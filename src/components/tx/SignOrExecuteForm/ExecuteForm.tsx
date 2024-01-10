@@ -180,7 +180,7 @@ export const ExecuteForm = ({
 
         {isRejectedByUser && (
           <Box mt={1}>
-            <ErrorMessage>The transaction was rejected by the user.</ErrorMessage>
+            <ErrorMessage>You've rejected the transaction.</ErrorMessage>
           </Box>
         )}
 

@@ -119,7 +119,9 @@ export const dispatchOnChainSigning = async (
     await sdkUnchecked.approveTransactionHash(safeTxHash)
     txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
   } catch (err) {
-    txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(err) })
+    if ((err as EthersError).code !== ErrorCode.ACTION_REJECTED) {
+      txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(err) })
+    }
     throw err
   }
 
@@ -149,7 +151,9 @@ export const dispatchTxExecution = async (
     result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
     txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+    if ((error as EthersError).code !== ErrorCode.ACTION_REJECTED) {
+      txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+    }
     throw error
   }
 
@@ -170,7 +174,7 @@ export const dispatchTxExecution = async (
 
       if (didReprice(error)) {
         txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
-      } else {
+      } else if ((error as EthersError).code !== ErrorCode.ACTION_REJECTED) {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
       }
     })
@@ -201,9 +205,11 @@ export const dispatchBatchExecution = async (
       txDispatch(TxEvent.EXECUTING, { txId, groupKey })
     })
   } catch (err) {
-    txs.forEach(({ txId }) => {
-      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
-    })
+    if ((err as EthersError).code !== ErrorCode.ACTION_REJECTED) {
+      txs.forEach(({ txId }) => {
+        txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
+      })
+    }
     throw err
   }
 
@@ -242,7 +248,7 @@ export const dispatchBatchExecution = async (
             safeAddress,
           })
         })
-      } else {
+      } else if ((error as EthersError).code !== ErrorCode.ACTION_REJECTED) {
         txs.forEach(({ txId }) => {
           txDispatch(TxEvent.FAILED, {
             txId,
@@ -284,7 +290,9 @@ export const dispatchSpendingLimitTxExecution = async (
     )
     txDispatch(TxEvent.EXECUTING, { groupKey: id })
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+    if ((error as EthersError).code !== ErrorCode.ACTION_REJECTED) {
+      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+    }
     throw error
   }
 
@@ -306,7 +314,9 @@ export const dispatchSpendingLimitTxExecution = async (
       }
     })
     .catch((error) => {
-      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+      if ((error as EthersError).code !== ErrorCode.ACTION_REJECTED) {
+        txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+      }
     })
 
   return result?.hash
@@ -360,7 +370,9 @@ export const dispatchTxRelay = async (
     // Monitor relay tx
     waitForRelayedTx(taskId, [txId], safe.address.value)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: asError(error) })
+    if ((error as EthersError).code !== ErrorCode.ACTION_REJECTED) {
+      txDispatch(TxEvent.FAILED, { txId, error: asError(error) })
+    }
     throw error
   }
 }

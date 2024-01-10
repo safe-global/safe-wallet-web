@@ -15,6 +15,8 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import BatchButton from './BatchButton'
+import { type EthersError } from '@/utils/ethers-utils'
+import { ErrorCode } from '@ethersproject/logger'
 
 export const SignForm = ({
   safeTx,
@@ -37,6 +39,7 @@ export const SignForm = ({
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
 
   // Hooks
   const { signTx, addToBatch } = txActions
@@ -57,15 +60,22 @@ export const SignForm = ({
 
     setIsSubmittable(false)
     setSubmitError(undefined)
+    setIsRejectedByUser(false)
+
 
     let resultTxId: string
     try {
       resultTxId = await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin))
     } catch (_err) {
-      const err = asError(_err)
-      trackError(Errors._805, err)
-      setIsSubmittable(true)
-      setSubmitError(err)
+      const err = _err as EthersError
+      if (err.code === ErrorCode.ACTION_REJECTED) {
+        setIsSubmittable(true)
+        setIsRejectedByUser(true)
+      } else {
+        trackError(Errors._804, err)
+        setIsSubmittable(true)
+        setSubmitError(err)
+      }
       return
     }
 
@@ -95,6 +105,12 @@ export const SignForm = ({
         submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
+      )}
+
+      {isRejectedByUser && (
+        <Box mt={1}>
+          <ErrorMessage>You've rejected the transaction.</ErrorMessage>
+        </Box>
       )}
 
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
