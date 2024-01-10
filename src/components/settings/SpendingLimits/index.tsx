@@ -38,7 +38,7 @@ const SpendingLimits = () => {
               <CheckWallet>
                 {(isOk) => (
                   <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.NEW_LIMIT}>
-                    <Button 
+                    <Button
                       data-testid="new-spending-limit"
                       onClick={() => setTxFlow(<NewSpendingLimitFlow />)}
                       sx={{ mt: 2 }}
