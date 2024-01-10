@@ -1,8 +1,6 @@
 import memoize from 'lodash/memoize'
 import { getTransactionDetails, getTransactionHistory } from '@safe-global/safe-gateway-typescript-sdk'
 
-const tzOffset = new Date().getTimezoneOffset() * 60 * 1000
-
 /**
  * Fetch and memoize transaction details from Safe Gateway
  *
@@ -22,7 +20,7 @@ export const getTxHistory = (chainId: string, safeAddress: string, pageUrl?: str
     chainId,
     safeAddress,
     {
-      timezone_offset: tzOffset,
+      timezone_offset: new Date().getTimezoneOffset() * 60 * 1000, // used for grouping txs by date
       trusted: false, // load all transactions, mark untrusted in the UI
     },
     pageUrl,
