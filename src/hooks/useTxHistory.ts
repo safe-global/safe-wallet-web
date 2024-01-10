@@ -6,6 +6,7 @@ import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
 import { fetchFilteredTxHistory, useTxFilter } from '@/utils/tx-history-filter'
 import { getTxHistory } from '@/services/transactions'
+import { selectSettings } from '@/store/settingsSlice'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -17,6 +18,7 @@ const useTxHistory = (
   // The latest page of the history is always in the store
   const historyState = useAppSelector(selectTxHistory)
   const [filter] = useTxFilter()
+  const { showOnlyTrustedTransactions } = useAppSelector(selectSettings)
 
   const {
     safe: { chainId },
@@ -30,9 +32,9 @@ const useTxHistory = (
 
       return filter
         ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
-        : getTxHistory(chainId, safeAddress, pageUrl)
+        : getTxHistory(chainId, safeAddress, showOnlyTrustedTransactions, pageUrl)
     },
-    [chainId, safeAddress, pageUrl, filter],
+    [chainId, safeAddress, pageUrl, filter, showOnlyTrustedTransactions],
     false,
   )
 
