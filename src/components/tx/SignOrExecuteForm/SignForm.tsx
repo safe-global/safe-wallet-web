@@ -10,7 +10,6 @@ import { useAlreadySigned, useTxActions } from './hooks'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
-import { asError } from '@/services/exceptions/utils'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
@@ -61,7 +60,6 @@ export const SignForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
     setIsRejectedByUser(false)
-
 
     let resultTxId: string
     try {

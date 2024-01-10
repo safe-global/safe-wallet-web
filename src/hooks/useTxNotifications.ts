@@ -15,6 +15,8 @@ import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
 import { getTxDetails } from '@/services/tx/txDetails'
+import { ErrorCode } from '@ethersproject/logger'
+
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
@@ -37,6 +39,10 @@ enum Variant {
   INFO = 'info',
   SUCCESS = 'success',
   ERROR = 'error',
+}
+
+const isUserRejection = (error: Error) => {
+  return 'code' in error && error.code === ErrorCode.ACTION_REJECTED
 }
 
 const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
@@ -72,6 +78,9 @@ const useTxNotifications = (): void => {
     const unsubFns = entries.map(([event, baseMessage]) =>
       txSubscribe(event, async (detail) => {
         const isError = 'error' in detail
+        if (isError && isUserRejection(detail.error)) {
+          return
+        }
         const isSuccess = successEvents.includes(event)
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
         const txId = 'txId' in detail ? detail.txId : undefined
@@ -84,7 +93,7 @@ const useTxNotifications = (): void => {
           try {
             const txDetails = await getTxDetails(chain.chainId, id)
             humanDescription = txDetails.txInfo.humanDescription || humanDescription
-          } catch {}
+          } catch { }
         }
 
         dispatch(
@@ -97,8 +106,8 @@ const useTxNotifications = (): void => {
             link: txId
               ? getTxLink(txId, chain, safeAddress)
               : txHash
-              ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
-              : undefined,
+                ? getExplorerLink(txHash, chain.blockExplorerUriTemplate)
+                : undefined,
           }),
         )
       }),
