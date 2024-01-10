@@ -20,11 +20,11 @@ import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
 import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
-import { type EthersError } from '@/utils/ethers-utils'
 import { ErrorCode } from '@ethersproject/logger'
 
 export type SpendingLimitTxParams = {
@@ -98,8 +98,8 @@ const ReviewSpendingLimitTx = ({
       onSubmit('', true)
       setTxFlow(undefined)
     } catch (_err) {
-      const err = _err as EthersError
-      if (err.code === ErrorCode.ACTION_REJECTED) {
+      const err = asError(_err)
+      if ('code' in err && err.code === ErrorCode.ACTION_REJECTED) {
         setIsSubmittable(true)
         setIsRejectedByUser(true)
       } else {

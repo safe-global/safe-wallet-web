@@ -14,7 +14,7 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import BatchButton from './BatchButton'
-import { type EthersError } from '@/utils/ethers-utils'
+import { asError } from '@/services/exceptions/utils'
 import { ErrorCode } from '@ethersproject/logger'
 
 export const SignForm = ({
@@ -65,8 +65,8 @@ export const SignForm = ({
     try {
       resultTxId = await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin))
     } catch (_err) {
-      const err = _err as EthersError
-      if (err.code === ErrorCode.ACTION_REJECTED) {
+      const err = asError(_err)
+      if ('code' in err && err.code === ErrorCode.ACTION_REJECTED) {
         setIsSubmittable(true)
         setIsRejectedByUser(true)
       } else {
