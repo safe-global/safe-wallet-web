@@ -21,7 +21,6 @@ import { TxModalContext } from '@/components/tx-flow'
 import { SuccessScreenFlow } from '@/components/tx-flow/flows'
 import useGasLimit from '@/hooks/useGasLimit'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
-import { asError } from '@/services/exceptions/utils'
 
 import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -103,7 +102,7 @@ export const ExecuteForm = ({
       const err = _err as EthersError
       if (err.code === ErrorCode.ACTION_REJECTED) {
         setIsSubmittable(true)
-        setIsRejectedByUser(true);
+        setIsRejectedByUser(true)
       } else {
         trackError(Errors._804, err)
         setIsSubmittable(true)

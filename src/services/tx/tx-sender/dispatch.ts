@@ -22,6 +22,7 @@ import {
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
+import { ErrorCode } from '@ethersproject/logger'
 
 /**
  * Propose a transaction
@@ -85,10 +86,12 @@ export const dispatchTxSigning = async (
   try {
     signedTx = await tryOffChainTxSigning(safeTx, safeVersion, sdk)
   } catch (error) {
-    txDispatch(TxEvent.SIGN_FAILED, {
-      txId,
-      error: asError(error),
-    })
+    if ((error as EthersError).code !== ErrorCode.ACTION_REJECTED) {
+      txDispatch(TxEvent.SIGN_FAILED, {
+        txId,
+        error: asError(error),
+      })
+    }
     throw error
   }
 
