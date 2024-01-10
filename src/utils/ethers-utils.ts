@@ -18,3 +18,16 @@ export const didRevert = (receipt: EthersError['receipt']): boolean => {
 export const didReprice = (error: EthersError): boolean => {
   return error.reason === EthersTxReplacedReason.repriced
 }
+
+type TimeoutError = Error & {
+  timeout: number
+  code: ErrorCode.TIMEOUT
+}
+
+export const isTimeoutError = (value?: Error): value is TimeoutError => {
+  return !!value && 'timeout' in value && 'code' in value
+}
+
+export const getTimeoutErrorMessage = (error: TimeoutError) => {
+  return `Transaction timed out after ${Math.floor(error.timeout / 1000)} seconds`
+}
