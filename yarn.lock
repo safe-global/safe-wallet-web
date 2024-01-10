@@ -3971,10 +3971,10 @@
     "@safe-global/safe-core-sdk-utils" "^1.7.4"
     ethers "5.7.2"
 
-"@safe-global/safe-gateway-typescript-sdk@^3.14.0-alpha.3":
-  version "3.14.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.14.0-alpha.3.tgz#51b4225fa706c5e7fa32bc32e3440854ad65e12d"
-  integrity sha512-5zTjVI1gqoolQ/qKro+IgEX8JulrZ+AQ/wzbgaYdnoaSpZUAn/T2nxyNzuNVuGcV0xXQRFHj969vOD8sJtepTA==
+"@safe-global/safe-gateway-typescript-sdk@^3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.14.0.tgz#9581c524c1ea4956555f40761eb6b4007392aa82"
+  integrity sha512-/dqU66RvHw50n+7x3nwnJedq8V6iLQyoWitNdjx5cFTBmae+rpP+LvHq+LqZfXJVkB1qNytMdjFjdyES0t79gQ==
 
 "@safe-global/safe-gateway-typescript-sdk@^3.5.3":
   version "3.12.0"
