@@ -55,7 +55,7 @@ const SpendingLimitRow = ({
             className={css.group}
           >
             {!isOnlySpendLimitBeneficiary && (
-              <FormControlLabel
+              <FormControlLabel data-testid="standard-tx"
                 value={TokenTransferType.multiSig}
                 label={
                   <>
@@ -97,7 +97,7 @@ const SpendingLimitRow = ({
                 className={css.label}
               />
             )}
-            <FormControlLabel
+            <FormControlLabel data-testid="spending-limit-tx"
               value={TokenTransferType.spendingLimit}
               label={
                 <>

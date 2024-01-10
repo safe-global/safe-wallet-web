@@ -59,6 +59,13 @@ export function checkTextsExistWithinElement(element, texts) {
   })
 }
 
+export function checkRadioButtonState(selector, state) {
+  if (state === constants.checkboxStates.checked) {
+    cy.get(selector).should('be.checked')
+  } else state === constants.checkboxStates.unchecked
+  cy.get(selector).should('not.be.checked')
+}
+
 export function verifyCheckboxeState(element, index, state) {
   cy.get(element).eq(index).should(state)
 }
@@ -150,5 +157,12 @@ export function addToLocalStorage(key, jsonValue) {
     } catch (error) {
       reject('Error adding item to local storage: ' + error)
     }
+  })
+}
+
+export function checkTextOrder(selector, expectedTextArray) {
+  cy.get(selector).each((element, index) => {
+    const text = Cypress.$(element).text().trim()
+    expect(text).to.eq(expectedTextArray[index])
   })
 }

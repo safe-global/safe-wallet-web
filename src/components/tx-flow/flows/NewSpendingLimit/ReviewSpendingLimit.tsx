@@ -85,7 +85,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
           </Typography>
         </Grid>
 
-        <Grid item md={10}>
+        <Grid data-testid="beneficiary-address" item md={10}>
           <EthHashInfo
             address={params.beneficiary}
             shortAddress={false}
@@ -130,7 +130,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
               />
             </>
           ) : (
-            <SpendingLimitLabel label={resetTime || 'One-time spending limit'} isOneTime={!!resetTime && isOneTime} />
+            <SpendingLimitLabel data-testid= "spending-limit-label" label={resetTime || 'One-time spending limit'} isOneTime={!!resetTime && isOneTime} />
           )}
         </Grid>
       </Grid>

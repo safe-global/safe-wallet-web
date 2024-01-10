@@ -98,7 +98,7 @@ export const SpendingLimitsTable = ({
                 spent: {
                   rawValue: spendingLimit.spent,
                   content: (
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <Box data-testid="spent-amount" display="flex" alignItems="center" gap={1}>
                       <TokenIcon logoUri={spendingLimit.token.logoUri} tokenSymbol={spendingLimit.token.symbol} />
                       {`${formattedSpent} of ${formattedAmount} ${spendingLimit.token.symbol}`}
                     </Box>
@@ -108,6 +108,7 @@ export const SpendingLimitsTable = ({
                   rawValue: spendingLimit.resetTimeMin,
                   content: (
                     <SpendingLimitLabel
+                      data-testid="reset-time"
                       label={relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}
                       isOneTime={spendingLimit.resetTimeMin === '0'}
                     />
@@ -121,6 +122,7 @@ export const SpendingLimitsTable = ({
                       {(isOk) => (
                         <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
                           <IconButton
+                            data-testid="delete-btn"
                             onClick={() => setTxFlow(<RemoveSpendingLimitFlow spendingLimit={spendingLimit} />)}
                             color="error"
                             size="small"

@@ -4,7 +4,29 @@ import { Box, Typography } from '@mui/material'
 import TokenIcon from '@/components/common/TokenIcon'
 import { formatAmountPrecise } from '@/utils/formatNumber'
 import { PSEUDO_APPROVAL_VALUES } from '@/components/tx/ApprovalEditor/utils/approvals'
-import FieldsGrid from '@/components/tx/FieldsGrid'
+
+const AmountBlock = ({
+  amount,
+  tokenInfo,
+  children,
+}: {
+  amount: number | string
+  tokenInfo: Omit<TokenInfo, 'name' | 'logoUri'> & { logoUri?: string }
+  children?: ReactNode
+}) => {
+  return (
+    <Grid item md={10} className={css.token}>
+      <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
+      <Typography fontWeight="bold">{tokenInfo.symbol}</Typography>
+      {children}
+      {amount === PSEUDO_APPROVAL_VALUES.UNLIMITED ? (
+        <Typography>{PSEUDO_APPROVAL_VALUES.UNLIMITED}</Typography>
+      ) : (
+        <Typography data-testid="token-amount">{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
+      )}
+    </Grid>
+  )
+}
 
 const SendAmountBlock = ({
   amount,
