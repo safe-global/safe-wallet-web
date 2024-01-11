@@ -54,10 +54,11 @@ const TokenAmountInput = ({
   }, [maxAmount, selectedToken, setValue])
 
   return (
-    <FormControl 
-      data-testid="token-amount-section" 
-      className={classNames(css.outline, { [css.error]: isAmountError })} 
-      fullWidth>
+    <FormControl
+      data-testid="token-amount-section"
+      className={classNames(css.outline, { [css.error]: isAmountError })}
+      fullWidth
+    >
       <InputLabel shrink required className={css.label}>
         {errors[TokenAmountFields.tokenAddress]?.message || errors[TokenAmountFields.amount]?.message || 'Amount'}
       </InputLabel>
@@ -82,7 +83,7 @@ const TokenAmountInput = ({
           })}
         />
         <Divider orientation="vertical" flexItem />
-        <TextField 
+        <TextField
           data-testid="token-balance"
           select
           variant="standard"

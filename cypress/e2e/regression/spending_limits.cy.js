@@ -9,7 +9,7 @@ const tokenAmount = 0.1
 const spendingLimitBalance = '(0.17 ETH)'
 
 describe('Spending limits tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit(constants.securityUrl + constants.SEPOLIA_TEST_SAFE_12)
     cy.clearLocalStorage()
     main.acceptCookies()

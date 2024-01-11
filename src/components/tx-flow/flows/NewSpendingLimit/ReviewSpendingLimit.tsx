@@ -130,10 +130,11 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
               />
             </>
           ) : (
-            <SpendingLimitLabel 
-              data-testid= "spending-limit-label" 
-              label={resetTime || 'One-time spending limit'} 
-              isOneTime={!!resetTime && isOneTime} />
+            <SpendingLimitLabel
+              data-testid="spending-limit-label"
+              label={resetTime || 'One-time spending limit'}
+              isOneTime={!!resetTime && isOneTime}
+            />
           )}
         </Grid>
       </Grid>

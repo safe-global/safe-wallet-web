@@ -5,7 +5,7 @@ import * as owner from '../pages/owners.pages'
 import * as safe from '../pages/load_safe.pages'
 
 describe('[SMOKE] Spending limits tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit(constants.securityUrl + constants.SEPOLIA_TEST_SAFE_12)
     cy.clearLocalStorage()
     main.acceptCookies()

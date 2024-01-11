@@ -65,10 +65,11 @@ export const CreateSpendingLimit = ({
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth sx={{ mb: 3 }}>
-            <AddressBookInput 
-              data-testid="beneficiary-section" 
-              name={SpendingLimitFields.beneficiary} 
-              label="Beneficiary" />
+            <AddressBookInput
+              data-testid="beneficiary-section"
+              name={SpendingLimitFields.beneficiary}
+              label="Beneficiary"
+            />
           </FormControl>
 
           <TokenAmountInput balances={balances.items} selectedToken={selectedToken} validate={validateSpendingLimit} />
@@ -86,16 +87,19 @@ export const CreateSpendingLimit = ({
               control={control}
               name={SpendingLimitFields.resetTime}
               render={({ field }) => (
-                <Select 
-                  data-testid="time-period-section" 
-                  {...field} sx={{ textAlign: 'right', fontWeight: 700 }} 
-                  IconComponent={ExpandMoreRoundedIcon}>
+                <Select
+                  data-testid="time-period-section"
+                  {...field}
+                  sx={{ textAlign: 'right', fontWeight: 700 }}
+                  IconComponent={ExpandMoreRoundedIcon}
+                >
                   {resetTimeOptions.map((resetTime) => (
-                    <MenuItem 
-                      data-testid="time-period-item" 
-                      key={resetTime.value} 
-                      value={resetTime.value} 
-                      sx={{ overflow: 'hidden' }}>
+                    <MenuItem
+                      data-testid="time-period-item"
+                      key={resetTime.value}
+                      value={resetTime.value}
+                      sx={{ overflow: 'hidden' }}
+                    >
                       {resetTime.label}
                     </MenuItem>
                   ))}
