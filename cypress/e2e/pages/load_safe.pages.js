@@ -2,7 +2,7 @@ import * as constants from '../../support/constants'
 
 const addExistingAccountBtnStr = 'Add existing one'
 const contactStr = 'Name, address & network'
-const invalidAddressFormatErrorMsg = 'Invalid address format'
+export const invalidAddressFormatErrorMsg = 'Invalid address format'
 const invalidAddressNameLengthErrorMsg = 'Maximum 50 symbols'
 
 const safeDataForm = '[data-testid=load-safe-form]'

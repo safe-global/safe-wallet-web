@@ -17,7 +17,7 @@ const buttonSx = {
 export const SendTokensButton = ({ onClick, sx }: { onClick: () => void; sx?: ButtonProps['sx'] }) => {
   return (
     <Track {...MODALS_EVENTS.SEND_FUNDS}>
-      <Button onClick={onClick} variant="contained" sx={sx ?? buttonSx} fullWidth>
+      <Button data-testid="send-tokens-btn" onClick={onClick} variant="contained" sx={sx ?? buttonSx} fullWidth>
         Send tokens
       </Button>
     </Track>

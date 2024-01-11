@@ -18,6 +18,7 @@ const NewTxButton = (): ReactElement => {
     <CheckWallet allowSpendingLimit>
       {(isOk) => (
         <Button
+          data-testid="new-tx-btn"
           onClick={onClick}
           variant="contained"
           size="small"
