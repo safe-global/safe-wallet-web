@@ -26,7 +26,6 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
 import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
-import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 
 export type SpendingLimitTxParams = {

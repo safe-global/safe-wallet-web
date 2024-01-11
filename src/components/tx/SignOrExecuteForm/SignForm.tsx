@@ -17,7 +17,6 @@ import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletReject
 import BatchButton from './BatchButton'
 import { asError } from '@/services/exceptions/utils'
 import { isWalletRejection } from '@/utils/wallets'
-import { ErrorCode } from '@ethersproject/logger'
 
 export const SignForm = ({
   safeTx,

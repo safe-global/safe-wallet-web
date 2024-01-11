@@ -44,7 +44,6 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
 import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
-import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {

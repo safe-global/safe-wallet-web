@@ -15,7 +15,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import type { PendingSafeMessagesState } from '@/store/pendingSafeMessagesSlice'
-import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 
 const SafeMessageNotifications: Partial<Record<SafeMsgEvent, string>> = {
@@ -25,7 +24,6 @@ const SafeMessageNotifications: Partial<Record<SafeMsgEvent, string>> = {
   [SafeMsgEvent.CONFIRM_PROPOSE_FAILED]: 'Confirming the message failed. Please try again.',
   [SafeMsgEvent.SIGNATURE_PREPARED]: 'The message was successfully confirmed.',
 }
-
 
 export const _getSafeMessagesAwaitingConfirmations = (
   items: SafeMessageListItem[],

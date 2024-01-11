@@ -15,7 +15,6 @@ import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
 import { getTxDetails } from '@/services/tx/txDetails'
-import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 
 const TxNotifications = {

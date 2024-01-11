@@ -30,7 +30,6 @@ import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
-import { ErrorCode } from '@ethersproject/logger'
 
 export const ExecuteForm = ({
   safeTx,
