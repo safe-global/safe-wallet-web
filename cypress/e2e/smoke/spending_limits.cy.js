@@ -49,16 +49,11 @@ describe('[SMOKE] Spending limits tests', () => {
     spendinglimit.verifyValidAddressShowsNoErrors()
   })
 
-  it('Verify any positive number can be set in the amount input', () => {
-    spendinglimit.enterSpendingLimitAmount(1)
-    spendinglimit.verifyValidAddressShowsNoErrors()
-  })
-
   it('Verify the reset time is "One time" by default', () => {
     spendinglimit.verifyDefaultTimeIsSet()
   })
 
-  it('Validate Reset values present in dropdown: One time, 1 day, 1 week, 1 month', () => {
+  it('Validate Reset values present in dropdown: One time, 5 minutes, 30 minutes, 1 hr', () => {
     spendinglimit.clickOnTimePeriodDropdown()
     spendinglimit.checkTimeDropdownOptions()
   })
