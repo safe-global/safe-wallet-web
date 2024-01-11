@@ -3,7 +3,9 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type WalletInit, ProviderRpcError } from '@web3-onboard/common'
 import { type EIP1193Provider } from '@web3-onboard/core'
-import { type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
+import { type SafeAuthPack, type SafeAuthEventListener } from '@safe-global/auth-kit'
+import { _getSafeAuthPackInstance } from '@/hooks/wallets/mpc/useSafeAuth'
+import { BrowserProvider } from 'ethers'
 
 const assertDefined = <T>(mpcProvider: T | undefined) => {
   if (!mpcProvider) {
@@ -12,13 +14,18 @@ const assertDefined = <T>(mpcProvider: T | undefined) => {
   return mpcProvider
 }
 
+export const onboardListeners: Record<'accountsChanged' | 'chainChanged', SafeAuthEventListener[]> = {
+  accountsChanged: [],
+  chainChanged: [],
+}
+
 export const ONBOARD_MPC_MODULE_LABEL = 'Social Login'
 
 export const isSocialLoginWallet = (walletLabel: string | undefined) => {
   return walletLabel === ONBOARD_MPC_MODULE_LABEL
 }
 
-const getConnectedAccounts = async (provider: typeof Web3AuthMPCCoreKit.prototype.provider | undefined) => {
+const getConnectedAccounts = async (provider: ReturnType<SafeAuthPack['getProvider']> | undefined) => {
   try {
     const web3 = assertDefined(provider)
     return web3.request({ method: 'eth_accounts' })
@@ -45,17 +52,16 @@ function MpcModule(chain: ChainInfo): WalletInit {
       label: ONBOARD_MPC_MODULE_LABEL,
       getIcon: async () => (await import('./icon')).default,
       getInterface: async () => {
-        const { _getMPCCoreKitInstance } = await import('@/hooks/wallets/mpc/useMPC')
-        const { getSocialWalletService } = await import('@/hooks/wallets/mpc/useSocialWallet')
-        const { COREKIT_STATUS } = await import('@web3auth/mpc-core-kit')
-        const { open } = await import('./PasswordRecoveryModal')
-
-        const getMPCProvider = () => _getMPCCoreKitInstance()?.provider
+        const { _getSafeAuthPackInstance: _getMPCCoreKitInstance } = await import('@/hooks/wallets/mpc/useSafeAuth')
+        const getMPCProvider = () => _getSafeAuthPackInstance()?.getProvider()
 
         const provider: EIP1193Provider = {
           on: (event, listener) => {
-            const web3 = assertDefined(getMPCProvider())
-            web3.on(event, listener)
+            const safeAuthPack = _getSafeAuthPackInstance()
+            if (event === 'accountsChanged' || event === 'chainChanged') {
+              onboardListeners[event].push(listener)
+              safeAuthPack?.subscribe(event, listener)
+            }
           },
           request: (request) => {
             return new Promise<any>(async (resolve, reject) => {
@@ -81,18 +87,13 @@ function MpcModule(chain: ChainInfo): WalletInit {
                     web3.request({ method: 'eth_accounts' }).then(resolve).catch(reject)
                   } catch (e) {
                     // Otherwise try to log in the user
-                    const socialWalletService = getSocialWalletService()
-                    if (!socialWalletService) throw Error('Social Login not ready')
-
-                    const status = await socialWalletService.loginAndCreate()
-
-                    if (status === COREKIT_STATUS.REQUIRED_SHARE) {
-                      open(() => {
-                        getConnectedAccounts(getMPCProvider()).then(resolve).catch(reject)
-                      })
-                    } else {
-                      getConnectedAccounts(getMPCProvider()).then(resolve).catch(reject)
+                    const safeAuthPack = _getSafeAuthPackInstance()
+                    if (!safeAuthPack) {
+                      throw Error('Social Login not ready')
                     }
+
+                    await safeAuthPack.signIn()
+                    getConnectedAccounts(getMPCProvider()).then(resolve).catch(reject)
                   }
                   return
                 }
@@ -119,11 +120,11 @@ function MpcModule(chain: ChainInfo): WalletInit {
             })
           },
           removeListener: (event, listener) => {
-            const web3 = assertDefined(getMPCProvider())
+            const web3 = new BrowserProvider(assertDefined(getMPCProvider()))
             return web3.removeListener(event, listener)
           },
           disconnect: () => {
-            _getMPCCoreKitInstance()?.logout()
+            _getSafeAuthPackInstance()?.signOut()
           },
         }
 

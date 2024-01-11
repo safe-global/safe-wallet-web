@@ -1,7 +1,4 @@
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
-import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { Box, Button, LinearProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
-import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { useMemo, useState } from 'react'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -19,7 +16,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { open } from '@/services/mpc/PasswordRecoveryModal'
+import useSafeAuth, { useSafeAuthUserInfo } from '@/hooks/wallets/mpc/useSafeAuth'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -41,7 +38,7 @@ const useIsSocialWalletEnabled = () => {
 }
 
 type SocialSignerLoginProps = {
-  socialWalletService: ISocialWalletService | undefined
+  safeAuthPack: ReturnType<typeof useSafeAuth>
   wallet: ReturnType<typeof useWallet>
   supportedChains: ReturnType<typeof useGetSupportedChains>
   isMPCLoginEnabled: ReturnType<typeof useIsSocialWalletEnabled>
@@ -50,7 +47,7 @@ type SocialSignerLoginProps = {
 }
 
 export const SocialSigner = ({
-  socialWalletService,
+  safeAuthPack,
   wallet,
   supportedChains,
   isMPCLoginEnabled,
@@ -59,29 +56,21 @@ export const SocialSigner = ({
 }: SocialSignerLoginProps) => {
   const [loginPending, setLoginPending] = useState<boolean>(false)
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
-  const userInfo = socialWalletService?.getUserInfo()
+  const [userInfo] = useSafeAuthUserInfo()
+
   const isDisabled = loginPending || !isMPCLoginEnabled
 
   const isWelcomePage = !!onLogin
 
   const login = async () => {
-    if (!socialWalletService) return
+    if (!safeAuthPack) return
 
     setLoginPending(true)
     setLoginError(undefined)
     try {
-      const status = await socialWalletService.loginAndCreate()
-
-      if (status === COREKIT_STATUS.LOGGED_IN) {
-        setLoginPending(false)
-        return
-      }
-
-      if (status === COREKIT_STATUS.REQUIRED_SHARE) {
-        onRequirePassword?.()
-        open(() => setLoginPending(false))
-        return
-      }
+      await safeAuthPack.signIn()
+      setLoginPending(false)
+      return
     } catch (err) {
       const error = asError(err)
       setLoginError(error.message)
@@ -181,7 +170,7 @@ export const SocialSigner = ({
 }
 
 export default madProps(SocialSigner, {
-  socialWalletService: useSocialWallet,
+  safeAuthPack: useSafeAuth,
   wallet: useWallet,
   supportedChains: useGetSupportedChains,
   isMPCLoginEnabled: useIsSocialWalletEnabled,

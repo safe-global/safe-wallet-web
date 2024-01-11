@@ -1,6 +1,4 @@
 import { SentryErrorBoundary } from '@/services/sentry' // needs to be imported first
-import useRehydrateSocialWallet from '@/hooks/wallets/mpc/useRehydrateSocialWallet'
-import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
 import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
@@ -42,6 +40,7 @@ import { TxModalProvider } from '@/components/tx-flow'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import Recovery from '@/features/recovery/components/Recovery'
 import WalletProvider from '@/components/common/WalletProvider'
+import { useInitSafeAuth } from '@/hooks/wallets/mpc/useSafeAuth'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -63,7 +62,8 @@ const InitApp = (): null => {
   useTxTracking()
   useSafeMsgTracking()
   useBeamer()
-  useRehydrateSocialWallet()
+  useInitSafeAuth()
+  // useRehydrateSocialWallet()
 
   return null
 }
@@ -122,8 +122,6 @@ const WebCoreApp = ({
           <CookieBanner />
 
           <Notifications />
-
-          <PasswordRecoveryModal />
 
           <Recovery />
         </AppProviders>

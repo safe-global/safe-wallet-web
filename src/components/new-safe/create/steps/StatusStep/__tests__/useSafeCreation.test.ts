@@ -7,7 +7,7 @@ import * as logic from '@/components/new-safe/create/logic'
 import * as contracts from '@/services/contracts/safeContracts'
 import * as txMonitor from '@/services/tx/txMonitor'
 import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/usePendingSafe'
-import { BrowserProvider, type Eip1193Provider, zeroPadValue, type JsonRpcProvider } from 'ethers'
+import { type JsonRpcProvider, BrowserProvider, type Eip1193Provider, zeroPadValue } from 'ethers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { chainBuilder } from '@/tests/builders/chains'
 import { waitFor } from '@testing-library/react'
@@ -242,6 +242,26 @@ describe('useSafeCreation', () => {
     })
   })
 
+  it('should set a PROCESSING state and monitor relay taskId after successfully tx relay', async () => {
+    jest.spyOn(logic, 'relaySafeCreation').mockResolvedValue('0x456')
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
+      {
+        ...mockPendingSafe,
+      },
+      mockSetPendingSafe,
+    ])
+    const txMonitorSpy = jest.spyOn(txMonitor, 'waitForCreateSafeTx').mockImplementation(jest.fn())
+
+    const initialStatus = SafeCreationStatus.PROCESSING
+
+    renderHook(() => useSafeCreation(initialStatus, mockSetStatus, true))
+
+    await waitFor(() => {
+      expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
+      expect(txMonitorSpy).toHaveBeenCalledWith('0x456', expect.anything())
+    })
+  })
+
   it('should watch a tx even if no wallet is connected', async () => {
     jest.spyOn(wallet, 'default').mockReturnValue(null)
     jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
@@ -268,16 +288,6 @@ describe('useSafeCreation', () => {
     })
   })
 
-  it('should not watch a tx if there is no txHash', async () => {
-    const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
-    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
-    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
-
-    await waitFor(() => {
-      expect(watchSafeTxSpy).not.toHaveBeenCalled()
-    })
-  })
-
   it('should not watch a tx if there is no tx object', async () => {
     const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
     jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
@@ -294,6 +304,16 @@ describe('useSafeCreation', () => {
       },
       mockSetPendingSafe,
     ])
+    renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
+
+    await waitFor(() => {
+      expect(watchSafeTxSpy).not.toHaveBeenCalled()
+    })
+  })
+
+  it('should not watch a tx if there is no txHash', async () => {
+    const watchSafeTxSpy = jest.spyOn(logic, 'checkSafeCreationTx')
+    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([mockPendingSafe, mockSetPendingSafe])
     renderHook(() => useSafeCreation(mockStatus, mockSetStatus, false))
 
     await waitFor(() => {
@@ -322,26 +342,6 @@ describe('useSafeCreation', () => {
 
     await waitFor(() => {
       expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
-    })
-  })
-
-  it('should set a PROCESSING state and monitor relay taskId after successfully tx relay', async () => {
-    jest.spyOn(logic, 'relaySafeCreation').mockResolvedValue('0x456')
-    jest.spyOn(usePendingSafe, 'usePendingSafe').mockReturnValue([
-      {
-        ...mockPendingSafe,
-      },
-      mockSetPendingSafe,
-    ])
-    const txMonitorSpy = jest.spyOn(txMonitor, 'waitForCreateSafeTx').mockImplementation(jest.fn())
-
-    const initialStatus = SafeCreationStatus.PROCESSING
-
-    renderHook(() => useSafeCreation(initialStatus, mockSetStatus, true))
-
-    await waitFor(() => {
-      expect(mockSetStatus).toHaveBeenCalledWith(SafeCreationStatus.PROCESSING)
-      expect(txMonitorSpy).toHaveBeenCalledWith('0x456', expect.anything())
     })
   })
 })

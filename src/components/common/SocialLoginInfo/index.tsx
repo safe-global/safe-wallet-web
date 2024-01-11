@@ -1,5 +1,5 @@
 import WalletBalance from '@/components/common/WalletBalance'
-import { Badge, Box, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import css from './styles.module.css'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -8,7 +8,7 @@ import ExplorerButton from '@/components/common/ExplorerButton'
 import { getBlockExplorerLink } from '@/utils/chains'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import useSafeAuth, { useSafeAuthUserInfo } from '@/hooks/wallets/mpc/useSafeAuth'
 
 const SocialLoginInfo = ({
   wallet,
@@ -25,8 +25,8 @@ const SocialLoginInfo = ({
   balance?: string
   showBalance?: boolean
 }) => {
-  const socialWalletService = useSocialWallet()
-  const userInfo = socialWalletService?.getUserInfo()
+  const safeAuthPack = useSafeAuth()
+  const [userInfo, userInfoError, userInfoLoading] = useSafeAuthUserInfo()
   const prefix = chainInfo?.shortName
   const link = chainInfo ? getBlockExplorerLink(chainInfo, wallet.address) : undefined
   const settings = useAppSelector(selectSettings)
@@ -44,7 +44,6 @@ const SocialLoginInfo = ({
           width={size}
           height={size}
         />
-        {!socialWalletService?.isMFAEnabled() && <Badge variant="dot" color="warning" className={css.bubble} />}
       </Box>
       <div className={css.profileData}>
         <Typography className={css.text} variant="body2">

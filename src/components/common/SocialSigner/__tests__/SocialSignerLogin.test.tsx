@@ -1,71 +1,102 @@
-import { act, render, waitFor } from '@/tests/test-utils'
+import { render, waitFor } from '@/tests/test-utils'
 
 import { SocialSigner, _getSupportedChains } from '@/components/common/SocialSigner'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
-import { COREKIT_STATUS, type UserInfo, type Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
-import SocialWalletService from '@/services/mpc/SocialWalletService'
 import { TxModalProvider } from '@/components/tx-flow'
-import { fireEvent } from '@testing-library/react'
-import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { chainBuilder } from '@/tests/builders/chains'
-import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
-
-jest.mock('@/services/mpc/SocialWalletService')
+import type { SafeAuthPack, SafeAuthUserInfo } from '@safe-global/auth-kit'
+import { setSafeAuthPack } from '@/hooks/wallets/mpc/useSafeAuth'
+import { act } from 'react-dom/test-utils'
 
 const mockWallet = connectedWalletBuilder().with({ chainId: '5', label: ONBOARD_MPC_MODULE_LABEL }).build()
 
 describe('SocialSignerLogin', () => {
-  let mockSocialWalletService: ISocialWalletService
-
   beforeEach(() => {
     jest.resetAllMocks()
-
-    mockSocialWalletService = new SocialWalletService({} as unknown as Web3AuthMPCCoreKit)
+    setSafeAuthPack(undefined)
   })
 
   it('should render continue with connected account when on gnosis chain', async () => {
+    const mockSafeAuthPack = {
+      signIn: jest.fn(),
+      isAuthenticated: false,
+      init: jest.fn(),
+      getProvider: jest.fn(),
+      signOut: jest.fn(),
+      getUserInfo: jest.fn().mockResolvedValue({
+        profileImage: 'some/url',
+        email: 'test@testermann.com',
+        name: 'Test Testermann',
+      } as SafeAuthUserInfo),
+      destroy: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      getSafes: jest.fn(),
+      getAddress: jest.fn(),
+      getChainId: jest.fn(),
+    } as unknown as SafeAuthPack
+    setSafeAuthPack(mockSafeAuthPack)
+
     const mockOnLogin = jest.fn()
 
     const result = render(
       <TxModalProvider>
         <SocialSigner
-          socialWalletService={mockSocialWalletService}
+          safeAuthPack={mockSafeAuthPack}
           wallet={mockWallet}
           supportedChains={['Goerli']}
           isMPCLoginEnabled={true}
           onLogin={mockOnLogin}
         />
-        <PasswordRecoveryModal />
       </TxModalProvider>,
     )
 
     await waitFor(() => {
-      expect(result.findByText('Continue as Test Testermann')).resolves.toBeDefined()
+      expect(result.queryByText('Continue as Test Testermann')).not.toBeNull()
     })
 
     // We do not automatically invoke the callback as the user did not actively connect
     expect(mockOnLogin).not.toHaveBeenCalled()
 
-    const button = await result.findByRole('button')
-    button.click()
+    await act(async () => {
+      const button = await result.findByRole('button')
+      button.click()
+    })
 
-    expect(mockOnLogin).toHaveBeenCalled()
+    await waitFor(() => {
+      expect(mockOnLogin).toHaveBeenCalled()
+    })
   })
 
   it('should render google login button if no wallet is connected on gnosis chain', async () => {
+    const mockSafeAuthPack = {
+      signIn: jest.fn(),
+      isAuthenticated: false,
+      init: jest.fn(),
+      getProvider: jest.fn(),
+      signOut: jest.fn(),
+      getUserInfo: jest.fn().mockResolvedValue(undefined),
+      destroy: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      getSafes: jest.fn(),
+      getAddress: jest.fn(),
+      getChainId: jest.fn(),
+    } as unknown as SafeAuthPack
+    setSafeAuthPack(mockSafeAuthPack)
+
     const mockOnLogin = jest.fn()
 
     const result = render(
       <TxModalProvider>
         <SocialSigner
-          socialWalletService={mockSocialWalletService}
+          safeAuthPack={mockSafeAuthPack}
           wallet={null}
           supportedChains={['Goerli']}
           isMPCLoginEnabled={true}
           onLogin={mockOnLogin}
         />
-        <PasswordRecoveryModal />
       </TxModalProvider>,
     )
 
@@ -75,24 +106,41 @@ describe('SocialSignerLogin', () => {
     })
   })
 
-  it('should display a Continue as button and call onLogin when clicked', () => {
+  it('should display a Continue as button and call onLogin when clicked', async () => {
+    const mockSafeAuthPack = {
+      signIn: jest.fn(),
+      isAuthenticated: false,
+      init: jest.fn(),
+      getProvider: jest.fn(),
+      signOut: jest.fn(),
+      getUserInfo: jest.fn().mockResolvedValue({
+        profileImage: 'some/url',
+        email: 'test@testermann.com',
+        name: 'Test Testermann',
+      } as SafeAuthUserInfo),
+      destroy: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      getSafes: jest.fn(),
+      getAddress: jest.fn(),
+      getChainId: jest.fn(),
+    } as unknown as SafeAuthPack
+    setSafeAuthPack(mockSafeAuthPack)
     const mockOnLogin = jest.fn()
-    mockSocialWalletService.loginAndCreate = jest.fn(() => Promise.resolve(COREKIT_STATUS.LOGGED_IN))
 
     const result = render(
-      <TxModalProvider>
-        <SocialSigner
-          socialWalletService={mockSocialWalletService}
-          wallet={mockWallet}
-          supportedChains={['Goerli']}
-          isMPCLoginEnabled={true}
-          onLogin={mockOnLogin}
-        />
-        <PasswordRecoveryModal />
-      </TxModalProvider>,
+      <SocialSigner
+        safeAuthPack={mockSafeAuthPack}
+        wallet={mockWallet}
+        supportedChains={['Goerli']}
+        isMPCLoginEnabled={true}
+        onLogin={mockOnLogin}
+      />,
     )
 
-    expect(result.getByText('Continue as Test Testermann')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(result.queryByText('Continue as Test Testermann')).toBeInTheDocument()
+    })
 
     const button = result.getByRole('button')
     button.click()
@@ -101,9 +149,28 @@ describe('SocialSignerLogin', () => {
   })
 
   it('should disable the Google Login button with a message when not on gnosis chain', async () => {
+    const mockSafeAuthPack = {
+      signIn: jest.fn(),
+      isAuthenticated: false,
+      init: jest.fn(),
+      getProvider: jest.fn(),
+      signOut: jest.fn(),
+      getUserInfo: jest.fn().mockResolvedValue({
+        profileImage: 'some/url',
+        email: 'test@testermann.com',
+        name: 'Test Testermann',
+      } as SafeAuthUserInfo),
+      destroy: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+      getSafes: jest.fn(),
+      getAddress: jest.fn(),
+      getChainId: jest.fn(),
+    } as unknown as SafeAuthPack
+    setSafeAuthPack(mockSafeAuthPack)
     const result = render(
       <SocialSigner
-        socialWalletService={mockSocialWalletService}
+        safeAuthPack={mockSafeAuthPack}
         wallet={mockWallet}
         supportedChains={['Goerli']}
         isMPCLoginEnabled={false}
@@ -112,74 +179,6 @@ describe('SocialSignerLogin', () => {
 
     expect(result.getByText('Currently only supported on Goerli')).toBeInTheDocument()
     expect(await result.findByRole('button')).toBeDisabled()
-  })
-
-  it('should display Password Recovery form and display a Continue as button when login succeeds', async () => {
-    const mockOnLogin = jest.fn()
-    mockSocialWalletService.loginAndCreate = jest.fn(() => Promise.resolve(COREKIT_STATUS.REQUIRED_SHARE))
-    mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue(undefined)
-    mockSocialWalletService.recoverAccountWithPassword = jest.fn(() => Promise.resolve(true))
-
-    const result = render(
-      <TxModalProvider>
-        <SocialSigner
-          socialWalletService={mockSocialWalletService}
-          wallet={mockWallet}
-          supportedChains={['Goerli']}
-          isMPCLoginEnabled={true}
-          onLogin={mockOnLogin}
-        />
-        <PasswordRecoveryModal />
-      </TxModalProvider>,
-    )
-
-    await waitFor(() => {
-      expect(result.findByText('Continue with Google')).resolves.toBeDefined()
-    })
-
-    // We do not automatically invoke the callback as the user did not actively connect
-    expect(mockOnLogin).not.toHaveBeenCalled()
-
-    const button = await result.findByRole('button')
-
-    act(() => {
-      button.click()
-    })
-
-    await waitFor(() => {
-      expect(result.findByText('Enter security password')).resolves.toBeDefined()
-    })
-
-    const passwordField = await result.findByLabelText('Recovery password')
-    const submitButton = await result.findByText('Submit')
-
-    act(() => {
-      fireEvent.change(passwordField, { target: { value: 'Test1234!' } })
-      submitButton.click()
-    })
-
-    mockSocialWalletService.getUserInfo = jest.fn().mockReturnValue({
-      email: 'test@testermann.com',
-      name: 'Test Testermann',
-      profileImage: 'test.testermann.local/profile.png',
-    } as unknown as UserInfo)
-
-    result.rerender(
-      <TxModalProvider>
-        <SocialSigner
-          socialWalletService={mockSocialWalletService}
-          wallet={mockWallet}
-          supportedChains={['Goerli']}
-          isMPCLoginEnabled={true}
-          onLogin={mockOnLogin}
-        />
-        <PasswordRecoveryModal />
-      </TxModalProvider>,
-    )
-
-    await waitFor(() => {
-      expect(result.getByText('Continue as Test Testermann')).toBeInTheDocument()
-    })
   })
 
   describe('getSupportedChains', () => {

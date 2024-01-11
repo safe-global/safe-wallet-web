@@ -4,7 +4,7 @@ import MpcModule, { ONBOARD_MPC_MODULE_LABEL } from '../SocialLoginModule'
 import { type WalletModule } from '@web3-onboard/common'
 
 import * as web3 from '@/hooks/wallets/web3'
-import * as useMPC from '@/hooks/wallets/mpc/useMPC'
+import * as useSafeAuth from '@/hooks/wallets/mpc/useSafeAuth'
 import { toBeHex } from 'ethers'
 
 const mockChain = chainBuilder()
@@ -12,7 +12,7 @@ const mockChain = chainBuilder()
   .with({ features: [FEATURES.SOCIAL_LOGIN] })
   .build()
 
-describe('MPC Onboard module', () => {
+describe('SafeAuthKit Onboard module', () => {
   it('should return correct metadata', async () => {
     const mpcModule = MpcModule(mockChain)({
       device: {
@@ -43,9 +43,9 @@ describe('MPC Onboard module', () => {
       send: mockReadOnlySend,
     } as any)
 
-    jest.spyOn(useMPC, '_getMPCCoreKitInstance').mockImplementation(() => {
+    jest.spyOn(useSafeAuth, '_getSafeAuthPackInstance').mockImplementation(() => {
       return {
-        provider: {},
+        getProvider: () => ({}),
       } as any
     })
 
@@ -92,11 +92,11 @@ describe('MPC Onboard module', () => {
       send: mockReadOnlySend,
     } as any)
 
-    jest.spyOn(useMPC, '_getMPCCoreKitInstance').mockImplementation(() => {
+    jest.spyOn(useSafeAuth, '_getSafeAuthPackInstance').mockImplementation(() => {
       return {
-        provider: {
+        getProvider: () => ({
           request: mockMPCProviderRequest,
-        },
+        }),
       } as any
     })
 
