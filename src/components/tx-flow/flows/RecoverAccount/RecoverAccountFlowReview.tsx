@@ -169,11 +169,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           </ErrorMessage>
         )}
 
-        {isRejectedByUser && (
-          <Box mt={1}>
-            <WalletRejectionError />
-          </Box>
-        )}
+        {isRejectedByUser && <WalletRejectionError />}
 
         <Divider className={commonCss.nestedDivider} />
 
