@@ -16,6 +16,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import type { PendingSafeMessagesState } from '@/store/pendingSafeMessagesSlice'
 import { ErrorCode } from '@ethersproject/logger'
+import { isWalletRejection } from '@/utils/wallets'
 
 const SafeMessageNotifications: Partial<Record<SafeMsgEvent, string>> = {
   [SafeMsgEvent.PROPOSE]: 'You successfully signed the message.',
@@ -25,9 +26,6 @@ const SafeMessageNotifications: Partial<Record<SafeMsgEvent, string>> = {
   [SafeMsgEvent.SIGNATURE_PREPARED]: 'The message was successfully confirmed.',
 }
 
-const isUserRejection = (error: Error) => {
-  return 'code' in error && error.code === ErrorCode.ACTION_REJECTED
-}
 
 export const _getSafeMessagesAwaitingConfirmations = (
   items: SafeMessageListItem[],
@@ -55,7 +53,7 @@ const useSafeMessageNotifications = () => {
     const unsubFns = entries.map(([event, baseMessage]) =>
       safeMsgSubscribe(event, (detail) => {
         const isError = 'error' in detail
-        if (isError && isUserRejection(detail.error)) return
+        if (isError && isWalletRejection(detail.error)) return
         const isSuccess = event === SafeMsgEvent.PROPOSE || event === SafeMsgEvent.SIGNATURE_PREPARED
         const message = isError ? `${baseMessage}${formatError(detail.error)}` : baseMessage
 

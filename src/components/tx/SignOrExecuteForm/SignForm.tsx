@@ -13,8 +13,10 @@ import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import BatchButton from './BatchButton'
 import { asError } from '@/services/exceptions/utils'
+import { isWalletRejection } from '@/utils/wallets'
 import { ErrorCode } from '@ethersproject/logger'
 
 export const SignForm = ({
@@ -66,7 +68,7 @@ export const SignForm = ({
       resultTxId = await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin))
     } catch (_err) {
       const err = asError(_err)
-      if ('code' in err && err.code === ErrorCode.ACTION_REJECTED) {
+      if (isWalletRejection(err)) {
         setIsSubmittable(true)
         setIsRejectedByUser(true)
       } else {
@@ -107,7 +109,7 @@ export const SignForm = ({
 
       {isRejectedByUser && (
         <Box mt={1}>
-          <ErrorMessage>{`You've rejected the transaction.`}</ErrorMessage>
+          <WalletRejectionError />
         </Box>
       )}
 

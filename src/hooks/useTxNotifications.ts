@@ -16,6 +16,7 @@ import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
 import { getTxDetails } from '@/services/tx/txDetails'
 import { ErrorCode } from '@ethersproject/logger'
+import { isWalletRejection } from '@/utils/wallets'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
@@ -41,10 +42,6 @@ enum Variant {
 }
 
 const successEvents = [TxEvent.PROPOSED, TxEvent.SIGNATURE_PROPOSED, TxEvent.ONCHAIN_SIGNATURE_SUCCESS, TxEvent.SUCCESS]
-
-const isUserRejection = (error: Error) => {
-  return 'code' in error && error.code === ErrorCode.ACTION_REJECTED
-}
 
 export const getTxLink = (
   txId: string,
@@ -77,7 +74,7 @@ const useTxNotifications = (): void => {
     const unsubFns = entries.map(([event, baseMessage]) =>
       txSubscribe(event, async (detail) => {
         const isError = 'error' in detail
-        if (isError && isUserRejection(detail.error)) return
+        if (isError && isWalletRejection(detail.error)) return
         const isSuccess = successEvents.includes(event)
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
         const txId = 'txId' in detail ? detail.txId : undefined

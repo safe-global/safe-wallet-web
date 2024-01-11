@@ -22,12 +22,14 @@ import { SuccessScreenFlow } from '@/components/tx-flow/flows'
 import useGasLimit from '@/hooks/useGasLimit'
 import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
+import { isWalletRejection } from '@/utils/wallets'
 
 import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { ErrorCode } from '@ethersproject/logger'
 
 export const ExecuteForm = ({
@@ -99,7 +101,7 @@ export const ExecuteForm = ({
       executedTxId = await executeTx(txOptions, safeTx, txId, origin, willRelay)
     } catch (_err) {
       const err = asError(_err)
-      if ('code' in err && err.code === ErrorCode.ACTION_REJECTED) {
+      if (isWalletRejection(err)) {
         setIsSubmittable(true)
         setIsRejectedByUser(true)
       } else {
@@ -180,7 +182,7 @@ export const ExecuteForm = ({
 
         {isRejectedByUser && (
           <Box mt={1}>
-            <ErrorMessage>{`You've rejected the transaction.`}</ErrorMessage>
+            <WalletRejectionError />
           </Box>
         )}
 
