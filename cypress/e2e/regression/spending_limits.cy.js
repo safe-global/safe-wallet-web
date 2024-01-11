@@ -61,7 +61,7 @@ describe('Spending limits tests', () => {
     spendinglimit.checkMaxValue()
   })
 
-  it('In new tx, verify selecting a native token from the dropdown', () => {
+  it('Verify selecting a native token from the dropdown in new tx', () => {
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
     spendinglimit.selectToken(constants.tokenNames.sepoliaEther)
