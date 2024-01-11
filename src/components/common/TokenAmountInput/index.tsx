@@ -101,7 +101,7 @@ const TokenAmountInput = ({
           required
         >
           {balances.map((item) => (
-            <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
+            <MenuItem data-testid="token-item" key={item.tokenInfo.address} value={item.tokenInfo.address}>
               <AutocompleteItem {...item} />
             </MenuItem>
           ))}

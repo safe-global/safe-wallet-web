@@ -69,7 +69,12 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
         <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} title="Amount">
           {existingAmount && existingAmount !== params.amount && (
             <>
-              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
+              <Typography
+                data-testid="old-token-amount"
+                color="error"
+                sx={{ textDecoration: 'line-through' }}
+                component="span"
+              >
                 {existingAmount}
               </Typography>
               {'→'}
@@ -111,6 +116,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
                     {existingSpendingLimit.resetTimeMin !== params.resetTime && (
                       <>
                         <Typography
+                          data-testid="old-reset-time"
                           color="error"
                           sx={{ textDecoration: 'line-through' }}
                           display="inline"
@@ -140,7 +146,9 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
       </Grid>
       {existingSpendingLimit && (
         <Alert severity="warning" sx={{ border: 'unset' }}>
-          <Typography fontWeight={700}>You are about to replace an existing spending limit</Typography>
+          <Typography data-testid="limit-replacement-warning" fontWeight={700}>
+            You are about to replace an existing spending limit
+          </Typography>
         </Alert>
       )}
     </SignOrExecuteForm>
