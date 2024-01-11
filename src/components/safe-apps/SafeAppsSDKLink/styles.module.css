@@ -3,7 +3,7 @@
   padding: var(--space-3);
   padding-top: var(--space-6);
   background-color: var(--color-background-main);
-  border: 1px solid var(--color-secondary-main);
+  border: 1px solid #12ff80;
   border-radius: 0 0 12px 12px;
   border-top: 0;
   position: fixed;
@@ -51,6 +51,11 @@
   left: 50%;
   bottom: -20px;
   margin-left: -25px;
+  background-color: #12ff80;
+}
+
+.openButton:hover {
+  background-color: #1ec46c;
 }
 
 .openButton svg {
