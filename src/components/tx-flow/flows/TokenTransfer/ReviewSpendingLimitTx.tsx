@@ -102,13 +102,12 @@ const ReviewSpendingLimitTx = ({
     } catch (_err) {
       const err = asError(_err)
       if (isWalletRejection(err)) {
-        setIsSubmittable(true)
         setIsRejectedByUser(true)
       } else {
         logError(Errors._801, err)
-        setIsSubmittable(true)
         setSubmitError(err)
       }
+      setIsSubmittable(true)
     }
 
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_token })

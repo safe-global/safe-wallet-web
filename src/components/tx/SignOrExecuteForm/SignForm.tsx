@@ -69,13 +69,12 @@ export const SignForm = ({
     } catch (_err) {
       const err = asError(_err)
       if (isWalletRejection(err)) {
-        setIsSubmittable(true)
         setIsRejectedByUser(true)
       } else {
         trackError(Errors._804, err)
-        setIsSubmittable(true)
         setSubmitError(err)
       }
+      setIsSubmittable(true)
       return
     }
 
