@@ -21,8 +21,15 @@ const spentAmountInfo = '[data-testid="spent-amount"]'
 const spendingLimitTxOption = '[data-testid="spending-limit-tx"]'
 const standartTxOption = '[data-testid="standard-tx"]'
 const tokenBalance = '[data-testid="token-balance"]'
+const tokenItem = '[data-testid="token-item"]'
 const maxBtn = '[data-testid="max-btn"]'
 const nonceFld = '[data-testid="nonce-fld"]'
+const splimitBeneficiaryIcon = '[data-testid="beneficiary-icon"]'
+const splimitAssetIcon = '[data-testid="asset-icon"]'
+const splimitTimeIcon = '[data-testid="time-icon"]'
+const oldTokenAmount = '[data-testid="old-token-amount"]'
+const oldResetTime = '[data-testid="old-reset-time"]'
+const slimitReplacementWarning = '[data-testid="limit-replacement-warning"]'
 
 export const timePeriodOptions = {
   oneTime: 'One time',
@@ -38,6 +45,35 @@ const newTransactionStr = 'New transaction'
 const confirmTxStr = 'Confirm transaction'
 const invalidNumberErrorStr = 'The value must be greater than 0'
 const invalidCharErrorStr = 'The value must be a number'
+
+export function verifyOldValuesAreDisplayed() {
+  main.verifyElementsIsVisible([oldTokenAmount, oldResetTime, slimitReplacementWarning])
+}
+export function verifySpendingLimitBtnIsDisabled() {
+  cy.get(newSpendingLimitBtn).should('be.disabled')
+}
+
+export function verifySpendingLimitsIcons() {
+  main.verifyElementsIsVisible([splimitBeneficiaryIcon, splimitAssetIcon, splimitTimeIcon])
+}
+
+export function selectToken(token) {
+  cy.get(tokenBalance).click()
+  cy.get(tokenItem).contains(token).click()
+  main.verifyValuesExist(tokenBalance, [token])
+}
+
+export function checkMaxValue() {
+  const maxValue = []
+
+  main.extractDigitsToArray(tokenBalance, maxValue)
+  cy.get(tokenAmountFld)
+    .find('input')
+    .invoke('val')
+    .then((value) => {
+      expect(maxValue).to.contain(value)
+    })
+}
 
 export function verifyNonceState(state) {
   if (state === constants.elementExistanceStates.exist) {
@@ -81,8 +117,13 @@ export function clickOnNextBtn() {
   cy.get(nextBtn).click()
   cy.get(modalTitle).should('have.text', confirmTxStr)
 }
+
 export function clickOnTimePeriodDropdown() {
   cy.get(timePeriodSection).click()
+}
+
+export function selectTimePeriod(period) {
+  cy.get(timePeriodItem).contains(period).click()
 }
 
 export function checkTimeDropdownOptions() {

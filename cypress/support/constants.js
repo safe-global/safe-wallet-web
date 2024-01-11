@@ -5,6 +5,7 @@ export const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 // SEPOLIA_TEST_SAFE_1 should always have no transactions, tokens and NFTs
 export const SEPOLIA_TEST_SAFE_1 = 'sep:0xBb26E3717172d5000F87DeFd391994f789D80aEB'
 // SEPOLIA_TEST_SAFE_2 Has no transactions, 1 owner, using for verificatons only
+// Also used for non-owner verifications in spending limits
 export const SEPOLIA_TEST_SAFE_2 = 'sep:0x33C4AA5729D91FfB3B87AEf8a324bb6304Fb905c'
 export const SEPOLIA_TEST_SAFE_3 = 'sep:0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7'
 export const SEPOLIA_TEST_SAFE_4 = 'sep:0x03042B890b99552b60A073F808100517fb148F60'

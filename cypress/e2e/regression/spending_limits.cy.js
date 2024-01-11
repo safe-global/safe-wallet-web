@@ -6,6 +6,7 @@ import * as navigation from '../pages/navigation.page'
 import * as tx from '../pages/create_tx.pages'
 
 const tokenAmount = 0.1
+const newTokenAmount = 0.001
 const spendingLimitBalance = '(0.17 ETH)'
 
 describe('Spending limits tests', () => {
@@ -51,5 +52,28 @@ describe('Spending limits tests', () => {
     tx.clickOnSendTokensBtn()
     spendinglimit.selectSpendingLimitOption()
     spendinglimit.verifyNonceState(constants.elementExistanceStates.not_exist)
+  })
+
+  it('Verify "Max" button value set to be no more than the allowed amount', () => {
+    navigation.clickOnNewTxBtn()
+    tx.clickOnSendTokensBtn()
+    spendinglimit.clickOnMaxBtn()
+    spendinglimit.checkMaxValue()
+  })
+
+  it('Verify selecting a native token from the dropdown in new tx', () => {
+    navigation.clickOnNewTxBtn()
+    tx.clickOnSendTokensBtn()
+    spendinglimit.selectToken(constants.tokenNames.sepoliaEther)
+  })
+
+  it('Verify that when replacing spending limit for the same owner, previous values are displayed in red', () => {
+    spendinglimit.clickOnNewSpendingLimitBtn()
+    spendinglimit.enterBeneficiaryAddress(constants.DEFAULT_OWNER_ADDRESS)
+    spendinglimit.enterSpendingLimitAmount(newTokenAmount)
+    spendinglimit.clickOnTimePeriodDropdown()
+    spendinglimit.selectTimePeriod(spendinglimit.timePeriodOptions.fiveMin)
+    tx.clickOnNextBtn()
+    spendinglimit.verifyOldValuesAreDisplayed()
   })
 })
