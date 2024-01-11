@@ -182,6 +182,16 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         return null
       },
 
+      async showTxStatus(safeTxHash) {
+        router.push({
+          pathname: AppRoutes.transactions.tx,
+          query: {
+            safe: router.query.safe,
+            id: safeTxHash,
+          },
+        })
+      },
+
       setSafeSettings(newSettings) {
         const res = {
           ...settings,
@@ -194,8 +204,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       },
 
       async proxy(method, params) {
-        const data = await web3ReadOnly?.send(method, params)
-        return data.result
+        return web3ReadOnly?.send(method, params)
       },
     }
   }, [chainId, safeAddress, safe, currentChain, onChainSigning, settings, setTxFlow, configs, router, web3ReadOnly])
