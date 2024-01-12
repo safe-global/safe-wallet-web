@@ -1,19 +1,16 @@
 import type { SyntheticEvent } from 'react'
 import { type ReactElement, useContext } from 'react'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button, Tooltip, SvgIcon } from '@mui/material'
+import { Button } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import useIsPending from '@/hooks/useIsPending'
-import RocketIcon from '@/public/images/transactions/rocket.svg'
-import IconButton from '@mui/material/IconButton'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { getTxButtonTooltip } from '@/components/transactions/utils'
 import { TxModalContext } from '@/components/tx-flow'
 import { ConfirmTxFlow } from '@/components/tx-flow/flows'
 
@@ -34,8 +31,6 @@ const ExecuteTxButton = ({
   const isNext = txNonce !== undefined && txNonce === safe.nonce
   const isDisabled = !isNext || isPending || !safeSDK
 
-  const tooltipTitle = getTxButtonTooltip('Execute', { isNext, nonce: safe.nonce, hasSafeSDK: !!safeSDK })
-
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
     e.preventDefault()
@@ -55,33 +50,16 @@ const ExecuteTxButton = ({
       <CheckWallet allowNonOwner>
         {(isOk) => (
           <Track {...TX_LIST_EVENTS.EXECUTE}>
-            {compact ? (
-              <Tooltip title={tooltipTitle} arrow placement="top">
-                <span>
-                  <IconButton
-                    onClick={onClick}
-                    onMouseEnter={onMouseEnter}
-                    onMouseLeave={onMouseLeave}
-                    color="primary"
-                    disabled={!isOk || isDisabled}
-                    size="small"
-                  >
-                    <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            ) : (
-              <Button
-                onClick={onClick}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                variant="contained"
-                disabled={!isOk || isDisabled}
-                size="stretched"
-              >
-                Execute
-              </Button>
-            )}
+            <Button
+              onClick={onClick}
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+              variant="contained"
+              disabled={!isOk || isDisabled}
+              size={compact ? 'small' : 'stretched'}
+            >
+              Execute
+            </Button>
           </Track>
         )}
       </CheckWallet>

@@ -9,20 +9,18 @@ import { ReplaceTxHoverContext, ReplaceTxHoverProvider } from './ReplaceTxHoverP
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 
-const Disclaimer = ({ nonce }: { nonce?: number }) => (
-  <Box className={css.disclaimerContainer}>
-    <Typography alignSelf="flex-start">{nonce}</Typography>
+const Disclaimer = () => (
+  <Box className={css.disclaimerContainer} gridArea="warning">
     <Typography>
-      These transactions conflict as they use the same nonce. Executing one will automatically replace the other(s).
+      <b>Conflicting transactions</b>. Executing one will automatically replace the others.{' '}
+      <ExternalLink
+        href={HelpCenterArticle.CONFLICTING_TRANSACTIONS}
+        title="Why are transactions with the same nonce conflicting with each other?"
+        noIcon
+      >
+        Why did this happen?
+      </ExternalLink>
     </Typography>
-
-    <ExternalLink
-      href={HelpCenterArticle.CONFLICTING_TRANSACTIONS}
-      title="Why are transactions with the same nonce conflicting with each other?"
-      className={css.link}
-    >
-      Learn more
-    </ExternalLink>
   </Box>
 )
 
@@ -34,13 +32,23 @@ const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): Rea
   const { replacedTxIds } = useContext(ReplaceTxHoverContext)
 
   return (
-    <Paper className={css.container} variant="outlined">
-      <Disclaimer nonce={nonce} />
-      {groupedListItems.map((tx) => (
-        <div key={tx.transaction.id} className={replacedTxIds.includes(tx.transaction.id) ? css.willBeReplaced : ''}>
-          <ExpandableTransactionItem item={tx} isGrouped />
-        </div>
-      ))}
+    <Paper className={css.container}>
+      <Typography gridArea="nonce">{nonce}</Typography>
+
+      <Disclaimer />
+
+      <Box gridArea="line" className={css.line} />
+
+      <Box gridArea="items" className={css.txItems}>
+        {groupedListItems.map((tx) => (
+          <div
+            key={tx.transaction.id}
+            className={replacedTxIds.includes(tx.transaction.id) ? css.willBeReplaced : undefined}
+          >
+            <ExpandableTransactionItem item={tx} isGrouped />
+          </div>
+        ))}
+      </Box>
     </Paper>
   )
 }

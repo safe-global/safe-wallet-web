@@ -36,7 +36,7 @@ export const ExpandableTransactionItem = ({
       }}
       elevation={0}
       defaultExpanded={!!txDetails}
-      className={classNames({ [css.batched]: isBatched })}
+      className={classNames(css.listItem, { [css.batched]: isBatched })}
       data-testid={testId}
       onChange={(_, expanded) => {
         if (expanded) {

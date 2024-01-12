@@ -1,4 +1,4 @@
-import { SvgIcon, Typography } from '@mui/material'
+import { Box, Chip, SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import OwnersIcon from '@/public/images/common/owners.svg'
@@ -10,15 +10,24 @@ const TxConfirmations = ({
   requiredConfirmations: number
   submittedConfirmations: number
 }): ReactElement => {
-  const confirmationColor = requiredConfirmations > submittedConfirmations ? 'border' : 'primary'
+  const color = requiredConfirmations > submittedConfirmations ? 'warning' : 'success'
 
   return (
-    <>
-      <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" color={confirmationColor} />
-      <Typography variant="caption" fontWeight="bold" color={confirmationColor}>
-        {submittedConfirmations} out of {requiredConfirmations}
-      </Typography>
-    </>
+    <Chip
+      size="small"
+      sx={{
+        backgroundColor: `${color}.background`,
+      }}
+      label={
+        <Box display="flex" alignItems="center" gap={1}>
+          <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" sx={{ color: `${color}.dark` }} />
+
+          <Typography variant="caption" fontWeight="bold" color={`${color}.dark`}>
+            {submittedConfirmations} out of {requiredConfirmations}
+          </Typography>
+        </Box>
+      }
+    />
   )
 }
 
