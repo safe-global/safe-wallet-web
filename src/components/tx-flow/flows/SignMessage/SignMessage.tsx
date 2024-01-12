@@ -102,7 +102,7 @@ const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submit
       : !isOwner
       ? "You are currently not an owner of this Safe Account and won't be able to confirm this message."
       : submitError && isWalletRejection(submitError)
-      ? "You've rejected the transaction."
+      ? 'User rejected signing.'
       : submitError
       ? 'Error confirming the message. Please try again.'
       : null
