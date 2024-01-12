@@ -47,7 +47,6 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       className={classNames(
         css.gridContainer,
         isGrouped ? css.grouped : undefined,
-        isQueue ? css.queued : undefined,
         !isTrusted ? css.untrusted : undefined,
       )}
       id={tx.id}

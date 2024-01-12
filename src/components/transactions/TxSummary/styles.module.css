@@ -4,31 +4,16 @@
   gap: var(--space-2);
   align-items: center;
   white-space: nowrap;
-  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 3fr) minmax(150px, 3fr) 0.75fr 0.5fr;
-  grid-template-areas: 'nonce type info date confirmations status';
-
+  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 3fr) minmax(150px, 3fr) minmax(200px, 3fr) 1fr;
+  grid-template-areas: 'nonce type info date status';
 }
 
-.container.queued {
-  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 2fr) minmax(150px, 2fr) minmax(200px, 2fr) 1fr minmax(
-    250px,
-    1fr
-  );
+.gridContainer.grouped {
+  grid-template-columns: minmax(150px, 3fr) minmax(150px, 3fr) minmax(200px, 3fr) 1fr;
+  grid-template-areas: 'type info date status';
 }
 
-.container.grouped {
-  grid-template-columns: minmax(150px, 3fr) minmax(150px, 3fr) 0.75fr 0.5fr;
-  grid-template-areas: 'type info date confirmations status';
-}
-
-.container.queued.grouped {
-  grid-template-columns: minmax(150px, 2fr) minmax(150px, 2fr) minmax(200px, 2fr) 1fr minmax(
-    250px,
-    1fr
-  );
-}
-
-.container.untrusted {
+.gridContainer.untrusted {
   opacity: 0.4;
 }
 

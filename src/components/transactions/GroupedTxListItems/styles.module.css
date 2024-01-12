@@ -47,7 +47,7 @@
   position: relative;
 }
 
-.txItems > div::before {
+.txItems > div:not(:last-child)::before {
   content: '';
   position: absolute;
   border-top: 1px solid var(--color-border-light);
@@ -55,11 +55,6 @@
   left: -40px;
   top: 50%;
   transform: translateY(-50%);
-}
-
-.txItems > div:last-child::before {
-  width: 50px;
-  margin-left: 3px;
 }
 
 .willBeReplaced {
@@ -72,7 +67,7 @@
   text-decoration: line-through;
 }
 
-@media (max-width: 786px) {
+@media (max-width: 1024px) {
   .line,
   .txItems > div::before {
     display: none;

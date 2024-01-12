@@ -17,19 +17,15 @@ const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
 
   return (
-    <Box display="flex" gap={1}>
+    <Box display="flex" gap={3} alignItems="center" pr={2}>
       {submittedConfirmations && requiredConfirmations && (
-        <Box flex={1}>
-          <TxConfirmations
-            submittedConfirmations={submittedConfirmations}
-            requiredConfirmations={requiredConfirmations}
-          />
-        </Box>
+        <TxConfirmations
+          submittedConfirmations={submittedConfirmations}
+          requiredConfirmations={requiredConfirmations}
+        />
       )}
 
-      <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
-        {awaitingExecution ? <ExecuteTxButton txSummary={tx} compact /> : <SignTxButton txSummary={tx} compact />}
-      </Box>
+      {awaitingExecution ? <ExecuteTxButton txSummary={tx} compact /> : <SignTxButton txSummary={tx} compact />}
     </Box>
   )
 }
