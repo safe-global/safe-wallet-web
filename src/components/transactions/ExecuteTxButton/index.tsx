@@ -1,7 +1,7 @@
 import type { SyntheticEvent } from 'react'
 import { type ReactElement, useContext } from 'react'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button } from '@mui/material'
+import { Button, CircularProgress, Tooltip } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
@@ -49,18 +49,24 @@ const ExecuteTxButton = ({
     <>
       <CheckWallet allowNonOwner>
         {(isOk) => (
-          <Track {...TX_LIST_EVENTS.EXECUTE}>
-            <Button
-              onClick={onClick}
-              onMouseEnter={onMouseEnter}
-              onMouseLeave={onMouseLeave}
-              variant="contained"
-              disabled={!isOk || isDisabled}
-              size={compact ? 'small' : 'stretched'}
-            >
-              Execute
-            </Button>
-          </Track>
+          <Tooltip title={!isNext ? 'You must execute the transaction with the lowest nonce first' : ''}>
+            <span>
+              <Track {...TX_LIST_EVENTS.EXECUTE}>
+                <Button
+                  onClick={onClick}
+                  onMouseEnter={onMouseEnter}
+                  onMouseLeave={onMouseLeave}
+                  variant="contained"
+                  disabled={!isOk || isDisabled}
+                  size={compact ? 'small' : 'stretched'}
+                  sx={{ minWidth: '106.5px' }}
+                >
+                  {isPending && <CircularProgress size={14} color="inherit" sx={{ mr: 1 }} />}
+                  {isPending ? 'Executing' : 'Execute'}
+                </Button>
+              </Track>
+            </span>
+          </Tooltip>
         )}
       </CheckWallet>
     </>

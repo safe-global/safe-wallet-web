@@ -1,14 +1,11 @@
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { isAwaitingExecution, isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import { Box, CircularProgress } from '@mui/material'
+import { Box } from '@mui/material'
 import TxConfirmations from '../TxConfirmations'
 import ExecuteTxButton from '../ExecuteTxButton'
 import SignTxButton from '../SignTxButton'
-import useIsPending from '@/hooks/useIsPending'
 
 const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
-  const isPending = useIsPending(tx.id)
-
   const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo)
     ? tx.executionInfo.confirmationsRequired
     : undefined
@@ -20,9 +17,9 @@ const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
 
   return (
-    <>
+    <Box display="flex" gap={1}>
       {submittedConfirmations && requiredConfirmations && (
-        <Box gridArea="confirmations" flex={1}>
+        <Box flex={1}>
           <TxConfirmations
             submittedConfirmations={submittedConfirmations}
             requiredConfirmations={requiredConfirmations}
@@ -30,12 +27,10 @@ const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
         </Box>
       )}
 
-      <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
+      <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
         {awaitingExecution ? <ExecuteTxButton txSummary={tx} compact /> : <SignTxButton txSummary={tx} compact />}
-
-        {isPending && <CircularProgress size={14} color="inherit" />}
       </Box>
-    </>
+    </Box>
   )
 }
 

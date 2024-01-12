@@ -46,8 +46,8 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       data-testid="transaction-item"
       className={classNames(
         css.gridContainer,
-        isQueue ? css.columnTemplate : css.columnTemplateTxHistory,
         isGrouped ? css.grouped : undefined,
+        isQueue ? css.queued : undefined,
         !isTrusted ? css.untrusted : undefined,
       )}
       id={tx.id}
@@ -78,19 +78,20 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Typography>
       </Box>
 
-      {isQueue ? (
-        <QueueActions tx={tx} />
-      ) : (
-        <Typography
-          gridArea="status"
-          data-testid="tx-status"
-          variant="caption"
-          fontWeight="bold"
-          color={({ palette }) => getStatusColor(tx.txStatus, palette)}
-        >
-          {txStatusLabel}
-        </Typography>
-      )}
+      <Box gridArea="status">
+        {isQueue ? (
+          <QueueActions tx={tx} />
+        ) : (
+          <Typography
+            data-testid="tx-status"
+            variant="caption"
+            fontWeight="bold"
+            color={({ palette }) => getStatusColor(tx.txStatus, palette)}
+          >
+            {txStatusLabel}
+          </Typography>
+        )}
+      </Box>
     </Box>
   )
 }

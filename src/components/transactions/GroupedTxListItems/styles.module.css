@@ -22,10 +22,6 @@
   text-decoration: underline;
 }
 
-.txGroup {
-  position: relative;
-}
-
 .line {
   border-left: 1px solid var(--color-border-light);
   border-bottom: 1px solid var(--color-border-light);
