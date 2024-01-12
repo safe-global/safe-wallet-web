@@ -4,22 +4,27 @@ import {
 } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { ERC20__factory } from '@/types/contracts'
 import { decodeMultiSendTxs } from '@/utils/transactions'
+import { normalizeTypedData } from '@/utils/web3'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { id } from 'ethers/lib/utils'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
 export type ApprovalModuleResponse = Approval[]
 
 export type ApprovalModuleRequest = {
-  safeTransaction: SafeTransaction
+  safeTransaction?: SafeTransaction
+  safeMessage?: EIP712TypedData
 }
 
 export type Approval = {
   spender: any
   amount: any
   tokenAddress: string
-  method: 'approve' | 'increaseAllowance'
+  method: 'approve' | 'increaseAllowance' | 'Permit2'
 }
+
+type PermitDetails = { token: string; amount: string }
 
 const MULTISEND_SIGNATURE_HASH = id('multiSend(bytes)').slice(0, 10)
 const ERC20_INTERFACE = ERC20__factory.createInterface()
@@ -52,16 +57,52 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     return []
   }
 
-  scanTransaction(request: ApprovalModuleRequest): SecurityResponse<ApprovalModuleResponse> {
-    const { safeTransaction } = request
-    const safeTxData = safeTransaction.data.data
-    const approvalInfos: Approval[] = []
+  private static scanPermitDetails(details: PermitDetails): Pick<Approval, 'amount' | 'tokenAddress'> {
+    return {
+      amount: BigInt(details.amount),
+      tokenAddress: details.token,
+    }
+  }
 
-    if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
-      const innerTxs = decodeMultiSendTxs(safeTxData)
-      approvalInfos.push(...innerTxs.flatMap((tx) => ApprovalModule.scanInnerTransaction(tx)))
-    } else {
-      approvalInfos.push(...ApprovalModule.scanInnerTransaction({ to: safeTransaction.data.to, data: safeTxData }))
+  scanTransaction(request: ApprovalModuleRequest): SecurityResponse<ApprovalModuleResponse> {
+    const { safeTransaction, safeMessage } = request
+
+    const approvalInfos: Approval[] = []
+    if (safeTransaction) {
+      const safeTxData = safeTransaction.data.data
+      if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
+        const innerTxs = decodeMultiSendTxs(safeTxData)
+        approvalInfos.push(...innerTxs.flatMap((tx) => ApprovalModule.scanInnerTransaction(tx)))
+      } else {
+        approvalInfos.push(...ApprovalModule.scanInnerTransaction({ to: safeTransaction.data.to, data: safeTxData }))
+      }
+    } else if (safeMessage) {
+      const normalizedMessage = normalizeTypedData(safeMessage)
+      if (normalizedMessage.domain.name === 'Permit2') {
+        if (normalizedMessage.types['PermitSingle'] !== undefined) {
+          const spender = normalizedMessage.message['spender'] as string
+          const details = normalizedMessage.message['details'] as PermitDetails
+          const permitInfo = ApprovalModule.scanPermitDetails(details)
+
+          approvalInfos.push({
+            ...permitInfo,
+            method: 'Permit2',
+            spender,
+          })
+        } else if (normalizedMessage.types['PermitBatch'] !== undefined) {
+          const spender = normalizedMessage.message['spender'] as string
+          const details = normalizedMessage.message['details'] as PermitDetails[]
+          details.forEach((details) => {
+            const permitInfo = ApprovalModule.scanPermitDetails(details)
+
+            approvalInfos.push({
+              ...permitInfo,
+              method: 'Permit2',
+              spender,
+            })
+          })
+        }
+      }
     }
 
     if (approvalInfos.length > 0) {

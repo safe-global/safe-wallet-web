@@ -44,6 +44,9 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
 import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
+import { isEIP712TypedData } from '@/utils/safe-messages'
+import ApprovalEditor from '@/components/tx/ApprovalEditor'
+import { ErrorBoundary } from '@sentry/react'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -233,7 +236,13 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
         <CardContent>
           <DialogHeader threshold={safe.threshold} />
 
-          <Typography fontWeight={700} mb={1}>
+          {isEIP712TypedData(decodedMessage) && (
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <ApprovalEditor safeMessage={decodedMessage} />
+            </ErrorBoundary>
+          )}
+
+          <Typography fontWeight={700} mt={2} mb={1}>
             Message: <CopyButton text={decodedMessageAsString} />
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
