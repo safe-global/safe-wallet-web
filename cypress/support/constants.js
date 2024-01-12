@@ -151,6 +151,7 @@ export const transactionStatus = {
 export const tokenNames = {
   wrappedEther: 'Wrapped Ether',
   sepoliaEther: 'Sepolia Ether',
+  qaToken: 'QAtest10',
 }
 
 export const addressBookErrrMsg = {
