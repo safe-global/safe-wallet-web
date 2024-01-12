@@ -279,7 +279,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '& .MuiAlert-icon': {
               color: theme.palette.error.main,
             },
-            '&. MuiPaper-root': {
+            '&.MuiPaper-root': {
               backgroundColor: theme.palette.error.background,
             },
             border: `1px solid ${theme.palette.error.main}`,
@@ -288,7 +288,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '& .MuiAlert-icon': {
               color: theme.palette.info.main,
             },
-            '&. MuiPaper-root': {
+            '&.MuiPaper-root': {
               backgroundColor: theme.palette.info.background,
             },
             border: `1px solid ${theme.palette.info.main}`,
@@ -297,7 +297,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '& .MuiAlert-icon': {
               color: theme.palette.success.main,
             },
-            '&. MuiPaper-root': {
+            '&.MuiPaper-root': {
               backgroundColor: theme.palette.success.background,
             },
             border: `1px solid ${theme.palette.success.main}`,
@@ -306,7 +306,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '& .MuiAlert-icon': {
               color: theme.palette.warning.main,
             },
-            '&. MuiPaper-root': {
+            '&.MuiPaper-root': {
               backgroundColor: theme.palette.warning.background,
             },
             border: `1px solid ${theme.palette.warning.main}`,
