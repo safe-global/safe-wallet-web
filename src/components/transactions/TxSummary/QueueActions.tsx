@@ -6,22 +6,15 @@ import ExecuteTxButton from '../ExecuteTxButton'
 import SignTxButton from '../SignTxButton'
 
 const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
-  const requiredConfirmations = isMultisigExecutionInfo(tx.executionInfo)
-    ? tx.executionInfo.confirmationsRequired
-    : undefined
-
-  const submittedConfirmations = isMultisigExecutionInfo(tx.executionInfo)
-    ? tx.executionInfo.confirmationsSubmitted
-    : undefined
-
+  const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
 
   return (
     <Box display="flex" gap={3} alignItems="center" pr={2}>
-      {submittedConfirmations && requiredConfirmations && (
+      {executionInfo && (
         <TxConfirmations
-          submittedConfirmations={submittedConfirmations}
-          requiredConfirmations={requiredConfirmations}
+          submittedConfirmations={executionInfo.confirmationsSubmitted}
+          requiredConfirmations={executionInfo.confirmationsRequired}
         />
       )}
 
