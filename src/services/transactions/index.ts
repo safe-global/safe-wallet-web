@@ -15,13 +15,13 @@ export const getTxDetails = memoize(
   (id: string, chainId: string) => `${chainId}-${id}`,
 )
 
-export const getTxHistory = (chainId: string, safeAddress: string, pageUrl?: string) => {
+export const getTxHistory = (chainId: string, safeAddress: string, trusted = false, pageUrl?: string) => {
   return getTransactionHistory(
     chainId,
     safeAddress,
     {
       timezone_offset: new Date().getTimezoneOffset() * 60 * 1000, // used for grouping txs by date
-      trusted: false, // load all transactions, mark untrusted in the UI
+      trusted, // if false, load all transactions, mark untrusted in the UI
     },
     pageUrl,
   )

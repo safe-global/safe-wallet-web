@@ -4,19 +4,22 @@ import useAsync, { type AsyncResult } from '../useAsync'
 import { Errors, logError } from '@/services/exceptions'
 import useSafeInfo from '../useSafeInfo'
 import { getTxHistory } from '@/services/transactions'
+import { useAppSelector } from '@/store'
+import { selectSettings } from '@/store/settingsSlice'
 
 export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()
   const { chainId, txHistoryTag } = safe
+  const { showOnlyTrustedTransactions } = useAppSelector(selectSettings)
 
-  // Re-fetch when chainId/address, or txHistoryTag change
+  // Re-fetch when chainId, address, showOnlyTrustedTransactions, or txHistoryTag changes
   const [data, error, loading] = useAsync<TransactionListPage>(
     () => {
       if (!safeLoaded) return
-      return getTxHistory(chainId, safeAddress)
+      return getTxHistory(chainId, safeAddress, showOnlyTrustedTransactions)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safeLoaded, chainId, safeAddress, txHistoryTag],
+    [safeLoaded, chainId, safeAddress, showOnlyTrustedTransactions, txHistoryTag],
     false,
   )
 
