@@ -82,13 +82,13 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
               },
             }}
             renderOption={(props, option) => (
-              <Typography data-testid="adress-item" component="li" variant="body2" {...props}>
+              <Typography data-testid="address-item" component="li" variant="body2" {...props}>
                 <EthHashInfo address={option.label} name={option.name} shortAddress={false} copyAddress={false} />
               </Typography>
             )}
             renderInput={(params) => (
               <AddressInput
-                data-testid="adress-item"
+                data-testid="address-item"
                 {...params}
                 {...props}
                 focused={props.focused || !addressValue}
