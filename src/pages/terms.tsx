@@ -12,7 +12,7 @@ const SafeTerms = () => (
     <Typography variant="h1" mb={2}>
       Terms and Conditions
     </Typography>
-    <p>Last updated: May, 2023</p>
+    <p>Last updated: January, 2024</p>
     <h3>1. What is the scope of the Terms?</h3>
     <ol start={1}>
       <li>
@@ -21,8 +21,7 @@ const SafeTerms = () => (
         &ldquo;we&rdquo;, &ldquo;our&rdquo; or &ldquo;us&rdquo;) provided we made these Terms accessible to you prior to
         entering into the Agreement and you consent to these Terms. We are a limited liability company registered with
         the commercial register of Berlin Charlottenburg under company number HRB 240421&nbsp;B, with its registered
-        office at the ℅ Full Node, Skalitzer Str. 85-86, 10997 Berlin, Germany. You can contact us by writing to
-        info@cc0x.dev.
+        office at the Gontardstraße 11, 10178 Berlin, Germany. You can contact us by writing to info@cc0x.dev.
       </li>
       <li>
         The Agreement is concluded by using the Mobile App, Web App and/or Browser Extension&nbsp;subject to these
