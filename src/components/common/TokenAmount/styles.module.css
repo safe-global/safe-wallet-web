@@ -5,10 +5,6 @@
   color: var(--color-text-primary);
 }
 
-.container b {
-  font-weight: bold;
-}
-
 .verticalAlign {
   vertical-align: middle;
 }
