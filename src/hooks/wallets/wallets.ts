@@ -11,7 +11,7 @@ import walletConnect from '@web3-onboard/walletconnect'
 
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { CGW_NAMES, WALLET_KEYS } from './consts'
-import MpcModule from '@/services/mpc/SocialLoginModule'
+import MpcModule from '@/features/socialwallet/services/SocialLoginModule'
 
 const prefersDarkMode = (): boolean => {
   return window?.matchMedia('(prefers-color-scheme: dark)')?.matches

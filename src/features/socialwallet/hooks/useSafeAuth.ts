@@ -1,15 +1,35 @@
 import useOnboard, { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import ExternalStore from '@/services/ExternalStore'
-import { onboardListeners, ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { onboardListeners, ONBOARD_MPC_MODULE_LABEL } from '@/features/socialwallet/services/SocialLoginModule'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type OnboardAPI } from '@web3-onboard/core'
-import { getRpcServiceUrl } from '../web3'
-import { type SafeAuthPack, type SafeAuthInitOptions } from '@safe-global/auth-kit'
-import useAsync from '@/hooks/useAsync'
+import { getRpcServiceUrl } from '../../../hooks/wallets/web3'
+import type { SafeAuthPack, SafeAuthInitOptions, SafeAuthUserInfo } from '@safe-global/auth-kit'
 import { useEffect } from 'react'
 import { useCurrentChain } from '@/hooks/useChains'
 
 const { getStore, setStore, useStore } = new ExternalStore<SafeAuthPack>()
+const {
+  getStore: getSafeAuthUserInfo,
+  setStore: setSafeAuthUserInfo,
+  useStore: useSafeAuthUserInfo,
+} = new ExternalStore<SafeAuthUserInfo>()
+
+/**
+ * Listener when the accounts change inside the safeAuthPack.
+ * Updates the UserInfo state and connects to onboard.
+ */
+const onAccountsChanged = (safeAuthPack: SafeAuthPack, onboard: OnboardAPI) => (accounts: string[]) => {
+  if (accounts.length > 0) {
+    safeAuthPack.getUserInfo().then(setSafeAuthUserInfo)
+    connectWallet(onboard, {
+      autoSelect: {
+        label: ONBOARD_MPC_MODULE_LABEL,
+        disableModals: true,
+      },
+    }).catch((reason) => console.error('Error connecting to Social Login module:', reason))
+  }
+}
 
 export const initSafeAuth = async (chain: ChainInfo, onboard: OnboardAPI) => {
   const chainConfig = {
@@ -40,14 +60,7 @@ export const initSafeAuth = async (chain: ChainInfo, onboard: OnboardAPI) => {
     .then(() => {
       setStore(safeAuthPack)
 
-      safeAuthPack.subscribe('accountsChanged', (...args) => {
-        connectWallet(onboard, {
-          autoSelect: {
-            label: ONBOARD_MPC_MODULE_LABEL,
-            disableModals: true,
-          },
-        }).catch((reason) => console.error('Error connecting to MPC module:', reason))
-      })
+      safeAuthPack.subscribe('accountsChanged', onAccountsChanged(safeAuthPack, onboard))
 
       // Always keep the onboard listeners
       Object.entries(onboardListeners).forEach((eventListeners) => {
@@ -84,16 +97,6 @@ export const _getSafeAuthPackInstance = getStore
 
 export const setSafeAuthPack = setStore
 
-export const useSafeAuthUserInfo = () => {
-  const safeAuthPack = useStore()
-  return useAsync(() => {
-    if (!safeAuthPack) {
-      return
-    }
-    return safeAuthPack.getUserInfo()
-  }, [safeAuthPack])
-}
-
 export const useInitSafeAuth = () => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
@@ -107,3 +110,4 @@ export const useInitSafeAuth = () => {
 }
 
 export default useStore
+export { useSafeAuthUserInfo }

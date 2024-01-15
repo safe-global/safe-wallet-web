@@ -2,7 +2,7 @@ import SettingsHeader from '@/components/settings/SettingsHeader/index'
 import * as safeAddress from '@/hooks/useSafeAddress'
 import * as feature from '@/hooks/useChains'
 import * as wallet from '@/hooks/wallets/useWallet'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/features/socialwallet/services/SocialLoginModule'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 
 import { render } from '@/tests/test-utils'

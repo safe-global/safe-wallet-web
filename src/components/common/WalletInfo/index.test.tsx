@@ -3,7 +3,7 @@ import { WalletInfo } from '@/components/common/WalletInfo/index'
 import { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
 import { type NextRouter } from 'next/router'
 import { act } from '@testing-library/react'
-import { setSafeAuthPack, _getSafeAuthPackInstance } from '@/hooks/wallets/mpc/useSafeAuth'
+import { setSafeAuthPack, _getSafeAuthPackInstance } from '@/features/socialwallet/hooks/useSafeAuth'
 import type { SafeAuthUserInfo, SafeAuthPack } from '@safe-global/auth-kit'
 
 const mockWallet = {

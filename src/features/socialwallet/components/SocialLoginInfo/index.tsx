@@ -8,7 +8,7 @@ import ExplorerButton from '@/components/common/ExplorerButton'
 import { getBlockExplorerLink } from '@/utils/chains'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import useSafeAuth, { useSafeAuthUserInfo } from '@/hooks/wallets/mpc/useSafeAuth'
+import useSafeAuth, { useSafeAuthUserInfo } from '@/features/socialwallet/hooks/useSafeAuth'
 
 const SocialLoginInfo = ({
   wallet,
@@ -26,7 +26,7 @@ const SocialLoginInfo = ({
   showBalance?: boolean
 }) => {
   const safeAuthPack = useSafeAuth()
-  const [userInfo, userInfoError, userInfoLoading] = useSafeAuthUserInfo()
+  const userInfo = useSafeAuthUserInfo()
   const prefix = chainInfo?.shortName
   const link = chainInfo ? getBlockExplorerLink(chainInfo, wallet.address) : undefined
   const settings = useAppSelector(selectSettings)

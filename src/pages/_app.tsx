@@ -40,7 +40,7 @@ import { TxModalProvider } from '@/components/tx-flow'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import Recovery from '@/features/recovery/components/Recovery'
 import WalletProvider from '@/components/common/WalletProvider'
-import { useInitSafeAuth } from '@/hooks/wallets/mpc/useSafeAuth'
+import { useInitSafeAuth } from '@/features/socialwallet/hooks/useSafeAuth'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 

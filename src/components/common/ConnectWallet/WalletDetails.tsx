@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import LockIcon from '@/public/images/common/lock.svg'
 
-const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
+const SocialSigner = dynamic(() => import('@/features/socialwallet/components/SocialSigner'), {
   loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
 })
 

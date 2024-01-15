@@ -1,12 +1,12 @@
 import { render, waitFor } from '@/tests/test-utils'
 
-import { SocialSigner, _getSupportedChains } from '@/components/common/SocialSigner'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { SocialSigner, _getSupportedChains } from '@/features/socialwallet/components/SocialSigner'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/features/socialwallet/services/SocialLoginModule'
 import { TxModalProvider } from '@/components/tx-flow'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import { chainBuilder } from '@/tests/builders/chains'
 import type { SafeAuthPack, SafeAuthUserInfo } from '@safe-global/auth-kit'
-import { setSafeAuthPack } from '@/hooks/wallets/mpc/useSafeAuth'
+import { setSafeAuthPack } from '@/features/socialwallet/hooks/useSafeAuth'
 import { act } from 'react-dom/test-utils'
 
 const mockWallet = connectedWalletBuilder().with({ chainId: '5', label: ONBOARD_MPC_MODULE_LABEL }).build()

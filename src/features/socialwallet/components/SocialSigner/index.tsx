@@ -10,13 +10,13 @@ import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import { isSocialLoginWallet } from '@/features/socialwallet/services/SocialLoginModule'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import useSafeAuth, { useSafeAuthUserInfo } from '@/hooks/wallets/mpc/useSafeAuth'
+import useSafeAuth, { useSafeAuthUserInfo } from '@/features/socialwallet/hooks/useSafeAuth'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -56,7 +56,7 @@ export const SocialSigner = ({
 }: SocialSignerLoginProps) => {
   const [loginPending, setLoginPending] = useState<boolean>(false)
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
-  const [userInfo] = useSafeAuthUserInfo()
+  const userInfo = useSafeAuthUserInfo()
 
   const isDisabled = loginPending || !isMPCLoginEnabled
 

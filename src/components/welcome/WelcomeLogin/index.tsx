@@ -11,7 +11,7 @@ import { LOAD_SAFE_EVENTS, CREATE_SAFE_EVENTS } from '@/services/analytics/event
 import Track from '@/components/common/Track'
 import { trackEvent } from '@/services/analytics'
 
-const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
+const SocialSigner = dynamic(() => import('@/features/socialwallet/components/SocialSigner'), {
   loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
 })
 

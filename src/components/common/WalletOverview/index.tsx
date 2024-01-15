@@ -11,8 +11,8 @@ import { selectChainById } from '@/store/chainsSlice'
 import WalletBalance from '@/components/common/WalletBalance'
 
 import css from './styles.module.css'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import SocialLoginInfo from '@/components/common/SocialLoginInfo'
+import { isSocialLoginWallet } from '@/features/socialwallet/services/SocialLoginModule'
+import SocialLoginInfo from '@/features/socialwallet/components/SocialLoginInfo'
 
 export const WalletIdenticon = ({ wallet, size = 32 }: { wallet: ConnectedWallet; size?: number }) => {
   return (

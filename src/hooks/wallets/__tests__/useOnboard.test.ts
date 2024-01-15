@@ -1,4 +1,4 @@
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/features/socialwallet/services/SocialLoginModule'
 import { faker } from '@faker-js/faker'
 import type { EIP1193Provider, OnboardAPI, WalletState } from '@web3-onboard/core'
 import { getConnectedWallet, switchWallet } from '../useOnboard'

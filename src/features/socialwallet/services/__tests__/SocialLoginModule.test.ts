@@ -4,8 +4,8 @@ import MpcModule, { ONBOARD_MPC_MODULE_LABEL } from '../SocialLoginModule'
 import { type WalletModule } from '@web3-onboard/common'
 
 import * as web3 from '@/hooks/wallets/web3'
-import * as useSafeAuth from '@/hooks/wallets/mpc/useSafeAuth'
 import { toBeHex } from 'ethers'
+import * as useSafeAuth from '@/features/socialwallet/hooks/useSafeAuth'
 
 const mockChain = chainBuilder()
   // @ts-expect-error - we are using a local FEATURES enum

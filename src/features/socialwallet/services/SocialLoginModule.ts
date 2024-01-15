@@ -4,8 +4,7 @@ import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type WalletInit, ProviderRpcError } from '@web3-onboard/common'
 import { type EIP1193Provider } from '@web3-onboard/core'
 import { type SafeAuthPack, type SafeAuthEventListener } from '@safe-global/auth-kit'
-import { _getSafeAuthPackInstance } from '@/hooks/wallets/mpc/useSafeAuth'
-import { BrowserProvider } from 'ethers'
+import { _getSafeAuthPackInstance } from '@/features/socialwallet/hooks/useSafeAuth'
 
 const assertDefined = <T>(mpcProvider: T | undefined) => {
   if (!mpcProvider) {
@@ -52,7 +51,9 @@ function MpcModule(chain: ChainInfo): WalletInit {
       label: ONBOARD_MPC_MODULE_LABEL,
       getIcon: async () => (await import('./icon')).default,
       getInterface: async () => {
-        const { _getSafeAuthPackInstance: _getMPCCoreKitInstance } = await import('@/hooks/wallets/mpc/useSafeAuth')
+        const { _getSafeAuthPackInstance: _getMPCCoreKitInstance } = await import(
+          '@/features/socialwallet/hooks/useSafeAuth'
+        )
         const getMPCProvider = () => _getSafeAuthPackInstance()?.getProvider()
 
         const provider: EIP1193Provider = {
@@ -83,17 +84,21 @@ function MpcModule(chain: ChainInfo): WalletInit {
                 if ('eth_requestAccounts' === request.method) {
                   try {
                     // If the provider is defined we already have access to the accounts.
+                    const isLoggedIn = _getSafeAuthPackInstance()?.isAuthenticated
+                    throw new Error('Not signed in')
+
                     const web3 = assertDefined(getMPCProvider())
                     web3.request({ method: 'eth_accounts' }).then(resolve).catch(reject)
                   } catch (e) {
+                    console.log('Trying to sign in through module')
                     // Otherwise try to log in the user
                     const safeAuthPack = _getSafeAuthPackInstance()
                     if (!safeAuthPack) {
                       throw Error('Social Login not ready')
                     }
 
-                    await safeAuthPack.signIn()
-                    getConnectedAccounts(getMPCProvider()).then(resolve).catch(reject)
+                    const signInResponse = await safeAuthPack.signIn()
+                    resolve([signInResponse.eoa])
                   }
                   return
                 }
@@ -120,8 +125,7 @@ function MpcModule(chain: ChainInfo): WalletInit {
             })
           },
           removeListener: (event, listener) => {
-            const web3 = new BrowserProvider(assertDefined(getMPCProvider()))
-            return web3.removeListener(event, listener)
+            // Not implemented
           },
           disconnect: () => {
             _getSafeAuthPackInstance()?.signOut()
