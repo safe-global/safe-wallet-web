@@ -6094,10 +6094,10 @@
     ethereumjs-util "^7.1.3"
     hdkey "^2.0.1"
 
-"@web3-onboard/walletconnect@^2.5.3-alpha.1":
-  version "2.5.3-alpha.1"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/walletconnect/-/walletconnect-2.5.3-alpha.1.tgz#0bae0b5ff0991e13ffd16b39c87266c98dc8d3aa"
-  integrity sha512-PgK8lyzEZzLqKnh6sp4iFaWdbM0zeI9aGGqOhv9+UmRctsUBg2PIzAzcEqGd9moNxWIzP33slsOmRJKKYyaoEA==
+"@web3-onboard/walletconnect@^2.5.3":
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/walletconnect/-/walletconnect-2.5.3.tgz#b8f71ee93de8cf151dd31732715bff250fcda293"
+  integrity sha512-ENrUwXBbja6gXWfF4G2pxhwOodT9MAMPum0E1KPyphzcs+QxjrC+aaXnYUpLLhZsjlAcIWcGrgpmtLP2NDhRXg==
   dependencies:
     "@walletconnect/ethereum-provider" "^2.11.0"
     "@web3-onboard/common" "^2.3.3"
