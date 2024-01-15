@@ -5,7 +5,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import SpendingLimits from '../SpendingLimits'
 import dynamic from 'next/dynamic'
-import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+import { useIsRecoverySupported } from '@/features/recovery'
 
 const RecoverySettings = dynamic(() => import('@/features/recovery/components/RecoverySettings'))
 

@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["features/**/*", "!features/recovery/**/*"],
+            "message": "You can not import from other features!"
+          }
+        ]
+      }
+    ]
+  }
+}

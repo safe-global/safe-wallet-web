@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["features/**/*", "!features/walletconnect/**/*"],
+            "message": "You can not import from other features!"
+          }
+        ]
+      }
+    ]
+  }
+}

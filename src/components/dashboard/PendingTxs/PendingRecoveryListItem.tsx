@@ -5,11 +5,11 @@ import { ChevronRight } from '@mui/icons-material'
 import { Box } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import { RecoveryInfo } from '@/features/recovery/components/RecoveryInfo'
-import { RecoveryStatus } from '@/features/recovery/components/RecoveryStatus'
-import { RecoveryType } from '@/features/recovery/components/RecoveryType'
+import { RecoveryInfo } from '@/features/recovery'
+import { RecoveryStatus } from '@/features/recovery'
+import { RecoveryType } from '@/features/recovery'
 import { AppRoutes } from '@/config/routes'
-import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import type { RecoveryQueueItem } from '@/features/recovery'
 
 import css from './styles.module.css'
 

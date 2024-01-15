@@ -13,9 +13,8 @@ import css from './styles.module.css'
 import { isSignableBy, isExecutable } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
 import type { SafeInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import { type RecoveryQueueItem, useRecoveryQueue } from '@/features/recovery'
 
 const PendingRecoveryListItem = dynamic(() => import('./PendingRecoveryListItem'))
 

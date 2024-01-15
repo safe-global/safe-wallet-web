@@ -14,7 +14,18 @@
         "additionalHooks": "useAsync"
       }
     ],
-    "no-only-tests/no-only-tests": "error"
+    "no-only-tests/no-only-tests": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@/features/**/*", "!@/features/*"],
+            "message": "You can not import from other features!"
+          }
+        ]
+      }
+    ]
   },
   "ignorePatterns": ["node_modules/", ".next/", ".github/"],
   "plugins": ["unused-imports", "@typescript-eslint", "no-only-tests"]

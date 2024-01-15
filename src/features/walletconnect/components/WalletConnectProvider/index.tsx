@@ -10,7 +10,7 @@ import { SafeAppsTag } from '@/config/constants'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { getPeerName, stripEip155Prefix } from '@/features/walletconnect/services/utils'
 import { trackRequest } from '@/features/walletconnect//services/tracking'
-import { wcPopupStore } from '@/features/walletconnect/components'
+import { wcPopupStore } from '@/features/walletconnect'
 import WalletConnectWallet from '@/features/walletconnect/services/WalletConnectWallet'
 import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
 

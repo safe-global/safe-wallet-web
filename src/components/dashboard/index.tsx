@@ -10,8 +10,7 @@ import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 
-import useRecovery from '@/features/recovery/hooks/useRecovery'
-import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+import { useIsRecoverySupported, useRecovery } from '@/features/recovery'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
 

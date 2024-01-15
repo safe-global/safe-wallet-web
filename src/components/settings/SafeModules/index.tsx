@@ -8,9 +8,9 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useContext } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
-import { selectDelayModifierByAddress } from '@/features/recovery/services/selectors'
+import { selectDelayModifierByAddress } from '@/features/recovery'
 import { RemoveRecoveryFlow } from '@/components/tx-flow/flows'
-import useRecovery from '@/features/recovery/hooks/useRecovery'
+import { useRecovery } from '@/features/recovery'
 
 import css from '../TransactionGuards/styles.module.css'
 

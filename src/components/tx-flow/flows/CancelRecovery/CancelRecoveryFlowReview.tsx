@@ -7,10 +7,10 @@ import type { ReactElement } from 'react'
 import { SafeTxContext } from '../../SafeTxProvider'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { getRecoverySkipTransaction } from '@/features/recovery/services/transaction'
+import { getRecoverySkipTransaction } from '@/features/recovery'
 import { createTx } from '@/services/tx/tx-sender'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import type { RecoveryQueueItem } from '@/features/recovery'
 
 const onSubmit = () => {
   trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_CANCEL })

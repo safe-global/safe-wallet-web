@@ -92,3 +92,5 @@ export const WarnedBridges = [
 ]
 
 export const WarnedBridgeNames = ['Across Bridge', 'Hop']
+
+export const WC_URI_SEARCH_PARAM = 'wc'
