@@ -12,6 +12,7 @@ import { startOfDay, endOfDay } from 'date-fns'
 
 import type { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
+import { getTimezoneOffset } from '@/services/transactions'
 
 type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
 type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
@@ -121,11 +122,9 @@ export const fetchFilteredTxHistory = async (
   pageUrl?: string,
 ): Promise<TransactionListPage> => {
   const fetchPage = () => {
-    const tzOffset = new Date().getTimezoneOffset() * 60 * 1000
-
     const query = {
       ...filterData.filter,
-      timezone_offset: tzOffset,
+      timezone_offset: getTimezoneOffset(),
       trusted: false, // load all transactions, mark untrusted in the UI
       executed: filterData.type === TxFilterType.MULTISIG ? 'true' : undefined,
     }
