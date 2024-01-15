@@ -1,5 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from './main.page'
+import * as addressBook from '../pages/address_book.page'
 import { invalidAddressFormatErrorMsg } from '../pages/load_safe.pages'
 import 'cypress-file-upload'
 
@@ -19,7 +20,6 @@ const deleteBtn = '[data-testid="delete-btn"]'
 const resetTimeInfo = '[data-testid="reset-time"]'
 const spentAmountInfo = '[data-testid="spent-amount"]'
 const spendingLimitTxOption = '[data-testid="spending-limit-tx"]'
-const standartTxOption = '[data-testid="standard-tx"]'
 const tokenBalance = '[data-testid="token-balance"]'
 const tokenItem = '[data-testid="token-item"]'
 const maxBtn = '[data-testid="max-btn"]'
@@ -30,6 +30,8 @@ const splimitTimeIcon = '[data-testid="time-icon"]'
 const oldTokenAmount = '[data-testid="old-token-amount"]'
 const oldResetTime = '[data-testid="old-reset-time"]'
 const slimitReplacementWarning = '[data-testid="limit-replacement-warning"]'
+const addressItem = '[data-testid="address-item"]'
+import * as ls from '../../support/localstorage_data.js'
 
 export const timePeriodOptions = {
   oneTime: 'One time',
@@ -38,6 +40,9 @@ export const timePeriodOptions = {
   oneHr: '1 hour',
 }
 
+const getBeneficiaryInput = () => cy.get(beneficiarySection).find('input').should('be.enabled')
+const automationOwner = ls.addressBookData.sepoliaAddress2[11155111]['0xC16Db0251654C0a72E91B190d81eAD367d2C6fED']
+
 const expectedSpendOptions = ['0 of 0.17 ETH', '0 of 0.05 ETH', '0 of 0.01 ETH']
 const expectedResetOptions = new Array(3).fill('One-time')
 
@@ -45,6 +50,11 @@ const newTransactionStr = 'New transaction'
 const confirmTxStr = 'Confirm transaction'
 const invalidNumberErrorStr = 'The value must be greater than 0'
 const invalidCharErrorStr = 'The value must be a number'
+
+export function selectRecipient(recipient) {
+  cy.get(addressItem).contains(recipient).click()
+  main.verifyValuesExist(addressBook.addressBookRecipient, [recipient, automationOwner])
+}
 
 export function verifyOldValuesAreDisplayed() {
   main.verifyElementsIsVisible([oldTokenAmount, oldResetTime, slimitReplacementWarning])
@@ -57,8 +67,15 @@ export function verifySpendingLimitsIcons() {
   main.verifyElementsIsVisible([splimitBeneficiaryIcon, splimitAssetIcon, splimitTimeIcon])
 }
 
-export function selectToken(token) {
+export function clickOnTokenDropdown() {
   cy.get(tokenBalance).click()
+}
+export function verifyMandatoryTokensExist() {
+  main.verifyValuesExist(tokenItem, [constants.tokenNames.sepoliaEther, constants.tokenNames.qaToken])
+}
+
+export function selectToken(token) {
+  clickOnTokenDropdown()
   cy.get(tokenItem).contains(token).click()
   main.verifyValuesExist(tokenBalance, [token])
 }
@@ -149,15 +166,15 @@ export function enterSpendingLimitAmount(amount) {
 }
 
 export function enterBeneficiaryAddress(address) {
-  cy.get(beneficiarySection).find('input').clear().type(address)
+  getBeneficiaryInput().clear().type(address)
 }
 
 export function checkBeneficiaryInputValue(value) {
-  cy.get(beneficiarySection).find('input').invoke('val').should('contain', value)
+  getBeneficiaryInput().invoke('val').should('contain', value)
 }
 
 export function checkBeneficiaryENS(ens) {
-  cy.get(beneficiarySection).find('input').invoke('val').should('contain', ens.substring(4))
+  getBeneficiaryInput().invoke('val').should('contain', ens.substring(4))
 }
 
 export function verifyValidAddressShowsNoErrors() {

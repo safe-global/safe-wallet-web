@@ -271,6 +271,9 @@ export const addressBookData = {
   sepoliaAddress1: {
     11155111: { '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'Owner1' },
   },
+  sepoliaAddress2: {
+    11155111: { '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'Automation owner' },
+  },
   dataSet: {
     5: {
       '0xD9cA710D531c20117dc74850C5CdebeDA86fbF76': 'qa-automate-tests-1@safe.global',
@@ -328,6 +331,28 @@ export const safeSettings = {
     theme: {
       darkMode: true,
     },
+    env: {
+      rpc: {},
+      tenderly: {
+        url: '',
+        accessToken: '',
+      },
+    },
+    signing: {
+      onChainSigning: false,
+    },
+    transactionExecution: true,
+  },
+  slimitSettings: {
+    currency: 'usd',
+    tokenList: 'ALL',
+    hiddenTokens: {},
+    shortName: {
+      show: true,
+      copy: true,
+      qr: true,
+    },
+    theme: {},
     env: {
       rpc: {},
       tenderly: {
