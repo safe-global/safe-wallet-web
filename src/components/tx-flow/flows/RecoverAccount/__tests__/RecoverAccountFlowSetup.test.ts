@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { shuffle } from 'lodash'
+import shuffle from 'lodash/shuffle'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { _isSameSetup } from '../RecoverAccountFlowSetup'

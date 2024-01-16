@@ -1,6 +1,5 @@
 import Identicon from '@/components/common/Identicon'
 import { Box, Typography } from '@mui/material'
-import { type BigNumber } from 'ethers'
 import { Suspense } from 'react'
 import type { ReactElement } from 'react'
 
@@ -34,7 +33,7 @@ const WalletOverview = ({
   showBalance,
 }: {
   wallet: ConnectedWallet
-  balance?: BigNumber | undefined
+  balance?: string
   showBalance?: boolean
 }): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))

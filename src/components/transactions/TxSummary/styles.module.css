@@ -6,6 +6,10 @@
   white-space: nowrap;
 }
 
+.untrusted {
+  opacity: 0.4;
+}
+
 .columnTemplate {
   grid-template-columns:
     minmax(50px, 0.25fr) minmax(150px, 2fr) minmax(150px, 2fr) minmax(200px, 2fr) 1fr minmax(60px, 0.5fr)

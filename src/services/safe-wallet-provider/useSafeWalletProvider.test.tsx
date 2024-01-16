@@ -333,4 +333,27 @@ describe('useSafeWalletProvider', () => {
       expect(mockSend).toHaveBeenCalledWith('eth_chainId', [])
     })
   })
+
+  it('should show a tx by hash', () => {
+    const routerPush = jest.fn()
+
+    jest.spyOn(router, 'useRouter').mockReturnValue({
+      push: routerPush,
+      query: {
+        safe: '0x1234567890000000000000000000000000000000',
+      },
+    } as unknown as router.NextRouter)
+
+    const { result } = renderHook(() => _useTxFlowApi('1', '0x1234567890000000000000000000000000000000'))
+
+    result.current?.showTxStatus('0x123')
+
+    expect(routerPush).toHaveBeenCalledWith({
+      pathname: '/transactions/tx',
+      query: {
+        safe: '0x1234567890000000000000000000000000000000',
+        id: '0x123',
+      },
+    })
+  })
 })

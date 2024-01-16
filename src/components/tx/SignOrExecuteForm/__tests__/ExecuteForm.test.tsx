@@ -9,6 +9,7 @@ import * as useGasLimit from '@/hooks/useGasLimit'
 import * as useIsValidExecution from '@/hooks/useIsValidExecution'
 import * as useWalletCanRelay from '@/hooks/useWalletCanRelay'
 import * as relayUtils from '@/utils/relaying'
+import * as walletCanPay from '@/hooks/useWalletCanPay'
 import { render } from '@/tests/test-utils'
 import { fireEvent, waitFor } from '@testing-library/react'
 
@@ -70,13 +71,32 @@ describe('ExecuteForm', () => {
     ).toBeInTheDocument()
   })
 
+  it('shows an error if the connected wallet has insufficient funds to execute and relaying is not selected', () => {
+    jest.spyOn(walletCanPay, 'default').mockReturnValue(false)
+    jest.spyOn(useWalletCanRelay, 'default').mockReturnValue([true, undefined, false])
+    jest.spyOn(relayUtils, 'hasRemainingRelays').mockReturnValue(true)
+
+    const { getByText, queryByText, getByTestId } = render(<ExecuteForm {...defaultProps} />)
+
+    expect(
+      queryByText("Your connected wallet doesn't have enough funds to execute this transaction."),
+    ).not.toBeInTheDocument()
+
+    const executeWithWalletOption = getByTestId('connected-wallet-execution-method')
+    fireEvent.click(executeWithWalletOption)
+
+    expect(
+      getByText("Your connected wallet doesn't have enough funds to execute this transaction."),
+    ).toBeInTheDocument()
+  })
+
   it('shows a relaying option if relaying is enabled', () => {
     jest.spyOn(useWalletCanRelay, 'default').mockReturnValue([true, undefined, false])
     jest.spyOn(relayUtils, 'hasRemainingRelays').mockReturnValue(true)
 
     const { getByText } = render(<ExecuteForm {...defaultProps} />)
 
-    expect(getByText('Choose execution method:')).toBeInTheDocument()
+    expect(getByText('Who will pay gas fees:')).toBeInTheDocument()
   })
 
   it('shows an execution validation error', () => {

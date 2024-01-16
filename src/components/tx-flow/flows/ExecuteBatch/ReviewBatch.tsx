@@ -24,17 +24,22 @@ import TxCard from '../../common/TxCard'
 import CheckWallet from '@/components/common/CheckWallet'
 import type { ExecuteBatchFlowProps } from '.'
 import { asError } from '@/services/exceptions/utils'
-import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
+import SendToBlock from '@/components/tx/SendToBlock'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxModalContext } from '@/components/tx-flow'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
 import type { PayableOverrides } from 'ethers'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { isWalletRejection } from '@/utils/wallets'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
@@ -106,17 +111,25 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
     e.preventDefault()
     setIsSubmittable(false)
     setSubmitError(undefined)
+    setIsRejectedByUser(false)
 
     try {
       await (willRelay ? onRelay() : onExecute())
       setTxFlow(undefined)
     } catch (_err) {
       const err = asError(_err)
-      logError(Errors._804, err)
+      if (isWalletRejection(err)) {
+        setIsRejectedByUser(true)
+      } else {
+        logError(Errors._804, err)
+        setSubmitError(err)
+      }
+
       setIsSubmittable(true)
-      setSubmitError(err)
       return
     }
+
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.batch })
   }
 
   const submitDisabled = loading || !isSubmittable || !gasPrice
@@ -131,7 +144,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           over the execute button.
         </Typography>
 
-        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
+        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with" />}
 
         {multiSendTxData && (
           <div>
@@ -185,6 +198,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         {submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
+
+        {isRejectedByUser && <WalletRejectionError />}
 
         <div>
           <Divider className={commonCss.nestedDivider} sx={{ pt: 2 }} />

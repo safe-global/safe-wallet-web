@@ -1,11 +1,10 @@
 import type { ReactElement } from 'react'
-import { useContext, useEffect } from 'react'
-import { useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
 import { Box } from '@mui/system'
 import { Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
-import { type EIP712TypedData, isObjectEIP712TypedData, Methods, type RequestId } from '@safe-global/safe-apps-sdk'
+import { type EIP712TypedData, Methods, type RequestId } from '@safe-global/safe-apps-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 
 import SendFromBlock from '@/components/tx/SendFromBlock'
@@ -25,8 +24,7 @@ import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
-import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { isEIP712TypedData } from '@/utils/safe-messages'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -44,7 +42,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   useHighlightHiddenTab()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
-  const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
+  const isTypedMessage = method === Methods.signTypedMessage && isEIP712TypedData(message)
 
   const readOnlySignMessageLibContract = useMemo(
     () => getReadOnlySignMessageLibContract(chainId, safe.version),
@@ -84,7 +82,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
     const params = {
       to: signMessageAddress,
       value: '0',
-      data: txData || '0x',
+      data: txData ?? '0x',
       operation: OperationType.DelegateCall,
     }
     createTx(params).then(setSafeTx).catch(setSafeTxError)
@@ -100,11 +98,6 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
 
   const handleSubmit = async () => {
     if (!safeTx || !onboard) return
-
-    // Track the creation of a typed message
-    if (isTypedMessage && safeTx.signatures.size === 0) {
-      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.typed_message })
-    }
 
     try {
       await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)

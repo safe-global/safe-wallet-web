@@ -10,7 +10,7 @@ import * as wallet from '@/hooks/wallets/useWallet'
 import * as logic from '../../logic'
 import * as preferences from '../useNotificationPreferences'
 import * as notificationsSlice from '@/store/notificationsSlice'
-import type { ConnectedWallet } from '@/services/onboard'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk')
 

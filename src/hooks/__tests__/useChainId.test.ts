@@ -5,7 +5,7 @@ import { setLastChainId } from '@/store/sessionSlice'
 import { renderHook } from '@/tests/test-utils'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import * as useChains from '@/hooks/useChains'
-import type { ConnectedWallet } from '@/services/onboard'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 // mock useRouter

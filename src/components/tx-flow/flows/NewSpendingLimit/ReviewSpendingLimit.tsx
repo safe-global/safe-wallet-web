@@ -17,7 +17,6 @@ import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import type { NewSpendingLimitFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeTxContext } from '../../SafeTxProvider'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowProps }) => {
   const [existingSpendingLimit, setExistingSpendingLimit] = useState<SpendingLimitState>()
@@ -54,8 +53,6 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
       ...SETTINGS_EVENTS.SPENDING_LIMIT.RESET_PERIOD,
       label: resetTime,
     })
-
-    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.spending_limit_add })
   }
 
   const existingAmount = existingSpendingLimit
@@ -72,7 +69,12 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
         <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} title="Amount">
           {existingAmount && existingAmount !== params.amount && (
             <>
-              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
+              <Typography
+                data-testid="old-token-amount"
+                color="error"
+                sx={{ textDecoration: 'line-through' }}
+                component="span"
+              >
                 {existingAmount}
               </Typography>
               {'→'}
@@ -88,7 +90,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
           </Typography>
         </Grid>
 
-        <Grid item md={10}>
+        <Grid data-testid="beneficiary-address" item md={10}>
           <EthHashInfo
             address={params.beneficiary}
             shortAddress={false}
@@ -114,6 +116,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
                     {existingSpendingLimit.resetTimeMin !== params.resetTime && (
                       <>
                         <Typography
+                          data-testid="old-reset-time"
                           color="error"
                           sx={{ textDecoration: 'line-through' }}
                           display="inline"
@@ -133,13 +136,19 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
               />
             </>
           ) : (
-            <SpendingLimitLabel label={resetTime || 'One-time spending limit'} isOneTime={!!resetTime && isOneTime} />
+            <SpendingLimitLabel
+              data-testid="spending-limit-label"
+              label={resetTime || 'One-time spending limit'}
+              isOneTime={!!resetTime && isOneTime}
+            />
           )}
         </Grid>
       </Grid>
       {existingSpendingLimit && (
         <Alert severity="warning" sx={{ border: 'unset' }}>
-          <Typography fontWeight={700}>You are about to replace an existing spending limit</Typography>
+          <Typography data-testid="limit-replacement-warning" fontWeight={700}>
+            You are about to replace an existing spending limit
+          </Typography>
         </Alert>
       )}
     </SignOrExecuteForm>

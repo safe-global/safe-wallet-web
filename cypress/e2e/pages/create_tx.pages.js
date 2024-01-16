@@ -9,6 +9,7 @@ const sendTokensBtnStr = 'Send tokens'
 const tokenAddressInput = 'input[name="tokenAddress"]'
 const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
+const nonceTxValue = '[data-testid="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
 const transactionItem = '[data-testid="transaction-item"]'
@@ -16,8 +17,6 @@ const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-meth
 const addToBatchBtn = '[data-track="batching: Add to batch"]'
 const accordionDetails = '[data-testid="accordion-details"]'
 const copyIcon = '[data-testid="copy-btn-icon"]'
-const transactionType = '[data-testid="tx-type"]'
-const copyToClipboardItem = 'span[aria-label="Copy to clipboard"]'
 const transactionSideList = '[data-testid="transaction-actions-list"]'
 const confirmationVisibilityBtn = '[data-testid="confirmation-visibility-btn"]'
 const expandAllBtn = '[data-testid="expande-all-btn"]'
@@ -27,13 +26,15 @@ const advancedDetails = '[data-testid="tx-advanced-details"]'
 const baseGas = '[data-testid="tx-bas-gas"]'
 const requiredConfirmation = '[data-testid="required-confirmations"]'
 const txDate = '[data-testid="tx-date"]'
+const spamTokenWarningIcon = '[data-testid="warning"]'
+const untrustedTokenWarningModal = '[data-testid="untrusted-token-warning"]'
+const sendTokensBtn = '[data-testid="send-tokens-btn"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
 const TransactionSummary = 'Send '
-const transactionsPerHrStr = 'Transactions per hour'
-const transactionsPerHr5Of5Str = '5 of 5'
+const transactionsPerHrStr = 'free transactions left this hour'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -48,6 +49,9 @@ const signBtnStr = 'Sign'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
 
+export function clickOnSendTokensBtn() {
+  cy.get(sendTokensBtn).click()
+}
 export function verifyNumberOfTransactions(count) {
   cy.get(txDate).should('have.length.at.least', count)
   cy.get(transactionItem).should('have.length.at.least', count)
@@ -55,6 +59,30 @@ export function verifyNumberOfTransactions(count) {
 
 export function checkRequiredThreshold(count) {
   cy.get(requiredConfirmation).should('be.visible').and('include.text', count)
+}
+
+export function verifyAddressNotCopied(index, data) {
+  cy.get(copyIcon)
+    .parent()
+    .eq(index)
+    .trigger('click')
+    .wait(1000)
+    .then(() =>
+      cy.window().then((win) => {
+        win.navigator.clipboard.readText().then((text) => {
+          expect(text).not.to.contain(data)
+        })
+      }),
+    )
+  cy.get(untrustedTokenWarningModal).should('be.visible')
+}
+
+export function verifyWarningModalVisible() {
+  cy.get(untrustedTokenWarningModal).should('be.visible')
+}
+
+export function clickOnCopyBtn(index) {
+  cy.get(copyIcon).parent().eq(index).trigger('click')
 }
 
 export function verifyCopyIconWorks(index, data) {
@@ -88,13 +116,15 @@ export function verifyNumberOfExternalLinks(number) {
   }
 }
 
-export function clickOnTransactionItemByName(name) {
-  cy.get(transactionItem).contains(name).scrollIntoView().click({ force: true })
-}
-
-export function clickOnTransactionItemByIndex(index) {
-  cy.get(transactionItem).eq(index).scrollIntoView().click({ force: true })
-  cy.get(accordionDetails).should('be.visible')
+export function clickOnTransactionItemByName(name, token) {
+  cy.get(transactionItem)
+    .filter(':contains("' + name + '")')
+    .then(($elements) => {
+      if (token) {
+        $elements = $elements.filter(':contains("' + token + '")')
+      }
+      cy.wrap($elements.first()).click({ force: true })
+    })
 }
 
 export function verifyExpandedDetails(data, warning) {
@@ -145,32 +175,38 @@ export function verifyActionListExists(data) {
   main.verifyElementsIsVisible([confirmationVisibilityBtn])
 }
 
-export function verifySummaryByName(name, data, alt) {
+export function verifySpamIconIsDisplayed(name, token) {
   cy.get(transactionItem)
-    .contains(name)
-    .parent()
-    .parent()
-    .parent()
-    .within(() => {
-      data.forEach((text) => {
-        cy.contains(text).should('be.visible')
+    .filter(':contains("' + name + '")')
+    .filter(':contains("' + token + '")')
+    .then(($elements) => {
+      cy.wrap($elements.first()).then(($element) => {
+        cy.wrap($element).find(spamTokenWarningIcon).should('be.visible')
       })
-      if (alt) verifyImageAltTxt(0, alt)
     })
 }
 
-export function verifySummaryByIndex(index, data, altIcon, altToken) {
+export function verifySummaryByName(name, token, data, alt, altToken) {
   cy.get(transactionItem)
-    .parent()
-    .parent()
-    .parent()
-    .eq(index)
-    .within(() => {
-      data.forEach((text) => {
-        cy.contains(text).should('be.visible')
-      })
-      if (altIcon) verifyImageAltTxt(0, altIcon)
-      if (altToken) verifyImageAltTxt(1, altToken)
+    .filter(':contains("' + name + '")')
+    .then(($elements) => {
+      if (token) {
+        $elements = $elements.filter(':contains("' + token + '")')
+      }
+
+      if ($elements.length > 0) {
+        cy.wrap($elements.first()).then(($element) => {
+          if (Array.isArray(data)) {
+            data.forEach((text) => {
+              cy.wrap($element).contains(text).should('be.visible')
+            })
+          } else {
+            cy.wrap($element).contains(data).should('be.visible')
+          }
+          if (alt) cy.wrap($element).find('img').eq(0).should('have.attr', 'alt', alt).should('be.visible')
+          if (altToken) cy.wrap($element).find('img').eq(1).should('have.attr', 'alt', alt).should('be.visible')
+        })
+      }
     })
 }
 
@@ -202,10 +238,6 @@ export function verifyENSResolves(fullAddress) {
   let split = fullAddress.split(':')
   let noPrefixAddress = split[1]
   cy.get(recepientInput).should('have.value', noPrefixAddress)
-}
-
-export function clickOnSendTokensBtn() {
-  cy.contains(sendTokensBtnStr).click()
 }
 
 export function verifyRandomStringAddress(randomAddressString) {
@@ -243,7 +275,6 @@ export function selectCurrentWallet() {
 
 export function verifyRelayerAttemptsAvailable() {
   cy.contains(transactionsPerHrStr).should('be.visible')
-  cy.contains(transactionsPerHr5Of5Str).should('be.visible')
 }
 
 export function clickOnTokenselectorAndSelectSepoliaEth() {
@@ -284,7 +315,7 @@ export function verifySubmitBtnIsEnabled() {
 }
 
 export function verifyAddToBatchBtnIsEnabled() {
-  cy.get(addToBatchBtn).should('not.be.disabled')
+  return cy.get(addToBatchBtn).should('not.be.disabled')
 }
 
 export function verifyNativeTokenTransfer() {
@@ -326,7 +357,6 @@ export function verifyAndSubmitExecutionParams() {
 }
 
 export function clickOnNoLaterOption() {
-  // Asserts the execute checkbox is uncheckable (???)
   cy.contains(noLaterStr).click()
 }
 

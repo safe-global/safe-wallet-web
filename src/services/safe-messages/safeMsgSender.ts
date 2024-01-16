@@ -1,10 +1,9 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import { isObjectEIP712TypedData } from '@safe-global/safe-apps-sdk'
 import type { OnboardAPI } from '@web3-onboard/core'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
-import { generateSafeMessageHash, tryOffChainMsgSigning } from '@/utils/safe-messages'
+import { generateSafeMessageHash, isEIP712TypedData, tryOffChainMsgSigning } from '@/utils/safe-messages'
 import { normalizeTypedData } from '@/utils/web3'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 import { asError } from '../exceptions/utils'
@@ -27,7 +26,7 @@ export const dispatchSafeMsgProposal = async ({
     const signature = await tryOffChainMsgSigning(signer, safe, message)
 
     let normalizedMessage = message
-    if (isObjectEIP712TypedData(message)) {
+    if (isEIP712TypedData(message)) {
       normalizedMessage = normalizeTypedData(message)
     }
 

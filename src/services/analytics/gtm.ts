@@ -90,7 +90,7 @@ type ActionGtmEvent = GtmEvent & {
   eventCategory: string
   eventAction: string
   eventLabel?: EventLabel
-  eventType?: EventType
+  eventType?: string
 }
 
 type PageviewGtmEvent = GtmEvent & {

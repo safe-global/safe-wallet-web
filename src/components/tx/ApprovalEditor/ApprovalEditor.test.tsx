@@ -52,7 +52,8 @@ describe('ApprovalEditor', () => {
       spender: '0x2',
       amount: '4200000',
       amountFormatted: '420.0',
-    }
+      method: 'approve',
+    } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
     const mockSafeTx = safeTxBuilder()
       .with({
@@ -77,7 +78,31 @@ describe('ApprovalEditor', () => {
       spender: '0x2',
       amount: '4200000',
       amountFormatted: '420.0',
-    }
+      method: 'approve',
+    } as const
+    jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
+    const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
+
+    const result = render(<ApprovalEditor safeTransaction={mockSafeTx} />)
+
+    const amountInput1 = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
+
+    expect(amountInput1).toBeInTheDocument
+
+    expect(amountInput1).toHaveValue('420.0')
+    expect(result.getByText('TST'))
+    expect(result.getByText('0x2'))
+  })
+
+  it('renders a form if there is an update callback', async () => {
+    const mockApprovalInfo = {
+      tokenInfo: { symbol: 'TST', decimals: 18, address: '0x3', type: TokenType.ERC20 },
+      tokenAddress: '0x1',
+      spender: '0x2',
+      amount: '4200000',
+      amountFormatted: '420.0',
+      method: 'approve',
+    } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
     const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
 

@@ -8,7 +8,7 @@ import { UpsertRecoveryFlowReview as UpsertRecoveryFlowReview } from './UpsertRe
 import { UpsertRecoveryFlowSettings as UpsertRecoveryFlowSettings } from './UpsertRecoveryFlowSettings'
 import { UpsertRecoveryFlowIntro as UpsertRecoveryFlowIntro } from './UpsertRecoveryFlowIntro'
 import { DAY_IN_SECONDS } from './useRecoveryPeriods'
-import type { RecoveryState } from '@/services/recovery/recovery-state'
+import type { RecoveryState } from '@/features/recovery/services/recovery-state'
 
 const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set up account recovery']
 
@@ -24,7 +24,7 @@ export type UpsertRecoveryFlowProps = {
   [UpsertRecoveryFlowFields.expiry]: string
 }
 
-export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
+function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[number] }): ReactElement {
   const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>(
     {
       [UpsertRecoveryFlowFields.recoverer]: delayModifier?.recoverers?.[0] ?? '',
@@ -64,3 +64,5 @@ export function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: Recovery
     </TxLayout>
   )
 }
+
+export default UpsertRecoveryFlow

@@ -46,6 +46,7 @@ describe('WalletInfo', () => {
         addressBook={{}}
         handleClose={jest.fn()}
         balance={undefined}
+        currentChainId="1"
       />,
     )
 
@@ -62,6 +63,7 @@ describe('WalletInfo', () => {
         addressBook={{}}
         handleClose={jest.fn()}
         balance={undefined}
+        currentChainId="1"
       />,
     )
 
@@ -78,6 +80,7 @@ describe('WalletInfo', () => {
         addressBook={{}}
         handleClose={jest.fn()}
         balance={undefined}
+        currentChainId="1"
       />,
     )
 
@@ -103,6 +106,7 @@ describe('WalletInfo', () => {
         addressBook={{}}
         handleClose={jest.fn()}
         balance={undefined}
+        currentChainId="1"
       />,
     )
 
@@ -122,6 +126,7 @@ describe('WalletInfo', () => {
         addressBook={{}}
         handleClose={jest.fn()}
         balance={undefined}
+        currentChainId="1"
       />,
     )
 
@@ -141,6 +146,7 @@ describe('WalletInfo', () => {
         addressBook={{}}
         handleClose={jest.fn()}
         balance={undefined}
+        currentChainId="1"
       />,
     )
 
@@ -159,6 +165,7 @@ describe('WalletInfo', () => {
         addressBook={{}}
         handleClose={jest.fn()}
         balance={undefined}
+        currentChainId="1"
       />,
     )
 
@@ -180,6 +187,7 @@ describe('WalletInfo', () => {
         addressBook={{}}
         handleClose={jest.fn()}
         balance={undefined}
+        currentChainId="1"
       />,
     )
 

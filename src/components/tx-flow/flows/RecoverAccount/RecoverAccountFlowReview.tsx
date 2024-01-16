@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { getRecoveryProposalTransactions } from '@/services/recovery/transaction'
+import { getRecoveryProposalTransactions } from '@/features/recovery/services/transaction'
 import DecodedTx from '@/components/tx/DecodedTx'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { RedefineBalanceChanges } from '@/components/tx/security/redefine/RedefineBalanceChange'
@@ -16,20 +16,22 @@ import useDecodeTx from '@/hooks/useDecodeTx'
 import TxCard from '../../common/TxCard'
 import { SafeTxContext } from '../../SafeTxProvider'
 import CheckWallet from '@/components/common/CheckWallet'
-import { dispatchRecoveryProposal } from '@/services/recovery/recovery-sender'
+import { dispatchRecoveryProposal } from '@/features/recovery/services/recovery-sender'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { RecoverAccountFlowFields } from '.'
 import { OwnerList } from '../../common/OwnerList'
-import { selectDelayModifierByRecoverer } from '@/services/recovery/selectors'
+import { selectDelayModifierByRecoverer } from '@/features/recovery/services/selectors'
 import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
 import { getPeriod } from '@/utils/date'
-import { useRecovery } from '@/components/recovery/RecoveryContext'
-import { useIsValidRecoveryExecTransactionFromModule } from '@/hooks/useIsValidRecoveryExecution'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
+import { useIsValidRecoveryExecTransactionFromModule } from '@/features/recovery/hooks/useIsValidRecoveryExecution'
 import type { RecoverAccountFlowProps } from '.'
+import { isWalletRejection } from '@/utils/wallets'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -37,6 +39,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
 
   // Hooks
   const { setTxFlow } = useContext(TxModalContext)
@@ -73,6 +76,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
     setIsSubmittable(false)
     setSubmitError(undefined)
+    setIsRejectedByUser(false)
 
     try {
       await dispatchRecoveryProposal({
@@ -84,9 +88,13 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
       trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_ATTEMPT })
     } catch (_err) {
       const err = asError(_err)
-      trackError(Errors._810, err)
+      if (isWalletRejection(err)) {
+        setIsRejectedByUser(true)
+      } else {
+        trackError(Errors._804, err)
+        setSubmitError(err)
+      }
       setIsSubmittable(true)
-      setSubmitError(err)
       return
     }
 
@@ -160,6 +168,8 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
             after this transaction is executed.
           </ErrorMessage>
         )}
+
+        {isRejectedByUser && <WalletRejectionError />}
 
         <Divider className={commonCss.nestedDivider} />
 

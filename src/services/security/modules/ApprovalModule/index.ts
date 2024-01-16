@@ -1,4 +1,7 @@
-import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
+import {
+  APPROVAL_SIGNATURE_HASH,
+  INCREASE_ALLOWANCE_SIGNATURE_HASH,
+} from '@/components/tx/ApprovalEditor/utils/approvals'
 import { ERC20__factory } from '@/types/contracts'
 import { decodeMultiSendTxs } from '@/utils/transactions'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -15,6 +18,7 @@ export type Approval = {
   spender: any
   amount: any
   tokenAddress: string
+  method: 'approve' | 'increaseAllowance'
 }
 
 const MULTISEND_SIGNATURE_HASH = id('multiSend(bytes)').slice(0, 10)
@@ -29,6 +33,19 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
           amount,
           spender,
           tokenAddress: txPartial.to,
+          method: 'approve',
+        },
+      ]
+    }
+
+    if (txPartial.data.startsWith(INCREASE_ALLOWANCE_SIGNATURE_HASH)) {
+      const [spender, amount] = ERC20_INTERFACE.decodeFunctionData('increaseAllowance', txPartial.data)
+      return [
+        {
+          amount,
+          spender,
+          tokenAddress: txPartial.to,
+          method: 'increaseAllowance',
         },
       ]
     }

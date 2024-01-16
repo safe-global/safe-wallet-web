@@ -63,6 +63,7 @@ export const ConnectionCenter = ({ isSocialLoginEnabled }: { isSocialLoginEnable
           horizontal: 'center',
         }}
         sx={{ mt: 1 }}
+        transitionDuration={0}
       >
         <Paper className={classnames(css.popoverContainer, css.largeGap)}>
           <WalletDetails onConnect={handleClose} />

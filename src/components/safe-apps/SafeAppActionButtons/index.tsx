@@ -37,7 +37,7 @@ const SafeAppActionButtons = ({
   }
 
   return (
-    <Box display="flex" gap={1}>
+    <Box display="flex" gap={1} alignItems="center">
       {/* Open the preview drawer */}
       {openPreviewDrawer && (
         <IconButton
@@ -58,7 +58,9 @@ const SafeAppActionButtons = ({
         onCopy={handleCopyShareSafeAppUrl}
         text={shareSafeAppUrl}
       >
-        <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
+        <IconButton size="small">
+          <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
+        </IconButton>
       </CopyButton>
 
       {/* Bookmark Safe App button */}
@@ -93,7 +95,7 @@ const SafeAppActionButtons = ({
               removeCustomApp(safeApp)
             }}
           >
-            <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
+            <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="border" />
           </IconButton>
         </Tooltip>
       )}

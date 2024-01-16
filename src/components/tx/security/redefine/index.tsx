@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react'
 import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { SecuritySeverity } from '@/services/security/modules/types'
-import { groupBy } from 'lodash'
+import groupBy from 'lodash/groupBy'
 import { Alert, Box, Checkbox, FormControlLabel, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import ExternalLink from '@/components/common/ExternalLink'
 import { FEATURES } from '@/utils/chains'
@@ -20,12 +20,18 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { RedefineHint } from '@/components/tx/security/redefine/RedefineHint'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import Image from 'next/image'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 const MAX_SHOWN_WARNINGS = 3
 
 const RedefineBlock = () => {
   const { severity, isLoading, error, needsRiskConfirmation, isRiskConfirmed, setIsRiskConfirmed, isRiskIgnored } =
     useContext(TxSecurityContext)
+
+  const { safeTx } = useContext(SafeTxContext)
+
+  // We either scan a tx or a message if tx is undefined
+  const isTransaction = !!safeTx
   const checkboxRef = useRef<HTMLElement>(null)
 
   const isDarkMode = useDarkMode()
@@ -55,7 +61,8 @@ const RedefineBlock = () => {
             <Tooltip
               title={
                 <>
-                  This transaction has been automatically scanned for risks to help prevent scams.&nbsp;
+                  This {isTransaction ? 'transaction' : 'message'} has been automatically scanned for risks to help
+                  prevent scams.&nbsp;
                   <ExternalLink href={REDEFINE_ARTICLE} title="Learn more about security scans">
                     Learn more about security scans
                   </ExternalLink>
@@ -118,7 +125,9 @@ const RedefineBlock = () => {
           <Box pl={2} ref={checkboxRef}>
             <Track {...MODALS_EVENTS.ACCEPT_RISK}>
               <FormControlLabel
-                label="I understand the risks and would like to continue this transaction"
+                label={`I understand the risks and would like to sign this ${
+                  isTransaction ? 'transaction' : 'message'
+                }`}
                 control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} />}
                 className={isRiskIgnored ? css.checkboxError : ''}
               />

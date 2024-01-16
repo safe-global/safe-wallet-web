@@ -26,7 +26,7 @@ const SafeCookiePolicy = () => (
     `}</style>
 
     <h1>Cookie Policy</h1>
-    <p>Last updated on March 2023</p>
+    <p>Last updated: January 2024.</p>
     <p>
       As described in our{' '}
       <Link href={AppRoutes.privacy} passHref legacyBehavior>
@@ -47,9 +47,8 @@ const SafeCookiePolicy = () => (
     </p>
     <p>
       In this policy, &quot;we&quot;, &quot;us&quot; and &quot;our&quot; refers to Core Contributors GmbH a company
-      incorporated in Germany with its registered address at Skalitzer Str. 85-86, ℅ Full Node, 10997 Berlin, Germany.
-      The terms &ldquo;you&rdquo; and &ldquo;your&rdquo; includes our clients, business partners and users of this
-      website.{' '}
+      incorporated in Germany with its registered address at Gontardstraße 11, 10178 Berlin, Germany. The terms
+      &ldquo;you&rdquo; and &ldquo;your&rdquo; includes our clients, business partners and users of this website.{' '}
     </p>
     <p>
       By using our website, you consent to storage and access to cookies and other technologies on your device, in

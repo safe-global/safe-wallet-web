@@ -57,6 +57,7 @@ export enum SafeAppsTag {
   DASHBOARD_FEATURED = 'dashboard-widgets',
   SAFE_GOVERNANCE_APP = 'safe-governance-app',
   WALLET_CONNECT = 'wallet-connect',
+  ONRAMP = 'onramp',
 }
 
 // Safe Gelato relay service

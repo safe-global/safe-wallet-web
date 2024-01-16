@@ -22,6 +22,7 @@ const mockTransferInfo: TransferInfo = {
   type: TransactionTokenType.ERC20,
   tokenAddress: 'string',
   value: 'string',
+  trusted: true,
 }
 
 const mockTxInfo: TransactionInfo = {

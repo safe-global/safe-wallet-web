@@ -7,11 +7,9 @@ import { createRemoveModuleTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { type RemoveModuleFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 
 const onFormSubmit = () => {
   trackEvent(SETTINGS_EVENTS.MODULES.REMOVE_MODULE)
-  trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.module_remove })
 }
 
 export const ReviewRemoveModule = ({ params }: { params: RemoveModuleFlowProps }) => {

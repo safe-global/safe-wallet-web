@@ -25,6 +25,7 @@ export type EthHashInfoProps = {
   hasExplorer?: boolean
   avatarSize?: number
   children?: ReactNode
+  trusted?: boolean
   ExplorerButtonProps?: ExplorerButtonProps
 }
 
@@ -45,6 +46,7 @@ const SrcEthHashInfo = ({
   hasExplorer,
   ExplorerButtonProps,
   children,
+  trusted = true,
 }: EthHashInfoProps): ReactElement => {
   const shouldPrefix = isAddress(address)
   const theme = useTheme()
@@ -84,7 +86,7 @@ const SrcEthHashInfo = ({
         <div className={css.addressContainer}>
           <Box fontWeight="inherit" fontSize="inherit">
             {copyAddress ? (
-              <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix}>
+              <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted}>
                 {addressElement}
               </CopyAddressButton>
             ) : (
@@ -92,7 +94,9 @@ const SrcEthHashInfo = ({
             )}
           </Box>
 
-          {showCopyButton && <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} />}
+          {showCopyButton && (
+            <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted} />
+          )}
 
           {hasExplorer && ExplorerButtonProps && (
             <Box color="border.main">

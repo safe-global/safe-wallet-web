@@ -7,7 +7,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import { useContext, useMemo } from 'react'
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { BigNumber } from '@ethersproject/bignumber'
-import RemoveSpendingLimitFlow from '@/components/tx-flow/flows/RemoveSpendingLimit'
+import { RemoveSpendingLimitFlow } from '@/components/tx-flow/flows'
 import { TxModalContext } from '@/components/tx-flow'
 import Track from '@/components/common/Track'
 import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
@@ -98,7 +98,7 @@ export const SpendingLimitsTable = ({
                 spent: {
                   rawValue: spendingLimit.spent,
                   content: (
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <Box data-testid="spent-amount" display="flex" alignItems="center" gap={1}>
                       <TokenIcon logoUri={spendingLimit.token.logoUri} tokenSymbol={spendingLimit.token.symbol} />
                       {`${formattedSpent} of ${formattedAmount} ${spendingLimit.token.symbol}`}
                     </Box>
@@ -108,6 +108,7 @@ export const SpendingLimitsTable = ({
                   rawValue: spendingLimit.resetTimeMin,
                   content: (
                     <SpendingLimitLabel
+                      data-testid="reset-time"
                       label={relativeTime(spendingLimit.lastResetMin, spendingLimit.resetTimeMin)}
                       isOneTime={spendingLimit.resetTimeMin === '0'}
                     />
@@ -121,6 +122,7 @@ export const SpendingLimitsTable = ({
                       {(isOk) => (
                         <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.REMOVE_LIMIT}>
                           <IconButton
+                            data-testid="delete-btn"
                             onClick={() => setTxFlow(<RemoveSpendingLimitFlow spendingLimit={spendingLimit} />)}
                             color="error"
                             size="small"

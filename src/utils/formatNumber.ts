@@ -1,4 +1,4 @@
-import { memoize } from 'lodash'
+import memoize from 'lodash/memoize'
 
 // These follow the guideline of "How to format amounts"
 // https://github.com/5afe/safe/wiki/How-to-format-amounts

@@ -8,27 +8,26 @@ on:
 
 jobs:
   tag-release:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        if: github.event.pull_request.merged == true
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
       - name: Extract version
-        if: github.event.pull_request.merged == true
         id: version
         run: |
           NEW_VERSION=$(node -p 'require("./package.json").version')
           echo "version=v$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Create a git tag
-        if: github.event.pull_request.merged == true
+        if: steps.version.outputs.version
         run: git tag ${{ steps.version.outputs.version }} && git push --tags
 
       - name: GitHub release
-        if: success()
+        if: steps.version.outputs.version
         uses: softprops/action-gh-release@v1
         id: create_release
         with:

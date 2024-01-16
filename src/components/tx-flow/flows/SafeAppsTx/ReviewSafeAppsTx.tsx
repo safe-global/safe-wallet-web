@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo } from 'react'
 import type { ReactElement } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import SendToBlock from '@/components/tx-flow/flows/TokenTransfer/SendToBlock'
+import SendToBlock from '@/components/tx/SendToBlock'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { useCurrentChain } from '@/hooks/useChains'
 import type { SafeAppsTxParams } from '.'
@@ -15,9 +15,6 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { getInteractionTitle, isTxValid } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
-import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
-import { isWalletConnectSafeApp } from '@/services/walletconnect/utils'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -61,14 +58,6 @@ const ReviewSafeAppsTx = ({
       safeTxHash = await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId, txId)
     } catch (error) {
       setSafeTxError(asError(error))
-    }
-
-    // Track tx creation
-    if (safeTx.signatures.size === 0) {
-      trackEvent({
-        ...TX_EVENTS.CREATE,
-        label: isWalletConnectSafeApp(app?.url || '') ? TX_TYPES.walletconnect : TX_TYPES.safeapps,
-      })
     }
 
     onSubmit?.(txId, safeTxHash)

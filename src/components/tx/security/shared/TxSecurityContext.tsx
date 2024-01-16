@@ -33,8 +33,8 @@ export const TxSecurityContext = createContext<{
 }>(defaultSecurityContextValues)
 
 export const TxSecurityProvider = ({ children }: { children: JSX.Element }) => {
-  const { safeTx } = useContext(SafeTxContext)
-  const [redefineResponse, redefineError, redefineLoading] = useRedefine(safeTx)
+  const { safeTx, safeMessage } = useContext(SafeTxContext)
+  const [redefineResponse, redefineError, redefineLoading] = useRedefine(safeTx ?? safeMessage)
   const [isRiskConfirmed, setIsRiskConfirmed] = useState(false)
   const [isRiskIgnored, setIsRiskIgnored] = useState(false)
 

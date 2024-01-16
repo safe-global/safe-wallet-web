@@ -3,6 +3,7 @@ import { hexZeroPad } from 'ethers/lib/utils'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ApprovalEditorForm } from '@/components/tx/ApprovalEditor/ApprovalEditorForm'
 import { getAllByTestId, getAllByTitle } from '@testing-library/dom'
+import type { ApprovalInfo } from './hooks/useApprovalInfos'
 
 describe('ApprovalEditorForm', () => {
   beforeEach(() => {
@@ -15,13 +16,14 @@ describe('ApprovalEditorForm', () => {
     const tokenAddress1 = hexZeroPad('0x123', 20)
     const tokenAddress2 = hexZeroPad('0x234', 20)
 
-    const mockApprovalInfos = [
+    const mockApprovalInfos: ApprovalInfo[] = [
       {
         tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress1, type: TokenType.ERC20 },
         tokenAddress: '0x1',
         spender: '0x2',
         amount: '4200000',
         amountFormatted: '420.0',
+        method: 'approve',
       },
       {
         tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress2, type: TokenType.ERC20 },
@@ -29,6 +31,7 @@ describe('ApprovalEditorForm', () => {
         spender: '0x2',
         amount: '6900000',
         amountFormatted: '69.0',
+        method: 'increaseAllowance',
       },
     ]
 
@@ -76,12 +79,13 @@ describe('ApprovalEditorForm', () => {
   it('should render and edit single tx', async () => {
     const tokenAddress = hexZeroPad('0x123', 20)
 
-    const mockApprovalInfo = {
+    const mockApprovalInfo: ApprovalInfo = {
       tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },
       tokenAddress: '0x1',
       spender: '0x2',
       amount: '4200000',
       amountFormatted: '420.0',
+      method: 'approve',
     }
 
     const result = render(<ApprovalEditorForm approvalInfos={[mockApprovalInfo]} updateApprovals={updateCallback} />)

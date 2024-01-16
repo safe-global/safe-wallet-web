@@ -4,7 +4,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { Box, Button, Typography } from '@mui/material'
-import { EthHashInfo } from '@safe-global/safe-react-components'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   const wallet = useWallet()
@@ -29,7 +29,15 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
                 <Typography variant="subtitle2" fontWeight={700}>
                   Continue with {wallet.label}
                 </Typography>
-                {wallet.address && <EthHashInfo address={wallet.address} shortAddress avatarSize={16} />}
+                {wallet.address && (
+                  <EthHashInfo
+                    address={wallet.address}
+                    shortAddress
+                    avatarSize={16}
+                    showName={false}
+                    copyAddress={false}
+                  />
+                )}
               </Box>
               {wallet.icon && (
                 <img

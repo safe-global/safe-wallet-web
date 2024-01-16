@@ -5,7 +5,7 @@ import type { MultisigExecutionInfo, Transaction } from '@safe-global/safe-gatew
 
 import { safeInfoBuilder } from '@/tests/builders/safe'
 import { _getTransactionsToDisplay } from './PendingTxsList'
-import type { RecoveryQueueItem } from '@/services/recovery/recovery-state'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 describe('_getTransactionsToDisplay', () => {
   it('should return the recovery queue if it has more than or equal to MAX_TXS items', () => {
@@ -21,7 +21,7 @@ describe('_getTransactionsToDisplay', () => {
     const queue = [] as Array<Transaction>
 
     const result = _getTransactionsToDisplay({ recoveryQueue, queue, walletAddress, safe })
-    expect(result).toStrictEqual(recoveryQueue.slice(0, 4))
+    expect(result).toStrictEqual([recoveryQueue.slice(0, 4), []])
   })
 
   it('should return the recovery queue followed by the actionable transactions from the queue', () => {
@@ -49,7 +49,7 @@ describe('_getTransactionsToDisplay', () => {
       } as unknown as Transaction,
     ]
 
-    const expected = [...recoveryQueue, actionableQueue[0]]
+    const expected = [recoveryQueue, [actionableQueue[0]]]
     const result = _getTransactionsToDisplay({ recoveryQueue, queue: actionableQueue, walletAddress, safe })
     expect(result).toEqual(expected)
   })
@@ -64,7 +64,7 @@ describe('_getTransactionsToDisplay', () => {
     ] as Array<RecoveryQueueItem>
     const queue = [{ transaction: { id: '1' } }, { transaction: { id: '2' } }] as Array<Transaction>
 
-    const expected = [...recoveryQueue, queue[0]]
+    const expected = [recoveryQueue, [queue[0]]]
     const result = _getTransactionsToDisplay({ recoveryQueue, queue, walletAddress, safe })
     expect(result).toEqual(expected)
   })

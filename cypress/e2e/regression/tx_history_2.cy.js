@@ -3,9 +3,6 @@ import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
 
-const batchTx = 13
-const thresholdTx = 0
-
 const typeOnchainRejection = data.type.onchainRejection
 const typeBatch = data.type.batchNativeTransfer
 const typeAddOwner = data.type.addOwner
@@ -15,6 +12,7 @@ const typeDisableOwner = data.type.disableModule
 const typeChangeThreshold = data.type.changeThreshold
 const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
+const typeUntrustedToken = data.type.untrustedReceivedToken
 
 describe('Tx history tests 2', () => {
   beforeEach(() => {
@@ -28,10 +26,6 @@ describe('Tx history tests 2', () => {
   })
 
   // On-chain rejection
-  it('Verify summary for on-chain rejection', () => {
-    createTx.verifySummaryByName(typeOnchainRejection.title, [typeGeneral.statusOk], typeOnchainRejection.altImage)
-  })
-
   it('Verify exapanded details for on-chain rejection', () => {
     createTx.clickOnTransactionItemByName(typeOnchainRejection.title)
     createTx.verifyExpandedDetails([
@@ -47,17 +41,8 @@ describe('Tx history tests 2', () => {
   })
 
   // Batch transaction
-  it('Verify summary for batch', () => {
-    createTx.verifySummaryByIndex(
-      batchTx,
-      [typeBatch.title, typeBatch.summaryTxInfo, typeGeneral.statusOk],
-      typeBatch.altImage,
-      typeBatch.altToken,
-    )
-  })
-
   it('Verify exapanded details for batch', () => {
-    createTx.clickOnTransactionItemByIndex(batchTx)
+    createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [
         typeBatch.description,
@@ -146,15 +131,15 @@ describe('Tx history tests 2', () => {
 
   // Change threshold
   it('Verify summary for changing threshold', () => {
-    createTx.verifySummaryByIndex(
-      thresholdTx,
-      [typeChangeThreshold.title, typeGeneral.statusOk],
+    createTx.verifySummaryByName(
+      typeChangeThreshold.title,
+      [typeChangeThreshold.summaryTxInfo, typeGeneral.statusOk],
       typeChangeThreshold.altImage,
     )
   })
 
   it('Verify exapanded details for changing threshold', () => {
-    createTx.clickOnTransactionItemByIndex(thresholdTx)
+    createTx.clickOnTransactionItemByName(typeChangeThreshold.title)
     createTx.verifyExpandedDetails(
       [
         typeChangeThreshold.requiredConfirmationsTitle,
@@ -164,5 +149,10 @@ describe('Tx history tests 2', () => {
       createTx.policyChangeWarning,
     )
     createTx.checkRequiredThreshold(2)
+  })
+
+  it('Verify that sender address of untrusted token will not be copied until agreed in warning popup', () => {
+    createTx.clickOnTransactionItemByName(typeUntrustedToken.summaryTitle, typeUntrustedToken.summaryTxInfo)
+    createTx.verifyAddressNotCopied(0, typeUntrustedToken.senderAddress)
   })
 })

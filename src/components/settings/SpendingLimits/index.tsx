@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { selectSpendingLimits, selectSpendingLimitsLoading } from '@/store/spendingLimitsSlice'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
-import NewSpendingLimitFlow from '@/components/tx-flow/flows/NewSpendingLimit'
+import { NewSpendingLimitFlow } from '@/components/tx-flow/flows'
 import { SETTINGS_EVENTS } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
@@ -19,7 +19,7 @@ const SpendingLimits = () => {
   const isEnabled = useHasFeature(FEATURES.SPENDING_LIMIT)
 
   return (
-    <Paper sx={{ padding: 4 }}>
+    <Paper data-testid="spending-limit-section" sx={{ padding: 4 }}>
       <Grid container direction="row" justifyContent="space-between" spacing={3} mb={2}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
@@ -39,6 +39,7 @@ const SpendingLimits = () => {
                 {(isOk) => (
                   <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.NEW_LIMIT}>
                     <Button
+                      data-testid="new-spending-limit"
                       onClick={() => setTxFlow(<NewSpendingLimitFlow />)}
                       sx={{ mt: 2 }}
                       variant="contained"

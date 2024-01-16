@@ -4,7 +4,7 @@ import { renderHook } from '@/tests/test-utils'
 import * as useIsSafeMessagePendingHook from '@/hooks/messages/useIsSafeMessagePending'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import useSafeMessageStatus from '../useSafeMessageStatus'
-import type { ConnectedWallet } from '@/services/onboard'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 describe('useSafeMessageStatus', () => {
   it('should return "Confirming" if the message is pending', () => {

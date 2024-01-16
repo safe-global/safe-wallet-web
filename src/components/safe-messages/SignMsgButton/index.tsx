@@ -10,7 +10,7 @@ import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 import useIsSafeMessageSignableBy from '@/hooks/messages/useIsSafeMessageSignableBy'
 import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
 import { TxModalContext } from '@/components/tx-flow'
-import SignMessageFlow from '@/components/tx-flow/flows/SignMessage'
+import { SignMessageFlow } from '@/components/tx-flow/flows'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
   const wallet = useWallet()
