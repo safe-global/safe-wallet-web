@@ -1,4 +1,4 @@
-import { Box, type Palette, Typography, CircularProgress } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import type { ReactElement } from 'react'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -11,15 +11,16 @@ import TxConfirmations from '@/components/transactions/TxConfirmations'
 
 import css from './styles.module.css'
 import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
+import TxStatusChip from '@/components/transactions/TxStatusChip'
 
-const getStatusColor = (value: SafeMessageStatus, palette: Palette): string => {
+const getStatusColor = (value: SafeMessageStatus): string => {
   switch (value) {
     case SafeMessageStatus.CONFIRMED:
-      return palette.success.main
+      return 'success'
     case SafeMessageStatus.NEEDS_CONFIRMATION:
-      return palette.warning.main
+      return 'warning'
     default:
-      return palette.primary.main
+      return 'primary'
   }
 }
 
@@ -50,20 +51,13 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
         )}
       </Box>
 
-      <Box gridArea="status" pr={2}>
+      <Box gridArea="status">
         {isConfirmed ? (
-          <Typography
-            variant="caption"
-            fontWeight="bold"
-            color={({ palette }) => getStatusColor(msg.status, palette)}
-            display="flex"
-            alignItems="center"
-            gap={1}
-          >
+          <TxStatusChip color={getStatusColor(msg.status)}>
             {isPending && <CircularProgress size={14} color="inherit" />}
 
             {txStatusLabel}
-          </Typography>
+          </TxStatusChip>
         ) : (
           <SignMsgButton msg={msg} compact />
         )}

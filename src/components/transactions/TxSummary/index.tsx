@@ -1,34 +1,18 @@
-import { CircularProgress, type Palette } from '@mui/material'
 import { Box, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
-import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
 import { isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
-import useTransactionStatus from '@/hooks/useTransactionStatus'
 import TxType from '@/components/transactions/TxType'
 import classNames from 'classnames'
 import { isTrustedTx } from '@/utils/transactions'
 import UntrustedTxWarning from '../UntrustedTxWarning'
 import QueueActions from './QueueActions'
 import useIsPending from '@/hooks/useIsPending'
-
-const getStatusColor = (value: TransactionStatus, palette: Palette | Record<string, Record<string, string>>) => {
-  switch (value) {
-    case TransactionStatus.SUCCESS:
-      return palette.success.main
-    case TransactionStatus.FAILED:
-    case TransactionStatus.CANCELLED:
-      return palette.error.main
-    case TransactionStatus.AWAITING_CONFIRMATIONS:
-    case TransactionStatus.AWAITING_EXECUTION:
-      return palette.warning.main
-    default:
-      return palette.primary.main
-  }
-}
+import TxStatusLabel from '../TxStatusLabel'
 
 type TxSummaryProps = {
   isGrouped?: boolean
@@ -37,7 +21,6 @@ type TxSummaryProps = {
 
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const tx = item.transaction
-  const txStatusLabel = useTransactionStatus(tx)
   const isQueue = isTxQueued(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const isTrusted = isTrustedTx(tx)
@@ -79,23 +62,10 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Typography>
       </Box>
 
-      <Box gridArea="status" pr={2}>
-        {isQueue && !isPending ? (
-          <QueueActions tx={tx} />
-        ) : (
-          <Typography
-            data-testid="tx-status"
-            variant="caption"
-            fontWeight="bold"
-            color={({ palette }) => getStatusColor(tx.txStatus, palette)}
-            display="flex"
-            alignItems="center"
-            gap={1}
-          >
-            {isPending && <CircularProgress size={14} color="inherit" />}
-            {txStatusLabel}
-          </Typography>
-        )}
+      <Box gridArea="status" pr={2} display="flex" gap={2}>
+        {isQueue && <QueueActions tx={tx} showActions={!isPending} />}
+
+        {(!isQueue || isPending) && <TxStatusLabel tx={tx} />}
       </Box>
     </Box>
   )

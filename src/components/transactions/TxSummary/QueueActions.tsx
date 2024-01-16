@@ -5,7 +5,7 @@ import TxConfirmations from '../TxConfirmations'
 import ExecuteTxButton from '../ExecuteTxButton'
 import SignTxButton from '../SignTxButton'
 
-const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
+const QueueActions = ({ tx, showActions }: { tx: TransactionSummary; showActions: boolean }) => {
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
 
@@ -18,7 +18,11 @@ const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
         />
       )}
 
-      {awaitingExecution ? <ExecuteTxButton txSummary={tx} compact /> : <SignTxButton txSummary={tx} compact />}
+      {showActions && (
+        <Box my={-1}>
+          {awaitingExecution ? <ExecuteTxButton txSummary={tx} compact /> : <SignTxButton txSummary={tx} compact />}
+        </Box>
+      )}
     </Box>
   )
 }

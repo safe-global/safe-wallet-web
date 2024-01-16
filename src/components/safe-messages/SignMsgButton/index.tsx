@@ -32,6 +32,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: b
                 variant={isSignable ? 'contained' : 'outlined'}
                 disabled={!isOk || !isSignable}
                 size={compact ? 'small' : 'stretched'}
+                sx={compact ? { py: 0.8 } : undefined}
               >
                 Sign
               </Button>

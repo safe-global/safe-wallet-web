@@ -1,7 +1,8 @@
-import { Box, Chip, SvgIcon, Typography } from '@mui/material'
+import { SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import OwnersIcon from '@/public/images/common/owners.svg'
+import TxStatusChip from '../TxStatusChip'
 
 const TxConfirmations = ({
   requiredConfirmations,
@@ -13,21 +14,13 @@ const TxConfirmations = ({
   const color = requiredConfirmations > submittedConfirmations ? 'warning' : 'success'
 
   return (
-    <Chip
-      size="small"
-      sx={{
-        backgroundColor: `${color}.background`,
-      }}
-      label={
-        <Box display="flex" alignItems="center" gap={1}>
-          <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" sx={{ color: `${color}.dark` }} />
+    <TxStatusChip color={color}>
+      <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" sx={{ color: `${color}.dark` }} />
 
-          <Typography variant="caption" fontWeight="bold" color={`${color}.dark`}>
-            {submittedConfirmations} out of {requiredConfirmations}
-          </Typography>
-        </Box>
-      }
-    />
+      <Typography variant="caption" fontWeight="bold" color={`${color}.dark`}>
+        {submittedConfirmations} out of {requiredConfirmations}
+      </Typography>
+    </TxStatusChip>
   )
 }
 

@@ -57,7 +57,7 @@ const ExecuteTxButton = ({
                   variant="contained"
                   disabled={!isOk || isDisabled}
                   size={compact ? 'small' : 'stretched'}
-                  sx={{ minWidth: '106.5px' }}
+                  sx={{ minWidth: '106.5px', py: compact ? 0.8 : undefined }}
                 >
                   Execute
                 </Button>

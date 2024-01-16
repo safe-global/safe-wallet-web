@@ -42,7 +42,7 @@ const SignTxButton = ({
                 variant={compact ? 'outlined' : 'contained'}
                 disabled={!isOk || isDisabled}
                 size={compact ? 'small' : 'stretched'}
-                sx={compact ? { py: 0.75 } : undefined}
+                sx={compact ? { py: 0.6 } : undefined}
               >
                 Confirm
               </Button>
