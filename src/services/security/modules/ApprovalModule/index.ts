@@ -24,7 +24,7 @@ export type Approval = {
   spender: any
   amount: any
   tokenAddress: string
-  method: 'approve' | 'increaseAllowance' | 'Permit2' | 'Permit'
+  method: 'approve' | 'increaseAllowance' | 'Permit2'
 }
 
 type PermitDetails = { token: string; amount: string }
