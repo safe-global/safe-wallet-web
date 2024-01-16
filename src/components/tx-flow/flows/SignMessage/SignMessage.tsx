@@ -44,6 +44,7 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
 import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
+import { isWalletRejection } from '@/utils/wallets'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -100,6 +101,8 @@ const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submit
       ? 'No wallet is connected.'
       : !isOwner
       ? "You are currently not an owner of this Safe Account and won't be able to confirm this message."
+      : submitError && isWalletRejection(submitError)
+      ? 'User rejected signing.'
       : submitError
       ? 'Error confirming the message. Please try again.'
       : null
