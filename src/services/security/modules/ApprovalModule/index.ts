@@ -60,7 +60,7 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     return []
   }
 
-  private static scanPermitDetails(details: PermitDetails): Pick<Approval, 'amount' | 'tokenAddress'> {
+  private static getPermitDetails(details: PermitDetails): Pick<Approval, 'amount' | 'tokenAddress'> {
     return {
       amount: BigInt(details.amount),
       tokenAddress: details.token,
@@ -75,7 +75,7 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
       if (normalizedMessage.types['PermitSingle'] !== undefined) {
         const spender = normalizedMessage.message['spender'] as string
         const details = normalizedMessage.message['details'] as PermitDetails
-        const permitInfo = ApprovalModule.scanPermitDetails(details)
+        const permitInfo = ApprovalModule.getPermitDetails(details)
 
         approvalInfos.push({
           ...permitInfo,
@@ -86,7 +86,7 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
         const spender = normalizedMessage.message['spender'] as string
         const details = normalizedMessage.message['details'] as PermitDetails[]
         details.forEach((details) => {
-          const permitInfo = ApprovalModule.scanPermitDetails(details)
+          const permitInfo = ApprovalModule.getPermitDetails(details)
 
           approvalInfos.push({
             ...permitInfo,
