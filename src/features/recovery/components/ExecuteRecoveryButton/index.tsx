@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Tooltip } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
@@ -69,8 +69,7 @@ export function ExecuteRecoveryButton({
                 disabled={isDisabled}
                 size={compact ? 'small' : 'stretched'}
               >
-                {isPending && <CircularProgress size={14} color="inherit" sx={{ mr: 1 }} />}
-                {isPending ? 'Executing' : 'Execute'}
+                Execute
               </Button>
             </span>
           </Tooltip>

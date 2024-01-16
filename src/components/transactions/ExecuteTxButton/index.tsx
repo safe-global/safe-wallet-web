@@ -1,11 +1,10 @@
 import type { SyntheticEvent } from 'react'
 import { type ReactElement, useContext } from 'react'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button, CircularProgress, Tooltip } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import useIsPending from '@/hooks/useIsPending'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
@@ -24,12 +23,11 @@ const ExecuteTxButton = ({
   const { setTxFlow } = useContext(TxModalContext)
   const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
-  const isPending = useIsPending(txSummary.id)
   const { setSelectedTxId } = useContext(ReplaceTxHoverContext)
   const safeSDK = useSafeSDK()
 
   const isNext = txNonce !== undefined && txNonce === safe.nonce
-  const isDisabled = !isNext || isPending || !safeSDK
+  const isDisabled = !isNext || !safeSDK
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -49,9 +47,7 @@ const ExecuteTxButton = ({
     <>
       <CheckWallet allowNonOwner>
         {(isOk) => (
-          <Tooltip
-            title={isOk && !isPending && !isNext ? 'You must execute the transaction with the lowest nonce first' : ''}
-          >
+          <Tooltip title={isOk && !isNext ? 'You must execute the transaction with the lowest nonce first' : ''}>
             <span>
               <Track {...TX_LIST_EVENTS.EXECUTE}>
                 <Button
@@ -63,8 +59,7 @@ const ExecuteTxButton = ({
                   size={compact ? 'small' : 'stretched'}
                   sx={{ minWidth: '106.5px' }}
                 >
-                  {isPending && <CircularProgress size={14} color="inherit" sx={{ mr: 1 }} />}
-                  {isPending ? 'Executing' : 'Execute'}
+                  Execute
                 </Button>
               </Track>
             </span>

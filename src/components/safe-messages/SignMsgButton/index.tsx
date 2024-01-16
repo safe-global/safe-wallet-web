@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Tooltip } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -7,7 +7,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import Track from '@/components/common/Track'
 import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 import useIsSafeMessageSignableBy from '@/hooks/messages/useIsSafeMessageSignableBy'
-import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
 import { TxModalContext } from '@/components/tx-flow'
 import { SignMessageFlow } from '@/components/tx-flow/flows'
 import CheckWallet from '@/components/common/CheckWallet'
@@ -15,15 +14,12 @@ import CheckWallet from '@/components/common/CheckWallet'
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
   const wallet = useWallet()
   const isSignable = useIsSafeMessageSignableBy(msg, wallet?.address || '')
-  const isPending = useIsSafeMessagePending(msg.messageHash)
   const { setTxFlow } = useContext(TxModalContext)
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
     setTxFlow(<SignMessageFlow {...msg} />)
   }
-
-  const isDisabled = !isSignable || isPending
 
   return (
     <CheckWallet>
@@ -34,11 +30,10 @@ const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: b
               <Button
                 onClick={onClick}
                 variant={isSignable ? 'contained' : 'outlined'}
-                disabled={!isOk || isDisabled}
+                disabled={!isOk || !isSignable}
                 size={compact ? 'small' : 'stretched'}
               >
-                {isPending && <CircularProgress size={14} color="inherit" sx={{ mr: 1 }} />}
-                {isPending ? 'Signing' : 'Sign'}
+                Sign
               </Button>
             </Track>
           </span>

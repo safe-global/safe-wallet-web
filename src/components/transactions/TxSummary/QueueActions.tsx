@@ -10,7 +10,7 @@ const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
   const awaitingExecution = isAwaitingExecution(tx.txStatus)
 
   return (
-    <Box display="flex" gap={3} alignItems="center" pr={2}>
+    <Box display="flex" gap={3} alignItems="center">
       {executionInfo && (
         <TxConfirmations
           submittedConfirmations={executionInfo.confirmationsSubmitted}

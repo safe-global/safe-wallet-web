@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import { RecoveryType } from '../RecoveryType'
@@ -14,7 +14,7 @@ import { useRecoveryTxState } from '../../hooks/useRecoveryTxState'
 
 export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactElement {
   const wallet = useWallet()
-  const { isExecutable } = useRecoveryTxState(item)
+  const { isExecutable, isPending } = useRecoveryTxState(item)
   const { isMalicious } = item
 
   return (
@@ -27,19 +27,22 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
         <RecoveryInfo isMalicious={isMalicious} />
       </Box>
 
-      {!isExecutable ? (
-        <Box gridArea="status">
-          <RecoveryStatus recovery={item} />
-        </Box>
-      ) : (
-        !isMalicious &&
-        wallet && (
-          <Box gridArea="status" display="flex" alignItems="center" gap={2} mr={2}>
-            <ExecuteRecoveryButton recovery={item} compact />
-            <CancelRecoveryButton recovery={item} compact />
-          </Box>
-        )
-      )}
+      <Box gridArea="status" display="flex" alignItems="center" gap={1} pr={2}>
+        {!isExecutable || isPending ? (
+          <>
+            {isPending && <CircularProgress size={14} color="inherit" />}
+            <RecoveryStatus recovery={item} />
+          </>
+        ) : (
+          !isMalicious &&
+          wallet && (
+            <>
+              <ExecuteRecoveryButton recovery={item} compact />
+              <CancelRecoveryButton recovery={item} compact />
+            </>
+          )
+        )}
+      </Box>
     </Box>
   )
 }

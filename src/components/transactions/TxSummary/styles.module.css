@@ -4,12 +4,12 @@
   gap: var(--space-2);
   align-items: center;
   white-space: nowrap;
-  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 3fr) minmax(150px, 3fr) minmax(200px, 3fr) 1fr;
+  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 3fr) minmax(150px, 3fr) minmax(200px, 3fr) auto;
   grid-template-areas: 'nonce type info date status';
 }
 
 .gridContainer.grouped {
-  grid-template-columns: minmax(150px, 3fr) minmax(150px, 3fr) minmax(200px, 3fr) 1fr;
+  grid-template-columns: minmax(150px, 3fr) minmax(150px, 3fr) minmax(200px, 3fr) auto;
   grid-template-areas: 'type info date status';
 }
 

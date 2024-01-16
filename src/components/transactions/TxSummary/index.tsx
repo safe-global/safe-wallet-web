@@ -1,4 +1,4 @@
-import { type Palette } from '@mui/material'
+import { CircularProgress, type Palette } from '@mui/material'
 import { Box, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
@@ -13,6 +13,7 @@ import classNames from 'classnames'
 import { isTrustedTx } from '@/utils/transactions'
 import UntrustedTxWarning from '../UntrustedTxWarning'
 import QueueActions from './QueueActions'
+import useIsPending from '@/hooks/useIsPending'
 
 const getStatusColor = (value: TransactionStatus, palette: Palette | Record<string, Record<string, string>>) => {
   switch (value) {
@@ -40,6 +41,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const isQueue = isTxQueued(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const isTrusted = isTrustedTx(tx)
+  const isPending = useIsPending(tx.id)
 
   return (
     <Box
@@ -77,8 +79,8 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Typography>
       </Box>
 
-      <Box gridArea="status">
-        {isQueue ? (
+      <Box gridArea="status" pr={2}>
+        {isQueue && !isPending ? (
           <QueueActions tx={tx} />
         ) : (
           <Typography
@@ -86,7 +88,11 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
             variant="caption"
             fontWeight="bold"
             color={({ palette }) => getStatusColor(tx.txStatus, palette)}
+            display="flex"
+            alignItems="center"
+            gap={1}
           >
+            {isPending && <CircularProgress size={14} color="inherit" />}
             {txStatusLabel}
           </Typography>
         )}
