@@ -1,7 +1,7 @@
 import type { SyntheticEvent } from 'react'
 import { useContext, type ReactElement } from 'react'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button, Tooltip } from '@mui/material'
+import { Button, CircularProgress, Tooltip } from '@mui/material'
 
 import { isSignableBy } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -46,7 +46,8 @@ const SignTxButton = ({
                 size={compact ? 'small' : 'stretched'}
                 sx={compact ? { py: 0.75 } : undefined}
               >
-                Confirm
+                {isPending && <CircularProgress size={14} color="inherit" sx={{ mr: 1 }} />}
+                {isPending ? 'Signing' : 'Confirm'}
               </Button>
             </Track>
           </span>

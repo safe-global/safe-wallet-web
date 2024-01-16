@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@mui/material'
+import { Button, CircularProgress, Tooltip } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -37,6 +37,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: b
                 disabled={!isOk || isDisabled}
                 size={compact ? 'small' : 'stretched'}
               >
+                {isPending && <CircularProgress size={14} color="inherit" sx={{ mr: 1 }} />}
                 {isPending ? 'Signing' : 'Sign'}
               </Button>
             </Track>
