@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useContext } from 'react'
+import { useEffect, useMemo, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { BigNumber } from 'ethers'
 import { Typography, Grid, Alert } from '@mui/material'
@@ -13,13 +13,11 @@ import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { formatVisualAmount } from '@/utils/formatters'
-import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import type { NewSpendingLimitFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeTxContext } from '../../SafeTxProvider'
 
 export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowProps }) => {
-  const [existingSpendingLimit, setExistingSpendingLimit] = useState<SpendingLimitState>()
   const spendingLimits = useSelector(selectSpendingLimits)
   const chainId = useChainId()
   const { balances } = useBalances()
@@ -27,12 +25,11 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const { decimals } = token?.tokenInfo || {}
 
-  useEffect(() => {
-    const existingSpendingLimit = spendingLimits.find(
+  const existingSpendingLimit = useMemo(() => {
+    return spendingLimits.find(
       (spendingLimit) =>
         spendingLimit.beneficiary === params.beneficiary && spendingLimit.token.address === params.tokenAddress,
     )
-    setExistingSpendingLimit(existingSpendingLimit)
   }, [spendingLimits, params])
 
   useEffect(() => {
