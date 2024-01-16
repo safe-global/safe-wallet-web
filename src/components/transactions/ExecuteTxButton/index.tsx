@@ -49,7 +49,9 @@ const ExecuteTxButton = ({
     <>
       <CheckWallet allowNonOwner>
         {(isOk) => (
-          <Tooltip title={!isNext ? 'You must execute the transaction with the lowest nonce first' : ''}>
+          <Tooltip
+            title={isOk && !isPending && !isNext ? 'You must execute the transaction with the lowest nonce first' : ''}
+          >
             <span>
               <Track {...TX_LIST_EVENTS.EXECUTE}>
                 <Button
