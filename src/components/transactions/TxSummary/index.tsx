@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -13,6 +13,7 @@ import UntrustedTxWarning from '../UntrustedTxWarning'
 import QueueActions from './QueueActions'
 import useIsPending from '@/hooks/useIsPending'
 import TxStatusLabel from '../TxStatusLabel'
+import TxConfirmations from '../TxConfirmations'
 
 type TxSummaryProps = {
   isGrouped?: boolean
@@ -25,15 +26,16 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const isTrusted = isTrustedTx(tx)
   const isPending = useIsPending(tx.id)
+  const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
 
   return (
     <Box
       data-testid="transaction-item"
-      className={classNames(
-        css.gridContainer,
-        isGrouped ? css.grouped : undefined,
-        !isTrusted ? css.untrusted : undefined,
-      )}
+      className={classNames(css.gridContainer, {
+        [css.history]: !isQueue,
+        [css.grouped]: isGrouped,
+        [css.untrusted]: !isTrusted,
+      })}
       id={tx.id}
     >
       {nonce && !isGrouped && (
@@ -57,16 +59,19 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       </Box>
 
       <Box gridArea="date" data-testid="tx-date" className={css.date}>
-        <Typography color="text.secondary">
-          <DateTime value={tx.timestamp} />
-        </Typography>
+        <DateTime value={tx.timestamp} />
       </Box>
 
-      <Box gridArea="status" pr={2} display="flex" gap={2}>
-        {isQueue && <QueueActions tx={tx} showActions={!isPending} />}
+      {isQueue && executionInfo && (
+        <Box gridArea="confirmations">
+          <TxConfirmations
+            submittedConfirmations={executionInfo.confirmationsSubmitted}
+            requiredConfirmations={executionInfo.confirmationsRequired}
+          />
+        </Box>
+      )}
 
-        {(!isQueue || isPending) && <TxStatusLabel tx={tx} />}
-      </Box>
+      <Box gridArea="status">{isQueue && !isPending ? <QueueActions tx={tx} /> : <TxStatusLabel tx={tx} />}</Box>
     </Box>
   )
 }

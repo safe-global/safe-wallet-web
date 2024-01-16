@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from '@mui/material'
+import { Box } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import { RecoveryType } from '../RecoveryType'
@@ -7,9 +7,9 @@ import { RecoveryStatus } from '../RecoveryStatus'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
-
-import css from './styles.module.css'
-import { useRecoveryTxState } from '../../hooks/useRecoveryTxState'
+import css from '@/components/transactions/TxSummary/styles.module.css'
+import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
+import DateTime from '@/components/common/DateTime'
 
 export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactElement {
   const wallet = useWallet()
@@ -26,12 +26,13 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
         <RecoveryInfo isMalicious={isMalicious} />
       </Box>
 
-      <Box gridArea="status" display="flex" alignItems="center" gap={1} pr={2}>
+      <Box gridArea="date" data-testid="tx-date" className={css.date}>
+        <DateTime value={item.timestamp.toNumber()} />
+      </Box>
+
+      <Box gridArea="status">
         {!isExecutable || isPending ? (
-          <>
-            {isPending && <CircularProgress size={14} color="inherit" />}
-            <RecoveryStatus recovery={item} />
-          </>
+          <RecoveryStatus recovery={item} />
         ) : (
           !isMalicious && wallet && <ExecuteRecoveryButton recovery={item} compact />
         )}

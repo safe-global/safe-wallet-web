@@ -1,15 +1,15 @@
 import type { ReactElement, ReactNode } from 'react'
-import { Box, Chip } from '@mui/material'
+import { Typography, Chip } from '@mui/material'
 
 const TxStatusChip = ({ children, color }: { children: ReactNode; color?: string }): ReactElement => {
   return (
     <Chip
       size="small"
-      sx={{ backgroundColor: `${color}.background` }}
+      sx={{ backgroundColor: `${color}.background`, color: `${color}.dark` }}
       label={
-        <Box display="flex" alignItems="center" gap={1} color={`${color}.dark`}>
+        <Typography variant="caption" fontWeight="bold" display="flex" alignItems="center" gap={1}>
           {children}
-        </Box>
+        </Typography>
       }
     />
   )

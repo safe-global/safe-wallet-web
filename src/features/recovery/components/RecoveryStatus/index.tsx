@@ -30,7 +30,7 @@ export const RecoveryStatus = ({ recovery }: { recovery: RecoveryQueueItem }): R
     'Expired'
   ) : (
     <>
-      <SvgIcon component={ClockIcon} inheritViewBox color="warning" fontSize="inherit" />
+      <SvgIcon component={ClockIcon} inheritViewBox fontSize="inherit" />
       Pending
     </>
   )

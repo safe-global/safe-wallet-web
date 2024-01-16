@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, type Palette, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -9,18 +9,17 @@ import SignMsgButton from '@/components/safe-messages/SignMsgButton'
 import useSafeMessageStatus from '@/hooks/messages/useSafeMessageStatus'
 import TxConfirmations from '@/components/transactions/TxConfirmations'
 
-import css from './styles.module.css'
+import css from '@/components/transactions/TxSummary/styles.module.css'
 import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
-import TxStatusChip from '@/components/transactions/TxStatusChip'
 
-const getStatusColor = (value: SafeMessageStatus): string => {
+const getStatusColor = (value: SafeMessageStatus, palette: Palette): string => {
   switch (value) {
     case SafeMessageStatus.CONFIRMED:
-      return 'success'
+      return palette.success.main
     case SafeMessageStatus.NEEDS_CONFIRMATION:
-      return 'warning'
+      return palette.warning.main
     default:
-      return 'primary'
+      return palette.text.primary
   }
 }
 
@@ -52,12 +51,19 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
       </Box>
 
       <Box gridArea="status">
-        {isConfirmed ? (
-          <TxStatusChip color={getStatusColor(msg.status)}>
+        {isConfirmed || isPending ? (
+          <Typography
+            variant="caption"
+            fontWeight="bold"
+            display="flex"
+            alignItems="center"
+            gap={1}
+            color={({ palette }) => getStatusColor(msg.status, palette)}
+          >
             {isPending && <CircularProgress size={14} color="inherit" />}
 
             {txStatusLabel}
-          </TxStatusChip>
+          </Typography>
         ) : (
           <SignMsgButton msg={msg} compact />
         )}

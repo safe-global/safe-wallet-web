@@ -1,21 +1,20 @@
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, type Palette, Typography } from '@mui/material'
 import { TransactionStatus, type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsPending from '@/hooks/useIsPending'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
-import TxStatusChip from '../TxStatusChip'
 
-const getStatusColor = (value: TransactionStatus) => {
+const getStatusColor = (value: TransactionStatus, palette: Palette) => {
   switch (value) {
     case TransactionStatus.SUCCESS:
-      return 'success'
+      return palette.success.main
     case TransactionStatus.FAILED:
     case TransactionStatus.CANCELLED:
-      return 'error'
+      return palette.error.main
     case TransactionStatus.AWAITING_CONFIRMATIONS:
     case TransactionStatus.AWAITING_EXECUTION:
-      return 'warning'
+      return palette.warning.main
     default:
-      return 'primary'
+      return palette.primary.main
   }
 }
 
@@ -24,10 +23,17 @@ const TxStatusLabel = ({ tx }: { tx: TransactionSummary }) => {
   const isPending = useIsPending(tx.id)
 
   return (
-    <TxStatusChip color={getStatusColor(tx.txStatus)}>
+    <Typography
+      variant="caption"
+      fontWeight="bold"
+      display="flex"
+      alignItems="center"
+      gap={1}
+      color={({ palette }) => getStatusColor(tx.txStatus, palette)}
+    >
       {isPending && <CircularProgress size={14} color="inherit" />}
       {txStatusLabel}
-    </TxStatusChip>
+    </Typography>
   )
 }
 
