@@ -10,18 +10,16 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 
 const Disclaimer = () => (
-  <Box className={css.disclaimerContainer} gridArea="warning">
-    <Typography>
-      <b>Conflicting transactions</b>. Executing one will automatically replace the others.{' '}
-      <ExternalLink
-        href={HelpCenterArticle.CONFLICTING_TRANSACTIONS}
-        title="Why are transactions with the same nonce conflicting with each other?"
-        noIcon
-      >
-        Why did this happen?
-      </ExternalLink>
-    </Typography>
-  </Box>
+  <Typography>
+    <b>Conflicting transactions</b>. Executing one will automatically replace the others.{' '}
+    <ExternalLink
+      href={HelpCenterArticle.CONFLICTING_TRANSACTIONS}
+      title="Why are transactions with the same nonce conflicting with each other?"
+      noIcon
+    >
+      Why did this happen?
+    </ExternalLink>
+  </Typography>
 )
 
 const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): ReactElement => {
@@ -35,7 +33,9 @@ const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): Rea
     <Paper className={css.container}>
       <Typography gridArea="nonce">{nonce}</Typography>
 
-      <Disclaimer />
+      <Box gridArea="warning" className={css.disclaimerContainer}>
+        <Disclaimer />
+      </Box>
 
       <Box gridArea="line" className={css.line} />
 

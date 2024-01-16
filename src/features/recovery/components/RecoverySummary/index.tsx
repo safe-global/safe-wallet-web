@@ -5,7 +5,6 @@ import { RecoveryType } from '../RecoveryType'
 import { RecoveryInfo } from '../RecoveryInfo'
 import { RecoveryStatus } from '../RecoveryStatus'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
-import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
@@ -34,13 +33,7 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
             <RecoveryStatus recovery={item} />
           </>
         ) : (
-          !isMalicious &&
-          wallet && (
-            <>
-              <ExecuteRecoveryButton recovery={item} compact />
-              <CancelRecoveryButton recovery={item} compact />
-            </>
-          )
+          !isMalicious && wallet && <ExecuteRecoveryButton recovery={item} compact />
         )}
       </Box>
     </Box>
