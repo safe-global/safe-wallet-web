@@ -49,7 +49,7 @@ const SafePrivacyPolicy = () => (
     `}</style>
 
     <h1>Privacy Policy</h1>
-    <p>Last updated in November&nbsp;2023.</p>
+    <p>Last updated: January 2024.</p>
     <p>
       Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
       regulation regarding any personal information we may collect about you, including across our website,{' '}
@@ -63,9 +63,9 @@ const SafePrivacyPolicy = () => (
     </p>
     <p>
       In this policy, &quot;we&quot;, &quot;us&quot; and &quot;our&quot; refers to Core Contributors GmbH a company
-      incorporated in Germany with its registered address at Skalitzer Str. 85-86, ℅ Full Node, 10997 Berlin,
-      Germany.&nbsp;Any data protection related questions you might have about how we handle your personal data or if
-      you wish to exercise your data subject rights, please contact us by post or at privacy@cc0x.dev.{' '}
+      incorporated in Germany with its registered address at Gontardstraße 11, 10178 Berlin, Germany.&nbsp;Any data
+      protection related questions you might have about how we handle your personal data or if you wish to exercise your
+      data subject rights, please contact us by post or at privacy@cc0x.dev.{' '}
     </p>
     <p>
       In this Policy, &ldquo;personal data&rdquo; means any information relating to you as an identified or identifiable
@@ -966,11 +966,10 @@ const SafePrivacyPolicy = () => (
     <h5>Contact us by post or email at:</h5>
     <p>
       Core Contributors GmbH
-      <br />℅ Full Node
       <br />
-      Skalitzer Str. 85-86
+      Gontardstraße 11
       <br />
-      10997 Berlin
+      10178 Berlin
       <br />
       Germany
       <br />

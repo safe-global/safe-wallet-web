@@ -16,11 +16,9 @@ const SafeImprint = () => (
     <Typography mb={2}>
       Core Contributors GmbH
       <br />
-      ℅ Full Node
+      Gontardstraße 11
       <br />
-      Skalitzer Str. 85-86
-      <br />
-      10997 Berlin Germany
+      10178 Berlin, Germany
     </Typography>
     <Typography mb={4}>
       Managing directors: Richard Meißner, Tobias Schubotz

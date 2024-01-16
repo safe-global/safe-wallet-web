@@ -36,7 +36,7 @@ const useTxMonitor = (): void => {
       return
     }
 
-    for (const [txId, { txHash, status, taskId, safeAddress }] of pendingTxEntriesOnChain) {
+    for (const [txId, { txHash, status, taskId, safeAddress, submittedAt }] of pendingTxEntriesOnChain) {
       const isProcessing = status === PendingStatus.PROCESSING && txHash !== undefined
       const isMonitored = monitoredTxs.current[txId]
       const isRelaying = status === PendingStatus.RELAYING && taskId !== undefined
@@ -48,7 +48,7 @@ const useTxMonitor = (): void => {
       monitoredTxs.current[txId] = true
 
       if (isProcessing) {
-        waitForTx(provider, txId, txHash)
+        waitForTx(provider, [txId], txHash, submittedAt)
         continue
       }
 
@@ -103,6 +103,7 @@ const useTxPendingStatuses = (): void => {
               groupKey: 'groupKey' in detail ? detail.groupKey : undefined,
               signerAddress: `signerAddress` in detail ? detail.signerAddress : undefined,
               taskId: 'taskId' in detail ? detail.taskId : undefined,
+              submittedAt: status === PendingStatus.PROCESSING ? Date.now() : undefined,
             }),
           )
         }
