@@ -49,7 +49,7 @@ const SafePrivacyPolicy = () => (
     `}</style>
 
     <h1>Privacy Policy</h1>
-    <p>Last updated: January&nbsp;2024.</p>
+    <p>Last updated: January 2024.</p>
     <p>
       Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
       regulation regarding any personal information we may collect about you, including across our website,{' '}

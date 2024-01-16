@@ -26,7 +26,7 @@ const SafeCookiePolicy = () => (
     `}</style>
 
     <h1>Cookie Policy</h1>
-    <p>Last updated: January 2024</p>
+    <p>Last updated: January 2024.</p>
     <p>
       As described in our{' '}
       <Link href={AppRoutes.privacy} passHref legacyBehavior>
