@@ -1,5 +1,4 @@
 import { Box } from '@mui/material'
-import classNames from 'classnames'
 import type { ReactElement } from 'react'
 
 import { RecoveryType } from '../RecoveryType'
@@ -10,32 +9,37 @@ import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
-import txSummaryCss from '@/components/transactions/TxSummary/styles.module.css'
+import css from './styles.module.css'
+import { useRecoveryTxState } from '../../hooks/useRecoveryTxState'
 
 export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactElement {
   const wallet = useWallet()
+  const { isExecutable } = useRecoveryTxState(item)
   const { isMalicious } = item
 
   return (
-    <Box className={classNames(txSummaryCss.gridContainer, txSummaryCss.columnTemplate)}>
-      <Box gridArea="type" className={txSummaryCss.columnWrap}>
+    <Box className={css.gridContainer}>
+      <Box gridArea="type">
         <RecoveryType isMalicious={isMalicious} />
       </Box>
 
-      <Box gridArea="info" className={txSummaryCss.columnWrap}>
+      <Box gridArea="info">
         <RecoveryInfo isMalicious={isMalicious} />
       </Box>
 
-      {wallet && (
-        <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
-          <ExecuteRecoveryButton recovery={item} compact />
-          <CancelRecoveryButton recovery={item} compact />
+      {!isExecutable ? (
+        <Box gridArea="status">
+          <RecoveryStatus recovery={item} />
         </Box>
+      ) : (
+        !isMalicious &&
+        wallet && (
+          <Box gridArea="status" display="flex" alignItems="center" gap={2} mr={2}>
+            <ExecuteRecoveryButton recovery={item} compact />
+            <CancelRecoveryButton recovery={item} compact />
+          </Box>
+        )
       )}
-
-      <Box gridArea="status" ml={{ sm: 'auto' }} mr={1} display="flex" alignItems="center">
-        <RecoveryStatus recovery={item} />
-      </Box>
     </Box>
   )
 }
