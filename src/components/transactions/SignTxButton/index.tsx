@@ -1,7 +1,7 @@
 import type { SyntheticEvent } from 'react'
 import { useContext, type ReactElement } from 'react'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 
 import { isSignableBy } from '@/utils/transaction-guards'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -36,17 +36,21 @@ const SignTxButton = ({
   return (
     <CheckWallet>
       {(isOk) => (
-        <Track {...TX_LIST_EVENTS.CONFIRM}>
-          <Button
-            onClick={onClick}
-            variant={compact ? 'outlined' : 'contained'}
-            disabled={!isOk || isDisabled}
-            size={compact ? 'small' : 'stretched'}
-            sx={compact ? { py: 0.75 } : undefined}
-          >
-            Confirm
-          </Button>
-        </Track>
+        <Tooltip title={isOk && !isSignable ? "You've already signed this transaction" : ''}>
+          <span>
+            <Track {...TX_LIST_EVENTS.CONFIRM}>
+              <Button
+                onClick={onClick}
+                variant={compact ? 'outlined' : 'contained'}
+                disabled={!isOk || isDisabled}
+                size={compact ? 'small' : 'stretched'}
+                sx={compact ? { py: 0.75 } : undefined}
+              >
+                Confirm
+              </Button>
+            </Track>
+          </span>
+        </Tooltip>
       )}
     </CheckWallet>
   )

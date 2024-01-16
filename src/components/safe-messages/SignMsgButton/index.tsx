@@ -1,6 +1,5 @@
-import { Button, Tooltip, IconButton } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 import { useContext } from 'react'
-import CheckIcon from '@mui/icons-material/Check'
 import type { SyntheticEvent, ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -11,6 +10,7 @@ import useIsSafeMessageSignableBy from '@/hooks/messages/useIsSafeMessageSignabl
 import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
 import { TxModalContext } from '@/components/tx-flow'
 import { SignMessageFlow } from '@/components/tx-flow/flows'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
   const wallet = useWallet()
@@ -26,21 +26,24 @@ const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: b
   const isDisabled = !isSignable || isPending
 
   return (
-    <Track {...MESSAGE_EVENTS.SIGN}>
-      {compact ? (
-        <Tooltip title="Sign" arrow placement="top">
+    <CheckWallet>
+      {(isOk) => (
+        <Tooltip title={isOk && !isSignable ? "You've already signed this message" : ''}>
           <span>
-            <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
-              <CheckIcon fontSize="small" />
-            </IconButton>
+            <Track {...MESSAGE_EVENTS.SIGN}>
+              <Button
+                onClick={onClick}
+                variant={isSignable ? 'contained' : 'outlined'}
+                disabled={!isOk || isDisabled}
+                size={compact ? 'small' : 'stretched'}
+              >
+                {isPending ? 'Signing' : 'Sign'}
+              </Button>
+            </Track>
           </span>
         </Tooltip>
-      ) : (
-        <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
-          Sign
-        </Button>
       )}
-    </Track>
+    </CheckWallet>
   )
 }
 
