@@ -13,15 +13,18 @@ import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '..
 export type ApprovalModuleResponse = Approval[]
 
 export type ApprovalModuleRequest = {
-  safeTransaction?: SafeTransaction
-  safeMessage?: EIP712TypedData
+  safeTransaction: SafeTransaction
+}
+
+export type ApprovalModuleMessageRequest = {
+  safeMessage: EIP712TypedData
 }
 
 export type Approval = {
   spender: any
   amount: any
   tokenAddress: string
-  method: 'approve' | 'increaseAllowance' | 'Permit2'
+  method: 'approve' | 'increaseAllowance' | 'Permit2' | 'Permit'
 }
 
 type PermitDetails = { token: string; amount: string }
@@ -64,24 +67,25 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     }
   }
 
-  scanTransaction(request: ApprovalModuleRequest): SecurityResponse<ApprovalModuleResponse> {
-    const { safeTransaction, safeMessage } = request
-
+  scanMessage(request: ApprovalModuleMessageRequest): SecurityResponse<ApprovalModuleResponse> {
+    const safeMessage = request.safeMessage
     const approvalInfos: Approval[] = []
-    if (safeTransaction) {
-      const safeTxData = safeTransaction.data.data
-      if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
-        const innerTxs = decodeMultiSendTxs(safeTxData)
-        approvalInfos.push(...innerTxs.flatMap((tx) => ApprovalModule.scanInnerTransaction(tx)))
-      } else {
-        approvalInfos.push(...ApprovalModule.scanInnerTransaction({ to: safeTransaction.data.to, data: safeTxData }))
-      }
-    } else if (safeMessage) {
-      const normalizedMessage = normalizeTypedData(safeMessage)
-      if (normalizedMessage.domain.name === 'Permit2') {
-        if (normalizedMessage.types['PermitSingle'] !== undefined) {
-          const spender = normalizedMessage.message['spender'] as string
-          const details = normalizedMessage.message['details'] as PermitDetails
+    const normalizedMessage = normalizeTypedData(safeMessage)
+    if (normalizedMessage.domain.name === 'Permit2') {
+      if (normalizedMessage.types['PermitSingle'] !== undefined) {
+        const spender = normalizedMessage.message['spender'] as string
+        const details = normalizedMessage.message['details'] as PermitDetails
+        const permitInfo = ApprovalModule.scanPermitDetails(details)
+
+        approvalInfos.push({
+          ...permitInfo,
+          method: 'Permit2',
+          spender,
+        })
+      } else if (normalizedMessage.types['PermitBatch'] !== undefined) {
+        const spender = normalizedMessage.message['spender'] as string
+        const details = normalizedMessage.message['details'] as PermitDetails[]
+        details.forEach((details) => {
           const permitInfo = ApprovalModule.scanPermitDetails(details)
 
           approvalInfos.push({
@@ -89,20 +93,31 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
             method: 'Permit2',
             spender,
           })
-        } else if (normalizedMessage.types['PermitBatch'] !== undefined) {
-          const spender = normalizedMessage.message['spender'] as string
-          const details = normalizedMessage.message['details'] as PermitDetails[]
-          details.forEach((details) => {
-            const permitInfo = ApprovalModule.scanPermitDetails(details)
-
-            approvalInfos.push({
-              ...permitInfo,
-              method: 'Permit2',
-              spender,
-            })
-          })
-        }
+        })
       }
+    }
+    if (approvalInfos.length > 0) {
+      return {
+        severity: SecuritySeverity.NONE,
+        payload: approvalInfos,
+      }
+    }
+
+    return {
+      severity: SecuritySeverity.NONE,
+    }
+  }
+
+  scanTransaction(request: ApprovalModuleRequest): SecurityResponse<ApprovalModuleResponse> {
+    const safeTransaction = request.safeTransaction
+
+    const approvalInfos: Approval[] = []
+    const safeTxData = safeTransaction.data.data
+    if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
+      const innerTxs = decodeMultiSendTxs(safeTxData)
+      approvalInfos.push(...innerTxs.flatMap((tx) => ApprovalModule.scanInnerTransaction(tx)))
+    } else {
+      approvalInfos.push(...ApprovalModule.scanInnerTransaction({ to: safeTransaction.data.to, data: safeTxData }))
     }
 
     if (approvalInfos.length > 0) {

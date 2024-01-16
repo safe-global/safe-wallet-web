@@ -27,9 +27,12 @@ export const useApprovalInfos = (payload: {
   const { safeTransaction, safeMessage } = payload
   const { balances } = useBalances()
   const approvals = useMemo(() => {
-    if (!safeTransaction && !safeMessage) return
-
-    return ApprovalModuleInstance.scanTransaction({ safeTransaction, safeMessage })
+    if (safeTransaction) {
+      return ApprovalModuleInstance.scanTransaction({ safeTransaction })
+    }
+    if (safeMessage) {
+      return ApprovalModuleInstance.scanMessage({ safeMessage })
+    }
   }, [safeMessage, safeTransaction])
 
   const hasApprovalSignatures = !!approvals && !!approvals.payload && approvals.payload.length > 0
