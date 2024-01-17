@@ -47,6 +47,29 @@ describe('useLocalStorage', () => {
     expect(result.current[0]).toBe('test3')
   })
 
+  it('should set a bigint value', () => {
+    const key = Math.random().toString(32)
+    const { result } = renderHook(() => useLocalStorage(key))
+    const [value, setValue] = result.current
+
+    expect(value).toBe(undefined)
+
+    act(() => {
+      setValue(BigInt(1))
+    })
+
+    expect(result.current[0]).toEqual(1n)
+  })
+
+  it('should read a bigint value', () => {
+    const key = Math.random().toString(32)
+    local.setItem(key, { __type: 'bigint', __value: '0x01' })
+
+    const { result } = renderHook(() => useLocalStorage(key))
+
+    expect(result.current[0]).toEqual(1n)
+  })
+
   it('should read from LS on initial call', () => {
     const key = Math.random().toString(32)
     local.setItem(key, 'ls')
