@@ -58,6 +58,9 @@ Object.defineProperty = (obj, prop, desc) => {
   return defineProperty(obj, prop, desc)
 }
 
+// We need this, otherwise jest will fail with:
+// invalid BytesLike value on createRandom
+// https://github.com/ethers-io/ethers.js/issues/4365
 Object.defineProperty(Uint8Array, Symbol.hasInstance, {
   value(potentialInstance) {
     return this === Uint8Array

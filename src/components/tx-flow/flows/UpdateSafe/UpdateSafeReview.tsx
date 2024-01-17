@@ -14,7 +14,7 @@ import useAsync from '@/hooks/useAsync'
 export const UpdateSafeReview = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
-  const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
+  const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
   useAsync(async () => {
     if (!chain || !safeLoaded) {

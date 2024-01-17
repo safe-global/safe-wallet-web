@@ -100,7 +100,6 @@ describe('safeCoreSDK', () => {
     })
 
     const getMockProvider = (chainId: string, version: string) => {
-      // const mockProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
       const mockProvider: Eip1193Provider = {
         request: jest.fn((request: { method: string; params?: Array<any> | Record<string, any> }) => {
           const { method, params } = request
