@@ -1,8 +1,6 @@
 import * as firebase from 'firebase/messaging'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
-import { toBeHex } from 'ethers'
-import type { Eip1193Provider } from 'ethers'
-import { BrowserProvider, type JsonRpcSigner } from 'ethers'
+import { BrowserProvider, type JsonRpcSigner, toBeHex, type Eip1193Provider } from 'ethers'
 
 import * as logic from '../logic'
 import * as web3 from '@/hooks/wallets/web3'

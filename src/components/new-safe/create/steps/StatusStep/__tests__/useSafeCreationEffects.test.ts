@@ -7,9 +7,7 @@ import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/u
 import * as addressbook from '@/components/new-safe/create/logic/address-book'
 import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
 import type { PendingSafeData } from '@/components/new-safe/create/types'
-import { toBeHex } from 'ethers'
-import type { Eip1193Provider } from 'ethers'
-import { BrowserProvider } from 'ethers'
+import { type Eip1193Provider, toBeHex, BrowserProvider } from 'ethers'
 
 describe('useSafeCreationEffects', () => {
   beforeEach(() => {
