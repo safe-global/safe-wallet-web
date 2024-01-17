@@ -1,4 +1,4 @@
-import { toBeHex } from 'ethers'
+import { toBeHex, BrowserProvider, type Eip1193Provider } from 'ethers'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
 import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -10,8 +10,6 @@ import * as logic from '../../logic'
 import * as preferences from '../useNotificationPreferences'
 import * as notificationsSlice from '@/store/notificationsSlice'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { Eip1193Provider } from 'ethers'
-import { BrowserProvider } from 'ethers'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk')
 
