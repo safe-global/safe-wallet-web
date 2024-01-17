@@ -1,28 +1,34 @@
-import React, { useState, type ReactElement, useCallback } from 'react'
+import React, { Fragment, useState, type ReactElement, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import List from '@mui/material/List'
 import Typography from '@mui/material/Typography'
+import Collapse from '@mui/material/Collapse'
 import Button from '@mui/material/Button'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import IconButton from '@mui/material/IconButton'
 import SvgIcon from '@mui/material/SvgIcon'
+import Box from '@mui/material/Box'
+import { Link as MuiLink } from '@mui/material'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import AddIcon from '@/public/images/common/add.svg'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
-import OwnedSafeList from '@/components/sidebar/OwnedSafeList'
+import SafeListItem from '@/components/sidebar/SafeListItem'
 
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import LoadingIcon from '@/public/images/common/loading.svg'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -65,9 +71,9 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const wallet = useWallet()
   const handleConnect = useConnectWallet()
 
-  const [open, setOpen] = useState<Record<string, boolean>>({})
-  const toggleOpen = (chainId: string, open: boolean) => {
-    setOpen((prev) => ({ ...prev, [chainId]: open }))
+  const [open, setOpen] = useState<boolean>(false)
+  const toggleOpen = (open: boolean) => {
+    setOpen(open)
   }
 
   const hasWallet = !!wallet
@@ -75,7 +81,9 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
-  /**
+  const ownedSafesOnCurrentChain = currentChain ? ownedSafes[currentChain.chainId] : []
+
+  /*
    * Navigate to the dashboard when selecting a safe on the welcome page,
    * navigate to the history when selecting a safe on a single tx page,
    * otherwise keep the current route
@@ -90,7 +98,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     [isWelcomePage, isSingleTxPage, router.pathname, router.query],
   )
 
-  const getOwnedSafesWithChain = () => {
+  const getOwnedSafesOnAllChains = () => {
     let ownedSafesOnAllChains: { safeAddress: string; chain: ChainInfo }[] = []
 
     for (let chain of configs) {
@@ -102,51 +110,9 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     return ownedSafesOnAllChains
   }
 
-  // const getAddedSafesWithChain = () => {
-  //   let addedSafesOnAllChains: { safeAddress: string; chain: ChainInfo }[] = []
-
-  //   for (let chain of configs) {
-  //     const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
-  //     const addedSafeEntriesOnChain = Object.entries(addedSafesOnChain)
-  //     const addedSafesWithChain = addedSafeEntriesOnChain.map(([safeAddress]) => ({ safeAddress, chain }))
-  //     addedSafesOnAllChains = [...addedSafesOnAllChains, ...addedSafesWithChain]
-  //   }
-
-  //   return addedSafesOnAllChains
-  // }
-
-  getOwnedSafesWithChain()
   return (
     <div>
-      <div className={css.header}>
-        <Typography variant="h4" display="inline" fontWeight={700}>
-          My Safe Accounts
-        </Typography>
-
-        {!isWelcomePage && (
-          <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
-            <Link
-              href={{ pathname: AppRoutes.welcome.index, query: { chain: currentChain?.shortName } }}
-              passHref
-              legacyBehavior
-            >
-              <Button
-                disableElevation
-                size="small"
-                variant="outlined"
-                onClick={closeDrawer}
-                startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-              >
-                Add
-              </Button>
-            </Link>
-          </Track>
-        )}
-      </div>
-
-      <OwnedSafeList closeDrawer={closeDrawer} />
-
-      {/* {hasNoSafes && (
+      {hasNoSafes && (
         <Box display="flex" flexDirection="column" alignItems="center" py={10}>
           {hasWallet ? (
             <>
@@ -179,7 +145,56 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
             </Box>
           )}
         </Box>
-      )} */}
+      )}
+
+      {!hasNoSafes && currentChain && (
+        <List className={css.list}>
+          {getOwnedSafesOnAllChains().map(({ safeAddress, chain }) => {
+            const href = getHref(currentChain, safeAddress)
+            return (
+              <SafeListItem
+                key={safeAddress}
+                address={safeAddress}
+                chainId={chain.chainId}
+                closeDrawer={closeDrawer}
+                href={href}
+                shouldScrollToSafe
+                isAdded
+              />
+            )
+          })}
+        </List>
+      )}
+
+      {getOwnedSafesOnAllChains().length > 0 && (
+        <>
+          <div onClick={() => toggleOpen(!open)} className={css.ownedLabelWrapper}>
+            <Typography variant="body2" display="inline" className={css.ownedLabel}>
+              Accounts on other networks
+              <IconButton disableRipple>{open ? <ExpandLess /> : <ExpandMore />}</IconButton>
+            </Typography>
+          </div>
+
+          <Collapse key={chainId} in={open}>
+            <List sx={{ py: 0 }}>
+              {getOwnedSafesOnAllChains().map(({ safeAddress, chain }) => {
+                const href = getHref(chain, safeAddress)
+
+                return (
+                  <SafeListItem
+                    key={safeAddress}
+                    address={safeAddress}
+                    chainId={chain.chainId}
+                    closeDrawer={closeDrawer}
+                    href={href}
+                    shouldScrollToSafe
+                  />
+                )
+              })}
+            </List>
+          </Collapse>
+        </>
+      )}
 
       {/* {!hasNoSafes &&
         configs.map((chain) => {
@@ -204,8 +219,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
           return (
             <Fragment key={chain.chainName}>
-              <ChainIndicator chainId={chain.chainId} className={css.chainDivider} showLogo={false} />
-
+              
               {!addedSafeEntriesOnChain.length && !ownedSafesOnChain.length && (
                 <Typography variant="body2" color="primary.light" p={2} textAlign="center">
                   {!isWelcomePage ? (
@@ -219,15 +233,14 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                 </Typography>
               )}
 
+              
               <List className={css.list}>
-                {addedSafeEntriesOnChain.map(([address, { threshold, owners }]) => {
+                {ownedSafesOnChain.map((address) => {
                   const href = getHref(chain, address)
                   return (
                     <SafeListItem
                       key={address}
                       address={address}
-                      threshold={threshold}
-                      owners={owners.length}
                       chainId={chain.chainId}
                       closeDrawer={closeDrawer}
                       href={href}
@@ -253,6 +266,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                   )}
               </List>
 
+              
               {ownedSafesOnChain.length > 0 && (
                 <>
                   <div onClick={() => toggleOpen(chain.chainId, !isOpen)} className={css.ownedLabelWrapper}>
