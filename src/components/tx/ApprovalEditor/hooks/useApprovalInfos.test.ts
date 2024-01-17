@@ -177,7 +177,7 @@ describe('useApprovalInfos', () => {
     const { result } = renderHook(() => useApprovalInfos({ safeMessage: mockMessage }))
 
     const mockApproval: ApprovalInfo = {
-      amount: getTokenInfo.UNLIMITED_PERMIT2_AMOUNT.toBigInt(),
+      amount: BigNumber.from(getTokenInfo.UNLIMITED_PERMIT2_AMOUNT),
       amountFormatted: PSEUDO_APPROVAL_VALUES.UNLIMITED,
       spender: spenderAddress,
       tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'.toLowerCase(),
@@ -288,7 +288,7 @@ describe('useApprovalInfos', () => {
 
     const expectedApprovals: ApprovalInfo[] = [
       {
-        amount: getTokenInfo.UNLIMITED_PERMIT2_AMOUNT.toBigInt(),
+        amount: BigNumber.from(getTokenInfo.UNLIMITED_PERMIT2_AMOUNT),
         amountFormatted: PSEUDO_APPROVAL_VALUES.UNLIMITED,
         spender: spenderAddress,
         tokenAddress: token1.toLowerCase(),
@@ -296,7 +296,7 @@ describe('useApprovalInfos', () => {
         method: 'Permit2',
       },
       {
-        amount: getTokenInfo.UNLIMITED_PERMIT2_AMOUNT.toBigInt(),
+        amount: BigNumber.from(getTokenInfo.UNLIMITED_PERMIT2_AMOUNT),
         amountFormatted: PSEUDO_APPROVAL_VALUES.UNLIMITED,
         spender: spenderAddress,
         tokenAddress: token2.toLowerCase(),
