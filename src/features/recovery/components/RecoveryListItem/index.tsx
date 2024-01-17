@@ -3,7 +3,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useContext, useState } from 'react'
 import type { ComponentProps, ReactElement } from 'react'
 
-import txListItemCss from '@/components/transactions/TxListItem/styles.module.css'
 import { RecoverySummary } from '../RecoverySummary'
 import { RecoveryDetails } from '../RecoveryDetails'
 import { RecoveryListItemContext, RecoveryListItemProvider } from './RecoveryListItemContext'
@@ -25,13 +24,7 @@ function ProvidedRecoveryListItem({ item }: { item: RecoveryQueueItem }): ReactE
   }
 
   return (
-    <Accordion
-      disableGutters
-      elevation={0}
-      className={txListItemCss.accordion}
-      expanded={isExpanded}
-      onChange={onChange}
-    >
+    <Accordion disableGutters elevation={0} expanded={isExpanded} onChange={onChange}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
         <RecoverySummary item={item} />
       </AccordionSummary>
