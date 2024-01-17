@@ -1,6 +1,5 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { toBeHex, AbiCoder } from 'ethers'
-import { type JsonRpcProvider, keccak256, parseEther, toUtf8Bytes } from 'ethers'
+import { type JsonRpcProvider, keccak256, parseEther, toUtf8Bytes, toBeHex, AbiCoder } from 'ethers'
 import useSafeTokenAllocation, {
   type VestingData,
   _getRedeemDeadline,

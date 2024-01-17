@@ -6,7 +6,6 @@ import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services
 import * as utils from '@/utils/safe-messages'
 import * as events from '@/services/safe-messages/safeMsgEvents'
 import * as sdk from '@/services/tx/tx-sender/sdk'
-// import { toBeHex } from 'ethers'
 import { zeroPadValue } from 'ethers'
 import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
 
@@ -15,20 +14,6 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   proposeSafeMessage: jest.fn(),
   confirmSafeMessage: jest.fn(),
 }))
-
-// jest.mock('@safe-global/protocol-kit', () => {
-//   const originalModule = jest.requireActual('@safe-global/protocol-kit');
-
-//   // Mock class
-//   class MockEthersAdapter extends originalModule.EthersAdapter {
-//     getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(5)));
-//   }
-
-//   return {
-//     ...originalModule,
-//     EthersAdapter: MockEthersAdapter,
-//   };
-// });
 
 let mockProvider = {
   request: jest.fn,
