@@ -1,7 +1,8 @@
 import { SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
-
+import CheckIcon from '@mui/icons-material/Check'
 import OwnersIcon from '@/public/images/common/owners.svg'
+import TxStatusChip from '../TxStatusChip'
 
 const TxConfirmations = ({
   requiredConfirmations,
@@ -10,15 +11,17 @@ const TxConfirmations = ({
   requiredConfirmations: number
   submittedConfirmations: number
 }): ReactElement => {
-  const confirmationColor = requiredConfirmations > submittedConfirmations ? 'border' : 'primary'
+  const isConfirmed = submittedConfirmations >= requiredConfirmations
+  const color = isConfirmed ? 'success' : 'warning'
 
   return (
-    <>
-      <SvgIcon component={OwnersIcon} inheritViewBox fontSize="small" color={confirmationColor} />
-      <Typography variant="caption" fontWeight="bold" color={confirmationColor}>
+    <TxStatusChip color={color}>
+      <SvgIcon component={isConfirmed ? CheckIcon : OwnersIcon} inheritViewBox fontSize="small" />
+
+      <Typography variant="caption" fontWeight="bold">
         {submittedConfirmations} out of {requiredConfirmations}
       </Typography>
-    </>
+    </TxStatusChip>
   )
 }
 

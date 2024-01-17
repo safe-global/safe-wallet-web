@@ -9,7 +9,7 @@ import type { ContractTransaction, PayableOverrides } from 'ethers'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
-import { waitForRelayedTx } from '@/services/tx/txMonitor'
+import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { sponsoredCall } from '@/services/tx/relaying'
 import {
@@ -19,7 +19,7 @@ import {
   assertWalletChain,
   tryOffChainTxSigning,
 } from './sdk'
-import { createWeb3 } from '@/hooks/wallets/web3'
+import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
 
@@ -152,25 +152,30 @@ export const dispatchTxExecution = async (
 
   txDispatch(TxEvent.PROCESSING, { ...eventParams, txHash: result.hash })
 
-  // Asynchronously watch the tx to be mined/validated
-  result.transactionResponse
-    ?.wait()
-    .then((receipt) => {
-      if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
-      } else {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
-      }
-    })
-    .catch((err) => {
-      const error = err as EthersError
+  const provider = getWeb3ReadOnly()
 
-      if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
-      } else {
-        txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
-      }
-    })
+  // Asynchronously watch the tx to be mined/validated
+  Promise.race([
+    result.transactionResponse
+      ?.wait()
+      .then((receipt) => {
+        if (didRevert(receipt)) {
+          txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
+        } else {
+          txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        }
+      })
+      .catch((err) => {
+        const error = err as EthersError
+
+        if (didReprice(error)) {
+          txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        } else {
+          txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+        }
+      }),
+    provider ? waitForTx(provider, [txId], result.hash) : undefined,
+  ])
 
   return result.hash
 }
@@ -187,6 +192,7 @@ export const dispatchBatchExecution = async (
   const groupKey = multiSendTxData
 
   let result: TransactionResult | undefined
+  const txIds = txs.map((tx) => tx.txId)
 
   try {
     const wallet = await assertWalletChain(onboard, chainId)
@@ -194,61 +200,66 @@ export const dispatchBatchExecution = async (
     const provider = createWeb3(wallet.provider)
     result = await multiSendContract.contract.connect(provider.getSigner()).multiSend(multiSendTxData, overrides)
 
-    txs.forEach(({ txId }) => {
+    txIds.forEach((txId) => {
       txDispatch(TxEvent.EXECUTING, { txId, groupKey })
     })
   } catch (err) {
-    txs.forEach(({ txId }) => {
+    txIds.forEach((txId) => {
       txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
     })
     throw err
   }
 
-  txs.forEach(({ txId }) => {
+  txIds.forEach((txId) => {
     txDispatch(TxEvent.PROCESSING, { txId, txHash: result!.hash, groupKey })
   })
 
-  result!.transactionResponse
-    ?.wait()
-    .then((receipt) => {
-      if (didRevert(receipt)) {
-        txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.REVERTED, {
-            txId,
-            error: new Error('Transaction reverted by EVM'),
-            groupKey,
-          })
-        })
-      } else {
-        txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, {
-            txId,
-            groupKey,
-            safeAddress,
-          })
-        })
-      }
-    })
-    .catch((err) => {
-      const error = err as EthersError
+  const provider = getWeb3ReadOnly()
 
-      if (didReprice(error)) {
-        txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.PROCESSED, {
-            txId,
-            safeAddress,
+  Promise.race([
+    result.transactionResponse
+      ?.wait()
+      .then((receipt) => {
+        if (didRevert(receipt)) {
+          txIds.forEach((txId) => {
+            txDispatch(TxEvent.REVERTED, {
+              txId,
+              error: new Error('Transaction reverted by EVM'),
+              groupKey,
+            })
           })
-        })
-      } else {
-        txs.forEach(({ txId }) => {
-          txDispatch(TxEvent.FAILED, {
-            txId,
-            error: asError(err),
-            groupKey,
+        } else {
+          txIds.forEach((txId) => {
+            txDispatch(TxEvent.PROCESSED, {
+              txId,
+              groupKey,
+              safeAddress,
+            })
           })
-        })
-      }
-    })
+        }
+      })
+      .catch((err) => {
+        const error = err as EthersError
+
+        if (didReprice(error)) {
+          txIds.forEach((txId) => {
+            txDispatch(TxEvent.PROCESSED, {
+              txId,
+              safeAddress,
+            })
+          })
+        } else {
+          txIds.forEach((txId) => {
+            txDispatch(TxEvent.FAILED, {
+              txId,
+              error: asError(err),
+              groupKey,
+            })
+          })
+        }
+      }),
+    provider ? waitForTx(provider, txIds, result.hash) : undefined,
+  ])
 
   return result!.hash
 }

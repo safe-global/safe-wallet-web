@@ -44,6 +44,10 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
 import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
+import { isEIP712TypedData } from '@/utils/safe-messages'
+import ApprovalEditor from '@/components/tx/ApprovalEditor'
+import { ErrorBoundary } from '@sentry/react'
+import { isWalletRejection } from '@/utils/wallets'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -100,6 +104,8 @@ const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submit
       ? 'No wallet is connected.'
       : !isOwner
       ? "You are currently not an owner of this Safe Account and won't be able to confirm this message."
+      : submitError && isWalletRejection(submitError)
+      ? 'User rejected signing.'
       : submitError
       ? 'Error confirming the message. Please try again.'
       : null
@@ -233,7 +239,13 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
         <CardContent>
           <DialogHeader threshold={safe.threshold} />
 
-          <Typography fontWeight={700} mb={1}>
+          {isEIP712TypedData(decodedMessage) && (
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <ApprovalEditor safeMessage={decodedMessage} />
+            </ErrorBoundary>
+          )}
+
+          <Typography fontWeight={700} mt={2} mb={1}>
             Message: <CopyButton text={decodedMessageAsString} />
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />

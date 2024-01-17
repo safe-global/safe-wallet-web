@@ -15,6 +15,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import type { PendingSafeMessagesState } from '@/store/pendingSafeMessagesSlice'
+import { isWalletRejection } from '@/utils/wallets'
 
 const SafeMessageNotifications: Partial<Record<SafeMsgEvent, string>> = {
   [SafeMsgEvent.PROPOSE]: 'You successfully signed the message.',
@@ -50,6 +51,7 @@ const useSafeMessageNotifications = () => {
     const unsubFns = entries.map(([event, baseMessage]) =>
       safeMsgSubscribe(event, (detail) => {
         const isError = 'error' in detail
+        if (isError && isWalletRejection(detail.error)) return
         const isSuccess = event === SafeMsgEvent.PROPOSE || event === SafeMsgEvent.SIGNATURE_PREPARED
         const message = isError ? `${baseMessage}${formatError(detail.error)}` : baseMessage
 

@@ -5,6 +5,7 @@ export const GOERLI_TEST_SAFE = 'gor:0x97d314157727D517A706B5D08507A1f9B44AaaE9'
 // SEPOLIA_TEST_SAFE_1 should always have no transactions, tokens and NFTs
 export const SEPOLIA_TEST_SAFE_1 = 'sep:0xBb26E3717172d5000F87DeFd391994f789D80aEB'
 // SEPOLIA_TEST_SAFE_2 Has no transactions, 1 owner, using for verificatons only
+// Also used for non-owner verifications in spending limits
 export const SEPOLIA_TEST_SAFE_2 = 'sep:0x33C4AA5729D91FfB3B87AEf8a324bb6304Fb905c'
 export const SEPOLIA_TEST_SAFE_3 = 'sep:0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7'
 export const SEPOLIA_TEST_SAFE_4 = 'sep:0x03042B890b99552b60A073F808100517fb148F60'
@@ -17,6 +18,8 @@ export const SEPOLIA_TEST_SAFE_8 = 'sep:0x5912f6616c84024cD1aff0D5b55bb36F5180fF
 // SAFE 9 & 10 are used for safe apps tests
 export const SEPOLIA_TEST_SAFE_9 = 'sep:0xD1571E8Cc4438aFef2836DD9a0E5D09fb63EDE9a'
 export const SEPOLIA_TEST_SAFE_10 = 'sep:0x4DD4cB2299E491E1B469245DB589ccB2B16d7bde'
+// SAFE 12 is used for spending limits
+export const SEPOLIA_TEST_SAFE_12 = 'sep:0x9190cc22D592dDcf396Fa616ce84a9978fD96Fc9'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -30,6 +33,7 @@ export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED
 export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
 export const SIDEBAR_ADDRESS = '0x04f8...1a91'
+//ENS_TEST_SEPOLIA resolves to 0xBf30F749FC027a5d79c4710D988F0D3C8e217A4F
 export const ENS_TEST_SEPOLIA = 'e2etestsafe.eth'
 export const ENS_TEST_GOERLI = 'goerli-safe-test.eth'
 export const ENS_TEST_SEPOLIA_INVALID = 'ivladitestenssepolia.eth'
@@ -65,6 +69,7 @@ export const getPermissionsUrl = '/get-permissions'
 export const appSettingsUrl = '/settings/safe-apps'
 export const setupUrl = '/settings/setup?safe='
 export const dataSettingsUrl = '/settings/data?safe='
+export const securityUrl = '/settings/security-login?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
@@ -128,6 +133,11 @@ export const checkboxStates = {
   checked: 'be.checked',
 }
 
+export const elementExistanceStates = {
+  exist: 'exist',
+  not_exist: 'not.exist',
+}
+
 export const transactionStatus = {
   received: 'Receive',
   sent: 'Send',
@@ -141,6 +151,7 @@ export const transactionStatus = {
 export const tokenNames = {
   wrappedEther: 'Wrapped Ether',
   sepoliaEther: 'Sepolia Ether',
+  qaToken: 'QAtest10',
 }
 
 export const addressBookErrrMsg = {
