@@ -385,7 +385,7 @@ describe('tx-history-filter', () => {
       expect(getIncomingTransfers).toHaveBeenCalledWith(
         '4',
         '0x123',
-        { value: '123', executed: undefined, timezone_offset: -3600000, trusted: false },
+        { value: '123', executed: undefined, timezone_offset: 3600000, trusted: false },
         'pageUrl1',
       )
 
@@ -410,7 +410,7 @@ describe('tx-history-filter', () => {
         {
           execution_date__gte: '1970-01-01T00:00:00.000Z',
           executed: 'true',
-          timezone_offset: -3600000,
+          timezone_offset: 3600000,
           trusted: false,
         },
         'pageUrl2',
@@ -431,7 +431,7 @@ describe('tx-history-filter', () => {
       expect(getModuleTransactions).toHaveBeenCalledWith(
         '1',
         '0x789',
-        { to: '0x123', executed: undefined, timezone_offset: -3600000, trusted: false },
+        { to: '0x123', executed: undefined, timezone_offset: 3600000, trusted: false },
         'pageUrl3',
       )
 
