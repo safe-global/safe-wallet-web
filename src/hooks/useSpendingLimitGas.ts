@@ -13,11 +13,9 @@ const useSpendingLimitGas = (params: SpendingLimitTxParams) => {
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint | undefined>(async () => {
     if (!provider || !wallet) return
 
-    const signer = await provider.getSigner()
+    const contract = getSpendingLimitContract(chainId, provider)
 
-    const contract = getSpendingLimitContract(chainId, signer)
-
-    return contract.executeAllowanceTransfer.estimateGas(
+    const data = contract.interface.encodeFunctionData('executeAllowanceTransfer', [
       params.safeAddress,
       params.token,
       params.to,
@@ -26,7 +24,13 @@ const useSpendingLimitGas = (params: SpendingLimitTxParams) => {
       params.payment,
       params.delegate,
       params.signature,
-    )
+    ])
+
+    return provider.estimateGas({
+      to: await contract.getAddress(),
+      from: wallet.address,
+      data,
+    })
   }, [provider, wallet, chainId, params])
 
   return { gasLimit, gasLimitError, gasLimitLoading }
