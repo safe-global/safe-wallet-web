@@ -105,12 +105,6 @@ const trackWalletType = (wallet: ConnectedWallet) => {
     .catch(() => null)
 }
 
-// Detect mobile devices
-const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-
-// Detect injected wallet
-const hasInjectedWallet = () => typeof window !== 'undefined' && !!window?.ethereum
-
 let isConnecting = false
 
 // Wrapper that tracks/sets the last used wallet
@@ -123,13 +117,6 @@ export const connectWallet = async (
   }
 
   isConnecting = true
-
-  // On mobile, automatically choose WalletConnect if there is no injected wallet
-  if (!options && isMobile() && !hasInjectedWallet()) {
-    options = {
-      autoSelect: WALLETCONNECT,
-    }
-  }
 
   let wallets: WalletState[] | undefined
 

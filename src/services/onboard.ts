@@ -1,7 +1,7 @@
 import Onboard, { type OnboardAPI } from '@web3-onboard/core'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { hexValue } from '@ethersproject/bytes'
-import { getAllWallets, getRecommendedInjectedWallets } from '@/hooks/wallets/wallets'
+import { getAllWallets } from '@/hooks/wallets/wallets'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 import type { EnvState } from '@/store/settingsSlice'
 
@@ -44,7 +44,6 @@ export const createOnboard = (
       name: 'Safe{Wallet}',
       icon: location.origin + '/images/logo-round.svg',
       description: 'Safe{Wallet} – smart contract wallet for Ethereum (ex-Gnosis Safe multisig)',
-      recommendedInjectedWallets: getRecommendedInjectedWallets(),
     },
 
     connect: {
