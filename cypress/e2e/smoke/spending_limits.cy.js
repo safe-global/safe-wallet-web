@@ -36,12 +36,12 @@ describe('[SMOKE] Spending limits tests', () => {
 
   it('Verify Amount input cannot be a negative number', () => {
     spendinglimit.enterSpendingLimitAmount('-1')
-    spendinglimit.verifyNumberErrorValidation()
+    spendinglimit.verifyNumberAmountEntered('1')
   })
 
   it('Verify Amount input cannot be characters', () => {
     spendinglimit.enterSpendingLimitAmount('abc')
-    spendinglimit.verifyCharErrorValidation()
+    spendinglimit.verifyNumberAmountEntered('')
   })
 
   it('Verify any positive number can be set in the amount input', () => {
