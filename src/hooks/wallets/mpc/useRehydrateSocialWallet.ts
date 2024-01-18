@@ -65,7 +65,6 @@ const useRehydrateSocialWallet = () => {
     }
     const isOnboardModuleEnabled = isSocialWalletEnabled(chain)
     if (isSocialLoginEnabled && isOnboardModuleEnabled) {
-      console.log('REHYDRATIN')
       void rehydrate()
     }
   }, [chain, onboard, updateAddressBook, isSocialLoginEnabled])
