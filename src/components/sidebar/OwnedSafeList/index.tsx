@@ -100,14 +100,18 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const getOwnedSafesOnAllChains = () => {
     let ownedSafesOnAllChains: { safeAddress: string; chain: ChainInfo }[] = []
-
     for (let chain of configs) {
       const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
       const ownedSafesWithChain = ownedSafesOnChain.map((safeAddress) => ({ safeAddress, chain }))
       ownedSafesOnAllChains = [...ownedSafesOnAllChains, ...ownedSafesWithChain]
     }
 
-    return ownedSafesOnAllChains
+    return ownedSafesOnAllChains.sort((safeA, safeB) => {
+      // display safes on current chain first.
+      if (safeA.chain.chainId === currentChain?.chainId && safeB.chain.chainId !== currentChain?.chainId) return -1
+      if (safeA.chain.chainId !== currentChain?.chainId && safeB.chain.chainId === currentChain?.chainId) return 1
+      return 0
+    })
   }
 
   return (
@@ -147,6 +151,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         </Box>
       )}
 
+      {/* First 5 Safes displayed by default */}
       {!hasNoSafes && (
         <List className={css.list}>
           {getOwnedSafesOnAllChains().map(({ safeAddress, chain }) => {
@@ -166,6 +171,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         </List>
       )}
 
+      {/* Additional safes inside dropdown */}
       {getOwnedSafesOnAllChains().length > 0 && (
         <>
           <div onClick={() => toggleOpen(!open)} className={css.ownedLabelWrapper}>
