@@ -147,10 +147,10 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         </Box>
       )}
 
-      {!hasNoSafes && currentChain && (
+      {!hasNoSafes && (
         <List className={css.list}>
           {getOwnedSafesOnAllChains().map(({ safeAddress, chain }) => {
-            const href = getHref(currentChain, safeAddress)
+            const href = getHref(chain, safeAddress)
             return (
               <SafeListItem
                 key={safeAddress}

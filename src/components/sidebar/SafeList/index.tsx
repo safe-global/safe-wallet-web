@@ -1,4 +1,4 @@
-import React, { useState, type ReactElement, useCallback } from 'react'
+import React, { type ReactElement, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Typography from '@mui/material/Typography'
@@ -9,20 +9,14 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import AddIcon from '@/public/images/common/add.svg'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
-import useChainId from '@/hooks/useChainId'
-import { useAppSelector } from '@/store'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
-import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import OwnedSafeList from '@/components/sidebar/OwnedSafeList'
 
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
-import useWallet from '@/hooks/wallets/useWallet'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -51,27 +45,13 @@ export const _shouldExpandSafeList = ({
 }
 
 const MAX_EXPANDED_SAFES = 3
-const NO_WALLET_MESSAGE = 'Connect a wallet to view your Safe Accounts\n or to create a new one'
-const NO_SAFE_MESSAGE = 'Create a new Safe Account or add'
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
-  const chainId = useChainId()
   const currentChain = useCurrentChain()
-  const { safeAddress, safe } = useSafeInfo()
   const { configs } = useChains()
   const ownedSafes = useOwnedSafes()
-  const addedSafes = useAppSelector(selectAllAddedSafes)
-  const wallet = useWallet()
-  const handleConnect = useConnectWallet()
 
-  const [open, setOpen] = useState<Record<string, boolean>>({})
-  const toggleOpen = (chainId: string, open: boolean) => {
-    setOpen((prev) => ({ ...prev, [chainId]: open }))
-  }
-
-  const hasWallet = !!wallet
-  const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
