@@ -2,7 +2,7 @@ import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { ERC20__factory } from '@/types/contracts'
 import { type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 
-export const UNLIMITED_APPROVAL_AMOUNT = BigInt(2 ** 256 - 1)
+export const UNLIMITED_APPROVAL_AMOUNT = 2n ** 256n - 1n
 
 /**
  * Fetches ERC20 token symbol and decimals from on-chain.

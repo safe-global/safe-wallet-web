@@ -8,8 +8,11 @@ import { ERC20__factory } from '@/types/contracts'
 import * as balances from '@/hooks/useBalances'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import * as getTokenInfo from '@/utils/tokens'
+import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 
 const ERC20_INTERFACE = ERC20__factory.createInterface()
+
+const UNLIMITED_APPROVAL = 115792089237316195423570985008687907853269984665640564039457584007913129639935n
 
 const createNonApproveCallData = (to: string, value: string) => {
   return ERC20_INTERFACE.encodeFunctionData('transfer', [to, value])
@@ -168,6 +171,31 @@ describe('useApprovalInfos', () => {
     await waitFor(() => {
       expect(result.current).toEqual([[mockApproval], undefined, false])
       expect(fetchMock).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  it('detect unlimited approvals and format them as "Unlimited"', async () => {
+    const testInterface = new Interface(['function approve(address, uint256)'])
+
+    const mockSafeTx = createMockSafeTransaction({
+      to: zeroPadValue('0x0123', 20),
+      data: testInterface.encodeFunctionData('approve', [zeroPadValue('0x02', 20), UNLIMITED_APPROVAL]),
+      operation: OperationType.Call,
+    })
+
+    const { result } = renderHook(() => useApprovalInfos(mockSafeTx))
+
+    const mockApproval: ApprovalInfo = {
+      amount: UNLIMITED_APPROVAL,
+      amountFormatted: PSEUDO_APPROVAL_VALUES.UNLIMITED,
+      spender: '0x0000000000000000000000000000000000000002',
+      tokenAddress: '0x0000000000000000000000000000000000000123',
+      tokenInfo: undefined,
+      method: 'approve',
+    }
+
+    await waitFor(() => {
+      expect(result.current).toEqual([[mockApproval], undefined, false])
     })
   })
 })
