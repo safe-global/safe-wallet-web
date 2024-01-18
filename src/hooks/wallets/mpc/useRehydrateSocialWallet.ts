@@ -10,6 +10,7 @@ import { type UserInfo } from '@web3auth/mpc-core-kit'
 import { useCallback, useEffect } from 'react'
 import { checksumAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
+import { isSocialWalletEnabled } from '../wallets'
 
 const useRehydrateSocialWallet = () => {
   const chain = useCurrentChain()
@@ -62,7 +63,9 @@ const useRehydrateSocialWallet = () => {
 
       socialWalletService.setOnConnect(onConnect)
     }
-    if (isSocialLoginEnabled) {
+    const isOnboardModuleEnabled = isSocialWalletEnabled(chain)
+    if (isSocialLoginEnabled && isOnboardModuleEnabled) {
+      console.log('REHYDRATIN')
       void rehydrate()
     }
   }, [chain, onboard, updateAddressBook, isSocialLoginEnabled])
