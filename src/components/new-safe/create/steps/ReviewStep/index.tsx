@@ -6,7 +6,7 @@ import lightPalette from '@/components/theme/lightPalette'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useCurrentChain } from '@/hooks/useChains'
-import useGasPrice from '@/hooks/useGasPrice'
+import useGasPrice, { getTotalFee } from '@/hooks/useGasPrice'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import { formatVisualAmount } from '@/utils/formatters'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
@@ -130,11 +130,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const totalFee =
     gasLimit && maxFeePerGas
-      ? formatVisualAmount(
-          // maxPriorityFeePerGas is undefined if EIP-1559 disabled
-          (maxFeePerGas + (maxPriorityFeePerGas || 0n)) * gasLimit,
-          chain?.nativeCurrency.decimals,
-        )
+      ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
       : '> 0.001'
 
   const handleBack = () => {
