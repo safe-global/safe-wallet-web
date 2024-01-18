@@ -1,7 +1,8 @@
+import { type ExtendedSafeInfo } from '@/hooks/loadables/useLoadSafeInfo'
 import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { makeLoadableSlice } from './common'
 
-export const defaultSafeInfo: SafeInfo = {
+export const defaultSafeInfo: ExtendedSafeInfo = {
   address: { value: '' },
   chainId: '',
   nonce: -1,
@@ -17,9 +18,10 @@ export const defaultSafeInfo: SafeInfo = {
   txQueuedTag: '',
   txHistoryTag: '',
   messagesTag: '',
+  deployed: false,
 }
 
-const { slice, selector } = makeLoadableSlice('safeInfo', undefined as SafeInfo | undefined)
+const { slice, selector } = makeLoadableSlice('safeInfo', undefined as ExtendedSafeInfo | undefined)
 
 export const safeInfoSlice = slice
 export const selectSafeInfo = selector

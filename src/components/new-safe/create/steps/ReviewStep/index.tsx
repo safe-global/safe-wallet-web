@@ -1,5 +1,11 @@
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { AppRoutes } from '@/config/routes'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
+import { useAppDispatch } from '@/store'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { addUndeployedSafe } from '@/store/undeployedSafeSlice'
+import type { BrowserProvider } from 'ethers'
+import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
 import lightPalette from '@/components/theme/lightPalette'
@@ -16,7 +22,7 @@ import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3 } from '@/hooks/wallets/web3'
+import { isSmartContract, useWeb3 } from '@/hooks/wallets/web3'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
@@ -33,6 +39,21 @@ import { RELAY_SPONSORS } from '@/components/tx/SponsoredBy'
 import Image from 'next/image'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type DeploySafeProps } from '@safe-global/protocol-kit'
+
+const getCounterfactualNonce = async (
+  provider: BrowserProvider,
+  props: DeploySafeProps,
+): Promise<string | undefined> => {
+  const safeAddress = await computeNewSafeAddress(provider, props)
+  const isContractDeployed = await isSmartContract(provider, safeAddress)
+
+  // Safe is already deployed so we try the next saltNonce
+  if (isContractDeployed) {
+    return getCounterfactualNonce(provider, { ...props, saltNonce: (Number(props.saltNonce) + 1).toString() })
+  }
+
+  return props.saltNonce
+}
 
 export const NetworkFee = ({
   totalFee,
@@ -102,6 +123,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const wallet = useWallet()
   const provider = useWeb3()
   const [gasPrice] = useGasPrice()
+  const dispatch = useAppDispatch()
+  const router = useRouter()
   const saltNonce = useMemo(() => Date.now(), [])
   const [_, setPendingSafe] = usePendingSafe()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
@@ -138,6 +161,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         )
       : '> 0.001'
 
+  // Only 1 out of 1 safe setups are supported for now
+  const isCounterfactual = data.threshold === 1 && data.owners.length === 1
+
   const handleBack = () => {
     onBack(data)
   }
@@ -154,6 +180,27 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
       },
       saltNonce: saltNonce.toString(),
+    }
+
+    if (isCounterfactual) {
+      const counterfactualNonce = await getCounterfactualNonce(provider, { ...props, saltNonce: '0' })
+      const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce: counterfactualNonce })
+
+      const undeployedSafe = {
+        chainId: chain.chainId,
+        address: safeAddress,
+        safeProps: {
+          safeAccountConfig: props.safeAccountConfig,
+          safeDeploymentConfig: {
+            saltNonce: counterfactualNonce,
+          },
+        },
+      }
+
+      dispatch(addUndeployedSafe(undeployedSafe))
+      dispatch(upsertAddressBookEntry({ chainId: chain.chainId, address: safeAddress, name: data.name }))
+      router.push({ pathname: AppRoutes.home, query: { safe: `${chain.shortName}:${safeAddress}` } })
+      return
     }
 
     const safeAddress = await computeNewSafeAddress(provider, props)
@@ -208,46 +255,52 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         </Grid>
       </Box>
 
-      <Divider />
-      <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
-        {canRelay && !isSocialLogin && (
-          <Grid container spacing={3}>
-            <ReviewRow
-              name="Execution method"
-              value={
-                <ExecutionMethodSelector
-                  executionMethod={executionMethod}
-                  setExecutionMethod={setExecutionMethod}
-                  relays={minRelays}
+      {!isCounterfactual && (
+        <>
+          <Divider />
+          <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
+            {canRelay && !isSocialLogin && (
+              <Grid container spacing={3}>
+                <ReviewRow
+                  name="Execution method"
+                  value={
+                    <ExecutionMethodSelector
+                      executionMethod={executionMethod}
+                      setExecutionMethod={setExecutionMethod}
+                      relays={minRelays}
+                    />
+                  }
                 />
-              }
-            />
-          </Grid>
-        )}
+              </Grid>
+            )}
 
-        <Grid data-testid="network-fee-section" container spacing={3}>
-          <ReviewRow
-            name="Est. network fee"
-            value={
-              <>
-                <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
+            <Grid data-testid="network-fee-section" container spacing={3}>
+              <ReviewRow
+                name="Est. network fee"
+                value={
+                  <>
+                    <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
 
-                {!willRelay && !isSocialLogin && (
-                  <Typography variant="body2" color="text.secondary" mt={1}>
-                    You will have to confirm a transaction with your connected wallet.
-                  </Typography>
-                )}
-              </>
-            }
-          />
-        </Grid>
+                    {!willRelay && !isSocialLogin && (
+                      <Typography variant="body2" color="text.secondary" mt={1}>
+                        You will have to confirm a transaction with your connected wallet.
+                      </Typography>
+                    )}
+                  </>
+                }
+              />
+            </Grid>
 
-        {isWrongChain && <NetworkWarning />}
+            {isWrongChain && <NetworkWarning />}
 
-        {!walletCanPay && !willRelay && (
-          <ErrorMessage>Your connected wallet doesn&apos;t have enough funds to execute this transaction</ErrorMessage>
-        )}
-      </Box>
+            {!walletCanPay && !willRelay && (
+              <ErrorMessage>
+                Your connected wallet doesn&apos;t have enough funds to execute this transaction
+              </ErrorMessage>
+            )}
+          </Box>
+        </>
+      )}
 
       <Divider />
 
@@ -269,7 +322,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             size="stretched"
             disabled={isDisabled}
           >
-            Next
+            Create
           </Button>
         </Box>
       </Box>

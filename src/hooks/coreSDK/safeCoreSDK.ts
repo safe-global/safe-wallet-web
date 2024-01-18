@@ -1,5 +1,6 @@
 import chains from '@/config/chains'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import type { PredictedSafeProps } from '@safe-global/protocol-kit/dist/src/types'
 import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
@@ -54,6 +55,7 @@ type SafeCoreSDKProps = {
   version: SafeInfo['version']
   implementationVersionState: SafeInfo['implementationVersionState']
   implementation: SafeInfo['implementation']['value']
+  undeployedSafe: PredictedSafeProps | undefined
 }
 
 // Safe Core SDK
@@ -64,6 +66,7 @@ export const initSafeSDK = async ({
   version,
   implementationVersionState,
   implementation,
+  undeployedSafe,
 }: SafeCoreSDKProps): Promise<Safe | undefined> => {
   const safeVersion = version ?? (await Gnosis_safe__factory.connect(address, provider).VERSION())
   let isL1SafeSingleton = chainId === chains.eth
@@ -86,6 +89,14 @@ export const initSafeSDK = async ({
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
     isL1SafeSingleton = true
+  }
+
+  if (undeployedSafe) {
+    return Safe.create({
+      ethAdapter: createReadOnlyEthersAdapter(provider),
+      isL1SafeSingleton: isL1SafeSingleton,
+      predictedSafe: undeployedSafe,
+    })
   }
 
   return Safe.create({

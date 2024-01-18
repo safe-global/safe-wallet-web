@@ -1,11 +1,11 @@
+import { type ExtendedSafeInfo } from '@/hooks/loadables/useLoadSafeInfo'
 import { useMemo } from 'react'
 import isEqual from 'lodash/isEqual'
-import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import { defaultSafeInfo, selectSafeInfo } from '@/store/safeInfoSlice'
 
 const useSafeInfo = (): {
-  safe: SafeInfo
+  safe: ExtendedSafeInfo
   safeAddress: string
   safeLoaded: boolean
   safeLoading: boolean

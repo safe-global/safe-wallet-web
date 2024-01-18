@@ -1,5 +1,7 @@
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { useEffect, useMemo } from 'react'
-import { getBalances, type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import { getBalances, type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import useAsync, { type AsyncResult } from '../useAsync'
 import { Errors, logError } from '@/services/exceptions'
@@ -28,18 +30,40 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const isTrustedTokenList = useTokenListSetting()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = safe.chainId
+  const chain = useCurrentChain()
+  const web3ReadOnly = useWeb3ReadOnly()
 
   // Re-fetch assets when the entire SafeInfo updates
-  const [data, error, loading] = useAsync<SafeBalanceResponse>(
-    () => {
-      if (!chainId || !safeAddress || isTrustedTokenList === undefined) return
+  const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(
+    async () => {
+      if (!chain || !chainId || !safeAddress || isTrustedTokenList === undefined) return
+
+      if (!safe.deployed) {
+        const balance = await web3ReadOnly?.getBalance(safeAddress)
+
+        return Promise.resolve({
+          fiatTotal: '0',
+          items: [
+            {
+              tokenInfo: {
+                type: TokenType.NATIVE_TOKEN,
+                address: ZERO_ADDRESS,
+                ...chain.nativeCurrency,
+              },
+              balance: balance?.toString(),
+              fiatBalance: '0',
+              fiatConversion: '0',
+            },
+          ],
+        } as SafeBalanceResponse)
+      }
 
       return getBalances(chainId, safeAddress, currency, {
         trusted: isTrustedTokenList,
       })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safeAddress, chainId, currency, isTrustedTokenList, pollCount],
+    [safeAddress, chainId, currency, isTrustedTokenList, pollCount, web3ReadOnly],
     false, // don't clear data between polls
   )
 
