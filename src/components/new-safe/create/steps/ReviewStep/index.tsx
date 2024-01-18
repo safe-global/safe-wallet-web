@@ -131,9 +131,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const totalFee =
     gasLimit && maxFeePerGas
       ? formatVisualAmount(
-          maxFeePerGas +
-            // maxPriorityFeePerGas is undefined if EIP-1559 disabled
-            (maxPriorityFeePerGas || 0n) * gasLimit,
+          // maxPriorityFeePerGas is undefined if EIP-1559 disabled
+          (maxFeePerGas + (maxPriorityFeePerGas || 0n)) * gasLimit,
           chain?.nativeCurrency.decimals,
         )
       : '> 0.001'
