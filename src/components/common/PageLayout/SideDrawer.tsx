@@ -37,7 +37,6 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
         open={isOpen}
         onClose={() => onToggle(false)}
         className={smDrawerHidden ? css.smDrawerHidden : undefined}
-        transitionDuration={isSafeAppRoute || isSmallScreen ? 225 : 0}
       >
         <aside>
           <Sidebar />
