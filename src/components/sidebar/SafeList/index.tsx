@@ -1,4 +1,4 @@
-import React, { type ReactElement, useCallback } from 'react'
+import React, { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Typography from '@mui/material/Typography'
@@ -54,21 +54,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
-
-  /**
-   * Navigate to the dashboard when selecting a safe on the welcome page,
-   * navigate to the history when selecting a safe on a single tx page,
-   * otherwise keep the current route
-   */
-  const getHref = useCallback(
-    (chain: ChainInfo, address: string) => {
-      return {
-        pathname: isWelcomePage ? AppRoutes.home : isSingleTxPage ? AppRoutes.transactions.history : router.pathname,
-        query: { ...router.query, safe: `${chain.shortName}:${address}` },
-      }
-    },
-    [isWelcomePage, isSingleTxPage, router.pathname, router.query],
-  )
 
   const getOwnedSafesWithChain = () => {
     let ownedSafesOnAllChains: { safeAddress: string; chain: ChainInfo }[] = []

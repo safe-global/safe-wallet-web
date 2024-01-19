@@ -154,49 +154,54 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
       {/* First 5 Safes displayed by default */}
       {!hasNoSafes && (
         <List className={css.list}>
-          {getOwnedSafesOnAllChains().map(({ safeAddress, chain }) => {
-            const href = getHref(chain, safeAddress)
-            return (
-              <SafeListItem
-                key={safeAddress}
-                address={safeAddress}
-                chainId={chain.chainId}
-                closeDrawer={closeDrawer}
-                href={href}
-                shouldScrollToSafe
-                isAdded
-              />
-            )
-          })}
+          {getOwnedSafesOnAllChains()
+            .slice(0, 3)
+            .map(({ safeAddress, chain }) => {
+              const href = getHref(chain, safeAddress)
+              return (
+                <SafeListItem
+                  key={safeAddress}
+                  address={safeAddress}
+                  chainId={chain.chainId}
+                  closeDrawer={closeDrawer}
+                  href={href}
+                  shouldScrollToSafe
+                  isAdded
+                  isWelcomePage={false}
+                />
+              )
+            })}
         </List>
       )}
 
       {/* Additional safes inside dropdown */}
-      {getOwnedSafesOnAllChains().length > 0 && (
+      {getOwnedSafesOnAllChains().length > 4 && (
         <>
           <div onClick={() => toggleOpen(!open)} className={css.ownedLabelWrapper}>
             <Typography variant="body2" display="inline" className={css.ownedLabel}>
-              Accounts on other networks
+              More Accounts
               <IconButton disableRipple>{open ? <ExpandLess /> : <ExpandMore />}</IconButton>
             </Typography>
           </div>
 
           <Collapse key={chainId} in={open}>
             <List sx={{ py: 0 }}>
-              {getOwnedSafesOnAllChains().map(({ safeAddress, chain }) => {
-                const href = getHref(chain, safeAddress)
+              {getOwnedSafesOnAllChains()
+                .slice(4)
+                .map(({ safeAddress, chain }) => {
+                  const href = getHref(chain, safeAddress)
 
-                return (
-                  <SafeListItem
-                    key={safeAddress}
-                    address={safeAddress}
-                    chainId={chain.chainId}
-                    closeDrawer={closeDrawer}
-                    href={href}
-                    shouldScrollToSafe
-                  />
-                )
-              })}
+                  return (
+                    <SafeListItem
+                      key={safeAddress}
+                      address={safeAddress}
+                      chainId={chain.chainId}
+                      closeDrawer={closeDrawer}
+                      href={href}
+                      shouldScrollToSafe
+                    />
+                  )
+                })}
             </List>
           </Collapse>
         </>

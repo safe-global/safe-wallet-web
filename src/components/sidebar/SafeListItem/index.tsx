@@ -11,9 +11,7 @@ import SafeIcon from '@/components/common/SafeIcon'
 import { useAppSelector } from '@/store'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { selectChainById } from '@/store/chainsSlice'
-import SafeListItemSecondaryAction from '@/components/sidebar/SafeListItemSecondaryAction'
 import useChainId from '@/hooks/useChainId'
-import { AppRoutes } from '@/config/routes'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
 import Box from '@mui/material/Box'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
@@ -24,6 +22,9 @@ import usePendingActions from '@/hooks/usePendingActions'
 import useOnceVisible from '@/hooks/useOnceVisible'
 import Track from '@/components/common/Track'
 import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS } from '@/services/analytics'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
 
 const SafeListItem = ({
   address,
@@ -33,6 +34,7 @@ const SafeListItem = ({
   href,
   noActions = false,
   isAdded = false,
+  isWelcomePage = false,
   ...rest
 }: {
   address: string
@@ -44,6 +46,7 @@ const SafeListItem = ({
   owners?: string | number
   noActions?: boolean
   isAdded?: boolean
+  isWelcomePage?: boolean
 }): ReactElement => {
   const safeRef = useRef<HTMLDivElement>(null)
   const safeAddress = useSafeAddress()
@@ -55,6 +58,8 @@ const SafeListItem = ({
   const shortName = chain?.shortName || ''
   const isVisible = useOnceVisible(safeRef)
   const { totalQueued, totalToSign } = usePendingActions(chainId, isAdded && isVisible ? address : undefined)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -65,12 +70,13 @@ const SafeListItem = ({
 
   return (
     <ListItem
+      alignItems="flex-start"
       className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
       disablePadding
       secondaryAction={
         noActions ? undefined : (
           <Box display="flex" alignItems="center" gap={1}>
-            <SafeListItemSecondaryAction
+            {/* <SafeListItemSecondaryAction
               chainId={chainId}
               address={address}
               onClick={closeDrawer}
@@ -78,7 +84,7 @@ const SafeListItem = ({
                 pathname: AppRoutes.newSafe.load,
                 query: { chain: shortName, address },
               }}
-            />
+            /> */}
             <SafeListContextMenu name={name} address={address} chainId={chainId} />
           </Box>
         )
@@ -96,27 +102,36 @@ const SafeListItem = ({
             <ListItemIcon>
               <SafeIcon address={address} {...rest} />
             </ListItemIcon>
-            <ListItemText
-              sx={noActions ? undefined : { pr: 10 }}
-              primaryTypographyProps={{
-                variant: 'body2',
-                component: 'div',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-              }}
-              secondaryTypographyProps={{ component: 'div', color: 'primary' }}
-              primary={name || ''}
-              secondary={
-                <EthHashInfo
-                  address={address}
-                  showAvatar={false}
-                  showName={false}
-                  prefix={shortName}
-                  copyAddress={false}
-                />
-              }
-            />
+            <div className={css.listItemInfo}>
+              <ListItemText
+                className={css.listItemText}
+                sx={noActions ? undefined : { pr: 10 }}
+                primaryTypographyProps={{
+                  variant: 'body2',
+                  component: 'div',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                }}
+                secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+                primary={<b>{name || ''}</b>}
+                secondary={
+                  <EthHashInfo
+                    address={address}
+                    showAvatar={false}
+                    showName={false}
+                    prefix={shortName}
+                    copyAddress={false}
+                  />
+                }
+              />
+              <ListItemText
+                sx={{ m: 'auto', fontWeight: 600 }}
+                primaryTypographyProps={{ variant: 'body2' }}
+                primary={<b>$2,651.82</b>}
+              />
+            </div>
+            <ChainIndicator chainId={chainId} inline showName={isWelcomePage && !isMobile} />
           </ListItemButton>
         </Link>
       </Track>
