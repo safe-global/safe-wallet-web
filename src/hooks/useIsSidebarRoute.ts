@@ -1,11 +1,14 @@
 import { AppRoutes } from '@/config/routes'
 import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/router'
 
 const NO_SIDEBAR_ROUTES = [
   AppRoutes.share.safeApp,
   AppRoutes.newSafe.create,
   AppRoutes.newSafe.load,
   AppRoutes.index,
+  AppRoutes.welcome.index,
+  AppRoutes.welcome.socialLogin,
   AppRoutes.imprint,
   AppRoutes.privacy,
   AppRoutes.cookie,
@@ -13,7 +16,12 @@ const NO_SIDEBAR_ROUTES = [
   AppRoutes.licenses,
 ]
 
-export function useIsSidebarRoute(): boolean {
+const TOGGLE_SIDEBAR_ROUTES = [AppRoutes.apps.open]
+
+export function useIsSidebarRoute(): [boolean, boolean] {
   const pathname = usePathname()
-  return !NO_SIDEBAR_ROUTES.includes(pathname)
+  const noSidebar = NO_SIDEBAR_ROUTES.includes(pathname)
+  const router = useRouter()
+  const hasSafe = !router.isReady || !!router.query.safe
+  return [!noSidebar && hasSafe, TOGGLE_SIDEBAR_ROUTES.includes(pathname)]
 }
