@@ -1,0 +1,5 @@
+.recoveryGroupContainer {
+  grid-template-areas:
+    'warning warning warning warning warning warning'
+    'line items items items items items';
+}

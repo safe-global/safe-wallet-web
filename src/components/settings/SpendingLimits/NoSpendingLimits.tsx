@@ -8,7 +8,7 @@ export const NoSpendingLimits = () => {
   return (
     <Grid mt={2} container direction="row" justifyContent="space-between" spacing={2}>
       <Grid item sm={2}>
-        <BeneficiaryIcon />
+        <BeneficiaryIcon data-testid="beneficiary-icon" />
       </Grid>
       <Grid item sm={10}>
         <Typography>
@@ -21,7 +21,7 @@ export const NoSpendingLimits = () => {
       </Grid>
 
       <Grid item sm={2}>
-        <AssetAmountIcon />
+        <AssetAmountIcon data-testid="asset-icon" />
       </Grid>
       <Grid item sm={10}>
         <Typography>
@@ -31,7 +31,7 @@ export const NoSpendingLimits = () => {
       </Grid>
 
       <Grid item sm={2}>
-        <TimeIcon />
+        <TimeIcon data-testid="time-icon" />
       </Grid>
       <Grid item sm={10}>
         <Typography>

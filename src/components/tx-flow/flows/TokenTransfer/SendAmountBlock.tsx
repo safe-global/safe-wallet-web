@@ -29,7 +29,7 @@ const SendAmountBlock = ({
         {amount === PSEUDO_APPROVAL_VALUES.UNLIMITED ? (
           <Typography>{PSEUDO_APPROVAL_VALUES.UNLIMITED}</Typography>
         ) : (
-          <Typography>{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
+          <Typography data-testid="token-amount">{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
         )}
       </Box>
     </FieldsGrid>

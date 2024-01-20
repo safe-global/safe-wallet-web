@@ -25,6 +25,8 @@ import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
 import { isEIP712TypedData } from '@/utils/safe-messages'
+import ApprovalEditor from '@/components/tx/ApprovalEditor'
+import { ErrorBoundary } from '@sentry/react'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -113,6 +115,12 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       <InfoDetails title="Interact with SignMessageLib">
         <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
       </InfoDetails>
+
+      {isEIP712TypedData(decodedMessage) && (
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor safeMessage={decodedMessage} />
+        </ErrorBoundary>
+      )}
 
       {safeTx && (
         <Box pb={1}>

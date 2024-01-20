@@ -9,6 +9,7 @@ import Button from '@mui/material/Button'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TxFilterForm from '@/components/transactions/TxFilterForm'
+import TrustedToggle from '@/components/transactions/TrustedToggle'
 import { useTxFilter } from '@/utils/tx-history-filter'
 
 const History: NextPage = () => {
@@ -28,6 +29,8 @@ const History: NextPage = () => {
       </Head>
 
       <TxHeader>
+        <TrustedToggle />
+
         <Button variant="outlined" onClick={toggleFilter} size="small" endIcon={<ExpandIcon />}>
           {filter?.type ?? 'Filter'}
         </Button>

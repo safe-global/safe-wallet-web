@@ -1,40 +1,41 @@
 import { Box } from '@mui/material'
-import classNames from 'classnames'
 import type { ReactElement } from 'react'
 
 import { RecoveryType } from '../RecoveryType'
 import { RecoveryInfo } from '../RecoveryInfo'
 import { RecoveryStatus } from '../RecoveryStatus'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
-import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
-
-import txSummaryCss from '@/components/transactions/TxSummary/styles.module.css'
+import css from '@/components/transactions/TxSummary/styles.module.css'
+import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
+import DateTime from '@/components/common/DateTime'
 
 export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactElement {
   const wallet = useWallet()
+  const { isExecutable, isPending } = useRecoveryTxState(item)
   const { isMalicious } = item
 
   return (
-    <Box className={classNames(txSummaryCss.gridContainer, txSummaryCss.columnTemplate)}>
-      <Box gridArea="type" className={txSummaryCss.columnWrap}>
+    <Box className={css.gridContainer}>
+      <Box gridArea="type">
         <RecoveryType isMalicious={isMalicious} />
       </Box>
 
-      <Box gridArea="info" className={txSummaryCss.columnWrap}>
+      <Box gridArea="info">
         <RecoveryInfo isMalicious={isMalicious} />
       </Box>
 
-      {wallet && (
-        <Box gridArea="actions" display="flex" justifyContent={{ sm: 'center' }} gap={1}>
-          <ExecuteRecoveryButton recovery={item} compact />
-          <CancelRecoveryButton recovery={item} compact />
-        </Box>
-      )}
+      <Box gridArea="date" data-testid="tx-date" className={css.date}>
+        <DateTime value={item.timestamp.toNumber()} />
+      </Box>
 
-      <Box gridArea="status" ml={{ sm: 'auto' }} mr={1} display="flex" alignItems="center">
-        <RecoveryStatus recovery={item} />
+      <Box gridArea="status">
+        {!isExecutable || isPending ? (
+          <RecoveryStatus recovery={item} />
+        ) : (
+          !isMalicious && wallet && <ExecuteRecoveryButton recovery={item} compact />
+        )}
       </Box>
     </Box>
   )

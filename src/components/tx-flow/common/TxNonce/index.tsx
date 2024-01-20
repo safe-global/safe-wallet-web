@@ -273,7 +273,7 @@ const TxNonce = () => {
   const { nonce, recommendedNonce } = useContext(SafeTxContext)
 
   return (
-    <Box display="flex" alignItems="center" gap={1}>
+    <Box data-testid="nonce-fld" display="flex" alignItems="center" gap={1}>
       Nonce{' '}
       <Typography component="span" fontWeight={700}>
         #

@@ -9,7 +9,7 @@ jest.mock('@/services/analytics', () => ({
   trackEvent: jest.fn(),
 }))
 
-jest.mock('@/services/tx/txDetails', () => ({
+jest.mock('@/services/transactions', () => ({
   getTxDetails: jest.fn(() => Promise.resolve({ safeAppInfo: { url: 'google.com' } } as unknown as TransactionDetails)),
 }))
 

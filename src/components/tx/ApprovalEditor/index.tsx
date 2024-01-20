@@ -12,6 +12,7 @@ import EditIcon from '@/public/images/common/edit.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import Approvals from '@/components/tx/ApprovalEditor/Approvals'
 import { BigNumber } from 'ethers'
+import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 const Title = () => {
   return (
@@ -29,17 +30,26 @@ const Title = () => {
   )
 }
 
-export const ApprovalEditor = ({ safeTransaction }: { safeTransaction: SafeTransaction | undefined }) => {
+export const ApprovalEditor = ({
+  safeTransaction,
+  safeMessage,
+}: {
+  safeTransaction?: SafeTransaction
+  safeMessage?: EIP712TypedData
+}) => {
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
-  const [readableApprovals, error, loading] = useApprovalInfos(safeTransaction)
+  const [readableApprovals, error, loading] = useApprovalInfos({ safeTransaction, safeMessage })
 
   const nonZeroApprovals = readableApprovals?.filter((approval) => !BigNumber.from(0).eq(approval.amount))
 
-  if (nonZeroApprovals?.length === 0 || !safeTransaction) {
+  if (nonZeroApprovals?.length === 0 || (!safeTransaction && !safeMessage)) {
     return null
   }
 
   const updateApprovals = (approvals: string[]) => {
+    if (!safeTransaction) {
+      return
+    }
     const extractedTxs = decodeSafeTxToBaseTransactions(safeTransaction)
     const updatedTxs = updateApprovalTxs(approvals, readableApprovals, extractedTxs)
 
@@ -51,8 +61,7 @@ export const ApprovalEditor = ({ safeTransaction }: { safeTransaction: SafeTrans
     createSafeTx().then(setSafeTx).catch(setSafeTxError)
   }
 
-  console.log('SIGS:', safeTransaction.signatures.size)
-  const isReadOnly = safeTransaction.signatures.size > 0
+  const isReadOnly = (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined
 
   return (
     <Box display="flex" flexDirection="column" gap={2} mb={3}>

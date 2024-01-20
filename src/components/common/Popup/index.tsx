@@ -16,6 +16,7 @@ const Popup = ({ children, ...props }: PopoverProps): ReactElement => {
       sx={{
         '& > .MuiPaper-root': {
           top: 'var(--header-height) !important',
+          overflowY: 'auto',
         },
       }}
       {...props}

@@ -10,11 +10,13 @@ import { useAlreadySigned, useTxActions } from './hooks'
 import type { SignOrExecuteProps } from '.'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
-import { asError } from '@/services/exceptions/utils'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../security/shared/TxSecurityContext'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import BatchButton from './BatchButton'
+import { asError } from '@/services/exceptions/utils'
+import { isWalletRejection } from '@/utils/wallets'
 
 export const SignForm = ({
   safeTx,
@@ -37,6 +39,7 @@ export const SignForm = ({
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
 
   // Hooks
   const { signTx, addToBatch } = txActions
@@ -57,15 +60,20 @@ export const SignForm = ({
 
     setIsSubmittable(false)
     setSubmitError(undefined)
+    setIsRejectedByUser(false)
 
     let resultTxId: string
     try {
       resultTxId = await (isAddingToBatch ? addToBatch(safeTx, origin) : signTx(safeTx, txId, origin))
     } catch (_err) {
       const err = asError(_err)
-      trackError(Errors._805, err)
+      if (isWalletRejection(err)) {
+        setIsRejectedByUser(true)
+      } else {
+        trackError(Errors._804, err)
+        setSubmitError(err)
+      }
       setIsSubmittable(true)
-      setSubmitError(err)
       return
     }
 
@@ -95,6 +103,12 @@ export const SignForm = ({
         submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
+      )}
+
+      {isRejectedByUser && (
+        <Box mt={1}>
+          <WalletRejectionError />
+        </Box>
       )}
 
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />

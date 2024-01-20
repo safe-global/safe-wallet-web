@@ -382,7 +382,12 @@ describe('tx-history-filter', () => {
     it('should get incoming transfers relevant to `type`', () => {
       fetchFilteredTxHistory('4', '0x123', { type: 'Incoming' as TxFilterType, filter: { value: '123' } }, 'pageUrl1')
 
-      expect(getIncomingTransfers).toHaveBeenCalledWith('4', '0x123', { value: '123' }, 'pageUrl1')
+      expect(getIncomingTransfers).toHaveBeenCalledWith(
+        '4',
+        '0x123',
+        { value: '123', executed: undefined, timezone_offset: 3600000, trusted: false },
+        'pageUrl1',
+      )
 
       expect(getMultisigTransactions).not.toHaveBeenCalled()
       expect(getModuleTransactions).not.toHaveBeenCalled()
@@ -402,7 +407,12 @@ describe('tx-history-filter', () => {
       expect(getMultisigTransactions).toHaveBeenCalledWith(
         '100',
         '0x456',
-        { execution_date__gte: '1970-01-01T00:00:00.000Z', executed: 'true' },
+        {
+          execution_date__gte: '1970-01-01T00:00:00.000Z',
+          executed: 'true',
+          timezone_offset: 3600000,
+          trusted: false,
+        },
         'pageUrl2',
       )
 
@@ -418,7 +428,12 @@ describe('tx-history-filter', () => {
         'pageUrl3',
       )
 
-      expect(getModuleTransactions).toHaveBeenCalledWith('1', '0x789', { to: '0x123' }, 'pageUrl3')
+      expect(getModuleTransactions).toHaveBeenCalledWith(
+        '1',
+        '0x789',
+        { to: '0x123', executed: undefined, timezone_offset: 3600000, trusted: false },
+        'pageUrl3',
+      )
 
       expect(getIncomingTransfers).not.toHaveBeenCalled()
       expect(getMultisigTransactions).not.toHaveBeenCalled()
@@ -428,7 +443,10 @@ describe('tx-history-filter', () => {
       fetchFilteredTxHistory(
         '1',
         '0x789',
-        { type: 'Test' as TxFilterType, filter: { token_address: '0x123' } },
+        {
+          type: 'Test' as TxFilterType,
+          filter: { token_address: '0x123' },
+        },
         'pageUrl3',
       )
 

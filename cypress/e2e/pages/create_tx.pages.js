@@ -28,6 +28,7 @@ const requiredConfirmation = '[data-testid="required-confirmations"]'
 const txDate = '[data-testid="tx-date"]'
 const spamTokenWarningIcon = '[data-testid="warning"]'
 const untrustedTokenWarningModal = '[data-testid="untrusted-token-warning"]'
+const sendTokensBtn = '[data-testid="send-tokens-btn"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -48,6 +49,9 @@ const signBtnStr = 'Sign'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
 
+export function clickOnSendTokensBtn() {
+  cy.get(sendTokensBtn).click()
+}
 export function verifyNumberOfTransactions(count) {
   cy.get(txDate).should('have.length.at.least', count)
   cy.get(transactionItem).should('have.length.at.least', count)
@@ -234,10 +238,6 @@ export function verifyENSResolves(fullAddress) {
   let split = fullAddress.split(':')
   let noPrefixAddress = split[1]
   cy.get(recepientInput).should('have.value', noPrefixAddress)
-}
-
-export function clickOnSendTokensBtn() {
-  cy.contains(sendTokensBtnStr).click()
 }
 
 export function verifyRandomStringAddress(randomAddressString) {

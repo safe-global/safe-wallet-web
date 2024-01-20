@@ -4,6 +4,7 @@ import { type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-
 import { BigNumber } from 'ethers'
 
 export const UNLIMITED_APPROVAL_AMOUNT = BigNumber.from(2).pow(256).sub(1)
+export const UNLIMITED_PERMIT2_AMOUNT = BigNumber.from(2).pow(160).sub(1)
 
 /**
  * Fetches ERC20 token symbol and decimals from on-chain.

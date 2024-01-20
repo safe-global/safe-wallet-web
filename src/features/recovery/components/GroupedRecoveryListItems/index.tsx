@@ -13,6 +13,7 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 
 import css from '@/components/transactions/GroupedTxListItems/styles.module.css'
+import customCss from './styles.module.css'
 
 function Disclaimer({ isMalicious }: { isMalicious: boolean }): ReactElement {
   return (
@@ -42,16 +43,24 @@ export function GroupedRecoveryListItems({ items }: { items: Array<Transaction |
   const isMalicious = recoveries.some((recovery) => recovery.isMalicious)
 
   return (
-    <Paper className={css.container} variant="outlined" sx={{ borderColor: ({ palette }) => palette.warning.light }}>
-      <Disclaimer isMalicious={isMalicious} />
+    <Paper className={[css.container, customCss.recoveryGroupContainer].join(' ')}>
+      <Box gridArea="warning" className={css.disclaimerContainer}>
+        <Disclaimer isMalicious={isMalicious} />
+      </Box>
 
-      {cancellations.map((tx) => (
-        <ExpandableTransactionItem key={tx.transaction.id} item={tx} />
-      ))}
+      <Box gridArea="line" className={css.line} />
 
-      {recoveries.map((recovery) => (
-        <RecoveryListItem key={recovery.transactionHash} item={recovery} />
-      ))}
+      <Box gridArea="items" className={css.txItems}>
+        {cancellations.map((tx) => (
+          <div key={tx.transaction.id}>
+            <ExpandableTransactionItem item={tx} />
+          </div>
+        ))}
+
+        {recoveries.map((recovery) => (
+          <RecoveryListItem key={recovery.transactionHash} item={recovery} />
+        ))}
+      </Box>
     </Paper>
   )
 }

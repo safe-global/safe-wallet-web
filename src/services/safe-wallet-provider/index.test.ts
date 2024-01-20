@@ -493,4 +493,104 @@ describe('SafeWalletProvider', () => {
       expect(sdk.proxy).toHaveBeenCalledWith('web3_clientVersion', [''])
     })
   })
+
+  describe('EIP-5792', () => {
+    describe('wallet_sendFunctionCallBundle', () => {
+      it('should send a bundle', async () => {
+        const sdk = {
+          send: jest.fn(),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = [
+          {
+            chainId: 1,
+            from: '0x1234',
+            calls: [
+              { gas: 1000, data: '0x123', to: '0x123', value: '0x123' },
+              { gas: 1000, data: '0x456', to: '0x789', value: '0x1' },
+            ],
+          },
+        ]
+
+        await safeWalletProvider.request(1, { method: 'wallet_sendFunctionCallBundle', params } as any, appInfo)
+
+        expect(sdk.send).toHaveBeenCalledWith(
+          {
+            txs: params[0].calls,
+            params: { safeTxGas: 0 },
+          },
+          {
+            description: 'test',
+            iconUrl: 'test',
+            id: 1,
+            name: 'test',
+            url: 'test',
+          },
+        )
+      })
+    })
+
+    describe('wallet_getBundleStatus', () => {
+      it('should look up a tx by txHash', async () => {
+        const sdk = {
+          getBySafeTxHash: jest.fn().mockResolvedValue({
+            txStatus: 'AWAITING_EXECUTION',
+            txHash: '0x123',
+            txData: {
+              dataDecoded: {
+                parameters: [{ valueDecoded: [1] }],
+              },
+            },
+          }),
+          proxy: jest.fn(),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = ['0x123']
+
+        await safeWalletProvider.request(1, { method: 'wallet_getBundleStatus', params } as any, appInfo)
+
+        expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
+        expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
+      })
+
+      it('should return a pending status w/o txHash', async () => {
+        const sdk = {
+          getBySafeTxHash: jest.fn().mockResolvedValue({
+            txStatus: 'AWAITING_CONFIRMATION',
+            txData: {
+              dataDecoded: {
+                parameters: [{ valueDecoded: [1] }],
+              },
+            },
+          }),
+          proxy: jest.fn(),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = ['0x123']
+
+        await safeWalletProvider.request(1, { method: 'wallet_getBundleStatus', params } as any, appInfo)
+
+        expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
+        expect(sdk.proxy).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('wallet_showBundleStatus', () => {
+      it('should return the bundle status', async () => {
+        const sdk = {
+          showTxStatus: jest.fn(),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = ['0x123']
+
+        await safeWalletProvider.request(1, { method: 'wallet_showBundleStatus', params } as any, appInfo)
+
+        expect(sdk.showTxStatus).toHaveBeenCalledWith(params[0])
+      })
+    })
+  })
 })
