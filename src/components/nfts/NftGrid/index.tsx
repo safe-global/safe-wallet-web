@@ -205,7 +205,7 @@ const NftGrid = ({
                     <Box display="flex" alignItems="center" gap={2}>
                       {item.imageUri ? activeNftIcon : inactiveNftIcon}
 
-                      <div>
+                      <div style={{ marginLeft: '20px' }}>
                         <Typography>{item.tokenName || item.tokenSymbol}</Typography>
 
                         <Typography fontSize="small" color="text.secondary" component="div">
