@@ -11,6 +11,7 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
 import OwnedSafeList from '@/components/sidebar/OwnedSafeList'
+import Watchlist from '@/components/sidebar/WatchList'
 
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
@@ -67,19 +68,6 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     return ownedSafesOnAllChains
   }
 
-  // const getAddedSafesWithChain = () => {
-  //   let addedSafesOnAllChains: { safeAddress: string; chain: ChainInfo }[] = []
-
-  //   for (let chain of configs) {
-  //     const addedSafesOnChain = addedSafes[chain.chainId] ?? {}
-  //     const addedSafeEntriesOnChain = Object.entries(addedSafesOnChain)
-  //     const addedSafesWithChain = addedSafeEntriesOnChain.map(([safeAddress]) => ({ safeAddress, chain }))
-  //     addedSafesOnAllChains = [...addedSafesOnAllChains, ...addedSafesWithChain]
-  //   }
-
-  //   return addedSafesOnAllChains
-  // }
-
   getOwnedSafesWithChain()
   return (
     <div>
@@ -110,6 +98,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
       </div>
 
       <OwnedSafeList closeDrawer={closeDrawer} />
+      <Watchlist closeDrawer={closeDrawer} />
 
       {/* {hasNoSafes && (
         <Box display="flex" flexDirection="column" alignItems="center" py={10}>
