@@ -1,4 +1,4 @@
-import { JsonRpcSigner, TransactionRequest, TransactionResponse } from 'ethers'
+import { JsonRpcSigner, type TransactionRequest, type TransactionResponse } from 'ethers'
 
 /**
  * This class is basically a copy of the UncheckedJonRpcSigner from ethers.js v 5.7:
@@ -16,7 +16,7 @@ import { JsonRpcSigner, TransactionRequest, TransactionResponse } from 'ethers'
 export class UncheckedJsonRpcSigner extends JsonRpcSigner {
   async sendTransaction(transaction: TransactionRequest): Promise<TransactionResponse> {
     return this.sendUncheckedTransaction(transaction).then((hash) => {
-      return <TransactionResponse><unknown>{
+      return <TransactionResponse>(<unknown>{
         hash: hash,
         nonce: null,
         gasLimit: null,
@@ -29,7 +29,7 @@ export class UncheckedJsonRpcSigner extends JsonRpcSigner {
         wait: (confirmations?: number) => {
           return this.provider.waitForTransaction(hash, confirmations)
         },
-      };
-    });
+      })
+    })
   }
 }

@@ -1,7 +1,8 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
 import { EthersAdapter } from '@safe-global/protocol-kit'
-import { ethers, JsonRpcProvider, Signer, JsonRpcSigner, TransactionRequest, TransactionResponse } from 'ethers'
+import type { JsonRpcSigner } from 'ethers'
+import { ethers } from 'ethers'
 import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -13,7 +14,6 @@ import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { asError } from '@/services/exceptions/utils'
-import { Deferrable } from '@ethersproject/properties'
 import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 
 export const getAndValidateSafeSDK = (): Safe => {
