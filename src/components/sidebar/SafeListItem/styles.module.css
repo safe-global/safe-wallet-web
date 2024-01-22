@@ -37,7 +37,7 @@
 .listItemText {
   padding-right: 0;
   flex: none;
-  justify-content: flex-start
+  width: 160px;
 }
 
 .listItemInfo {

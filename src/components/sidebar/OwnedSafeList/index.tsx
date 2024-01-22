@@ -71,9 +71,9 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const wallet = useWallet()
   const handleConnect = useConnectWallet()
 
-  const [open, setOpen] = useState<boolean>(false)
+  const [isOpen, setIsopen] = useState<boolean>(false)
   const toggleOpen = (open: boolean) => {
-    setOpen(open)
+    setIsopen(open)
   }
 
   const hasWallet = !!wallet
@@ -177,14 +177,16 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
       {/* Additional safes inside dropdown */}
       {getOwnedSafesOnAllChains().length > 4 && (
         <>
-          <div onClick={() => toggleOpen(!open)} className={css.ownedLabelWrapper}>
-            <Typography variant="body2" display="inline" className={css.ownedLabel}>
-              More Accounts
-              <IconButton disableRipple>{open ? <ExpandLess /> : <ExpandMore />}</IconButton>
-            </Typography>
-          </div>
+          {!isOpen && (
+            <div onClick={() => toggleOpen(!isOpen)} className={css.ownedLabelWrapper}>
+              <Typography variant="body2" display="inline" className={css.ownedLabel}>
+                More Accounts
+                <IconButton disableRipple>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
+              </Typography>
+            </div>
+          )}
 
-          <Collapse key={chainId} in={open}>
+          <Collapse key={chainId} in={isOpen}>
             <List sx={{ py: 0 }}>
               {getOwnedSafesOnAllChains()
                 .slice(4)
