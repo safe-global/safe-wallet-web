@@ -123,6 +123,16 @@ const getGasParameters = (
     maxPriorityFeePerGas: undefined,
   }
 }
+
+export const getTotalFee = (
+  maxFeePerGas: bigint,
+  maxPriorityFeePerGas: bigint | null | undefined,
+  gasLimit: bigint,
+) => {
+  // maxPriorityFeePerGas is undefined if EIP-1559 disabled
+  return (maxFeePerGas + (maxPriorityFeePerGas || 0n)) * gasLimit
+}
+
 const useGasPrice = (): AsyncResult<GasFeeParams> => {
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice

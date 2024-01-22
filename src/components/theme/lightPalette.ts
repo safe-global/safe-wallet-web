@@ -30,7 +30,7 @@ const lightPalette = {
     dark: '#028D4C',
     main: '#00B460',
     light: '#72F5B8',
-    background: '#F2FFF9',
+    background: '#EFFAF1',
   },
   info: {
     dark: '#52BFDC',
