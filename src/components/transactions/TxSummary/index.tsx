@@ -14,6 +14,8 @@ import QueueActions from './QueueActions'
 import useIsPending from '@/hooks/useIsPending'
 import TxStatusLabel from '../TxStatusLabel'
 import TxConfirmations from '../TxConfirmations'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 type TxSummaryProps = {
   isGrouped?: boolean
@@ -21,10 +23,12 @@ type TxSummaryProps = {
 }
 
 const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
+  const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
+
   const tx = item.transaction
   const isQueue = isTxQueued(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
-  const isTrusted = isTrustedTx(tx)
+  const isTrusted = !hasDefaultTokenlist || isTrustedTx(tx)
   const isPending = useIsPending(tx.id)
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
 
