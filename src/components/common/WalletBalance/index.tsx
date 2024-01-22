@@ -5,7 +5,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 const WalletBalance = ({ balance }: { balance: string | bigint | undefined }) => {
   const currentChain = useCurrentChain()
 
-  if (!balance) {
+  if (balance === undefined) {
     return <Skeleton width={30} variant="text" sx={{ display: 'inline-block' }} />
   }
 
