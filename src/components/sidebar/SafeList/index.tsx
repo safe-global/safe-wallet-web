@@ -11,7 +11,7 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
 import OwnedSafeList from '@/components/sidebar/OwnedSafeList'
-import Watchlist from '@/components/sidebar/WatchList'
+import Watchlist from '@/components/sidebar/Watchlist'
 
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
