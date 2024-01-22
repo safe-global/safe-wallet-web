@@ -43,7 +43,13 @@
 .listItemInfo {
   display:flex;
   flex-direction:row;
-  margin-right: auto;
+  width: 100%;
+}
+
+.accountBalance {
+  font-weight: bold;
+  text-align: center;
+  margin: auto;
 }
 
 @media (max-width: 400px) {
@@ -52,6 +58,11 @@
   }
 
   .listItemInfo {
-    display:block
+    display: block;
   }
+
+  .accountBalance {
+    text-align: start;
+  }
+
 }

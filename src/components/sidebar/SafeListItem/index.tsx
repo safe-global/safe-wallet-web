@@ -126,7 +126,7 @@ const SafeListItem = ({
                 }
               />
               <ListItemText
-                sx={{ m: 'auto', fontWeight: 600 }}
+                className={css.accountBalance}
                 primaryTypographyProps={{ variant: 'body2' }}
                 primary={<b>$2,651.82</b>}
               />
