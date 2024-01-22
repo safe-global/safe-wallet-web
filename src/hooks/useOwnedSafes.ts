@@ -19,7 +19,7 @@ type OwnedSafe = {
  * Fetch all safes owned by the current wallet up to a certain limit.
  * The hook loads safes sequentially from all chains, updating its state as it goes.
  */
-const useAllOwnedSafes = (safesToFetch: number): [OwnedSafe[], Error | undefined, boolean] => {
+const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSafe[], Error | undefined, boolean] => {
   const { address: walletAddress } = useWallet() || {}
   const currentChainId = useChainId()
   const { configs } = useChains()
@@ -33,10 +33,16 @@ const useAllOwnedSafes = (safesToFetch: number): [OwnedSafe[], Error | undefined
   const [error, setError] = useState<Error>()
   const [loading, setLoading] = useState<boolean>(false)
 
+  // Reset state when the wallet address changes
+  useEffect(() => {
+    setAllSafes([])
+    setError(undefined)
+    setLoading(false)
+  }, [walletAddress])
+
+  // Fetch safes sequentially from all chains
   useEffect(() => {
     let current = true
-    const allSafes: OwnedSafe[] = []
-
     const load = async (index: number) => {
       if (!current) return
 
@@ -55,26 +61,29 @@ const useAllOwnedSafes = (safesToFetch: number): [OwnedSafe[], Error | undefined
         chainId,
       }))
 
-      const newAllSafes = [...allSafes, ...ownedSafesOnChain]
-
-      setAllSafes(newAllSafes)
-
-      if (safesToFetch > newAllSafes.length && index < chainIds.length - 1) {
-        load(index + 1)
-      } else {
-        setLoading(false)
-      }
+      setAllSafes((prevSafes) => {
+        const newAllSafes = [...prevSafes, ...ownedSafesOnChain]
+        if (safesToFetch > newAllSafes.length && index < chainIds.length - 1) {
+          load(index + 1)
+        } else {
+          setLoading(false)
+        }
+        return newAllSafes
+      })
     }
 
     if (safesToFetch > 0) {
-      setLoading(true)
-      load(0)
+      const startIndex = startChainId ? chainIds.findIndex((chainId) => chainId === startChainId) + 1 : 0
+      if (startIndex < chainIds.length) {
+        load(startIndex)
+        setLoading(true)
+      }
     }
 
     return () => {
       current = false
     }
-  }, [walletAddress, chainIds])
+  }, [walletAddress, chainIds, startChainId])
 
   return [allSafes, error, loading]
 }
