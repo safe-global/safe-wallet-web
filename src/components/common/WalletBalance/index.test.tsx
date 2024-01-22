@@ -1,8 +1,7 @@
-import { useCurrentChain } from '@/hooks/useChains'
 import { chainBuilder } from '@/tests/builders/chains'
 import { render } from '@/tests/test-utils'
 import { faker } from '@faker-js/faker'
-import { formatEther, parseEther } from 'ethers'
+import { parseEther } from 'ethers'
 import WalletBalance from '.'
 
 jest.mock('@/hooks/useChains', () => ({
