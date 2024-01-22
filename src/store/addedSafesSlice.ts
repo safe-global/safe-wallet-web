@@ -49,26 +49,26 @@ export const addedSafesSlice = createSlice({
         threshold,
       }
     },
-    updateAddedSafeBalance: (
-      state,
-      { payload }: PayloadAction<{ chainId: string; address: string; balances?: SafeBalanceResponse }>,
-    ) => {
-      const { chainId, address, balances } = payload
+    // updateAddedSafeBalance: (
+    //   state,
+    //   { payload }: PayloadAction<{ chainId: string; address: string; balances?: SafeBalanceResponse }>,
+    // ) => {
+    //   const { chainId, address, balances } = payload
 
-      if (!balances?.items || !isAddedSafe(state, chainId, address)) {
-        return
-      }
+    //   if (!balances?.items || !isAddedSafe(state, chainId, address)) {
+    //     return
+    //   }
 
-      for (const item of balances.items) {
-        if (item.tokenInfo.type !== TokenType.NATIVE_TOKEN) {
-          continue
-        }
+    //   for (const item of balances.items) {
+    //     if (item.tokenInfo.type !== TokenType.NATIVE_TOKEN) {
+    //       continue
+    //     }
 
-        state[chainId][address].ethBalance = safeFormatUnits(item.balance, item.tokenInfo.decimals)
+    //     state[chainId][address].ethBalance = safeFormatUnits(item.balance, item.tokenInfo.decimals)
 
-        return
-      }
-    },
+    //     return
+    //   }
+    // },
     removeSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = payload
 
