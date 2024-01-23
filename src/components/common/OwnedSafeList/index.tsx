@@ -17,7 +17,7 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
 
   const [safes] = useAllOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
 
-  const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
+  const isWelcomePage = router.pathname === AppRoutes.welcome.login || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   const safesToShow = useMemo(() => {
