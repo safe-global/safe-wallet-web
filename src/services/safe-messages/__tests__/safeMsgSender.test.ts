@@ -125,7 +125,7 @@ describe('safeMsgSender', () => {
           Test: [{ name: 'test', type: 'string' }],
         },
         domain: {
-          chainId: '0x1',
+          chainId: 1,
           name: 'TestDapp',
           verifyingContract: zeroPadValue('0x1234', 20),
         },
