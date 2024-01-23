@@ -41,7 +41,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
-  const [multisendContractAddress, setMultisendContractAddress] = useState<string>('')
   const chain = useCurrentChain()
   const { safe } = useSafeInfo()
   const [relays] = useRelaysBySafe()
@@ -65,13 +64,13 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
   const [multiSendContract] = useAsync(async () => {
     if (!chain?.chainId || !safe.version) return
-    const contract = await getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
-
-    if (contract) {
-      setMultisendContractAddress(await contract.getAddress())
-    }
-    return contract
+    return await getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
   }, [chain?.chainId, safe.version])
+
+  const [multisendContractAddress = ''] = useAsync(async () => {
+    if (!multiSendContract) return ''
+    return await multiSendContract.getAddress()
+  }, [multiSendContract])
 
   const [multiSendTxs] = useAsync(async () => {
     if (!txsWithDetails || !chain || !safe.version) return
