@@ -3,6 +3,7 @@ import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getAllWallets, getRecommendedInjectedWallets } from '@/hooks/wallets/wallets'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 import type { EnvState } from '@/store/settingsSlice'
+import { numberToHex } from '@/utils/hex'
 
 let onboard: OnboardAPI | null = null
 
@@ -17,7 +18,7 @@ export const createOnboard = (
 
   const chains = chainConfigs.map((cfg) => ({
     // We cannot use ethers' toBeHex here as we do not want to pad it to an even number of characters.
-    id: `0x${parseInt(cfg.chainId).toString(16)}`,
+    id: numberToHex(parseInt(cfg.chainId)),
     label: cfg.chainName,
     rpcUrl: rpcConfig?.[cfg.chainId] || getRpcServiceUrl(cfg.rpcUri),
     token: cfg.nativeCurrency.symbol,
