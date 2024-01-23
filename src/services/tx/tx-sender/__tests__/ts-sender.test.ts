@@ -34,7 +34,7 @@ import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-o
 import { toBeHex } from 'ethers'
 import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 import { createMockSafeTransaction } from '@/tests/transactions'
-import type { JsonRpcSigner } from 'ethers/lib.commonjs/providers/provider-jsonrpc'
+import type { JsonRpcSigner } from 'ethers'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -136,11 +136,14 @@ describe('txSender', () => {
   beforeAll(() => {
     const mockBrowserProvider = new BrowserProvider(jest.fn() as unknown as EIP1193Provider)
 
-    jest
-      .spyOn(mockBrowserProvider, 'getSigner')
-      .mockImplementation(
-        async (address?: string | number | undefined) => Promise.resolve(jest.fn()) as unknown as JsonRpcSigner,
-      )
+    jest.spyOn(mockBrowserProvider, 'getSigner').mockImplementation(
+      async (address?: string | number | undefined) =>
+        Promise.resolve({
+          getAddress: jest.fn(() => Promise.resolve('0x0000000000000000000000000000000000000123')),
+          provider: mockProvider,
+        }) as unknown as JsonRpcSigner,
+    )
+
     jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockBrowserProvider)
 
     setSafeSDK(mockSafeSDK)

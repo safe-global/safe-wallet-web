@@ -1,6 +1,7 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
 import { EthersAdapter } from '@safe-global/protocol-kit'
+import type { JsonRpcSigner } from 'ethers'
 import { ethers } from 'ethers'
 import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -12,8 +13,8 @@ import { toQuantity } from 'ethers'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { JsonRpcSigner } from 'ethers'
 import { asError } from '@/services/exceptions/utils'
+import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -98,16 +99,13 @@ export const getAssertedChainSigner = async (
  * dealing with smart-contract wallet owners
  */
 export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  // console.log('getUncheckedSafeSDK', onboard, chainId)
   const signer = await getAssertedChainSigner(onboard, chainId)
+  const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(signer.provider, await signer.getAddress())
   const sdk = getAndValidateSafeSDK()
 
   const ethAdapter = new EthersAdapter({
     ethers,
-    // TODO: in etherhs v6 this method is no longer existing
-    // we should find out if this is still necessary
-    // signerOrProvider: signer.getUncheckedSigner(),
-    signerOrProvider: signer,
+    signerOrProvider: uncheckedJsonRpcSigner,
   })
 
   return sdk.connect({ ethAdapter })

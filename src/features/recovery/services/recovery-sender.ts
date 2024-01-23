@@ -11,6 +11,7 @@ import { recoveryDispatch, RecoveryEvent, RecoveryTxType } from './recoveryEvent
 import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain } from '../../../services/tx/tx-sender/sdk'
 import { isSmartContractWallet } from '@/utils/wallets'
+import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 
 async function getDelayModifierContract({
   onboard,
@@ -27,8 +28,11 @@ async function getDelayModifierContract({
   const provider = createWeb3(wallet.provider)
   const isSmartContract = await isSmartContractWallet(wallet.chainId, wallet.address)
 
+  const originalSigner = await provider.getSigner()
   // Use unchecked signer for smart contract wallets as transactions do not necessarily immediately execute
-  const signer = await provider.getSigner()
+  const signer = isSmartContract
+    ? new UncheckedJsonRpcSigner(provider, await originalSigner.getAddress())
+    : originalSigner
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, signer).connect(signer)
 
   return {
