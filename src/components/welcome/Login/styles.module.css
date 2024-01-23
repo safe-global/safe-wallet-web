@@ -1,0 +1,25 @@
+.ownedLabelWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ownedLabel {
+    cursor: pointer;
+    color: var(--color-primary-light);
+    margin-top: var(--space-1);
+    margin-bottom: var(--space-1);
+  }
+  
+  .list {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding: 0 0;
+  }
+  
+  @media (max-width: 599.95px) {
+    .list {
+      overflow-x: auto;
+    }
+  }
+  

@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
+import { ChainInfo, getOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useChainId from '@/hooks/useChainId'
-import useChains from '@/hooks/useChains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
 
 const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
   if (!walletAddress || !chainId) return
@@ -11,7 +11,7 @@ const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
 }
 
 type OwnedSafe = {
-  chainId: string
+  chain: ChainInfo
   safeAddress: string
 }
 
@@ -22,11 +22,15 @@ type OwnedSafe = {
 const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSafe[], Error | undefined, boolean] => {
   const { address: walletAddress } = useWallet() || {}
   const currentChainId = useChainId()
+  // const currentChain = useCurrentChain()
+
   const { configs } = useChains()
 
-  const chainIds = useMemo(() => {
-    const allChainIds = configs.map((config) => config.chainId).filter((chainId) => chainId !== currentChainId)
-    return [currentChainId, ...allChainIds]
+  const chains: ChainInfo[] = useMemo(() => {
+    const currentChain = configs.find(({ chainId }) => chainId === currentChainId);
+    const otherChains= configs.filter(({ chainId }) => chainId !== currentChainId);
+    return currentChain ? [currentChain, ...otherChains] : configs;
+
   }, [configs, currentChainId])
 
   const [allSafes, setAllSafes] = useState<OwnedSafe[]>([])
@@ -44,12 +48,12 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSa
   useEffect(() => {
     let current = true
     const load = async (index: number) => {
-      if (!current) return
+      const chain = chains[index]
+      if (!current || !chain) return
 
-      const chainId = chainIds[index]
       let chainSafes
       try {
-        chainSafes = await getWalletSafes(walletAddress, chainId)
+        chainSafes = await getWalletSafes(walletAddress, chain.chainId)
       } catch (error) {
         setError(error as Error)
       }
@@ -58,12 +62,12 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSa
 
       const ownedSafesOnChain = (chainSafes?.safes || []).map((safeAddress) => ({
         safeAddress,
-        chainId,
+        chain,
       }))
 
       setAllSafes((prevSafes) => {
         const newAllSafes = [...prevSafes, ...ownedSafesOnChain]
-        if (safesToFetch > newAllSafes.length && index < chainIds.length - 1) {
+        if (safesToFetch > newAllSafes.length && index < chains.length - 1) {
           load(index + 1)
         } else {
           setLoading(false)
@@ -73,8 +77,8 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSa
     }
 
     if (safesToFetch > 0) {
-      const startIndex = startChainId ? chainIds.findIndex((chainId) => chainId === startChainId) + 1 : 0
-      if (startIndex < chainIds.length) {
+      const startIndex = startChainId ? chains.findIndex((chain) => chain.chainId === startChainId) + 1 : 0
+      if (startIndex < chains.length) {
         load(startIndex)
         setLoading(true)
       }
@@ -83,7 +87,7 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSa
     return () => {
       current = false
     }
-  }, [walletAddress, chainIds, startChainId])
+  }, [walletAddress, chains, startChainId])
 
   return [allSafes, error, loading]
 }

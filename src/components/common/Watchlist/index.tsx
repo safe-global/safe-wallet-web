@@ -29,6 +29,7 @@ import LoadingIcon from '@/public/images/common/loading.svg'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
+import { VisibilityOutlined, AddOutlined } from '@mui/icons-material'
 
 export const _shouldExpandSafeList = ({
   isCurrentChain,
@@ -60,7 +61,7 @@ const MAX_EXPANDED_SAFES = 3
 const NO_WALLET_MESSAGE = 'Connect a wallet to view your Safe Accounts\n or to create a new one'
 const NO_SAFE_MESSAGE = 'Create a new Safe Account or add'
 
-const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
+const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
   const chainId = useChainId()
   const currentChain = useCurrentChain()
@@ -116,42 +117,25 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
 
   return (
     <div>
+      <div className={css.header}>
+        <Typography variant="h5" display="inline" fontWeight={700}>
+          <VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: '10px' }} fontSize="small" />
+          Watchlist
+        </Typography>
+
+        <Button disableElevation>
+          <AddOutlined /> Add
+        </Button>
+      </div>
+
       {hasNoSafes && (
         <Box display="flex" flexDirection="column" alignItems="center" py={10}>
-          {hasWallet ? (
-            <>
-              <SvgIcon component={LoadingIcon} inheritViewBox sx={{ width: '85px', height: '80px' }} />
-
-              <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
-                {!isWelcomePage ? (
-                  <Link href={{ pathname: AppRoutes.welcome.index, query: router.query }} passHref legacyBehavior>
-                    <MuiLink onClick={closeDrawer}>{NO_SAFE_MESSAGE}</MuiLink>
-                  </Link>
-                ) : (
-                  <>{NO_SAFE_MESSAGE}</>
-                )}{' '}
-                an existing one
-              </Typography>
-            </>
-          ) : (
-            <Box display="flex" flexDirection="column" alignItems="center" gap={3} maxWidth={250}>
-              <Box display="flex" alignItems="center" justifyContent="center">
-                <KeyholeIcon size={40} />
-              </Box>
-
-              <Typography variant="body2" color="primary.light" textAlign="center" sx={{ textWrap: 'balance' }}>
-                {NO_WALLET_MESSAGE}
-              </Typography>
-
-              <Button onClick={handleConnect} variant="contained" size="stretched" disableElevation>
-                Connect wallet
-              </Button>
-            </Box>
-          )}
+          <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
+            Add any Safe account to the watchlist
+          </Typography>
         </Box>
       )}
 
-      {/* First 5 Safes displayed by default */}
       {!hasNoSafes && (
         <List className={css.list}>
           {getOwnedSafesOnAllChains()
@@ -173,43 +157,8 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
             })}
         </List>
       )}
-
-      {/* Additional safes inside dropdown */}
-      {getOwnedSafesOnAllChains().length > 4 && (
-        <>
-          {!isOpen && (
-            <div onClick={() => toggleOpen(!isOpen)} className={css.ownedLabelWrapper}>
-              <Typography variant="body2" display="inline" className={css.ownedLabel}>
-                More Accounts
-                <IconButton disableRipple>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
-              </Typography>
-            </div>
-          )}
-
-          <Collapse key={chainId} in={isOpen}>
-            <List sx={{ py: 0 }}>
-              {getOwnedSafesOnAllChains()
-                .slice(4)
-                .map(({ safeAddress, chain }) => {
-                  const href = getHref(chain, safeAddress)
-
-                  return (
-                    <SafeListItem
-                      key={safeAddress}
-                      address={safeAddress}
-                      chainId={chain.chainId}
-                      closeDrawer={closeDrawer}
-                      href={href}
-                      shouldScrollToSafe
-                    />
-                  )
-                })}
-            </List>
-          </Collapse>
-        </>
-      )}
     </div>
   )
 }
 
-export default SafeList
+export default Watchlist
