@@ -12,6 +12,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 import Box from '@mui/material/Box'
 import { Link as MuiLink } from '@mui/material'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import AddIcon from '@/public/images/common/add.svg'
 
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
@@ -58,31 +59,13 @@ export const _shouldExpandSafeList = ({
 }
 
 const MAX_EXPANDED_SAFES = 3
-const NO_WALLET_MESSAGE = 'Connect a wallet to view your Safe Accounts\n or to create a new one'
-const NO_SAFE_MESSAGE = 'Create a new Safe Account or add'
 
 const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const router = useRouter()
-  const chainId = useChainId()
-  const currentChain = useCurrentChain()
-  const { safeAddress, safe } = useSafeInfo()
-  const { configs } = useChains()
-  const ownedSafes = useOwnedSafes()
-  const addedSafes = useAppSelector(selectAllAddedSafes)
-  const wallet = useWallet()
-  const handleConnect = useConnectWallet()
+  // const addedSafes = useAppSelector(selectAllAddedSafes)
 
-  const [isOpen, setIsopen] = useState<boolean>(false)
-  const toggleOpen = (open: boolean) => {
-    setIsopen(open)
-  }
-
-  const hasWallet = !!wallet
-  const hasNoSafes = Object.keys(ownedSafes).length === 0 && Object.keys(addedSafes).length === 0
   const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
-
-  const ownedSafesOnCurrentChain = currentChain ? ownedSafes[currentChain.chainId] : []
 
   /*
    * Navigate to the dashboard when selecting a safe on the welcome page,
@@ -99,64 +82,31 @@ const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement 
     [isWelcomePage, isSingleTxPage, router.pathname, router.query],
   )
 
-  const getOwnedSafesOnAllChains = () => {
-    let ownedSafesOnAllChains: { safeAddress: string; chain: ChainInfo }[] = []
-    for (let chain of configs) {
-      const ownedSafesOnChain = ownedSafes[chain.chainId] ?? []
-      const ownedSafesWithChain = ownedSafesOnChain.map((safeAddress) => ({ safeAddress, chain }))
-      ownedSafesOnAllChains = [...ownedSafesOnAllChains, ...ownedSafesWithChain]
-    }
-
-    return ownedSafesOnAllChains.sort((safeA, safeB) => {
-      // display safes on current chain first.
-      if (safeA.chain.chainId === currentChain?.chainId && safeB.chain.chainId !== currentChain?.chainId) return -1
-      if (safeA.chain.chainId !== currentChain?.chainId && safeB.chain.chainId === currentChain?.chainId) return 1
-      return 0
-    })
-  }
-
   return (
-    <div>
+    <div className={css.container}>
       <div className={css.header}>
         <Typography variant="h5" display="inline" fontWeight={700}>
           <VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: '10px' }} fontSize="small" />
           Watchlist
         </Typography>
 
-        <Button disableElevation>
-          <AddOutlined /> Add
+        <Button
+          disableElevation
+          size="small"
+          onClick={closeDrawer}
+          startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+        >
+          Add
         </Button>
       </div>
 
-      {hasNoSafes && (
+      {
         <Box display="flex" flexDirection="column" alignItems="center" py={10}>
           <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
             Add any Safe account to the watchlist
           </Typography>
         </Box>
-      )}
-
-      {!hasNoSafes && (
-        <List className={css.list}>
-          {getOwnedSafesOnAllChains()
-            .slice(0, 3)
-            .map(({ safeAddress, chain }) => {
-              const href = getHref(chain, safeAddress)
-              return (
-                <SafeListItem
-                  key={safeAddress}
-                  address={safeAddress}
-                  chainId={chain.chainId}
-                  closeDrawer={closeDrawer}
-                  href={href}
-                  shouldScrollToSafe
-                  isAdded
-                  isWelcomePage={false}
-                />
-              )
-            })}
-        </List>
-      )}
+      }
     </div>
   )
 }

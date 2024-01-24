@@ -1,5 +1,16 @@
+.container {
+  background-color: var(--color-background-paper);
+  border-radius: 8px;
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-2);
+  margin: var(--space-3) var(--space-2) var(--space-2);
+}
+
 .header {
-  padding-left: var(--space-2);
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+  display: flex;
+  justify-content: space-between;
 }
 
 .ownedLabelWrapper {

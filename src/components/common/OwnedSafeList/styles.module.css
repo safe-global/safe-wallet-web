@@ -1,3 +1,15 @@
+.container {
+  background-color: var(--color-background-paper);
+  border-radius: 8px;
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-2);
+  margin: var(--space-3) var(--space-2) var(--space-2);
+}
+
+.title {
+  padding-left: var(--space-3);
+}
+
 .ownedLabelWrapper {
   display: flex;
   align-items: center;
@@ -7,14 +19,13 @@
 .ownedLabel {
   cursor: pointer;
   color: var(--color-primary-light);
-  margin-top: var(--space-1);
-  margin-bottom: var(--space-1);
 }
 
 .list {
   overflow-x: hidden;
   overflow-y: hidden;
   padding: 0 0;
+  margin-right: var(--space-1);
 }
 
 @media (max-width: 599.95px) {

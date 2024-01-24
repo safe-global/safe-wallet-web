@@ -25,7 +25,7 @@ const NewSafe = () => {
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
             <Box minWidth={{ md: 480 }} className={css.sidebar}>
-              <SafeListDrawer />
+              {/* <SafeListDrawer /> */}
             </Box>
 
             <Typography variant="h1" fontSize={[44, null, 52]} lineHeight={1} letterSpacing={-1.5} color="static.main">

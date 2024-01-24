@@ -42,7 +42,11 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
   )
 
   return (
-    <>
+    <div className={css.container}>
+      <Typography variant="h5" display="inline" fontWeight={700} className={css.title}>
+        My accounts
+      </Typography>
+
       <List className={css.list}>
         {safesToShow[0].map(({ safeAddress, chain }) => {
           const href = getHref(chain, safeAddress)
@@ -91,7 +95,7 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
           })}
         </List>
       )}
-    </>
+    </div>
   )
 }
 

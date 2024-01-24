@@ -76,15 +76,6 @@ const SafeListItem = ({
       secondaryAction={
         noActions ? undefined : (
           <Box display="flex" alignItems="center" gap={1}>
-            {/* <SafeListItemSecondaryAction
-              chainId={chainId}
-              address={address}
-              onClick={closeDrawer}
-              href={{
-                pathname: AppRoutes.newSafe.load,
-                query: { chain: shortName, address },
-              }}
-            /> */}
             <SafeListContextMenu name={name} address={address} chainId={chainId} />
           </Box>
         )

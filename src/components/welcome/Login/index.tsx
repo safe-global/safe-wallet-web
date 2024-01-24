@@ -1,68 +1,48 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import SafeListItem from '@/components/sidebar/SafeListItem'
-import useAllOwnedSafes from '@/hooks/useOwnedSafes'
-import { Button, IconButton, Typography } from '@mui/material'
+import React from 'react'
 import css from './styles.module.css'
-import { ExpandLess } from '@mui/icons-material'
-import ExpandMore from '@mui/icons-material/ExpandMore'
 
-const maxSafes = 3
+import Link from 'next/link'
+import { Button, SvgIcon, Typography } from '@mui/material'
+import Track from '@/components/common/Track'
+import AddIcon from '@/public/images/common/add.svg'
+import { AppRoutes } from '@/config/routes'
+import { OVERVIEW_EVENTS } from '@/services/analytics'
+import SafeList from '@/components/common/OwnedSafeList'
+import { useCurrentChain } from '@/hooks/useChains'
+import OwnedSafeList from '@/components/common/OwnedSafeList'
 
 const Login = () => {
-  const [lastChainId, setLastChainId] = useState<string | undefined>()
-  const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
-
-  const [safes] = useAllOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
-
-  const safesToShow = useMemo(() => {
-    return [safes.slice(0, maxSafes), safes.slice(maxSafes)]
-  }, [safes])
-
-  const onShowMore = useCallback(() => {
-    if (safes.length > 0) {
-      setLastChainId(safes[safes.length - 1].chainId)
-      setIsListExpanded((prev) => !prev)
-    }
-  }, [safes])
+  const currentChain = useCurrentChain()
 
   return (
-    <>
-      {safesToShow[0].map(({ safeAddress, chainId }) => (
-        <SafeListItem
-          key={chainId + safeAddress}
-          address={safeAddress}
-          chainId={chainId}
-          href={''}
-          shouldScrollToSafe={false}
-          isAdded
-          isWelcomePage={false}
-        />
-      ))}
+    <div>
+      <div className={css.header}>
+        <Typography variant="h4" display="inline" fontWeight={700}>
+          My Safe Accounts
+        </Typography>
 
-      {!isListExpanded && (
-        <div className={css.ownedLabelWrapper} onClick={onShowMore}>
-          <Typography variant="body2" display="inline" className={css.ownedLabel}>
-            More Accounts
-            <IconButton disableRipple>
-              <ExpandMore />
-            </IconButton>
-          </Typography>
-        </div>
-      )}
+        <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+          <Link
+            href={{ pathname: AppRoutes.welcome.index, query: { chain: currentChain?.shortName } }}
+            passHref
+            legacyBehavior
+          >
+            <Button
+              disableElevation
+              size="small"
+              variant="outlined"
+              // onClick={closeDrawer}
+              startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+            >
+              Add
+            </Button>
+          </Link>
+        </Track>
+      </div>
 
-      {!!lastChainId &&
-        safesToShow[1].map(({ safeAddress, chainId }) => (
-          <SafeListItem
-            key={chainId + safeAddress}
-            address={safeAddress}
-            chainId={chainId}
-            href={''}
-            shouldScrollToSafe={false}
-            isAdded
-            isWelcomePage={false}
-          />
-        ))}
-    </>
+      <OwnedSafeList />
+      {/* <Watchlist closeDrawer={closeDrawer} /> */}
+    </div>
   )
 }
 
