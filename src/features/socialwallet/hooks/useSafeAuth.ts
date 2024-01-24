@@ -110,4 +110,6 @@ export const useInitSafeAuth = () => {
 }
 
 export default useStore
+export const _setSafeAuthUserInfo = setSafeAuthUserInfo
+export const _getSafeAuthUserInfo = getSafeAuthUserInfo
 export { useSafeAuthUserInfo }

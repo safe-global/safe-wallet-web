@@ -85,12 +85,13 @@ function MpcModule(chain: ChainInfo): WalletInit {
                   try {
                     // If the provider is defined we already have access to the accounts.
                     const isLoggedIn = _getSafeAuthPackInstance()?.isAuthenticated
-                    throw new Error('Not signed in')
+                    if (!isLoggedIn) {
+                      throw new Error('Not signed in')
+                    }
 
                     const web3 = assertDefined(getMPCProvider())
                     web3.request({ method: 'eth_accounts' }).then(resolve).catch(reject)
                   } catch (e) {
-                    console.log('Trying to sign in through module')
                     // Otherwise try to log in the user
                     const safeAuthPack = _getSafeAuthPackInstance()
                     if (!safeAuthPack) {
