@@ -70,10 +70,10 @@ const SafeListItem = ({
   }, [isCurrentSafe, shouldScrollToSafe])
 
   return (
-    <div className={css.listContaner}>
+    <div className={css.container}>
       <ListItem
         alignItems="flex-start"
-        className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
+        className={classnames(css.listItem, { [css.withPendingButtons]: totalQueued || totalToSign })}
         disablePadding
         secondaryAction={
           noActions ? undefined : (
