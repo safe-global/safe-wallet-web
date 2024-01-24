@@ -26,7 +26,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
     <div>
       <div className={isWelcomePage ? css.container : ''}>
         <div className={classNames(css.header, !isWelcomePage ? css.sidebarHeader : '')}>
-          <Typography variant="h4" display="inline" fontWeight={700}>
+          <Typography variant="h1" display="inline" fontWeight={700}>
             My Safe Accounts
           </Typography>
 
@@ -36,7 +36,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
               passHref
               legacyBehavior
             >
-              <Button disableElevation size="small" variant="contained" onClick={closeDrawer}>
+              <Button disableElevation size="small" variant="contained" sx={{ p: '12px 24px' }} onClick={closeDrawer}>
                 Create new account
               </Button>
             </Link>

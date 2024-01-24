@@ -1,8 +1,21 @@
-.container {
+.listContaner {
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+  margin-left: var(--space-3);
   margin-top: var(--space-1);
   margin-bottom: var(--space-1);
-  padding-left: var(--space-3);
+  margin-right: var(--space-2);
+
+
+
 }
+
+.container {
+  /* margin-top: var(--space-1); */
+  /* margin-bottom: var(--space-1); */
+  /* padding-left: var(--space-3); */
+}
+
 
 /* <Track> */
 .container > span {
@@ -10,9 +23,9 @@
 }
 
 .safe {
-  border-radius: 8px;
-  border: 1px solid var(--color-border-light);
-  padding-right: var(--space-5);
+  /* border-radius: 8px;
+  border: 1px solid var(--color-border-light); */
+  padding-right: var(--space-6);
 }
 
 .open {
@@ -27,12 +40,12 @@
 }
 
 .container :global .MuiListItemSecondaryAction-root {
-  right: 24px;
+  right: 12px;
 }
 
-.withPendingButtons :global .MuiListItemSecondaryAction-root {
+/* .withPendingButtons :global .MuiListItemSecondaryAction-root {
   right: 74px;
-}
+} */
 
 .listItemText {
   padding-right: 0;
@@ -53,9 +66,9 @@
 }
 
 @media (max-width: 400px) {
-  .withPendingButtons :global .MuiListItemSecondaryAction-root {
+  /* .withPendingButtons :global .MuiListItemSecondaryAction-root {
     right: 48px;
-  }
+  } */
 
   .listItemInfo {
     display: block;

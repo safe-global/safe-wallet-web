@@ -1,18 +1,17 @@
-.pendingButtons {
+/* .pendingButtons {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 4px;
   padding-left: 0px;
   margin-right: var(--space-2);
-}
+} */
 
 .pendingButton {
-  width: 52px;
-  height: 22px;
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 8px;
+  /* margin-left:  16px;
+  margin-bottom:  16px; */
+  margin: 0 4px 16px 16px;
+
 }
 
 .pendingButton img {
@@ -30,7 +29,7 @@
 }
 
 .queued {
-  background-color: var(--color-background-main);
+  /* background-color: var(--color-background-main); */
 }
 
 [data-theme='dark'] .queued {

@@ -25,6 +25,7 @@ import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS } from '@/services/analytics'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
+import { Chip } from '@mui/material'
 
 const SafeListItem = ({
   address,
@@ -69,64 +70,65 @@ const SafeListItem = ({
   }, [isCurrentSafe, shouldScrollToSafe])
 
   return (
-    <ListItem
-      alignItems="flex-start"
-      className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
-      disablePadding
-      secondaryAction={
-        noActions ? undefined : (
-          <Box display="flex" alignItems="center" gap={1}>
-            <SafeListContextMenu name={name} address={address} chainId={chainId} />
-          </Box>
-        )
-      }
-    >
-      <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.sidebar}>
-        <Link href={href} passHref legacyBehavior>
-          <ListItemButton
-            key={address}
-            onClick={closeDrawer}
-            selected={isCurrentSafe}
-            className={classnames(css.safe, { [css.open]: isCurrentSafe })}
-            ref={safeRef}
-          >
-            <ListItemIcon>
-              <SafeIcon address={address} {...rest} />
-            </ListItemIcon>
-            <div className={css.listItemInfo}>
-              <ListItemText
-                className={css.listItemText}
-                sx={noActions ? undefined : { pr: 10 }}
-                primaryTypographyProps={{
-                  variant: 'body2',
-                  component: 'div',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                }}
-                secondaryTypographyProps={{ component: 'div', color: 'primary' }}
-                primary={<b>{name || ''}</b>}
-                secondary={
-                  <EthHashInfo
-                    address={address}
-                    showAvatar={false}
-                    showName={false}
-                    prefix={shortName}
-                    copyAddress={false}
-                  />
-                }
-              />
-              <ListItemText
-                className={css.accountBalance}
-                primaryTypographyProps={{ variant: 'body2' }}
-                primary={<b>$2,651.82</b>}
-              />
-            </div>
-            <ChainIndicator chainId={chainId} inline showName={isWelcomePage && !isMobile} />
-          </ListItemButton>
-        </Link>
-      </Track>
-
+    <div className={css.listContaner}>
+      <ListItem
+        alignItems="flex-start"
+        className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
+        disablePadding
+        secondaryAction={
+          noActions ? undefined : (
+            <Box display="flex" alignItems="center" gap={1}>
+              <SafeListContextMenu name={name} address={address} chainId={chainId} />
+            </Box>
+          )
+        }
+      >
+        <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.sidebar}>
+          <Link href={href} passHref legacyBehavior>
+            <ListItemButton
+              key={address}
+              onClick={closeDrawer}
+              selected={isCurrentSafe}
+              className={classnames(css.safe, { [css.open]: isCurrentSafe })}
+              ref={safeRef}
+            >
+              <ListItemIcon>
+                <SafeIcon address={address} {...rest} />
+              </ListItemIcon>
+              <div className={css.listItemInfo}>
+                <ListItemText
+                  className={css.listItemText}
+                  sx={noActions ? undefined : { pr: 10 }}
+                  primaryTypographyProps={{
+                    variant: 'body2',
+                    component: 'div',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                  }}
+                  secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+                  primary={<b>{name || ''}</b>}
+                  secondary={
+                    <EthHashInfo
+                      address={address}
+                      showAvatar={false}
+                      showName={false}
+                      prefix={shortName}
+                      copyAddress={false}
+                    />
+                  }
+                />
+                <ListItemText
+                  className={css.accountBalance}
+                  primaryTypographyProps={{ variant: 'body2' }}
+                  primary={<b>$2,651.82</b>}
+                />
+              </div>
+              <ChainIndicator chainId={chainId} inline showName={isWelcomePage && !isMobile} />
+            </ListItemButton>
+          </Link>
+        </Track>
+      </ListItem>
       <PendingActionButtons
         safeAddress={address}
         closeDrawer={closeDrawer}
@@ -134,7 +136,7 @@ const SafeListItem = ({
         totalQueued={totalQueued}
         totalToSign={totalToSign}
       />
-    </ListItem>
+    </div>
   )
 }
 

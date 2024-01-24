@@ -1,7 +1,7 @@
-import { Box } from '@mui/material'
+import { Box, Chip } from '@mui/material'
 import React, { useMemo } from 'react'
 import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
+// import CheckIcon from '@mui/icons-material/Check'
 import WalletIcon from '@/components/common/WalletIcon'
 import NextLink from 'next/link'
 import Track from '@/components/common/Track'
@@ -12,6 +12,8 @@ import type { UrlObject } from 'url'
 import css from './styles.module.css'
 import classnames from 'classnames'
 import { AppRoutes } from '@/config/routes'
+import TransactionsIcon from '@/public/images/sidebar/transactions.svg'
+import CheckIcon from '@/public/images/common/check.svg'
 
 const PendingActionButtons = ({
   totalQueued,
@@ -52,8 +54,7 @@ const PendingActionButtons = ({
                   borderBottomRightRadius: ({ shape }) => shape.borderRadius,
                 }}
               >
-                <WalletIcon provider={wallet.label} icon={wallet.icon} />
-                <Typography variant="body2">{totalToSign}</Typography>
+                <Chip icon={<CheckIcon />} size="small" label={`${totalToSign} to confirm`} />{' '}
               </ButtonBase>
             </Tooltip>
           </NextLink>
@@ -72,9 +73,7 @@ const PendingActionButtons = ({
                   borderBottomRightRadius: ({ shape }) => shape.borderRadius,
                 }}
               >
-                {/* TODO: replace for Icon library */}
-                <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" />
-                <Typography variant="body2">{totalQueued}</Typography>
+                <Chip icon={<TransactionsIcon />} size="small" label={`${totalQueued} pending transactions`} />
               </ButtonBase>
             </Tooltip>
           </NextLink>
