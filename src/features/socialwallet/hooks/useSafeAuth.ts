@@ -1,4 +1,4 @@
-import useOnboard, { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
+import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import ExternalStore from '@/services/ExternalStore'
 import { onboardListeners, ONBOARD_MPC_MODULE_LABEL } from '@/features/socialwallet/services/SocialLoginModule'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -68,27 +68,6 @@ export const initSafeAuth = async (chain: ChainInfo, onboard: OnboardAPI) => {
           safeAuthPack.subscribe(eventListeners[0] as 'accountsChanged' | 'chainChanged', listener)
         })
       })
-
-      if (!safeAuthPack.isAuthenticated) {
-        return
-      }
-
-      const connectedWallet = getConnectedWallet(onboard.state.get().wallets)
-      if (!connectedWallet) {
-        connectWallet(onboard, {
-          autoSelect: {
-            label: ONBOARD_MPC_MODULE_LABEL,
-            disableModals: true,
-          },
-        }).catch((reason) => console.error('Error connecting to MPC module:', reason))
-      } else {
-        const newProvider = safeAuthPack.getProvider()
-        if (!newProvider) {
-          return
-        }
-
-        return safeAuthPack
-      }
     })
     .catch((error) => console.error(error))
 }
