@@ -65,13 +65,13 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
   const [multiSendContract] = useAsync(async () => {
     if (!chain?.chainId || !safe.version) return
-    const contract = await getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
-
-    if (contract) {
-      setMultisendContractAddress(await contract.getAddress())
-    }
-    return contract
+    return await getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
   }, [chain?.chainId, safe.version])
+
+  const [multisendContractAddress = ''] = useAsync(async () => {
+    if (!multiSendContract) return ''
+    return await multiSendContract.getAddress()
+  }, [multiSendContract])
 
   const [multiSendTxs] = useAsync(async () => {
     if (!txsWithDetails || !chain || !safe.version) return
