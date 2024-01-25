@@ -58,9 +58,6 @@
 }
 
 @media (max-width: 400px) {
-  /* .withPendingButtons :global .MuiListItemSecondaryAction-root {
-    right: 48px;
-  } */
 
   .listItemInfo {
     display: block;
