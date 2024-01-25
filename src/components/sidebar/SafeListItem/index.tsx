@@ -30,6 +30,7 @@ import { Chip } from '@mui/material'
 const SafeListItem = ({
   address,
   chainId,
+  fiatBalance,
   closeDrawer,
   shouldScrollToSafe,
   href,
@@ -40,6 +41,7 @@ const SafeListItem = ({
 }: {
   address: string
   chainId: string
+  fiatBalance: string
   shouldScrollToSafe: boolean
   href: ComponentProps<typeof Link>['href']
   closeDrawer?: () => void
@@ -121,7 +123,7 @@ const SafeListItem = ({
                 <ListItemText
                   className={css.accountBalance}
                   primaryTypographyProps={{ variant: 'body2' }}
-                  primary={<b>$2,651.82</b>}
+                  primary={<b>${fiatBalance}</b>}
                 />
               </div>
               <ChainIndicator chainId={chainId} inline showName={isWelcomePage && !isMobile} />

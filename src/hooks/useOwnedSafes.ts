@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ChainInfo, getOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
+import { ChainInfo, getOwnedSafes, getBalances, type SafeBalanceResponse  } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useChainId from '@/hooks/useChainId'
-import useChains, { useCurrentChain } from '@/hooks/useChains'
+import useChains from '@/hooks/useChains'
 
 const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
   if (!walletAddress || !chainId) return
@@ -13,6 +13,7 @@ const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
 type OwnedSafe = {
   chain: ChainInfo
   safeAddress: string
+  fiatBalance: string
 }
 
 /**
@@ -49,7 +50,7 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSa
     let current = true
     const load = async (index: number) => {
       const chain = chains[index]
-      if (!current || !chain) return
+      if (!current) return
 
       let chainSafes
       try {
@@ -60,10 +61,13 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSa
 
       if (!current) return
 
-      const ownedSafesOnChain = (chainSafes?.safes || []).map((safeAddress) => ({
-        safeAddress,
-        chain,
-      }))
+
+      const ownedSafesOnChain = await Promise.all(
+        (chainSafes?.safes || []).map(async (safeAddress) => {
+        const {fiatTotal: fiatBalance} =  await getBalances(chain.chainId, safeAddress, 'USD')
+        return  { safeAddress, chain, fiatBalance }
+      })
+      )
 
       setAllSafes((prevSafes) => {
         const newAllSafes = [...prevSafes, ...ownedSafesOnChain]
@@ -72,7 +76,7 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [OwnedSa
         } else {
           setLoading(false)
         }
-        return newAllSafes
+       return newAllSafes
       })
     }
 
