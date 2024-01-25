@@ -1,4 +1,5 @@
-import type { BrowserProvider, Provider } from 'ethers'
+import { type BrowserProvider, type Provider } from 'ethers'
+
 import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   getReadOnlyFallbackHandlerContract,
@@ -9,7 +10,6 @@ import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { Errors, trackError } from '@/services/exceptions'
-import { ErrorCode } from '@ethersproject/logger'
 import { isWalletRejection } from '@/utils/wallets'
 import type { PendingSafeTx } from '@/components/new-safe/create/types'
 import type { NewSafeFormData } from '@/components/new-safe/create'
@@ -179,7 +179,7 @@ export const handleSafeCreationError = (error: EthersError) => {
     return SafeCreationStatus.WALLET_REJECTED
   }
 
-  if (error.code === ErrorCode.TRANSACTION_REPLACED) {
+  if (error.code === 'TRANSACTION_REPLACED') {
     if (error.reason === 'cancelled') {
       return SafeCreationStatus.ERROR
     } else {
@@ -191,7 +191,7 @@ export const handleSafeCreationError = (error: EthersError) => {
     return SafeCreationStatus.REVERTED
   }
 
-  if (error.code === ErrorCode.TIMEOUT) {
+  if (error.code === 'TIMEOUT') {
     return SafeCreationStatus.TIMEOUT
   }
 

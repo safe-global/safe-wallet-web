@@ -15,7 +15,6 @@ import {
   dispatchTxSigning,
   dispatchBatchExecutionRelay,
 } from '..'
-import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
 import { BrowserProvider, zeroPadValue } from 'ethers'
 import * as safeContracts from '@/services/contracts/safeContracts'
@@ -532,7 +531,7 @@ describe('txSender', () => {
       jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() =>
         Promise.resolve({
           transactionResponse: {
-            wait: jest.fn(() => Promise.reject({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'cancelled' })),
+            wait: jest.fn(() => Promise.reject({ code: 'TRANSACTION_REPLACED', reason: 'cancelled' })),
           },
         } as unknown as TransactionResult),
       )
@@ -555,7 +554,7 @@ describe('txSender', () => {
       await waitFor(() =>
         expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', {
           txId: 'tx_id_123',
-          error: new Error(JSON.stringify({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'cancelled' })),
+          error: new Error(JSON.stringify({ code: 'TRANSACTION_REPLACED', reason: 'cancelled' })),
         }),
       )
     })
@@ -564,7 +563,7 @@ describe('txSender', () => {
       jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() =>
         Promise.resolve({
           transactionResponse: {
-            wait: jest.fn(() => Promise.reject({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'repriced' })),
+            wait: jest.fn(() => Promise.reject({ code: 'TRANSACTION_REPLACED', reason: 'repriced' })),
           },
         } as unknown as TransactionResult),
       )

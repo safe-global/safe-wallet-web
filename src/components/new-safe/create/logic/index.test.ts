@@ -7,7 +7,7 @@ import {
   relaySafeCreation,
   handleSafeCreationError,
 } from '@/components/new-safe/create/logic/index'
-import { ErrorCode } from '@ethersproject/logger'
+import { type ErrorCode } from 'ethers'
 import { EthersTxReplacedReason } from '@/utils/ethers-utils'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -97,7 +97,7 @@ describe('checkSafeCreationTx', () => {
   it('returns TIMEOUT if transaction could not be found within the timeout limit', async () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.TIMEOUT,
+      code: 'TIMEOUT' as ErrorCode,
     }
 
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
@@ -138,7 +138,7 @@ describe('handleSafeCreationError', () => {
   it('returns WALLET_REJECTED if the tx was rejected in the wallet', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.ACTION_REJECTED,
+      code: 'ACTION_REJECTED' as ErrorCode,
       reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
     }
@@ -151,7 +151,7 @@ describe('handleSafeCreationError', () => {
   it('returns WALLET_REJECTED if the tx was rejected via WC', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.UNKNOWN_ERROR,
+      code: 'UNKNOWN_ERROR' as ErrorCode,
       reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
       message: 'rejected',
@@ -165,7 +165,7 @@ describe('handleSafeCreationError', () => {
   it('returns ERROR if the tx was cancelled', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.TRANSACTION_REPLACED,
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
       reason: EthersTxReplacedReason.cancelled,
       receipt: {} as TransactionReceipt,
     }
@@ -178,7 +178,7 @@ describe('handleSafeCreationError', () => {
   it('returns SUCCESS if the tx was replaced', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.TRANSACTION_REPLACED,
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
       reason: EthersTxReplacedReason.replaced,
       receipt: {} as TransactionReceipt,
     }
@@ -191,7 +191,7 @@ describe('handleSafeCreationError', () => {
   it('returns SUCCESS if the tx was repriced', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.TRANSACTION_REPLACED,
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
       reason: EthersTxReplacedReason.repriced,
       receipt: {} as TransactionReceipt,
     }
@@ -204,7 +204,7 @@ describe('handleSafeCreationError', () => {
   it('returns ERROR if the tx was not rejected, cancelled or replaced', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.UNKNOWN_ERROR,
+      code: 'UNKNOWN_ERROR' as ErrorCode,
       reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
     }
@@ -217,7 +217,7 @@ describe('handleSafeCreationError', () => {
   it('returns REVERTED if the tx failed', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.UNKNOWN_ERROR,
+      code: 'UNKNOWN_ERROR' as ErrorCode,
       reason: '' as EthersTxReplacedReason,
       receipt: {
         status: 0,

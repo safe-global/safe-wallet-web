@@ -1,5 +1,5 @@
 import type { TransactionReceipt } from 'ethers'
-import type { ErrorCode } from '@ethersproject/logger'
+import type { ErrorCode } from 'ethers'
 import { Signature, type SignatureLike } from 'ethers'
 
 // https://docs.ethers.io/v5/api/providers/types/#providers-TransactionResponse
@@ -22,7 +22,7 @@ export const didReprice = (error: EthersError): boolean => {
 
 type TimeoutError = Error & {
   timeout: number
-  code: ErrorCode.TIMEOUT
+  code: 'TIMEOUT'
 }
 
 export const isTimeoutError = (value?: Error): value is TimeoutError => {
