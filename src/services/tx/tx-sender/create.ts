@@ -79,7 +79,13 @@ export const createExistingTx = async (
   // Create a tx and add pre-approved signatures
   const safeTx = await createTx(txParams, txParams.nonce)
   Object.entries(signatures).forEach(([signer, data]) => {
-    safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
+    safeTx.addSignature({
+      signer,
+      data,
+      staticPart: () => data,
+      dynamicPart: () => '',
+      isContractSignature: false,
+    })
   })
 
   return safeTx
