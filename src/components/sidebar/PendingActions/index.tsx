@@ -2,7 +2,6 @@ import { Box, Chip } from '@mui/material'
 import React, { useMemo } from 'react'
 import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
 // import CheckIcon from '@mui/icons-material/Check'
-import WalletIcon from '@/components/common/WalletIcon'
 import NextLink from 'next/link'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
@@ -42,38 +41,48 @@ const PendingActionButtons = ({
 
   return (
     <Box className={css.pendingButtons}>
-      {wallet && totalToSign && (
-        <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
+      {totalQueued && (
+        <Track {...OVERVIEW_EVENTS.OPEN_QUEUED_TRANSACTIONS}>
           <NextLink href={queueLink} passHref legacyBehavior>
-            <Tooltip title={`${shortAddress} can confirm ${totalToSign} transaction(s)`} placement="top" arrow>
+            <Tooltip title={`${totalQueued} transactions in the queue`} placement="top" arrow>
               <ButtonBase
-                className={classnames(css.pendingButton, css.missingSignatures)}
+                className={classnames(css.pendingButton)}
                 onClick={closeDrawer}
                 sx={{
                   borderTopRightRadius: ({ shape }) => shape.borderRadius,
                   borderBottomRightRadius: ({ shape }) => shape.borderRadius,
                 }}
               >
-                <Chip icon={<CheckIcon />} size="small" label={`${totalToSign} to confirm`} />{' '}
+                <Chip
+                  className={css.queued}
+                  icon={<TransactionsIcon style={{ color: 'var(--color-border-main)' }} />}
+                  size="small"
+                  label={`${totalQueued} pending transactions`}
+                />
               </ButtonBase>
             </Tooltip>
           </NextLink>
         </Track>
       )}
 
-      {totalQueued && (
-        <Track {...OVERVIEW_EVENTS.OPEN_QUEUED_TRANSACTIONS}>
+      {wallet && totalToSign && (
+        <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
           <NextLink href={queueLink} passHref legacyBehavior>
-            <Tooltip title={`${totalQueued} transactions in the queue`} placement="top" arrow>
+            <Tooltip title={`${shortAddress} can confirm ${totalToSign} transaction(s)`} placement="top" arrow>
               <ButtonBase
-                className={classnames(css.pendingButton, css.queued)}
+                className={classnames(css.pendingButton)}
                 onClick={closeDrawer}
                 sx={{
                   borderTopRightRadius: ({ shape }) => shape.borderRadius,
                   borderBottomRightRadius: ({ shape }) => shape.borderRadius,
                 }}
               >
-                <Chip icon={<TransactionsIcon />} size="small" label={`${totalQueued} pending transactions`} />
+                <Chip
+                  className={css.missingSignaturesChip}
+                  icon={<CheckIcon style={{ color: 'var(--color-warning-main)' }} />}
+                  size="small"
+                  label={`${totalToSign} to confirm`}
+                />{' '}
               </ButtonBase>
             </Tooltip>
           </NextLink>

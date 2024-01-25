@@ -11,7 +11,6 @@
   /* margin-left:  16px;
   margin-bottom:  16px; */
   margin: 0 4px 16px 16px;
-
 }
 
 .pendingButton img {
@@ -19,9 +18,8 @@
   width: 20px;
 }
 
-.missingSignatures {
-  height: 32px;
-  background-color: var(--color-info-light);
+.missingSignaturesChip {
+  background-color: var(--color-warning-background);
 }
 
 [data-theme='dark'] .missingSignatures {
@@ -29,7 +27,7 @@
 }
 
 .queued {
-  /* background-color: var(--color-background-main); */
+  background-color: var(--color-background-main);
 }
 
 [data-theme='dark'] .queued {
