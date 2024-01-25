@@ -27,6 +27,14 @@ describe('useWalletCanPay', () => {
     expect(result.current).toEqual(true)
   })
 
+  it('should return false if wallet balance is zero', () => {
+    jest.spyOn(walletBalance, 'default').mockReturnValue([BigInt(0), undefined, false])
+
+    const { result } = renderHook(() => useWalletCanPay({ gasLimit: BigInt(21000), maxFeePerGas: BigInt(1) }))
+
+    expect(result.current).toEqual(false)
+  })
+
   it('should return false if wallet balance is smaller than gas costs', () => {
     jest.spyOn(walletBalance, 'default').mockReturnValue([BigInt(20999), undefined, false])
 
