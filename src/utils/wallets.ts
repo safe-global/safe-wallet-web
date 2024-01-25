@@ -1,5 +1,4 @@
 import type { EthersError } from '@/utils/ethers-utils'
-import { ErrorCode } from '@ethersproject/logger'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly, isSmartContract } from '@/hooks/wallets/web3'
 import { WALLET_KEYS } from '@/hooks/wallets/consts'
@@ -11,7 +10,7 @@ const isWCRejection = (err: Error): boolean => {
 }
 
 const isEthersRejection = (err: EthersError): boolean => {
-  return err.code === ErrorCode.ACTION_REJECTED
+  return err.code === 'ACTION_REJECTED'
 }
 
 export const isWalletRejection = (err: EthersError | Error): boolean => {

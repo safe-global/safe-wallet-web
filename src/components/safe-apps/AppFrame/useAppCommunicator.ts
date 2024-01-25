@@ -1,7 +1,6 @@
 import type { MutableRefObject } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { getAddress } from 'ethers/lib/utils'
-import { BigNumber } from '@ethersproject/bignumber'
+import { getAddress } from 'ethers'
 import type {
   SafeAppData,
   ChainInfo as WebCoreChainInfo,
@@ -165,7 +164,7 @@ const useAppCommunicator = (
       const transactions = txs.map(({ to, value, data }) => {
         return {
           to: getAddress(to),
-          value: value ? BigNumber.from(value).toString() : '0',
+          value: value ? BigInt(value).toString() : '0',
           data: data || '0x',
         }
       })

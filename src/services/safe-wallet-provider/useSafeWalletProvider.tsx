@@ -1,5 +1,4 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { BigNumber } from 'ethers'
 import { useRouter } from 'next/router'
 
 import { RpcErrorCode } from '.'
@@ -15,7 +14,7 @@ import { Methods } from '@safe-global/safe-apps-sdk'
 import type { EIP712TypedData, SafeSettings } from '@safe-global/safe-apps-sdk'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { getAddress } from 'ethers/lib/utils'
+import { getAddress } from 'ethers'
 import { AppRoutes } from '@/config/routes'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import { NotificationMessages, showNotification } from './notifications'
@@ -117,7 +116,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         const transactions = params.txs.map(({ to, value, data }) => {
           return {
             to: getAddress(to),
-            value: BigNumber.from(value).toString(),
+            value: BigInt(value).toString(),
             data,
           }
         })

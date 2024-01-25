@@ -4,10 +4,10 @@ import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
-import type { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
-import Safe from '@safe-global/safe-core-sdk'
+import type { BrowserProvider, Provider } from 'ethers'
+import Safe from '@safe-global/protocol-kit'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import EthersAdapter from '@safe-global/safe-ethers-lib'
+import { EthersAdapter } from '@safe-global/protocol-kit'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
@@ -28,15 +28,15 @@ export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersio
   return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe Account version`)
 }
 
-export const createEthersAdapter = (provider: Web3Provider) => {
-  const signer = provider.getSigner(0)
+export const createEthersAdapter = async (provider: BrowserProvider) => {
+  const signer = await provider.getSigner(0)
   return new EthersAdapter({
     ethers,
     signerOrProvider: signer,
   })
 }
 
-export const createReadOnlyEthersAdapter = (provider = getWeb3ReadOnly()) => {
+export const createReadOnlyEthersAdapter = (provider: Provider | undefined = getWeb3ReadOnly()) => {
   if (!provider) {
     throw new Error('Unable to create `EthersAdapter` without a provider')
   }
@@ -48,7 +48,7 @@ export const createReadOnlyEthersAdapter = (provider = getWeb3ReadOnly()) => {
 }
 
 type SafeCoreSDKProps = {
-  provider: JsonRpcProvider
+  provider: Provider
   chainId: SafeInfo['chainId']
   address: SafeInfo['address']['value']
   version: SafeInfo['version']
@@ -66,8 +66,7 @@ export const initSafeSDK = async ({
   implementation,
 }: SafeCoreSDKProps): Promise<Safe | undefined> => {
   const safeVersion = version ?? (await Gnosis_safe__factory.connect(address, provider).VERSION())
-
-  let isL1SafeMasterCopy = chainId === chains.eth
+  let isL1SafeSingleton = chainId === chains.eth
 
   // If it is an official deployment we should still initiate the safeSDK
   if (!isValidMasterCopy(implementationVersionState)) {
@@ -76,24 +75,23 @@ export const initSafeSDK = async ({
     const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
     const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
 
-    isL1SafeMasterCopy = masterCopy === safeL1Deployment?.networkAddresses[chainId]
+    isL1SafeSingleton = masterCopy === safeL1Deployment?.networkAddresses[chainId]
     const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.networkAddresses[chainId]
 
     // Unknown deployment, which we do not want to support
-    if (!isL1SafeMasterCopy && !isL2SafeMasterCopy) {
+    if (!isL1SafeSingleton && !isL2SafeMasterCopy) {
       return Promise.resolve(undefined)
     }
   }
-
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
-    isL1SafeMasterCopy = true
+    isL1SafeSingleton = true
   }
 
   return Safe.create({
     ethAdapter: createReadOnlyEthersAdapter(provider),
     safeAddress: address,
-    isL1SafeMasterCopy,
+    isL1SafeSingleton: isL1SafeSingleton,
   })
 }
 

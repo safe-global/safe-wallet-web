@@ -64,7 +64,9 @@ export const validateLimitedAmount = (amount: string, decimals?: number, max?: s
     return numberError
   }
 
-  if (safeParseUnits(amount, decimals)?.gt(max)) {
+  const value = safeParseUnits(amount, decimals)
+
+  if (value && value > BigInt(max)) {
     return `Maximum value is ${safeFormatUnits(max, decimals)}`
   }
 }

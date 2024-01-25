@@ -1,5 +1,5 @@
-import { getAddress } from 'ethers/lib/utils'
-import { isAddress } from '@ethersproject/address'
+import { getAddress, isAddress } from 'ethers'
+
 /**
  * Checksums the given address
  * @param address ethereum address

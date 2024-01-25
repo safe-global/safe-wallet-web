@@ -1,6 +1,6 @@
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import type { AddOwnerTxParams, RemoveOwnerTxParams, SwapOwnerTxParams } from '@safe-global/safe-core-sdk'
+import type { AddOwnerTxParams, RemoveOwnerTxParams, SwapOwnerTxParams } from '@safe-global/protocol-kit'
 import type { MetaTransactionData, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import extractTxInfo from '../extractTxInfo'
 import { getAndValidateSafeSDK } from './sdk'
@@ -11,7 +11,7 @@ import { getAndValidateSafeSDK } from './sdk'
 export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: number): Promise<SafeTransaction> => {
   if (nonce !== undefined) txParams = { ...txParams, nonce }
   const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.createTransaction({ safeTransactionData: txParams })
+  return safeSDK.createTransaction({ transactions: [txParams] })
 }
 
 /**
@@ -20,7 +20,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
  */
 export const createMultiSendCallOnlyTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.createTransaction({ safeTransactionData: txParams, onlyCalls: true })
+  return safeSDK.createTransaction({ transactions: txParams, onlyCalls: true })
 }
 
 export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {

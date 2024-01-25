@@ -1,7 +1,7 @@
 import { LS_NAMESPACE } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
 import { asError } from '../exceptions/utils'
-
+import { reviver, replacer } from './storageHelpers'
 type BrowserStorage = typeof localStorage | typeof sessionStorage
 
 type ItemWithExpiry<T> = {
@@ -34,7 +34,7 @@ class Storage {
     if (saved == null) return null
 
     try {
-      return JSON.parse(saved) as T
+      return JSON.parse(saved, reviver) as T
     } catch (err) {
       logError(Errors._700, `key ${key} – ${asError(err).message}`)
     }
@@ -43,11 +43,12 @@ class Storage {
 
   public setItem = <T>(key: string, item: T): void => {
     const fullKey = this.getPrefixedKey(key)
+
     try {
       if (item == null) {
         this.storage?.removeItem(fullKey)
       } else {
-        this.storage?.setItem(fullKey, JSON.stringify(item))
+        this.storage?.setItem(fullKey, JSON.stringify(item, replacer))
       }
     } catch (err) {
       logError(Errors._701, `key ${key} – ${asError(err).message}`)

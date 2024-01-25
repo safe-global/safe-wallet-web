@@ -1,5 +1,5 @@
 import type { ReactNode, ReactElement, SyntheticEvent } from 'react'
-import { isAddress } from 'ethers/lib/utils'
+import { isAddress } from 'ethers'
 import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import useMediaQuery from '@mui/material/useMediaQuery'

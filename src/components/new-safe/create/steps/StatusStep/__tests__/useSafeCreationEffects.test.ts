@@ -5,10 +5,9 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as pendingSafe from '@/components/new-safe/create/logic'
 import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/usePendingSafe'
 import * as addressbook from '@/components/new-safe/create/logic/address-book'
-import { Web3Provider } from '@ethersproject/providers'
 import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
 import type { PendingSafeData } from '@/components/new-safe/create/types'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { type Eip1193Provider, toBeHex, BrowserProvider } from 'ethers'
 
 describe('useSafeCreationEffects', () => {
   beforeEach(() => {
@@ -16,7 +15,7 @@ describe('useSafeCreationEffects', () => {
     jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn(() => Promise.resolve({} as SafeInfo)))
     jest.spyOn(addressbook, 'updateAddressBook').mockReturnValue(() => {})
 
-    const mockProvider: Web3Provider = new Web3Provider(jest.fn())
+    const mockProvider: BrowserProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
   })
 
@@ -57,7 +56,7 @@ describe('useSafeCreationEffects', () => {
     const setPendingSafeSpy = jest.fn()
     jest
       .spyOn(usePendingSafe, 'usePendingSafe')
-      .mockReturnValue([{ safeAddress: hexZeroPad('0x123', 20) } as PendingSafeData, setPendingSafeSpy])
+      .mockReturnValue([{ safeAddress: toBeHex('0x123', 20) } as PendingSafeData, setPendingSafeSpy])
     renderHook(() =>
       useSafeCreationEffects({
         status: SafeCreationStatus.SUCCESS,

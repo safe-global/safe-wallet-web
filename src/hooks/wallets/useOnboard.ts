@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import { type EIP1193Provider, type WalletState, type OnboardAPI } from '@web3-onboard/core'
+import { type WalletState, type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getAddress } from 'ethers/lib/utils'
+import type { Eip1193Provider } from 'ethers'
+import { getAddress } from 'ethers'
 import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { logError, Errors } from '@/services/exceptions'
@@ -21,7 +22,7 @@ export type ConnectedWallet = {
   chainId: string
   address: string
   ens?: string
-  provider: EIP1193Provider
+  provider: Eip1193Provider
   icon?: string
   balance?: string
 }

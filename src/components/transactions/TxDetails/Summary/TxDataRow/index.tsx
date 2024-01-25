@@ -3,7 +3,7 @@ import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import CopyButton from '@/components/common/CopyButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { Typography } from '@mui/material'
-import { hexDataLength } from 'ethers/lib/utils'
+import { dataLength } from 'ethers'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
@@ -58,7 +58,7 @@ export const generateDataRowValue = (
     case 'rawData':
       return (
         <div data-testid="tx-data-row" className={css.rawData}>
-          <div>{value ? hexDataLength(value) : 0} bytes</div>
+          <div>{value ? dataLength(value) : 0} bytes</div>
           <CopyButton text={value} />
         </div>
       )

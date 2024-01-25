@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { Typography } from '@mui/material'
 
 import ExternalLink from '@/components/common/ExternalLink'
@@ -9,20 +9,21 @@ import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
+import useAsync from '@/hooks/useAsync'
 
 export const UpdateSafeReview = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
-  const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
+  const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
-  useEffect(() => {
+  useAsync(async () => {
     if (!chain || !safeLoaded) {
       return
     }
 
-    const txs = createUpdateSafeTxs(safe, chain)
+    const txs = await createUpdateSafeTxs(safe, chain)
     createMultiSendCallOnlyTx(txs).then(setSafeTx).catch(setSafeTxError)
-  }, [chain, safe, safeLoaded, setNonce, setSafeTx, setSafeTxError])
+  }, [safe, safeLoaded, chain, setSafeTx, setSafeTxError])
 
   return (
     <SignOrExecuteForm>
