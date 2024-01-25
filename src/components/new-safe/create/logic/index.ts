@@ -225,7 +225,7 @@ export const checkSafeCreationTx = async (
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {
-      throw SafeCreationStatus.ERROR
+      throw new Error('Transaction should have a receipt, but got null instead.')
     }
 
     if (didRevert(receipt)) {
