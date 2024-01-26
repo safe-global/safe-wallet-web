@@ -27,7 +27,7 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
       </Box>
 
       <Box gridArea="date" data-testid="tx-date" className={css.date}>
-        <DateTime value={item.timestamp.toNumber()} />
+        <DateTime value={Number(item.timestamp)} />
       </Box>
 
       <Box gridArea="status">

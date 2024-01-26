@@ -7,6 +7,8 @@ import useSafeInfo from './useSafeInfo'
 import { fetchFilteredTxHistory, useTxFilter } from '@/utils/tx-history-filter'
 import { getTxHistory } from '@/services/transactions'
 import { selectSettings } from '@/store/settingsSlice'
+import { useHasFeature } from './useChains'
+import { FEATURES } from '@/utils/chains'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -19,6 +21,7 @@ const useTxHistory = (
   const historyState = useAppSelector(selectTxHistory)
   const [filter] = useTxFilter()
   const { showOnlyTrustedTransactions } = useAppSelector(selectSettings)
+  const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
 
   const {
     safe: { chainId },
@@ -32,9 +35,9 @@ const useTxHistory = (
 
       return filter
         ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
-        : getTxHistory(chainId, safeAddress, showOnlyTrustedTransactions, pageUrl)
+        : getTxHistory(chainId, safeAddress, hasDefaultTokenlist && showOnlyTrustedTransactions, pageUrl)
     },
-    [chainId, safeAddress, pageUrl, filter, showOnlyTrustedTransactions],
+    [chainId, safeAddress, pageUrl, filter, hasDefaultTokenlist, showOnlyTrustedTransactions],
     false,
   )
 

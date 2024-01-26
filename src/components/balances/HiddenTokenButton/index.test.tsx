@@ -1,6 +1,6 @@
 import * as useChainId from '@/hooks/useChainId'
 import { fireEvent, render } from '@/tests/test-utils'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeParseUnits } from '@/utils/formatters'
 import HiddenTokenButton from '.'
@@ -23,7 +23,7 @@ describe('HiddenTokenToggle', () => {
 
   test('button disabled if hidden assets are visible', async () => {
     const mockHiddenAssets = {
-      '5': [hexZeroPad('0x3', 20)],
+      '5': [toBeHex('0x3', 20)],
     }
     const mockBalances = {
       data: {
@@ -34,7 +34,7 @@ describe('HiddenTokenToggle', () => {
             fiatBalance: '100',
             fiatConversion: '1',
             tokenInfo: {
-              address: hexZeroPad('0x2', 20),
+              address: toBeHex('0x2', 20),
               decimals: 18,
               logoUri: '',
               name: 'DAI',
@@ -47,7 +47,7 @@ describe('HiddenTokenToggle', () => {
             fiatBalance: '200',
             fiatConversion: '1',
             tokenInfo: {
-              address: hexZeroPad('0x3', 20),
+              address: toBeHex('0x3', 20),
               decimals: 18,
               logoUri: '',
               name: 'SPAM',

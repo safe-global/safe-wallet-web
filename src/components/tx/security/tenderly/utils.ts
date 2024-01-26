@@ -1,6 +1,6 @@
-import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
-import EthSafeTransaction from '@safe-global/safe-core-sdk/dist/src/utils/transactions/SafeTransaction'
-import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
+import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
+import EthSafeTransaction from '@safe-global/protocol-kit/dist/src/utils/transactions/SafeTransaction'
+import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
 import { type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
@@ -12,8 +12,7 @@ import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAM
 import { FEATURES, hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/security/tenderly/types'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { hexZeroPad } from 'ethers/lib/utils'
-import { BigNumber } from 'ethers'
+import { toBeHex } from 'ethers'
 import type { EnvState } from '@/store/settingsSlice'
 
 export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
@@ -78,9 +77,9 @@ type MultiSendTransactionSimulationParams = {
 
 export type SimulationTxParams = SingleTransactionSimulationParams | MultiSendTransactionSimulationParams
 
-export const _getSingleTransactionPayload = (
+export const _getSingleTransactionPayload = async (
   params: SingleTransactionSimulationParams,
-): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
+): Promise<Pick<TenderlySimulatePayload, 'to' | 'input'>> => {
   // If a transaction is executable we simulate with the proposed/selected gasLimit and the actual signatures
   let transaction = params.transactions
   const hasOwnerSignature = transaction.signatures.has(params.executionOwner)
@@ -97,7 +96,7 @@ export const _getSingleTransactionPayload = (
     transaction = simulatedTransaction
   }
 
-  const readOnlySafeContract = getReadOnlyCurrentGnosisSafeContract(params.safe)
+  const readOnlySafeContract = await getReadOnlyCurrentGnosisSafeContract(params.safe)
 
   const input = readOnlySafeContract.encode('execTransaction', [
     transaction.data.to,
@@ -113,19 +112,19 @@ export const _getSingleTransactionPayload = (
   ])
 
   return {
-    to: readOnlySafeContract.getAddress(),
+    to: await readOnlySafeContract.getAddress(),
     input,
   }
 }
 
-export const _getMultiSendCallOnlyPayload = (
+export const _getMultiSendCallOnlyPayload = async (
   params: MultiSendTransactionSimulationParams,
-): Pick<TenderlySimulatePayload, 'to' | 'input'> => {
+): Promise<Pick<TenderlySimulatePayload, 'to' | 'input'>> => {
   const data = encodeMultiSendData(params.transactions)
-  const readOnlyMultiSendContract = getReadOnlyMultiSendCallOnlyContract(params.safe.chainId, params.safe.version)
+  const readOnlyMultiSendContract = await getReadOnlyMultiSendCallOnlyContract(params.safe.chainId, params.safe.version)
 
   return {
-    to: readOnlyMultiSendContract.getAddress(),
+    to: await readOnlyMultiSendContract.getAddress(),
     input: readOnlyMultiSendContract.encode('multiSend', [data]),
   }
 }
@@ -179,11 +178,11 @@ const getNonceOverwrite = (params: SimulationTxParams): number | undefined => {
   The threshold is stored in storage slot 4 and uses full 32 bytes slot.
   Safe storage layout can be found here:
   https://github.com/gnosis/safe-contracts/blob/main/contracts/libraries/GnosisSafeStorage.sol */
-export const THRESHOLD_STORAGE_POSITION = hexZeroPad('0x4', 32)
-export const THRESHOLD_OVERWRITE = hexZeroPad('0x1', 32)
+export const THRESHOLD_STORAGE_POSITION = toBeHex('0x4', 32)
+export const THRESHOLD_OVERWRITE = toBeHex('0x1', 32)
 /* We need to overwrite the nonce if we simulate a (partially) signed transaction which is not at the top position of the tx queue.
   The nonce can be found in storage slot 5 and uses a full 32 bytes slot. */
-export const NONCE_STORAGE_POSITION = hexZeroPad('0x5', 32)
+export const NONCE_STORAGE_POSITION = toBeHex('0x5', 32)
 
 const getStateOverwrites = (params: SimulationTxParams) => {
   const nonceOverwrite = getNonceOverwrite(params)
@@ -195,7 +194,7 @@ const getStateOverwrites = (params: SimulationTxParams) => {
     storageOverwrites[THRESHOLD_STORAGE_POSITION] = THRESHOLD_OVERWRITE
   }
   if (nonceOverwrite) {
-    storageOverwrites[NONCE_STORAGE_POSITION] = hexZeroPad(BigNumber.from(nonceOverwrite).toHexString(), 32)
+    storageOverwrites[NONCE_STORAGE_POSITION] = toBeHex('0x' + BigInt(nonceOverwrite).toString(16), 32)
   }
 
   return storageOverwrites
@@ -207,15 +206,15 @@ const getLatestBlockGasLimit = async (): Promise<number> => {
   if (!latestBlock) {
     throw Error('Could not determine block gas limit')
   }
-  return latestBlock.gasLimit.toNumber()
+  return Number(latestBlock.gasLimit)
 }
 
 export const getSimulationPayload = async (params: SimulationTxParams): Promise<TenderlySimulatePayload> => {
   const gasLimit = params.gasLimit || (await getLatestBlockGasLimit())
 
   const payload = isSingleTransactionSimulation(params)
-    ? _getSingleTransactionPayload(params)
-    : _getMultiSendCallOnlyPayload(params)
+    ? await _getSingleTransactionPayload(params)
+    : await _getMultiSendCallOnlyPayload(params)
 
   const stateOverwrites = getStateOverwrites(params)
   const stateOverwritesLength = Object.keys(stateOverwrites).length

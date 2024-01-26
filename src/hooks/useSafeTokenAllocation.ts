@@ -1,16 +1,14 @@
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { IS_PRODUCTION } from '@/config/constants'
-import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { isPast } from 'date-fns'
-import { BigNumber } from 'ethers'
-import { defaultAbiCoder, Interface } from 'ethers/lib/utils'
+import { AbiCoder, Interface, type JsonRpcProvider } from 'ethers'
 import { useMemo } from 'react'
 import useAsync, { type AsyncResult } from './useAsync'
 import useSafeInfo from './useSafeInfo'
 import { getWeb3ReadOnly } from './wallets/web3'
 import memoize from 'lodash/memoize'
-import type { JsonRpcProvider } from '@ethersproject/providers'
 
 export const VESTING_URL =
   IS_PRODUCTION || cgwDebugStorage.get()
@@ -39,7 +37,7 @@ export type Vesting = VestingData & {
 // We currently do not have typechain as dependency so we fallback to human readable ABIs
 const airdropInterface = new Interface([
   'function redeemDeadline() public returns (uint64)',
-  'function vestings(bytes32) public returns ({address account, uint8 curveType,bool managed, uint16 durationWeeks, uint64 startDate, uint128 amount, uint128 amountClaimed, uint64 pausingDate,bool cancelled})',
+  'function vestings(bytes32) public returns (address account, uint8 curveType,bool managed, uint16 durationWeeks, uint64 startDate, uint128 amount, uint128 amountClaimed, uint64 pausingDate,bool cancelled)',
 ])
 const tokenInterface = new Interface(['function balanceOf(address _owner) public view returns (uint256 balance)'])
 
@@ -67,11 +65,12 @@ const completeAllocation = async (allocation: VestingData): Promise<Vesting> => 
     data: airdropInterface.encodeFunctionData('vestings', [allocation.vestingId]),
   })
 
-  const decodedVestingData = defaultAbiCoder.decode(
+  const decodedVestingData = AbiCoder.defaultAbiCoder().decode(
     // account, curveType, managed, durationWeeks, startDate, amount, amountClaimed, pausingDate, cancelled}
     ['address', 'uint8', 'bool', 'uint16', 'uint64', 'uint128', 'uint128', 'uint64', 'bool'],
     onChainVestingData,
   )
+
   const isRedeemed = decodedVestingData[0].toLowerCase() !== ZERO_ADDRESS.toLowerCase()
   if (isRedeemed) {
     return { ...allocation, isRedeemed, isExpired: false, amountClaimed: decodedVestingData[6] }
@@ -80,7 +79,7 @@ const completeAllocation = async (allocation: VestingData): Promise<Vesting> => 
   // Allocation is not yet redeemed => check the redeemDeadline
   const redeemDeadline = await _getRedeemDeadline(allocation, web3ReadOnly)
 
-  const redeemDeadlineDate = new Date(BigNumber.from(redeemDeadline).mul(1000).toNumber())
+  const redeemDeadlineDate = new Date(Number(BigInt(redeemDeadline) * BigInt(1000)))
 
   // Allocation is valid if redeem deadline is in future
   return { ...allocation, isRedeemed, isExpired: isPast(redeemDeadlineDate), amountClaimed: '0' }
@@ -142,7 +141,7 @@ const fetchTokenBalance = async (chainId: string, safeAddress: string): Promise<
  * The Safe token allocation is equal to the voting power.
  * It is computed by adding all vested tokens - claimed tokens + token balance
  */
-export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<BigNumber> => {
+export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigint> => {
   const { safe, safeAddress } = useSafeInfo()
   const chainId = safe.chainId
 
@@ -160,16 +159,16 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<BigN
 
     // Return current balance if no allocation exists
     if (!allocationData) {
-      return BigNumber.from(balance)
+      return BigInt(balance.startsWith('0x') ? balance : '0x' + balance)
     }
 
     const tokensInVesting = allocationData.reduce(
-      (acc, data) => (data.isExpired ? acc : acc.add(data.amount).sub(data.amountClaimed)),
-      BigNumber.from(0),
+      (acc, data) => (data.isExpired ? acc : acc + BigInt(data.amount) - BigInt(data.amountClaimed)),
+      BigInt(0),
     )
 
     // add balance
-    const totalAllocation = tokensInVesting.add(BigNumber.from(balance))
+    const totalAllocation = tokensInVesting + BigInt(balance)
     return totalAllocation
   }, [allocationData, balance])
 

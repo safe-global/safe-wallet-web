@@ -1,5 +1,5 @@
 import { fireEvent, render, waitFor } from '@/tests/test-utils'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ApprovalEditorForm } from '@/components/tx/ApprovalEditor/ApprovalEditorForm'
 import { getAllByTestId, getAllByTitle } from '@testing-library/dom'
@@ -13,8 +13,8 @@ describe('ApprovalEditorForm', () => {
   const updateCallback = jest.fn()
 
   it('should render and edit multiple txs', async () => {
-    const tokenAddress1 = hexZeroPad('0x123', 20)
-    const tokenAddress2 = hexZeroPad('0x234', 20)
+    const tokenAddress1 = toBeHex('0x123', 20)
+    const tokenAddress2 = toBeHex('0x234', 20)
 
     const mockApprovalInfos: ApprovalInfo[] = [
       {
@@ -77,7 +77,7 @@ describe('ApprovalEditorForm', () => {
   })
 
   it('should render and edit single tx', async () => {
-    const tokenAddress = hexZeroPad('0x123', 20)
+    const tokenAddress = toBeHex('0x123', 20)
 
     const mockApprovalInfo: ApprovalInfo = {
       tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },

@@ -11,7 +11,6 @@ import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
 import EditIcon from '@/public/images/common/edit.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import Approvals from '@/components/tx/ApprovalEditor/Approvals'
-import { BigNumber } from 'ethers'
 import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 const Title = () => {
@@ -40,7 +39,7 @@ export const ApprovalEditor = ({
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const [readableApprovals, error, loading] = useApprovalInfos({ safeTransaction, safeMessage })
 
-  const nonZeroApprovals = readableApprovals?.filter((approval) => !BigNumber.from(0).eq(approval.amount))
+  const nonZeroApprovals = readableApprovals?.filter((approval) => !(0n === approval.amount))
 
   if (nonZeroApprovals?.length === 0 || (!safeTransaction && !safeMessage)) {
     return null

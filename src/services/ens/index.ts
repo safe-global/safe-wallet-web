@@ -1,4 +1,4 @@
-import { type JsonRpcProvider } from '@ethersproject/providers'
+import { type Provider } from 'ethers'
 import { logError } from '../exceptions'
 import ErrorCodes from '../exceptions/ErrorCodes'
 import { CUSTOM_REGISTRIES } from './config'
@@ -15,7 +15,7 @@ export function isDomain(domain: string): boolean {
   return DOMAIN_RE.test(domain)
 }
 
-export const resolveName = async (rpcProvider: JsonRpcProvider, name: string): Promise<string | undefined> => {
+export const resolveName = async (rpcProvider: Provider, name: string): Promise<string | undefined> => {
   let chainId = ''
   try {
     chainId = (await rpcProvider.getNetwork()).chainId.toString()
@@ -35,7 +35,7 @@ export const resolveName = async (rpcProvider: JsonRpcProvider, name: string): P
   }
 }
 
-export const lookupAddress = async (rpcProvider: JsonRpcProvider, address: string): Promise<string | undefined> => {
+export const lookupAddress = async (rpcProvider: Provider, address: string): Promise<string | undefined> => {
   try {
     return (await rpcProvider.lookupAddress(address)) || undefined
   } catch (e) {

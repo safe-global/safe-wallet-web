@@ -1,15 +1,15 @@
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { SENTINEL_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getModuleInstance, KnownContracts, deployAndSetUpModule } from '@gnosis.pm/zodiac'
-import { Interface } from 'ethers/lib/utils'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import { Interface } from 'ethers'
+import type { JsonRpcProvider } from 'ethers'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 import { sameAddress } from '@/utils/addresses'
 import { MAX_RECOVERER_PAGE_SIZE } from './recovery-state'
 import type { UpsertRecoveryFlowProps } from '@/components/tx-flow/flows/UpsertRecovery'
 
-export function _getRecoverySetupTransactions({
+export async function _getRecoverySetupTransactions({
   delay,
   expiry,
   recoverers,
@@ -23,10 +23,7 @@ export function _getRecoverySetupTransactions({
   chainId: string
   safeAddress: string
   provider: JsonRpcProvider
-}): {
-  expectedModuleAddress: string
-  transactions: Array<MetaTransactionData>
-} {
+}): Promise<{ expectedModuleAddress: string; transactions: Array<MetaTransactionData> }> {
   const setupArgs: Parameters<typeof deployAndSetUpModule>[1] = {
     types: ['address', 'address', 'address', 'uint256', 'uint256'],
     values: [
@@ -40,7 +37,7 @@ export function _getRecoverySetupTransactions({
 
   const saltNonce: Parameters<typeof deployAndSetUpModule>[4] = Date.now().toString()
 
-  const { transaction, expectedModuleAddress } = deployAndSetUpModule(
+  const { transaction, expectedModuleAddress } = await deployAndSetUpModule(
     KnownContracts.DELAY,
     setupArgs,
     provider,
@@ -114,13 +111,13 @@ export async function _getEditRecoveryTransactions({
   const txData: Array<string> = []
 
   // Update cooldown
-  if (!oldDelay.eq(newDelay)) {
+  if (oldDelay !== BigInt(newDelay)) {
     const setTxCooldown = delayModifierContract.interface.encodeFunctionData('setTxCooldown', [newDelay])
     txData.push(setTxCooldown)
   }
 
   // Update expiration
-  if (!oldExpiry.eq(newExpiry)) {
+  if (oldExpiry !== BigInt(newExpiry)) {
     const setTxExpiration = delayModifierContract.interface.encodeFunctionData('setTxExpiration', [newExpiry])
     txData.push(setTxExpiration)
   }
@@ -190,7 +187,7 @@ export async function getRecoveryUpsertTransactions({
     })
   }
 
-  const { transactions } = _getRecoverySetupTransactions({
+  const { transactions } = await _getRecoverySetupTransactions({
     delay,
     expiry,
     recoverers: [recoverer],

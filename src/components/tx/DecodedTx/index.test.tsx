@@ -14,12 +14,12 @@ describe('DecodedTx', () => {
               value: '1000000',
               data: '0x',
               operation: 0,
-              baseGas: 0,
-              gasPrice: 0,
+              baseGas: '0',
+              gasPrice: '0',
               gasToken: '0x0000000000000000000000000000000000000000',
               refundReceiver: '0x0000000000000000000000000000000000000000',
               nonce: 58,
-              safeTxGas: 0,
+              safeTxGas: '0',
             },
           } as SafeTransaction
         }
@@ -60,12 +60,12 @@ describe('DecodedTx', () => {
               value: '0',
               data: '0xa9059cbb000000000000000000000000474e5ded6b5d078163bfb8f6dba355c3aa5478c80000000000000000000000000000000000000000000000008ac7230489e80000',
               operation: 0,
-              baseGas: 0,
-              gasPrice: 0,
+              baseGas: '0',
+              gasPrice: '0',
               gasToken: '0x0000000000000000000000000000000000000000',
               refundReceiver: '0x0000000000000000000000000000000000000000',
               nonce: 58,
-              safeTxGas: 0,
+              safeTxGas: '0',
             },
           } as SafeTransaction
         }
@@ -106,14 +106,14 @@ describe('DecodedTx', () => {
             data: {
               to: '0x40A2aCCbd92BCA938b02010E17A5b8929b49130D',
               value: '0',
-              data: '0x8d80ff0',
+              data: '0x8d80ff00',
               operation: 1,
-              baseGas: 0,
-              gasPrice: 0,
+              baseGas: '0',
+              gasPrice: '0',
               gasToken: '0x0000000000000000000000000000000000000000',
               refundReceiver: '0x0000000000000000000000000000000000000000',
               nonce: 58,
-              safeTxGas: 0,
+              safeTxGas: '0',
             },
           } as SafeTransaction
         }
@@ -202,12 +202,12 @@ describe('DecodedTx', () => {
               value: '5000000000000',
               data: '0xd0e30db0',
               operation: 0,
-              baseGas: 0,
-              gasPrice: 0,
+              baseGas: '0',
+              gasPrice: '0',
               gasToken: '0x0000000000000000000000000000000000000000',
               refundReceiver: '0x0000000000000000000000000000000000000000',
               nonce: 58,
-              safeTxGas: 0,
+              safeTxGas: '0',
             },
           } as SafeTransaction
         }

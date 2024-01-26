@@ -4,7 +4,6 @@ import { type ApprovalInfo } from '@/components/tx/ApprovalEditor/hooks/useAppro
 import css from './styles.module.css'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import ApprovalItem from '@/components/tx/ApprovalEditor/ApprovalItem'
-import { BigNumber } from 'ethers'
 
 const Approvals = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
   return (
@@ -15,7 +14,7 @@ const Approvals = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
         return (
           <ListItem
             key={tx.tokenAddress + tx.spender}
-            className={BigNumber.from(0).eq(tx.amount) ? css.zeroValueApproval : undefined}
+            className={BigInt(0) === BigInt(tx.amount) ? css.zeroValueApproval : undefined}
             disablePadding
             data-testid="approval-item"
           >
