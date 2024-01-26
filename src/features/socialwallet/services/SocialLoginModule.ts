@@ -3,7 +3,6 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type WalletInit, ProviderRpcError } from '@web3-onboard/common'
 import { type EIP1193Provider } from '@web3-onboard/core'
-import { type SafeAuthPack, type SafeAuthEventListener } from '@safe-global/auth-kit'
 import { _getSafeAuthPackInstance } from '@/features/socialwallet/hooks/useSafeAuth'
 
 const assertDefined = <T>(mpcProvider: T | undefined) => {
@@ -13,27 +12,10 @@ const assertDefined = <T>(mpcProvider: T | undefined) => {
   return mpcProvider
 }
 
-export const onboardListeners: Record<'accountsChanged' | 'chainChanged', SafeAuthEventListener[]> = {
-  accountsChanged: [],
-  chainChanged: [],
-}
-
 export const ONBOARD_MPC_MODULE_LABEL = 'Social Login'
 
 export const isSocialLoginWallet = (walletLabel: string | undefined) => {
   return walletLabel === ONBOARD_MPC_MODULE_LABEL
-}
-
-const getConnectedAccounts = async (provider: ReturnType<SafeAuthPack['getProvider']> | undefined) => {
-  try {
-    const web3 = assertDefined(provider)
-    return web3.request({ method: 'eth_accounts' })
-  } catch (e) {
-    throw new ProviderRpcError({
-      code: 4001,
-      message: 'Provider is unavailable',
-    })
-  }
 }
 
 /**
@@ -60,7 +42,6 @@ function MpcModule(chain: ChainInfo): WalletInit {
           on: (event, listener) => {
             const safeAuthPack = _getSafeAuthPackInstance()
             if (event === 'accountsChanged' || event === 'chainChanged') {
-              onboardListeners[event].push(listener)
               safeAuthPack?.subscribe(event, listener)
             }
           },
@@ -101,12 +82,6 @@ function MpcModule(chain: ChainInfo): WalletInit {
                     const signInResponse = await safeAuthPack.signIn()
                     resolve([signInResponse.eoa])
                   }
-                  return
-                }
-
-                if ('wallet_switchEthereumChain' === request.method) {
-                  // The MPC provider always uses the current chain as chain. Nothing to do here.
-                  resolve(null)
                   return
                 }
 

@@ -2,9 +2,8 @@ import { connectWallet } from '@/hooks/wallets/useOnboard'
 import { chainBuilder } from '@/tests/builders/chains'
 import { onboardBuilder } from '@/tests/builders/onboard'
 import { faker } from '@faker-js/faker'
-import { type SafeAuthPack } from '@safe-global/auth-kit'
+import { SafeAuthPack } from '@safe-global/auth-kit'
 import { renderHook, waitFor } from '@testing-library/react'
-import { onboardListeners } from '../../services/SocialLoginModule'
 import {
   setSafeAuthPack,
   useInitSafeAuth,
@@ -100,53 +99,15 @@ describe('useInitSafeAuth', () => {
     })
   })
 
-  it('should call destroy when re-initializing', async () => {
+  it('should only init once', async () => {
     const mockDestroy = jest.fn()
-    setSafeAuthPack({
-      destroy: mockDestroy,
-    } as unknown as SafeAuthPack)
+    setSafeAuthPack({} as unknown as SafeAuthPack)
 
     renderHook(() => useInitSafeAuth())
 
     await waitFor(() => {
       expect(_getSafeAuthPackInstance()).toBeDefined()
-      expect(mockSafeAuthPack.init).toHaveBeenCalled()
-      expect(mockDestroy).toHaveBeenCalledTimes(1)
+      expect(mockSafeAuthPack.init).not.toHaveBeenCalled()
     })
-  })
-
-  it('should register onboard listeners when (re)-initializing', async () => {
-    const mockAccountsListener = jest.fn()
-    const mockChainsListener = jest.fn()
-
-    onboardListeners.accountsChanged.push(mockAccountsListener)
-    onboardListeners.chainChanged.push(mockChainsListener)
-
-    renderHook(() => useInitSafeAuth())
-
-    await waitFor(() => {
-      expect(_getSafeAuthPackInstance()).toBeDefined()
-      expect(mockSafeAuthPack.init).toHaveBeenCalled()
-    })
-
-    const mockMail = faker.internet.email()
-    const mockUserInfo = {
-      email: mockMail,
-      name: faker.string.alpha(),
-      profileImage: faker.internet.url(),
-      verifier: 'google',
-      verifierId: mockMail,
-    }
-    mockSafeAuthPack.getUserInfo.mockResolvedValue(mockUserInfo)
-
-    // Emit accountsChanged on subscribed listeners
-    expect(mockAccountsListener).not.toHaveBeenCalled()
-    registeredListeners.accountsChanged.forEach((listener) => listener([faker.finance.ethereumAddress()]))
-    expect(mockAccountsListener).toHaveBeenCalledTimes(1)
-
-    // Emit chainChanged on subscribed listeners
-    expect(mockChainsListener).not.toHaveBeenCalled()
-    registeredListeners.chainChanged.forEach((listener) => listener(faker.string.numeric()))
-    expect(mockChainsListener).toHaveBeenCalledTimes(1)
   })
 })

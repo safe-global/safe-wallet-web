@@ -1,6 +1,6 @@
 import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import ExternalStore from '@/services/ExternalStore'
-import { onboardListeners, ONBOARD_MPC_MODULE_LABEL } from '@/features/socialwallet/services/SocialLoginModule'
+import { ONBOARD_MPC_MODULE_LABEL } from '@/features/socialwallet/services/SocialLoginModule'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { getRpcServiceUrl } from '../../../hooks/wallets/web3'
@@ -48,7 +48,7 @@ export const initSafeAuth = async (chain: ChainInfo, onboard: OnboardAPI) => {
   const oldPack = _getSafeAuthPackInstance()
 
   if (oldPack) {
-    oldPack.destroy()
+    return oldPack
   }
 
   const safeAuthPack = new SafeAuthPack({
@@ -59,15 +59,7 @@ export const initSafeAuth = async (chain: ChainInfo, onboard: OnboardAPI) => {
     .init(safeAuthInitOptions)
     .then(() => {
       setStore(safeAuthPack)
-
       safeAuthPack.subscribe('accountsChanged', onAccountsChanged(safeAuthPack, onboard))
-
-      // Always keep the onboard listeners
-      Object.entries(onboardListeners).forEach((eventListeners) => {
-        eventListeners[1].forEach((listener) => {
-          safeAuthPack.subscribe(eventListeners[0] as 'accountsChanged' | 'chainChanged', listener)
-        })
-      })
     })
     .catch((error) => console.error(error))
 }
@@ -79,13 +71,12 @@ export const setSafeAuthPack = setStore
 export const useInitSafeAuth = () => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
-  const safeAuthPack = useStore()
   useEffect(() => {
     if (!chain || !onboard) {
       return
     }
     initSafeAuth(chain, onboard)
-  }, [chain, onboard, safeAuthPack?.destroy])
+  }, [chain, onboard])
 }
 
 export default useStore
