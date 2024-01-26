@@ -1,3 +1,4 @@
+import { useCounterfactualBalances } from '@/features/counterfactual/hooks/useCounterfactualBalances'
 import { useEffect, useMemo } from 'react'
 import { getBalances, type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
@@ -27,12 +28,16 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const currency = useAppSelector(selectCurrency)
   const isTrustedTokenList = useTokenListSetting()
   const { safe, safeAddress } = useSafeInfo()
+  const [balance] = useCounterfactualBalances(safeAddress, pollCount)
   const chainId = safe.chainId
 
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error, loading] = useAsync<SafeBalanceResponse>(
     () => {
       if (!chainId || !safeAddress || isTrustedTokenList === undefined) return
+      if (!safe.deployed) {
+        return balance ? Promise.resolve(balance) : undefined
+      }
 
       return getBalances(chainId, safeAddress, currency, {
         trusted: isTrustedTokenList,

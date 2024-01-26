@@ -5,9 +5,8 @@ import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
 import type { BrowserProvider, Provider } from 'ethers'
-import Safe from '@safe-global/protocol-kit'
+import Safe, { type PredictedSafeProps, EthersAdapter } from '@safe-global/protocol-kit'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { EthersAdapter } from '@safe-global/protocol-kit'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
@@ -54,6 +53,7 @@ type SafeCoreSDKProps = {
   version: SafeInfo['version']
   implementationVersionState: SafeInfo['implementationVersionState']
   implementation: SafeInfo['implementation']['value']
+  undeployedSafe: PredictedSafeProps | undefined
 }
 
 // Safe Core SDK
@@ -64,6 +64,7 @@ export const initSafeSDK = async ({
   version,
   implementationVersionState,
   implementation,
+  undeployedSafe,
 }: SafeCoreSDKProps): Promise<Safe | undefined> => {
   const safeVersion = version ?? (await Gnosis_safe__factory.connect(address, provider).VERSION())
   let isL1SafeSingleton = chainId === chains.eth
@@ -86,6 +87,14 @@ export const initSafeSDK = async ({
   // Legacy Safe contracts
   if (isLegacyVersion(safeVersion)) {
     isL1SafeSingleton = true
+  }
+
+  if (undeployedSafe) {
+    return Safe.create({
+      ethAdapter: createReadOnlyEthersAdapter(provider),
+      isL1SafeSingleton: isL1SafeSingleton,
+      predictedSafe: undeployedSafe,
+    })
   }
 
   return Safe.create({

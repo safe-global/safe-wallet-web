@@ -1,3 +1,4 @@
+import { dispatchTxExecutionAndDeploySafe } from '@/features/counterfactual/utils'
 import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
@@ -30,6 +31,7 @@ type TxActions = {
     origin?: string,
     isRelayed?: boolean,
   ) => Promise<string>
+  deploySafeAndExecuteTx: (txOptions: TransactionOptions, safeTx?: SafeTransaction) => Promise<any>
 }
 
 function assertTx(safeTx: SafeTransaction | undefined): asserts safeTx {
@@ -105,6 +107,14 @@ export const useTxActions = (): TxActions => {
       return tx.txId
     }
 
+    const deploySafeAndExecuteTx = async (txOptions: TransactionOptions, safeTx?: SafeTransaction) => {
+      assertTx(safeTx)
+      assertWallet(wallet)
+      assertOnboard(onboard)
+
+      return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId)
+    }
+
     const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
@@ -134,8 +144,8 @@ export const useTxActions = (): TxActions => {
       return txId
     }
 
-    return { addToBatch, signTx, executeTx }
-  }, [safe, onboard, wallet, addTxToBatch])
+    return { addToBatch, signTx, executeTx, deploySafeAndExecuteTx }
+  }, [safe, wallet, addTxToBatch, onboard])
 }
 
 export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {
@@ -162,6 +172,8 @@ export const useRecommendedNonce = (): number | undefined => {
   const [recommendedNonce] = useAsync(
     async () => {
       if (!safe.chainId || !safeAddress) return
+
+      if (!safe.deployed) return 0
 
       const nonces = await getNonces(safe.chainId, safeAddress)
 

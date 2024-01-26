@@ -193,7 +193,7 @@ export const dispatchBatchExecution = async (
 ) => {
   const groupKey = multiSendTxData
 
-  let result: TransactionResult | undefined
+  let result: ContractTransactionResponse | undefined
   const txIds = txs.map((tx) => tx.txId)
 
   try {
@@ -219,8 +219,8 @@ export const dispatchBatchExecution = async (
   const provider = getWeb3ReadOnly()
 
   Promise.race([
-    result.transactionResponse
-      ?.wait()
+    result
+      .wait()
       .then((receipt) => {
         if (receipt === null) {
           txs.forEach(({ txId }) => {
@@ -271,7 +271,7 @@ export const dispatchBatchExecution = async (
     provider ? waitForTx(provider, txIds, result.hash) : undefined,
   ])
 
-  return result!.hash
+  return result.hash
 }
 
 export const dispatchSpendingLimitTxExecution = async (

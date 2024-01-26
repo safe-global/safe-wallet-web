@@ -115,13 +115,18 @@ export const getReadOnlyProxyFactoryContract = (chainId: string, safeVersion: Sa
   })
 }
 
-// Fallback handler
-
+/**
+ * Fallback handler
+ * @param chainId
+ * @param safeVersion
+ * @param provider - If a provider is passed RPC requests go through the wallet
+ */
 export const getReadOnlyFallbackHandlerContract = async (
   chainId: string,
   safeVersion: SafeInfo['version'],
+  provider?: BrowserProvider,
 ): Promise<CompatibilityFallbackHandlerEthersContract> => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+  const ethAdapter = provider ? await createEthersAdapter(provider) : createReadOnlyEthersAdapter()
 
   return ethAdapter.getCompatibilityFallbackHandlerContract({
     singletonDeployment: getFallbackHandlerContractDeployment(chainId, safeVersion),
