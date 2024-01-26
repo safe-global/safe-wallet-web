@@ -33,9 +33,6 @@
     "node": ">=16"
   },
   "resolutions": {
-    "@walletconnect/core": "^2.10.6",
-    "@walletconnect/ethereum-provider": "^2.10.6",
-    "@walletconnect/utils": "^2.10.6",
     "@web3-onboard/trezor/**/protobufjs": "^7.2.4",
     "@safe-global/safe-core-sdk-types/**/ethers": "^6.10.0",
     "@safe-global/protocol-kit/**/ethers": "^6.10.0",
