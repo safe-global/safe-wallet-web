@@ -4,7 +4,7 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as router from 'next/router'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/protocol-kit'
@@ -24,7 +24,8 @@ describe('useInitSafeCoreSDK hook', () => {
         value: '0x1',
       },
       implementationVersionState: ImplementationVersionState.UP_TO_DATE,
-    } as SafeInfo,
+      deployed: true,
+    } as ExtendedSafeInfo,
     safeAddress: mockSafeAddress,
     safeLoaded: true,
     safeError: undefined,

@@ -1,6 +1,8 @@
 import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { ImplementationVersionState, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -73,4 +75,18 @@ export const dispatchTxExecutionAndDeploySafe = async (
   }
 
   return result?.wait()
+}
+
+export const deploySafeAndExecuteTx = async (
+  txOptions: TransactionOptions,
+  chainId: string,
+  wallet: ConnectedWallet | null,
+  safeTx?: SafeTransaction,
+  onboard?: OnboardAPI,
+) => {
+  assertTx(safeTx)
+  assertWallet(wallet)
+  assertOnboard(onboard)
+
+  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId)
 }

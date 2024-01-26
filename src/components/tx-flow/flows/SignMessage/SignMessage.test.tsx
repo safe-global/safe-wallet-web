@@ -1,3 +1,4 @@
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { hexlify, zeroPadValue, toUtf8Bytes } from 'ethers'
 import type { SafeInfo, SafeMessage, SafeMessageListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeMessageListItemType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -96,13 +97,14 @@ describe('SignMessage', () => {
 
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        ...extendedSafeInfoBuilder().build(),
         version: '1.3.0',
         address: {
           value: zeroPadValue('0x01', 20),
         },
         chainId: '5',
         threshold: 2,
-      } as SafeInfo,
+      },
       safeAddress: zeroPadValue('0x01', 20),
       safeError: undefined,
       safeLoading: false,

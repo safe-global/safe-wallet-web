@@ -53,7 +53,7 @@ type SafeCoreSDKProps = {
   version: SafeInfo['version']
   implementationVersionState: SafeInfo['implementationVersionState']
   implementation: SafeInfo['implementation']['value']
-  undeployedSafe: PredictedSafeProps | undefined
+  undeployedSafe?: PredictedSafeProps
 }
 
 // Safe Core SDK

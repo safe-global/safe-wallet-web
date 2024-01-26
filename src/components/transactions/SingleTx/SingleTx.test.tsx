@@ -1,7 +1,9 @@
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { fireEvent, render } from '@/tests/test-utils'
 import SingleTx from '@/pages/transactions/tx'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
-import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { waitFor } from '@testing-library/react'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 const SAFE_ADDRESS = '0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f'
@@ -38,8 +40,9 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
 jest.spyOn(useSafeInfo, 'default').mockImplementation(() => ({
   safeAddress: SAFE_ADDRESS,
   safe: {
+    ...extendedSafeInfoBuilder().build(),
     chainId: '5',
-  } as SafeInfo,
+  },
   safeError: undefined,
   safeLoading: false,
   safeLoaded: true,
@@ -64,12 +67,14 @@ describe('SingleTx', () => {
 
     const screen = render(<SingleTx />)
 
-    expect(await screen.findByText('Failed to load transaction')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load transaction')).toBeInTheDocument()
+    })
 
-    const button = screen.getByText('Details')
-    fireEvent.click(button!)
-
-    expect(screen.getByText('Server error')).toBeInTheDocument()
+    await waitFor(() => {
+      fireEvent.click(screen.getByText('Details'))
+      expect(screen.getByText('Server error')).toBeInTheDocument()
+    })
   })
 
   it('shows an error when transaction is not from the opened Safe', async () => {

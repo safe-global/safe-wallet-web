@@ -1,4 +1,4 @@
-import { dispatchTxExecutionAndDeploySafe } from '@/features/counterfactual/utils'
+import { assertTx, assertWallet, assertOnboard } from '@/utils/helpers'
 import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
@@ -14,8 +14,6 @@ import {
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { OnboardAPI } from '@web3-onboard/core'
 import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
@@ -31,17 +29,6 @@ type TxActions = {
     origin?: string,
     isRelayed?: boolean,
   ) => Promise<string>
-  deploySafeAndExecuteTx: (txOptions: TransactionOptions, safeTx?: SafeTransaction) => Promise<any>
-}
-
-function assertTx(safeTx: SafeTransaction | undefined): asserts safeTx {
-  if (!safeTx) throw new Error('Transaction not provided')
-}
-function assertWallet(wallet: ConnectedWallet | null): asserts wallet {
-  if (!wallet) throw new Error('Wallet not connected')
-}
-function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard {
-  if (!onboard) throw new Error('Onboard not connected')
 }
 
 export const useTxActions = (): TxActions => {
@@ -107,14 +94,6 @@ export const useTxActions = (): TxActions => {
       return tx.txId
     }
 
-    const deploySafeAndExecuteTx = async (txOptions: TransactionOptions, safeTx?: SafeTransaction) => {
-      assertTx(safeTx)
-      assertWallet(wallet)
-      assertOnboard(onboard)
-
-      return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId)
-    }
-
     const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
@@ -144,7 +123,7 @@ export const useTxActions = (): TxActions => {
       return txId
     }
 
-    return { addToBatch, signTx, executeTx, deploySafeAndExecuteTx }
+    return { addToBatch, signTx, executeTx }
   }, [safe, wallet, addTxToBatch, onboard])
 }
 

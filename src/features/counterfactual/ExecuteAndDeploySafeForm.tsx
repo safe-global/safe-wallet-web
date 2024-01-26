@@ -1,10 +1,12 @@
 import { TxModalContext } from '@/components/tx-flow'
 import { removeUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
+import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useOnboard from '@/hooks/wallets/useOnboard'
+import useWallet from '@/hooks/wallets/useWallet'
 import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { useAppDispatch } from '@/store'
 import madProps from '@/utils/mad-props'
@@ -65,6 +67,7 @@ export const ExecuteAndDeploySafeForm = ({
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
 }): ReactElement => {
+  const wallet = useWallet()
   const onboard = useOnboard()
   const chainId = useChainId()
   const dispatch = useAppDispatch()
@@ -76,7 +79,6 @@ export const ExecuteAndDeploySafeForm = ({
 
   // Hooks
   const currentChain = useCurrentChain()
-  const { deploySafeAndExecuteTx } = txActions
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
   const { setTxFlow } = useContext(TxModalContext)
 
@@ -103,7 +105,7 @@ export const ExecuteAndDeploySafeForm = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await deploySafeAndExecuteTx(txOptions, safeTx)
+      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
       dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
     } catch (_err) {
       const err = asError(_err)
