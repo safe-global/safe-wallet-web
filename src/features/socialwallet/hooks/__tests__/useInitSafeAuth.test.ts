@@ -2,7 +2,7 @@ import { connectWallet } from '@/hooks/wallets/useOnboard'
 import { chainBuilder } from '@/tests/builders/chains'
 import { onboardBuilder } from '@/tests/builders/onboard'
 import { faker } from '@faker-js/faker'
-import { SafeAuthPack } from '@safe-global/auth-kit'
+import { type SafeAuthPack } from '@safe-global/auth-kit'
 import { renderHook, waitFor } from '@testing-library/react'
 import {
   setSafeAuthPack,
