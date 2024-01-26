@@ -52,6 +52,7 @@ const mockBalanceUSD = {
 const mockSafeInfo = {
   data: {
     ...defaultSafeInfo,
+    deployed: true,
     address: { value: safeAddress },
     chainId: '5',
   },

@@ -91,20 +91,21 @@ describe('SignMessage', () => {
   })
 
   const mockUseSafeMessages = useSafeMessages as jest.Mock
+  const extendedSafeInfo = {
+    ...extendedSafeInfoBuilder().build(),
+    version: '1.3.0',
+    address: {
+      value: zeroPadValue('0x01', 20),
+    },
+    chainId: '5',
+    threshold: 2,
+  }
 
   beforeEach(() => {
     jest.clearAllMocks()
 
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
-      safe: {
-        ...extendedSafeInfoBuilder().build(),
-        version: '1.3.0',
-        address: {
-          value: zeroPadValue('0x01', 20),
-        },
-        chainId: '5',
-        threshold: 2,
-      },
+      safe: extendedSafeInfo,
       safeAddress: zeroPadValue('0x01', 20),
       safeError: undefined,
       safeLoading: false,
@@ -257,16 +258,10 @@ describe('SignMessage', () => {
 
     expect(proposalSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        safe: {
-          version: '1.3.0',
-          address: {
-            value: zeroPadValue('0x01', 20),
-          },
-          chainId: '5',
-          threshold: 2,
-        } as SafeInfo,
+        safe: extendedSafeInfo,
         message: 'Hello world!',
         safeAppId: 25,
+        //onboard: expect.anything(),
       }),
     )
 
@@ -365,15 +360,9 @@ describe('SignMessage', () => {
 
     expect(confirmationSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        safe: {
-          version: '1.3.0',
-          address: {
-            value: zeroPadValue('0x01', 20),
-          },
-          chainId: '5',
-          threshold: 2,
-        } as SafeInfo,
+        safe: extendedSafeInfo,
         message: 'Hello world!',
+        onboard: expect.anything(),
       }),
     )
 

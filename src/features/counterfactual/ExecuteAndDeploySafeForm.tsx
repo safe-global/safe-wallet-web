@@ -20,15 +20,15 @@ import { trackError, Errors } from '@/services/exceptions'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useIsExecutionLoop, useTxActions } from 'src/components/tx/SignOrExecuteForm/hooks'
-import type { SignOrExecuteProps } from 'src/components/tx/SignOrExecuteForm'
+import { useIsExecutionLoop } from '@/components/tx/SignOrExecuteForm/hooks'
+import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import AdvancedParams, { useAdvancedParams } from 'src/components/tx/AdvancedParams'
+import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
 
-import css from 'src/components/tx/SignOrExecuteForm/styles.module.css'
+import css from '@/components/tx/SignOrExecuteForm/styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import { TxSecurityContext } from 'src/components/tx/security/shared/TxSecurityContext'
+import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 
@@ -58,12 +58,10 @@ export const ExecuteAndDeploySafeForm = ({
   isCreation,
   isOwner,
   isExecutionLoop,
-  txActions,
   txSecurity,
 }: SignOrExecuteProps & {
   isOwner: ReturnType<typeof useIsSafeOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
-  txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
 }): ReactElement => {
@@ -194,6 +192,5 @@ const useTxSecurityContext = () => useContext(TxSecurityContext)
 export default madProps(ExecuteAndDeploySafeForm, {
   isOwner: useIsSafeOwner,
   isExecutionLoop: useIsExecutionLoop,
-  txActions: useTxActions,
   txSecurity: useTxSecurityContext,
 })

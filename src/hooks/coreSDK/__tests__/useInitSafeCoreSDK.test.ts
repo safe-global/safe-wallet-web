@@ -24,7 +24,6 @@ describe('useInitSafeCoreSDK hook', () => {
         value: '0x1',
       },
       implementationVersionState: ImplementationVersionState.UP_TO_DATE,
-      deployed: true,
     } as ExtendedSafeInfo,
     safeAddress: mockSafeAddress,
     safeLoaded: true,
@@ -59,6 +58,7 @@ describe('useInitSafeCoreSDK hook', () => {
       provider: mockProvider,
       address: mockSafeInfo.safe.address.value,
       implementation: mockSafeInfo.safe.implementation.value,
+      undeployedSafe: undefined,
     })
 
     await waitFor(() => {

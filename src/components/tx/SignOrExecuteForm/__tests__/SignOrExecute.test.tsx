@@ -1,10 +1,23 @@
 import { SignOrExecuteForm } from '@/components/tx/SignOrExecuteForm'
 import * as hooks from '@/components/tx/SignOrExecuteForm/hooks'
+import * as useSafeInfo from '@/hooks/useSafeInfo'
+import { safeInfoBuilder } from '@/tests/builders/safe'
 import { safeTxBuilder } from '@/tests/builders/safeTx'
 import { render } from '@/tests/test-utils'
 import { fireEvent } from '@testing-library/react'
 
 describe('SignOrExecute', () => {
+  const mockSafeInfo = {
+    safeLoading: false,
+    safeLoaded: true,
+    safeError: undefined,
+    safe: { ...safeInfoBuilder().build(), deployed: true },
+    safeAddress: '',
+  }
+  beforeEach(() => {
+    jest.spyOn(useSafeInfo, 'default').mockReturnValue(mockSafeInfo)
+  })
+
   it('should display a safeTxError', () => {
     const { getByText } = render(
       <SignOrExecuteForm
