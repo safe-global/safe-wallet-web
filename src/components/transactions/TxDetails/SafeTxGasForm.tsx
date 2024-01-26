@@ -7,11 +7,11 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { isLegacyVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 type FormFields = {
-  safeTxGas: number
+  safeTxGas: string
 }
 
 const Form = ({ onSubmit }: { onSubmit: () => void }) => {
-  const { safeTxGas = 0, setSafeTxGas } = useContext(SafeTxContext)
+  const { safeTxGas = '0', setSafeTxGas } = useContext(SafeTxContext)
 
   const formMethods = useForm<FormFields>({
     defaultValues: {
@@ -21,7 +21,7 @@ const Form = ({ onSubmit }: { onSubmit: () => void }) => {
   })
 
   const onFormSubmit = (values: FormFields) => {
-    setSafeTxGas(values.safeTxGas || 0)
+    setSafeTxGas(values.safeTxGas || '0')
     onSubmit()
   }
 

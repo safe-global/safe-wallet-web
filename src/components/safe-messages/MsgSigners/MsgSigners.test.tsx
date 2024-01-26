@@ -1,6 +1,6 @@
 import { render } from '@/tests/test-utils'
 import { SafeMessageStatus, SafeMessageListItemType, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import MsgSigners from '.'
 
 describe('MsgSigners', () => {
@@ -9,13 +9,13 @@ describe('MsgSigners', () => {
       confirmations: [
         {
           owner: {
-            value: hexZeroPad('0x1', 20),
+            value: toBeHex('0x1', 20),
           },
           signature: '0x123',
         },
         {
           owner: {
-            value: hexZeroPad('0x2', 20),
+            value: toBeHex('0x2', 20),
           },
           signature: '0x456',
         },
@@ -47,7 +47,7 @@ describe('MsgSigners', () => {
       confirmations: [
         {
           owner: {
-            value: hexZeroPad('0x1', 20),
+            value: toBeHex('0x1', 20),
           },
           signature: '0x123',
         },

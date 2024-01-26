@@ -78,8 +78,8 @@ function RecoverySettings(): ReactElement {
       const { recoverers, delay, expiry } = delayModifier
 
       return recoverers.map((recoverer) => {
-        const delaySeconds = delay.toNumber()
-        const expirySeconds = expiry.toNumber()
+        const delaySeconds = Number(delay)
+        const expirySeconds = Number(expiry)
 
         return {
           cells: {

@@ -1,9 +1,9 @@
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { ContractTransaction } from 'ethers'
 import type { OnboardAPI } from '@web3-onboard/core'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
+import type { TransactionResponse } from 'ethers'
 
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
@@ -11,6 +11,7 @@ import { recoveryDispatch, RecoveryEvent, RecoveryTxType } from './recoveryEvent
 import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain } from '../../../services/tx/tx-sender/sdk'
 import { isSmartContractWallet } from '@/utils/wallets'
+import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 
 async function getDelayModifierContract({
   onboard,
@@ -27,8 +28,11 @@ async function getDelayModifierContract({
   const provider = createWeb3(wallet.provider)
   const isSmartContract = await isSmartContractWallet(wallet.chainId, wallet.address)
 
+  const originalSigner = await provider.getSigner()
   // Use unchecked signer for smart contract wallets as transactions do not necessarily immediately execute
-  const signer = isSmartContract ? provider.getUncheckedSigner() : provider.getSigner()
+  const signer = isSmartContract
+    ? new UncheckedJsonRpcSigner(provider, await originalSigner.getAddress())
+    : originalSigner
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, signer).connect(signer)
 
   return {
@@ -43,7 +47,7 @@ function waitForRecoveryTx({
 }: {
   moduleAddress: string
   recoveryTxHash: string
-  tx: ContractTransaction
+  tx: TransactionResponse
   txType: RecoveryTxType
 }) {
   const event = {
@@ -52,10 +56,9 @@ function waitForRecoveryTx({
   }
 
   recoveryDispatch(RecoveryEvent.PROCESSING, event)
-
   tx.wait()
     .then((receipt) => {
-      if (didRevert(receipt)) {
+      if (didRevert(receipt!)) {
         recoveryDispatch(RecoveryEvent.REVERTED, {
           ...event,
           error: new Error('Transaction reverted by EVM'),
@@ -147,7 +150,7 @@ export async function dispatchRecoveryExecution({
 }: {
   onboard: OnboardAPI
   chainId: string
-  args: TransactionAddedEvent['args']
+  args: TransactionAddedEvent.Log['args']
   delayModifierAddress: string
 }) {
   const { delayModifier, isUnchecked } = await getDelayModifierContract({

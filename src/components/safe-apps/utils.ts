@@ -1,4 +1,4 @@
-import { isHexString, toUtf8String } from 'ethers/lib/utils'
+import { isHexString, toUtf8String } from 'ethers'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeAppFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'

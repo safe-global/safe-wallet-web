@@ -1,5 +1,5 @@
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from 'ethers'
 
 import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { isSmartContract } from '@/hooks/wallets/web3'
@@ -87,7 +87,7 @@ export class RecipientAddressModule
       this.shouldWarnOfMainnetSafe(chainId, address),
     ])
 
-    if (balance.eq(0)) {
+    if (balance === 0n) {
       warnings.push({
         severity: SecuritySeverity.LOW,
         address,

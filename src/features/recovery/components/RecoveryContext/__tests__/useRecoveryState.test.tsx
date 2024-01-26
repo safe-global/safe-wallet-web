@@ -176,7 +176,9 @@ describe('useRecoveryState', () => {
     const chain = chainBuilder().build()
     mockUseCurrentChain.mockReturnValue(chain)
     const delayModifierAddress = faker.finance.ethereumAddress()
-    mockGetRecoveryDelayModifiers.mockResolvedValue([{ address: delayModifierAddress } as any])
+    mockGetRecoveryDelayModifiers.mockResolvedValue([
+      { getAddress: jest.fn().mockResolvedValue(delayModifierAddress) } as any,
+    ])
 
     function Test() {
       const dispatch = useAppDispatch()

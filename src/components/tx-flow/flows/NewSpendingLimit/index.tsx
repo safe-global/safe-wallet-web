@@ -3,7 +3,7 @@ import useTxStepper from '../../useTxStepper'
 import { CreateSpendingLimit } from './CreateSpendingLimit'
 import { ReviewSpendingLimit } from './ReviewSpendingLimit'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
-import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { TokenAmountFields } from '@/components/common/TokenAmountInput'
 
 enum Fields {

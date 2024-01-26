@@ -5,7 +5,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { encodeMultiSendData } from '@safe-global/safe-core-sdk/dist/src/utils/transactions/utils'
+import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
 import { useState, useMemo, useContext } from 'react'
 import type { SyntheticEvent } from 'react'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
@@ -30,7 +30,7 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxModalContext } from '@/components/tx-flow'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
-import type { PayableOverrides } from 'ethers'
+import type { Overrides } from 'ethers'
 import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
@@ -62,12 +62,17 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
     return getTxsWithDetails(params.txs, chain.chainId)
   }, [params.txs, chain?.chainId])
 
-  const multiSendContract = useMemo(() => {
+  const [multiSendContract] = useAsync(async () => {
     if (!chain?.chainId || !safe.version) return
-    return getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
+    return await getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
   }, [chain?.chainId, safe.version])
 
-  const multiSendTxs = useMemo(() => {
+  const [multisendContractAddress = ''] = useAsync(async () => {
+    if (!multiSendContract) return ''
+    return await multiSendContract.getAddress()
+  }, [multiSendContract])
+
+  const [multiSendTxs] = useAsync(async () => {
     if (!txsWithDetails || !chain || !safe.version) return
     return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
   }, [chain, safe.address.value, safe.version, txsWithDetails])
@@ -80,7 +85,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const onExecute = async () => {
     if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
 
-    const overrides: PayableOverrides = isEIP1559
+    const overrides: Overrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
       : { gasPrice: maxFeePerGas?.toString() }
 
@@ -144,7 +149,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           over the execute button.
         </Typography>
 
-        {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with" />}
+        {multiSendContract && <SendToBlock address={multisendContractAddress} title="Interact with" />}
 
         {multiSendTxData && (
           <div>

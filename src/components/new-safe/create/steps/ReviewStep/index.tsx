@@ -6,7 +6,7 @@ import lightPalette from '@/components/theme/lightPalette'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useCurrentChain } from '@/hooks/useChains'
-import useGasPrice from '@/hooks/useGasPrice'
+import useGasPrice, { getTotalFee } from '@/hooks/useGasPrice'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import { formatVisualAmount } from '@/utils/formatters'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
@@ -26,13 +26,13 @@ import { ExecutionMethodSelector, ExecutionMethod } from '@/components/tx/Execut
 import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import classnames from 'classnames'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { BigNumber } from 'ethers'
 import { usePendingSafe } from '../StatusStep/usePendingSafe'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { RELAY_SPONSORS } from '@/components/tx/SponsoredBy'
 import Image from 'next/image'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type DeploySafeProps } from '@safe-global/protocol-kit'
 
 export const NetworkFee = ({
   totalFee,
@@ -130,15 +130,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const totalFee =
     gasLimit && maxFeePerGas
-      ? formatVisualAmount(
-          maxFeePerGas
-            .add(
-              // maxPriorityFeePerGas is undefined if EIP-1559 disabled
-              maxPriorityFeePerGas || BigNumber.from(0),
-            )
-            .mul(gasLimit),
-          chain?.nativeCurrency.decimals,
-        )
+      ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
       : '> 0.001'
 
   const handleBack = () => {
@@ -148,17 +140,15 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const createSafe = async () => {
     if (!wallet || !provider || !chain) return
 
-    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
+    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
 
-    const props = {
+    const props: DeploySafeProps = {
       safeAccountConfig: {
         threshold: data.threshold,
         owners: data.owners.map((owner) => owner.address),
-        fallbackHandler: readOnlyFallbackHandlerContract.getAddress(),
+        fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
       },
-      safeDeploymentConfig: {
-        saltNonce: saltNonce.toString(),
-      },
+      saltNonce: saltNonce.toString(),
     }
 
     const safeAddress = await computeNewSafeAddress(provider, props)

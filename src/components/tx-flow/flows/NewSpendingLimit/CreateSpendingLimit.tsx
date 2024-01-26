@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { Button, CardActions, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
-import { defaultAbiCoder, parseUnits } from 'ethers/lib/utils'
+import { parseUnits, AbiCoder } from 'ethers'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
 import useChainId from '@/hooks/useChainId'
@@ -19,7 +19,7 @@ export const _validateSpendingLimit = (val: string, decimals?: number) => {
   // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
   try {
     const amount = parseUnits(val, decimals)
-    defaultAbiCoder.encode(['int96'], [amount])
+    AbiCoder.defaultAbiCoder().encode(['int96'], [amount])
   } catch (e) {
     return Number(val) > 1 ? 'Amount is too big' : 'Amount is too small'
   }
