@@ -221,7 +221,13 @@ export const checkSafeCreationTx = async (
   const TIMEOUT_TIME = 60 * 1000 // 1 minute
 
   try {
-    const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_TIME)
+    const txResponse = await provider.getTransaction(txHash)
+    if (txResponse === null) {
+      throw new Error('could not find tx')
+    }
+
+    const receipt = await txResponse.wait(1, TIMEOUT_TIME)
+    //const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_TIME)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {
