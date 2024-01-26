@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
-import useAllOwnedSafes from '@/hooks/useOwnedSafes'
+import useAllOwnedSafes, { useAllWatchedSafes } from '@/hooks/useOwnedSafes'
 import { IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
 import ExpandMore from '@mui/icons-material/ExpandMore'
@@ -15,6 +15,8 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
 
+  // const [safes] = useAllWatchedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
+  // console.log('!!!!!', safesa)
   const [safes] = useAllOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
 
   const isWelcomePage = router.pathname === AppRoutes.welcome.login || router.pathname === AppRoutes.welcome.socialLogin
@@ -77,7 +79,7 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
         </div>
       )}
 
-      {!!lastChainId && (
+      {isListExpanded && (
         <List className={css.list}>
           {safesToShow[1].map(({ safeAddress, chain, fiatBalance }) => {
             const href = getHref(chain, safeAddress)

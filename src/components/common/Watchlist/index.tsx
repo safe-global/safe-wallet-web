@@ -1,4 +1,4 @@
-import React, { Fragment, useState, type ReactElement, useCallback } from 'react'
+import React, { Fragment, useState, type ReactElement, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import List from '@mui/material/List'
@@ -15,7 +15,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import AddIcon from '@/public/images/common/add.svg'
 
 import useChains, { useCurrentChain } from '@/hooks/useChains'
-import useOwnedSafes from '@/hooks/useOwnedSafes'
+import { useAllWatchedSafes } from '@/hooks/useOwnedSafes'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
@@ -32,40 +32,28 @@ import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet
 import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import { VisibilityOutlined, AddOutlined } from '@mui/icons-material'
 
-export const _shouldExpandSafeList = ({
-  isCurrentChain,
-  safeAddress,
-  ownedSafesOnChain,
-  addedSafesOnChain,
-}: {
-  isCurrentChain: boolean
-  safeAddress: string
-  ownedSafesOnChain: string[]
-  addedSafesOnChain: AddedSafesOnChain
-}): boolean => {
-  let shouldExpand = false
-
-  const addedAddressesOnChain = Object.keys(addedSafesOnChain)
-
-  if (isCurrentChain && ownedSafesOnChain.some((address) => sameAddress(address, safeAddress))) {
-    // Expand the Owned Safes if the current Safe is owned, but not added
-    shouldExpand = !addedAddressesOnChain.some((address) => sameAddress(address, safeAddress))
-  } else {
-    // Expand the Owned Safes if there are no added Safes
-    shouldExpand = !addedAddressesOnChain.length && ownedSafesOnChain.length <= MAX_EXPANDED_SAFES
-  }
-
-  return shouldExpand
-}
-
-const MAX_EXPANDED_SAFES = 3
+const maxSafes = 3
 
 const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
+  const [lastChainId, setLastChainId] = useState<string | undefined>()
+  const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
-  // const addedSafes = useAppSelector(selectAllAddedSafes)
+
+  const [safes] = useAllWatchedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
 
   const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
+
+  const safesToShow = useMemo(() => {
+    return [safes.slice(0, maxSafes), safes.slice(maxSafes)]
+  }, [safes])
+
+  const onShowMore = useCallback(() => {
+    if (safes.length > 0) {
+      setLastChainId(safes[safes.length - 1].chain.chainId)
+      setIsListExpanded((prev) => !prev)
+    }
+  }, [safes])
 
   /*
    * Navigate to the dashboard when selecting a safe on the welcome page,
@@ -90,23 +78,78 @@ const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement 
           Watchlist
         </Typography>
 
-        <Button
-          disableElevation
-          size="small"
-          onClick={closeDrawer}
-          startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-        >
-          Add
-        </Button>
+        <Link href={AppRoutes.newSafe.load}>
+          <Button
+            disableElevation
+            size="small"
+            onClick={closeDrawer}
+            startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+          >
+            Add
+          </Button>
+        </Link>
       </div>
 
-      {
+      {!safes && (
         <Box display="flex" flexDirection="column" alignItems="center" py={10}>
           <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
             Add any Safe account to the watchlist
           </Typography>
         </Box>
-      }
+      )}
+
+      {!!safes && (
+        <List className={css.list}>
+          {safesToShow[0].map(({ safeAddress, chain, fiatBalance }) => {
+            const href = getHref(chain, safeAddress)
+            return (
+              <SafeListItem
+                key={chain.chainId + safeAddress}
+                address={safeAddress}
+                chainId={chain.chainId}
+                fiatBalance={fiatBalance}
+                closeDrawer={closeDrawer}
+                href={href}
+                shouldScrollToSafe={false}
+                isAdded
+                isWelcomePage={true}
+              />
+            )
+          })}
+        </List>
+      )}
+
+      {!isListExpanded && (
+        <div className={css.ownedLabelWrapper} onClick={onShowMore}>
+          <Typography variant="body2" display="inline" className={css.ownedLabel}>
+            More Accounts
+            <IconButton disableRipple>
+              <ExpandMore />
+            </IconButton>
+          </Typography>
+        </div>
+      )}
+
+      {isListExpanded && (
+        <List className={css.list}>
+          {safesToShow[1].map(({ safeAddress, chain, fiatBalance }) => {
+            const href = getHref(chain, safeAddress)
+            return (
+              <SafeListItem
+                key={chain.chainId + safeAddress}
+                address={safeAddress}
+                chainId={chain.chainId}
+                fiatBalance={fiatBalance}
+                closeDrawer={closeDrawer}
+                href={href}
+                shouldScrollToSafe={false}
+                isAdded
+                isWelcomePage={true}
+              />
+            )
+          })}
+        </List>
+      )}
     </div>
   )
 }

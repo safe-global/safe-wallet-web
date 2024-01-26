@@ -78,7 +78,7 @@ const PendingActionButtons = ({
                 }}
               >
                 <Chip
-                  className={css.missingSignaturesChip}
+                  className={css.missingSignatures}
                   icon={<CheckIcon style={{ color: 'var(--color-warning-main)' }} />}
                   size="small"
                   label={`${totalToSign} to confirm`}

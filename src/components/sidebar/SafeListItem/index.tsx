@@ -131,13 +131,15 @@ const SafeListItem = ({
           </Link>
         </Track>
       </ListItem>
-      <PendingActionButtons
-        safeAddress={address}
-        closeDrawer={closeDrawer}
-        shortName={shortName}
-        totalQueued={totalQueued}
-        totalToSign={totalToSign}
-      />
+      {(totalQueued || totalToSign) && (
+        <PendingActionButtons
+          safeAddress={address}
+          closeDrawer={closeDrawer}
+          shortName={shortName}
+          totalQueued={totalQueued}
+          totalToSign={totalToSign}
+        />
+      )}
     </div>
   )
 }

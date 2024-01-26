@@ -1,16 +1,10 @@
-/* .pendingButtons {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-  padding-left: 0px;
-  margin-right: var(--space-2);
-} */
+.pendingButtons {
+  margin-left: 12px;
+  margin-bottom: 16px;
+}
 
 .pendingButton {
-  /* margin-left:  16px;
-  margin-bottom:  16px; */
-  margin: 0 4px 16px 16px;
+  margin: 0 4px;
 }
 
 .pendingButton img {
@@ -18,13 +12,13 @@
   width: 20px;
 }
 
-.missingSignaturesChip {
+.missingSignatures {
   background-color: var(--color-warning-background);
 }
 
-[data-theme='dark'] .missingSignatures {
+/* [data-theme='dark'] .missingSignatures {
   background-color: var(--color-info-dark);
-}
+} */
 
 .queued {
   background-color: var(--color-background-main);
