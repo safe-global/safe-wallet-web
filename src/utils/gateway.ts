@@ -28,6 +28,9 @@ export const getExplorerLink = (
 }
 
 export const isWalletConnectSafeApp = (url: string): boolean => {
-  const WC_APP_URL = 'https://apps-portal.safe.global/wallet-connect'
-  return url === WC_APP_URL
+  const WC_APP_URLS = [
+    'https://apps-portal.safe.global/wallet-connect',
+    'https://safe-apps.dev.5afe.dev/wallet-connect',
+  ]
+  return WC_APP_URLS.includes(url)
 }
