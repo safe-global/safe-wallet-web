@@ -1,4 +1,6 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import { useTheme } from '@mui/material/styles'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
@@ -36,6 +38,8 @@ const isTestnet = (shortName: string) => {
 
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const wallet = useWallet()
+  const isDarkMode = useDarkMode()
+  const theme = useTheme()
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
@@ -112,6 +116,13 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
           '& .MuiPaper-root': {
             overflow: 'auto',
           },
+          ...(isDarkMode
+            ? {
+                '& .Mui-selected, & .Mui-selected:hover': {
+                  backgroundColor: `${theme.palette.secondary.background} !important`,
+                },
+              }
+            : {}),
         },
       }}
       sx={{
