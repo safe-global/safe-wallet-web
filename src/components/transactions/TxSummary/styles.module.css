@@ -17,6 +17,10 @@
   grid-template-areas: 'nonce type info date confirmations status';
 }
 
+.gridContainer > * {
+  max-width: 100%;
+}
+
 .gridContainer.history {
   grid-template-columns: var(--grid-nonce) var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-status);
   grid-template-areas: 'nonce type info date status';
