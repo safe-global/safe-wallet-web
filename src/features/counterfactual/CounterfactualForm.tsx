@@ -30,7 +30,7 @@ import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityCon
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 
-export const ExecuteAndDeploySafeForm = ({
+export const CounterfactualForm = ({
   safeTx,
   disableSubmit = false,
   onlyExecute,
@@ -168,7 +168,7 @@ export const ExecuteAndDeploySafeForm = ({
 
 const useTxSecurityContext = () => useContext(TxSecurityContext)
 
-export default madProps(ExecuteAndDeploySafeForm, {
+export default madProps(CounterfactualForm, {
   isOwner: useIsSafeOwner,
   isExecutionLoop: useIsExecutionLoop,
   txSecurity: useTxSecurityContext,

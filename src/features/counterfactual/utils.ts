@@ -27,13 +27,7 @@ export const getCounterfactualNonce = async (
   return props.saltNonce
 }
 
-export const getUndeployedSafeInfo = (
-  undeployedSafe: PredictedSafeProps | undefined,
-  address: string,
-  chainId: string,
-) => {
-  if (!undeployedSafe) return
-
+export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
   return Promise.resolve({
     ...defaultSafeInfo,
     address: { value: address },

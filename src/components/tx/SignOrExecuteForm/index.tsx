@@ -1,4 +1,4 @@
-import ExecuteAndDeploySafeForm from '@/features/counterfactual/ExecuteAndDeploySafeForm'
+import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
 import madProps from '@/utils/mad-props'
@@ -136,13 +136,7 @@ export const SignOrExecuteForm = ({
         <RiskConfirmationError />
 
         {isCounterfactualSafe ? (
-          <ExecuteAndDeploySafeForm
-            {...props}
-            safeTx={safeTx}
-            isCreation={isCreation}
-            onSubmit={onFormSubmit}
-            onlyExecute
-          />
+          <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
         ) : willExecute ? (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         ) : (
