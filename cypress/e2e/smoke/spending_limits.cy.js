@@ -2,7 +2,6 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as spendinglimit from '../pages/spending_limits.pages'
 import * as owner from '../pages/owners.pages'
-import * as safe from '../pages/load_safe.pages'
 
 describe('[SMOKE] Spending limits tests', () => {
   beforeEach(() => {
