@@ -1,16 +1,14 @@
 import { TxModalContext } from '@/components/tx-flow'
+import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
 import { removeUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
-import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
-import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { useAppDispatch } from '@/store'
 import madProps from '@/utils/mad-props'
-import { estimateSafeDeploymentGas, estimateSafeTxGas, estimateTxBaseGas } from '@safe-global/protocol-kit'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
 import classNames from 'classnames'
@@ -31,25 +29,6 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
-
-const useDeployGasLimit = (safeTx?: SafeTransaction) => {
-  const onboard = useOnboard()
-  const chainId = useChainId()
-
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint | undefined>(async () => {
-    if (!safeTx || !onboard) return
-
-    const sdk = await getSafeSDKWithSigner(onboard, chainId)
-
-    const gas = await estimateTxBaseGas(sdk, safeTx)
-    const safeTxGas = await estimateSafeTxGas(sdk, safeTx)
-    const safeDeploymentGas = await estimateSafeDeploymentGas(sdk)
-
-    return BigInt(gas) + BigInt(safeTxGas) + BigInt(safeDeploymentGas)
-  }, [onboard, chainId, safeTx])
-
-  return { gasLimit, gasLimitError, gasLimitLoading }
-}
 
 export const ExecuteAndDeploySafeForm = ({
   safeTx,
