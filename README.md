@@ -59,6 +59,12 @@ Install the dependencies:
 yarn
 ```
 
+If your yarn is configured not to run postinstall scripts automatically, you'll have to run it manually:
+
+```bash
+yarn postinstall
+```
+
 Run the development server:
 
 ```bash
