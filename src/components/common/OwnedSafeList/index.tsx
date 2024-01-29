@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
-import useAllOwnedSafes, { useAllWatchedSafes } from '@/hooks/useOwnedSafes'
+import useAllOwnedSafes from '@/hooks/useOwnedSafes'
 import { IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
 import ExpandMore from '@mui/icons-material/ExpandMore'
@@ -22,9 +22,13 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
   const isWelcomePage = router.pathname === AppRoutes.welcome.login || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
+  // const safesToShow = useMemo(() => {
+  //   return [safes.slice(0, maxSafes), safes.slice(maxSafes)]
+  // }, [safes])
+
   const safesToShow = useMemo(() => {
-    return [safes.slice(0, maxSafes), safes.slice(maxSafes)]
-  }, [safes])
+    return isListExpanded ? safes : safes.slice(0, maxSafes)
+  }, [safes, isListExpanded])
 
   const onShowMore = useCallback(() => {
     if (safes.length > 0) {
@@ -50,7 +54,7 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
       </Typography>
 
       <List className={css.list}>
-        {safesToShow[0].map(({ safeAddress, chain, fiatBalance }) => {
+        {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {
           const href = getHref(chain, safeAddress)
           return (
             <SafeListItem
@@ -77,27 +81,6 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
             </IconButton>
           </Typography>
         </div>
-      )}
-
-      {isListExpanded && (
-        <List className={css.list}>
-          {safesToShow[1].map(({ safeAddress, chain, fiatBalance }) => {
-            const href = getHref(chain, safeAddress)
-            return (
-              <SafeListItem
-                key={chain.chainId + safeAddress}
-                address={safeAddress}
-                chainId={chain.chainId}
-                fiatBalance={fiatBalance}
-                closeDrawer={closeDrawer}
-                href={href}
-                shouldScrollToSafe={false}
-                isAdded
-                isWelcomePage={true}
-              />
-            )
-          })}
-        </List>
       )}
     </div>
   )

@@ -41,7 +41,7 @@ const SafeListItem = ({
 }: {
   address: string
   chainId: string
-  fiatBalance: string
+  fiatBalance?: string
   shouldScrollToSafe: boolean
   href: ComponentProps<typeof Link>['href']
   closeDrawer?: () => void

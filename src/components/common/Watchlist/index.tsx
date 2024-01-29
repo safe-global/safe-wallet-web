@@ -1,59 +1,33 @@
-import React, { Fragment, useState, type ReactElement, useCallback, useMemo } from 'react'
+import React, { useState, type ReactElement, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import List from '@mui/material/List'
 import Typography from '@mui/material/Typography'
-import Collapse from '@mui/material/Collapse'
 import Button from '@mui/material/Button'
-import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
 import SvgIcon from '@mui/material/SvgIcon'
 import Box from '@mui/material/Box'
-import { Link as MuiLink } from '@mui/material'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import AddIcon from '@/public/images/common/add.svg'
 
-import useChains, { useCurrentChain } from '@/hooks/useChains'
-import { useAllWatchedSafes } from '@/hooks/useOwnedSafes'
-import useChainId from '@/hooks/useChainId'
-import { useAppSelector } from '@/store'
-import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
-import { selectAllAddedSafes } from '@/store/addedSafesSlice'
+import { useAllAddedSafes } from '@/hooks/useOwnedSafes'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
-import { sameAddress } from '@/utils/addresses'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import LoadingIcon from '@/public/images/common/loading.svg'
-import useWallet from '@/hooks/wallets/useWallet'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
-import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import { VisibilityOutlined, AddOutlined } from '@mui/icons-material'
 
 const maxSafes = 3
 
 const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
-  const [lastChainId, setLastChainId] = useState<string | undefined>()
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
 
-  const [safes] = useAllWatchedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
+  const [safes, error, isLoading] = useAllAddedSafes()
 
   const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
-
-  const safesToShow = useMemo(() => {
-    return [safes.slice(0, maxSafes), safes.slice(maxSafes)]
-  }, [safes])
-
-  const onShowMore = useCallback(() => {
-    if (safes.length > 0) {
-      setLastChainId(safes[safes.length - 1].chain.chainId)
-      setIsListExpanded((prev) => !prev)
-    }
-  }, [safes])
 
   /*
    * Navigate to the dashboard when selecting a safe on the welcome page,
@@ -69,6 +43,16 @@ const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement 
     },
     [isWelcomePage, isSingleTxPage, router.pathname, router.query],
   )
+
+  const safesToShow = useMemo(() => {
+    return isListExpanded ? safes : safes.slice(0, maxSafes)
+  }, [safes, isListExpanded])
+
+  const onShowMore = useCallback(() => {
+    if (safes.length > 0) {
+      setIsListExpanded((prev) => !prev)
+    }
+  }, [safes])
 
   return (
     <div className={css.container}>
@@ -100,7 +84,7 @@ const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement 
 
       {!!safes && (
         <List className={css.list}>
-          {safesToShow[0].map(({ safeAddress, chain, fiatBalance }) => {
+          {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {
             const href = getHref(chain, safeAddress)
             return (
               <SafeListItem
@@ -119,7 +103,7 @@ const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement 
         </List>
       )}
 
-      {!isListExpanded && (
+      {!isListExpanded && safes.length > maxSafes && (
         <div className={css.ownedLabelWrapper} onClick={onShowMore}>
           <Typography variant="body2" display="inline" className={css.ownedLabel}>
             More Accounts
@@ -128,27 +112,6 @@ const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement 
             </IconButton>
           </Typography>
         </div>
-      )}
-
-      {isListExpanded && (
-        <List className={css.list}>
-          {safesToShow[1].map(({ safeAddress, chain, fiatBalance }) => {
-            const href = getHref(chain, safeAddress)
-            return (
-              <SafeListItem
-                key={chain.chainId + safeAddress}
-                address={safeAddress}
-                chainId={chain.chainId}
-                fiatBalance={fiatBalance}
-                closeDrawer={closeDrawer}
-                href={href}
-                shouldScrollToSafe={false}
-                isAdded
-                isWelcomePage={true}
-              />
-            )
-          })}
-        </List>
       )}
     </div>
   )
