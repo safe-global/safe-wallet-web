@@ -4,8 +4,6 @@ import * as owner from '../pages/owners.pages'
 import * as createwallet from '../pages/create_wallet.pages'
 import * as createTx from '../pages/create_tx.pages.js'
 
-let removedAddress
-
 describe('[SMOKE] Remove Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_11)
@@ -14,8 +12,7 @@ describe('[SMOKE] Remove Owners tests', () => {
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 
-  // TODO: Add Sign action. Check there is no error before sign action on UI when nonce not loaded
-  it('[SMOKE] Verify owner deletion confirmation is displayed', () => {
+  it('[SMOKE] Verify owner deletion transaction has been created', () => {
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)
     cy.wait(3000)
