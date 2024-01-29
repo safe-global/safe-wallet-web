@@ -24,11 +24,6 @@ describe('[SMOKE] Spending limits tests', () => {
     spendinglimit.verifyValidAddressShowsNoErrors()
   })
 
-  it('Verify Fill by QR code with a valid address', () => {
-    safe.scanQRCode(constants.VALID_QR_CODE_PATH)
-    spendinglimit.checkBeneficiaryENS(constants.SEPOLIA_TEST_SAFE_6)
-  })
-
   it('Verify Amount input cannot be 0', () => {
     spendinglimit.enterSpendingLimitAmount('0')
     spendinglimit.verifyNumberErrorValidation()

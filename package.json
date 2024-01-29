@@ -90,7 +90,6 @@
     "react-gtm-module": "^2.0.11",
     "react-hook-form": "7.41.1",
     "react-papaparse": "^4.0.2",
-    "react-qr-reader": "2.2.1",
     "react-redux": "^8.0.5",
     "semver": "^7.5.2"
   },
@@ -114,7 +113,6 @@
     "@types/react": "18.2.28",
     "@types/react-dom": "18.2.13",
     "@types/react-gtm-module": "^2.0.1",
-    "@types/react-qr-reader": "^2.1.5",
     "@types/semver": "^7.3.10",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@walletconnect/types": "^2.11.0",
