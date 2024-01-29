@@ -45,7 +45,7 @@ describe('Permissions settings tests', () => {
       )
     })
 
-    cy.visit(`${constants.appsUrl}?safe=${constants.SEPOLIA_TEST_SAFE_5}`, {
+    cy.visit(`${constants.appSettingsUrl}?safe=${constants.SEPOLIA_TEST_SAFE_5}`, {
       failOnStatusCode: false,
     })
 
