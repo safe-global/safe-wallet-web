@@ -18,10 +18,17 @@ const NO_SIDEBAR_ROUTES = [
 
 const TOGGLE_SIDEBAR_ROUTES = [AppRoutes.apps.open]
 
-export function useIsSidebarRoute(): [boolean, boolean] {
-  const pathname = usePathname()
-  const noSidebar = NO_SIDEBAR_ROUTES.includes(pathname)
+/**
+ * Returns a boolean tuple indicating if the current route should display the sidebar and if the sidebar can be toggled
+ * @param pathname Optional server-side pathname to check against
+ * @returns A tuple with the first value indicating if the sidebar should be displayed and the second value indicating if the sidebar can be toggled
+ */
+export function useIsSidebarRoute(pathname?: string): [boolean, boolean] {
+  const clientPathname = usePathname()
+  const route = pathname || clientPathname
+  const noSidebar = NO_SIDEBAR_ROUTES.includes(route)
+  const toggledSidebar = TOGGLE_SIDEBAR_ROUTES.includes(route)
   const router = useRouter()
   const hasSafe = !router.isReady || !!router.query.safe
-  return [!noSidebar && hasSafe, TOGGLE_SIDEBAR_ROUTES.includes(pathname)]
+  return [!noSidebar && hasSafe, toggledSidebar]
 }

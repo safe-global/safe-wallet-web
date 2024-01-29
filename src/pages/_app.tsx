@@ -115,7 +115,7 @@ const WebCoreApp = ({
 
           <InitApp />
 
-          <PageLayout>
+          <PageLayout pathname={router.pathname}>
             <Component {...pageProps} key={safeKey} />
           </PageLayout>
 

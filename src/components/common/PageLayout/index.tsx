@@ -10,8 +10,8 @@ import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
 import { TxModalContext } from '@/components/tx-flow'
 import BatchSidebar from '@/components/batch/BatchSidebar'
 
-const PageLayout = ({ children }: { children: ReactElement }): ReactElement => {
-  const [isSidebarRoute, isAnimated] = useIsSidebarRoute()
+const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
+  const [isSidebarRoute, isAnimated] = useIsSidebarRoute(pathname)
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
   const [isBatchOpen, setBatchOpen] = useState<boolean>(false)
   const { setFullWidth } = useContext(TxModalContext)
