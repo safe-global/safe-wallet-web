@@ -12,7 +12,8 @@ const SafeTerms = () => (
     <Typography variant="h1" mb={2}>
       Terms and Conditions
     </Typography>
-    <p>Last updated: May, 2023</p>
+    <p>Last updated: January 2024.</p>
+
     <h3>1. What is the scope of the Terms?</h3>
     <ol start={1}>
       <li>
@@ -21,8 +22,7 @@ const SafeTerms = () => (
         &ldquo;we&rdquo;, &ldquo;our&rdquo; or &ldquo;us&rdquo;) provided we made these Terms accessible to you prior to
         entering into the Agreement and you consent to these Terms. We are a limited liability company registered with
         the commercial register of Berlin Charlottenburg under company number HRB 240421&nbsp;B, with its registered
-        office at the ℅ Full Node, Skalitzer Str. 85-86, 10997 Berlin, Germany. You can contact us by writing to
-        info@cc0x.dev.
+        office at Gontardstraße 11, 10178 Berlin, Germany. You can contact us by writing to info@cc0x.dev.
       </li>
       <li>
         The Agreement is concluded by using the Mobile App, Web App and/or Browser Extension&nbsp;subject to these
@@ -45,6 +45,7 @@ const SafeTerms = () => (
         contract according to Clause 8 remains unaffected.
       </li>
     </ol>
+
     <h3>2. What do some of the capitalized terms mean in the Agreement?</h3>
     <ol start={1}>
       <li>
@@ -79,6 +80,7 @@ const SafeTerms = () => (
         Transaction and should only be known by the legal owner of the Wallet.
       </li>
     </ol>
+
     <h3>3. What are the Services offered?</h3>
     <p>
       Our services (&ldquo;Services&rdquo;) primarily consist of enabling users to create their Safe Accounts and
@@ -135,6 +137,7 @@ const SafeTerms = () => (
       Accordingly, we are not liable in the event of a breach of contract, damage or loss related to the use of such
       Third-Party Service.
     </p>
+
     <h3>4. What do the Services not consist of?</h3>
     <p>Our Services do not&nbsp;consist of:</p>
     <ol start={1}>
@@ -161,6 +164,7 @@ const SafeTerms = () => (
         Transactions before you are authorizing them.
       </li>
     </ol>
+
     <h3>5. What do you need to know about Third-Party Services?</h3>
     <ol start={1}>
       <li>
@@ -233,6 +237,7 @@ const SafeTerms = () => (
         Services.
       </li>
     </ul>
+
     <h3>6. What are the fees for the Services?</h3>
     <ol start={1}>
       <li>
@@ -245,6 +250,7 @@ const SafeTerms = () => (
         established, undisputed or recognized by CC.
       </li>
     </ol>
+
     <h3>7. Are we responsible for the security of your Private Keys, Recovery Phrase or other credentials?</h3>
     <ol start={1}>
       <li>
@@ -261,6 +267,7 @@ const SafeTerms = () => (
         of access or custody of any cryptographic assets stored thereon.
       </li>
     </ol>
+
     <h3>8. Can we terminate or limit your right to use our Services?</h3>
     <ol start={1}>
       <li>
@@ -276,6 +283,7 @@ const SafeTerms = () => (
         Services. At no time will we be able to limit or block access to or transfer your funds without your consent.
       </li>
     </ol>
+
     <h3>9. Can you terminate your Agreement with us?</h3>
     <p>You may terminate the Agreement at any time without notice.</p>
     <h3>10. What licenses and access do we grant to you?</h3>
@@ -291,6 +299,7 @@ const SafeTerms = () => (
         solely for your own personal, non-commercial use.{' '}
       </li>
     </ol>
+
     <h3>11. What can you expect from the Services and can we make changes to them?</h3>
     <ol start={1}>
       <li>
@@ -317,6 +326,7 @@ const SafeTerms = () => (
         Services we provide to you, or we need to do so for security, legal or any other reasons.
       </li>
     </ol>
+
     <h3>12. What do you agree, warrant and represent?</h3>
     <p>By using our Services you hereby agree, represent and warrant that:</p>
     <ol start={1}>
@@ -376,25 +386,35 @@ const SafeTerms = () => (
       </li>
       <li>You are using the Services at your own risk.</li>
     </ol>
+
     <h3>13. What about our liability to you?</h3>
-    <p>We are liable to you only as follows:</p>
-    <ol start={1}>
-      <li>We are liable for damages, in any case of negligence, resulting from injury to life, body or health.</li>
+    <p>All our liability is excluded, except for the following:</p>
+
+    <ol>
       <li>
-        We are liable for damages &ndash; regardless of the legal grounds &ndash; in the event of intent and gross
-        negligence on our part, our legal representatives, our executive employees or other vicarious agents.
+        In the event of intent and gross negligence on our part, we are liable for damages – regardless of the legal
+        grounds.
       </li>
       <li>
-        If we do not provide the Safe App or Services to you free of charge, we are liable in case of simple negligence
-        for damages resulting from the breach of an essential contractual duty (e.g. a duty, the performance of which
-        enables the proper execution of the contract in the first place and on the compliance of which the contractual
-        partner regularly relies and may rely), whereby in the latter case of breach of an essential contractual duty,
-        our liability shall be limited to compensation of the foreseeable, typically occurring damage.
+        In the event of negligence on our part, we are liable for damages resulting from injury to life, body or health.
       </li>
       <li>
-        The limitations of liability according to Clause 13.2 do not apply as far as we have assumed a guarantee or we
-        have fraudulently concealed a defect in the Services. These limitations of liability also do not apply to your
-        claims according to the Product Liability Act (&rdquo;Produkthaftungsgesetz&rdquo;) and any applicable data
+        In the event of simple negligence on our part, we are only liable for damages resulting from the breach of an
+        essential contractual duty (e.g. a duty, the performance of which enables the proper execution of the contract
+        in the first place and on the compliance of which the contractual partner regularly relies and may rely),
+        whereby our liability shall be limited to compensation of the foreseeable, typically occurring damage. Liability
+        for the violation of a non-essential contractual duty is excluded.
+      </li>
+      <li>
+        The liability for simple negligence only applies to the extent that we do not offer the Safe App and the
+        Services free of charge (please note, in this context, that any service, network and/or transaction fees may be
+        charged by third parties via the Blockchain and not necessarily by us). Conversely, this means that we are not
+        liable in cases of simple negligence, when you obtain the Safe App or the service from us free of charge.
+      </li>
+      <li>
+        The limitations of liability according to Clauses 13.2 to 13.4. do not apply as far as we have assumed a
+        guarantee or we have fraudulently concealed a defect in the Services. These limitations of liability also do not
+        apply to your claims according to the Product Liability Act (”Produkthaftungsgesetz”) and any applicable data
         privacy laws.
       </li>
       <li>
@@ -402,12 +422,13 @@ const SafeTerms = () => (
         avoided by your regular and complete backup of all relevant data.
       </li>
       <li>
-        We take all possible measures to enable you to access our Services. In the event of disruptions to the technical
-        infrastructure, the internet connection or a relevant blockchain, we shall be exempt from our obligation to
-        perform. This also applies if we are prevented from performing due to force majeure or other circumstances, the
-        elimination of which is not possible or cannot be economically expected of CC.
+        In the event of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain
+        that we are not responsible for, we shall be exempt from our obligation to perform. This also applies if we are
+        prevented from performing due to force majeure or other circumstances, the elimination of which is not possible
+        or cannot be economically expected of CC.
       </li>
     </ol>
+
     <h3>14. What about viruses, bugs and security vulnerabilities?</h3>
     <ol start={1}>
       <li>We endeavor to provide our Service free from material bugs, security vulnerabilities or viruses.</li>
@@ -421,6 +442,7 @@ const SafeTerms = () => (
         If you do, your right to use our Services will cease immediately.
       </li>
     </ol>
+
     <h3>15. What if an event outside our control happens that affects our Services?</h3>
     <ol start={1}>
       <li>
@@ -462,6 +484,7 @@ const SafeTerms = () => (
         including the occurrence of a Force Majeure Event.
       </li>
     </ol>
+
     <h3>16. Who is responsible for your tax liabilities?</h3>
     <p>
       You are solely responsible to determine if your use of the Services have tax implications, in particular income
@@ -469,6 +492,7 @@ const SafeTerms = () => (
       to hold us liable for any tax liability associated with or arising from the operation of the Services or any other
       action or transaction related thereto.
     </p>
+
     <h3>17. What if a court disagrees with part of this Agreement?</h3>
     <p>
       Should individual provisions of these Terms be or become invalid or unenforceable in whole or in part, this shall
@@ -477,17 +501,20 @@ const SafeTerms = () => (
       unacceptable result, the parties shall enter negotiations to replace the invalid or unenforceable provision with a
       valid provision that comes as close as possible to the economic purpose of the invalid or unenforceable provision.
     </p>
+
     <h3>18. What if we do not enforce certain rights under this Agreement?</h3>
     <p>
       Our failure to exercise or enforce any right or remedy provided under this Agreement or by law shall not
       constitute a waiver of that or any other right or remedy, nor shall it prevent or restrict any further exercise of
       that or any other right or remedy.
     </p>
+
     <h3>19. Do third parties have rights?</h3>
     <p>
       Unless it expressly states otherwise, this Agreement does not give rise to any third-party rights, which may be
       enforced against us.
     </p>
+
     <h3>20. Can this Agreement be assigned?</h3>
     <ol start={1}>
       <li>
@@ -498,11 +525,13 @@ const SafeTerms = () => (
         You shall not be entitled to assign this Agreement to any third party without our express prior written consent.
       </li>
     </ol>
+
     <h3>21. Which Clauses of this Agreement survive termination?</h3>
     <p>
       All covenants, agreements, representations and warranties made in this Agreement shall survive your acceptance of
       this Agreement and its termination.
     </p>
+
     <h3>22. Data Protection</h3>
     <p>
       We inform you about our processing of personal data, including the disclosure to third parties and your rights as
@@ -512,6 +541,7 @@ const SafeTerms = () => (
       </Link>
       .
     </p>
+
     <h3>23. Which laws apply to the Agreement?</h3>
     <p>
       The Agreement including these Terms shall be governed by German law. The application of the UN Convention on
@@ -520,6 +550,7 @@ const SafeTerms = () => (
       domiciled shall also apply, provided that these are more advantageous for the consumer than the provisions of the
       German law.
     </p>
+
     <h3>24. How can you get support for Safe Accounts and tell us about any problems?</h3>
     <p>
       If you want to learn more about Safe Accounts or the Service or have any problems using them or have any
@@ -551,12 +582,14 @@ const SafeTerms = () => (
         </Link>
       </li>
     </ol>
+
     <h3>25. Where is the place of legal proceedings?</h3>
     <p>
       For users who are merchants within the meaning of the German Commercial Code (Handelsgesetzbuch), a special fund
       (Sonderverm&ouml;gen) under public law or a legal person under public law, Berlin shall be the exclusive place of
       jurisdiction for all disputes arising from the contractual relationship.
     </p>
+
     <h3>26. Is this all?</h3>
     <p>
       These Terms constitute the entire agreement between you and us in relation to the Agreement&rsquo;s subject

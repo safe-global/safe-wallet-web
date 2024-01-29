@@ -1,11 +1,19 @@
 .wrapper :global .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline,
 .wrapper :global .MuiInputBase-root .MuiOutlinedInput-notchedOutline {
-  border-color: var(--color-text-secondary);
+  border-color: var(--color-border-light) !important;
   border-width: 1px;
+}
+
+.wrapper :global .MuiInputBase-root.Mui-error .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-error-main) !important;
 }
 
 .wrapper :global .MuiInputLabel-root {
   color: var(--color-text-secondary);
+}
+
+.wrapper :global .MuiInputLabel-root.Mui-error {
+  color: var(--color-error-main);
 }
 
 .wrapper :global .MuiInputBase-root {
@@ -33,8 +41,4 @@
 .input [title] {
   font-weight: bold;
   color: var(--color-text-primary);
-}
-
-.input fieldset {
-  border-color: var(--color-border-light) !important;
 }

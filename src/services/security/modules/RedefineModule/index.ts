@@ -1,6 +1,9 @@
 import { REDEFINE_API } from '@/config/constants'
+import { isEIP712TypedData } from '@/utils/safe-messages'
+import { normalizeTypedData } from '@/utils/web3'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
+import { generateTypedData } from '@safe-global/protocol-kit/dist/src/utils/eip-712'
+import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
 export const enum REDEFINE_ERROR_CODES {
@@ -22,7 +25,7 @@ export type RedefineModuleRequest = {
   chainId: number
   safeAddress: string
   walletAddress: string
-  safeTransaction: SafeTransaction
+  data: SafeTransaction | EIP712TypedData
   threshold: number
 }
 
@@ -106,25 +109,42 @@ export type RedefineResponse = {
 }
 
 export class RedefineModule implements SecurityModule<RedefineModuleRequest, RedefineModuleResponse> {
+  static prepareMessage(request: RedefineModuleRequest): string {
+    const { data, safeAddress, chainId } = request
+    if (isEIP712TypedData(data)) {
+      const normalizedMsg = normalizeTypedData(data)
+      return JSON.stringify(normalizedMsg)
+    } else {
+      return JSON.stringify(
+        generateTypedData({
+          safeAddress,
+          safeVersion: '1.3.0', // TODO: pass to module, taking into account that lower Safe versions don't have chainId in payload
+          chainId: BigInt(chainId),
+          // TODO: find out why these types are incompaitble
+          safeTransactionData: {
+            ...data.data,
+            safeTxGas: data.data.safeTxGas,
+            baseGas: data.data.baseGas,
+            gasPrice: data.data.gasPrice,
+          },
+        }),
+      )
+    }
+  }
   async scanTransaction(request: RedefineModuleRequest): Promise<SecurityResponse<RedefineModuleResponse>> {
     if (!REDEFINE_API) {
       throw new Error('Redefine API URL is not set')
     }
 
-    const { chainId, safeAddress } = request
+    const { chainId, safeAddress, data } = request
 
-    const txTypedData = generateTypedData({
-      safeAddress,
-      safeVersion: '1.3.0', // TODO: pass to module, taking into account that lower Safe versions don't have chainId in payload
-      chainId,
-      safeTransactionData: request.safeTransaction.data,
-    })
+    const message = RedefineModule.prepareMessage(request)
 
     const payload: RedefinePayload = {
       chainId,
       payload: {
         method: 'eth_signTypedData_v4',
-        params: [safeAddress, JSON.stringify(txTypedData)],
+        params: [safeAddress, message],
       },
     }
 
@@ -150,7 +170,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
           severity: redefineSeverityMap[issue.severity.label],
         })),
         balanceChange: result.data?.balanceChange,
-        simulation: result.data?.simulation,
+        simulation: isEIP712TypedData(data) ? undefined : result.data?.simulation,
         errors: result.errors,
       },
     }

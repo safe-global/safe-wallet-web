@@ -1,8 +1,8 @@
-import { arrayify, joinSignature, keccak256, splitSignature, toUtf8Bytes } from 'ethers/lib/utils'
+import { getBytes, keccak256, toUtf8Bytes, type BrowserProvider } from 'ethers'
+import { joinSignature, splitSignature } from '@/utils/ethers-utils'
 import { getToken, getMessaging } from 'firebase/messaging'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RegisterNotificationsRequest } from '@safe-global/safe-gateway-typescript-sdk'
-import type { Web3Provider } from '@ethersproject/providers'
 
 import { FIREBASE_VAPID_KEY, initializeFirebaseApp } from '@/services/push-notifications/firebase'
 import packageJson from '../../../../package.json'
@@ -41,6 +41,7 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
 export const _adjustLedgerSignatureV = (signature: string): string => {
   const split = splitSignature(signature)
 
+  // @ts-ignore
   if (split.v === 0 || split.v === 1) {
     split.v += 27
   }
@@ -57,7 +58,7 @@ const getSafeRegistrationSignature = async ({
   isLedger,
 }: {
   safeAddresses: Array<string>
-  web3: Web3Provider
+  web3: BrowserProvider
   timestamp: string
   uuid: string
   token: string
@@ -74,7 +75,7 @@ const getSafeRegistrationSignature = async ({
   const message = MESSAGE_PREFIX + timestamp + uuid + token + safeAddresses.sort().join('')
   const hashedMessage = keccak256(toUtf8Bytes(message))
 
-  const signature = await web3.getSigner().signMessage(arrayify(hashedMessage))
+  const signature = await (await web3.getSigner()).signMessage(getBytes(hashedMessage))
 
   if (!isLedger) {
     return signature

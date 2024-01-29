@@ -75,6 +75,7 @@ const WcInput = ({ uri }: { uri: string }) => {
       onChange={(e) => onInput(e.target.value)}
       fullWidth
       autoComplete="off"
+      autoFocus
       disabled={connecting}
       error={!!error}
       label={error ? error.message : 'Pairing code'}

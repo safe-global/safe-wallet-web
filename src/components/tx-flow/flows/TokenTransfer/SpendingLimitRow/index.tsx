@@ -1,6 +1,5 @@
 import { FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, SvgIcon, Tooltip } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
-import type { BigNumber } from '@ethersproject/bignumber'
 import classNames from 'classnames'
 import { safeFormatUnits } from '@/utils/formatters'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -19,7 +18,7 @@ const SpendingLimitRow = ({
   availableAmount,
   selectedToken,
 }: {
-  availableAmount: BigNumber
+  availableAmount: bigint
   selectedToken: TokenInfo | undefined
 }) => {
   const { control, trigger } = useFormContext()
@@ -56,6 +55,7 @@ const SpendingLimitRow = ({
           >
             {!isOnlySpendLimitBeneficiary && (
               <FormControlLabel
+                data-testid="standard-tx"
                 value={TokenTransferType.multiSig}
                 label={
                   <>
@@ -98,6 +98,7 @@ const SpendingLimitRow = ({
               />
             )}
             <FormControlLabel
+              data-testid="spending-limit-tx"
               value={TokenTransferType.spendingLimit}
               label={
                 <>

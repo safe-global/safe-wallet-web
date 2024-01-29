@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useMemo } from 'react'
-import { hashMessage, _TypedDataEncoder } from 'ethers/lib/utils'
+import { hashMessage, TypedDataEncoder } from 'ethers'
 import { Box } from '@mui/system'
 import { Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
-import { type EIP712TypedData, isObjectEIP712TypedData, Methods, type RequestId } from '@safe-global/safe-apps-sdk'
+import { type EIP712TypedData, Methods, type RequestId } from '@safe-global/safe-apps-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 
 import SendFromBlock from '@/components/tx/SendFromBlock'
@@ -25,6 +25,10 @@ import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { asError } from '@/services/exceptions/utils'
+import { isEIP712TypedData } from '@/utils/safe-messages'
+import ApprovalEditor from '@/components/tx/ApprovalEditor'
+import { ErrorBoundary } from '@sentry/react'
+import useAsync from '@/hooks/useAsync'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -38,17 +42,22 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
-
   useHighlightHiddenTab()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
-  const isTypedMessage = method === Methods.signTypedMessage && isObjectEIP712TypedData(message)
+  const isTypedMessage = method === Methods.signTypedMessage && isEIP712TypedData(message)
 
-  const readOnlySignMessageLibContract = useMemo(
-    () => getReadOnlySignMessageLibContract(chainId, safe.version),
+  const [readOnlySignMessageLibContract] = useAsync(
+    async () => getReadOnlySignMessageLibContract(chainId, safe.version),
     [chainId, safe.version],
   )
-  const signMessageAddress = readOnlySignMessageLibContract.getAddress()
+
+  const [signMessageAddress, setSignMessageAddress] = useState<string>('')
+
+  useEffect(() => {
+    if (!readOnlySignMessageLibContract) return
+    readOnlySignMessageLibContract.getAddress().then(setSignMessageAddress)
+  }, [readOnlySignMessageLibContract])
 
   const [decodedMessage, readableMessage] = useMemo(() => {
     if (isTextMessage) {
@@ -63,6 +72,8 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   useEffect(() => {
     let txData
 
+    if (!readOnlySignMessageLibContract) return
+
     if (isTextMessage) {
       txData = readOnlySignMessageLibContract.encode('signMessage', [hashMessage(getDecodedMessage(message))])
     } else if (isTypedMessage) {
@@ -75,14 +86,14 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       delete typesCopy.EIP712Domain
       txData = readOnlySignMessageLibContract.encode('signMessage', [
         // @ts-ignore
-        _TypedDataEncoder.hash(message.domain, typesCopy, message.message),
+        TypedDataEncoder.hash(message.domain, typesCopy, message.message),
       ])
     }
 
     const params = {
       to: signMessageAddress,
       value: '0',
-      data: txData || '0x',
+      data: txData ?? '0x',
       operation: OperationType.DelegateCall,
     }
     createTx(params).then(setSafeTx).catch(setSafeTxError)
@@ -113,6 +124,12 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       <InfoDetails title="Interact with SignMessageLib">
         <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
       </InfoDetails>
+
+      {isEIP712TypedData(decodedMessage) && (
+        <ErrorBoundary fallback={<div>Error parsing data</div>}>
+          <ApprovalEditor safeMessage={decodedMessage} />
+        </ErrorBoundary>
+      )}
 
       {safeTx && (
         <Box pb={1}>

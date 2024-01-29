@@ -1,24 +1,60 @@
 .container {
   padding: var(--space-2);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  border: 1px solid var(--color-warning-light);
+  display: grid;
+  align-items: center;
+  grid-template-columns: minmax(50px, 0.25fr) minmax(150px, 2fr) minmax(150px, 2fr) minmax(200px, 2fr) 1fr minmax(
+      170px,
+      1fr
+    );
+  grid-template-areas:
+    'nonce warning warning warning warning warning'
+    'line items items items items items';
 }
 
 .disclaimerContainer {
-  background-color: var(--color-border-light);
-  padding: var(--space-1);
-  border-radius: 8px;
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
+  background-color: var(--color-warning-background);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--space-1);
+  flex: 1;
 }
 
-.link {
+.disclaimerContainer a > * {
+  text-decoration: underline;
+}
+
+.line {
+  border-left: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
+  border-radius: 0 0 0 4px;
+  height: calc(100% - 29px);
+  margin-top: -30px;
+  margin-left: 9px;
+}
+
+.txItems {
   display: flex;
-  gap: 4px;
-  align-items: center;
-  flex-shrink: 0;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.txItems :global(.MuiAccordion-root) {
+  border-color: var(--color-border-light);
+}
+
+.txItems > div {
+  position: relative;
+}
+
+.txItems > div:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  border-top: 1px solid var(--color-border-light);
+  width: 40px;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .willBeReplaced {
@@ -31,10 +67,16 @@
   text-decoration: line-through;
 }
 
-@media (max-width: 599.95px) {
-  .disclaimerContainer {
+@media (max-width: 1024px) {
+  .line,
+  .txItems > div::before {
+    display: none;
+  }
+  .container {
     gap: var(--space-1);
-    align-items: flex-start;
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'nonce warning warning'
+      'items items items';
   }
 }

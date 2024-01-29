@@ -22,9 +22,9 @@ describe('extractTxInfo', () => {
       },
       detailedExecutionInfo: {
         type: 'MULTISIG',
-        baseGas: 21000,
+        baseGas: '21000',
         gasPrice: '10000000000',
-        safeTxGas: 11000,
+        safeTxGas: '11000',
         gasToken: '0x0000000000000000000000000000000000000000',
         nonce: 0,
 
@@ -41,9 +41,9 @@ describe('extractTxInfo', () => {
     expect(extractTxInfo(txDetails, safeAddress)).toEqual({
       txParams: {
         data: '0x',
-        baseGas: 21000,
-        gasPrice: 10000000000,
-        safeTxGas: 11000,
+        baseGas: '21000',
+        gasPrice: '10000000000',
+        safeTxGas: '11000',
         gasToken: '0x0000000000000000000000000000000000000000',
         nonce: 0,
         refundReceiver: '0x1234567890123456789012345678901234567890',
@@ -78,9 +78,9 @@ describe('extractTxInfo', () => {
       },
       detailedExecutionInfo: {
         type: 'MULTISIG',
-        baseGas: 21000,
+        baseGas: '21000',
         gasPrice: '10000000000',
-        safeTxGas: 11000,
+        safeTxGas: '11000',
         gasToken: '0x0000000000000000000000000000000000000000',
         nonce: 0,
 
@@ -97,9 +97,9 @@ describe('extractTxInfo', () => {
     expect(extractTxInfo(txDetails, safeAddress)).toEqual({
       txParams: {
         data: '0x546785',
-        baseGas: 21000,
-        gasPrice: 10000000000,
-        safeTxGas: 11000,
+        baseGas: '21000',
+        gasPrice: '10000000000',
+        safeTxGas: '11000',
         gasToken: '0x0000000000000000000000000000000000000000',
         nonce: 0,
         refundReceiver: '0x1234567890123456789012345678901234567890',

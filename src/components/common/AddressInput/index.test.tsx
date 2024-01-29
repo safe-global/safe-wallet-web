@@ -66,6 +66,10 @@ describe('AddressInput tests', () => {
     jest.useFakeTimers()
   })
 
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
   beforeEach(() => {
     jest.clearAllMocks()
     ;(useCurrentChain as jest.Mock).mockImplementation(() => mockChain)

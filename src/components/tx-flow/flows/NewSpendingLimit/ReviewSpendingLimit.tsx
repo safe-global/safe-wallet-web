@@ -1,6 +1,5 @@
-import { useState, useEffect, useMemo, useContext } from 'react'
+import { useEffect, useMemo, useContext } from 'react'
 import { useSelector } from 'react-redux'
-import { BigNumber } from 'ethers'
 import { Typography, Grid, Alert } from '@mui/material'
 
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
@@ -13,13 +12,11 @@ import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
 import { formatVisualAmount } from '@/utils/formatters'
-import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import type { NewSpendingLimitFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeTxContext } from '../../SafeTxProvider'
 
 export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowProps }) => {
-  const [existingSpendingLimit, setExistingSpendingLimit] = useState<SpendingLimitState>()
   const spendingLimits = useSelector(selectSpendingLimits)
   const chainId = useChainId()
   const { balances } = useBalances()
@@ -27,12 +24,11 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const { decimals } = token?.tokenInfo || {}
 
-  useEffect(() => {
-    const existingSpendingLimit = spendingLimits.find(
+  const existingSpendingLimit = useMemo(() => {
+    return spendingLimits.find(
       (spendingLimit) =>
         spendingLimit.beneficiary === params.beneficiary && spendingLimit.token.address === params.tokenAddress,
     )
-    setExistingSpendingLimit(existingSpendingLimit)
   }, [spendingLimits, params])
 
   useEffect(() => {
@@ -56,7 +52,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   }
 
   const existingAmount = existingSpendingLimit
-    ? formatVisualAmount(BigNumber.from(existingSpendingLimit?.amount), decimals)
+    ? formatVisualAmount(BigInt(existingSpendingLimit?.amount), decimals)
     : undefined
 
   const oldResetTime = existingSpendingLimit
@@ -69,7 +65,12 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
         <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} title="Amount">
           {existingAmount && existingAmount !== params.amount && (
             <>
-              <Typography color="error" sx={{ textDecoration: 'line-through' }} component="span">
+              <Typography
+                data-testid="old-token-amount"
+                color="error"
+                sx={{ textDecoration: 'line-through' }}
+                component="span"
+              >
                 {existingAmount}
               </Typography>
               {'→'}
@@ -85,7 +86,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
           </Typography>
         </Grid>
 
-        <Grid item md={10}>
+        <Grid data-testid="beneficiary-address" item md={10}>
           <EthHashInfo
             address={params.beneficiary}
             shortAddress={false}
@@ -111,6 +112,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
                     {existingSpendingLimit.resetTimeMin !== params.resetTime && (
                       <>
                         <Typography
+                          data-testid="old-reset-time"
                           color="error"
                           sx={{ textDecoration: 'line-through' }}
                           display="inline"
@@ -130,13 +132,19 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
               />
             </>
           ) : (
-            <SpendingLimitLabel label={resetTime || 'One-time spending limit'} isOneTime={!!resetTime && isOneTime} />
+            <SpendingLimitLabel
+              data-testid="spending-limit-label"
+              label={resetTime || 'One-time spending limit'}
+              isOneTime={!!resetTime && isOneTime}
+            />
           )}
         </Grid>
       </Grid>
       {existingSpendingLimit && (
         <Alert severity="warning" sx={{ border: 'unset' }}>
-          <Typography fontWeight={700}>You are about to replace an existing spending limit</Typography>
+          <Typography data-testid="limit-replacement-warning" fontWeight={700}>
+            You are about to replace an existing spending limit
+          </Typography>
         </Alert>
       )}
     </SignOrExecuteForm>

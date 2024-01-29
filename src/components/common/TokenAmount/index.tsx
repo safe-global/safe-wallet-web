@@ -26,8 +26,10 @@ const TokenAmount = ({
   return (
     <span className={classNames(css.container, { [css.verticalAlign]: logoUri })}>
       {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} fallbackSrc={fallbackSrc} />}
-      {sign}
-      {amount} {tokenSymbol}
+      <b>
+        {sign}
+        {amount} {tokenSymbol}
+      </b>
     </span>
   )
 }

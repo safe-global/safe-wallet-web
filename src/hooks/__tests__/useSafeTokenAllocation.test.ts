@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { defaultAbiCoder, hexZeroPad, keccak256, parseEther, toUtf8Bytes } from 'ethers/lib/utils'
+import { type JsonRpcProvider, keccak256, parseEther, toUtf8Bytes, toBeHex, AbiCoder } from 'ethers'
 import useSafeTokenAllocation, {
   type VestingData,
   _getRedeemDeadline,
@@ -8,9 +8,7 @@ import useSafeTokenAllocation, {
 } from '../useSafeTokenAllocation'
 import * as web3 from '../wallets/web3'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
-import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { BigNumber } from 'ethers'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 const setupFetchStub =
   (data: any, status: number = 200) =>
@@ -36,7 +34,7 @@ describe('_getRedeemDeadline', () => {
 
   it('should should only call the provider once per address on a chain', async () => {
     for await (const _ of Array.from({ length: 10 })) {
-      await _getRedeemDeadline({ chainId: 1, contract: hexZeroPad('0x1', 20) } as VestingData, mockProvider)
+      await _getRedeemDeadline({ chainId: 1, contract: toBeHex('0x1', 20) } as VestingData, mockProvider)
     }
 
     expect(mockProvider.call).toHaveBeenCalledTimes(1)
@@ -45,15 +43,15 @@ describe('_getRedeemDeadline', () => {
   it('should not memoize different addresses on the same chain', async () => {
     const chainId = 1
 
-    await _getRedeemDeadline({ chainId, contract: hexZeroPad('0x1', 20) } as VestingData, mockProvider)
-    await _getRedeemDeadline({ chainId, contract: hexZeroPad('0x2', 20) } as VestingData, mockProvider)
+    await _getRedeemDeadline({ chainId, contract: toBeHex('0x1', 20) } as VestingData, mockProvider)
+    await _getRedeemDeadline({ chainId, contract: toBeHex('0x2', 20) } as VestingData, mockProvider)
 
     expect(mockProvider.call).toHaveBeenCalledTimes(2)
   })
 
   it('should not memoize the same address on difference chains', async () => {
     for await (const i of Array.from({ length: 10 }, (_, i) => i + 1)) {
-      await _getRedeemDeadline({ chainId: i, contract: hexZeroPad('0x1', 20) } as VestingData, mockProvider)
+      await _getRedeemDeadline({ chainId: i, contract: toBeHex('0x1', 20) } as VestingData, mockProvider)
     }
 
     expect(mockProvider.call).toHaveBeenCalledTimes(10)
@@ -79,9 +77,9 @@ describe('Allocations', () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
       () =>
         ({
-          safeAddress: hexZeroPad('0x2', 20),
+          safeAddress: toBeHex('0x2', 20),
           safe: {
-            address: hexZeroPad('0x2', 20),
+            address: toBeHex('0x2', 20),
             chainId: '1',
           },
         } as any),
@@ -136,10 +134,10 @@ describe('Allocations', () => {
       const mockAllocations = [
         {
           tag: 'user',
-          account: hexZeroPad('0x2', 20),
+          account: toBeHex('0x2', 20),
           chainId: 1,
-          contract: hexZeroPad('0xabc', 20),
-          vestingId: hexZeroPad('0x4110', 32),
+          contract: toBeHex('0xabc', 20),
+          vestingId: toBeHex('0x4110', 32),
           durationWeeks: 208,
           startDate: 1657231200,
           amount: '2000',
@@ -160,7 +158,7 @@ describe('Allocations', () => {
 
               if (transaction.data?.startsWith(vestingsSigHash)) {
                 return Promise.resolve(
-                  defaultAbiCoder.encode(
+                  AbiCoder.defaultAbiCoder().encode(
                     ['address', 'uint8', 'bool', 'uint16', 'uint64', 'uint128', 'uint128', 'uint64', 'bool'],
                     [ZERO_ADDRESS, '0x1', false, 208, 1657231200, 2000, 0, 0, false],
                   ),
@@ -168,7 +166,7 @@ describe('Allocations', () => {
               }
               if (transaction.data?.startsWith(redeemDeadlineSigHash)) {
                 // 30th Nov 2022
-                return Promise.resolve(defaultAbiCoder.encode(['uint64'], [1669766400]))
+                return Promise.resolve(AbiCoder.defaultAbiCoder().encode(['uint64'], [1669766400]))
               }
               return Promise.resolve('0x')
             },
@@ -195,10 +193,10 @@ describe('Allocations', () => {
       const mockAllocation = [
         {
           tag: 'user',
-          account: hexZeroPad('0x2', 20),
+          account: toBeHex('0x2', 20),
           chainId: 1,
-          contract: hexZeroPad('0xabc', 20),
-          vestingId: hexZeroPad('0x4110', 32),
+          contract: toBeHex('0xabc', 20),
+          vestingId: toBeHex('0x4110', 32),
           durationWeeks: 208,
           startDate: 1657231200,
           amount: '2000',
@@ -219,15 +217,15 @@ describe('Allocations', () => {
 
               if (transaction.data?.startsWith(vestingsSigHash)) {
                 return Promise.resolve(
-                  defaultAbiCoder.encode(
+                  AbiCoder.defaultAbiCoder().encode(
                     ['address', 'uint8', 'bool', 'uint16', 'uint64', 'uint128', 'uint128', 'uint64', 'bool'],
-                    [hexZeroPad('0x2', 20), '0x1', false, 208, 1657231200, 2000, 0, 0, false],
+                    [toBeHex('0x2', 20), '0x1', false, 208, 1657231200, 2000, 0, 0, false],
                   ),
                 )
               }
               if (transaction.data?.startsWith(redeemDeadlineSigHash)) {
                 // 08.Dec 2200
-                return Promise.resolve(defaultAbiCoder.encode(['uint64'], [7287610110]))
+                return Promise.resolve(AbiCoder.defaultAbiCoder().encode(['uint64'], [7287610110]))
               }
               return Promise.resolve('0x')
             },
@@ -241,7 +239,7 @@ describe('Allocations', () => {
         expect(result.current[0]).toEqual([
           {
             ...mockAllocation[0],
-            amountClaimed: BigNumber.from(0),
+            amountClaimed: BigInt(0),
             isExpired: false,
             isRedeemed: true,
           },
@@ -289,7 +287,7 @@ describe('Allocations', () => {
               const sigHash = keccak256(toUtf8Bytes('balanceOf(address)')).slice(0, 10)
 
               if (transaction.data?.startsWith(sigHash)) {
-                return Promise.resolve(parseEther('100').toHexString())
+                return Promise.resolve(parseEther('100').toString(16))
               }
               return Promise.resolve('0x')
             },
@@ -299,7 +297,7 @@ describe('Allocations', () => {
       const { result } = renderHook(() => useSafeVotingPower())
 
       await waitFor(() => {
-        expect(result.current[0]?.eq(parseEther('100'))).toBeTruthy()
+        expect(result.current[0] === parseEther('100')).toBeTruthy()
         expect(result.current[1]).toBeFalsy()
       })
     })
@@ -312,7 +310,7 @@ describe('Allocations', () => {
               const balanceOfSigHash = keccak256(toUtf8Bytes('balanceOf(address)')).slice(0, 10)
 
               if (transaction.data?.startsWith(balanceOfSigHash)) {
-                return Promise.resolve(BigNumber.from('400').toHexString())
+                return Promise.resolve('0x' + BigInt('400').toString(16))
               }
               return Promise.resolve('0x')
             },
@@ -322,10 +320,10 @@ describe('Allocations', () => {
       const mockAllocation: Vesting[] = [
         {
           tag: 'user',
-          account: hexZeroPad('0x2', 20),
+          account: toBeHex('0x2', 20),
           chainId: 1,
-          contract: hexZeroPad('0xabc', 20),
-          vestingId: hexZeroPad('0x4110', 32),
+          contract: toBeHex('0xabc', 20),
+          vestingId: toBeHex('0x4110', 32),
           durationWeeks: 208,
           startDate: 1657231200,
           amount: '2000',
@@ -340,7 +338,7 @@ describe('Allocations', () => {
       const { result } = renderHook(() => useSafeVotingPower(mockAllocation))
 
       await waitFor(() => {
-        expect(result.current[0]?.toNumber()).toEqual(2000 - 1000 + 400)
+        expect(Number(result.current[0])).toEqual(2000 - 1000 + 400)
         expect(result.current[1]).toBeFalsy()
       })
     })
@@ -353,7 +351,7 @@ describe('Allocations', () => {
               const balanceOfSigHash = keccak256(toUtf8Bytes('balanceOf(address)')).slice(0, 10)
 
               if (transaction.data?.startsWith(balanceOfSigHash)) {
-                return Promise.resolve(BigNumber.from('0').toHexString())
+                return Promise.resolve(BigInt('0').toString(16))
               }
               return Promise.resolve('0x')
             },
@@ -363,10 +361,10 @@ describe('Allocations', () => {
       const mockAllocation: Vesting[] = [
         {
           tag: 'user',
-          account: hexZeroPad('0x2', 20),
+          account: toBeHex('0x2', 20),
           chainId: 1,
-          contract: hexZeroPad('0xabc', 20),
-          vestingId: hexZeroPad('0x4110', 32),
+          contract: toBeHex('0xabc', 20),
+          vestingId: toBeHex('0x4110', 32),
           durationWeeks: 208,
           startDate: 1657231200,
           amount: '2000',
@@ -381,7 +379,7 @@ describe('Allocations', () => {
       const { result } = renderHook(() => useSafeVotingPower(mockAllocation))
 
       await waitFor(() => {
-        expect(result.current[0]?.toNumber()).toEqual(0)
+        expect(Number(result.current[0])).toEqual(0)
         expect(result.current[1]).toBeFalsy()
       })
     })

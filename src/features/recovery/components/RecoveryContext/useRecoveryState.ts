@@ -50,7 +50,7 @@ export function useRecoveryState(delayModifiers?: Array<Delay>): AsyncResult<Rec
       addListener({
         // Listen to history polls (only occuring when the txHistoryTag changes)
         actionCreator: txHistorySlice.actions.set,
-        effect: (action) => {
+        effect: async (action) => {
           // Get the most recent transaction
           const [latestTx] = action.payload.data?.results.filter(isTransactionListItem) ?? []
 
@@ -60,9 +60,14 @@ export function useRecoveryState(delayModifiers?: Array<Delay>): AsyncResult<Rec
 
           const { txInfo } = latestTx.transaction
 
-          const isDelayModiferTx = delayModifiers.some((delayModifier) => {
-            return isCustomTxInfo(txInfo) && sameAddress(txInfo.to.value, delayModifier.address)
-          })
+          const isDelayModiferTx = (
+            await Promise.all(
+              delayModifiers.map(async (delayModifier) => {
+                const address = await delayModifier.getAddress()
+                return isCustomTxInfo(txInfo) && sameAddress(txInfo.to.value, address)
+              }),
+            )
+          ).some(Boolean)
 
           // Refetch if the most recent transaction was with a Delay Modifier or MultiSend
           // (Multiple Delay Modifier settings changes are batched into a MultiSend)

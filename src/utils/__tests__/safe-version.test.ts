@@ -1,5 +1,4 @@
-import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
-
+import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '../safe-versions'
 
 describe('safe-version', () => {

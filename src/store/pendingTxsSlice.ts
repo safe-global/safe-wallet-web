@@ -19,6 +19,7 @@ export type PendingTx = {
   groupKey?: string
   signerAddress?: string
   taskId?: string
+  submittedAt?: number
 }
 
 export type PendingTxsState = {

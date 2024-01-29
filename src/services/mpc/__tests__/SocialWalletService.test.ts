@@ -10,13 +10,13 @@ import * as mpcCoreKit from '@web3auth/mpc-core-kit'
 import * as socialWalletOptions from '@/services/mpc/config'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import SocialWalletService from '../SocialWalletService'
 
 /** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
 /** Mock address for successful login */
-const mockSignerAddress = hexZeroPad('0x1', 20)
+const mockSignerAddress = toBeHex('0x1', 20)
 
 /**
  * Helper class for mocking MPC Core Kit login flow

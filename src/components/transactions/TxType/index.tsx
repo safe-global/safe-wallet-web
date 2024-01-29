@@ -20,7 +20,7 @@ const TxType = ({ tx }: TxTypeProps) => {
         height={16}
         fallback="/images/transactions/custom.svg"
       />
-      {type.text}
+      <span className={css.txTypeText}>{type.text}</span>
     </Box>
   )
 }

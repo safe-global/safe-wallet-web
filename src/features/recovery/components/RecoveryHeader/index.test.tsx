@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker'
-import { BigNumber } from 'ethers'
 
 import { _RecoveryHeader, _useIsProposalInProgress } from '.'
 import { render, renderHook, waitFor } from '@/tests/test-utils'
@@ -17,7 +16,7 @@ describe('RecoveryHeader', () => {
   })
 
   it('should render the in-progress widget if there is a queue for recoverers', () => {
-    const queue = [{ validFrom: BigNumber.from(0) }] as any
+    const queue = [{ validFrom: BigInt(0) }] as any
     store.setStore({ state: [[{ queue }]] } as any)
 
     const { queryByText } = render(<_RecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} />)

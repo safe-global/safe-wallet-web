@@ -2,8 +2,7 @@ import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useAsync from '@/hooks/useAsync'
-import { Contract } from 'ethers'
-import { Interface } from '@ethersproject/abi'
+import { Contract, Interface } from 'ethers'
 
 const PAUSED_ABI = 'function paused() public view virtual returns (bool)'
 
