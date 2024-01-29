@@ -1,10 +1,11 @@
-.pendingButtons {
+/* .pendingButtons {
   margin-left: 12px;
   margin-bottom: 16px;
-}
+} */
 
 .pendingButton {
-  margin: 0 4px;
+  margin-top: 12px;
+  margin-right: 8px;
 }
 
 .pendingButton img {

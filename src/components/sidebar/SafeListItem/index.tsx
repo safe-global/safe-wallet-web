@@ -75,7 +75,7 @@ const SafeListItem = ({
     <div className={css.container}>
       <ListItem
         alignItems="flex-start"
-        className={classnames(css.listItem, { [css.withPendingButtons]: totalQueued || totalToSign })}
+        className={css.listItem}
         disablePadding
         secondaryAction={
           noActions ? undefined : (
@@ -94,52 +94,54 @@ const SafeListItem = ({
               className={classnames(css.safe, { [css.open]: isCurrentSafe })}
               ref={safeRef}
             >
-              <ListItemIcon>
-                <SafeIcon address={address} {...rest} />
-              </ListItemIcon>
-              <div className={css.listItemInfo}>
-                <ListItemText
-                  className={css.listItemText}
-                  sx={noActions ? undefined : { pr: 10 }}
-                  primaryTypographyProps={{
-                    variant: 'body2',
-                    component: 'div',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                  }}
-                  secondaryTypographyProps={{ component: 'div', color: 'primary' }}
-                  primary={<b>{name || ''}</b>}
-                  secondary={
-                    <EthHashInfo
-                      address={address}
-                      showAvatar={false}
-                      showName={false}
-                      prefix={shortName}
-                      copyAddress={false}
-                    />
-                  }
-                />
-                <ListItemText
-                  className={css.accountBalance}
-                  primaryTypographyProps={{ variant: 'body2' }}
-                  primary={<b>${fiatBalance}</b>}
-                />
+              <div className={css.row}>
+                <ListItemIcon>
+                  <SafeIcon address={address} {...rest} />
+                </ListItemIcon>
+                <div className={css.listItemInfo}>
+                  <ListItemText
+                    className={css.listItemText}
+                    sx={noActions ? undefined : { pr: 10 }}
+                    primaryTypographyProps={{
+                      variant: 'body2',
+                      component: 'div',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                    }}
+                    secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+                    primary={<b>{name || ''}</b>}
+                    secondary={
+                      <EthHashInfo
+                        address={address}
+                        showAvatar={false}
+                        showName={false}
+                        prefix={shortName}
+                        copyAddress={false}
+                      />
+                    }
+                  />
+                  <ListItemText
+                    className={css.accountBalance}
+                    primaryTypographyProps={{ variant: 'body2' }}
+                    primary={<b>${fiatBalance}</b>}
+                  />
+                </div>
+                <ChainIndicator chainId={chainId} inline showName={isWelcomePage && !isMobile} />
               </div>
-              <ChainIndicator chainId={chainId} inline showName={isWelcomePage && !isMobile} />
+              {(totalQueued || totalToSign) && (
+                <PendingActionButtons
+                  safeAddress={address}
+                  closeDrawer={closeDrawer}
+                  shortName={shortName}
+                  totalQueued={totalQueued}
+                  totalToSign={totalToSign}
+                />
+              )}
             </ListItemButton>
           </Link>
         </Track>
       </ListItem>
-      {(totalQueued || totalToSign) && (
-        <PendingActionButtons
-          safeAddress={address}
-          closeDrawer={closeDrawer}
-          shortName={shortName}
-          totalQueued={totalQueued}
-          totalToSign={totalToSign}
-        />
-      )}
     </div>
   )
 }

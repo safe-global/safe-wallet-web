@@ -17,7 +17,17 @@
 }
 
 .safe {
-  padding-right: var(--space-6);
+  padding: var(--space-2) var(--space-6) var(--space-2) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  width: 100%;
 }
 
 .open {
@@ -32,17 +42,14 @@
 }
 
 .listItem :global .MuiListItemSecondaryAction-root {
-  right: 12px;
-}
-
-.listItem :global .Mui-selected {
-  background-color: red;
+  top: 36px;
 }
 
 .listItemText {
   padding-right: 0;
   flex: none;
   width: 160px;
+  margin: 0;
 }
 
 .listItemInfo {
@@ -66,5 +73,4 @@
   .accountBalance {
     text-align: start;
   }
-
 }

@@ -72,7 +72,7 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
         })}
       </List>
 
-      {!isListExpanded && (
+      {!isListExpanded && safes.length > maxSafes && (
         <div className={css.ownedLabelWrapper} onClick={onShowMore}>
           <Typography variant="body2" display="inline" className={css.ownedLabel}>
             More Accounts
