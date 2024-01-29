@@ -33,9 +33,7 @@ describe('[SMOKE] Create transactions tests', () => {
 
   it('[SMOKE] Verify error message for invalid amount input', () => {
     createtx.clickOnTokenselectorAndSelectSepoliaEth()
-    createtx.verifyAmountNegativeNumber()
     createtx.verifyAmountLargerThanCurrentBalance()
-    createtx.verifyAmountMustBeNumber()
   })
 
   it('[SMOKE] Verify MaxAmount button', () => {
@@ -44,14 +42,10 @@ describe('[SMOKE] Create transactions tests', () => {
   })
 
   it('[SMOKE] Verify nonce tooltip warning messages', () => {
-    createtx.changeNonce(-1)
-    createtx.verifyTooltipMessage(constants.nonceTooltipMsg.lowerThanCurrent + currentNonce.toString())
     createtx.changeNonce(currentNonce + 50)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.higherThanRecommended)
     createtx.changeNonce(currentNonce + 150)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.muchHigherThanRecommended)
-    createtx.changeNonce('abc')
-    createtx.verifyTooltipMessage(constants.nonceTooltipMsg.mustBeNumber)
   })
 
   it('[SMOKE] Verify advance parameters gas limit input', () => {

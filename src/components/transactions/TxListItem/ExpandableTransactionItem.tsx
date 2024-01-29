@@ -44,7 +44,18 @@ export const ExpandableTransactionItem = ({
         }
       }}
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ justifyContent: 'flex-start', overflowX: 'auto' }}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{
+          justifyContent: 'flex-start',
+          overflowX: 'auto',
+          ['.MuiAccordionSummary-content, .MuiAccordionSummary-content.Mui-expanded']: {
+            overflow: 'hidden',
+            margin: 0,
+            padding: '12px 0',
+          },
+        }}
+      >
         <TxSummary item={item} isGrouped={isGrouped} />
       </AccordionSummary>
 

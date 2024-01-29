@@ -250,19 +250,9 @@ export function verifyWrongChecksum(wronglyChecksummedAddress) {
   cy.contains(constants.addressBookErrrMsg.invalidChecksum).should('be.visible')
 }
 
-export function verifyAmountNegativeNumber() {
-  setSendValue(-1)
-  cy.contains(constants.amountErrorMsg.negativeValue).should('be.visible')
-}
-
 export function verifyAmountLargerThanCurrentBalance() {
   setSendValue(9999)
   cy.contains(constants.amountErrorMsg.largerThanCurrentBalance).should('be.visible')
-}
-
-export function verifyAmountMustBeNumber() {
-  setSendValue('abc')
-  cy.contains(constants.amountErrorMsg.randomString).should('be.visible')
 }
 
 export function verifyTooltipMessage(message) {

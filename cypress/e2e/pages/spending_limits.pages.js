@@ -191,3 +191,7 @@ export function verifyNumberErrorValidation() {
 export function verifyCharErrorValidation() {
   cy.get(tokenAmountSection).find('label').should('contain', invalidCharErrorStr)
 }
+
+export function verifyNumberAmountEntered(amount) {
+  cy.get(tokenAmountFld).find('input').should('have.value', amount)
+}
