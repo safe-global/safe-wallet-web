@@ -59,6 +59,11 @@ Install the dependencies:
 yarn
 ```
 
+Generate types:
+```bash
+yarn postinstall
+```
+
 Run the development server:
 
 ```bash
