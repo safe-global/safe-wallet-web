@@ -32,9 +32,8 @@ export function RecoveryDetails({ item }: { item: RecoveryQueueItem }): ReactEle
           <TxDataRow title="Transaction hash">{generateDataRowValue(transactionHash, 'hash', true)}</TxDataRow>
           <TxDataRow title="Created:">{dateString(Number(timestamp))}</TxDataRow>
           <TxDataRow title="Executable:">{dateString(Number(validFrom))}</TxDataRow>
-          <TxDataRow title="Expires:">{dateString(Number(expiresAt))}</TxDataRow>
 
-          {Number(expiresAt) && <TxDataRow title="Expires:">{dateString(Number(expiresAt))}</TxDataRow>}
+          {expiresAt ? <TxDataRow title="Expires:">{dateString(Number(expiresAt))}</TxDataRow> : null}
 
           <Link className={summaryCss.buttonExpand} onClick={toggleExpanded} component="button" variant="body1">
             Advanced details
