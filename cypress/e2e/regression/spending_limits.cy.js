@@ -78,6 +78,19 @@ describe('Spending limits tests', () => {
     spendinglimit.verifyOldValuesAreDisplayed()
   })
 
+  it('Verify that when editing spending limit for owner who used some of it, relevant actions are displayed', () => {
+    spendinglimit.clickOnNewSpendingLimitBtn()
+    spendinglimit.enterBeneficiaryAddress(constants.SPENDING_LIMIT_ADDRESS_2)
+    spendinglimit.enterSpendingLimitAmount(newTokenAmount)
+    spendinglimit.clickOnTimePeriodDropdown()
+    spendinglimit.selectTimePeriod(spendinglimit.timePeriodOptions.oneTime)
+    tx.clickOnNextBtn()
+    spendinglimit.verifyActionNamesAreDisplayed([
+      constants.TXActionNames.resetAllowance,
+      constants.TXActionNames.setAllowance,
+    ])
+  })
+
   it('Verify that when multiple assets are available, they are displayed in token dropdown', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__settings, ls.safeSettings.slimitSettings).then(() => {
       main
