@@ -313,7 +313,7 @@ export function verifyNativeTokenTransfer() {
 }
 
 export function changeNonce(value) {
-  cy.get(nonceInput).clear().type(value, { force: true }).blur()
+  cy.get(nonceInput).clear().type(value, { force: true })
 }
 
 export function verifyConfirmTransactionData() {
