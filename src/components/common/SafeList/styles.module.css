@@ -21,10 +21,6 @@
   font-size: 20px;
 }
 
-.createAccountButton {
-  padding: 12px 24px;
-}
-
 
 @media (max-width: 599.95px) {
   .header {

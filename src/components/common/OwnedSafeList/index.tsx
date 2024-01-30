@@ -1,13 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 import useAllOwnedSafes from '@/hooks/useOwnedSafes'
-import { IconButton, List, Typography } from '@mui/material'
+import { Box, Button, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import classNames from 'classnames'
+import useConnectWallet from '../ConnectWallet/useConnectWallet'
 
 const maxSafes = 3
 
@@ -15,6 +16,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
   const [lastChainId, setLastChainId] = useState<string | undefined>()
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
+  const connectWallet = useConnectWallet()
 
   const [safes] = useAllOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
 
@@ -30,6 +32,13 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
       setIsListExpanded((prev) => !prev)
     }
   }, [safes])
+
+  const handleConnectWallet = () => {
+    if (closeDrawer) {
+      closeDrawer()
+    }
+    connectWallet()
+  }
 
   const getHref = useCallback(
     (chain: ChainInfo, address: string) => {
@@ -48,6 +57,23 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
           My accounts
         </Typography>
       </div>
+
+      {!safes.length && (
+        <Box display="flex" flexDirection="column" alignItems="center" py={4}>
+          <Typography variant="body2" color="primary.light" textAlign="center" mt={2} mb={2}>
+            Connect a wallet to view your Safe Accounts or to create a new one
+          </Typography>
+          <Button
+            onClick={handleConnectWallet}
+            disableElevation
+            size="small"
+            variant="contained"
+            sx={{ padding: '12px 24px' }}
+          >
+            Connect new account
+          </Button>
+        </Box>
+      )}
 
       <List className={css.list}>
         {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {

@@ -2,9 +2,7 @@ import React, { type ReactElement } from 'react'
 import Link from 'next/link'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import SvgIcon from '@mui/material/SvgIcon'
 
-import AddIcon from '@/public/images/common/add.svg'
 import { useCurrentChain } from '@/hooks/useChains'
 import OwnedSafeList from '@/components/common/OwnedSafeList'
 import Watchlist from '@/components/common/Watchlist'
@@ -45,7 +43,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
                 disableElevation
                 size="small"
                 variant="contained"
-                className={css.createAccountButton}
+                sx={{ padding: '12px 24px' }}
                 onClick={closeDrawer}
               >
                 Create new account
