@@ -108,6 +108,10 @@ export function showSendBtn(index) {
     })
 }
 
+export function sendButtonIsDisabled() {
+  cy.get('button').contains(sendBtnStr).should('be.disabled')
+}
+
 export function verifyTableRows(assetsLength) {
   cy.get(balanceSingleRow).should('have.length', assetsLength)
 }

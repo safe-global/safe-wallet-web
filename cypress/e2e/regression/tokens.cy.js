@@ -173,13 +173,13 @@ describe('Tokens tests', () => {
     owner.clickOnDisconnectBtn()
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     assets.showSendBtn(0)
-    owner.verifyTooltiptext(owner.disconnectedUserErrorMsg)
+    assets.sendButtonIsDisabled()
   })
 
   it('Verify that when connected user is not owner, Send button is disabled', () => {
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_11)
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     assets.showSendBtn(0)
-    owner.verifyTooltiptext(owner.nonOwnerErrorMsg)
+    assets.sendButtonIsDisabled()
   })
 })
