@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber'
 import type { SafeTransaction, SafeSignature } from '@safe-global/safe-core-sdk-types'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { act, renderHook } from '@/tests/test-utils'
@@ -6,11 +5,11 @@ import useIsValidExecution from '../../../../hooks/useIsValidExecution'
 import type { EthersError } from '@/utils/ethers-utils'
 import type { EthersTxReplacedReason } from '@/utils/ethers-utils'
 import * as web3 from '@/hooks/wallets/web3'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
-import { type EIP1193Provider } from '@web3-onboard/core'
+import type { Eip1193Provider } from 'ethers'
+import { JsonRpcProvider, BrowserProvider } from 'ethers'
 import * as contracts from '@/services/contracts/safeContracts'
-import type GnosisSafeContractEthers from '@safe-global/safe-ethers-lib/dist/src/contracts/GnosisSafe/GnosisSafeContractEthers'
 
+import type { SafeContractEthers } from '@safe-global/protocol-kit'
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
     data: {
@@ -39,12 +38,12 @@ const createSafeTx = (data = '0x'): SafeTransaction => {
 
 describe('useIsValidExecution', () => {
   const mockReadOnlyProvider: JsonRpcProvider = new JsonRpcProvider()
-  const mockProvider: Web3Provider = new Web3Provider(jest.fn())
+  const mockProvider: BrowserProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
   const mockWallet = {
     address: '',
     chainId: '5',
     label: '',
-    provider: {} as unknown as EIP1193Provider,
+    provider: {} as unknown as Eip1193Provider,
   }
 
   beforeEach(() => {
@@ -59,21 +58,20 @@ describe('useIsValidExecution', () => {
     const error = new Error('Some error') as EthersError
     error.reason = 'GS026' as EthersTxReplacedReason
 
-    jest.spyOn(contracts, 'getCurrentGnosisSafeContract').mockImplementation(
-      () =>
-        ({
-          contract: {
-            callStatic: {
-              execTransaction: () => {
-                throw error
-              },
+    jest.spyOn(contracts, 'getCurrentGnosisSafeContract').mockImplementation(() =>
+      Promise.resolve({
+        contract: {
+          execTransaction: {
+            staticCall: () => {
+              throw error
             },
           },
-        } as unknown as GnosisSafeContractEthers),
+        },
+      } as unknown as SafeContractEthers),
     )
 
     const mockTx = createSafeTx()
-    const mockGas = BigNumber.from(1000)
+    const mockGas = BigInt(1000)
 
     const { result } = renderHook(() => useIsValidExecution(mockTx, mockGas))
 

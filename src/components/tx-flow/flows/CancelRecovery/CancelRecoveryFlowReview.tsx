@@ -1,7 +1,7 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Typography } from '@mui/material'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import type { ReactElement } from 'react'
 
 import { SafeTxContext } from '../../SafeTxProvider'
@@ -11,6 +11,7 @@ import { getRecoverySkipTransaction } from '@/features/recovery/services/transac
 import { createTx } from '@/services/tx/tx-sender'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import useAsync from '@/hooks/useAsync'
 
 const onSubmit = () => {
   trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_CANCEL })
@@ -20,11 +21,11 @@ export function CancelRecoveryFlowReview({ recovery }: { recovery: RecoveryQueue
   const web3ReadOnly = useWeb3ReadOnly()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
-  useEffect(() => {
+  useAsync(async () => {
     if (!web3ReadOnly) {
       return
     }
-    const transaction = getRecoverySkipTransaction(recovery, web3ReadOnly)
+    const transaction = await getRecoverySkipTransaction(recovery, web3ReadOnly)
     createTx(transaction).then(setSafeTx).catch(setSafeTxError)
   }, [setSafeTx, setSafeTxError, recovery, web3ReadOnly])
 

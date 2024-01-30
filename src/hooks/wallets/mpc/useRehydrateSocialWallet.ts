@@ -1,6 +1,6 @@
 import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
-import { useCurrentChain } from '@/hooks/useChains'
+import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { useAppDispatch } from '@/store'
@@ -9,6 +9,8 @@ import { type WalletState } from '@web3-onboard/core'
 import { type UserInfo } from '@web3auth/mpc-core-kit'
 import { useCallback, useEffect } from 'react'
 import { checksumAddress } from '@/utils/addresses'
+import { FEATURES } from '@/utils/chains'
+import { isSocialWalletEnabled } from '../wallets'
 
 const useRehydrateSocialWallet = () => {
   const chain = useCurrentChain()
@@ -16,6 +18,7 @@ const useRehydrateSocialWallet = () => {
   const currentChainId = useChainId()
   const addressBook = useAddressBook()
   const dispatch = useAppDispatch()
+  const isSocialLoginEnabled = useHasFeature(FEATURES.SOCIAL_LOGIN)
 
   const updateAddressBook = useCallback(
     (userInfo: UserInfo | undefined, wallets: WalletState[] | undefined | void) => {
@@ -60,9 +63,11 @@ const useRehydrateSocialWallet = () => {
 
       socialWalletService.setOnConnect(onConnect)
     }
-
-    void rehydrate()
-  }, [chain, onboard, updateAddressBook])
+    const isOnboardModuleEnabled = isSocialWalletEnabled(chain)
+    if (isSocialLoginEnabled && isOnboardModuleEnabled) {
+      void rehydrate()
+    }
+  }, [chain, onboard, updateAddressBook, isSocialLoginEnabled])
 }
 
 export default useRehydrateSocialWallet

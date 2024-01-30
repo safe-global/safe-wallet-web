@@ -1,7 +1,7 @@
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType, TransactionInfoType, TransactionTokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionTrackingType } from '../tx-tracking'
-import * as txDetailsModule from '@/services/tx/txDetails'
+import * as txDetailsModule from '@/services/transactions'
 import { TX_TYPES } from '../events/transactions'
 
 const getMockTxType = (txDetails: unknown) => {
@@ -144,7 +144,7 @@ describe('getTransactionTrackingType', () => {
         type: TransactionInfoType.CUSTOM,
       },
       safeAppInfo: {
-        url: 'https://safe-apps.safe.global/wallet-connect',
+        url: 'https://apps-portal.safe.global/wallet-connect',
       },
     } as unknown)
 

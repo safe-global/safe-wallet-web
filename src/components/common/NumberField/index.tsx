@@ -10,11 +10,19 @@ export const _formatNumber = (value: string) => {
     return value
   }
 
-  // Remove leading zeros from the string
-  value = value.replace(/^0+/, '')
+  // Replace commas with dots (used as decimal separator)
+  value = value.replace(/,/g, '.')
 
-  if (value === '') {
-    return '0'
+  let index = 0
+  // replace all dots except the first one
+  value = value.replace(/\./g, (item) => (!index++ ? item : ''))
+
+  // Remove all characters except numbers and dots
+  value = value.replace(/[^0-9.]/g, '')
+
+  if (value.length > 1) {
+    // Remove leading zeros from the string
+    value = value.replace(/^0+/, '')
   }
 
   // If the string starts with a decimal point, add a leading zero

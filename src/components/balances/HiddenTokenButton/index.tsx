@@ -3,7 +3,7 @@ import { Typography, Button } from '@mui/material'
 import { ASSETS_EVENTS } from '@/services/analytics'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import useBalances from '@/hooks/useBalances'
-import { VisibilityOutlined } from '@mui/icons-material'
+import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined'
 import Track from '@/components/common/Track'
 
 import css from './styles.module.css'

@@ -5,6 +5,7 @@ import {
   validatePrefixedAddress,
   validateDecimalLength,
   isValidAddress,
+  isValidURL,
 } from '@/utils/validation'
 
 describe('validation', () => {
@@ -127,6 +128,24 @@ describe('validation', () => {
 
       const result3 = validateDecimalLength('1', 0)
       expect(result3).toBeUndefined()
+    })
+  })
+
+  describe('URL validation', () => {
+    it('returns true for localhost URLs', () => {
+      const result1 = isValidURL('http://localhost:3000')
+      expect(result1).toBe(true)
+
+      const result2 = isValidURL('http://subdomain.localhost:3000')
+      expect(result2).toBe(true)
+    })
+
+    it('returns false for non https domains ', () => {
+      const result1 = isValidURL('https://example.com')
+      expect(result1).toBe(true)
+
+      const result2 = isValidURL('http://example.com')
+      expect(result2).toBe(false)
     })
   })
 })

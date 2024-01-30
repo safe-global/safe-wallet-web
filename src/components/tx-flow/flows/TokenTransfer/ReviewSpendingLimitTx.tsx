@@ -1,6 +1,6 @@
 import type { ReactElement, SyntheticEvent } from 'react'
 import { useContext, useMemo, useState } from 'react'
-import type { BigNumberish, BytesLike } from 'ethers'
+import { type BigNumberish, type BytesLike, parseUnits } from 'ethers'
 import { Button, CardActions, Typography } from '@mui/material'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { type TokenTransferParams } from '@/components/tx-flow/flows/TokenTransfer/index'
@@ -9,11 +9,11 @@ import useBalances from '@/hooks/useBalances'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import useSpendingLimitGas from '@/hooks/useSpendingLimitGas'
 import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { parseUnits } from '@ethersproject/units'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Errors, logError } from '@/services/exceptions'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { useCurrentChain } from '@/hooks/useChains'
 import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
@@ -25,6 +25,7 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
 import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { isWalletRejection } from '@/utils/wallets'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -46,6 +47,7 @@ const ReviewSpendingLimitTx = ({
 }): ReactElement => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
   const { setTxFlow } = useContext(TxModalContext)
   const currentChain = useCurrentChain()
   const onboard = useOnboard()
@@ -87,6 +89,7 @@ const ReviewSpendingLimitTx = ({
 
     setIsSubmittable(false)
     setSubmitError(undefined)
+    setIsRejectedByUser(false)
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
@@ -96,9 +99,13 @@ const ReviewSpendingLimitTx = ({
       setTxFlow(undefined)
     } catch (_err) {
       const err = asError(_err)
-      logError(Errors._801, err)
+      if (isWalletRejection(err)) {
+        setIsRejectedByUser(true)
+      } else {
+        logError(Errors._801, err)
+        setSubmitError(err)
+      }
       setIsSubmittable(true)
-      setSubmitError(err)
     }
 
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_token })
@@ -127,6 +134,8 @@ const ReviewSpendingLimitTx = ({
         {submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )}
+
+        {isRejectedByUser && <WalletRejectionError />}
 
         <Typography variant="body2" color="primary.light" textAlign="center">
           You&apos;re about to create a transaction and will need to confirm it with your currently connected wallet.

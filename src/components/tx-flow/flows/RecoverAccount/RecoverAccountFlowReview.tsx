@@ -30,6 +30,8 @@ import { getPeriod } from '@/utils/date'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsValidRecoveryExecTransactionFromModule } from '@/features/recovery/hooks/useIsValidRecoveryExecution'
 import type { RecoverAccountFlowProps } from '.'
+import { isWalletRejection } from '@/utils/wallets'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -37,6 +39,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
 
   // Hooks
   const { setTxFlow } = useContext(TxModalContext)
@@ -73,6 +76,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
     setIsSubmittable(false)
     setSubmitError(undefined)
+    setIsRejectedByUser(false)
 
     try {
       await dispatchRecoveryProposal({
@@ -84,9 +88,13 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
       trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_ATTEMPT })
     } catch (_err) {
       const err = asError(_err)
-      trackError(Errors._810, err)
+      if (isWalletRejection(err)) {
+        setIsRejectedByUser(true)
+      } else {
+        trackError(Errors._804, err)
+        setSubmitError(err)
+      }
       setIsSubmittable(true)
-      setSubmitError(err)
       return
     }
 
@@ -133,45 +141,49 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
       </TxCard>
 
       <TxCard>
-        <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
+        <>
+          <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
 
-        {safeTxError && (
-          <ErrorMessage error={safeTxError}>
-            This recovery will most likely fail. To save gas costs, avoid executing the transaction.
-          </ErrorMessage>
-        )}
+          {safeTxError && (
+            <ErrorMessage error={safeTxError}>
+              This recovery will most likely fail. To save gas costs, avoid executing the transaction.
+            </ErrorMessage>
+          )}
 
-        {executionValidationError && (
-          <ErrorMessage error={executionValidationError}>
-            This transaction will most likely fail. To save gas costs, avoid executing the transaction.
-          </ErrorMessage>
-        )}
+          {executionValidationError && (
+            <ErrorMessage error={executionValidationError}>
+              This transaction will most likely fail. To save gas costs, avoid executing the transaction.
+            </ErrorMessage>
+          )}
 
-        {submitError && (
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-        )}
+          {submitError && (
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          )}
 
-        <WrongChainWarning />
+          <WrongChainWarning />
 
-        {recovery?.delay && (
-          <ErrorMessage level="info">
-            Recovery will be{' '}
-            {recovery.delay.isZero() ? 'immediately possible' : `possible in ${getPeriod(recovery.delay.toNumber())}`}{' '}
-            after this transaction is executed.
-          </ErrorMessage>
-        )}
+          {recovery?.delay && (
+            <ErrorMessage level="info">
+              Recovery will be{' '}
+              {recovery.delay === 0n ? 'immediately possible' : `possible in ${getPeriod(Number(recovery.delay))}`}{' '}
+              after this transaction is executed.
+            </ErrorMessage>
+          )}
 
-        <Divider className={commonCss.nestedDivider} />
+          {isRejectedByUser && <WalletRejectionError />}
 
-        <CardActions sx={{ mt: 'var(--space-1) !important' }}>
-          <CheckWallet allowNonOwner>
-            {(isOk) => (
-              <Button variant="contained" disabled={!isOk || submitDisabled} onClick={onSubmit}>
-                {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
-              </Button>
-            )}
-          </CheckWallet>
-        </CardActions>
+          <Divider className={commonCss.nestedDivider} />
+
+          <CardActions sx={{ mt: 'var(--space-1) !important' }}>
+            <CheckWallet allowNonOwner>
+              {(isOk) => (
+                <Button variant="contained" disabled={!isOk || submitDisabled} onClick={onSubmit}>
+                  {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
+                </Button>
+              )}
+            </CheckWallet>
+          </CardActions>
+        </>
       </TxCard>
     </>
   )

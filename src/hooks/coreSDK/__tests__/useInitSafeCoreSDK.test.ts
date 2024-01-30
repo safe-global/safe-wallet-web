@@ -7,8 +7,8 @@ import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { waitFor } from '@testing-library/react'
-import type Safe from '@safe-global/safe-core-sdk'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import type Safe from '@safe-global/protocol-kit'
+import { type JsonRpcProvider } from 'ethers'
 
 describe('useInitSafeCoreSDK hook', () => {
   const mockSafeAddress = '0x0000000000000000000000000000000000005AFE'

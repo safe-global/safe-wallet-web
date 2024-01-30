@@ -102,7 +102,7 @@ const BalanceChange = ({
 
 const BalanceChanges = () => {
   const { balanceChange, isLoading } = useContext(TxSecurityContext)
-  const totalBalanceChanges = balanceChange ? balanceChange.in.length + balanceChange.out.length : undefined
+  const totalBalanceChanges = balanceChange ? balanceChange.in.length + balanceChange.out.length : 0
 
   if (isLoading && !balanceChange) {
     return (
@@ -120,7 +120,7 @@ const BalanceChanges = () => {
     )
   }
 
-  if (totalBalanceChanges && totalBalanceChanges === 0) {
+  if (totalBalanceChanges === 0) {
     return (
       <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
         No balance change detected

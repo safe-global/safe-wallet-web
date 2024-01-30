@@ -3,7 +3,7 @@ import { REDEFINE_RETRY_TIMEOUT, useRedefine } from './useRedefine'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import * as useChains from '@/hooks/useChains'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { type RedefineResponse, REDEFINE_ERROR_CODES } from '@/services/security/modules/RedefineModule'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { safeTxBuilder } from '@/tests/builders/safeTx'
@@ -63,7 +63,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useRedefine for %s'
   })
 
   it('should return undefined without feature enabled', async () => {
-    const walletAddress = hexZeroPad('0x1', 20)
+    const walletAddress = toBeHex('0x1', 20)
 
     mockUseWallet.mockImplementation(() => ({
       address: walletAddress,
@@ -84,7 +84,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useRedefine for %s'
   })
 
   it('should handle request errors', async () => {
-    const walletAddress = hexZeroPad('0x1', 20)
+    const walletAddress = toBeHex('0x1', 20)
 
     mockUseWallet.mockImplementation(() => ({
       address: walletAddress,
@@ -108,7 +108,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useRedefine for %s'
   })
 
   it('should return the redefine issues', async () => {
-    const walletAddress = hexZeroPad('0x1', 20)
+    const walletAddress = toBeHex('0x1', 20)
 
     const mockRedefineResponse: RedefineResponse = {
       data: {
@@ -139,7 +139,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useRedefine for %s'
         balanceChange: {
           in: [
             {
-              address: hexZeroPad('0x2', 20),
+              address: toBeHex('0x2', 20),
               amount: {
                 normalizedValue: '0.1',
                 value: '100000000000000000',
@@ -190,7 +190,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useRedefine for %s'
   })
 
   it('should poll again on error code 1000', async () => {
-    const walletAddress = hexZeroPad('0x1', 20)
+    const walletAddress = toBeHex('0x1', 20)
 
     const mockPartialRedefineResponse: RedefineResponse = {
       data: {
@@ -232,7 +232,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useRedefine for %s'
         balanceChange: {
           in: [
             {
-              address: hexZeroPad('0x2', 20),
+              address: toBeHex('0x2', 20),
               amount: {
                 normalizedValue: '0.1',
                 value: '100000000000000000',

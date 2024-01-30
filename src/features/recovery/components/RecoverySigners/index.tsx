@@ -21,7 +21,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
     item.expiresAt ? (
       <>
         The recovery proposal can be executed{' '}
-        <Typography color="primary.main">until {formatDateTime(item.expiresAt.toNumber())}.</Typography>
+        <Typography color="primary.main">until {formatDateTime(Number(item.expiresAt))}.</Typography>
       </>
     ) : (
       'The recovery proposal can be executed now.'

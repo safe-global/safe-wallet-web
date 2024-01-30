@@ -64,7 +64,9 @@ export const validateLimitedAmount = (amount: string, decimals?: number, max?: s
     return numberError
   }
 
-  if (safeParseUnits(amount, decimals)?.gt(max)) {
+  const value = safeParseUnits(amount, decimals)
+
+  if (value && value > BigInt(max)) {
     return `Maximum value is ${safeFormatUnits(max, decimals)}`
   }
 }
@@ -89,7 +91,7 @@ export const isValidURL = (url: string, protocolsAllowed = ['https:']): boolean 
   try {
     const urlInfo = new URL(url)
 
-    return protocolsAllowed.includes(urlInfo.protocol) || urlInfo.hostname === 'localhost'
+    return protocolsAllowed.includes(urlInfo.protocol) || urlInfo.hostname.split('.').pop() === 'localhost'
   } catch (error) {
     return false
   }

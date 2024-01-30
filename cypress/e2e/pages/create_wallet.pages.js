@@ -128,7 +128,8 @@ export function selectNetwork(network) {
   cy.wait(1000)
   cy.get(expandMoreIcon).eq(1).parents('div').eq(1).click()
   cy.wait(1000)
-  cy.get('li').contains(network).click()
+  let regex = new RegExp(`^${network}$`)
+  cy.get('li').contains(regex).click()
 }
 
 export function clickOnNextBtn() {

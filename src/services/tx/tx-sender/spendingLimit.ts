@@ -3,7 +3,7 @@ import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { createAddDelegateTx, createResetAllowanceTx, createSetAllowanceTx } from '@/services/tx/spendingLimitParams'
-import { parseUnits } from '@ethersproject/units'
+import { parseUnits } from 'ethers'
 import { currentMinutes } from '@/utils/date'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender/create'
 

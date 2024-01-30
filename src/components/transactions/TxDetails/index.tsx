@@ -30,6 +30,8 @@ import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Mu
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsPending from '@/hooks/useIsPending'
 import { isTrustedTx } from '@/utils/transactions'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -40,6 +42,7 @@ type TxDetailsProps = {
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
   const isPending = useIsPending(txSummary.id)
+  const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
   const isQueue = isTxQueued(txSummary.txStatus)
   const awaitingExecution = isAwaitingExecution(txSummary.txStatus)
   const isUnsigned =
@@ -49,7 +52,8 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
     txDetails.detailedExecutionInfo.trusted === false
 
-  const isTrustedTransfer = isTrustedTx(txSummary)
+  // If we have no token list we always trust the transfer
+  const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
 
   return (
     <>

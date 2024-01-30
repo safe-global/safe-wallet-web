@@ -1,4 +1,4 @@
-import { type JsonRpcProvider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from 'ethers'
 import { resolveName, lookupAddress, isDomain } from '.'
 import { logError } from '../exceptions'
 

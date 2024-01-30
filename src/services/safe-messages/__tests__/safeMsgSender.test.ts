@@ -1,11 +1,12 @@
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
-import type { JsonRpcSigner } from '@ethersproject/providers'
+import type { JsonRpcSigner } from 'ethers'
+import { zeroPadBytes } from 'ethers'
 
 import { dispatchSafeMsgConfirmation, dispatchSafeMsgProposal } from '@/services/safe-messages/safeMsgSender'
 import * as utils from '@/utils/safe-messages'
 import * as events from '@/services/safe-messages/safeMsgEvents'
 import * as sdk from '@/services/tx/tx-sender/sdk'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { zeroPadValue } from 'ethers'
 import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -59,17 +60,16 @@ const mockOnboard = {
   },
 } as unknown as OnboardAPI
 
-const mockValidSignature = `${hexZeroPad('0x456', 64)}1c`
-const mockSignatureWithInvalidV = `${hexZeroPad('0x456', 64)}01`
-
+const mockValidSignature = `${zeroPadBytes('0x0456', 64)}1c`
+const mockSignatureWithInvalidV = `${zeroPadBytes('0x0456', 64)}01`
 describe('safeMsgSender', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    jest.spyOn(utils, 'generateSafeMessageHash').mockImplementation(() => '0x123')
+    jest.spyOn(utils, 'generateSafeMessageHash').mockImplementation(() => '0x0123')
 
     jest.spyOn(sdk, 'getAssertedChainSigner').mockResolvedValue({
-      _signTypedData: jest.fn().mockImplementation(() => Promise.resolve(mockValidSignature)),
+      signTypedData: jest.fn().mockImplementation(() => Promise.resolve(mockValidSignature)),
     } as unknown as JsonRpcSigner)
   })
 
@@ -84,7 +84,7 @@ describe('safeMsgSender', () => {
         version: '1.3.0',
         chainId: '5',
         address: {
-          value: hexZeroPad('0x789', 20),
+          value: zeroPadValue('0x0789', 20),
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
@@ -92,14 +92,14 @@ describe('safeMsgSender', () => {
 
       await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
 
-      expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
+      expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
         message,
         signature: mockValidSignature,
         safeAppId,
       })
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.PROPOSE, {
-        messageHash: '0x123',
+        messageHash: '0x0123',
       })
     })
 
@@ -112,7 +112,7 @@ describe('safeMsgSender', () => {
         version: '1.3.0',
         chainId: '5',
         address: {
-          value: hexZeroPad('0x789', 20),
+          value: zeroPadValue('0x0789', 20),
         },
       } as unknown as gateway.SafeInfo
       const message: {
@@ -125,9 +125,9 @@ describe('safeMsgSender', () => {
           Test: [{ name: 'test', type: 'string' }],
         },
         domain: {
-          chainId: '1',
+          chainId: 1,
           name: 'TestDapp',
-          verifyingContract: hexZeroPad('0x1234', 20),
+          verifyingContract: zeroPadValue('0x1234', 20),
         },
         message: {
           test: 'Hello World!',
@@ -145,7 +145,7 @@ describe('safeMsgSender', () => {
       ]
       message.primaryType = 'Test'
 
-      expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
+      expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
         message,
         signature: mockValidSignature,
         safeAppId,
@@ -154,7 +154,7 @@ describe('safeMsgSender', () => {
 
     it('should adjust hardware wallet signatures', async () => {
       jest.spyOn(sdk, 'getAssertedChainSigner').mockResolvedValue({
-        _signTypedData: jest.fn().mockImplementation(() => Promise.resolve(mockSignatureWithInvalidV)),
+        signTypedData: jest.fn().mockImplementation(() => Promise.resolve(mockSignatureWithInvalidV)),
       } as unknown as JsonRpcSigner)
 
       const proposeSafeMessageSpy = jest.spyOn(gateway, 'proposeSafeMessage')
@@ -166,7 +166,7 @@ describe('safeMsgSender', () => {
         version: '1.3.0',
         chainId: '5',
         address: {
-          value: hexZeroPad('0x789', 20),
+          value: zeroPadValue('0x0789', 20),
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
@@ -174,7 +174,7 @@ describe('safeMsgSender', () => {
 
       await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
 
-      expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
+      expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
         message,
         // Even though the mock returns the signature with invalid V, the valid signature should get dispatched as we adjust invalid Vs
         signature: mockValidSignature,
@@ -182,7 +182,7 @@ describe('safeMsgSender', () => {
       })
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.PROPOSE, {
-        messageHash: '0x123',
+        messageHash: '0x0123',
       })
     })
 
@@ -196,7 +196,7 @@ describe('safeMsgSender', () => {
         version: '1.3.0',
         chainId: '5',
         address: {
-          value: hexZeroPad('0x789', 20),
+          value: zeroPadValue('0x0789', 20),
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
@@ -207,14 +207,14 @@ describe('safeMsgSender', () => {
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 
-        expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', hexZeroPad('0x789', 20), {
+        expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
           message,
           signature: mockValidSignature,
           safeAppId,
         })
 
         expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.PROPOSE_FAILED, {
-          messageHash: '0x123',
+          messageHash: '0x0123',
           error: expect.any(Error),
         })
       }
@@ -232,19 +232,19 @@ describe('safeMsgSender', () => {
         version: '1.3.0',
         chainId: '5',
         address: {
-          value: hexZeroPad('0x789', 20),
+          value: zeroPadValue('0x0789', 20),
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
 
       await dispatchSafeMsgConfirmation({ onboard: mockOnboard, safe, message })
 
-      expect(confirmSafeMessageSpy).toHaveBeenCalledWith('5', '0x123', {
+      expect(confirmSafeMessageSpy).toHaveBeenCalledWith('5', '0x0123', {
         signature: mockValidSignature,
       })
 
       expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.CONFIRM_PROPOSE, {
-        messageHash: '0x123',
+        messageHash: '0x0123',
       })
     })
 
@@ -258,7 +258,7 @@ describe('safeMsgSender', () => {
         version: '1.3.0',
         chainId: '5',
         address: {
-          value: hexZeroPad('0x789', 20),
+          value: zeroPadValue('0x0789', 20),
         },
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
@@ -268,12 +268,12 @@ describe('safeMsgSender', () => {
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 
-        expect(confirmSafeMessageSpy).toHaveBeenCalledWith('5', '0x123', {
+        expect(confirmSafeMessageSpy).toHaveBeenCalledWith('5', '0x0123', {
           signature: mockValidSignature,
         })
 
         expect(safeMsgDispatchSpy).toHaveBeenCalledWith(events.SafeMsgEvent.CONFIRM_PROPOSE_FAILED, {
-          messageHash: '0x123',
+          messageHash: '0x0123',
           error: expect.any(Error),
         })
       }

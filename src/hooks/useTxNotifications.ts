@@ -14,7 +14,8 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
-import { getTxDetails } from '@/services/tx/txDetails'
+import { getTxDetails } from '@/services/transactions'
+import { isWalletRejection } from '@/utils/wallets'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
@@ -72,6 +73,7 @@ const useTxNotifications = (): void => {
     const unsubFns = entries.map(([event, baseMessage]) =>
       txSubscribe(event, async (detail) => {
         const isError = 'error' in detail
+        if (isError && isWalletRejection(detail.error)) return
         const isSuccess = successEvents.includes(event)
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
         const txId = 'txId' in detail ? detail.txId : undefined

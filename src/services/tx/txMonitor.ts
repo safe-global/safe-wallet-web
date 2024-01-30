@@ -2,39 +2,51 @@ import { didRevert } from '@/utils/ethers-utils'
 
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
-import type { JsonRpcProvider } from '@ethersproject/providers'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { asError } from '../exceptions/utils'
+import { type JsonRpcProvider } from 'ethers'
+
+export function _getRemainingTimeout(defaultTimeout: number, submittedAt?: number) {
+  const timeoutInMs = defaultTimeout * 60_000
+  const timeSinceSubmission = submittedAt ? Date.now() - submittedAt : 0
+
+  return Math.max(timeoutInMs - timeSinceSubmission, 1)
+}
 
 // Provider must be passed as an argument as it is undefined until initialised by `useInitWeb3`
-export const waitForTx = async (provider: JsonRpcProvider, txId: string, txHash: string) => {
-  const TIMEOUT_MINUTES = 6.5
+export const waitForTx = async (provider: JsonRpcProvider, txIds: string[], txHash: string, submittedAt?: number) => {
+  const TIMEOUT_MINUTES = 1
+  const remainingTimeout = _getRemainingTimeout(TIMEOUT_MINUTES, submittedAt)
 
   try {
     // Return receipt after 1 additional block was mined/validated or until timeout
     // https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/-%23-Provider-waitForTransaction
-    const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_MINUTES * 60_000)
+    const receipt = await provider.waitForTransaction(txHash, 1, remainingTimeout)
 
     if (!receipt) {
       throw new Error(
-        `Transaction not processed in ${TIMEOUT_MINUTES} minutes. Be aware that it might still be processed.`,
+        `Transaction not processed in ${TIMEOUT_MINUTES} minute. Be aware that it might still be processed.`,
       )
     }
 
     if (didRevert(receipt)) {
-      txDispatch(TxEvent.REVERTED, {
-        txId,
-        error: new Error(`Transaction reverted by EVM.`),
+      txIds.forEach((txId) => {
+        txDispatch(TxEvent.REVERTED, {
+          txId,
+          error: new Error(`Transaction reverted by EVM.`),
+        })
       })
     }
 
     // Tx successfully mined/validated but we don't dispatch SUCCESS as this may be faster than our indexer
   } catch (error) {
-    txDispatch(TxEvent.FAILED, {
-      txId,
-      error: asError(error),
+    txIds.forEach((txId) => {
+      txDispatch(TxEvent.FAILED, {
+        txId,
+        error: asError(error),
+      })
     })
   }
 }

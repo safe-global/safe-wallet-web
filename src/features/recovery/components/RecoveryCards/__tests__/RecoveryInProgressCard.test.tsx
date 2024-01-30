@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { fireEvent, waitFor } from '@testing-library/react'
 
 import { render } from '@/tests/test-utils'
@@ -28,7 +27,7 @@ describe('RecoveryInProgressCard', () => {
         <RecoveryInProgressCard
           orientation="vertical"
           onClose={mockClose}
-          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
+          recovery={{ validFrom: BigInt(0) } as RecoveryQueueItem}
         />,
       )
 
@@ -62,7 +61,7 @@ describe('RecoveryInProgressCard', () => {
         <RecoveryInProgressCard
           orientation="vertical"
           onClose={mockClose}
-          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
+          recovery={{ validFrom: BigInt(0) } as RecoveryQueueItem}
         />,
       )
 
@@ -100,7 +99,7 @@ describe('RecoveryInProgressCard', () => {
         <RecoveryInProgressCard
           orientation="vertical"
           onClose={mockClose}
-          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
+          recovery={{ validFrom: BigInt(0) } as RecoveryQueueItem}
         />,
       )
 
@@ -129,10 +128,7 @@ describe('RecoveryInProgressCard', () => {
       } as any)
 
       const { queryByText } = render(
-        <RecoveryInProgressCard
-          orientation="horizontal"
-          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
-        />,
+        <RecoveryInProgressCard orientation="horizontal" recovery={{ validFrom: BigInt(0) } as RecoveryQueueItem} />,
       )
 
       ;['days', 'hrs', 'mins'].forEach((unit) => {
@@ -152,10 +148,7 @@ describe('RecoveryInProgressCard', () => {
       } as any)
 
       const { queryByText } = render(
-        <RecoveryInProgressCard
-          orientation="horizontal"
-          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
-        />,
+        <RecoveryInProgressCard orientation="horizontal" recovery={{ validFrom: BigInt(0) } as RecoveryQueueItem} />,
       )
 
       ;['days', 'hrs', 'mins'].forEach((unit) => {
@@ -178,10 +171,7 @@ describe('RecoveryInProgressCard', () => {
       } as any)
 
       const { queryByText } = render(
-        <RecoveryInProgressCard
-          orientation="horizontal"
-          recovery={{ validFrom: BigNumber.from(0) } as RecoveryQueueItem}
-        />,
+        <RecoveryInProgressCard orientation="horizontal" recovery={{ validFrom: BigInt(0) } as RecoveryQueueItem} />,
       )
 
       expect(queryByText('Go to queue')).toBeFalsy()

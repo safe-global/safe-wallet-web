@@ -1,4 +1,4 @@
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { SafeMessageStatus, SafeMessageListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeMessageListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -28,7 +28,7 @@ describe('useSafeMessageNotifications', () => {
         } as unknown as SafeMessageListItem,
       ]
 
-      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, hexZeroPad('0x456', 20))
+      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, toBeHex('0x456', 20))
 
       expect(messages).toStrictEqual([
         {
@@ -47,7 +47,7 @@ describe('useSafeMessageNotifications', () => {
         } as SafeMessageListItem,
       ]
 
-      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, hexZeroPad('0x456', 20))
+      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, toBeHex('0x456', 20))
 
       expect(messages).toStrictEqual([])
     })
@@ -61,7 +61,7 @@ describe('useSafeMessageNotifications', () => {
           confirmations: [
             {
               owner: {
-                value: hexZeroPad('0x123', 20),
+                value: toBeHex('0x123', 20),
               },
               signature: '0xabc',
             },
@@ -73,7 +73,7 @@ describe('useSafeMessageNotifications', () => {
         '0x123': true,
       } as PendingSafeMessagesState
 
-      const messages = _getSafeMessagesAwaitingConfirmations(items, pendingMsgs, hexZeroPad('0x456', 20))
+      const messages = _getSafeMessagesAwaitingConfirmations(items, pendingMsgs, toBeHex('0x456', 20))
 
       expect(messages).toStrictEqual([])
     })
@@ -87,7 +87,7 @@ describe('useSafeMessageNotifications', () => {
           confirmations: [
             {
               owner: {
-                value: hexZeroPad('0x123', 20),
+                value: toBeHex('0x123', 20),
               },
               signature: '0xabc',
             },
@@ -95,7 +95,7 @@ describe('useSafeMessageNotifications', () => {
         } as SafeMessageListItem,
       ]
 
-      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, hexZeroPad('0x123', 20))
+      const messages = _getSafeMessagesAwaitingConfirmations(items, {}, toBeHex('0x123', 20))
 
       expect(messages).toStrictEqual([])
     })
