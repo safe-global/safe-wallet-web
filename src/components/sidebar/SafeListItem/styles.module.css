@@ -61,7 +61,7 @@
   margin: auto;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 599.95px) {
   .listItemInfo {
     display: block;
   }

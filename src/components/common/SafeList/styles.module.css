@@ -15,17 +15,24 @@
   border-bottom: 1px solid var(--color-border-light);
   padding: 16px 26px;
   margin: 0;
-  /* padding: 0 24px; */
-  /* font-size: 20px; */
 }
 
 .sidebarTitle {
   font-size: 20px;
 }
 
+.createAccountButton {
+  padding: 12px 24px;
+}
 
-@media (max-width: 400px) {
-  /* .header {
-    font-size: 20px;
-  } */
+
+@media (max-width: 599.95px) {
+  .header {
+    display: block;
+  }
+  
+  .createAccountButton {
+    width: 100%;
+    margin-top: 16px; 
+  }
 }
