@@ -1,7 +1,7 @@
 .container {
   max-width: 695px;
   margin: auto;
-  padding: var(--space-5) 0;
+  padding-top: var(--space-5);
 }
 
 .header {

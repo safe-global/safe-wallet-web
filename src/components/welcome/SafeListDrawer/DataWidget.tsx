@@ -1,4 +1,4 @@
-import { Button, Grid, SvgIcon, Card, CardHeader, CardContent, Box } from '@mui/material'
+import { Button, Grid, SvgIcon, Card, CardHeader, CardContent, Box, Tooltip } from '@mui/material'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
 
@@ -12,6 +12,7 @@ import { exportAppData } from '@/components/settings/DataManagement'
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
 import css from './styles.module.css'
 
@@ -34,19 +35,21 @@ export const DataWidget = (): ReactElement => {
   return (
     <Card className={css.card}>
       <CardHeader
-        avatar={
-          <Box
-            className={css.fileIcon}
-            sx={{
-              borderRadius: ({ shape }) => `${shape.borderRadius}px`,
-            }}
-          >
-            <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
-          </Box>
-        }
         className={css.cardHeader}
-        title={<b>{hasData ? 'Work with your data' : 'Already have a Safe Account?'}</b>}
-        subheader={hasData ? 'Export or import your data' : 'Import your data'}
+        title={
+          <>
+            <b>{hasData ? 'Export or import your data' : 'Import your data'}</b>
+            <Tooltip
+              title="Download or upload your local data with your added Safe Accounts, address book and settings."
+              placement="top"
+              arrow
+            >
+              <span>
+                <InfoIcon className={css.infoIcon} />
+              </span>
+            </Tooltip>
+          </>
+        }
       />
       <CardContent>
         <Grid container spacing={2}>
