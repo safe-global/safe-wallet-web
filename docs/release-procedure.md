@@ -20,10 +20,12 @@ We prepare at least one release every sprint. Sprints are two weeks long.
 * Bump the version in the `package.json`
 * Create a PR with the list of changes
 
-💡 To generate a quick changelog:
-```
-git log origin/main..origin/dev --pretty=format:'* %s'
-```
+  >    💡 To generate a quick changelog:
+  > ```bash
+  > git log origin/main..origin/dev --pretty=format:'* %s'
+  > ```
+* Add the PR to the Project `Web Squad` and set the status to `Ready for QA`
+
 
 ### QA
 * The QA team do regression testing on this branch
@@ -47,7 +49,7 @@ git pull origin release/3.15.0
 git push
 ```
 
-A deploy workflow will kick in and do the following things:
+A deployment workflow will kick in and do the following things:
 
 * Deploy the code to staging
 * Create a new git tag from the version in package.json
