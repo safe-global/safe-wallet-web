@@ -17,16 +17,23 @@ import SafeListItem from '@/components/sidebar/SafeListItem'
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
 import { VisibilityOutlined, AddOutlined } from '@mui/icons-material'
+import classNames from 'classnames'
 
 const maxSafes = 3
 
-const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
+const Watchlist = ({
+  closeDrawer,
+  isWelcomePage,
+}: {
+  closeDrawer?: () => void
+  isWelcomePage: boolean
+}): ReactElement => {
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
 
-  const [safes, error, isLoading] = useAllAddedSafes()
+  const [safes] = useAllAddedSafes()
 
-  const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
+  // const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   /*
@@ -55,9 +62,9 @@ const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement 
   }, [safes])
 
   return (
-    <div className={css.container}>
+    <div className={classNames(css.container, { [css.sidebarContainer]: !isWelcomePage })}>
       <div className={css.header}>
-        <Typography variant="h5" display="inline" fontWeight={700}>
+        <Typography variant="h5" display="inline" fontWeight={700} className={css.title}>
           <VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: '10px' }} fontSize="small" />
           Watchlist
         </Typography>
@@ -96,7 +103,7 @@ const Watchlist = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement 
                 href={href}
                 shouldScrollToSafe={false}
                 isAdded
-                isWelcomePage={true}
+                isWelcomePage={isWelcomePage}
               />
             )
           })}

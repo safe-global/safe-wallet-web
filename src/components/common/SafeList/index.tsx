@@ -25,8 +25,13 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   return (
     <div>
       <div className={isWelcomePage ? css.container : ''}>
-        <div className={classNames(css.header, !isWelcomePage ? css.sidebarHeader : '')}>
-          <Typography variant="h1" display="inline" fontWeight={700}>
+        <div className={classNames(css.header, !isWelcomePage && css.sidebarHeader)}>
+          <Typography
+            className={classNames(!isWelcomePage && css.sidebarTitle)}
+            variant="h1"
+            display="inline"
+            fontWeight={700}
+          >
             My Safe Accounts
           </Typography>
 
@@ -43,8 +48,8 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
           </Track>
         </div>
 
-        <OwnedSafeList closeDrawer={closeDrawer} />
-        <Watchlist closeDrawer={closeDrawer} />
+        <OwnedSafeList closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} />
+        <Watchlist closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} />
       </div>
     </div>
   )

@@ -6,8 +6,15 @@
   margin: var(--space-3) var(--space-2) var(--space-2);
 }
 
-.title {
-  padding-left: var(--space-3);
+.sidebarContainer {
+  margin: var(--space-2) var(--space-1);
+  padding: 0;
+}
+
+.header {
+  padding: 0  var(--space-2);
+  display: flex;
+  justify-content: space-between;
 }
 
 .ownedLabelWrapper {
@@ -25,7 +32,6 @@
   overflow-x: hidden;
   overflow-y: hidden;
   padding: 0 0;
-  margin-right: var(--space-1);
 }
 
 @media (max-width: 599.95px) {

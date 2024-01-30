@@ -7,10 +7,11 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
+import classNames from 'classnames'
 
 const maxSafes = 3
 
-const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
+const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => void; isWelcomePage: boolean }) => {
   const [lastChainId, setLastChainId] = useState<string | undefined>()
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
@@ -19,7 +20,7 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
   // console.log('!!!!!', safesa)
   const [safes] = useAllOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
 
-  const isWelcomePage = router.pathname === AppRoutes.welcome.login || router.pathname === AppRoutes.welcome.socialLogin
+  // const isWelcomePage = router.pathname === AppRoutes.welcome.login || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   // const safesToShow = useMemo(() => {
@@ -48,10 +49,12 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
   )
 
   return (
-    <div className={css.container}>
-      <Typography variant="h5" display="inline" fontWeight={700} className={css.title}>
-        My accounts
-      </Typography>
+    <div className={classNames(css.container, { [css.sidebarContainer]: !isWelcomePage })}>
+      <div className={css.header}>
+        <Typography variant="h5" display="inline" fontWeight={700}>
+          My accounts
+        </Typography>
+      </div>
 
       <List className={css.list}>
         {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {
@@ -66,7 +69,7 @@ const OwnedSafeList = ({ closeDrawer }: { closeDrawer?: () => void }) => {
               href={href}
               shouldScrollToSafe={false}
               isAdded
-              isWelcomePage={true}
+              isWelcomePage={isWelcomePage}
             />
           )
         })}

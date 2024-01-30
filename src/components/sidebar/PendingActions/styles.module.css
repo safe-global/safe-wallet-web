@@ -17,9 +17,6 @@
   background-color: var(--color-warning-background);
 }
 
-/* [data-theme='dark'] .missingSignatures {
-  background-color: var(--color-info-dark);
-} */
 
 .queued {
   background-color: var(--color-background-main);

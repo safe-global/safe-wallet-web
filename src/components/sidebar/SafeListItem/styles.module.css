@@ -1,5 +1,5 @@
 .container {
-  margin: var(--space-1) var(--space-2) var(--space-3) var(--space-1);
+  margin: var(--space-1) var(--space-2);
 }
 
 .container:hover {
@@ -18,8 +18,6 @@
   align-items: flex-start;
   border-radius: 8px;
   border: 1px solid var(--color-border-light);
-
-
 }
 
 .row {
@@ -64,12 +62,15 @@
 }
 
 @media (max-width: 400px) {
-
   .listItemInfo {
     display: block;
   }
 
   .accountBalance {
     text-align: start;
+  }
+
+  .listItem :global .MuiListItemSecondaryAction-root {
+    top: 46px;
   }
 }

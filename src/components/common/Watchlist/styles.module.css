@@ -6,11 +6,19 @@
   margin: var(--space-3) var(--space-2) var(--space-2);
 }
 
+.sidebarContainer {
+  margin: var(--space-2) var(--space-1);
+  padding: 0;
+}
+
 .header {
-  padding-left: var(--space-3);
-  padding-right: var(--space-3);
+  padding: 0  var(--space-2);
   display: flex;
   justify-content: space-between;
+}
+
+.title {
+  margin: auto 0;
 }
 
 .ownedLabelWrapper {
@@ -22,8 +30,6 @@
 .ownedLabel {
   cursor: pointer;
   color: var(--color-primary-light);
-  margin-top: var(--space-1);
-  margin-bottom: var(--space-1);
 }
 
 .list {
