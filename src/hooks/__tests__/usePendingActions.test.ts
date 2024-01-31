@@ -1,6 +1,7 @@
 import usePendingActions from '@/hooks/usePendingActions'
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { renderHook, waitFor } from '@/tests/test-utils'
-import type { SafeInfo, TransactionListPage, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionListPage, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConflictType,
   DetailedExecutionInfoType,
@@ -46,8 +47,9 @@ describe('usePendingActions hook', () => {
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safeAddress: mockSafeAddress,
       safe: {
+        ...extendedSafeInfoBuilder().build(),
         chainId: '5',
-      } as SafeInfo,
+      },
       safeError: undefined,
       safeLoading: false,
       safeLoaded: true,
@@ -82,8 +84,9 @@ describe('usePendingActions hook', () => {
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safeAddress: mockSafeAddress,
       safe: {
+        ...extendedSafeInfoBuilder().build(),
         chainId: '5',
-      } as SafeInfo,
+      },
       safeError: undefined,
       safeLoading: false,
       safeLoaded: true,
@@ -153,8 +156,9 @@ describe('usePendingActions hook', () => {
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safeAddress: mockSafeAddress,
       safe: {
+        ...extendedSafeInfoBuilder().build(),
         chainId: '5',
-      } as SafeInfo,
+      },
       safeError: undefined,
       safeLoading: false,
       safeLoaded: true,

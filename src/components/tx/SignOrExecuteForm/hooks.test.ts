@@ -1,7 +1,7 @@
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { renderHook } from '@/tests/test-utils'
 import { zeroPadValue } from 'ethers'
 import { createSafeTx } from '@/tests/builders/safeTx'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as wallet from '@/hooks/wallets/useWallet'
@@ -13,6 +13,8 @@ import { type OnboardAPI } from '@web3-onboard/core'
 import { useAlreadySigned, useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
 
 describe('SignOrExecute hooks', () => {
+  const extendedSafeInfo = extendedSafeInfoBuilder().build()
+
   beforeEach(() => {
     jest.clearAllMocks()
 
@@ -45,13 +47,14 @@ describe('SignOrExecute hooks', () => {
     it('should return true if nonce is correct', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: zeroPadValue('0x0000', 20),
         safeError: undefined,
         safeLoading: false,
@@ -66,13 +69,14 @@ describe('SignOrExecute hooks', () => {
     it('should return false if nonce is incorrect', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 90,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: zeroPadValue('0x0000', 20),
         safeError: undefined,
         safeLoading: false,
@@ -92,12 +96,13 @@ describe('SignOrExecute hooks', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
         safeAddress: address,
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: address },
           owners: [{ value: address }],
           nonce: 100,
           chainId: '1',
-        } as SafeInfo,
+        },
         safeLoaded: true,
         safeLoading: false,
         safeError: undefined,
@@ -132,12 +137,13 @@ describe('SignOrExecute hooks', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
         safeAddress: zeroPadValue('0x0000', 20),
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           owners: [{ value: zeroPadValue('0x0123', 20) }],
           threshold: 1,
           nonce: 100,
-        } as SafeInfo,
+        },
         safeLoaded: true,
         safeLoading: false,
         safeError: undefined,
@@ -154,13 +160,14 @@ describe('SignOrExecute hooks', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
         safeAddress: zeroPadValue('0x0000', 20),
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           owners: [{ value: zeroPadValue('0x0123', 20) }],
           threshold: 2,
           nonce: 100,
           chainId: '1',
-        } as SafeInfo,
+        },
         safeLoaded: true,
         safeLoading: false,
         safeError: undefined,
@@ -177,13 +184,14 @@ describe('SignOrExecute hooks', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
         safeAddress: zeroPadValue('0x0000', 20),
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           owners: [{ value: zeroPadValue('0x0123', 20) }],
           threshold: 1,
           nonce: 100,
           chainId: '1',
-        } as SafeInfo,
+        },
         safeLoaded: true,
         safeLoading: false,
         safeError: undefined,
@@ -201,13 +209,14 @@ describe('SignOrExecute hooks', () => {
     it('should return sign and execute actions', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -225,13 +234,14 @@ describe('SignOrExecute hooks', () => {
 
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -266,13 +276,14 @@ describe('SignOrExecute hooks', () => {
 
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -295,13 +306,14 @@ describe('SignOrExecute hooks', () => {
     it('should execute a tx without a txId (immediate execution)', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -327,13 +339,14 @@ describe('SignOrExecute hooks', () => {
     it('should execute a tx with an id (existing tx)', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -359,13 +372,14 @@ describe('SignOrExecute hooks', () => {
     it('should throw an error if the tx is undefined', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -383,13 +397,15 @@ describe('SignOrExecute hooks', () => {
     it('should relay a tx execution', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
+          ...extendedSafeInfoBuilder().build(),
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 1,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -424,13 +440,15 @@ describe('SignOrExecute hooks', () => {
 
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
+          ...extendedSafeInfoBuilder().build(),
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -476,13 +494,15 @@ describe('SignOrExecute hooks', () => {
 
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
+          ...extendedSafeInfoBuilder().build(),
           version: '1.3.0',
           address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
           owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,

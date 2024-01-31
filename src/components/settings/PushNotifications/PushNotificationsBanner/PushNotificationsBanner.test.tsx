@@ -1,9 +1,10 @@
 import 'fake-indexeddb/auto'
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { toBeHex } from 'ethers'
 import * as tracking from '@/services/analytics'
 import { set } from 'idb-keyval'
 import * as navigation from 'next/navigation'
-import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { PushNotificationsBanner, _getSafesToRegister } from '.'
 import { createPushNotificationPrefsIndexedDb } from '@/services/push-notifications/preferences'
@@ -95,6 +96,14 @@ describe('PushNotificationsBanner', () => {
   })
 
   describe('PushNotificationsBanner', () => {
+    const extendedSafeInfo = {
+      ...extendedSafeInfoBuilder().build(),
+      chainId: '1',
+      address: {
+        value: toBeHex('0x123', 20),
+      },
+    }
+
     beforeEach(() => {
       // Reset indexedDB
       indexedDB = new IDBFactory()
@@ -140,12 +149,7 @@ describe('PushNotificationsBanner', () => {
           safeInfo: {
             loading: false,
             error: undefined,
-            data: {
-              chainId: '1',
-              address: {
-                value: toBeHex('0x123', 20),
-              },
-            } as unknown as SafeInfo,
+            data: extendedSafeInfo,
           },
         },
       })
@@ -187,12 +191,7 @@ describe('PushNotificationsBanner', () => {
             safeInfo: {
               loading: false,
               error: undefined,
-              data: {
-                chainId: '1',
-                address: {
-                  value: toBeHex('0x123', 20),
-                },
-              } as unknown as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
@@ -233,12 +232,7 @@ describe('PushNotificationsBanner', () => {
             safeInfo: {
               loading: false,
               error: undefined,
-              data: {
-                chainId: '1',
-                address: {
-                  value: toBeHex('0x123', 20),
-                },
-              } as unknown as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
@@ -277,12 +271,7 @@ describe('PushNotificationsBanner', () => {
             safeInfo: {
               loading: false,
               error: undefined,
-              data: {
-                chainId: '1',
-                address: {
-                  value: toBeHex('0x123', 20),
-                },
-              } as unknown as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
@@ -317,12 +306,7 @@ describe('PushNotificationsBanner', () => {
             safeInfo: {
               loading: false,
               error: undefined,
-              data: {
-                chainId: '1',
-                address: {
-                  value: toBeHex('0x123', 20),
-                },
-              } as unknown as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
@@ -366,12 +350,7 @@ describe('PushNotificationsBanner', () => {
             safeInfo: {
               loading: false,
               error: undefined,
-              data: {
-                chainId: '1',
-                address: {
-                  value: toBeHex('0x123', 20),
-                },
-              } as unknown as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
