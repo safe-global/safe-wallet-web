@@ -33,13 +33,6 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
     }
   }, [safes])
 
-  const handleConnectWallet = () => {
-    if (closeDrawer) {
-      closeDrawer()
-    }
-    connectWallet()
-  }
-
   const getHref = useCallback(
     (chain: ChainInfo, address: string) => {
       return {
@@ -59,12 +52,12 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
       </div>
 
       {!safes.length && (
-        <Box display="flex" flexDirection="column" alignItems="center" py={4}>
+        <Box display="flex" flexDirection="column" py={4} sx={{ maxWidth: '250px', margin: 'auto' }}>
           <Typography variant="body2" color="primary.light" textAlign="center" mt={2} mb={2}>
             Connect a wallet to view your Safe Accounts or to create a new one
           </Typography>
           <Button
-            onClick={handleConnectWallet}
+            onClick={connectWallet}
             disableElevation
             size="small"
             variant="contained"
@@ -75,24 +68,26 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
         </Box>
       )}
 
-      <List className={css.list}>
-        {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {
-          const href = getHref(chain, safeAddress)
-          return (
-            <SafeListItem
-              key={chain.chainId + safeAddress}
-              address={safeAddress}
-              chainId={chain.chainId}
-              fiatBalance={fiatBalance}
-              closeDrawer={closeDrawer}
-              href={href}
-              shouldScrollToSafe={false}
-              isAdded
-              isWelcomePage={isWelcomePage}
-            />
-          )
-        })}
-      </List>
+      {safes.length && (
+        <List className={css.list}>
+          {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {
+            const href = getHref(chain, safeAddress)
+            return (
+              <SafeListItem
+                key={chain.chainId + safeAddress}
+                address={safeAddress}
+                chainId={chain.chainId}
+                fiatBalance={fiatBalance}
+                closeDrawer={closeDrawer}
+                href={href}
+                shouldScrollToSafe={false}
+                isAdded
+                isWelcomePage={isWelcomePage}
+              />
+            )
+          })}
+        </List>
+      )}
 
       {!isListExpanded && safes.length > maxSafes && (
         <div className={css.ownedLabelWrapper} onClick={onShowMore}>
