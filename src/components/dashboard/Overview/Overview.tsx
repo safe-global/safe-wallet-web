@@ -7,12 +7,15 @@ import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useContext, type ReactElement } from 'react'
 import { Button, Grid, Skeleton, Typography } from '@mui/material'
 import { WidgetBody, WidgetContainer } from '../styled'
+import Link from 'next/link'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
 import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 import FiatValue from '@/components/common/FiatValue'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 
 const SkeletonOverview = (
   <>
@@ -36,6 +39,7 @@ const Overview = (): ReactElement => {
   const { safe, safeLoading, safeLoaded } = useSafeInfo()
   const { balances, loading: balancesLoading } = useVisibleBalances()
   const { setTxFlow } = useContext(TxModalContext)
+  const router = useRouter()
 
   const isInitialState = !safeLoaded && !safeLoading
   const isLoading = safeLoading || balancesLoading || isInitialState
@@ -107,6 +111,14 @@ const Overview = (): ReactElement => {
                   </Grid>
                 </Grid>
               )}
+
+              <Grid item xs={6} sm="auto">
+                <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
+                  <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconNW />} fullWidth>
+                    Swap
+                  </Button>
+                </Link>
+              </Grid>
             </Grid>
           </>
         )}
