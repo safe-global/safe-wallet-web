@@ -68,7 +68,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
         </Box>
       )}
 
-      {safes.length && (
+      {!!safes.length && (
         <List className={css.list}>
           {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {
             const href = getHref(chain, safeAddress)
