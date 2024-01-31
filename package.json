@@ -39,6 +39,7 @@
     "@safe-global/api-kit/**/ethers": "^6.10.0"
   },
   "dependencies": {
+    "@cowprotocol/widget-react": "^0.3.0",
     "@ducanh2912/next-pwa": "^9.7.1",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.0",

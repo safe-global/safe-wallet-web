@@ -81,6 +81,7 @@ export class SafeWalletProvider {
   private async makeRequest(request: RpcRequest, appInfo: AppInfo): Promise<unknown> {
     const { method, params = [] } = request
 
+    console.log('SafeWalletProvider makeRequest ================', method, params)
     switch (method) {
       case 'wallet_switchEthereumChain': {
         return this.wallet_switchEthereumChain(...(params as [{ chainId: string }]), appInfo)
@@ -155,6 +156,7 @@ export class SafeWalletProvider {
       }
 
       default: {
+        console.log(' SafeWalletProvider default proxy ==============', method, params)
         return await this.sdk.proxy(method, params)
       }
     }
