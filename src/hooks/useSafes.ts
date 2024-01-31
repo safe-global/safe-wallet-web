@@ -29,7 +29,7 @@ const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): 
  * Fetch all safes owned by the current wallet up to a certain limit.
  * The hook loads safes sequentially from all chains, updating its state as it goes.
  */
-export const useOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeListItemDetails[], Error | undefined, boolean] => {
+const useOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeListItemDetails[], Error | undefined, boolean] => {
   const wallet = useWallet()
   const currentChainId = useChainId()
   const { configs } = useChains()
@@ -121,3 +121,5 @@ export const useWatchedSafes = () : [SafeListItemDetails[], Error | undefined, b
   },[watchedSafes, configs], false)
   return [allAddedSafesWithBalances ?? [], error, loading]
 }
+
+export default useOwnedSafes

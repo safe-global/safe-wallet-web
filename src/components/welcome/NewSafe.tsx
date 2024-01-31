@@ -4,7 +4,6 @@ import css from './styles.module.css'
 import CheckFilled from '@/public/images/common/check-filled.svg'
 
 import WelcomeLogin from './WelcomeLogin'
-import SafeListDrawer from '@/components/welcome/SafeListDrawer'
 
 const BulletListItem = ({ text }: { text: string }) => (
   <li>

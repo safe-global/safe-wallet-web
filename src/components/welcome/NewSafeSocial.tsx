@@ -7,7 +7,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import WelcomeLogin from './WelcomeLogin'
 import GnosisChainLogo from '@/public/images/common/gnosis-chain-logo.png'
 import Image from 'next/image'
-import SafeListDrawer from '@/components/welcome/SafeListDrawer'
 
 const BulletListItem = ({ text }: { text: string }) => (
   <li>

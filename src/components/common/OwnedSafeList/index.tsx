@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
-import { useOwnedSafes } from '@/hooks/useSafes'
-import { Box, Button, IconButton, List, Typography } from '@mui/material'
+import useOwnedSafes from '@/hooks/useSafes'
+import { Box, Button, CircularProgress, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -18,7 +18,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
   const router = useRouter()
   const connectWallet = useConnectWallet()
 
-  const [safes] = useOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
+  const [safes, error, isLoading] = useOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
 
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
@@ -50,6 +50,12 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
           My accounts
         </Typography>
       </div>
+
+      {isLoading && (
+        <Box py={4} textAlign="center">
+          <CircularProgress size={20} />
+        </Box>
+      )}
 
       {!safes.length && (
         <Box display="flex" flexDirection="column" py={4} sx={{ maxWidth: '250px', margin: 'auto' }}>

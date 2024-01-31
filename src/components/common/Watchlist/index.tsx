@@ -16,8 +16,9 @@ import SafeListItem from '@/components/sidebar/SafeListItem'
 
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
-import { VisibilityOutlined, AddOutlined } from '@mui/icons-material'
+import { VisibilityOutlined } from '@mui/icons-material'
 import classNames from 'classnames'
+import { CircularProgress } from '@mui/material'
 
 const maxSafes = 3
 
@@ -31,7 +32,7 @@ const Watchlist = ({
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
 
-  const [safes] = useWatchedSafes()
+  const [safes, error, isLoading] = useWatchedSafes()
 
   // const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
@@ -80,6 +81,12 @@ const Watchlist = ({
           </Button>
         </Link>
       </div>
+
+      {isLoading && (
+        <Box py={4} textAlign="center">
+          <CircularProgress size={20} />
+        </Box>
+      )}
 
       {!safes && (
         <Box display="flex" flexDirection="column" alignItems="center" py={10}>

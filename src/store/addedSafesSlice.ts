@@ -97,7 +97,7 @@ export const addedSafesSlice = createSlice({
   },
 })
 
-export const { addOrUpdateSafe, updateAddedSafeBalance, removeSafe } = addedSafesSlice.actions
+export const { addOrUpdateSafe, removeSafe } = addedSafesSlice.actions
 
 export const selectAllAddedSafes = (state: RootState): AddedSafesState => {
   return state[addedSafesSlice.name]
@@ -116,22 +116,22 @@ export const selectAddedSafes = createSelector(
   },
 )
 
-export const addedSafesListener = (listenerMiddleware: typeof listenerMiddlewareInstance) => {
-  listenerMiddleware.startListening({
-    actionCreator: balancesSlice.actions.set,
-    effect: (action, listenerApi) => {
-      if (!action.payload.data) {
-        return
-      }
+// export const addedSafesListener = (listenerMiddleware: typeof listenerMiddlewareInstance) => {
+//   listenerMiddleware.startListening({
+//     actionCreator: balancesSlice.actions.set,
+//     effect: (action, listenerApi) => {
+//       if (!action.payload.data) {
+//         return
+//       }
 
-      const safeInfo = selectSafeInfo(listenerApi.getState())
+//       const safeInfo = selectSafeInfo(listenerApi.getState())
 
-      const chainId = safeInfo.data?.chainId
-      const address = safeInfo.data?.address.value
+//       const chainId = safeInfo.data?.chainId
+//       const address = safeInfo.data?.address.value
 
-      if (chainId && address) {
-        listenerApi.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
-      }
-    },
-  })
-}
+//       if (chainId && address) {
+//         listenerApi.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
+//       }
+//     },
+//   })
+// }
