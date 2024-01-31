@@ -21,6 +21,9 @@ import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
 import { TokenTransferFlow } from '@/components/tx-flow/flows'
 import NoAssets from './NoAssets'
+import { SWAP_EVENTS } from '@/services/analytics/events/swaps'
+import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -114,6 +117,46 @@ const SendButton = ({
     </CheckWallet>
   )
 }
+
+const SwapButton = ({
+                      tokenInfo,
+  amount,
+                    }: {
+  tokenInfo: TokenInfo
+  amount: string
+}): ReactElement => {
+  const spendingLimit = useSpendingLimit(tokenInfo)
+  const router = useRouter()
+
+  return (
+    <CheckWallet allowSpendingLimit={!!spendingLimit}>
+      {(isOk) => (
+        <Track {...SWAP_EVENTS.SWAP_ASSETS}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => {
+              console.log('tokenInfo', tokenInfo)
+              router.push({
+                pathname: AppRoutes.swap,
+                query: {
+                  ...router.query,
+                  token: tokenInfo.symbol,
+                  amount: amount,
+                },
+              })
+            }}
+            disabled={!isOk}
+          >
+            Swap
+          </Button>
+        </Track>
+      )}
+    </CheckWallet>
+  )
+}
+
 
 const AssetsTable = ({
   showHiddenAssets,
@@ -216,7 +259,7 @@ const AssetsTable = ({
                 <Box display="flex" flexDirection="row" gap={1} alignItems="center">
                   <>
                     <SendButton tokenInfo={item.tokenInfo} onClick={() => onSendClick(item.tokenInfo.address)} />
-
+                    <SwapButton tokenInfo={item.tokenInfo} amount={Number(item.balance) / 10 ** item.tokenInfo.decimals} />
                     {showHiddenAssets ? (
                       <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
                     ) : (

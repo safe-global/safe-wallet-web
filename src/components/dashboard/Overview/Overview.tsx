@@ -5,8 +5,7 @@ import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 import { formatCurrency } from '@/utils/formatNumber'
-import type { ReactElement } from 'react'
-import { useContext, useMemo } from 'react'
+import { useContext, useMemo, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Box, Button, Divider, Grid, Skeleton, Typography } from '@mui/material'
@@ -21,6 +20,7 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
 import BuyCryproButton from '@/components/common/BuyCryproButton'
+import { CowWidget } from '@/components/swap/SwapWidget'
 
 const ValueSkeleton = () => <Skeleton variant="text" width={20} />
 
@@ -203,6 +203,21 @@ const Overview = (): ReactElement => {
                       Receive
                     </Button>
                   </QrCodeButton>
+                </Grid>
+
+                <Grid item xs={6} sm="auto">
+                  <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type={"button"}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<ArrowIconNW />}
+                      fullWidth
+                    >
+                      Swap
+                    </Button>
+                  </Link>
+
                 </Grid>
               </Grid>
             </Grid>

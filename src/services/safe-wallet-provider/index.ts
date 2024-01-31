@@ -31,12 +31,12 @@ export type WalletSDK = {
   showTxStatus: (safeTxHash: string) => void
   switchChain: (chainId: string, appInfo: AppInfo) => Promise<null>
   setSafeSettings: (safeSettings: SafeSettings) => SafeSettings
-  proxy: (method: string, params: unknown[]) => Promise<unknown>
+  proxy: (method: string, params?: Array<any> | Record<string, any>) => Promise<unknown>
 }
 
 interface RpcRequest {
   method: string
-  params?: unknown[]
+  params?: Array<any> | Record<string, any>
 }
 
 export enum RpcErrorCode {

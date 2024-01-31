@@ -18,6 +18,7 @@ export const INFURA_TOKEN = process.env.NEXT_PUBLIC_INFURA_TOKEN || ''
 export const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN || ''
 export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID || ''
 
+export const SWAP_1INCH_TOKEN = process.env.NEXT_PUBLIC_SWAP_1INCH_TOKEN || ''
 // Wallets
 export const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WC_PROJECT_ID || ''
 export const TREZOR_APP_URL = 'app.safe.global'
