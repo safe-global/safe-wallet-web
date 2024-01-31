@@ -11,7 +11,7 @@ import Box from '@mui/material/Box'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import AddIcon from '@/public/images/common/add.svg'
 
-import { useAllAddedSafes } from '@/hooks/useOwnedSafes'
+import { useWatchedSafes } from '@/hooks/useSafes'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 
 import { AppRoutes } from '@/config/routes'
@@ -31,7 +31,7 @@ const Watchlist = ({
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
 
-  const [safes] = useAllAddedSafes()
+  const [safes] = useWatchedSafes()
 
   // const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx

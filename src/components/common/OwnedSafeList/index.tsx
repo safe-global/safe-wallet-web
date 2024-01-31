@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
-import useAllOwnedSafes from '@/hooks/useOwnedSafes'
+import { useOwnedSafes } from '@/hooks/useSafes'
 import { Box, Button, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
 import ExpandMore from '@mui/icons-material/ExpandMore'
@@ -18,7 +18,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
   const router = useRouter()
   const connectWallet = useConnectWallet()
 
-  const [safes] = useAllOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
+  const [safes] = useOwnedSafes(isListExpanded ? Infinity : maxSafes, lastChainId)
 
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 

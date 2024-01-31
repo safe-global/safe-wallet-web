@@ -36,10 +36,6 @@ const NewSafeSocial = () => {
         </Grid>
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
-            <Box minWidth={{ md: 480 }} className={css.sidebar}>
-              {/* <SafeListDrawer /> */}
-            </Box>
-
             <Box pt={5} alignSelf="center" margin="auto">
               <Typography
                 variant="h1"
