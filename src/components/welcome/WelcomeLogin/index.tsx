@@ -30,11 +30,11 @@ const WelcomeLogin = () => {
         <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px', ml: '-8px' }} />
 
         <Typography variant="h6" mt={6} fontWeight={700}>
-          Create Account
+          Get Started
         </Typography>
 
         <Typography mb={2} textAlign="center">
-          Choose how you would like to create your Safe Account
+          Connect your wallet or a social account to create a new account or load existing one
         </Typography>
         <WalletLogin onLogin={continueToCreation} />
 
@@ -49,15 +49,6 @@ const WelcomeLogin = () => {
             <SocialSigner onLogin={continueToCreation} />
           </>
         )}
-
-        <Typography mt={2} textAlign="center">
-          Already have a Safe Account?
-        </Typography>
-        <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
-          <Link color="primary" href={AppRoutes.newSafe.load}>
-            Add existing one
-          </Link>
-        </Track>
       </Box>
     </Paper>
   )
