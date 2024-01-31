@@ -10,11 +10,14 @@ import { formatCurrency } from '@/utils/formatNumber'
 import { useContext, useMemo, type ReactElement } from 'react'
 import { Button, Grid, Skeleton, Typography } from '@mui/material'
 import { WidgetBody, WidgetContainer } from '../styled'
+import Link from 'next/link'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
 import BuyCryptoButton from '@/components/common/BuyCryptoButton'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 
 const SkeletonOverview = (
   <>
@@ -39,6 +42,7 @@ const Overview = (): ReactElement => {
   const { safe, safeLoading, safeLoaded } = useSafeInfo()
   const { balances, loading: balancesLoading } = useVisibleBalances()
   const { setTxFlow } = useContext(TxModalContext)
+  const router = useRouter()
 
   const fiatTotal = useMemo(
     () => (balances.fiatTotal ? formatCurrency(balances.fiatTotal, currency) : ''),
@@ -115,6 +119,14 @@ const Overview = (): ReactElement => {
                   </Grid>
                 </Grid>
               )}
+
+              <Grid item xs={6} sm="auto">
+                <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type={'button'}>
+                  <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconNW />} fullWidth>
+                    Swap
+                  </Button>
+                </Link>
+              </Grid>
             </Grid>
           </>
         )}
