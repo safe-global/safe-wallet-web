@@ -107,10 +107,6 @@ const Overview = (): ReactElement => {
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 
-  const handleSwap = () => {
-    setTxFlow(<CowWidget />, undefined, false)
-    // trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
-  }
   return (
     <WidgetContainer>
       <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
@@ -210,16 +206,18 @@ const Overview = (): ReactElement => {
                 </Grid>
 
                 <Grid item xs={6} sm="auto">
-                  <Button
-                    onClick={handleSwap}
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    startIcon={<ArrowIconNW />}
-                    fullWidth
-                  >
-                    Swap
-                  </Button>
+                  <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type={"button"}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<ArrowIconNW />}
+                      fullWidth
+                    >
+                      Swap
+                    </Button>
+                  </Link>
+
                 </Grid>
               </Grid>
             </Grid>
