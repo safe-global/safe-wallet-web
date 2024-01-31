@@ -66,7 +66,7 @@ export type UseAppCommunicatorHandlers = {
 }
 
 const useAppCommunicator = (
-  iframeRef: MutableRefObject<HTMLIFrameElement | null>,
+  iframeRef: MutableRefObject<HTMLIFrameElement | null | undefined>,
   app: SafeAppData | undefined,
   chain: WebCoreChainInfo | undefined,
   handlers: UseAppCommunicatorHandlers,
@@ -74,6 +74,7 @@ const useAppCommunicator = (
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
   const customRpc = useAppSelector(selectRpc)
 
+  // console.log(iframeRef)
   const safeAppWeb3Provider = useMemo(() => {
     if (!chain) {
       return
@@ -85,7 +86,7 @@ const useAppCommunicator = (
   useEffect(() => {
     let communicatorInstance: AppCommunicator
 
-    const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
+    const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | undefined | null>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onMessage: (msg) => {
           if (!msg.data) return
@@ -111,7 +112,7 @@ const useAppCommunicator = (
     }
 
     if (app) {
-      initCommunicator(iframeRef as MutableRefObject<HTMLIFrameElement>, app)
+      initCommunicator(iframeRef, app)
     }
 
     return () => {
@@ -205,7 +206,7 @@ const useAppCommunicator = (
     communicator?.on(Methods.requestAddressBook, (msg) => {
       return handlers.onRequestAddressBook(msg.origin)
     })
-  }, [safeAppWeb3Provider, handlers, chain, communicator])
+  }, [safeAppWeb3Provider, chain, communicator, handlers])
 
   return communicator
 }
