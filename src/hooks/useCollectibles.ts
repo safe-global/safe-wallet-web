@@ -9,8 +9,10 @@ export const useCollectibles = (pageUrl?: string): AsyncResult<SafeCollectiblesP
 
   const [data, error, loading] = useAsync<SafeCollectiblesPage>(() => {
     if (!safeAddress) return
+    if (!safe.deployed) return Promise.resolve({ results: [] })
+
     return getCollectiblesPage(safe.chainId, safeAddress, undefined, pageUrl)
-  }, [safeAddress, safe.chainId, pageUrl])
+  }, [safeAddress, safe.chainId, pageUrl, safe.deployed])
 
   // Log errors
   useEffect(() => {

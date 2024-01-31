@@ -29,6 +29,7 @@ import { safeAppsSlice } from './safeAppsSlice'
 import { safeMessagesListener, safeMessagesSlice } from './safeMessagesSlice'
 import { pendingSafeMessagesSlice } from './pendingSafeMessagesSlice'
 import { batchSlice } from './batchSlice'
+import { undeployedSafeSlice } from '@/features/counterfactual/store/undeployedSafeSlice'
 
 const rootReducer = combineReducers({
   [chainsSlice.name]: chainsSlice.reducer,
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   [safeMessagesSlice.name]: safeMessagesSlice.reducer,
   [pendingSafeMessagesSlice.name]: pendingSafeMessagesSlice.reducer,
   [batchSlice.name]: batchSlice.reducer,
+  [undeployedSafeSlice.name]: undeployedSafeSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -61,6 +63,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   safeAppsSlice.name,
   pendingSafeMessagesSlice.name,
   batchSlice.name,
+  undeployedSafeSlice.name,
 ]
 
 export const getPersistedState = () => {
