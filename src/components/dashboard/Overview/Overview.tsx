@@ -204,6 +204,20 @@ const Overview = (): ReactElement => {
                     </Button>
                   </QrCodeButton>
                 </Grid>
+                <Grid item xs={6} sm="auto">
+                  <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type={"button"}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<ArrowIconNW />}
+                      fullWidth
+                    >
+                      Swap
+                    </Button>
+                  </Link>
+
+                </Grid>
               </Grid>
             </Grid>
           </Card>
