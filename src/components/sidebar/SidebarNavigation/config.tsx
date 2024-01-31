@@ -27,6 +27,11 @@ export const navItems: NavItem[] = [
     href: AppRoutes.balances.index,
   },
   {
+    label: 'Swap',
+    icon: <SvgIcon component={AssetsIcon} inheritViewBox />,
+    href: AppRoutes.swap,
+  },
+  {
     label: 'Transactions',
     icon: <SvgIcon component={TransactionIcon} inheritViewBox />,
     href: AppRoutes.transactions.history,
