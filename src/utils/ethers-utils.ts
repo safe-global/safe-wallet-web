@@ -26,11 +26,7 @@ type TimeoutError = Error & {
 }
 
 export const isTimeoutError = (value?: Error): value is TimeoutError => {
-  return !!value && 'timeout' in value && 'code' in value
-}
-
-export const getTimeoutErrorMessage = (error: TimeoutError) => {
-  return `Transaction timed out after ${Math.floor(error.timeout / 1000)} seconds`
+  return !!value && 'reason' in value && value.reason === 'timeout' && 'code' in value
 }
 
 export const splitSignature = (sigBytes: string): Signature => {
