@@ -30,7 +30,7 @@ const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): 
  * The hook loads safes sequentially from all chains, updating its state as it goes.
  */
 const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeListItemDetails[], Error | undefined, boolean] => {
-  const { address: walletAddress } = useWallet() || {}
+  const wallet = useWallet()
   const currentChainId = useChainId()
   const { configs } = useChains()
 
@@ -45,18 +45,18 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeLis
     setAllSafes([])
     setError(undefined)
     setLoading(false)
-  }, [walletAddress, currentChainId])
+  }, [wallet, currentChainId])
 
   // Fetch safes sequentially from all chains
   useEffect(() => {
     let current = true
     const load = async (index: number) => {
       const chain = chains[index]
-      if (!current) return
+      if (!current || !wallet) return
 
       let chainSafes
       try {
-        chainSafes = await getWalletSafes(walletAddress, chain.chainId)
+        chainSafes = await getWalletSafes(wallet.address, chain.chainId)
       } catch (error) {
         setError(error as Error)
       }
@@ -89,7 +89,7 @@ const useAllOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeLis
     return () => {
       current = false
     }
-  }, [walletAddress, chains, startChainId])
+  }, [wallet, chains, startChainId])
 
   return [allSafes, error, loading]
 }
@@ -118,7 +118,7 @@ export const useAllAddedSafes = () : [SafeListItemDetails[], Error | undefined, 
       }
     })
     return Promise.all(promises);
-  },[addedSafes, configs])
+  },[addedSafes, configs], false)
   return [allAddedSafesWithBalances ?? [], error, loading]
 }
 
