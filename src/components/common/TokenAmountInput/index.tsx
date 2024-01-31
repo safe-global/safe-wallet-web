@@ -67,12 +67,11 @@ const TokenAmountInput = ({
           variant="standard"
           InputProps={{
             disableUnderline: true,
-            endAdornment:
-              maxAmount !== undefined && Number(maxAmount) ? (
-                <Button data-testid="max-btn" className={css.max} onClick={onMaxAmountClick}>
-                  Max
-                </Button>
-              ) : null,
+            endAdornment: maxAmount !== undefined && (
+              <Button data-testid="max-btn" className={css.max} onClick={onMaxAmountClick}>
+                Max
+              </Button>
+            ),
           }}
           className={css.amount}
           required
