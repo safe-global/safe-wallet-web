@@ -1,4 +1,4 @@
-import type { MutableRefObject } from 'react'
+import type { RefObject } from 'react'
 import { useCallback, useEffect } from 'react'
 
 import type { AnalyticsEvent } from '@/services/analytics'
@@ -16,7 +16,7 @@ const ALLOWED_DOMAINS: RegExp[] = [
   /^https:\/\/safe-dao-governance\.dev\.5afe\.dev$/,
 ]
 
-const useAnalyticsFromSafeApp = (iframeRef: MutableRefObject<HTMLIFrameElement | null>): void => {
+const useAnalyticsFromSafeApp = (iframeRef: RefObject<HTMLIFrameElement | undefined>): void => {
   const isValidMessage = useCallback(
     (msg: MessageEvent<AnalyticsEvent>) => {
       if (!msg.data) return false
