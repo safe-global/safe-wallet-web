@@ -54,7 +54,9 @@ const SidebarFooter = (): ReactElement => {
             <SidebarListItemIcon color="primary">
               <BeamerIcon />
             </SidebarListItemIcon>
-            <SidebarListItemText bold>What&apos;s new</SidebarListItemText>
+            <SidebarListItemText data-testid="list-item-whats-new" bold>
+              What&apos;s new
+            </SidebarListItemText>
           </SidebarListItemButton>
         </ListItem>
       </Track>
@@ -66,7 +68,9 @@ const SidebarFooter = (): ReactElement => {
               <SidebarListItemIcon color="primary">
                 <HelpCenterIcon />
               </SidebarListItemIcon>
-              <SidebarListItemText bold>Need help?</SidebarListItemText>
+              <SidebarListItemText data-testid="list-item-need-help" bold>
+                Need help?
+              </SidebarListItemText>
             </SidebarListItemButton>
           </a>
         </ListItem>
