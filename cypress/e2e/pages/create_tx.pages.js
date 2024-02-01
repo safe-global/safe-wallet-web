@@ -313,7 +313,7 @@ export function verifyNativeTokenTransfer() {
 }
 
 export function changeNonce(value) {
-  cy.get(nonceInput).clear().type(value, { force: true }).blur()
+  cy.get(nonceInput).clear().type(value, { force: true })
 }
 
 export function verifyConfirmTransactionData() {
@@ -401,4 +401,10 @@ export function clickOnExpandAllBtn() {
 
 export function clickOnCollapseAllBtn() {
   cy.contains(collapseAllBtnStr).click()
+}
+
+export function verifyTxDestinationAddress(receivedAddress) {
+  cy.get(receivedAddress).then((address) => {
+    cy.contains(address).should('exist')
+  })
 }

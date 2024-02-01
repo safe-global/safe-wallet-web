@@ -112,7 +112,7 @@ export const CookieBanner = ({
               <Grid item>
                 <Typography>
                   <Button onClick={handleAccept} variant="text" size="small" color="inherit" disableElevation>
-                    Accept selection
+                    Save settings
                   </Button>
                 </Typography>
               </Grid>

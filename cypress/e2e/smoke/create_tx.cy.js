@@ -3,7 +3,7 @@ import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 
 const sendValue = 0.00002
-const currentNonce = 0
+const currentNonce = 1
 
 function happyPathToStepTwo() {
   createtx.typeRecipientAddress(constants.EOA)
@@ -42,6 +42,8 @@ describe('[SMOKE] Create transactions tests', () => {
   })
 
   it('[SMOKE] Verify nonce tooltip warning messages', () => {
+    createtx.changeNonce(0)
+    createtx.verifyTooltipMessage(constants.nonceTooltipMsg.lowerThanCurrent + currentNonce.toString())
     createtx.changeNonce(currentNonce + 50)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.higherThanRecommended)
     createtx.changeNonce(currentNonce + 150)
