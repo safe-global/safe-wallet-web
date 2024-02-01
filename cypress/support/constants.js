@@ -26,6 +26,8 @@ export const SEPOLIA_TEST_SAFE_12 = 'sep:0x9190cc22D592dDcf396Fa616ce84a9978fD96
 export const SEPOLIA_TEST_SAFE_13 = 'sep:0x98705770aF3b18db0a64597F6d4DCe825915fec0'
 export const SEPOLIA_TEST_SAFE_13_SHORT = '0x9870...fec0'
 export const SEPOLIA_TEST_SAFE_14 = 'sep:0xC23e061252BFc7967203D054136d8fA7c7df2fc4'
+// SAFE 15 is a safe with native tokens but the automation user is not its owner
+export const SEPOLIA_TEST_SAFE_15_TOKEN = 'sep:0xfC0A7ac73Fde7547ac0792Cca1D8A50CE0AFC4Df'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'

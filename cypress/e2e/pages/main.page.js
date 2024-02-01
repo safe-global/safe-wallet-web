@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 
 const acceptSelection = 'Save settings'
 const executeStr = 'Execute'
+const connectedOwnerBlock = '[data-testid="open-account-center"]'
 export const modalDialogCloseBtn = '[data-testid="modal-dialog-close-btn"]'
 
 export function clickOnExecuteBtn() {
@@ -39,6 +40,10 @@ export function acceptCookies(index = 0) {
       cy.contains(acceptSelection).should('not.exist')
       cy.wait(500)
     })
+}
+
+export function verifyOwnerConnected(prefix = 'sep:') {
+  cy.get(connectedOwnerBlock).should('contain', prefix)
 }
 
 export function verifyHomeSafeUrl(safe) {
