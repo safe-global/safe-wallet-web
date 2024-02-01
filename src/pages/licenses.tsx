@@ -355,14 +355,6 @@ const SafeLicenses = () => (
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell>@date-io/date-fns</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/dmtrKovalenko/date-io/blob/master/LICENSE">
-                  https://github.com/dmtrKovalenko/date-io/blob/master/LICENSE
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
               <TableCell>@emotion/cache</TableCell>
               <TableCell>
                 <ExternalLink href="https://github.com/emotion-js/emotion/blob/main/LICENSE">
@@ -695,14 +687,6 @@ const SafeLicenses = () => (
               <TableCell>
                 <ExternalLink href="https://github.com/Bunlong/react-papaparse/blob/master/LICENSE">
                   https://github.com/Bunlong/react-papaparse/blob/master/LICENSE
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>react-qr-reader</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/JodusNodus/react-qr-reader/blob/master/LICENSE">
-                  https://github.com/JodusNodus/react-qr-reader/blob/master/LICENSE
                 </ExternalLink>
               </TableCell>
             </TableRow>
