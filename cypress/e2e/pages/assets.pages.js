@@ -108,7 +108,7 @@ export function showSendBtn(index) {
     })
 }
 
-export function sendButtonIsDisabled() {
+export function VerifySendButtonIsDisabled() {
   cy.get('button').contains(sendBtnStr).should('be.disabled')
 }
 
