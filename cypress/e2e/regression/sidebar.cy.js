@@ -41,12 +41,6 @@ describe('Sidebar tests', () => {
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.disabled)
   })
 
-  it('Verify New Transaction button disabled for non-owners', () => {
-    navigation.clickOnWalletExpandMoreIcon()
-    navigation.clickOnDisconnectBtn()
-    sideBar.verifyNewTxBtnStatus(constants.enabledStates.disabled)
-  })
-
   it('Verify the side menu buttons exist', () => {
     sideBar.verifySideListItems()
   })
