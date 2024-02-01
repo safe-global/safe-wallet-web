@@ -1,6 +1,6 @@
 import * as constants from '../../support/constants'
 
-const acceptSelection = 'Accept selection'
+const acceptSelection = 'Save settings'
 const executeStr = 'Execute'
 export const modalDialogCloseBtn = '[data-testid="modal-dialog-close-btn"]'
 
