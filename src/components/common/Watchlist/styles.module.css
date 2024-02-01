@@ -12,7 +12,7 @@
 }
 
 .header {
-  padding: 0  var(--space-2);
+  padding: 0 var(--space-2);
   display: flex;
   justify-content: space-between;
 }

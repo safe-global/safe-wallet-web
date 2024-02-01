@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ChainInfo, getOwnedSafes, getBalances, type SafeBalanceResponse  } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  ChainInfo,
+  getOwnedSafes,
+  getBalances,
+  type SafeBalanceResponse,
+} from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useChainId from '@/hooks/useChainId'
@@ -20,16 +25,19 @@ const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
 }
 
 const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): ChainInfo[] => {
-  const currentChain = chains.find(({ chainId }) => chainId === currentChainId);
-  const otherChains= chains.filter(({ chainId }) => chainId !== currentChainId);
-  return currentChain ? [currentChain, ...otherChains] : chains;
+  const currentChain = chains.find(({ chainId }) => chainId === currentChainId)
+  const otherChains = chains.filter(({ chainId }) => chainId !== currentChainId)
+  return currentChain ? [currentChain, ...otherChains] : chains
 }
 
 /**
  * Fetch all safes owned by the current wallet up to a certain limit.
  * The hook loads safes sequentially from all chains, updating its state as it goes.
  */
-const useOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeListItemDetails[], Error | undefined, boolean] => {
+const useOwnedSafes = (
+  safesToFetch: number,
+  startChainId?: string,
+): [SafeListItemDetails[], Error | undefined, boolean] => {
   const wallet = useWallet()
   const currentChainId = useChainId()
   const { configs } = useChains()
@@ -63,9 +71,10 @@ const useOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeListIt
 
       const ownedSafesOnChain = await Promise.all(
         (chainSafes?.safes || []).map(async (safeAddress) => {
-        const {fiatTotal: fiatBalance} =  await getBalances(chain.chainId, safeAddress, 'USD')
-        return  { safeAddress, chain, fiatBalance }
-      }))
+          const { fiatTotal: fiatBalance } = await getBalances(chain.chainId, safeAddress, 'USD')
+          return { safeAddress, chain, fiatBalance }
+        }),
+      )
 
       setAllSafes((prevSafes) => {
         const newAllSafes = [...prevSafes, ...ownedSafesOnChain]
@@ -74,7 +83,7 @@ const useOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeListIt
         } else {
           setLoading(false)
         }
-       return newAllSafes
+        return newAllSafes
       })
     }
 
@@ -94,7 +103,7 @@ const useOwnedSafes = (safesToFetch: number, startChainId?: string): [SafeListIt
   return [allSafes, error, loading]
 }
 
-export const useWatchedSafes = () : [SafeListItemDetails[], Error | undefined, boolean] => {
+export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, boolean] => {
   const currentChainId = useChainId()
   const { configs } = useChains()
   const watchedSafes = useAppSelector(selectAllAddedSafes)
@@ -104,21 +113,25 @@ export const useWatchedSafes = () : [SafeListItemDetails[], Error | undefined, b
   for (const chain of chains) {
     const addedSafesOnChain = watchedSafes[chain.chainId] ?? {}
     const addedSafesAdressesOnChain = Object.keys(addedSafesOnChain)
-    const addedSafesWithChain = addedSafesAdressesOnChain.map((safeAddress) => ({safeAddress, chain}))
+    const addedSafesWithChain = addedSafesAdressesOnChain.map((safeAddress) => ({ safeAddress, chain }))
     allAddedSafes = [...allAddedSafes, ...addedSafesWithChain]
   }
 
-  const [allAddedSafesWithBalances, error, loading] = useAsync<SafeListItemDetails[]>(() => {
-    const promises = allAddedSafes.map(async ({safeAddress, chain}) => {
-      const fiatBalance = await getBalances(chain.chainId, safeAddress, 'USD').then((result) => result.fiatTotal)
-      return {
-        safeAddress,
-        chain,
-        fiatBalance
-      }
-    })
-    return Promise.all(promises);
-  },[watchedSafes, configs], false)
+  const [allAddedSafesWithBalances, error, loading] = useAsync<SafeListItemDetails[]>(
+    () => {
+      const promises = allAddedSafes.map(async ({ safeAddress, chain }) => {
+        const fiatBalance = await getBalances(chain.chainId, safeAddress, 'USD').then((result) => result.fiatTotal)
+        return {
+          safeAddress,
+          chain,
+          fiatBalance,
+        }
+      })
+      return Promise.all(promises)
+    },
+    [watchedSafes, configs],
+    false,
+  )
   return [allAddedSafesWithBalances ?? [], error, loading]
 }
 

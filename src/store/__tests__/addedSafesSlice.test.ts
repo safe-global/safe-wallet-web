@@ -2,11 +2,7 @@ import { createListenerMiddleware } from '@reduxjs/toolkit'
 import type { SafeBalanceResponse, SafeInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '..'
 import type { AddedSafesState } from '../addedSafesSlice'
-import {
-  addOrUpdateSafe,
-  removeSafe,
-  addedSafesSlice,
-} from '../addedSafesSlice'
+import { addOrUpdateSafe, removeSafe, addedSafesSlice } from '../addedSafesSlice'
 import { balancesSlice } from '../balancesSlice'
 import { defaultSafeInfo } from '../safeInfoSlice'
 
