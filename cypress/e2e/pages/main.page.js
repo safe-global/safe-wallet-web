@@ -42,6 +42,10 @@ export function acceptCookies(index = 0) {
     })
 }
 
+export function verifyOwnerConnected(prefix = 'sep:') {
+  cy.get(connectedOwnerBlock).should('contain', prefix)
+}
+
 export function verifyHomeSafeUrl(safe) {
   cy.location('href', { timeout: 10000 }).should('include', constants.homeUrl + safe)
 }
