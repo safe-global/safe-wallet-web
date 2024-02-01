@@ -25,7 +25,6 @@ import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS } from '@/services/analytics'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
-import { Chip } from '@mui/material'
 
 const SafeListItem = ({
   address,

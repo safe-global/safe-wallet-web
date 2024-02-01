@@ -1,11 +1,7 @@
-import type { listenerMiddlewareInstance } from '.'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { AddressEx, SafeBalanceResponse, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AddressEx, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '.'
-import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
-import { balancesSlice } from './balancesSlice'
-import { safeFormatUnits } from '@/utils/formatters'
+import { safeInfoSlice } from '@/store/safeInfoSlice'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
