@@ -1,12 +1,18 @@
-import type { NewSafeFormData } from '@/components/new-safe/create'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
+import type { NewSafeFormData } from '@/components/new-safe/create'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
 import { AppRoutes } from '@/config/routes'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
+import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
+import type { OnboardAPI } from '@web3-onboard/core'
+import type { ContractTransactionResponse } from 'ethers'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import {
@@ -14,8 +20,10 @@ import {
   ImplementationVersionState,
   type SafeBalanceResponse,
   TokenType,
+  type SafeInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BrowserProvider } from 'ethers'
+import { createWeb3 } from '@/hooks/wallets/web3'
 import type { NextRouter } from 'next/router'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
@@ -31,6 +39,49 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
     version: LATEST_SAFE_VERSION,
     deployed: false,
   })
+}
+
+export const dispatchTxExecutionAndDeploySafe = async (
+  safeTx: SafeTransaction,
+  txOptions: TransactionOptions,
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
+) => {
+  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+
+  let result: ContractTransactionResponse | undefined
+  try {
+    const wallet = await assertWalletChain(onboard, chainId)
+
+    const signedTx = await sdkUnchecked.signTransaction(safeTx)
+    const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
+
+    const provider = createWeb3(wallet.provider)
+    const signer = await provider.getSigner()
+
+    // @ts-ignore TODO: Check if the other type also works
+    result = await signer.sendTransaction(deploymentTx)
+  } catch (e) {
+    // TODO: Dispatch tx event?
+    console.log(e)
+    throw e
+  }
+
+  return result?.wait()
+}
+
+export const deploySafeAndExecuteTx = async (
+  txOptions: TransactionOptions,
+  chainId: string,
+  wallet: ConnectedWallet | null,
+  safeTx?: SafeTransaction,
+  onboard?: OnboardAPI,
+) => {
+  assertTx(safeTx)
+  assertWallet(wallet)
+  assertOnboard(onboard)
+
+  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId)
 }
 
 export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
