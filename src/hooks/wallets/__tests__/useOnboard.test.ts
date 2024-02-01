@@ -6,7 +6,6 @@ import { getConnectedWallet, switchWallet } from '../useOnboard'
 // mock wallets
 jest.mock('@/hooks/wallets/wallets', () => ({
   getDefaultWallets: jest.fn(() => []),
-  getRecommendedInjectedWallets: jest.fn(() => []),
 }))
 
 describe('useOnboard', () => {

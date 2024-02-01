@@ -2,7 +2,7 @@ import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-t
 import * as store from '@/store'
 import { renderHook } from '@/tests/test-utils'
 import useBalances from '../useBalances'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 
 describe('useBalances', () => {
   test('empty balance', () => {
@@ -23,7 +23,7 @@ describe('useBalances', () => {
   })
 
   test('return all balances', () => {
-    const tokenAddress = hexZeroPad('0x2', 20)
+    const tokenAddress = toBeHex('0x2', 20)
     const balance: SafeBalanceResponse = {
       fiatTotal: '100',
       items: [

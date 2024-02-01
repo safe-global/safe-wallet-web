@@ -1,11 +1,10 @@
 import { faker } from '@faker-js/faker'
 import { getModuleInstance } from '@gnosis.pm/zodiac'
-import { BigNumber } from 'ethers'
 
 import { safeInfoBuilder } from '@/tests/builders/safe'
 import { createSafeTx } from '@/tests/builders/safeTx'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
-import { act, renderHook } from '@/tests/test-utils'
+import { renderHook, waitFor } from '@/tests/test-utils'
 import { useIsRecoverer } from '../useIsRecoverer'
 import { getPatchedSignerProvider } from '../../../../hooks/useIsValidExecution'
 import {
@@ -42,23 +41,22 @@ describe('useIsValidRecoveryExecution', () => {
   })
 
   describe('useIsValidRecoveryExecTransactionFromModule', () => {
-    it('should return undefined if the user is not a guardian', async () => {
+    it('should return undefined if the user is not a recoverer', async () => {
       mockUseWallet.mockReturnValue(connectedWalletBuilder().build())
       mockUseSafeInfo.mockReturnValue({ safe: safeInfoBuilder().build() } as any)
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
       mockUseIsRecoverer.mockReturnValue(false)
 
-      const { result } = renderHook(() =>
-        useIsValidRecoveryExecTransactionFromModule(faker.finance.ethereumAddress(), createSafeTx()),
-      )
+      const delayModifierAddress = faker.finance.ethereumAddress()
+      const safeTx = createSafeTx()
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(delayModifierAddress, safeTx))
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      expect(result.current).toEqual([undefined, undefined, true])
+
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no delay modifier address is provided', async () => {
@@ -67,15 +65,14 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
       mockUseIsRecoverer.mockReturnValue(true)
 
-      const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(undefined, createSafeTx()))
+      const safeTx = createSafeTx()
+      const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(undefined, safeTx))
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no transaction is provided', async () => {
@@ -84,15 +81,14 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
       mockUseIsRecoverer.mockReturnValue(true)
 
-      const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(faker.finance.ethereumAddress()))
+      const delayModifierAddress = faker.finance.ethereumAddress()
+      const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(delayModifierAddress))
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no wallet is connected', async () => {
@@ -101,17 +97,16 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWeb3ReadOnly.mockReturnValue({} as any)
       mockUseIsRecoverer.mockReturnValue(true)
 
-      const { result } = renderHook(() =>
-        useIsValidRecoveryExecTransactionFromModule(faker.finance.ethereumAddress(), createSafeTx()),
-      )
+      const delayModifierAddress = faker.finance.ethereumAddress()
+      const safeTx = createSafeTx()
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(delayModifierAddress, safeTx))
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      expect(result.current).toEqual([undefined, undefined, true])
+
+      await waitFor(async () => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no provider is connected', async () => {
@@ -120,17 +115,16 @@ describe('useIsValidRecoveryExecution', () => {
       mockUseWeb3ReadOnly.mockReturnValue(undefined)
       mockUseIsRecoverer.mockReturnValue(true)
 
-      const { result } = renderHook(() =>
-        useIsValidRecoveryExecTransactionFromModule(faker.finance.ethereumAddress(), createSafeTx()),
-      )
+      const ethereumAddress = faker.finance.ethereumAddress()
+      const safeTx = createSafeTx()
 
-      expect(result.current).toEqual([undefined, undefined, false])
+      const { result } = renderHook(() => useIsValidRecoveryExecTransactionFromModule(ethereumAddress, safeTx))
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      expect(result.current).toEqual([undefined, undefined, true])
+
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return whether the transaction is valid', async () => {
@@ -146,8 +140,8 @@ describe('useIsValidRecoveryExecution', () => {
       const isValid = faker.datatype.boolean()
       mockGetModuleInstance.mockReturnValue({
         connect: () => ({
-          callStatic: {
-            execTransactionFromModule: jest.fn().mockResolvedValue(isValid),
+          execTransactionFromModule: {
+            staticCall: jest.fn().mockResolvedValue(isValid),
           },
         }),
       } as any)
@@ -159,14 +153,8 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
-      })
-
-      expect(result.current[2]).toBe(false)
-
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current[2]).toBe(false)
       })
 
       expect(result.current).toEqual([isValid, undefined, false])
@@ -185,8 +173,8 @@ describe('useIsValidRecoveryExecution', () => {
       const error = new Error('Some error')
       mockGetModuleInstance.mockReturnValue({
         connect: () => ({
-          callStatic: {
-            execTransactionFromModule: () => Promise.reject(error),
+          execTransactionFromModule: {
+            staticCall: () => Promise.reject(error),
           },
         }),
       } as any)
@@ -198,11 +186,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, error, false])
       })
-
-      expect(result.current).toEqual([undefined, error, false])
     })
   })
 
@@ -217,7 +203,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -227,11 +213,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no wallet is connected', async () => {
@@ -244,7 +228,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -254,11 +238,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no provider is connected', async () => {
@@ -271,7 +253,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -281,11 +263,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return whether the transaction is valid', async () => {
@@ -300,8 +280,8 @@ describe('useIsValidRecoveryExecution', () => {
 
       mockGetModuleInstance.mockReturnValue({
         connect: () => ({
-          callStatic: {
-            executeNextTx: () => Promise.resolve(),
+          executeNextTx: {
+            staticCall: () => Promise.resolve(),
           },
         }),
       } as any)
@@ -310,7 +290,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -320,11 +300,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([true, undefined, false])
       })
-
-      expect(result.current).toEqual([true, undefined, false])
     })
 
     it('should otherwise return an error if the transaction is invalid', async () => {
@@ -340,8 +318,8 @@ describe('useIsValidRecoveryExecution', () => {
       const error = new Error('Some error')
       mockGetModuleInstance.mockReturnValue({
         connect: () => ({
-          callStatic: {
-            executeNextTx: () => Promise.reject(error),
+          executeNextTx: {
+            staticCall: () => Promise.reject(error),
           },
         }),
       } as any)
@@ -350,7 +328,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -360,11 +338,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, error, false])
       })
-
-      expect(result.current).toEqual([undefined, error, false])
     })
   })
 
@@ -379,7 +355,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -389,11 +365,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no wallet is connected', async () => {
@@ -406,7 +380,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -416,11 +390,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
-
-      expect(result.current).toEqual([undefined, undefined, false])
     })
 
     it('should return undefined if no provider is connected', async () => {
@@ -433,7 +405,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -443,8 +415,8 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, undefined, false])
       })
 
       expect(result.current).toEqual([undefined, undefined, false])
@@ -462,8 +434,8 @@ describe('useIsValidRecoveryExecution', () => {
 
       mockGetModuleInstance.mockReturnValue({
         connect: () => ({
-          callStatic: {
-            skipExpired: () => Promise.resolve(),
+          skipExpired: {
+            staticCall: () => Promise.resolve(),
           },
         }),
       } as any)
@@ -472,7 +444,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -482,11 +454,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([true, undefined, false])
       })
-
-      expect(result.current).toEqual([true, undefined, false])
     })
 
     it('should otherwise return an error if the transaction is invalid', async () => {
@@ -502,8 +472,8 @@ describe('useIsValidRecoveryExecution', () => {
       const error = new Error('Some error')
       mockGetModuleInstance.mockReturnValue({
         connect: () => ({
-          callStatic: {
-            skipExpired: () => Promise.reject(error),
+          skipExpired: {
+            staticCall: () => Promise.reject(error),
           },
         }),
       } as any)
@@ -512,7 +482,7 @@ describe('useIsValidRecoveryExecution', () => {
         address: faker.finance.ethereumAddress(),
         args: {
           to: faker.finance.ethereumAddress(),
-          value: BigNumber.from(0),
+          value: BigInt(0),
           data: '0x',
           operation: 0,
         },
@@ -522,11 +492,9 @@ describe('useIsValidRecoveryExecution', () => {
 
       expect(result.current).toEqual([undefined, undefined, true])
 
-      await act(async () => {
-        await new Promise(process.nextTick)
+      await waitFor(() => {
+        expect(result.current).toEqual([undefined, error, false])
       })
-
-      expect(result.current).toEqual([undefined, error, false])
     })
   })
 })

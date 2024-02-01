@@ -88,14 +88,14 @@ export const CreateTokenTransfer = ({
 
   const isSpendingLimitType = type === TokenTransferType.spendingLimit
 
-  const maxAmount = isSpendingLimitType && totalAmount.gt(spendingLimitAmount) ? spendingLimitAmount : totalAmount
+  const maxAmount = isSpendingLimitType && totalAmount > spendingLimitAmount ? spendingLimitAmount : totalAmount
 
   const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
   const isDisabled = isSafeTokenSelected && isSafeTokenPaused
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   useEffect(() => {
-    setNonceNeeded(!isSpendingLimitType || spendingLimitAmount.eq(0))
+    setNonceNeeded(!isSpendingLimitType || spendingLimitAmount === 0n)
   }, [setNonceNeeded, isSpendingLimitType, spendingLimitAmount])
 
   return (
@@ -121,7 +121,7 @@ export const CreateTokenTransfer = ({
             </Box>
           )}
 
-          {!disableSpendingLimit && spendingLimitAmount.gt(0) && (
+          {!disableSpendingLimit && spendingLimitAmount > 0n && (
             <FormControl fullWidth sx={{ mt: 3 }}>
               <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
             </FormControl>

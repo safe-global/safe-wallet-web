@@ -1,13 +1,13 @@
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import * as addressBook from '@/hooks/useAddressBook'
-import { ethers } from 'ethers'
+import { zeroPadValue } from 'ethers'
 import * as domains from '@/services/ens'
 import * as web3 from '@/hooks/wallets/web3'
 import * as useChains from '@/hooks/useChains'
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { JsonRpcProvider } from 'ethers'
 
-const ADDRESS1 = ethers.utils.hexZeroPad('0x1', 20)
+const ADDRESS1 = zeroPadValue('0x01', 20)
 const mockProvider = new JsonRpcProvider()
 
 describe('useAddressResolver', () => {

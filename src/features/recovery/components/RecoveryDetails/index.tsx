@@ -30,9 +30,11 @@ export function RecoveryDetails({ item }: { item: RecoveryQueueItem }): ReactEle
 
         <div className={txDetailsCss.txSummary}>
           <TxDataRow title="Transaction hash">{generateDataRowValue(transactionHash, 'hash', true)}</TxDataRow>
-          <TxDataRow title="Created:">{dateString(timestamp.toNumber())}</TxDataRow>
-          <TxDataRow title="Executable:">{dateString(validFrom.toNumber())}</TxDataRow>
-          {expiresAt && <TxDataRow title="Expires:">{dateString(expiresAt.toNumber())}</TxDataRow>}
+          <TxDataRow title="Created:">{dateString(Number(timestamp))}</TxDataRow>
+          <TxDataRow title="Executable:">{dateString(Number(validFrom))}</TxDataRow>
+
+          {expiresAt ? <TxDataRow title="Expires:">{dateString(Number(expiresAt))}</TxDataRow> : null}
+
           <Link className={summaryCss.buttonExpand} onClick={toggleExpanded} component="button" variant="body1">
             Advanced details
           </Link>
@@ -41,8 +43,8 @@ export function RecoveryDetails({ item }: { item: RecoveryQueueItem }): ReactEle
             <>
               <TxDataRow title="Module:">{generateDataRowValue(address, 'address', true)}</TxDataRow>
               <TxDataRow title="Value:">{args.value.toString()}</TxDataRow>
-              <TxDataRow title="Operation:">{`${args.operation} (${Operation[
-                args.operation
+              <TxDataRow title="Operation:">{`${Number(args.operation)} (${Operation[
+                Number(args.operation)
               ].toLowerCase()})`}</TxDataRow>
               <TxDataRow title="Raw data:">{generateDataRowValue(args.data, 'rawData')}</TxDataRow>
             </>

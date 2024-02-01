@@ -1,3 +1,7 @@
+.listItem {
+  border-color: transparent;
+}
+
 .closed:hover,
 .batched {
   background-color: var(--color-secondary-background);

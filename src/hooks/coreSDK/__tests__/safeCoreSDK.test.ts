@@ -1,12 +1,11 @@
-import { ethers } from 'ethers'
-import Safe from '@safe-global/safe-core-sdk'
+import { toBeHex } from 'ethers'
+import { BrowserProvider, id, AbiCoder, type Eip1193Provider } from 'ethers'
+import Safe from '@safe-global/protocol-kit'
 import {
   getProxyFactoryContract,
   getSafeContract,
-} from '@safe-global/safe-core-sdk/dist/src/contracts/safeDeploymentContracts'
+} from '@safe-global/protocol-kit/dist/src/contracts/safeDeploymentContracts'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import { Web3Provider } from '@ethersproject/providers'
-
 import { initSafeSDK, isValidSafeVersion } from '../safeCoreSDK'
 
 jest.mock('@/services/contracts/safeContracts', () => {
@@ -16,12 +15,27 @@ jest.mock('@/services/contracts/safeContracts', () => {
   }
 })
 
-jest.mock('@safe-global/safe-core-sdk/dist/src/contracts/safeDeploymentContracts')
+jest.mock('@safe-global/protocol-kit/dist/src/contracts/safeDeploymentContracts')
 
 jest.mock('@/types/contracts', () => {
   return {
     __esModule: true,
     ...jest.requireActual('@/types/contracts'),
+  }
+})
+
+jest.mock('@safe-global/protocol-kit', () => {
+  const originalModule = jest.requireActual('@safe-global/protocol-kit')
+
+  // Mock class
+  class MockEthersAdapter extends originalModule.EthersAdapter {
+    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(1)))
+  }
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    EthersAdapter: MockEthersAdapter,
   }
 })
 
@@ -86,23 +100,25 @@ describe('safeCoreSDK', () => {
     })
 
     const getMockProvider = (chainId: string, version: string) => {
-      return new Web3Provider(
-        jest.fn((method, params) => {
-          const VERSION_SIG_HASH = ethers.utils.id('VERSION()').slice(0, 10)
+      const mockProvider: Eip1193Provider = {
+        request: jest.fn((request: { method: string; params?: Array<any> | Record<string, any> }) => {
+          const { method, params } = request
+          const VERSION_SIG_HASH = id('VERSION()').slice(0, 10)
 
           if (method === 'eth_chainId') {
             return Promise.resolve(+chainId)
           }
 
-          if (method === 'eth_call' && params?.[0].data.startsWith(VERSION_SIG_HASH)) {
-            const encodedVersion = ethers.utils.defaultAbiCoder.encode(['string'], [version])
-
+          if (method === 'eth_call' && Array.isArray(params) && params?.[0].data.startsWith(VERSION_SIG_HASH)) {
+            const encodedVersion = AbiCoder.defaultAbiCoder().encode(['string'], [version])
             return Promise.resolve(encodedVersion)
           }
 
           return Promise.resolve()
         }),
-      )
+      }
+
+      return new BrowserProvider(mockProvider)
     }
 
     describe('Supported contracts', () => {
@@ -115,7 +131,7 @@ describe('safeCoreSDK', () => {
         const sdk = await initSafeSDK({
           provider: mockProvider,
           chainId,
-          address: ethers.utils.hexZeroPad('0x1', 20),
+          address: toBeHex('0x1', 20),
           version,
           implementation: MAINNET_MASTER_COPY,
           implementationVersionState: ImplementationVersionState.UP_TO_DATE,
@@ -133,14 +149,14 @@ describe('safeCoreSDK', () => {
         const sdk = await initSafeSDK({
           provider: mockProvider,
           chainId,
-          address: ethers.utils.hexZeroPad('0x1', 20),
+          address: toBeHex('0x1', 20),
           version,
           implementation: MAINNET_MASTER_COPY,
           implementationVersionState: ImplementationVersionState.UP_TO_DATE,
         })
 
         expect(sdk).toBeInstanceOf(Safe)
-        expect(sdk?.getContractManager().isL1SafeMasterCopy).toBe(true)
+        expect(sdk?.getContractManager().isL1SafeSingleton).toBe(true)
       })
 
       it('should return an L2 SDK instance for L2 chain', async () => {
@@ -152,14 +168,14 @@ describe('safeCoreSDK', () => {
         const sdk = await initSafeSDK({
           provider: mockProvider,
           chainId,
-          address: ethers.utils.hexZeroPad('0x1', 20),
+          address: toBeHex('0x1', 20),
           version: `${version}+L2`,
           implementation: POLYGON_MASTER_COPY,
           implementationVersionState: ImplementationVersionState.UP_TO_DATE,
         })
 
         expect(sdk).toBeInstanceOf(Safe)
-        expect(sdk?.getContractManager().isL1SafeMasterCopy).toBe(false)
+        expect(sdk?.getContractManager().isL1SafeSingleton).toBe(false)
       })
 
       it('should return an L1 SDK instance for legacy Safes, regardless of chain', async () => {
@@ -171,14 +187,14 @@ describe('safeCoreSDK', () => {
         const sdk = await initSafeSDK({
           provider: mockProvider,
           chainId,
-          address: ethers.utils.hexZeroPad('0x1', 20),
+          address: toBeHex('0x1', 20),
           version,
           implementation: POLYGON_MASTER_COPY,
           implementationVersionState: ImplementationVersionState.OUTDATED,
         })
 
         expect(sdk).toBeInstanceOf(Safe)
-        expect(sdk?.getContractManager().isL1SafeMasterCopy).toBe(true)
+        expect(sdk?.getContractManager().isL1SafeSingleton).toBe(true)
       })
     })
 
@@ -193,7 +209,7 @@ describe('safeCoreSDK', () => {
         const sdk = await initSafeSDK({
           provider: mockProvider,
           chainId: '1',
-          address: ethers.utils.hexZeroPad('0x1', 20),
+          address: toBeHex('0x1', 20),
           version: null, // Indexer returns null if unsupported contract version
           implementation: MAINNET_MASTER_COPY,
           implementationVersionState: ImplementationVersionState.UNKNOWN,
@@ -211,14 +227,14 @@ describe('safeCoreSDK', () => {
         const sdk = await initSafeSDK({
           provider: mockProvider,
           chainId,
-          address: ethers.utils.hexZeroPad('0x1', 20),
+          address: toBeHex('0x1', 20),
           version: null,
           implementation: MAINNET_MASTER_COPY,
           implementationVersionState: ImplementationVersionState.UNKNOWN,
         })
 
         expect(sdk).toBeInstanceOf(Safe)
-        expect(sdk?.getContractManager().isL1SafeMasterCopy).toBe(true)
+        expect(sdk?.getContractManager().isL1SafeSingleton).toBe(true)
       })
 
       it('should return undefined for unsupported mastercopies', async () => {
@@ -230,7 +246,7 @@ describe('safeCoreSDK', () => {
         const sdk = await initSafeSDK({
           provider: mockProvider,
           chainId,
-          address: ethers.utils.hexZeroPad('0x1', 20),
+          address: toBeHex('0x1', 20),
           version: null,
           implementation: '0xinvalid',
           implementationVersionState: ImplementationVersionState.UNKNOWN,

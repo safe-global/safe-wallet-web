@@ -14,7 +14,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from './wallets/useWallet'
 import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
-import { getTxDetails } from '@/services/tx/txDetails'
+import { getTxDetails } from '@/services/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 
 const TxNotifications = {

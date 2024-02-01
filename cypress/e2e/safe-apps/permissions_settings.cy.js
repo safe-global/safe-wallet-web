@@ -45,7 +45,10 @@ describe('Permissions settings tests', () => {
       )
     })
 
-    cy.visit(constants.SEPOLIA_TEST_SAFE_5 + constants.appSettingsUrl, { failOnStatusCode: false })
+    cy.visit(`${constants.appSettingsUrl}?safe=${constants.SEPOLIA_TEST_SAFE_5}`, {
+      failOnStatusCode: false,
+    })
+
     main.acceptCookies()
   })
 

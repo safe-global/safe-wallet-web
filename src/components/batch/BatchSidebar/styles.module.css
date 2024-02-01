@@ -99,3 +99,10 @@
 .accordion {
   opacity: 1 !important;
 }
+
+.accordion :global .MuiAccordionSummary-content {
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 12px 0px;
+}

@@ -1,5 +1,5 @@
+import type { JsonRpcProvider } from 'ethers'
 import { Contract } from 'ethers'
-import type { JsonRpcProvider } from '@ethersproject/providers'
 
 // zodiac-safe-app used as reference for proxy detection
 // @see https://github.com/gnosis/zodiac-safe-app/blob/e5d6d3d251d128245104ddc638e26d290689bb14/packages/app/src/utils/modulesValidation.ts

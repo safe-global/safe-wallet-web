@@ -24,6 +24,8 @@ const singleOwnerNameInput = 'input[name="name"]'
 const finishTransactionBtn = '[data-testid="finish-transaction-btn"]'
 const addOwnerBtn = '[data-testid="add-owner-btn"]'
 const addOwnerNextBtn = '[data-testid="add-owner-next-btn"]'
+const modalHeader = '[data-testid="modal-header"]'
+const addressToBeRemoved = '[aria-label="Copy to clipboard"] span'
 
 const disconnectBtnStr = 'Disconnect'
 const notConnectedStatus = 'Connect'
@@ -107,6 +109,21 @@ export function hoverOverDeleteOwnerBtn(index) {
 export function openRemoveOwnerWindow(btn) {
   cy.get(removeOwnerBtn).eq(btn).click({ force: true })
   cy.get('div').contains(removeOwnerStr).should('exist')
+}
+
+export function getAddressToBeRemoved() {
+  let removedAddress
+  cy.get(modalHeader)
+    .next()
+    .should('exist')
+    .find(addressToBeRemoved)
+    .first()
+    .invoke('text')
+    .then((value) => {
+      removedAddress = value
+      cy.wrap(removedAddress).as('removedAddress')
+    })
+  return removedAddress
 }
 
 export function openReplaceOwnerWindow() {

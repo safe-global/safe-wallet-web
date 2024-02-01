@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { sameString } from '@safe-global/safe-core-sdk/dist/src/utils'
+import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
@@ -175,7 +175,7 @@ export const useRecommendedNonce = (): number | undefined => {
   return recommendedNonce
 }
 
-export const useSafeTxGas = (safeTx: SafeTransaction | undefined): number | undefined => {
+export const useSafeTxGas = (safeTx: SafeTransaction | undefined): string | undefined => {
   const { safeAddress, safe } = useSafeInfo()
 
   // Memoize only the necessary params so that the useAsync hook is not called every time safeTx changes

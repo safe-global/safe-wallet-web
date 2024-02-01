@@ -1,9 +1,9 @@
 import { CYPRESS_MNEMONIC, TREZOR_APP_URL, TREZOR_EMAIL, WC_PROJECT_ID } from '@/config/constants'
-import type { RecommendedInjectedWallets, WalletInit } from '@web3-onboard/common/dist/types.d'
+import type { WalletInit } from '@web3-onboard/common/dist/types.d'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import coinbaseModule from '@web3-onboard/coinbase'
-import injectedWalletModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
+import injectedWalletModule from '@web3-onboard/injected-wallets'
 import keystoneModule from '@web3-onboard/keystone/dist/index'
 import ledgerModule from '@web3-onboard/ledger/dist/index'
 import trezorModule from '@web3-onboard/trezor'
@@ -49,10 +49,6 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }
 
 export const getAllWallets = (chain: ChainInfo): WalletInit[] => {
   return Object.values(WALLET_MODULES).map((module) => module(chain))
-}
-
-export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {
-  return [{ name: ProviderLabel.MetaMask, url: 'https://metamask.io' }]
 }
 
 export const isWalletSupported = (disabledWallets: string[], walletLabel: string): boolean => {

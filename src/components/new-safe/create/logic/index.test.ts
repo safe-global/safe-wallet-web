@@ -1,18 +1,17 @@
-import { JsonRpcProvider, type TransactionResponse, Web3Provider } from '@ethersproject/providers'
-import { BigNumber } from '@ethersproject/bignumber'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { JsonRpcProvider, type TransactionResponse } from 'ethers'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
-import type { TransactionReceipt } from '@ethersproject/abstract-provider'
+import type { TransactionReceipt } from 'ethers'
 import {
   checkSafeCreationTx,
   relaySafeCreation,
   handleSafeCreationError,
 } from '@/components/new-safe/create/logic/index'
-import { ErrorCode } from '@ethersproject/logger'
+import { type ErrorCode } from 'ethers'
 import { EthersTxReplacedReason } from '@/utils/ethers-utils'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import * as relaying from '@/services/tx/relaying'
 import {
   Gnosis_safe__factory,
@@ -32,7 +31,7 @@ const mockTransaction = {
   nonce: 1,
   from: '0x10',
   to: '0x11',
-  value: BigNumber.from(0),
+  value: BigInt(0),
 }
 
 const mockPendingTx = {
@@ -41,18 +40,32 @@ const mockPendingTx = {
   to: ZERO_ADDRESS,
   nonce: 0,
   startBlock: 0,
-  value: BigNumber.from(0),
+  value: BigInt(0),
 }
 
+jest.mock('@safe-global/protocol-kit', () => {
+  const originalModule = jest.requireActual('@safe-global/protocol-kit')
+
+  // Mock class
+  class MockEthersAdapter extends originalModule.EthersAdapter {
+    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
+  }
+
+  return {
+    ...originalModule,
+    EthersAdapter: MockEthersAdapter,
+  }
+})
+
 describe('checkSafeCreationTx', () => {
-  let waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
+  let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
 
   beforeEach(() => {
     jest.resetAllMocks()
 
-    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new Web3Provider(jest.fn()))
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => provider)
 
-    waitForTxSpy = jest.spyOn(provider, '_waitForTransaction')
+    waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
     jest.spyOn(provider, 'getBlockNumber').mockReturnValue(Promise.resolve(4))
     jest.spyOn(provider, 'getTransaction').mockReturnValue(Promise.resolve(mockTransaction as TransactionResponse))
   })
@@ -84,7 +97,7 @@ describe('checkSafeCreationTx', () => {
   it('returns TIMEOUT if transaction could not be found within the timeout limit', async () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.TIMEOUT,
+      code: 'TIMEOUT' as ErrorCode,
     }
 
     waitForTxSpy.mockImplementationOnce(() => Promise.reject(mockEthersError))
@@ -125,7 +138,7 @@ describe('handleSafeCreationError', () => {
   it('returns WALLET_REJECTED if the tx was rejected in the wallet', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.ACTION_REJECTED,
+      code: 'ACTION_REJECTED' as ErrorCode,
       reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
     }
@@ -138,7 +151,7 @@ describe('handleSafeCreationError', () => {
   it('returns WALLET_REJECTED if the tx was rejected via WC', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.UNKNOWN_ERROR,
+      code: 'UNKNOWN_ERROR' as ErrorCode,
       reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
       message: 'rejected',
@@ -152,7 +165,7 @@ describe('handleSafeCreationError', () => {
   it('returns ERROR if the tx was cancelled', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.TRANSACTION_REPLACED,
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
       reason: EthersTxReplacedReason.cancelled,
       receipt: {} as TransactionReceipt,
     }
@@ -165,7 +178,7 @@ describe('handleSafeCreationError', () => {
   it('returns SUCCESS if the tx was replaced', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.TRANSACTION_REPLACED,
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
       reason: EthersTxReplacedReason.replaced,
       receipt: {} as TransactionReceipt,
     }
@@ -178,7 +191,7 @@ describe('handleSafeCreationError', () => {
   it('returns SUCCESS if the tx was repriced', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.TRANSACTION_REPLACED,
+      code: 'TRANSACTION_REPLACED' as ErrorCode,
       reason: EthersTxReplacedReason.repriced,
       receipt: {} as TransactionReceipt,
     }
@@ -191,7 +204,7 @@ describe('handleSafeCreationError', () => {
   it('returns ERROR if the tx was not rejected, cancelled or replaced', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.UNKNOWN_ERROR,
+      code: 'UNKNOWN_ERROR' as ErrorCode,
       reason: '' as EthersTxReplacedReason,
       receipt: {} as TransactionReceipt,
     }
@@ -204,7 +217,7 @@ describe('handleSafeCreationError', () => {
   it('returns REVERTED if the tx failed', () => {
     const mockEthersError = {
       ...new Error(),
-      code: ErrorCode.UNKNOWN_ERROR,
+      code: 'UNKNOWN_ERROR' as ErrorCode,
       reason: '' as EthersTxReplacedReason,
       receipt: {
         status: 0,
@@ -218,29 +231,34 @@ describe('handleSafeCreationError', () => {
 })
 
 describe('createNewSafeViaRelayer', () => {
-  const owner1 = hexZeroPad('0x1', 20)
-  const owner2 = hexZeroPad('0x2', 20)
+  const owner1 = toBeHex('0x1', 20)
+  const owner2 = toBeHex('0x2', 20)
 
   const mockChainInfo = {
     chainId: '5',
     l2: false,
   } as ChainInfo
 
+  beforeAll(() => {
+    jest.resetAllMocks()
+    jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => provider)
+  })
+
   it('returns taskId if create Safe successfully relayed', async () => {
     const sponsoredCallSpy = jest.spyOn(relaying, 'sponsoredCall').mockResolvedValue({ taskId: '0x123' })
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const proxyFactoryAddress = getReadOnlyProxyFactoryContract('5', LATEST_SAFE_VERSION).getAddress()
-    const readOnlyFallbackHandlerContract = getReadOnlyFallbackHandlerContract('5', LATEST_SAFE_VERSION)
-    const safeContractAddress = getReadOnlyGnosisSafeContract(mockChainInfo).getAddress()
+    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract('5', LATEST_SAFE_VERSION)).getAddress()
+    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract('5', LATEST_SAFE_VERSION)
+    const safeContractAddress = await (await getReadOnlyGnosisSafeContract(mockChainInfo)).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
       [owner1, owner2],
       expectedThreshold,
       ZERO_ADDRESS,
       EMPTY_DATA,
-      readOnlyFallbackHandlerContract.getAddress(),
+      await readOnlyFallbackHandlerContract.getAddress(),
       ZERO_ADDRESS,
       0,
       ZERO_ADDRESS,

@@ -1,12 +1,11 @@
 import { formatVisualAmount } from '@/utils/formatters'
 import { Skeleton } from '@mui/material'
-import { type BigNumber } from 'ethers'
 import { useCurrentChain } from '@/hooks/useChains'
 
-const WalletBalance = ({ balance }: { balance: string | BigNumber | undefined }) => {
+const WalletBalance = ({ balance }: { balance: string | bigint | undefined }) => {
   const currentChain = useCurrentChain()
 
-  if (!balance) {
+  if (balance === undefined) {
     return <Skeleton width={30} variant="text" sx={{ display: 'inline-block' }} />
   }
 

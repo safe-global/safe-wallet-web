@@ -1,4 +1,4 @@
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 
 import { _parseServiceWorkerWebhookPushNotification } from '../notifications'
@@ -37,9 +37,9 @@ describe('parseWebhookPushNotification', () => {
     const payload: Omit<ExecutedMultisigTransactionEvent, 'failed'> = {
       type: WebhookType.EXECUTED_MULTISIG_TRANSACTION,
       chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      safeTxHash: hexZeroPad('0x3', 32),
-      txHash: hexZeroPad('0x4', 32),
+      address: toBeHex('0x1', 20),
+      safeTxHash: toBeHex('0x3', 32),
+      txHash: toBeHex('0x4', 32),
     }
 
     describe('successful transactions', () => {
@@ -115,8 +115,8 @@ describe('parseWebhookPushNotification', () => {
     const payload: IncomingEtherEvent = {
       type: WebhookType.INCOMING_ETHER,
       chainId: '137',
-      address: hexZeroPad('0x1', 20),
-      txHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      txHash: toBeHex('0x3', 32),
       value: '1000000000000000000',
     }
 
@@ -157,9 +157,9 @@ describe('parseWebhookPushNotification', () => {
     const payload: IncomingTokenEvent = {
       type: WebhookType.INCOMING_TOKEN,
       chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      tokenAddress: hexZeroPad('0x2', 20),
-      txHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      tokenAddress: toBeHex('0x2', 20),
+      txHash: toBeHex('0x3', 32),
     }
 
     const erc20Payload: IncomingTokenEvent = {
@@ -320,9 +320,9 @@ describe('parseWebhookPushNotification', () => {
     const payload: ModuleTransactionEvent = {
       type: WebhookType.MODULE_TRANSACTION,
       chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      module: hexZeroPad('0x2', 20),
-      txHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      module: toBeHex('0x2', 20),
+      txHash: toBeHex('0x3', 32),
     }
 
     it('with chain info', async () => {
@@ -356,8 +356,8 @@ describe('parseWebhookPushNotification', () => {
     const payload: ConfirmationRequestEvent = {
       type: WebhookType.CONFIRMATION_REQUEST,
       chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      safeTxHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      safeTxHash: toBeHex('0x3', 32),
     }
 
     it('with chain info', async () => {
@@ -392,8 +392,8 @@ describe('parseWebhookPushNotification', () => {
     const payload: SafeCreatedEvent = {
       type: WebhookType.SAFE_CREATED,
       chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      txHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      txHash: toBeHex('0x3', 32),
       blockNumber: '1',
     }
     it('with chain info', async () => {
@@ -420,9 +420,9 @@ describe('parseWebhookPushNotification', () => {
     const payload: NewConfirmationEvent = {
       type: WebhookType._NEW_CONFIRMATION,
       chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      owner: hexZeroPad('0x2', 20),
-      safeTxHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      owner: toBeHex('0x2', 20),
+      safeTxHash: toBeHex('0x3', 32),
     }
 
     it('with chain info', async () => {
@@ -449,8 +449,8 @@ describe('parseWebhookPushNotification', () => {
     const payload: PendingMultisigTransactionEvent = {
       type: WebhookType._PENDING_MULTISIG_TRANSACTION,
       chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      safeTxHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      safeTxHash: toBeHex('0x3', 32),
     }
 
     it('with chain info', async () => {
@@ -477,8 +477,8 @@ describe('parseWebhookPushNotification', () => {
     const payload: OutgoingEtherEvent = {
       type: WebhookType._OUTGOING_ETHER,
       chainId: '137',
-      address: hexZeroPad('0x1', 20),
-      txHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      txHash: toBeHex('0x3', 32),
       value: '1000000000000000000',
     }
 
@@ -512,9 +512,9 @@ describe('parseWebhookPushNotification', () => {
     const payload: OutgoingTokenEvent = {
       type: WebhookType._OUTGOING_TOKEN,
       chainId: '1',
-      address: hexZeroPad('0x1', 20),
-      tokenAddress: hexZeroPad('0x2', 20),
-      txHash: hexZeroPad('0x3', 32),
+      address: toBeHex('0x1', 20),
+      tokenAddress: toBeHex('0x2', 20),
+      txHash: toBeHex('0x3', 32),
     }
 
     const erc20Payload: OutgoingTokenEvent = {

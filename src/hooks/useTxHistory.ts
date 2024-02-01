@@ -1,10 +1,14 @@
 import { useMemo } from 'react'
-import { getTransactionHistory, type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxHistory } from '@/store/txHistorySlice'
 import useSafeInfo from './useSafeInfo'
 import { fetchFilteredTxHistory, useTxFilter } from '@/utils/tx-history-filter'
+import { getTxHistory } from '@/services/transactions'
+import { selectSettings } from '@/store/settingsSlice'
+import { useHasFeature } from './useChains'
+import { FEATURES } from '@/utils/chains'
 
 const useTxHistory = (
   pageUrl?: string,
@@ -16,6 +20,8 @@ const useTxHistory = (
   // The latest page of the history is always in the store
   const historyState = useAppSelector(selectTxHistory)
   const [filter] = useTxFilter()
+  const { showOnlyTrustedTransactions } = useAppSelector(selectSettings)
+  const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
 
   const {
     safe: { chainId },
@@ -29,9 +35,9 @@ const useTxHistory = (
 
       return filter
         ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
-        : getTransactionHistory(chainId, safeAddress, pageUrl)
+        : getTxHistory(chainId, safeAddress, hasDefaultTokenlist && showOnlyTrustedTransactions, pageUrl)
     },
-    [chainId, safeAddress, pageUrl, filter],
+    [chainId, safeAddress, pageUrl, filter, hasDefaultTokenlist, showOnlyTrustedTransactions],
     false,
   )
 

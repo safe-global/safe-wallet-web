@@ -1,5 +1,5 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import type Safe from '@safe-global/safe-core-sdk'
+import type Safe from '@safe-global/protocol-kit'
 import type { TransactionResult } from '@safe-global/safe-core-sdk-types'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -15,11 +15,12 @@ import {
   dispatchTxSigning,
   dispatchBatchExecutionRelay,
 } from '..'
-import { ErrorCode } from '@ethersproject/logger'
 import { waitFor } from '@/tests/test-utils'
-import { ethers } from 'ethers'
+import { BrowserProvider, zeroPadValue } from 'ethers'
 import * as safeContracts from '@/services/contracts/safeContracts'
-import type MultiSendCallOnlyEthersContract from '@safe-global/safe-ethers-lib/dist/src/contracts/MultiSendCallOnly/MultiSendCallOnlyEthersContract'
+
+import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
+import * as web3 from '@/hooks/wallets/web3'
 
 const setupFetchStub = (data: any) => (_url: string) => {
   return Promise.resolve({
@@ -29,9 +30,10 @@ const setupFetchStub = (data: any) => (_url: string) => {
   })
 }
 import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
-import { hexZeroPad } from 'ethers/lib/utils'
-import { generatePreValidatedSignature } from '@safe-global/safe-core-sdk/dist/src/utils/signatures'
+import { toBeHex } from 'ethers'
+import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 import { createMockSafeTransaction } from '@/tests/transactions'
+import type { JsonRpcSigner } from 'ethers'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -131,6 +133,18 @@ const mockSafeSDK = {
 
 describe('txSender', () => {
   beforeAll(() => {
+    const mockBrowserProvider = new BrowserProvider(jest.fn() as unknown as EIP1193Provider)
+
+    jest.spyOn(mockBrowserProvider, 'getSigner').mockImplementation(
+      async (address?: string | number | undefined) =>
+        Promise.resolve({
+          getAddress: jest.fn(() => Promise.resolve('0x0000000000000000000000000000000000000123')),
+          provider: mockProvider,
+        }) as unknown as JsonRpcSigner,
+    )
+
+    jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockBrowserProvider)
+
     setSafeSDK(mockSafeSDK)
 
     jest.spyOn(txEvents, 'txDispatch')
@@ -146,7 +160,7 @@ describe('txSender', () => {
         to: '0x123',
         value: '1',
         data: '0x0',
-        safeTxGas: 60000,
+        safeTxGas: '60000',
       }
       await createTx(txParams)
 
@@ -154,9 +168,9 @@ describe('txSender', () => {
         to: '0x123',
         value: '1',
         data: '0x0',
-        safeTxGas: 60000,
+        safeTxGas: '60000',
       }
-      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ transactions: [{ ...safeTransactionData }] })
     })
 
     it('should create a tx with a given nonce', async () => {
@@ -174,7 +188,7 @@ describe('txSender', () => {
         data: '0x0',
         nonce: 18,
       }
-      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ safeTransactionData })
+      expect(mockSafeSDK.createTransaction).toHaveBeenCalledWith({ transactions: [{ ...safeTransactionData }] })
     })
   })
 
@@ -448,7 +462,7 @@ describe('txSender', () => {
   describe('dispatchTxExecution', () => {
     it('should execute a tx', async () => {
       const txId = 'tx_id_123'
-      const safeAddress = hexZeroPad('0x123', 20)
+      const safeAddress = toBeHex('0x123', 20)
 
       const safeTx = await createTx({
         to: '0x123',
@@ -469,7 +483,7 @@ describe('txSender', () => {
       jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() => Promise.reject(new Error('error')))
 
       const txId = 'tx_id_123'
-      const safeAddress = hexZeroPad('0x123', 20)
+      const safeAddress = toBeHex('0x123', 20)
 
       const safeTx = await createTx({
         to: '0x123',
@@ -517,7 +531,7 @@ describe('txSender', () => {
       jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() =>
         Promise.resolve({
           transactionResponse: {
-            wait: jest.fn(() => Promise.reject({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'cancelled' })),
+            wait: jest.fn(() => Promise.reject({ code: 'TRANSACTION_REPLACED', reason: 'cancelled' })),
           },
         } as unknown as TransactionResult),
       )
@@ -540,7 +554,7 @@ describe('txSender', () => {
       await waitFor(() =>
         expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', {
           txId: 'tx_id_123',
-          error: new Error(JSON.stringify({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'cancelled' })),
+          error: new Error(JSON.stringify({ code: 'TRANSACTION_REPLACED', reason: 'cancelled' })),
         }),
       )
     })
@@ -549,7 +563,7 @@ describe('txSender', () => {
       jest.spyOn(mockSafeSDK, 'executeTransaction').mockImplementationOnce(() =>
         Promise.resolve({
           transactionResponse: {
-            wait: jest.fn(() => Promise.reject({ code: ErrorCode.TRANSACTION_REPLACED, reason: 'repriced' })),
+            wait: jest.fn(() => Promise.reject({ code: 'TRANSACTION_REPLACED', reason: 'repriced' })),
           },
         } as unknown as TransactionResult),
       )
@@ -574,8 +588,8 @@ describe('txSender', () => {
 
   describe('dispatchBatchExecutionRelay', () => {
     it('should relay a batch execution', async () => {
-      const mockMultisendAddress = ethers.utils.hexZeroPad('0x1234', 20)
-      const safeAddress = hexZeroPad('0x567', 20)
+      const mockMultisendAddress = zeroPadValue('0x1234', 20)
+      const safeAddress = toBeHex('0x567', 20)
 
       const txDetails1 = {
         txId: 'multisig_0x01',
@@ -595,7 +609,7 @@ describe('txSender', () => {
             encodeFunctionData: jest.fn(() => expectedData),
           },
         } as any,
-        getAddress: () => mockMultisendAddress,
+        getAddress: async () => mockMultisendAddress,
       } as MultiSendCallOnlyEthersContract
 
       jest

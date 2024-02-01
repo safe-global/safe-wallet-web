@@ -451,26 +451,10 @@ const SafeLicenses = () => (
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>@safe-global/safe-core-sdk-utils</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md">
-                  https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
               <TableCell>@safe-global/safe-deployments</TableCell>
               <TableCell>
                 <ExternalLink href="https://github.com/safe-global/safe-deployments/blob/main/LICENSE">
                   https://github.com/safe-global/safe-deployments/blob/main/LICENSE
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>@safe-global/safe-ethers-lib</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md">
-                  https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md
                 </ExternalLink>
               </TableCell>
             </TableRow>

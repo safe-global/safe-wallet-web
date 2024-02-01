@@ -6,7 +6,7 @@ import * as navigation from '../pages/navigation.page'
 
 describe('Safe creation Google tests', () => {
   beforeEach(() => {
-    cy.visit(constants.welcomeUrl + '?chain=gor')
+    cy.visit(constants.welcomeUrl + '?chain=sep')
     cy.clearLocalStorage()
     main.acceptCookies()
     // TODO: Need credentials to finish API Google login
