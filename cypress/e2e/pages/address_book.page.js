@@ -1,4 +1,4 @@
-export const acceptSelection = 'Accept selection'
+export const acceptSelection = 'Save settings'
 export const addressBook = 'Address book'
 const createEntryBtn = 'Create entry'
 
@@ -12,7 +12,6 @@ export const editEntryBtn = 'button[aria-label="Edit entry"]'
 export const deleteEntryBtn = 'button[aria-label="Delete entry"]'
 export const deleteEntryModalBtnSection = '.MuiDialogActions-root'
 export const delteEntryModaldeleteBtn = 'Delete'
-const exportFileModalExportBtn = 'Export'
 const importBtn = 'Import'
 const exportBtn = 'Export'
 const exportModalBtn = '[data-testid="export-modal-btn"]'
