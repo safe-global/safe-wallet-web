@@ -22,6 +22,10 @@ export const SEPOLIA_TEST_SAFE_10 = 'sep:0x4DD4cB2299E491E1B469245DB589ccB2B16d7
 export const SEPOLIA_TEST_SAFE_11 = 'sep:0x81034C61a318649F7aD43f9e8C1051427e326443'
 // SAFE 12 is used for spending limits
 export const SEPOLIA_TEST_SAFE_12 = 'sep:0x9190cc22D592dDcf396Fa616ce84a9978fD96Fc9'
+// SAFE 13 & 14 are used for sidebar with pending tx, no fyrther tx should be made in it
+export const SEPOLIA_TEST_SAFE_13 = 'sep:0x98705770aF3b18db0a64597F6d4DCe825915fec0'
+export const SEPOLIA_TEST_SAFE_13_SHORT = '0x9870...fec0'
+export const SEPOLIA_TEST_SAFE_14 = 'sep:0xC23e061252BFc7967203D054136d8fA7c7df2fc4'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -32,6 +36,7 @@ export const SAFE_APP_ADDRESS = '0x11AB70A4564C62F567B92868Cb5e69b50c5434aF'
 export const SAFE_APP_ADDRESS_2 = '0x49d4450977E2c95362C13D3a31a09311E0Ea26A6'
 export const SAFE_APP_ADDRESS_3 = '0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD'
 export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
+// Below is also used in sidebar tests as a beneficiary
 export const SPENDING_LIMIT_ADDRESS_2 = '0x52835f11E348605E9D791Ec09380a3224526d538'
 export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
@@ -139,6 +144,11 @@ export const testAppData = {
 export const checkboxStates = {
   unchecked: 'not.be.checked',
   checked: 'be.checked',
+}
+
+export const enabledStates = {
+  enabled: 'not.be.disabled',
+  disabled: 'be.disabled',
 }
 
 export const elementExistanceStates = {

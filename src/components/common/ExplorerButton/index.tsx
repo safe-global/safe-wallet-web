@@ -19,6 +19,7 @@ const ExplorerButton = ({
 }: ExplorerButtonProps): ReactElement => (
   <Tooltip title={title} placement="top">
     <IconButton
+      data-testid="explorer-btn"
       className={className}
       target="_blank"
       rel="noreferrer"
