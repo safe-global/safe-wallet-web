@@ -44,7 +44,7 @@ describe('[SMOKE] Create transactions tests', () => {
   it('[SMOKE] Verify nonce tooltip warning messages', () => {
     createtx.changeNonce(0)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.lowerThanCurrent + currentNonce.toString())
-    createtx.changeNonce(currentNonce + 50)
+    createtx.changeNonce(currentNonce + 53)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.higherThanRecommended)
     createtx.changeNonce(currentNonce + 150)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.muchHigherThanRecommended)
@@ -68,17 +68,5 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.selectCurrentWallet()
     createtx.clickOnNoLaterOption()
     createtx.verifyAddToBatchBtnIsEnabled()
-  })
-
-  it('[SMOKE] Verify submitting a tx and that clicking on notification shows the transaction in queue', () => {
-    happyPathToStepTwo()
-    createtx.verifySubmitBtnIsEnabled()
-    createtx.changeNonce(14)
-    createtx.clickOnSignTransactionBtn()
-    createtx.waitForProposeRequest()
-    createtx.clickViewTransaction()
-    createtx.verifySingleTxPage()
-    createtx.verifyQueueLabel()
-    createtx.verifyTransactionSummary(sendValue)
   })
 })

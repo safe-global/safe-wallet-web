@@ -22,6 +22,9 @@ export const SEPOLIA_TEST_SAFE_10 = 'sep:0x4DD4cB2299E491E1B469245DB589ccB2B16d7
 export const SEPOLIA_TEST_SAFE_11 = 'sep:0x81034C61a318649F7aD43f9e8C1051427e326443'
 // SAFE 12 is used for spending limits
 export const SEPOLIA_TEST_SAFE_12 = 'sep:0x9190cc22D592dDcf396Fa616ce84a9978fD96Fc9'
+// SAFE 13 is used for sidebar with pending tx, no fyrther tx should be made in it
+export const SEPOLIA_TEST_SAFE_13 = 'sep:0x98705770aF3b18db0a64597F6d4DCe825915fec0'
+export const SEPOLIA_TEST_SAFE_13_SHORT = '0x9870...fec0'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -139,6 +142,11 @@ export const testAppData = {
 export const checkboxStates = {
   unchecked: 'not.be.checked',
   checked: 'be.checked',
+}
+
+export const enabledStates = {
+  enabled: 'not.be.disabled',
+  disabled: 'be.disabled',
 }
 
 export const elementExistanceStates = {

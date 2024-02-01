@@ -54,6 +54,7 @@ const ChainIndicator = ({
     <Skeleton width="100%" height="22px" variant="rectangular" sx={{ flexShrink: 0 }} />
   ) : chainConfig ? (
     <span
+      data-testid="chain-logo"
       style={showLogo ? undefined : style}
       className={classnames(inline ? css.inlineIndicator : css.indicator, showLogo ? css.withLogo : '', className)}
     >
