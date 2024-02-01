@@ -1,3 +1,4 @@
+import { assertTx, assertWallet, assertOnboard } from '@/utils/helpers'
 import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
@@ -13,8 +14,6 @@ import {
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { OnboardAPI } from '@web3-onboard/core'
 import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
@@ -30,16 +29,6 @@ type TxActions = {
     origin?: string,
     isRelayed?: boolean,
   ) => Promise<string>
-}
-
-function assertTx(safeTx: SafeTransaction | undefined): asserts safeTx {
-  if (!safeTx) throw new Error('Transaction not provided')
-}
-function assertWallet(wallet: ConnectedWallet | null): asserts wallet {
-  if (!wallet) throw new Error('Wallet not connected')
-}
-function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard {
-  if (!onboard) throw new Error('Onboard not connected')
 }
 
 export const useTxActions = (): TxActions => {
@@ -135,7 +124,7 @@ export const useTxActions = (): TxActions => {
     }
 
     return { addToBatch, signTx, executeTx }
-  }, [safe, onboard, wallet, addTxToBatch])
+  }, [safe, wallet, addTxToBatch, onboard])
 }
 
 export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {
@@ -162,6 +151,7 @@ export const useRecommendedNonce = (): number | undefined => {
   const [recommendedNonce] = useAsync(
     async () => {
       if (!safe.chainId || !safeAddress) return
+      if (!safe.deployed) return 0
 
       const nonces = await getNonces(safe.chainId, safeAddress)
 
