@@ -46,7 +46,8 @@ export const CowWidget = () => {
         TradeType.LIMIT,
         TradeType.ADVANCED,
       ],
-      theme: { // light/dark or provide your own color palette
+      env: 'dev',
+      theme: {
         baseTheme: 'dark',
         primary: '#12ff80',
         background: '#1c1c1c',
@@ -56,7 +57,6 @@ export const CowWidget = () => {
       interfaceFeeBips: '50', // 0.5% - COMING SOON! Fill the form above if you are interested
     })
   }, [walletProvider])
-
 
   if (!params.provider) {
     return null
