@@ -57,12 +57,7 @@ const ChainIndicator = ({
   ) : chainConfig ? (
     <span
       style={showLogo ? undefined : style}
-      className={classnames(
-        inline ? css.inlineIndicator : css.indicator,
-        showLogo ? css.withLogo : '',
-        showName ? css.showName : '',
-        className,
-      )}
+      className={classnames(inline ? css.inlineIndicator : css.indicator, showLogo ? css.withLogo : '', className)}
     >
       {showLogo && (
         <img

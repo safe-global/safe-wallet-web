@@ -34,7 +34,6 @@ const Watchlist = ({
 
   const [safes, error, isLoading] = useWatchedSafes()
 
-  // const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   /*
@@ -45,7 +44,7 @@ const Watchlist = ({
   const getHref = useCallback(
     (chain: ChainInfo, address: string) => {
       return {
-        pathname: isWelcomePage ? AppRoutes.home : isSingleTxPage ? AppRoutes.transactions.history : router.pathname,
+        pathname: isWelcomePage ? AppRoutes.home : router.pathname,
         query: { ...router.query, safe: `${chain.shortName}:${address}` },
       }
     },

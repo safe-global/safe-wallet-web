@@ -40,7 +40,7 @@ const PendingActionButtons = ({
   const shortAddress = shortenAddress(wallet?.address || '')
 
   return (
-    <Box className={css.pendingButtons}>
+    <Box>
       {totalQueued && (
         <Track {...OVERVIEW_EVENTS.OPEN_QUEUED_TRANSACTIONS}>
           <NextLink href={queueLink} passHref legacyBehavior>
