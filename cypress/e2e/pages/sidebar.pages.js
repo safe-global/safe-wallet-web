@@ -16,7 +16,7 @@ const sideBarListItemWhatsNew = '[data-testid="list-item-whats-new"]'
 const sideBarListItemNeedHelp = '[data-testid="list-item-need-help"]'
 
 export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
-export const testSafeHeaderDetails = ['2.27 USD', '2/2', constants.SEPOLIA_TEST_SAFE_13_SHORT]
+export const testSafeHeaderDetails = ['2.04 USD', '2/2', constants.SEPOLIA_TEST_SAFE_13_SHORT]
 const receiveAssetsStr = 'Receive assets'
 
 export function verifyNetworkIsDisplayed(netwrok) {

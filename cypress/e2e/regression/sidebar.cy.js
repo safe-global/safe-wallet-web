@@ -35,6 +35,11 @@ describe('Sidebar tests', () => {
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
 
+  it('Verify New transaction button enabled for beneficiaries who are non-owners', () => {
+    cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_14)
+    sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
+  })
+
   it('Verify New Transaction button disabled for non-owners', () => {
     navigation.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
