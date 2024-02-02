@@ -118,7 +118,7 @@ type OwnedSafesCache = {
 }
 
 
-export const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
+const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const chainId = useChainId()
   const { address: walletAddress } = useWallet() || {}
   const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY)
@@ -190,3 +190,5 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
   )
   return [allAddedSafesWithBalances ?? [], error, loading]
 }
+
+export default useOwnedSafes;
