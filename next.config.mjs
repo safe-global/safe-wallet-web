@@ -25,7 +25,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-
   reactStrictMode: false,
   productionBrowserSourceMaps: true,
   eslint: {
@@ -65,7 +64,10 @@ const nextConfig = {
       'bn.js': path.resolve('./node_modules/bn.js/lib/bn.js'),
       'mainnet.json': path.resolve('./node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json'),
     }
-
+    config.resolve.fallback = {
+    ...config.resolve.fallback,
+        fs: false, // needed for uniswap widget
+    }
     return config
   },
 }

@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { CowWidget } from '@/components/swap/CowWidget'
+import { UniswapWidget } from '@/components/swap/UniswapWidget'
 
 
 const Swap: NextPage = () => {
@@ -11,7 +11,7 @@ const Swap: NextPage = () => {
       </Head>
 
       <main>
-        <CowWidget />
+        <UniswapWidget />
       </main>
     </>
   )

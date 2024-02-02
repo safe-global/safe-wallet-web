@@ -59,6 +59,7 @@
     "@spindl-xyz/attribution-lite": "^1.4.0",
     "@tkey-mpc/common-types": "^8.2.2",
     "@truffle/hdwallet-provider": "^2.1.4",
+    "@uniswap/widgets": "^2.59.0",
     "@walletconnect/utils": "^2.11.0",
     "@walletconnect/web3wallet": "^1.10.0",
     "@web3-onboard/coinbase": "^2.2.6",
