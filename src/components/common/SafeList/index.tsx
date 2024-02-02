@@ -5,7 +5,6 @@ import Button from '@mui/material/Button'
 
 import { useCurrentChain } from '@/hooks/useChains'
 import OwnedSafeList from '@/components/common/OwnedSafeList'
-import Watchlist from '@/components/common/Watchlist'
 
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
@@ -13,6 +12,7 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { useRouter } from 'next/router'
 import classNames from 'classnames'
+import Watchlist from '../Watchlist'
 
 const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement => {
   const currentChain = useCurrentChain()
@@ -53,7 +53,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         </div>
 
         <OwnedSafeList closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} />
-        {/* <Watchlist closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} /> */}
+        <Watchlist closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} />
       </div>
     </div>
   )

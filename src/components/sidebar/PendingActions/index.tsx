@@ -1,7 +1,6 @@
 import { Box, Chip } from '@mui/material'
 import React, { useMemo } from 'react'
-import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
-// import CheckIcon from '@mui/icons-material/Check'
+import { ButtonBase, Tooltip } from '@mui/material'
 import NextLink from 'next/link'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'

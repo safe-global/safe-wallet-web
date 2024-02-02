@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Grid, SvgIcon, Typography } from '@mui/material'
+import { Grid, SvgIcon, Typography } from '@mui/material'
 import css from './styles.module.css'
 import CheckFilled from '@/public/images/common/check-filled.svg'
 

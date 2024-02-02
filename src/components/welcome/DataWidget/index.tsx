@@ -1,11 +1,10 @@
-import { Button, Grid, SvgIcon, Card, CardHeader, CardContent, Box, Tooltip } from '@mui/material'
+import { Button, Grid, SvgIcon, Card, CardHeader, CardContent, Tooltip } from '@mui/material'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
-import FileIcon from '@/public/images/settings/data/file.svg'
 import ExportIcon from '@/public/images/common/export.svg'
 import ImportIcon from '@/public/images/common/import.svg'
 import { exportAppData } from '@/components/settings/DataManagement'

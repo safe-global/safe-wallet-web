@@ -1,11 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
-import {
-  ChainInfo,
-  getOwnedSafes,
-  getBalances,
-  AddressEx,
-  OwnedSafes,
-} from '@safe-global/safe-gateway-typescript-sdk'
+import { useEffect, useMemo } from 'react'
+import type { ChainInfo, AddressEx, OwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
+import { getOwnedSafes, getBalances } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import useChainId from '@/hooks/useChainId'
@@ -20,8 +15,8 @@ type SafeListItemDetails = {
   chain: ChainInfo
   safeAddress: string
   fiatBalance?: string
-  threshold: number;
-  owners: AddressEx[];
+  threshold: number
+  owners: AddressEx[]
 }
 
 const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): ChainInfo[] => {
@@ -29,7 +24,6 @@ const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): 
   const otherChains = chains.filter(({ chainId }) => chainId !== currentChainId)
   return currentChain ? [currentChain, ...otherChains] : chains
 }
-
 
 // const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
 //   if (!walletAddress || !chainId) return
@@ -117,7 +111,6 @@ type OwnedSafesCache = {
   }
 }
 
-
 const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const chainId = useChainId()
   const { address: walletAddress } = useWallet() || {}
@@ -153,7 +146,6 @@ const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   return ownedSafesCache?.[walletAddress || ''] ?? {}
 }
 
-
 export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, boolean] => {
   const currentChainId = useChainId()
   const { configs } = useChains()
@@ -165,7 +157,7 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
     const addedSafesOnChain = watchedSafes[chain.chainId] ?? {}
     const addedSafesAdressesOnChain = Object.keys(addedSafesOnChain)
     const addedSafesWithChain = addedSafesAdressesOnChain.map((safeAddress) => {
-      const {threshold, owners} = addedSafesOnChain[safeAddress]
+      const { threshold, owners } = addedSafesOnChain[safeAddress]
       return { safeAddress, chain, threshold, owners }
     })
     allAddedSafes = [...allAddedSafes, ...addedSafesWithChain]
@@ -180,7 +172,7 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
           chain,
           fiatBalance,
           threshold,
-          owners
+          owners,
         }
       })
       return Promise.all(promises)
@@ -191,4 +183,4 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
   return [allAddedSafesWithBalances ?? [], error, loading]
 }
 
-export default useOwnedSafes;
+export default useOwnedSafes
