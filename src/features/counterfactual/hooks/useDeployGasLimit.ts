@@ -14,9 +14,11 @@ const useDeployGasLimit = (safeTx?: SafeTransaction) => {
 
     const sdk = await getSafeSDKWithSigner(onboard, chainId)
 
-    const gas = await estimateTxBaseGas(sdk, safeTx)
-    const safeTxGas = await estimateSafeTxGas(sdk, safeTx)
-    const safeDeploymentGas = await estimateSafeDeploymentGas(sdk)
+    const [gas, safeTxGas, safeDeploymentGas] = await Promise.all([
+      estimateTxBaseGas(sdk, safeTx),
+      estimateSafeTxGas(sdk, safeTx),
+      estimateSafeDeploymentGas(sdk),
+    ])
 
     return BigInt(gas) + BigInt(safeTxGas) + BigInt(safeDeploymentGas)
   }, [onboard, chainId, safeTx])

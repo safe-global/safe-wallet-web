@@ -51,19 +51,18 @@ export const dispatchTxExecutionAndDeploySafe = async (
 
   let result: ContractTransactionResponse | undefined
   try {
-    const wallet = await assertWalletChain(onboard, chainId)
-
     const signedTx = await sdkUnchecked.signTransaction(safeTx)
-    const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
 
+    const wallet = await assertWalletChain(onboard, chainId)
     const provider = createWeb3(wallet.provider)
     const signer = await provider.getSigner()
+
+    const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
 
     // @ts-ignore TODO: Check if the other type also works
     result = await signer.sendTransaction(deploymentTx)
   } catch (e) {
     // TODO: Dispatch tx event?
-    console.log(e)
     throw e
   }
 
