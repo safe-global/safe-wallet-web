@@ -1,14 +1,9 @@
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { AppRoutes } from '@/config/routes'
-import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
+import { createCounterfactualSafe } from '@/features/counterfactual/utils'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import { useAppDispatch } from '@/store'
-import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { FEATURES } from '@/utils/chains'
-import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
@@ -169,35 +164,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
 
     if (isCounterfactual) {
-      const undeployedSafe = {
-        chainId: chain.chainId,
-        address: safeAddress,
-        safeProps: {
-          safeAccountConfig: props.safeAccountConfig,
-          safeDeploymentConfig: {
-            saltNonce,
-            safeVersion: LATEST_SAFE_VERSION as SafeVersion,
-          },
-        },
-      }
-
-      dispatch(addUndeployedSafe(undeployedSafe))
-      dispatch(upsertAddressBookEntry({ chainId: chain.chainId, address: safeAddress, name: data.name }))
-      dispatch(
-        addOrUpdateSafe({
-          safe: {
-            ...defaultSafeInfo,
-            address: { value: safeAddress, name: data.name },
-            threshold: data.threshold,
-            owners: data.owners.map((owner) => ({
-              value: owner.address,
-              name: owner.name || owner.ens,
-            })),
-            chainId: chain.chainId,
-          },
-        }),
-      )
-      router.push({ pathname: AppRoutes.home, query: { safe: `${chain.shortName}:${safeAddress}` } })
+      createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
       return
     }
 
