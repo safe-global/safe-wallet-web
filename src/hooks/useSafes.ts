@@ -3,8 +3,8 @@ import {
   ChainInfo,
   getOwnedSafes,
   getBalances,
-  type SafeBalanceResponse,
   AddressEx,
+  OwnedSafes,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
@@ -13,6 +13,8 @@ import useChains from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useAsync from './useAsync'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { Errors, logError } from '@/services/exceptions'
 
 type SafeListItemDetails = {
   chain: ChainInfo
@@ -22,16 +24,17 @@ type SafeListItemDetails = {
   owners: AddressEx[];
 }
 
-const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
-  if (!walletAddress || !chainId) return
-  return getOwnedSafes(chainId, walletAddress)
-}
-
 const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): ChainInfo[] => {
   const currentChain = chains.find(({ chainId }) => chainId === currentChainId)
   const otherChains = chains.filter(({ chainId }) => chainId !== currentChainId)
   return currentChain ? [currentChain, ...otherChains] : chains
 }
+
+
+// const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
+//   if (!walletAddress || !chainId) return
+//   return getOwnedSafes(chainId, walletAddress)
+// }
 
 /**
  * Fetch all safes owned by the current wallet up to a certain limit.
@@ -106,6 +109,51 @@ const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): 
 //   return [allSafes, error, loading]
 // }
 
+const CACHE_KEY = 'ownedSafes'
+
+type OwnedSafesCache = {
+  [walletAddress: string]: {
+    [chainId: string]: OwnedSafes['safes']
+  }
+}
+
+
+export const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
+  const chainId = useChainId()
+  const { address: walletAddress } = useWallet() || {}
+  const [ownedSafesCache, setOwnedSafesCache] = useLocalStorage<OwnedSafesCache>(CACHE_KEY)
+
+  useEffect(() => {
+    if (!walletAddress || !chainId) return
+    let isCurrent = true
+
+    /**
+     * No useAsync in this case to avoid updating
+     * for a new chainId with stale data see https://github.com/safe-global/safe-wallet-web/pull/1760#discussion_r1133705349
+     */
+    getOwnedSafes(chainId, walletAddress)
+      .then(
+        (ownedSafes) =>
+          isCurrent &&
+          setOwnedSafesCache((prev) => ({
+            ...prev,
+            [walletAddress]: {
+              ...(prev?.[walletAddress] || {}),
+              [chainId]: ownedSafes.safes,
+            },
+          })),
+      )
+      .catch((error: Error) => logError(Errors._610, error.message))
+
+    return () => {
+      isCurrent = false
+    }
+  }, [chainId, walletAddress, setOwnedSafesCache])
+
+  return ownedSafesCache?.[walletAddress || ''] ?? {}
+}
+
+
 export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, boolean] => {
   const currentChainId = useChainId()
   const { configs } = useChains()
@@ -142,5 +190,3 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
   )
   return [allAddedSafesWithBalances ?? [], error, loading]
 }
-
-// export default useOwnedSafes

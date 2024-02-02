@@ -53,7 +53,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
         </div>
 
         <OwnedSafeList closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} />
-        <Watchlist closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} />
+        {/* <Watchlist closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} /> */}
       </div>
     </div>
   )

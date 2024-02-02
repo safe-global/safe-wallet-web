@@ -8,7 +8,7 @@ import { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import classNames from 'classnames'
-import useConnectWallet from '../ConnectWallet/useConnectWallet'
+import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 
 const maxSafes = 3
 
@@ -21,19 +21,20 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
   // use watched safes list here for now. Change later to owned safes
   const [safes, error, isLoading] = useWatchedSafes()
 
-  const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
+  // const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
-  const safesToShow = useMemo(() => {
-    return isListExpanded ? safes : safes.slice(0, maxSafes)
-  }, [safes, isListExpanded])
+  // const safesToShow = useMemo(() => {
+  //   return isListExpanded ? safes : safes.slice(0, maxSafes)
+  // }, [safes, isListExpanded])
 
-  const onShowMore = useCallback(() => {
-    if (safes.length > 0) {
-      setLastChainId(safes[safes.length - 1].chain.chainId)
-      setIsListExpanded((prev) => !prev)
-    }
-  }, [safes])
+  // const onShowMore = useCallback(() => {
+  //   if (safes.length > 0) {
+  //     setLastChainId(safes[safes.length - 1].chain.chainId)
+  //     setIsListExpanded((prev) => !prev)
+  //   }
+  // }, [safes])
 
+<<<<<<< Updated upstream
   const getHref = useCallback(
     (chain: ChainInfo, address: string) => {
       return {
@@ -43,13 +44,25 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
     },
     [isWelcomePage, isSingleTxPage, router.pathname, router.query],
   )
+=======
+  // const getHref = useCallback(
+  //   (chain: ChainInfo, address: string) => {
+  //     return {
+  //       pathname: isWelcomePage ? AppRoutes.home : isSingleTxPage ? AppRoutes.transactions.history : router.pathname,
+  //       query: { ...router.query, safe: `${chain.shortName}:${address}` },
+  //     }
+  //   },
+  //   [isWelcomePage, isSingleTxPage, router.pathname, router.query],
+  // )
+>>>>>>> Stashed changes
 
   return (
     <div className={classNames(css.container, { [css.sidebarContainer]: !isWelcomePage })}>
-      <div className={css.header}>
+      {/* <div className={css.header}>
         <Typography variant="h5" display="inline" fontWeight={700}>
           My accounts
         </Typography>
+<<<<<<< Updated upstream
       </div>
 
       {isLoading && (
@@ -58,6 +71,10 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
         </Box>
       )}
 
+=======
+      </div> */}
+      {/* 
+>>>>>>> Stashed changes
       {!safes.length && (
         <Box display="flex" flexDirection="column" py={4} sx={{ maxWidth: '250px', margin: 'auto' }}>
           <Typography variant="body2" color="primary.light" textAlign="center" mt={2} mb={2}>
@@ -73,8 +90,9 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
             Connect new account
           </Button>
         </Box>
-      )}
+      )} */}
 
+<<<<<<< Updated upstream
       {!!safes.length && (
         <List className={css.list}>
           {safesToShow.map(({ safeAddress, chain, fiatBalance, threshold, owners }) => {
@@ -97,8 +115,28 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
           })}
         </List>
       )}
+=======
+      {/* <List className={css.list}>
+        {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {
+          const href = getHref(chain, safeAddress)
+          return (
+            <SafeListItem
+              key={chain.chainId + safeAddress}
+              address={safeAddress}
+              chainId={chain.chainId}
+              fiatBalance={fiatBalance}
+              closeDrawer={closeDrawer}
+              href={href}
+              shouldScrollToSafe={false}
+              isAdded
+              isWelcomePage={isWelcomePage}
+            />
+          )
+        })}
+      </List> */}
+>>>>>>> Stashed changes
 
-      {!isListExpanded && safes.length > maxSafes && (
+      {/* {!isListExpanded && safes.length > maxSafes && (
         <div className={css.ownedLabelWrapper} onClick={onShowMore}>
           <Typography variant="body2" display="inline" className={css.ownedLabel}>
             More Accounts
@@ -107,7 +145,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
             </IconButton>
           </Typography>
         </div>
-      )}
+      )} */}
     </div>
   )
 }
