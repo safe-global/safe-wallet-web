@@ -41,6 +41,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
             >
               <Button
                 disableElevation
+                className={css.createAccountButton}
                 size="small"
                 variant="contained"
                 sx={{ padding: '12px 24px' }}
