@@ -19,8 +19,10 @@ import css from './styles.module.css'
 import { VisibilityOutlined } from '@mui/icons-material'
 import classNames from 'classnames'
 import { CircularProgress } from '@mui/material'
+import { OVERVIEW_EVENTS } from '@/services/analytics'
+import Track from '../Track'
 
-const maxSafes = 3
+const MAX_SAFES = 5
 
 const Watchlist = ({
   closeDrawer,
@@ -52,7 +54,7 @@ const Watchlist = ({
   )
 
   const safesToShow = useMemo(() => {
-    return isListExpanded ? safes : safes.slice(0, maxSafes)
+    return isListExpanded ? safes : safes.slice(0, MAX_SAFES)
   }, [safes, isListExpanded])
 
   const onShowMore = useCallback(() => {
@@ -69,16 +71,18 @@ const Watchlist = ({
           Watchlist
         </Typography>
 
-        <Link href={AppRoutes.newSafe.load}>
-          <Button
-            disableElevation
-            size="small"
-            onClick={closeDrawer}
-            startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-          >
-            Add
-          </Button>
-        </Link>
+        <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+          <Link href={AppRoutes.newSafe.load}>
+            <Button
+              disableElevation
+              size="small"
+              onClick={closeDrawer}
+              startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+            >
+              Add
+            </Button>
+          </Link>
+        </Track>
       </div>
 
       {isLoading && (
@@ -118,7 +122,7 @@ const Watchlist = ({
         </List>
       )}
 
-      {!isListExpanded && safes.length > maxSafes && (
+      {!isListExpanded && safes.length > MAX_SAFES && (
         <div className={css.ownedLabelWrapper} onClick={onShowMore}>
           <Typography variant="body2" display="inline" className={css.ownedLabel}>
             More Accounts

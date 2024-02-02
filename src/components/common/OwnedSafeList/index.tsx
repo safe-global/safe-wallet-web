@@ -10,7 +10,7 @@ import { useRouter } from 'next/router'
 import classNames from 'classnames'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
 
-const maxSafes = 3
+const MAX_SAFES = 5
 
 const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => void; isWelcomePage: boolean }) => {
   const [lastChainId, setLastChainId] = useState<string | undefined>()
@@ -24,7 +24,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   const safesToShow = useMemo(() => {
-    return isListExpanded ? safes : safes.slice(0, maxSafes)
+    return isListExpanded ? safes : safes.slice(0, MAX_SAFES)
   }, [safes, isListExpanded])
 
   const onShowMore = useCallback(() => {
@@ -61,17 +61,8 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
       {!safes.length && (
         <Box display="flex" flexDirection="column" py={4} sx={{ maxWidth: '250px', margin: 'auto' }}>
           <Typography variant="body2" color="primary.light" textAlign="center" mt={2} mb={2}>
-            Connect a wallet to view your Safe Accounts or to create a new one
+            No safe accounts yet
           </Typography>
-          <Button
-            onClick={connectWallet}
-            disableElevation
-            size="small"
-            variant="contained"
-            sx={{ padding: '12px 24px' }}
-          >
-            Connect new account
-          </Button>
         </Box>
       )}
 
@@ -98,7 +89,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
         </List>
       )}
 
-      {!isListExpanded && safes.length > maxSafes && (
+      {!isListExpanded && safes.length > MAX_SAFES && (
         <div className={css.ownedLabelWrapper} onClick={onShowMore}>
           <Typography variant="body2" display="inline" className={css.ownedLabel}>
             More Accounts

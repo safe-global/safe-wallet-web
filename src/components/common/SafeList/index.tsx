@@ -33,24 +33,22 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
             Safe Accounts
           </Typography>
 
-          <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
-            <Link
-              href={{ pathname: AppRoutes.welcome.index, query: { chain: currentChain?.shortName } }}
-              passHref
-              legacyBehavior
+          <Link
+            href={{ pathname: AppRoutes.newSafe.create, query: { chain: currentChain?.shortName } }}
+            passHref
+            legacyBehavior
+          >
+            <Button
+              disableElevation
+              className={css.createAccountButton}
+              size="small"
+              variant="contained"
+              sx={{ padding: '12px 24px' }}
+              onClick={closeDrawer}
             >
-              <Button
-                disableElevation
-                className={css.createAccountButton}
-                size="small"
-                variant="contained"
-                sx={{ padding: '12px 24px' }}
-                onClick={closeDrawer}
-              >
-                Create new account
-              </Button>
-            </Link>
-          </Track>
+              Create new account
+            </Button>
+          </Link>
         </div>
 
         <OwnedSafeList closeDrawer={closeDrawer} isWelcomePage={isWelcomePage} />

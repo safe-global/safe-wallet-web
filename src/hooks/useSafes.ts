@@ -152,20 +152,19 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
   const watchedSafes = useAppSelector(selectAllAddedSafes)
   const chains = useMemo(() => sortChainsByCurrentChain(configs, currentChainId), [configs, currentChainId])
 
-  let allAddedSafes: SafeListItemDetails[] = []
-  for (const chain of chains) {
-    const addedSafesOnChain = watchedSafes[chain.chainId] ?? {}
-    const addedSafesAdressesOnChain = Object.keys(addedSafesOnChain)
-    const addedSafesWithChain = addedSafesAdressesOnChain.map((safeAddress) => {
-      const { threshold, owners } = addedSafesOnChain[safeAddress]
-      return { safeAddress, chain, threshold, owners }
-    })
-    allAddedSafes = [...allAddedSafes, ...addedSafesWithChain]
-  }
-
-  const [allAddedSafesWithBalances, error, loading] = useAsync<SafeListItemDetails[]>(
+  const [allWatchedSafesWithBalances, error, loading] = useAsync<SafeListItemDetails[]>(
     () => {
-      const promises = allAddedSafes.map(async ({ safeAddress, chain, threshold, owners }) => {
+      let watchedSafesOnAllChains: SafeListItemDetails[] = []
+      for (const chain of chains) {
+        const watchedSafesOnChain = watchedSafes[chain.chainId] ?? {}
+        const watchedSafesAdressesOnChain = Object.keys(watchedSafesOnChain)
+        const watchedSafesWithChain = watchedSafesAdressesOnChain.map((safeAddress) => {
+          const { threshold, owners } = watchedSafesOnChain[safeAddress]
+          return { safeAddress, chain, threshold, owners }
+        })
+        watchedSafesOnAllChains = [...watchedSafesOnAllChains, ...watchedSafesWithChain]
+      }
+      const promises = watchedSafesOnAllChains.map(async ({ safeAddress, chain, threshold, owners }) => {
         const fiatBalance = await getBalances(chain.chainId, safeAddress, 'USD').then((result) => result.fiatTotal)
         return {
           safeAddress,
@@ -177,10 +176,10 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
       })
       return Promise.all(promises)
     },
-    [watchedSafes, configs],
+    [watchedSafes, chains],
     false,
   )
-  return [allAddedSafesWithBalances ?? [], error, loading]
+  return [allWatchedSafesWithBalances ?? [], error, loading]
 }
 
 export default useOwnedSafes
