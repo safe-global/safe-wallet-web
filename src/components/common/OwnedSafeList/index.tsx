@@ -77,13 +77,15 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
 
       {!!safes.length && (
         <List className={css.list}>
-          {safesToShow.map(({ safeAddress, chain, fiatBalance }) => {
+          {safesToShow.map(({ safeAddress, chain, fiatBalance, threshold, owners }) => {
             const href = getHref(chain, safeAddress)
             return (
               <SafeListItem
                 key={chain.chainId + safeAddress}
                 address={safeAddress}
                 chainId={chain.chainId}
+                threshold={threshold}
+                owners={owners.length}
                 fiatBalance={fiatBalance}
                 closeDrawer={closeDrawer}
                 href={href}

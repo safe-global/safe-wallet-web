@@ -37,74 +37,74 @@ const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): 
  * Fetch all safes owned by the current wallet up to a certain limit.
  * The hook loads safes sequentially from all chains, updating its state as it goes.
  */
-const useOwnedSafes = (
-  safesToFetch: number,
-  startChainId?: string,
-): [SafeListItemDetails[], Error | undefined, boolean] => {
-  const wallet = useWallet()
-  const currentChainId = useChainId()
-  const { configs } = useChains()
+// const useOwnedSafes = (
+//   safesToFetch: number,
+//   startChainId?: string,
+// ): [SafeListItemDetails[], Error | undefined, boolean] => {
+//   const wallet = useWallet()
+//   const currentChainId = useChainId()
+//   const { configs } = useChains()
 
-  const chains = useMemo(() => sortChainsByCurrentChain(configs, currentChainId), [configs, currentChainId])
+//   const chains = useMemo(() => sortChainsByCurrentChain(configs, currentChainId), [configs, currentChainId])
 
-  const [allSafes, setAllSafes] = useState<SafeListItemDetails[]>([])
-  const [error, setError] = useState<Error>()
-  const [loading, setLoading] = useState<boolean>(false)
+//   const [allSafes, setAllSafes] = useState<SafeListItemDetails[]>([])
+//   const [error, setError] = useState<Error>()
+//   const [loading, setLoading] = useState<boolean>(false)
 
-  // Reset state when the wallet address or current chain changes
-  useEffect(() => {
-    setAllSafes([])
-    setError(undefined)
-    setLoading(false)
-  }, [wallet, currentChainId])
+//   // Reset state when the wallet address or current chain changes
+//   useEffect(() => {
+//     setAllSafes([])
+//     setError(undefined)
+//     setLoading(false)
+//   }, [wallet, currentChainId])
 
-  // Fetch safes sequentially from all chains
-  useEffect(() => {
-    let current = true
-    const load = async (index: number) => {
-      const chain = chains[index]
-      if (!current || !wallet) return
+//   // Fetch safes sequentially from all chains
+//   useEffect(() => {
+//     let current = true
+//     const load = async (index: number) => {
+//       const chain = chains[index]
+//       if (!current || !wallet) return
 
-      let chainSafes
-      try {
-        chainSafes = await getWalletSafes(wallet.address, chain.chainId)
-      } catch (error) {
-        setError(error as Error)
-      }
+//       let chainSafes
+//       try {
+//         chainSafes = await getWalletSafes(wallet.address, chain.chainId)
+//       } catch (error) {
+//         setError(error as Error)
+//       }
 
-      const ownedSafesOnChain = await Promise.all(
-        (chainSafes?.safes || []).map(async (safeAddress) => {
-          const { fiatTotal: fiatBalance } = await getBalances(chain.chainId, safeAddress, 'USD')
-          return { safeAddress, chain, fiatBalance }
-        }),
-      )
+//       const ownedSafesOnChain = await Promise.all(
+//         (chainSafes?.safes || []).map(async (safeAddress) => {
+//           const { fiatTotal: fiatBalance } = await getBalances(chain.chainId, safeAddress, 'USD')
+//           return { safeAddress, chain, fiatBalance }
+//         }),
+//       )
 
-      setAllSafes((prevSafes) => {
-        const newAllSafes = [...prevSafes, ...ownedSafesOnChain]
-        if (safesToFetch > newAllSafes.length && index < chains.length - 1) {
-          load(index + 1)
-        } else {
-          setLoading(false)
-        }
-        return newAllSafes
-      })
-    }
+//       setAllSafes((prevSafes) => {
+//         const newAllSafes = [...prevSafes, ...ownedSafesOnChain]
+//         if (safesToFetch > newAllSafes.length && index < chains.length - 1) {
+//           load(index + 1)
+//         } else {
+//           setLoading(false)
+//         }
+//         return newAllSafes
+//       })
+//     }
 
-    if (safesToFetch > 0) {
-      const startIndex = startChainId ? chains.findIndex((chain) => chain.chainId === startChainId) + 1 : 0
-      if (startIndex < chains.length) {
-        load(startIndex)
-        setLoading(true)
-      }
-    }
+//     if (safesToFetch > 0) {
+//       const startIndex = startChainId ? chains.findIndex((chain) => chain.chainId === startChainId) + 1 : 0
+//       if (startIndex < chains.length) {
+//         load(startIndex)
+//         setLoading(true)
+//       }
+//     }
 
-    return () => {
-      current = false
-    }
-  }, [wallet, chains, startChainId])
+//     return () => {
+//       current = false
+//     }
+//   }, [wallet, chains, startChainId])
 
-  return [allSafes, error, loading]
-}
+//   return [allSafes, error, loading]
+// }
 
 export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, boolean] => {
   const currentChainId = useChainId()
@@ -143,4 +143,4 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
   return [allAddedSafesWithBalances ?? [], error, loading]
 }
 
-export default useOwnedSafes
+// export default useOwnedSafes
