@@ -4,6 +4,7 @@ import {
   getOwnedSafes,
   getBalances,
   type SafeBalanceResponse,
+  AddressEx,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useWallet from '@/hooks/wallets/useWallet'
@@ -17,6 +18,8 @@ type SafeListItemDetails = {
   chain: ChainInfo
   safeAddress: string
   fiatBalance?: string
+  threshold: number;
+  owners: AddressEx[];
 }
 
 const getWalletSafes = async (walletAddress?: string, chainId?: string) => {
@@ -113,18 +116,23 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
   for (const chain of chains) {
     const addedSafesOnChain = watchedSafes[chain.chainId] ?? {}
     const addedSafesAdressesOnChain = Object.keys(addedSafesOnChain)
-    const addedSafesWithChain = addedSafesAdressesOnChain.map((safeAddress) => ({ safeAddress, chain }))
+    const addedSafesWithChain = addedSafesAdressesOnChain.map((safeAddress) => {
+      const {threshold, owners} = addedSafesOnChain[safeAddress]
+      return { safeAddress, chain, threshold, owners }
+    })
     allAddedSafes = [...allAddedSafes, ...addedSafesWithChain]
   }
 
   const [allAddedSafesWithBalances, error, loading] = useAsync<SafeListItemDetails[]>(
     () => {
-      const promises = allAddedSafes.map(async ({ safeAddress, chain }) => {
+      const promises = allAddedSafes.map(async ({ safeAddress, chain, threshold, owners }) => {
         const fiatBalance = await getBalances(chain.chainId, safeAddress, 'USD').then((result) => result.fiatTotal)
         return {
           safeAddress,
           chain,
           fiatBalance,
+          threshold,
+          owners
         }
       })
       return Promise.all(promises)

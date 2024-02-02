@@ -51,6 +51,7 @@ export const AppRoutes = {
   },
   welcome: {
     socialLogin: '/welcome/social-login',
+    login: '/welcome/login',
     index: '/welcome',
   },
 }

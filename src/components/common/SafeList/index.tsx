@@ -18,7 +18,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const currentChain = useCurrentChain()
   const router = useRouter()
 
-  const isWelcomePage = router.pathname === AppRoutes.welcome.index || router.pathname === AppRoutes.welcome.socialLogin
+  const isWelcomePage = router.pathname === AppRoutes.welcome.login
 
   return (
     <div>

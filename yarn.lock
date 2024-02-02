@@ -5697,7 +5697,7 @@
     events "^3.3.0"
     isomorphic-unfetch "^3.1.0"
 
-"@walletconnect/core@2.11.0", "@walletconnect/core@^2.10.1", "@walletconnect/core@^2.11.0":
+"@walletconnect/core@2.11.0", "@walletconnect/core@^2.10.1":
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.11.0.tgz#3a4e301077b2f858fd916b7a20b5b984d1afce63"
   integrity sha512-2Tjp5BCevI7dbmqo/OrCjX4tqgMqwJNQLlQAlphqPfvwlF9+tIu6pGcVbSN3U9zyXzWIZCeleqEaWUeSeET4Ew==
