@@ -1,13 +1,14 @@
+import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { AppRoutes } from '@/config/routes'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
-import { getCounterfactualNonce } from '@/features/counterfactual/utils'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import { useAppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { FEATURES } from '@/utils/chains'
+import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
@@ -113,7 +114,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const dispatch = useAppDispatch()
   const router = useRouter()
   const [gasPrice] = useGasPrice()
-  const saltNonce = useMemo(() => Date.now(), [])
   const [_, setPendingSafe] = usePendingSafe()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
@@ -129,9 +129,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     return {
       owners: data.owners.map((owner) => owner.address),
       threshold: data.threshold,
-      saltNonce,
+      saltNonce: Date.now(), // Doesn't matter for the gas estimation
     }
-  }, [data.owners, data.threshold, saltNonce])
+  }, [data.owners, data.threshold])
 
   const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
@@ -163,20 +163,20 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         owners: data.owners.map((owner) => owner.address),
         fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
       },
-      saltNonce: saltNonce.toString(),
     }
 
-    if (isCounterfactual) {
-      const counterfactualNonce = await getCounterfactualNonce(provider, { ...props, saltNonce: '0' })
-      const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce: counterfactualNonce })
+    const saltNonce = await getAvailableSaltNonce(provider, { ...props, saltNonce: '0' })
+    const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
 
+    if (isCounterfactual) {
       const undeployedSafe = {
         chainId: chain.chainId,
         address: safeAddress,
         safeProps: {
           safeAccountConfig: props.safeAccountConfig,
           safeDeploymentConfig: {
-            saltNonce: counterfactualNonce,
+            saltNonce,
+            safeVersion: LATEST_SAFE_VERSION as SafeVersion,
           },
         },
       }
@@ -201,11 +201,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       return
     }
 
-    const safeAddress = await computeNewSafeAddress(provider, props)
-
     const pendingSafe = {
       ...data,
-      saltNonce,
+      saltNonce: Number(saltNonce),
       safeAddress,
       willRelay,
     }
