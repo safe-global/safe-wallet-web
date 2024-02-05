@@ -18,6 +18,8 @@ import { formatVisualAmount } from '@/utils/formatters'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import TokenAmountInput from '@/components/common/TokenAmountInput'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import { FEATURES } from '@/utils/chains'
+import { useHasFeature } from '@/hooks/useChains'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
@@ -50,6 +52,7 @@ export const CreateTokenTransfer = ({
   const isOnlySpendingLimitBeneficiary = useIsOnlySpendingLimitBeneficiary()
   const balancesItems = useVisibleTokens()
   const { setNonce, setNonceNeeded } = useContext(SafeTxContext)
+  const isDomainLookupEnabled = useHasFeature(FEATURES.DOMAIN_LOOKUP)
 
   useEffect(() => {
     if (txNonce) {
@@ -105,7 +108,7 @@ export const CreateTokenTransfer = ({
           <FormControl fullWidth sx={{ mt: 1 }}>
             <AddressBookInput
               name={TokenTransferFields.recipient}
-              label="Recipient address or ENS"
+              label={`Recipient address${isDomainLookupEnabled ? ' or ENS' : ''}`}
               canAdd={isAddressValid}
             />
           </FormControl>
