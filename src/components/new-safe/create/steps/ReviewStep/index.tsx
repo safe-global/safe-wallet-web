@@ -11,9 +11,8 @@ import lightPalette from '@/components/theme/lightPalette'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
-import useGasPrice, { getTotalFee } from '@/hooks/useGasPrice'
+import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
-import { formatVisualAmount } from '@/utils/formatters'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
@@ -136,10 +135,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
 
-  const totalFee =
-    gasLimit && maxFeePerGas
-      ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
-      : '> 0.001'
+  const totalFee = getTotalFeeFormatted(maxFeePerGas, maxPriorityFeePerGas, gasLimit, chain)
 
   // Only 1 out of 1 safe setups are supported for now
   const isCounterfactual = data.threshold === 1 && data.owners.length === 1 && isCounterfactualEnabled

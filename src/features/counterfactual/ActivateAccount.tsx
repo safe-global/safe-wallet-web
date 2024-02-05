@@ -11,19 +11,40 @@ import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit
 import { removeUndeployedSafe, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
-import useGasPrice, { getTotalFee } from '@/hooks/useGasPrice'
+import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { hasFeature } from '@/utils/chains'
-import { formatVisualAmount } from '@/utils/formatters'
 import { Alert, Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import React, { useContext, useState } from 'react'
 
 import TxLayout from '@/components/tx-flow/common/TxLayout'
+
+const useActivateAccount = () => {
+  const chain = useCurrentChain()
+  const [gasPrice] = useGasPrice()
+  const { gasLimit } = useDeployGasLimit()
+
+  const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
+  const maxFeePerGas = gasPrice?.maxFeePerGas
+  const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
+
+  const options: DeploySafeProps['options'] = isEIP1559
+    ? {
+        maxFeePerGas: maxFeePerGas?.toString(),
+        maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
+        gasLimit: gasLimit?.toString(),
+      }
+    : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
+
+  const totalFee = getTotalFeeFormatted(maxFeePerGas, maxPriorityFeePerGas, gasLimit, chain)
+
+  return { options, totalFee }
+}
 
 const ActivateAccountFlow = () => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -36,20 +57,9 @@ const ActivateAccountFlow = () => {
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, safeAddress))
   const { setTxFlow } = useContext(TxModalContext)
   const dispatch = useAppDispatch()
-
-  const { gasLimit } = useDeployGasLimit()
-  const [gasPrice] = useGasPrice()
+  const { options, totalFee } = useActivateAccount()
 
   if (!undeployedSafe) return null
-
-  const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
-  const maxFeePerGas = gasPrice?.maxFeePerGas
-  const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
-
-  const totalFee =
-    gasLimit && maxFeePerGas
-      ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
-      : '> 0.001'
 
   const createSafe = async () => {
     if (!provider) return
@@ -58,14 +68,6 @@ const ActivateAccountFlow = () => {
     setSubmitError(undefined)
 
     try {
-      const options: DeploySafeProps['options'] = isEIP1559
-        ? {
-            maxFeePerGas: maxFeePerGas?.toString(),
-            maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
-            gasLimit: gasLimit?.toString(),
-          }
-        : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
-
       await createNewSafe(provider, {
         safeAccountConfig: undeployedSafe.safeAccountConfig,
         saltNonce: undeployedSafe.safeDeploymentConfig?.saltNonce,
@@ -172,7 +174,7 @@ const ActivateAccount = () => {
 
   return (
     <Alert severity="info" sx={{ mb: 3 }}>
-      <Typography fontWeight="bold">Want to skip onboarding?</Typography>
+      <Typography fontWeight="bold">Activate your account?</Typography>
       <Typography variant="body2" mb={3}>
         Activate your account now by deploying it and paying a network fee.
       </Typography>
