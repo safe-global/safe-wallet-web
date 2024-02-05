@@ -20,10 +20,6 @@ jest.mock('../exceptions', () => ({
   logError: jest.fn(),
 }))
 
-jest.mock('./custom', () => ({
-  customResolveName: jest.fn(() => Promise.resolve('0x0000001111111111111111111111111111111111')),
-}))
-
 describe('domains', () => {
   describe('isDomain', () => {
     it('should check the domain format', async () => {
