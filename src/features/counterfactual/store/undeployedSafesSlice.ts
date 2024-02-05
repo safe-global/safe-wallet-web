@@ -6,6 +6,11 @@ type UndeployedSafesSlice = { [address: string]: PredictedSafeProps }
 
 type UndeployedSafesState = { [chainId: string]: UndeployedSafesSlice }
 
+export type UndeployedSafe = {
+  chainId: string
+  safeAddress: string
+  safeProps: PredictedSafeProps
+}
 const initialState: UndeployedSafesState = {}
 
 export const undeployedSafesSlice = createSlice({

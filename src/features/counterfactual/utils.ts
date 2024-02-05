@@ -1,7 +1,8 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
+import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { addUndeployedSafe, type UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
@@ -92,5 +93,12 @@ export const createCounterfactualSafe = (
       },
     }),
   )
-  router.push({ pathname: AppRoutes.home, query: { safe: `${chain.shortName}:${safeAddress}` } })
+  router.push({
+    pathname: AppRoutes.home,
+    query: { safe: `${chain.shortName}:${safeAddress}`, [CREATION_MODAL_QUERY_PARM]: true },
+  })
+}
+
+export const isUndeployedSafe = (value: any): value is UndeployedSafe => {
+  return 'chainId' in value && 'safeAddress' in value && 'safeProps' in value
 }
