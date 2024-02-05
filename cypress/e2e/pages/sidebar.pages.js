@@ -25,11 +25,12 @@ const saveBtn = '[data-testid="save-btn"]'
 const cancelBtn = '[data-testid="cancel-btn"]'
 const deleteBtn = '[data-testid="delete-btn"]'
 const readOnlyVisibility = '[data-testid="read-only-visibility"]'
+const currencySection = '[data-testid="currency-section"]'
 
 export const addedSafesGnosis = ['0x17b3...98C8', '0x11A6...F1BB', '0xB8d7...642A']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
 export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
-export const testSafeHeaderDetails = ['2.04 USD', '2/2', constants.SEPOLIA_TEST_SAFE_13_SHORT]
+export const testSafeHeaderDetails = ['2/2', constants.SEPOLIA_TEST_SAFE_13_SHORT]
 const receiveAssetsStr = 'Receive assets'
 
 export function verifyNetworkIsDisplayed(netwrok) {
@@ -42,7 +43,7 @@ export function verifyNetworkIsDisplayed(netwrok) {
 
 export function verifySafeHeaderDetails(details) {
   main.checkTextsExistWithinElement(safeHeaderInfo, details)
-  main.verifyElementsExist([safeIcon])
+  main.verifyElementsExist([safeIcon, currencySection])
 }
 
 export function clickOnQRCodeBtn() {

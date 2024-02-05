@@ -22,7 +22,7 @@ export const SEPOLIA_TEST_SAFE_10 = 'sep:0x4DD4cB2299E491E1B469245DB589ccB2B16d7
 export const SEPOLIA_TEST_SAFE_11 = 'sep:0x81034C61a318649F7aD43f9e8C1051427e326443'
 // SAFE 12 is used for spending limits
 export const SEPOLIA_TEST_SAFE_12 = 'sep:0x9190cc22D592dDcf396Fa616ce84a9978fD96Fc9'
-// SAFE 13 & 14 are used for sidebar with pending tx, no fyrther tx should be made in it
+// SAFE 13 & 14 are used for sidebar with pending tx, no further tx should be made in it
 export const SEPOLIA_TEST_SAFE_13 = 'sep:0x98705770aF3b18db0a64597F6d4DCe825915fec0'
 export const SEPOLIA_TEST_SAFE_13_SHORT = '0x9870...fec0'
 export const SEPOLIA_TEST_SAFE_14 = 'sep:0xC23e061252BFc7967203D054136d8fA7c7df2fc4'
