@@ -1,4 +1,5 @@
 import { AppRoutes } from '@/config/routes'
+import LoadSafeFromBackup from '@/features/counterfactual/LoadSafeFromBackup'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import { Paper, SvgIcon, Typography, Divider, Link, Box, Skeleton } from '@mui/material'
@@ -28,16 +29,13 @@ const WelcomeLogin = () => {
     <Paper className={css.loginCard} data-testid="welcome-login">
       <Box className={css.loginContent}>
         <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px', ml: '-8px' }} />
-
         <Typography variant="h6" mt={6} fontWeight={700}>
           Create Account
         </Typography>
-
         <Typography mb={2} textAlign="center">
           Choose how you would like to create your Safe Account
         </Typography>
         <WalletLogin onLogin={continueToCreation} />
-
         {isSocialLoginEnabled && (
           <>
             <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
@@ -49,15 +47,17 @@ const WelcomeLogin = () => {
             <SocialSigner onLogin={continueToCreation} />
           </>
         )}
-
         <Typography mt={2} textAlign="center">
           Already have a Safe Account?
         </Typography>
-        <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
-          <Link color="primary" href={AppRoutes.newSafe.load}>
-            Add existing one
-          </Link>
-        </Track>
+        <Box textAlign="center">
+          <Track {...LOAD_SAFE_EVENTS.LOAD_BUTTON}>
+            <Link color="primary" href={AppRoutes.newSafe.load}>
+              Add existing one
+            </Link>
+          </Track>{' '}
+          or <LoadSafeFromBackup />
+        </Box>
       </Box>
     </Paper>
   )

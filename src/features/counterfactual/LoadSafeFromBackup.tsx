@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react'
-import { Button } from '@mui/material'
+import { Link } from '@mui/material'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
 import { isUndeployedSafe } from '@/features/counterfactual/utils'
 import { useAppDispatch } from '@/store'
@@ -43,10 +43,12 @@ const LoadSafeFromBackup = () => {
   }
 
   return (
-    <Button component="label" variant="outlined" size="large" sx={{ mt: 2, mb: 1 }}>
-      Recover your Safe Account
-      <input type="file" className={css.fileInput} onChange={handleUpload} />
-    </Button>
+    <Link href="#" sx={{ mt: 2, mb: 1 }}>
+      <label style={{ cursor: 'pointer' }}>
+        Recover Safe Account
+        <input type="file" className={css.fileInput} onChange={handleUpload} />
+      </label>
+    </Link>
   )
 }
 
