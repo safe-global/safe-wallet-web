@@ -61,7 +61,7 @@ const SafeListContextMenu = ({
 
   return (
     <>
-      <IconButton edge="end" size="small" onClick={handleOpenContextMenu}>
+      <IconButton data-testid="safe-options-btn" edge="end" size="small" onClick={handleOpenContextMenu}>
         <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
@@ -69,7 +69,7 @@ const SafeListContextMenu = ({
           <ListItemIcon>
             <SvgIcon component={EditIcon} inheritViewBox fontSize="small" color="success" />
           </ListItemIcon>
-          <ListItemText>Rename</ListItemText>
+          <ListItemText data-testid="rename-btn">Rename</ListItemText>
         </MenuItem>
 
         {isAdded && (
@@ -77,7 +77,7 @@ const SafeListContextMenu = ({
             <ListItemIcon>
               <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="error" />
             </ListItemIcon>
-            <ListItemText>Remove</ListItemText>
+            <ListItemText data-testid="remove-btn">Remove</ListItemText>
           </MenuItem>
         )}
       </ContextMenu>

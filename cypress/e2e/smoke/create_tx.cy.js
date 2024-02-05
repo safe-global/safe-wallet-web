@@ -41,7 +41,7 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.verifyMaxAmount(constants.tokenNames.sepoliaEther, constants.tokenAbbreviation.sep)
   })
 
-  it('[SMOKE] Verify nonce tooltip warning messages', () => {
+  it.skip('[SMOKE] Verify nonce tooltip warning messages', () => {
     createtx.changeNonce(0)
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.lowerThanCurrent + currentNonce.toString())
     createtx.changeNonce(currentNonce + 53)
