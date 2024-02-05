@@ -29,7 +29,7 @@ describe('CreateTokenTransfer', () => {
       <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} isSafeTokenPaused={true} />,
     )
 
-    expect(getAllByText('Recipient address or ENS')[0]).toBeInTheDocument()
+    expect(getAllByText('Recipient address')[0]).toBeInTheDocument()
   })
 
   it('should disable the submit button and display a warning if $SAFE token is selected and not transferable', () => {
