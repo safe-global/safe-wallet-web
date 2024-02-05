@@ -65,6 +65,7 @@ const SafeListItem = ({
 
   return (
     <ListItem
+      data-testid="safe-list-item"
       className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
       disablePadding
       secondaryAction={

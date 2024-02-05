@@ -90,6 +90,10 @@ export function verifyElementsCount(element, count) {
   cy.get(element).should('have.length', count)
 }
 
+export function verifyMinimumElementsCount(element, count) {
+  cy.get(element).should('have.length.at.least', count)
+}
+
 export function verifyValuesDoNotExist(element, values) {
   values.forEach((value) => {
     cy.get(element).should('not.contain', value)

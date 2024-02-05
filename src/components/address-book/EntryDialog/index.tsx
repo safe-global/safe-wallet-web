@@ -56,7 +56,7 @@ function EntryDialog({
         <form onSubmit={onSubmit}>
           <DialogContent>
             <Box mb={2}>
-              <NameInput label="Name" autoFocus name="name" required />
+              <NameInput data-testid="name-input" label="Name" autoFocus name="name" required />
             </Box>
 
             <Box>
@@ -72,8 +72,16 @@ function EntryDialog({
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit" variant="contained" disabled={!formState.isValid} disableElevation>
+            <Button data-testid="cancel-btn" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              data-testid="save-btn"
+              type="submit"
+              variant="contained"
+              disabled={!formState.isValid}
+              disableElevation
+            >
               Save
             </Button>
           </DialogActions>

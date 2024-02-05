@@ -119,6 +119,7 @@ export const networks = {
   goerli: /^G(ö|oe)rli$/,
   sepolia: 'Sepolia',
   polygon: 'Polygon',
+  gnosis: 'Gnosis',
 }
 
 export const tokenAbbreviation = {

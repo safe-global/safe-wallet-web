@@ -37,8 +37,10 @@ const SafeListRemoveDialog = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleConfirm} variant="danger" disableElevation>
+        <Button data-testid="cancel-btn" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button data-testid="delete-btn" onClick={handleConfirm} variant="danger" disableElevation>
           Delete
         </Button>
       </DialogActions>
