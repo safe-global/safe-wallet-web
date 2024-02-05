@@ -36,7 +36,7 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
 export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
   const balance = await provider?.getBalance(safeAddress)
 
-  if (!balance || !chain) return
+  if (balance === undefined || !chain) return
 
   return <SafeBalanceResponse>{
     fiatTotal: '0',
