@@ -3,6 +3,8 @@ import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import { addUndeployedSafe, type UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import ExternalStore from '@/services/ExternalStore'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
@@ -34,8 +36,20 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
   })
 }
 
+const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint | undefined>()
+
 export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
-  const balance = await provider?.getBalance(safeAddress)
+  let balance: bigint | undefined
+
+  // Fetch balance via the connected wallet.
+  // If there is no wallet connected we fetch and cache the balance instead
+  if (provider) {
+    balance = await provider.getBalance(safeAddress)
+  } else {
+    const cachedBalance = getNativeBalance()
+    balance = cachedBalance !== undefined ? cachedBalance : await getWeb3ReadOnly()?.getBalance(safeAddress)
+    setNativeBalance(balance)
+  }
 
   if (balance === undefined || !chain) return
 

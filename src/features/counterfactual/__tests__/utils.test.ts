@@ -1,10 +1,11 @@
 import { getCounterfactualBalance, getUndeployedSafeInfo } from '@/features/counterfactual/utils'
+import * as web3 from '@/hooks/wallets/web3'
 import { chainBuilder } from '@/tests/builders/chains'
 import { faker } from '@faker-js/faker'
 import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
-import { BrowserProvider, type Eip1193Provider } from 'ethers'
+import { BrowserProvider, type Eip1193Provider, type JsonRpcProvider } from 'ethers'
 
 describe('Counterfactual utils', () => {
   describe('getUndeployedSafeInfo', () => {
@@ -35,12 +36,33 @@ describe('Counterfactual utils', () => {
       jest.clearAllMocks()
     })
 
-    it('should return undefined if there is no provider', () => {
+    it('should fall back to readonly provider if there is no provider', () => {
+      const mockBalance = 123n
+      const mockReadOnlyProvider = {
+        getBalance: jest.fn(() => Promise.resolve(mockBalance)),
+      } as unknown as JsonRpcProvider
+      const readOnlyProvider = jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
+
       const mockSafeAddress = faker.finance.ethereumAddress()
       const mockChain = chainBuilder().build()
       const result = getCounterfactualBalance(mockSafeAddress, undefined, mockChain)
 
-      expect(result).resolves.toBeUndefined()
+      expect(readOnlyProvider).toHaveBeenCalled()
+      expect(result).resolves.toEqual({
+        fiatTotal: '0',
+        items: [
+          {
+            tokenInfo: {
+              type: TokenType.NATIVE_TOKEN,
+              address: ZERO_ADDRESS,
+              ...mockChain.nativeCurrency,
+            },
+            balance: mockBalance.toString(),
+            fiatBalance: '0',
+            fiatConversion: '0',
+          },
+        ],
+      })
     })
 
     it('should return undefined if there is no chain info', () => {
@@ -63,6 +85,7 @@ describe('Counterfactual utils', () => {
 
       const result = getCounterfactualBalance(mockSafeAddress, mockProvider, mockChain)
 
+      expect(mockProvider.getBalance).toHaveBeenCalled()
       expect(result).resolves.toEqual({
         fiatTotal: '0',
         items: [
