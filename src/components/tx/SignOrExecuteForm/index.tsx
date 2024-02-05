@@ -16,7 +16,7 @@ import { selectSettings } from '@/store/settingsSlice'
 import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import UnknownContractError from './UnknownContractError'
 import RiskConfirmationError from './RiskConfirmationError'
-import useDecodeTx from '@/hooks/useDecodeTx'
+import useDecodeTx, { useCowOrder } from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
 import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
@@ -24,6 +24,10 @@ import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
+import { Typography } from '@mui/material'
+import { formatVisualAmount } from '@/utils/formatters'
+import useBalances from '@/hooks/useBalances'
+import { sameAddress } from '@/utils/addresses'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -69,7 +73,10 @@ export const SignOrExecuteForm = ({
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
+  const [cowOrder, cowOrderError, cowOrderLoading] = useCowOrder(safeTx?.data)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
+
+  const { balances } = useBalances()
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
@@ -93,6 +100,21 @@ export const SignOrExecuteForm = ({
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor safeTransaction={safeTx} />
         </ErrorBoundary>
+
+        {cowOrder && (
+          <Typography>
+            Swap
+            <b>
+              {formatVisualAmount(cowOrder.sellAmount, 18)}
+              {balances.items.find((item) => sameAddress(item.tokenInfo.address, cowOrder.sellToken))?.tokenInfo.symbol}
+            </b>
+            for{' '}
+            <b>
+              {formatVisualAmount(cowOrder.buyAmount, 18)}
+              {balances.items.find((item) => sameAddress(item.tokenInfo.address, cowOrder.buyToken))?.tokenInfo.symbol}
+            </b>
+          </Typography>
+        )}
 
         <DecodedTx
           tx={safeTx}

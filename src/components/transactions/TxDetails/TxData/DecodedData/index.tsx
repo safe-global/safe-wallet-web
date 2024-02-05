@@ -5,6 +5,11 @@ import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
+import { useCowOrder } from '@/hooks/useDecodeTx'
+import { sameAddress } from '@/utils/addresses'
+import { formatVisualAmount } from '@/utils/formatters'
+import { Typography } from '@mui/material'
+import useBalances from '@/hooks/useBalances'
 
 interface Props {
   txData: TransactionDetails['txData']
@@ -12,6 +17,10 @@ interface Props {
 }
 
 export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
+  // Try to decode a CoW Order
+  const [cowOrder] = useCowOrder({ data: txData?.hexData, value: txData?.value })
+  const { balances } = useBalances()
+
   // nothing to render
   if (!txData) {
     return null
@@ -38,6 +47,21 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
           hasExplorer
         />
       </InfoDetails>
+
+      {cowOrder && (
+        <Typography>
+          Swap{' '}
+          <b>
+            {formatVisualAmount(BigInt(cowOrder.sellAmount) + BigInt(cowOrder.feeAmount), 18)}{' '}
+            {balances.items.find((item) => sameAddress(item.tokenInfo.address, cowOrder.sellToken))?.tokenInfo.symbol}
+          </b>{' '}
+          for{' '}
+          <b>
+            {formatVisualAmount(cowOrder.buyAmount, 18)}{' '}
+            {balances.items.find((item) => sameAddress(item.tokenInfo.address, cowOrder.buyToken))?.tokenInfo.symbol}
+          </b>
+        </Typography>
+      )}
 
       {decodedData}
     </>
