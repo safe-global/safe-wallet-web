@@ -1,3 +1,4 @@
+import useBalances from '@/hooks/useBalances'
 import { useContext, useState } from 'react'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
@@ -72,6 +73,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
 
   const addressBook = useAddressBook()
   const chain = useCurrentChain()
+  const { balances } = useBalances()
   const router = useRouter()
   const {
     expanded: queueBarExpanded,
@@ -164,10 +166,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
     onGetSafeInfo: useGetSafeInfo(),
     onGetSafeBalances: (currency) => {
       const isDefaultTokenlistSupported = chain && hasFeature(chain, FEATURES.DEFAULT_TOKENLIST)
-      return getBalances(chainId, safeAddress, currency, {
-        exclude_spam: true,
-        trusted: isDefaultTokenlistSupported && TOKEN_LISTS.TRUSTED === tokenlist,
-      })
+
+      return safe.deployed
+        ? getBalances(chainId, safeAddress, currency, {
+            exclude_spam: true,
+            trusted: isDefaultTokenlistSupported && TOKEN_LISTS.TRUSTED === tokenlist,
+          })
+        : Promise.resolve(balances)
     },
     onGetChainInfo: () => {
       if (!chain) return
