@@ -1,9 +1,7 @@
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
 import { isUndeployedSafe } from '@/features/counterfactual/utils'
-import { useHasFeature } from '@/hooks/useChains'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { FEATURES } from '@/utils/chains'
 import { type ReactElement, type ReactNode, type ChangeEvent } from 'react'
 import { Button } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -16,7 +14,6 @@ import css from './styles.module.css'
 const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement => {
   const { safeError } = useSafeInfo()
   const dispatch = useAppDispatch()
-  const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
 
   if (!safeError) return <>{children}</>
 
@@ -58,15 +55,11 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
       img={<img src="/images/common/error.png" alt="A vault with a red icon in the bottom right corner" />}
       text="This Safe Account couldn't be loaded"
     >
-      {isCounterfactualEnabled && (
-        <>
-          <Button component="label" variant="outlined" size="large" sx={{ mt: 2, mb: 1 }}>
-            Recover your Safe Account
-            <input type="file" className={css.fileInput} onChange={handleUpload} />
-          </Button>{' '}
-          or
-        </>
-      )}
+      <Button component="label" variant="outlined" size="large" sx={{ mt: 2, mb: 1 }}>
+        Recover your Safe Account
+        <input type="file" className={css.fileInput} onChange={handleUpload} />
+      </Button>{' '}
+      or
       <Link href={AppRoutes.welcome.index} passHref legacyBehavior>
         <Button variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
           Go to the main page
