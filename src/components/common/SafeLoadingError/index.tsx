@@ -61,7 +61,7 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
       {isCounterfactualEnabled && (
         <>
           <Button component="label" variant="outlined" size="large" sx={{ mt: 2, mb: 1 }}>
-            Recover your safe setup
+            Recover your Safe Account
             <input type="file" className={css.fileInput} onChange={handleUpload} />
           </Button>{' '}
           or

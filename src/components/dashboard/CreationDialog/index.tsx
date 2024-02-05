@@ -105,9 +105,9 @@ const CreationDialog = () => {
 
         {undeployedSafe && (
           <Alert severity="info" sx={{ mb: 2 }}>
-            We recommend to{' '}
+            We recommend{' '}
             <Link href="#" onClick={() => backupSafe(chainId, safeAddress, undeployedSafe)}>
-              backup your safe account
+              backing up your Safe Account
             </Link>{' '}
             in case you lose access to this device.
           </Alert>
