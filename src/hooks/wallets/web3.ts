@@ -1,6 +1,6 @@
-import { RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
 import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
-import { JsonRpcProvider, BrowserProvider, type Eip1193Provider, type Provider } from 'ethers'
+import { JsonRpcProvider, BrowserProvider, type Eip1193Provider, type Provider, Network } from 'ethers'
 import ExternalStore from '@/services/ExternalStore'
 import { EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
@@ -20,20 +20,24 @@ export const getRpcServiceUrl = (rpcUri: RpcUri): string => {
   return formatRpcServiceUrl(rpcUri, INFURA_TOKEN)
 }
 
-export const createWeb3ReadOnly = (rpcUri: RpcUri, customRpc?: string): JsonRpcProvider | undefined => {
-  const url = customRpc || getRpcServiceUrl(rpcUri)
+export const createWeb3ReadOnly = (chain: ChainInfo, customRpc?: string): JsonRpcProvider | undefined => {
+  const url = customRpc || getRpcServiceUrl(chain.rpcUri)
   if (!url) return
-  return new JsonRpcProvider(url)
+  return new JsonRpcProvider(url, new Network(chain.chainName, chain.chainId), {
+    staticNetwork: true,
+  })
 }
 
 export const createWeb3 = (walletProvider: Eip1193Provider): BrowserProvider => {
   return new BrowserProvider(walletProvider)
 }
 
-export const createSafeAppsWeb3Provider = (safeAppsRpcUri: RpcUri, customRpc?: string): JsonRpcProvider | undefined => {
-  const url = customRpc || formatRpcServiceUrl(safeAppsRpcUri, SAFE_APPS_INFURA_TOKEN)
+export const createSafeAppsWeb3Provider = (chain: ChainInfo, customRpc?: string): JsonRpcProvider | undefined => {
+  const url = customRpc || formatRpcServiceUrl(chain.rpcUri, SAFE_APPS_INFURA_TOKEN)
   if (!url) return
-  return new JsonRpcProvider(url)
+  return new JsonRpcProvider(url, new Network(chain.chainName, chain.chainId), {
+    staticNetwork: true,
+  })
 }
 
 export const { setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<BrowserProvider>()
