@@ -7,6 +7,7 @@ import useChains from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useAsync from './useAsync'
+import { selectCurrency } from '@/store/settingsSlice'
 
 type SafeListItemDetails = {
   chain: ChainInfo
@@ -26,6 +27,7 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
   const currentChainId = useChainId()
   const { configs } = useChains()
   const watchedSafes = useAppSelector(selectAllAddedSafes)
+  const currency = useAppSelector(selectCurrency)
   const chains = useMemo(() => sortChainsByCurrentChain(configs, currentChainId), [configs, currentChainId])
 
   const [allWatchedSafesWithBalances, error, loading] = useAsync<SafeListItemDetails[]>(
@@ -41,7 +43,7 @@ export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, bo
         watchedSafesOnAllChains = [...watchedSafesOnAllChains, ...watchedSafesWithChain]
       }
       const promises = watchedSafesOnAllChains.map(async ({ safeAddress, chain, threshold, owners }) => {
-        const fiatBalance = await getBalances(chain.chainId, safeAddress, 'USD').then((result) => result.fiatTotal)
+        const fiatBalance = await getBalances(chain.chainId, safeAddress, currency).then((result) => result.fiatTotal)
         return {
           safeAddress,
           chain,

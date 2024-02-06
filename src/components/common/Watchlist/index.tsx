@@ -91,9 +91,9 @@ const Watchlist = ({
         </Box>
       )}
 
-      {!safes && (
-        <Box display="flex" flexDirection="column" alignItems="center" py={10}>
-          <Typography variant="body2" color="primary.light" textAlign="center" mt={3}>
+      {!safes.length && (
+        <Box display="flex" flexDirection="column" alignItems="center" sx={{ paddingY: '26px' }}>
+          <Typography variant="body2" color="primary.light" textAlign="center">
             Add any Safe account to the watchlist
           </Typography>
         </Box>

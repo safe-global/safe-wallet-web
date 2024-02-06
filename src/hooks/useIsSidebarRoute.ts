@@ -8,6 +8,7 @@ const NO_SIDEBAR_ROUTES = [
   AppRoutes.newSafe.load,
   AppRoutes.index,
   AppRoutes.welcome.index,
+  AppRoutes.welcome.login,
   AppRoutes.welcome.socialLogin,
   AppRoutes.imprint,
   AppRoutes.privacy,
