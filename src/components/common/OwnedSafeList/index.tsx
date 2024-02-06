@@ -16,10 +16,9 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
   const [lastChainId, setLastChainId] = useState<string | undefined>()
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
-  const connectWallet = useConnectWallet()
 
   // use watched safes list here for now. Change later to owned safes
-  const [safes, error, isLoading] = useWatchedSafes()
+  const safes = useWatchedSafes()
 
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
@@ -51,12 +50,6 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
           My accounts
         </Typography>
       </div>
-
-      {isLoading && (
-        <Box py={4} textAlign="center">
-          <CircularProgress size={20} />
-        </Box>
-      )}
 
       {!safes.length && (
         <Box display="flex" flexDirection="column" py={4} sx={{ maxWidth: '250px', margin: 'auto' }}>

@@ -25,6 +25,8 @@ import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS } from '@/services/analytics'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
+import { getBalances } from '@safe-global/safe-gateway-typescript-sdk'
+import useAsync from '@/hooks/useAsync'
 
 const SafeListItem = ({
   address,
@@ -62,6 +64,12 @@ const SafeListItem = ({
   const { totalQueued, totalToSign } = usePendingActions(chainId, isAdded && isVisible ? address : undefined)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const currency = 'USD'
+  const [balance] = useAsync(
+    () => getBalances(chainId, address, currency).then((result) => result.fiatTotal),
+    [chainId, address, currency],
+  )
 
   // Scroll to the current Safe
   useEffect(() => {
@@ -121,11 +129,13 @@ const SafeListItem = ({
                       />
                     }
                   />
-                  <ListItemText
-                    className={css.accountBalance}
-                    primaryTypographyProps={{ variant: 'body2' }}
-                    primary={<b>${fiatBalance}</b>}
-                  />
+                  {balance && (
+                    <ListItemText
+                      className={css.accountBalance}
+                      primaryTypographyProps={{ variant: 'body2' }}
+                      primary={<b>${balance}</b>}
+                    />
+                  )}
                 </div>
                 <ChainIndicator chainId={chainId} inline showName={isWelcomePage && !isMobile} />
               </div>

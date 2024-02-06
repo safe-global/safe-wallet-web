@@ -23,39 +23,21 @@ const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): 
   return currentChain ? [currentChain, ...otherChains] : chains
 }
 
-export const useWatchedSafes = (): [SafeListItemDetails[], Error | undefined, boolean] => {
+export const useWatchedSafes = (): SafeListItemDetails[] => {
   const currentChainId = useChainId()
   const { configs } = useChains()
   const watchedSafes = useAppSelector(selectAllAddedSafes)
-  const currency = useAppSelector(selectCurrency)
   const chains = useMemo(() => sortChainsByCurrentChain(configs, currentChainId), [configs, currentChainId])
 
-  const [allWatchedSafesWithBalances, error, loading] = useAsync<SafeListItemDetails[]>(
-    () => {
-      let watchedSafesOnAllChains: SafeListItemDetails[] = []
-      for (const chain of chains) {
-        const watchedSafesOnChain = watchedSafes[chain.chainId] ?? {}
-        const watchedSafesAdressesOnChain = Object.keys(watchedSafesOnChain)
-        const watchedSafesWithChain = watchedSafesAdressesOnChain.map((safeAddress) => {
-          const { threshold, owners } = watchedSafesOnChain[safeAddress]
-          return { safeAddress, chain, threshold, owners }
-        })
-        watchedSafesOnAllChains = [...watchedSafesOnAllChains, ...watchedSafesWithChain]
-      }
-      const promises = watchedSafesOnAllChains.map(async ({ safeAddress, chain, threshold, owners }) => {
-        const fiatBalance = await getBalances(chain.chainId, safeAddress, currency).then((result) => result.fiatTotal)
-        return {
-          safeAddress,
-          chain,
-          fiatBalance,
-          threshold,
-          owners,
-        }
-      })
-      return Promise.all(promises)
-    },
-    [watchedSafes, chains],
-    false,
-  )
-  return [allWatchedSafesWithBalances ?? [], error, loading]
+  let watchedSafesOnAllChains: SafeListItemDetails[] = []
+  for (const chain of chains) {
+    const watchedSafesOnChain = watchedSafes[chain.chainId] ?? {}
+    const watchedSafesAdressesOnChain = Object.keys(watchedSafesOnChain)
+    const watchedSafesWithChain = watchedSafesAdressesOnChain.map((safeAddress) => {
+      const { threshold, owners } = watchedSafesOnChain[safeAddress]
+      return { safeAddress, chain, threshold, owners }
+    })
+    watchedSafesOnAllChains = [...watchedSafesOnAllChains, ...watchedSafesWithChain]
+  }
+  return watchedSafesOnAllChains
 }
