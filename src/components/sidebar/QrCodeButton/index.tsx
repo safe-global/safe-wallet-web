@@ -8,7 +8,9 @@ const QrCodeButton = ({ children }: { children: ReactNode }): ReactElement => {
 
   return (
     <>
-      <div onClick={() => setModalOpen(true)}>{children}</div>
+      <div data-testid="qr-modal-btn" onClick={() => setModalOpen(true)}>
+        {children}
+      </div>
 
       {modalOpen && (
         <Suspense>

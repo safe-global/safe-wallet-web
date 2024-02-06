@@ -73,6 +73,7 @@ const SafeListItem = ({
   return (
     <div className={css.container}>
       <ListItem
+        data-testid="safe-list-item"
         alignItems="flex-start"
         className={css.listItem}
         disablePadding

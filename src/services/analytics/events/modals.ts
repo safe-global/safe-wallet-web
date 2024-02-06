@@ -15,14 +15,6 @@ export const MODALS_EVENTS = {
     action: 'Contract interaction',
     category: MODALS_CATEGORY,
   },
-  SCAN_QR: {
-    action: 'Scan QR',
-    category: MODALS_CATEGORY,
-  },
-  SCAN_QR_FINISHED: {
-    action: 'Scan QR finished',
-    category: MODALS_CATEGORY,
-  },
   TX_DETAILS: {
     action: 'Transaction details',
     category: MODALS_CATEGORY,

@@ -2,7 +2,6 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as spendinglimit from '../pages/spending_limits.pages'
 import * as owner from '../pages/owners.pages'
-import * as safe from '../pages/load_safe.pages'
 
 describe('[SMOKE] Spending limits tests', () => {
   beforeEach(() => {
@@ -22,11 +21,6 @@ describe('[SMOKE] Spending limits tests', () => {
   it('Verify writing a valid address shows no errors', () => {
     spendinglimit.enterBeneficiaryAddress(constants.SEPOLIA_TEST_SAFE_7)
     spendinglimit.verifyValidAddressShowsNoErrors()
-  })
-
-  it('Verify Fill by QR code with a valid address', () => {
-    safe.scanQRCode(constants.VALID_QR_CODE_PATH)
-    spendinglimit.checkBeneficiaryENS(constants.SEPOLIA_TEST_SAFE_6)
   })
 
   it('Verify Amount input cannot be 0', () => {

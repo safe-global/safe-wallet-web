@@ -19,7 +19,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   const isWelcomePage = router.pathname === AppRoutes.welcome.login
 
   return (
-    <div>
+    <div data-testid="sidebar-safe-container">
       <div className={classNames({ [css.container]: isWelcomePage })}>
         <div className={classNames(css.header, { [css.sidebarHeader]: !isWelcomePage })}>
           <Typography
