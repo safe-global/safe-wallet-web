@@ -21,7 +21,7 @@ import { showNotification } from '@/store/notificationsSlice'
 import { SafeFactory } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
-import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
+import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
@@ -57,6 +57,9 @@ export const getSafeDeployProps = async (
 }
 
 const getSafeFactory = async (ethersProvider: BrowserProvider): Promise<SafeFactory> => {
+  if (!isValidSafeVersion(LATEST_SAFE_VERSION)) {
+    throw new Error('Invalid Safe version')
+  }
   const ethAdapter = await createEthersAdapter(ethersProvider)
   const safeFactory = await SafeFactory.create({ ethAdapter, safeVersion: LATEST_SAFE_VERSION })
   return safeFactory
