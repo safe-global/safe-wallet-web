@@ -1,4 +1,4 @@
-import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useAppSelector } from '@/store'
