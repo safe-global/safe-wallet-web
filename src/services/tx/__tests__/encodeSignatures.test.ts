@@ -32,6 +32,7 @@ describe('encodeSignatures', () => {
       data: '0xEEE',
       staticPart: () => '0xEEE',
       dynamicPart: () => '',
+      isContractSignature: false,
     })
 
     safeTx.addSignature({
@@ -39,6 +40,7 @@ describe('encodeSignatures', () => {
       data: '0xAAA',
       staticPart: () => '0xAAA',
       dynamicPart: () => '',
+      isContractSignature: false,
     })
 
     const owner = '0x123'
@@ -57,6 +59,7 @@ describe('encodeSignatures', () => {
       data: '0xAAA',
       staticPart: () => '0xAAA',
       dynamicPart: () => '',
+      isContractSignature: false,
     })
 
     const owner = '0x123'

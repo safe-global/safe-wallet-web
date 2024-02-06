@@ -410,6 +410,7 @@ describe('SignOrExecute hooks', () => {
         data: '0x0001',
         staticPart: () => '',
         dynamicPart: () => '',
+        isContractSignature: false,
       })
 
       const id = await executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)
@@ -442,6 +443,7 @@ describe('SignOrExecute hooks', () => {
         data: '0x0001',
         staticPart: () => '',
         dynamicPart: () => '',
+        isContractSignature: false,
       })
 
       const proposeSpy = jest
@@ -453,6 +455,7 @@ describe('SignOrExecute hooks', () => {
           data: '0x0001',
           staticPart: () => '',
           dynamicPart: () => '',
+          isContractSignature: false,
         })
         return Promise.resolve(tx)
       })
@@ -492,6 +495,7 @@ describe('SignOrExecute hooks', () => {
         data: '0x0001',
         staticPart: () => '',
         dynamicPart: () => '',
+        isContractSignature: false,
       })
 
       const proposeSpy = jest
@@ -503,6 +507,7 @@ describe('SignOrExecute hooks', () => {
           data: '0x0001',
           staticPart: () => '',
           dynamicPart: () => '',
+          isContractSignature: false,
         })
         return Promise.resolve(tx)
       })
@@ -535,6 +540,7 @@ describe('SignOrExecute hooks', () => {
         data: '0x0001',
         staticPart: () => '',
         dynamicPart: () => '',
+        isContractSignature: false,
       })
       const { result } = renderHook(() => useAlreadySigned(tx))
       expect(result.current).toEqual(true)
@@ -554,6 +560,7 @@ describe('SignOrExecute hooks', () => {
       data: '0x0001',
       staticPart: () => '',
       dynamicPart: () => '',
+      isContractSignature: false,
     })
     const { result } = renderHook(() => useAlreadySigned(tx))
     expect(result.current).toEqual(false)
