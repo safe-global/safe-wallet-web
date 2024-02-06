@@ -1,3 +1,5 @@
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 import type { ChangeEvent } from 'react'
 import { Link } from '@mui/material'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
@@ -8,6 +10,7 @@ import css from './styles.module.css'
 
 const LoadSafeFromBackup = () => {
   const dispatch = useAppDispatch()
+  const router = useRouter()
 
   const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -28,6 +31,7 @@ const LoadSafeFromBackup = () => {
           const safeProps = parsedData.safeProps
 
           dispatch(addUndeployedSafe({ chainId, address, safeProps }))
+          router.push({ pathname: AppRoutes.home, query: { safe: address } })
         } else {
           dispatch(
             showNotification({
