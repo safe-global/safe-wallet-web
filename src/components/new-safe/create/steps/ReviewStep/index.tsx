@@ -1,4 +1,5 @@
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { createCounterfactualSafe } from '@/features/counterfactual/utils'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
@@ -99,6 +100,52 @@ export const NetworkFee = ({
   )
 }
 
+export const SafeSetupOverview = ({
+  name,
+  owners,
+  threshold,
+}: {
+  name?: string
+  owners: NamedAddress[]
+  threshold: number
+}) => {
+  const chain = useCurrentChain()
+
+  return (
+    <Grid container spacing={3}>
+      <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
+      {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
+      <ReviewRow
+        name="Owners"
+        value={
+          <Box data-testid="review-step-owner-info" className={css.ownersArray}>
+            {owners.map((owner, index) => (
+              <EthHashInfo
+                address={owner.address}
+                name={owner.name || owner.ens}
+                shortAddress={false}
+                showPrefix={false}
+                showName
+                hasExplorer
+                showCopyButton
+                key={index}
+              />
+            ))}
+          </Box>
+        }
+      />
+      <ReviewRow
+        name="Threshold"
+        value={
+          <Typography>
+            {threshold} out of {owners.length} owner(s)
+          </Typography>
+        }
+      />
+    </Grid>
+  )
+}
+
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
@@ -189,37 +236,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   return (
     <>
       <Box className={layoutCss.row}>
-        <Grid container spacing={3}>
-          <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
-          {data.name && <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />}
-          <ReviewRow
-            name="Owners"
-            value={
-              <Box data-testid="review-step-owner-info" className={css.ownersArray}>
-                {data.owners.map((owner, index) => (
-                  <EthHashInfo
-                    address={owner.address}
-                    name={owner.name || owner.ens}
-                    shortAddress={false}
-                    showPrefix={false}
-                    showName
-                    hasExplorer
-                    showCopyButton
-                    key={index}
-                  />
-                ))}
-              </Box>
-            }
-          />
-          <ReviewRow
-            name="Threshold"
-            value={
-              <Typography>
-                {data.threshold} out of {data.owners.length} owner(s)
-              </Typography>
-            }
-          />
-        </Grid>
+        <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} />
       </Box>
 
       {!isCounterfactual && (
