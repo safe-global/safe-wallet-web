@@ -56,13 +56,17 @@ export const getSafeDeployProps = async (
   }
 }
 
+const getSafeFactory = async (ethersProvider: BrowserProvider): Promise<SafeFactory> => {
+  const ethAdapter = await createEthersAdapter(ethersProvider)
+  const safeFactory = await SafeFactory.create({ ethAdapter, safeVersion: LATEST_SAFE_VERSION })
+  return safeFactory
+}
+
 /**
  * Create a Safe creation transaction via Core SDK and submits it to the wallet
  */
 export const createNewSafe = async (ethersProvider: BrowserProvider, props: DeploySafeProps): Promise<Safe> => {
-  const ethAdapter = await createEthersAdapter(ethersProvider)
-
-  const safeFactory = await SafeFactory.create({ ethAdapter })
+  const safeFactory = await getSafeFactory(ethersProvider)
   return safeFactory.deploySafe(props)
 }
 
@@ -73,9 +77,7 @@ export const computeNewSafeAddress = async (
   ethersProvider: BrowserProvider,
   props: DeploySafeProps,
 ): Promise<string> => {
-  const ethAdapter = await createEthersAdapter(ethersProvider)
-
-  const safeFactory = await SafeFactory.create({ ethAdapter })
+  const safeFactory = await getSafeFactory(ethersProvider)
   return safeFactory.predictSafeAddress(props.safeAccountConfig, props.saltNonce)
 }
 
