@@ -24,11 +24,11 @@ export const useInitWeb3 = () => {
   }, [wallet, chainId])
 
   useEffect(() => {
-    if (!rpcUri) {
+    if (!rpcUri || !chainId) {
       setWeb3ReadOnly(undefined)
       return
     }
-    const web3ReadOnly = createWeb3ReadOnly(rpcUri, customRpcUrl)
+    const web3ReadOnly = createWeb3ReadOnly(chainId, rpcUri, customRpcUrl)
     setWeb3ReadOnly(web3ReadOnly)
-  }, [rpcUri, customRpcUrl])
+  }, [chainId, rpcUri, customRpcUrl])
 }
