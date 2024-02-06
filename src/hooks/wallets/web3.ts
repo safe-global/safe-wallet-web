@@ -1,9 +1,8 @@
-import { RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
 import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
-import { type JsonRpcProvider, BrowserProvider, type Eip1193Provider, type Provider } from 'ethers'
+import { JsonRpcProvider, BrowserProvider, type Eip1193Provider, type Provider, Network } from 'ethers'
 import ExternalStore from '@/services/ExternalStore'
 import { EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import ReadonlyRpcProvider from '@/utils/providers/ReadonlyRpcProvider'
 
 // RPC helpers
 const formatRpcServiceUrl = ({ authentication, value }: RpcUri, token: string): string => {
@@ -22,13 +21,15 @@ export const getRpcServiceUrl = (rpcUri: RpcUri): string => {
 }
 
 export const createWeb3ReadOnly = (
-  chainId: string,
+  chain: ChainInfo,
   rpcUri: RpcUri,
   customRpc?: string,
 ): JsonRpcProvider | undefined => {
   const url = customRpc || getRpcServiceUrl(rpcUri)
   if (!url) return
-  return new ReadonlyRpcProvider(chainId, url)
+  return new JsonRpcProvider(url, new Network(chain.chainName, chain.chainId), {
+    staticNetwork: true,
+  })
 }
 
 export const createWeb3 = (walletProvider: Eip1193Provider): BrowserProvider => {
@@ -36,13 +37,15 @@ export const createWeb3 = (walletProvider: Eip1193Provider): BrowserProvider => 
 }
 
 export const createSafeAppsWeb3Provider = (
-  chainId: string,
+  chain: ChainInfo,
   safeAppsRpcUri: RpcUri,
   customRpc?: string,
 ): JsonRpcProvider | undefined => {
   const url = customRpc || formatRpcServiceUrl(safeAppsRpcUri, SAFE_APPS_INFURA_TOKEN)
   if (!url) return
-  return new ReadonlyRpcProvider(chainId, url)
+  return new JsonRpcProvider(url, new Network(chain.chainName, chain.chainId), {
+    staticNetwork: true,
+  })
 }
 
 export const { setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<BrowserProvider>()
