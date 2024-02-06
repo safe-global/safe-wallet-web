@@ -96,5 +96,6 @@ export const createMockSafeTransaction = ({
     encodedSignatures: () => {
       return '0x'
     },
+    getSignature: (signer: string) => signatures.get(signer),
   }
 }

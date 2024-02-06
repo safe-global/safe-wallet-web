@@ -121,7 +121,7 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
           safeVersion: '1.3.0', // TODO: pass to module, taking into account that lower Safe versions don't have chainId in payload
           chainId: BigInt(chainId),
           // TODO: find out why these types are incompaitble
-          safeTransactionData: {
+          data: {
             ...data.data,
             safeTxGas: data.data.safeTxGas,
             baseGas: data.data.baseGas,
