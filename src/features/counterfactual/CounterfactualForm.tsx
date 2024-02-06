@@ -77,9 +77,12 @@ export const CounterfactualForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    try {
-      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
+    const onSuccess = () => {
       dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
+    }
+
+    try {
+      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard, onSuccess)
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._804, err)

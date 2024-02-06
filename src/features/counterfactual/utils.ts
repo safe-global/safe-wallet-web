@@ -1,13 +1,16 @@
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
 import { AppRoutes } from '@/config/routes'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { didReprice, didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
@@ -46,8 +49,11 @@ export const dispatchTxExecutionAndDeploySafe = async (
   txOptions: TransactionOptions,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
+  onSuccess?: () => void,
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+  const eventParams = { groupKey: 'cf-tx' }
+  const safeAddress = await sdkUnchecked.getAddress()
 
   let result: ContractTransactionResponse | undefined
   try {
@@ -59,14 +65,41 @@ export const dispatchTxExecutionAndDeploySafe = async (
 
     const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
 
-    // @ts-ignore TODO: Check if the other type also works
+    // @ts-ignore TODO: Check why TransactionResponse type doesn't work
     result = await signer.sendTransaction(deploymentTx)
-  } catch (e) {
-    // TODO: Dispatch tx event?
-    throw e
+    txDispatch(TxEvent.EXECUTING, eventParams)
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+    throw error
   }
 
-  return result?.wait()
+  txDispatch(TxEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
+
+  result
+    ?.wait()
+    .then((receipt) => {
+      if (receipt === null) {
+        txDispatch(TxEvent.FAILED, { ...eventParams, error: new Error('No transaction receipt found') })
+      } else if (didRevert(receipt)) {
+        txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
+      } else {
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+      }
+    })
+    .catch((err) => {
+      const error = err as EthersError
+
+      if (didReprice(error)) {
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+      } else {
+        txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+      }
+    })
+    .finally(() => {
+      onSuccess?.()
+    })
+
+  return result!.hash
 }
 
 export const deploySafeAndExecuteTx = async (
@@ -75,12 +108,13 @@ export const deploySafeAndExecuteTx = async (
   wallet: ConnectedWallet | null,
   safeTx?: SafeTransaction,
   onboard?: OnboardAPI,
+  onSuccess?: () => void,
 ) => {
   assertTx(safeTx)
   assertWallet(wallet)
   assertOnboard(onboard)
 
-  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId)
+  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId, onSuccess)
 }
 
 export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
