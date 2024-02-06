@@ -141,6 +141,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [gasPrice] = useGasPrice()
   const [_, setPendingSafe] = usePendingSafe()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
+  const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
@@ -180,7 +181,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   }
 
   const createSafe = async () => {
-    if (!wallet || !provider || !chain || !deployProps) return
+    if (!wallet || !provider || !chain) return
+
+    if (!deployProps) {
+      setSubmitError('Error creating the Safe Account. Please try again later.')
+      return
+    }
 
     const props = deployProps.deploySafeProps
     const saltNonce = deployProps.saltNonce
@@ -291,6 +297,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       <Divider />
 
       <Box className={layoutCss.row}>
+        {submitError && <ErrorMessage className={css.errorMessage}>{submitError}</ErrorMessage>}
         <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
           <Button
             data-testid="back-btn"
