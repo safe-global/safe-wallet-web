@@ -1,7 +1,7 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
+import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'

@@ -2,14 +2,14 @@ import { type RootState } from '@/store'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 
-type UndeployedSafeSlice = { [address: string]: PredictedSafeProps }
+type UndeployedSafesSlice = { [address: string]: PredictedSafeProps }
 
-type UndeployedSafeState = { [chainId: string]: UndeployedSafeSlice }
+type UndeployedSafesState = { [chainId: string]: UndeployedSafesSlice }
 
-const initialState: UndeployedSafeState = {}
+const initialState: UndeployedSafesState = {}
 
-export const undeployedSafeSlice = createSlice({
-  name: 'undeployedSafe',
+export const undeployedSafesSlice = createSlice({
+  name: 'undeployedSafes',
   initialState,
   reducers: {
     addUndeployedSafe: (
@@ -38,10 +38,10 @@ export const undeployedSafeSlice = createSlice({
   },
 })
 
-export const { removeUndeployedSafe, addUndeployedSafe } = undeployedSafeSlice.actions
+export const { removeUndeployedSafe, addUndeployedSafe } = undeployedSafesSlice.actions
 
-export const selectUndeployedSafes = (state: RootState): UndeployedSafeState => {
-  return state[undeployedSafeSlice.name]
+export const selectUndeployedSafes = (state: RootState): UndeployedSafesState => {
+  return state[undeployedSafesSlice.name]
 }
 
 export const selectUndeployedSafe = createSelector(

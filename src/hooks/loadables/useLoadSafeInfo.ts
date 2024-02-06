@@ -1,4 +1,4 @@
-import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { getUndeployedSafeInfo } from '@/features/counterfactual/utils'
 import { useAppSelector } from '@/store'
 import { useEffect } from 'react'
