@@ -2,19 +2,25 @@ import * as creationUtils from '@/components/new-safe/create/logic/index'
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
 import * as web3Utils from '@/hooks/wallets/web3'
 import { faker } from '@faker-js/faker'
+import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
 
 describe('getAvailableSaltNonce', () => {
   jest.spyOn(creationUtils, 'computeNewSafeAddress').mockReturnValue(Promise.resolve(faker.finance.ethereumAddress()))
 
-  const mockProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
-  const mockDeployProps = {
-    safeAccountConfig: {
-      threshold: 1,
-      owners: [faker.finance.ethereumAddress()],
-      fallbackHandler: faker.finance.ethereumAddress(),
-    },
-  }
+  let mockProvider: BrowserProvider
+  let mockDeployProps: DeploySafeProps
+
+  beforeAll(() => {
+    mockProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
+    mockDeployProps = {
+      safeAccountConfig: {
+        threshold: 1,
+        owners: [faker.finance.ethereumAddress()],
+        fallbackHandler: faker.finance.ethereumAddress(),
+      },
+    }
+  })
 
   beforeEach(() => {
     jest.clearAllMocks()
