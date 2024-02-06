@@ -1,13 +1,10 @@
 import { useMemo } from 'react'
 import type { ChainInfo, AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
-import { getBalances } from '@safe-global/safe-gateway-typescript-sdk'
 
 import useChainId from '@/hooks/useChainId'
 import useChains from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
-import useAsync from './useAsync'
-import { selectCurrency } from '@/store/settingsSlice'
 
 type SafeListItemDetails = {
   chain: ChainInfo

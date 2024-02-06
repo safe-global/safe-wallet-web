@@ -18,7 +18,6 @@ import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
 import { VisibilityOutlined } from '@mui/icons-material'
 import classNames from 'classnames'
-import { CircularProgress } from '@mui/material'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import Track from '../Track'
 

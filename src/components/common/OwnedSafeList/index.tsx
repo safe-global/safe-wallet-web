@@ -1,14 +1,13 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 import { useWatchedSafes } from '@/hooks/useSafes'
-import { Box, CircularProgress, IconButton, List, Typography } from '@mui/material'
+import { Box, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import classNames from 'classnames'
-import useConnectWallet from '../ConnectWallet/useConnectWallet'
 
 const MAX_SAFES = 5
 
