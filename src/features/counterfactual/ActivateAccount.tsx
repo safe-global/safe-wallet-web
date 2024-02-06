@@ -1,13 +1,16 @@
 import { createNewSafe, relaySafeCreation } from '@/components/new-safe/create/logic'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'
 import TxCard from '@/components/tx-flow/common/TxCard'
+
+import TxLayout from '@/components/tx-flow/common/TxLayout'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
-import { removeUndeployedSafe, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
+import { removeUndeployedSafe, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
@@ -27,8 +30,6 @@ import { Alert, Box, Button, CircularProgress, Divider, Grid, Typography } from 
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import React, { useContext, useState } from 'react'
-
-import TxLayout from '@/components/tx-flow/common/TxLayout'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -78,6 +79,10 @@ const ActivateAccountFlow = () => {
 
   if (!undeployedSafe) return null
 
+  const onSuccess = () => {
+    dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
+  }
+
   const createSafe = async () => {
     if (!provider || !chain) return
 
@@ -94,7 +99,9 @@ const ActivateAccountFlow = () => {
         )
 
         waitForCreateSafeTx(taskId, (status) => {
-          console.log(status)
+          if (status === SafeCreationStatus.SUCCESS) {
+            onSuccess()
+          }
         })
       } else {
         await createNewSafe(provider, {
@@ -102,8 +109,8 @@ const ActivateAccountFlow = () => {
           saltNonce: undeployedSafe.safeDeploymentConfig?.saltNonce,
           options,
         })
+        onSuccess()
       }
-      dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
     } catch (_err) {
       const err = asError(_err)
       setIsSubmittable(true)

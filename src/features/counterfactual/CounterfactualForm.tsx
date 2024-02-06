@@ -1,6 +1,6 @@
 import { TxModalContext } from '@/components/tx-flow'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
-import { removeUndeployedSafe } from '@/features/counterfactual/store/undeployedSafeSlice'
+import { removeUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'

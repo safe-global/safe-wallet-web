@@ -65,7 +65,7 @@ describe('GasParams', () => {
     )
 
     expect(getByText('Estimated fee')).toBeInTheDocument()
-    expect(getByText('0.21 SepoliaETH')).toBeInTheDocument()
+    expect(getByText('0.42 SepoliaETH')).toBeInTheDocument()
   })
 
   it("Doesn't show an estimated fee if there is no gasLimit", () => {
