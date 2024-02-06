@@ -61,7 +61,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
       {!safes.length && (
         <Box display="flex" flexDirection="column" py={4} sx={{ maxWidth: '250px', margin: 'auto' }}>
           <Typography variant="body2" color="primary.light" textAlign="center" mt={2} mb={2}>
-            No safe accounts yet
+            No Safe Accounts yet
           </Typography>
         </Box>
       )}
