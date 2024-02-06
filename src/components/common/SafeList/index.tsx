@@ -8,8 +8,6 @@ import OwnedSafeList from '@/components/common/OwnedSafeList'
 
 import { AppRoutes } from '@/config/routes'
 import css from './styles.module.css'
-import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { useRouter } from 'next/router'
 import classNames from 'classnames'
 import Watchlist from '../Watchlist'

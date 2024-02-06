@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 import { useWatchedSafes } from '@/hooks/useSafes'
-import { Box, Button, CircularProgress, IconButton, List, Typography } from '@mui/material'
+import { Box, CircularProgress, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'

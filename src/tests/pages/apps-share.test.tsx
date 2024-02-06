@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '../test-utils'
 import ShareSafeApp from '@/pages/share/safe-app'
 import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
+import * as useOwnedSafesHook from '@/hooks/useOwnedSafes'
 import * as manifest from '@/services/safe-apps/manifest'
 import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 import crypto from 'crypto'
@@ -192,6 +193,52 @@ describe('Share Safe App Page', () => {
       expect(getSafeAppsSpy).toHaveBeenCalledWith('5', { url: TX_BUILDER })
 
       expect(screen.getByText('Create new Safe Account')).toBeInTheDocument()
+    })
+  })
+
+  it('Should show a select input with owned safes when the connected wallet owns Safes', async () => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        pathname: '/share/safe-app',
+        search: '?appUrl=https://apps-portal.safe.global/tx-builder&chain=eth',
+      },
+    })
+
+    const address = `0x${crypto.randomBytes(20).toString('hex')}`
+    const safeAddress = `0x${crypto.randomBytes(20).toString('hex')}`
+    jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({
+      ens: 'craicis90.eth',
+      address,
+      provider: jest.fn() as unknown as EIP1193Provider,
+      label: 'Metamask',
+      chainId: '1',
+    }))
+    jest.spyOn(useOwnedSafesHook, 'default').mockImplementation(() => ({
+      '1': [safeAddress],
+    }))
+
+    render(<ShareSafeApp />, {
+      routerProps: {
+        query: {
+          appUrl: TX_BUILDER,
+          chain: 'eth',
+        },
+      },
+      initialReduxState: {
+        chains: {
+          data: CONFIG_SERVICE_CHAINS,
+          error: undefined,
+          loading: false,
+        },
+      },
+    })
+
+    await waitFor(() => {
+      expect(fetchSafeAppFromManifestSpy).toHaveBeenCalledWith(TX_BUILDER, '1')
+      expect(getSafeAppsSpy).toHaveBeenCalledWith('1', { url: TX_BUILDER })
+
+      expect(screen.getByLabelText('Select a Safe Account')).toBeInTheDocument()
     })
   })
 })

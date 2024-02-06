@@ -1,7 +1,11 @@
+import type { listenerMiddlewareInstance } from '.'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { AddressEx, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AddressEx, SafeBalanceResponse, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '.'
-import { safeInfoSlice } from '@/store/safeInfoSlice'
+import { selectSafeInfo, safeInfoSlice } from '@/store/safeInfoSlice'
+import { balancesSlice } from './balancesSlice'
+import { safeFormatUnits } from '@/utils/formatters'
 
 export type AddedSafesOnChain = {
   [safeAddress: string]: {
@@ -45,6 +49,26 @@ export const addedSafesSlice = createSlice({
         threshold,
       }
     },
+    updateAddedSafeBalance: (
+      state,
+      { payload }: PayloadAction<{ chainId: string; address: string; balances?: SafeBalanceResponse }>,
+    ) => {
+      const { chainId, address, balances } = payload
+
+      if (!balances?.items || !isAddedSafe(state, chainId, address)) {
+        return
+      }
+
+      for (const item of balances.items) {
+        if (item.tokenInfo.type !== TokenType.NATIVE_TOKEN) {
+          continue
+        }
+
+        state[chainId][address].ethBalance = safeFormatUnits(item.balance, item.tokenInfo.decimals)
+
+        return
+      }
+    },
     removeSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = payload
 
@@ -73,7 +97,7 @@ export const addedSafesSlice = createSlice({
   },
 })
 
-export const { addOrUpdateSafe, removeSafe } = addedSafesSlice.actions
+export const { addOrUpdateSafe, updateAddedSafeBalance, removeSafe } = addedSafesSlice.actions
 
 export const selectAllAddedSafes = (state: RootState): AddedSafesState => {
   return state[addedSafesSlice.name]
@@ -91,3 +115,23 @@ export const selectAddedSafes = createSelector(
     return allAddedSafes?.[chainId]
   },
 )
+
+export const addedSafesListener = (listenerMiddleware: typeof listenerMiddlewareInstance) => {
+  listenerMiddleware.startListening({
+    actionCreator: balancesSlice.actions.set,
+    effect: (action, listenerApi) => {
+      if (!action.payload.data) {
+        return
+      }
+
+      const safeInfo = selectSafeInfo(listenerApi.getState())
+
+      const chainId = safeInfo.data?.chainId
+      const address = safeInfo.data?.address.value
+
+      if (chainId && address) {
+        listenerApi.dispatch(updateAddedSafeBalance({ chainId, address, balances: action.payload.data }))
+      }
+    },
+  })
+}
