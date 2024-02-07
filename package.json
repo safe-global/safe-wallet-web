@@ -56,7 +56,7 @@
     "@safe-global/safe-core-sdk-utils": "^1.7.4",
     "@safe-global/safe-ethers-lib": "^1.9.4",
     "@safe-global/safe-deployments": "1.32.0",
-    "@safe-global/safe-gateway-typescript-sdk": "^3.14.0",
+    "@safe-global/safe-gateway-typescript-sdk": "^3.14.1-alpha.0",
     "@safe-global/safe-modules-deployments": "^1.2.0",
     "@sentry/react": "^7.91.0",
     "@spindl-xyz/attribution-lite": "^1.4.0",
