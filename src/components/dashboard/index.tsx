@@ -34,11 +34,7 @@ const Dashboard = (): ReactElement => {
         </Grid>
 
         <Grid item xs={12}>
-          <Grid container>
-            <Grid item xs={12} lg={4}>
-              <FirstSteps />
-            </Grid>
-          </Grid>
+          <FirstSteps />
         </Grid>
 
         <Grid item xs={12} lg={6}>
