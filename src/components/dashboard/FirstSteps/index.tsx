@@ -1,7 +1,7 @@
 import useBalances from '@/hooks/useBalances'
 import { useAppSelector } from '@/store'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
-import { type ReactNode } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { LinearProgress, List, ListItem, ListItemIcon, Typography } from '@mui/material'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
@@ -23,10 +23,14 @@ type StatusProgressItems = Array<{
   completed: boolean
 }>
 
-const StatusProgress = ({ items }: { items: StatusProgressItems }) => {
+const calculateProgress = (items: StatusProgressItems) => {
   const totalNumberOfItems = items.length
   const completedItems = items.filter((item) => item.completed)
-  const progress = Math.round((completedItems.length / totalNumberOfItems) * 100)
+  return Math.round((completedItems.length / totalNumberOfItems) * 100)
+}
+
+const StatusProgress = ({ items, completedName }: { items: StatusProgressItems; completedName?: string }) => {
+  const progress = calculateProgress(items)
 
   return (
     <>
@@ -38,6 +42,7 @@ const StatusProgress = ({ items }: { items: StatusProgressItems }) => {
             </StatusItem>
           )
         })}
+        {completedName && <StatusItem completed={progress === 100}>{completedName}</StatusItem>}
       </List>
       <LinearProgress color="secondary" variant="determinate" value={progress} sx={{ borderRadius: 1 }} />
       <Typography variant="body2" mt={0.5}>
@@ -47,6 +52,12 @@ const StatusProgress = ({ items }: { items: StatusProgressItems }) => {
   )
 }
 
+enum FirstStepNames {
+  AddFunds = 'Add funds',
+  CreateFirstTx = 'Create your first transaction',
+  SafeReady = 'Safe is ready',
+}
+
 const FirstSteps = () => {
   const { balances } = useBalances()
   const outgoingTransactions = useAppSelector(selectOutgoingTransactions)
@@ -54,11 +65,13 @@ const FirstSteps = () => {
   const hasNonZeroBalance = balances && (balances.items.length > 1 || BigInt(balances.items[0]?.balance || 0) > 0)
   const hasOutgoingTransactions = !!outgoingTransactions && outgoingTransactions.length > 0
 
-  const items = [
-    { name: 'Add funds', completed: hasNonZeroBalance },
-    { name: 'Create your first transaction', completed: hasOutgoingTransactions },
-    { name: 'Safe is ready', completed: hasNonZeroBalance && hasOutgoingTransactions },
-  ]
+  const items = useMemo(
+    () => [
+      { name: FirstStepNames.AddFunds, completed: hasNonZeroBalance },
+      { name: FirstStepNames.CreateFirstTx, completed: hasOutgoingTransactions },
+    ],
+    [hasNonZeroBalance, hasOutgoingTransactions],
+  )
 
   return (
     <WidgetContainer>
@@ -67,7 +80,7 @@ const FirstSteps = () => {
           <Typography variant="h4" fontWeight="bold">
             First steps
           </Typography>
-          <StatusProgress items={items} />
+          <StatusProgress items={items} completedName={FirstStepNames.SafeReady} />
         </Card>
       </WidgetBody>
     </WidgetContainer>
