@@ -26,7 +26,7 @@ type StatusProgressItems = Array<{
 const StatusProgress = ({ items }: { items: StatusProgressItems }) => {
   const totalNumberOfItems = items.length
   const completedItems = items.filter((item) => item.completed)
-  const progress = Math.ceil(completedItems.length / totalNumberOfItems) * 100
+  const progress = Math.round((completedItems.length / totalNumberOfItems) * 100)
 
   return (
     <>
