@@ -151,7 +151,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
-  const [deployProps] = useGetDeployProps(data, provider, chain)
+  const [deployProps, deployPropsError, deployPropsLoading] = useGetDeployProps(data, provider, chain)
 
   const safeParams = useMemo(() => {
     return {
@@ -209,7 +209,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   }
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
-  const isDisabled = isWrongChain || (isSocialLogin && !willRelay)
+  const isDisabled = isWrongChain || (isSocialLogin && !willRelay) || deployPropsLoading
 
   return (
     <>
