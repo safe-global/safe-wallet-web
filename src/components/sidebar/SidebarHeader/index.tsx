@@ -77,7 +77,7 @@ const SafeHeader = (): ReactElement => {
         </div>
 
         <div className={css.iconButtons}>
-          <Track {...OVERVIEW_EVENTS.SHOW_QR}>
+          <Track {...OVERVIEW_EVENTS.SHOW_QR} label="sidebar">
             <QrCodeButton>
               <Tooltip title="Open QR code" placement="top">
                 <IconButton className={css.iconButton}>
