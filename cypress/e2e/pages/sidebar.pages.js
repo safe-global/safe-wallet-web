@@ -15,7 +15,7 @@ const sideBarListItem = '[data-testid="sidebar-list-item"]'
 const sideBarListItemWhatsNew = '[data-testid="list-item-whats-new"]'
 const sideBarListItemNeedHelp = '[data-testid="list-item-need-help"]'
 const sideSafeListItem = '[data-testid="safe-list-item"]'
-const sidebarSafeHeader = '[data-testid="sidebar-safe-header"]'
+const sidebarSafeHeader = '[data-testid="safe-header-info"]'
 const sidebarSafeContainer = '[data-testid="sidebar-safe-container"]'
 const safeItemOptionsBtn = '[data-testid="safe-options-btn"]'
 const safeItemOptionsRenameBtn = '[data-testid="rename-btn"]'
@@ -26,6 +26,8 @@ const cancelBtn = '[data-testid="cancel-btn"]'
 const deleteBtn = '[data-testid="delete-btn"]'
 const readOnlyVisibility = '[data-testid="read-only-visibility"]'
 const currencySection = '[data-testid="currency-section"]'
+const missingSignatureInfo = '[data-testid="missing-signature-info"]'
+const queuedTxInfo = '[data-testid="queued-tx-info"]'
 
 export const addedSafesGnosis = ['0x17b3...98C8', '0x11A6...F1BB', '0xB8d7...642A']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
@@ -120,27 +122,26 @@ export function verifySafesByNetwork(netwrok, safes) {
   })
 }
 
+function getSafeItemByName(name) {
+  return cy.get(sidebarSafeContainer).find(sideSafeListItem).contains(name).parents('li')
+}
+
 export function verifySafeReadOnlyState(safe) {
-  cy.get(sidebarSafeContainer).within(() => {
-    cy.get(sideSafeListItem)
-      .contains(safe)
-      .parents('li')
-      .within(() => {
-        cy.get(readOnlyVisibility).should('exist')
-      })
-  })
+  getSafeItemByName(safe).find(readOnlyVisibility).should('exist')
+}
+
+export function verifyMissingSignature(safe) {
+  getSafeItemByName(safe).find(missingSignatureInfo).should('exist')
+}
+
+export function verifyQueuedTx(safe) {
+  return getSafeItemByName(safe).find(queuedTxInfo).should('exist')
 }
 
 function clickOnSafeItemOptionsBtn(name) {
-  cy.get(sidebarSafeContainer).within(() => {
-    cy.get(sideSafeListItem)
-      .contains(name)
-      .parents('li')
-      .within(() => {
-        cy.get(safeItemOptionsBtn).click()
-      })
-  })
+  getSafeItemByName(name).find(safeItemOptionsBtn).click()
 }
+
 export function renameSafeItem(oldName, newName) {
   clickOnSafeItemOptionsBtn(oldName)
   clickOnRenameBtn()
@@ -187,4 +188,10 @@ export function clickOnSaveBtn() {
 
 function verifyModalRemoved() {
   main.verifyElementsCount(modal.modalTitle, 0)
+}
+
+export function checkCurrencyInHeader(currency) {
+  cy.get(sidebarSafeHeader).within(() => {
+    cy.get(currencySection).contains(currency)
+  })
 }
