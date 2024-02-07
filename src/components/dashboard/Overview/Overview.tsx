@@ -20,7 +20,7 @@ import type { UrlObject } from 'url'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
-import BuyCryproButton from '@/components/common/BuyCryproButton'
+import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 
 const ValueSkeleton = () => <Skeleton variant="text" width={20} />
 
@@ -182,7 +182,7 @@ const Overview = (): ReactElement => {
             <Grid item mt="auto">
               <Grid container mt={3} spacing={1} flexWrap="wrap">
                 <Grid item xs={12} sm="auto">
-                  <BuyCryproButton />
+                  <BuyCryptoButton />
                 </Grid>
 
                 <Grid item xs={6} sm="auto">

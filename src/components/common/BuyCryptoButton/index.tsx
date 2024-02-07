@@ -110,9 +110,9 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
   )
 }
 
-const BuyCryproButton = madProps(_BuyCryptoButton, {
+const BuyCryptoButton = madProps(_BuyCryptoButton, {
   href: useBuyCryptoHref,
   pagePath: usePathname,
 })
 
-export default BuyCryproButton
+export default BuyCryptoButton
