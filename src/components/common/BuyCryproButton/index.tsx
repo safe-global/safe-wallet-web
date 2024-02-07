@@ -1,14 +1,22 @@
+import EthHashInfo from '@/components/common/EthHashInfo'
+import ModalDialog from '@/components/common/ModalDialog'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { usePathname, useSearchParams } from 'next/navigation'
 import Link, { type LinkProps } from 'next/link'
-import { Button } from '@mui/material'
+import { Box, Button, ButtonBase, DialogContent, Divider, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
-import { SafeAppsTag } from '@/config/constants'
+import { MERCURYO_URL, MOONPAY_URL, SafeAppsTag } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import madProps from '@/utils/mad-props'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Track from '../Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
+import RampLogo from '@/public/images/common/ramp_logo.svg'
+import MercuryoLogo from '@/public/images/common/mercuryo_logo.svg'
+import MoonPayLogo from '@/public/images/common/moonpay_logo.svg'
+import css from './styles.module.css'
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded'
 
 const useOnrampAppUrl = (): string | undefined => {
   const [onrampApps] = useRemoteSafeApps(SafeAppsTag.ONRAMP)
@@ -31,16 +39,74 @@ const buttonStyles = {
 }
 
 const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePath: string }) => {
-  if (!href) return null
+  const [open, setOpen] = useState<boolean>(false)
+  const { safeAddress } = useSafeInfo()
+
+  const toggleDialog = () => {
+    setOpen((prev) => !prev)
+  }
+
+  const moonPayLink = `${MOONPAY_URL}?defaultCurrencyCode=eth&walletAddress=${safeAddress}`
+  const mercuryoLink = MERCURYO_URL
 
   return (
-    <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON} label={pagePath}>
-      <Link href={href} passHref>
-        <Button variant="contained" size="small" sx={buttonStyles} fullWidth startIcon={<AddIcon />}>
+    <>
+      <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON} label={pagePath}>
+        <Button variant="contained" size="small" sx={buttonStyles} startIcon={<AddIcon />} onClick={toggleDialog}>
           Buy crypto
         </Button>
-      </Link>
-    </Track>
+      </Track>
+      <ModalDialog open={open} onClose={toggleDialog} dialogTitle="Buy crypto with fiat" hideChainIndicator>
+        <DialogContent>
+          <Box mt={3}>
+            {href && (
+              <Box position="relative">
+                <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Ramp">
+                  <Link href={href} passHref>
+                    <ButtonBase className={css.button}>
+                      <RampLogo />
+                      Ramp
+                      <ChevronRightRoundedIcon color="border" />
+                    </ButtonBase>
+                  </Link>
+                </Track>
+                <div className={css.badge}>Safe integrated app</div>
+              </Box>
+            )}
+
+            <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="MoonPay">
+              <Link href={moonPayLink} passHref target="_blank">
+                <ButtonBase className={css.button}>
+                  <MoonPayLogo />
+                  MoonPay
+                  <ChevronRightRoundedIcon color="border" />
+                </ButtonBase>
+              </Link>
+            </Track>
+
+            <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Mercuryo">
+              <Link href={mercuryoLink} passHref target="_blank">
+                <ButtonBase className={css.button}>
+                  <MercuryoLogo />
+                  Mercuryo
+                  <ChevronRightRoundedIcon color="border" />
+                </ButtonBase>
+              </Link>
+            </Track>
+
+            <Divider sx={{ my: 4 }} />
+
+            <Typography mb={2}>
+              Make sure to use your correct account address when interacting with these apps:
+            </Typography>
+
+            <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start">
+              <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
+            </Box>
+          </Box>
+        </DialogContent>
+      </ModalDialog>
+    </>
   )
 }
 
