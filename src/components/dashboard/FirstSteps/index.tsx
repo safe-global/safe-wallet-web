@@ -29,7 +29,7 @@ const calculateProgress = (items: StatusProgressItems) => {
   return Math.round((completedItems.length / totalNumberOfItems) * 100)
 }
 
-const StatusProgress = ({ items, completedName }: { items: StatusProgressItems; completedName?: string }) => {
+const StatusProgress = ({ items }: { items: StatusProgressItems }) => {
   const progress = calculateProgress(items)
 
   return (
@@ -42,7 +42,6 @@ const StatusProgress = ({ items, completedName }: { items: StatusProgressItems; 
             </StatusItem>
           )
         })}
-        {completedName && <StatusItem completed={progress === 100}>{completedName}</StatusItem>}
       </List>
       <LinearProgress color="secondary" variant="determinate" value={progress} sx={{ borderRadius: 1 }} />
       <Typography variant="body2" mt={0.5}>
@@ -69,6 +68,7 @@ const FirstSteps = () => {
     () => [
       { name: FirstStepNames.AddFunds, completed: hasNonZeroBalance },
       { name: FirstStepNames.CreateFirstTx, completed: hasOutgoingTransactions },
+      { name: FirstStepNames.SafeReady, completed: hasNonZeroBalance && hasOutgoingTransactions },
     ],
     [hasNonZeroBalance, hasOutgoingTransactions],
   )
@@ -80,7 +80,7 @@ const FirstSteps = () => {
           <Typography variant="h4" fontWeight="bold">
             First steps
           </Typography>
-          <StatusProgress items={items} completedName={FirstStepNames.SafeReady} />
+          <StatusProgress items={items} />
         </Card>
       </WidgetBody>
     </WidgetContainer>
