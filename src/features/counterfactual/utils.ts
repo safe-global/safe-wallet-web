@@ -9,7 +9,9 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { showNotification } from '@/store/notificationsSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { getBlockExplorerLink } from '@/utils/chains'
 import { didReprice, didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
@@ -84,6 +86,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
         txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
       } else {
         txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        onSuccess?.()
       }
     })
     .catch((err) => {
@@ -91,12 +94,10 @@ export const dispatchTxExecutionAndDeploySafe = async (
 
       if (didReprice(error)) {
         txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        onSuccess?.()
       } else {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
       }
-    })
-    .finally(() => {
-      onSuccess?.()
     })
 
   return result!.hash
@@ -177,4 +178,17 @@ export const createCounterfactualSafe = (
     }),
   )
   router.push({ pathname: AppRoutes.home, query: { safe: `${chain.shortName}:${safeAddress}` } })
+}
+
+export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo, txHash?: string) => {
+  const link = chain && txHash ? getBlockExplorerLink(chain, txHash) : undefined
+  dispatch(
+    showNotification({
+      variant: 'info',
+      groupKey: 'cf-activate-account',
+      message: 'Transaction submitted',
+      detailedMessage: 'Your Safe Account will be deployed on-chain after the transaction has been executed.',
+      link: link ? { href: link.href, title: link.title } : undefined,
+    }),
+  )
 }

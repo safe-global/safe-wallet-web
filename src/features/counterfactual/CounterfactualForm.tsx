@@ -3,6 +3,7 @@ import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit
 import { removeUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
+import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useOnboard from '@/hooks/wallets/useOnboard'
@@ -10,7 +11,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useAppDispatch } from '@/store'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
+import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -46,6 +47,7 @@ export const CounterfactualForm = ({
 }): ReactElement => {
   const wallet = useWallet()
   const onboard = useOnboard()
+  const chain = useCurrentChain()
   const chainId = useChainId()
   const dispatch = useAppDispatch()
   const { safeAddress } = useSafeInfo()
@@ -61,7 +63,7 @@ export const CounterfactualForm = ({
 
   // Estimate gas limit
   const { gasLimit, gasLimitError } = useDeployGasLimit(safeTx)
-  const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
+  const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit?.totalGas)
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -91,12 +93,11 @@ export const CounterfactualForm = ({
       return
     }
 
-    // TODO: Show a success or status screen
     setTxFlow(undefined)
   }
 
   const walletCanPay = useWalletCanPay({
-    gasLimit,
+    gasLimit: gasLimit?.totalGas,
     maxFeePerGas: advancedParams.maxFeePerGas,
     maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
   })
@@ -113,6 +114,29 @@ export const CounterfactualForm = ({
   return (
     <>
       <form onSubmit={handleSubmit}>
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Executing this transaction will also deploy your Safe Account. The network fee can be broken down into
+          Transaction cost{' '}
+          <strong>
+            {getTotalFeeFormatted(
+              advancedParams.maxFeePerGas,
+              advancedParams.maxPriorityFeePerGas,
+              BigInt(gasLimit?.baseGas || '0') + BigInt(gasLimit?.safeTxGas || '0'),
+              chain,
+            )}{' '}
+            {chain?.nativeCurrency.symbol}
+          </strong>{' '}
+          and Deployment cost{' '}
+          <strong>
+            {getTotalFeeFormatted(
+              advancedParams.maxFeePerGas,
+              advancedParams.maxPriorityFeePerGas,
+              BigInt(gasLimit?.safeDeploymentGas || '0'),
+              chain,
+            )}{' '}
+            {chain?.nativeCurrency.symbol}
+          </strong>
+        </Alert>
         <div className={classNames(css.params)}>
           <AdvancedParams
             willExecute
@@ -123,7 +147,6 @@ export const CounterfactualForm = ({
             willRelay={false}
           />
         </div>
-
         {/* Error messages */}
         {cannotPropose ? (
           <NonOwnerError />
@@ -141,15 +164,12 @@ export const CounterfactualForm = ({
             </ErrorMessage>
           )
         )}
-
         {submitError && (
           <Box mt={1}>
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}
-
         <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
-
         <CardActions>
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>

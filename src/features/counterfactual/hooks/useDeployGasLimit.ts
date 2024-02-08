@@ -5,22 +5,31 @@ import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { estimateSafeDeploymentGas, estimateSafeTxGas, estimateTxBaseGas } from '@safe-global/protocol-kit'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
+type DeployGasLimitProps = {
+  baseGas: string
+  safeTxGas: string
+  safeDeploymentGas: string
+  totalGas: bigint
+}
+
 const useDeployGasLimit = (safeTx?: SafeTransaction) => {
   const onboard = useOnboard()
   const chainId = useChainId()
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint | undefined>(async () => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<DeployGasLimitProps | undefined>(async () => {
     if (!onboard) return
 
     const sdk = await getSafeSDKWithSigner(onboard, chainId)
 
-    const [gas, safeTxGas, safeDeploymentGas] = await Promise.all([
+    const [baseGas, safeTxGas, safeDeploymentGas] = await Promise.all([
       safeTx ? estimateTxBaseGas(sdk, safeTx) : '0',
       safeTx ? estimateSafeTxGas(sdk, safeTx) : '0',
       estimateSafeDeploymentGas(sdk),
     ])
 
-    return BigInt(gas) + BigInt(safeTxGas) + BigInt(safeDeploymentGas)
+    const totalGas = BigInt(baseGas) + BigInt(safeTxGas) + BigInt(safeDeploymentGas)
+
+    return { baseGas, safeTxGas, safeDeploymentGas, totalGas }
   }, [onboard, chainId, safeTx])
 
   return { gasLimit, gasLimitError, gasLimitLoading }
