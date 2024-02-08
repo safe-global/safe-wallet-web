@@ -74,6 +74,7 @@ const useAppCommunicator = (
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
   const customRpc = useAppSelector(selectRpc)
 
+  // console.log(iframeRef)
   const safeAppWeb3Provider = useMemo(() => {
     if (!chain) {
       return

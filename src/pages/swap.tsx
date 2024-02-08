@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { CowWidget } from '@/components/swap/CowWidget'
 import { useRouter } from 'next/router'
+import { CowWidgetCommunicator } from '@/components/swap/CowWidgetCommunicator'
 
 
 const Swap: NextPage = () => {
@@ -21,7 +22,7 @@ const Swap: NextPage = () => {
       </Head>
 
       <main>
-        <CowWidget sell={sell} />
+        <CowWidgetCommunicator sell={sell} />
       </main>
     </>
   )

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { Container, Grid } from '@mui/material'
 import useChainId from '@/hooks/useChainId'
 import { useRef } from 'react';
-
+import { Box } from '@mui/material'
 const supportedChains = [1, 100, 11155111]
 
 const isSupportedChainForSwap = (chainId: number) => supportedChains.includes(chainId)
@@ -82,8 +82,8 @@ export const CowWidget = ({sell}:Params) => {
   }
 
   return (
-    <Container>
+    <Box sx={{ height: '100%' }}>
         <CowSwapWidget params={params} ref={widget}/>
-    </Container>
+    </Box>
   )
 }
