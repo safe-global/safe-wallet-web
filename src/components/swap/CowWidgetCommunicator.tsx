@@ -252,6 +252,9 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
     },
   })
 
+  if(!params) {
+    return null
+  }
 
   if (!isSupportedChainForSwap(Number(chainId))) {
     return (
