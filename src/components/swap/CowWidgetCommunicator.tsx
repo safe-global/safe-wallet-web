@@ -1,16 +1,18 @@
 import { type CowSwapWidgetParams, TradeType, CowSwapWidget } from '@cowprotocol/widget-react'
-import { useState, useEffect, useContext, useMemo } from 'react'
-import { Container, Grid } from '@mui/material'
+import { useState, useEffect, useContext, type MutableRefObject } from 'react'
+import { Container, Grid, useTheme } from '@mui/material'
 import useChainId from '@/hooks/useChainId'
 import { useRef } from 'react'
 import { Box } from '@mui/material'
 import useAppCommunicator, { CommunicatorMessages } from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import {
   type AddressBookItem,
-  BaseTransaction,
-  EIP712TypedData, Methods,
-  RequestId, type SafeSettings,
-  SendTransactionRequestParams,
+  type BaseTransaction,
+  type EIP712TypedData,
+  Methods,
+  type RequestId,
+  type SafeSettings,
+  type SendTransactionRequestParams,
 } from '@safe-global/safe-apps-sdk'
 import { SafeAppsTxFlow, SignMessageFlow, SignMessageOnChainFlow } from '@/components/tx-flow/flows'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
@@ -20,6 +22,7 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import {
   SafeAppAccessPolicyTypes,
+  type SafeAppData,
   SafeAppFeatures,
 } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -31,6 +34,8 @@ import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTran
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
 import { useSafePermissions } from '@/hooks/safe-apps/permissions'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import { type SafeAppsTxParams } from '../tx-flow/flows/SafeAppsTx'
 
 const supportedChains = [1, 100, 11155111]
 
@@ -42,7 +47,7 @@ type Params = {
   }
 }
 
-const appData = {
+const appData: SafeAppData = {
   id: 1,
   url: 'https://app.safe.global',
   name: 'Safe Swap',
@@ -51,7 +56,7 @@ const appData = {
   chainIds: ['1', '100'],
   accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
   tags: ['safe-apps'],
-  features: [SafeAppFeatures.SAFE_APPS],
+  features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
   socialProfiles: [],
 }
 export const CowWidgetCommunicator = ({ sell }: Params) => {
@@ -61,6 +66,9 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
   const chainId = useChainId()
   const [currentRequestId, setCurrentRequestId] = useState<RequestId | undefined>()
   const safeMessages = useAppSelector(selectSafeMessages)
+
+  const { palette } = useTheme()
+  const darkMode = useDarkMode()
 
   const [params, setParams] = useState<CowSwapWidgetParams | null>(null)
   useEffect(() => {
@@ -76,11 +84,13 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
         'https://tokens.coingecko.com/uniswap/all.json',
       ],
       tradeType: TradeType.SWAP, // TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED
-      sell: sell ? sell : {
-        // Sell token. Optionally add amount for sell orders
-        asset: '',
-        amount: '0',
-      },
+      sell: sell
+        ? sell
+        : {
+            // Sell token. Optionally add amount for sell orders
+            asset: '',
+            amount: '0',
+          },
       enabledTradeTypes: [
         // TradeType.SWAP, TradeType.LIMIT and/or TradeType.ADVANCED
         TradeType.SWAP,
@@ -89,16 +99,20 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
       ],
       // env: 'dev',
       theme: {
-        baseTheme: 'dark',
-        primary: '#12ff80',
-        background: '#1c1c1c',
-        paper: '#121312',
-        text: '#ffffff',
+        baseTheme: darkMode ? 'dark' : 'light',
+        primary: palette.primary.main,
+        background: palette.background.main,
+        paper: palette.background.paper,
+        text: palette.text.primary,
+        danger: palette.error.dark,
+        info: palette.info.main,
+        success: palette.success.main,
+        warning: palette.warning.main,
+        alert: palette.warning.main,
       },
       interfaceFeeBips: '50', // 0.5% - COMING SOON! Fill the form above if you are interested
-
     })
-  }, [sell, chainId])
+  }, [sell, chainId, palette, darkMode])
 
   const chain = useCurrentChain()
 
@@ -120,7 +134,6 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
   const tokenlist = useAppSelector(selectTokenList)
   const onChainSigning = useAppSelector(selectOnChainSigning)
 
-
   const { setTxFlow } = useContext(TxModalContext)
 
   const onTxFlowClose = () => {
@@ -133,18 +146,18 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
     })
   }
 
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const iframeRef: MutableRefObject<HTMLIFrameElement | null | undefined> = useRef<HTMLIFrameElement | null>()
 
   useEffect(() => {
     const iframeElement = document.querySelector('#swapWidget iframe')
     if (iframeElement) {
-      iframeRef.current = iframeElement
+      iframeRef.current = iframeElement as HTMLIFrameElement
     }
   }, [params])
 
   const communicator = useAppCommunicator(iframeRef, appData, chain, {
     onConfirmTransactions: (txs: BaseTransaction[], requestId: RequestId, params?: SendTransactionRequestParams) => {
-      const data = {
+      const data: SafeAppsTxParams = {
         app: appData,
         appId: String(appData.id),
         requestId: requestId,
@@ -252,7 +265,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
     },
   })
 
-  if(!params) {
+  if (!params) {
     return null
   }
 
@@ -268,9 +281,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
 
   return (
     <Box sx={{ height: '100%' }} id={'swapWidget'}>
-
       <CowSwapWidget params={params} />
-
     </Box>
   )
 }

@@ -66,7 +66,7 @@ export type UseAppCommunicatorHandlers = {
 }
 
 const useAppCommunicator = (
-  iframeRef: MutableRefObject<HTMLIFrameElement | null>,
+  iframeRef: MutableRefObject<HTMLIFrameElement | null | undefined>,
   app: SafeAppData | undefined,
   chain: WebCoreChainInfo | undefined,
   handlers: UseAppCommunicatorHandlers,
@@ -111,7 +111,7 @@ const useAppCommunicator = (
       setCommunicator(communicatorInstance)
     }
 
-    if (app) {
+    if (app && iframeRef) {
       initCommunicator(iframeRef as MutableRefObject<HTMLIFrameElement>, app)
     }
 
@@ -206,7 +206,7 @@ const useAppCommunicator = (
     communicator?.on(Methods.requestAddressBook, (msg) => {
       return handlers.onRequestAddressBook(msg.origin)
     })
-  }, [safeAppWeb3Provider, handlers, chain, communicator])
+  }, [safeAppWeb3Provider, chain, communicator, handlers])
 
   return communicator
 }
