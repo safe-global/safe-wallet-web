@@ -1,3 +1,4 @@
+import CheckBalance from '@/features/counterfactual/CheckBalance'
 import { type ReactElement, useMemo, useContext } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -257,6 +258,8 @@ const AssetsTable = ({
           <EnhancedTable rows={rows} headCells={headCells} />
         </div>
       )}
+
+      <CheckBalance />
     </>
   )
 }
