@@ -10,7 +10,7 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   const { chainId, txQueuedTag, txHistoryTag } = safe
   const [proposedId, setProposedId] = useState<string>('')
   // N.B. we reload when txQueuedTag/txHistoryTag/proposedId changes as txQueuedTag alone is not enough
-  const reloadTag = txQueuedTag + txHistoryTag + proposedId
+  const reloadTag = (txQueuedTag ?? '') + (txHistoryTag ?? '') + proposedId
 
   // Re-fetch when chainId/address, or txQueueTag change
   const [data, error, loading] = useAsync<TransactionListPage>(
