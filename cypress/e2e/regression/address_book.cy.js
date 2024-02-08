@@ -51,8 +51,7 @@ describe('Address book tests', () => {
     cy.contains(constants.GNO_CSV_ENTRY.address).should('exist')
   })
 
-  // TODO: Change title in Testrail. New title "...exported"
-  it('Verify the address book file can be downloaded', () => {
+  it('Verify the address book file can be exported', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.dataSet).then(() => {
       main
         .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.dataSet)

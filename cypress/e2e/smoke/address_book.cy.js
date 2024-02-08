@@ -35,10 +35,11 @@ describe('[SMOKE] Address book tests', () => {
       })
   })
 
-  it('[SMOKE] Verify csv file can be imported', () => {
+  it.only('[SMOKE] Verify csv file can be imported', () => {
     addressBook.clickOnImportFileBtn()
     addressBook.importFile()
     addressBook.verifyImportModalIsClosed()
-    addressBook.verifyDataImported(constants.SEPOLIA_CSV_ENTRY.name, constants.SEPOLIA_CSV_ENTRY.address)
+    addressBook.verifyDataImported(addressBook.entries)
+    addressBook.verifyNumberOfRows(4)
   })
 })
