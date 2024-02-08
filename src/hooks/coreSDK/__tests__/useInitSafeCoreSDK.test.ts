@@ -1,10 +1,10 @@
+import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { renderHook } from '@/tests/test-utils'
 import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
 import * as web3 from '@/hooks/wallets/web3'
 import * as router from 'next/router'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/protocol-kit'
@@ -24,7 +24,7 @@ describe('useInitSafeCoreSDK hook', () => {
         value: '0x1',
       },
       implementationVersionState: ImplementationVersionState.UP_TO_DATE,
-    } as SafeInfo,
+    } as ExtendedSafeInfo,
     safeAddress: mockSafeAddress,
     safeLoaded: true,
     safeError: undefined,
@@ -58,6 +58,7 @@ describe('useInitSafeCoreSDK hook', () => {
       provider: mockProvider,
       address: mockSafeInfo.safe.address.value,
       implementation: mockSafeInfo.safe.implementation.value,
+      undeployedSafe: undefined,
     })
 
     await waitFor(() => {

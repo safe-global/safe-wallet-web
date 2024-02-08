@@ -1,5 +1,6 @@
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { renderHook } from '@/tests/test-utils'
-import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { useCompatibilityWarning } from '../useCompatibilityWarning'
 import * as wcUtils from '@/features/walletconnect/services/utils'
@@ -141,9 +142,10 @@ describe('useCompatibilityWarning', () => {
             loading: false,
             error: undefined,
             data: {
-              address: {},
+              ...extendedSafeInfoBuilder().build(),
+              address: { value: '' },
               chainId: '1',
-            } as unknown as SafeInfo,
+            },
           },
         },
       })

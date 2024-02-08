@@ -16,10 +16,12 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
   const [data, error, loading] = useAsync<TransactionListPage>(
     () => {
       if (!safeLoaded) return
+      if (!safe.deployed) return Promise.resolve({ results: [] })
+
       return getTransactionQueue(chainId, safeAddress)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safeLoaded, chainId, safeAddress, reloadTag],
+    [safeLoaded, chainId, safeAddress, reloadTag, safe.deployed],
     false,
   )
 

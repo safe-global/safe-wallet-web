@@ -1,11 +1,16 @@
+import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { createCounterfactualSafe } from '@/features/counterfactual/utils'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
+import { useAppDispatch } from '@/store'
+import { FEATURES } from '@/utils/chains'
+import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
 import lightPalette from '@/components/theme/lightPalette'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { useCurrentChain } from '@/hooks/useChains'
+import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import useGasPrice, { getTotalFee } from '@/hooks/useGasPrice'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import { formatVisualAmount } from '@/utils/formatters'
@@ -101,10 +106,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const chain = useCurrentChain()
   const wallet = useWallet()
   const provider = useWeb3()
+  const dispatch = useAppDispatch()
+  const router = useRouter()
   const [gasPrice] = useGasPrice()
-  const saltNonce = useMemo(() => Date.now(), [])
   const [_, setPendingSafe] = usePendingSafe()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
+  const [submitError, setSubmitError] = useState<string>()
+  const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
@@ -117,9 +125,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     return {
       owners: data.owners.map((owner) => owner.address),
       threshold: data.threshold,
-      saltNonce,
+      saltNonce: Date.now(), // This is not the final saltNonce but easier to use and will only result in a slightly higher gas estimation
     }
-  }, [data.owners, data.threshold, saltNonce])
+  }, [data.owners, data.threshold])
 
   const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
@@ -133,6 +141,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
       : '> 0.001'
 
+  // Only 1 out of 1 safe setups are supported for now
+  const isCounterfactual = data.threshold === 1 && data.owners.length === 1 && isCounterfactualEnabled
+
   const handleBack = () => {
     onBack(data)
   }
@@ -140,28 +151,40 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const createSafe = async () => {
     if (!wallet || !provider || !chain) return
 
-    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
+    try {
+      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+        chain.chainId,
+        LATEST_SAFE_VERSION,
+      )
 
-    const props: DeploySafeProps = {
-      safeAccountConfig: {
-        threshold: data.threshold,
-        owners: data.owners.map((owner) => owner.address),
-        fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
-      },
-      saltNonce: saltNonce.toString(),
+      const props: DeploySafeProps = {
+        safeAccountConfig: {
+          threshold: data.threshold,
+          owners: data.owners.map((owner) => owner.address),
+          fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
+        },
+      }
+
+      const saltNonce = await getAvailableSaltNonce(provider, { ...props, saltNonce: '0' })
+      const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
+
+      if (isCounterfactual) {
+        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
+        return
+      }
+
+      const pendingSafe = {
+        ...data,
+        saltNonce: Number(saltNonce),
+        safeAddress,
+        willRelay,
+      }
+
+      setPendingSafe(pendingSafe)
+      onSubmit(pendingSafe)
+    } catch (_err) {
+      setSubmitError('Error creating the Safe Account. Please try again later.')
     }
-
-    const safeAddress = await computeNewSafeAddress(provider, props)
-
-    const pendingSafe = {
-      ...data,
-      saltNonce,
-      safeAddress,
-      willRelay,
-    }
-
-    setPendingSafe(pendingSafe)
-    onSubmit(pendingSafe)
   }
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
@@ -203,50 +226,57 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         </Grid>
       </Box>
 
-      <Divider />
-      <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
-        {canRelay && !isSocialLogin && (
-          <Grid container spacing={3}>
-            <ReviewRow
-              name="Execution method"
-              value={
-                <ExecutionMethodSelector
-                  executionMethod={executionMethod}
-                  setExecutionMethod={setExecutionMethod}
-                  relays={minRelays}
+      {!isCounterfactual && (
+        <>
+          <Divider />
+          <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
+            {canRelay && !isSocialLogin && (
+              <Grid container spacing={3}>
+                <ReviewRow
+                  name="Execution method"
+                  value={
+                    <ExecutionMethodSelector
+                      executionMethod={executionMethod}
+                      setExecutionMethod={setExecutionMethod}
+                      relays={minRelays}
+                    />
+                  }
                 />
-              }
-            />
-          </Grid>
-        )}
+              </Grid>
+            )}
 
-        <Grid data-testid="network-fee-section" container spacing={3}>
-          <ReviewRow
-            name="Est. network fee"
-            value={
-              <>
-                <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
+            <Grid data-testid="network-fee-section" container spacing={3}>
+              <ReviewRow
+                name="Est. network fee"
+                value={
+                  <>
+                    <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
 
-                {!willRelay && !isSocialLogin && (
-                  <Typography variant="body2" color="text.secondary" mt={1}>
-                    You will have to confirm a transaction with your connected wallet.
-                  </Typography>
-                )}
-              </>
-            }
-          />
-        </Grid>
+                    {!willRelay && !isSocialLogin && (
+                      <Typography variant="body2" color="text.secondary" mt={1}>
+                        You will have to confirm a transaction with your connected wallet.
+                      </Typography>
+                    )}
+                  </>
+                }
+              />
+            </Grid>
 
-        {isWrongChain && <NetworkWarning />}
+            {isWrongChain && <NetworkWarning />}
 
-        {!walletCanPay && !willRelay && (
-          <ErrorMessage>Your connected wallet doesn&apos;t have enough funds to execute this transaction</ErrorMessage>
-        )}
-      </Box>
+            {!walletCanPay && !willRelay && (
+              <ErrorMessage>
+                Your connected wallet doesn&apos;t have enough funds to execute this transaction
+              </ErrorMessage>
+            )}
+          </Box>
+        </>
+      )}
 
       <Divider />
 
       <Box className={layoutCss.row}>
+        {submitError && <ErrorMessage className={css.errorMessage}>{submitError}</ErrorMessage>}
         <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
           <Button
             data-testid="back-btn"
@@ -264,7 +294,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             size="stretched"
             disabled={isDisabled}
           >
-            Next
+            Create
           </Button>
         </Box>
       </Box>
