@@ -319,8 +319,13 @@ export const addressBookData = {
   addedSafes: {
     100: {
       '0x17b34aEf1428A358bA2eA360a098b8A3BEb698C8': 'Added safe 1',
-      '0x11A6B41322C57Bd0e56cEe06abB11A1E5c1FF1BB': 'Added safe 2',
+      '0x11A6B41322C57Bd0e56cEe06abB11A1E5c1FF1BB': 'Added safe 900',
       '0xB8d760a90a5ed54D3c2b3EFC231277e99188642A': 'Added safe 100',
+    },
+    11155111: {
+      '0x0A0EEb6fBCc7c82259E548Fc4617175A357b3e71': 'Added safe 200',
+      '0xF21445699e91aC6F2EeeAF1a19510AC4197e59aB': 'Added owner',
+      '0x9E6DAfe829431e1892EcF8461FDAd02665170c31': 'Added non-owner',
     },
   },
 }
@@ -507,6 +512,22 @@ export const addedSafes = {
         threshold: 1,
         ethBalance: '0',
       },
+      '0x0A0EEb6fBCc7c82259E548Fc4617175A357b3e71': {
+        owners: [
+          {
+            value: '0x8aEf2f5c3F17261F6F1C4dA058D022BE92776af8',
+            name: null,
+            logoUri: null,
+          },
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 2,
+        ethBalance: '0',
+      },
     },
     100: {
       '0x17b34aEf1428A358bA2eA360a098b8A3BEb698C8': {
@@ -523,6 +544,32 @@ export const addedSafes = {
         owners: [{ value: '0x11B1D54B66e5e226D6f89069c21A569A22D98cfd' }],
         threshold: 1,
         ethBalance: '0.92132507668989',
+      },
+    },
+  },
+  set3: {
+    11155111: {
+      '0xF21445699e91aC6F2EeeAF1a19510AC4197e59aB': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 2,
+        ethBalance: '0',
+      },
+      '0x9E6DAfe829431e1892EcF8461FDAd02665170c31': {
+        owners: [
+          {
+            value: '0x96D4c6fFC338912322813a77655fCC926b9A5aC5',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 2,
+        ethBalance: '0',
       },
     },
   },

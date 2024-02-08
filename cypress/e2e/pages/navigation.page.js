@@ -9,6 +9,9 @@ const sentinelStart = 'div[data-testid="sentinelStart"]'
 const disconnectBtnStr = 'Disconnect'
 const notConnectedStatus = 'Connect'
 
+export function verifyTxBtnStatus(status) {
+  cy.get(newTxBtn).should(status)
+}
 export function clickOnSideNavigation(option) {
   cy.get(option).should('exist').click()
 }

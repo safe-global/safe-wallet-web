@@ -34,6 +34,7 @@ const CurrencySelect = (): ReactElement => {
       <InputLabel id="currency-label">Currency</InputLabel>
 
       <Select
+        data-testid="currency-selector"
         labelId="currency-label"
         id="currency"
         value={currency.toUpperCase()}
@@ -43,7 +44,7 @@ const CurrencySelect = (): ReactElement => {
         onClose={() => handleTrack('Close')}
       >
         {fiatCurrencies.map((item) => (
-          <MenuItem key={item} value={item} sx={{ overflow: 'hidden' }}>
+          <MenuItem data-testid="currency-item" key={item} value={item} sx={{ overflow: 'hidden' }}>
             {item.toUpperCase()}
           </MenuItem>
         ))}
