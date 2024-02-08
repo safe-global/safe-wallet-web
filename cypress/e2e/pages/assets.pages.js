@@ -17,6 +17,8 @@ const hiddenTokenSaveBtn = 'span[data-track="assets: Save hide dialog"]'
 const hiddenTokenCancelBtn = 'span[data-track="assets: Cancel hide dialog"]'
 const hiddenTokenDeselectAllBtn = 'span[data-track="assets: Deselect all hide dialog"]'
 const hiddenTokenIcon = 'svg[data-testid="VisibilityOffOutlinedIcon"]'
+const currencySelector = '[data-testid="currency-selector"]'
+const currencyItem = '[data-testid="currency-item"]'
 
 const hideTokenDefaultString = 'Hide tokens'
 const assetNameSortBtnStr = 'Asset'
@@ -90,6 +92,15 @@ export const currentcyGnosisFormat = '< 0.00001 GNO'
 
 export const currencyOx = /^0x$/
 export const currentcyOxFormat = '1.003 ZRX'
+
+function clickOnCurrencySelector() {
+  cy.get(currencySelector).click()
+}
+
+export function changeCurrency(currency) {
+  clickOnCurrencySelector()
+  cy.get(currencyItem).contains(currency).click()
+}
 
 export function clickOnSendBtn(index) {
   cy.get('button')

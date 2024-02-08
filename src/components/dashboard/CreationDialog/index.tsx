@@ -38,7 +38,7 @@ const getExportFileName = () => {
 }
 
 const backupSafe = (chainId: string, safeAddress: string, undeployedSafe: PredictedSafeProps) => {
-  const data = JSON.stringify({ chainId, safeAddress, safeProps: undeployedSafe })
+  const data = JSON.stringify({ chainId, safeAddress, safeProps: undeployedSafe }, null, 2)
 
   const blob = new Blob([data], { type: 'text/json' })
   const link = document.createElement('a')
@@ -49,7 +49,7 @@ const backupSafe = (chainId: string, safeAddress: string, undeployedSafe: Predic
   link.dispatchEvent(new MouseEvent('click'))
 
   // TODO: Track this as an event
-  //trackEvent(SETTINGS_EVENTS.DATA.EXPORT_ALL_BUTTON)
+  // trackEvent(COUNTERFACTUAL_EVENTS.EXPORT_SAFE)
 }
 
 const CreationDialog = () => {

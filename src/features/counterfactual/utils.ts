@@ -2,14 +2,23 @@ import type { NewSafeFormData } from '@/components/new-safe/create'
 import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { addUndeployedSafe, type UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import ExternalStore from '@/services/ExternalStore'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { asError } from '@/services/exceptions/utils'
+import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { didReprice, didRevert, type EthersError } from '@/utils/ethers-utils'
+import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
+import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
+import type { OnboardAPI } from '@web3-onboard/core'
+import type { ContractTransactionResponse } from 'ethers'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import {
@@ -17,8 +26,10 @@ import {
   ImplementationVersionState,
   type SafeBalanceResponse,
   TokenType,
+  type SafeInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BrowserProvider } from 'ethers'
+import { createWeb3 } from '@/hooks/wallets/web3'
 import type { NextRouter } from 'next/router'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
@@ -36,10 +47,85 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
   })
 }
 
+export const dispatchTxExecutionAndDeploySafe = async (
+  safeTx: SafeTransaction,
+  txOptions: TransactionOptions,
+  onboard: OnboardAPI,
+  chainId: SafeInfo['chainId'],
+  onSuccess?: () => void,
+) => {
+  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+  const eventParams = { groupKey: 'cf-tx' }
+  const safeAddress = await sdkUnchecked.getAddress()
+
+  let result: ContractTransactionResponse | undefined
+  try {
+    const signedTx = await sdkUnchecked.signTransaction(safeTx)
+
+    const wallet = await assertWalletChain(onboard, chainId)
+    const provider = createWeb3(wallet.provider)
+    const signer = await provider.getSigner()
+
+    const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
+
+    // @ts-ignore TODO: Check why TransactionResponse type doesn't work
+    result = await signer.sendTransaction(deploymentTx)
+    txDispatch(TxEvent.EXECUTING, eventParams)
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+    throw error
+  }
+
+  txDispatch(TxEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
+
+  result
+    ?.wait()
+    .then((receipt) => {
+      if (receipt === null) {
+        txDispatch(TxEvent.FAILED, { ...eventParams, error: new Error('No transaction receipt found') })
+      } else if (didRevert(receipt)) {
+        txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
+      } else {
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+      }
+    })
+    .catch((err) => {
+      const error = err as EthersError
+
+      if (didReprice(error)) {
+        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+      } else {
+        txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+      }
+    })
+    .finally(() => {
+      onSuccess?.()
+    })
+
+  return result!.hash
+}
+
+export const deploySafeAndExecuteTx = async (
+  txOptions: TransactionOptions,
+  chainId: string,
+  wallet: ConnectedWallet | null,
+  safeTx?: SafeTransaction,
+  onboard?: OnboardAPI,
+  onSuccess?: () => void,
+) => {
+  assertTx(safeTx)
+  assertWallet(wallet)
+  assertOnboard(onboard)
+
+  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId, onSuccess)
+}
+
 const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint | undefined>()
 
 export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
   let balance: bigint | undefined
+
+  if (!chain) return undefined
 
   // Fetch balance via the connected wallet.
   // If there is no wallet connected we fetch and cache the balance instead
@@ -51,8 +137,6 @@ export const getCounterfactualBalance = async (safeAddress: string, provider?: B
     setNativeBalance(balance)
   }
 
-  if (balance === undefined || !chain) return
-
   return <SafeBalanceResponse>{
     fiatTotal: '0',
     items: [
@@ -62,7 +146,7 @@ export const getCounterfactualBalance = async (safeAddress: string, provider?: B
           address: ZERO_ADDRESS,
           ...chain?.nativeCurrency,
         },
-        balance: balance.toString(),
+        balance: balance?.toString(),
         fiatBalance: '0',
         fiatConversion: '0',
       },
@@ -111,8 +195,4 @@ export const createCounterfactualSafe = (
     pathname: AppRoutes.home,
     query: { safe: `${chain.shortName}:${safeAddress}`, [CREATION_MODAL_QUERY_PARM]: true },
   })
-}
-
-export const isUndeployedSafe = (value: any): value is UndeployedSafe => {
-  return 'chainId' in value && 'safeAddress' in value && 'safeProps' in value
 }

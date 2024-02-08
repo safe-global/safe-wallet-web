@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker'
 import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
-import { BrowserProvider, type Eip1193Provider, type JsonRpcProvider } from 'ethers'
+import { type BrowserProvider, type JsonRpcProvider } from 'ethers'
 
 describe('Counterfactual utils', () => {
   describe('getUndeployedSafeInfo', () => {
@@ -36,19 +36,19 @@ describe('Counterfactual utils', () => {
       jest.clearAllMocks()
     })
 
-    it('should fall back to readonly provider if there is no provider', () => {
+    it('should fall back to readonly provider if there is no provider', async () => {
       const mockBalance = 123n
       const mockReadOnlyProvider = {
         getBalance: jest.fn(() => Promise.resolve(mockBalance)),
       } as unknown as JsonRpcProvider
-      const readOnlyProvider = jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
+      jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
 
       const mockSafeAddress = faker.finance.ethereumAddress()
       const mockChain = chainBuilder().build()
-      const result = getCounterfactualBalance(mockSafeAddress, undefined, mockChain)
+      const result = await getCounterfactualBalance(mockSafeAddress, undefined, mockChain)
 
-      expect(readOnlyProvider).toHaveBeenCalled()
-      expect(result).resolves.toEqual({
+      expect(mockReadOnlyProvider.getBalance).toHaveBeenCalled()
+      expect(result).toEqual({
         fiatTotal: '0',
         items: [
           {
@@ -65,28 +65,25 @@ describe('Counterfactual utils', () => {
       })
     })
 
-    it('should return undefined if there is no chain info', () => {
+    it('should return undefined if there is no chain info', async () => {
       const mockSafeAddress = faker.finance.ethereumAddress()
-      const mockProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
-      mockProvider.getBalance = jest.fn(() => Promise.resolve(1n))
+      const mockProvider = { getBalance: jest.fn(() => Promise.resolve(1n)) } as unknown as BrowserProvider
 
-      const result = getCounterfactualBalance(mockSafeAddress, mockProvider, undefined)
+      const result = await getCounterfactualBalance(mockSafeAddress, mockProvider, undefined)
 
-      expect(result).resolves.toBeUndefined()
+      expect(result).toBeUndefined()
     })
 
-    it('should return the native balance', () => {
+    it('should return the native balance', async () => {
       const mockSafeAddress = faker.finance.ethereumAddress()
-      const mockProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
-      const mockChain = chainBuilder().build()
       const mockBalance = 1000000n
+      const mockProvider = { getBalance: jest.fn(() => Promise.resolve(mockBalance)) } as unknown as BrowserProvider
+      const mockChain = chainBuilder().build()
 
-      mockProvider.getBalance = jest.fn(() => Promise.resolve(mockBalance))
-
-      const result = getCounterfactualBalance(mockSafeAddress, mockProvider, mockChain)
+      const result = await getCounterfactualBalance(mockSafeAddress, mockProvider, mockChain)
 
       expect(mockProvider.getBalance).toHaveBeenCalled()
-      expect(result).resolves.toEqual({
+      expect(result).toEqual({
         fiatTotal: '0',
         items: [
           {
