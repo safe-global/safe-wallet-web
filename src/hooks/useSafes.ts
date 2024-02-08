@@ -72,7 +72,7 @@ export const useWatchedSafes = (): Safe[] => {
 }
 
 export const useLoadSafeList = (safes: Safe[]) => {
-  const safeInfoList = useAsync(() => {
+  const [safeInfoList] = useAsync(() => {
     const promises = safes.map(async ({ address, chainId }) => {
       const balance = await getBalances(chainId, address, CURRENCY).then((result) => result.fiatTotal)
       return { address, chainId, balance }

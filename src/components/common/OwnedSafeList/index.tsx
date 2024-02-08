@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
 import type { Safe } from '@/hooks/useSafes'
+import { useLoadSafeList } from '@/hooks/useSafes'
 import { useOwnedSafes } from '@/hooks/useSafes'
 import { Box, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
@@ -13,21 +14,20 @@ import useChains from '@/hooks/useChains'
 const PAGE_SIZE = 2
 
 const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => void; isWelcomePage: boolean }) => {
-  const [loadedSafes, setLoadedSafes] = useState<Safe[]>([])
+  const [allLoadedSafes, setAllLoadedSafes] = useState<Safe[]>([])
   const [safesToDisplay, setSafesToDisplay] = useState<number>(PAGE_SIZE)
   const router = useRouter()
   const { configs } = useChains()
-
   const [safes] = useOwnedSafes()
+
+  const safesToLoad = safes.slice(allLoadedSafes.length, safesToDisplay)
+  const newLoadedSafes = useLoadSafeList(safesToLoad)
 
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   useEffect(() => {
-    setLoadedSafes((prev) => {
-      const newLoadedSafes = safes.slice(prev.length, safesToDisplay)
-      return [...prev, ...newLoadedSafes]
-    })
-  }, [safesToDisplay])
+    if (newLoadedSafes) setAllLoadedSafes((prev) => [...prev, ...newLoadedSafes])
+  }, [newLoadedSafes])
 
   const onShowMore = useCallback(() => {
     if (safes && safes.length > 0) {
@@ -64,12 +64,12 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
 
       {!!safes.length && (
         <List className={css.list}>
-          {loadedSafes.map(({ address: safeAddress, chainId }) => {
-            const href = getHref(chainId, safeAddress)
+          {allLoadedSafes.map(({ address, chainId }) => {
+            const href = getHref(chainId, address)
             return (
               <SafeListItem
-                key={chainId + safeAddress}
-                address={safeAddress}
+                key={chainId + address}
+                address={address}
                 chainId={chainId}
                 // threshold={threshold}
                 // owners={owners.length}
