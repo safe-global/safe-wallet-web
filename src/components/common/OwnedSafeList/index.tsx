@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
-import { useWatchedSafes } from '@/hooks/useSafes'
+import { useOwnedSafes } from '@/hooks/useSafes'
 import { Box, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import classNames from 'classnames'
+import useChains from '@/hooks/useChains'
 
 const MAX_SAFES = 5
 
@@ -15,9 +15,10 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
   const [lastChainId, setLastChainId] = useState<string | undefined>()
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
+  const { configs } = useChains()
 
   // use watched safes list here for now. Change later to owned safes
-  const safes = useWatchedSafes()
+  const [safes] = useOwnedSafes()
 
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
@@ -26,20 +27,21 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
   }, [safes, isListExpanded])
 
   const onShowMore = useCallback(() => {
-    if (safes.length > 0) {
-      setLastChainId(safes[safes.length - 1].chain.chainId)
+    if (safes && safes.length > 0) {
+      setLastChainId(safes[safes.length - 1].chainId)
       setIsListExpanded((prev) => !prev)
     }
   }, [safes])
 
   const getHref = useCallback(
-    (chain: ChainInfo, address: string) => {
+    (chainId: String, address: string) => {
+      const chain = configs.find((chain) => chain.chainId === chainId)
       return {
         pathname: isWelcomePage ? AppRoutes.home : isSingleTxPage ? AppRoutes.transactions.history : router.pathname,
-        query: { ...router.query, safe: `${chain.shortName}:${address}` },
+        query: { ...router.query, safe: `${chain?.shortName}:${address}` },
       }
     },
-    [isWelcomePage, isSingleTxPage, router.pathname, router.query],
+    [isWelcomePage, isSingleTxPage, router.pathname, router.query, configs],
   )
 
   return (
@@ -60,16 +62,16 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
 
       {!!safes.length && (
         <List className={css.list}>
-          {safesToShow.map(({ safeAddress, chain, fiatBalance, threshold, owners }) => {
-            const href = getHref(chain, safeAddress)
+          {safesToShow.map(({ safeAddress, chainId }) => {
+            const href = getHref(chainId, safeAddress)
             return (
               <SafeListItem
-                key={chain.chainId + safeAddress}
+                key={chainId + safeAddress}
                 address={safeAddress}
-                chainId={chain.chainId}
-                threshold={threshold}
-                owners={owners.length}
-                fiatBalance={fiatBalance}
+                chainId={chainId}
+                // threshold={threshold}
+                // owners={owners.length}
+                // fiatBalance={fiatBalance}
                 closeDrawer={closeDrawer}
                 href={href}
                 shouldScrollToSafe={false}
