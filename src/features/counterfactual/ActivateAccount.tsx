@@ -54,7 +54,7 @@ const useActivateAccount = () => {
   return { options, totalFee, walletCanPay }
 }
 
-const ActivateAccountFlow = () => {
+export const ActivateAccountFlow = () => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)

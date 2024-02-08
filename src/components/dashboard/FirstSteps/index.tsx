@@ -1,7 +1,10 @@
+import { TxModalContext } from '@/components/tx-flow'
+import { ActivateAccountFlow } from '@/features/counterfactual/ActivateAccount'
 import useBalances from '@/hooks/useBalances'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { useAppSelector } from '@/store'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
-import { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Button, CircularProgress, Grid, Link, Typography } from '@mui/material'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
@@ -69,7 +72,9 @@ const FirstStepsContent: StatusProgressItems = [
 
 const FirstSteps = () => {
   const { balances } = useBalances()
+  const { safe } = useSafeInfo()
   const outgoingTransactions = useAppSelector(selectOutgoingTransactions)
+  const { setTxFlow } = useContext(TxModalContext)
 
   const hasNonZeroBalance = balances && (balances.items.length > 1 || BigInt(balances.items[0]?.balance || 0) > 0)
   const hasOutgoingTransactions = !!outgoingTransactions && outgoingTransactions.length > 0
@@ -83,14 +88,13 @@ const FirstSteps = () => {
   )
 
   const activateAccount = () => {
-    // TODO: Open safe deployment flow
+    setTxFlow(<ActivateAccountFlow />)
   }
 
   const progress = calculateProgress(items)
   const stepsCompleted = items.filter((item) => item.completed).length
-  const isCounterfactual = false // TODO: Add real check here
 
-  if (!isCounterfactual) return null
+  if (safe.deployed) return null
 
   return (
     <WidgetContainer>
