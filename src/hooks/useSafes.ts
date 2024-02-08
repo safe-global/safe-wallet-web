@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { getBalances } from '@safe-global/safe-gateway-typescript-sdk'
 import { getAllOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
 import useChains from '@/hooks/useChains'
@@ -8,20 +9,19 @@ import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useAsync from './useAsync'
 import useWallet from './wallets/useWallet'
 
-export type SafeListItemDetails = {
+export type Safe = {
   chainId: string
-  safeAddress: string
+  address: string
 }
+
+const CURRENCY = 'USD'
 
 const sortChainsByCurrentChain = (chains: ChainInfo[], currentChainId: string): ChainInfo[] => {
   const currentChain = chains.find(({ chainId }) => chainId === currentChainId)
   const otherChains = chains.filter(({ chainId }) => chainId !== currentChainId)
   return currentChain ? [currentChain, ...otherChains] : chains
 }
-const sortSafesByCurrentChain = (
-  safes: SafeListItemDetails[],
-  currentChainId: string | undefined,
-): SafeListItemDetails[] => {
+const sortSafesByCurrentChain = (safes: Safe[], currentChainId: string | undefined): Safe[] => {
   if (!currentChainId) return safes
 
   const safesOnCurrentChain = safes.filter((safe) => safe.chainId === currentChainId)
@@ -30,7 +30,7 @@ const sortSafesByCurrentChain = (
   return [...safesOnCurrentChain, ...safesNotOnCurrentChain]
 }
 
-export const useOwnedSafes = (): [SafeListItemDetails[], Error | undefined, boolean] => {
+export const useOwnedSafes = (): [Safe[], Error | undefined, boolean] => {
   const currentChainId = useChainId()
   const wallet = useWallet()
 
@@ -41,8 +41,8 @@ export const useOwnedSafes = (): [SafeListItemDetails[], Error | undefined, bool
 
   const ownedSafeEntries = Object.entries(allOwnedSafes ?? {})
 
-  const ownedSafeList: SafeListItemDetails[] = ownedSafeEntries.flatMap(([chainId, chainSafes]) =>
-    chainSafes.map((safeAddress) => ({ chainId, safeAddress })),
+  const ownedSafeList: Safe[] = ownedSafeEntries.flatMap(([chainId, chainSafes]) =>
+    chainSafes.map((address) => ({ chainId, address })),
   )
 
   const sortedSafesList = useMemo(
@@ -52,21 +52,33 @@ export const useOwnedSafes = (): [SafeListItemDetails[], Error | undefined, bool
   return [sortedSafesList, error, loading]
 }
 
-export const useWatchedSafes = (): SafeListItemDetails[] => {
+export const useWatchedSafes = (): Safe[] => {
   const currentChainId = useChainId()
   const { configs } = useChains()
   const watchedSafes = useAppSelector(selectAllAddedSafes)
   const chains = useMemo(() => sortChainsByCurrentChain(configs, currentChainId), [configs, currentChainId])
 
-  let watchedSafesOnAllChains: SafeListItemDetails[] = []
+  let watchedSafesOnAllChains: Safe[] = []
   for (const chain of chains) {
     const { chainId } = chain
     const watchedSafesOnChain = watchedSafes[chainId] ?? {}
     const watchedSafesAdressesOnChain = Object.keys(watchedSafesOnChain)
-    const watchedSafesWithChain = watchedSafesAdressesOnChain.map((safeAddress) => {
-      return { safeAddress, chainId }
+    const watchedSafesWithChain = watchedSafesAdressesOnChain.map((address) => {
+      return { address, chainId }
     })
     watchedSafesOnAllChains = [...watchedSafesOnAllChains, ...watchedSafesWithChain]
   }
   return watchedSafesOnAllChains
+}
+
+export const useLoadSafeList = (safes: Safe[]) => {
+  const safeInfoList = useAsync(() => {
+    const promises = safes.map(async ({ address, chainId }) => {
+      const balance = await getBalances(chainId, address, CURRENCY).then((result) => result.fiatTotal)
+      return { address, chainId, balance }
+    })
+    return Promise.all(promises)
+  }, [safes])
+
+  return safeInfoList
 }

@@ -96,7 +96,7 @@ const Watchlist = ({
 
       {!!safes && (
         <List className={css.list}>
-          {safesToShow.map(({ safeAddress, chainId }) => {
+          {safesToShow.map(({ address: safeAddress, chainId }) => {
             const href = getHref(chainId, safeAddress)
             return (
               <SafeListItem

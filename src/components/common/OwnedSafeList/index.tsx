@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
-import type { SafeListItemDetails } from '@/hooks/useSafes'
+import type { Safe } from '@/hooks/useSafes'
 import { useOwnedSafes } from '@/hooks/useSafes'
 import { Box, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
@@ -13,7 +13,7 @@ import useChains from '@/hooks/useChains'
 const PAGE_SIZE = 2
 
 const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => void; isWelcomePage: boolean }) => {
-  const [loadedSafes, setLoadedSafes] = useState<SafeListItemDetails[]>([])
+  const [loadedSafes, setLoadedSafes] = useState<Safe[]>([])
   const [safesToDisplay, setSafesToDisplay] = useState<number>(PAGE_SIZE)
   const router = useRouter()
   const { configs } = useChains()
@@ -27,7 +27,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
       const newLoadedSafes = safes.slice(prev.length, safesToDisplay)
       return [...prev, ...newLoadedSafes]
     })
-  }, [safesToDisplay, safes])
+  }, [safesToDisplay])
 
   const onShowMore = useCallback(() => {
     if (safes && safes.length > 0) {
@@ -64,7 +64,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
 
       {!!safes.length && (
         <List className={css.list}>
-          {loadedSafes.map(({ safeAddress, chainId }) => {
+          {loadedSafes.map(({ address: safeAddress, chainId }) => {
             const href = getHref(chainId, safeAddress)
             return (
               <SafeListItem
