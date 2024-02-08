@@ -1,5 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import SafeListItem from '@/components/sidebar/SafeListItem'
+import type { SafeListItemDetails } from '@/hooks/useSafes'
 import { useOwnedSafes } from '@/hooks/useSafes'
 import { Box, IconButton, List, Typography } from '@mui/material'
 import css from './styles.module.css'
@@ -9,27 +10,28 @@ import { useRouter } from 'next/router'
 import classNames from 'classnames'
 import useChains from '@/hooks/useChains'
 
-const MAX_SAFES = 5
+const PAGE_SIZE = 2
 
 const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => void; isWelcomePage: boolean }) => {
-  const [lastChainId, setLastChainId] = useState<string | undefined>()
-  const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
+  const [loadedSafes, setLoadedSafes] = useState<SafeListItemDetails[]>([])
+  const [safesToDisplay, setSafesToDisplay] = useState<number>(PAGE_SIZE)
   const router = useRouter()
   const { configs } = useChains()
 
-  // use watched safes list here for now. Change later to owned safes
   const [safes] = useOwnedSafes()
 
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
-  const safesToShow = useMemo(() => {
-    return isListExpanded ? safes : safes.slice(0, MAX_SAFES)
-  }, [safes, isListExpanded])
+  useEffect(() => {
+    setLoadedSafes((prev) => {
+      const newLoadedSafes = safes.slice(prev.length, safesToDisplay)
+      return [...prev, ...newLoadedSafes]
+    })
+  }, [safesToDisplay, safes])
 
   const onShowMore = useCallback(() => {
     if (safes && safes.length > 0) {
-      setLastChainId(safes[safes.length - 1].chainId)
-      setIsListExpanded((prev) => !prev)
+      setSafesToDisplay((prev) => prev + PAGE_SIZE)
     }
   }, [safes])
 
@@ -62,7 +64,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
 
       {!!safes.length && (
         <List className={css.list}>
-          {safesToShow.map(({ safeAddress, chainId }) => {
+          {loadedSafes.map(({ safeAddress, chainId }) => {
             const href = getHref(chainId, safeAddress)
             return (
               <SafeListItem
@@ -83,7 +85,7 @@ const OwnedSafeList = ({ closeDrawer, isWelcomePage }: { closeDrawer?: () => voi
         </List>
       )}
 
-      {!isListExpanded && safes.length > MAX_SAFES && (
+      {safes.length > safesToDisplay && (
         <div className={css.ownedLabelWrapper} onClick={onShowMore}>
           <Typography variant="body2" display="inline" className={css.ownedLabel}>
             More Accounts

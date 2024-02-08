@@ -8,7 +8,6 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import IconButton from '@mui/material/IconButton'
 import SvgIcon from '@mui/material/SvgIcon'
 import Box from '@mui/material/Box'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import AddIcon from '@/public/images/common/add.svg'
 
 import { useWatchedSafes } from '@/hooks/useSafes'
@@ -20,6 +19,7 @@ import { VisibilityOutlined } from '@mui/icons-material'
 import classNames from 'classnames'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import Track from '../Track'
+import useChains from '@/hooks/useChains'
 
 const MAX_SAFES = 5
 
@@ -32,6 +32,7 @@ const Watchlist = ({
 }): ReactElement => {
   const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
   const router = useRouter()
+  const { configs } = useChains()
 
   const safes = useWatchedSafes()
 
@@ -43,13 +44,14 @@ const Watchlist = ({
    * otherwise keep the current route
    */
   const getHref = useCallback(
-    (chain: ChainInfo, address: string) => {
+    (chainId: string, address: string) => {
+      const chain = configs.find((chain) => chain.chainId === chainId)
       return {
         pathname: isWelcomePage ? AppRoutes.home : isSingleTxPage ? AppRoutes.transactions.history : router.pathname,
-        query: { ...router.query, safe: `${chain.shortName}:${address}` },
+        query: { ...router.query, safe: `${chain?.shortName}:${address}` },
       }
     },
-    [isWelcomePage, isSingleTxPage, router.pathname, router.query],
+    [isWelcomePage, isSingleTxPage, router.pathname, router.query, configs],
   )
 
   const safesToShow = useMemo(() => {
@@ -94,16 +96,16 @@ const Watchlist = ({
 
       {!!safes && (
         <List className={css.list}>
-          {safesToShow.map(({ safeAddress, chain, fiatBalance, threshold, owners }) => {
-            const href = getHref(chain, safeAddress)
+          {safesToShow.map(({ safeAddress, chainId }) => {
+            const href = getHref(chainId, safeAddress)
             return (
               <SafeListItem
-                key={chain.chainId + safeAddress}
+                key={chainId + safeAddress}
                 address={safeAddress}
-                chainId={chain.chainId}
-                threshold={threshold}
-                owners={owners.length}
-                fiatBalance={fiatBalance}
+                chainId={chainId}
+                // threshold={threshold}
+                // owners={owners.length}
+                // fiatBalance={fiatBalance}
                 closeDrawer={closeDrawer}
                 href={href}
                 shouldScrollToSafe={false}
