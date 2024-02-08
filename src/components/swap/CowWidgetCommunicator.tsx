@@ -36,6 +36,9 @@ import { selectSafeMessages } from '@/store/safeMessagesSlice'
 import { useSafePermissions } from '@/hooks/safe-apps/permissions'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { type SafeAppsTxParams } from '../tx-flow/flows/SafeAppsTx'
+import { trackSafeAppEvent, SAFE_APPS_EVENTS } from '@/services/analytics'
+import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
+import { txSubscribe, TxEvent } from '@/services/tx/txEvents'
 
 const supportedChains = [1, 100, 11155111]
 
@@ -264,6 +267,27 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
       }
     },
   })
+
+  useEffect(() => {
+    const unsubscribe = txSubscribe(TxEvent.SAFE_APPS_REQUEST, async ({ safeAppRequestId, safeTxHash }) => {
+      if (safeAppRequestId && currentRequestId === safeAppRequestId) {
+        trackSafeAppEvent(SAFE_APPS_EVENTS.PROPOSE_TRANSACTION, appData.name)
+        communicator?.send({ safeTxHash }, safeAppRequestId)
+      }
+    })
+
+    return unsubscribe
+  }, [chainId, communicator, currentRequestId])
+
+  useEffect(() => {
+    const unsubscribe = safeMsgSubscribe(SafeMsgEvent.SIGNATURE_PREPARED, ({ messageHash, requestId, signature }) => {
+      if (requestId && currentRequestId === requestId) {
+        communicator?.send({ messageHash, signature }, requestId)
+      }
+    })
+
+    return unsubscribe
+  }, [communicator, currentRequestId])
 
   if (!params) {
     return null
