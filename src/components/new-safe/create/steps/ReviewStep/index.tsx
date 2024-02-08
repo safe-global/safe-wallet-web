@@ -1,11 +1,9 @@
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { createCounterfactualSafe } from '@/features/counterfactual/utils'
-import useAsync from '@/hooks/useAsync'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import { useAppDispatch } from '@/store'
 import { FEATURES } from '@/utils/chains'
-import type { BrowserProvider } from 'ethers'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
@@ -102,34 +100,6 @@ export const NetworkFee = ({
   )
 }
 
-const useGetDeployProps = (data: NewSafeFormData, provider?: BrowserProvider, chain?: ChainInfo) => {
-  return useAsync(
-    async () => {
-      if (!chain || !provider) return
-
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
-        chain.chainId,
-        LATEST_SAFE_VERSION,
-      )
-
-      const deploySafeProps: DeploySafeProps = {
-        safeAccountConfig: {
-          threshold: data.threshold,
-          owners: data.owners.map((owner) => owner.address),
-          fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
-        },
-      }
-
-      const saltNonce = await getAvailableSaltNonce(provider, { ...deploySafeProps, saltNonce: '0' })
-      const safeAddress = await computeNewSafeAddress(provider, { ...deploySafeProps, saltNonce })
-
-      return { saltNonce, safeAddress, deploySafeProps }
-    },
-    [chain, data.owners, data.threshold, provider],
-    false,
-  )
-}
-
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
@@ -151,15 +121,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
-  const [deployProps] = useGetDeployProps(data, provider, chain)
-
   const safeParams = useMemo(() => {
     return {
       owners: data.owners.map((owner) => owner.address),
       threshold: data.threshold,
-      saltNonce: deployProps?.saltNonce ? Number(deployProps.saltNonce) : Date.now(),
+      saltNonce: Date.now(), // This is not the final saltNonce but easier to use and will only result in a slightly higher gas estimation
     }
-  }, [data.owners, data.threshold, deployProps?.saltNonce])
+  }, [data.owners, data.threshold])
 
   const { gasLimit } = useEstimateSafeCreationGas(safeParams)
 
@@ -183,29 +151,40 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const createSafe = async () => {
     if (!wallet || !provider || !chain) return
 
-    if (!deployProps) {
+    try {
+      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+        chain.chainId,
+        LATEST_SAFE_VERSION,
+      )
+
+      const props: DeploySafeProps = {
+        safeAccountConfig: {
+          threshold: data.threshold,
+          owners: data.owners.map((owner) => owner.address),
+          fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
+        },
+      }
+
+      const saltNonce = await getAvailableSaltNonce(provider, { ...props, saltNonce: '0' })
+      const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
+
+      if (isCounterfactual) {
+        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
+        return
+      }
+
+      const pendingSafe = {
+        ...data,
+        saltNonce: Number(saltNonce),
+        safeAddress,
+        willRelay,
+      }
+
+      setPendingSafe(pendingSafe)
+      onSubmit(pendingSafe)
+    } catch (_err) {
       setSubmitError('Error creating the Safe Account. Please try again later.')
-      return
     }
-
-    const props = deployProps.deploySafeProps
-    const saltNonce = deployProps.saltNonce
-    const safeAddress = deployProps.safeAddress
-
-    if (isCounterfactual) {
-      createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
-      return
-    }
-
-    const pendingSafe = {
-      ...data,
-      saltNonce: Number(saltNonce),
-      safeAddress,
-      willRelay,
-    }
-
-    setPendingSafe(pendingSafe)
-    onSubmit(pendingSafe)
   }
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
