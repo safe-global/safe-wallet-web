@@ -1,10 +1,13 @@
+import type { NewSafeFormData } from '@/components/new-safe/create'
+import * as useChains from '@/hooks/useChains'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { render } from '@/tests/test-utils'
-import { NetworkFee } from '@/components/new-safe/create/steps/ReviewStep/index'
+import ReviewStep, { NetworkFee } from '@/components/new-safe/create/steps/ReviewStep/index'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { act, fireEvent, waitFor } from '@testing-library/react'
 
 const mockChainInfo = {
   chainId: '100',
@@ -38,5 +41,81 @@ describe('NetworkFee', () => {
     expect(
       result.getByText(/You have used up your 5 free transactions per hour. Please try again later/),
     ).toBeInTheDocument()
+  })
+})
+
+describe('ReviewStep', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should display a pay now pay later option for counterfactual safe setups', () => {
+    const mockData: NewSafeFormData = {
+      name: 'Test',
+      threshold: 1,
+      owners: [{ name: '', address: '0x1' }],
+      saltNonce: 0,
+    }
+    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
+
+    const { getByText } = render(
+      <ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />,
+    )
+
+    expect(getByText('Pay now')).toBeInTheDocument()
+  })
+
+  it('should not display the network fee for counterfactual safes', () => {
+    const mockData: NewSafeFormData = {
+      name: 'Test',
+      threshold: 1,
+      owners: [{ name: '', address: '0x1' }],
+      saltNonce: 0,
+    }
+    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
+
+    const { queryByText } = render(
+      <ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />,
+    )
+
+    expect(queryByText('Est. network fee')).not.toBeInTheDocument()
+  })
+
+  it('should not display the execution method for counterfactual safes', () => {
+    const mockData: NewSafeFormData = {
+      name: 'Test',
+      threshold: 1,
+      owners: [{ name: '', address: '0x1' }],
+      saltNonce: 0,
+    }
+    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
+
+    const { queryByText } = render(
+      <ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />,
+    )
+
+    expect(queryByText('Execution method')).not.toBeInTheDocument()
+  })
+
+  it('should display the execution method for counterfactual safes if the user selects pay now', async () => {
+    const mockData: NewSafeFormData = {
+      name: 'Test',
+      threshold: 1,
+      owners: [{ name: '', address: '0x1' }],
+      saltNonce: 0,
+    }
+    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
+
+    const { getByText } = render(
+      <ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />,
+    )
+
+    const payNow = getByText('Pay now')
+
+    act(() => {
+      fireEvent.click(payNow)
+    })
+
+    expect(getByText(/Est. network fee/)).toBeInTheDocument()
   })
 })
