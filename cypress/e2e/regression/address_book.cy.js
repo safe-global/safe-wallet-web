@@ -5,9 +5,11 @@ import * as constants from '../../support/constants'
 import * as addressBook from '../../e2e/pages/address_book.page'
 import * as main from '../../e2e/pages/main.page'
 import * as ls from '../../support/localstorage_data.js'
+import * as sidebar from '../pages/sidebar.pages.js'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
+const importedSafe = 'imported-safe'
 
 describe('Address book tests', () => {
   beforeEach(() => {
@@ -68,6 +70,39 @@ describe('Address book tests', () => {
           const downloadsFolder = Cypress.config('downloadsFolder')
           //File reading is failing in the CI. Can be tested locally
           cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
+        })
+    })
+  })
+
+  it('Verify that importing a csv file does not alter addresses in the Address book not present in the file', () => {
+    main
+      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+      .then(() => {
+        main
+          .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+          .then(() => {
+            cy.wait(1000)
+            cy.reload()
+            addressBook.clickOnImportFileBtn()
+            addressBook.importCSVFile(addressBook.validCSVFile)
+            addressBook.clickOnImportBtn()
+            addressBook.verifyDataImported([constants.RECIPIENT_ADDRESS])
+          })
+      })
+  })
+
+  it('Verify Safe name changes after uploading a csv file', () => {
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set3).then(() => {
+      main
+        .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.addedSafesImport)
+        .then(() => {
+          cy.wait(1000)
+          cy.reload()
+          addressBook.clickOnImportFileBtn()
+          addressBook.importCSVFile(addressBook.addedSafesCSVFile)
+          addressBook.clickOnImportBtn()
+          sidebar.openSidebar()
+          sidebar.verifyAddedSafesExist([importedSafe])
         })
     })
   })

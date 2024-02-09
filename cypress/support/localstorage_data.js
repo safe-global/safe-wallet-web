@@ -323,6 +323,11 @@ export const addressBookData = {
       '0xB8d760a90a5ed54D3c2b3EFC231277e99188642A': 'Added safe 100',
     },
   },
+  addedSafesImport: {
+    11155111: {
+      '0x6d0b6F96f665Bb4490f9ddb2e450Da2f7e546dC1': 'Before import safe',
+    },
+  },
 }
 
 export const safeSettings = {
@@ -523,6 +528,21 @@ export const addedSafes = {
         owners: [{ value: '0x11B1D54B66e5e226D6f89069c21A569A22D98cfd' }],
         threshold: 1,
         ethBalance: '0.92132507668989',
+      },
+    },
+  },
+  set3: {
+    11155111: {
+      '0x6d0b6F96f665Bb4490f9ddb2e450Da2f7e546dC1': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 1,
+        ethBalance: '0',
       },
     },
   },
