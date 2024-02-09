@@ -3,13 +3,13 @@ import ModalDialog from '@/components/common/ModalDialog'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { usePathname, useSearchParams } from 'next/navigation'
 import Link, { type LinkProps } from 'next/link'
-import { Box, Button, ButtonBase, DialogContent, Divider, Typography } from '@mui/material'
+import { Box, Button, ButtonBase, Divider, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { MERCURYO_URL, MOONPAY_URL, SafeAppsTag } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import madProps from '@/utils/mad-props'
-import { useMemo, useState } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 import Track from '../Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import RampLogo from '@/public/images/common/ramp_logo.svg'
@@ -38,6 +38,18 @@ const buttonStyles = {
   minHeight: '40px',
 }
 
+const BuyCryptoOption = ({ name, children }: { name: string; children: ReactNode }) => {
+  return (
+    <ButtonBase className={css.button}>
+      <Typography display="flex" alignItems="center" fontWeight="bold" fontSize="18px" gap={1}>
+        {children}
+        {name}
+      </Typography>
+      <ChevronRightRoundedIcon color="border" />
+    </ButtonBase>
+  )
+}
+
 const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePath: string }) => {
   const [open, setOpen] = useState<boolean>(false)
   const { safeAddress } = useSafeInfo()
@@ -57,54 +69,47 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
         </Button>
       </Track>
       <ModalDialog open={open} onClose={toggleDialog} dialogTitle="Buy crypto with fiat" hideChainIndicator>
-        <DialogContent>
-          <Box mt={3}>
-            {href && (
-              <Box position="relative">
-                <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Ramp">
-                  <Link href={href} passHref>
-                    <ButtonBase className={css.button}>
-                      <RampLogo />
-                      Ramp
-                      <ChevronRightRoundedIcon color="border" />
-                    </ButtonBase>
-                  </Link>
-                </Track>
-                <div className={css.badge}>Safe integrated app</div>
-              </Box>
-            )}
-
-            <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="MoonPay">
-              <Link href={moonPayLink} passHref target="_blank">
-                <ButtonBase className={css.button}>
-                  <MoonPayLogo />
-                  MoonPay
-                  <ChevronRightRoundedIcon color="border" />
-                </ButtonBase>
-              </Link>
-            </Track>
-
-            <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Mercuryo">
-              <Link href={mercuryoLink} passHref target="_blank">
-                <ButtonBase className={css.button}>
-                  <MercuryoLogo />
-                  Mercuryo
-                  <ChevronRightRoundedIcon color="border" />
-                </ButtonBase>
-              </Link>
-            </Track>
-
-            <Divider sx={{ my: 4 }} />
-
-            <Typography mb={2}>
-              Make sure to use your correct account address when interacting with these apps:
-            </Typography>
-
-            <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start">
-              <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
+        <Box px={4} pb={5} pt={4}>
+          <Typography>Choose one of the available options</Typography>
+          {href && (
+            <Box position="relative">
+              <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Ramp">
+                <Link href={href} passHref>
+                  <BuyCryptoOption name="Ramp">
+                    <RampLogo />
+                  </BuyCryptoOption>
+                </Link>
+              </Track>
+              <div className={css.badge}>Safe integrated app</div>
             </Box>
+          )}
+
+          <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="MoonPay">
+            <Link href={moonPayLink} passHref target="_blank">
+              <BuyCryptoOption name="MoonPay">
+                <MoonPayLogo />
+              </BuyCryptoOption>
+            </Link>
+          </Track>
+
+          <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Mercuryo">
+            <Link href={mercuryoLink} passHref target="_blank">
+              <BuyCryptoOption name="Mercuryo">
+                <MercuryoLogo />
+              </BuyCryptoOption>
+            </Link>
+          </Track>
+
+          <Divider sx={{ my: 4 }} />
+
+          <Typography mb={2}>
+            Make sure to use your correct account address when interacting with these apps:
+          </Typography>
+
+          <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start">
+            <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
           </Box>
-        </DialogContent>
+        </Box>
       </ModalDialog>
     </>
   )

@@ -1,5 +1,4 @@
 .button {
-  text-indent: -9999px;
   justify-content: space-between;
   padding: var(--space-2);
   border-radius: 6px;
@@ -7,6 +6,10 @@
   width: 100%;
   margin-top: var(--space-2);
   color: var(--color-text-primary);
+}
+
+.button:hover {
+  border-color: var(--color-primary-main);
 }
 
 .badge {
