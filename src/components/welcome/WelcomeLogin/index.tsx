@@ -1,4 +1,3 @@
-import isEmpty from 'lodash/isEmpty'
 import { AppRoutes } from '@/config/routes'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
@@ -10,9 +9,8 @@ import { useRouter } from 'next/router'
 import WalletLogin from './WalletLogin'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import { trackEvent } from '@/services/analytics'
-import { useAppSelector } from '@/store'
-import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useHasSafes } from '../MyAccounts/useAllSafes'
 
 const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
   loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
@@ -22,11 +20,10 @@ const WelcomeLogin = () => {
   const router = useRouter()
   const wallet = useWallet()
   const isSocialLoginEnabled = useHasFeature(FEATURES.SOCIAL_LOGIN)
-  const addedSafes = useAppSelector(selectAllAddedSafes)
-  const hasAddedSafes = !isEmpty(addedSafes)
+  const hasSafes = useHasSafes()
 
   const continueToCreation = () => {
-    if (hasAddedSafes) {
+    if (hasSafes) {
       router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
     } else {
       trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
