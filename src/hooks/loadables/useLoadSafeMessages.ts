@@ -12,13 +12,13 @@ export const useLoadSafeMessages = (): AsyncResult<SafeMessageListPage> => {
 
   const [data, error, loading] = useAsync<SafeMessageListPage>(
     () => {
-      if (!safeLoaded) {
-        return
-      }
+      if (!safeLoaded) return
+      if (!safe.deployed) return Promise.resolve({ results: [] })
+
       return getSafeMessages(safe.chainId, safeAddress)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safeLoaded, safe.chainId, safeAddress, safe.messagesTag],
+    [safeLoaded, safe.chainId, safeAddress, safe.messagesTag, safe.deployed],
     false,
   )
 
