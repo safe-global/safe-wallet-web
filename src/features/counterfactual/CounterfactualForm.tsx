@@ -136,6 +136,8 @@ export const CounterfactualForm = ({
             )}{' '}
             {chain?.nativeCurrency.symbol}
           </strong>
+          . Be aware that this is just an estimation and that the actual network fee might be higher depending on the
+          type of transaction you are doing.
         </Alert>
         <div className={classNames(css.params)}>
           <AdvancedParams
