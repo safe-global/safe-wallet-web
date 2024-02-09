@@ -11,7 +11,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useAppDispatch } from '@/store'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
+import { CircularProgress, Box, Button, CardActions, Divider, Alert, Typography } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -115,8 +115,7 @@ export const CounterfactualForm = ({
     <>
       <form onSubmit={handleSubmit}>
         <Alert severity="info" sx={{ mb: 2 }}>
-          Executing this transaction will also deploy your Safe Account. The network fee can be broken down into
-          Transaction cost{' '}
+          Executing this transaction will also activate your account. Additional network fees will apply. Base fee is{' '}
           <strong>
             {getTotalFeeFormatted(
               advancedParams.maxFeePerGas,
@@ -125,8 +124,8 @@ export const CounterfactualForm = ({
               chain,
             )}{' '}
             {chain?.nativeCurrency.symbol}
-          </strong>{' '}
-          and Deployment cost{' '}
+          </strong>
+          , activation fee is{' '}
           <strong>
             {getTotalFeeFormatted(
               advancedParams.maxFeePerGas,
@@ -136,8 +135,7 @@ export const CounterfactualForm = ({
             )}{' '}
             {chain?.nativeCurrency.symbol}
           </strong>
-          . Be aware that this is just an estimation and that the actual network fee might be higher depending on the
-          type of transaction you are doing.
+          . This is an estimation and the final cost can be slightly higher.
         </Alert>
         <div className={classNames(css.params)}>
           <AdvancedParams
