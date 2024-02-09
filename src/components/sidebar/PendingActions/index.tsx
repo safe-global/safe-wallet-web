@@ -45,6 +45,7 @@ const PendingActionButtons = ({
           <NextLink href={queueLink} passHref legacyBehavior>
             <Tooltip title={`${shortAddress} can confirm ${totalToSign} transaction(s)`} placement="top" arrow>
               <ButtonBase
+                data-testid="missing-signature-info"
                 className={classnames(css.pendingButton, css.missingSignatures)}
                 onClick={closeDrawer}
                 sx={{
@@ -65,6 +66,7 @@ const PendingActionButtons = ({
           <NextLink href={queueLink} passHref legacyBehavior>
             <Tooltip title={`${totalQueued} transactions in the queue`} placement="top" arrow>
               <ButtonBase
+                data-testid="queued-tx-info"
                 className={classnames(css.pendingButton, css.queued)}
                 onClick={closeDrawer}
                 sx={{

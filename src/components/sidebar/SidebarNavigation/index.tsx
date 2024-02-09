@@ -67,7 +67,7 @@ const Navigation = (): ReactElement => {
             >
               {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
 
-              <SidebarListItemText bold>
+              <SidebarListItemText data-testid="sidebar-list-item" bold>
                 {item.label}
 
                 <SidebarListItemCounter count={getCounter(item)} />

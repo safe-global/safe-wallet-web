@@ -9,7 +9,6 @@ import { selectRpc } from '@/store/settingsSlice'
 export const useInitWeb3 = () => {
   const chain = useCurrentChain()
   const chainId = chain?.chainId
-  const rpcUri = chain?.rpcUri
   const wallet = useWallet()
   const customRpc = useAppSelector(selectRpc)
   const customRpcUrl = chain ? customRpc?.[chain.chainId] : undefined
@@ -24,11 +23,11 @@ export const useInitWeb3 = () => {
   }, [wallet, chainId])
 
   useEffect(() => {
-    if (!rpcUri) {
+    if (!chain) {
       setWeb3ReadOnly(undefined)
       return
     }
-    const web3ReadOnly = createWeb3ReadOnly(rpcUri, customRpcUrl)
+    const web3ReadOnly = createWeb3ReadOnly(chain, customRpcUrl)
     setWeb3ReadOnly(web3ReadOnly)
-  }, [rpcUri, customRpcUrl])
+  }, [chain, customRpcUrl])
 }

@@ -1,7 +1,10 @@
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { fireEvent, render } from '@/tests/test-utils'
 import SingleTx from '@/pages/transactions/tx'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
-import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import * as gatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { waitFor } from '@testing-library/react'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 const SAFE_ADDRESS = '0x87a57cBf742CC1Fc702D0E9BF595b1E056693e2f'
@@ -30,23 +33,27 @@ jest.mock('next/router', () => ({
   },
 }))
 
-jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
-  ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
-  getTransactionDetails: jest.fn(() => Promise.resolve(txDetails)),
-}))
+const extendedSafeInfo = extendedSafeInfoBuilder().build()
 
 jest.spyOn(useSafeInfo, 'default').mockImplementation(() => ({
   safeAddress: SAFE_ADDRESS,
   safe: {
+    ...extendedSafeInfo,
     chainId: '5',
-  } as SafeInfo,
+  },
   safeError: undefined,
   safeLoading: false,
   safeLoaded: true,
 }))
 
 describe('SingleTx', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('renders <SingleTx />', async () => {
+    jest.spyOn(gatewaySDK, 'getTransactionDetails').mockImplementation(() => Promise.resolve(txDetails))
+
     const screen = render(<SingleTx />)
 
     const button = screen.queryByText('Details')
@@ -56,28 +63,22 @@ describe('SingleTx', () => {
   })
 
   it('shows an error when the transaction has failed to load', async () => {
-    const getTransactionDetails = jest.spyOn(
-      require('@safe-global/safe-gateway-typescript-sdk'),
-      'getTransactionDetails',
-    )
-    getTransactionDetails.mockImplementation(() => Promise.reject(new Error('Server error')))
+    jest.spyOn(gatewaySDK, 'getTransactionDetails').mockImplementation(() => Promise.reject(new Error('Server error')))
 
     const screen = render(<SingleTx />)
 
-    expect(await screen.findByText('Failed to load transaction')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load transaction')).toBeInTheDocument()
+    })
 
-    const button = screen.getByText('Details')
-    fireEvent.click(button!)
-
-    expect(screen.getByText('Server error')).toBeInTheDocument()
+    await waitFor(() => {
+      fireEvent.click(screen.getByText('Details'))
+      expect(screen.getByText('Server error')).toBeInTheDocument()
+    })
   })
 
   it('shows an error when transaction is not from the opened Safe', async () => {
-    const getTransactionDetails = jest.spyOn(
-      require('@safe-global/safe-gateway-typescript-sdk'),
-      'getTransactionDetails',
-    )
-    getTransactionDetails.mockImplementation(() =>
+    jest.spyOn(gatewaySDK, 'getTransactionDetails').mockImplementation(() =>
       Promise.resolve({
         ...txDetails,
         safeAddress: MOCK_SAFE_ADDRESS,
@@ -86,11 +87,14 @@ describe('SingleTx', () => {
 
     const screen = render(<SingleTx />)
 
-    expect(await screen.findByText('Failed to load transaction')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load transaction')).toBeInTheDocument()
+    })
 
-    const button = screen.getByText('Details')
-    fireEvent.click(button!)
+    fireEvent.click(screen.getByText('Details'))
 
-    expect(screen.getByText('Transaction with this id was not found in this Safe Account')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Transaction with this id was not found in this Safe Account')).toBeInTheDocument()
+    })
   })
 })

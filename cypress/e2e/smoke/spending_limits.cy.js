@@ -2,7 +2,6 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as spendinglimit from '../pages/spending_limits.pages'
 import * as owner from '../pages/owners.pages'
-import * as safe from '../pages/load_safe.pages'
 
 describe('[SMOKE] Spending limits tests', () => {
   beforeEach(() => {
@@ -24,11 +23,6 @@ describe('[SMOKE] Spending limits tests', () => {
     spendinglimit.verifyValidAddressShowsNoErrors()
   })
 
-  it('Verify Fill by QR code with a valid address', () => {
-    safe.scanQRCode(constants.VALID_QR_CODE_PATH)
-    spendinglimit.checkBeneficiaryENS(constants.SEPOLIA_TEST_SAFE_6)
-  })
-
   it('Verify Amount input cannot be 0', () => {
     spendinglimit.enterSpendingLimitAmount('0')
     spendinglimit.verifyNumberErrorValidation()
@@ -36,12 +30,12 @@ describe('[SMOKE] Spending limits tests', () => {
 
   it('Verify Amount input cannot be a negative number', () => {
     spendinglimit.enterSpendingLimitAmount('-1')
-    spendinglimit.verifyNumberErrorValidation()
+    spendinglimit.verifyNumberAmountEntered('1')
   })
 
   it('Verify Amount input cannot be characters', () => {
     spendinglimit.enterSpendingLimitAmount('abc')
-    spendinglimit.verifyCharErrorValidation()
+    spendinglimit.verifyNumberAmountEntered('')
   })
 
   it('Verify any positive number can be set in the amount input', () => {

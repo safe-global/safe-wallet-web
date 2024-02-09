@@ -1,7 +1,8 @@
 import * as constants from '../../support/constants'
 
-const acceptSelection = 'Accept selection'
+const acceptSelection = 'Save settings'
 const executeStr = 'Execute'
+const connectedOwnerBlock = '[data-testid="open-account-center"]'
 export const modalDialogCloseBtn = '[data-testid="modal-dialog-close-btn"]'
 
 export function clickOnExecuteBtn() {
@@ -41,8 +42,8 @@ export function acceptCookies(index = 0) {
     })
 }
 
-export function verifyGoerliWalletHeader() {
-  cy.contains(constants.goerlyE2EWallet)
+export function verifyOwnerConnected(prefix = 'sep:') {
+  cy.get(connectedOwnerBlock).should('contain', prefix)
 }
 
 export function verifyHomeSafeUrl(safe) {
@@ -87,6 +88,10 @@ export function generateRandomString(length) {
 
 export function verifyElementsCount(element, count) {
   cy.get(element).should('have.length', count)
+}
+
+export function verifyMinimumElementsCount(element, count) {
+  cy.get(element).should('have.length.at.least', count)
 }
 
 export function verifyValuesDoNotExist(element, values) {
@@ -164,5 +169,11 @@ export function checkTextOrder(selector, expectedTextArray) {
   cy.get(selector).each((element, index) => {
     const text = Cypress.$(element).text().trim()
     expect(text).to.eq(expectedTextArray[index])
+  })
+}
+
+export function verifyElementsStatus(elements, status) {
+  elements.forEach((element) => {
+    cy.get(element).should(status)
   })
 }

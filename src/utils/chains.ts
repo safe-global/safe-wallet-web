@@ -18,6 +18,7 @@ export enum FEATURES {
   NATIVE_WALLETCONNECT = 'NATIVE_WALLETCONNECT',
   RECOVERY = 'RECOVERY',
   SOCIAL_LOGIN = 'SOCIAL_LOGIN',
+  COUNTERFACTUAL = 'COUNTERFACTUAL',
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {

@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 import * as main from './main.page'
 import * as addressBook from '../pages/address_book.page'
 import { invalidAddressFormatErrorMsg } from '../pages/load_safe.pages'
+import * as ls from '../../support/localstorage_data.js'
 import 'cypress-file-upload'
 
 export const spendingLimitsSection = '[data-testid="spending-limit-section"]'
@@ -31,7 +32,10 @@ const oldTokenAmount = '[data-testid="old-token-amount"]'
 const oldResetTime = '[data-testid="old-reset-time"]'
 const slimitReplacementWarning = '[data-testid="limit-replacement-warning"]'
 const addressItem = '[data-testid="address-item"]'
-import * as ls from '../../support/localstorage_data.js'
+
+const actionSectionItem = () => {
+  return cy.get('[data-testid="CodeIcon"]').parent()
+}
 
 export const timePeriodOptions = {
   oneTime: 'One time',
@@ -43,7 +47,7 @@ export const timePeriodOptions = {
 const getBeneficiaryInput = () => cy.get(beneficiarySection).find('input').should('be.enabled')
 const automationOwner = ls.addressBookData.sepoliaAddress2[11155111]['0xC16Db0251654C0a72E91B190d81eAD367d2C6fED']
 
-const expectedSpendOptions = ['0 of 0.17 ETH', '0 of 0.05 ETH', '0 of 0.01 ETH']
+const expectedSpendOptions = ['0 of 0.17 ETH', '0.00001 of 0.05 ETH', '0 of 0.01 ETH']
 const expectedResetOptions = new Array(3).fill('One-time')
 
 const newTransactionStr = 'New transaction'
@@ -59,6 +63,11 @@ export function selectRecipient(recipient) {
 export function verifyOldValuesAreDisplayed() {
   main.verifyElementsIsVisible([oldTokenAmount, oldResetTime, slimitReplacementWarning])
 }
+
+export function verifyActionNamesAreDisplayed(names) {
+  main.verifyValuesExist(actionSectionItem, names)
+}
+
 export function verifySpendingLimitBtnIsDisabled() {
   cy.get(newSpendingLimitBtn).should('be.disabled')
 }
@@ -190,4 +199,8 @@ export function verifyNumberErrorValidation() {
 
 export function verifyCharErrorValidation() {
   cy.get(tokenAmountSection).find('label').should('contain', invalidCharErrorStr)
+}
+
+export function verifyNumberAmountEntered(amount) {
+  cy.get(tokenAmountFld).find('input').should('have.value', amount)
 }

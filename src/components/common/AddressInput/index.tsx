@@ -13,7 +13,6 @@ import { useFormContext, useWatch, type Validate, get } from 'react-hook-form'
 import { validatePrefixedAddress } from '@/utils/validation'
 import { useCurrentChain } from '@/hooks/useChains'
 import useNameResolver from './useNameResolver'
-import ScanQRButton from '../ScanQRModal/ScanQRButton'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { cleanInputValue, parsePrefixedAddress } from '@/utils/addresses'
 import useDebounce from '@/hooks/useDebounce'
@@ -97,8 +96,6 @@ const AddressInput = ({
             </IconButton>
           )}
 
-          <ScanQRButton onScan={setAddressValue} />
-
           {onOpenListClick && (
             <IconButton
               onClick={onOpenListClick}
@@ -120,7 +117,7 @@ const AddressInput = ({
         className={inputCss.input}
         autoComplete="off"
         autoFocus={props.focused}
-        label={<>{error?.message || props.label}</>}
+        label={<>{error?.message || props.label || `Recipient address${isDomainLookupEnabled ? ' or ENS' : ''}`}</>}
         error={!!error}
         fullWidth
         spellCheck={false}

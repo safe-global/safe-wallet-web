@@ -9,3 +9,7 @@
   text-decoration: line-through;
   color: var(--color-text-secondary);
 }
+
+.errorMessage {
+  margin-top: 0;
+}

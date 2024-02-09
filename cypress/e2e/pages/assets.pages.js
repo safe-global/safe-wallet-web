@@ -1,6 +1,5 @@
-import * as main from '../pages/main.page'
+import * as main from './main.page'
 
-let etherscanLink = 'a[aria-label="View on sepolia.etherscan.io"]'
 let etherscanLinkSepolia = 'a[aria-label="View on sepolia.etherscan.io"]'
 export const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
 const currencyDropdown = '[id="currency"]'
@@ -18,6 +17,8 @@ const hiddenTokenSaveBtn = 'span[data-track="assets: Save hide dialog"]'
 const hiddenTokenCancelBtn = 'span[data-track="assets: Cancel hide dialog"]'
 const hiddenTokenDeselectAllBtn = 'span[data-track="assets: Deselect all hide dialog"]'
 const hiddenTokenIcon = 'svg[data-testid="VisibilityOffOutlinedIcon"]'
+const currencySelector = '[data-testid="currency-selector"]'
+const currencyItem = '[data-testid="currency-item"]'
 
 const hideTokenDefaultString = 'Hide tokens'
 const assetNameSortBtnStr = 'Asset'
@@ -92,6 +93,15 @@ export const currentcyGnosisFormat = '< 0.00001 GNO'
 export const currencyOx = /^0x$/
 export const currentcyOxFormat = '1.003 ZRX'
 
+function clickOnCurrencySelector() {
+  cy.get(currencySelector).click()
+}
+
+export function changeCurrency(currency) {
+  clickOnCurrencySelector()
+  cy.get(currencyItem).contains(currency).click()
+}
+
 export function clickOnSendBtn(index) {
   cy.get('button')
     .contains(sendBtnStr)
@@ -107,6 +117,10 @@ export function showSendBtn(index) {
     .then((elements) => {
       cy.wrap(elements[index]).invoke('css', 'opacity', 100).trigger('mouseover', { force: true })
     })
+}
+
+export function VerifySendButtonIsDisabled() {
+  cy.get('button').contains(sendBtnStr).should('be.disabled')
 }
 
 export function verifyTableRows(assetsLength) {
@@ -207,14 +221,14 @@ export function verityTokenAltImageIsVisible(currency, alttext) {
     })
 }
 
-export function verifyAssetNameHasExplorerLink(currency, columnName, sepolia = false) {
-  if (sepolia) etherscanLink = etherscanLinkSepolia
+export function verifyAssetNameHasExplorerLink(currency, columnName) {
+  etherscanLinkSepolia
   cy.get(tokenListTable)
     .contains(currency)
     .parents('tr')
     .find('td')
     .eq(columnName)
-    .find(etherscanLink)
+    .find(etherscanLinkSepolia)
     .should('be.visible')
 }
 
@@ -225,7 +239,7 @@ export function verifyAssetExplorerLinkNotAvailable(currency, columnName) {
     .find('td')
     .eq(columnName)
     .within(() => {
-      cy.get(etherscanLink).should('not.exist')
+      cy.get(etherscanLinkSepolia).should('not.exist')
     })
 }
 

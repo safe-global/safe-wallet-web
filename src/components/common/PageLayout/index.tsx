@@ -7,43 +7,31 @@ import SafeLoadingError from '../SafeLoadingError'
 import Footer from '../Footer'
 import SideDrawer from './SideDrawer'
 import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
-import useDebounce from '@/hooks/useDebounce'
-import { useRouter } from 'next/router'
 import { TxModalContext } from '@/components/tx-flow'
 import BatchSidebar from '@/components/batch/BatchSidebar'
 
 const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
-  const router = useRouter()
-  const isSidebarRoute = useIsSidebarRoute()
-  const [noSidebar, setNoSidebar] = useState<boolean>(isSidebarRoute)
+  const [isSidebarRoute, isAnimated] = useIsSidebarRoute(pathname)
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
   const [isBatchOpen, setBatchOpen] = useState<boolean>(false)
-  const hideSidebar = noSidebar || !isSidebarOpen
   const { setFullWidth } = useContext(TxModalContext)
-  let isAnimated = useDebounce(!noSidebar, 300)
-  if (!isSidebarRoute) isAnimated = false
 
   useEffect(() => {
-    const noSafeAddress = router.isReady && !router.query.safe
-    setNoSidebar(!isSidebarRoute || noSafeAddress)
-  }, [isSidebarRoute, pathname, router])
-
-  useEffect(() => {
-    setFullWidth(hideSidebar)
-  }, [hideSidebar, setFullWidth])
+    setFullWidth(!isSidebarOpen)
+  }, [isSidebarOpen, setFullWidth])
 
   return (
     <>
       <header className={css.header}>
-        <Header onMenuToggle={noSidebar ? undefined : setSidebarOpen} onBatchToggle={setBatchOpen} />
+        <Header onMenuToggle={isSidebarRoute ? setSidebarOpen : undefined} onBatchToggle={setBatchOpen} />
       </header>
 
-      {!noSidebar && <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />}
+      {isSidebarRoute && <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />}
 
       <div
         className={classnames(css.main, {
-          [css.mainNoSidebar]: hideSidebar,
-          [css.mainAnimated]: isAnimated,
+          [css.mainNoSidebar]: !isSidebarOpen || !isSidebarRoute,
+          [css.mainAnimated]: isSidebarRoute && isAnimated,
         })}
       >
         <div className={css.content}>

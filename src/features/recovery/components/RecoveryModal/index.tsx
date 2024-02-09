@@ -100,12 +100,17 @@ export function _RecoveryModal({
   )
 }
 
+const useSidebar = () => {
+  const [isSidebarRoute] = useIsSidebarRoute()
+  return isSidebarRoute
+}
+
 export const RecoveryModal = madProps(_RecoveryModal, {
   isOwner: useIsSafeOwner,
   isRecoverer: useIsRecoverer,
   queue: useRecoveryQueue,
   wallet: useWallet,
-  isSidebarRoute: useIsSidebarRoute,
+  isSidebarRoute: useSidebar,
 })
 
 export function _useDidDismissProposal() {

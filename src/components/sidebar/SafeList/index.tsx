@@ -101,7 +101,7 @@ const SafeList = ({ closeDrawer }: { closeDrawer?: () => void }): ReactElement =
   )
 
   return (
-    <div>
+    <div data-testid="sidebar-safe-container">
       <div className={css.header}>
         <Typography variant="h4" display="inline" fontWeight={700}>
           My Safe Accounts

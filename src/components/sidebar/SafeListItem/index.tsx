@@ -65,6 +65,7 @@ const SafeListItem = ({
 
   return (
     <ListItem
+      data-testid="safe-list-item"
       className={classnames(css.container, { [css.withPendingButtons]: totalQueued || totalToSign })}
       disablePadding
       secondaryAction={
@@ -105,7 +106,7 @@ const SafeListItem = ({
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
               }}
-              secondaryTypographyProps={{ component: 'div', color: 'primary' }}
+              secondaryTypographyProps={{ component: 'div', color: 'text.primary' }}
               primary={name || ''}
               secondary={
                 <EthHashInfo

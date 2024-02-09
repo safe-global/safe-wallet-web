@@ -1,4 +1,4 @@
-import { getTimeoutErrorMessage, isTimeoutError } from '@/utils/ethers-utils'
+import { isTimeoutError } from '@/utils/ethers-utils'
 import classNames from 'classnames'
 import { Box, Typography } from '@mui/material'
 import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
@@ -21,7 +21,7 @@ const getStep = (status: PendingStatus, error?: Error) => {
     default:
       return {
         description: error ? 'Transaction failed' : 'Transaction was successful',
-        instruction: error ? (isTimeoutError(error) ? getTimeoutErrorMessage(error) : error.message) : '',
+        instruction: error ? (isTimeoutError(error) ? 'Transaction timed out' : error.message) : '',
       }
   }
 }

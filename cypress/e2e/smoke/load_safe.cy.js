@@ -49,18 +49,6 @@ describe('[SMOKE] Load Safe tests', () => {
     safe.clickOnNextBtn()
   })
 
-  it('[SMOKE] Verify a valid QR code is accepted', () => {
-    safe.scanQRCode(constants.VALID_QR_CODE_PATH)
-    safe.verifyAddressInputValue(constants.SEPOLIA_TEST_SAFE_6)
-    safe.verifyNextButtonStatus('be.enabled')
-    safe.clickOnNextBtn()
-  })
-
-  it('[SMOKE] Verify a non QR code is not accepted', () => {
-    safe.scanQRCode(constants.INVALID_QR_CODE_PATH)
-    safe.verifyQRCodeErrorMsg()
-  })
-
   it('[SMOKE] Verify the custom Safe name is successfully loaded', () => {
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_2)
     safe.clickOnNextBtn()

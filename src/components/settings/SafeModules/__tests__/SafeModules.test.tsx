@@ -1,19 +1,18 @@
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { render, waitFor } from '@/tests/test-utils'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import SafeModules from '..'
-import type { AddressEx, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { zeroPadValue } from 'ethers'
 
 const MOCK_MODULE_1 = zeroPadValue('0x01', 20)
 const MOCK_MODULE_2 = zeroPadValue('0x02', 20)
 
 describe('SafeModules', () => {
+  const extendedSafeInfo = extendedSafeInfoBuilder().build()
+
   it('should render placeholder label without any modules', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
-      safe: {
-        modules: [] as AddressEx[],
-        chainId: '4',
-      } as SafeInfo,
+      safe: extendedSafeInfo,
       safeAddress: '0x123',
       safeError: undefined,
       safeLoading: false,
@@ -26,7 +25,7 @@ describe('SafeModules', () => {
 
   it('should render placeholder label if safe is loading', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
-      safe: {} as SafeInfo,
+      safe: extendedSafeInfo,
       safeAddress: '',
       safeError: undefined,
       safeLoading: true,
@@ -39,6 +38,7 @@ describe('SafeModules', () => {
   it('should render module addresses for defined modules', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        ...extendedSafeInfo,
         modules: [
           {
             value: MOCK_MODULE_1,
@@ -47,8 +47,7 @@ describe('SafeModules', () => {
             value: MOCK_MODULE_2,
           },
         ],
-        chainId: '4',
-      } as SafeInfo,
+      },
       safeAddress: '0x123',
       safeError: undefined,
       safeLoading: false,

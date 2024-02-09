@@ -1,3 +1,5 @@
+import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
 import madProps from '@/utils/mad-props'
 import DecodedTx from '../DecodedTx'
@@ -71,6 +73,9 @@ export const SignOrExecuteForm = ({
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
+  const { safe } = useSafeInfo()
+  const isCounterfactualSafe = !safe.deployed
+
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
   const willExecute = (props.onlyExecute || shouldExecute) && canExecute
@@ -122,7 +127,7 @@ export const SignOrExecuteForm = ({
           </ErrorMessage>
         )}
 
-        {canExecute && !props.onlyExecute && <ExecuteCheckbox onChange={setShouldExecute} />}
+        {canExecute && !props.onlyExecute && !isCounterfactualSafe && <ExecuteCheckbox onChange={setShouldExecute} />}
 
         <WrongChainWarning />
 
@@ -130,7 +135,9 @@ export const SignOrExecuteForm = ({
 
         <RiskConfirmationError />
 
-        {willExecute ? (
+        {isCounterfactualSafe ? (
+          <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
+        ) : willExecute ? (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         ) : (
           <SignForm

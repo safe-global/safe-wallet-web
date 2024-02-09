@@ -5,7 +5,9 @@ import * as safeapps from '../pages/safeapps.pages'
 describe('Preview drawer tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(`/${constants.SEPOLIA_TEST_SAFE_5}/apps`, { failOnStatusCode: false })
+    cy.visit(`${constants.appsUrl}?safe=${constants.SEPOLIA_TEST_SAFE_5}`, {
+      failOnStatusCode: false,
+    })
     main.acceptCookies()
   })
 

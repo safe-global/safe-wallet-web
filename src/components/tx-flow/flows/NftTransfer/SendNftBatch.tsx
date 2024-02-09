@@ -113,7 +113,7 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onFormSubmit)}>
           <FormControl fullWidth sx={{ mb: 3, mt: 1 }}>
-            <AddressBookInput name={Field.recipient} label="Recipient address or ENS" canAdd={isAddressValid} />
+            <AddressBookInput name={Field.recipient} canAdd={isAddressValid} />
           </FormControl>
 
           <Typography data-testid="selected-nfts" variant="body2" color="text.secondary" mb={2}>

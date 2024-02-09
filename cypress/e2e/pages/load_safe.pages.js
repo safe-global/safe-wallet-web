@@ -11,7 +11,6 @@ const addressInput = 'input[name="address"]'
 const sideBarIcon = '[data-testid="ChevronRightIcon"]'
 const sidebarCheckIcon = '[data-testid="CheckIcon"]'
 const addressStepNextBtn = '[data-testid="load-safe-next-btn"]'
-const qrCodeBtn = '[data-testid="address-qr-scan"]'
 const typeFile = '[type="file"]'
 const nextBtnStr = 'Next'
 const addBtnStr = 'Add'
@@ -63,12 +62,6 @@ export function verifyIncorrectAddressErrorMessage() {
 
 export function verifyNameLengthErrorMessage() {
   cy.get(nameInput).parent().prev('label').contains(invalidAddressNameLengthErrorMsg)
-}
-
-export function scanQRCode(image) {
-  cy.get(qrCodeBtn).click()
-  cy.contains('Upload an image').click()
-  cy.get(typeFile).attachFile(image)
 }
 
 export function inputAddress(address) {

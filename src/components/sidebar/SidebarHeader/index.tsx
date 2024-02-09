@@ -52,7 +52,7 @@ const SafeHeader = (): ReactElement => {
     <div className={css.container}>
       <div className={css.info}>
         <div data-testid="safe-header-info" className={css.safe}>
-          <div>
+          <div data-testid="safe-icon">
             {safeAddress ? (
               <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
             ) : (
@@ -70,7 +70,7 @@ const SafeHeader = (): ReactElement => {
               </Typography>
             )}
 
-            <Typography variant="body2" fontWeight={700}>
+            <Typography data-testid="currency-section" variant="body2" fontWeight={700}>
               {fiatTotal || <Skeleton variant="text" width={60} />}
             </Typography>
           </div>
@@ -89,7 +89,7 @@ const SafeHeader = (): ReactElement => {
 
           <Track {...OVERVIEW_EVENTS.COPY_ADDRESS}>
             <CopyTooltip text={addressCopyText}>
-              <IconButton className={css.iconButton}>
+              <IconButton data-testid="copy-address-btn" className={css.iconButton}>
                 <SvgIcon component={CopyIconBold} inheritViewBox color="primary" fontSize="small" />
               </IconButton>
             </CopyTooltip>

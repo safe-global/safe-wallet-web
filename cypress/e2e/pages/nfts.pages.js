@@ -1,8 +1,9 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
+import * as modal from '../pages/modals.page'
 
-const nftModalTitle = '[data-testid="modal-title"]'
-const nftModal = '[data-testid="modal-view"]'
+const nftModalTitle = modal.modalTitle
+const nftModal = modal.modal
 
 const nftModalCloseBtn = main.modalDialogCloseBtn
 const recipientInput = 'input[name="recipient"]'
