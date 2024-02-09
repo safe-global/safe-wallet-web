@@ -118,13 +118,7 @@ const SendButton = ({
   )
 }
 
-const SwapButton = ({
-                      tokenInfo,
-  amount,
-                    }: {
-  tokenInfo: TokenInfo
-  amount: string
-}): ReactElement => {
+const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: number }): ReactElement => {
   const spendingLimit = useSpendingLimit(tokenInfo)
   const router = useRouter()
 
@@ -156,7 +150,6 @@ const SwapButton = ({
     </CheckWallet>
   )
 }
-
 
 const AssetsTable = ({
   showHiddenAssets,
@@ -259,7 +252,10 @@ const AssetsTable = ({
                 <Box display="flex" flexDirection="row" gap={1} alignItems="center">
                   <>
                     <SendButton tokenInfo={item.tokenInfo} onClick={() => onSendClick(item.tokenInfo.address)} />
-                    <SwapButton tokenInfo={item.tokenInfo} amount={Number(item.balance) / 10 ** item.tokenInfo.decimals} />
+                    <SwapButton
+                      tokenInfo={item.tokenInfo}
+                      amount={Number(item.balance) / 10 ** item.tokenInfo.decimals}
+                    />
                     {showHiddenAssets ? (
                       <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
                     ) : (

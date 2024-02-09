@@ -20,7 +20,6 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
 import BuyCryproButton from '@/components/common/BuyCryproButton'
-import { CowWidget } from '@/components/swap/CowWidget'
 
 const ValueSkeleton = () => <Skeleton variant="text" width={20} />
 
@@ -206,18 +205,11 @@ const Overview = (): ReactElement => {
                 </Grid>
 
                 <Grid item xs={6} sm="auto">
-                  <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type={"button"}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      color="primary"
-                      startIcon={<ArrowIconNW />}
-                      fullWidth
-                    >
+                  <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type={'button'}>
+                    <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconNW />} fullWidth>
                       Swap
                     </Button>
                   </Link>
-
                 </Grid>
               </Grid>
             </Grid>
