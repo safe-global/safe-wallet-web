@@ -125,7 +125,7 @@ export const CounterfactualForm = ({
             )}{' '}
             {chain?.nativeCurrency.symbol}
           </strong>
-          , activation fee is{' '}
+          , one time activation fee is{' '}
           <strong>
             {getTotalFeeFormatted(
               advancedParams.maxFeePerGas,
