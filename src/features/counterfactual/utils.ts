@@ -190,7 +190,7 @@ export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo,
       variant: 'info',
       groupKey: 'cf-activate-account',
       message: 'Transaction submitted',
-      detailedMessage: 'Your Safe Account will be deployed on-chain after the transaction has been executed.',
+      detailedMessage: 'Your Safe Account will be deployed onchain after the transaction is executed.',
       link: link ? { href: link.href, title: link.title } : undefined,
     }),
   )

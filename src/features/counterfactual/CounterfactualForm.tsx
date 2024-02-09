@@ -135,8 +135,9 @@ export const CounterfactualForm = ({
             )}{' '}
             {chain?.nativeCurrency.symbol}
           </strong>
-          . This is an estimation and the final cost can be slightly higher.
+          . This is an estimation and the final cost can be higher.
         </Alert>
+
         <div className={classNames(css.params)}>
           <AdvancedParams
             willExecute
@@ -147,6 +148,7 @@ export const CounterfactualForm = ({
             willRelay={false}
           />
         </div>
+
         {/* Error messages */}
         {cannotPropose ? (
           <NonOwnerError />
@@ -164,12 +166,15 @@ export const CounterfactualForm = ({
             </ErrorMessage>
           )
         )}
+
         {submitError && (
           <Box mt={1}>
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}
+
         <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
+
         <CardActions>
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>
