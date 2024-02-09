@@ -1,0 +1,23 @@
+.button {
+  justify-content: space-between;
+  padding: var(--space-2);
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
+  width: 100%;
+  margin-top: var(--space-2);
+  color: var(--color-text-primary);
+}
+
+.button:hover {
+  border-color: var(--color-primary-main);
+}
+
+.badge {
+  background-color: var(--color-secondary-light);
+  color: var(--color-static-main);
+  display: inline-block;
+  margin-left: var(--space-2);
+  margin-top: -1px;
+  padding: 4px var(--space-1);
+  border-radius: 0 0 4px 4px;
+}

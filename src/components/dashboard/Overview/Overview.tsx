@@ -13,7 +13,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
-import BuyCryproButton from '@/components/common/BuyCryproButton'
+import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 
 const SkeletonOverview = (
   <>
@@ -72,7 +72,7 @@ const Overview = (): ReactElement => {
               <Grid item>
                 <Grid container spacing={1} flexWrap="wrap">
                   <Grid item xs={12} sm="auto">
-                    <BuyCryproButton />
+                    <BuyCryptoButton />
                   </Grid>
 
                   <Grid item xs={6} sm="auto">
