@@ -1,3 +1,4 @@
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ComponentType, type ReactElement, type ReactNode, useContext, useEffect, useState } from 'react'
 import { Box, Container, Grid, Typography, Button, Paper, SvgIcon, IconButton, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
@@ -23,6 +24,7 @@ const TxLayoutHeader = ({
   icon: TxLayoutProps['icon']
   subtitle: TxLayoutProps['subtitle']
 }) => {
+  const { safe } = useSafeInfo()
   const { nonceNeeded } = useContext(SafeTxContext)
 
   if (hideNonce && !icon && !subtitle) return null
@@ -41,7 +43,7 @@ const TxLayoutHeader = ({
         </Typography>
       </Box>
 
-      {!hideNonce && nonceNeeded && <TxNonce />}
+      {!hideNonce && safe.deployed && nonceNeeded && <TxNonce />}
     </Box>
   )
 }

@@ -1,6 +1,7 @@
 import { type PendingTx } from '@/store/pendingTxsSlice'
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { act, renderHook } from '@/tests/test-utils'
-import type { Label, SafeInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
+import type { Label, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import { useHasPendingTxs, usePendingTxsQueue } from '../usePendingTxs'
 
@@ -39,11 +40,12 @@ describe('usePendingTxsQueue', () => {
 
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        ...extendedSafeInfoBuilder().build(),
         nonce: 100,
         threshold: 1,
         owners: [{ value: '0x123' }],
         chainId: '5',
-      } as SafeInfo,
+      },
       safeAddress: '0x0000000000000000000000000000000000000001',
       safeError: undefined,
       safeLoading: false,

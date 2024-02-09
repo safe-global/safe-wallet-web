@@ -1,5 +1,7 @@
+import { formatVisualAmount } from '@/utils/formatters'
 import type { FeeData } from 'ethers'
 import type {
+  ChainInfo,
   GasPrice,
   GasPriceFixed,
   GasPriceFixedEIP1559,
@@ -131,6 +133,17 @@ export const getTotalFee = (
 ) => {
   // maxPriorityFeePerGas is undefined if EIP-1559 disabled
   return (maxFeePerGas + (maxPriorityFeePerGas || 0n)) * gasLimit
+}
+
+export const getTotalFeeFormatted = (
+  maxFeePerGas: bigint | null | undefined,
+  maxPriorityFeePerGas: bigint | null | undefined,
+  gasLimit: bigint | undefined,
+  chain: ChainInfo | undefined,
+) => {
+  return gasLimit && maxFeePerGas
+    ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
+    : '> 0.001'
 }
 
 const useGasPrice = (): AsyncResult<GasFeeParams> => {
