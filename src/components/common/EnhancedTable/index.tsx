@@ -135,13 +135,14 @@ function EnhancedTable({ rows, headCells, mobileVariant }: EnhancedTableProps) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <TableContainer component={Paper} sx={{ width: '100%', mb: 2 }}>
+      <TableContainer data-testid="table-container" component={Paper} sx={{ width: '100%', mb: 2 }}>
         <Table aria-labelledby="tableTitle" className={mobileVariant ? css.mobileColumn : undefined}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
             {pagedRows.length > 0 ? (
               pagedRows.map((row, index) => (
                 <TableRow
+                  data-testid="table-row"
                   tabIndex={-1}
                   key={row.key ?? index}
                   selected={row.selected}

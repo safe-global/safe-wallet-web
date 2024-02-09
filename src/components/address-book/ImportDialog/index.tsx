@@ -128,7 +128,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
                   name: acceptedFile.name,
                   additionalInfo: formatFileSize(acceptedFile.size),
                   summary: [
-                    <Typography key="abSummary">
+                    <Typography data-testid="summary-message" key="abSummary">
                       {`Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`}
                     </Typography>,
                   ],
@@ -163,8 +163,16 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleImport} variant="contained" disableElevation disabled={!csvData || !!error}>
+        <Button data-testid="cancel-btn" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button
+          data-testid="import-btn"
+          onClick={handleImport}
+          variant="contained"
+          disableElevation
+          disabled={!csvData || !!error}
+        >
           Import
         </Button>
       </DialogActions>
