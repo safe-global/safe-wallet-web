@@ -1,5 +1,8 @@
+.container {
+  width: 600px;
+}
+
 .listItem {
-  gap: var(--space-2);
   border: 1px solid var(--color-border-light);
   border-radius: var(--space-1);
   margin-bottom: 12px;
@@ -7,13 +10,28 @@
   padding-bottom: var(--space-2);
 }
 
-.listItem> :first-child {
-  display: block;
+.listItem > :first-child {
   flex: 1;
 }
 
 .safeLink {
   display: flex;
-  gap: var(--space-2);
   align-items: center;
+  padding-right: var(--space-2);
+}
+
+.safeAddress {
+  flex: 1;
+  white-space: nowrap;
+  padding-left: var(--space-2);
+}
+
+@media (max-width: 899.95px) {
+  .container {
+    width: auto;
+  }
+
+  .safeLink {
+    padding-right: 0;
+  }
 }

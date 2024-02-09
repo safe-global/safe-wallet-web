@@ -40,7 +40,7 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
         <Link href={href} className={css.safeLink}>
           <SafeIcon address={address} {...rest} />
 
-          <Typography variant="body2" component="div">
+          <Typography variant="body2" component="div" className={css.safeAddress}>
             {name && (
               <Typography fontWeight="bold" fontSize="inherit">
                 {name}
@@ -54,9 +54,10 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
 
           <Box flex={1} />
 
-          <ChainIndicator chainId={chainId} />
+          <ChainIndicator chainId={chainId} responsive />
         </Link>
       </Track>
+
       <SafeListContextMenu name={name} address={address} chainId={chainId} />
     </ListItemButton>
   )

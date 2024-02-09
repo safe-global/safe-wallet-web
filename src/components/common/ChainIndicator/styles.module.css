@@ -23,3 +23,9 @@
   padding: 0;
   font-size: 14px;
 }
+
+@media (max-width: 899.95px) {
+  .responsive .name {
+    display: none;
+  }
+}

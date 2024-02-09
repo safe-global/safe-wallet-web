@@ -6,6 +6,8 @@ import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
+import { DataWidget } from '@/components/welcome/SafeListDrawer/DataWidget'
+import css from './styles.module.css'
 
 type AccountsListProps = {
   safes: SafeItems
@@ -31,8 +33,8 @@ const AccountsList = ({ safes }: AccountsListProps) => {
 
   return (
     <Box display="flex" justifyContent="center">
-      <Box width={600} m={2}>
-        <Box display="flex" justifyContent="space-between" py={3}>
+      <Box className={css.container} m={2}>
+        <Box display="flex" flexWrap="wrap" justifyContent="space-between" py={3} gap={2}>
           <Typography variant="h1" fontWeight={700}>
             My Safe accounts
             <Typography component="span" color="text.secondary" fontSize="inherit" fontWeight="normal">
@@ -44,7 +46,7 @@ const AccountsList = ({ safes }: AccountsListProps) => {
           <CreateButton />
         </Box>
 
-        <Paper sx={{ p: 3 }}>
+        <Paper sx={{ p: 3, mb: 3 }}>
           {shownSafes.length ? (
             shownSafes.map((item) => <AccountItem {...item} key={item.chainId + item.address} />)
           ) : (
@@ -61,6 +63,8 @@ const AccountsList = ({ safes }: AccountsListProps) => {
             </Box>
           )}
         </Paper>
+
+        <DataWidget />
       </Box>
     </Box>
   )
