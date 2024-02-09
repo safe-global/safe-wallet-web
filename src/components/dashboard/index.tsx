@@ -1,3 +1,4 @@
+import FirstSteps from '@/components/dashboard/FirstSteps'
 import type { ReactElement } from 'react'
 import dynamic from 'next/dynamic'
 import { Grid } from '@mui/material'
@@ -30,6 +31,10 @@ const Dashboard = (): ReactElement => {
 
         <Grid item xs={12}>
           <Overview />
+        </Grid>
+
+        <Grid item xs={12}>
+          <FirstSteps />
         </Grid>
 
         <Grid item xs={12} lg={6}>

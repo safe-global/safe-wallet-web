@@ -1,0 +1,31 @@
+.circleProgress {
+  color: var(--color-secondary-main);
+}
+
+.circleBg {
+  color: var(--color-border-light);
+  position: absolute;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  min-height: 240px;
+}
+
+.topBadge {
+  position: absolute;
+  top: 0;
+  right: 24px;
+  background-color: var(--color-secondary-light);
+  border-radius: 0 0 4px 4px;
+  padding: 4px var(--space-1);
+}
+
+.status {
+  align-self: flex-start;
+  margin-bottom: auto;
+  color: var(--color-border-light);
+}

@@ -1,6 +1,7 @@
 import type { listenerMiddlewareInstance } from '@/store'
+import { createSelector } from '@reduxjs/toolkit'
 import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
-import { isTransactionListItem } from '@/utils/transaction-guards'
+import { isCreationTxInfo, isIncomingTransfer, isTransactionListItem } from '@/utils/transaction-guards'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { selectPendingTxs } from './pendingTxsSlice'
 import { makeLoadableSlice } from './common'
@@ -9,6 +10,12 @@ const { slice, selector } = makeLoadableSlice('txHistory', undefined as Transact
 
 export const txHistorySlice = slice
 export const selectTxHistory = selector
+
+export const selectOutgoingTransactions = createSelector(selectTxHistory, (txHistory) => {
+  return txHistory.data?.results.filter(isTransactionListItem).filter((tx) => {
+    return !isIncomingTransfer(tx.transaction.txInfo) && !isCreationTxInfo(tx.transaction.txInfo)
+  })
+})
 
 export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareInstance) => {
   listenerMiddleware.startListening({
