@@ -1,3 +1,4 @@
+import AddFundsCTA from '@/components/common/AddFunds'
 import FirstSteps from '@/components/dashboard/FirstSteps'
 import type { ReactElement } from 'react'
 import dynamic from 'next/dynamic'
@@ -35,6 +36,10 @@ const Dashboard = (): ReactElement => {
 
         <Grid item xs={12}>
           <FirstSteps />
+        </Grid>
+
+        <Grid item xs={12}>
+          <AddFundsCTA />
         </Grid>
 
         <Grid item xs={12} lg={6}>
