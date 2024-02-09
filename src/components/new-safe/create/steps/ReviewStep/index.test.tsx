@@ -7,7 +7,7 @@ import ReviewStep, { NetworkFee } from '@/components/new-safe/create/steps/Revie
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
-import { act, fireEvent, waitFor } from '@testing-library/react'
+import { act, fireEvent } from '@testing-library/react'
 
 const mockChainInfo = {
   chainId: '100',

@@ -1,3 +1,4 @@
+import { getTotalFee } from '@/hooks/useGasPrice'
 import useWalletBalance from '@/hooks/wallets/useWalletBalance'
 
 const useWalletCanPay = ({
@@ -15,7 +16,7 @@ const useWalletCanPay = ({
   // if gasLimit, maxFeePerGas or their walletBalance are missing
   if (!gasLimit || !maxFeePerGas || walletBalance === undefined) return true
 
-  const totalFee = (maxFeePerGas + BigInt(maxPriorityFeePerGas || 0)) * gasLimit
+  const totalFee = getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit)
 
   return walletBalance >= totalFee
 }

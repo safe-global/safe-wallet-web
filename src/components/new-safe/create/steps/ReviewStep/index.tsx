@@ -1,5 +1,7 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
@@ -18,7 +20,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import PayNowPayLater, { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { createCounterfactualSafe } from '@/features/counterfactual/utils'
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
-import useGasPrice, { getTotalFee } from '@/hooks/useGasPrice'
+import useGasPrice from '@/hooks/useGasPrice'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
@@ -28,7 +30,6 @@ import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeCon
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppDispatch } from '@/store'
 import { FEATURES } from '@/utils/chains'
-import { formatVisualAmount } from '@/utils/formatters'
 import { hasRemainingRelays } from '@/utils/relaying'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Alert, Box, Button, Divider, Grid, Typography } from '@mui/material'
@@ -101,6 +102,52 @@ export const NetworkFee = ({
   )
 }
 
+export const SafeSetupOverview = ({
+  name,
+  owners,
+  threshold,
+}: {
+  name?: string
+  owners: NamedAddress[]
+  threshold: number
+}) => {
+  const chain = useCurrentChain()
+
+  return (
+    <Grid container spacing={3}>
+      <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
+      {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
+      <ReviewRow
+        name="Owners"
+        value={
+          <Box data-testid="review-step-owner-info" className={css.ownersArray}>
+            {owners.map((owner, index) => (
+              <EthHashInfo
+                address={owner.address}
+                name={owner.name || owner.ens}
+                shortAddress={false}
+                showPrefix={false}
+                showName
+                hasExplorer
+                showCopyButton
+                key={index}
+              />
+            ))}
+          </Box>
+        }
+      />
+      <ReviewRow
+        name="Threshold"
+        value={
+          <Typography>
+            {threshold} out of {owners.length} owner(s)
+          </Typography>
+        }
+      />
+    </Grid>
+  )
+}
+
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
   useSyncSafeCreationStep(setStep)
@@ -138,10 +185,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
 
-  const totalFee =
-    gasLimit && maxFeePerGas
-      ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
-      : '> 0.001'
+  const totalFee = getTotalFeeFormatted(maxFeePerGas, maxPriorityFeePerGas, gasLimit, chain)
 
   // Only 1 out of 1 safe setups are supported for now
   const isCounterfactual = data.threshold === 1 && data.owners.length === 1 && isCounterfactualEnabled
@@ -195,37 +239,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   return (
     <>
       <Box className={layoutCss.row}>
-        <Grid container spacing={3}>
-          <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
-          {data.name && <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />}
-          <ReviewRow
-            name="Owners"
-            value={
-              <Box data-testid="review-step-owner-info" className={css.ownersArray}>
-                {data.owners.map((owner, index) => (
-                  <EthHashInfo
-                    address={owner.address}
-                    name={owner.name || owner.ens}
-                    shortAddress={false}
-                    showPrefix={false}
-                    showName
-                    hasExplorer
-                    showCopyButton
-                    key={index}
-                  />
-                ))}
-              </Box>
-            }
-          />
-          <ReviewRow
-            name="Threshold"
-            value={
-              <Typography>
-                {data.threshold} out of {data.owners.length} owner(s)
-              </Typography>
-            }
-          />
-        </Grid>
+        <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} />
       </Box>
 
       {isCounterfactual && (
