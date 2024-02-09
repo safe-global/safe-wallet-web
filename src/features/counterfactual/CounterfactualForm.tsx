@@ -11,7 +11,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useAppDispatch } from '@/store'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider, Alert, Typography } from '@mui/material'
+import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
 import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
