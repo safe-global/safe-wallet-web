@@ -64,7 +64,14 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
   return (
     <>
       <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON} label={pagePath}>
-        <Button variant="contained" size="small" sx={buttonStyles} startIcon={<AddIcon />} onClick={toggleDialog}>
+        <Button
+          variant="contained"
+          size="small"
+          sx={buttonStyles}
+          startIcon={<AddIcon />}
+          onClick={toggleDialog}
+          className={css.buyCryptoButton}
+        >
           Buy crypto
         </Button>
       </Track>

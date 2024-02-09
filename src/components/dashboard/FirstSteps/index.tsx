@@ -35,7 +35,7 @@ const StatusCard = ({
       </div>
       <div className={css.status}>
         {completed ? (
-          <CheckCircleRoundedIcon color="primary" fontSize="medium" />
+          <CheckCircleRoundedIcon color="success" fontSize="medium" />
         ) : (
           <CircleOutlinedIcon color="inherit" fontSize="medium" />
         )}
@@ -98,6 +98,21 @@ const FirstSteps = () => {
       <WidgetBody>
         <Grid container gap={3} mb={2} flexWrap="nowrap">
           <Grid item position="relative">
+            <svg className={css.gradient}>
+              <defs>
+                <linearGradient
+                  id="progress_gradient"
+                  x1="21.1648"
+                  y1="8.21591"
+                  x2="-9.95028"
+                  y2="22.621"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stopColor="#5FDDFF" />
+                  <stop offset="1" stopColor="#12FF80" />
+                </linearGradient>
+              </defs>
+            </svg>
             <CircularProgress variant="determinate" value={100} className={css.circleBg} size={60} thickness={5} />
             <CircularProgress
               variant="determinate"
@@ -105,6 +120,7 @@ const FirstSteps = () => {
               className={css.circleProgress}
               size={60}
               thickness={5}
+              sx={{ 'svg circle': { stroke: 'url(#progress_gradient)' } }}
             />
           </Grid>
           <Grid item>

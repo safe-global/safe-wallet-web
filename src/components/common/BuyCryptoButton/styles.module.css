@@ -21,3 +21,9 @@
   padding: 4px var(--space-1);
   border-radius: 0 0 4px 4px;
 }
+
+@media (max-width: 400px) {
+  .buyCryptoButton {
+    width: 100%;
+  }
+}

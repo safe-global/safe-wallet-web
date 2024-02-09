@@ -1,3 +1,4 @@
+import TokenAmount from '@/components/common/TokenAmount'
 import Track from '@/components/common/Track'
 import QrCodeButton from '@/components/sidebar/QrCodeButton'
 import { TxModalContext } from '@/components/tx-flow'
@@ -35,7 +36,7 @@ const SkeletonOverview = (
 
 const Overview = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
-  const { safeLoading, safeLoaded } = useSafeInfo()
+  const { safe, safeLoading, safeLoaded } = useSafeInfo()
   const { balances, loading: balancesLoading } = useVisibleBalances()
   const { setTxFlow } = useContext(TxModalContext)
 
@@ -65,7 +66,15 @@ const Overview = (): ReactElement => {
                   Total asset value
                 </Typography>
                 <Typography component="div" variant="h1" fontSize={44} lineHeight="40px">
-                  {fiatTotal}
+                  {safe.deployed ? (
+                    fiatTotal
+                  ) : (
+                    <TokenAmount
+                      value={balances.items[0].balance}
+                      decimals={balances.items[0].tokenInfo.decimals}
+                      tokenSymbol={balances.items[0].tokenInfo.symbol}
+                    />
+                  )}
                 </Typography>
               </Grid>
 
