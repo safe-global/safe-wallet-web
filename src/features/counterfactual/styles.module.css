@@ -21,6 +21,10 @@
   font-weight: bold;
 }
 
+.active .radioSubtitle {
+  color: var(--color-text-primary);
+}
+
 @media (max-width: 400px) {
   .radioGroup {
     flex-direction: column;

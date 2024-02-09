@@ -246,7 +246,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         <>
           <Divider />
           <Box className={layoutCss.row}>
-            <PayNowPayLater totalFee={totalFee} payMethod={payMethod} setPayMethod={setPayMethod} />
+            <PayNowPayLater totalFee={totalFee} canRelay={canRelay} payMethod={payMethod} setPayMethod={setPayMethod} />
           </Box>
         </>
       )}

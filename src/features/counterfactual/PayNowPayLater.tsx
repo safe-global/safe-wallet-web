@@ -22,10 +22,12 @@ export const enum PayMethod {
 
 const PayNowPayLater = ({
   totalFee,
+  canRelay,
   payMethod,
   setPayMethod,
 }: {
   totalFee: string
+  canRelay: boolean
   payMethod: PayMethod
   setPayMethod: Dispatch<SetStateAction<PayMethod>>
 }) => {
@@ -67,8 +69,14 @@ const PayNowPayLater = ({
             label={
               <>
                 <Typography className={css.radioTitle}>Pay now</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  &asymp; {totalFee} {chain?.nativeCurrency.symbol}
+                <Typography className={css.radioSubtitle} variant="body2" color="text.secondary">
+                  {canRelay ? (
+                    'Sponsored free transaction'
+                  ) : (
+                    <>
+                      &asymp; {totalFee} {chain?.nativeCurrency.symbol}
+                    </>
+                  )}
                 </Typography>
               </>
             }
@@ -83,7 +91,7 @@ const PayNowPayLater = ({
             label={
               <>
                 <Typography className={css.radioTitle}>Pay later</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography className={css.radioSubtitle} variant="body2" color="text.secondary">
                   with the first transaction
                 </Typography>
               </>
