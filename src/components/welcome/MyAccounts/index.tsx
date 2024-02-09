@@ -44,10 +44,14 @@ const AccountsList = ({ safes }: AccountsListProps) => {
           <CreateButton />
         </Box>
 
-        <Paper sx={{ p: 3, pb: 2 }}>
-          {shownSafes.map((item) => (
-            <AccountItem {...item} key={item.chainId + item.address} />
-          ))}
+        <Paper sx={{ p: 3 }}>
+          {shownSafes.length ? (
+            shownSafes.map((item) => <AccountItem {...item} key={item.chainId + item.address} />)
+          ) : (
+            <Typography variant="body2" color="primary.light" textAlign="center" my={3}>
+              You don&apos;t have any Safe Accounts yet
+            </Typography>
+          )}
 
           {safes.length > shownSafes.length && (
             <Box display="flex" justifyContent="center">
