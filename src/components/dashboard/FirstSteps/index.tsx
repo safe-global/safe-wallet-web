@@ -19,13 +19,11 @@ const calculateProgress = (items: StatusProgressItems) => {
 
 const StatusCard = ({
   badge,
-  step,
   title,
   content,
   completed,
 }: {
   badge: string
-  step: number
   title: string
   content: string
   completed: boolean
@@ -43,7 +41,6 @@ const StatusCard = ({
         )}
       </div>
       <Typography variant="h4" fontWeight="bold" mb={2}>
-        <span className={css.circleBadge}>{step}</span>
         {title}
       </Typography>
       <Typography>{content}</Typography>
@@ -129,16 +126,10 @@ const FirstSteps = () => {
           </Grid>
         </Grid>
         <Grid container spacing={3}>
-          {items.map((item, index) => {
+          {items.map((item) => {
             return (
               <Grid item xs={12} md={4} key={item.title}>
-                <StatusCard
-                  badge="First steps"
-                  step={index + 1}
-                  title={item.title}
-                  content={item.content}
-                  completed={item.completed}
-                />
+                <StatusCard badge="First steps" title={item.title} content={item.content} completed={item.completed} />
               </Grid>
             )
           })}
