@@ -4,6 +4,8 @@ import madProps from '@/utils/mad-props'
 import AccountItem from './AccountItem'
 import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS } from '@/services/analytics'
 
 type AccountsListProps = {
   safes: SafeItems
@@ -49,7 +51,9 @@ const AccountsList = ({ safes }: AccountsListProps) => {
 
           {safes.length > shownSafes.length && (
             <Box display="flex" justifyContent="center">
-              <Button onClick={onShowMore}>Show more</Button>
+              <Track {...OVERVIEW_EVENTS.SHOW_MORE_SAFES}>
+                <Button onClick={onShowMore}>Show more</Button>
+              </Track>
             </Box>
           )}
         </Paper>
