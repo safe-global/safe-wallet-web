@@ -114,4 +114,5 @@ export enum OPEN_SAFE_LABELS {
   sidebar = 'sidebar',
   after_create = 'after_create',
   after_add = 'after_add',
+  login_page = 'login_page',
 }
