@@ -1,17 +1,21 @@
+import CooldownButton from '@/components/common/CooldownButton'
 import ExternalLink from '@/components/common/ExternalLink'
+import { getCounterfactualBalance } from '@/features/counterfactual/utils'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { useWeb3 } from '@/hooks/wallets/web3'
 import { getBlockExplorerLink } from '@/utils/chains'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 const CheckBalance = () => {
   const { safe, safeAddress } = useSafeInfo()
   const chain = useCurrentChain()
+  const provider = useWeb3()
 
   if (safe.deployed) return null
 
-  const handleBalanceRefresh = () => {
-    // TODO: Call external store from getCounterfactualBalance
+  const handleBalanceRefresh = async () => {
+    void getCounterfactualBalance(safeAddress, provider, chain, true)
   }
 
   const blockExplorerLink = chain ? getBlockExplorerLink(chain, safeAddress) : undefined
@@ -22,9 +26,9 @@ const CheckBalance = () => {
         Don&apos;t see your tokens?
       </Typography>
       <Box display="flex" flexDirection="column" gap={1} alignItems="center">
-        <Button href="#" onClick={handleBalanceRefresh} variant="contained" size="small">
+        <CooldownButton cooldown={15} onClick={handleBalanceRefresh}>
           Refresh balance
-        </Button>
+        </CooldownButton>
         <Typography>or</Typography>
         {blockExplorerLink && (
           <Typography>
