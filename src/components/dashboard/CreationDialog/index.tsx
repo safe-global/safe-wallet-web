@@ -106,7 +106,13 @@ const CreationDialog = () => {
         {undeployedSafe && (
           <Alert severity="info" sx={{ mb: 2 }}>
             We recommend{' '}
-            <Link href="#" onClick={() => backupSafe(chainId, safeAddress, undeployedSafe)}>
+            <Link
+              href="#"
+              onClick={(e) => {
+                e.preventDefault()
+                backupSafe(chainId, safeAddress, undeployedSafe)
+              }}
+            >
               backing up your Safe Account
             </Link>{' '}
             in case you lose access to this device.
