@@ -11,7 +11,7 @@ import GovernanceSection from '@/components/dashboard/GovernanceSection/Governan
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
-
+import css from './styles.module.css'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
@@ -27,7 +27,7 @@ const Dashboard = (): ReactElement => {
 
   return (
     <>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} className={css.container}>
         {supportsRecovery && <RecoveryHeader />}
 
         <Grid item xs={12}>

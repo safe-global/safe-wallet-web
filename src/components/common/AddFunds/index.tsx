@@ -1,3 +1,4 @@
+import useBalances from '@/hooks/useBalances'
 import { Box, FormControlLabel, Grid, Paper, Switch, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import QRCode from '@/components/common/QRCode'
@@ -8,12 +9,17 @@ import { selectSettings, setQrShortName } from '@/store/settingsSlice'
 import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 
 const AddFundsCTA = () => {
+  const { balances } = useBalances()
   const safeAddress = useSafeAddress()
   const chain = useCurrentChain()
   const dispatch = useAppDispatch()
   const settings = useAppSelector(selectSettings)
   const qrPrefix = settings.shortName.qr ? `${chain?.shortName}:` : ''
   const qrCode = `${qrPrefix}${safeAddress}`
+
+  const hasNoAssets = balances.items.length === 1 && balances.items[0].balance === '0'
+
+  if (!hasNoAssets) return null
 
   return (
     <Paper>
