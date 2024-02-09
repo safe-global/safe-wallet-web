@@ -1,4 +1,7 @@
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import type { ChainInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AddOwnerTxParams, RemoveOwnerTxParams, SwapOwnerTxParams } from '@safe-global/protocol-kit'
 import type { MetaTransactionData, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
@@ -28,14 +31,49 @@ export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promis
   return safeSDK.createRemoveOwnerTx(txParams)
 }
 
-export const createAddOwnerTx = async (txParams: AddOwnerTxParams): Promise<SafeTransaction> => {
+export const createAddOwnerTx = async (
+  chain: ChainInfo,
+  isDeployed: boolean,
+  txParams: AddOwnerTxParams,
+): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.createAddOwnerTx(txParams)
+  if (isDeployed) return safeSDK.createAddOwnerTx(txParams)
+
+  const contract = await getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
+  // @ts-ignore TODO: Fix overload issue
+  const data = contract.encode('addOwnerWithThreshold', [txParams.ownerAddress, txParams.threshold])
+
+  const tx = {
+    to: await safeSDK.getAddress(),
+    value: '0',
+    data,
+  }
+
+  return safeSDK.createTransaction({
+    transactions: [tx],
+  })
 }
 
-export const createSwapOwnerTx = async (txParams: SwapOwnerTxParams): Promise<SafeTransaction> => {
+export const createSwapOwnerTx = async (
+  chain: ChainInfo,
+  isDeployed: boolean,
+  txParams: SwapOwnerTxParams,
+): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.createSwapOwnerTx(txParams)
+  if (isDeployed) return safeSDK.createSwapOwnerTx(txParams)
+
+  const contract = await getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
+  const data = contract.encode('swapOwner', [SENTINEL_ADDRESS, txParams.oldOwnerAddress, txParams.newOwnerAddress])
+
+  const tx = {
+    to: await safeSDK.getAddress(),
+    value: '0',
+    data,
+  }
+
+  return safeSDK.createTransaction({
+    transactions: [tx],
+  })
 }
 
 export const createUpdateThresholdTx = async (threshold: number): Promise<SafeTransaction> => {

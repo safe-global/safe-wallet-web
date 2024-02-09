@@ -29,7 +29,7 @@ const currencySection = '[data-testid="currency-section"]'
 const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
 
-export const addedSafesGnosis = ['0x17b3...98C8', '0x11A6...F1BB', '0xB8d7...642A']
+export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
 export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
 export const testSafeHeaderDetails = ['2/2', constants.SEPOLIA_TEST_SAFE_13_SHORT]
