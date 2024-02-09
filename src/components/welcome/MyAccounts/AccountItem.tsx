@@ -11,6 +11,7 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import css from './styles.module.css'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { shortenAddress } from '@/utils/formatters'
+import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
 
 type AccountItemProps = {
   chainId: string
@@ -34,9 +35,9 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
 
   return (
-    <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.login_page}>
-      <Link href={href}>
-        <ListItemButton className={css.listItem}>
+    <ListItemButton className={css.listItem}>
+      <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.login_page}>
+        <Link href={href} className={css.safeLink}>
           <SafeIcon address={address} {...rest} />
 
           <Typography variant="body2" component="div">
@@ -54,9 +55,10 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
           <Box flex={1} />
 
           <ChainIndicator chainId={chainId} />
-        </ListItemButton>
-      </Link>
-    </Track>
+        </Link>
+      </Track>
+      <SafeListContextMenu name={name} address={address} chainId={chainId} />
+    </ListItemButton>
   )
 }
 
