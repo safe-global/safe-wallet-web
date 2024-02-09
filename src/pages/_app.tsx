@@ -63,7 +63,6 @@ const InitApp = (): null => {
   useSafeMsgTracking()
   useBeamer()
   useInitSafeAuth()
-  // useRehydrateSocialWallet()
 
   return null
 }
