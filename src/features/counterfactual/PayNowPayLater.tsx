@@ -59,6 +59,12 @@ const PayNowPayLater = ({
             If you choose to pay later, the fee will be included with the first transaction you make.
           </Typography>
         </ListItem>
+        <ListItem disableGutters>
+          <ListItemIcon sx={{ minWidth: 0, mr: 1, color: 'black' }}>
+            <CheckRoundedIcon fontSize="small" color="inherit" />
+          </ListItemIcon>
+          <Typography variant="body2">Safe doesn&apos;t profit from the fees.</Typography>
+        </ListItem>
       </List>
       <FormControl fullWidth>
         <RadioGroup row value={payMethod} onChange={onChoosePayMethod} className={css.radioGroup}>

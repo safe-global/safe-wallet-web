@@ -12,7 +12,6 @@ import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ReviewRow from '@/components/new-safe/ReviewRow'
-import lightPalette from '@/components/theme/lightPalette'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import { RELAY_SPONSORS } from '@/components/tx/SponsoredBy'
@@ -45,10 +44,12 @@ export const NetworkFee = ({
   totalFee,
   chain,
   willRelay,
+  inline = false,
 }: {
   totalFee: string
   chain: ChainInfo | undefined
   willRelay: boolean
+  inline?: boolean
 }) => {
   const wallet = useWallet()
 
@@ -56,16 +57,8 @@ export const NetworkFee = ({
 
   if (!isSocialLogin) {
     return (
-      <Box
-        p={1}
-        sx={{
-          backgroundColor: lightPalette.secondary.background,
-          color: 'static.main',
-          width: 'fit-content',
-          borderRadius: '6px',
-        }}
-      >
-        <Typography variant="body1" className={classnames({ [css.sponsoredFee]: willRelay })}>
+      <Box className={classnames(css.networkFee, { [css.networkFeeInline]: inline })}>
+        <Typography className={classnames({ [css.sponsoredFee]: willRelay })}>
           <b>
             &asymp; {totalFee} {chain?.nativeCurrency.symbol}
           </b>
@@ -247,11 +240,35 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           <Divider />
           <Box className={layoutCss.row}>
             <PayNowPayLater totalFee={totalFee} canRelay={canRelay} payMethod={payMethod} setPayMethod={setPayMethod} />
+
+            {canRelay && !isSocialLogin && payMethod === PayMethod.PayNow && (
+              <Grid container spacing={3} pt={2}>
+                <ReviewRow
+                  value={
+                    <ExecutionMethodSelector
+                      executionMethod={executionMethod}
+                      setExecutionMethod={setExecutionMethod}
+                      relays={minRelays}
+                    />
+                  }
+                />
+              </Grid>
+            )}
+
+            {payMethod === PayMethod.PayNow && (
+              <Grid item>
+                <Typography mt={2}>
+                  You will have to confirm a transaction and pay an estimated fee of{' '}
+                  <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} inline /> with your connected
+                  wallet
+                </Typography>
+              </Grid>
+            )}
           </Box>
         </>
       )}
 
-      {(!isCounterfactual || payMethod === PayMethod.PayNow) && (
+      {!isCounterfactual && (
         <>
           <Divider />
           <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
