@@ -71,7 +71,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
     const gas = await signer.estimateGas({ data: deploymentTx.data, value: deploymentTx.value, to: deploymentTx.to })
 
     // @ts-ignore TODO: Check why TransactionResponse type doesn't work
-    result = await signer.sendTransaction({ deploymentTx, gasLimit: gas })
+    result = await signer.sendTransaction({ ...deploymentTx, gasLimit: gas })
     txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
