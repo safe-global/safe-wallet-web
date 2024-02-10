@@ -139,7 +139,7 @@ const AssetsTable = ({
     [hiddenAssets, balances.items, showHiddenAssets],
   )
 
-  const hasNoAssets = balances.items.length === 1 && balances.items[0].balance === '0'
+  const hasNoAssets = !loading && balances.items.length === 1 && balances.items[0].balance === '0'
 
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
 
