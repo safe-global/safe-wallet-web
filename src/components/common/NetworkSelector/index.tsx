@@ -19,8 +19,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 
-const keepPathRoutes = [AppRoutes.welcome.index, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
-
 const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(props: any, ref) {
   return (
     <Tooltip title="More network support coming soon" arrow placement="left">
@@ -43,10 +41,10 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
 
   const getNetworkLink = useCallback(
     (shortName: string) => {
-      const shouldKeepPath = keepPathRoutes.includes(router.pathname)
+      const shouldKeepPath = !router.query.safe
 
       const route = {
-        pathname: shouldKeepPath ? router.pathname : '/',
+        pathname: shouldKeepPath ? router.pathname : AppRoutes.index,
         query: {
           chain: shortName,
         } as {
