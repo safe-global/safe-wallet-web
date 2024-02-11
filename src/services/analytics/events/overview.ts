@@ -109,7 +109,11 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
   },
   SHOW_MORE_SAFES: {
-    action: 'Show more safes',
+    action: 'Show more Safes',
+    category: OVERVIEW_CATEGORY,
+  },
+  CREATE_NEW_SAFE: {
+    action: 'Create new Safe',
     category: OVERVIEW_CATEGORY,
   },
 }
