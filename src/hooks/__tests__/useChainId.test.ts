@@ -1,7 +1,5 @@
 import { useParams } from 'next/navigation'
 import useChainId from '@/hooks/useChainId'
-import { useAppDispatch } from '@/store'
-import { setLastChainId } from '@/store/sessionSlice'
 import { renderHook } from '@/tests/test-utils'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import * as useChains from '@/hooks/useChains'
@@ -22,22 +20,6 @@ describe('useChainId hook', () => {
       writable: true,
       value: undefined,
     })
-  })
-
-  it('should read location.pathname if useRouter query.safe is empty', () => {
-    ;(useParams as any).mockImplementation(() => ({}))
-
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        pathname: '/avax:0x0000000000000000000000000000000000000123/balances',
-        search: '',
-      },
-    })
-
-    const { result } = renderHook(() => useChainId())
-
-    expect(result.current).toEqual('43114')
   })
 
   it('should read location.search if useRouter query.safe is empty', () => {
@@ -95,7 +77,7 @@ describe('useChainId hook', () => {
     expect(result.current).toBe('137')
   })
 
-  it('should return the wallet chain id if no chain in the URL and it is present in the chain configs', () => {
+  it('should return the wallet chain id if no chain in the URL and no last chain id', () => {
     ;(useParams as any).mockImplementation(() => ({}))
 
     jest.spyOn(useWalletHook, 'default').mockImplementation(
@@ -113,28 +95,10 @@ describe('useChainId hook', () => {
     expect(result.current).toBe('1337')
   })
 
-  it('should return the last used chain id if no chain in the URL and the connect wallet chain id is not present in the chain configs', () => {
+  it('should return the last chain id', () => {
     ;(useParams as any).mockImplementation(() => ({}))
 
-    jest.spyOn(useWalletHook, 'default').mockImplementation(
-      () =>
-        ({
-          chainId: '1337',
-        } as ConnectedWallet),
-    )
-
-    jest.spyOn(useChains, 'default').mockImplementation(() => ({
-      configs: [],
-    }))
-
-    const { result } = renderHook(() => useChainId())
-    expect(result.current).toBe('11155111')
-  })
-
-  it('should return the last used chain id if no wallet is connected and there is no chain in the URL', () => {
-    ;(useParams as any).mockImplementation(() => ({}))
-
-    renderHook(() => useAppDispatch()(setLastChainId('100')))
+    localStorage.setItem('SAFE_v2__session', `{"lastChainId": "100"}`)
 
     const { result } = renderHook(() => useChainId())
     expect(result.current).toBe('100')
