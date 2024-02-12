@@ -1,52 +1,55 @@
-import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
-import type { NamedAddress } from '@/components/new-safe/create/types'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import { createCounterfactualSafe } from '@/features/counterfactual/utils'
-import useWalletCanPay from '@/hooks/useWalletCanPay'
-import { useAppDispatch } from '@/store'
-import { FEATURES } from '@/utils/chains'
-import { useRouter } from 'next/router'
-import { useMemo, useState } from 'react'
-import { Button, Grid, Typography, Divider, Box, Alert } from '@mui/material'
-import lightPalette from '@/components/theme/lightPalette'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
-import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
-import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
+import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
+import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
+import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
-import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
+import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
+import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
+import ReviewRow from '@/components/new-safe/ReviewRow'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
+import { RELAY_SPONSORS } from '@/components/tx/SponsoredBy'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import PayNowPayLater, { PayMethod } from '@/features/counterfactual/PayNowPayLater'
+import { createCounterfactualSafe } from '@/features/counterfactual/utils'
+import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
+import useGasPrice from '@/hooks/useGasPrice'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
+import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import ReviewRow from '@/components/new-safe/ReviewRow'
-import { ExecutionMethodSelector, ExecutionMethod } from '@/components/tx/ExecutionMethodSelector'
-import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
-import classnames from 'classnames'
-import { hasRemainingRelays } from '@/utils/relaying'
-import { usePendingSafe } from '../StatusStep/usePendingSafe'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import { RELAY_SPONSORS } from '@/components/tx/SponsoredBy'
-import Image from 'next/image'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useAppDispatch } from '@/store'
+import { FEATURES } from '@/utils/chains'
+import { hasRemainingRelays } from '@/utils/relaying'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { Alert, Box, Button, Divider, Grid, Typography } from '@mui/material'
 import { type DeploySafeProps } from '@safe-global/protocol-kit'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import classnames from 'classnames'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { useMemo, useState } from 'react'
+import { usePendingSafe } from '../StatusStep/usePendingSafe'
 
 export const NetworkFee = ({
   totalFee,
   chain,
   willRelay,
+  inline = false,
 }: {
   totalFee: string
   chain: ChainInfo | undefined
   willRelay: boolean
+  inline?: boolean
 }) => {
   const wallet = useWallet()
 
@@ -54,16 +57,8 @@ export const NetworkFee = ({
 
   if (!isSocialLogin) {
     return (
-      <Box
-        p={1}
-        sx={{
-          backgroundColor: lightPalette.secondary.background,
-          color: 'static.main',
-          width: 'fit-content',
-          borderRadius: '6px',
-        }}
-      >
-        <Typography variant="body1" className={classnames({ [css.sponsoredFee]: willRelay })}>
+      <Box className={classnames(css.networkFee, { [css.networkFeeInline]: inline })}>
+        <Typography className={classnames({ [css.sponsoredFee]: willRelay })}>
           <b>
             &asymp; {totalFee} {chain?.nativeCurrency.symbol}
           </b>
@@ -156,6 +151,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const router = useRouter()
   const [gasPrice] = useGasPrice()
   const [_, setPendingSafe] = usePendingSafe()
+  const [payMethod, setPayMethod] = useState(PayMethod.PayLater)
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
   const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
@@ -211,7 +207,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const saltNonce = await getAvailableSaltNonce(provider, { ...props, saltNonce: '0' })
       const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
 
-      if (isCounterfactual) {
+      if (isCounterfactual && payMethod === PayMethod.PayLater) {
         createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
         return
       }
@@ -238,6 +234,39 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       <Box className={layoutCss.row}>
         <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} />
       </Box>
+
+      {isCounterfactual && (
+        <>
+          <Divider />
+          <Box className={layoutCss.row}>
+            <PayNowPayLater totalFee={totalFee} canRelay={canRelay} payMethod={payMethod} setPayMethod={setPayMethod} />
+
+            {canRelay && !isSocialLogin && payMethod === PayMethod.PayNow && (
+              <Grid container spacing={3} pt={2}>
+                <ReviewRow
+                  value={
+                    <ExecutionMethodSelector
+                      executionMethod={executionMethod}
+                      setExecutionMethod={setExecutionMethod}
+                      relays={minRelays}
+                    />
+                  }
+                />
+              </Grid>
+            )}
+
+            {payMethod === PayMethod.PayNow && (
+              <Grid item>
+                <Typography mt={2}>
+                  You will have to confirm a transaction and pay an estimated fee of{' '}
+                  <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} inline /> with your connected
+                  wallet
+                </Typography>
+              </Grid>
+            )}
+          </Box>
+        </>
+      )}
 
       {!isCounterfactual && (
         <>

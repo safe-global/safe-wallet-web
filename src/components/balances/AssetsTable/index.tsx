@@ -1,3 +1,4 @@
+import CheckBalance from '@/features/counterfactual/CheckBalance'
 import { type ReactElement, useMemo, useContext } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -138,7 +139,7 @@ const AssetsTable = ({
     [hiddenAssets, balances.items, showHiddenAssets],
   )
 
-  const hasNoAssets = balances.items.length === 1 && balances.items[0].balance === '0'
+  const hasNoAssets = !loading && balances.items.length === 1 && balances.items[0].balance === '0'
 
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
 
@@ -257,6 +258,8 @@ const AssetsTable = ({
           <EnhancedTable rows={rows} headCells={headCells} />
         </div>
       )}
+
+      <CheckBalance />
     </>
   )
 }

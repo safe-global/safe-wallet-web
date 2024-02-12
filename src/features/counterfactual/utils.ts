@@ -1,15 +1,20 @@
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import type { NewSafeFormData } from '@/components/new-safe/create'
+import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { AppRoutes } from '@/config/routes'
+import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import ExternalStore from '@/services/ExternalStore'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
-import { AppRoutes } from '@/config/routes'
-import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { showNotification } from '@/store/notificationsSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { getBlockExplorerLink } from '@/utils/chains'
 import { didReprice, didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
@@ -44,6 +49,8 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
   })
 }
 
+export const CF_TX_GROUP_KEY = 'cf-tx'
+
 export const dispatchTxExecutionAndDeploySafe = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
@@ -52,8 +59,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
   onSuccess?: () => void,
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
-  const eventParams = { groupKey: 'cf-tx' }
-  const safeAddress = await sdkUnchecked.getAddress()
+  const eventParams = { groupKey: CF_TX_GROUP_KEY }
 
   let result: ContractTransactionResponse | undefined
   try {
@@ -65,8 +71,11 @@ export const dispatchTxExecutionAndDeploySafe = async (
 
     const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
 
+    // We need to estimate the actual gasLimit after the user has signed since it is more accurate than what useDeployGasLimit returns
+    const gas = await signer.estimateGas({ data: deploymentTx.data, value: deploymentTx.value, to: deploymentTx.to })
+
     // @ts-ignore TODO: Check why TransactionResponse type doesn't work
-    result = await signer.sendTransaction(deploymentTx)
+    result = await signer.sendTransaction({ ...deploymentTx, gasLimit: gas })
     txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
@@ -83,20 +92,19 @@ export const dispatchTxExecutionAndDeploySafe = async (
       } else if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        txDispatch(TxEvent.SUCCESS, eventParams)
+        onSuccess?.()
       }
     })
     .catch((err) => {
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        txDispatch(TxEvent.SUCCESS, eventParams)
+        onSuccess?.()
       } else {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
       }
-    })
-    .finally(() => {
-      onSuccess?.()
     })
 
   return result!.hash
@@ -117,10 +125,28 @@ export const deploySafeAndExecuteTx = async (
   return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId, onSuccess)
 }
 
-export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
-  const balance = await provider?.getBalance(safeAddress)
+export const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint>(0n)
 
-  if (balance === undefined || !chain) return
+export const getCounterfactualBalance = async (
+  safeAddress: string,
+  provider?: BrowserProvider,
+  chain?: ChainInfo,
+  ignoreCache?: boolean,
+) => {
+  let balance: bigint | undefined
+
+  if (!chain) return undefined
+
+  // Fetch balance via the connected wallet.
+  // If there is no wallet connected we fetch and cache the balance instead
+  if (provider) {
+    balance = await provider.getBalance(safeAddress)
+  } else {
+    const cachedBalance = getNativeBalance()
+    const useCache = cachedBalance && cachedBalance > 0n && !ignoreCache
+    balance = useCache ? cachedBalance : (await getWeb3ReadOnly()?.getBalance(safeAddress)) || 0n
+    setNativeBalance(balance)
+  }
 
   return <SafeBalanceResponse>{
     fiatTotal: '0',
@@ -131,7 +157,7 @@ export const getCounterfactualBalance = async (safeAddress: string, provider?: B
           address: ZERO_ADDRESS,
           ...chain?.nativeCurrency,
         },
-        balance: balance.toString(),
+        balance: balance?.toString(),
         fiatBalance: '0',
         fiatConversion: '0',
       },
@@ -176,5 +202,21 @@ export const createCounterfactualSafe = (
       },
     }),
   )
-  router.push({ pathname: AppRoutes.home, query: { safe: `${chain.shortName}:${safeAddress}` } })
+  router.push({
+    pathname: AppRoutes.home,
+    query: { safe: `${chain.shortName}:${safeAddress}`, [CREATION_MODAL_QUERY_PARM]: true },
+  })
+}
+
+export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo, txHash?: string) => {
+  const link = chain && txHash ? getBlockExplorerLink(chain, txHash) : undefined
+  dispatch(
+    showNotification({
+      variant: 'info',
+      groupKey: CF_TX_GROUP_KEY,
+      message: 'Safe Account activation in progress',
+      detailedMessage: 'Your Safe Account will be deployed onchain after the transaction is executed.',
+      link: link ? { href: link.href, title: link.title } : undefined,
+    }),
+  )
 }
