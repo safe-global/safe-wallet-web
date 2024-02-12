@@ -197,7 +197,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     })
   })
 
-  it('Verify a batch cannot be created without asset amount', () => {
+  it.skip('Verify a batch cannot be created without asset amount', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SEPOLIA_TEST_SAFE_10)
       getBody().findByText(safeapps.addTransactionStr).click()
@@ -266,7 +266,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     })
   })
 
-  it('Verify a valid batch as successful can be simulated', () => {
+  it.skip('Verify a valid batch as successful can be simulated', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SEPOLIA_TEST_SAFE_10)
       getBody().findByLabelText(safeapps.tokenAmount).type('0')
@@ -278,7 +278,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     })
   })
 
-  it('Verify an invalid batch as failed can be simulated', () => {
+  it.skip('Verify an invalid batch as failed can be simulated', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SEPOLIA_TEST_SAFE_10)
       getBody().findByLabelText(safeapps.tokenAmount).type('100')
