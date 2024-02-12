@@ -11,6 +11,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
 import { removeUndeployedSafe, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { CF_TX_GROUP_KEY, showSubmitNotification } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
@@ -22,6 +23,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { hasFeature } from '@/utils/chains'
@@ -44,12 +46,12 @@ const useActivateAccount = () => {
     ? {
         maxFeePerGas: maxFeePerGas?.toString(),
         maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
-        gasLimit: gasLimit?.toString(),
+        gasLimit: gasLimit?.totalGas.toString(),
       }
-    : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
+    : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.totalGas.toString() }
 
-  const totalFee = getTotalFeeFormatted(maxFeePerGas, maxPriorityFeePerGas, gasLimit, chain)
-  const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
+  const totalFee = getTotalFeeFormatted(maxFeePerGas, maxPriorityFeePerGas, gasLimit?.totalGas, chain)
+  const walletCanPay = useWalletCanPay({ gasLimit: gasLimit?.totalGas, maxFeePerGas, maxPriorityFeePerGas })
 
   return { options, totalFee, walletCanPay }
 }
@@ -81,6 +83,12 @@ const ActivateAccountFlow = () => {
 
   const onSuccess = () => {
     dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
+    txDispatch(TxEvent.SUCCESS, { groupKey: CF_TX_GROUP_KEY })
+  }
+
+  const onSubmit = (txHash?: string) => {
+    showSubmitNotification(dispatch, chain, txHash)
+    setTxFlow(undefined)
   }
 
   const createSafe = async () => {
@@ -99,6 +107,8 @@ const ActivateAccountFlow = () => {
           undeployedSafe.safeDeploymentConfig?.safeVersion,
         )
 
+        onSubmit()
+
         waitForCreateSafeTx(taskId, (status) => {
           if (status === SafeCreationStatus.SUCCESS) {
             onSuccess()
@@ -111,6 +121,8 @@ const ActivateAccountFlow = () => {
             safeAccountConfig: undeployedSafe.safeAccountConfig,
             saltNonce: undeployedSafe.safeDeploymentConfig?.saltNonce,
             options,
+
+            callback: onSubmit,
           },
           undeployedSafe.safeDeploymentConfig?.safeVersion,
         )
@@ -122,8 +134,6 @@ const ActivateAccountFlow = () => {
       setSubmitError(err)
       return
     }
-
-    setTxFlow(undefined)
   }
 
   const submitDisabled = !isSubmittable
