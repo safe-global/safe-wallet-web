@@ -46,7 +46,7 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
   })
 }
 
-const CF_TX_GROUP_KEY = 'cf-tx'
+export const CF_TX_GROUP_KEY = 'cf-tx'
 
 export const dispatchTxExecutionAndDeploySafe = async (
   safeTx: SafeTransaction,
@@ -189,7 +189,7 @@ export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo,
   dispatch(
     showNotification({
       variant: 'info',
-      groupKey: 'cf-activate-account',
+      groupKey: CF_TX_GROUP_KEY,
       message: 'Safe Account activation in progress',
       detailedMessage: 'Your Safe Account will be deployed onchain after the transaction is executed.',
       link: link ? { href: link.href, title: link.title } : undefined,

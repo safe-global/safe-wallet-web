@@ -11,7 +11,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
 import { removeUndeployedSafe, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import { showSubmitNotification } from '@/features/counterfactual/utils'
+import { CF_TX_GROUP_KEY, showSubmitNotification } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
@@ -23,6 +23,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { hasFeature } from '@/utils/chains'
@@ -82,6 +83,7 @@ const ActivateAccountFlow = () => {
 
   const onSuccess = () => {
     dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
+    txDispatch(TxEvent.SUCCESS, { groupKey: CF_TX_GROUP_KEY })
   }
 
   const onSubmit = (txHash?: string) => {
