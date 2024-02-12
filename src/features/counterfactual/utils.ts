@@ -9,7 +9,6 @@ import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import ExternalStore from '@/services/ExternalStore'
 import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
@@ -55,9 +54,9 @@ export const dispatchTxExecutionAndDeploySafe = async (
   txOptions: TransactionOptions,
   onboard: OnboardAPI,
   chainId: SafeInfo['chainId'],
-  onSuccess?: () => void,
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+  const safeAddress = await sdkUnchecked.getAddress()
   const eventParams = { groupKey: CF_TX_GROUP_KEY }
 
   let result: ContractTransactionResponse | undefined
@@ -75,34 +74,37 @@ export const dispatchTxExecutionAndDeploySafe = async (
 
     // @ts-ignore TODO: Check why TransactionResponse type doesn't work
     result = await signer.sendTransaction({ ...deploymentTx, gasLimit: gas })
-    txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error) })
     throw error
   }
 
-  txDispatch(TxEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
+  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
 
   result
     ?.wait()
     .then((receipt) => {
       if (receipt === null) {
-        txDispatch(TxEvent.FAILED, { ...eventParams, error: new Error('No transaction receipt found') })
+        safeCreationDispatch(SafeCreationEvent.FAILED, {
+          ...eventParams,
+          error: new Error('No transaction receipt found'),
+        })
       } else if (didRevert(receipt)) {
-        txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
+        safeCreationDispatch(SafeCreationEvent.REVERTED, {
+          ...eventParams,
+          error: new Error('Transaction reverted by EVM'),
+        })
       } else {
-        txDispatch(TxEvent.SUCCESS, eventParams)
-        onSuccess?.()
+        safeCreationDispatch(SafeCreationEvent.SUCCESS, { ...eventParams, safeAddress })
       }
     })
     .catch((err) => {
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.SUCCESS, eventParams)
-        onSuccess?.()
+        safeCreationDispatch(SafeCreationEvent.SUCCESS, { ...eventParams, safeAddress })
       } else {
-        txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
+        safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error) })
       }
     })
 
@@ -115,13 +117,12 @@ export const deploySafeAndExecuteTx = async (
   wallet: ConnectedWallet | null,
   safeTx?: SafeTransaction,
   onboard?: OnboardAPI,
-  onSuccess?: () => void,
 ) => {
   assertTx(safeTx)
   assertWallet(wallet)
   assertOnboard(onboard)
 
-  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId, onSuccess)
+  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId)
 }
 
 export const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint>(0n)
