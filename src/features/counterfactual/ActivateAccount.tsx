@@ -1,7 +1,6 @@
 import { createNewSafe, relaySafeCreation } from '@/components/new-safe/create/logic'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'
 import TxCard from '@/components/tx-flow/common/TxCard'
@@ -10,8 +9,9 @@ import TxLayout from '@/components/tx-flow/common/TxLayout'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
-import { removeUndeployedSafe, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import { CF_TX_GROUP_KEY, showSubmitNotification } from '@/features/counterfactual/utils'
+import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
+import { PendingSafeStatus, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { CF_TX_GROUP_KEY } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
@@ -23,12 +23,10 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
-import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppSelector } from '@/store'
 import { hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { Alert, Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
+import { Alert, Box, Button, CircularProgress, Divider, Grid, Tooltip, Typography } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import React, { useContext, useState } from 'react'
@@ -68,11 +66,10 @@ const ActivateAccountFlow = () => {
   const provider = useWeb3()
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, safeAddress))
   const { setTxFlow } = useContext(TxModalContext)
-  const dispatch = useAppDispatch()
   const wallet = useWallet()
   const { options, totalFee, walletCanPay } = useActivateAccount()
 
-  const ownerAddresses = undeployedSafe?.safeAccountConfig.owners || []
+  const ownerAddresses = undeployedSafe?.props.safeAccountConfig.owners || []
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
   // Every owner has remaining relays and relay method is selected
@@ -81,13 +78,19 @@ const ActivateAccountFlow = () => {
 
   if (!undeployedSafe) return null
 
+  const owners = undeployedSafe.props.safeAccountConfig.owners
+  const threshold = undeployedSafe.props.safeAccountConfig.threshold
+  const saltNonce = undeployedSafe.props.safeDeploymentConfig?.saltNonce
+  const safeVersion = undeployedSafe.props.safeDeploymentConfig?.safeVersion
+
   const onSuccess = () => {
-    dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
-    txDispatch(TxEvent.SUCCESS, { groupKey: CF_TX_GROUP_KEY })
+    safeCreationDispatch(SafeCreationEvent.SUCCESS, { groupKey: CF_TX_GROUP_KEY, safeAddress })
   }
 
   const onSubmit = (txHash?: string) => {
-    showSubmitNotification(dispatch, chain, txHash)
+    if (txHash) {
+      safeCreationDispatch(SafeCreationEvent.PROCESSING, { groupKey: CF_TX_GROUP_KEY, txHash })
+    }
     setTxFlow(undefined)
   }
 
@@ -99,32 +102,20 @@ const ActivateAccountFlow = () => {
 
     try {
       if (willRelay) {
-        const taskId = await relaySafeCreation(
-          chain,
-          undeployedSafe.safeAccountConfig.owners,
-          undeployedSafe.safeAccountConfig.threshold,
-          Number(undeployedSafe.safeDeploymentConfig?.saltNonce!),
-          undeployedSafe.safeDeploymentConfig?.safeVersion,
-        )
+        const taskId = await relaySafeCreation(chain, owners, threshold, Number(saltNonce!), safeVersion)
+        safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId })
 
         onSubmit()
-
-        waitForCreateSafeTx(taskId, (status) => {
-          if (status === SafeCreationStatus.SUCCESS) {
-            onSuccess()
-          }
-        })
       } else {
         await createNewSafe(
           provider,
           {
-            safeAccountConfig: undeployedSafe.safeAccountConfig,
-            saltNonce: undeployedSafe.safeDeploymentConfig?.saltNonce,
+            safeAccountConfig: undeployedSafe.props.safeAccountConfig,
+            saltNonce,
             options,
-
             callback: onSubmit,
           },
-          undeployedSafe.safeDeploymentConfig?.safeVersion,
+          safeVersion,
         )
         onSuccess()
       }
@@ -149,10 +140,7 @@ const ActivateAccountFlow = () => {
 
         <Divider sx={{ mx: -3, my: 2 }} />
 
-        <SafeSetupOverview
-          owners={undeployedSafe.safeAccountConfig.owners.map((owner) => ({ name: '', address: owner }))}
-          threshold={undeployedSafe.safeAccountConfig.threshold}
-        />
+        <SafeSetupOverview owners={owners.map((owner) => ({ name: '', address: owner }))} threshold={threshold} />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
         <Box display="flex" flexDirection="column" gap={3}>
@@ -216,10 +204,13 @@ const ActivateAccountFlow = () => {
 }
 
 const ActivateAccount = () => {
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, safeAddress))
   const { setTxFlow } = useContext(TxModalContext)
 
   if (safe.deployed) return null
+
+  const isProcessing = undeployedSafe?.status.status !== PendingSafeStatus.AWAITING_EXECUTION
 
   const activateAccount = () => {
     setTxFlow(<ActivateAccountFlow />)
@@ -231,9 +222,22 @@ const ActivateAccount = () => {
       <Typography variant="body2" mb={3}>
         Activate your account now by deploying it and paying a network fee.
       </Typography>
-      <Button variant="contained" size="small" onClick={activateAccount}>
-        Activate now
-      </Button>
+      <Tooltip title={isProcessing ? 'The safe activation is already in process' : undefined}>
+        <span>
+          <Button variant="contained" size="small" onClick={activateAccount} disabled={isProcessing}>
+            {isProcessing ? (
+              <>
+                <Typography variant="body2" component="span" mr={1}>
+                  Processing
+                </Typography>
+                <CircularProgress size={16} />
+              </>
+            ) : (
+              'Activate now'
+            )}
+          </Button>
+        </span>
+      </Tooltip>
     </Alert>
   )
 }

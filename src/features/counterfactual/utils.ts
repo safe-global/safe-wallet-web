@@ -1,14 +1,16 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { LATEST_SAFE_VERSION, POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
+import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import ExternalStore from '@/services/ExternalStore'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
+import ExternalStore from '@/services/ExternalStore'
 import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
@@ -18,20 +20,17 @@ import { getBlockExplorerLink } from '@/utils/chains'
 import { didReprice, didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
-import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
-import type { OnboardAPI } from '@web3-onboard/core'
-import type { ContractTransactionResponse } from 'ethers'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import {
   type ChainInfo,
   ImplementationVersionState,
   type SafeBalanceResponse,
-  TokenType,
   type SafeInfo,
+  TokenType,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import type { BrowserProvider } from 'ethers'
-import { createWeb3 } from '@/hooks/wallets/web3'
+import type { OnboardAPI } from '@web3-onboard/core'
+import type { BrowserProvider, ContractTransactionResponse, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
@@ -44,7 +43,7 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
     threshold: undeployedSafe.safeAccountConfig.threshold,
     implementationVersionState: ImplementationVersionState.UP_TO_DATE,
     fallbackHandler: { value: undeployedSafe.safeAccountConfig.fallbackHandler! },
-    version: LATEST_SAFE_VERSION,
+    version: undeployedSafe.safeDeploymentConfig?.safeVersion || LATEST_SAFE_VERSION,
     deployed: false,
   })
 }
@@ -219,4 +218,91 @@ export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo,
       link: link ? { href: link.href, title: link.title } : undefined,
     }),
   )
+}
+
+// TODO: Reuse this for safe creation flow instead of checkSafeCreationTx
+export const checkSafeActivation = async (provider: Provider, txHash: string, safeAddress: string) => {
+  const TIMEOUT_TIME = 60 * 1000 // 1 minute
+
+  try {
+    const txResponse = await provider.getTransaction(txHash)
+    if (txResponse === null) {
+      throw new Error('Transaction not found')
+    }
+
+    const receipt = await txResponse.wait(1, TIMEOUT_TIME)
+
+    /** The receipt should always be non-null as we require 1 confirmation */
+    if (receipt === null) {
+      throw new Error('Transaction should have a receipt, but got null instead.')
+    }
+
+    if (didRevert(receipt)) {
+      safeCreationDispatch(SafeCreationEvent.REVERTED, {
+        groupKey: CF_TX_GROUP_KEY,
+        error: new Error('Transaction reverted'),
+      })
+    }
+
+    safeCreationDispatch(SafeCreationEvent.SUCCESS, {
+      groupKey: CF_TX_GROUP_KEY,
+      safeAddress,
+    })
+  } catch (err) {
+    const _err = err as EthersError
+
+    // TODO: Do we need to detect speed-up txs here?
+    safeCreationDispatch(SafeCreationEvent.FAILED, {
+      groupKey: CF_TX_GROUP_KEY,
+      error: _err,
+    })
+  }
+}
+
+// TODO: Reuse this for safe creation flow instead of waitForCreateSafeTx
+export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => {
+  const TIMEOUT_TIME = 60 * 1000 // 1 minute
+
+  let intervalId: NodeJS.Timeout
+  let failAfterTimeoutId: NodeJS.Timeout
+
+  intervalId = setInterval(async () => {
+    const status = await getRelayTxStatus(taskId)
+
+    // 404
+    if (!status) return
+
+    switch (status.task.taskState) {
+      case TaskState.ExecSuccess:
+        safeCreationDispatch(SafeCreationEvent.SUCCESS, {
+          groupKey: CF_TX_GROUP_KEY,
+          safeAddress,
+        })
+        break
+      case TaskState.ExecReverted:
+      case TaskState.Blacklisted:
+      case TaskState.Cancelled:
+      case TaskState.NotFound:
+        safeCreationDispatch(SafeCreationEvent.FAILED, {
+          groupKey: CF_TX_GROUP_KEY,
+          error: new Error('Transaction failed'),
+        })
+        break
+      default:
+        // Don't clear interval as we're still waiting for the tx to be relayed
+        return
+    }
+
+    clearTimeout(failAfterTimeoutId)
+    clearInterval(intervalId)
+  }, POLLING_INTERVAL)
+
+  failAfterTimeoutId = setTimeout(() => {
+    safeCreationDispatch(SafeCreationEvent.FAILED, {
+      groupKey: CF_TX_GROUP_KEY,
+      error: new Error('Transaction failed'),
+    })
+
+    clearInterval(intervalId)
+  }, TIMEOUT_TIME)
 }

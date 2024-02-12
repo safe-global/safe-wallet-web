@@ -1,3 +1,5 @@
+import usePendingSafeNotifications from '@/hooks/usePendingSafeNotifications'
+import usePendingSafeStatus from '@/hooks/usePendingSafeStatuses'
 import { SentryErrorBoundary } from '@/services/sentry' // needs to be imported first
 import useRehydrateSocialWallet from '@/hooks/wallets/mpc/useRehydrateSocialWallet'
 import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
@@ -64,6 +66,10 @@ const InitApp = (): null => {
   useSafeMsgTracking()
   useBeamer()
   useRehydrateSocialWallet()
+
+  // Counterfactual
+  usePendingSafeStatus()
+  usePendingSafeNotifications()
 
   return null
 }
