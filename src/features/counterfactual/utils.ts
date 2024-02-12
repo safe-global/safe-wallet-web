@@ -1,10 +1,13 @@
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import type { NewSafeFormData } from '@/components/new-safe/create'
+import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { AppRoutes } from '@/config/routes'
+import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import ExternalStore from '@/services/ExternalStore'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
-import { AppRoutes } from '@/config/routes'
-import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
@@ -122,10 +125,22 @@ export const deploySafeAndExecuteTx = async (
   return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId, onSuccess)
 }
 
-export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
-  const balance = await provider?.getBalance(safeAddress)
+const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint | undefined>()
 
-  if (balance === undefined || !chain) return
+export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
+  let balance: bigint | undefined
+
+  if (!chain) return undefined
+
+  // Fetch balance via the connected wallet.
+  // If there is no wallet connected we fetch and cache the balance instead
+  if (provider) {
+    balance = await provider.getBalance(safeAddress)
+  } else {
+    const cachedBalance = getNativeBalance()
+    balance = cachedBalance !== undefined ? cachedBalance : await getWeb3ReadOnly()?.getBalance(safeAddress)
+    setNativeBalance(balance)
+  }
 
   return <SafeBalanceResponse>{
     fiatTotal: '0',
@@ -136,7 +151,7 @@ export const getCounterfactualBalance = async (safeAddress: string, provider?: B
           address: ZERO_ADDRESS,
           ...chain?.nativeCurrency,
         },
-        balance: balance.toString(),
+        balance: balance?.toString(),
         fiatBalance: '0',
         fiatConversion: '0',
       },
@@ -181,7 +196,10 @@ export const createCounterfactualSafe = (
       },
     }),
   )
-  router.push({ pathname: AppRoutes.home, query: { safe: `${chain.shortName}:${safeAddress}` } })
+  router.push({
+    pathname: AppRoutes.home,
+    query: { safe: `${chain.shortName}:${safeAddress}`, [CREATION_MODAL_QUERY_PARM]: true },
+  })
 }
 
 export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo, txHash?: string) => {

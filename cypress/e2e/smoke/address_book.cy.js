@@ -6,6 +6,7 @@ import * as ls from '../../support/localstorage_data.js'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
+const duplicateEntry = 'test-sepolia-90'
 
 describe('[SMOKE] Address book tests', () => {
   beforeEach(() => {
@@ -37,8 +38,40 @@ describe('[SMOKE] Address book tests', () => {
 
   it('[SMOKE] Verify csv file can be imported', () => {
     addressBook.clickOnImportFileBtn()
-    addressBook.importFile()
-    addressBook.verifyImportModalIsClosed()
-    addressBook.verifyDataImported(constants.SEPOLIA_CSV_ENTRY.name, constants.SEPOLIA_CSV_ENTRY.address)
+    addressBook.importCSVFile(addressBook.validCSVFile)
+    addressBook.verifyImportBtnStatus(constants.enabledStates.enabled)
+    addressBook.clickOnImportBtn()
+    addressBook.verifyDataImported(addressBook.entries)
+    addressBook.verifyNumberOfRows(4)
+  })
+
+  it('[SMOKE] Import a csv file with an empty address/name/network in one row', () => {
+    addressBook.clickOnImportFileBtn()
+    addressBook.importCSVFile(addressBook.emptyCSVFile)
+    addressBook.verifyImportBtnStatus(constants.enabledStates.disabled)
+    addressBook.verifyUploadExportMessage([addressBook.uploadErrorMessages.emptyFile])
+  })
+
+  it('[SMOKE] Import a non-csv file', () => {
+    addressBook.clickOnImportFileBtn()
+    addressBook.importCSVFile(addressBook.nonCSVFile)
+    addressBook.verifyImportBtnStatus(constants.enabledStates.disabled)
+    addressBook.verifyUploadExportMessage([addressBook.uploadErrorMessages.fileType])
+  })
+
+  it('[SMOKE] Import a csv file with a repeated address and same network', () => {
+    addressBook.clickOnImportFileBtn()
+    addressBook.importCSVFile(addressBook.duplicatedCSVFile)
+    addressBook.verifyImportBtnStatus(constants.enabledStates.enabled)
+    addressBook.clickOnImportBtn()
+    addressBook.verifyDataImported([duplicateEntry])
+    addressBook.verifyNumberOfRows(1)
+  })
+
+  it('[SMOKE] Verify modal shows the amount of entries and networks detected', () => {
+    addressBook.clickOnImportFileBtn()
+    addressBook.importCSVFile(addressBook.networksCSVFile)
+    addressBook.verifyImportBtnStatus(constants.enabledStates.enabled)
+    addressBook.verifyModalSummaryMessage(4, 3)
   })
 })
