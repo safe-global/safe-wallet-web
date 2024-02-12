@@ -27,7 +27,6 @@ export const broadcastState = <K extends keyof PreloadedRootState>(sliceNames: K
 export const listenToBroadcast = (store: Store<RootState>) => {
   broadcast?.addEventListener('message', ({ data }) => {
     if (data.tabId !== tabId) {
-      console.log('ACTION', data.action)
       store.dispatch({ ...data.action, _isBroadcasted: true })
     }
   })
