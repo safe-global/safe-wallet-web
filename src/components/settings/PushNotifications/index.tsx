@@ -140,7 +140,7 @@ export const PushNotifications = (): ReactElement => {
                         <FormControlLabel
                           control={<Switch checked={!!preferences} onChange={handleOnChange} />}
                           label={preferences ? 'On' : 'Off'}
-                          disabled={!isOk || isRegistering}
+                          disabled={!isOk || isRegistering || !safe.deployed}
                         />
                       )}
                     </CheckWallet>

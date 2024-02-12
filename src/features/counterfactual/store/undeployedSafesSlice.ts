@@ -4,7 +4,7 @@ import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 
 type UndeployedSafesSlice = { [address: string]: PredictedSafeProps }
 
-type UndeployedSafesState = { [chainId: string]: UndeployedSafesSlice }
+export type UndeployedSafesState = { [chainId: string]: UndeployedSafesSlice }
 
 const initialState: UndeployedSafesState = {}
 
