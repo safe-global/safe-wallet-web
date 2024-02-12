@@ -317,10 +317,8 @@ export const addressBookData = {
     },
   },
   addedSafes: {
-    100: {
-      '0x17b34aEf1428A358bA2eA360a098b8A3BEb698C8': 'Added safe 1',
-      '0x11A6B41322C57Bd0e56cEe06abB11A1E5c1FF1BB': 'Added safe 900',
-      '0xB8d760a90a5ed54D3c2b3EFC231277e99188642A': 'Added safe 100',
+    1: {
+      '0x8675B754342754A30A2AeF474D114d8460bca19b': 'Added safe 900',
     },
     11155111: {
       '0x0A0EEb6fBCc7c82259E548Fc4617175A357b3e71': 'Added safe 200',
@@ -529,21 +527,11 @@ export const addedSafes = {
         ethBalance: '0',
       },
     },
-    100: {
-      '0x17b34aEf1428A358bA2eA360a098b8A3BEb698C8': {
+    1: {
+      '0x8675B754342754A30A2AeF474D114d8460bca19b': {
         owners: [{ value: '0x11B1D54B66e5e226D6f89069c21A569A22D98cfd' }],
         threshold: 1,
         ethBalance: '0.001000002',
-      },
-      '0x11A6B41322C57Bd0e56cEe06abB11A1E5c1FF1BB': {
-        owners: [{ value: '0x7724b234c9099C205F03b458944942bcEBA13408' }],
-        threshold: 1,
-        ethBalance: '0',
-      },
-      '0xB8d760a90a5ed54D3c2b3EFC231277e99188642A': {
-        owners: [{ value: '0x11B1D54B66e5e226D6f89069c21A569A22D98cfd' }],
-        threshold: 1,
-        ethBalance: '0.92132507668989',
       },
     },
   },

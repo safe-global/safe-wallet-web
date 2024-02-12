@@ -1,5 +1,10 @@
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import useChainId from '@/hooks/useChainId'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { useAppSelector } from '@/store'
+import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 import React, { type ElementType } from 'react'
-import { Box, Button, Dialog, DialogContent, Grid, SvgIcon, Typography } from '@mui/material'
+import { Alert, Box, Button, Dialog, DialogContent, Grid, Link, SvgIcon, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import HomeIcon from '@/public/images/sidebar/home.svg'
@@ -27,11 +32,34 @@ const HintItem = ({ Icon, title, description }: { Icon: ElementType; title: stri
   )
 }
 
+const getExportFileName = () => {
+  const today = new Date().toISOString().slice(0, 10)
+  return `safe-backup-${today}.json`
+}
+
+const backupSafe = (chainId: string, safeAddress: string, undeployedSafe: PredictedSafeProps) => {
+  const data = JSON.stringify({ chainId, safeAddress, safeProps: undeployedSafe }, null, 2)
+
+  const blob = new Blob([data], { type: 'text/json' })
+  const link = document.createElement('a')
+
+  link.download = getExportFileName()
+  link.href = window.URL.createObjectURL(blob)
+  link.dataset.downloadurl = ['text/json', link.download, link.href].join(':')
+  link.dispatchEvent(new MouseEvent('click'))
+
+  // TODO: Track this as an event
+  // trackEvent(COUNTERFACTUAL_EVENTS.EXPORT_SAFE)
+}
+
 const CreationDialog = () => {
   const router = useRouter()
   const [open, setOpen] = React.useState(true)
   const [remoteSafeApps = []] = useRemoteSafeApps()
   const chain = useCurrentChain()
+  const chainId = useChainId()
+  const { safeAddress } = useSafeInfo()
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, safeAddress))
 
   const onClose = () => {
     const { [CREATION_MODAL_QUERY_PARM]: _, ...query } = router.query
@@ -49,7 +77,8 @@ const CreationDialog = () => {
         <Typography variant="body2">
           Congratulations on your first step to truly unlock ownership. Enjoy the experience and discover our app.
         </Typography>
-        <Grid container mt={4} mb={6} spacing={3}>
+
+        <Grid container mt={2} mb={4} spacing={3}>
           <HintItem Icon={HomeIcon} title="Home" description="Get a status overview of your Safe Account here." />
           <HintItem
             Icon={TransactionIcon}
@@ -73,6 +102,23 @@ const CreationDialog = () => {
             description="Have any questions? Check out our collection of articles."
           />
         </Grid>
+
+        {undeployedSafe && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            We recommend{' '}
+            <Link
+              href="#"
+              onClick={(e) => {
+                e.preventDefault()
+                backupSafe(chainId, safeAddress, undeployedSafe)
+              }}
+            >
+              backing up your Safe Account
+            </Link>{' '}
+            in case you lose access to this device.
+          </Alert>
+        )}
+
         <Box display="flex" justifyContent="center">
           <Button onClick={onClose} variant="contained" size="stretched">
             Got it
