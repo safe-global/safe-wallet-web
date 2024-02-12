@@ -20,6 +20,7 @@
   top: 0;
   right: 24px;
   background-color: var(--color-secondary-light);
+  color: var(--color-static-main);
   border-radius: 0 0 4px 4px;
   padding: 4px var(--space-1);
 }
