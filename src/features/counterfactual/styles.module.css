@@ -21,6 +21,12 @@
   font-weight: bold;
 }
 
+.listItem {
+  min-width: 0;
+  margin-right: var(--space-1);
+  color: var(--color-primary-main);
+}
+
 .active .radioSubtitle {
   color: var(--color-text-primary);
 }
