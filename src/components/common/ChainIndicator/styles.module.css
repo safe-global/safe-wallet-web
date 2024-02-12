@@ -1,7 +1,6 @@
 .indicator {
   display: flex;
   align-items: center;
-  justify-content: center;
   min-width: 70px;
   font-size: 12px;
 }
@@ -22,6 +21,7 @@
   gap: var(--space-1);
   padding: 0;
   font-size: 14px;
+  min-width: 130px
 }
 
 @media (max-width: 899.95px) {
