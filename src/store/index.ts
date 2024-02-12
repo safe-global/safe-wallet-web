@@ -95,8 +95,6 @@ export const makeStore = (initialState?: Record<string, any>) => {
   return store
 }
 
-export const store = makeStore()
-
 export type AppDispatch = ReturnType<typeof makeStore>['dispatch']
 export type RootState = ReturnType<typeof _hydrationReducer>
 

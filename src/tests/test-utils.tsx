@@ -5,10 +5,11 @@ import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtim
 import type { Theme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
 import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
-import type { RootState } from '@/store'
+import { type RootState, makeStore, useHydrateStore } from '@/store'
 import * as web3 from '@/hooks/wallets/web3'
 import { type JsonRpcProvider, AbiCoder } from 'ethers'
 import { id } from 'ethers'
+import { Provider } from 'react-redux'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',
@@ -43,16 +44,18 @@ const getProviders: (options: {
   initialReduxState?: Partial<RootState>
 }) => React.FC<{ children: React.ReactElement }> = ({ routerProps, initialReduxState }) =>
   function ProviderComponent({ children }) {
-    const { StoreHydrator } = require('@/store') // require dynamically to reset the store
+    const store = makeStore(initialReduxState)
+
+    useHydrateStore(store)
 
     return (
-      <StoreHydrator initialState={initialReduxState}>
+      <Provider store={store}>
         <RouterContext.Provider value={mockRouter(routerProps)}>
           <SafeThemeProvider mode="light">
             {(safeTheme: Theme) => <ThemeProvider theme={safeTheme}>{children}</ThemeProvider>}
           </SafeThemeProvider>
         </RouterContext.Provider>
-      </StoreHydrator>
+      </Provider>
     )
   }
 

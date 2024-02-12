@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
-import { store, getPersistedState } from '@/store'
+import { getPersistedState, type makeStore } from '@/store'
 
 export const HYDRATE_ACTION = '@@HYDRATE'
 
-export const useHydrateStore = () => {
+export const useHydrateStore = (store: ReturnType<typeof makeStore>) => {
   useEffect(() => {
     store.dispatch({
       type: HYDRATE_ACTION,
       payload: getPersistedState(),
     })
-  }, [])
+  }, [store])
 }

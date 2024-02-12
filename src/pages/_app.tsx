@@ -14,7 +14,7 @@ import { CacheProvider, type EmotionCache } from '@emotion/react'
 import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 import '@/styles/globals.css'
 import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
-import { store, useHydrateStore } from '@/store'
+import { makeStore, useHydrateStore } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
 import { useInitOnboard } from '@/hooks/wallets/useOnboard'
@@ -46,9 +46,11 @@ import WalletProvider from '@/components/common/WalletProvider'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
+const reduxStore = makeStore()
+
 const InitApp = (): null => {
   setGatewayBaseUrl(GATEWAY_URL)
-  useHydrateStore()
+  useHydrateStore(reduxStore)
   useAdjustUrl()
   useGtm()
   useNotificationTracking()
@@ -105,7 +107,7 @@ const WebCoreApp = ({
   const safeKey = useChangedValue(router.query.safe?.toString())
 
   return (
-    <Provider store={store}>
+    <Provider store={reduxStore}>
       <Head>
         <title key="default-title">{'Safe{Wallet}'}</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
