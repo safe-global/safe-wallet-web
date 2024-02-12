@@ -1,3 +1,4 @@
+import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 
 export const addressBookRecipient = '[data-testid="address-book-recipient"]'
@@ -15,16 +16,27 @@ const importBtn = '[data-testid="import-btn"]'
 const cancelImportBtn = '[data-testid="cancel-btn"]'
 const uploadErrorMsg = '[data-testid="error-message"]'
 const modalSummaryMessage = '[data-testid="summary-message"]'
+const saveBtn = '[data-testid="save-btn"]'
+const divInput = '[data-testid="name-input"]'
+const exportSummary = '[data-testid="export-summary"]'
+const sendBtn = '[data-testid="send-btn"]'
+
+//TODO Move to specific component
+const moreActionIcon = '[data-testid="MoreHorizIcon"]'
 
 export const acceptSelection = 'Save settings'
 export const addressBook = 'Address book'
 const createEntryBtn = 'Create entry'
 export const delteEntryModaldeleteBtn = 'Delete'
 const exportBtn = 'Export'
-const saveBtn = 'Save'
+// const saveBtn = 'Save'
 const whatsNewBtnStr = "What's new"
 const beamrCookiesStr = 'accept the "Beamer" cookies'
 const headerImportBtnStr = 'Import'
+const mandatoryNameStr = 'Name *'
+const nameSortBtn = 'Name'
+const addressortBtn = 'Address'
+const addToAddressBookStr = 'Add to address book'
 
 export const emptyCSVFile = '../fixtures/address_book_empty_test.csv'
 export const nonCSVFile = '../fixtures/balances.json'
@@ -32,6 +44,9 @@ export const duplicatedCSVFile = 'address_book_duplicated.csv'
 export const validCSVFile = '../fixtures/address_book_test.csv'
 export const networksCSVFile = '../fixtures/address_book_networks.csv'
 export const addedSafesCSVFile = '../fixtures/address_book_addedsafes.csv'
+
+const sortSafe1 = 'AA Safe'
+const sortSafe2 = 'BB Safe'
 
 export const entries = [
   '0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7',
@@ -43,6 +58,56 @@ export const entries = [
   '0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415',
   'assets-test-sepolia',
 ]
+
+export function verifyRecipientData(data) {
+  main.verifyValuesExist(addressBookRecipient, data)
+}
+
+export function clickOnSendBtn() {
+  cy.get(sendBtn).click()
+}
+
+export function clickOnMoreActionsBtn() {
+  cy.get(moreActionIcon).click()
+}
+
+export function clickOnAddToAddressBookBtn() {
+  cy.get('li span').contains(addToAddressBookStr).click()
+}
+
+export function verifyExportMessage(count) {
+  let msg = `${count} address book`
+  cy.get(exportSummary).should('contain', msg)
+}
+
+export function clickOnNameSortBtn() {
+  cy.get(tableContainer).contains(nameSortBtn).click()
+  cy.wait(500)
+}
+
+export function clickOnAddrressSortBtn() {
+  cy.get(tableContainer).contains(addressortBtn).click()
+  cy.wait(500)
+}
+
+export function verifyEntriesOrder(option = 'ascending') {
+  let address = constants.DEFAULT_OWNER_ADDRESS
+  let name = sortSafe1
+  if (option == 'descending') {
+    address = constants.RECIPIENT_ADDRESS
+    name = sortSafe2
+  }
+
+  cy.get(tableRow).eq(0).contains(address)
+  cy.get(tableRow).eq(0).contains(name)
+}
+
+export function addEntryByENS(name, ens) {
+  typeInName(name)
+  typeInAddress(ens)
+  clickOnSaveEntryBtn()
+  verifyNewEntryAdded(name, constants.SEPOLIA_TEST_SAFE_7)
+}
 
 export function verifyModalSummaryMessage(entryCount, chainCount) {
   cy.get(modalSummaryMessage).should(
@@ -104,7 +169,7 @@ export function typeInAddress(address) {
 }
 
 export function clickOnSaveEntryBtn() {
-  cy.contains('button', saveBtn).click()
+  cy.get(saveBtn).click()
 }
 
 export function verifyNewEntryAdded(name, address) {
@@ -125,10 +190,6 @@ export function clickOnEditEntryBtn() {
 
 export function typeInNameInput(name) {
   cy.get(nameInput).clear().type(name).should('have.value', name)
-}
-
-export function clickOnSaveButton() {
-  cy.contains('button', saveBtn).click()
 }
 
 export function verifyNameWasChanged(name, editedName) {
@@ -163,4 +224,10 @@ export function verifyBeamerIsChecked() {
 export function verifyBeameriFrameExists() {
   cy.wait(1000)
   cy.get(beameriFrameContainer).should('exist')
+}
+
+export function verifyEmptyOwnerNameNotAllowed() {
+  cy.get(nameInput).clear()
+  main.verifyElementsStatus([saveBtn], constants.enabledStates.disabled)
+  cy.get(divInput).contains(mandatoryNameStr)
 }

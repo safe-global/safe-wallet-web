@@ -326,6 +326,13 @@ export const addressBookData = {
       '0x9E6DAfe829431e1892EcF8461FDAd02665170c31': 'Added non-owner',
     },
   },
+  sortingData: {
+    11155111: {
+      '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AA Safe',
+      '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'BB Safe',
+    },
+  },
+  cookies: { necessary: true, updates: true, analytics: true },
 }
 
 export const safeSettings = {

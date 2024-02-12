@@ -63,7 +63,7 @@ function ExportDialog({
   return (
     <ModalDialog open onClose={handleClose} dialogTitle="Export address book" hideChainIndicator>
       <DialogContent sx={{ p: '24px !important' }}>
-        <Typography>
+        <Typography data-testid="export-summary">
           You&apos;re about to export a CSV file with{' '}
           <b>
             {length} address book {length === 1 ? 'entry' : 'entries'}
@@ -84,7 +84,7 @@ function ExportDialog({
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData} style={{ order: 2 }}>
-          <Button variant="contained" disableElevation onClick={onSubmit}>
+          <Button data-testid="export-modal-btn" variant="contained" disableElevation onClick={onSubmit}>
             Export
           </Button>
         </CSVDownloader>
