@@ -17,7 +17,7 @@
 .safeLink {
   display: flex;
   align-items: center;
-  padding-right: var(--space-2);
+  padding-right: var(--space-1);
 }
 
 .safeAddress {

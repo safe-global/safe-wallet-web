@@ -3,6 +3,7 @@
   align-items: center;
   min-width: 70px;
   font-size: 12px;
+  justify-content: center;
 }
 
 .inlineIndicator {
@@ -20,8 +21,9 @@
   align-items: center;
   gap: var(--space-1);
   padding: 0;
+  min-width: 115px;
   font-size: 14px;
-  min-width: 130px
+  justify-content: start;
 }
 
 @media (max-width: 899.95px) {
