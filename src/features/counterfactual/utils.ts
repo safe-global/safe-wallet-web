@@ -125,9 +125,14 @@ export const deploySafeAndExecuteTx = async (
   return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId, onSuccess)
 }
 
-const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint | undefined>()
+export const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint>(0n)
 
-export const getCounterfactualBalance = async (safeAddress: string, provider?: BrowserProvider, chain?: ChainInfo) => {
+export const getCounterfactualBalance = async (
+  safeAddress: string,
+  provider?: BrowserProvider,
+  chain?: ChainInfo,
+  ignoreCache?: boolean,
+) => {
   let balance: bigint | undefined
 
   if (!chain) return undefined
@@ -138,7 +143,8 @@ export const getCounterfactualBalance = async (safeAddress: string, provider?: B
     balance = await provider.getBalance(safeAddress)
   } else {
     const cachedBalance = getNativeBalance()
-    balance = cachedBalance !== undefined ? cachedBalance : await getWeb3ReadOnly()?.getBalance(safeAddress)
+    const useCache = cachedBalance && cachedBalance > 0n && !ignoreCache
+    balance = useCache ? cachedBalance : (await getWeb3ReadOnly()?.getBalance(safeAddress)) || 0n
     setNativeBalance(balance)
   }
 
