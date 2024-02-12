@@ -46,6 +46,8 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
   })
 }
 
+const CF_TX_GROUP_KEY = 'cf-tx'
+
 export const dispatchTxExecutionAndDeploySafe = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
@@ -54,8 +56,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
   onSuccess?: () => void,
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
-  const eventParams = { groupKey: 'cf-tx' }
-  const safeAddress = await sdkUnchecked.getAddress()
+  const eventParams = { groupKey: CF_TX_GROUP_KEY }
 
   let result: ContractTransactionResponse | undefined
   try {
@@ -88,7 +89,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
       } else if (didRevert(receipt)) {
         txDispatch(TxEvent.REVERTED, { ...eventParams, error: new Error('Transaction reverted by EVM') })
       } else {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        txDispatch(TxEvent.SUCCESS, eventParams)
         onSuccess?.()
       }
     })
@@ -96,7 +97,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
       const error = err as EthersError
 
       if (didReprice(error)) {
-        txDispatch(TxEvent.PROCESSED, { ...eventParams, safeAddress })
+        txDispatch(TxEvent.SUCCESS, eventParams)
         onSuccess?.()
       } else {
         txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
@@ -189,7 +190,7 @@ export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo,
     showNotification({
       variant: 'info',
       groupKey: 'cf-activate-account',
-      message: 'Transaction submitted',
+      message: 'Safe Account activation in progress',
       detailedMessage: 'Your Safe Account will be deployed onchain after the transaction is executed.',
       link: link ? { href: link.href, title: link.title } : undefined,
     }),
