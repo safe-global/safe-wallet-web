@@ -1,5 +1,6 @@
 import AddFundsCTA from '@/components/common/AddFunds'
 import FirstSteps from '@/components/dashboard/FirstSteps'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import type { ReactElement } from 'react'
 import dynamic from 'next/dynamic'
 import { Grid } from '@mui/material'
@@ -19,6 +20,7 @@ const RecoveryWidget = dynamic(() => import('@/features/recovery/components/Reco
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
+  const { safe } = useSafeInfo()
   const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
 
   const supportsRecovery = useIsRecoverySupported()
@@ -42,27 +44,31 @@ const Dashboard = (): ReactElement => {
           <AddFundsCTA />
         </Grid>
 
-        <Grid item xs={12} lg={6}>
-          <PendingTxsList />
-        </Grid>
+        {safe.deployed && (
+          <>
+            <Grid item xs={12} lg={6}>
+              <PendingTxsList />
+            </Grid>
 
-        <Grid item xs={12} lg={showRecoveryWidget ? 6 : undefined}>
-          <FeaturedApps stackedLayout={!!showRecoveryWidget} />
-        </Grid>
+            <Grid item xs={12} lg={showRecoveryWidget ? 6 : undefined}>
+              <FeaturedApps stackedLayout={!!showRecoveryWidget} />
+            </Grid>
 
-        {showRecoveryWidget ? (
-          <Grid item xs={12} lg={6}>
-            <RecoveryWidget />
-          </Grid>
-        ) : null}
+            {showRecoveryWidget ? (
+              <Grid item xs={12} lg={6}>
+                <RecoveryWidget />
+              </Grid>
+            ) : null}
 
-        <Grid item xs={12}>
-          <GovernanceSection />
-        </Grid>
+            <Grid item xs={12}>
+              <GovernanceSection />
+            </Grid>
 
-        <Grid item xs={12}>
-          <SafeAppsDashboardSection />
-        </Grid>
+            <Grid item xs={12}>
+              <SafeAppsDashboardSection />
+            </Grid>
+          </>
+        )}
       </Grid>
       {showCreationModal ? <CreationDialog /> : null}
     </>
