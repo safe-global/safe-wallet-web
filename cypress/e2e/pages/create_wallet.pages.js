@@ -11,6 +11,7 @@ const thresholdInput = 'input[name="threshold"]'
 export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
 const connectingContainer = 'div[class*="connecting-container"]'
 const createNewSafeBtn = 'span[data-track="create-safe: Continue to creation"]'
+const continueWithWalletBtn = 'span[data-track="create-safe: Continue to my accounts"]'
 const connectWalletBtn = 'Connect wallet'
 const googleConnectBtn = '[data-testid="google-connect-btn"]'
 const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
@@ -108,6 +109,10 @@ export function connectWallet() {
 
 export function clickOnCreateNewSafeBtn() {
   cy.get(createNewSafeBtn).click().wait(1000)
+}
+
+export function clickOnContinueWithWalletBtn() {
+  cy.get(continueWithWalletBtn).click().wait(1000)
 }
 
 export function clickOnConnectWalletBtn() {
