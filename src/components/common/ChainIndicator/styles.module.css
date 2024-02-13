@@ -30,7 +30,7 @@
   .responsive .name {
     display: none;
   }
-.indicator {
-  min-width: 35px;
-}
+  .indicator {
+    min-width: 35px;
+  }
 }

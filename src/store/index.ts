@@ -20,7 +20,7 @@ import { addressBookSlice } from './addressBookSlice'
 import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
 import { pendingTxsSlice } from './pendingTxsSlice'
-import { addedSafesListener, addedSafesSlice } from './addedSafesSlice'
+import { addedSafesSlice } from './addedSafesSlice'
 import { settingsSlice } from './settingsSlice'
 import { cookiesSlice } from './cookiesSlice'
 import { popupSlice } from './popupSlice'
@@ -73,7 +73,7 @@ export const getPersistedState = () => {
 export const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
 
 const middleware = [persistState(persistedSlices), listenerMiddlewareInstance.middleware]
-const listeners = [addedSafesListener, safeMessagesListener, txHistoryListener, txQueueListener]
+const listeners = [safeMessagesListener, txHistoryListener, txQueueListener]
 
 export const _hydrationReducer: typeof rootReducer = (state, action) => {
   if (action.type === HYDRATE_ACTION) {
