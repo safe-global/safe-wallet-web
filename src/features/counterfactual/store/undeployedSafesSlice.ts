@@ -86,3 +86,7 @@ export const selectUndeployedSafe = createSelector(
     return undeployedSafes[chainId]?.[address]
   },
 )
+
+export const selectIsUndeployedSafe = createSelector([selectUndeployedSafe], (undeployedSafe) => {
+  return !!undeployedSafe
+})

@@ -42,8 +42,7 @@ import { TxModalProvider } from '@/components/tx-flow'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import Recovery from '@/features/recovery/components/Recovery'
 import WalletProvider from '@/components/common/WalletProvider'
-import usePendingSafeNotifications from '@/features/counterfactual/hooks/usePendingSafeNotifications'
-import usePendingSafeStatus from '@/features/counterfactual/hooks/usePendingSafeStatuses'
+import Counterfactual from '@/features/counterfactual'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -66,10 +65,6 @@ const InitApp = (): null => {
   useSafeMsgTracking()
   useBeamer()
   useRehydrateSocialWallet()
-
-  // Counterfactual
-  usePendingSafeStatus()
-  usePendingSafeNotifications()
 
   return null
 }
@@ -132,6 +127,8 @@ const WebCoreApp = ({
           <PasswordRecoveryModal />
 
           <Recovery />
+
+          <Counterfactual />
         </AppProviders>
       </CacheProvider>
     </StoreHydrator>
