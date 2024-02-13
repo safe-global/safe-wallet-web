@@ -38,3 +38,23 @@
   opacity: 0;
   visibility: hidden;
 }
+
+.accountReady {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  color: var(--color-text-secondary);
+}
+
+.accountReady.completed {
+  color: var(--color-text-primary);
+}
+
+.checkIcon {
+  color: var(--color-border-light);
+}
+
+.checkIcon.completed {
+  color: var(--color-success-main);
+}

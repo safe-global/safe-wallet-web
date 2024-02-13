@@ -1,4 +1,4 @@
-import AddFundsCTA from '@/components/common/AddFunds'
+import ActivateAccount from '@/features/counterfactual/ActivateAccount'
 import FirstSteps from '@/components/dashboard/FirstSteps'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import type { ReactElement } from 'react'
@@ -41,7 +41,7 @@ const Dashboard = (): ReactElement => {
         </Grid>
 
         <Grid item xs={12}>
-          <AddFundsCTA />
+          <ActivateAccount />
         </Grid>
 
         {safe.deployed && (

@@ -50,16 +50,53 @@ const BuyCryptoOption = ({ name, children }: { name: string; children: ReactNode
   )
 }
 
-const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePath: string }) => {
+const _BuyCryptoOptions = ({ rampLink }: { rampLink?: LinkProps['href'] }) => {
+  const { safeAddress } = useSafeInfo()
+
+  const moonPayLink = `${MOONPAY_URL}?defaultCurrencyCode=eth&walletAddress=${safeAddress}`
+  const mercuryoLink = MERCURYO_URL
+
+  return (
+    <>
+      {rampLink && (
+        <Box position="relative">
+          <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Ramp">
+            <Link href={rampLink} passHref>
+              <BuyCryptoOption name="Ramp">
+                <RampLogo />
+              </BuyCryptoOption>
+            </Link>
+          </Track>
+          <div className={css.badge}>Safe integrated app</div>
+        </Box>
+      )}
+
+      <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="MoonPay">
+        <Link href={moonPayLink} passHref target="_blank">
+          <BuyCryptoOption name="MoonPay">
+            <MoonPayLogo />
+          </BuyCryptoOption>
+        </Link>
+      </Track>
+
+      <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Mercuryo">
+        <Link href={mercuryoLink} passHref target="_blank">
+          <BuyCryptoOption name="Mercuryo">
+            <MercuryoLogo />
+          </BuyCryptoOption>
+        </Link>
+      </Track>
+    </>
+  )
+}
+
+const _BuyCryptoButton = ({ pagePath }: { pagePath: string }) => {
   const [open, setOpen] = useState<boolean>(false)
   const { safeAddress } = useSafeInfo()
 
   const toggleDialog = () => {
     setOpen((prev) => !prev)
   }
-
-  const moonPayLink = `${MOONPAY_URL}?defaultCurrencyCode=eth&walletAddress=${safeAddress}`
-  const mercuryoLink = MERCURYO_URL
 
   return (
     <>
@@ -78,34 +115,8 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
       <ModalDialog open={open} onClose={toggleDialog} dialogTitle="Buy crypto with fiat" hideChainIndicator>
         <Box px={4} pb={5} pt={4}>
           <Typography>Choose one of the available options</Typography>
-          {href && (
-            <Box position="relative">
-              <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Ramp">
-                <Link href={href} passHref>
-                  <BuyCryptoOption name="Ramp">
-                    <RampLogo />
-                  </BuyCryptoOption>
-                </Link>
-              </Track>
-              <div className={css.badge}>Safe integrated app</div>
-            </Box>
-          )}
 
-          <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="MoonPay">
-            <Link href={moonPayLink} passHref target="_blank">
-              <BuyCryptoOption name="MoonPay">
-                <MoonPayLogo />
-              </BuyCryptoOption>
-            </Link>
-          </Track>
-
-          <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Mercuryo">
-            <Link href={mercuryoLink} passHref target="_blank">
-              <BuyCryptoOption name="Mercuryo">
-                <MercuryoLogo />
-              </BuyCryptoOption>
-            </Link>
-          </Track>
+          <BuyCryptoOptions />
 
           <Divider sx={{ my: 4 }} />
 
@@ -123,8 +134,11 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
 }
 
 const BuyCryptoButton = madProps(_BuyCryptoButton, {
-  href: useBuyCryptoHref,
   pagePath: usePathname,
+})
+
+export const BuyCryptoOptions = madProps(_BuyCryptoOptions, {
+  rampLink: useBuyCryptoHref,
 })
 
 export default BuyCryptoButton

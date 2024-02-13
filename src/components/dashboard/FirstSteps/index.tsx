@@ -1,19 +1,27 @@
+import { BuyCryptoOptions } from '@/components/common/BuyCryptoButton'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import ModalDialog from '@/components/common/ModalDialog'
+import useDismissFirstSteps from '@/components/dashboard/FirstSteps/useDismissFirstSteps'
 import { TxModalContext } from '@/components/tx-flow'
-import { ActivateAccountFlow } from '@/features/counterfactual/ActivateAccount'
+import { NewTxFlow } from '@/components/tx-flow/flows'
 import useBalances from '@/hooks/useBalances'
+import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useAppSelector } from '@/store'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
-import React, { useContext, useMemo } from 'react'
+import classnames from 'classnames'
+import { type ReactNode, useContext, useState } from 'react'
 import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
-import { Button, CircularProgress, Grid, Link, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Grid, IconButton, Typography } from '@mui/material'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import css from './styles.module.css'
 
-const calculateProgress = (items: StatusProgressItems) => {
+const calculateProgress = (items: boolean[]) => {
   const totalNumberOfItems = items.length
-  const completedItems = items.filter((item) => item.completed)
+  const completedItems = items.filter((item) => item)
   return Math.round((completedItems.length / totalNumberOfItems) * 100)
 }
 
@@ -22,11 +30,13 @@ const StatusCard = ({
   title,
   content,
   completed,
+  children,
 }: {
   badge: string
   title: string
   content: string
   completed: boolean
+  children: ReactNode
 }) => {
   return (
     <Card className={css.card}>
@@ -44,60 +54,120 @@ const StatusCard = ({
         {title}
       </Typography>
       <Typography>{content}</Typography>
+      {children}
     </Card>
   )
 }
 
-type StatusProgressItem = {
-  title: string
-  content: string
-  completed?: boolean
+const AddFundsWidget = ({ completed }: { completed: boolean }) => {
+  const { safeAddress } = useSafeInfo()
+  const [open, setOpen] = useState<boolean>(false)
+
+  const chain = useCurrentChain()
+  const title = 'Add native assets'
+  const content = `Receive ${chain?.nativeCurrency.name} to start interacting with your account.`
+
+  const toggleDialog = () => {
+    setOpen((prev) => !prev)
+  }
+
+  return (
+    <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
+      {!completed && (
+        <>
+          <Box mt={2}>
+            <Button onClick={toggleDialog} variant="contained" size="small" sx={{ minHeight: '40px' }}>
+              Add funds
+            </Button>
+          </Box>
+          <ModalDialog
+            open={open}
+            onClose={toggleDialog}
+            dialogTitle="Add funds to your Safe Account"
+            hideChainIndicator
+          >
+            <Box px={4} pb={5} pt={4}>
+              <Typography mb={2}>
+                Add funds directly from your bank account or copy your address to send tokens from a different account.
+              </Typography>
+
+              <Typography variant="body2" color="text.secondary">
+                Account address
+              </Typography>
+
+              <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" mb={4} fontSize="14px">
+                <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
+              </Box>
+
+              <Typography>Buy crypto with fiat:</Typography>
+              <BuyCryptoOptions />
+            </Box>
+          </ModalDialog>
+        </>
+      )}
+    </StatusCard>
+  )
 }
 
-type StatusProgressItems = Array<StatusProgressItem>
+const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
+  const { setTxFlow } = useContext(TxModalContext)
 
-const FirstStepsContent: StatusProgressItems = [
-  {
-    title: 'Add funds',
-    content: 'Receive assets to start interacting with your account.',
-  },
-  {
-    title: 'Create your first transaction',
-    content: 'Do a simple transfer or use a safe app to create your first transaction.',
-  },
-]
+  const title = 'Create your first transaction'
+  const content = 'Simply send funds, add a new signer or swap tokens through a safe app.'
+
+  const handleNewTx = () => {
+    setTxFlow(<NewTxFlow />, undefined, false)
+  }
+
+  return (
+    <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
+      {!completed && (
+        <Button onClick={handleNewTx} variant="contained" size="small" sx={{ mt: 2, minHeight: '40px' }}>
+          Create transaction
+        </Button>
+      )}
+    </StatusCard>
+  )
+}
+
+const AccountReadyWidget = ({ completed }: { completed: boolean }) => {
+  return (
+    <Card className={classnames(css.card, css.accountReady, { [css.completed]: completed })}>
+      <div className={classnames(css.checkIcon, { [css.completed]: completed })}>
+        <CheckCircleOutlineRoundedIcon sx={{ width: '60px', height: '60px' }} />
+      </div>
+      <Typography variant="h4" fontWeight="bold" mb={2} mt={2}>
+        Safe Account is ready!
+      </Typography>
+      <Typography>Continue to improve your account security and unlock more features</Typography>
+    </Card>
+  )
+}
 
 const FirstSteps = () => {
   const { balances } = useBalances()
   const { safe } = useSafeInfo()
   const outgoingTransactions = useAppSelector(selectOutgoingTransactions)
-  const { setTxFlow } = useContext(TxModalContext)
+  const { dismissFirstSteps, setDismissFirstSteps } = useDismissFirstSteps()
 
   const hasNonZeroBalance = balances && (balances.items.length > 1 || BigInt(balances.items[0]?.balance || 0) > 0)
   const hasOutgoingTransactions = !!outgoingTransactions && outgoingTransactions.length > 0
+  const completedItems = [hasNonZeroBalance, hasOutgoingTransactions]
 
-  const items = useMemo(
-    () => [
-      { ...FirstStepsContent[0], completed: hasNonZeroBalance },
-      { ...FirstStepsContent[1], completed: hasOutgoingTransactions },
-    ],
-    [hasNonZeroBalance, hasOutgoingTransactions],
-  )
+  const progress = calculateProgress(completedItems)
+  const stepsCompleted = completedItems.filter((item) => item).length
 
-  const activateAccount = () => {
-    setTxFlow(<ActivateAccountFlow />)
+  const dismissWidget = () => {
+    setDismissFirstSteps(true)
   }
 
-  const progress = calculateProgress(items)
-  const stepsCompleted = items.filter((item) => item.completed).length
-
-  if (safe.deployed) return null
+  if (dismissFirstSteps) return null
 
   return (
     <WidgetContainer>
       <WidgetBody>
-        <Grid container gap={3} mb={2} flexWrap="nowrap">
-          <Grid item position="relative">
+        <Grid container gap={3} mb={2} flexWrap="nowrap" alignItems="center">
+          <Grid item position="relative" display="inline-flex">
             <svg className={css.gradient}>
               <defs>
                 <linearGradient
@@ -116,11 +186,11 @@ const FirstSteps = () => {
             <CircularProgress variant="determinate" value={100} className={css.circleBg} size={60} thickness={5} />
             <CircularProgress
               variant="determinate"
-              value={progress}
+              value={progress === 0 ? 3 : progress} // Just to give an indication of the progress even at 0%
               className={css.circleProgress}
               size={60}
               thickness={5}
-              sx={{ 'svg circle': { stroke: 'url(#progress_gradient)' } }}
+              sx={{ 'svg circle': { stroke: 'url(#progress_gradient)', strokeLinecap: 'round' } }}
             />
           </Grid>
           <Grid item>
@@ -129,37 +199,30 @@ const FirstSteps = () => {
             </Typography>
             <Typography variant="body2">
               <strong>
-                {stepsCompleted} of {items.length} steps completed.
+                {stepsCompleted} of {completedItems.length} steps completed.
               </strong>{' '}
-              {progress === 100 ? (
-                <>
-                  Congratulations! You finished the first steps. <Link>Hide this section</Link>
-                </>
-              ) : (
-                'Finish the next steps to start using all Safe Account features:'
-              )}
+              Finish the next steps to start using all Safe Account features:
             </Typography>
           </Grid>
+          {safe.deployed && (
+            <Grid item marginLeft="auto">
+              <IconButton size="large" onClick={dismissWidget}>
+                <CloseRoundedIcon />
+              </IconButton>
+            </Grid>
+          )}
         </Grid>
         <Grid container spacing={3}>
-          {items.map((item) => {
-            return (
-              <Grid item xs={12} md={4} key={item.title}>
-                <StatusCard badge="First steps" title={item.title} content={item.content} completed={item.completed} />
-              </Grid>
-            )
-          })}
+          <Grid item xs={12} md={4}>
+            <AddFundsWidget completed={hasNonZeroBalance} />
+          </Grid>
 
           <Grid item xs={12} md={4}>
-            <Card className={css.card}>
-              <Typography variant="h4" fontWeight="bold" mb={2}>
-                Skip first steps
-              </Typography>
-              <Typography mb={2}>Pay a network fee to immediately access all Safe Account features.</Typography>
-              <Button variant="contained" onClick={activateAccount}>
-                Activate Safe Account
-              </Button>
-            </Card>
+            <FirstTransactionWidget completed={hasOutgoingTransactions} />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <AccountReadyWidget completed={safe.deployed} />
           </Grid>
         </Grid>
       </WidgetBody>

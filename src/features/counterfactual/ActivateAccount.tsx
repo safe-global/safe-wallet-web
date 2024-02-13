@@ -209,25 +209,34 @@ export const ActivateAccountFlow = () => {
   )
 }
 
-const ActivateAccount = () => {
-  const { safe } = useSafeInfo()
+export const ActivateAccountButton = () => {
   const { setTxFlow } = useContext(TxModalContext)
-
-  if (safe.deployed) return null
 
   const activateAccount = () => {
     setTxFlow(<ActivateAccountFlow />)
   }
 
   return (
-    <Alert severity="info" sx={{ mb: 3 }}>
-      <Typography fontWeight="bold">Activate your account?</Typography>
+    <Button variant="contained" size="small" onClick={activateAccount}>
+      Activate now
+    </Button>
+  )
+}
+
+const ActivateAccount = () => {
+  const { safe } = useSafeInfo()
+
+  if (safe.deployed) return null
+
+  return (
+    <Alert severity="info" icon={false} sx={{ mb: 3, border: 0, backgroundColor: 'transparent !important' }}>
+      <Typography fontWeight="bold" mb={0.5}>
+        Want to skip onboarding?
+      </Typography>
       <Typography variant="body2" mb={3}>
         Activate your account now by deploying it and paying a network fee.
       </Typography>
-      <Button variant="contained" size="small" onClick={activateAccount}>
-        Activate now
-      </Button>
+      <ActivateAccountButton />
     </Alert>
   )
 }

@@ -1,42 +1,36 @@
-import CooldownButton from '@/components/common/CooldownButton'
 import ExternalLink from '@/components/common/ExternalLink'
-import { getCounterfactualBalance } from '@/features/counterfactual/utils'
+import { ActivateAccountButton } from '@/features/counterfactual/ActivateAccount'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { getBlockExplorerLink } from '@/utils/chains'
-import { Box, Typography } from '@mui/material'
+import { Alert, Typography } from '@mui/material'
 
 const CheckBalance = () => {
   const { safe, safeAddress } = useSafeInfo()
   const chain = useCurrentChain()
-  const provider = useWeb3()
 
   if (safe.deployed) return null
-
-  const handleBalanceRefresh = async () => {
-    void getCounterfactualBalance(safeAddress, provider, chain, true)
-  }
 
   const blockExplorerLink = chain ? getBlockExplorerLink(chain, safeAddress) : undefined
 
   return (
-    <Box textAlign="center" p={3}>
-      <Typography variant="h4" fontWeight="bold" mb={2}>
+    <Alert icon={false} severity="info" sx={{ display: 'flex', maxWidth: '600px', mt: 3, px: 3, py: 2, mx: 'auto' }}>
+      <Typography fontWeight="bold" mb={1}>
         Don&apos;t see your tokens?
       </Typography>
-      <Box display="flex" flexDirection="column" gap={1} alignItems="center">
-        <CooldownButton cooldown={15} onClick={handleBalanceRefresh}>
-          Refresh balance
-        </CooldownButton>
-        <Typography>or</Typography>
+      <Typography variant="body2" mb={2}>
+        Your Safe Account is not activated yet so we can only display your native balance. Finish the onboarding to
+        deploy your account onchain and unlock all features.{' '}
         {blockExplorerLink && (
-          <Typography>
-            check on <ExternalLink href={blockExplorerLink.href}>Block Explorer</ExternalLink>
-          </Typography>
+          <>
+            You can always view all of your assets on the{' '}
+            <ExternalLink href={blockExplorerLink.href}>Block Explorer</ExternalLink>
+          </>
         )}
-      </Box>
-    </Box>
+      </Typography>
+
+      <ActivateAccountButton />
+    </Alert>
   )
 }
 
