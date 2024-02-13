@@ -284,7 +284,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     const safes = _mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
     const deployedSafes = _filterUndeployedSafes(safes, undeployedSafes)
     return _sanitizeNotifiableSafes(chains.configs, deployedSafes)
-  }, [chains.configs, addedSafes, currentNotifiedSafes])
+  }, [addedSafes, currentNotifiedSafes, undeployedSafes, chains.configs])
 
   const totalNotifiableSafes = useMemo(() => {
     return _getTotalNotifiableSafes(notifiableSafes)
