@@ -12,6 +12,7 @@ import css from './styles.module.css'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { shortenAddress } from '@/utils/formatters'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
+import router from 'next/router'
 
 type AccountItemProps = {
   chainId: string
@@ -33,6 +34,7 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
   }, [chain, address])
 
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
+  const isSidebar = router.pathname === AppRoutes.home
 
   return (
     <ListItemButton className={css.listItem}>
@@ -54,7 +56,7 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
 
           <Box flex={1} />
 
-          <ChainIndicator chainId={chainId} responsive />
+          <ChainIndicator chainId={chainId} responsive showName={!isSidebar} />
         </Link>
       </Track>
 

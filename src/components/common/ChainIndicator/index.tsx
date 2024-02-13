@@ -16,6 +16,7 @@ type ChainIndicatorProps = {
   showUnknown?: boolean
   showLogo?: boolean
   responsive?: boolean
+  showName?: boolean
 }
 
 const fallbackChainConfig = {
@@ -34,6 +35,7 @@ const ChainIndicator = ({
   showUnknown = true,
   showLogo = true,
   responsive = false,
+  showName = true,
 }: ChainIndicatorProps): ReactElement | null => {
   const currentChainId = useChainId()
   const id = chainId || currentChainId
@@ -75,7 +77,7 @@ const ChainIndicator = ({
         />
       )}
 
-      <span className={css.name}>{chainConfig.chainName}</span>
+      {showName && <span className={css.name}>{chainConfig.chainName}</span>}
     </span>
   ) : null
 }
