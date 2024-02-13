@@ -14,7 +14,7 @@ import { AppRoutes } from '@/config/routes'
 
 type AccountsListProps = {
   safes: SafeItems
-  closeDrawer?: () => void
+  onLinkClick?: () => void
 }
 
 const DEFAULT_SHOWN = 5
