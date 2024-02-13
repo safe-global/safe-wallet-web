@@ -8,9 +8,6 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/SafeListDrawer/DataWidget'
 import css from './styles.module.css'
-import classNames from 'classnames'
-import router from 'next/router'
-import { AppRoutes } from '@/config/routes'
 
 type AccountsListProps = {
   safes: SafeItems
@@ -19,7 +16,7 @@ type AccountsListProps = {
 
 const DEFAULT_SHOWN = 5
 const MAX_DEFAULT_SHOWN = 7
-const AccountsList = ({ safes, closeDrawer }: AccountsListProps) => {
+const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const [maxShown, setMaxShown] = useState<number>(DEFAULT_SHOWN)
 
   const shownSafes = useMemo(() => {
@@ -34,11 +31,9 @@ const AccountsList = ({ safes, closeDrawer }: AccountsListProps) => {
     setMaxShown((prev) => prev + pageSize)
   }
 
-  const isSidebar = router.pathname === AppRoutes.home
-
   return (
-    <Box display="flex" justifyContent="center">
-      <Box m={2} className={classNames(css.container, { [css.sidebarContainer]: isSidebar })}>
+    <Box display="flex" justifyContent="center" className={css.container}>
+      <Box m={2} className={css.myAccounts}>
         <Box className={css.header}>
           <Typography variant="h1" fontWeight={700} className={css.title}>
             My Safe accounts
@@ -54,12 +49,7 @@ const AccountsList = ({ safes, closeDrawer }: AccountsListProps) => {
         <Paper className={css.safeList}>
           {shownSafes.length ? (
             shownSafes.map((item) => (
-              <AccountItem
-                closeDrawer={closeDrawer}
-                {...item}
-                key={item.chainId + item.address}
-                isSidebar={isSidebar}
-              />
+              <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />
             ))
           ) : (
             <Typography variant="body2" color="primary.light" textAlign="center" my={3}>

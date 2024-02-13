@@ -1,5 +1,11 @@
 .container {
-  width: 600px;
+  container-type: inline-size;
+  container-name: my-accounts-container;
+}
+
+.myAccounts {
+  width: 100%;
+  max-width: 600px;
 }
 
 .safeList {
@@ -15,19 +21,6 @@
   gap: var(--space-1);
 }
 
-.sidebarContainer {
-  margin: 0;
-}
-
-.sidebarContainer .header {
-  padding: var(--space-3);
-  border-bottom: 1px solid var(--color-border-light);
-}
-
-.sidebarContainer .title {
-  font-size: 20px;
-}
-
 .listItem {
   border: 1px solid var(--color-border-light);
   border-radius: var(--space-1);
@@ -36,7 +29,7 @@
   padding-bottom: var(--space-2);
 }
 
-.open {
+.currentListItem {
   padding-left: var(--space-2);
   border: 1px solid var(--color-secondary-light);
   border-left-width: 6px;
@@ -66,5 +59,20 @@
 
   .safeLink {
     padding-right: 0;
+  }
+}
+
+@container my-accounts-container (max-width: 500px) {
+  .myAccounts {
+    margin: 0;
+  }
+
+  .header {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .title {
+    font-size: 20px;
   }
 }

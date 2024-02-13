@@ -23,7 +23,6 @@ type AccountItemProps = {
   threshold?: number
   owners?: number
   onLinkClick?: () => void
-  isSidebar: boolean
 }
 
 const getSafeHref = (prefix: string, address: string) => ({
@@ -31,7 +30,7 @@ const getSafeHref = (prefix: string, address: string) => ({
   query: { safe: `${prefix}:${address}` },
 })
 
-const AccountItem = ({ closeDrawer, chainId, address, isSidebar, ...rest }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
@@ -44,9 +43,12 @@ const AccountItem = ({ closeDrawer, chainId, address, isSidebar, ...rest }: Acco
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
 
   return (
-    <ListItemButton selected={isCurrentSafe} className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}>
+    <ListItemButton
+      selected={isCurrentSafe}
+      className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}
+    >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.login_page}>
-        <Link onClick={closeDrawer} href={href} className={css.safeLink}>
+        <Link onClick={onLinkClick} href={href} className={css.safeLink}>
           <SafeIcon address={address} {...rest} />
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
@@ -63,7 +65,7 @@ const AccountItem = ({ closeDrawer, chainId, address, isSidebar, ...rest }: Acco
 
           <Box flex={1} />
 
-          <ChainIndicator chainId={chainId} responsive showName={!isSidebar} />
+          <ChainIndicator chainId={chainId} responsive />
         </Link>
       </Track>
 
