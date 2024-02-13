@@ -26,6 +26,9 @@
   justify-content: start;
 }
 
+.withoutName {
+  min-width: 0;
+}
 @media (max-width: 899.95px) {
   .responsive .name {
     display: none;

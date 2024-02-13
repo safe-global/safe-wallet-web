@@ -65,6 +65,7 @@ const ChainIndicator = ({
         [css.indicator]: !inline,
         [css.withLogo]: showLogo,
         [css.responsive]: responsive,
+        [css.withoutName]: !showName,
       })}
     >
       {showLogo && (
