@@ -44,7 +44,7 @@ const AccountItem = ({ closeDrawer, chainId, address, isSidebar, ...rest }: Acco
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
 
   return (
-    <ListItemButton selected={isCurrentSafe} className={classnames(css.listItem, { [css.open]: isCurrentSafe })}>
+    <ListItemButton selected={isCurrentSafe} className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}>
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.login_page}>
         <Link onClick={closeDrawer} href={href} className={css.safeLink}>
           <SafeIcon address={address} {...rest} />
