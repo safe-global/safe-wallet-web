@@ -5,8 +5,8 @@ import type { RootState } from '@/store'
 type PreloadedRootState = PreloadedState<RootState>
 
 const BC_NAME = 'SAFE__store-updates'
-const broadcast = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(BC_NAME) : undefined
 const tabId = Math.random().toString(32).slice(2)
+let broadcast: BroadcastChannel | undefined
 
 export const broadcastState = <K extends keyof PreloadedRootState>(sliceNames: K[]): Middleware<{}, RootState> => {
   return (_) => (next) => (action) => {
@@ -25,6 +25,8 @@ export const broadcastState = <K extends keyof PreloadedRootState>(sliceNames: K
 }
 
 export const listenToBroadcast = (store: Store<RootState>) => {
+  broadcast = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(BC_NAME) : undefined
+
   broadcast?.addEventListener('message', ({ data }) => {
     if (data.tabId !== tabId) {
       store.dispatch({ ...data.action, _isBroadcasted: true })

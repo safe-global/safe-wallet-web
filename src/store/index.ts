@@ -9,11 +9,11 @@ import {
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
 import merge from 'lodash/merge'
 import { IS_PRODUCTION } from '@/config/constants'
-import { HYDRATE_ACTION } from './storeHydrator'
 import { getPreloadedState, persistState } from './persistStore'
 import { broadcastState, listenToBroadcast } from './broadcast'
 import { safeMessagesListener, txHistoryListener, txQueueListener } from './slices'
 import * as slices from './slices'
+import * as hydrate from './useHydrateStore'
 
 const rootReducer = combineReducers({
   [slices.chainsSlice.name]: slices.chainsSlice.reducer,
@@ -64,7 +64,7 @@ const middleware = [
 const listeners = [safeMessagesListener, txHistoryListener, txQueueListener]
 
 export const _hydrationReducer: typeof rootReducer = (state, action) => {
-  if (action.type === HYDRATE_ACTION) {
+  if (action.type === hydrate.HYDRATE_ACTION) {
     /**
      * When changing the schema of a Redux slice, previously stored data in LS might become incompatible.
      * To avoid this, we should always migrate the data on a case-by-case basis in the corresponding slice.
@@ -103,4 +103,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unk
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
-export * from '@/store/storeHydrator'
+export const useHydrateStore = hydrate.useHydrateStore
