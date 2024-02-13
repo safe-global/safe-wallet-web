@@ -1,3 +1,4 @@
+import useOnboard from '@/hooks/wallets/useOnboard'
 import type { ReactElement } from 'react'
 import dynamic from 'next/dynamic'
 import { Grid } from '@mui/material'
@@ -17,7 +18,10 @@ const RecoveryWidget = dynamic(() => import('@/features/recovery/components/Reco
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
+  const onboard = useOnboard()
   const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
+
+  console.log(onboard)
 
   const supportsRecovery = useIsRecoverySupported()
   const [recovery] = useRecovery()

@@ -46,6 +46,8 @@
 .drawerButton {
   position: absolute !important;
   z-index: 2;
+  color: var(--color-text-primary);
+  padding: 8px 0;
   right: 0;
   transform: translateX(50%);
   margin-top: 54px;

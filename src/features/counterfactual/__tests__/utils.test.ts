@@ -1,4 +1,9 @@
-import { getCounterfactualBalance, getUndeployedSafeInfo } from '@/features/counterfactual/utils'
+import {
+  getCounterfactualBalance,
+  getNativeBalance,
+  getUndeployedSafeInfo,
+  setNativeBalance,
+} from '@/features/counterfactual/utils'
 import * as web3 from '@/hooks/wallets/web3'
 import { chainBuilder } from '@/tests/builders/chains'
 import { faker } from '@faker-js/faker'
@@ -32,6 +37,9 @@ describe('Counterfactual utils', () => {
   })
 
   describe('getCounterfactualBalance', () => {
+    const mockSafeAddress = faker.finance.ethereumAddress()
+    const mockChain = chainBuilder().build()
+
     beforeEach(() => {
       jest.clearAllMocks()
     })
@@ -41,13 +49,50 @@ describe('Counterfactual utils', () => {
       const mockReadOnlyProvider = {
         getBalance: jest.fn(() => Promise.resolve(mockBalance)),
       } as unknown as JsonRpcProvider
-      jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
+      jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementationOnce(() => mockReadOnlyProvider)
 
-      const mockSafeAddress = faker.finance.ethereumAddress()
-      const mockChain = chainBuilder().build()
       const result = await getCounterfactualBalance(mockSafeAddress, undefined, mockChain)
+      const nativeBalanceCache = getNativeBalance()
 
-      expect(mockReadOnlyProvider.getBalance).toHaveBeenCalled()
+      expect(mockReadOnlyProvider.getBalance).toHaveBeenCalledTimes(1)
+      expect(nativeBalanceCache).toEqual(mockBalance)
+      expect(result).toEqual({
+        fiatTotal: '0',
+        items: [
+          {
+            tokenInfo: {
+              type: TokenType.NATIVE_TOKEN,
+              address: ZERO_ADDRESS,
+              ...mockChain.nativeCurrency,
+            },
+            balance: mockBalance.toString(),
+            fiatBalance: '0',
+            fiatConversion: '0',
+          },
+        ],
+      })
+
+      // Should use the cache now
+      const newResult = await getCounterfactualBalance(mockSafeAddress, undefined, mockChain)
+      expect(mockReadOnlyProvider.getBalance).toHaveBeenCalledTimes(1)
+      expect(newResult?.items[0].balance).toEqual('123')
+    })
+
+    it('should return undefined if there is no chain info', async () => {
+      const mockProvider = { getBalance: jest.fn(() => Promise.resolve(1n)) } as unknown as BrowserProvider
+
+      const result = await getCounterfactualBalance(mockSafeAddress, mockProvider, undefined)
+
+      expect(result).toBeUndefined()
+    })
+
+    it('should return the native balance', async () => {
+      const mockBalance = 1000000n
+      const mockProvider = { getBalance: jest.fn(() => Promise.resolve(mockBalance)) } as unknown as BrowserProvider
+
+      const result = await getCounterfactualBalance(mockSafeAddress, mockProvider, mockChain)
+
+      expect(mockProvider.getBalance).toHaveBeenCalled()
       expect(result).toEqual({
         fiatTotal: '0',
         items: [
@@ -65,24 +110,24 @@ describe('Counterfactual utils', () => {
       })
     })
 
-    it('should return undefined if there is no chain info', async () => {
-      const mockSafeAddress = faker.finance.ethereumAddress()
-      const mockProvider = { getBalance: jest.fn(() => Promise.resolve(1n)) } as unknown as BrowserProvider
+    it('should not use the cache if the ignoreCache flag is passed', async () => {
+      const mockBalance = 123n
+      const mockReadOnlyProvider = {
+        getBalance: jest.fn(() => Promise.resolve(mockBalance)),
+      } as unknown as JsonRpcProvider
+      jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementationOnce(() => mockReadOnlyProvider)
 
-      const result = await getCounterfactualBalance(mockSafeAddress, mockProvider, undefined)
+      // Set local cache
+      const mockCacheBalance = 10n
+      setNativeBalance(mockCacheBalance)
+      const nativeBalanceCache = getNativeBalance()
+      expect(nativeBalanceCache).toEqual(mockCacheBalance)
 
-      expect(result).toBeUndefined()
-    })
+      // Call function and ignore cache
+      const result = await getCounterfactualBalance(mockSafeAddress, undefined, mockChain, true)
 
-    it('should return the native balance', async () => {
-      const mockSafeAddress = faker.finance.ethereumAddress()
-      const mockBalance = 1000000n
-      const mockProvider = { getBalance: jest.fn(() => Promise.resolve(mockBalance)) } as unknown as BrowserProvider
-      const mockChain = chainBuilder().build()
-
-      const result = await getCounterfactualBalance(mockSafeAddress, mockProvider, mockChain)
-
-      expect(mockProvider.getBalance).toHaveBeenCalled()
+      expect(mockReadOnlyProvider.getBalance).toHaveBeenCalled()
+      expect(result?.items[0].balance).not.toEqual(mockCacheBalance)
       expect(result).toEqual({
         fiatTotal: '0',
         items: [

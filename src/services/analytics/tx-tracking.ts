@@ -56,7 +56,7 @@ export const getTransactionTrackingType = async (chainId: string, txId: string):
     }
 
     if (details.safeAppInfo) {
-      return isWalletConnectSafeApp(details.safeAppInfo.url) ? TX_TYPES.walletconnect : TX_TYPES.safeapps
+      return isWalletConnectSafeApp(details.safeAppInfo.url) ? TX_TYPES.walletconnect : details.safeAppInfo.url
     }
 
     if (isMultiSendTxInfo(txInfo)) {
