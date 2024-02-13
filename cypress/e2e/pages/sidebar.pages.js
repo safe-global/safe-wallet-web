@@ -115,6 +115,7 @@ export function verifySafesByNetwork(netwrok, safes) {
   cy.get(sidebarSafeContainer).within(() => {
     cy.get(chainLogo)
       .contains(netwrok)
+      .parent()
       .next()
       .within(() => {
         main.verifyValuesExist(sideSafeListItem, safes)
