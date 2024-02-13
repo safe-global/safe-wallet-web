@@ -3,8 +3,8 @@
 }
 
 .safeList {
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 .header {
