@@ -104,6 +104,7 @@ export const ActivateAccountFlow = () => {
           undeployedSafe.safeAccountConfig.owners,
           undeployedSafe.safeAccountConfig.threshold,
           Number(undeployedSafe.safeDeploymentConfig?.saltNonce!),
+          undeployedSafe.safeDeploymentConfig?.safeVersion,
         )
 
         onSubmit()
@@ -114,12 +115,17 @@ export const ActivateAccountFlow = () => {
           }
         })
       } else {
-        await createNewSafe(provider, {
-          safeAccountConfig: undeployedSafe.safeAccountConfig,
-          saltNonce: undeployedSafe.safeDeploymentConfig?.saltNonce,
-          options,
-          callback: onSubmit,
-        })
+        await createNewSafe(
+          provider,
+          {
+            safeAccountConfig: undeployedSafe.safeAccountConfig,
+            saltNonce: undeployedSafe.safeDeploymentConfig?.saltNonce,
+            options,
+
+            callback: onSubmit,
+          },
+          undeployedSafe.safeDeploymentConfig?.safeVersion,
+        )
         onSuccess()
       }
     } catch (_err) {

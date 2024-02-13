@@ -1,9 +1,9 @@
 .indicator {
   display: flex;
   align-items: center;
-  justify-content: center;
   min-width: 70px;
   font-size: 12px;
+  justify-content: center;
 }
 
 .inlineIndicator {
@@ -21,5 +21,16 @@
   align-items: center;
   gap: var(--space-1);
   padding: 0;
+  min-width: 115px;
   font-size: 14px;
+  justify-content: start;
+}
+
+@media (max-width: 899.95px) {
+  .responsive .name {
+    display: none;
+  }
+.indicator {
+  min-width: 35px;
+}
 }

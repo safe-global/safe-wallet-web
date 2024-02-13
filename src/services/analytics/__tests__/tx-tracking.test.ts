@@ -161,7 +161,7 @@ describe('getTransactionTrackingType', () => {
       },
     } as unknown)
 
-    expect(txType).toEqual(TX_TYPES.safeapps)
+    expect(txType).toEqual('https://gnosis-safe.io/app')
   })
 
   it('should return batch for multisend transactions', async () => {

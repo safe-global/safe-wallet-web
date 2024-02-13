@@ -13,12 +13,12 @@ const importedSafe = 'imported-safe'
 
 describe('Address book tests', () => {
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
+    cy.clearLocalStorage()
     main.acceptCookies()
   })
 
-  it('Verify entered entry in Name input can be saved', () => {
+  it('Verify owners name can be edited', () => {
     main
       .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
       .then(() => {
@@ -28,7 +28,7 @@ describe('Address book tests', () => {
             cy.reload()
             addressBook.clickOnEditEntryBtn()
             addressBook.typeInNameInput(EDITED_NAME)
-            addressBook.clickOnSaveButton()
+            addressBook.clickOnSaveEntryBtn()
             addressBook.verifyNameWasChanged(NAME, EDITED_NAME)
           })
       })
@@ -65,6 +65,7 @@ describe('Address book tests', () => {
           const fileName = `safe-address-book-${date}.csv`
 
           addressBook.clickOnExportFileBtn()
+          addressBook.verifyExportMessage(12)
           addressBook.confirmExport()
 
           const downloadsFolder = Cypress.config('downloadsFolder')

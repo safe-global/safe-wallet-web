@@ -108,6 +108,14 @@ export const OVERVIEW_EVENTS = {
     action: 'Buy crypto button',
     category: OVERVIEW_CATEGORY,
   },
+  SHOW_MORE_SAFES: {
+    action: 'Show more Safes',
+    category: OVERVIEW_CATEGORY,
+  },
+  CREATE_NEW_SAFE: {
+    action: 'Create new Safe',
+    category: OVERVIEW_CATEGORY,
+  },
   SELECT_ONRAMP_APP: {
     action: 'Select on-ramp app',
     category: OVERVIEW_CATEGORY,
@@ -118,4 +126,5 @@ export enum OPEN_SAFE_LABELS {
   sidebar = 'sidebar',
   after_create = 'after_create',
   after_add = 'after_add',
+  login_page = 'login_page',
 }
