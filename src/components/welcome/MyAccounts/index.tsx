@@ -54,7 +54,12 @@ const AccountsList = ({ safes, closeDrawer }: AccountsListProps) => {
         <Paper className={css.safeList}>
           {shownSafes.length ? (
             shownSafes.map((item) => (
-              <AccountItem closeDrawer={closeDrawer} {...item} key={item.chainId + item.address} />
+              <AccountItem
+                closeDrawer={closeDrawer}
+                {...item}
+                key={item.chainId + item.address}
+                isSidebar={isSidebar}
+              />
             ))
           ) : (
             <Typography variant="body2" color="primary.light" textAlign="center" my={3}>

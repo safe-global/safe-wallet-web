@@ -12,7 +12,6 @@ import css from './styles.module.css'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { shortenAddress } from '@/utils/formatters'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
-import router from 'next/router'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
@@ -24,6 +23,7 @@ type AccountItemProps = {
   threshold?: number
   owners?: number
   closeDrawer?: () => void
+  isSidebar: boolean
 }
 
 const getSafeHref = (prefix: string, address: string) => ({
@@ -31,7 +31,7 @@ const getSafeHref = (prefix: string, address: string) => ({
   query: { safe: `${prefix}:${address}` },
 })
 
-const AccountItem = ({ closeDrawer, chainId, address, ...rest }: AccountItemProps) => {
+const AccountItem = ({ closeDrawer, chainId, address, isSidebar, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
@@ -42,7 +42,6 @@ const AccountItem = ({ closeDrawer, chainId, address, ...rest }: AccountItemProp
   }, [chain, address])
 
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
-  const isSidebar = router.pathname === AppRoutes.home
 
   return (
     <ListItemButton selected={isCurrentSafe} className={classnames(css.listItem, { [css.open]: isCurrentSafe })}>
