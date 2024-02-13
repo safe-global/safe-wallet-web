@@ -1,4 +1,5 @@
 import TokenAmount from '@/components/common/TokenAmount'
+import CounterfactualStatusButton from '@/features/counterfactual/CounterfactualStatusButton'
 import { type ReactElement, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
@@ -107,6 +108,8 @@ const SafeHeader = (): ReactElement => {
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
             <ExplorerButton {...blockExplorerLink} className={css.iconButton} icon={LinkIconBold} />
           </Track>
+
+          <CounterfactualStatusButton />
 
           <EnvHintButton />
         </div>
