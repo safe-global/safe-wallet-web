@@ -20,6 +20,8 @@ const saveBtn = '[data-testid="save-btn"]'
 const divInput = '[data-testid="name-input"]'
 const exportSummary = '[data-testid="export-summary"]'
 const sendBtn = '[data-testid="send-btn"]'
+const nextPageBtn = 'button[aria-label="Go to next page"]'
+const previousPageBtn = 'button[aria-label="Go to previous page"]'
 
 //TODO Move to specific component
 const moreActionIcon = '[data-testid="MoreHorizIcon"]'
@@ -59,6 +61,17 @@ export const entries = [
   'assets-test-sepolia',
 ]
 
+export function clickOnNextPageBtn() {
+  cy.get(nextPageBtn).click()
+}
+
+export function clickOnPrevPageBtn() {
+  cy.get(previousPageBtn).click()
+}
+
+export function verifyCountOfSafes(count) {
+  main.verifyElementsCount(tableRow, count)
+}
 export function verifyRecipientData(data) {
   main.verifyValuesExist(addressBookRecipient, data)
 }

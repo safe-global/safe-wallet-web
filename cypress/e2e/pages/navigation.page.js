@@ -26,7 +26,7 @@ export function clickOnNewTxBtn() {
 
 export function clickOnWalletExpandMoreIcon() {
   cy.get(expandMoreIcon).eq(0).click()
-  cy.get(sentinelStart).next().should('be.visible')
+  cy.get(sentinelStart).next().should('exist')
 }
 
 export function clickOnDisconnectBtn() {

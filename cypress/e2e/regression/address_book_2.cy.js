@@ -66,4 +66,21 @@ describe('Address book tests - 2', () => {
     createtx.verifyCopyIconWorks(0, constants.RECIPIENT_ADDRESS)
     createtx.verifyNumberOfExternalLinks(1)
   })
+
+  it('Verify by default there 25 rows shown per page', () => {
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.pagination)
+    cy.wait(1000)
+    cy.reload()
+    addressBook.verifyCountOfSafes(25)
+  })
+
+  it('Verify that clicking on next and previous page buttons shows safes', () => {
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.pagination)
+    cy.wait(1000)
+    cy.reload()
+    addressBook.clickOnNextPageBtn()
+    addressBook.verifyCountOfSafes(1)
+    addressBook.clickOnPrevPageBtn()
+    addressBook.verifyCountOfSafes(25)
+  })
 })
