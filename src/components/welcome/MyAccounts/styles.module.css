@@ -12,7 +12,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   padding: 24px 0;
-  gap: 16px;
+  gap: var(--space-1);
 }
 
 .sidebarContainer {
