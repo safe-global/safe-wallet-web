@@ -3,9 +3,9 @@ import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounte
 
 const LazyCounterfactual = dynamic(() => import('./LazyCounterfactual'))
 
-function Counterfactual() {
+function CounterfactualHooks() {
   const isCounterfactualSafe = useIsCounterfactualSafe()
   return isCounterfactualSafe ? <LazyCounterfactual /> : null
 }
 
-export default Counterfactual
+export default CounterfactualHooks
