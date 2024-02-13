@@ -1,4 +1,4 @@
-import EventBus from '../../../services/EventBus'
+import EventBus from '@/services/EventBus'
 
 export enum SafeCreationEvent {
   PROCESSING = 'PROCESSING',
@@ -40,6 +40,6 @@ export const safeCreationSubscribe = SafeCreationEventBus.subscribe.bind(SafeCre
 // Log all events
 Object.values(SafeCreationEvent).forEach((event: SafeCreationEvent) => {
   safeCreationSubscribe<SafeCreationEvent>(event, (detail) => {
-    console.info(`Safe creation ${event} event received`, detail)
+    console.info(`[Safe creation]: ${event}`, detail)
   })
 })

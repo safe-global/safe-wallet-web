@@ -78,10 +78,8 @@ const ActivateAccountFlow = () => {
 
   if (!undeployedSafe) return null
 
-  const owners = undeployedSafe.props.safeAccountConfig.owners
-  const threshold = undeployedSafe.props.safeAccountConfig.threshold
-  const saltNonce = undeployedSafe.props.safeDeploymentConfig?.saltNonce
-  const safeVersion = undeployedSafe.props.safeDeploymentConfig?.safeVersion
+  const { owners, threshold } = undeployedSafe.props.safeAccountConfig
+  const { saltNonce, safeVersion } = undeployedSafe.props.safeDeploymentConfig || {}
 
   const onSuccess = () => {
     safeCreationDispatch(SafeCreationEvent.SUCCESS, { groupKey: CF_TX_GROUP_KEY, safeAddress })
