@@ -20,7 +20,7 @@
 }
 
 .sidebarContainer .header {
-  padding: 24px;
+  padding: var(--space-3);
   border-bottom: 1px solid var(--color-border-light);
 }
 
