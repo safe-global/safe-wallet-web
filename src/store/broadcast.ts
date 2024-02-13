@@ -15,7 +15,7 @@ export const broadcastState = <K extends keyof PreloadedRootState>(sliceNames: K
     // Broadcast actions that aren't being already broadcasted
     if (!action._isBroadcasted) {
       const sliceType = action.type.split('/')[0]
-      if (sliceNames.some((slice) => slice === sliceType)) {
+      if (sliceNames.includes(sliceType)) {
         broadcast?.postMessage({ action, tabId })
       }
     }
