@@ -5,13 +5,17 @@ import * as main from '../../e2e/pages/main.page'
 import * as ls from '../../support/localstorage_data.js'
 
 const NAME = 'Owner1'
+const NAME_2 = 'Owner2'
 const EDITED_NAME = 'Edited Owner1'
 const duplicateEntry = 'test-sepolia-90'
+const owner1 = 'Automation owner'
+
+const recipientData = [owner1, constants.DEFAULT_OWNER_ADDRESS]
 
 describe('[SMOKE] Address book tests', () => {
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
+    cy.clearLocalStorage()
     main.waitForHistoryCallToComplete()
     main.acceptCookies()
   })
@@ -73,5 +77,26 @@ describe('[SMOKE] Address book tests', () => {
     addressBook.importCSVFile(addressBook.networksCSVFile)
     addressBook.verifyImportBtnStatus(constants.enabledStates.enabled)
     addressBook.verifyModalSummaryMessage(4, 3)
+  })
+
+  it('[SMOKE] Verify an entry can be added by ENS name', () => {
+    addressBook.clickOnCreateEntryBtn()
+    addressBook.addEntryByENS(NAME_2, constants.ENS_TEST_SEPOLIA)
+  })
+
+  it('[SMOKE] Verify empty name is not allowed when editing', () => {
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+    cy.wait(1000)
+    cy.reload()
+    addressBook.clickOnEditEntryBtn()
+    addressBook.verifyEmptyOwnerNameNotAllowed()
+  })
+
+  it('[SMOKE] Verify clicking on Send button autofills the recipient filed with correct value', () => {
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress2)
+    cy.wait(1000)
+    cy.reload()
+    addressBook.clickOnSendBtn()
+    addressBook.verifyRecipientData(recipientData)
   })
 })
