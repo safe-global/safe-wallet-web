@@ -8,7 +8,7 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import ExternalStore from '@/services/ExternalStore'
-import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
+import { assertWalletChain, getUncheckedSafeSDK, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
 import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
@@ -61,7 +61,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
 
   let result: ContractTransactionResponse | undefined
   try {
-    const signedTx = await sdkUnchecked.signTransaction(safeTx)
+    const signedTx = await tryOffChainTxSigning(safeTx, await sdkUnchecked.getContractVersion(), sdkUnchecked)
 
     const wallet = await assertWalletChain(onboard, chainId)
     const provider = createWeb3(wallet.provider)

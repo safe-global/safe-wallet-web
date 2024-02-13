@@ -120,6 +120,7 @@ function AddressBookTable({ chain, setTxFlow }: AddressBookTableProps) {
               {(isOk) => (
                 <Track {...ADDRESS_BOOK_EVENTS.SEND}>
                   <Button
+                    data-testid="send-btn"
                     variant="contained"
                     color="primary"
                     size="small"
