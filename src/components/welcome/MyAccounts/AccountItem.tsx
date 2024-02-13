@@ -22,7 +22,7 @@ type AccountItemProps = {
   address: string
   threshold?: number
   owners?: number
-  closeDrawer?: () => void
+  onLinkClick?: () => void
   isSidebar: boolean
 }
 
