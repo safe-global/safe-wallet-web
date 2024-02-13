@@ -4,8 +4,8 @@ import { useEffect } from 'react'
 import { formatError } from '@/utils/formatters'
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
-import { useCurrentChain } from './useChains'
-import useSafeAddress from './useSafeAddress'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeAddress from '@/hooks/useSafeAddress'
 import { isWalletRejection } from '@/utils/wallets'
 
 const SafeCreationNotifications = {
@@ -22,16 +22,10 @@ enum Variant {
   ERROR = 'error',
 }
 
-const successEvents = [SafeCreationEvent.SUCCESS]
-
 const usePendingSafeNotifications = (): void => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
   const safeAddress = useSafeAddress()
-
-  /**
-   * Show notifications of a transaction's lifecycle
-   */
 
   useEffect(() => {
     if (!chain) return
@@ -43,7 +37,7 @@ const usePendingSafeNotifications = (): void => {
         const isError = 'error' in detail
         if (isError && isWalletRejection(detail.error)) return
 
-        const isSuccess = successEvents.includes(event)
+        const isSuccess = event === SafeCreationEvent.SUCCESS
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
         const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txHash || ''

@@ -9,8 +9,8 @@ import { checkSafeActionViaRelay, checkSafeActivation } from '@/features/counter
 import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { useEffect, useRef } from 'react'
-import useChainId from './useChainId'
-import useSafeInfo from './useSafeInfo'
+import useChainId from '@/hooks/useChainId'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 const pendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
   [SafeCreationEvent.PROCESSING]: PendingSafeStatus.PROCESSING,
@@ -44,19 +44,16 @@ const usePendingSafeMonitor = (): void => {
       const isProcessing = status === PendingSafeStatus.PROCESSING && txHash !== undefined
       const isRelaying = status === PendingSafeStatus.RELAYING && taskId !== undefined
       const isMonitored = monitoredSafes.current[safeAddress]
-      console.log({ isMonitored })
 
       if ((!isProcessing && !isRelaying) || isMonitored) return
 
       monitoredSafes.current[safeAddress] = true
 
       if (isProcessing) {
-        console.log(isProcessing)
         checkSafeActivation(provider, txHash, safeAddress)
       }
 
       if (isRelaying) {
-        console.log(isRelaying)
         checkSafeActionViaRelay(taskId, safeAddress)
       }
     }
@@ -110,7 +107,6 @@ const usePendingSafeStatus = (): void => {
           return
         }
 
-        // Or set a new status
         dispatch(
           updateUndeployedSafeStatus({
             chainId: safe.chainId,
