@@ -39,7 +39,7 @@
 .open {
   padding-left: var(--space-2);
   border: 1px solid var(--color-secondary-light);
-  border-left: 6px solid var(--color-secondary-light);
+  border-left-width: 6px;
   background-color: var(--color-secondary-background) !important;
 }
 
