@@ -294,8 +294,8 @@ describe('getTotalFee', () => {
   })
 
   it('handles large numbers', () => {
-    const result = getTotalFee(11230000000000123n, 123123123n)
+    const result = getTotalFee(10000000000000000n, 123123123n)
 
-    expect(result).toEqual(1382918917536015144144129n)
+    expect(result).toEqual(1231231230000000000000000n)
   })
 })

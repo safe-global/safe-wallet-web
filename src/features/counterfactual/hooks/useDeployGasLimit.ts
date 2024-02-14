@@ -25,7 +25,6 @@ const useDeployGasLimit = (safeTx?: SafeTransaction) => {
 
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<DeployGasLimitProps | undefined>(async () => {
     if (!onboard) return
-
     const sdk = await getSafeSDKWithSigner(onboard, chainId)
 
     const [baseGas, batchTxGas, safeDeploymentGas] = await Promise.all([
@@ -63,7 +62,6 @@ export const estimateBatchDeploymentTransaction = async (
   chainId: string,
 ) => {
   const customContracts = sdk.getContractManager().contractNetworks?.[chainId]
-
   const safeVersion = await sdk.getContractVersion()
   const ethAdapter = sdk.getEthAdapter()
   const fallbackHandlerContract = await getCompatibilityFallbackHandlerContract({
