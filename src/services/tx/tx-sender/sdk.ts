@@ -124,13 +124,11 @@ export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInf
 }
 
 export const getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethod[] => {
-  const methods = [SigningMethod.ETH_SIGN_TYPED_DATA]
-
-  if (hasSafeFeature(SAFE_FEATURES.ETH_SIGN, safeVersion)) {
-    methods.push(SigningMethod.ETH_SIGN)
+  if (!hasSafeFeature(SAFE_FEATURES.ETH_SIGN, safeVersion)) {
+    return [SigningMethod.ETH_SIGN_TYPED_DATA]
   }
 
-  return methods
+  return [SigningMethod.ETH_SIGN_TYPED_DATA, SigningMethod.ETH_SIGN]
 }
 
 export const tryOffChainTxSigning = async (
