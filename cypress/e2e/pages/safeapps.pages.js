@@ -8,6 +8,7 @@ export const saveToLibraryBtn = 'button[title="Save to Library"]'
 export const downloadBatchBtn = 'button[title="Download batch"]'
 export const deleteBatchBtn = 'button[title="Delete Batch"]'
 const appModal = '[data-testid="app-info-modal"]'
+export const safeAppsList = '[data-testid="apps-list"]'
 
 const addBtnStr = /add/i
 const noAppsStr = /no Safe Apps found/i
@@ -278,4 +279,8 @@ export function uncheckAllPermissions(element) {
 
 export function checkAllPermissions(element) {
   cy.wrap(element).findByText(allowAllPermissions).click()
+}
+
+export function verifyPinnedApp(name) {
+  cy.get(`[aria-label="${name}"]`)
 }

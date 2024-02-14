@@ -58,7 +58,7 @@ const SafeAppActionButtons = ({
         onCopy={handleCopyShareSafeAppUrl}
         text={shareSafeAppUrl}
       >
-        <IconButton size="small">
+        <IconButton data-testid="copy-btn-icon" size="small">
           <SvgIcon component={ShareIcon} inheritViewBox color="border" fontSize="small" />
         </IconButton>
       </CopyButton>
