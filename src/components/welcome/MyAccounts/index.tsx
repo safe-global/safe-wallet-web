@@ -24,19 +24,22 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const [maxShownOwnedSafes, setMaxShownOwnedSafes] = useState<number>(DEFAULT_SHOWN)
   const [maxShownWatchlistSafes, setMaxShownWatchlistSafes] = useState<number>(DEFAULT_SHOWN)
 
+  const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
+  const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
+
   const shownOwnedSafes = useMemo(() => {
-    if (safes.length <= MAX_DEFAULT_SHOWN) {
-      return safes
+    if (ownedSafes.length <= MAX_DEFAULT_SHOWN) {
+      return ownedSafes
     }
-    return safes.slice(0, maxShownOwnedSafes)
-  }, [safes, maxShownOwnedSafes])
+    return ownedSafes.slice(0, maxShownOwnedSafes)
+  }, [ownedSafes, maxShownOwnedSafes])
 
   const shownWatchlistSafes = useMemo(() => {
-    if (safes.length <= MAX_DEFAULT_SHOWN) {
-      return safes
+    if (watchlistSafes.length <= MAX_DEFAULT_SHOWN) {
+      return watchlistSafes
     }
-    return safes.slice(0, maxShownWatchlistSafes)
-  }, [safes, maxShownWatchlistSafes])
+    return watchlistSafes.slice(0, maxShownWatchlistSafes)
+  }, [watchlistSafes, maxShownWatchlistSafes])
 
   const onShowMoreOwnedSafes = () => setMaxShownOwnedSafes((prev) => prev + PAGE_SIZE)
   const onShowMoreWatchlistSafes = () => setMaxShownWatchlistSafes((prev) => prev + PAGE_SIZE)
@@ -68,7 +71,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               You don&apos;t have any Safe Accounts yet
             </Typography>
           )}
-          {safes.length > shownOwnedSafes.length && (
+          {ownedSafes.length > shownOwnedSafes.length && (
             <Box display="flex" justifyContent="center">
               <Track {...OVERVIEW_EVENTS.SHOW_MORE_SAFES}>
                 <Button onClick={onShowMoreOwnedSafes}>Show more</Button>
@@ -105,7 +108,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               You don&apos;t have any Safe Accounts yet
             </Typography>
           )}
-          {safes.length > shownWatchlistSafes.length && (
+          {watchlistSafes.length > shownWatchlistSafes.length && (
             <Box display="flex" justifyContent="center">
               <Track {...OVERVIEW_EVENTS.SHOW_MORE_SAFES}>
                 <Button onClick={onShowMoreWatchlistSafes}>Show more</Button>
