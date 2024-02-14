@@ -26,7 +26,7 @@ const pendingTxWidget = '[data-testid="pending-tx-widget"]'
 const pendingTxItem = '[data-testid="tx-pending-item"]'
 const singleTxDetailsHeader = '[data-testid="tx-details"]'
 
-export function clcikOnTxByIndex(index) {
+export function clickOnTxByIndex(index) {
   cy.get(pendingTxItem).eq(index).click()
   cy.get(singleTxDetailsHeader).should('be.visible')
 }

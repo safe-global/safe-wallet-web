@@ -74,7 +74,7 @@ describe('[SMOKE] Dashboard tests', () => {
   })
 
   it('[SMOKE] Verify clicking on any tx takes the user to Transactions > Queue tab', () => {
-    dashboard.clcikOnTxByIndex(0)
+    dashboard.clickOnTxByIndex(0)
     dashboard.verifySingleTxItem(txData)
   })
 })
