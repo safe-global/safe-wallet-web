@@ -1,5 +1,24 @@
 .container {
-  width: 600px;
+  container-type: inline-size;
+  container-name: my-accounts-container;
+}
+
+.myAccounts {
+  width: 100%;
+  max-width: 600px;
+}
+
+.safeList {
+  padding: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  gap: var(--space-1);
 }
 
 .listItem {
@@ -8,6 +27,13 @@
   margin-bottom: 12px;
   padding-top: var(--space-2);
   padding-bottom: var(--space-2);
+}
+
+.currentListItem {
+  padding-left: var(--space-2);
+  border: 1px solid var(--color-secondary-light);
+  border-left-width: 6px;
+  background-color: var(--color-secondary-background) !important;
 }
 
 .listItem > :first-child {
@@ -33,5 +59,20 @@
 
   .safeLink {
     padding-right: 0;
+  }
+}
+
+@container my-accounts-container (max-width: 500px) {
+  .myAccounts {
+    margin: 0;
+  }
+
+  .header {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .title {
+    font-size: 20px;
   }
 }

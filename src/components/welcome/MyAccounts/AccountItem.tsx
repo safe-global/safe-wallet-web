@@ -12,12 +12,17 @@ import css from './styles.module.css'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { shortenAddress } from '@/utils/formatters'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import useChainId from '@/hooks/useChainId'
+import { sameAddress } from '@/utils/addresses'
+import classnames from 'classnames'
 
 type AccountItemProps = {
   chainId: string
   address: string
   threshold?: number
   owners?: number
+  onLinkClick?: () => void
 }
 
 const getSafeHref = (prefix: string, address: string) => ({
@@ -25,8 +30,11 @@ const getSafeHref = (prefix: string, address: string) => ({
   query: { safe: `${prefix}:${address}` },
 })
 
-const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
+  const safeAddress = useSafeAddress()
+  const currChainId = useChainId()
+  const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
 
   const href = useMemo(() => {
     return chain ? getSafeHref(chain.shortName, address) : ''
@@ -35,9 +43,12 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
 
   return (
-    <ListItemButton className={css.listItem}>
+    <ListItemButton
+      selected={isCurrentSafe}
+      className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}
+    >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.login_page}>
-        <Link href={href} className={css.safeLink}>
+        <Link onClick={onLinkClick} href={href} className={css.safeLink}>
           <SafeIcon address={address} {...rest} />
 
           <Typography variant="body2" component="div" className={css.safeAddress}>

@@ -11,12 +11,12 @@ import css from './styles.module.css'
 
 type AccountsListProps = {
   safes: SafeItems
+  onLinkClick?: () => void
 }
 
 const DEFAULT_SHOWN = 5
 const MAX_DEFAULT_SHOWN = 7
-
-const AccountsList = ({ safes }: AccountsListProps) => {
+const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const [maxShown, setMaxShown] = useState<number>(DEFAULT_SHOWN)
 
   const shownSafes = useMemo(() => {
@@ -32,10 +32,10 @@ const AccountsList = ({ safes }: AccountsListProps) => {
   }
 
   return (
-    <Box display="flex" justifyContent="center">
-      <Box className={css.container} m={2}>
-        <Box display="flex" flexWrap="wrap" justifyContent="space-between" py={3} gap={2}>
-          <Typography variant="h1" fontWeight={700}>
+    <Box display="flex" justifyContent="center" className={css.container}>
+      <Box m={2} className={css.myAccounts}>
+        <Box className={css.header}>
+          <Typography variant="h1" fontWeight={700} className={css.title}>
             My Safe accounts
             <Typography component="span" color="text.secondary" fontSize="inherit" fontWeight="normal">
               {' '}
@@ -46,9 +46,11 @@ const AccountsList = ({ safes }: AccountsListProps) => {
           <CreateButton />
         </Box>
 
-        <Paper sx={{ p: 3, mb: 3 }}>
+        <Paper className={css.safeList}>
           {shownSafes.length ? (
-            shownSafes.map((item) => <AccountItem {...item} key={item.chainId + item.address} />)
+            shownSafes.map((item) => (
+              <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />
+            ))
           ) : (
             <Typography variant="body2" color="primary.light" textAlign="center" my={3}>
               You don&apos;t have any Safe Accounts yet
