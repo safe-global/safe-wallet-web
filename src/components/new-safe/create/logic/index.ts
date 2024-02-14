@@ -223,16 +223,11 @@ export const checkSafeCreationTx = async (
   txHash: string,
   dispatch: AppDispatch,
 ): Promise<SafeCreationStatus> => {
-  const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
+  const TIMEOUT_TIME = 60 * 1000 // 1 minute
 
   try {
-    const txResponse = await provider.getTransaction(txHash)
-    if (txResponse === null) {
-      throw new Error('Transaction not found')
-    }
-
-    const replaceableTx = txResponse.replaceableTransaction(pendingTx.startBlock)
-    const receipt = await replaceableTx.wait(1, TIMEOUT_TIME)
+    // TODO: Use the fix from checkSafeActivation to detect cancellation and speed-up txs again
+    const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_TIME)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {
