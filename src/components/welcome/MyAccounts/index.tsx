@@ -17,22 +17,29 @@ type AccountsListProps = {
   onLinkClick?: () => void
 }
 
-const DEFAULT_SHOWN = 5
-const MAX_DEFAULT_SHOWN = 7
+const DEFAULT_SHOWN = 2
+const MAX_DEFAULT_SHOWN = 3
+const PAGE_SIZE = 2
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
-  const [maxShown, setMaxShown] = useState<number>(DEFAULT_SHOWN)
+  const [maxShownOwnedSafes, setMaxShownOwnedSafes] = useState<number>(DEFAULT_SHOWN)
+  const [maxShownWatchlistSafes, setMaxShownWatchlistSafes] = useState<number>(DEFAULT_SHOWN)
 
-  const shownSafes = useMemo(() => {
+  const shownOwnedSafes = useMemo(() => {
     if (safes.length <= MAX_DEFAULT_SHOWN) {
       return safes
     }
-    return safes.slice(0, maxShown)
-  }, [safes, maxShown])
+    return safes.slice(0, maxShownOwnedSafes)
+  }, [safes, maxShownOwnedSafes])
 
-  const onShowMore = () => {
-    const pageSize = 100 // DEFAULT_SHOWN
-    setMaxShown((prev) => prev + pageSize)
-  }
+  const shownWatchlistSafes = useMemo(() => {
+    if (safes.length <= MAX_DEFAULT_SHOWN) {
+      return safes
+    }
+    return safes.slice(0, maxShownWatchlistSafes)
+  }, [safes, maxShownWatchlistSafes])
+
+  const onShowMoreOwnedSafes = () => setMaxShownOwnedSafes((prev) => prev + PAGE_SIZE)
+  const onShowMoreWatchlistSafes = () => setMaxShownWatchlistSafes((prev) => prev + PAGE_SIZE)
 
   return (
     <Box className={css.container}>
@@ -52,8 +59,8 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               ({safes.length})
             </Typography>
           </Typography>
-          {shownSafes.length ? (
-            shownSafes.map((item) => (
+          {shownOwnedSafes.length ? (
+            shownOwnedSafes.map((item) => (
               <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />
             ))
           ) : (
@@ -61,10 +68,10 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               You don&apos;t have any Safe Accounts yet
             </Typography>
           )}
-          {safes.length > shownSafes.length && (
+          {safes.length > shownOwnedSafes.length && (
             <Box display="flex" justifyContent="center">
               <Track {...OVERVIEW_EVENTS.SHOW_MORE_SAFES}>
-                <Button onClick={onShowMore}>Show more</Button>
+                <Button onClick={onShowMoreOwnedSafes}>Show more</Button>
               </Track>
             </Box>
           )}
@@ -89,8 +96,8 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               </Link>
             </Track>
           </div>{' '}
-          {shownSafes.length ? (
-            shownSafes.map((item) => (
+          {shownWatchlistSafes.length ? (
+            shownWatchlistSafes.map((item) => (
               <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />
             ))
           ) : (
@@ -98,10 +105,10 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               You don&apos;t have any Safe Accounts yet
             </Typography>
           )}
-          {safes.length > shownSafes.length && (
+          {safes.length > shownWatchlistSafes.length && (
             <Box display="flex" justifyContent="center">
               <Track {...OVERVIEW_EVENTS.SHOW_MORE_SAFES}>
-                <Button onClick={onShowMore}>Show more</Button>
+                <Button onClick={onShowMoreWatchlistSafes}>Show more</Button>
               </Track>
             </Box>
           )}
