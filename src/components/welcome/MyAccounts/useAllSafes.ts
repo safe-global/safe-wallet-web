@@ -13,6 +13,7 @@ export type SafeItems = Array<{
   address: string
   threshold?: number
   owners?: number
+  isWatchlist?: boolean
 }>
 
 const useAddedSafes = () => {
@@ -49,6 +50,7 @@ const useAllSafes = (): SafeItems => {
         chainId,
         threshold: allAdded[chainId]?.[address]?.threshold,
         owners: allAdded[chainId]?.[address]?.owners.length,
+        isWatchlist: !(ownedOnChain || []).includes(address),
       }))
     })
   }, [configs, allAdded, allOwned, currentChainId])
