@@ -31,7 +31,7 @@ import { useAppDispatch } from '@/store'
 import { FEATURES } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { Alert, Box, Button, Divider, Grid, Typography } from '@mui/material'
+import { Alert, Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import { type DeploySafeProps } from '@safe-global/protocol-kit'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
@@ -153,6 +153,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [_, setPendingSafe] = usePendingSafe()
   const [payMethod, setPayMethod] = useState(PayMethod.PayLater)
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
+  const [isCreating, setIsCreating] = useState<boolean>(false)
   const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
 
@@ -190,6 +191,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const createSafe = async () => {
     if (!wallet || !provider || !chain) return
 
+    setIsCreating(true)
+
     try {
       const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
         chain.chainId,
@@ -224,10 +227,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     } catch (_err) {
       setSubmitError('Error creating the Safe Account. Please try again later.')
     }
+
+    setIsCreating(false)
   }
 
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
-  const isDisabled = isWrongChain || (isSocialLogin && !willRelay)
+  const isDisabled = isWrongChain || (isSocialLogin && !willRelay) || isCreating
 
   return (
     <>
@@ -336,7 +341,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             size="stretched"
             disabled={isDisabled}
           >
-            Create
+            {isCreating ? <CircularProgress size={18} /> : 'Create'}
           </Button>
         </Box>
       </Box>
