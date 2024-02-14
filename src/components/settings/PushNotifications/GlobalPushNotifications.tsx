@@ -43,11 +43,11 @@ import css from './styles.module.css'
 
 const _filterUndeployedSafes = (safes: NotifiableSafes, undeployedSafes: UndeployedSafesState) => {
   return pickBy(
-    mapValues(safes, (safes, chainId) => {
+    mapValues(safes, (safeAddresses, chainId) => {
       const undeployedAddresses = undeployedSafes[chainId] ? Object.keys(undeployedSafes[chainId]) : []
-      return difference(safes, undeployedAddresses)
+      return difference(safeAddresses, undeployedAddresses)
     }),
-    (safes) => safes.length > 0,
+    (safeAddresses) => safeAddresses.length > 0,
   )
 }
 
