@@ -2,15 +2,14 @@ import { BuyCryptoOptions } from '@/components/common/BuyCryptoButton'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ModalDialog from '@/components/common/ModalDialog'
 import QRCode from '@/components/common/QRCode'
-import { TxModalContext } from '@/components/tx-flow'
-import { NewTxFlow } from '@/components/tx-flow/flows'
+import FirstTxFlow from '@/features/counterfactual/FirstTxFlow'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useAppSelector } from '@/store'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
 import classnames from 'classnames'
-import { type ReactNode, useContext, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
@@ -127,23 +126,22 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
 }
 
 const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
-  const { setTxFlow } = useContext(TxModalContext)
+  const [open, setOpen] = useState<boolean>(false)
 
   const title = 'Create your first transaction'
   const content = 'Simply send funds, add a new signer or swap tokens through a safe app.'
 
-  const handleNewTx = () => {
-    setTxFlow(<NewTxFlow />, undefined, false)
-  }
-
   return (
-    <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
-      {!completed && (
-        <Button onClick={handleNewTx} variant="contained" size="small" sx={{ mt: 2, minHeight: '40px' }}>
-          Create transaction
-        </Button>
-      )}
-    </StatusCard>
+    <>
+      <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
+        {!completed && (
+          <Button onClick={() => setOpen(true)} variant="contained" size="small" sx={{ mt: 2, minHeight: '40px' }}>
+            Create transaction
+          </Button>
+        )}
+      </StatusCard>
+      <FirstTxFlow open={open} onClose={() => setOpen(false)} />
+    </>
   )
 }
 
