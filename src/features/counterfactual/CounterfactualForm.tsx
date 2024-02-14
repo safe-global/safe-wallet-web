@@ -120,7 +120,7 @@ export const CounterfactualForm = ({
             {getTotalFeeFormatted(
               advancedParams.maxFeePerGas,
               advancedParams.maxPriorityFeePerGas,
-              BigInt(gasLimit?.baseGas || '0') + BigInt(gasLimit?.safeTxGas || '0'),
+              BigInt(gasLimit?.safeTxGas || '0'),
               chain,
             )}{' '}
             {chain?.nativeCurrency.symbol}
@@ -142,7 +142,7 @@ export const CounterfactualForm = ({
           <AdvancedParams
             willExecute
             params={advancedParams}
-            recommendedGasLimit={gasLimit}
+            recommendedGasLimit={gasLimit?.totalGas}
             onFormSubmit={setAdvancedParams}
             gasLimitError={gasLimitError}
             willRelay={false}

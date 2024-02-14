@@ -44,7 +44,6 @@ describe('useDeployGasLimit hook', () => {
     await waitFor(() => {
       expect(mockEstimateTxBaseGas).not.toHaveBeenCalled()
       expect(mockEstimateSafeTxGas).not.toHaveBeenCalled()
-      expect(result.current.gasLimit?.baseGas).toEqual('0')
       expect(result.current.gasLimit?.safeTxGas).toEqual('0')
     })
   })
