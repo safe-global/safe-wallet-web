@@ -59,7 +59,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
             My accounts
             <Typography component="span" color="text.secondary" fontSize="inherit" fontWeight="normal">
               {' '}
-              ({safes.length})
+              ({ownedSafes.length})
             </Typography>
           </Typography>
           {shownOwnedSafes.length ? (
