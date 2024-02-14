@@ -40,10 +40,6 @@ const Dashboard = (): ReactElement => {
           <FirstSteps />
         </Grid>
 
-        <Grid item xs={12}>
-          <ActivateAccount />
-        </Grid>
-
         {safe.deployed && (
           <>
             <Grid item xs={12} lg={6}>

@@ -78,35 +78,37 @@ const Overview = (): ReactElement => {
                 </Typography>
               </Grid>
 
-              <Grid item>
-                <Grid container spacing={1} flexWrap="wrap">
-                  <Grid item xs={12} sm="auto">
-                    <BuyCryptoButton />
-                  </Grid>
+              {safe.deployed && (
+                <Grid item>
+                  <Grid container spacing={1} flexWrap="wrap">
+                    <Grid item xs={12} sm="auto">
+                      <BuyCryptoButton />
+                    </Grid>
 
-                  <Grid item xs={6} sm="auto">
-                    <Button
-                      onClick={handleOnSend}
-                      size="small"
-                      variant="outlined"
-                      color="primary"
-                      startIcon={<ArrowIconNW />}
-                      fullWidth
-                    >
-                      Send
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6} sm="auto">
-                    <Track {...OVERVIEW_EVENTS.SHOW_QR} label="dashboard">
-                      <QrCodeButton>
-                        <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />} fullWidth>
-                          Receive
-                        </Button>
-                      </QrCodeButton>
-                    </Track>
+                    <Grid item xs={6} sm="auto">
+                      <Button
+                        onClick={handleOnSend}
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<ArrowIconNW />}
+                        fullWidth
+                      >
+                        Send
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} sm="auto">
+                      <Track {...OVERVIEW_EVENTS.SHOW_QR} label="dashboard">
+                        <QrCodeButton>
+                          <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />} fullWidth>
+                            Receive
+                          </Button>
+                        </QrCodeButton>
+                      </Track>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
+              )}
             </Grid>
           </>
         )}
