@@ -41,7 +41,7 @@ import css from './styles.module.css'
 
 // UI logic
 
-const _filterUndeployedSafes = (safes: NotifiableSafes, undeployedSafes: UndeployedSafesState) => {
+export const _filterUndeployedSafes = (safes: NotifiableSafes, undeployedSafes: UndeployedSafesState) => {
   return pickBy(
     mapValues(safes, (safeAddresses, chainId) => {
       const undeployedAddresses = undeployedSafes[chainId] ? Object.keys(undeployedSafes[chainId]) : []

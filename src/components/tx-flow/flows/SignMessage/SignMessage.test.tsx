@@ -99,6 +99,7 @@ describe('SignMessage', () => {
     },
     chainId: '5',
     threshold: 2,
+    deployed: true,
   }
 
   beforeEach(() => {
