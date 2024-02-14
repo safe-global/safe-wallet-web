@@ -68,6 +68,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
     const wallet = await assertWalletChain(onboard, chainId)
     const provider = createWeb3(wallet.provider)
     const signer = await provider.getSigner()
+
     const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
 
     // We need to estimate the actual gasLimit after the user has signed since it is more accurate than what useDeployGasLimit returns
