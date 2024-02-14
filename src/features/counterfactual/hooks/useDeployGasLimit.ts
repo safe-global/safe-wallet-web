@@ -87,7 +87,7 @@ export const estimateBatchDeploymentTransaction = async (
     operation: OperationType.Call,
   }
 
-  // 2. Put a simulateAndRevert call to the predicted SafeProxy
+  // 2. Add a simulate call to the predicted SafeProxy as second transaction
   const transactionDataToEstimate: string = simulateTxAccessorContract.encode('simulate', [
     safeTransaction.data.to,
     safeTransaction.data.value,
@@ -114,6 +114,7 @@ export const estimateBatchDeploymentTransaction = async (
 
   const signerAddress = await ethAdapter.getSignerAddress()
 
+  // estimate the entire batch
   const safeTxGas = await ethAdapter.estimateGas({
     ...safeDeploymentBatch,
     from: signerAddress || ZERO_ADDRESS, // This address should not really matter
