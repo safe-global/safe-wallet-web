@@ -12,6 +12,7 @@ type UndeployedSafeStatus = {
   status: PendingSafeStatus
   txHash?: string
   taskId?: string
+  startBlock?: number
 }
 
 export type UndeployedSafe = {

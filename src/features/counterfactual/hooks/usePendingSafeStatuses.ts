@@ -38,7 +38,7 @@ const usePendingSafeMonitor = (): void => {
 
     const monitorPendingSafe = async () => {
       const {
-        status: { status, txHash, taskId },
+        status: { status, txHash, taskId, startBlock },
       } = undeployedSafe
 
       const isProcessing = status === PendingSafeStatus.PROCESSING && txHash !== undefined
@@ -50,7 +50,7 @@ const usePendingSafeMonitor = (): void => {
       monitoredSafes.current[safeAddress] = true
 
       if (isProcessing) {
-        checkSafeActivation(provider, txHash, safeAddress)
+        checkSafeActivation(provider, txHash, safeAddress, startBlock)
       }
 
       if (isRelaying) {
@@ -87,7 +87,7 @@ const usePendingSafeStatus = (): void => {
   // Subscribe to pending safe statuses
   useEffect(() => {
     const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
-      safeCreationSubscribe(event as SafeCreationEvent, (detail) => {
+      safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
         // Clear the pending status if the tx is no longer pending
         const isSuccess = event === SafeCreationEvent.SUCCESS
         if (isSuccess) {
@@ -115,6 +115,7 @@ const usePendingSafeStatus = (): void => {
               status: status,
               txHash: 'txHash' in detail ? detail.txHash : undefined,
               taskId: 'taskId' in detail ? detail.taskId : undefined,
+              startBlock: await provider?.getBlockNumber(),
             },
           }),
         )
@@ -124,7 +125,7 @@ const usePendingSafeStatus = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [safe.chainId, dispatch, safeAddress])
+  }, [safe.chainId, dispatch, safeAddress, provider])
 }
 
 export default usePendingSafeStatus

@@ -222,8 +222,13 @@ export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo,
 }
 
 // TODO: Reuse this for safe creation flow instead of checkSafeCreationTx
-export const checkSafeActivation = async (provider: Provider, txHash: string, safeAddress: string) => {
-  const TIMEOUT_TIME = 60 * 1000 // 1 minute
+export const checkSafeActivation = async (
+  provider: Provider,
+  txHash: string,
+  safeAddress: string,
+  startBlock?: number,
+) => {
+  const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
   try {
     const txResponse = await provider.getTransaction(txHash)
@@ -231,7 +236,8 @@ export const checkSafeActivation = async (provider: Provider, txHash: string, sa
       throw new Error('Transaction not found')
     }
 
-    const receipt = await txResponse.wait(1, TIMEOUT_TIME)
+    const replaceableTx = startBlock ? txResponse.replaceableTransaction(startBlock) : txResponse
+    const receipt = await replaceableTx.wait(1, TIMEOUT_TIME)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {
@@ -252,7 +258,20 @@ export const checkSafeActivation = async (provider: Provider, txHash: string, sa
   } catch (err) {
     const _err = err as EthersError
 
-    // TODO: Do we need to detect speed-up txs here?
+    if (_err.code === 'TRANSACTION_REPLACED') {
+      if (_err.reason === 'cancelled') {
+        safeCreationDispatch(SafeCreationEvent.FAILED, {
+          groupKey: CF_TX_GROUP_KEY,
+          error: _err,
+        })
+      } else {
+        safeCreationDispatch(SafeCreationEvent.SUCCESS, {
+          groupKey: CF_TX_GROUP_KEY,
+          safeAddress,
+        })
+      }
+    }
+
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: _err,
@@ -262,7 +281,7 @@ export const checkSafeActivation = async (provider: Provider, txHash: string, sa
 
 // TODO: Reuse this for safe creation flow instead of waitForCreateSafeTx
 export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => {
-  const TIMEOUT_TIME = 60 * 1000 // 1 minute
+  const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
   let intervalId: NodeJS.Timeout
   let failAfterTimeoutId: NodeJS.Timeout
