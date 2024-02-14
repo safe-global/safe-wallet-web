@@ -126,23 +126,17 @@ const getGasParameters = (
   }
 }
 
-export const getTotalFee = (
-  maxFeePerGas: bigint,
-  maxPriorityFeePerGas: bigint | null | undefined,
-  gasLimit: bigint,
-) => {
-  // maxPriorityFeePerGas is undefined if EIP-1559 disabled
-  return (maxFeePerGas + (maxPriorityFeePerGas || 0n)) * gasLimit
+export const getTotalFee = (maxFeePerGas: bigint, gasLimit: bigint) => {
+  return maxFeePerGas * gasLimit
 }
 
 export const getTotalFeeFormatted = (
   maxFeePerGas: bigint | null | undefined,
-  maxPriorityFeePerGas: bigint | null | undefined,
   gasLimit: bigint | undefined,
   chain: ChainInfo | undefined,
 ) => {
   return gasLimit && maxFeePerGas
-    ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
+    ? formatVisualAmount(getTotalFee(maxFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
     : '> 0.001'
 }
 

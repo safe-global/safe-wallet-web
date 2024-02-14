@@ -178,7 +178,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
 
-  const totalFee = getTotalFeeFormatted(maxFeePerGas, maxPriorityFeePerGas, gasLimit, chain)
+  const totalFee = getTotalFeeFormatted(maxFeePerGas, gasLimit, chain)
 
   // Only 1 out of 1 safe setups are supported for now
   const isCounterfactual = data.threshold === 1 && data.owners.length === 1 && isCounterfactualEnabled

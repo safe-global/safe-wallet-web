@@ -117,22 +117,12 @@ export const CounterfactualForm = ({
         <Alert severity="info" sx={{ mb: 2 }}>
           Executing this transaction will also activate your account. Additional network fees will apply. Base fee is{' '}
           <strong>
-            {getTotalFeeFormatted(
-              advancedParams.maxFeePerGas,
-              advancedParams.maxPriorityFeePerGas,
-              BigInt(gasLimit?.safeTxGas || '0'),
-              chain,
-            )}{' '}
+            {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeTxGas || '0'), chain)}{' '}
             {chain?.nativeCurrency.symbol}
           </strong>
           , one time activation fee is{' '}
           <strong>
-            {getTotalFeeFormatted(
-              advancedParams.maxFeePerGas,
-              advancedParams.maxPriorityFeePerGas,
-              BigInt(gasLimit?.safeDeploymentGas || '0'),
-              chain,
-            )}{' '}
+            {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeDeploymentGas || '0'), chain)}{' '}
             {chain?.nativeCurrency.symbol}
           </strong>
           . This is an estimation and the final cost can be higher.

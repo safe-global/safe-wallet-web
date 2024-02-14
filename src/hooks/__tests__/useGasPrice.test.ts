@@ -289,25 +289,12 @@ describe('useGasPrice', () => {
 
 describe('getTotalFee', () => {
   it('returns the totalFee', () => {
-    const result = getTotalFee(1n, 1n, 100n)
-
-    expect(result).toEqual(200n)
-  })
-
-  it('ignores maxPriorityFeePerGas if its undefined', () => {
-    const result = getTotalFee(1n, undefined, 100n)
-
-    expect(result).toEqual(100n)
-  })
-
-  it('ignores maxPriorityFeePerGas if its null', () => {
-    const result = getTotalFee(1n, null, 100n)
-
+    const result = getTotalFee(1n, 100n)
     expect(result).toEqual(100n)
   })
 
   it('handles large numbers', () => {
-    const result = getTotalFee(11230000000000123n, 2000000000000n, 123123123n)
+    const result = getTotalFee(11230000000000123n, 123123123n)
 
     expect(result).toEqual(1382918917536015144144129n)
   })
