@@ -17,9 +17,9 @@ type AccountsListProps = {
   onLinkClick?: () => void
 }
 
-const DEFAULT_SHOWN = 2
-const MAX_DEFAULT_SHOWN = 3
-const PAGE_SIZE = 2
+const DEFAULT_SHOWN = 5
+const MAX_DEFAULT_SHOWN = 7
+const PAGE_SIZE = 5
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const [maxShownOwnedSafes, setMaxShownOwnedSafes] = useState<number>(DEFAULT_SHOWN)
   const [maxShownWatchlistSafes, setMaxShownWatchlistSafes] = useState<number>(DEFAULT_SHOWN)
