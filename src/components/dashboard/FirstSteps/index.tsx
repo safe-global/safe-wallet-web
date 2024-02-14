@@ -1,7 +1,7 @@
 import { BuyCryptoOptions } from '@/components/common/BuyCryptoButton'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ModalDialog from '@/components/common/ModalDialog'
-import useDismissFirstSteps from '@/components/dashboard/FirstSteps/useDismissFirstSteps'
+import QRCode from '@/components/common/QRCode'
 import { TxModalContext } from '@/components/tx-flow'
 import { NewTxFlow } from '@/components/tx-flow/flows'
 import useBalances from '@/hooks/useBalances'
@@ -12,11 +12,10 @@ import { selectOutgoingTransactions } from '@/store/txHistorySlice'
 import classnames from 'classnames'
 import { type ReactNode, useContext, useState } from 'react'
 import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
-import { Box, Button, CircularProgress, Grid, IconButton, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import css from './styles.module.css'
 
 const calculateProgress = (items: boolean[]) => {
@@ -87,19 +86,37 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
             hideChainIndicator
           >
             <Box px={4} pb={5} pt={4}>
-              <Typography mb={2}>
-                Add funds directly from your bank account or copy your address to send tokens from a different account.
-              </Typography>
+              <Grid container spacing={2} alignItems="center" mb={4}>
+                <Grid item>
+                  <Box p={1} border={1} borderRadius="6px" borderColor="border.light" display="inline-flex">
+                    <QRCode value={safeAddress} size={132} />
+                  </Box>
+                </Grid>
+                <Grid item xs>
+                  <Typography mb={2}>
+                    Add funds directly from your bank account or copy your address to send tokens from a different
+                    account.
+                  </Typography>
 
-              <Typography variant="body2" color="text.secondary">
-                Account address
-              </Typography>
+                  <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" fontSize="14px">
+                    <EthHashInfo
+                      address={safeAddress}
+                      showName={false}
+                      shortAddress={true}
+                      showCopyButton
+                      hasExplorer
+                      avatarSize={24}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
 
-              <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" mb={4} fontSize="14px">
-                <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
+              <Box mb={4} position="relative" textAlign="center">
+                <Typography className={css.orDivider}>or</Typography>
+                <Divider />
               </Box>
 
-              <Typography>Buy crypto with fiat:</Typography>
+              <Typography mb={2}>Buy crypto with fiat:</Typography>
               <BuyCryptoOptions />
             </Box>
           </ModalDialog>
@@ -130,10 +147,10 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
   )
 }
 
-const AccountReadyWidget = ({ completed }: { completed: boolean }) => {
+const AccountReadyWidget = () => {
   return (
-    <Card className={classnames(css.card, css.accountReady, { [css.completed]: completed })}>
-      <div className={classnames(css.checkIcon, { [css.completed]: completed })}>
+    <Card className={classnames(css.card, css.accountReady)}>
+      <div className={classnames(css.checkIcon)}>
         <CheckCircleOutlineRoundedIcon sx={{ width: '60px', height: '60px' }} />
       </div>
       <Typography variant="h4" fontWeight="bold" mb={2} mt={2}>
@@ -148,7 +165,6 @@ const FirstSteps = () => {
   const { balances } = useBalances()
   const { safe } = useSafeInfo()
   const outgoingTransactions = useAppSelector(selectOutgoingTransactions)
-  const { dismissFirstSteps, setDismissFirstSteps } = useDismissFirstSteps()
 
   const hasNonZeroBalance = balances && (balances.items.length > 1 || BigInt(balances.items[0]?.balance || 0) > 0)
   const hasOutgoingTransactions = !!outgoingTransactions && outgoingTransactions.length > 0
@@ -157,11 +173,7 @@ const FirstSteps = () => {
   const progress = calculateProgress(completedItems)
   const stepsCompleted = completedItems.filter((item) => item).length
 
-  const dismissWidget = () => {
-    setDismissFirstSteps(true)
-  }
-
-  if (dismissFirstSteps) return null
+  if (safe.deployed) return null
 
   return (
     <WidgetContainer>
@@ -204,13 +216,6 @@ const FirstSteps = () => {
               Finish the next steps to start using all Safe Account features:
             </Typography>
           </Grid>
-          {safe.deployed && (
-            <Grid item marginLeft="auto">
-              <IconButton size="large" onClick={dismissWidget}>
-                <CloseRoundedIcon />
-              </IconButton>
-            </Grid>
-          )}
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
@@ -222,7 +227,7 @@ const FirstSteps = () => {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <AccountReadyWidget completed={safe.deployed} />
+            <AccountReadyWidget />
           </Grid>
         </Grid>
       </WidgetBody>
