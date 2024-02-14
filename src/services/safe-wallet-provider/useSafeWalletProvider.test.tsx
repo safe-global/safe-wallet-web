@@ -1,3 +1,4 @@
+import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import * as router from 'next/router'
 
@@ -43,7 +44,8 @@ describe('useSafeWalletProvider', () => {
               address: {
                 value: '0x1234567890000000000000000000000000000000',
               },
-            } as gateway.SafeInfo,
+              deployed: true,
+            } as unknown as ExtendedSafeInfo,
           },
         },
       })

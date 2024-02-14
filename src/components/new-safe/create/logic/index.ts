@@ -1,3 +1,4 @@
+import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { type BrowserProvider, type Provider } from 'ethers'
 
 import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -56,20 +57,27 @@ export const getSafeDeployProps = async (
   }
 }
 
-const getSafeFactory = async (ethersProvider: BrowserProvider): Promise<SafeFactory> => {
-  if (!isValidSafeVersion(LATEST_SAFE_VERSION)) {
+const getSafeFactory = async (
+  ethersProvider: BrowserProvider,
+  safeVersion = LATEST_SAFE_VERSION,
+): Promise<SafeFactory> => {
+  if (!isValidSafeVersion(safeVersion)) {
     throw new Error('Invalid Safe version')
   }
   const ethAdapter = await createEthersAdapter(ethersProvider)
-  const safeFactory = await SafeFactory.create({ ethAdapter, safeVersion: LATEST_SAFE_VERSION })
+  const safeFactory = await SafeFactory.create({ ethAdapter, safeVersion })
   return safeFactory
 }
 
 /**
  * Create a Safe creation transaction via Core SDK and submits it to the wallet
  */
-export const createNewSafe = async (ethersProvider: BrowserProvider, props: DeploySafeProps): Promise<Safe> => {
-  const safeFactory = await getSafeFactory(ethersProvider)
+export const createNewSafe = async (
+  ethersProvider: BrowserProvider,
+  props: DeploySafeProps,
+  safeVersion?: SafeVersion,
+): Promise<Safe> => {
+  const safeFactory = await getSafeFactory(ethersProvider, safeVersion)
   return safeFactory.deploySafe(props)
 }
 
@@ -285,10 +293,22 @@ export const getRedirect = (
   return redirectUrl + `${appendChar}safe=${address}`
 }
 
-export const relaySafeCreation = async (chain: ChainInfo, owners: string[], threshold: number, saltNonce: number) => {
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(chain.chainId, LATEST_SAFE_VERSION)
+export const relaySafeCreation = async (
+  chain: ChainInfo,
+  owners: string[],
+  threshold: number,
+  saltNonce: number,
+  safeVersion?: SafeVersion,
+) => {
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(
+    chain.chainId,
+    safeVersion ?? LATEST_SAFE_VERSION,
+  )
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+    chain.chainId,
+    safeVersion ?? LATEST_SAFE_VERSION,
+  )
   const fallbackHandlerAddress = await readOnlyFallbackHandlerContract.getAddress()
   const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain)
   const safeContractAddress = await readOnlySafeContract.getAddress()

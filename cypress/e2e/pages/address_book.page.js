@@ -1,41 +1,164 @@
-export const acceptSelection = 'Save settings'
-export const addressBook = 'Address book'
-const createEntryBtn = 'Create entry'
+import * as constants from '../../support/constants'
+import * as main from '../pages/main.page'
 
+export const addressBookRecipient = '[data-testid="address-book-recipient"]'
 const beameriFrameContainer = '#beamerOverlay .iframeCointaner'
 const beamerInput = 'input[id="beamer"]'
 const nameInput = 'input[name="name"]'
 const addressInput = 'input[name="address"]'
-export const addressBookRecipient = '[data-testid="address-book-recipient"]'
-const saveBtn = 'Save'
+const exportModalBtn = '[data-testid="export-modal-btn"]'
 export const editEntryBtn = 'button[aria-label="Edit entry"]'
 export const deleteEntryBtn = 'button[aria-label="Delete entry"]'
 export const deleteEntryModalBtnSection = '.MuiDialogActions-root'
+const tableContainer = '[data-testid="table-container"]'
+const tableRow = '[data-testid="table-row"]'
+const importBtn = '[data-testid="import-btn"]'
+const cancelImportBtn = '[data-testid="cancel-btn"]'
+const uploadErrorMsg = '[data-testid="error-message"]'
+const modalSummaryMessage = '[data-testid="summary-message"]'
+const saveBtn = '[data-testid="save-btn"]'
+const divInput = '[data-testid="name-input"]'
+const exportSummary = '[data-testid="export-summary"]'
+const sendBtn = '[data-testid="send-btn"]'
+const nextPageBtn = 'button[aria-label="Go to next page"]'
+const previousPageBtn = 'button[aria-label="Go to previous page"]'
+
+//TODO Move to specific component
+const moreActionIcon = '[data-testid="MoreHorizIcon"]'
+
+export const acceptSelection = 'Save settings'
+export const addressBook = 'Address book'
+const createEntryBtn = 'Create entry'
 export const delteEntryModaldeleteBtn = 'Delete'
-const importBtn = 'Import'
 const exportBtn = 'Export'
-const exportModalBtn = '[data-testid="export-modal-btn"]'
+// const saveBtn = 'Save'
 const whatsNewBtnStr = "What's new"
 const beamrCookiesStr = 'accept the "Beamer" cookies'
+const headerImportBtnStr = 'Import'
+const mandatoryNameStr = 'Name *'
+const nameSortBtn = 'Name'
+const addressortBtn = 'Address'
+const addToAddressBookStr = 'Add to address book'
+
+export const emptyCSVFile = '../fixtures/address_book_empty_test.csv'
+export const nonCSVFile = '../fixtures/balances.json'
+export const duplicatedCSVFile = 'address_book_duplicated.csv'
+export const validCSVFile = '../fixtures/address_book_test.csv'
+export const networksCSVFile = '../fixtures/address_book_networks.csv'
+export const addedSafesCSVFile = '../fixtures/address_book_addedsafes.csv'
+
+const sortSafe1 = 'AA Safe'
+const sortSafe2 = 'BB Safe'
+
+export const entries = [
+  '0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7',
+  'test-sepolia-3',
+  '0xf405BC611F4a4c89CCB3E4d083099f9C36D966f8',
+  'sepolia-test-4',
+  '0x03042B890b99552b60A073F808100517fb148F60',
+  'sepolia-test-5',
+  '0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415',
+  'assets-test-sepolia',
+]
+
+export function clickOnNextPageBtn() {
+  cy.get(nextPageBtn).click()
+}
+
+export function clickOnPrevPageBtn() {
+  cy.get(previousPageBtn).click()
+}
+
+export function verifyCountOfSafes(count) {
+  main.verifyElementsCount(tableRow, count)
+}
+export function verifyRecipientData(data) {
+  main.verifyValuesExist(addressBookRecipient, data)
+}
+
+export function clickOnSendBtn() {
+  cy.get(sendBtn).click()
+}
+
+export function clickOnMoreActionsBtn() {
+  cy.get(moreActionIcon).click()
+}
+
+export function clickOnAddToAddressBookBtn() {
+  cy.get('li span').contains(addToAddressBookStr).click()
+}
+
+export function verifyExportMessage(count) {
+  let msg = `${count} address book`
+  cy.get(exportSummary).should('contain', msg)
+}
+
+export function clickOnNameSortBtn() {
+  cy.get(tableContainer).contains(nameSortBtn).click()
+  cy.wait(500)
+}
+
+export function clickOnAddrressSortBtn() {
+  cy.get(tableContainer).contains(addressortBtn).click()
+  cy.wait(500)
+}
+
+export function verifyEntriesOrder(option = 'ascending') {
+  let address = constants.DEFAULT_OWNER_ADDRESS
+  let name = sortSafe1
+  if (option == 'descending') {
+    address = constants.RECIPIENT_ADDRESS
+    name = sortSafe2
+  }
+
+  cy.get(tableRow).eq(0).contains(address)
+  cy.get(tableRow).eq(0).contains(name)
+}
+
+export function addEntryByENS(name, ens) {
+  typeInName(name)
+  typeInAddress(ens)
+  clickOnSaveEntryBtn()
+  verifyNewEntryAdded(name, constants.SEPOLIA_TEST_SAFE_7)
+}
+
+export function verifyModalSummaryMessage(entryCount, chainCount) {
+  cy.get(modalSummaryMessage).should(
+    'contain',
+    `Found ${entryCount} entries on ${chainCount} ${chainCount > 1 ? 'chains' : 'chain'}`,
+  )
+}
+export const uploadErrorMessages = {
+  fileType: 'File type must be text/csv',
+  emptyFile: 'No entries found in address book',
+}
+
+export function verifyUploadExportMessage(msg) {
+  main.verifyValuesExist(uploadErrorMsg, msg)
+}
+
+export function verifyImportBtnStatus(status) {
+  main.verifyElementsStatus([importBtn], status)
+}
+
+export function verifyNumberOfRows(number) {
+  main.verifyElementsCount(tableRow, number)
+}
 
 export function clickOnImportFileBtn() {
-  cy.contains(importBtn).click()
+  cy.contains(headerImportBtnStr).click()
 }
 
-export function importFile() {
-  cy.get('[type="file"]').attachFile('../fixtures/address_book_test.csv')
-  // Import button should be enabled
-  cy.get('.MuiDialogActions-root').contains('Import').should('not.be.disabled')
-  cy.get('.MuiDialogActions-root').contains('Import').click()
+export function importCSVFile(file) {
+  cy.get('[type="file"]').attachFile(file)
 }
 
-export function verifyImportModalIsClosed() {
-  cy.get('Import address book').should('not.exist')
+export function clickOnImportBtn() {
+  cy.get(importBtn).click()
 }
 
-export function verifyDataImported(name, address) {
-  cy.contains(name).should('exist')
-  cy.contains(address).should('exist')
+export function verifyDataImported(data) {
+  main.verifyValuesExist(tableContainer, data)
 }
 
 export function clickOnExportFileBtn() {
@@ -59,7 +182,7 @@ export function typeInAddress(address) {
 }
 
 export function clickOnSaveEntryBtn() {
-  cy.contains('button', saveBtn).click()
+  cy.get(saveBtn).click()
 }
 
 export function verifyNewEntryAdded(name, address) {
@@ -80,10 +203,6 @@ export function clickOnEditEntryBtn() {
 
 export function typeInNameInput(name) {
   cy.get(nameInput).clear().type(name).should('have.value', name)
-}
-
-export function clickOnSaveButton() {
-  cy.contains('button', saveBtn).click()
 }
 
 export function verifyNameWasChanged(name, editedName) {
@@ -118,4 +237,10 @@ export function verifyBeamerIsChecked() {
 export function verifyBeameriFrameExists() {
   cy.wait(1000)
   cy.get(beameriFrameContainer).should('exist')
+}
+
+export function verifyEmptyOwnerNameNotAllowed() {
+  cy.get(nameInput).clear()
+  main.verifyElementsStatus([saveBtn], constants.enabledStates.disabled)
+  cy.get(divInput).contains(mandatoryNameStr)
 }

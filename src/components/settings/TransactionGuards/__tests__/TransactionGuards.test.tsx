@@ -1,6 +1,6 @@
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { render, waitFor } from '@/tests/test-utils'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { zeroPadValue } from 'ethers'
 import TransactionGuards from '..'
 
@@ -8,13 +8,11 @@ const MOCK_GUARD = zeroPadValue('0x01', 20)
 const EMPTY_LABEL = 'No transaction guard set'
 
 describe('TransactionGuards', () => {
+  const extendedSafeInfo = extendedSafeInfoBuilder().build()
+
   it('should render placeholder label without an tx guard', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
-      safe: {
-        guard: null,
-        chainId: '4',
-        version: '1.3.0',
-      } as any as SafeInfo,
+      safe: extendedSafeInfo,
       safeAddress: '0x123',
       safeError: undefined,
       safeLoading: false,
@@ -27,7 +25,7 @@ describe('TransactionGuards', () => {
 
   it('should render null if safe is loading', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
-      safe: {} as SafeInfo,
+      safe: extendedSafeInfo,
       safeAddress: '',
       safeError: undefined,
       safeLoading: true,
@@ -41,10 +39,11 @@ describe('TransactionGuards', () => {
   it('should render null if safe version < 1.3.0', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        ...extendedSafeInfo,
         guard: null,
         chainId: '4',
         version: '1.2.0',
-      } as any as SafeInfo,
+      },
       safeAddress: '0x123',
       safeError: undefined,
       safeLoading: false,
@@ -58,12 +57,11 @@ describe('TransactionGuards', () => {
   it('should render tx guard address if defined', async () => {
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: {
+        ...extendedSafeInfo,
         guard: {
           value: MOCK_GUARD,
         },
-        chainId: '4',
-        version: '1.3.0',
-      } as SafeInfo,
+      },
       safeAddress: '0x123',
       safeError: undefined,
       safeLoading: false,

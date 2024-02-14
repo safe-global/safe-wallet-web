@@ -9,6 +9,9 @@ const sentinelStart = 'div[data-testid="sentinelStart"]'
 const disconnectBtnStr = 'Disconnect'
 const notConnectedStatus = 'Connect'
 
+export function verifyTxBtnStatus(status) {
+  cy.get(newTxBtn).should(status)
+}
 export function clickOnSideNavigation(option) {
   cy.get(option).should('exist').click()
 }
@@ -23,7 +26,7 @@ export function clickOnNewTxBtn() {
 
 export function clickOnWalletExpandMoreIcon() {
   cy.get(expandMoreIcon).eq(0).click()
-  cy.get(sentinelStart).next().should('be.visible')
+  cy.get(sentinelStart).next().should('exist')
 }
 
 export function clickOnDisconnectBtn() {

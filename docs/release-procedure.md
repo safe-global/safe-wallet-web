@@ -8,16 +8,16 @@ After the PR is tested and approved by QA, it's merged into the `main` branch. `
 
 Schematically:
 ```
-<feature branches> –> dev -> release/X.Y.Z -> main
+<feature branches> –> dev -> release -> main
 ```
 
 We prepare at least one release every sprint. Sprints are two weeks long.
 
 ### Preparing a release branch
-* Create a code-freeze branch named `release/X.Y.Z`
+* Create a code-freeze branch named `release`
   * If it's a regular release, this branch is typically based off of `dev`
   * For hot fixes, it would be `main` + cherry-picked commits
-* Bump the version in the `package.json`
+* Bump the version in the `package.json` as a separate commit with the commit message equal to the exact version
 * Create a PR with the list of changes
 
   >    💡 To generate a quick changelog:
@@ -42,7 +42,7 @@ git reset --hard origin/main
 ```
 * Pull from the release branch:
 ```
-git pull origin release/3.15.0
+git pull origin release
 ```
 * Push:
 ```

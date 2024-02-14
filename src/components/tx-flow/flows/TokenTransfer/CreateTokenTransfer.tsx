@@ -103,11 +103,7 @@ export const CreateTokenTransfer = ({
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)} className={commonCss.form}>
           <FormControl fullWidth sx={{ mt: 1 }}>
-            <AddressBookInput
-              name={TokenTransferFields.recipient}
-              label="Recipient address or ENS"
-              canAdd={isAddressValid}
-            />
+            <AddressBookInput name={TokenTransferFields.recipient} canAdd={isAddressValid} />
           </FormControl>
 
           <TokenAmountInput balances={balancesItems} selectedToken={selectedToken} maxAmount={maxAmount} />
