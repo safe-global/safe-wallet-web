@@ -1,11 +1,14 @@
 .container {
   container-type: inline-size;
   container-name: my-accounts-container;
+  display:flex;
+  justify-content:center; 
 }
 
 .myAccounts {
   width: 100%;
   max-width: 600px;
+  margin: var(--space-2)
 }
 
 .safeList {
@@ -50,6 +53,16 @@
   flex: 1;
   white-space: nowrap;
   padding-left: var(--space-2);
+}
+
+.watchlistHeader {
+  padding-bottom:  var(--space-1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.watchlistTitle {
+  margin: auto 0;
 }
 
 @media (max-width: 899.95px) {
