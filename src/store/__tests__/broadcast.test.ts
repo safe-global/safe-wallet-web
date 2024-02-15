@@ -69,8 +69,7 @@ describe('broadcast middleware', () => {
       const event = new Event('message')
       const data = { action, tabId: 'anotherTab' }
       Object.defineProperty(event, 'data', { value: data })
-
-      global.BroadcastChannel.prototype.addEventListener.mock.calls[0][1](event)
+      ;(global.BroadcastChannel as any).prototype.addEventListener.mock.calls[0][1](event)
 
       expect(store.getState().addressBook).toEqual({})
     })
