@@ -1,9 +1,11 @@
+import { PendingSafeStatus, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { useAppSelector } from '@/store'
+import LoopRoundedIcon from '@mui/icons-material/LoopRounded'
 import { IconButton, Tooltip } from '@mui/material'
 import classnames from 'classnames'
 import css from './styles.module.css'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import InfoIcon from '@/public/images/notifications/info.svg'
-import LoopRoundedIcon from '@mui/icons-material/LoopRounded'
 
 const LoopIcon = () => {
   return (
@@ -23,13 +25,15 @@ const LoopIcon = () => {
   )
 }
 
+const processingStates = [PendingSafeStatus.PROCESSING, PendingSafeStatus.RELAYING]
+
 const CounterfactualStatusButton = () => {
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, safeAddress))
 
   if (safe.deployed) return null
 
-  // TODO: Replace with pending state
-  const processing = false
+  const processing = undeployedSafe && processingStates.includes(undeployedSafe.status.status)
 
   return (
     <Tooltip

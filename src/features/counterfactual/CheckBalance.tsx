@@ -1,5 +1,5 @@
 import ExternalLink from '@/components/common/ExternalLink'
-import { ActivateAccountButton } from '@/features/counterfactual/ActivateAccount'
+import { ActivateAccountButton } from '@/features/counterfactual/ActivateAccountFlow'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getBlockExplorerLink } from '@/utils/chains'

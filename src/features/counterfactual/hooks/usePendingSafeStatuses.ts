@@ -12,7 +12,7 @@ import { useEffect, useRef } from 'react'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
-const pendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
+export const safeCreationPendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
   [SafeCreationEvent.PROCESSING]: PendingSafeStatus.PROCESSING,
   [SafeCreationEvent.RELAYING]: PendingSafeStatus.RELAYING,
   [SafeCreationEvent.SUCCESS]: null,
@@ -86,7 +86,7 @@ const usePendingSafeStatus = (): void => {
 
   // Subscribe to pending safe statuses
   useEffect(() => {
-    const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
+    const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
         // Clear the pending status if the tx is no longer pending
         const isSuccess = event === SafeCreationEvent.SUCCESS

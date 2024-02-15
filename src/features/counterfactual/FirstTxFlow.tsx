@@ -1,5 +1,5 @@
 import { AppRoutes } from '@/config/routes'
-import { ActivateAccountFlow } from '@/features/counterfactual/ActivateAccount'
+import ActivateAccountFlow from '@/features/counterfactual/ActivateAccountFlow'
 import { useRouter } from 'next/router'
 import { type ElementType, useContext } from 'react'
 import { Box, ButtonBase, Grid, SvgIcon, Typography } from '@mui/material'

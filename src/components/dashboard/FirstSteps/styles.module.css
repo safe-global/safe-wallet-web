@@ -12,7 +12,7 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  min-height: 240px;
+  min-height: 260px;
 }
 
 .topBadge {

@@ -135,7 +135,7 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
     <>
       <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
         {!completed && (
-          <Button onClick={() => setOpen(true)} variant="contained" size="small" sx={{ mt: 2, minHeight: '40px' }}>
+          <Button onClick={() => setOpen(true)} variant="outlined" size="small" sx={{ mt: 2, minHeight: '40px' }}>
             Create transaction
           </Button>
         )}

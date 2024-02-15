@@ -26,7 +26,7 @@ import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppSelector } from '@/store'
 import { hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { Alert, Box, Button, CircularProgress, Divider, Grid, Tooltip, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, Grid, Tooltip, Typography } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import React, { useContext, useState } from 'react'
@@ -54,7 +54,7 @@ const useActivateAccount = () => {
   return { options, totalFee, walletCanPay }
 }
 
-export const ActivateAccountFlow = () => {
+const ActivateAccountFlow = () => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
@@ -214,38 +214,22 @@ export const ActivateAccountButton = () => {
 
   return (
     <Tooltip title={isProcessing ? 'The safe activation is already in process' : undefined}>
-        <span>
-          <Button variant="contained" size="small" onClick={activateAccount} disabled={isProcessing}>
-            {isProcessing ? (
-              <>
-                <Typography variant="body2" component="span" mr={1}>
-                  Processing
-                </Typography>
-                <CircularProgress size={16} />
-              </>
-            ) : (
-              'Activate now'
-            )}
-          </Button>
-        </span>
+      <span>
+        <Button variant="contained" size="small" onClick={activateAccount} disabled={isProcessing}>
+          {isProcessing ? (
+            <>
+              <Typography variant="body2" component="span" mr={1}>
+                Processing
+              </Typography>
+              <CircularProgress size={16} />
+            </>
+          ) : (
+            'Activate now'
+          )}
+        </Button>
+      </span>
     </Tooltip>
   )
 }
 
-const ActivateAccount = () => {
-  const { safe } = useSafeInfo()
-
-  if (safe.deployed) return null
-
-  return (
-    <Alert severity="info" sx={{ mb: 3 }}>
-      <Typography fontWeight="bold">Activate your account?</Typography>
-      <Typography variant="body2" mb={3}>
-        Activate your account now by deploying it and paying a network fee.
-      </Typography>
-      <ActivateAccountButton />
-    </Alert>
-  )
-}
-
-export default ActivateAccount
+export default ActivateAccountFlow

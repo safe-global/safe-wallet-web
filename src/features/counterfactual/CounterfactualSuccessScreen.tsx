@@ -1,11 +1,23 @@
+import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
+import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
+import { useEffect, useState } from 'react'
 import { Box, Button, Dialog, DialogContent, Typography } from '@mui/material'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
-import { useState } from 'react'
 
 const CounterfactualSuccessScreen = () => {
   const [open, setOpen] = useState<boolean>(false)
 
-  // TODO: Detect success event and setOpen(true)
+  useEffect(() => {
+    const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
+      safeCreationSubscribe(event as SafeCreationEvent, async () => {
+        if (event === SafeCreationEvent.SUCCESS) setOpen(true)
+      }),
+    )
+
+    return () => {
+      unsubFns.forEach((unsub) => unsub())
+    }
+  }, [])
 
   return (
     <Dialog open={open}>
