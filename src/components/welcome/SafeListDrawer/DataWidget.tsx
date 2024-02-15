@@ -51,7 +51,7 @@ export const DataWidget = (): ReactElement => {
         }
       />
       <CardContent>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ maxWidth: 250, margin: 'auto', paddingRight: 2 }}>
           {hasData && (
             <Grid item xs={6}>
               <Track {...OVERVIEW_EVENTS.EXPORT_DATA}>
@@ -60,7 +60,7 @@ export const DataWidget = (): ReactElement => {
                   size="small"
                   onClick={exportAppData}
                   startIcon={<SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />}
-                  sx={{ width: '100%' }}
+                  sx={{ width: '100%', paddingY: 0.5, paddingX: 0 }}
                 >
                   Export
                 </Button>
@@ -74,7 +74,7 @@ export const DataWidget = (): ReactElement => {
                 size="small"
                 onClick={onImport}
                 startIcon={<SvgIcon component={ImportIcon} inheritViewBox fontSize="small" />}
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', paddingY: 0.5, paddingX: 0 }}
               >
                 Import
               </Button>
