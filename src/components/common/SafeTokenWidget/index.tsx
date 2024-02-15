@@ -1,14 +1,12 @@
-import { SafeAppsTag, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
+import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import useChainId from '@/hooks/useChainId'
 import useSafeTokenAllocation, { useSafeVotingPower, type Vesting } from '@/hooks/useSafeTokenAllocation'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Button, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import type { UrlObject } from 'url'
+import { useSearchParams } from 'next/navigation'
 import Track from '../Track'
 import SafeTokenIcon from '@/public/images/common/safe-token.svg'
 import css from './styles.module.css'
@@ -36,13 +34,11 @@ const canRedeemSep5Airdrop = (allocation?: Vesting[]): boolean => {
   return !sep5Allocation.isRedeemed && !sep5Allocation.isExpired
 }
 
-const SEP5_DEADLINE = '27.10'
+const GOVERNANCE_APP_URL = IS_PRODUCTION ? 'https://governance.safe.global' : 'https://safe-dao-governance.dev.5afe.dev'
 
 const SafeTokenWidget = () => {
   const chainId = useChainId()
-  const router = useRouter()
-  const [apps] = useRemoteSafeApps(SafeAppsTag.SAFE_GOVERNANCE_APP)
-  const governanceApp = apps?.[0]
+  const query = useSearchParams()
 
   const [allocationData, , allocationDataLoading] = useSafeTokenAllocation()
   const [allocation, , allocationLoading] = useSafeVotingPower(allocationData)
@@ -52,30 +48,20 @@ const SafeTokenWidget = () => {
     return null
   }
 
-  const url: UrlObject | undefined = governanceApp
-    ? {
-        pathname: AppRoutes.apps.open,
-        query: { safe: router.query.safe, appUrl: governanceApp.url },
-      }
-    : undefined
+  const url = {
+    pathname: AppRoutes.apps.open,
+    query: { safe: query.get('safe'), appUrl: GOVERNANCE_APP_URL },
+  }
 
   const canRedeemSep5 = canRedeemSep5Airdrop(allocationData)
   const flooredSafeBalance = formatVisualAmount(allocation || BigInt(0), TOKEN_DECIMALS, 2)
 
   return (
     <Box className={css.container}>
-      <Tooltip
-        title={
-          url
-            ? canRedeemSep5
-              ? `Claim any amount until ${SEP5_DEADLINE} to be eligible!`
-              : `Open ${governanceApp?.name}`
-            : ''
-        }
-      >
+      <Tooltip title="Go to Safe{DAO} Governance">
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
-            <Link href={url || ''} passHref legacyBehavior>
+            <Link href={url} passHref legacyBehavior>
               <ButtonBase
                 aria-describedby="safe-token-widget"
                 className={classnames(css.tokenButton, { [css.sep5]: canRedeemSep5 })}
