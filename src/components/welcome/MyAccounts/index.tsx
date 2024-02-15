@@ -6,7 +6,7 @@ import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
-import { DataWidget } from '@/components/welcome/SafeListDrawer/DataWidget'
+import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
 
 type AccountsListProps = {

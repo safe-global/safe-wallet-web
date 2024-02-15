@@ -52,6 +52,31 @@
   padding-left: var(--space-2);
 }
 
+.card {
+  margin: auto;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+}
+
+.card :global .MuiCardHeader-root,
+.card :global .MuiCardContent-root {
+  padding: 0;
+}
+
+.cardHeader {
+  text-align: center;
+}
+
+.infoIcon {
+  vertical-align: middle;
+  width: 1rem;
+  height: 1rem;
+  margin: 4px;
+  color: var(--color-text-secondary);
+}
+
 @media (max-width: 899.95px) {
   .container {
     width: auto;
