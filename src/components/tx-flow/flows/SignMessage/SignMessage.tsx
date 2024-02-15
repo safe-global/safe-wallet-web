@@ -191,7 +191,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const decodedMessageAsString = isPlainTextMessage ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
   const hasSigned = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
   const isFullySigned = !!safeMessage?.preparedSignature
-  const isDisabled = !isOwner || hasSigned
+  const isDisabled = !isOwner || hasSigned || !safe.deployed
 
   const { onSign, submitError } = useSyncSafeMessageSigner(
     safeMessage,
@@ -290,6 +290,8 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
             <MessageDialogError isOwner={isOwner} submitError={submitError} />
 
             <RiskConfirmationError />
+
+            {!safe.deployed && <ErrorMessage>Your Safe Account is not activated yet.</ErrorMessage>}
           </TxCard>
           <TxCard>
             <CardActions>

@@ -53,6 +53,26 @@ const Overview = (): ReactElement => {
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 
+  const assetsBoxStyles = {
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: 0.5,
+    pr: 1,
+    position: 'relative',
+    '::before': {
+      content: '""',
+      display: 'block',
+      width: '3px',
+      height: '3px',
+      backgroundColor: ({ palette }: Theme) => palette.border.light,
+      borderRadius: '50%',
+      position: 'absolute',
+      top: '50%',
+      right: '-2px',
+      transform: 'translateY(-50%)',
+    },
+  }
+
   return (
     <WidgetContainer>
       <WidgetBody>

@@ -34,7 +34,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
   )
 
   return (
-    <NextLink href={url} passHref>
+    <NextLink data-testid="tx-pending-item" href={url} passHref>
       <Box className={css.container}>
         <Box minWidth={30}>{isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}</Box>
 

@@ -1,3 +1,4 @@
+import { selectUndeployedSafes, type UndeployedSafesState } from '@/features/counterfactual/store/undeployedSafesSlice'
 import {
   Box,
   Grid,
@@ -13,6 +14,9 @@ import {
   ListItemText,
   CircularProgress,
 } from '@mui/material'
+import mapValues from 'lodash/mapValues'
+import difference from 'lodash/difference'
+import pickBy from 'lodash/pickBy'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -36,6 +40,16 @@ import CheckWallet from '@/components/common/CheckWallet'
 import css from './styles.module.css'
 
 // UI logic
+
+export const _filterUndeployedSafes = (safes: NotifiableSafes, undeployedSafes: UndeployedSafesState) => {
+  return pickBy(
+    mapValues(safes, (safeAddresses, chainId) => {
+      const undeployedAddresses = undeployedSafes[chainId] ? Object.keys(undeployedSafes[chainId]) : []
+      return difference(safeAddresses, undeployedAddresses)
+    }),
+    (safeAddresses) => safeAddresses.length > 0,
+  )
+}
 
 // Convert data structure of added Safes
 export const _transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {
@@ -235,6 +249,7 @@ export const _shouldUnregisterDevice = (
 export const GlobalPushNotifications = (): ReactElement | null => {
   const chains = useChains()
   const addedSafes = useAppSelector(selectAllAddedSafes)
+  const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const [isLoading, setIsLoading] = useState(false)
 
   const { dismissPushNotificationBanner } = useDismissPushNotificationsBanner()
@@ -267,8 +282,9 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   // Merged added Safes and `currentNotifiedSafes` (in case subscriptions aren't added)
   const notifiableSafes = useMemo(() => {
     const safes = _mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
-    return _sanitizeNotifiableSafes(chains.configs, safes)
-  }, [chains.configs, addedSafes, currentNotifiedSafes])
+    const deployedSafes = _filterUndeployedSafes(safes, undeployedSafes)
+    return _sanitizeNotifiableSafes(chains.configs, deployedSafes)
+  }, [addedSafes, currentNotifiedSafes, undeployedSafes, chains.configs])
 
   const totalNotifiableSafes = useMemo(() => {
     return _getTotalNotifiableSafes(notifiableSafes)

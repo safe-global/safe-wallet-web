@@ -1,6 +1,5 @@
 import { TxModalContext } from '@/components/tx-flow'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
-import { removeUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
@@ -79,12 +78,8 @@ export const CounterfactualForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    const onSuccess = () => {
-      dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
-    }
-
     try {
-      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard, onSuccess)
+      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._804, err)

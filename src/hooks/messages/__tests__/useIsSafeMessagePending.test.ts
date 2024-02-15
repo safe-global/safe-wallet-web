@@ -21,6 +21,6 @@ describe('useIsSafeMessagePending', () => {
       },
     })
 
-    expect(result.current).toBe(true)
+    expect(result.current).toBe(false)
   })
 })

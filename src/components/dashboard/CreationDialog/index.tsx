@@ -110,7 +110,7 @@ const CreationDialog = () => {
               href="#"
               onClick={(e) => {
                 e.preventDefault()
-                backupSafe(chainId, safeAddress, undeployedSafe)
+                backupSafe(chainId, safeAddress, undeployedSafe.props)
               }}
             >
               backing up your Safe Account
