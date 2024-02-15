@@ -258,18 +258,12 @@ export const checkSafeActivation = async (
   } catch (err) {
     const _err = err as EthersError
 
-    if (_err.code === 'TRANSACTION_REPLACED') {
-      if (_err.reason === 'cancelled') {
-        safeCreationDispatch(SafeCreationEvent.FAILED, {
-          groupKey: CF_TX_GROUP_KEY,
-          error: _err,
-        })
-      } else {
-        safeCreationDispatch(SafeCreationEvent.SUCCESS, {
-          groupKey: CF_TX_GROUP_KEY,
-          safeAddress,
-        })
-      }
+    if (_err.reason === 'replaced' || _err.reason === 'repriced') {
+      safeCreationDispatch(SafeCreationEvent.SUCCESS, {
+        groupKey: CF_TX_GROUP_KEY,
+        safeAddress,
+      })
+      return
     }
 
     safeCreationDispatch(SafeCreationEvent.FAILED, {
