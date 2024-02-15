@@ -42,6 +42,6 @@ export function safeInfoBuilder(): IBuilder<SafeInfo> {
 export function extendedSafeInfoBuilder(): IBuilder<ExtendedSafeInfo> {
   return Builder.new<ExtendedSafeInfo>().with({
     ...safeInfoBuilder().build(),
-    deployed: faker.datatype.boolean(),
+    deployed: true,
   })
 }
