@@ -78,13 +78,17 @@ const DecodedTx = ({
       )}
 
       <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} className={accordionCss.accordion}>
+        <AccordionSummary
+          data-testid="accordion-summary"
+          expandIcon={<ExpandMoreIcon />}
+          className={accordionCss.accordion}
+        >
           <span style={{ flex: 1 }}>Transaction details</span>
 
           {decodedData ? decodedData.method : tx?.data.operation === OperationType.DelegateCall ? 'Delegate call' : ''}
         </AccordionSummary>
 
-        <AccordionDetails>
+        <AccordionDetails data-testid="accordion-details">
           {decodedData ? (
             <MethodDetails data={decodedData} addressInfoIndex={addressInfoIndex} />
           ) : decodedDataError ? (
