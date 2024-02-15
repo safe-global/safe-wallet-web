@@ -37,7 +37,7 @@ export const DataWidget = (): ReactElement => {
         className={css.cardHeader}
         title={
           <>
-            <b>{hasData ? 'Export or import your data' : 'Import your data'}</b>
+            <b>{hasData ? 'Export or import your Safe data' : 'Import your Safe data'}</b>
             <Tooltip
               title="Download or upload your local data with your added Safe Accounts, address book and settings."
               placement="top"
@@ -51,7 +51,7 @@ export const DataWidget = (): ReactElement => {
         }
       />
       <CardContent>
-        <Grid container spacing={2} sx={{ maxWidth: 250, margin: 'auto', paddingRight: 2 }}>
+        <Grid container spacing={2} sx={{ maxWidth: 240, margin: 'auto', paddingRight: 2 }}>
           {hasData && (
             <Grid item xs={6}>
               <Track {...OVERVIEW_EVENTS.EXPORT_DATA}>
@@ -60,7 +60,7 @@ export const DataWidget = (): ReactElement => {
                   size="small"
                   onClick={exportAppData}
                   startIcon={<SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />}
-                  sx={{ width: '100%', paddingY: 0.5, paddingX: 0 }}
+                  sx={{ width: '100%', paddingY: 0.5 }}
                 >
                   Export
                 </Button>
