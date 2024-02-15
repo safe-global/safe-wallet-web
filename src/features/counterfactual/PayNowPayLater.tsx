@@ -1,3 +1,5 @@
+import { trackEvent } from '@/services/analytics'
+import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import type { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import classnames from 'classnames'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -34,6 +36,9 @@ const PayNowPayLater = ({
   const chain = useCurrentChain()
 
   const onChoosePayMethod = (_: ChangeEvent<HTMLInputElement>, newPayMethod: string) => {
+    trackEvent(
+      newPayMethod === PayMethod.PayNow ? COUNTERFACTUAL_EVENTS.CHOOSE_PAY_NOW : COUNTERFACTUAL_EVENTS.CHOOSE_PAY_LATER,
+    )
     setPayMethod(newPayMethod as PayMethod)
   }
 

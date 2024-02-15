@@ -16,7 +16,7 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { showNotification } from '@/store/notificationsSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { getBlockExplorerLink } from '@/utils/chains'
-import { didReprice, didRevert, type EthersError } from '@/utils/ethers-utils'
+import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
@@ -80,33 +80,6 @@ export const dispatchTxExecutionAndDeploySafe = async (
   }
 
   safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
-
-  result
-    ?.wait()
-    .then((receipt) => {
-      if (receipt === null) {
-        safeCreationDispatch(SafeCreationEvent.FAILED, {
-          ...eventParams,
-          error: new Error('No transaction receipt found'),
-        })
-      } else if (didRevert(receipt)) {
-        safeCreationDispatch(SafeCreationEvent.REVERTED, {
-          ...eventParams,
-          error: new Error('Transaction reverted by EVM'),
-        })
-      } else {
-        safeCreationDispatch(SafeCreationEvent.SUCCESS, { ...eventParams, safeAddress })
-      }
-    })
-    .catch((err) => {
-      const error = err as EthersError
-
-      if (didReprice(error)) {
-        safeCreationDispatch(SafeCreationEvent.SUCCESS, { ...eventParams, safeAddress })
-      } else {
-        safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error) })
-      }
-    })
 
   return result!.hash
 }

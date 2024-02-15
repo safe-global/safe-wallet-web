@@ -2,10 +2,12 @@ import { BuyCryptoOptions } from '@/components/common/BuyCryptoButton'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ModalDialog from '@/components/common/ModalDialog'
 import QRCode from '@/components/common/QRCode'
+import Track from '@/components/common/Track'
 import FirstTxFlow from '@/features/counterfactual/FirstTxFlow'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import { useAppSelector } from '@/store'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
 import classnames from 'classnames'
@@ -74,9 +76,11 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
       {!completed && (
         <>
           <Box mt={2}>
-            <Button onClick={toggleDialog} variant="contained" size="small" sx={{ minHeight: '40px' }}>
-              Add funds
-            </Button>
+            <Track {...COUNTERFACTUAL_EVENTS.PRESS_ADD_FUNDS}>
+              <Button onClick={toggleDialog} variant="contained" size="small" sx={{ minHeight: '40px' }}>
+                Add funds
+              </Button>
+            </Track>
           </Box>
           <ModalDialog
             open={open}
@@ -135,9 +139,11 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
     <>
       <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
         {!completed && (
-          <Button onClick={() => setOpen(true)} variant="outlined" size="small" sx={{ mt: 2, minHeight: '40px' }}>
-            Create transaction
-          </Button>
+          <Track {...COUNTERFACTUAL_EVENTS.PRESS_CREATE_TRANSACTION}>
+            <Button onClick={() => setOpen(true)} variant="outlined" size="small" sx={{ mt: 2, minHeight: '40px' }}>
+              Create transaction
+            </Button>
+          </Track>
         )}
       </StatusCard>
       <FirstTxFlow open={open} onClose={() => setOpen(false)} />

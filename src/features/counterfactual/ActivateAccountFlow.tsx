@@ -21,6 +21,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { trackEvent } from '@/services/analytics'
+import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import { asError } from '@/services/exceptions/utils'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppSelector } from '@/store'
@@ -86,6 +88,7 @@ const ActivateAccountFlow = () => {
   }
 
   const onSubmit = (txHash?: string) => {
+    trackEvent({ ...COUNTERFACTUAL_EVENTS.SUBMIT_ACCOUNT_ACTIVATION, label: 'without_tx' })
     if (txHash) {
       safeCreationDispatch(SafeCreationEvent.PROCESSING, { groupKey: CF_TX_GROUP_KEY, txHash })
     }
@@ -209,6 +212,7 @@ export const ActivateAccountButton = () => {
   const isProcessing = undeployedSafe?.status.status !== PendingSafeStatus.AWAITING_EXECUTION
 
   const activateAccount = () => {
+    trackEvent({ ...COUNTERFACTUAL_EVENTS.CHOOSE_FIRST_TRANSACTION, label: 'activate_now' })
     setTxFlow(<ActivateAccountFlow />)
   }
 

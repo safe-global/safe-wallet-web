@@ -1,5 +1,7 @@
 import { AppRoutes } from '@/config/routes'
 import ActivateAccountFlow from '@/features/counterfactual/ActivateAccountFlow'
+import { trackEvent } from '@/services/analytics'
+import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import { useRouter } from 'next/router'
 import { type ElementType, useContext } from 'react'
 import { Box, ButtonBase, Grid, SvgIcon, Typography } from '@mui/material'
@@ -57,29 +59,35 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   }
 
   const onSendToken = () => {
+    trackEvent({ ...COUNTERFACTUAL_EVENTS.CHOOSE_FIRST_TRANSACTION, label: 'send_token' })
     setTxFlow(<TokenTransferFlow />)
   }
 
   const onActivateSafe = () => {
+    trackEvent({ ...COUNTERFACTUAL_EVENTS.CHOOSE_FIRST_TRANSACTION, label: 'activate_safe' })
     setTxFlow(<ActivateAccountFlow />)
   }
 
   const onAddSigner = () => {
+    trackEvent({ ...COUNTERFACTUAL_EVENTS.CHOOSE_FIRST_TRANSACTION, label: 'add_signer' })
     setTxFlow(<AddOwnerFlow />)
   }
 
   const onRecovery = () => {
+    trackEvent({ ...COUNTERFACTUAL_EVENTS.CHOOSE_FIRST_TRANSACTION, label: 'setup_recovery' })
     setTxFlow(<UpsertRecoveryFlow />)
   }
 
   const onSwap = () => {
     // TODO: Pre-filter DeFi category apps
+    trackEvent({ ...COUNTERFACTUAL_EVENTS.CHOOSE_FIRST_TRANSACTION, label: 'swap' })
     router.push({ pathname: AppRoutes.apps.index, query: router.query })
   }
 
   const onCustomTransaction = () => {
     if (!txBuilder) return
 
+    trackEvent({ ...COUNTERFACTUAL_EVENTS.CHOOSE_FIRST_TRANSACTION, label: 'tx_builder' })
     router.push(txBuilder.link)
   }
 

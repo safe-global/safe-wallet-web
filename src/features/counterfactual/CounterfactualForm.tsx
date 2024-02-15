@@ -7,6 +7,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
+import { trackEvent } from '@/services/analytics'
+import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import { useAppDispatch } from '@/store'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
@@ -80,6 +82,7 @@ export const CounterfactualForm = ({
 
     try {
       await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
+      trackEvent({ ...COUNTERFACTUAL_EVENTS.SUBMIT_ACCOUNT_ACTIVATION, label: 'with_tx' })
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._804, err)
