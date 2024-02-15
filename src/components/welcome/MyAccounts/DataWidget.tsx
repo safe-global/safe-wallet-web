@@ -1,17 +1,17 @@
-import { Button, Grid, SvgIcon, Card, CardHeader, CardContent, Box } from '@mui/material'
+import { Button, Grid, SvgIcon, Card, CardHeader, CardContent, Tooltip } from '@mui/material'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
-import FileIcon from '@/public/images/settings/data/file.svg'
 import ExportIcon from '@/public/images/common/export.svg'
 import ImportIcon from '@/public/images/common/import.svg'
 import { exportAppData } from '@/components/settings/DataManagement'
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
 import css from './styles.module.css'
 
@@ -34,22 +34,24 @@ export const DataWidget = (): ReactElement => {
   return (
     <Card className={css.card}>
       <CardHeader
-        avatar={
-          <Box
-            className={css.fileIcon}
-            sx={{
-              borderRadius: ({ shape }) => `${shape.borderRadius}px`,
-            }}
-          >
-            <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
-          </Box>
-        }
         className={css.cardHeader}
-        title={<b>{hasData ? 'Work with your data' : 'Already have a Safe Account?'}</b>}
-        subheader={hasData ? 'Export or import your data' : 'Import your data'}
+        title={
+          <>
+            <b>{hasData ? 'Export or import your Safe data' : 'Import your Safe data'}</b>
+            <Tooltip
+              title="Download or upload your local data with your added Safe Accounts, address book and settings."
+              placement="top"
+              arrow
+            >
+              <span>
+                <InfoIcon className={css.infoIcon} />
+              </span>
+            </Tooltip>
+          </>
+        }
       />
       <CardContent>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ maxWidth: 240, margin: 'auto', paddingRight: 2 }}>
           {hasData && (
             <Grid item xs={6}>
               <Track {...OVERVIEW_EVENTS.EXPORT_DATA}>
@@ -58,7 +60,7 @@ export const DataWidget = (): ReactElement => {
                   size="small"
                   onClick={exportAppData}
                   startIcon={<SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />}
-                  sx={{ width: '100%' }}
+                  sx={{ width: '100%', py: 0.5 }}
                 >
                   Export
                 </Button>
@@ -72,7 +74,7 @@ export const DataWidget = (): ReactElement => {
                 size="small"
                 onClick={onImport}
                 startIcon={<SvgIcon component={ImportIcon} inheritViewBox fontSize="small" />}
-                sx={{ width: '100%' }}
+                sx={{ width: '100%', py: 0.5 }}
               >
                 Import
               </Button>

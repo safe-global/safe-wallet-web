@@ -1,11 +1,3 @@
-.sidebar {
-  max-height: calc(100vh - var(--header-height) - var(--footer-height) - 8px);
-  overflow-y: auto;
-  align-self: flex-start;
-  margin-bottom: auto;
-  width: 100%;
-}
-
 .bulletList {
   list-style: none;
   margin-bottom: auto;
@@ -104,10 +96,6 @@
 }
 
 @media (max-width: 899.95px) {
-  .sidebar :global .MuiPaper-root {
-    height: 100%;
-  }
-
   .content {
     padding: var(--space-6);
   }
