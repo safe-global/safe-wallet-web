@@ -29,7 +29,7 @@ const PaginatedSafeList = ({ safes, title, action, safeCount, onLinkClick }: Pag
     return safes.slice(0, maxShownSafes)
   }, [safes, maxShownSafes])
 
-  const onShowMoreSafes = () => setMaxSafes((prev) => prev + PAGE_SIZE)
+  const onShowMoreSafes = () => setMaxShownSafes((prev) => prev + PAGE_SIZE)
 
   return (
     <Paper className={css.safeList}>
