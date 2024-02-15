@@ -9,6 +9,7 @@ import type { ReactElement } from 'react'
 import { useContext, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import type { Theme } from '@mui/material'
 import { Box, Button, Divider, Grid, Skeleton, Typography } from '@mui/material'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -107,6 +108,26 @@ const Overview = (): ReactElement => {
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 
+  const assetsBoxStyles = {
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: 0.5,
+    pr: 1,
+    position: 'relative',
+    '::before': {
+      content: '""',
+      display: 'block',
+      width: '3px',
+      height: '3px',
+      backgroundColor: ({ palette }: Theme) => palette.border.light,
+      borderRadius: '50%',
+      position: 'absolute',
+      top: '50%',
+      right: '-2px',
+      transform: 'translateY(-50%)',
+    },
+  }
+
   return (
     <WidgetContainer>
       <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
@@ -137,20 +158,12 @@ const Overview = (): ReactElement => {
             <Grid container pt="12px">
               <Grid item container xs={6} gap={1}>
                 <Link href={assetsLink} passHref>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      borderRight: '1px solid',
-                      borderColor: ({ palette }) => palette.border.light,
-                      gap: 0.5,
-                      pr: 1,
-                    }}
-                  >
-                    <Typography variant="caption" component="span">
-                      {balancesLoading ? <ValueSkeleton /> : tokenCount}
-                    </Typography>{' '}
+                  <Box sx={assetsBoxStyles}>
+                    <Typography variant="subtitle1" component="span">
+                      {!balancesLoading ? <ValueSkeleton /> : tokenCount}
+                    </Typography>
                     <Typography
-                      variant="caption"
+                      variant="body2"
                       component="span"
                       color="border.main"
                       textTransform="uppercase"
@@ -162,12 +175,19 @@ const Overview = (): ReactElement => {
                 </Link>
 
                 <Link href={nftsLink} passHref>
-                  <Box display="flex" pr={1} gap={0.5}>
-                    <Typography variant="caption" component="span">
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'baseline',
+                    }}
+                    pr={1}
+                    gap={0.5}
+                  >
+                    <Typography variant="subtitle1" component="span">
                       {nftsCount || <ValueSkeleton />}
-                    </Typography>{' '}
+                    </Typography>
                     <Typography
-                      variant="caption"
+                      variant="body2"
                       component="span"
                       color="border.main"
                       textTransform="uppercase"
@@ -180,12 +200,16 @@ const Overview = (): ReactElement => {
               </Grid>
             </Grid>
             <Grid item mt="auto">
-              <Grid container mt={3} spacing={1} flexWrap="wrap">
-                <Grid item xs={12} sm="auto">
-                  <BuyCryproButton />
-                </Grid>
+              <Grid
+                container
+                mt={3}
+                spacing={1}
+                flexWrap="wrap"
+                style={{ display: 'flex', justifyContent: 'space-between' }}
+              >
+                <BuyCryproButton />
 
-                <Grid item xs={6} sm="auto">
+                <Grid item style={{ flex: 1 }}>
                   <Button
                     onClick={handleOnSend}
                     size="small"
@@ -197,7 +221,7 @@ const Overview = (): ReactElement => {
                     Send
                   </Button>
                 </Grid>
-                <Grid item xs={6} sm="auto">
+                <Grid item style={{ flex: 1 }}>
                   <QrCodeButton>
                     <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />} fullWidth>
                       Receive
