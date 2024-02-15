@@ -1,20 +1,50 @@
-import { Badge, IconButton, Tooltip } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
+import classnames from 'classnames'
 import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import SafeLogo from '@/public/images/logo-no-text.svg'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import LoopRoundedIcon from '@mui/icons-material/LoopRounded'
+
+const LoopIcon = () => {
+  return (
+    <LoopRoundedIcon
+      sx={{
+        animation: 'spin 2s linear infinite',
+        '@keyframes spin': {
+          '0%': {
+            transform: 'rotate(360deg)',
+          },
+          '100%': {
+            transform: 'rotate(0deg)',
+          },
+        },
+      }}
+    />
+  )
+}
 
 const CounterfactualStatusButton = () => {
   const { safe } = useSafeInfo()
 
   if (safe.deployed) return null
 
+  // TODO: Replace with pending state
+  const processing = false
+
   return (
-    <Tooltip placement="right" title="Safe Account is not activated" arrow>
-      <Badge color="info" variant="dot" anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <IconButton className={css.statusButton} size="small" color="primary" disableRipple>
-          <SafeLogo />
-        </IconButton>
-      </Badge>
+    <Tooltip
+      placement="right"
+      title={processing ? 'Safe Account is being activated' : 'Safe Account is not activated'}
+      arrow
+    >
+      <IconButton
+        className={classnames(css.statusButton, { [css.processing]: processing })}
+        size="small"
+        color={processing ? 'info' : 'warning'}
+        disableRipple
+      >
+        {processing ? <LoopIcon /> : <InfoIcon />}
+      </IconButton>
     </Tooltip>
   )
 }

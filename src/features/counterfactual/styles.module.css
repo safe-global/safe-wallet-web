@@ -36,7 +36,13 @@
   padding: 6px;
   width: 32px;
   height: 32px;
-  background: var(--color-border-background);
+  background: var(--color-warning-background);
+  justify-self: flex-end;
+  margin-left: auto;
+}
+
+.statusButton.processing {
+  background: var(--color-info-background);
 }
 
 .newTxButton {
