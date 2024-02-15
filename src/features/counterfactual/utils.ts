@@ -221,6 +221,30 @@ export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo,
   )
 }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+/**
+ * Calling getTransaction too fast sometimes fails because the txHash hasn't been
+ * picked up by any node yet so we should retry a few times with short delays to
+ * make sure the transaction really does/does not exist
+ * @param provider
+ * @param txHash
+ * @param maxAttempts
+ * @param delayMs
+ */
+async function retryGetTransaction(provider: Provider, txHash: string, maxAttempts = 3, delayMs = 1000) {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const txResponse = await provider.getTransaction(txHash)
+    if (txResponse !== null) {
+      return txResponse
+    }
+    if (attempt < maxAttempts - 1) {
+      await delay(delayMs)
+    }
+  }
+  throw new Error('Transaction not found')
+}
+
 // TODO: Reuse this for safe creation flow instead of checkSafeCreationTx
 export const checkSafeActivation = async (
   provider: Provider,
@@ -231,13 +255,10 @@ export const checkSafeActivation = async (
   const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
   try {
-    const txResponse = await provider.getTransaction(txHash)
-    if (txResponse === null) {
-      throw new Error('Transaction not found')
-    }
+    const txResponse = await retryGetTransaction(provider, txHash)
 
     const replaceableTx = startBlock ? txResponse.replaceableTransaction(startBlock) : txResponse
-    const receipt = await replaceableTx.wait(1, TIMEOUT_TIME)
+    const receipt = await replaceableTx?.wait(1, TIMEOUT_TIME)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {

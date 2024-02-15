@@ -10,7 +10,7 @@ const CounterfactualSuccessScreen = () => {
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async () => {
-        if (event === SafeCreationEvent.SUCCESS) setOpen(true)
+        if (event === SafeCreationEvent.INDEXED) setOpen(true)
       }),
     )
 
