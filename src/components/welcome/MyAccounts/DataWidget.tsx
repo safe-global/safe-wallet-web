@@ -60,7 +60,7 @@ export const DataWidget = (): ReactElement => {
                   size="small"
                   onClick={exportAppData}
                   startIcon={<SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />}
-                  sx={{ width: '100%', paddingY: 0.5 }}
+                  sx={{ width: '100%', py: 0.5 }}
                 >
                   Export
                 </Button>
@@ -74,7 +74,7 @@ export const DataWidget = (): ReactElement => {
                 size="small"
                 onClick={onImport}
                 startIcon={<SvgIcon component={ImportIcon} inheritViewBox fontSize="small" />}
-                sx={{ width: '100%', paddingY: 0.5, paddingX: 0 }}
+                sx={{ width: '100%', py: 0.5 }}
               >
                 Import
               </Button>
