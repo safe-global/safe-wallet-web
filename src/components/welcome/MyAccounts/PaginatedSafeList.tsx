@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { Button, Box, Paper, Typography } from '@mui/material'
 import AccountItem from './AccountItem'
@@ -9,7 +9,7 @@ import css from './styles.module.css'
 
 type PaginatedSafeListProps = {
   safes: SafeItems
-  title: ReactElement
+  title: ReactNode
   safeCount?: number
   action?: ReactElement
   onLinkClick?: () => void
@@ -20,7 +20,7 @@ const MAX_DEFAULT_SHOWN = 7
 const PAGE_SIZE = 5
 
 const PaginatedSafeList = ({ safes, title, action, safeCount, onLinkClick }: PaginatedSafeListProps) => {
-  const [maxShownSafes, setMaxSafes] = useState<number>(DEFAULT_SHOWN)
+  const [maxShownSafes, setMaxShownSafes] = useState<number>(DEFAULT_SHOWN)
 
   const shownSafes = useMemo(() => {
     if (safes.length <= MAX_DEFAULT_SHOWN) {

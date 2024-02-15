@@ -17,8 +17,8 @@ type AccountsListProps = {
   onLinkClick?: () => void
 }
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
-  const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
-  const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
+  const ownedSafes = useMemo(() => safes.filter(({ isOnWatchlist }) => !isOnWatchlist), [safes])
+  const watchlistSafes = useMemo(() => safes.filter(({ isOnWatchlist }) => isOnWatchlist), [safes])
 
   return (
     <Box className={css.container}>
@@ -31,7 +31,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
         </Box>
 
         <PaginatedSafeList
-          title={<span>My accounts</span>}
+          title="My accounts"
           safes={ownedSafes}
           safeCount={ownedSafes.length}
           onLinkClick={onLinkClick}

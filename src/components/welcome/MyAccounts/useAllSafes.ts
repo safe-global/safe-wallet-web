@@ -11,7 +11,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 export type SafeItems = Array<{
   chainId: string
   address: string
-  isWatchlist: boolean
+  isOnWatchlist: boolean
   threshold?: number
   owners?: number
 }>
@@ -48,7 +48,7 @@ const useAllSafes = (): SafeItems => {
       return uniqueAddresses.map((address) => ({
         address,
         chainId,
-        isWatchlist: !(ownedOnChain || []).includes(address),
+        isOnWatchlist: !(ownedOnChain || []).includes(address),
         threshold: allAdded[chainId]?.[address]?.threshold,
         owners: allAdded[chainId]?.[address]?.owners.length,
       }))
