@@ -18,7 +18,7 @@ describe('SafeTokenWidget', () => {
       () =>
         ({
           get: () => fakeSafeAddress,
-        }) as any,
+        } as any),
     )
   })
 
