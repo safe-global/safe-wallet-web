@@ -355,7 +355,7 @@ export class SafeWalletProvider {
       throw new Error('Transaction not found')
     }
 
-    const calls = new Array(tx.txData.dataDecoded.parameters?.[0].valueDecoded?.length || 1).fill(null)
+    const calls = new Array(tx.txData.dataDecoded.parameters?.[0].valueDecoded?.length ?? 1).fill(null)
     const { txStatus, txHash } = tx
 
     let receipt: TransactionReceipt | undefined
@@ -369,7 +369,7 @@ export class SafeWalletProvider {
         success: txStatus === TransactionStatus.SUCCESS,
         blockHash: receipt?.blockHash ?? '',
         blockNumber: receipt?.blockNumber.toString() ?? '0x0',
-        blockTimestamp: numberToHex(tx.executedAt || 0),
+        blockTimestamp: numberToHex(tx.executedAt ?? 0),
         gasUsed: receipt?.gasUsed.toString() ?? '0x0',
         transactionHash: txHash ?? '',
         logs: receipt?.logs ?? [],

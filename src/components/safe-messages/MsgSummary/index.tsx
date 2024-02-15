@@ -42,7 +42,7 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
       </Box>
 
       <Box gridArea="confirmations">
-        {!!confirmationsRequired && (
+        {confirmationsRequired > 0 && (
           <TxConfirmations
             submittedConfirmations={confirmationsSubmitted}
             requiredConfirmations={confirmationsRequired}

@@ -40,7 +40,7 @@ const useMetaEvents = () => {
 
   // Tokens
   const { balances } = useBalances()
-  const totalTokens = balances?.items.length || 0
+  const totalTokens = balances?.items.length ?? 0
   useEffect(() => {
     if (!safeAddress || totalTokens <= 0) return
 
@@ -50,7 +50,7 @@ const useMetaEvents = () => {
   // Manually hidden tokens
   const hiddenTokens = useHiddenTokens()
   const totalHiddenFromBalance =
-    balances?.items.filter((item) => hiddenTokens.includes(item.tokenInfo.address)).length || 0
+    balances?.items.filter((item) => hiddenTokens.includes(item.tokenInfo.address)).length ?? 0
   useEffect(() => {
     if (!safeAddress || totalTokens <= 0) return
 

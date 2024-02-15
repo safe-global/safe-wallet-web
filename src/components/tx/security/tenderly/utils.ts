@@ -193,7 +193,7 @@ const getStateOverwrites = (params: SimulationTxParams) => {
   if (isThresholdOverwrite) {
     storageOverwrites[THRESHOLD_STORAGE_POSITION] = THRESHOLD_OVERWRITE
   }
-  if (nonceOverwrite) {
+  if (nonceOverwrite !== undefined) {
     storageOverwrites[NONCE_STORAGE_POSITION] = toBeHex('0x' + BigInt(nonceOverwrite).toString(16), 32)
   }
 
@@ -210,7 +210,7 @@ const getLatestBlockGasLimit = async (): Promise<number> => {
 }
 
 export const getSimulationPayload = async (params: SimulationTxParams): Promise<TenderlySimulatePayload> => {
-  const gasLimit = params.gasLimit || (await getLatestBlockGasLimit())
+  const gasLimit = params.gasLimit ?? (await getLatestBlockGasLimit())
 
   const payload = isSingleTransactionSimulation(params)
     ? await _getSingleTransactionPayload(params)

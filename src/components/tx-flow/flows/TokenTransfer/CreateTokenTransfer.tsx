@@ -52,7 +52,7 @@ export const CreateTokenTransfer = ({
   const { setNonce, setNonceNeeded } = useContext(SafeTxContext)
 
   useEffect(() => {
-    if (txNonce) {
+    if (txNonce !== undefined) {
       setNonce(txNonce)
     }
   }, [setNonce, txNonce])

@@ -30,7 +30,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
   const formMethods = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {
-      userNonce: params.userNonce || 0,
+      userNonce: params.userNonce ?? 0,
       gasLimit: params.gasLimit?.toString() || undefined,
       maxFeePerGas: params.maxFeePerGas ? safeFormatUnits(params.maxFeePerGas) : '',
       maxPriorityFeePerGas: params.maxPriorityFeePerGas ? safeFormatUnits(params.maxPriorityFeePerGas) : '',
@@ -55,8 +55,8 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
     props.onSubmit({
       userNonce: data.userNonce,
       gasLimit: data.gasLimit ? BigInt(data.gasLimit) : undefined,
-      maxFeePerGas: safeParseUnits(data.maxFeePerGas) || params.maxFeePerGas,
-      maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || params.maxPriorityFeePerGas,
+      maxFeePerGas: safeParseUnits(data.maxFeePerGas) ?? params.maxFeePerGas,
+      maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) ?? params.maxPriorityFeePerGas,
     })
   }
 

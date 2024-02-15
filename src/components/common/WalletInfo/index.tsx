@@ -54,8 +54,6 @@ export const WalletInfo = ({
   const resetAccount = () => socialWalletService?.__deleteAccount()
 
   const handleDisconnect = () => {
-    if (!wallet) return
-
     onboard?.disconnectWallet({
       label: wallet.label,
     })

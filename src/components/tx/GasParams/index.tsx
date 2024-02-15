@@ -99,7 +99,7 @@ export const _GasParams = ({
           <GasDetail isLoading={false} name="Safe Account transaction nonce" value={nonce.toString()} />
         )}
 
-        {!!safeTxGas && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
+        {safeTxGas !== undefined && <GasDetail isLoading={false} name="safeTxGas" value={safeTxGas.toString()} />}
 
         {isExecution && (
           <>

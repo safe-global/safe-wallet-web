@@ -132,7 +132,7 @@ export const getTotalFee = (
   gasLimit: bigint,
 ) => {
   // maxPriorityFeePerGas is undefined if EIP-1559 disabled
-  return (maxFeePerGas + (maxPriorityFeePerGas || 0n)) * gasLimit
+  return (maxFeePerGas + (maxPriorityFeePerGas ?? 0n)) * gasLimit
 }
 
 export const getTotalFeeFormatted = (
@@ -141,7 +141,7 @@ export const getTotalFeeFormatted = (
   gasLimit: bigint | undefined,
   chain: ChainInfo | undefined,
 ) => {
-  return gasLimit && maxFeePerGas
+  return gasLimit !== undefined && maxFeePerGas !== undefined && maxFeePerGas !== null
     ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
     : '> 0.001'
 }

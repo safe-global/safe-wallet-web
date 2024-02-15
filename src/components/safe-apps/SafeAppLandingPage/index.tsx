@@ -30,7 +30,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   const showDemo = chain.chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
 
   useEffect(() => {
-    if (!isLoading && !backendAppLoading && safeApp?.chainIds.length) {
+    if (!isLoading && !backendAppLoading && safeApp.chainIds.length) {
       const appName = backendApp ? backendApp.name : safeApp.url
 
       trackSafeAppEvent({ ...SAFE_APPS_EVENTS.SHARED_APP_LANDING, label: chain.chainId }, appName)
@@ -55,10 +55,6 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
         <CircularProgress size={40} />
       </Box>
     )
-  }
-
-  if (!safeApp) {
-    return <div>No Safe App found</div>
   }
 
   return (

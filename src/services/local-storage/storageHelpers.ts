@@ -17,7 +17,7 @@ function isBigIntSerialized(value: unknown): value is BigIntSerialized {
 export function replacer(_: string, value: unknown) {
   if (typeof value === 'bigint') {
     let hex = value.toString(16)
-    if (hex.length % 2) {
+    if (hex.length % 2 === 0) {
       hex = '0' + hex
     }
 
