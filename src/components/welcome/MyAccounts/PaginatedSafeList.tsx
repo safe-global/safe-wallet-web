@@ -10,7 +10,6 @@ import css from './styles.module.css'
 type PaginatedSafeListProps = {
   safes: SafeItems
   title: ReactNode
-  safeCount?: number
   action?: ReactElement
   onLinkClick?: () => void
 }
@@ -19,7 +18,7 @@ const DEFAULT_SHOWN = 5
 const MAX_DEFAULT_SHOWN = 7
 const PAGE_SIZE = 5
 
-const PaginatedSafeList = ({ safes, title, action, safeCount, onLinkClick }: PaginatedSafeListProps) => {
+const PaginatedSafeList = ({ safes, title, action, onLinkClick }: PaginatedSafeListProps) => {
   const [maxShownSafes, setMaxShownSafes] = useState<number>(DEFAULT_SHOWN)
 
   const shownSafes = useMemo(() => {
@@ -36,13 +35,11 @@ const PaginatedSafeList = ({ safes, title, action, safeCount, onLinkClick }: Pag
       <div className={css.listHeader}>
         <Typography variant="h5" fontWeight={700} mb={2} className={css.listTitle}>
           {title}
-          {safeCount && safeCount > 0 ? (
+          {safes.length > 0 && (
             <Typography component="span" color="text.secondary" fontSize="inherit" fontWeight="normal">
               {' '}
-              ({safeCount})
+              ({safes.length})
             </Typography>
-          ) : (
-            ''
           )}
         </Typography>
         {action}
