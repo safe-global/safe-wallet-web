@@ -22,6 +22,7 @@ import { SignMessageOnChainFlow } from '@/components/tx-flow/flows'
 import { useAppSelector } from '@/store'
 import { selectOnChainSigning } from '@/store/settingsSlice'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
+import type { OperationType } from '@safe-global/safe-core-sdk-types'
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { safe } = useSafeInfo()
@@ -110,7 +111,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         return await signMessage(typedData as EIP712TypedData, appInfo, Methods.signTypedMessage)
       },
 
-      async send(params: { txs: any[]; params: { safeTxGas: number } }, appInfo) {
+      async send(params: { txs: any[]; params: { safeTxGas: number; operation?: OperationType } }, appInfo) {
         const id = Math.random().toString(36).slice(2)
 
         const transactions = params.txs.map(({ to, value, data }) => {

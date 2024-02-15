@@ -35,6 +35,7 @@ const nextConfig = {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash', 'date-fns', '@sentry/react', '@gnosis.pm/zodiac'],
   },
   webpack(config) {
+    config.externals.push("pino-pretty", "lokijs", "encoding")
     config.module.rules.push({
       test: /\.svg$/i,
       issuer: { and: [/\.(js|ts|md)x?$/] },

@@ -1,0 +1,13 @@
+main.widgetRoot {
+    position: relative;
+    overflow-y: scroll;
+    height: calc(100vh - var(--header-height));
+}
+
+main.widgetRoot div[data-rk='stakekit'] > div[data-select-modal] {
+    position: absolute;
+}
+
+main.widgetRoot div[data-rk='stakekit'][role='dialog'] {
+    position: absolute;
+}
