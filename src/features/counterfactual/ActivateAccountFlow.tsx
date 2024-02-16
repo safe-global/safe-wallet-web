@@ -100,7 +100,7 @@ const ActivateAccountFlow = () => {
   const createSafe = async () => {
     if (!provider || !chain) return
 
-    trackEvent({ ...TX_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_without_tx })
+    trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_without_tx })
 
     setIsSubmittable(false)
     setSubmitError(undefined)

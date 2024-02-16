@@ -126,8 +126,9 @@ export const OVERVIEW_EVENTS = {
     action: 'Create new Safe',
     category: OVERVIEW_CATEGORY,
   },
-  SELECT_ONRAMP_APP: {
-    action: 'Select on-ramp app',
+  PROCEED_WITH_TX: {
+    event: EventType.CLICK,
+    action: 'Proceed with transaction',
     category: OVERVIEW_CATEGORY,
   },
 }

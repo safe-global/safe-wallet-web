@@ -6,7 +6,7 @@ import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
-import { trackEvent } from '@/services/analytics'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
@@ -77,7 +77,7 @@ export const CounterfactualForm = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      trackEvent({ ...TX_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
+      trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
 
       await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
 

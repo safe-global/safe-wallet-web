@@ -30,11 +30,6 @@ export enum TX_TYPES {
 const TX_CATEGORY = 'transactions'
 
 export const TX_EVENTS = {
-  PROCEED_WITH_TX: {
-    event: EventType.CLICK,
-    action: 'Proceed with transaction',
-    category: TX_CATEGORY,
-  },
   CREATE: {
     event: EventType.TX_CREATED,
     action: 'Create transaction',
