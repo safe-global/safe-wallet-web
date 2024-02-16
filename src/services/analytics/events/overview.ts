@@ -48,6 +48,16 @@ export const OVERVIEW_EVENTS = {
     action: 'New transaction',
     category: OVERVIEW_CATEGORY,
   },
+  CHOOSE_TRANSACTION_TYPE: {
+    action: 'Choose transaction type',
+    category: OVERVIEW_CATEGORY,
+    event: EventType.CLICK,
+  },
+  ADD_FUNDS: {
+    action: 'Add funds',
+    category: OVERVIEW_CATEGORY,
+    event: EventType.CLICK,
+  },
   NOTIFICATION_CENTER: {
     action: 'Open Notification Center',
     category: OVERVIEW_CATEGORY,

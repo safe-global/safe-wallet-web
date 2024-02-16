@@ -49,9 +49,6 @@ const backupSafe = (chainId: string, safeAddress: string, undeployedSafe: Predic
   link.href = window.URL.createObjectURL(blob)
   link.dataset.downloadurl = ['text/json', link.download, link.href].join(':')
   link.dispatchEvent(new MouseEvent('click'))
-
-  // TODO: Track this as an event
-  // trackEvent(COUNTERFACTUAL_EVENTS.EXPORT_SAFE)
 }
 
 const CreationDialog = () => {

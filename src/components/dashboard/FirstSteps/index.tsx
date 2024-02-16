@@ -7,7 +7,7 @@ import FirstTxFlow from '@/features/counterfactual/FirstTxFlow'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
+import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
 import classnames from 'classnames'
@@ -76,7 +76,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
       {!completed && (
         <>
           <Box mt={2}>
-            <Track {...COUNTERFACTUAL_EVENTS.PRESS_ADD_FUNDS}>
+            <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
               <Button onClick={toggleDialog} variant="contained" size="small" sx={{ minHeight: '40px' }}>
                 Add funds
               </Button>
@@ -139,7 +139,7 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
     <>
       <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
         {!completed && (
-          <Track {...COUNTERFACTUAL_EVENTS.PRESS_CREATE_TRANSACTION}>
+          <Track {...OVERVIEW_EVENTS.NEW_TRANSACTION} label="onboarding">
             <Button onClick={() => setOpen(true)} variant="outlined" size="small" sx={{ mt: 2, minHeight: '40px' }}>
               Create transaction
             </Button>

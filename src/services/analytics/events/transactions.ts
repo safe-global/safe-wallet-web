@@ -21,11 +21,20 @@ export enum TX_TYPES {
   typed_message = 'typed_message',
   walletconnect = 'walletconnect',
   custom = 'custom',
+
+  // Counterfactual
+  activate_without_tx = 'activate_without_tx',
+  activate_with_tx = 'activate_with_tx',
 }
 
 const TX_CATEGORY = 'transactions'
 
 export const TX_EVENTS = {
+  PROCEED_WITH_TX: {
+    event: EventType.CLICK,
+    action: 'Proceed with transaction',
+    category: TX_CATEGORY,
+  },
   CREATE: {
     event: EventType.TX_CREATED,
     action: 'Create transaction',

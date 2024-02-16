@@ -21,8 +21,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { trackEvent } from '@/services/analytics'
-import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { asError } from '@/services/exceptions/utils'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppSelector } from '@/store'
@@ -88,7 +88,9 @@ const ActivateAccountFlow = () => {
   }
 
   const onSubmit = (txHash?: string) => {
-    trackEvent({ ...COUNTERFACTUAL_EVENTS.SUBMIT_ACCOUNT_ACTIVATION, label: 'without_tx' })
+    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_without_tx })
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_without_tx })
+
     if (txHash) {
       safeCreationDispatch(SafeCreationEvent.PROCESSING, { groupKey: CF_TX_GROUP_KEY, txHash })
     }
@@ -97,6 +99,8 @@ const ActivateAccountFlow = () => {
 
   const createSafe = async () => {
     if (!provider || !chain) return
+
+    trackEvent({ ...TX_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_without_tx })
 
     setIsSubmittable(false)
     setSubmitError(undefined)
@@ -212,7 +216,7 @@ export const ActivateAccountButton = () => {
   const isProcessing = undeployedSafe?.status.status !== PendingSafeStatus.AWAITING_EXECUTION
 
   const activateAccount = () => {
-    trackEvent({ ...COUNTERFACTUAL_EVENTS.CHOOSE_FIRST_TRANSACTION, label: 'activate_now' })
+    trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'activate_now' })
     setTxFlow(<ActivateAccountFlow />)
   }
 
