@@ -58,7 +58,7 @@ const PaginatedSafeList = ({ safes, title, action, onLinkClick }: PaginatedSafeL
           </Button>
         </Typography>
       ) : (
-        <Typography variant="body2" color="text.secondary" textAlign="center" my={3} mx="auto" width={250}>
+        <Typography variant="body2" color="text.secondary" textAlign="center" my={3}>
           You don&apos;t have any Safe Accounts yet
         </Typography>
       )}
