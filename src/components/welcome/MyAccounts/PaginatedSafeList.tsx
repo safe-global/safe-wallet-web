@@ -53,7 +53,7 @@ const PaginatedSafeList = ({ safes, title, action, onLinkClick }: PaginatedSafeL
       ) : !wallet ? (
         <Typography variant="body2" color="text.secondary" textAlign="center" my={3} mx="auto" width={250}>
           Connect a wallet to view your Safe Accounts or to create a new one
-          <Button onClick={handleConnect} disableElevation size="small" sx={{ marginTop: 2 }}>
+          <Button onClick={handleConnect} disableElevation size="small" sx={{ mt: 2 }}>
             Connect a wallet
           </Button>
         </Typography>
