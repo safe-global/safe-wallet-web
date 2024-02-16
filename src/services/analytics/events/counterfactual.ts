@@ -18,11 +18,6 @@ export const COUNTERFACTUAL_EVENTS = {
     category: COUNTERFACTUAL_CATEGORY,
     event: EventType.CLICK,
   },
-  DEPLOYED_COUNTERFACTUAL_SAFE: {
-    action: 'Deployed counterfactual safe',
-    category: COUNTERFACTUAL_CATEGORY,
-    event: EventType.META,
-  },
   CHECK_BALANCES: {
     action: 'Check balances on block explorer',
     category: COUNTERFACTUAL_CATEGORY,

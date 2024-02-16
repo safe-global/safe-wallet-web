@@ -25,7 +25,7 @@ import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRe
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import { CREATE_SAFE_CATEGORY, trackEvent } from '@/services/analytics'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
@@ -213,9 +213,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
-        trackEvent({ ...TX_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
         await createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
-        trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
+        trackEvent({ ...TX_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
         return
       }
 

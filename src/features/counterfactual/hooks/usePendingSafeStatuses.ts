@@ -14,8 +14,7 @@ import { checkSafeActionViaRelay, checkSafeActivation } from '@/features/counter
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { trackEvent } from '@/services/analytics'
-import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { useEffect, useRef } from 'react'
 
@@ -101,7 +100,7 @@ const usePendingSafeStatus = (): void => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
         if (event === SafeCreationEvent.SUCCESS) {
-          trackEvent(COUNTERFACTUAL_EVENTS.DEPLOYED_COUNTERFACTUAL_SAFE)
+          trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
           pollSafeInfo(safe.chainId, safeAddress).finally(() => {
             safeCreationDispatch(SafeCreationEvent.INDEXED, { groupKey: detail.groupKey, safeAddress })
           })
