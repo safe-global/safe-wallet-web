@@ -16,6 +16,10 @@
   margin-bottom: var(--space-3);
 }
 
+.safeList :last-child {
+  margin-bottom: 0;
+}
+
 .header {
   display: flex;
   flex-wrap: wrap;
