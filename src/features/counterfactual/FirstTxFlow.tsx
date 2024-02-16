@@ -1,11 +1,12 @@
 import { AppRoutes } from '@/config/routes'
-import ActivateAccountFlow from '@/features/counterfactual/ActivateAccountFlow'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { type ElementType, useContext } from 'react'
 import { Box, ButtonBase, Grid, SvgIcon, Typography } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
 import { TxModalContext } from '@/components/tx-flow'
 import { AddOwnerFlow, TokenTransferFlow, UpsertRecoveryFlow } from '@/components/tx-flow/flows'
+const ActivateAccountFlow = dynamic(() => import('./ActivateAccountFlow'))
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
