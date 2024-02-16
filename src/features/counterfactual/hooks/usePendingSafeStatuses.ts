@@ -100,7 +100,7 @@ const usePendingSafeStatus = (): void => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
         if (event === SafeCreationEvent.SUCCESS) {
-          trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
+          trackEvent({ ...CREATE_SAFE_EVENTS.ACTIVATED_SAFE, label: 'counterfactual' })
           pollSafeInfo(safe.chainId, safeAddress).finally(() => {
             safeCreationDispatch(SafeCreationEvent.INDEXED, { groupKey: detail.groupKey, safeAddress })
           })
