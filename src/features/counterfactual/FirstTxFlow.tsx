@@ -1,3 +1,4 @@
+import { SafeAppsTag } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
@@ -74,7 +75,7 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   }
 
   const onSwap = () => {
-    router.push({ pathname: AppRoutes.apps.index, query: { ...router.query, categories: 'DEX' } })
+    router.push({ pathname: AppRoutes.apps.index, query: { ...router.query, categories: SafeAppsTag.DEX } })
   }
 
   const onCustomTransaction = () => {

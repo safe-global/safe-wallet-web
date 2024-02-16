@@ -31,18 +31,16 @@ const useQueryFilter = ({
     }
   }, [router.isReady, router.query.categories, safeAppsList, selectedCategories.length, setSelectedCategories])
 
-  const onSelectCategories = (categories: string[]) => {
-    setSelectedCategories(categories)
+  const onSelectCategories = (selectedCategories: string[]) => {
+    setSelectedCategories(selectedCategories)
 
-    // Clean up the URL
-    if (categories.length === 0) {
-      delete router.query.categories
-    }
+    const { categories, ...otherParams } = router.query
 
     router.push(
       {
         pathname: router.pathname,
-        query: categories.length === 0 ? router.query : { ...router.query, categories: categories.join(',') },
+        query:
+          selectedCategories.length === 0 ? otherParams : { ...router.query, categories: selectedCategories.join(',') },
       },
       undefined,
       {
