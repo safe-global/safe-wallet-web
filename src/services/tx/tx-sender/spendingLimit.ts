@@ -2,7 +2,13 @@ import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
-import { createAddDelegateTx, createResetAllowanceTx, createSetAllowanceTx } from '@/services/tx/spendingLimitParams'
+import {
+  createAddDelegateTx,
+  createEnableModuleTx,
+  createResetAllowanceTx,
+  createSetAllowanceTx,
+} from '@/services/tx/spendingLimitParams'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { parseUnits } from 'ethers'
 import { currentMinutes } from '@/utils/date'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender/create'
@@ -18,6 +24,8 @@ export const createNewSpendingLimitTx = async (
   data: NewSpendingLimitData,
   spendingLimits: SpendingLimitState[],
   chainId: string,
+  chain: ChainInfo | undefined,
+  deployed: boolean,
   tokenDecimals?: number,
   existingSpendingLimit?: SpendingLimitState,
 ) => {
@@ -27,16 +35,35 @@ export const createNewSpendingLimitTx = async (
 
   const txs: MetaTransactionData[] = []
 
-  const isSpendingLimitEnabled = await sdk.isModuleEnabled(spendingLimitAddress)
-  if (!isSpendingLimitEnabled) {
-    const enableModuleTx = await sdk.createEnableModuleTx(spendingLimitAddress)
+  if (!deployed) {
+    if (!chain) return
+
+    const enableModuleTx = await createEnableModuleTx(
+      chain,
+      await sdk.getAddress(),
+      await sdk.getContractVersion(),
+      spendingLimitAddress,
+    )
 
     const tx = {
-      to: enableModuleTx.data.to,
+      to: enableModuleTx.to,
       value: '0',
-      data: enableModuleTx.data.data,
+      data: enableModuleTx.data,
     }
+
     txs.push(tx)
+  } else {
+    const isSpendingLimitEnabled = await sdk.isModuleEnabled(spendingLimitAddress)
+    if (!isSpendingLimitEnabled) {
+      const enableModuleTx = await sdk.createEnableModuleTx(spendingLimitAddress)
+
+      const tx = {
+        to: enableModuleTx.data.to,
+        value: '0',
+        data: enableModuleTx.data.data,
+      }
+      txs.push(tx)
+    }
   }
 
   const existingDelegate = spendingLimits.find((spendingLimit) => spendingLimit.beneficiary === data.beneficiary)

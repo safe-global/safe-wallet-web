@@ -1,4 +1,3 @@
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import type { ChainInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -39,7 +38,9 @@ export const createAddOwnerTx = async (
   const safeSDK = getAndValidateSafeSDK()
   if (isDeployed) return safeSDK.createAddOwnerTx(txParams)
 
-  const contract = await getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
+  const safeVersion = await safeSDK.getContractVersion()
+
+  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
   // @ts-ignore TODO: Fix overload issue
   const data = contract.encode('addOwnerWithThreshold', [txParams.ownerAddress, txParams.threshold])
 
@@ -62,7 +63,9 @@ export const createSwapOwnerTx = async (
   const safeSDK = getAndValidateSafeSDK()
   if (isDeployed) return safeSDK.createSwapOwnerTx(txParams)
 
-  const contract = await getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
+  const safeVersion = await safeSDK.getContractVersion()
+
+  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
   const data = contract.encode('swapOwner', [SENTINEL_ADDRESS, txParams.oldOwnerAddress, txParams.newOwnerAddress])
 
   const tx = {
