@@ -1,4 +1,4 @@
-import useQueryFilter from '@/hooks/safe-apps/useQueryFilter'
+import useCategoryFilter from '@/hooks/safe-apps/useCategoryFilter'
 import { useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
@@ -28,7 +28,7 @@ const useSafeAppsFilters = (safeAppsList: SafeAppData[]): ReturnType => {
   const filteredAppsByQueryAndCategories = useAppsFilterByCategory(filteredAppsByQuery, selectedCategories)
   const filteredApps = useAppsFilterByOptimizedForBatch(filteredAppsByQueryAndCategories, optimizedWithBatchFilter)
 
-  const { onSelectCategories } = useQueryFilter({
+  const { onSelectCategories } = useCategoryFilter({
     safeAppsList,
     selectedCategories,
     setSelectedCategories,

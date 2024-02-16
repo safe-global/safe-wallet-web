@@ -3,8 +3,7 @@ import { useRouter } from 'next/router'
 import { getCategoryOptions } from '@/components/safe-apps/SafeAppsFilters'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
-// TODO: Add search and batch filter as well
-const useQueryFilter = ({
+const useCategoryFilter = ({
   safeAppsList,
   selectedCategories,
   setSelectedCategories,
@@ -52,4 +51,4 @@ const useQueryFilter = ({
   return { onSelectCategories }
 }
 
-export default useQueryFilter
+export default useCategoryFilter
