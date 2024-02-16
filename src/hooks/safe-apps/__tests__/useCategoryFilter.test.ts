@@ -1,10 +1,15 @@
-import { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import * as nextRouter from 'next/router'
 import useCategoryFilter from '@/hooks/safe-apps/useCategoryFilter'
 import { renderHook } from '@/tests/test-utils'
 
 describe('useCategoryFilter', () => {
   const mockSafeAppsList = [{ id: '1', name: 'CowSwap', tags: ['DeFi'] }] as unknown as SafeAppData[]
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should not set categories if there are none in the URL', () => {
     jest.spyOn(nextRouter, 'useRouter').mockImplementation(() => ({ isReady: true, query: {} } as any))
 
