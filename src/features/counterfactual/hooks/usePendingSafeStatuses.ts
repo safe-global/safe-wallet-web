@@ -100,7 +100,8 @@ const usePendingSafeStatus = (): void => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
         if (event === SafeCreationEvent.SUCCESS) {
-          trackEvent({ ...CREATE_SAFE_EVENTS.ACTIVATED_SAFE, label: 'counterfactual' })
+          // TODO: Possible to add a label with_tx, without_tx?
+          trackEvent(CREATE_SAFE_EVENTS.ACTIVATED_SAFE)
           pollSafeInfo(safe.chainId, safeAddress).finally(() => {
             safeCreationDispatch(SafeCreationEvent.INDEXED, { groupKey: detail.groupKey, safeAddress })
           })
