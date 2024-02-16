@@ -22,7 +22,6 @@ const EthHashInfo = ({
   return (
     <SrcEthHashInfo
       prefix={chain?.shortName}
-      showPrefix={settings.shortName.show}
       copyPrefix={settings.shortName.copy}
       {...props}
       name={name}
