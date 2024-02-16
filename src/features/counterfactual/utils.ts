@@ -33,7 +33,7 @@ import type { BrowserProvider, ContractTransactionResponse, Provider } from 'eth
 import type { NextRouter } from 'next/router'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
-  return Promise.resolve({
+  return {
     ...defaultSafeInfo,
     address: { value: address },
     chainId,
@@ -44,7 +44,7 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
     fallbackHandler: { value: undeployedSafe.safeAccountConfig.fallbackHandler! },
     version: undeployedSafe.safeDeploymentConfig?.safeVersion || LATEST_SAFE_VERSION,
     deployed: false,
-  })
+  }
 }
 
 export const CF_TX_GROUP_KEY = 'cf-tx'
@@ -56,7 +56,6 @@ export const dispatchTxExecutionAndDeploySafe = async (
   chainId: SafeInfo['chainId'],
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
-  const safeAddress = await sdkUnchecked.getAddress()
   const eventParams = { groupKey: CF_TX_GROUP_KEY }
 
   let result: ContractTransactionResponse | undefined

@@ -8,8 +8,19 @@ const useIntervalCounter = (interval: number): [number, () => void] => {
   }, [setCounter])
 
   useEffect(() => {
-    const timerId = setTimeout(() => setCounter(counter + 1), interval)
-    return () => clearTimeout(timerId)
+    let reqFrameId: number
+    const timerId = setTimeout(() => {
+      // requestAnimationFrame prevents the timer from ticking in a background tab
+      reqFrameId = requestAnimationFrame(() => {
+        setCounter(counter + 1)
+      })
+    }, interval)
+    return () => {
+      clearTimeout(timerId)
+      if (reqFrameId) {
+        cancelAnimationFrame(reqFrameId)
+      }
+    }
   }, [counter, interval])
 
   return [counter, resetCounter]

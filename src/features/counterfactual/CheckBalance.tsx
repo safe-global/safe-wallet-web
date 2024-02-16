@@ -1,6 +1,6 @@
 import ExternalLink from '@/components/common/ExternalLink'
+import ActivateAccountButton from '@/features/counterfactual/ActivateAccountButton'
 import Track from '@/components/common/Track'
-import { ActivateAccountButton } from '@/features/counterfactual/ActivateAccountFlow'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
