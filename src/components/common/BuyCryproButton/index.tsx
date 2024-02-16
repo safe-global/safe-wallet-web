@@ -9,6 +9,7 @@ import madProps from '@/utils/mad-props'
 import { useMemo } from 'react'
 import Track from '../Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
+import Grid from '@mui/material/Grid'
 
 const useOnrampAppUrl = (): string | undefined => {
   const [onrampApps] = useRemoteSafeApps(SafeAppsTag.ONRAMP)
@@ -34,13 +35,15 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
   if (!href) return null
 
   return (
-    <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON} label={pagePath}>
-      <Link href={href} passHref>
-        <Button variant="contained" size="small" sx={buttonStyles} fullWidth startIcon={<AddIcon />}>
-          Buy crypto
-        </Button>
-      </Link>
-    </Track>
+    <Grid item style={{ flex: 1 }}>
+      <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON} label={pagePath}>
+        <Link href={href} passHref>
+          <Button variant="contained" size="small" sx={buttonStyles} fullWidth startIcon={<AddIcon />}>
+            Buy crypto
+          </Button>
+        </Link>
+      </Track>
+    </Grid>
   )
 }
 

@@ -11,7 +11,7 @@ const openSafesIcon = '[data-testid="open-safes-icon"]'
 const qrModalBtn = '[data-testid="qr-modal-btn"]'
 const copyAddressBtn = '[data-testid="copy-address-btn"]'
 const explorerBtn = '[data-testid="explorer-btn"]'
-const sideBarListItem = '[data-testid="sidebar-list-item"]'
+export const sideBarListItem = '[data-testid="sidebar-list-item"]'
 const sideBarListItemWhatsNew = '[data-testid="list-item-whats-new"]'
 const sideBarListItemNeedHelp = '[data-testid="list-item-need-help"]'
 const sideSafeListItem = '[data-testid="safe-list-item"]'
@@ -115,6 +115,7 @@ export function verifySafesByNetwork(netwrok, safes) {
   cy.get(sidebarSafeContainer).within(() => {
     cy.get(chainLogo)
       .contains(netwrok)
+      .parent()
       .next()
       .within(() => {
         main.verifyValuesExist(sideSafeListItem, safes)

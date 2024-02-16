@@ -62,7 +62,7 @@ const ExploreSafeAppsCard = () => {
     <SafeAppCardContainer safeAppUrl={safeAppsLink} className={css.container}>
       <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
 
-      <Button variant="contained" size="small">
+      <Button data-testid="explore-apps-btn" variant="contained" size="small">
         Explore Safe Apps
       </Button>
     </SafeAppCardContainer>

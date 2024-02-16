@@ -21,15 +21,20 @@ export const persistState = <K extends keyof PreloadedRootState>(sliceNames: K[]
   return (store) => (next) => (action) => {
     const result = next(action)
 
-    const state = store.getState()
+    // No need to persist broadcasted actions because they are persisted in another tab
+    if (action._isBroadcasted) return result
 
-    for (const sliceName of sliceNames) {
-      const sliceState = state[sliceName]
+    const sliceType = action.type.split('/')[0]
+    const name = sliceNames.find((slice) => slice === sliceType)
+
+    if (name) {
+      const state = store.getState()
+      const sliceState = state[name]
 
       if (sliceState) {
-        local.setItem(sliceName, sliceState)
+        local.setItem(name, sliceState)
       } else {
-        local.removeItem(sliceName)
+        local.removeItem(name)
       }
     }
 

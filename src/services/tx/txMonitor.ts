@@ -51,7 +51,7 @@ export const waitForTx = async (provider: JsonRpcProvider, txIds: string[], txHa
   }
 }
 
-enum TaskState {
+export enum TaskState {
   CheckPending = 'CheckPending',
   ExecPending = 'ExecPending',
   ExecSuccess = 'ExecSuccess',
@@ -77,7 +77,7 @@ type TransactionStatusResponse = {
 const TASK_STATUS_URL = 'https://relay.gelato.digital/tasks/status'
 const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 
-const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStatusResponse } | undefined> => {
+export const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStatusResponse } | undefined> => {
   const url = getTaskTrackingUrl(taskId)
 
   let response

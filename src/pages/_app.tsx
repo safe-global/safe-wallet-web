@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { type ReactElement } from 'react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
+import { Provider } from 'react-redux'
 import CssBaseline from '@mui/material/CssBaseline'
 import type { Theme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
@@ -13,7 +14,7 @@ import { CacheProvider, type EmotionCache } from '@emotion/react'
 import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 import '@/styles/globals.css'
 import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
-import { StoreHydrator } from '@/store'
+import { makeStore, useHydrateStore } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
 import { useInitOnboard } from '@/hooks/wallets/useOnboard'
@@ -42,11 +43,15 @@ import { TxModalProvider } from '@/components/tx-flow'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import Recovery from '@/features/recovery/components/Recovery'
 import WalletProvider from '@/components/common/WalletProvider'
+import CounterfactualHooks from '@/features/counterfactual/CounterfactualHooks'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
+const reduxStore = makeStore()
+
 const InitApp = (): null => {
   setGatewayBaseUrl(GATEWAY_URL)
+  useHydrateStore(reduxStore)
   useAdjustUrl()
   useGtm()
   useNotificationTracking()
@@ -103,7 +108,7 @@ const WebCoreApp = ({
   const safeKey = useChangedValue(router.query.safe?.toString())
 
   return (
-    <StoreHydrator>
+    <Provider store={reduxStore}>
       <Head>
         <title key="default-title">{'Safe{Wallet}'}</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
@@ -126,9 +131,11 @@ const WebCoreApp = ({
           <PasswordRecoveryModal />
 
           <Recovery />
+
+          <CounterfactualHooks />
         </AppProviders>
       </CacheProvider>
-    </StoreHydrator>
+    </Provider>
   )
 }
 

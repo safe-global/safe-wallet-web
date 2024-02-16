@@ -12,12 +12,16 @@ const inactiveNftIcon = '[data-testid="nft-icon-border"]'
 const activeNftIcon = '[data-testid="nft-icon-primary"]'
 const nftCheckBox = (index) => `[data-testid="nft-checkbox-${index}"] > input`
 const activeSendNFTBtn = '[data-testid="nft-send-btn-false"]'
+const disabledSendNFTBtn = '[data-testid="nft-send-btn-true"]'
 const modalTitle = '[data-testid="modal-title"]'
 const modalHeader = '[data-testid="modal-header"]'
 const modalSelectedNFTs = '[data-testid="selected-nfts"]'
 const nftItemList = '[data-testid="nft-item-list"]'
 const nftItemNane = '[data-testid="nft-item-name"]'
 const signBtn = '[data-testid="sign-btn"]'
+const txDetailsSummary = '[data-testid="decoded-tx-summary"]'
+const txAccordionDetails = '[data-testid="decoded-tx-details"]'
+const accordionActionItem = '[data-testid="action-item"]'
 
 const noneNFTSelected = '0 NFTs selected'
 const sendNFTStr = 'Send NFTs'
@@ -29,6 +33,21 @@ const nextBtnStr = 'Next'
 const sendStr = 'Send'
 const toStr = 'To'
 const transferFromStr = 'safeTransferFrom'
+
+export function verifySendNFTBtnDisabled() {
+  cy.get(disabledSendNFTBtn).should('be.visible')
+}
+export function verifyTxDetails(data) {
+  main.verifyValuesExist(txDetailsSummary, data)
+}
+
+export function verifyCountOfActions(count) {
+  main.verifyElementsCount(accordionActionItem, count)
+}
+
+export function verifyActionName(index, name) {
+  cy.get(accordionActionItem).eq(index).should('contain', name)
+}
 
 export function clickOnNftsTab() {
   cy.get('p').contains('NFTs').click()

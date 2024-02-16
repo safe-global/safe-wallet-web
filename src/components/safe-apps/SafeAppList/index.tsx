@@ -54,7 +54,7 @@ const SafeAppList = ({
       <SafeAppsListHeader title={title} amount={safeAppsList.length} />
 
       {/* Safe Apps List */}
-      <ul className={css.safeAppsContainer}>
+      <ul data-testid="apps-list" className={css.safeAppsContainer}>
         {/* Add Custom Safe App Card */}
         {addCustomApp && (
           <li>

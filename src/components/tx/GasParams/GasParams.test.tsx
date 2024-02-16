@@ -49,7 +49,7 @@ describe('GasParams', () => {
     const params: AdvancedParameters = {
       gasLimit: BigInt('21000'),
       userNonce: 1,
-      maxFeePerGas: BigInt('10000'),
+      maxFeePerGas: BigInt('20000'),
       maxPriorityFeePerGas: BigInt('10000'),
     }
 
