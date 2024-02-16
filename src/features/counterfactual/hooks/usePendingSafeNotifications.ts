@@ -11,7 +11,7 @@ import { isWalletRejection } from '@/utils/wallets'
 const SafeCreationNotifications = {
   [SafeCreationEvent.PROCESSING]: 'Validating...',
   [SafeCreationEvent.RELAYING]: 'Validating...',
-  [SafeCreationEvent.SUCCESS]: 'Successfully executed.',
+  [SafeCreationEvent.INDEXED]: 'Successfully executed.',
   [SafeCreationEvent.FAILED]: 'Failed.',
   [SafeCreationEvent.REVERTED]: 'Reverted. Please check your gas settings.',
 }
@@ -37,7 +37,7 @@ const usePendingSafeNotifications = (): void => {
         const isError = 'error' in detail
         if (isError && isWalletRejection(detail.error)) return
 
-        const isSuccess = event === SafeCreationEvent.SUCCESS
+        const isSuccess = event === SafeCreationEvent.INDEXED
         const message = isError ? `${baseMessage} ${formatError(detail.error)}` : baseMessage
         const txHash = 'txHash' in detail ? detail.txHash : undefined
         const groupKey = 'groupKey' in detail && detail.groupKey ? detail.groupKey : txHash || ''

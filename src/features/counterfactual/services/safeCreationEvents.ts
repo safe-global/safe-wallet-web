@@ -6,6 +6,7 @@ export enum SafeCreationEvent {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
   REVERTED = 'REVERTED',
+  INDEXED = 'INDEXED',
 }
 
 export interface SafeCreationEvents {
@@ -18,6 +19,10 @@ export interface SafeCreationEvents {
     taskId: string
   }
   [SafeCreationEvent.SUCCESS]: {
+    groupKey: string
+    safeAddress: string
+  }
+  [SafeCreationEvent.INDEXED]: {
     groupKey: string
     safeAddress: string
   }

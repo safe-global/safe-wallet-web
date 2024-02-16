@@ -14,7 +14,7 @@ import { type BrowserProvider, type JsonRpcProvider } from 'ethers'
 
 describe('Counterfactual utils', () => {
   describe('getUndeployedSafeInfo', () => {
-    it('should return undeployed safe info', async () => {
+    it('should return undeployed safe info', () => {
       const undeployedSafe: PredictedSafeProps = {
         safeAccountConfig: {
           owners: [faker.finance.ethereumAddress()],
@@ -25,7 +25,7 @@ describe('Counterfactual utils', () => {
       const mockAddress = faker.finance.ethereumAddress()
       const mockChainId = '1'
 
-      const result = await getUndeployedSafeInfo(undeployedSafe, mockAddress, mockChainId)
+      const result = getUndeployedSafeInfo(undeployedSafe, mockAddress, mockChainId)
 
       expect(result.nonce).toEqual(0)
       expect(result.deployed).toEqual(false)

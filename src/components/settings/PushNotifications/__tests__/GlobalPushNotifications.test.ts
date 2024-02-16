@@ -1,4 +1,4 @@
-import type { PredictedSafeProps } from '@safe-global/protocol-kit'
+import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
@@ -90,9 +90,12 @@ describe('GlobalPushNotifications', () => {
       const undeployedSafes = {
         '1': {
           '0x456': {
-            safeAccountConfig: {},
-            safeDeploymentConfig: {},
-          } as PredictedSafeProps,
+            props: {
+              safeAccountConfig: {},
+              safeDeploymentConfig: {},
+            },
+            status: {},
+          } as UndeployedSafe,
         },
       }
 

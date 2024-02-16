@@ -10,7 +10,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
-import { PendingSafeStatus, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { CF_TX_GROUP_KEY } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -26,7 +26,7 @@ import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppSelector } from '@/store'
 import { hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { Alert, Box, Button, CircularProgress, Divider, Grid, Tooltip, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import React, { useContext, useState } from 'react'
@@ -201,43 +201,4 @@ const ActivateAccountFlow = () => {
   )
 }
 
-const ActivateAccount = () => {
-  const { safe, safeAddress } = useSafeInfo()
-  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, safeAddress))
-  const { setTxFlow } = useContext(TxModalContext)
-
-  if (safe.deployed) return null
-
-  const isProcessing = undeployedSafe?.status.status !== PendingSafeStatus.AWAITING_EXECUTION
-
-  const activateAccount = () => {
-    setTxFlow(<ActivateAccountFlow />)
-  }
-
-  return (
-    <Alert severity="info" sx={{ mb: 3 }}>
-      <Typography fontWeight="bold">Activate your account?</Typography>
-      <Typography variant="body2" mb={3}>
-        Activate your account now by deploying it and paying a network fee.
-      </Typography>
-      <Tooltip title={isProcessing ? 'The safe activation is already in process' : undefined}>
-        <span>
-          <Button variant="contained" size="small" onClick={activateAccount} disabled={isProcessing}>
-            {isProcessing ? (
-              <>
-                <Typography variant="body2" component="span" mr={1}>
-                  Processing
-                </Typography>
-                <CircularProgress size={16} />
-              </>
-            ) : (
-              'Activate now'
-            )}
-          </Button>
-        </span>
-      </Tooltip>
-    </Alert>
-  )
-}
-
-export default ActivateAccount
+export default ActivateAccountFlow

@@ -1,3 +1,5 @@
+import TokenAmount from '@/components/common/TokenAmount'
+import CounterfactualStatusButton from '@/features/counterfactual/CounterfactualStatusButton'
 import { type ReactElement, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
@@ -71,13 +73,21 @@ const SafeHeader = (): ReactElement => {
             )}
 
             <Typography data-testid="currency-section" variant="body2" fontWeight={700}>
-              {fiatTotal || <Skeleton variant="text" width={60} />}
+              {safe.deployed ? (
+                fiatTotal || <Skeleton variant="text" width={60} />
+              ) : (
+                <TokenAmount
+                  value={balances.items[0]?.balance}
+                  decimals={balances.items[0]?.tokenInfo.decimals}
+                  tokenSymbol={balances.items[0]?.tokenInfo.symbol}
+                />
+              )}
             </Typography>
           </div>
         </div>
 
         <div className={css.iconButtons}>
-          <Track {...OVERVIEW_EVENTS.SHOW_QR}>
+          <Track {...OVERVIEW_EVENTS.SHOW_QR} label="sidebar">
             <QrCodeButton>
               <Tooltip title="Open QR code" placement="top">
                 <IconButton className={css.iconButton}>
@@ -98,6 +108,8 @@ const SafeHeader = (): ReactElement => {
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
             <ExplorerButton {...blockExplorerLink} className={css.iconButton} icon={LinkIconBold} />
           </Track>
+
+          <CounterfactualStatusButton />
 
           <EnvHintButton />
         </div>

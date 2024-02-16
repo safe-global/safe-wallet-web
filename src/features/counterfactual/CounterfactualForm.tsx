@@ -109,18 +109,25 @@ export const CounterfactualForm = ({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <Alert severity="info" sx={{ mb: 2 }}>
-          Executing this transaction will also activate your account. Additional network fees will apply. Base fee is{' '}
-          <strong>
-            {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeTxGas || '0'), chain)}{' '}
-            {chain?.nativeCurrency.symbol}
-          </strong>
-          , one time activation fee is{' '}
-          <strong>
-            {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeDeploymentGas || '0'), chain)}{' '}
-            {chain?.nativeCurrency.symbol}
-          </strong>
-          . This is an estimation and the final cost can be higher.
+        <Alert severity="info" sx={{ mb: 2, border: 0 }}>
+          Executing this transaction will activate your account.
+          <br />
+          <ul style={{ margin: 0, padding: '4px 16px 0' }}>
+            <li>
+              Base fee: &asymp;{' '}
+              <strong>
+                {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeTxGas || '0'), chain)}{' '}
+                {chain?.nativeCurrency.symbol}
+              </strong>
+            </li>
+            <li>
+              One-time activation fee: &asymp;{' '}
+              <strong>
+                {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeDeploymentGas || '0'), chain)}{' '}
+                {chain?.nativeCurrency.symbol}
+              </strong>
+            </li>
+          </ul>
         </Alert>
 
         <div className={classNames(css.params)}>

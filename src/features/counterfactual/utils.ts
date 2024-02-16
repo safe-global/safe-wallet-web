@@ -16,7 +16,7 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { showNotification } from '@/store/notificationsSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { getBlockExplorerLink } from '@/utils/chains'
-import { didReprice, didRevert, type EthersError } from '@/utils/ethers-utils'
+import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
@@ -33,7 +33,7 @@ import type { BrowserProvider, ContractTransactionResponse, Provider } from 'eth
 import type { NextRouter } from 'next/router'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
-  return Promise.resolve({
+  return {
     ...defaultSafeInfo,
     address: { value: address },
     chainId,
@@ -44,7 +44,7 @@ export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, addres
     fallbackHandler: { value: undeployedSafe.safeAccountConfig.fallbackHandler! },
     version: undeployedSafe.safeDeploymentConfig?.safeVersion || LATEST_SAFE_VERSION,
     deployed: false,
-  })
+  }
 }
 
 export const CF_TX_GROUP_KEY = 'cf-tx'
@@ -56,7 +56,6 @@ export const dispatchTxExecutionAndDeploySafe = async (
   chainId: SafeInfo['chainId'],
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
-  const safeAddress = await sdkUnchecked.getAddress()
   const eventParams = { groupKey: CF_TX_GROUP_KEY }
 
   let result: ContractTransactionResponse | undefined
@@ -80,33 +79,6 @@ export const dispatchTxExecutionAndDeploySafe = async (
   }
 
   safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
-
-  result
-    ?.wait()
-    .then((receipt) => {
-      if (receipt === null) {
-        safeCreationDispatch(SafeCreationEvent.FAILED, {
-          ...eventParams,
-          error: new Error('No transaction receipt found'),
-        })
-      } else if (didRevert(receipt)) {
-        safeCreationDispatch(SafeCreationEvent.REVERTED, {
-          ...eventParams,
-          error: new Error('Transaction reverted by EVM'),
-        })
-      } else {
-        safeCreationDispatch(SafeCreationEvent.SUCCESS, { ...eventParams, safeAddress })
-      }
-    })
-    .catch((err) => {
-      const error = err as EthersError
-
-      if (didReprice(error)) {
-        safeCreationDispatch(SafeCreationEvent.SUCCESS, { ...eventParams, safeAddress })
-      } else {
-        safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error) })
-      }
-    })
 
   return result!.hash
 }
@@ -221,6 +193,30 @@ export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo,
   )
 }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+/**
+ * Calling getTransaction too fast sometimes fails because the txHash hasn't been
+ * picked up by any node yet so we should retry a few times with short delays to
+ * make sure the transaction really does/does not exist
+ * @param provider
+ * @param txHash
+ * @param maxAttempts
+ * @param delayMs
+ */
+async function retryGetTransaction(provider: Provider, txHash: string, maxAttempts = 3, delayMs = 1000) {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const txResponse = await provider.getTransaction(txHash)
+    if (txResponse !== null) {
+      return txResponse
+    }
+    if (attempt < maxAttempts - 1) {
+      await delay(delayMs)
+    }
+  }
+  throw new Error('Transaction not found')
+}
+
 // TODO: Reuse this for safe creation flow instead of checkSafeCreationTx
 export const checkSafeActivation = async (
   provider: Provider,
@@ -231,13 +227,10 @@ export const checkSafeActivation = async (
   const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
   try {
-    const txResponse = await provider.getTransaction(txHash)
-    if (txResponse === null) {
-      throw new Error('Transaction not found')
-    }
+    const txResponse = await retryGetTransaction(provider, txHash)
 
     const replaceableTx = startBlock ? txResponse.replaceableTransaction(startBlock) : txResponse
-    const receipt = await replaceableTx.wait(1, TIMEOUT_TIME)
+    const receipt = await replaceableTx?.wait(1, TIMEOUT_TIME)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {

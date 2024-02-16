@@ -44,7 +44,7 @@ const PayNowPayLater = ({
       </Typography>
       <List>
         <ListItem disableGutters>
-          <ListItemIcon sx={{ minWidth: 0, mr: 1, color: 'black' }}>
+          <ListItemIcon className={css.listItem}>
             <CheckRoundedIcon fontSize="small" color="inherit" />
           </ListItemIcon>
           <Typography variant="body2">
@@ -52,7 +52,7 @@ const PayNowPayLater = ({
           </Typography>
         </ListItem>
         <ListItem disableGutters>
-          <ListItemIcon sx={{ minWidth: 0, mr: 1, color: 'black' }}>
+          <ListItemIcon className={css.listItem}>
             <CheckRoundedIcon fontSize="small" color="inherit" />
           </ListItemIcon>
           <Typography variant="body2">
@@ -60,7 +60,7 @@ const PayNowPayLater = ({
           </Typography>
         </ListItem>
         <ListItem disableGutters>
-          <ListItemIcon sx={{ minWidth: 0, mr: 1, color: 'black' }}>
+          <ListItemIcon className={css.listItem}>
             <CheckRoundedIcon fontSize="small" color="inherit" />
           </ListItemIcon>
           <Typography variant="body2">Safe doesn&apos;t profit from the fees.</Typography>

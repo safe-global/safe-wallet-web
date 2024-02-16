@@ -1,4 +1,9 @@
-import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
+import { pollSafeInfo } from '@/components/new-safe/create/logic'
+import {
+  safeCreationDispatch,
+  SafeCreationEvent,
+  safeCreationSubscribe,
+} from '@/features/counterfactual/services/safeCreationEvents'
 import {
   PendingSafeStatus,
   removeUndeployedSafe,
@@ -6,16 +11,17 @@ import {
   updateUndeployedSafeStatus,
 } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { checkSafeActionViaRelay, checkSafeActivation } from '@/features/counterfactual/utils'
+import useChainId from '@/hooks/useChainId'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { useEffect, useRef } from 'react'
-import useChainId from '@/hooks/useChainId'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
-const pendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
+export const safeCreationPendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
   [SafeCreationEvent.PROCESSING]: PendingSafeStatus.PROCESSING,
   [SafeCreationEvent.RELAYING]: PendingSafeStatus.RELAYING,
   [SafeCreationEvent.SUCCESS]: null,
+  [SafeCreationEvent.INDEXED]: null,
   [SafeCreationEvent.FAILED]: null,
   [SafeCreationEvent.REVERTED]: null,
 }
@@ -32,6 +38,10 @@ const usePendingSafeMonitor = (): void => {
 
   // Monitor pending safe creation mining/validating progress
   useEffect(() => {
+    if (undeployedSafe?.status.status === PendingSafeStatus.AWAITING_EXECUTION) {
+      monitoredSafes.current[safeAddress] = false
+    }
+
     if (!provider || !undeployedSafe || undeployedSafe.status.status === PendingSafeStatus.AWAITING_EXECUTION) {
       return
     }
@@ -86,17 +96,20 @@ const usePendingSafeStatus = (): void => {
 
   // Subscribe to pending safe statuses
   useEffect(() => {
-    const unsubFns = Object.entries(pendingStatuses).map(([event, status]) =>
+    const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
-        // Clear the pending status if the tx is no longer pending
-        const isSuccess = event === SafeCreationEvent.SUCCESS
-        if (isSuccess) {
-          dispatch(removeUndeployedSafe({ chainId: safe.chainId, address: safeAddress }))
+        if (event === SafeCreationEvent.SUCCESS) {
+          pollSafeInfo(safe.chainId, safeAddress).finally(() => {
+            safeCreationDispatch(SafeCreationEvent.INDEXED, { groupKey: detail.groupKey, safeAddress })
+          })
           return
         }
 
-        const isError = status === null
-        if (isError) {
+        if (event === SafeCreationEvent.INDEXED) {
+          dispatch(removeUndeployedSafe({ chainId: safe.chainId, address: safeAddress }))
+        }
+
+        if (status === null) {
           dispatch(
             updateUndeployedSafeStatus({
               chainId: safe.chainId,

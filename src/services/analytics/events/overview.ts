@@ -116,6 +116,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Create new Safe',
     category: OVERVIEW_CATEGORY,
   },
+  SELECT_ONRAMP_APP: {
+    action: 'Select on-ramp app',
+    category: OVERVIEW_CATEGORY,
+  },
 }
 
 export enum OPEN_SAFE_LABELS {
