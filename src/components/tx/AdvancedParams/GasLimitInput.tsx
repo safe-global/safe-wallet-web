@@ -1,3 +1,4 @@
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { FormControl, IconButton, Tooltip } from '@mui/material'
 import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useFormContext } from 'react-hook-form'
@@ -6,6 +7,8 @@ import { AdvancedField } from './types.d'
 import NumberField from '@/components/common/NumberField'
 
 const GasLimitInput = ({ recommendedGasLimit }: { recommendedGasLimit?: string }) => {
+  const { safe } = useSafeInfo()
+
   const {
     register,
     watch,
@@ -48,6 +51,7 @@ const GasLimitInput = ({ recommendedGasLimit }: { recommendedGasLimit?: string }
         InputLabelProps={{
           shrink: currentGasLimit !== undefined,
         }}
+        disabled={!safe.deployed}
         required
         {...register(AdvancedField.gasLimit, { required: true, min: BASE_TX_GAS })}
       />
