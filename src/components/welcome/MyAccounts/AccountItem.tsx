@@ -57,8 +57,8 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
                 {name}
               </Typography>
             )}
-            <b>{chain?.shortName}: </b>
-            <Typography color="text.secondary" fontSize="inherit" component="span">
+            {chain?.shortName}:
+            <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
             </Typography>
           </Typography>

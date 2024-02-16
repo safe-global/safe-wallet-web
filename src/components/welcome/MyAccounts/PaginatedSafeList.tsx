@@ -36,7 +36,7 @@ const PaginatedSafeList = ({ safes, title, action, onLinkClick }: PaginatedSafeL
         <Typography variant="h5" fontWeight={700} mb={2} className={css.listTitle}>
           {title}
           {safes.length > 0 && (
-            <Typography component="span" color="text.secondary" fontSize="inherit" fontWeight="normal">
+            <Typography component="span" color="var(--color-primary-light)" fontSize="inherit" fontWeight="normal">
               {' '}
               ({safes.length})
             </Typography>
