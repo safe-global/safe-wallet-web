@@ -30,22 +30,22 @@ const useCategoryFilter = ({
     }
   }, [router.isReady, router.query.categories, safeAppsList, selectedCategories.length, setSelectedCategories])
 
-  const onSelectCategories = (selectedCategories: string[]) => {
-    setSelectedCategories(selectedCategories)
+  const onSelectCategories = async (selectedCategories: string[]) => {
+    const { categories, ...restProps } = router.query
 
-    const { categories, ...otherParams } = router.query
-
-    router.push(
+    await router.push(
       {
         pathname: router.pathname,
         query:
-          selectedCategories.length === 0 ? otherParams : { ...router.query, categories: selectedCategories.join(',') },
+          selectedCategories.length === 0 ? restProps : { ...router.query, categories: selectedCategories.join(',') },
       },
       undefined,
       {
         shallow: true,
       },
     )
+
+    setSelectedCategories(selectedCategories)
   }
 
   return { onSelectCategories }
