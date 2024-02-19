@@ -190,7 +190,7 @@ const categoryMenuProps = {
   },
 }
 
-const getCategoryOptions = (safeAppList: SafeAppData[]): safeAppCatogoryOptionType[] => {
+export const getCategoryOptions = (safeAppList: SafeAppData[]): safeAppCatogoryOptionType[] => {
   return getUniqueTags(safeAppList).map((category) => ({
     label: category,
     value: category,

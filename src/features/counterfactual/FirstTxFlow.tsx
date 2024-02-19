@@ -79,9 +79,8 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   }
 
   const onSwap = () => {
-    // TODO: Pre-filter DeFi category apps
     trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'swap' })
-    router.push({ pathname: AppRoutes.apps.index, query: router.query })
+    router.push({ pathname: AppRoutes.apps.index, query: { ...router.query, categories: 'Aggregator' } })
   }
 
   const onCustomTransaction = () => {
