@@ -1,7 +1,9 @@
 import ExternalLink from '@/components/common/ExternalLink'
 import ActivateAccountButton from '@/features/counterfactual/ActivateAccountButton'
+import Track from '@/components/common/Track'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import { getBlockExplorerLink } from '@/utils/chains'
 import { Alert, Typography } from '@mui/material'
 
@@ -24,7 +26,9 @@ const CheckBalance = () => {
         {blockExplorerLink && (
           <>
             You can always view all of your assets on the{' '}
-            <ExternalLink href={blockExplorerLink.href}>Block Explorer</ExternalLink>
+            <Track {...COUNTERFACTUAL_EVENTS.CHECK_BALANCES}>
+              <ExternalLink href={blockExplorerLink.href}>Block Explorer</ExternalLink>
+            </Track>
           </>
         )}
       </Typography>

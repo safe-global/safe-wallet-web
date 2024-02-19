@@ -1,5 +1,6 @@
 import { AppRoutes } from '@/config/routes'
 import dynamic from 'next/dynamic'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useRouter } from 'next/router'
 import { type ElementType, useContext } from 'react'
 import { Box, ButtonBase, Grid, SvgIcon, Typography } from '@mui/material'
@@ -58,29 +59,35 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   }
 
   const onSendToken = () => {
+    trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'send_token' })
     setTxFlow(<TokenTransferFlow />)
   }
 
   const onActivateSafe = () => {
+    trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'activate_safe' })
     setTxFlow(<ActivateAccountFlow />)
   }
 
   const onAddSigner = () => {
+    trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'add_signer' })
     setTxFlow(<AddOwnerFlow />)
   }
 
   const onRecovery = () => {
+    trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'setup_recovery' })
     setTxFlow(<UpsertRecoveryFlow />)
   }
 
   const onSwap = () => {
     // TODO: Pre-filter DeFi category apps
+    trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'swap' })
     router.push({ pathname: AppRoutes.apps.index, query: router.query })
   }
 
   const onCustomTransaction = () => {
     if (!txBuilder) return
 
+    trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'tx_builder' })
     router.push(txBuilder.link)
   }
 

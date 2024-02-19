@@ -11,7 +11,7 @@ const NewTxButton = (): ReactElement => {
 
   const onClick = () => {
     setTxFlow(<NewTxFlow />, undefined, false)
-    trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
+    trackEvent({ ...OVERVIEW_EVENTS.NEW_TRANSACTION, label: 'sidebar' })
   }
 
   return (

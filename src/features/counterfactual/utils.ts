@@ -174,7 +174,7 @@ export const createCounterfactualSafe = (
       },
     }),
   )
-  router.push({
+  return router.push({
     pathname: AppRoutes.home,
     query: { safe: `${chain.shortName}:${safeAddress}`, [CREATION_MODAL_QUERY_PARM]: true },
   })
