@@ -1,3 +1,5 @@
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { useEffect, useMemo, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { Typography, Grid, Alert } from '@mui/material'
@@ -18,7 +20,9 @@ import { SafeTxContext } from '../../SafeTxProvider'
 
 export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowProps }) => {
   const spendingLimits = useSelector(selectSpendingLimits)
+  const { safe } = useSafeInfo()
   const chainId = useChainId()
+  const chain = useCurrentChain()
   const { balances } = useBalances()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -32,10 +36,20 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   }, [spendingLimits, params])
 
   useEffect(() => {
-    createNewSpendingLimitTx(params, spendingLimits, chainId, decimals, existingSpendingLimit)
+    createNewSpendingLimitTx(params, spendingLimits, chainId, chain, safe.deployed, decimals, existingSpendingLimit)
       .then(setSafeTx)
       .catch(setSafeTxError)
-  }, [chainId, decimals, existingSpendingLimit, params, setSafeTx, setSafeTxError, spendingLimits])
+  }, [
+    chain,
+    chainId,
+    decimals,
+    existingSpendingLimit,
+    params,
+    safe.deployed,
+    setSafeTx,
+    setSafeTxError,
+    spendingLimits,
+  ])
 
   const isOneTime = params.resetTime === '0'
   const resetTime = useMemo(() => {
