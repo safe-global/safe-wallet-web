@@ -5,7 +5,7 @@ import { formatJsonRpcError } from '@walletconnect/jsonrpc-utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
 import { asError } from '@/services/exceptions/utils'
-import { IS_PRODUCTION, WalletConnectSafeApp } from '@/config/constants'
+import { IS_PRODUCTION, WC_APP_DEV, WC_APP_PROD } from '@/config/constants'
 import { getPeerName, stripEip155Prefix } from '@/features/walletconnect/services/utils'
 import { trackRequest } from '@/features/walletconnect//services/tracking'
 import { wcPopupStore } from '@/features/walletconnect/components'
@@ -15,6 +15,8 @@ import { WalletConnectContext } from '@/features/walletconnect/WalletConnectCont
 enum Errors {
   WRONG_CHAIN = '%%dappName%% made a request on a different chain than the one you are connected to',
 }
+
+const WalletConnectSafeApp = IS_PRODUCTION ? WC_APP_PROD : WC_APP_DEV
 
 const walletConnectSingleton = new WalletConnectWallet()
 

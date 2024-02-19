@@ -1,4 +1,4 @@
-import { WalletConnectSafeApp } from '@/config/constants'
+import { WC_APP_PROD, WC_APP_DEV } from '@/config/constants'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const _replaceTemplate = (uri: string, data: Record<string, string>): string => {
@@ -29,5 +29,5 @@ export const getExplorerLink = (
 }
 
 export const isWalletConnectSafeApp = (url: string): boolean => {
-  return url === WalletConnectSafeApp.url
+  return url === WC_APP_PROD.url || url === WC_APP_DEV.url
 }

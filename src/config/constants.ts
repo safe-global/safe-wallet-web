@@ -58,15 +58,14 @@ export enum SafeAppsTag {
   ONRAMP = 'onramp',
 }
 
-export const WalletConnectSafeApp = IS_PRODUCTION
-  ? {
-      id: 111,
-      url: 'https://apps-portal.safe.global/wallet-connect',
-    }
-  : {
-      id: 25,
-      url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
-    }
+export const WC_APP_PROD = {
+  id: 111,
+  url: 'https://apps-portal.safe.global/wallet-connect',
+}
+export const WC_APP_DEV = {
+  id: 25,
+  url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
+}
 
 // Safe Gelato relay service
 export const SAFE_RELAY_SERVICE_URL_PRODUCTION =
