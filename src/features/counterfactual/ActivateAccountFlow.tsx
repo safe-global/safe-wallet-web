@@ -83,10 +83,6 @@ const ActivateAccountFlow = () => {
   const { owners, threshold } = undeployedSafe.props.safeAccountConfig
   const { saltNonce, safeVersion } = undeployedSafe.props.safeDeploymentConfig || {}
 
-  const onSuccess = () => {
-    safeCreationDispatch(SafeCreationEvent.SUCCESS, { groupKey: CF_TX_GROUP_KEY, safeAddress })
-  }
-
   const onSubmit = (txHash?: string) => {
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_without_tx })
     trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_without_tx })
@@ -123,7 +119,6 @@ const ActivateAccountFlow = () => {
           },
           safeVersion,
         )
-        onSuccess()
       }
     } catch (_err) {
       const err = asError(_err)
