@@ -7,11 +7,11 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 
 type PaginatedSafeListProps = {
   safes: SafeItems
   title: ReactNode
+  noSafesMessage?: ReactNode
   action?: ReactElement
   onLinkClick?: () => void
 }
@@ -20,10 +20,9 @@ const DEFAULT_SHOWN = 5
 const MAX_DEFAULT_SHOWN = 7
 const PAGE_SIZE = 5
 
-const PaginatedSafeList = ({ safes, title, action, onLinkClick }: PaginatedSafeListProps) => {
+const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }: PaginatedSafeListProps) => {
   const [maxShownSafes, setMaxShownSafes] = useState<number>(DEFAULT_SHOWN)
   const wallet = useWallet()
-  const handleConnect = useConnectWallet()
 
   const shownSafes = useMemo(() => {
     if (safes.length <= MAX_DEFAULT_SHOWN) {
@@ -50,16 +49,9 @@ const PaginatedSafeList = ({ safes, title, action, onLinkClick }: PaginatedSafeL
       </div>
       {shownSafes.length ? (
         shownSafes.map((item) => <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />)
-      ) : !wallet ? (
-        <Typography variant="body2" color="text.secondary" textAlign="center" my={3} mx="auto" width={250}>
-          Connect a wallet to view your Safe Accounts or to create a new one
-          <Button onClick={handleConnect} disableElevation size="small" sx={{ mt: 2 }}>
-            Connect a wallet
-          </Button>
-        </Typography>
       ) : (
-        <Typography variant="body2" color="text.secondary" textAlign="center" my={3}>
-          You don&apos;t have any Safe Accounts yet
+        <Typography variant="body2" color="text.secondary" textAlign="center" my={3} mx="auto" width={250}>
+          {noSafesMessage}
         </Typography>
       )}
       {safes.length > shownSafes.length && (
