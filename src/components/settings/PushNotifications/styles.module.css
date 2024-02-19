@@ -1,5 +1,5 @@
 .macOsInfo {
-  border-color: var(--color-border-light);
+  border-color: var(--color-info-main);
   background-color: var(--color-background-main);
   padding: var(--space-2);
 }

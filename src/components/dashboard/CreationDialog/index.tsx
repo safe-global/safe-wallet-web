@@ -1,9 +1,11 @@
-import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { selectUndeployedSafe, type UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { trackEvent } from '@/services/analytics'
+import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import { useAppSelector } from '@/store'
 import type { PredictedSafeProps } from '@safe-global/protocol-kit'
-import React, { type ElementType } from 'react'
+import React, { type ElementType, type MouseEvent } from 'react'
 import { Alert, Box, Button, Dialog, DialogContent, Grid, Link, SvgIcon, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
@@ -47,9 +49,6 @@ const backupSafe = (chainId: string, safeAddress: string, undeployedSafe: Predic
   link.href = window.URL.createObjectURL(blob)
   link.dataset.downloadurl = ['text/json', link.download, link.href].join(':')
   link.dispatchEvent(new MouseEvent('click'))
-
-  // TODO: Track this as an event
-  // trackEvent(COUNTERFACTUAL_EVENTS.EXPORT_SAFE)
 }
 
 const CreationDialog = () => {
@@ -66,6 +65,12 @@ const CreationDialog = () => {
     router.replace({ pathname: router.pathname, query })
 
     setOpen(false)
+  }
+
+  const onBackup = (e: MouseEvent<HTMLAnchorElement>, undeployedSafe: UndeployedSafe) => {
+    e.preventDefault()
+    trackEvent(COUNTERFACTUAL_EVENTS.BACKUP_COUNTERFACTUAL_SAFE)
+    backupSafe(chainId, safeAddress, undeployedSafe.props)
   }
 
   return (
@@ -106,13 +111,7 @@ const CreationDialog = () => {
         {undeployedSafe && (
           <Alert severity="info" sx={{ mb: 2 }}>
             We recommend{' '}
-            <Link
-              href="#"
-              onClick={(e) => {
-                e.preventDefault()
-                backupSafe(chainId, safeAddress, undeployedSafe.props)
-              }}
-            >
+            <Link href="#" onClick={(e) => onBackup(e, undeployedSafe)}>
               backing up your Safe Account
             </Link>{' '}
             in case you lose access to this device.

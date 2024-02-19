@@ -49,7 +49,7 @@ const _BuyCryptoOptions = ({ rampLink }: { rampLink?: LinkProps['href'] }) => {
   if (rampLink) {
     return (
       <Box position="relative">
-        <Track {...OVERVIEW_EVENTS.SELECT_ONRAMP_APP} label="Ramp">
+        <Track {...OVERVIEW_EVENTS.BUY_CRYPTO_BUTTON} label="onboarding">
           <Link href={rampLink} passHref>
             <BuyCryptoOption name="Ramp">
               <RampLogo />

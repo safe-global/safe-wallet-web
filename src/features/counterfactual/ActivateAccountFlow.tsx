@@ -21,6 +21,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { asError } from '@/services/exceptions/utils'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppSelector } from '@/store'
@@ -86,6 +88,10 @@ const ActivateAccountFlow = () => {
   }
 
   const onSubmit = (txHash?: string) => {
+    trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_without_tx })
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_without_tx })
+    trackEvent(WALLET_EVENTS.ONCHAIN_INTERACTION)
+
     if (txHash) {
       safeCreationDispatch(SafeCreationEvent.PROCESSING, { groupKey: CF_TX_GROUP_KEY, txHash })
     }
@@ -94,6 +100,8 @@ const ActivateAccountFlow = () => {
 
   const createSafe = async () => {
     if (!provider || !chain) return
+
+    trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_without_tx })
 
     setIsSubmittable(false)
     setSubmitError(undefined)

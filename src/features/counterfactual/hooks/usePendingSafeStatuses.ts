@@ -14,6 +14,7 @@ import { checkSafeActionViaRelay, checkSafeActivation } from '@/features/counter
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { useEffect, useRef } from 'react'
 
@@ -99,6 +100,8 @@ const usePendingSafeStatus = (): void => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
         if (event === SafeCreationEvent.SUCCESS) {
+          // TODO: Possible to add a label with_tx, without_tx?
+          trackEvent(CREATE_SAFE_EVENTS.ACTIVATED_SAFE)
           pollSafeInfo(safe.chainId, safeAddress).finally(() => {
             safeCreationDispatch(SafeCreationEvent.INDEXED, { groupKey: detail.groupKey, safeAddress })
           })

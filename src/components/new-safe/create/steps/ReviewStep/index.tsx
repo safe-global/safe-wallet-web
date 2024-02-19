@@ -25,6 +25,7 @@ import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRe
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppDispatch } from '@/store'
@@ -211,7 +212,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
-        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
+        trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
+        await createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
+        trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
         return
       }
 
@@ -221,6 +224,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         safeAddress,
         willRelay,
       }
+
+      trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'deployment', category: CREATE_SAFE_CATEGORY })
 
       setPendingSafe(pendingSafe)
       onSubmit(pendingSafe)
@@ -262,7 +267,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
             {payMethod === PayMethod.PayNow && (
               <Grid item>
-                <Typography mt={2}>
+                <Typography component="div" mt={2}>
                   You will have to confirm a transaction and pay an estimated fee of{' '}
                   <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} inline /> with your connected
                   wallet
