@@ -2,7 +2,7 @@ import { act, render, waitFor } from '@/tests/test-utils'
 import * as useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import WalletLogin from '../WalletLogin'
-import { hexZeroPad } from '@ethersproject/bytes'
+import { toBeHex } from 'ethers'
 import { type EIP1193Provider } from '@web3-onboard/common'
 import { shortenAddress } from '@/utils/formatters'
 
@@ -13,7 +13,7 @@ describe('WalletLogin', () => {
 
   it('should render continue with connected wallet', async () => {
     const mockOnLogin = jest.fn()
-    const walletAddress = hexZeroPad('0x1', 20)
+    const walletAddress = toBeHex('0x1', 20)
     jest.spyOn(useWallet, 'default').mockReturnValue({
       address: walletAddress,
       chainId: '5',
@@ -39,7 +39,7 @@ describe('WalletLogin', () => {
 
   it('should render connect wallet if no wallet is connected', async () => {
     const mockOnLogin = jest.fn()
-    const walletAddress = hexZeroPad('0x1', 20)
+    const walletAddress = toBeHex('0x1', 20)
     const mockUseWallet = jest.spyOn(useWallet, 'default').mockReturnValue(null)
     jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn().mockReturnValue([{}]))
 

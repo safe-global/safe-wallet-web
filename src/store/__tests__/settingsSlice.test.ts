@@ -1,13 +1,13 @@
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { setHiddenTokensForChain, settingsSlice, isEnvInitialState, initialState } from '../settingsSlice'
 import type { SettingsState } from '../settingsSlice'
 import type { RootState } from '..'
 
 describe('settingsSlice', () => {
   it('handle hiddenTokens', () => {
-    const token1 = hexZeroPad('0x1', 20)
-    const token2 = hexZeroPad('0x2', 20)
-    const token3 = hexZeroPad('0x3', 20)
+    const token1 = toBeHex('0x1', 20)
+    const token2 = toBeHex('0x2', 20)
+    const token3 = toBeHex('0x3', 20)
 
     let state = settingsSlice.reducer(undefined, setHiddenTokensForChain({ chainId: '1', assets: [token1] }))
     expect(state.hiddenTokens).toEqual({

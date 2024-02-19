@@ -1,5 +1,4 @@
-import { networks } from '@safe-global/safe-core-sdk-utils/dist/src/eip-3770/config'
-
+import { networks } from '@safe-global/protocol-kit/dist/src/utils/eip-3770/config'
 /**
  * A static shortName<->chainId dictionary
  * E.g.:
@@ -25,7 +24,8 @@ const ChainLogos = {
   [chains.matic]: '/images/networks/polygon.svg',
   [chains.aurora]: '/images/networks/aurora.svg',
   [chains.base]: '/images/networks/base.svg',
-  [chains['base-gor']]: '/images/networks/base.svg',
+  [chains.basegor]: '/images/networks/base.svg',
+  [chains.basesep]: '/images/networks/base.svg',
   [chains.zkevm]: '/images/networks/polygon.svg',
   [chains.zksync]: '/images/networks/zksync.svg',
   [chains.celo]: '/images/networks/celo.svg',

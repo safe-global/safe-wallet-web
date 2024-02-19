@@ -1,4 +1,6 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import { useTheme } from '@mui/material/styles'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
@@ -17,8 +19,6 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 
-const keepPathRoutes = [AppRoutes.welcome.index, AppRoutes.newSafe.create, AppRoutes.newSafe.load]
-
 const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(props: any, ref) {
   return (
     <Tooltip title="More network support coming soon" arrow placement="left">
@@ -29,25 +29,22 @@ const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(pr
   )
 })
 
-const testNets = ['gor', 'base-gor', 'sep']
-const isTestnet = (shortName: string) => {
-  return testNets.includes(shortName)
-}
-
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const wallet = useWallet()
+  const isDarkMode = useDarkMode()
+  const theme = useTheme()
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
 
-  const [testNets, prodNets] = useMemo(() => partition(configs, (config) => isTestnet(config.shortName)), [configs])
+  const [testNets, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
 
   const getNetworkLink = useCallback(
     (shortName: string) => {
-      const shouldKeepPath = keepPathRoutes.includes(router.pathname)
+      const shouldKeepPath = !router.query.safe
 
       const route = {
-        pathname: shouldKeepPath ? router.pathname : '/',
+        pathname: shouldKeepPath ? router.pathname : AppRoutes.index,
         query: {
           chain: shortName,
         } as {
@@ -112,6 +109,13 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
           '& .MuiPaper-root': {
             overflow: 'auto',
           },
+          ...(isDarkMode
+            ? {
+                '& .Mui-selected, & .Mui-selected:hover': {
+                  backgroundColor: `${theme.palette.secondary.background} !important`,
+                },
+              }
+            : {}),
         },
       }}
       sx={{

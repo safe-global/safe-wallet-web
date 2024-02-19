@@ -1,19 +1,20 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import type Safe from '@safe-global/safe-core-sdk'
-import EthersAdapter from '@safe-global/safe-ethers-lib'
+import type Safe from '@safe-global/protocol-kit'
+import { EthersAdapter, SigningMethod } from '@safe-global/protocol-kit'
+import type { JsonRpcSigner } from 'ethers'
 import { ethers } from 'ethers'
 import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
+import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'
 import { createWeb3 } from '@/hooks/wallets/web3'
-import { hexValue } from 'ethers/lib/utils'
+import { toQuantity } from 'ethers'
 import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import type { JsonRpcSigner } from '@ethersproject/providers'
 import { asError } from '@/services/exceptions/utils'
+import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -39,7 +40,7 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): P
     return wallets ? getConnectedWallet(wallets) : null
   }
 
-  const didSwitch = await onboard.setChain({ chainId: hexValue(parseInt(chainId)) })
+  const didSwitch = await onboard.setChain({ chainId: toQuantity(parseInt(chainId)) })
   if (!didSwitch) {
     return currentWallet
   }
@@ -99,11 +100,12 @@ export const getAssertedChainSigner = async (
  */
 export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
   const signer = await getAssertedChainSigner(onboard, chainId)
+  const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(signer.provider, await signer.getAddress())
   const sdk = getAndValidateSafeSDK()
 
   const ethAdapter = new EthersAdapter({
     ethers,
-    signerOrProvider: signer.connectUnchecked(),
+    signerOrProvider: uncheckedJsonRpcSigner,
   })
 
   return sdk.connect({ ethAdapter })
@@ -121,17 +123,12 @@ export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInf
   return sdk.connect({ ethAdapter })
 }
 
-type SigningMethods = Parameters<Safe['signTransaction']>[1]
-
-export const getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethods[] => {
-  const ETH_SIGN_TYPED_DATA: SigningMethods = 'eth_signTypedData'
-  const ETH_SIGN: SigningMethods = 'eth_sign'
-
+export const getSupportedSigningMethods = (safeVersion: SafeInfo['version']): SigningMethod[] => {
   if (!hasSafeFeature(SAFE_FEATURES.ETH_SIGN, safeVersion)) {
-    return [ETH_SIGN_TYPED_DATA]
+    return [SigningMethod.ETH_SIGN_TYPED_DATA]
   }
 
-  return [ETH_SIGN_TYPED_DATA, ETH_SIGN]
+  return [SigningMethod.ETH_SIGN_TYPED_DATA, SigningMethod.ETH_SIGN]
 }
 
 export const tryOffChainTxSigning = async (

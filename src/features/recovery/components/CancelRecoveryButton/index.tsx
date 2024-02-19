@@ -1,11 +1,9 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { Button, SvgIcon } from '@mui/material'
+import { Button } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
-import ErrorIcon from '@/public/images/notifications/error.svg'
-import IconButton from '@mui/material/IconButton'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import { CancelRecoveryFlow } from '@/components/tx-flow/flows'
@@ -62,12 +60,8 @@ export function CancelRecoveryButton({
       {(isOk) => {
         const isDisabled = isPending || (isOwner ? !isOk : !isOk || !isExpired)
 
-        return compact ? (
-          <IconButton onClick={onClick} color="error" size="small" disabled={isDisabled}>
-            <SvgIcon component={ErrorIcon} inheritViewBox fontSize="small" />
-          </IconButton>
-        ) : (
-          <Button onClick={onClick} variant="danger" disabled={isDisabled} size="stretched">
+        return (
+          <Button onClick={onClick} variant="danger" disabled={isDisabled} size={compact ? 'small' : 'stretched'}>
             Cancel
           </Button>
         )

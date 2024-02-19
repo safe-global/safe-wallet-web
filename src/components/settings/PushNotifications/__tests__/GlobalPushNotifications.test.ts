@@ -1,3 +1,4 @@
+import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
@@ -13,6 +14,7 @@ import {
   _getSafesToUnregister,
   _shouldUnregisterDevice,
   _sanitizeNotifiableSafes,
+  _filterUndeployedSafes,
 } from '../GlobalPushNotifications'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 
@@ -75,6 +77,34 @@ describe('GlobalPushNotifications', () => {
       } as unknown as AddedSafesState
 
       expect(_mergeNotifiableSafes(addedSafes)).toEqual(_transformAddedSafes(addedSafes))
+    })
+  })
+
+  describe('filterUndeployedSafes', () => {
+    it('should remove Safes that are not deployed', () => {
+      const notifiableSafes = {
+        '1': ['0x123', '0x456'],
+        '4': ['0xabc'],
+      }
+
+      const undeployedSafes = {
+        '1': {
+          '0x456': {
+            props: {
+              safeAccountConfig: {},
+              safeDeploymentConfig: {},
+            },
+            status: {},
+          } as UndeployedSafe,
+        },
+      }
+
+      const expected = {
+        '1': ['0x123'],
+        '4': ['0xabc'],
+      }
+
+      expect(_filterUndeployedSafes(notifiableSafes, undeployedSafes)).toEqual(expected)
     })
   })
 

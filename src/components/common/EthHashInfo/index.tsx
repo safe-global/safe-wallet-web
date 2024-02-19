@@ -16,13 +16,12 @@ const EthHashInfo = ({
   const currentChainId = useChainId()
   const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
   const addressBook = useAddressBook()
-  const link = chain ? getBlockExplorerLink(chain, props.address) : undefined
+  const link = chain && props.hasExplorer ? getBlockExplorerLink(chain, props.address) : undefined
   const name = showName ? addressBook[props.address] || props.name : undefined
 
   return (
     <SrcEthHashInfo
       prefix={chain?.shortName}
-      showPrefix={settings.shortName.show}
       copyPrefix={settings.shortName.copy}
       {...props}
       name={name}

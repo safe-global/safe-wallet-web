@@ -1,4 +1,5 @@
-import { hexZeroPad } from 'ethers/lib/utils'
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
+import { toBeHex } from 'ethers'
 import { useContext } from 'react'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
@@ -42,6 +43,14 @@ const TestComponent = () => {
 }
 
 describe('WalletConnectProvider', () => {
+  const extendedSafeInfo = {
+    ...extendedSafeInfoBuilder().build(),
+    address: {
+      value: toBeHex('0x123', 20),
+    },
+    chainId: '5',
+  }
+
   beforeEach(() => {
     jest.resetAllMocks()
     jest.restoreAllMocks()
@@ -59,12 +68,7 @@ describe('WalletConnectProvider', () => {
         initialReduxState: {
           safeInfo: {
             loading: false,
-            data: {
-              address: {
-                value: hexZeroPad('0x123', 20),
-              },
-              chainId: '5',
-            } as SafeInfo,
+            data: extendedSafeInfo,
           },
         },
       },
@@ -89,12 +93,7 @@ describe('WalletConnectProvider', () => {
         initialReduxState: {
           safeInfo: {
             loading: false,
-            data: {
-              address: {
-                value: hexZeroPad('0x123', 20),
-              },
-              chainId: '5',
-            } as SafeInfo,
+            data: extendedSafeInfo,
           },
         },
       },
@@ -106,6 +105,14 @@ describe('WalletConnectProvider', () => {
   })
 
   describe('updateSessions', () => {
+    const extendedSafeInfo = {
+      ...extendedSafeInfoBuilder().build(),
+      address: {
+        value: toBeHex('0x123', 20),
+      },
+      chainId: '5',
+    }
+
     const getUpdateSafeInfoComponent = (safeInfo: SafeInfo) => {
       // eslint-disable-next-line react/display-name
       return () => {
@@ -114,7 +121,7 @@ describe('WalletConnectProvider', () => {
           dispatch(
             safeInfoSlice.actions.set({
               loading: false,
-              data: safeInfo,
+              data: { ...extendedSafeInfo, ...safeInfo },
             }),
           )
         }
@@ -128,7 +135,7 @@ describe('WalletConnectProvider', () => {
       jest.spyOn(WalletConnectWallet.prototype, 'updateSessions').mockImplementation(() => Promise.resolve())
 
       const ChainUpdater = getUpdateSafeInfoComponent({
-        address: { value: hexZeroPad('0x123', 20) },
+        address: { value: toBeHex('0x123', 20) },
         chainId: '1',
       } as SafeInfo)
 
@@ -141,12 +148,7 @@ describe('WalletConnectProvider', () => {
           initialReduxState: {
             safeInfo: {
               loading: false,
-              data: {
-                address: {
-                  value: hexZeroPad('0x123', 20),
-                },
-                chainId: '5',
-              } as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
@@ -154,13 +156,13 @@ describe('WalletConnectProvider', () => {
 
       await waitFor(() => {
         expect(getByText('WalletConnect initialized')).toBeInTheDocument()
-        expect(WalletConnectWallet.prototype.updateSessions).toHaveBeenCalledWith('5', hexZeroPad('0x123', 20))
+        expect(WalletConnectWallet.prototype.updateSessions).toHaveBeenCalledWith('5', toBeHex('0x123', 20))
       })
 
       fireEvent.click(getByText('update'))
 
       await waitFor(() => {
-        expect(WalletConnectWallet.prototype.updateSessions).toHaveBeenCalledWith('1', hexZeroPad('0x123', 20))
+        expect(WalletConnectWallet.prototype.updateSessions).toHaveBeenCalledWith('1', toBeHex('0x123', 20))
       })
     })
 
@@ -169,7 +171,7 @@ describe('WalletConnectProvider', () => {
       jest.spyOn(WalletConnectWallet.prototype, 'updateSessions').mockImplementation(() => Promise.resolve())
 
       const AddressUpdater = getUpdateSafeInfoComponent({
-        address: { value: hexZeroPad('0x456', 20) },
+        address: { value: toBeHex('0x456', 20) },
         chainId: '5',
       } as SafeInfo)
 
@@ -183,11 +185,12 @@ describe('WalletConnectProvider', () => {
             safeInfo: {
               loading: false,
               data: {
+                ...extendedSafeInfo,
                 address: {
-                  value: hexZeroPad('0x123', 20),
+                  value: toBeHex('0x123', 20),
                 },
                 chainId: '5',
-              } as SafeInfo,
+              },
             },
           },
         },
@@ -195,13 +198,13 @@ describe('WalletConnectProvider', () => {
 
       await waitFor(() => {
         expect(getByText('WalletConnect initialized')).toBeInTheDocument()
-        expect(WalletConnectWallet.prototype.updateSessions).toHaveBeenCalledWith('5', hexZeroPad('0x123', 20))
+        expect(WalletConnectWallet.prototype.updateSessions).toHaveBeenCalledWith('5', toBeHex('0x123', 20))
       })
 
       fireEvent.click(getByText('update'))
 
       await waitFor(() => {
-        expect(WalletConnectWallet.prototype.updateSessions).toHaveBeenCalledWith('5', hexZeroPad('0x456', 20))
+        expect(WalletConnectWallet.prototype.updateSessions).toHaveBeenCalledWith('5', toBeHex('0x456', 20))
       })
     })
 
@@ -220,11 +223,12 @@ describe('WalletConnectProvider', () => {
             safeInfo: {
               loading: false,
               data: {
+                ...extendedSafeInfo,
                 address: {
-                  value: hexZeroPad('0x123', 20),
+                  value: toBeHex('0x123', 20),
                 },
                 chainId: '5',
-              } as SafeInfo,
+              },
             },
           },
         },
@@ -237,6 +241,14 @@ describe('WalletConnectProvider', () => {
   })
 
   describe('onRequest', () => {
+    const extendedSafeInfo = {
+      ...extendedSafeInfoBuilder().build(),
+      address: {
+        value: toBeHex('0x123', 20),
+      },
+      chainId: '5',
+    }
+
     it('does not continue with the request if there is no matching topic', async () => {
       jest.spyOn(WalletConnectWallet.prototype, 'init').mockImplementation(() => Promise.resolve())
       jest.spyOn(WalletConnectWallet.prototype, 'updateSessions').mockImplementation(() => Promise.resolve())
@@ -261,12 +273,7 @@ describe('WalletConnectProvider', () => {
           initialReduxState: {
             safeInfo: {
               loading: false,
-              data: {
-                address: {
-                  value: hexZeroPad('0x123', 20),
-                },
-                chainId: '5',
-              } as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
@@ -325,12 +332,7 @@ describe('WalletConnectProvider', () => {
           initialReduxState: {
             safeInfo: {
               loading: false,
-              data: {
-                address: {
-                  value: hexZeroPad('0x123', 20),
-                },
-                chainId: '5',
-              } as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
@@ -397,12 +399,7 @@ describe('WalletConnectProvider', () => {
           initialReduxState: {
             safeInfo: {
               loading: false,
-              data: {
-                address: {
-                  value: hexZeroPad('0x123', 20),
-                },
-                chainId: '5',
-              } as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },
@@ -477,12 +474,7 @@ describe('WalletConnectProvider', () => {
           initialReduxState: {
             safeInfo: {
               loading: false,
-              data: {
-                address: {
-                  value: hexZeroPad('0x123', 20),
-                },
-                chainId: '5',
-              } as SafeInfo,
+              data: extendedSafeInfo,
             },
           },
         },

@@ -1,9 +1,8 @@
-import { RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
 import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
-import { type EIP1193Provider } from '@web3-onboard/core'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider, BrowserProvider, type Eip1193Provider, type Provider } from 'ethers'
 import ExternalStore from '@/services/ExternalStore'
-import { EMPTY_DATA } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
+import { EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 // RPC helpers
 const formatRpcServiceUrl = ({ authentication, value }: RpcUri, token: string): string => {
@@ -21,23 +20,27 @@ export const getRpcServiceUrl = (rpcUri: RpcUri): string => {
   return formatRpcServiceUrl(rpcUri, INFURA_TOKEN)
 }
 
-export const createWeb3ReadOnly = (rpcUri: RpcUri, customRpc?: string): JsonRpcProvider | undefined => {
-  const url = customRpc || getRpcServiceUrl(rpcUri)
+export const createWeb3ReadOnly = (chain: ChainInfo, customRpc?: string): JsonRpcProvider | undefined => {
+  const url = customRpc || getRpcServiceUrl(chain.rpcUri)
   if (!url) return
-  return new JsonRpcProvider({ url, timeout: 10_000 })
+  return new JsonRpcProvider(url, undefined, {
+    staticNetwork: true,
+  })
 }
 
-export const createWeb3 = (walletProvider: EIP1193Provider): Web3Provider => {
-  return new Web3Provider(walletProvider)
+export const createWeb3 = (walletProvider: Eip1193Provider): BrowserProvider => {
+  return new BrowserProvider(walletProvider)
 }
 
-export const createSafeAppsWeb3Provider = (safeAppsRpcUri: RpcUri, customRpc?: string): JsonRpcProvider | undefined => {
-  const url = customRpc || formatRpcServiceUrl(safeAppsRpcUri, SAFE_APPS_INFURA_TOKEN)
+export const createSafeAppsWeb3Provider = (chain: ChainInfo, customRpc?: string): JsonRpcProvider | undefined => {
+  const url = customRpc || formatRpcServiceUrl(chain.rpcUri, SAFE_APPS_INFURA_TOKEN)
   if (!url) return
-  return new JsonRpcProvider({ url, timeout: 10_000 })
+  return new JsonRpcProvider(url, undefined, {
+    staticNetwork: true,
+  })
 }
 
-export const { setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<Web3Provider>()
+export const { setStore: setWeb3, useStore: useWeb3 } = new ExternalStore<BrowserProvider>()
 
 export const {
   getStore: getWeb3ReadOnly,
@@ -55,7 +58,7 @@ export const getUserNonce = async (userAddress: string): Promise<number> => {
   }
 }
 
-export const isSmartContract = async (provider: JsonRpcProvider, address: string): Promise<boolean> => {
+export const isSmartContract = async (provider: Provider, address: string): Promise<boolean> => {
   const code = await provider.getCode(address)
 
   return code !== EMPTY_DATA

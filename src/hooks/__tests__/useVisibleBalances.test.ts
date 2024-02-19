@@ -1,12 +1,12 @@
 import { type SafeBalanceResponse, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import * as store from '@/store'
 import { renderHook } from '@/tests/test-utils'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import { useVisibleBalances } from '../useVisibleBalances'
 
 describe('useVisibleBalances', () => {
-  const hiddenTokenAddress = hexZeroPad('0x2', 20)
-  const visibleTokenAddress = hexZeroPad('0x3', 20)
+  const hiddenTokenAddress = toBeHex('0x2', 20)
+  const visibleTokenAddress = toBeHex('0x3', 20)
 
   test('empty balance', () => {
     const balance: SafeBalanceResponse = {
@@ -21,7 +21,6 @@ describe('useVisibleBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {
             darkMode: false,
@@ -79,7 +78,6 @@ describe('useVisibleBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {
             darkMode: false,
@@ -150,7 +148,6 @@ describe('useVisibleBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {
             darkMode: false,
@@ -209,7 +206,6 @@ describe('useVisibleBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {
             darkMode: false,

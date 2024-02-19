@@ -1,5 +1,24 @@
+import { getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { getSpendingLimitInterface } from '@/services/contracts/spendingLimitContracts'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+
+export const createEnableModuleTx = async (
+  chain: ChainInfo,
+  safeAddress: string,
+  safeVersion: string,
+  spendingLimitAddress: string,
+): Promise<MetaTransactionData> => {
+  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+
+  const data = contract.encode('enableModule', [spendingLimitAddress])
+
+  return {
+    to: safeAddress,
+    value: '0',
+    data,
+  }
+}
 
 export const createAddDelegateTx = (delegate: string, spendingLimitAddress: string): MetaTransactionData => {
   const spendingLimitInterface = getSpendingLimitInterface()

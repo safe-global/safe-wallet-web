@@ -1,0 +1,3 @@
+.container > div:empty {
+  display: none;
+}

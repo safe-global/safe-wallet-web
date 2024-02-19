@@ -1,3 +1,4 @@
+import { getTotalFee } from '@/hooks/useGasPrice'
 import type { ReactElement, SyntheticEvent } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Typography, Link, Grid } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -52,7 +53,7 @@ export const _GasParams = ({
 
   // Total gas cost
   const totalFee = !isLoading
-    ? formatVisualAmount(maxFeePerGas.mul(gasLimit), chain?.nativeCurrency.decimals)
+    ? formatVisualAmount(getTotalFee(maxFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
     : '> 0.001'
 
   // Individual gas params

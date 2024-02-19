@@ -9,58 +9,45 @@ import {
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
 import merge from 'lodash/merge'
 import { IS_PRODUCTION } from '@/config/constants'
-import { createStoreHydrator, HYDRATE_ACTION } from './storeHydrator'
-import { chainsSlice } from './chainsSlice'
-import { safeInfoSlice } from './safeInfoSlice'
-import { balancesSlice } from './balancesSlice'
-import { sessionSlice } from './sessionSlice'
-import { txHistoryListener, txHistorySlice } from './txHistorySlice'
-import { txQueueListener, txQueueSlice } from './txQueueSlice'
-import { addressBookSlice } from './addressBookSlice'
-import { notificationsSlice } from './notificationsSlice'
 import { getPreloadedState, persistState } from './persistStore'
-import { pendingTxsSlice } from './pendingTxsSlice'
-import { addedSafesListener, addedSafesSlice } from './addedSafesSlice'
-import { settingsSlice } from './settingsSlice'
-import { cookiesSlice } from './cookiesSlice'
-import { popupSlice } from './popupSlice'
-import { spendingLimitSlice } from './spendingLimitsSlice'
-import { safeAppsSlice } from './safeAppsSlice'
-import { safeMessagesListener, safeMessagesSlice } from './safeMessagesSlice'
-import { pendingSafeMessagesSlice } from './pendingSafeMessagesSlice'
-import { batchSlice } from './batchSlice'
+import { broadcastState, listenToBroadcast } from './broadcast'
+import { safeMessagesListener, txHistoryListener, txQueueListener } from './slices'
+import * as slices from './slices'
+import * as hydrate from './useHydrateStore'
 
 const rootReducer = combineReducers({
-  [chainsSlice.name]: chainsSlice.reducer,
-  [safeInfoSlice.name]: safeInfoSlice.reducer,
-  [balancesSlice.name]: balancesSlice.reducer,
-  [sessionSlice.name]: sessionSlice.reducer,
-  [txHistorySlice.name]: txHistorySlice.reducer,
-  [txQueueSlice.name]: txQueueSlice.reducer,
-  [addressBookSlice.name]: addressBookSlice.reducer,
-  [notificationsSlice.name]: notificationsSlice.reducer,
-  [pendingTxsSlice.name]: pendingTxsSlice.reducer,
-  [addedSafesSlice.name]: addedSafesSlice.reducer,
-  [settingsSlice.name]: settingsSlice.reducer,
-  [cookiesSlice.name]: cookiesSlice.reducer,
-  [popupSlice.name]: popupSlice.reducer,
-  [spendingLimitSlice.name]: spendingLimitSlice.reducer,
-  [safeAppsSlice.name]: safeAppsSlice.reducer,
-  [safeMessagesSlice.name]: safeMessagesSlice.reducer,
-  [pendingSafeMessagesSlice.name]: pendingSafeMessagesSlice.reducer,
-  [batchSlice.name]: batchSlice.reducer,
+  [slices.chainsSlice.name]: slices.chainsSlice.reducer,
+  [slices.safeInfoSlice.name]: slices.safeInfoSlice.reducer,
+  [slices.balancesSlice.name]: slices.balancesSlice.reducer,
+  [slices.sessionSlice.name]: slices.sessionSlice.reducer,
+  [slices.txHistorySlice.name]: slices.txHistorySlice.reducer,
+  [slices.txQueueSlice.name]: slices.txQueueSlice.reducer,
+  [slices.addressBookSlice.name]: slices.addressBookSlice.reducer,
+  [slices.notificationsSlice.name]: slices.notificationsSlice.reducer,
+  [slices.pendingTxsSlice.name]: slices.pendingTxsSlice.reducer,
+  [slices.addedSafesSlice.name]: slices.addedSafesSlice.reducer,
+  [slices.settingsSlice.name]: slices.settingsSlice.reducer,
+  [slices.cookiesSlice.name]: slices.cookiesSlice.reducer,
+  [slices.popupSlice.name]: slices.popupSlice.reducer,
+  [slices.spendingLimitSlice.name]: slices.spendingLimitSlice.reducer,
+  [slices.safeAppsSlice.name]: slices.safeAppsSlice.reducer,
+  [slices.safeMessagesSlice.name]: slices.safeMessagesSlice.reducer,
+  [slices.pendingSafeMessagesSlice.name]: slices.pendingSafeMessagesSlice.reducer,
+  [slices.batchSlice.name]: slices.batchSlice.reducer,
+  [slices.undeployedSafesSlice.name]: slices.undeployedSafesSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
-  sessionSlice.name,
-  addressBookSlice.name,
-  pendingTxsSlice.name,
-  addedSafesSlice.name,
-  settingsSlice.name,
-  cookiesSlice.name,
-  safeAppsSlice.name,
-  pendingSafeMessagesSlice.name,
-  batchSlice.name,
+  slices.sessionSlice.name,
+  slices.addressBookSlice.name,
+  slices.pendingTxsSlice.name,
+  slices.addedSafesSlice.name,
+  slices.settingsSlice.name,
+  slices.cookiesSlice.name,
+  slices.safeAppsSlice.name,
+  slices.pendingSafeMessagesSlice.name,
+  slices.batchSlice.name,
+  slices.undeployedSafesSlice.name,
 ]
 
 export const getPersistedState = () => {
@@ -69,11 +56,15 @@ export const getPersistedState = () => {
 
 export const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
 
-const middleware = [persistState(persistedSlices), listenerMiddlewareInstance.middleware]
-const listeners = [addedSafesListener, safeMessagesListener, txHistoryListener, txQueueListener]
+const middleware = [
+  persistState(persistedSlices),
+  broadcastState(persistedSlices),
+  listenerMiddlewareInstance.middleware,
+]
+const listeners = [safeMessagesListener, txHistoryListener, txQueueListener]
 
 export const _hydrationReducer: typeof rootReducer = (state, action) => {
-  if (action.type === HYDRATE_ACTION) {
+  if (action.type === hydrate.HYDRATE_ACTION) {
     /**
      * When changing the schema of a Redux slice, previously stored data in LS might become incompatible.
      * To avoid this, we should always migrate the data on a case-by-case basis in the corresponding slice.
@@ -89,7 +80,7 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
 }
 
 export const makeStore = (initialState?: Record<string, any>) => {
-  return configureStore({
+  const store = configureStore({
     reducer: _hydrationReducer,
     middleware: (getDefaultMiddleware) => {
       listeners.forEach((listener) => listener(listenerMiddlewareInstance))
@@ -98,9 +89,11 @@ export const makeStore = (initialState?: Record<string, any>) => {
     devTools: !IS_PRODUCTION,
     preloadedState: initialState,
   })
-}
 
-export const StoreHydrator = createStoreHydrator(makeStore)
+  listenToBroadcast(store)
+
+  return store
+}
 
 export type AppDispatch = ReturnType<typeof makeStore>['dispatch']
 export type RootState = ReturnType<typeof _hydrationReducer>
@@ -109,3 +102,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unk
 
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+
+export const useHydrateStore = hydrate.useHydrateStore

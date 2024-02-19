@@ -2,7 +2,7 @@ import { REDEFINE_API } from '@/config/constants'
 import { isEIP712TypedData } from '@/utils/safe-messages'
 import { normalizeTypedData } from '@/utils/web3'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { generateTypedData } from '@safe-global/safe-core-sdk-utils'
+import { generateTypedData } from '@safe-global/protocol-kit/dist/src/utils/eip-712'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 
@@ -119,8 +119,14 @@ export class RedefineModule implements SecurityModule<RedefineModuleRequest, Red
         generateTypedData({
           safeAddress,
           safeVersion: '1.3.0', // TODO: pass to module, taking into account that lower Safe versions don't have chainId in payload
-          chainId,
-          safeTransactionData: data.data,
+          chainId: BigInt(chainId),
+          // TODO: find out why these types are incompaitble
+          data: {
+            ...data.data,
+            safeTxGas: data.data.safeTxGas,
+            baseGas: data.data.baseGas,
+            gasPrice: data.data.gasPrice,
+          },
         }),
       )
     }

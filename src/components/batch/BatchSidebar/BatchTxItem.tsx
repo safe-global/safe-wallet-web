@@ -62,7 +62,7 @@ const BatchTxItem = ({
 
       <Accordion elevation={0} sx={{ flex: 1 }} onChange={handleExpand}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} disabled={dragging} className={css.accordion}>
-          <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4}>
+          <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4} width="100%">
             {draggable && (
               <SvgIcon
                 component={DragIcon}

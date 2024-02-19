@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { faker } from '@faker-js/faker'
 
 import { useRecoveryTxState } from '../useRecoveryTxState'
@@ -25,25 +24,25 @@ describe('useRecoveryTxState', () => {
       const delayModifierAddress2 = faker.finance.ethereumAddress()
       const nextTxHash2 = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(1_000)
-      const expiresAt = BigNumber.from(1_000)
+      const validFrom = BigInt(1_000)
+      const expiresAt = BigInt(1_000)
 
       const data = [
         {
           address: delayModifierAddress1,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [{ address: delayModifierAddress1, transactionHash: nextTxHash1 }],
         },
         {
           address: delayModifierAddress2,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress2,
               transactionHash: nextTxHash2,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(0) },
+              args: { queueNonce: BigInt(0) },
             },
           ],
         },
@@ -70,20 +69,20 @@ describe('useRecoveryTxState', () => {
       const delayModifierAddress = faker.finance.ethereumAddress()
       const nextTxHash = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(1_000)
-      const expiresAt = BigNumber.from(1_000)
+      const validFrom = BigInt(1_000)
+      const expiresAt = BigInt(1_000)
 
       const data = [
         {
           address: delayModifierAddress,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress,
               transactionHash: nextTxHash,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(0) },
+              args: { queueNonce: BigInt(0) },
             },
           ],
         },
@@ -110,20 +109,20 @@ describe('useRecoveryTxState', () => {
       const delayModifierAddress = faker.finance.ethereumAddress()
       const nextTxHash = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(0)
-      const expiresAt = BigNumber.from(2_000)
+      const validFrom = BigInt(0)
+      const expiresAt = BigInt(2_000)
 
       const data = [
         {
           address: delayModifierAddress,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress,
               transactionHash: nextTxHash,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(0) },
+              args: { queueNonce: BigInt(0) },
             },
           ],
         },
@@ -150,20 +149,20 @@ describe('useRecoveryTxState', () => {
       const delayModifierAddress = faker.finance.ethereumAddress()
       const nextTxHash = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(0)
-      const expiresAt = BigNumber.from(0)
+      const validFrom = BigInt(0)
+      const expiresAt = BigInt(0)
 
       const data = [
         {
           address: delayModifierAddress,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress,
               transactionHash: nextTxHash,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(0) },
+              args: { queueNonce: BigInt(0) },
             },
           ],
         },
@@ -192,20 +191,20 @@ describe('useRecoveryTxState', () => {
 
       const nextRecoveryTxHash = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(0)
-      const expiresAt = BigNumber.from(1)
+      const validFrom = BigInt(0)
+      const expiresAt = BigInt(1)
 
       const data = [
         {
           address: delayModifierAddress,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress,
               transactionHash: nextTxHash,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(0), txHash: nextRecoveryTxHash },
+              args: { queueNonce: BigInt(0), txHash: nextRecoveryTxHash },
             },
           ],
         },
@@ -239,13 +238,13 @@ describe('useRecoveryTxState', () => {
       const nextTxHash2 = faker.string.hexadecimal({ length: 10 })
       const queueTxHash2 = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(1_000)
-      const expiresAt = BigNumber.from(1_000)
+      const validFrom = BigInt(1_000)
+      const expiresAt = BigInt(1_000)
 
       const data = [
         {
           address: delayModifierAddress1,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress1,
@@ -259,7 +258,7 @@ describe('useRecoveryTxState', () => {
         },
         {
           address: delayModifierAddress2,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress2,
@@ -270,7 +269,7 @@ describe('useRecoveryTxState', () => {
               transactionHash: queueTxHash2,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(1) },
+              args: { queueNonce: BigInt(1) },
             },
           ],
         },
@@ -299,13 +298,13 @@ describe('useRecoveryTxState', () => {
       const nextTxHash = faker.string.hexadecimal({ length: 10 })
       const queueTxHash = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(1_000)
-      const expiresAt = BigNumber.from(1_000)
+      const validFrom = BigInt(1_000)
+      const expiresAt = BigInt(1_000)
 
       const data = [
         {
           address: delayModifierAddress,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress,
@@ -316,7 +315,7 @@ describe('useRecoveryTxState', () => {
               transactionHash: queueTxHash,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(1) },
+              args: { queueNonce: BigInt(1) },
             },
           ],
         },
@@ -345,13 +344,13 @@ describe('useRecoveryTxState', () => {
       const nextTxHash = faker.string.hexadecimal({ length: 10 })
       const queueTxHash = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(0)
-      const expiresAt = BigNumber.from(2_000)
+      const validFrom = BigInt(0)
+      const expiresAt = BigInt(2_000)
 
       const data = [
         {
           address: delayModifierAddress,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress,
@@ -362,7 +361,7 @@ describe('useRecoveryTxState', () => {
               transactionHash: queueTxHash,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(1) },
+              args: { queueNonce: BigInt(1) },
             },
           ],
         },
@@ -391,13 +390,13 @@ describe('useRecoveryTxState', () => {
       const nextTxHash = faker.string.hexadecimal({ length: 10 })
       const queueTxHash = faker.string.hexadecimal({ length: 10 })
 
-      const validFrom = BigNumber.from(0)
-      const expiresAt = BigNumber.from(0)
+      const validFrom = BigInt(0)
+      const expiresAt = BigInt(0)
 
       const data = [
         {
           address: delayModifierAddress,
-          txNonce: BigNumber.from(0),
+          txNonce: BigInt(0),
           queue: [
             {
               address: delayModifierAddress,
@@ -408,7 +407,7 @@ describe('useRecoveryTxState', () => {
               transactionHash: queueTxHash,
               validFrom,
               expiresAt,
-              args: { queueNonce: BigNumber.from(1) },
+              args: { queueNonce: BigInt(1) },
             },
           ],
         },

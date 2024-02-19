@@ -2,7 +2,7 @@ import { SvgIcon, Typography } from '@mui/material'
 import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useState, useEffect } from 'react'
 import { useWatch } from 'react-hook-form'
-import { isAddress } from 'ethers/lib/utils'
+import { isAddress } from 'ethers'
 import type { ReactElement } from 'react'
 
 import InfoIcon from '@/public/images/notifications/info.svg'

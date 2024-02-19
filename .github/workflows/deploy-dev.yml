@@ -90,7 +90,7 @@ jobs:
             ## Branch preview
             ✅  Deploy successful!
 
-            https://${{ steps.extract_branch.outputs.branch }}--walletweb.review-wallet-web.5afe.dev
+            https://${{ steps.extract_branch.outputs.branch }}--walletweb.review-wallet-web.5afe.dev/home?safe=eth:0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6
           message-failure: |
             ## Branch preview
             ❌  Deploy failed!

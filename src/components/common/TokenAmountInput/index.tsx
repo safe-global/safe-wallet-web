@@ -6,7 +6,6 @@ import NumberField from '@/components/common/NumberField'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import { AutocompleteItem } from '@/components/tx-flow/flows/TokenTransfer/CreateTokenTransfer'
 import { useFormContext } from 'react-hook-form'
-import { type BigNumber } from '@ethersproject/bignumber'
 import classNames from 'classnames'
 import { useCallback } from 'react'
 
@@ -23,7 +22,7 @@ const TokenAmountInput = ({
 }: {
   balances: SafeBalanceResponse['items']
   selectedToken: SafeBalanceResponse['items'][number] | undefined
-  maxAmount?: BigNumber
+  maxAmount?: bigint
   validate?: (value: string) => string | undefined
 }) => {
   const {
@@ -68,7 +67,7 @@ const TokenAmountInput = ({
           variant="standard"
           InputProps={{
             disableUnderline: true,
-            endAdornment: maxAmount && (
+            endAdornment: maxAmount !== undefined && (
               <Button data-testid="max-btn" className={css.max} onClick={onMaxAmountClick}>
                 Max
               </Button>

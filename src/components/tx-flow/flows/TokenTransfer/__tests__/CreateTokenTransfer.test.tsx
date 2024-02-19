@@ -2,8 +2,7 @@ import { TokenTransferType } from '@/components/tx-flow/flows/TokenTransfer'
 import { CreateTokenTransfer } from '@/components/tx-flow/flows/TokenTransfer/CreateTokenTransfer'
 import * as tokenUtils from '@/components/tx-flow/flows/TokenTransfer/utils'
 import { render } from '@/tests/test-utils'
-import { ZERO_ADDRESS } from '@safe-global/safe-core-sdk/dist/src/utils/constants'
-import { BigNumber } from 'ethers'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 describe('CreateTokenTransfer', () => {
   const mockParams = {
@@ -30,7 +29,7 @@ describe('CreateTokenTransfer', () => {
       <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} isSafeTokenPaused={true} />,
     )
 
-    expect(getAllByText('Recipient address or ENS')[0]).toBeInTheDocument()
+    expect(getAllByText('Recipient address')[0]).toBeInTheDocument()
   })
 
   it('should disable the submit button and display a warning if $SAFE token is selected and not transferable', () => {
@@ -68,7 +67,7 @@ describe('CreateTokenTransfer', () => {
   it('should display a type selection if a spending limit token is selected', () => {
     jest
       .spyOn(tokenUtils, 'useTokenAmount')
-      .mockReturnValue({ totalAmount: BigNumber.from(1000), spendingLimitAmount: BigNumber.from(500) })
+      .mockReturnValue({ totalAmount: BigInt(1000), spendingLimitAmount: BigInt(500) })
 
     const { getByText } = render(
       <CreateTokenTransfer params={mockParams} onSubmit={jest.fn()} isSafeTokenPaused={false} />,

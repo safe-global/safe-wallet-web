@@ -1,6 +1,5 @@
-import { BigNumber } from 'ethers'
 import { act, renderHook } from '@/tests/test-utils'
-import useGasPrice from '@/hooks/useGasPrice'
+import useGasPrice, { getTotalFee } from '@/hooks/useGasPrice'
 import { useCurrentChain } from '../useChains'
 
 // mock useWeb3Readonly
@@ -9,8 +8,8 @@ jest.mock('../wallets/web3', () => {
     getFeeData: jest.fn(() =>
       Promise.resolve({
         gasPrice: undefined,
-        maxFeePerGas: BigNumber.from('0x956e'), //38254
-        maxPriorityFeePerGas: BigNumber.from('0x136f'), //4975
+        maxFeePerGas: BigInt('0x956e'), //38254
+        maxPriorityFeePerGas: BigInt('0x136f'), //4975
       }),
     ),
   }
@@ -285,5 +284,18 @@ describe('useGasPrice', () => {
     expect(result.current[2]).toBe(false)
 
     expect(result2.current[0]?.maxFeePerGas?.toString()).toBe('22000000000')
+  })
+})
+
+describe('getTotalFee', () => {
+  it('returns the totalFee', () => {
+    const result = getTotalFee(1n, 100n)
+    expect(result).toEqual(100n)
+  })
+
+  it('handles large numbers', () => {
+    const result = getTotalFee(10000000000000000n, 123123123n)
+
+    expect(result).toEqual(1231231230000000000000000n)
   })
 })

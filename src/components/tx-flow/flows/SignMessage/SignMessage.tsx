@@ -44,6 +44,9 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
 import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
+import { isEIP712TypedData } from '@/utils/safe-messages'
+import ApprovalEditor from '@/components/tx/ApprovalEditor'
+import { ErrorBoundary } from '@sentry/react'
 import { isWalletRejection } from '@/utils/wallets'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
@@ -188,7 +191,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const decodedMessageAsString = isPlainTextMessage ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
   const hasSigned = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
   const isFullySigned = !!safeMessage?.preparedSignature
-  const isDisabled = !isOwner || hasSigned
+  const isDisabled = !isOwner || hasSigned || !safe.deployed
 
   const { onSign, submitError } = useSyncSafeMessageSigner(
     safeMessage,
@@ -236,7 +239,13 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
         <CardContent>
           <DialogHeader threshold={safe.threshold} />
 
-          <Typography fontWeight={700} mb={1}>
+          {isEIP712TypedData(decodedMessage) && (
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <ApprovalEditor safeMessage={decodedMessage} />
+            </ErrorBoundary>
+          )}
+
+          <Typography fontWeight={700} mt={2} mb={1}>
             Message: <CopyButton text={decodedMessageAsString} />
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
@@ -281,6 +290,8 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
             <MessageDialogError isOwner={isOwner} submitError={submitError} />
 
             <RiskConfirmationError />
+
+            {!safe.deployed && <ErrorMessage>Your Safe Account is not activated yet.</ErrorMessage>}
           </TxCard>
           <TxCard>
             <CardActions>

@@ -4,4 +4,11 @@
   flex-wrap: nowrap;
   gap: var(--space-1);
   color: var(--color-text-primary);
+  overflow: hidden;
+}
+
+.txTypeText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
 }

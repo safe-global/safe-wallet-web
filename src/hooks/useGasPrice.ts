@@ -1,6 +1,7 @@
-import { BigNumber } from 'ethers'
-import type { FeeData } from '@ethersproject/abstract-provider'
+import { formatVisualAmount } from '@/utils/formatters'
+import type { FeeData } from 'ethers'
 import type {
+  ChainInfo,
   GasPrice,
   GasPriceFixed,
   GasPriceFixedEIP1559,
@@ -17,16 +18,16 @@ import { asError } from '@/services/exceptions/utils'
 
 type EstimatedGasPrice =
   | {
-      gasPrice: BigNumber
+      gasPrice: bigint
     }
   | {
-      maxFeePerGas: BigNumber
-      maxPriorityFeePerGas: BigNumber
+      maxFeePerGas: bigint
+      maxPriorityFeePerGas: bigint
     }
 
 type GasFeeParams = {
-  maxFeePerGas: BigNumber | null | undefined
-  maxPriorityFeePerGas: BigNumber | null | undefined
+  maxFeePerGas: bigint | null | undefined
+  maxPriorityFeePerGas: bigint | null | undefined
 }
 
 // Update gas fees every 20 seconds
@@ -35,7 +36,7 @@ const REFRESH_DELAY = 20e3
 // Loop over the oracles and return the first one that works.
 // Or return a fixed value if specified.
 // If none of them work, throw an error.
-const fetchGasOracle = async (gasPriceOracle: GasPriceOracle): Promise<BigNumber> => {
+const fetchGasOracle = async (gasPriceOracle: GasPriceOracle): Promise<bigint> => {
   const { uri, gasParameter, gweiFactor } = gasPriceOracle
   const response = await fetch(uri)
   if (!response.ok) {
@@ -44,7 +45,7 @@ const fetchGasOracle = async (gasPriceOracle: GasPriceOracle): Promise<BigNumber
 
   const json = await response.json()
   const data = json.data || json.result || json
-  return BigNumber.from(data[gasParameter] * Number(gweiFactor))
+  return BigInt(data[gasParameter] * Number(gweiFactor))
 }
 
 // These typeguards are necessary because the GAS_PRICE_TYPE enum uses uppercase while the config service uses lowercase values
@@ -65,14 +66,14 @@ const getGasPrice = async (gasPriceConfigs: GasPrice): Promise<EstimatedGasPrice
   for (const config of gasPriceConfigs) {
     if (isGasPriceFixed(config)) {
       return {
-        gasPrice: BigNumber.from(config.weiValue),
+        gasPrice: BigInt(config.weiValue),
       }
     }
 
     if (isGasPriceFixed1559(config)) {
       return {
-        maxFeePerGas: BigNumber.from(config.maxFeePerGas),
-        maxPriorityFeePerGas: BigNumber.from(config.maxPriorityFeePerGas),
+        maxFeePerGas: BigInt(config.maxFeePerGas),
+        maxPriorityFeePerGas: BigInt(config.maxPriorityFeePerGas),
       }
     }
 
@@ -124,6 +125,21 @@ const getGasParameters = (
     maxPriorityFeePerGas: undefined,
   }
 }
+
+export const getTotalFee = (maxFeePerGas: bigint, gasLimit: bigint) => {
+  return maxFeePerGas * gasLimit
+}
+
+export const getTotalFeeFormatted = (
+  maxFeePerGas: bigint | null | undefined,
+  gasLimit: bigint | undefined,
+  chain: ChainInfo | undefined,
+) => {
+  return gasLimit && maxFeePerGas
+    ? formatVisualAmount(getTotalFee(maxFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
+    : '> 0.001'
+}
+
 const useGasPrice = (): AsyncResult<GasFeeParams> => {
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice

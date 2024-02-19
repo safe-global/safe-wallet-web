@@ -47,6 +47,7 @@ Here's the list of all the environment variables:
 | `NEXT_PUBLIC_FIREBASE_VAPID_KEY_STAGING`               | FCM vapid key on staging
 | `NEXT_PUBLIC_SOCIAL_WALLET_OPTIONS_PRODUCTION`         | Web3Auth and Google credentials (production)
 | `NEXT_PUBLIC_SOCIAL_WALLET_OPTIONS_STAGING`            | Web3Auth and Google credentials (staging)
+| `NEXT_PUBLIC_SPINDL_SDK_KEY`                           | [Spindl](http://spindl.xyz) SDK key
 
 If you don't provide some of the variables, the corresponding features will be disabled in the UI.
 
@@ -56,6 +57,11 @@ Install the dependencies:
 
 ```bash
 yarn
+```
+
+Generate types:
+```bash
+yarn postinstall
 ```
 
 Run the development server:

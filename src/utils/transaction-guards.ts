@@ -38,6 +38,7 @@ import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimi
 import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import { ethers } from 'ethers'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -99,6 +100,10 @@ export const isOutgoingTransfer = (txInfo: TransactionInfo): boolean => {
   return isTransferTxInfo(txInfo) && txInfo.direction.toUpperCase() === TransferDirection.OUTGOING
 }
 
+export const isIncomingTransfer = (txInfo: TransactionInfo): boolean => {
+  return isTransferTxInfo(txInfo) && txInfo.direction.toUpperCase() === TransferDirection.INCOMING
+}
+
 // TransactionListItem type guards
 export const isLabelListItem = (value: TransactionListItem): value is Label => {
   return value.type === TransactionListItemType.LABEL
@@ -118,7 +123,7 @@ export const isTransactionListItem = (value: TransactionListItem): value is Tran
 
 export function isRecoveryQueueItem(value: TransactionListItem | RecoveryQueueItem): value is RecoveryQueueItem {
   const EVENT_SIGNATURE = 'TransactionAdded(uint256,bytes32,address,uint256,bytes,uint8)'
-  return 'eventSignature' in value && value.eventSignature === EVENT_SIGNATURE
+  return 'fragment' in value && ethers.id(EVENT_SIGNATURE) === value.fragment.topicHash
 }
 
 // Narrows `Transaction`

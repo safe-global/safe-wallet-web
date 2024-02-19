@@ -316,6 +316,54 @@ export const addressBookData = {
       '0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7': 'test-sepolia-3',
     },
   },
+  addedSafes: {
+    1: {
+      '0x8675B754342754A30A2AeF474D114d8460bca19b': 'Added safe 900',
+    },
+    11155111: {
+      '0x0A0EEb6fBCc7c82259E548Fc4617175A357b3e71': 'Added safe 200',
+      '0xF21445699e91aC6F2EeeAF1a19510AC4197e59aB': 'Added owner',
+      '0x9E6DAfe829431e1892EcF8461FDAd02665170c31': 'Added non-owner',
+    },
+  },
+  sortingData: {
+    11155111: {
+      '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AA Safe',
+      '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'BB Safe',
+    },
+  },
+  pagination: {
+    11155111: {
+      '0xB8Bfd72663602dB33A454e3D899fb1ee95F54c26': 'Safe 1',
+      '0x368D6B0Aa605253D19AB7C1F006a61Aa46bbECEb': 'Safe 2',
+      '0x9190cc22D592dDcf396Fa616ce84a9978fD96Fc9': 'Safe 3',
+      '0x98705770aF3b18db0a64597F6d4DCe825915fec0': 'Safe 4',
+      '0xC23e061252BFc7967203D054136d8fA7c7df2fc4': 'Safe 5',
+      '0x0Ec5EF749cce5185900819A3457C0f9129a9a9a1': 'Safe 6',
+      '0x0A0EEb6fBCc7c82259E548Fc4617175A357b3e71': 'Safe 7',
+      '0x10B45a24640E2170B6AA63ea3A289D723a0C9cba': 'Safe 8',
+      '0xF21445699e91aC6F2EeeAF1a19510AC4197e59aB': 'Safe 9',
+      '0x9E6DAfe829431e1892EcF8461FDAd02665170c31': 'Safe 10',
+      '0x6d0b6F96f665Bb4490f9ddb2e450Da2f7e546dC1': 'Safe 11',
+      '0xB8Bfd72663602dB33A454e3D899fb1ee95F54c26': 'Safe 12',
+      '0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7': 'Safe 13',
+      '0xBb26E3717172d5000F87DeFd391994f789D80aEB': 'Safe 14',
+      '0x905934aA8758c06B2422F0C90D97d2fbb6677811': 'Safe 15',
+      '0xf8D6450d6ae36328cBAA97B1998C741be498c5D3': 'Safe 16',
+      '0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415': 'Safe 17',
+      '0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb': 'Safe 18',
+      '0x81034C61a318649F7aD43f9e8C1051427e326443': 'Safe 19',
+      '0x06373d5e45AD31BD354CeBfA8dB4eD2c75B8708e': 'Safe 20',
+      '0x4DD4cB2299E491E1B469245DB589ccB2B16d7bde': 'Safe 21',
+      '0xD1571E8Cc4438aFef2836DD9a0E5D09fb63EDE9a': 'Safe 22',
+      '0x691B95d2531BFf662767839d668d3D7651524C21': 'Safe 23',
+      '0x39419cC835046D0c7beca69638eBBDD0F9FD85e4': 'Safe 24',
+      '0xBf30F749FC027a5d79c4710D988F0D3C8e217A4F': 'Safe 25',
+      '0x8A89C14ed0900a95fc94075D0823f8c744789a40': 'Safe 26',
+      '0xc2F3645bfd395516d1a18CA6ad9298299d328C01': 'Safe 27',
+    },
+  },
+  cookies: { necessary: true, updates: true, analytics: true },
 }
 
 export const safeSettings = {
@@ -324,7 +372,6 @@ export const safeSettings = {
     tokenList: 'TRUSTED',
     hiddenTokens: {},
     shortName: {
-      show: false,
       copy: false,
       qr: false,
     },
@@ -348,7 +395,6 @@ export const safeSettings = {
     tokenList: 'ALL',
     hiddenTokens: {},
     shortName: {
-      show: true,
       copy: true,
       qr: true,
     },
@@ -435,6 +481,118 @@ export const addedSafes = {
           },
         ],
         threshold: 1,
+        ethBalance: '0',
+      },
+    },
+  },
+  set2: {
+    11155111: {
+      '0x6d0b6F96f665Bb4490f9ddb2e450Da2f7e546dC1': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 1,
+        ethBalance: '0',
+      },
+      '0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+          {
+            value: '0x96D4c6fFC338912322813a77655fCC926b9A5aC5',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 2,
+        ethBalance: '0.442500000005',
+      },
+      '0x06373d5e45AD31BD354CeBfA8dB4eD2c75B8708e': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+          {
+            value: '0x96D4c6fFC338912322813a77655fCC926b9A5aC5',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 1,
+        ethBalance: '0.058000000005',
+      },
+      '0xD1571E8Cc4438aFef2836DD9a0E5D09fb63EDE9a': {
+        owners: [
+          {
+            value: '0x96D4c6fFC338912322813a77655fCC926b9A5aC5',
+            name: null,
+            logoUri: null,
+          },
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 1,
+        ethBalance: '0',
+      },
+      '0x0A0EEb6fBCc7c82259E548Fc4617175A357b3e71': {
+        owners: [
+          {
+            value: '0x8aEf2f5c3F17261F6F1C4dA058D022BE92776af8',
+            name: null,
+            logoUri: null,
+          },
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 2,
+        ethBalance: '0',
+      },
+    },
+    1: {
+      '0x8675B754342754A30A2AeF474D114d8460bca19b': {
+        owners: [{ value: '0x11B1D54B66e5e226D6f89069c21A569A22D98cfd' }],
+        threshold: 1,
+        ethBalance: '0.001000002',
+      },
+    },
+  },
+  set3: {
+    11155111: {
+      '0xF21445699e91aC6F2EeeAF1a19510AC4197e59aB': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 2,
+        ethBalance: '0',
+      },
+      '0x9E6DAfe829431e1892EcF8461FDAd02665170c31': {
+        owners: [
+          {
+            value: '0x96D4c6fFC338912322813a77655fCC926b9A5aC5',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 2,
         ethBalance: '0',
       },
     },

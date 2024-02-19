@@ -15,6 +15,7 @@ type ChainIndicatorProps = {
   className?: string
   showUnknown?: boolean
   showLogo?: boolean
+  responsive?: boolean
 }
 
 const fallbackChainConfig = {
@@ -32,6 +33,7 @@ const ChainIndicator = ({
   inline = false,
   showUnknown = true,
   showLogo = true,
+  responsive = false,
 }: ChainIndicatorProps): ReactElement | null => {
   const currentChainId = useChainId()
   const id = chainId || currentChainId
@@ -54,8 +56,14 @@ const ChainIndicator = ({
     <Skeleton width="100%" height="22px" variant="rectangular" sx={{ flexShrink: 0 }} />
   ) : chainConfig ? (
     <span
+      data-testid="chain-logo"
       style={showLogo ? undefined : style}
-      className={classnames(inline ? css.inlineIndicator : css.indicator, showLogo ? css.withLogo : '', className)}
+      className={classnames(className || '', {
+        [css.inlineIndicator]: inline,
+        [css.indicator]: !inline,
+        [css.withLogo]: showLogo,
+        [css.responsive]: responsive,
+      })}
     >
       {showLogo && (
         <img
@@ -67,7 +75,7 @@ const ChainIndicator = ({
         />
       )}
 
-      {chainConfig.chainName}
+      <span className={css.name}>{chainConfig.chainName}</span>
     </span>
   ) : null
 }

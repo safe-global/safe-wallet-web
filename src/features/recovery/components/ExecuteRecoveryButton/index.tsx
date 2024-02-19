@@ -1,9 +1,7 @@
-import { Button, SvgIcon, Tooltip } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
-import RocketIcon from '@/public/images/transactions/rocket.svg'
-import IconButton from '@mui/material/IconButton'
 import CheckWallet from '@/components/common/CheckWallet'
 import { dispatchRecoveryExecution } from '@/features/recovery/services/recovery-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
@@ -65,15 +63,14 @@ export function ExecuteRecoveryButton({
             }
           >
             <span>
-              {compact ? (
-                <IconButton onClick={onClick} color="primary" disabled={isDisabled} size="small">
-                  <SvgIcon component={RocketIcon} inheritViewBox fontSize="small" />
-                </IconButton>
-              ) : (
-                <Button onClick={onClick} variant="contained" disabled={isDisabled} size="stretched">
-                  Execute
-                </Button>
-              )}
+              <Button
+                onClick={onClick}
+                variant="contained"
+                disabled={isDisabled}
+                size={compact ? 'small' : 'stretched'}
+              >
+                Execute
+              </Button>
             </span>
           </Tooltip>
         )

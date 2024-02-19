@@ -7,6 +7,7 @@ import type { Approval } from '@/services/security/modules/ApprovalModule'
 const approvalMethodDescription: Record<Approval['method'], string> = {
   approve: 'Set allowance to',
   increaseAllowance: 'Increase allowance by',
+  Permit2: 'Give permission to spend',
 }
 
 const ApprovalItem = ({

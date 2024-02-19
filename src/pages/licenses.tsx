@@ -355,14 +355,6 @@ const SafeLicenses = () => (
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell>@date-io/date-fns</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/dmtrKovalenko/date-io/blob/master/LICENSE">
-                  https://github.com/dmtrKovalenko/date-io/blob/master/LICENSE
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
               <TableCell>@emotion/cache</TableCell>
               <TableCell>
                 <ExternalLink href="https://github.com/emotion-js/emotion/blob/main/LICENSE">
@@ -451,26 +443,10 @@ const SafeLicenses = () => (
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>@safe-global/safe-core-sdk-utils</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md">
-                  https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
               <TableCell>@safe-global/safe-deployments</TableCell>
               <TableCell>
                 <ExternalLink href="https://github.com/safe-global/safe-deployments/blob/main/LICENSE">
                   https://github.com/safe-global/safe-deployments/blob/main/LICENSE
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>@safe-global/safe-ethers-lib</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md">
-                  https://github.com/safe-global/safe-core-sdk/blob/main/LICENSE.md
                 </ExternalLink>
               </TableCell>
             </TableRow>
@@ -711,14 +687,6 @@ const SafeLicenses = () => (
               <TableCell>
                 <ExternalLink href="https://github.com/Bunlong/react-papaparse/blob/master/LICENSE">
                   https://github.com/Bunlong/react-papaparse/blob/master/LICENSE
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>react-qr-reader</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/JodusNodus/react-qr-reader/blob/master/LICENSE">
-                  https://github.com/JodusNodus/react-qr-reader/blob/master/LICENSE
                 </ExternalLink>
               </TableCell>
             </TableRow>

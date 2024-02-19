@@ -1,6 +1,5 @@
 import { type SyntheticEvent } from 'react'
 import { Button, DialogActions, FormControl, Grid, Typography, DialogContent } from '@mui/material'
-import { BigNumber } from 'ethers'
 import { FormProvider, useForm } from 'react-hook-form'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
 import { FLOAT_REGEX } from '@/utils/validation'
@@ -55,7 +54,7 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
   const onSubmit = (data: FormData) => {
     props.onSubmit({
       userNonce: data.userNonce,
-      gasLimit: data.gasLimit ? BigNumber.from(data.gasLimit) : undefined,
+      gasLimit: data.gasLimit ? BigInt(data.gasLimit) : undefined,
       maxFeePerGas: safeParseUnits(data.maxFeePerGas) || params.maxFeePerGas,
       maxPriorityFeePerGas: safeParseUnits(data.maxPriorityFeePerGas) || params.maxPriorityFeePerGas,
     })

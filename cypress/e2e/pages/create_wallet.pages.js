@@ -10,7 +10,8 @@ const ownerAddress = 'input[name^="owners"][name$="address"]'
 const thresholdInput = 'input[name="threshold"]'
 export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
 const connectingContainer = 'div[class*="connecting-container"]'
-const createNewSafeBtn = 'span[data-track="create-safe: Continue to creation"]'
+const createNewSafeBtn = '[data-testid="create-safe-btn"]'
+const continueWithWalletBtn = 'span[data-track="create-safe: Continue to my accounts"]'
 const connectWalletBtn = 'Connect wallet'
 const googleConnectBtn = '[data-testid="google-connect-btn"]'
 const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
@@ -110,6 +111,10 @@ export function clickOnCreateNewSafeBtn() {
   cy.get(createNewSafeBtn).click().wait(1000)
 }
 
+export function clickOnContinueWithWalletBtn() {
+  cy.get(continueWithWalletBtn).click().wait(1000)
+}
+
 export function clickOnConnectWalletBtn() {
   cy.get(welcomeLoginScreen).within(() => {
     cy.get('button').contains(connectWalletBtn).should('be.visible').should('be.enabled').click().wait(1000)
@@ -128,7 +133,8 @@ export function selectNetwork(network) {
   cy.wait(1000)
   cy.get(expandMoreIcon).eq(1).parents('div').eq(1).click()
   cy.wait(1000)
-  cy.get('li').contains(network).click()
+  let regex = new RegExp(`^${network}$`)
+  cy.get('li').contains(regex).click()
 }
 
 export function clickOnNextBtn() {

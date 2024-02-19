@@ -1,6 +1,8 @@
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import type { ChainInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import type { AddOwnerTxParams, RemoveOwnerTxParams, SwapOwnerTxParams } from '@safe-global/safe-core-sdk'
+import type { AddOwnerTxParams, RemoveOwnerTxParams, SwapOwnerTxParams } from '@safe-global/protocol-kit'
 import type { MetaTransactionData, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import extractTxInfo from '../extractTxInfo'
 import { getAndValidateSafeSDK } from './sdk'
@@ -11,7 +13,7 @@ import { getAndValidateSafeSDK } from './sdk'
 export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: number): Promise<SafeTransaction> => {
   if (nonce !== undefined) txParams = { ...txParams, nonce }
   const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.createTransaction({ safeTransactionData: txParams })
+  return safeSDK.createTransaction({ transactions: [txParams] })
 }
 
 /**
@@ -20,7 +22,7 @@ export const createTx = async (txParams: SafeTransactionDataPartial, nonce?: num
  */
 export const createMultiSendCallOnlyTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.createTransaction({ safeTransactionData: txParams, onlyCalls: true })
+  return safeSDK.createTransaction({ transactions: txParams, onlyCalls: true })
 }
 
 export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
@@ -28,14 +30,53 @@ export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promis
   return safeSDK.createRemoveOwnerTx(txParams)
 }
 
-export const createAddOwnerTx = async (txParams: AddOwnerTxParams): Promise<SafeTransaction> => {
+export const createAddOwnerTx = async (
+  chain: ChainInfo,
+  isDeployed: boolean,
+  txParams: AddOwnerTxParams,
+): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.createAddOwnerTx(txParams)
+  if (isDeployed) return safeSDK.createAddOwnerTx(txParams)
+
+  const safeVersion = await safeSDK.getContractVersion()
+
+  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  // @ts-ignore TODO: Fix overload issue
+  const data = contract.encode('addOwnerWithThreshold', [txParams.ownerAddress, txParams.threshold])
+
+  const tx = {
+    to: await safeSDK.getAddress(),
+    value: '0',
+    data,
+  }
+
+  return safeSDK.createTransaction({
+    transactions: [tx],
+  })
 }
 
-export const createSwapOwnerTx = async (txParams: SwapOwnerTxParams): Promise<SafeTransaction> => {
+export const createSwapOwnerTx = async (
+  chain: ChainInfo,
+  isDeployed: boolean,
+  txParams: SwapOwnerTxParams,
+): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
-  return safeSDK.createSwapOwnerTx(txParams)
+  if (isDeployed) return safeSDK.createSwapOwnerTx(txParams)
+
+  const safeVersion = await safeSDK.getContractVersion()
+
+  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  const data = contract.encode('swapOwner', [SENTINEL_ADDRESS, txParams.oldOwnerAddress, txParams.newOwnerAddress])
+
+  const tx = {
+    to: await safeSDK.getAddress(),
+    value: '0',
+    data,
+  }
+
+  return safeSDK.createTransaction({
+    transactions: [tx],
+  })
 }
 
 export const createUpdateThresholdTx = async (threshold: number): Promise<SafeTransaction> => {
@@ -79,7 +120,13 @@ export const createExistingTx = async (
   // Create a tx and add pre-approved signatures
   const safeTx = await createTx(txParams, txParams.nonce)
   Object.entries(signatures).forEach(([signer, data]) => {
-    safeTx.addSignature({ signer, data, staticPart: () => data, dynamicPart: () => '' })
+    safeTx.addSignature({
+      signer,
+      data,
+      staticPart: () => data,
+      dynamicPart: () => '',
+      isContractSignature: false,
+    })
   })
 
   return safeTx

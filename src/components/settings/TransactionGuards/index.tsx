@@ -4,7 +4,7 @@ import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material
 
 import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
-import { SAFE_FEATURES } from '@safe-global/safe-core-sdk-utils'
+import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'
 import { HelpCenterArticle } from '@/config/constants'
 import DeleteIcon from '@/public/images/common/delete.svg'

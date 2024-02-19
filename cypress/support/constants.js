@@ -18,8 +18,20 @@ export const SEPOLIA_TEST_SAFE_8 = 'sep:0x5912f6616c84024cD1aff0D5b55bb36F5180fF
 // SAFE 9 & 10 are used for safe apps tests
 export const SEPOLIA_TEST_SAFE_9 = 'sep:0xD1571E8Cc4438aFef2836DD9a0E5D09fb63EDE9a'
 export const SEPOLIA_TEST_SAFE_10 = 'sep:0x4DD4cB2299E491E1B469245DB589ccB2B16d7bde'
+// SAFE 11 is used for remove owner tests
+export const SEPOLIA_TEST_SAFE_11 = 'sep:0x81034C61a318649F7aD43f9e8C1051427e326443'
 // SAFE 12 is used for spending limits
 export const SEPOLIA_TEST_SAFE_12 = 'sep:0x9190cc22D592dDcf396Fa616ce84a9978fD96Fc9'
+// SAFE 13 & 14 are used for sidebar with pending tx, no further tx should be made in it
+export const SEPOLIA_TEST_SAFE_13 = 'sep:0x98705770aF3b18db0a64597F6d4DCe825915fec0'
+export const SEPOLIA_TEST_SAFE_13_SHORT = '0x9870...fec0'
+export const SEPOLIA_TEST_SAFE_14 = 'sep:0xC23e061252BFc7967203D054136d8fA7c7df2fc4'
+// SAFE 15 is a safe with native tokens but the automation user is not its owner
+export const SEPOLIA_TEST_SAFE_15_TOKEN = 'sep:0xfC0A7ac73Fde7547ac0792Cca1D8A50CE0AFC4Df'
+export const SEPOLIA_TEST_SAFE_16_CREATE_TX = 'sep:0xc2F3645bfd395516d1a18CA6ad9298299d328C01'
+export const SEPOLIA_TEST_SAFE_17_SIDEBAR_NONOWNER = 'sep:0x10B45a24640E2170B6AA63ea3A289D723a0C9cba'
+export const SEPOLIA_TEST_SAFE_18_PENDING_TX = 'sep:0xFFfaC243A24EecE6553f0Da278322aCF1Fb6CeF1'
+export const SEPOLIA_TEST_SAFE_19_NONOWNER_NFT = 'sep:0x3e259dea1E317743Cb49CA9358904E07420ff061'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -30,6 +42,8 @@ export const SAFE_APP_ADDRESS = '0x11AB70A4564C62F567B92868Cb5e69b50c5434aF'
 export const SAFE_APP_ADDRESS_2 = '0x49d4450977E2c95362C13D3a31a09311E0Ea26A6'
 export const SAFE_APP_ADDRESS_3 = '0xc6b82bA149CFA113f8f48d5E3b1F78e933e16DfD'
 export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'
+// Below is also used in sidebar tests as a beneficiary
+export const SPENDING_LIMIT_ADDRESS_2 = '0x52835f11E348605E9D791Ec09380a3224526d538'
 export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
 export const SIDEBAR_ADDRESS = '0x04f8...1a91'
@@ -77,11 +91,16 @@ export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
 
 export const proposeEndpoint = '/**/propose'
 export const appsEndpoint = '/**/safe-apps'
-export const transactionHistoryEndpoint = '**/history?trusted=false'
+export const transactionHistoryEndpoint = '**/history*'
 export const safeListEndpoint = '**/safes'
 
 export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
 export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png'
+
+export const TXActionNames = {
+  resetAllowance: 'resetAllowance',
+  setAllowance: 'setAllowance',
+}
 
 export const networkKeys = {
   sepolia: '11155111',
@@ -104,6 +123,7 @@ export const networks = {
   goerli: /^G(ö|oe)rli$/,
   sepolia: 'Sepolia',
   polygon: 'Polygon',
+  gnosis: 'Gnosis',
 }
 
 export const tokenAbbreviation = {
@@ -115,6 +135,11 @@ export const tokenAbbreviation = {
   usds: 'USDC',
   aave: 'AAVE',
   link: 'LINK',
+}
+
+export const currencies = {
+  cad: 'CAD',
+  aud: 'AUD',
 }
 
 export const appNames = {
@@ -131,6 +156,11 @@ export const testAppData = {
 export const checkboxStates = {
   unchecked: 'not.be.checked',
   checked: 'be.checked',
+}
+
+export const enabledStates = {
+  enabled: 'not.be.disabled',
+  disabled: 'be.disabled',
 }
 
 export const elementExistanceStates = {

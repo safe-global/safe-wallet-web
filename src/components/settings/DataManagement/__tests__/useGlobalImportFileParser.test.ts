@@ -307,7 +307,7 @@ describe('useGlobalImportFileParser', () => {
       data: {
         settings: {
           currency: 'usd',
-          shortName: { show: true, copy: true, qr: true },
+          shortName: { copy: true, qr: true },
           theme: { darkMode: false },
         },
       },
@@ -323,7 +323,6 @@ describe('useGlobalImportFileParser', () => {
 
     expect(settings.currency).toEqual('usd')
 
-    expect(settings.shortName.show).toEqual(true)
     expect(settings.shortName.copy).toEqual(true)
     expect(settings.shortName.qr).toEqual(true)
 

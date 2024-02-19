@@ -1,7 +1,7 @@
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { renderHook } from '@/tests/test-utils'
-import { ethers } from 'ethers'
+import { zeroPadValue } from 'ethers'
 import { createSafeTx } from '@/tests/builders/safeTx'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as wallet from '@/hooks/wallets/useWallet'
@@ -13,6 +13,8 @@ import { type OnboardAPI } from '@web3-onboard/core'
 import { useAlreadySigned, useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
 
 describe('SignOrExecute hooks', () => {
+  const extendedSafeInfo = extendedSafeInfoBuilder().build()
+
   beforeEach(() => {
     jest.clearAllMocks()
 
@@ -45,14 +47,15 @@ describe('SignOrExecute hooks', () => {
     it('should return true if nonce is correct', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
-        safeAddress: ethers.utils.hexZeroPad('0x000', 20),
+        },
+        safeAddress: zeroPadValue('0x0000', 20),
         safeError: undefined,
         safeLoading: false,
         safeLoaded: true,
@@ -66,14 +69,15 @@ describe('SignOrExecute hooks', () => {
     it('should return false if nonce is incorrect', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 90,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
-        safeAddress: ethers.utils.hexZeroPad('0x000', 20),
+        },
+        safeAddress: zeroPadValue('0x0000', 20),
         safeError: undefined,
         safeLoading: false,
         safeLoaded: true,
@@ -87,17 +91,18 @@ describe('SignOrExecute hooks', () => {
 
   describe('useIsExecutionLoop', () => {
     it('should return true when a safe is executing its own transaction', () => {
-      const address = ethers.utils.hexZeroPad('0x789', 20)
+      const address = zeroPadValue('0x0789', 20)
 
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
         safeAddress: address,
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
           address: { value: address },
           owners: [{ value: address }],
           nonce: 100,
           chainId: '1',
-        } as SafeInfo,
+        },
         safeLoaded: true,
         safeLoading: false,
         safeError: undefined,
@@ -118,7 +123,7 @@ describe('SignOrExecute hooks', () => {
       jest.spyOn(wallet, 'default').mockReturnValue({
         chainId: '1',
         label: 'MetaMask',
-        address: ethers.utils.hexZeroPad('0x456', 20),
+        address: zeroPadValue('0x0456', 20),
       } as ConnectedWallet)
 
       const { result } = renderHook(() => useIsExecutionLoop())
@@ -130,14 +135,15 @@ describe('SignOrExecute hooks', () => {
   describe('useImmediatelyExecutable', () => {
     it('should return true for newly created transactions with threshold 1 and no pending transactions', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
-        safeAddress: ethers.utils.hexZeroPad('0x000', 20),
+        safeAddress: zeroPadValue('0x0000', 20),
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }],
+          address: { value: zeroPadValue('0x0000', 20) },
+          owners: [{ value: zeroPadValue('0x0123', 20) }],
           threshold: 1,
           nonce: 100,
-        } as SafeInfo,
+        },
         safeLoaded: true,
         safeLoading: false,
         safeError: undefined,
@@ -152,15 +158,16 @@ describe('SignOrExecute hooks', () => {
 
     it('should return false for newly created transactions with threshold > 1', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
-        safeAddress: ethers.utils.hexZeroPad('0x000', 20),
+        safeAddress: zeroPadValue('0x0000', 20),
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }],
+          address: { value: zeroPadValue('0x0000', 20) },
+          owners: [{ value: zeroPadValue('0x0123', 20) }],
           threshold: 2,
           nonce: 100,
           chainId: '1',
-        } as SafeInfo,
+        },
         safeLoaded: true,
         safeLoading: false,
         safeError: undefined,
@@ -175,15 +182,16 @@ describe('SignOrExecute hooks', () => {
 
     it('should return false for safes with pending transactions', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
-        safeAddress: ethers.utils.hexZeroPad('0x000', 20),
+        safeAddress: zeroPadValue('0x0000', 20),
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }],
+          address: { value: zeroPadValue('0x0000', 20) },
+          owners: [{ value: zeroPadValue('0x0123', 20) }],
           threshold: 1,
           nonce: 100,
           chainId: '1',
-        } as SafeInfo,
+        },
         safeLoaded: true,
         safeLoading: false,
         safeError: undefined,
@@ -201,13 +209,14 @@ describe('SignOrExecute hooks', () => {
     it('should return sign and execute actions', () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -225,13 +234,14 @@ describe('SignOrExecute hooks', () => {
 
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -266,13 +276,14 @@ describe('SignOrExecute hooks', () => {
 
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -295,13 +306,14 @@ describe('SignOrExecute hooks', () => {
     it('should execute a tx without a txId (immediate execution)', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -327,13 +339,14 @@ describe('SignOrExecute hooks', () => {
     it('should execute a tx with an id (existing tx)', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -359,13 +372,14 @@ describe('SignOrExecute hooks', () => {
     it('should throw an error if the tx is undefined', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -383,13 +397,15 @@ describe('SignOrExecute hooks', () => {
     it('should relay a tx execution', async () => {
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
+          ...extendedSafeInfoBuilder().build(),
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 1,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -410,6 +426,7 @@ describe('SignOrExecute hooks', () => {
         data: '0x0001',
         staticPart: () => '',
         dynamicPart: () => '',
+        isContractSignature: false,
       })
 
       const id = await executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)
@@ -423,13 +440,15 @@ describe('SignOrExecute hooks', () => {
 
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
+          ...extendedSafeInfoBuilder().build(),
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -442,6 +461,7 @@ describe('SignOrExecute hooks', () => {
         data: '0x0001',
         staticPart: () => '',
         dynamicPart: () => '',
+        isContractSignature: false,
       })
 
       const proposeSpy = jest
@@ -453,6 +473,7 @@ describe('SignOrExecute hooks', () => {
           data: '0x0001',
           staticPart: () => '',
           dynamicPart: () => '',
+          isContractSignature: false,
         })
         return Promise.resolve(tx)
       })
@@ -469,17 +490,19 @@ describe('SignOrExecute hooks', () => {
     })
 
     it('should throw when relaying an unsigned tx as a smart contract wallet', async () => {
-      jest.spyOn(walletHooks, 'isSmartContractWallet').mockReturnValue(Promise.resolve(true))
+      jest.spyOn(walletHooks, 'isSmartContractWallet').mockResolvedValue(true)
 
       jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
         safe: {
+          ...extendedSafeInfo,
+          ...extendedSafeInfoBuilder().build(),
           version: '1.3.0',
-          address: { value: ethers.utils.hexZeroPad('0x000', 20) },
+          address: { value: zeroPadValue('0x0000', 20) },
           nonce: 100,
           threshold: 2,
-          owners: [{ value: ethers.utils.hexZeroPad('0x123', 20) }, { value: ethers.utils.hexZeroPad('0x456', 20) }],
+          owners: [{ value: zeroPadValue('0x0123', 20) }, { value: zeroPadValue('0x0456', 20) }],
           chainId: '1',
-        } as SafeInfo,
+        },
         safeAddress: '0x123',
         safeError: undefined,
         safeLoading: false,
@@ -492,6 +515,7 @@ describe('SignOrExecute hooks', () => {
         data: '0x0001',
         staticPart: () => '',
         dynamicPart: () => '',
+        isContractSignature: false,
       })
 
       const proposeSpy = jest
@@ -503,6 +527,7 @@ describe('SignOrExecute hooks', () => {
           data: '0x0001',
           staticPart: () => '',
           dynamicPart: () => '',
+          isContractSignature: false,
         })
         return Promise.resolve(tx)
       })
@@ -511,7 +536,7 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useTxActions())
       const { executeTx } = result.current
 
-      await expect(() => executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)).rejects.toThrowError(
+      await expect(executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)).rejects.toThrowError(
         'Cannot relay an unsigned transaction from a smart contract wallet',
       )
       expect(proposeSpy).not.toHaveBeenCalled()
@@ -535,6 +560,7 @@ describe('SignOrExecute hooks', () => {
         data: '0x0001',
         staticPart: () => '',
         dynamicPart: () => '',
+        isContractSignature: false,
       })
       const { result } = renderHook(() => useAlreadySigned(tx))
       expect(result.current).toEqual(true)
@@ -554,6 +580,7 @@ describe('SignOrExecute hooks', () => {
       data: '0x0001',
       staticPart: () => '',
       dynamicPart: () => '',
+      isContractSignature: false,
     })
     const { result } = renderHook(() => useAlreadySigned(tx))
     expect(result.current).toEqual(false)

@@ -1,3 +1,5 @@
+import { Provider } from 'react-redux'
+import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import * as router from 'next/router'
 
@@ -7,9 +9,8 @@ import { act, renderHook } from '@/tests/test-utils'
 import { TxModalContext } from '@/components/tx-flow'
 import useSafeWalletProvider, { _useTxFlowApi } from './useSafeWalletProvider'
 import { SafeWalletProvider } from '.'
-import { StoreHydrator, makeStore } from '@/store'
+import { makeStore } from '@/store'
 import * as messages from '@/utils/safe-messages'
-import { createStoreHydrator } from '@/store/storeHydrator'
 
 const appInfo = {
   id: 1,
@@ -43,7 +44,8 @@ describe('useSafeWalletProvider', () => {
               address: {
                 value: '0x1234567890000000000000000000000000000000',
               },
-            } as gateway.SafeInfo,
+              deployed: true,
+            } as unknown as ExtendedSafeInfo,
           },
         },
       })
@@ -74,9 +76,9 @@ describe('useSafeWalletProvider', () => {
       const { result } = renderHook(() => _useTxFlowApi('1', '0x1234567890000000000000000000000000000000'), {
         // TODO: Improve render/renderHook to allow custom wrappers within the "defaults"
         wrapper: ({ children }) => (
-          <StoreHydrator>
+          <Provider store={makeStore()}>
             <TxModalContext.Provider value={{ setTxFlow: mockSetTxFlow } as any}>{children}</TxModalContext.Provider>
-          </StoreHydrator>
+          </Provider>
         ),
       })
 
@@ -104,16 +106,12 @@ describe('useSafeWalletProvider', () => {
 
       const mockSetTxFlow = jest.fn()
 
-      const StoreHydrator = createStoreHydrator(() =>
-        makeStore({ settings: { signing: { useOnChainSigning: false } } }),
-      )
-
       const { result } = renderHook(() => _useTxFlowApi('1', '0x1234567890000000000000000000000000000000'), {
         // TODO: Improve render/renderHook to allow custom wrappers within the "defaults"
         wrapper: ({ children }) => (
-          <StoreHydrator>
+          <Provider store={makeStore({ settings: { signing: { useOnChainSigning: false } } })}>
             <TxModalContext.Provider value={{ setTxFlow: mockSetTxFlow } as any}>{children}</TxModalContext.Provider>
-          </StoreHydrator>
+          </Provider>
         ),
       })
 
@@ -151,9 +149,9 @@ describe('useSafeWalletProvider', () => {
       const { result } = renderHook(() => _useTxFlowApi('1', '0x1234567890000000000000000000000000000000'), {
         // TODO: Improve render/renderHook to allow custom wrappers within the "defaults"
         wrapper: ({ children }) => (
-          <StoreHydrator>
+          <Provider store={makeStore()}>
             <TxModalContext.Provider value={{ setTxFlow: mockSetTxFlow } as any}>{children}</TxModalContext.Provider>
-          </StoreHydrator>
+          </Provider>
         ),
       })
 
@@ -221,9 +219,9 @@ describe('useSafeWalletProvider', () => {
       const { result } = renderHook(() => _useTxFlowApi('1', '0x1234567890000000000000000000000000000000'), {
         // TODO: Improve render/renderHook to allow custom wrappers within the "defaults"
         wrapper: ({ children }) => (
-          <StoreHydrator>
+          <Provider store={makeStore()}>
             <TxModalContext.Provider value={{ setTxFlow: mockSetTxFlow } as any}>{children}</TxModalContext.Provider>
-          </StoreHydrator>
+          </Provider>
         ),
       })
 

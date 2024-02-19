@@ -51,6 +51,7 @@ const SafeListItemSecondaryAction = ({
   if (!isAddedSafeOwner) {
     return (
       <Typography
+        data-testid="read-only-visibility"
         variant="body2"
         display="flex"
         alignItems="center"

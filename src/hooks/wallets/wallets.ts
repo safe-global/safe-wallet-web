@@ -1,9 +1,9 @@
 import { CYPRESS_MNEMONIC, TREZOR_APP_URL, TREZOR_EMAIL, WC_PROJECT_ID } from '@/config/constants'
-import type { RecommendedInjectedWallets, WalletInit } from '@web3-onboard/common/dist/types.d'
+import type { WalletInit } from '@web3-onboard/common/dist/types.d'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import coinbaseModule from '@web3-onboard/coinbase'
-import injectedWalletModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
+import injectedWalletModule from '@web3-onboard/injected-wallets'
 import keystoneModule from '@web3-onboard/keystone/dist/index'
 import ledgerModule from '@web3-onboard/ledger/dist/index'
 import trezorModule from '@web3-onboard/trezor'
@@ -12,6 +12,7 @@ import walletConnect from '@web3-onboard/walletconnect'
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { CGW_NAMES, WALLET_KEYS } from './consts'
 import MpcModule from '@/services/mpc/SocialLoginModule'
+import { SOCIAL_WALLET_OPTIONS } from '@/services/mpc/config'
 
 const prefersDarkMode = (): boolean => {
   return window?.matchMedia('(prefers-color-scheme: dark)')?.matches
@@ -51,10 +52,6 @@ export const getAllWallets = (chain: ChainInfo): WalletInit[] => {
   return Object.values(WALLET_MODULES).map((module) => module(chain))
 }
 
-export const getRecommendedInjectedWallets = (): RecommendedInjectedWallets[] => {
-  return [{ name: ProviderLabel.MetaMask, url: 'https://metamask.io' }]
-}
-
 export const isWalletSupported = (disabledWallets: string[], walletLabel: string): boolean => {
   const legacyWalletName = CGW_NAMES?.[walletLabel.toUpperCase() as WALLET_KEYS]
   return !disabledWallets.includes(legacyWalletName || walletLabel)
@@ -74,6 +71,8 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
 }
 
 export const isSocialWalletEnabled = (chain: ChainInfo | undefined): boolean => {
+  if (Object.keys(SOCIAL_WALLET_OPTIONS).length === 0) return false
+
   if (!chain) return false
 
   return chain.disabledWallets.every((label) => label !== CGW_NAMES.SOCIAL_LOGIN)

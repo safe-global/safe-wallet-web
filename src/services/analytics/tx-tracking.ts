@@ -1,5 +1,5 @@
 import { TX_TYPES } from '@/services/analytics/events/transactions'
-import { getTxDetails } from '@/services/tx/txDetails'
+import { getTxDetails } from '@/services/transactions'
 import { isWalletConnectSafeApp } from '@/utils/gateway'
 import { SettingsInfoType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -56,7 +56,7 @@ export const getTransactionTrackingType = async (chainId: string, txId: string):
     }
 
     if (details.safeAppInfo) {
-      return isWalletConnectSafeApp(details.safeAppInfo.url) ? TX_TYPES.walletconnect : TX_TYPES.safeapps
+      return isWalletConnectSafeApp(details.safeAppInfo.url) ? TX_TYPES.walletconnect : details.safeAppInfo.url
     }
 
     if (isMultiSendTxInfo(txInfo)) {

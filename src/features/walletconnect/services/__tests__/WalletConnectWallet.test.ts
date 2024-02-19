@@ -1,4 +1,4 @@
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import type { ProposalTypes, SessionTypes, SignClientTypes, Verify } from '@walletconnect/types'
 import type { IWeb3Wallet, Web3WalletTypes } from '@walletconnect/web3wallet'
 
@@ -89,13 +89,13 @@ describe('WalletConnectWallet', () => {
     it('should call emitSessionEvent with the correct parameters', async () => {
       const emitSessionEventSpy = jest.spyOn((wallet as any).web3Wallet as IWeb3Wallet, 'emitSessionEvent')
 
-      await wallet.accountsChanged('topic1', '1', hexZeroPad('0x123', 20))
+      await wallet.accountsChanged('topic1', '1', toBeHex('0x123', 20))
 
       expect(emitSessionEventSpy).toHaveBeenCalledWith({
         topic: 'topic1',
         event: {
           name: 'accountsChanged',
-          data: [hexZeroPad('0x123', 20)],
+          data: [toBeHex('0x123', 20)],
         },
         chainId: 'eip155:1',
       })
@@ -156,7 +156,7 @@ describe('WalletConnectWallet', () => {
       await wallet.approveSession(
         proposal,
         '69420', // Not in proposal, therefore not supported
-        hexZeroPad('0x123', 20),
+        toBeHex('0x123', 20),
       )
 
       const namespaces = {
@@ -181,13 +181,13 @@ describe('WalletConnectWallet', () => {
           ],
           events: ['chainChanged', 'accountsChanged'],
           accounts: [
-            `eip155:1:${hexZeroPad('0x123', 20)}`,
-            `eip155:43114:${hexZeroPad('0x123', 20)}`,
-            `eip155:42161:${hexZeroPad('0x123', 20)}`,
-            `eip155:8453:${hexZeroPad('0x123', 20)}`,
-            `eip155:100:${hexZeroPad('0x123', 20)}`,
-            `eip155:137:${hexZeroPad('0x123', 20)}`,
-            `eip155:1101:${hexZeroPad('0x123', 20)}`,
+            `eip155:1:${toBeHex('0x123', 20)}`,
+            `eip155:43114:${toBeHex('0x123', 20)}`,
+            `eip155:42161:${toBeHex('0x123', 20)}`,
+            `eip155:8453:${toBeHex('0x123', 20)}`,
+            `eip155:100:${toBeHex('0x123', 20)}`,
+            `eip155:137:${toBeHex('0x123', 20)}`,
+            `eip155:1101:${toBeHex('0x123', 20)}`,
           ],
         },
       }
@@ -227,7 +227,7 @@ describe('WalletConnectWallet', () => {
       await wallet.approveSession(
         proposal,
         '69420', // Not in proposal, therefore not supported
-        hexZeroPad('0x123', 20),
+        toBeHex('0x123', 20),
       )
 
       const namespaces = {
@@ -236,12 +236,12 @@ describe('WalletConnectWallet', () => {
           methods: ['eth_accounts', 'personal_sign', 'eth_sendTransaction'],
           events: ['chainChanged', 'accountsChanged'],
           accounts: [
-            `eip155:43114:${hexZeroPad('0x123', 20)}`,
-            `eip155:42161:${hexZeroPad('0x123', 20)}`,
-            `eip155:8453:${hexZeroPad('0x123', 20)}`,
-            `eip155:100:${hexZeroPad('0x123', 20)}`,
-            `eip155:137:${hexZeroPad('0x123', 20)}`,
-            `eip155:1101:${hexZeroPad('0x123', 20)}`,
+            `eip155:43114:${toBeHex('0x123', 20)}`,
+            `eip155:42161:${toBeHex('0x123', 20)}`,
+            `eip155:8453:${toBeHex('0x123', 20)}`,
+            `eip155:100:${toBeHex('0x123', 20)}`,
+            `eip155:137:${toBeHex('0x123', 20)}`,
+            `eip155:1101:${toBeHex('0x123', 20)}`,
           ],
         },
       }
@@ -274,11 +274,12 @@ describe('WalletConnectWallet', () => {
             },
             requiredNamespaces: {} as ProposalTypes.RequiredNamespaces,
             optionalNamespaces: {} as ProposalTypes.OptionalNamespaces,
+            expiryTimestamp: 2,
           },
           verifyContext: {} as Verify.Context,
         },
         '1',
-        hexZeroPad('0x123', 20),
+        toBeHex('0x123', 20),
       )
 
       expect(emitSessionEventSpy).toHaveBeenCalledTimes(1)
@@ -311,11 +312,12 @@ describe('WalletConnectWallet', () => {
             },
             requiredNamespaces: {} as ProposalTypes.RequiredNamespaces,
             optionalNamespaces: {} as ProposalTypes.OptionalNamespaces,
+            expiryTimestamp: 2,
           },
           verifyContext: {} as Verify.Context,
         },
         '1',
-        hexZeroPad('0x123', 20),
+        toBeHex('0x123', 20),
       )
 
       expect(emitSpy).toHaveBeenCalledWith('session_add', { namespaces: { eip155: {} }, topic: 'topic' })
@@ -332,14 +334,14 @@ describe('WalletConnectWallet', () => {
         namespaces: {
           eip155: {
             chains: ['eip155:1'],
-            accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
+            accounts: [`eip155:1:${toBeHex('0x123', 20)}`],
             events: ['chainChanged', 'accountsChanged'],
             methods: [],
           },
         },
       } as unknown as SessionTypes.Struct
 
-      await (wallet as any).updateSession(session, '69420', hexZeroPad('0x123', 20))
+      await (wallet as any).updateSession(session, '69420', toBeHex('0x123', 20))
 
       expect(disconnectSessionSpy).toHaveBeenCalledWith({
         reason: {
@@ -361,21 +363,21 @@ describe('WalletConnectWallet', () => {
         namespaces: {
           eip155: {
             chains: ['eip155:1'],
-            accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
+            accounts: [`eip155:1:${toBeHex('0x123', 20)}`],
             events: ['chainChanged', 'accountsChanged'],
             methods: [],
           },
         },
       } as unknown as SessionTypes.Struct
 
-      await (wallet as any).updateSession(session, '1', hexZeroPad('0x456', 20))
+      await (wallet as any).updateSession(session, '1', toBeHex('0x456', 20))
 
       expect(updateSessionSpy).toHaveBeenCalledWith({
         topic: 'topic1',
         namespaces: {
           eip155: {
             chains: ['eip155:1'],
-            accounts: [`eip155:1:${hexZeroPad('0x456', 20)}`, `eip155:1:${hexZeroPad('0x123', 20)}`],
+            accounts: [`eip155:1:${toBeHex('0x456', 20)}`, `eip155:1:${toBeHex('0x123', 20)}`],
             events: ['chainChanged', 'accountsChanged'],
             methods: [],
           },
@@ -394,12 +396,12 @@ describe('WalletConnectWallet', () => {
         namespaces: {
           eip155: {
             chains: ['eip155:1'],
-            accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
+            accounts: [`eip155:1:${toBeHex('0x123', 20)}`],
           },
         },
       } as unknown as SessionTypes.Struct
 
-      await (wallet as any).updateSession(session, '1', hexZeroPad('0x123', 20))
+      await (wallet as any).updateSession(session, '1', toBeHex('0x123', 20))
 
       expect(updateSessionSpy).not.toHaveBeenCalled()
 
@@ -414,12 +416,12 @@ describe('WalletConnectWallet', () => {
         namespaces: {
           eip155: {
             chains: ['eip155:1', 'eip155:5'],
-            accounts: [`eip155:1:${hexZeroPad('0x123', 20)}`],
+            accounts: [`eip155:1:${toBeHex('0x123', 20)}`],
           },
         },
       } as unknown as SessionTypes.Struct
 
-      await (wallet as any).updateSession(session, '5', hexZeroPad('0x456', 20))
+      await (wallet as any).updateSession(session, '5', toBeHex('0x456', 20))
 
       expect(emitSessionEventSpy).toHaveBeenCalledTimes(2)
 
@@ -433,7 +435,7 @@ describe('WalletConnectWallet', () => {
         topic: 'topic',
         event: {
           name: 'accountsChanged',
-          data: [hexZeroPad('0x456', 20)],
+          data: [toBeHex('0x456', 20)],
         },
         chainId: 'eip155:5',
       })
@@ -447,11 +449,11 @@ describe('WalletConnectWallet', () => {
       const updateSessionSpy = jest.spyOn(wallet as any, 'updateSession')
       jest.spyOn(wallet, 'getActiveSessions').mockReturnValue([session1, session2])
 
-      await wallet.updateSessions('1', hexZeroPad('0x123', 20))
+      await wallet.updateSessions('1', toBeHex('0x123', 20))
 
       expect(updateSessionSpy).toHaveBeenCalledTimes(2)
-      expect(updateSessionSpy).toHaveBeenCalledWith(session1, '1', hexZeroPad('0x123', 20))
-      expect(updateSessionSpy).toHaveBeenCalledWith(session2, '1', hexZeroPad('0x123', 20))
+      expect(updateSessionSpy).toHaveBeenCalledWith(session1, '1', toBeHex('0x123', 20))
+      expect(updateSessionSpy).toHaveBeenCalledWith(session2, '1', toBeHex('0x123', 20))
     })
   })
 

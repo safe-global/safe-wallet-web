@@ -1,13 +1,14 @@
 import usePendingActions from '@/hooks/usePendingActions'
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { renderHook, waitFor } from '@/tests/test-utils'
-import type { SafeInfo, TransactionListPage, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionListPage, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConflictType,
   DetailedExecutionInfoType,
   LabelValue,
   TransactionListItemType,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import { hexZeroPad } from 'ethers/lib/utils'
+import { toBeHex } from 'ethers'
 import type { EIP1193Provider } from '@web3-onboard/core'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import * as useTxQueue from '@/hooks/useTxQueue'
@@ -26,7 +27,7 @@ describe('usePendingActions hook', () => {
 
   it('should return no pending actions for non-current Safe with an empty queue', () => {
     const chainId = '5'
-    const safeAddress = hexZeroPad('0x1', 20)
+    const safeAddress = toBeHex('0x1', 20)
 
     ;(getTransactionQueue as jest.Mock).mockResolvedValue({
       next: undefined,
@@ -40,14 +41,15 @@ describe('usePendingActions hook', () => {
 
   it('should return no pending actions for current Safe with an empty queue', () => {
     const chainId = '5'
-    const safeAddress = hexZeroPad('0x1', 20)
+    const safeAddress = toBeHex('0x1', 20)
 
-    const mockSafeAddress = hexZeroPad('0x1', 20)
+    const mockSafeAddress = toBeHex('0x1', 20)
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safeAddress: mockSafeAddress,
       safe: {
+        ...extendedSafeInfoBuilder().build(),
         chainId: '5',
-      } as SafeInfo,
+      },
       safeError: undefined,
       safeLoading: false,
       safeLoaded: true,
@@ -69,7 +71,7 @@ describe('usePendingActions hook', () => {
   })
 
   it('should return 2 queued txs and 1 pending signature for non-current Safe with a queue', async () => {
-    const walletAddress = hexZeroPad('0x789', 20)
+    const walletAddress = toBeHex('0x789', 20)
     const mockWallet = {
       address: walletAddress,
       chainId: '5',
@@ -78,12 +80,13 @@ describe('usePendingActions hook', () => {
     }
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
 
-    const mockSafeAddress = hexZeroPad('0x2', 20)
+    const mockSafeAddress = toBeHex('0x2', 20)
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safeAddress: mockSafeAddress,
       safe: {
+        ...extendedSafeInfoBuilder().build(),
         chainId: '5',
-      } as SafeInfo,
+      },
       safeError: undefined,
       safeLoading: false,
       safeLoaded: true,
@@ -129,7 +132,7 @@ describe('usePendingActions hook', () => {
     ;(getTransactionQueue as jest.Mock).mockResolvedValue(page)
 
     const chainId = '5'
-    const safeAddress = hexZeroPad('0x1', 20)
+    const safeAddress = toBeHex('0x1', 20)
 
     const { result } = renderHook(() => usePendingActions(chainId, safeAddress))
 
@@ -139,8 +142,8 @@ describe('usePendingActions hook', () => {
   })
 
   it('should return 1 queued txs and 1 pending signature for current Safe with a queue', async () => {
-    const safeAddress = hexZeroPad('0x1', 20)
-    const walletAddress = hexZeroPad('0x789', 20)
+    const safeAddress = toBeHex('0x1', 20)
+    const walletAddress = toBeHex('0x789', 20)
     const mockWallet = {
       address: walletAddress,
       chainId: '5',
@@ -149,12 +152,13 @@ describe('usePendingActions hook', () => {
     }
     jest.spyOn(useWallet, 'default').mockReturnValue({ ...mockWallet, provider: {} as EIP1193Provider })
 
-    const mockSafeAddress = hexZeroPad('0x1', 20)
+    const mockSafeAddress = toBeHex('0x1', 20)
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safeAddress: mockSafeAddress,
       safe: {
+        ...extendedSafeInfoBuilder().build(),
         chainId: '5',
-      } as SafeInfo,
+      },
       safeError: undefined,
       safeLoading: false,
       safeLoaded: true,

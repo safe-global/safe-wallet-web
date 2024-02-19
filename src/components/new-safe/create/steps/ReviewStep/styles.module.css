@@ -9,3 +9,20 @@
   text-decoration: line-through;
   color: var(--color-text-secondary);
 }
+
+.errorMessage {
+  margin-top: 0;
+}
+
+.networkFee {
+  padding: var(--space-1);
+  background-color: var(--color-secondary-background);
+  color: var(--color-static-main);
+  width: fit-content;
+  border-radius: 6px;
+}
+
+.networkFeeInline {
+  padding: 2px 4px;
+  display: inline-flex;
+}

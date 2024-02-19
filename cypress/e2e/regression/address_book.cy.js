@@ -5,18 +5,20 @@ import * as constants from '../../support/constants'
 import * as addressBook from '../../e2e/pages/address_book.page'
 import * as main from '../../e2e/pages/main.page'
 import * as ls from '../../support/localstorage_data.js'
+import * as sidebar from '../pages/sidebar.pages.js'
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
+const importedSafe = 'imported-safe'
 
 describe('Address book tests', () => {
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
+    cy.clearLocalStorage()
     main.acceptCookies()
   })
 
-  it('Verify entered entry in Name input can be saved', () => {
+  it('Verify owners name can be edited', () => {
     main
       .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
       .then(() => {
@@ -26,7 +28,7 @@ describe('Address book tests', () => {
             cy.reload()
             addressBook.clickOnEditEntryBtn()
             addressBook.typeInNameInput(EDITED_NAME)
-            addressBook.clickOnSaveButton()
+            addressBook.clickOnSaveEntryBtn()
             addressBook.verifyNameWasChanged(NAME, EDITED_NAME)
           })
       })
@@ -51,8 +53,7 @@ describe('Address book tests', () => {
     cy.contains(constants.GNO_CSV_ENTRY.address).should('exist')
   })
 
-  // TODO: Change title in Testrail. New title "...exported"
-  it('Verify the address book file can be downloaded', () => {
+  it('Verify the address book file can be exported', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.dataSet).then(() => {
       main
         .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.dataSet)
@@ -64,11 +65,45 @@ describe('Address book tests', () => {
           const fileName = `safe-address-book-${date}.csv`
 
           addressBook.clickOnExportFileBtn()
+          addressBook.verifyExportMessage(12)
           addressBook.confirmExport()
 
           const downloadsFolder = Cypress.config('downloadsFolder')
           //File reading is failing in the CI. Can be tested locally
           cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
+        })
+    })
+  })
+
+  it('Verify that importing a csv file does not alter addresses in the Address book not present in the file', () => {
+    main
+      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+      .then(() => {
+        main
+          .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+          .then(() => {
+            cy.wait(1000)
+            cy.reload()
+            addressBook.clickOnImportFileBtn()
+            addressBook.importCSVFile(addressBook.validCSVFile)
+            addressBook.clickOnImportBtn()
+            addressBook.verifyDataImported([constants.RECIPIENT_ADDRESS])
+          })
+      })
+  })
+
+  it('Verify Safe name changes after uploading a csv file', () => {
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set4).then(() => {
+      main
+        .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.addedSafesImport)
+        .then(() => {
+          cy.wait(1000)
+          cy.reload()
+          addressBook.clickOnImportFileBtn()
+          addressBook.importCSVFile(addressBook.addedSafesCSVFile)
+          addressBook.clickOnImportBtn()
+          sidebar.openSidebar()
+          sidebar.verifyAddedSafesExist([importedSafe])
         })
     })
   })

@@ -1,5 +1,5 @@
 import * as constants from '../../support/constants'
-import * as balances from '../pages/balances.pages'
+import * as assets from '../pages/assets.pages'
 import * as main from '../../e2e/pages/main.page'
 
 const ASSETS_LENGTH = 8
@@ -11,16 +11,16 @@ describe('Balance pagination tests', () => {
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_6)
     main.acceptCookies()
 
-    balances.selectTokenList(balances.tokenListOptions.allTokens)
+    assets.selectTokenList(assets.tokenListOptions.allTokens)
   })
 
   it('Verify a user can change rows per page and navigate to next and previous page', () => {
-    balances.verifyInitialTableState()
-    balances.changeTo10RowsPerPage()
-    balances.verifyTableHas10Rows()
-    balances.navigateToNextPage()
-    balances.verifyTableHasNRows(ASSETS_LENGTH)
-    balances.navigateToPreviousPage()
-    balances.verifyTableHas10RowsAgain()
+    assets.verifyInitialTableState()
+    assets.changeTo10RowsPerPage()
+    assets.verifyTableHas10Rows()
+    assets.navigateToNextPage()
+    assets.verifyTableHasNRows(ASSETS_LENGTH)
+    assets.navigateToPreviousPage()
+    assets.verifyTableHas10RowsAgain()
   })
 })

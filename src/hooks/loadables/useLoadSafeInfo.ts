@@ -1,3 +1,6 @@
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { getUndeployedSafeInfo } from '@/features/counterfactual/utils'
+import { useAppSelector } from '@/store'
 import { useEffect } from 'react'
 import { getSafeInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync, { type AsyncResult } from '../useAsync'
@@ -14,12 +17,22 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)
   const { safe } = useSafeInfo()
   const isStoredSafeValid = safe.chainId === chainId && safe.address.value === address
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
 
-  const [data, error, loading] = useAsync<SafeInfo>(() => {
+  const [data, error, loading] = useAsync<SafeInfo | undefined>(async () => {
     if (!chainId || !address) return
-    return getSafeInfo(chainId, address)
+
+    /**
+     * This is the one place where we can't check for `safe.deployed` as we want to update that value
+     * when the local storage is cleared, so we have to check undeployedSafe
+     */
+    if (undeployedSafe) return getUndeployedSafeInfo(undeployedSafe.props, address, chainId)
+
+    const safeInfo = await getSafeInfo(chainId, address)
+
+    return { ...safeInfo, deployed: true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, address, pollCount])
+  }, [chainId, address, pollCount, undeployedSafe])
 
   // Reset the counter when safe address/chainId changes
   useEffect(() => {

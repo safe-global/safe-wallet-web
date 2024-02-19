@@ -2,11 +2,11 @@ import { didRevert } from '@/utils/ethers-utils'
 
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
-import type { JsonRpcProvider } from '@ethersproject/providers'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { asError } from '../exceptions/utils'
+import { type JsonRpcProvider } from 'ethers'
 
 export function _getRemainingTimeout(defaultTimeout: number, submittedAt?: number) {
   const timeoutInMs = defaultTimeout * 60_000
@@ -51,7 +51,7 @@ export const waitForTx = async (provider: JsonRpcProvider, txIds: string[], txHa
   }
 }
 
-enum TaskState {
+export enum TaskState {
   CheckPending = 'CheckPending',
   ExecPending = 'ExecPending',
   ExecSuccess = 'ExecSuccess',
@@ -77,7 +77,7 @@ type TransactionStatusResponse = {
 const TASK_STATUS_URL = 'https://relay.gelato.digital/tasks/status'
 const getTaskTrackingUrl = (taskId: string) => `${TASK_STATUS_URL}/${taskId}`
 
-const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStatusResponse } | undefined> => {
+export const getRelayTxStatus = async (taskId: string): Promise<{ task: TransactionStatusResponse } | undefined> => {
   const url = getTaskTrackingUrl(taskId)
 
   let response

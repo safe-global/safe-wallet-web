@@ -44,7 +44,7 @@ export const usePendingTxsQueue = (): {
   const [untrustedQueue, error, loading] = useAsync<TransactionListPage>(
     () => {
       if (!hasPending) return
-      return getTransactionQueue(chainId, safeAddress, undefined, false)
+      return getTransactionQueue(chainId, safeAddress, { trusted: false })
     },
     [chainId, safeAddress, hasPending],
     false,

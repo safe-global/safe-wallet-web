@@ -25,9 +25,9 @@ const EmptyState = () => {
   return (
     <Card>
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={2}>
-        <NoTransactionsIcon />
+        <NoTransactionsIcon data-testid="no-tx-icon" />
 
-        <Typography variant="body1" color="primary.light">
+        <Typography data-testid="no-tx-text" variant="body1" color="primary.light">
           This Safe Account has no queued transactions
         </Typography>
       </Box>
@@ -103,7 +103,7 @@ const PendingTxsList = (): ReactElement | null => {
   )
 
   return (
-    <WidgetContainer>
+    <WidgetContainer data-testid="pending-tx-widget">
       <div className={css.title}>
         <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Pending transactions

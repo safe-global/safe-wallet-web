@@ -1,3 +1,4 @@
+import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { faker } from '@faker-js/faker'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
@@ -35,5 +36,12 @@ export function safeInfoBuilder(): IBuilder<SafeInfo> {
     txQueuedTag: faker.string.numeric(),
     txHistoryTag: faker.string.numeric(),
     messagesTag: faker.string.numeric(),
+  })
+}
+
+export function extendedSafeInfoBuilder(): IBuilder<ExtendedSafeInfo> {
+  return Builder.new<ExtendedSafeInfo>().with({
+    ...safeInfoBuilder().build(),
+    deployed: true,
   })
 }

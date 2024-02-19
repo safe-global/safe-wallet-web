@@ -1,3 +1,4 @@
+import useCategoryFilter from '@/hooks/safe-apps/useCategoryFilter'
 import { useEffect, useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
@@ -12,7 +13,7 @@ type ReturnType = {
   query: string
   setQuery: Dispatch<SetStateAction<string>>
   selectedCategories: string[]
-  setSelectedCategories: Dispatch<SetStateAction<string[]>>
+  setSelectedCategories: (categories: string[]) => void
   optimizedWithBatchFilter: boolean
   setOptimizedWithBatchFilter: Dispatch<SetStateAction<boolean>>
   filteredApps: SafeAppData[]
@@ -27,6 +28,12 @@ const useSafeAppsFilters = (safeAppsList: SafeAppData[]): ReturnType => {
   const filteredAppsByQueryAndCategories = useAppsFilterByCategory(filteredAppsByQuery, selectedCategories)
   const filteredApps = useAppsFilterByOptimizedForBatch(filteredAppsByQueryAndCategories, optimizedWithBatchFilter)
 
+  const { onSelectCategories } = useCategoryFilter({
+    safeAppsList,
+    selectedCategories,
+    setSelectedCategories,
+  })
+
   const debouncedSearchQuery = useDebounce(query, 2000)
   useEffect(() => {
     if (debouncedSearchQuery) {
@@ -39,7 +46,7 @@ const useSafeAppsFilters = (safeAppsList: SafeAppData[]): ReturnType => {
     setQuery,
 
     selectedCategories,
-    setSelectedCategories,
+    setSelectedCategories: onSelectCategories,
 
     optimizedWithBatchFilter,
     setOptimizedWithBatchFilter,

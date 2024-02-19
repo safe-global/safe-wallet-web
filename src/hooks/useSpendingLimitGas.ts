@@ -1,7 +1,6 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import type { BigNumber } from 'ethers'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { getSpendingLimitContract, getSpendingLimitInterface } from '@/services/contracts/spendingLimitContracts'
+import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import useAsync from '@/hooks/useAsync'
 import { type SpendingLimitTxParams } from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
 import useChainId from '@/hooks/useChainId'
@@ -11,13 +10,12 @@ const useSpendingLimitGas = (params: SpendingLimitTxParams) => {
   const provider = useWeb3ReadOnly()
   const wallet = useWallet()
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<BigNumber>(() => {
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint | undefined>(async () => {
     if (!provider || !wallet) return
 
     const contract = getSpendingLimitContract(chainId, provider)
-    const spendingLimitInterface = getSpendingLimitInterface()
 
-    const data = spendingLimitInterface.encodeFunctionData('executeAllowanceTransfer', [
+    const data = contract.interface.encodeFunctionData('executeAllowanceTransfer', [
       params.safeAddress,
       params.token,
       params.to,
@@ -29,9 +27,9 @@ const useSpendingLimitGas = (params: SpendingLimitTxParams) => {
     ])
 
     return provider.estimateGas({
-      to: contract.address,
+      to: await contract.getAddress(),
       from: wallet.address,
-      data: data,
+      data,
     })
   }, [provider, wallet, chainId, params])
 

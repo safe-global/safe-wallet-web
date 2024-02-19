@@ -18,7 +18,7 @@ const extractTxInfo = (
   let signatures: Record<string, string> = {}
   if (isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)) {
     signatures = txDetails.detailedExecutionInfo.confirmations.reduce((result, item) => {
-      result[item.signer.value] = item.signature || ''
+      result[item.signer.value] = item.signature ?? ''
       return result
     }, signatures)
   }
@@ -26,16 +26,16 @@ const extractTxInfo = (
   const data = txDetails.txData?.hexData ?? EMPTY_DATA
 
   const baseGas = isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
-    ? Number(txDetails.detailedExecutionInfo.baseGas)
-    : 0
+    ? txDetails.detailedExecutionInfo.baseGas
+    : '0'
 
   const gasPrice = isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
-    ? Number(txDetails.detailedExecutionInfo.gasPrice)
-    : 0
+    ? txDetails.detailedExecutionInfo.gasPrice
+    : '0'
 
   const safeTxGas = isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
-    ? Number(txDetails.detailedExecutionInfo.safeTxGas)
-    : 0
+    ? txDetails.detailedExecutionInfo.safeTxGas
+    : '0'
 
   const gasToken = isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
     ? txDetails.detailedExecutionInfo.gasToken

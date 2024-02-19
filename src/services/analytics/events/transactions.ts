@@ -19,9 +19,12 @@ export enum TX_TYPES {
   batch = 'batch',
   rejection = 'rejection',
   typed_message = 'typed_message',
-  safeapps = 'safeapps',
   walletconnect = 'walletconnect',
   custom = 'custom',
+
+  // Counterfactual
+  activate_without_tx = 'activate_without_tx',
+  activate_with_tx = 'activate_with_tx',
 }
 
 const TX_CATEGORY = 'transactions'

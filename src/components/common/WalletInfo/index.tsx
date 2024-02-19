@@ -1,6 +1,5 @@
 import WalletBalance from '@/components/common/WalletBalance'
 import { WalletIdenticon } from '@/components/common/WalletOverview'
-import { type BigNumber } from 'ethers'
 import { Box, Button, Typography } from '@mui/material'
 import css from './styles.module.css'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
@@ -23,7 +22,7 @@ import useChainId from '@/hooks/useChainId'
 
 type WalletInfoProps = {
   wallet: ConnectedWallet
-  balance?: string | BigNumber
+  balance?: string | bigint
   currentChainId: ReturnType<typeof useChainId>
   socialWalletService: ReturnType<typeof useSocialWallet>
   router: ReturnType<typeof useRouter>

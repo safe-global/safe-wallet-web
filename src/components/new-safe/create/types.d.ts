@@ -1,4 +1,3 @@
-import type { BigNumber } from 'ethers'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 
 export type NamedAddress = {
@@ -12,7 +11,7 @@ export type PendingSafeTx = {
   from: string
   nonce: number
   to: string
-  value: BigNumber
+  value: bigint
   startBlock: number
 }
 
