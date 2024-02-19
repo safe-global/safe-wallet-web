@@ -10,6 +10,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import EntryDialog from '@/components/address-book/EntryDialog'
 import css from './styles.module.css'
 import inputCss from '@/styles/inputs.module.css'
+import { isValidAddress } from '@/utils/validation'
 
 const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
@@ -34,6 +35,12 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
     () => !!addressBookEntries.filter((entry) => entry.label.includes(addressValue)).length,
     [addressBookEntries, addressValue],
   )
+
+  const customFilterOptions = (options: any, state: any) => {
+    // Don't show suggestions from the address book once a valid address has been entered.
+    if (isValidAddress(addressValue)) return []
+    return abFilterOptions(options, state)
+  }
 
   const handleOpenAutocomplete = () => {
     setOpen((value) => !value)
@@ -75,7 +82,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
             options={addressBookEntries}
             onChange={(_, value) => (typeof value === 'string' ? field.onChange(value) : field.onChange(value.label))}
             onInputChange={(_, value) => setValue(name, value)}
-            filterOptions={abFilterOptions}
+            filterOptions={customFilterOptions}
             componentsProps={{
               paper: {
                 elevation: 2,
