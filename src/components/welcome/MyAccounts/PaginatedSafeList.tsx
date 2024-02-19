@@ -6,7 +6,6 @@ import { type SafeItems } from './useAllSafes'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import css from './styles.module.css'
-import useWallet from '@/hooks/wallets/useWallet'
 
 type PaginatedSafeListProps = {
   safes: SafeItems
@@ -22,7 +21,6 @@ const PAGE_SIZE = 5
 
 const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }: PaginatedSafeListProps) => {
   const [maxShownSafes, setMaxShownSafes] = useState<number>(DEFAULT_SHOWN)
-  const wallet = useWallet()
 
   const shownSafes = useMemo(() => {
     if (safes.length <= MAX_DEFAULT_SHOWN) {

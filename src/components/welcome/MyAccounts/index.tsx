@@ -11,7 +11,7 @@ import PaginatedSafeList from './PaginatedSafeList'
 import { VisibilityOutlined } from '@mui/icons-material'
 import AddIcon from '@/public/images/common/add.svg'
 import { AppRoutes } from '@/config/routes'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 
 type AccountsListProps = {
   safes: SafeItems
@@ -20,7 +20,6 @@ type AccountsListProps = {
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
   const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
-  const handleConnect = useConnectWallet()
 
   return (
     <Box className={css.container}>
@@ -38,10 +37,8 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           onLinkClick={onLinkClick}
           noSafesMessage={
             <>
-              Connect a wallet to view your Safe Accounts or to create a new one
-              <Button onClick={handleConnect} disableElevation size="small" sx={{ mt: 2 }}>
-                Connect a wallet
-              </Button>
+              <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
+              <ConnectWalletButton text="Connect a wallet" contained={false} />
             </>
           }
         />
