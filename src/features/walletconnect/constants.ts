@@ -51,7 +51,6 @@ export const BlockedBridges = [
   // Unsupported chain bridges
   'bridge.zora.energy',
   'bridge.mantle.xyz',
-  'bridge.linea.build',
   'bridge.metis.io',
   'scroll.io',
   'pacific-bridge.manta.network',
@@ -70,6 +69,7 @@ export const WarnedBridges = [
   'app.allbridge.io',
   'bridge.arbitrum.io',
   'bridge.base.org',
+  'bridge.linea.build',
   'core.allbridge.io',
   'bungee.exchange',
   'www.carrier.so',
