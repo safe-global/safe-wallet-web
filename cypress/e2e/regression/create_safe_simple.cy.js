@@ -6,7 +6,6 @@ import * as owner from '../pages/owners.pages'
 describe('Safe creation tests', () => {
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
-    main.waitForSafeListRequestToComplete()
     cy.clearLocalStorage()
     main.acceptCookies()
   })

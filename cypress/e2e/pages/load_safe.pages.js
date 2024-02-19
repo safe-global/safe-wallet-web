@@ -1,7 +1,7 @@
 import * as constants from '../../support/constants'
 
 const addExistingAccountBtnStr = 'Add existing one'
-const contactStr = 'Name, address & network'
+const contactStr = 'Choose address, network and a name'
 export const invalidAddressFormatErrorMsg = 'Invalid address format'
 const invalidAddressNameLengthErrorMsg = 'Maximum 50 symbols'
 
