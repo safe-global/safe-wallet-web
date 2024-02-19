@@ -10,6 +10,7 @@ import css from './styles.module.css'
 type PaginatedSafeListProps = {
   safes: SafeItems
   title: ReactNode
+  noSafesMessage?: ReactNode
   action?: ReactElement
   onLinkClick?: () => void
 }
@@ -18,7 +19,7 @@ const DEFAULT_SHOWN = 5
 const MAX_DEFAULT_SHOWN = 7
 const PAGE_SIZE = 5
 
-const PaginatedSafeList = ({ safes, title, action, onLinkClick }: PaginatedSafeListProps) => {
+const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }: PaginatedSafeListProps) => {
   const [maxShownSafes, setMaxShownSafes] = useState<number>(DEFAULT_SHOWN)
 
   const shownSafes = useMemo(() => {
@@ -47,8 +48,8 @@ const PaginatedSafeList = ({ safes, title, action, onLinkClick }: PaginatedSafeL
       {shownSafes.length ? (
         shownSafes.map((item) => <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />)
       ) : (
-        <Typography variant="body2" color="primary.light" textAlign="center" my={3}>
-          You don&apos;t have any Safe Accounts yet
+        <Typography variant="body2" color="text.secondary" textAlign="center" my={3} mx="auto" width={250}>
+          {noSafesMessage}
         </Typography>
       )}
       {safes.length > shownSafes.length && (
