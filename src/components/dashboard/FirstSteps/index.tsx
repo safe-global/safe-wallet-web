@@ -89,7 +89,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
             hideChainIndicator
           >
             <Box px={4} pb={5} pt={4}>
-              <Grid container spacing={2} alignItems="center" mb={4}>
+              <Grid container spacing={2} alignItems="center" justifyContent="center" mb={4}>
                 <Grid item>
                   <Box p={1} border={1} borderRadius="6px" borderColor="border.light" display="inline-flex">
                     <QRCode value={safeAddress} size={132} />
@@ -105,7 +105,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                     <EthHashInfo
                       address={safeAddress}
                       showName={false}
-                      shortAddress={true}
+                      shortAddress={false}
                       showCopyButton
                       hasExplorer
                       avatarSize={24}
