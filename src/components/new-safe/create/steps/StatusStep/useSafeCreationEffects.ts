@@ -76,7 +76,7 @@ const useSafeCreationEffects = ({
   useEffect(() => {
     if (status === SafeCreationStatus.SUCCESS) {
       pendingSafe?.safeAddress && gtmSetSafeAddress(pendingSafe.safeAddress)
-      trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
+      trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'deployment' })
       return
     }
 

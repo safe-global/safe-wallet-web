@@ -48,6 +48,16 @@ export const OVERVIEW_EVENTS = {
     action: 'New transaction',
     category: OVERVIEW_CATEGORY,
   },
+  CHOOSE_TRANSACTION_TYPE: {
+    action: 'Choose transaction type',
+    category: OVERVIEW_CATEGORY,
+    event: EventType.CLICK,
+  },
+  ADD_FUNDS: {
+    action: 'Add funds',
+    category: OVERVIEW_CATEGORY,
+    event: EventType.CLICK,
+  },
   NOTIFICATION_CENTER: {
     action: 'Open Notification Center',
     category: OVERVIEW_CATEGORY,
@@ -114,6 +124,11 @@ export const OVERVIEW_EVENTS = {
   },
   CREATE_NEW_SAFE: {
     action: 'Create new Safe',
+    category: OVERVIEW_CATEGORY,
+  },
+  PROCEED_WITH_TX: {
+    event: EventType.CLICK,
+    action: 'Proceed with transaction',
     category: OVERVIEW_CATEGORY,
   },
 }

@@ -6,7 +6,7 @@ import * as createtx from '../../e2e/pages/create_tx.pages'
 const connectAndTransactStr = 'Connect & transact'
 const transactionQueueStr = 'Pending transactions'
 const noTransactionStr = 'This Safe has no queued transactions'
-const overviewStr = 'Overview'
+const overviewStr = 'Total asset value'
 const sendStr = 'Send'
 const receiveStr = 'Receive'
 const viewAllStr = 'View all'
@@ -112,12 +112,10 @@ export function verifyConnectTransactStrIsVisible() {
 
 export function verifyOverviewWidgetData() {
   // Alias for the Overview section
-  cy.contains('h2', overviewStr).parents('section').as('overviewSection')
+  cy.contains('div', overviewStr).parents('section').as('overviewSection')
 
   cy.get('@overviewSection').within(() => {
     // Prefix is separated across elements in EthHashInfo
-    cy.get('h2').contains('Overview')
-    cy.get(`a[href="${constants.BALANCE_URL}${encodeURIComponent(constants.SEPOLIA_TEST_SAFE_5)}"]`).contains('Tokens')
     cy.get('button').contains(sendStr)
     cy.get('button').contains(receiveStr)
   })

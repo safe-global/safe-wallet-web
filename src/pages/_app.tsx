@@ -43,6 +43,7 @@ import { TxModalProvider } from '@/components/tx-flow'
 import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
 import Recovery from '@/features/recovery/components/Recovery'
 import WalletProvider from '@/components/common/WalletProvider'
+import CounterfactualHooks from '@/features/counterfactual/CounterfactualHooks'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -130,6 +131,8 @@ const WebCoreApp = ({
           <PasswordRecoveryModal />
 
           <Recovery />
+
+          <CounterfactualHooks />
         </AppProviders>
       </CacheProvider>
     </Provider>

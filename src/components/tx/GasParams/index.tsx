@@ -53,7 +53,7 @@ export const _GasParams = ({
 
   // Total gas cost
   const totalFee = !isLoading
-    ? formatVisualAmount(getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
+    ? formatVisualAmount(getTotalFee(maxFeePerGas, gasLimit), chain?.nativeCurrency.decimals)
     : '> 0.001'
 
   // Individual gas params

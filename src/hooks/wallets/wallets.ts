@@ -12,6 +12,7 @@ import walletConnect from '@web3-onboard/walletconnect'
 import e2eWalletModule from '@/tests/e2e-wallet'
 import { CGW_NAMES, WALLET_KEYS } from './consts'
 import MpcModule from '@/services/mpc/SocialLoginModule'
+import { SOCIAL_WALLET_OPTIONS } from '@/services/mpc/config'
 
 const prefersDarkMode = (): boolean => {
   return window?.matchMedia('(prefers-color-scheme: dark)')?.matches
@@ -70,6 +71,8 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
 }
 
 export const isSocialWalletEnabled = (chain: ChainInfo | undefined): boolean => {
+  if (Object.keys(SOCIAL_WALLET_OPTIONS).length === 0) return false
+
   if (!chain) return false
 
   return chain.disabledWallets.every((label) => label !== CGW_NAMES.SOCIAL_LOGIN)
