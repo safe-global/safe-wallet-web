@@ -27,7 +27,7 @@ describe('[SMOKE] Load Safe tests', () => {
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
-    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
+    createwallet.verifyDefaultWalletName(createwallet.defaultSepoliaPlaceholder)
     safe.verifyIncorrectAddressErrorMessage()
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
 
@@ -62,9 +62,9 @@ describe('[SMOKE] Load Safe tests', () => {
   })
 
   it('[SMOKE] Verify safe name has a default name', () => {
-    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
+    createwallet.verifyDefaultWalletName(createwallet.defaultSepoliaPlaceholder)
     cy.reload()
-    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
+    createwallet.verifyDefaultWalletName(createwallet.defaultSepoliaPlaceholder)
   })
 
   it('[SMOKE] Verify that after loading existing Safe, its name input is not empty', () => {

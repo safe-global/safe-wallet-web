@@ -32,7 +32,7 @@ const changeNetworkWarningStr = 'Change your wallet network'
 const safeAccountSetupStr = 'Safe Account setup'
 const policy1_2 = '1/1 policy'
 export const walletName = 'test1-sepolia-safe'
-export const defaltSepoliaPlaceholder = 'Sepolia Safe'
+export const defaultSepoliaPlaceholder = 'Sepolia Safe'
 const welcomeToSafeStr = 'Welcome to Safe'
 
 export function clickOnBackBtn() {
