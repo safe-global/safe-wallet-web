@@ -50,8 +50,8 @@ const Dashboard = (): ReactElement => {
               </Grid>
             ) : null}
 
-            <Grid item xs={12}>
-              <FeaturedApps stackedLayout={!!showRecoveryWidget} />
+            <Grid item xs={12} lg={showRecoveryWidget ? 12 : 6}>
+              <FeaturedApps stackedLayout={!showRecoveryWidget} />
             </Grid>
 
             <Grid item xs={12}>

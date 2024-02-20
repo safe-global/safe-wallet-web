@@ -54,7 +54,7 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
         <WidgetBody>
           <Grid container spacing={3} height={1}>
             {featuredApps?.map((app) => (
-              <Grid item xs={12} md={6} key={app.id}>
+              <Grid item xs={12} md={stackedLayout ? 12 : 6} key={app.id}>
                 <NextLink
                   passHref
                   href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
