@@ -144,7 +144,7 @@ describe('getTransactionTrackingType', () => {
         type: TransactionInfoType.CUSTOM,
       },
       safeAppInfo: {
-        url: 'https://apps-portal.safe.global/wallet-connect',
+        url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
       },
     } as unknown)
 
