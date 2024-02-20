@@ -21,7 +21,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
 
   return (
-    <Box className={css.container}>
+    <Box data-testid="sidebar-safe-container" className={css.container}>
       <Box className={css.myAccounts}>
         <Box className={css.header}>
           <Typography variant="h1" fontWeight={700} className={css.title}>

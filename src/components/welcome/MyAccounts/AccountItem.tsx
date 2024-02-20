@@ -44,6 +44,7 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
 
   return (
     <ListItemButton
+      data-testid="safe-list-item"
       selected={isCurrentSafe}
       className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}
     >

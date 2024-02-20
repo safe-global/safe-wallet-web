@@ -62,6 +62,7 @@ export function verifyQRModalDisplayed() {
 }
 
 export function verifyCopyAddressBtn(data) {
+  cy.wait(1000)
   cy.get(sidebarContainer)
     .should('be.visible')
     .within(() => {
@@ -124,7 +125,15 @@ export function verifySafesByNetwork(netwrok, safes) {
 }
 
 function getSafeItemByName(name) {
-  return cy.get(sidebarSafeContainer).find(sideSafeListItem).contains(name).parents('li')
+  return cy
+    .get(sidebarSafeContainer)
+    .find(sideSafeListItem)
+    .contains(name)
+    .parents('span')
+    .parent()
+    .within(() => {
+      cy.get(safeItemOptionsBtn)
+    })
 }
 
 export function verifySafeReadOnlyState(safe) {
