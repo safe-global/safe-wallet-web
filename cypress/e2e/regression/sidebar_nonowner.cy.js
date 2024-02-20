@@ -21,7 +21,8 @@ describe('Sidebar non-owner tests', () => {
     navigation.verifyTxBtnStatus(constants.enabledStates.enabled)
   })
 
-  it('Verify tag counting queue tx show for owners and non-owners', () => {
+  // TODOD: Waiting for endpoint from CGW
+  it.skip('Verify tag counting queue tx show for owners and non-owners', () => {
     sideBar.openSidebar()
     sideBar.verifyQueuedTx(addedOwner).contains(2)
     sideBar.verifyQueuedTx(addedNonowner).contains(2)

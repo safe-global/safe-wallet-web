@@ -124,7 +124,6 @@ describe('useLoadBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {},
           tokenList: 'ALL',
@@ -171,7 +170,6 @@ describe('useLoadBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {},
           tokenList: TOKEN_LISTS.ALL,
@@ -212,7 +210,6 @@ describe('useLoadBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {},
           tokenList: TOKEN_LISTS.ALL,
@@ -256,7 +253,6 @@ describe('useLoadBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {},
           tokenList: TOKEN_LISTS.TRUSTED,
@@ -304,7 +300,6 @@ describe('useLoadBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {},
           tokenList: TOKEN_LISTS.TRUSTED,
@@ -345,7 +340,6 @@ describe('useLoadBalances', () => {
           shortName: {
             copy: true,
             qr: true,
-            show: true,
           },
           theme: {},
           tokenList: TOKEN_LISTS.ALL,
