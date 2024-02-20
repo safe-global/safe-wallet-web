@@ -27,6 +27,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Add Safe',
     category: OVERVIEW_CATEGORY,
   },
+  ADD_TO_WATCHLIST: {
+    action: 'Add to watchlist',
+    category: OVERVIEW_CATEGORY,
+  },
   SIDEBAR: {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
