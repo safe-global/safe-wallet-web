@@ -22,7 +22,7 @@ describe('[SMOKE] Safe creation tests', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
-    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
+    createwallet.verifyDefaultWalletName(createwallet.defaultSepoliaPlaceholder)
   })
 
   it('[SMOKE] Verify Add and Remove Owner Row works as expected', () => {

@@ -27,7 +27,7 @@ describe('[SMOKE] Load Safe tests', () => {
     // alias the address input label
     cy.get('input[name="address"]').parent().prev('label').as('addressLabel')
 
-    createwallet.verifyDefaultWalletName(createwallet.defaltSepoliaPlaceholder)
+    createwallet.verifyDefaultWalletName(createwallet.defaultSepoliaPlaceholder)
     safe.verifyIncorrectAddressErrorMessage()
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
 
@@ -59,5 +59,34 @@ describe('[SMOKE] Load Safe tests', () => {
     main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_2)
     safe.veriySidebarSafeNameIsVisible(testSafeName)
     safe.verifyOwnerNamePresentInSettings(testOwnerName)
+  })
+
+  it('[SMOKE] Verify safe name has a default name', () => {
+    createwallet.verifyDefaultWalletName(createwallet.defaultSepoliaPlaceholder)
+    cy.reload()
+    createwallet.verifyDefaultWalletName(createwallet.defaultSepoliaPlaceholder)
+  })
+
+  it('[SMOKE] Verify that after loading existing Safe, its name input is not empty', () => {
+    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
+    safe.clickOnNextBtn()
+    safe.verifyOnwerInputIsNotEmpty()
+  })
+
+  it('[SMOKE] Verify that when changing a network in dropdown, the same network is displayed in right top corner', () => {
+    safe.clickNetworkSelector(constants.networks.sepolia)
+    safe.selectPolygon()
+    cy.wait(1000)
+    safe.checkMainNetworkSelected(constants.networks.polygon)
+  })
+
+  it('[SMOKE] Verify there are mandatory networks in dropdown: Eth, Polygon, Sepolia', () => {
+    safe.clickNetworkSelector(constants.networks.sepolia)
+    safe.verifyMandatoryNetworksExist()
+  })
+
+  it('[SMOKE] Verify non-smart contract address is not allowed in safe address', () => {
+    safe.inputAddress(constants.DEFAULT_OWNER_ADDRESS)
+    safe.verifyAddressError()
   })
 })
