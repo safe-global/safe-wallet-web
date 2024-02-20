@@ -87,8 +87,9 @@ export const createNewSafe = async (
 export const computeNewSafeAddress = async (
   ethersProvider: BrowserProvider,
   props: DeploySafeProps,
+  safeVersion?: SafeVersion,
 ): Promise<string> => {
-  const safeFactory = await getSafeFactory(ethersProvider)
+  const safeFactory = await getSafeFactory(ethersProvider, safeVersion)
   return safeFactory.predictSafeAddress(props.safeAccountConfig, props.saltNonce)
 }
 

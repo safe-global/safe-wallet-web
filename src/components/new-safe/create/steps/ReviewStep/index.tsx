@@ -34,6 +34,7 @@ import { hasRemainingRelays } from '@/utils/relaying'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Alert, Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import { type DeploySafeProps } from '@safe-global/protocol-kit'
+import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import Image from 'next/image'
@@ -195,10 +196,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     setIsCreating(true)
 
     try {
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
-        chain.chainId,
-        LATEST_SAFE_VERSION,
-      )
+      const safeVersion = LATEST_SAFE_VERSION as SafeVersion
+
+      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, safeVersion)
 
       const props: DeploySafeProps = {
         safeAccountConfig: {
@@ -208,8 +208,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         },
       }
 
-      const saltNonce = await getAvailableSaltNonce(provider, { ...props, saltNonce: '0' })
-      const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
+      const saltNonce = await getAvailableSaltNonce(provider, { ...props, saltNonce: '0' }, safeVersion)
+      const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce }, safeVersion)
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
