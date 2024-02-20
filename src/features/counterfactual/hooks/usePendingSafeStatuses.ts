@@ -85,6 +85,9 @@ const usePendingSafeStatus = (): void => {
     if (!provider || !safeAddress) return
 
     const checkDeploymentStatus = async () => {
+      // In case the safe info hasn't been updated yet when switching safes
+      if ((await provider.getNetwork()).chainId !== BigInt(safe.chainId)) return
+
       const isContractDeployed = await isSmartContract(provider, safeAddress)
 
       if (isContractDeployed) {
