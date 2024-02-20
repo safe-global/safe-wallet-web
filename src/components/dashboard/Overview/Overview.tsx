@@ -80,7 +80,7 @@ const Overview = (): ReactElement => {
 
               {safe.deployed && (
                 <Grid item>
-                  <Grid container spacing={1} flexWrap="wrap">
+                  <Grid container spacing={1}>
                     <Grid item xs={12} sm="auto">
                       <BuyCryptoButton />
                     </Grid>
