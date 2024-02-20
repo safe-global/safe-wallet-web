@@ -470,6 +470,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
                               address={safeAddress || ''}
                               shortAddress={false}
                               showName={true}
+                              chainId={chainId}
                             />
                           </ListItemButton>
                         </ListItem>
