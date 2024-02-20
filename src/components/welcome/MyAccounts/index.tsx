@@ -12,6 +12,9 @@ import { VisibilityOutlined } from '@mui/icons-material'
 import AddIcon from '@/public/images/common/add.svg'
 import { AppRoutes } from '@/config/routes'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
+import useWallet from '@/hooks/wallets/useWallet'
+
+const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 
 type AccountsListProps = {
   safes: SafeItems
@@ -20,6 +23,7 @@ type AccountsListProps = {
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
   const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
+  const wallet = useWallet()
 
   return (
     <Box className={css.container}>
@@ -36,10 +40,14 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           safes={ownedSafes}
           onLinkClick={onLinkClick}
           noSafesMessage={
-            <>
-              <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
-              <ConnectWalletButton text="Connect a wallet" contained={false} />
-            </>
+            wallet ? (
+              NO_SAFES_MESSAGE
+            ) : (
+              <>
+                <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
+                <ConnectWalletButton text="Connect a wallet" contained={false} />
+              </>
+            )
           }
         />
 
@@ -65,7 +73,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               </Link>
             </Track>
           }
-          noSafesMessage="You don't have any Safe Accounts yet"
+          noSafesMessage={NO_SAFES_MESSAGE}
           onLinkClick={onLinkClick}
         />
 

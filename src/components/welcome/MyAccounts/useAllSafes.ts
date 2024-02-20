@@ -25,9 +25,14 @@ const useAddedSafes = () => {
 export const useHasSafes = () => {
   const { address = '' } = useWallet() || {}
   const allAdded = useAddedSafes()
-  const hasAdded = isEmpty(allAdded)
+  const hasAdded = !isEmpty(allAdded)
   const [allOwned] = useAllOwnedSafes(!hasAdded ? address : '') // pass an empty string to not fetch owned safes
-  return hasAdded || !isEmpty(allOwned)
+
+  if (hasAdded) return { isLoaded: true, hasSafes: hasAdded }
+  if (!allOwned) return { isLoaded: false }
+
+  const hasOwned = !isEmpty(Object.values(allOwned).flat())
+  return { isLoaded: true, hasSafes: hasOwned }
 }
 
 const useAllSafes = (): SafeItems => {

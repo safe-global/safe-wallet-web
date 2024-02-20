@@ -4,10 +4,12 @@ import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet
 const ConnectWalletButton = ({
   onConnect,
   contained = true,
+  small = false,
   text,
 }: {
   onConnect?: () => void
   contained?: boolean
+  small?: boolean
   text?: string
 }): React.ReactElement => {
   const connectWallet = useConnectWallet()
@@ -21,10 +23,10 @@ const ConnectWalletButton = ({
     <Button
       onClick={handleConnect}
       variant={contained ? 'contained' : 'text'}
-      size="small"
+      size={small ? 'small' : 'medium'}
       disableElevation
       fullWidth
-      sx={{ fontSize: ['12px', '13px'] }}
+      sx={{ fontSize: small ? ['12px', '13px'] : '' }}
     >
       {text || 'Connect'}
     </Button>
