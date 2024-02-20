@@ -4,7 +4,7 @@ import * as modal from '../pages/modals.page'
 import * as navigation from './navigation.page'
 import { safeHeaderInfo } from './import_export.pages'
 
-const chainLogo = '[data-testid="chain-logo"]'
+export const chainLogo = '[data-testid="chain-logo"]'
 const safeIcon = '[data-testid="safe-icon"]'
 const sidebarContainer = '[data-testid="sidebar-container"]'
 const openSafesIcon = '[data-testid="open-safes-icon"]'

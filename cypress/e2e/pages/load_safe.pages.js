@@ -1,4 +1,6 @@
 import * as constants from '../../support/constants'
+import * as sidebar from '../pages/sidebar.pages'
+import * as main from '../pages/main.page'
 
 const addExistingAccountBtnStr = 'Add existing one'
 const contactStr = 'Choose address, network and a name'
@@ -12,12 +14,33 @@ const sideBarIcon = '[data-testid="ChevronRightIcon"]'
 const sidebarCheckIcon = '[data-testid="CheckIcon"]'
 const addressStepNextBtn = '[data-testid="load-safe-next-btn"]'
 const typeFile = '[type="file"]'
+const ownerName = '[data-testid="owner-name"]'
+const addressSection = '[data-testid="address-section"]'
 const nextBtnStr = 'Next'
 const addBtnStr = 'Add'
 const settingsBtnStr = 'Settings'
 const ownersConfirmationsStr = 'Owners and confirmations'
 const transactionStr = 'Transactions'
 const qrErrorMsg = 'The QR could not be read'
+const safeAddressError = 'Address given is not a valid Safe Account address'
+
+const mandatoryNetworks = [constants.networks.sepolia, constants.networks.polygon, constants.networks.ethereum]
+
+export function verifyAddressError() {
+  cy.get(addressSection).find('label').contains(safeAddressError)
+}
+
+export function verifyOnwerInputIsNotEmpty() {
+  cy.get(ownerName).find('input').invoke('attr', 'placeholder').should('not.be.empty')
+}
+
+export function checkMainNetworkSelected(network) {
+  cy.get(sidebar.chainLogo).eq(0).contains(network).should('be.visible')
+}
+
+export function verifyMandatoryNetworksExist() {
+  main.verifyValuesExist('ul li', mandatoryNetworks)
+}
 
 export function verifyQRCodeErrorMsg() {
   cy.contains(qrErrorMsg).should('be.visible')
