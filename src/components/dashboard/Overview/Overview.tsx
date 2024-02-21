@@ -79,33 +79,39 @@ const Overview = (): ReactElement => {
               </Grid>
 
               {safe.deployed && (
-                <Grid item>
-                  <Grid container spacing={1}>
-                    <Grid item xs={12} sm="auto">
-                      <BuyCryptoButton />
-                    </Grid>
+                <Grid
+                  item
+                  container
+                  spacing={1}
+                  xs={12}
+                  sm
+                  justifyContent="flex-end"
+                  flexWrap={{ xs: 'wrap', sm: 'nowrap' }}
+                >
+                  <Grid item xs={12} sm="auto">
+                    <BuyCryptoButton />
+                  </Grid>
 
-                    <Grid item xs={6} sm="auto">
-                      <Button
-                        onClick={handleOnSend}
-                        size="small"
-                        variant="outlined"
-                        color="primary"
-                        startIcon={<ArrowIconNW />}
-                        fullWidth
-                      >
-                        Send
-                      </Button>
-                    </Grid>
-                    <Grid item xs={6} sm="auto">
-                      <Track {...OVERVIEW_EVENTS.SHOW_QR} label="dashboard">
-                        <QrCodeButton>
-                          <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />} fullWidth>
-                            Receive
-                          </Button>
-                        </QrCodeButton>
-                      </Track>
-                    </Grid>
+                  <Grid item xs={6} sm="auto">
+                    <Button
+                      onClick={handleOnSend}
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<ArrowIconNW />}
+                      fullWidth
+                    >
+                      Send
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6} sm="auto">
+                    <Track {...OVERVIEW_EVENTS.SHOW_QR} label="dashboard">
+                      <QrCodeButton>
+                        <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />} fullWidth>
+                          Receive
+                        </Button>
+                      </QrCodeButton>
+                    </Track>
                   </Grid>
                 </Grid>
               )}
