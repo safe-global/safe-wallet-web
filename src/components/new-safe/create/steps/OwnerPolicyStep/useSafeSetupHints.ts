@@ -25,7 +25,7 @@ export const useSafeSetupHints = (
       })
     }
 
-    setHint({ title: 'Safe Account setup', variant: 'warning', steps: safeSetupWarningSteps })
+    setHint({ title: 'Safe Account setup', variant: 'info', steps: safeSetupWarningSteps })
 
     // Clear dynamic hints when the step / hook unmounts
     return () => {
