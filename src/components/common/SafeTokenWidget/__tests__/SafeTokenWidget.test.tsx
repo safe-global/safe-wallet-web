@@ -1,50 +1,23 @@
-import * as nextRouter from 'next/router'
+import * as nextNav from 'next/navigation'
 import useChainId from '@/hooks/useChainId'
 import { render, waitFor } from '@/tests/test-utils'
-import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import SafeTokenWidget from '..'
 import { toBeHex } from 'ethers'
 import { AppRoutes } from '@/config/routes'
 import useSafeTokenAllocation, { useSafeVotingPower } from '@/hooks/useSafeTokenAllocation'
 
-const MOCK_GOVERNANCE_APP_URL = 'https://mock.governance.safe.global'
-
 jest.mock('@/hooks/useChainId', () => jest.fn(() => '1'))
 
 jest.mock('@/hooks/useSafeTokenAllocation')
-
-jest.mock(
-  '@/hooks/safe-apps/useRemoteSafeApps',
-  jest.fn(() => ({
-    useRemoteSafeApps: () => [
-      [
-        {
-          id: 61,
-          url: MOCK_GOVERNANCE_APP_URL,
-          chainIds: ['4'],
-          name: 'Safe {DAO} Governance',
-          description: '',
-          iconUrl: '',
-          tags: ['safe-dao-governance-app'],
-          accessControl: {
-            type: SafeAppAccessPolicyTypes.NoRestrictions,
-          },
-        },
-      ],
-    ],
-  })),
-)
 
 describe('SafeTokenWidget', () => {
   const fakeSafeAddress = toBeHex('0x1', 20)
   beforeEach(() => {
     jest.restoreAllMocks()
-    jest.spyOn(nextRouter, 'useRouter').mockImplementation(
+    jest.spyOn(nextNav, 'useSearchParams').mockImplementation(
       () =>
         ({
-          query: {
-            safe: fakeSafeAddress,
-          },
+          get: () => fakeSafeAddress,
         } as any),
     )
   })
@@ -90,7 +63,9 @@ describe('SafeTokenWidget', () => {
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
       expect(result.baseElement).toContainHTML(
-        `href="${AppRoutes.apps.open}?safe=${fakeSafeAddress}&appUrl=${encodeURIComponent(MOCK_GOVERNANCE_APP_URL)}"`,
+        `href="${AppRoutes.apps.open}?safe=${fakeSafeAddress}&appUrl=${encodeURIComponent(
+          'https://safe-dao-governance.dev.5afe.dev',
+        )}`,
       )
     })
   })

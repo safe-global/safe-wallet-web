@@ -11,7 +11,6 @@ import GovernanceSection from '@/components/dashboard/GovernanceSection/Governan
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
-import css from './styles.module.css'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
@@ -28,7 +27,7 @@ const Dashboard = (): ReactElement => {
 
   return (
     <>
-      <Grid container spacing={3} className={css.container}>
+      <Grid container spacing={3}>
         {supportsRecovery && <RecoveryHeader />}
 
         <Grid item xs={12}>
@@ -45,15 +44,15 @@ const Dashboard = (): ReactElement => {
               <PendingTxsList />
             </Grid>
 
-            <Grid item xs={12} lg={showRecoveryWidget ? 6 : undefined}>
-              <FeaturedApps stackedLayout={!!showRecoveryWidget} />
-            </Grid>
-
             {showRecoveryWidget ? (
               <Grid item xs={12} lg={6}>
                 <RecoveryWidget />
               </Grid>
             ) : null}
+
+            <Grid item xs={12} lg={showRecoveryWidget ? 12 : 6}>
+              <FeaturedApps stackedLayout={!showRecoveryWidget} />
+            </Grid>
 
             <Grid item xs={12}>
               <GovernanceSection />

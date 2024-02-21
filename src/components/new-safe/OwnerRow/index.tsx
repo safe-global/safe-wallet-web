@@ -78,6 +78,7 @@ export const OwnerRow = ({
       <Grid item xs={12} md={readOnly ? 5 : 4}>
         <FormControl fullWidth>
           <NameInput
+            data-testid="owner-name"
             name={`${fieldName}.name`}
             label="Owner name"
             InputLabelProps={{ shrink: true }}

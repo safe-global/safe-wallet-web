@@ -17,7 +17,7 @@
 .networkFee {
   padding: var(--space-1);
   background-color: var(--color-secondary-background);
-  color: var(--color-static-main);
+  color: var(--color-text-primary);
   width: fit-content;
   border-radius: 6px;
 }

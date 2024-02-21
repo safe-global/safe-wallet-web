@@ -1,10 +1,9 @@
 import React from 'react'
-import { Box, Grid, SvgIcon, Typography } from '@mui/material'
+import { Grid, SvgIcon, Typography } from '@mui/material'
 import css from './styles.module.css'
 import CheckFilled from '@/public/images/common/check-filled.svg'
 
 import WelcomeLogin from './WelcomeLogin'
-import SafeListDrawer from '@/components/welcome/SafeListDrawer'
 
 const BulletListItem = ({ text }: { text: string }) => (
   <li>
@@ -24,10 +23,6 @@ const NewSafe = () => {
         </Grid>
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
-            <Box minWidth={{ md: 480 }} className={css.sidebar}>
-              <SafeListDrawer />
-            </Box>
-
             <Typography variant="h1" fontSize={[44, null, 52]} lineHeight={1} letterSpacing={-1.5} color="static.main">
               Unlock a new way of ownership
             </Typography>

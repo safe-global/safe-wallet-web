@@ -80,6 +80,7 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
             sx={buttonStyles}
             startIcon={<AddIcon />}
             className={css.buyCryptoButton}
+            fullWidth
           >
             Buy crypto
           </Button>

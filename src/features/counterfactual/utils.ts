@@ -13,9 +13,7 @@ import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { showNotification } from '@/store/notificationsSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import { getBlockExplorerLink } from '@/utils/chains'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
@@ -180,19 +178,6 @@ export const createCounterfactualSafe = (
   })
 }
 
-export const showSubmitNotification = (dispatch: AppDispatch, chain?: ChainInfo, txHash?: string) => {
-  const link = chain && txHash ? getBlockExplorerLink(chain, txHash) : undefined
-  dispatch(
-    showNotification({
-      variant: 'info',
-      groupKey: CF_TX_GROUP_KEY,
-      message: 'Safe Account activation in progress',
-      detailedMessage: 'Your Safe Account will be deployed onchain after the transaction is executed.',
-      link: link ? { href: link.href, title: link.title } : undefined,
-    }),
-  )
-}
-
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /**
@@ -202,16 +187,16 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
  * @param provider
  * @param txHash
  * @param maxAttempts
- * @param delayMs
  */
-async function retryGetTransaction(provider: Provider, txHash: string, maxAttempts = 3, delayMs = 1000) {
+async function retryGetTransaction(provider: Provider, txHash: string, maxAttempts = 6) {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const txResponse = await provider.getTransaction(txHash)
     if (txResponse !== null) {
       return txResponse
     }
     if (attempt < maxAttempts - 1) {
-      await delay(delayMs)
+      const exponentialDelay = 2 ** attempt * 1000 // 1000, 2000, 4000, 8000, 16000, 32000
+      await delay(exponentialDelay)
     }
   }
   throw new Error('Transaction not found')

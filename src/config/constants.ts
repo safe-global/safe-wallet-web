@@ -29,8 +29,6 @@ export const CYPRESS_MNEMONIC = process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC || ''
 // Safe Token
 export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
   [chains.eth]: '0x5aFE3855358E112B5647B952709E6165e1c1eEEe',
-  [chains.rin]: '0xCFf1b0FdE85C102552D1D96084AF148f478F964A',
-  [chains.gor]: '0x61fD3b6d656F39395e32f46E2050953376c3f5Ff',
   [chains.sep]: '0xd16d9C09d13E9Cf77615771eADC5d51a1Ae92a26',
 }
 
@@ -59,6 +57,15 @@ export enum SafeAppsTag {
   SAFE_GOVERNANCE_APP = 'safe-governance-app',
   WALLET_CONNECT = 'wallet-connect',
   ONRAMP = 'onramp',
+}
+
+export const WC_APP_PROD = {
+  id: 111,
+  url: 'https://apps-portal.safe.global/wallet-connect',
+}
+export const WC_APP_DEV = {
+  id: 25,
+  url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
 }
 
 // Safe Gelato relay service

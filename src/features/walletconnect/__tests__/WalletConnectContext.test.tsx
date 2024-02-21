@@ -16,22 +16,6 @@ import * as useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeW
 jest.mock('../services/WalletConnectWallet')
 jest.mock('@/services/safe-wallet-provider/useSafeWalletProvider')
 
-jest.mock('@/hooks/safe-apps/useRemoteSafeApps', () => ({
-  useRemoteSafeApps: () => [
-    [
-      {
-        id: 111,
-        url: 'https://apps-portal.safe.global/wallet-connect',
-        name: 'WC App',
-        iconUrl: 'https://test.com/icon.png',
-        description: 'Test App Description',
-      },
-    ],
-    undefined,
-    false,
-  ],
-}))
-
 const TestComponent = () => {
   const { walletConnect, error } = useContext(WalletConnectContext)
   return (
@@ -426,10 +410,10 @@ describe('WalletConnectProvider', () => {
         1,
         { method: 'fake', params: [] },
         {
-          id: 111,
+          id: 25,
           name: 'name',
           description: 'description',
-          url: 'https://apps-portal.safe.global/wallet-connect',
+          url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
           iconUrl: 'iconUrl',
         },
       )

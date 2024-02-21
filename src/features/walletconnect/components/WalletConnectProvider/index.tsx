@@ -5,9 +5,7 @@ import { formatJsonRpcError } from '@walletconnect/jsonrpc-utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
 import { asError } from '@/services/exceptions/utils'
-import { IS_PRODUCTION } from '@/config/constants'
-import { SafeAppsTag } from '@/config/constants'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import { IS_PRODUCTION, WC_APP_DEV, WC_APP_PROD } from '@/config/constants'
 import { getPeerName, stripEip155Prefix } from '@/features/walletconnect/services/utils'
 import { trackRequest } from '@/features/walletconnect//services/tracking'
 import { wcPopupStore } from '@/features/walletconnect/components'
@@ -18,16 +16,13 @@ enum Errors {
   WRONG_CHAIN = '%%dappName%% made a request on a different chain than the one you are connected to',
 }
 
+const WalletConnectSafeApp = IS_PRODUCTION ? WC_APP_PROD : WC_APP_DEV
+
 const walletConnectSingleton = new WalletConnectWallet()
 
 const getWrongChainError = (dappName: string): Error => {
   const message = Errors.WRONG_CHAIN.replace('%%dappName%%', dappName)
   return new Error(message)
-}
-
-const useWalletConnectApp = () => {
-  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.WALLET_CONNECT)
-  return matchingApps?.[0]
 }
 
 export const WalletConnectProvider = ({ children }: { children: ReactNode }) => {
@@ -40,7 +35,6 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
   const setOpen = wcPopupStore.setStore
   const [error, setError] = useState<Error | null>(null)
   const safeWalletProvider = useSafeWalletProvider()
-  const wcApp = useWalletConnectApp()
 
   // Init WalletConnect
   useEffect(() => {
@@ -88,8 +82,8 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
         // Get response from Safe Wallet Provider
         return safeWalletProvider.request(event.id, event.params.request, {
-          id: wcApp?.id || -1,
-          url: wcApp?.url || '',
+          id: WalletConnectSafeApp.id,
+          url: WalletConnectSafeApp.url,
           name: getPeerName(session.peer) || 'Unknown dApp',
           description: session.peer.metadata.description,
           iconUrl: session.peer.metadata.icons[0],
@@ -105,7 +99,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
         setError(asError(e))
       }
     })
-  }, [walletConnect, chainId, safeWalletProvider, wcApp])
+  }, [walletConnect, chainId, safeWalletProvider])
 
   return (
     <WalletConnectContext.Provider value={{ walletConnect, error, setError, open, setOpen }}>
