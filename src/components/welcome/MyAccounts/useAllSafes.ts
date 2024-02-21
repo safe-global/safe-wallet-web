@@ -55,7 +55,7 @@ const useAllSafes = (): SafeItems => {
 
       return uniqueAddresses.map((address) => {
         const owners = allAdded?.[chainId]?.[address]?.owners
-        const isOwner = owners?.map((address) => address.value).includes(walletAddress)
+        const isOwner = owners?.some(({ value }) => sameAddress(walletAddress))
         const isUndeployed = undeployedOnChain.includes(address)
         const isOwned = (ownedOnChain || []).includes(address) || isOwner
         return {
