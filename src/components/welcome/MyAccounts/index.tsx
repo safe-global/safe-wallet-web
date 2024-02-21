@@ -15,6 +15,7 @@ import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWallet
 import useWallet from '@/hooks/wallets/useWallet'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
+import { getTrackingLabel } from '../utils'
 
 type AccountsListProps = {
   safes: SafeItems
@@ -45,7 +46,9 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
             ) : (
               <>
                 <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
-                <ConnectWalletButton text="Connect a wallet" contained={false} />
+                <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={getTrackingLabel()}>
+                  <ConnectWalletButton text="Connect a wallet" contained={false} />
+                </Track>
               </>
             )
           }
@@ -60,7 +63,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           }
           safes={watchlistSafes}
           action={
-            <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST}>
+            <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={getTrackingLabel()}>
               <Link href={AppRoutes.newSafe.load}>
                 <Button
                   disableElevation

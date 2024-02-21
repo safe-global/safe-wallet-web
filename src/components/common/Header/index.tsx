@@ -19,6 +19,8 @@ import WalletConnect from '@/features/walletconnect/components'
 import { PushNotificationsBanner } from '@/components/settings/PushNotifications/PushNotificationsBanner'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -88,7 +90,9 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
       )}
 
       <div className={classnames(css.element, css.connectWallet)}>
-        <ConnectWallet />
+        <Track label={OVERVIEW_LABELS.top_bar} {...OVERVIEW_EVENTS.OPEN_ONBOARD}>
+          <ConnectWallet />
+        </Track>
       </div>
 
       <div className={classnames(css.element, css.networkSelector)}>

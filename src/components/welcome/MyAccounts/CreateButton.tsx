@@ -6,7 +6,10 @@ import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 const buttonSx = { width: ['100%', 'auto'] }
 
 const onClick = () => {
-  trackEvent(OVERVIEW_EVENTS.CREATE_NEW_SAFE)
+  trackEvent({
+    ...OVERVIEW_EVENTS.CREATE_NEW_SAFE,
+    label: getTrackingLabel(),
+  })
 }
 
 const CreateButton = () => (

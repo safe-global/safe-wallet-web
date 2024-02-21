@@ -24,7 +24,7 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
   },
   ADD_SAFE: {
-    action: 'Add Safe',
+    action: 'Add Safe to watchlist',
     category: OVERVIEW_CATEGORY,
   },
   ADD_TO_WATCHLIST: {
@@ -142,4 +142,11 @@ export enum OPEN_SAFE_LABELS {
   after_create = 'after_create',
   after_add = 'after_add',
   login_page = 'login_page',
+}
+
+export enum OVERVIEW_LABELS {
+  sidebar = 'sidebar',
+  login_page = 'login_page',
+  top_bar = 'top_bar',
+  welcome_page = 'welcome_page',
 }
