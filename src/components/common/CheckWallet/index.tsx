@@ -9,6 +9,7 @@ type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
   allowSpendingLimit?: boolean
   allowNonOwner?: boolean
+  noTooltip?: boolean
 }
 
 enum Message {
@@ -17,7 +18,7 @@ enum Message {
   OnlySpendingLimitBeneficiary = 'You can only create ERC-20 transactions within your spending limit',
 }
 
-const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner }: CheckWalletProps): ReactElement => {
+const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }: CheckWalletProps): ReactElement => {
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
@@ -32,6 +33,8 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner }: CheckWalle
     : ''
 
   if (!message) return children(true)
+
+  if (noTooltip) return children(false)
 
   return (
     <Tooltip title={message}>

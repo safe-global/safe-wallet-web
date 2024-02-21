@@ -60,7 +60,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           }
           safes={watchlistSafes}
           action={
-            <Track {...OVERVIEW_EVENTS.ADD_SAFE}>
+            <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST}>
               <Link href={AppRoutes.newSafe.load}>
                 <Button
                   disableElevation
