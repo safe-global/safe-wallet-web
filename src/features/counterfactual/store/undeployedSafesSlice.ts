@@ -54,7 +54,7 @@ export const undeployedSafesSlice = createSlice({
     ) => {
       const { chainId, address, status } = action.payload
 
-      if (!state[chainId][address]) return state
+      if (!state[chainId]?.[address]) return state
 
       state[chainId][address] = {
         props: state[chainId][address].props,

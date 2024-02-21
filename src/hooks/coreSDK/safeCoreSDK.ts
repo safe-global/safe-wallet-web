@@ -68,6 +68,9 @@ export const initSafeSDK = async ({
   implementation,
   undeployedSafe,
 }: SafeCoreSDKProps): Promise<Safe | undefined> => {
+  const providerNetwork = (await provider.getNetwork()).chainId
+  if (providerNetwork !== BigInt(chainId)) return
+
   const safeVersion = version ?? (await Gnosis_safe__factory.connect(address, provider).VERSION())
   let isL1SafeSingleton = chainId === chains.eth
 

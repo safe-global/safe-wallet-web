@@ -1,4 +1,6 @@
 import { AppRoutes } from '@/config/routes'
+import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
 import dynamic from 'next/dynamic'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useRouter } from 'next/router'
@@ -52,6 +54,8 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   const txBuilder = useTxBuilderApp()
   const router = useRouter()
   const { setTxFlow } = useContext(TxModalContext)
+  const supportsRecovery = useIsRecoverySupported()
+  const [recovery] = useRecovery()
 
   const handleClick = (onClick: () => void) => {
     onClose()
@@ -90,6 +94,8 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
     router.push(txBuilder.link)
   }
 
+  const showRecoveryOption = supportsRecovery && !recovery
+
   return (
     <ModalDialog open={open} dialogTitle="Create new transaction" hideChainIndicator onClose={onClose}>
       <Grid container justifyContent="center" flexDirection="column" p={3} spacing={2}>
@@ -111,14 +117,16 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
           />
         </Grid>
 
-        <Grid item>
-          <TxButton
-            title="Set up recovery"
-            description="Ensure you never lose access to your funds"
-            icon={RecoveryPlus}
-            onClick={() => handleClick(onRecovery)}
-          />
-        </Grid>
+        {showRecoveryOption && (
+          <Grid item>
+            <TxButton
+              title="Set up recovery"
+              description="Ensure you never lose access to your funds"
+              icon={RecoveryPlus}
+              onClick={() => handleClick(onRecovery)}
+            />
+          </Grid>
+        )}
 
         <Grid item>
           <TxButton

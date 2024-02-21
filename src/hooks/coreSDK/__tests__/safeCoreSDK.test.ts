@@ -255,5 +255,24 @@ describe('safeCoreSDK', () => {
         expect(sdk).toBeUndefined()
       })
     })
+
+    it('should return undefined if provider does not match safe', async () => {
+      const chainId = '1'
+      const safeChainId = '100'
+      const version = '1.3.0'
+
+      const mockProvider = getMockProvider(chainId, version)
+
+      const sdk = await initSafeSDK({
+        provider: mockProvider,
+        chainId: safeChainId,
+        address: toBeHex('0x1', 20),
+        version: null,
+        implementation: '0xinvalid',
+        implementationVersionState: ImplementationVersionState.UNKNOWN,
+      })
+
+      expect(sdk).toBeUndefined()
+    })
   })
 })
