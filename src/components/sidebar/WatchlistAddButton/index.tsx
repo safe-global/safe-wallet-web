@@ -3,13 +3,12 @@ import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import { Button, SvgIcon } from '@mui/material'
+import { Button } from '@mui/material'
 import SafeListRemoveDialog from '../SafeListRemoveDialog'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import { useState } from 'react'
 import { VisibilityOutlined } from '@mui/icons-material'
-import DeleteIcon from '@/public/images/common/delete.svg'
 
 const WatchlistAddButton = () => {
   const [open, setOpen] = useState(false)
@@ -56,7 +55,6 @@ const WatchlistAddButton = () => {
           fullWidth
           disableElevation
           sx={{ py: 1.3, px: 1 }}
-          startIcon={<SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />}
         >
           Remove from watchlist
         </Button>
