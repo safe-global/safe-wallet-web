@@ -40,6 +40,16 @@ export const OVERVIEW_EVENTS = {
     action: 'Total added Safes',
     category: OVERVIEW_CATEGORY,
   },
+  TOTAL_SAFES_OWNED: {
+    event: EventType.META,
+    action: 'Total safes owned',
+    category: OVERVIEW_CATEGORY,
+  },
+  TOTAL_SAFES_WATCHLIST: {
+    event: EventType.META,
+    action: 'Total safes watchlist',
+    category: OVERVIEW_CATEGORY,
+  },
   WHATS_NEW: {
     action: "Open What's New",
     category: OVERVIEW_CATEGORY,
