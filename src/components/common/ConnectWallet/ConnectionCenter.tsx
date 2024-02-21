@@ -30,7 +30,7 @@ export const ConnectionCenter = ({ isSocialLoginEnabled }: { isSocialLoginEnable
   if (!isSocialLoginEnabled) {
     return (
       <Box className={css.buttonContainer}>
-        <ConnectWalletButton />
+        <ConnectWalletButton small={true} />
       </Box>
     )
   }

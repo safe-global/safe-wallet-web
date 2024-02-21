@@ -48,7 +48,7 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
       {shownSafes.length ? (
         shownSafes.map((item) => <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />)
       ) : (
-        <Typography variant="body2" color="text.secondary" textAlign="center" my={3} mx="auto" width={250}>
+        <Typography variant="body2" color="text.secondary" textAlign="center" py={3} mx="auto" width={250}>
           {noSafesMessage}
         </Typography>
       )}
