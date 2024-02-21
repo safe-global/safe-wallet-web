@@ -36,8 +36,8 @@ export const useHasSafes = () => {
 }
 
 const useAllSafes = (): SafeItems => {
-  const { address = '' } = useWallet() || {}
-  const [allOwned = {}] = useAllOwnedSafes(address)
+  const { address: walletAddress = '' } = useWallet() || {}
+  const [allOwned = {}] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
   const { configs } = useChains()
   const currentChainId = useChainId()
@@ -54,8 +54,10 @@ const useAllSafes = (): SafeItems => {
       const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
 
       return uniqueAddresses.map((address) => {
+        const owners = allAdded?.[chainId]?.[address]?.owners
+        const isOwner = owners?.map((address) => address.value).includes(walletAddress)
         const isUndeployed = undeployedOnChain.includes(address)
-        const isOwned = (ownedOnChain || []).includes(address)
+        const isOwned = (ownedOnChain || []).includes(address) || isOwner
         return {
           address,
           chainId,
@@ -65,7 +67,7 @@ const useAllSafes = (): SafeItems => {
         }
       })
     })
-  }, [configs, allAdded, allOwned, currentChainId, undeployedSafes])
+  }, [currentChainId, allAdded, allOwned, configs, undeployedSafes, walletAddress])
 }
 
 export default useAllSafes
