@@ -1,10 +1,13 @@
-import { Alert } from '@mui/material'
+import { Alert, Typography } from '@mui/material'
 
 const CounterfactualHint = () => {
   return (
     <Alert severity="info" sx={{ mt: 2 }}>
-      Please note that Safe Accounts with more than one owner will have to be activated with a network fee right away.
-      You can add more owners after Safe creation.
+      <Typography fontWeight="bold" mb={1}>
+        Create now, pay later! Only for 1/1 Accounts
+      </Typography>
+      Explore Safe{'{Wallet}'} without additional hassle. Pay the gas fees later at any time, and don&apos;t forget to
+      add extra owners for better security.
     </Alert>
   )
 }
