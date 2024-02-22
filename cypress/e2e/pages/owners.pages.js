@@ -90,8 +90,7 @@ export function getThresholdOptions() {
 export function verifyThresholdLimit(startValue, endValue) {
   cy.get('p').contains(`out of ${endValue} owner(s)`)
   clickOnThresholdDropdown()
-  getThresholdOptions().eq(0).should('have.text', startValue)
-  cy.get('body').click()
+  getThresholdOptions().eq(0).should('have.text', startValue).click()
 }
 
 export function verifyRemoveBtnIsEnabled() {

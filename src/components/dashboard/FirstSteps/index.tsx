@@ -8,12 +8,13 @@ import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectSettings, setQrShortName } from '@/store/settingsSlice'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
 import classnames from 'classnames'
 import { type ReactNode, useState } from 'react'
 import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
-import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, FormControlLabel, Grid, Switch, Typography } from '@mui/material'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
@@ -60,10 +61,14 @@ const StatusCard = ({
 }
 
 const AddFundsWidget = ({ completed }: { completed: boolean }) => {
-  const { safeAddress } = useSafeInfo()
   const [open, setOpen] = useState<boolean>(false)
-
+  const { safeAddress } = useSafeInfo()
   const chain = useCurrentChain()
+  const dispatch = useAppDispatch()
+  const settings = useAppSelector(selectSettings)
+  const qrPrefix = settings.shortName.qr ? `${chain?.shortName}:` : ''
+  const qrCode = `${qrPrefix}${safeAddress}`
+
   const title = 'Add native assets'
   const content = `Receive ${chain?.nativeCurrency.name} to start interacting with your account.`
 
@@ -90,9 +95,24 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
           >
             <Box px={4} pb={5} pt={4}>
               <Grid container spacing={2} alignItems="center" justifyContent="center" mb={4}>
-                <Grid item>
+                <Grid item textAlign="center">
                   <Box p={1} border={1} borderRadius="6px" borderColor="border.light" display="inline-flex">
-                    <QRCode value={safeAddress} size={132} />
+                    <QRCode value={qrCode} size={132} />
+                  </Box>
+                  <Box>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={settings.shortName.qr}
+                          onChange={(e) => dispatch(setQrShortName(e.target.checked))}
+                        />
+                      }
+                      label={
+                        <>
+                          QR code with chain prefix (<b>{chain?.shortName}:</b>)
+                        </>
+                      }
+                    />
                   </Box>
                 </Grid>
                 <Grid item xs>
