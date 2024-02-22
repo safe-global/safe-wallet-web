@@ -88,10 +88,6 @@ export const OVERVIEW_EVENTS = {
     action: 'Rename Safe from sidebar',
     category: OVERVIEW_CATEGORY,
   },
-  SIDEBAR_REMOVE: {
-    action: 'Remove Safe from sidebar',
-    category: OVERVIEW_CATEGORY,
-  },
   SAFE_TOKEN_WIDGET: {
     action: 'Open Safe Governance App from widget',
     category: OVERVIEW_CATEGORY,
