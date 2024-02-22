@@ -3,7 +3,7 @@ import { ListItemButton, Box, Typography } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
-import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
@@ -16,6 +16,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
+import { useRouter } from 'next/router'
 
 type AccountItemProps = {
   chainId: string
@@ -34,7 +35,10 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
+  const router = useRouter()
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
+  const trackingLabel =
+    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   const href = useMemo(() => {
     return chain ? getSafeHref(chain.shortName, address) : ''
@@ -48,7 +52,7 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
       selected={isCurrentSafe}
       className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}
     >
-      <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.login_page}>
+      <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
         <Link onClick={onLinkClick} href={href} className={css.safeLink}>
           <SafeIcon address={address} {...rest} />
 

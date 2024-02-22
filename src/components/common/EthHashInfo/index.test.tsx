@@ -2,7 +2,7 @@ import { blo } from 'blo'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
-import * as useAddressBook from '@/hooks/useAddressBook'
+import * as useAllAddressBooks from '@/hooks/useAllAddressBooks'
 import * as useChainId from '@/hooks/useChainId'
 import * as store from '@/store'
 import EthHashInfo from '.'
@@ -10,16 +10,19 @@ import EthHashInfo from '.'
 const originalClipboard = { ...global.navigator.clipboard }
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
+const MOCK_CHAIN_ID = '4'
 
-jest.mock('@/hooks/useAddressBook')
+jest.mock('@/hooks/useAllAddressBooks')
 jest.mock('@/hooks/useChainId')
 
 describe('EthHashInfo', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    jest.spyOn(useAddressBook, 'default').mockImplementation(() => ({
-      [MOCK_SAFE_ADDRESS]: 'Address book name',
+    jest.spyOn(useAllAddressBooks, 'default').mockImplementation(() => ({
+      [MOCK_CHAIN_ID]: {
+        [MOCK_SAFE_ADDRESS]: 'Address book name',
+      },
     }))
 
     //@ts-ignore

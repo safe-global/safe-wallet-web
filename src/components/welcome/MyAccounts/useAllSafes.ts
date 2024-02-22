@@ -8,6 +8,7 @@ import useChains from '@/hooks/useChains'
 import useChainId from '@/hooks/useChainId'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectUndeployedSafes } from '@/store/slices'
+import { sameAddress } from '@/utils/addresses'
 
 export type SafeItems = Array<{
   chainId: string
@@ -36,8 +37,8 @@ export const useHasSafes = () => {
 }
 
 const useAllSafes = (): SafeItems => {
-  const { address = '' } = useWallet() || {}
-  const [allOwned = {}] = useAllOwnedSafes(address)
+  const { address: walletAddress = '' } = useWallet() || {}
+  const [allOwned = {}] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
   const { configs } = useChains()
   const currentChainId = useChainId()
@@ -54,8 +55,10 @@ const useAllSafes = (): SafeItems => {
       const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
 
       return uniqueAddresses.map((address) => {
+        const owners = allAdded?.[chainId]?.[address]?.owners
+        const isOwner = owners?.some(({ value }) => sameAddress(walletAddress, value))
         const isUndeployed = undeployedOnChain.includes(address)
-        const isOwned = (ownedOnChain || []).includes(address)
+        const isOwned = (ownedOnChain || []).includes(address) || isOwner
         return {
           address,
           chainId,
@@ -65,7 +68,7 @@ const useAllSafes = (): SafeItems => {
         }
       })
     })
-  }, [configs, allAdded, allOwned, currentChainId, undeployedSafes])
+  }, [currentChainId, allAdded, allOwned, configs, undeployedSafes, walletAddress])
 }
 
 export default useAllSafes

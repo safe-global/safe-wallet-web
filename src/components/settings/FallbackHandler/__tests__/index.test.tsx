@@ -1,10 +1,14 @@
+import { chainBuilder } from '@/tests/builders/chains'
 import { render, waitFor } from '@/tests/test-utils'
 
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
+import * as useChainId from '@/hooks/useChainId'
 import * as useTxBuilderHook from '@/hooks/safe-apps/useTxBuilderApp'
 import { FallbackHandler } from '..'
 
 const GOERLI_FALLBACK_HANDLER = '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4'
+
+const mockChain = chainBuilder().build()
 
 describe('FallbackHandler', () => {
   beforeEach(() => {
@@ -13,6 +17,8 @@ describe('FallbackHandler', () => {
     jest.spyOn(useTxBuilderHook, 'useTxBuilderApp').mockImplementation(() => ({
       link: { href: 'https://mock.link/tx-builder' },
     }))
+
+    jest.spyOn(useChainId, 'default').mockImplementation(() => mockChain.chainId)
   })
 
   it('should render the Fallback Handler when one is set', async () => {
@@ -30,7 +36,9 @@ describe('FallbackHandler', () => {
         } as unknown as ReturnType<typeof useSafeInfoHook.default>),
     )
 
-    const fbHandler = render(<FallbackHandler />)
+    const fbHandler = render(<FallbackHandler />, {
+      initialReduxState: { chains: { loading: false, data: [mockChain] } },
+    })
 
     await waitFor(() => {
       expect(
@@ -65,7 +73,9 @@ describe('FallbackHandler', () => {
         } as unknown as ReturnType<typeof useSafeInfoHook.default>),
     )
 
-    const fbHandler = render(<FallbackHandler />)
+    const fbHandler = render(<FallbackHandler />, {
+      initialReduxState: { chains: { loading: false, data: [mockChain] } },
+    })
 
     await waitFor(() => {
       expect(
@@ -96,7 +106,9 @@ describe('FallbackHandler', () => {
         } as unknown as ReturnType<typeof useSafeInfoHook.default>),
     )
 
-    const fbHandler = render(<FallbackHandler />)
+    const fbHandler = render(<FallbackHandler />, {
+      initialReduxState: { chains: { loading: false, data: [mockChain] } },
+    })
 
     await waitFor(() => {
       expect(fbHandler.getByText('CompatibilityFallbackHandler')).toBeDefined()
