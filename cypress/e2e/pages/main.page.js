@@ -172,3 +172,11 @@ export function verifyElementsStatus(elements, status) {
     cy.get(element).should(status)
   })
 }
+
+export function formatAddressInCaps(address) {
+  if (address.startsWith('sep:0x')) {
+    return '0x' + address.substring(6).toUpperCase()
+  } else {
+    return 'Invalid address format'
+  }
+}
