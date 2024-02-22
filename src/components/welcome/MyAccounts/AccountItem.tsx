@@ -16,7 +16,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
-import router from 'next/router'
+import { useRouter } from 'next/router'
 
 type AccountItemProps = {
   chainId: string
@@ -35,6 +35,7 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
+  const router = useRouter()
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const trackingLabel =
     router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar

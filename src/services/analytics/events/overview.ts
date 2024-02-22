@@ -101,11 +101,11 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
   },
   EXPORT_DATA: {
-    action: 'Export data from sidebar',
+    action: 'Export data',
     category: OVERVIEW_CATEGORY,
   },
   IMPORT_DATA: {
-    action: 'Import data from sidebar',
+    action: 'Import data',
     category: OVERVIEW_CATEGORY,
   },
   RELAYING_HELP_ARTICLE: {
