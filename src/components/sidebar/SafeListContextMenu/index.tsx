@@ -16,6 +16,7 @@ import ContextMenu from '@/components/common/ContextMenu'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import { SvgIcon } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
+import Track from '@/components/common/Track'
 
 enum ModalType {
   RENAME = 'rename',
@@ -80,7 +81,9 @@ const SafeListContextMenu = ({
             <ListItemIcon>
               <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="error" />
             </ListItemIcon>
-            <ListItemText data-testid="remove-btn">Remove</ListItemText>
+            <Track {...OVERVIEW_EVENTS.REMOVE_FROM_WATCHLIST}>
+              <ListItemText data-testid="remove-btn">Remove</ListItemText>
+            </Track>
           </MenuItem>
         )}
       </ContextMenu>

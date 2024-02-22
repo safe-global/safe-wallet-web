@@ -31,6 +31,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Add to watchlist',
     category: OVERVIEW_CATEGORY,
   },
+  REMOVE_FROM_WATCHLIST: {
+    action: 'Remove form watchlist',
+    category: OVERVIEW_CATEGORY,
+  },
   SIDEBAR: {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
@@ -156,6 +160,8 @@ export enum OPEN_SAFE_LABELS {
 
 export enum OVERVIEW_LABELS {
   sidebar = 'sidebar',
+  quick_add = 'quick_add',
+  quick_remove = 'quick_remove',
   login_page = 'login_page',
   top_bar = 'top_bar',
   welcome_page = 'welcome_page',
