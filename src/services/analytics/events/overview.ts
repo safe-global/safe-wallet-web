@@ -32,7 +32,7 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
   },
   REMOVE_FROM_WATCHLIST: {
-    action: 'Remove form watchlist',
+    action: 'Remove from watchlist',
     category: OVERVIEW_CATEGORY,
   },
   SIDEBAR: {
@@ -42,16 +42,6 @@ export const OVERVIEW_EVENTS = {
   TOTAL_ADDED_SAFES: {
     event: EventType.META,
     action: 'Total added Safes',
-    category: OVERVIEW_CATEGORY,
-  },
-  TOTAL_SAFES_OWNED: {
-    event: EventType.META,
-    action: 'Total safes owned',
-    category: OVERVIEW_CATEGORY,
-  },
-  TOTAL_SAFES_WATCHLIST: {
-    event: EventType.META,
-    action: 'Total safes watchlist',
     category: OVERVIEW_CATEGORY,
   },
   WHATS_NEW: {
