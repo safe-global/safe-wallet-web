@@ -38,7 +38,7 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { t
     <Box display="flex" flexDirection="column" gap={1}>
       <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} trusted={trusted} />
 
-      <Box display="flex" alignItems="center">
+      <Box display="flex" alignItems="center" width="100%">
         <EthHashInfo
           address={address.value}
           name={address.name}
