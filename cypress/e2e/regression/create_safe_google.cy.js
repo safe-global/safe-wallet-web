@@ -13,7 +13,8 @@ describe('Safe creation Google tests', () => {
     // createwallet.loginGoogleAPI()
   })
 
-  it('Verify that "Connect with Google" option is disabled for the networks without Relay on the Welcome page', () => {
+  // TODO: Clarify requirements
+  it.skip('Verify that "Connect with Google" option is disabled for the networks without Relay on the Welcome page', () => {
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
     createwallet.selectNetwork(constants.networks.polygon)

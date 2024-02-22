@@ -55,7 +55,9 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
       {safes.length > shownSafes.length && (
         <Box display="flex" justifyContent="center">
           <Track {...OVERVIEW_EVENTS.SHOW_MORE_SAFES}>
-            <Button onClick={onShowMoreSafes}>Show more</Button>
+            <Button data-testid="show-more-btn" onClick={onShowMoreSafes}>
+              Show more
+            </Button>
           </Track>
         </Box>
       )}

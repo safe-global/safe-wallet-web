@@ -28,12 +28,23 @@ const readOnlyVisibility = '[data-testid="read-only-visibility"]'
 const currencySection = '[data-testid="currency-section"]'
 const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
+const showMoreBtn = '[data-testid="show-more-btn" ]'
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
 export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
 export const testSafeHeaderDetails = ['2/2', constants.SEPOLIA_TEST_SAFE_13_SHORT]
 const receiveAssetsStr = 'Receive assets'
+
+export function showAllSafes() {
+  cy.get('body').then(($body) => {
+    if ($body.find(showMoreBtn).length > 0) {
+      cy.get(showMoreBtn).click()
+      cy.wait(500)
+      showAllSafes()
+    }
+  })
+}
 
 export function verifyNetworkIsDisplayed(netwrok) {
   cy.get(sidebarContainer)
@@ -66,15 +77,14 @@ export function verifyCopyAddressBtn(data) {
   cy.get(sidebarContainer)
     .should('be.visible')
     .within(() => {
-      cy.get(copyAddressBtn)
-        .click()
-        .then(() =>
-          cy.window().then((win) => {
-            win.navigator.clipboard.readText().then((text) => {
-              expect(text).to.contain(data)
-            })
-          }),
-        )
+      cy.get(copyAddressBtn).click()
+      cy.wait(500).then(() =>
+        cy.window().then((win) => {
+          win.navigator.clipboard.readText().then((text) => {
+            expect(text).to.contain(data)
+          })
+        }),
+      )
     })
 }
 
@@ -105,6 +115,7 @@ export function verifySafeCount(count) {
 
 export function openSidebar() {
   cy.get(openSafesIcon).click()
+  showAllSafes()
   main.verifyElementsExist([sidebarSafeContainer])
 }
 
@@ -157,7 +168,7 @@ export function renameSafeItem(oldName, newName) {
   clickOnRenameBtn()
   typeSafeName(newName)
 }
-
+//
 export function removeSafeItem(name) {
   clickOnSafeItemOptionsBtn(name)
   clickOnRemoveBtn()

@@ -43,7 +43,7 @@ describe('Sidebar tests', () => {
   it('Verify New Transaction button disabled for non-owners', () => {
     navigation.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
-    sideBar.verifyNewTxBtnStatus(constants.enabledStates.disabled)
+    main.verifyElementsCount(navigation.newTxBtn, 0)
   })
 
   it('Verify the side menu buttons exist', () => {
