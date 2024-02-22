@@ -143,3 +143,8 @@ export enum OPEN_SAFE_LABELS {
   after_add = 'after_add',
   login_page = 'login_page',
 }
+
+export enum OVERVIEW_LABELS {
+  sidebar = 'sidebar',
+  login_page = 'login_page',
+}
