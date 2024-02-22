@@ -62,7 +62,7 @@ const SrcEthHashInfo = ({
   )
 
   return (
-    <div className={css.container} style={{ width: '100%' }}>
+    <div className={css.container}>
       {showAvatar && (
         <div
           className={css.avatarContainer}
