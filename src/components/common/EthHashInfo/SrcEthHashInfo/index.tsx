@@ -62,7 +62,7 @@ const SrcEthHashInfo = ({
   )
 
   return (
-    <div className={css.container}>
+    <div className={css.container} style={{ width: '100%' }}>
       {showAvatar && (
         <div
           className={css.avatarContainer}
@@ -84,7 +84,7 @@ const SrcEthHashInfo = ({
         )}
 
         <div className={css.addressContainer}>
-          <Box fontWeight="inherit" fontSize="inherit">
+          <Box fontWeight="inherit" fontSize="inherit" overflow="hidden" textOverflow="ellipsis">
             {copyAddress ? (
               <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted}>
                 {addressElement}
