@@ -43,8 +43,9 @@
   background-color: var(--color-secondary-background) !important;
 }
 
-.listItem > :first-child {
+.listItem> :first-child {
   flex: 1;
+  width: 90%;
 }
 
 .safeLink {
@@ -54,9 +55,11 @@
 }
 
 .safeAddress {
-  flex: 1;
   white-space: nowrap;
   padding-left: var(--space-2);
+  overflow: hidden;
+  margin-right: 10px;
+  text-overflow: ellipsis;
 }
 
 .listHeader {
