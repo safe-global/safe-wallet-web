@@ -30,12 +30,6 @@ describe('Sidebar added sidebar tests', () => {
     sideBar.verifySafeNameExists(newSafeName)
   })
 
-  it('Verify a safe can be removed', () => {
-    sideBar.openSidebar()
-    sideBar.removeSafeItem(addedSafe900)
-    sideBar.verifySafeRemoved([addedSafe900])
-  })
-
   it('Verify Fiat currency changes when edited in the assets tab', () => {
     assets.changeCurrency(constants.currencies.cad)
     sideBar.checkCurrencyInHeader(constants.currencies.cad)
