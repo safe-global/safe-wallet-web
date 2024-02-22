@@ -4,7 +4,7 @@ import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
 import PaginatedSafeList from './PaginatedSafeList'
@@ -13,7 +13,6 @@ import AddIcon from '@/public/images/common/add.svg'
 import { AppRoutes } from '@/config/routes'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import useWallet from '@/hooks/wallets/useWallet'
-import router from 'next/router'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 
@@ -25,8 +24,6 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
   const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
   const wallet = useWallet()
-  const trackingLabel =
-    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   return (
     <Box data-testid="sidebar-safe-container" className={css.container}>
@@ -35,9 +32,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           <Typography variant="h1" fontWeight={700} className={css.title}>
             Safe accounts
           </Typography>
-          <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
-            <CreateButton />
-          </Track>
+          <CreateButton />
         </Box>
 
         <PaginatedSafeList
