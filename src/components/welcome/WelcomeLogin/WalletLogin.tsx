@@ -1,10 +1,8 @@
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
-import Track from '@/components/common/Track'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { Box, Button, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 
 const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   const wallet = useWallet()
@@ -53,18 +51,16 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   }
 
   return (
-    <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={OVERVIEW_LABELS.welcome_page}>
-      <Button
-        onClick={connectWallet}
-        sx={{ minHeight: '42px' }}
-        variant="contained"
-        size="small"
-        disableElevation
-        fullWidth
-      >
-        Connect wallet
-      </Button>
-    </Track>
+    <Button
+      onClick={connectWallet}
+      sx={{ minHeight: '42px' }}
+      variant="contained"
+      size="small"
+      disableElevation
+      fullWidth
+    >
+      Connect wallet
+    </Button>
   )
 }
 

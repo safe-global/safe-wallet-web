@@ -7,11 +7,12 @@ import dynamic from 'next/dynamic'
 import css from './styles.module.css'
 import { useRouter } from 'next/router'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
-import { trackEvent } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useHasSafes } from '../MyAccounts/useAllSafes'
 import { useEffect } from 'react'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
+import Track from '@/components/common/Track'
 
 const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
   loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
@@ -49,7 +50,9 @@ const WelcomeLogin = () => {
             : 'Connect your wallet to create a new Safe Account or open an existing one'}
         </Typography>
 
-        <ConnectWalletButton text="Connect wallet" />
+        <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={OVERVIEW_LABELS.welcome_page}>
+          <ConnectWalletButton text="Connect wallet" />
+        </Track>
 
         {isSocialLoginEnabled && (
           <>

@@ -26,8 +26,8 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
   const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
   const wallet = useWallet()
-  const isLoginPage = router.pathname === AppRoutes.welcome.accounts
-  const trackingLabel = isLoginPage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+  const trackingLabel =
+    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   return (
     <Box data-testid="sidebar-safe-container" className={css.container}>
