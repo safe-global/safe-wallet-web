@@ -1,35 +1,38 @@
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { asError } from '@/services/exceptions/utils'
+import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
+import { isWalletRejection } from '@/utils/wallets'
 import { useState } from 'react'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
 import { Box, Button, Typography } from '@mui/material'
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
 import { getRegisteredEmail } from '@safe-global/safe-gateway-typescript-sdk'
 
 const RecoveryEmail = () => {
   const [email, setEmail] = useState<string>()
-  const wallet = useWallet()
-  const { safeAddress } = useSafeInfo()
+  const onboard = useOnboard()
+  const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
 
   const signToViewEmail = async () => {
-    if (!wallet) return
+    if (!onboard) return
 
     try {
+      const signer = await getAssertedChainSigner(onboard, safe.chainId)
       const timestamp = Date.now().toString()
-      const messageToSign = `email-retrieval-${chainId}-${safeAddress}-${wallet.address}-${timestamp}`
-      const signedMessage = await wallet.provider.request({
-        method: 'personal_sign',
-        params: [messageToSign, wallet.address],
-      })
-      const response = await getRegisteredEmail(chainId, safeAddress, wallet?.address, {
+      const messageToSign = `email-retrieval-${chainId}-${safeAddress}-${signer.address}-${timestamp}`
+      const signedMessage = await signer.signMessage(messageToSign)
+
+      const response = await getRegisteredEmail(chainId, safeAddress, signer.address, {
         'Safe-Wallet-Signature': signedMessage,
         'Safe-Wallet-Signature-Timestamp': timestamp,
       })
 
       setEmail(response.email)
     } catch (e) {
-      setEmail('No email found')
+      const error = asError(e)
+      setEmail(isWalletRejection(error) ? undefined : 'No email found')
     }
   }
 

@@ -139,10 +139,12 @@ function RecoverySettings(): ReactElement {
           {!isRecoveryEnabled ? (
             <SetupRecoveryButton eventLabel="settings" />
           ) : rows ? (
-            <EnhancedTable rows={rows} headCells={headCells} />
-          ) : null}
+            <>
+              <EnhancedTable rows={rows} headCells={headCells} />
 
-          <RecoveryEmail />
+              <RecoveryEmail />
+            </>
+          ) : null}
         </Grid>
       </Grid>
     </Paper>
