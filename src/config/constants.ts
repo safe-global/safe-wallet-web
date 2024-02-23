@@ -29,6 +29,7 @@ export const CYPRESS_MNEMONIC = process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC || ''
 // Safe Token
 export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
   [chains.eth]: '0x5aFE3855358E112B5647B952709E6165e1c1eEEe',
+  [chains.sep]: '0xd16d9C09d13E9Cf77615771eADC5d51a1Ae92a26',
 }
 
 // Safe Apps
