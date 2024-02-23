@@ -124,7 +124,7 @@ To create a new component from a template:
 yarn cmp MyNewComponent
 ```
 
-## Pre-commit hooks
+## Pre-push hooks
 
 This repo has a pre-push hook that runs the linter(always) and the tests(if `RUN_TESTS_ON_PUSH` env variable is set to true)
 before pushing. If you want to skip the hooks, you can use the `--no-verify` flag.
