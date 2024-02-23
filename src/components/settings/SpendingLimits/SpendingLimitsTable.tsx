@@ -91,7 +91,7 @@ export const SpendingLimitsTable = ({
                 beneficiary: {
                   rawValue: spendingLimit.beneficiary,
                   content: (
-                    <EthHashInfo address={spendingLimit.beneficiary} shortAddress={false} hasExplorer showCopyButton />
+                    <EthHashInfo address={spendingLimit.beneficiary} shortAddress={true} hasExplorer showCopyButton />
                   ),
                 },
                 spent: {
