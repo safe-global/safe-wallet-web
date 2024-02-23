@@ -35,6 +35,8 @@
   },
   "resolutions": {
     "@web3-onboard/trezor/**/protobufjs": "^7.2.4",
+    "@walletconnect/core": "^2.11.1",
+    "@walletconnect/ethereum-provider": "^2.11.2",
     "@safe-global/safe-core-sdk-types/**/ethers": "^6.10.0",
     "@safe-global/protocol-kit/**/ethers": "^6.10.0",
     "@safe-global/api-kit/**/ethers": "^6.10.0"

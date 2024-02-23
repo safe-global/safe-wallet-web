@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -25,10 +25,13 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const { walletConnect, error, setError, open, setOpen } = useContext(WalletConnectContext)
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
   const [changedSession, setChangedSession] = useState<SessionTypes.Struct>()
+  const isResponded = useRef<boolean>(false)
 
   // On session approve
   const onApprove = useCallback(async () => {
     if (!walletConnect || !chainId || !safeAddress || !proposal) return
+
+    isResponded.current = true
 
     const label = proposal?.params.proposer.metadata.url
     trackEvent({ ...WALLETCONNECT_EVENTS.APPROVE_CLICK, label })
@@ -49,6 +52,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const onReject = useCallback(async () => {
     if (!walletConnect || !proposal) return
 
+    isResponded.current = true
     const label = proposal?.params.proposer.metadata.url
     trackEvent({ ...WALLETCONNECT_EVENTS.REJECT_CLICK, label })
 
@@ -61,6 +65,21 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     // Always clear the proposal, even if the rejection fails
     setProposal(undefined)
   }, [proposal, walletConnect, setError])
+
+  // Try to clean-up when the user has open proposal,
+  // but for whatever reason refreshes the browser without rejecting/accepting it
+  // if we don't do this we often get "No matching key: session"
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      if (proposal && isResponded.current === false) {
+        await onReject()
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [proposal, onReject])
 
   // On session disconnect
   const onDisconnect = useCallback(
@@ -89,6 +108,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     return walletConnect.onSessionPropose((proposalData) => {
       setError(null)
       setProposal(proposalData)
+      isResponded.current = false
     })
   }, [walletConnect, setError])
 
