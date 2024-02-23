@@ -79,7 +79,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     window.addEventListener('beforeunload', handleBeforeUnload)
 
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [proposal])
+  }, [proposal, onReject])
 
   // On session disconnect
   const onDisconnect = useCallback(
