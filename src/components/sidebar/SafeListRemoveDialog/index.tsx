@@ -1,3 +1,4 @@
+import { removeAddressBookEntry } from '@/store/addressBookSlice'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Typography from '@mui/material/Typography'
@@ -25,6 +26,7 @@ const SafeListRemoveDialog = ({
 
   const handleConfirm = () => {
     dispatch(removeSafe({ chainId, address }))
+    dispatch(removeAddressBookEntry({ chainId, address }))
     handleClose()
   }
 

@@ -1,34 +1,25 @@
+import { addSafeToWatchlist } from '@/components/new-safe/load/logic'
+import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { useRouter } from 'next/router'
-import { AppRoutes } from '@/config/routes'
-import { useCurrentChain } from '@/hooks/useChains'
-import useSafeAddress from '@/hooks/useSafeAddress'
 import { Button } from '@mui/material'
 import SafeListRemoveDialog from '../SafeListRemoveDialog'
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import { useState } from 'react'
 import { VisibilityOutlined } from '@mui/icons-material'
 
 const WatchlistAddButton = () => {
   const [open, setOpen] = useState(false)
-  const router = useRouter()
-  const chain = useCurrentChain()
-  const address = useSafeAddress()
-  const chainId = chain?.chainId || ''
-  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
-  const isInWatchlist = !!addedSafes?.[address]
+  const { safe } = useSafeInfo()
+  const dispatch = useAppDispatch()
+  const safeName = useMnemonicSafeName()
+  const addedSafes = useAppSelector((state) => selectAddedSafes(state, safe.chainId))
+  const isInWatchlist = !!addedSafes?.[safe.address.value]
 
   const onClick = () => {
     trackEvent({ ...OVERVIEW_EVENTS.ADD_SAFE })
-
-    router.push({
-      pathname: AppRoutes.newSafe.load,
-      query: {
-        chain: chain?.shortName,
-        address: address,
-      },
-    })
+    addSafeToWatchlist(dispatch, safe, safeName)
   }
 
   return (
@@ -60,8 +51,8 @@ const WatchlistAddButton = () => {
         </Button>
       )}
 
-      {open && chainId && (
-        <SafeListRemoveDialog handleClose={() => setOpen(false)} address={address} chainId={chainId} />
+      {open && safe.chainId && (
+        <SafeListRemoveDialog handleClose={() => setOpen(false)} address={safe.address.value} chainId={safe.chainId} />
       )}
     </>
   )
