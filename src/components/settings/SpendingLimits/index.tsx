@@ -27,7 +27,7 @@ const SpendingLimits = () => {
           </Typography>
         </Grid>
 
-        <Grid item xs>
+        <Grid item xs={12} lg={8}>
           {isEnabled ? (
             <Box>
               <Typography>
@@ -56,9 +56,10 @@ const SpendingLimits = () => {
           ) : (
             <Typography>The spending limit module is not yet available on this chain.</Typography>
           )}
+
+          <SpendingLimitsTable isLoading={spendingLimitsLoading} spendingLimits={spendingLimits} />
         </Grid>
       </Grid>
-      <SpendingLimitsTable isLoading={spendingLimitsLoading} spendingLimits={spendingLimits} />
     </Paper>
   )
 }

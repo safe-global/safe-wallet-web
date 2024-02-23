@@ -1,4 +1,5 @@
 import Track from '@/components/common/Track'
+import RecoveryEmail from '@/features/recovery/components/RecoveryEmail'
 import { ChooseRecoveryMethodModal } from './ChooseRecoveryMethodModal'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
@@ -123,7 +124,7 @@ function RecoverySettings(): ReactElement {
           </Box>
         </Grid>
 
-        <Grid item xs>
+        <Grid item xs={12} lg={8}>
           <Typography mb={2}>
             {isRecoveryEnabled
               ? 'The trusted Recoverer will be able to recover your Safe Account if you ever lose access. You can change Recoverers or alter your recovery setup at any time.'
@@ -138,7 +139,11 @@ function RecoverySettings(): ReactElement {
           {!isRecoveryEnabled ? (
             <SetupRecoveryButton eventLabel="settings" />
           ) : rows ? (
-            <EnhancedTable rows={rows} headCells={headCells} />
+            <>
+              <EnhancedTable rows={rows} headCells={headCells} />
+
+              <RecoveryEmail />
+            </>
           ) : null}
         </Grid>
       </Grid>
