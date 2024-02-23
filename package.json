@@ -28,7 +28,8 @@
     "cypress:ci": "yarn cypress:run --config baseUrl=http://localhost:8080 --spec cypress/e2e/smoke/*.cy.js",
     "serve": "npx -y serve out -p ${REVERSE_PROXY_UI_PORT:=8080}",
     "static-serve": "yarn build && yarn serve",
-    "update-wc": "yarn add @walletconnect/web3wallet@latest @walletconnect/utils@latest @walletconnect/types@latest"
+    "update-wc": "yarn add @walletconnect/web3wallet@latest @walletconnect/utils@latest @walletconnect/types@latest",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=16"
@@ -130,6 +131,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "fake-indexeddb": "^4.0.2",
+    "husky": "^9.0.11",
     "jest": "^29.6.2",
     "jest-environment-jsdom": "^29.6.2",
     "prettier": "^2.7.0",
