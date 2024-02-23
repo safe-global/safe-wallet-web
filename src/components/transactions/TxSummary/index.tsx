@@ -42,7 +42,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       })}
       id={tx.id}
     >
-      {nonce && !isGrouped && (
+      {nonce !== undefined && !isGrouped && (
         <Box gridArea="nonce" data-testid="nonce" className={css.nonce}>
           {nonce}
         </Box>

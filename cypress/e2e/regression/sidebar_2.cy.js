@@ -23,12 +23,6 @@ describe('Sidebar added sidebar tests', () => {
     sideBar.verifyAddedSafesExist(sideBar.addedSafesSepolia)
   })
 
-  it('Verify Safes are separated by networks', () => {
-    sideBar.openSidebar()
-    sideBar.verifySafesByNetwork(constants.networks.ethereum, sideBar.addedSafesEth)
-    sideBar.verifySafesByNetwork(constants.networks.sepolia, sideBar.addedSafesSepolia)
-  })
-
   it('Verify a safe can be renamed', () => {
     sideBar.openSidebar()
     sideBar.renameSafeItem(addedSafe900, newSafeName)
@@ -36,15 +30,11 @@ describe('Sidebar added sidebar tests', () => {
     sideBar.verifySafeNameExists(newSafeName)
   })
 
-  it('Verify a safe can be removed', () => {
+  // TODO: Update to remove from watch list
+  it.skip('Verify a safe can be removed', () => {
     sideBar.openSidebar()
     sideBar.removeSafeItem(addedSafe900)
     sideBar.verifySafeRemoved([addedSafe900])
-  })
-
-  it('Verify the "Read only" tag if the connected user is not an owner of a safe', () => {
-    sideBar.openSidebar()
-    sideBar.verifySafeReadOnlyState(addedSafe900)
   })
 
   it('Verify Fiat currency changes when edited in the assets tab', () => {
@@ -52,12 +42,14 @@ describe('Sidebar added sidebar tests', () => {
     sideBar.checkCurrencyInHeader(constants.currencies.cad)
   })
 
-  it('Verify "wallet" tag counter if the safe has tx ready for execution', () => {
+  // Waiting for endpoint from CGW
+  it.skip('Verify "wallet" tag counter if the safe has tx ready for execution', () => {
     sideBar.openSidebar()
     sideBar.verifyMissingSignature(staticSafe200)
   })
 
-  it('Verify "Wallet" tag counter only shows for owners', () => {
+  // Waiting for endpoint from CGW
+  it.skip('Verify "Wallet" tag counter only shows for owners', () => {
     sideBar.openSidebar()
     sideBar.verifyQueuedTx(staticSafe200)
   })

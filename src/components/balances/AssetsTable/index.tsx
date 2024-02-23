@@ -21,7 +21,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
 import { TokenTransferFlow } from '@/components/tx-flow/flows'
-import NoAssets from './NoAssets'
+import AddFundsCTA from '@/components/common/AddFunds'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -252,7 +252,7 @@ const AssetsTable = ({
       />
 
       {hasNoAssets ? (
-        <NoAssets />
+        <AddFundsCTA />
       ) : (
         <div className={css.container}>
           <EnhancedTable rows={rows} headCells={headCells} />

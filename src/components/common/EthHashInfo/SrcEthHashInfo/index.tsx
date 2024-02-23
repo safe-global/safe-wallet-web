@@ -35,8 +35,8 @@ const SrcEthHashInfo = ({
   address,
   customAvatar,
   prefix = '',
-  copyPrefix,
-  showPrefix,
+  copyPrefix = true,
+  showPrefix = true,
   shortAddress = true,
   copyAddress = true,
   showAvatar = true,
@@ -84,7 +84,7 @@ const SrcEthHashInfo = ({
         )}
 
         <div className={css.addressContainer}>
-          <Box fontWeight="inherit" fontSize="inherit">
+          <Box fontWeight="inherit" fontSize="inherit" overflow="hidden" textOverflow="ellipsis">
             {copyAddress ? (
               <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted}>
                 {addressElement}

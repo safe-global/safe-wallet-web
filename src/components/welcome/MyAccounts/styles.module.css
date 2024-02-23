@@ -1,5 +1,31 @@
 .container {
-  width: 600px;
+  container-type: inline-size;
+  container-name: my-accounts-container;
+  display: flex;
+  justify-content: center;
+}
+
+.myAccounts {
+  width: 100%;
+  max-width: 600px;
+  margin: var(--space-2);
+}
+
+.safeList {
+  padding: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.safeList :last-child {
+  margin-bottom: 0;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  gap: var(--space-1);
 }
 
 .listItem {
@@ -10,8 +36,16 @@
   padding-bottom: var(--space-2);
 }
 
-.listItem > :first-child {
+.currentListItem {
+  padding-left: var(--space-2);
+  border: 1px solid var(--color-secondary-light);
+  border-left-width: 6px;
+  background-color: var(--color-secondary-background) !important;
+}
+
+.listItem> :first-child {
   flex: 1;
+  width: 90%;
 }
 
 .safeLink {
@@ -21,9 +55,46 @@
 }
 
 .safeAddress {
-  flex: 1;
   white-space: nowrap;
   padding-left: var(--space-2);
+  overflow: hidden;
+  margin-right: 10px;
+  text-overflow: ellipsis;
+}
+
+.listHeader {
+  padding-bottom: var(--space-1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.listTitle {
+  margin: auto 0;
+}
+
+.card {
+  margin: auto;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+}
+
+.card :global .MuiCardHeader-root,
+.card :global .MuiCardContent-root {
+  padding: 0;
+}
+
+.cardHeader {
+  text-align: center;
+}
+
+.infoIcon {
+  vertical-align: middle;
+  width: 1rem;
+  height: 1rem;
+  margin: 4px;
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 899.95px) {
@@ -33,5 +104,29 @@
 
   .safeLink {
     padding-right: 0;
+  }
+}
+
+@container my-accounts-container (max-width: 500px) {
+  .myAccounts {
+    margin: 0;
+  }
+
+  .header {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .safeList {
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .card {
+    border-top: 1px solid var(--color-border-light);
   }
 }

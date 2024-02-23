@@ -52,14 +52,9 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
           Connect &amp; transact
         </Typography>
         <WidgetBody>
-          <Grid
-            container
-            flexDirection={{ xs: 'column', sm: 'row', lg: stackedLayout ? 'column' : undefined }}
-            gap={3}
-            height={1}
-          >
+          <Grid container spacing={3} height={1}>
             {featuredApps?.map((app) => (
-              <Grid item xs md key={app.id}>
+              <Grid item xs={12} md={stackedLayout ? 12 : 6} key={app.id}>
                 <NextLink
                   passHref
                   href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}

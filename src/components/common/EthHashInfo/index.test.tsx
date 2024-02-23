@@ -2,7 +2,7 @@ import { blo } from 'blo'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
-import * as useAddressBook from '@/hooks/useAddressBook'
+import * as useAllAddressBooks from '@/hooks/useAllAddressBooks'
 import * as useChainId from '@/hooks/useChainId'
 import * as store from '@/store'
 import EthHashInfo from '.'
@@ -10,16 +10,19 @@ import EthHashInfo from '.'
 const originalClipboard = { ...global.navigator.clipboard }
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
+const MOCK_CHAIN_ID = '4'
 
-jest.mock('@/hooks/useAddressBook')
+jest.mock('@/hooks/useAllAddressBooks')
 jest.mock('@/hooks/useChainId')
 
 describe('EthHashInfo', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    jest.spyOn(useAddressBook, 'default').mockImplementation(() => ({
-      [MOCK_SAFE_ADDRESS]: 'Address book name',
+    jest.spyOn(useAllAddressBooks, 'default').mockImplementation(() => ({
+      [MOCK_CHAIN_ID]: {
+        [MOCK_SAFE_ADDRESS]: 'Address book name',
+      },
     }))
 
     //@ts-ignore
@@ -56,7 +59,7 @@ describe('EthHashInfo', () => {
           session: {},
           settings: {
             shortName: {
-              show: true,
+              copy: true,
             },
           },
           chains: {
@@ -76,7 +79,7 @@ describe('EthHashInfo', () => {
           session: {},
           settings: {
             shortName: {
-              show: true,
+              copy: true,
             },
           },
           chains: {
@@ -96,7 +99,7 @@ describe('EthHashInfo', () => {
     it('renders a custom prefix', () => {
       jest.spyOn(store, 'useAppSelector').mockReturnValue({
         shortName: {
-          show: true,
+          copy: true,
         },
       })
 
@@ -113,7 +116,7 @@ describe('EthHashInfo', () => {
           session: {},
           settings: {
             shortName: {
-              show: true,
+              copy: true,
             },
           },
           chains: {
@@ -133,14 +136,8 @@ describe('EthHashInfo', () => {
       expect(result2.queryByText('rin:')).not.toBeInTheDocument()
     })
 
-    it("doesn't render the prefix when disabled in the settings", () => {
-      jest.spyOn(store, 'useAppSelector').mockReturnValue({
-        shortName: {
-          show: false,
-        },
-      })
-
-      const { queryByText } = render(<EthHashInfo address={MOCK_SAFE_ADDRESS} />)
+    it('should not render the prefix when disabled in the props', () => {
+      const { queryByText } = render(<EthHashInfo address={MOCK_SAFE_ADDRESS} showPrefix={false} />)
 
       expect(queryByText('rin:')).not.toBeInTheDocument()
     })
@@ -246,7 +243,6 @@ describe('EthHashInfo', () => {
           session: {},
           settings: {
             shortName: {
-              show: true,
               copy: true,
             },
           },
@@ -279,7 +275,6 @@ describe('EthHashInfo', () => {
           session: {},
           settings: {
             shortName: {
-              show: true,
               copy: true,
             },
           },
@@ -308,7 +303,6 @@ describe('EthHashInfo', () => {
           session: {},
           settings: {
             shortName: {
-              show: true,
               copy: true,
             },
           },
@@ -339,7 +333,6 @@ describe('EthHashInfo', () => {
           session: {},
           settings: {
             shortName: {
-              show: true,
               copy: true,
             },
           },
@@ -369,7 +362,6 @@ describe('EthHashInfo', () => {
           session: {},
           settings: {
             shortName: {
-              show: true,
               copy: false,
             },
           },

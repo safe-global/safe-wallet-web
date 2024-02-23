@@ -32,7 +32,6 @@ export type SettingsState = {
   showOnlyTrustedTransactions?: boolean
 
   shortName: {
-    show: boolean
     copy: boolean
     qr: boolean
   }
@@ -56,7 +55,6 @@ export const initialState: SettingsState = {
   showOnlyTrustedTransactions: false,
 
   shortName: {
-    show: true,
     copy: true,
     qr: true,
   },
@@ -80,9 +78,6 @@ export const settingsSlice = createSlice({
   reducers: {
     setCurrency: (state, { payload }: PayloadAction<SettingsState['currency']>) => {
       state.currency = payload
-    },
-    setShowShortName: (state, { payload }: PayloadAction<SettingsState['shortName']['show']>) => {
-      state.shortName.show = payload
     },
     setCopyShortName: (state, { payload }: PayloadAction<SettingsState['shortName']['copy']>) => {
       state.shortName.copy = payload
@@ -130,7 +125,6 @@ export const settingsSlice = createSlice({
 
 export const {
   setCurrency,
-  setShowShortName,
   setCopyShortName,
   setQrShortName,
   setDarkMode,

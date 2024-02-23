@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react'
-import useAddressBook from '@/hooks/useAddressBook'
+import useAllAddressBooks from '@/hooks/useAllAddressBooks'
 import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
@@ -15,14 +15,13 @@ const EthHashInfo = ({
   const settings = useAppSelector(selectSettings)
   const currentChainId = useChainId()
   const chain = useAppSelector((state) => selectChainById(state, props.chainId || currentChainId))
-  const addressBook = useAddressBook()
+  const addressBooks = useAllAddressBooks()
   const link = chain && props.hasExplorer ? getBlockExplorerLink(chain, props.address) : undefined
-  const name = showName ? addressBook[props.address] || props.name : undefined
+  const name = showName && chain ? addressBooks?.[chain.chainId]?.[props.address] || props.name : undefined
 
   return (
     <SrcEthHashInfo
       prefix={chain?.shortName}
-      showPrefix={settings.shortName.show}
       copyPrefix={settings.shortName.copy}
       {...props}
       name={name}

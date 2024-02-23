@@ -91,7 +91,6 @@ describe('AssetsTable', () => {
           hiddenTokens: mockHiddenAssets,
           tokenList: TOKEN_LISTS.ALL,
           shortName: {
-            show: true,
             copy: true,
             qr: true,
           },
@@ -197,7 +196,6 @@ describe('AssetsTable', () => {
           hiddenTokens: mockHiddenAssets,
           tokenList: TOKEN_LISTS.ALL,
           shortName: {
-            show: true,
             copy: true,
             qr: true,
           },
@@ -299,7 +297,6 @@ describe('AssetsTable', () => {
           hiddenTokens: mockHiddenAssets,
           tokenList: TOKEN_LISTS.ALL,
           shortName: {
-            show: true,
             copy: true,
             qr: true,
           },
@@ -398,7 +395,6 @@ describe('AssetsTable', () => {
           hiddenTokens: mockHiddenAssets,
           tokenList: TOKEN_LISTS.ALL,
           shortName: {
-            show: true,
             copy: true,
             qr: true,
           },

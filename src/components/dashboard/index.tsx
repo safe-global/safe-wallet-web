@@ -1,4 +1,5 @@
-import useOnboard from '@/hooks/wallets/useOnboard'
+import FirstSteps from '@/components/dashboard/FirstSteps'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import type { ReactElement } from 'react'
 import dynamic from 'next/dynamic'
 import { Grid } from '@mui/material'
@@ -10,7 +11,6 @@ import GovernanceSection from '@/components/dashboard/GovernanceSection/Governan
 import CreationDialog from '@/components/dashboard/CreationDialog'
 import { useRouter } from 'next/router'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
-
 import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
@@ -18,10 +18,8 @@ const RecoveryWidget = dynamic(() => import('@/features/recovery/components/Reco
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
-  const onboard = useOnboard()
+  const { safe } = useSafeInfo()
   const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
-
-  console.log(onboard)
 
   const supportsRecovery = useIsRecoverySupported()
   const [recovery] = useRecovery()
@@ -32,31 +30,39 @@ const Dashboard = (): ReactElement => {
       <Grid container spacing={3}>
         {supportsRecovery && <RecoveryHeader />}
 
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12}>
           <Overview />
         </Grid>
 
-        <Grid item xs={12} lg={6}>
-          <PendingTxsList />
-        </Grid>
-
-        <Grid item xs={12} lg={showRecoveryWidget ? 6 : undefined}>
-          <FeaturedApps stackedLayout={!!showRecoveryWidget} />
-        </Grid>
-
-        {showRecoveryWidget ? (
-          <Grid item xs={12} lg={6}>
-            <RecoveryWidget />
-          </Grid>
-        ) : null}
-
         <Grid item xs={12}>
-          <GovernanceSection />
+          <FirstSteps />
         </Grid>
 
-        <Grid item xs={12}>
-          <SafeAppsDashboardSection />
-        </Grid>
+        {safe.deployed && (
+          <>
+            <Grid item xs={12} lg={6}>
+              <PendingTxsList />
+            </Grid>
+
+            {showRecoveryWidget ? (
+              <Grid item xs={12} lg={6}>
+                <RecoveryWidget />
+              </Grid>
+            ) : null}
+
+            <Grid item xs={12} lg={showRecoveryWidget ? 12 : 6}>
+              <FeaturedApps stackedLayout={!showRecoveryWidget} />
+            </Grid>
+
+            <Grid item xs={12}>
+              <GovernanceSection />
+            </Grid>
+
+            <Grid item xs={12}>
+              <SafeAppsDashboardSection />
+            </Grid>
+          </>
+        )}
       </Grid>
       {showCreationModal ? <CreationDialog /> : null}
     </>

@@ -234,6 +234,7 @@ export const checkSafeCreationTx = async (
   const TIMEOUT_TIME = 60 * 1000 // 1 minute
 
   try {
+    // TODO: Use the fix from checkSafeActivation to detect cancellation and speed-up txs again
     const receipt = await provider.waitForTransaction(txHash, 1, TIMEOUT_TIME)
 
     /** The receipt should always be non-null as we require 1 confirmation */

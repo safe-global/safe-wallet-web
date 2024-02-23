@@ -13,13 +13,13 @@ describe('useIntervalCounter', () => {
     expect(result.current[1]).toBeInstanceOf(Function)
 
     act(() => {
-      jest.advanceTimersByTime(100)
+      jest.advanceTimersByTime(200)
     })
 
     expect(result.current[0]).toBe(1)
 
     act(() => {
-      jest.advanceTimersByTime(100)
+      jest.advanceTimersByTime(200)
     })
 
     expect(result.current[0]).toBe(2)
@@ -29,7 +29,7 @@ describe('useIntervalCounter', () => {
     const { result } = renderHook(() => useIntervalCounter(100))
 
     act(() => {
-      jest.advanceTimersByTime(100)
+      jest.advanceTimersByTime(200)
     })
 
     expect(result.current[0]).toBe(1)

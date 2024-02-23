@@ -108,12 +108,14 @@ export const SignOrExecuteForm = ({
           showMultisend={!props.isBatch}
         />
 
-        <RedefineBalanceChanges />
+        {!isCounterfactualSafe && <RedefineBalanceChanges />}
       </TxCard>
 
-      <TxCard>
-        <TxChecks />
-      </TxCard>
+      {!isCounterfactualSafe && (
+        <TxCard>
+          <TxChecks />
+        </TxCard>
+      )}
 
       <TxCard>
         <ConfirmationTitle

@@ -7,7 +7,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import WelcomeLogin from './WelcomeLogin'
 import GnosisChainLogo from '@/public/images/common/gnosis-chain-logo.png'
 import Image from 'next/image'
-import SafeListDrawer from '@/components/welcome/SafeListDrawer'
 
 const BulletListItem = ({ text }: { text: string }) => (
   <li>
@@ -36,10 +35,6 @@ const NewSafeSocial = () => {
         </Grid>
         <Grid item xs={12} lg={6} flex={1}>
           <div className={css.content}>
-            <Box minWidth={{ md: 480 }} className={css.sidebar}>
-              <SafeListDrawer />
-            </Box>
-
             <Box pt={5} alignSelf="center" margin="auto">
               <Typography
                 variant="h1"

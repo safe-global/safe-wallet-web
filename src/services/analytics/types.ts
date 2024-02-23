@@ -7,6 +7,7 @@ export enum EventType {
   META = 'metadata',
   SAFE_APP = 'safeApp',
   SAFE_CREATED = 'safe_created',
+  SAFE_ACTIVATED = 'safe_activated',
   SAFE_OPENED = 'safe_opened',
   WALLET_CONNECTED = 'wallet_connected',
   TX_CREATED = 'tx_created',

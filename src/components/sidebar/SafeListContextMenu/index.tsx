@@ -15,6 +15,7 @@ import DeleteIcon from '@/public/images/common/delete.svg'
 import ContextMenu from '@/components/common/ContextMenu'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import { SvgIcon } from '@mui/material'
+import useAddressBook from '@/hooks/useAddressBook'
 
 enum ModalType {
   RENAME = 'rename',
@@ -34,6 +35,8 @@ const SafeListContextMenu = ({
 }): ReactElement => {
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
+  const addressBook = useAddressBook()
+  const hasName = address in addressBook
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
@@ -69,7 +72,7 @@ const SafeListContextMenu = ({
           <ListItemIcon>
             <SvgIcon component={EditIcon} inheritViewBox fontSize="small" color="success" />
           </ListItemIcon>
-          <ListItemText data-testid="rename-btn">Rename</ListItemText>
+          <ListItemText data-testid="rename-btn">{hasName ? 'Rename' : 'Give name'}</ListItemText>
         </MenuItem>
 
         {isAdded && (

@@ -61,6 +61,11 @@ export const CREATE_SAFE_EVENTS = {
     action: 'Created Safe',
     category: CREATE_SAFE_CATEGORY,
   },
+  ACTIVATED_SAFE: {
+    event: EventType.SAFE_ACTIVATED,
+    action: 'Activated Safe',
+    category: CREATE_SAFE_CATEGORY,
+  },
   GET_STARTED: {
     action: 'Load Safe',
     category: CREATE_SAFE_CATEGORY,

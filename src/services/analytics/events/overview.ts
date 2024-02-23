@@ -27,6 +27,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Add Safe',
     category: OVERVIEW_CATEGORY,
   },
+  ADD_TO_WATCHLIST: {
+    action: 'Add to watchlist',
+    category: OVERVIEW_CATEGORY,
+  },
   SIDEBAR: {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
@@ -47,6 +51,16 @@ export const OVERVIEW_EVENTS = {
   NEW_TRANSACTION: {
     action: 'New transaction',
     category: OVERVIEW_CATEGORY,
+  },
+  CHOOSE_TRANSACTION_TYPE: {
+    action: 'Choose transaction type',
+    category: OVERVIEW_CATEGORY,
+    event: EventType.CLICK,
+  },
+  ADD_FUNDS: {
+    action: 'Add funds',
+    category: OVERVIEW_CATEGORY,
+    event: EventType.CLICK,
   },
   NOTIFICATION_CENTER: {
     action: 'Open Notification Center',
@@ -116,11 +130,21 @@ export const OVERVIEW_EVENTS = {
     action: 'Create new Safe',
     category: OVERVIEW_CATEGORY,
   },
+  PROCEED_WITH_TX: {
+    event: EventType.CLICK,
+    action: 'Proceed with transaction',
+    category: OVERVIEW_CATEGORY,
+  },
 }
 
 export enum OPEN_SAFE_LABELS {
   sidebar = 'sidebar',
   after_create = 'after_create',
   after_add = 'after_add',
+  login_page = 'login_page',
+}
+
+export enum OVERVIEW_LABELS {
+  sidebar = 'sidebar',
   login_page = 'login_page',
 }

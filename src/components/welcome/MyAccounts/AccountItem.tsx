@@ -3,7 +3,7 @@ import { ListItemButton, Box, Typography } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
-import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
@@ -12,12 +12,18 @@ import css from './styles.module.css'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { shortenAddress } from '@/utils/formatters'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import useChainId from '@/hooks/useChainId'
+import { sameAddress } from '@/utils/addresses'
+import classnames from 'classnames'
+import { useRouter } from 'next/router'
 
 type AccountItemProps = {
   chainId: string
   address: string
   threshold?: number
   owners?: number
+  onLinkClick?: () => void
 }
 
 const getSafeHref = (prefix: string, address: string) => ({
@@ -25,8 +31,14 @@ const getSafeHref = (prefix: string, address: string) => ({
   query: { safe: `${prefix}:${address}` },
 })
 
-const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
+  const safeAddress = useSafeAddress()
+  const currChainId = useChainId()
+  const router = useRouter()
+  const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
+  const trackingLabel =
+    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   const href = useMemo(() => {
     return chain ? getSafeHref(chain.shortName, address) : ''
@@ -35,9 +47,13 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
 
   return (
-    <ListItemButton className={css.listItem}>
-      <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.login_page}>
-        <Link href={href} className={css.safeLink}>
+    <ListItemButton
+      data-testid="safe-list-item"
+      selected={isCurrentSafe}
+      className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}
+    >
+      <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
+        <Link onClick={onLinkClick} href={href} className={css.safeLink}>
           <SafeIcon address={address} {...rest} />
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
@@ -46,8 +62,8 @@ const AccountItem = ({ chainId, address, ...rest }: AccountItemProps) => {
                 {name}
               </Typography>
             )}
-            <b>{chain?.shortName}: </b>
-            <Typography color="text.secondary" fontSize="inherit" component="span">
+            {chain?.shortName}:
+            <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
             </Typography>
           </Typography>

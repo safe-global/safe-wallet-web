@@ -6,11 +6,12 @@ import SafeLogo from '@/public/images/logo-text.svg'
 import dynamic from 'next/dynamic'
 import css from './styles.module.css'
 import { useRouter } from 'next/router'
-import WalletLogin from './WalletLogin'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import { trackEvent } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useHasSafes } from '../MyAccounts/useAllSafes'
+import { useEffect } from 'react'
+import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 
 const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
   loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
@@ -20,16 +21,18 @@ const WelcomeLogin = () => {
   const router = useRouter()
   const wallet = useWallet()
   const isSocialLoginEnabled = useHasFeature(FEATURES.SOCIAL_LOGIN)
-  const hasSafes = useHasSafes()
+  const { isLoaded, hasSafes } = useHasSafes()
 
-  const continueToCreation = () => {
-    if (hasSafes) {
-      router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
-    } else {
-      trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
-      router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
+  useEffect(() => {
+    if (wallet && isLoaded) {
+      if (hasSafes) {
+        router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
+      } else {
+        trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
+        router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
+      }
     }
-  }
+  }, [hasSafes, isLoaded, router, wallet])
 
   return (
     <Paper className={css.loginCard} data-testid="welcome-login">
@@ -46,7 +49,7 @@ const WelcomeLogin = () => {
             : 'Connect your wallet to create a new Safe Account or open an existing one'}
         </Typography>
 
-        <WalletLogin onLogin={continueToCreation} />
+        <ConnectWalletButton text="Connect wallet" />
 
         {isSocialLoginEnabled && (
           <>
@@ -56,7 +59,7 @@ const WelcomeLogin = () => {
               </Typography>
             </Divider>
 
-            <SocialSigner onLogin={continueToCreation} />
+            <SocialSigner />
           </>
         )}
       </Box>

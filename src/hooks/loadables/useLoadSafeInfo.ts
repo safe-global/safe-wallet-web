@@ -26,7 +26,7 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
      * This is the one place where we can't check for `safe.deployed` as we want to update that value
      * when the local storage is cleared, so we have to check undeployedSafe
      */
-    if (undeployedSafe) return getUndeployedSafeInfo(undeployedSafe, address, chainId)
+    if (undeployedSafe) return getUndeployedSafeInfo(undeployedSafe.props, address, chainId)
 
     const safeInfo = await getSafeInfo(chainId, address)
 

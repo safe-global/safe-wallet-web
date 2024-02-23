@@ -1,14 +1,13 @@
 import { TxModalContext } from '@/components/tx-flow'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
-import { removeUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useAppDispatch } from '@/store'
+import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
@@ -49,8 +48,6 @@ export const CounterfactualForm = ({
   const onboard = useOnboard()
   const chain = useCurrentChain()
   const chainId = useChainId()
-  const dispatch = useAppDispatch()
-  const { safeAddress } = useSafeInfo()
 
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -79,12 +76,14 @@ export const CounterfactualForm = ({
 
     const txOptions = getTxOptions(advancedParams, currentChain)
 
-    const onSuccess = () => {
-      dispatch(removeUndeployedSafe({ chainId, address: safeAddress }))
-    }
-
     try {
-      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard, onSuccess)
+      trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
+
+      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
+
+      trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_with_tx })
+      trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_with_tx })
+      trackEvent(WALLET_EVENTS.ONCHAIN_INTERACTION)
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._804, err)
@@ -114,35 +113,32 @@ export const CounterfactualForm = ({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <Alert severity="info" sx={{ mb: 2 }}>
-          Executing this transaction will also activate your account. Additional network fees will apply. Base fee is{' '}
-          <strong>
-            {getTotalFeeFormatted(
-              advancedParams.maxFeePerGas,
-              advancedParams.maxPriorityFeePerGas,
-              BigInt(gasLimit?.baseGas || '0') + BigInt(gasLimit?.safeTxGas || '0'),
-              chain,
-            )}{' '}
-            {chain?.nativeCurrency.symbol}
-          </strong>
-          , one time activation fee is{' '}
-          <strong>
-            {getTotalFeeFormatted(
-              advancedParams.maxFeePerGas,
-              advancedParams.maxPriorityFeePerGas,
-              BigInt(gasLimit?.safeDeploymentGas || '0'),
-              chain,
-            )}{' '}
-            {chain?.nativeCurrency.symbol}
-          </strong>
-          . This is an estimation and the final cost can be higher.
+        <Alert severity="info" sx={{ mb: 2, border: 0 }}>
+          Executing this transaction will activate your account.
+          <br />
+          <ul style={{ margin: 0, padding: '4px 16px 0' }}>
+            <li>
+              Base fee: &asymp;{' '}
+              <strong>
+                {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeTxGas || '0'), chain)}{' '}
+                {chain?.nativeCurrency.symbol}
+              </strong>
+            </li>
+            <li>
+              One-time activation fee: &asymp;{' '}
+              <strong>
+                {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeDeploymentGas || '0'), chain)}{' '}
+                {chain?.nativeCurrency.symbol}
+              </strong>
+            </li>
+          </ul>
         </Alert>
 
         <div className={classNames(css.params)}>
           <AdvancedParams
             willExecute
             params={advancedParams}
-            recommendedGasLimit={gasLimit}
+            recommendedGasLimit={gasLimit?.totalGas}
             onFormSubmit={setAdvancedParams}
             gasLimitError={gasLimitError}
             willRelay={false}

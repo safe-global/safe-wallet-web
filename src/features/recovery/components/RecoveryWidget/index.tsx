@@ -33,7 +33,7 @@ function RecoveryWidget(): ReactElement {
                 <Chip label="New" />
               </Box>
 
-              <Typography mt={1} mb={3}>
+              <Typography mt={1}>
                 Ensure you never lose access to your funds by choosing a recovery option to recover your Safe Account.
               </Typography>
 

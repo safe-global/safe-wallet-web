@@ -1,7 +1,17 @@
 import { Button } from '@mui/material'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 
-const ConnectWalletButton = ({ onConnect }: { onConnect?: () => void }): React.ReactElement => {
+const ConnectWalletButton = ({
+  onConnect,
+  contained = true,
+  small = false,
+  text,
+}: {
+  onConnect?: () => void
+  contained?: boolean
+  small?: boolean
+  text?: string
+}): React.ReactElement => {
   const connectWallet = useConnectWallet()
 
   const handleConnect = () => {
@@ -12,13 +22,13 @@ const ConnectWalletButton = ({ onConnect }: { onConnect?: () => void }): React.R
   return (
     <Button
       onClick={handleConnect}
-      variant="contained"
-      size="small"
+      variant={contained ? 'contained' : 'text'}
+      size={small ? 'small' : 'medium'}
       disableElevation
       fullWidth
-      sx={{ fontSize: ['12px', '13px'] }}
+      sx={{ fontSize: small ? ['12px', '13px'] : '' }}
     >
-      Connect
+      {text || 'Connect'}
     </Button>
   )
 }

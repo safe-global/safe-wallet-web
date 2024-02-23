@@ -100,6 +100,10 @@ export const isOutgoingTransfer = (txInfo: TransactionInfo): boolean => {
   return isTransferTxInfo(txInfo) && txInfo.direction.toUpperCase() === TransferDirection.OUTGOING
 }
 
+export const isIncomingTransfer = (txInfo: TransactionInfo): boolean => {
+  return isTransferTxInfo(txInfo) && txInfo.direction.toUpperCase() === TransferDirection.INCOMING
+}
+
 // TransactionListItem type guards
 export const isLabelListItem = (value: TransactionListItem): value is Label => {
   return value.type === TransactionListItemType.LABEL

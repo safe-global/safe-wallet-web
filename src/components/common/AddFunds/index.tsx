@@ -5,9 +5,9 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setQrShortName } from '@/store/settingsSlice'
-import BuyCryproButton from '@/components/common/BuyCryproButton'
+import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 
-const NoAssets = () => {
+const AddFundsCTA = () => {
   const safeAddress = useSafeAddress()
   const chain = useCurrentChain()
   const dispatch = useAppDispatch()
@@ -17,7 +17,7 @@ const NoAssets = () => {
 
   return (
     <Paper>
-      <Grid container gap={3} alignItems="center" justifyContent="center" py={10} px={2}>
+      <Grid container gap={3} alignItems="center" justifyContent="center" p={4}>
         <Grid item>
           <div>
             <Box p={2} border="1px solid" borderColor="border.light" borderRadius={1} display="inline-block">
@@ -47,7 +47,7 @@ const NoAssets = () => {
           </Box>
 
           <Box alignSelf="flex-start">
-            <BuyCryproButton />
+            <BuyCryptoButton />
           </Box>
         </Grid>
       </Grid>
@@ -55,4 +55,4 @@ const NoAssets = () => {
   )
 }
 
-export default NoAssets
+export default AddFundsCTA

@@ -27,10 +27,16 @@
 }
 
 @media (max-width: 899.95px) {
+  .indicator {
+    min-width: 35px;
+  }
+}
+
+@container my-accounts-container (max-width: 500px) {
+  .responsive {
+    min-width: 0;
+  }
   .responsive .name {
     display: none;
   }
-.indicator {
-  min-width: 35px;
-}
 }

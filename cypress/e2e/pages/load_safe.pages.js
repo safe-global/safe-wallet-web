@@ -1,7 +1,9 @@
 import * as constants from '../../support/constants'
+import * as sidebar from '../pages/sidebar.pages'
+import * as main from '../pages/main.page'
 
 const addExistingAccountBtnStr = 'Add existing one'
-const contactStr = 'Name, address & network'
+const contactStr = 'Choose address, network and a name'
 export const invalidAddressFormatErrorMsg = 'Invalid address format'
 const invalidAddressNameLengthErrorMsg = 'Maximum 50 symbols'
 
@@ -12,12 +14,63 @@ const sideBarIcon = '[data-testid="ChevronRightIcon"]'
 const sidebarCheckIcon = '[data-testid="CheckIcon"]'
 const addressStepNextBtn = '[data-testid="load-safe-next-btn"]'
 const typeFile = '[type="file"]'
+const ownerName = '[data-testid="owner-name"]'
+const addressSection = '[data-testid="address-section"]'
 const nextBtnStr = 'Next'
 const addBtnStr = 'Add'
 const settingsBtnStr = 'Settings'
 const ownersConfirmationsStr = 'Owners and confirmations'
 const transactionStr = 'Transactions'
 const qrErrorMsg = 'The QR could not be read'
+const safeAddressError = 'Address given is not a valid Safe Account address'
+
+const mandatoryNetworks = [constants.networks.sepolia, constants.networks.polygon, constants.networks.ethereum]
+
+export function verifyAddresFormatIsValid() {
+  cy.get(addressSection).find('label').contains(constants.addressBookErrrMsg.invalidFormat).should('not.exist')
+}
+
+export function clickOnBackBtn() {
+  cy.get('button').contains('Back').click()
+}
+export function verifyAddressCheckSum(address) {
+  inputAddress(main.formatAddressInCaps(address))
+}
+export function verifyOwnerNames(names) {
+  main.verifyValuesExist(safeDataForm, names)
+}
+
+export function inputOwnerName(index, name) {
+  cy.get(ownerName)
+    .eq(index)
+    .find('input')
+    .clear()
+    .type(name)
+    .then(($input) => {
+      const typedValue = $input.val()
+      expect(name).to.contain(typedValue)
+    })
+}
+
+export function verifyOnwerENS(index, ens) {
+  cy.get(ownerName).eq(index).find('input').invoke('attr', 'placeholder').should('contain', ens)
+}
+
+export function verifyAddressError() {
+  cy.get(addressSection).find('label').contains(safeAddressError)
+}
+
+export function verifyOnwerInputIsNotEmpty(index) {
+  cy.get(ownerName).find('input').eq(index).invoke('attr', 'placeholder').should('not.be.empty')
+}
+
+export function checkMainNetworkSelected(network) {
+  cy.get(sidebar.chainLogo).eq(0).contains(network).should('be.visible')
+}
+
+export function verifyMandatoryNetworksExist() {
+  main.verifyValuesExist('ul li', mandatoryNetworks)
+}
 
 export function verifyQRCodeErrorMsg() {
   cy.contains(qrErrorMsg).should('be.visible')
@@ -42,6 +95,11 @@ export function selectSepolia() {
   cy.contains('span', constants.networks.sepolia)
 }
 
+export function selectEth() {
+  cy.get('ul li').contains(constants.networks.ethereum).click()
+  cy.contains('span', constants.networks.ethereum)
+}
+
 export function selectPolygon() {
   cy.get('ul li').contains(constants.networks.polygon).click()
   cy.contains('span', constants.networks.polygon)
@@ -51,6 +109,7 @@ export function inputNameAndAddress(name, address) {
   inputName(name)
   inputAddress(address)
 }
+
 export function inputName(name) {
   cy.get(nameInput).type(name).should('have.value', name)
 }
@@ -78,9 +137,11 @@ export function clickOnNextBtn() {
   cy.contains(nextBtnStr).click()
 }
 
-export function verifyDataInReviewSection(safeName, ownerName) {
+export function verifyDataInReviewSection(safeName, ownerName, threshold = null, network = null) {
   cy.findByText(safeName).should('be.visible')
   cy.findByText(ownerName).should('be.visible')
+  if (threshold !== null) cy.get(safeDataForm).contains(threshold).should('be.visible')
+  if (network !== null) cy.get(sidebar.chainLogo).eq(1).contains(network).should('be.visible')
 }
 
 export function clickOnAddBtn() {

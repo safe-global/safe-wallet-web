@@ -31,6 +31,9 @@ export const SEPOLIA_TEST_SAFE_15_TOKEN = 'sep:0xfC0A7ac73Fde7547ac0792Cca1D8A50
 export const SEPOLIA_TEST_SAFE_16_CREATE_TX = 'sep:0xc2F3645bfd395516d1a18CA6ad9298299d328C01'
 export const SEPOLIA_TEST_SAFE_17_SIDEBAR_NONOWNER = 'sep:0x10B45a24640E2170B6AA63ea3A289D723a0C9cba'
 export const SEPOLIA_TEST_SAFE_18_PENDING_TX = 'sep:0xFFfaC243A24EecE6553f0Da278322aCF1Fb6CeF1'
+export const SEPOLIA_TEST_SAFE_19_NONOWNER_NFT = 'sep:0x3e259dea1E317743Cb49CA9358904E07420ff061'
+export const SEPOLIA_TEST_SAFE_20_LOAD_SAFE = 'sep:0x027bBe128174F0e5e5d22ECe9623698E01cd3970'
+export const SEPOLIA_TEST_SAFE_21_LOAD_SAFE = 'eth:0x8675B754342754A30A2AeF474D114d8460bca19b'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -50,6 +53,7 @@ export const SIDEBAR_ADDRESS = '0x04f8...1a91'
 export const ENS_TEST_SEPOLIA = 'e2etestsafe.eth'
 export const ENS_TEST_GOERLI = 'goerli-safe-test.eth'
 export const ENS_TEST_SEPOLIA_INVALID = 'ivladitestenssepolia.eth'
+export const ENS_TEST_SEPOLIA_VALID = 'testenssepolia.eth'
 export const WRONGLY_CHECKSUMMED_ADDRESS = '0X6D0B6F96F665BB4490F9DDB2E450DA2F7E546DC1'
 
 export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissions`
@@ -96,6 +100,9 @@ export const safeListEndpoint = '**/safes'
 export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
 export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png'
 
+export const commonThresholds = {
+  oneOfOne: '1 out of 1 owner(s)',
+}
 export const TXActionNames = {
   resetAllowance: 'resetAllowance',
   setAllowance: 'setAllowance',
@@ -192,6 +199,8 @@ export const addressBookErrrMsg = {
   ownerAdded: 'Owner is already added',
   failedResolve: 'Failed to resolve the address',
   emptyAddress: 'Owner',
+  safeAlreadyAdded: 'Safe Account is already added',
+  prefixMismatch: "doesn't match the current chain",
   invalidPrefix(prefix) {
     return `"${prefix}" doesn't match the current chain`
   },

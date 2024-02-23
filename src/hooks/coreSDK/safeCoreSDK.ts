@@ -1,11 +1,12 @@
 import chains from '@/config/chains'
+import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
 import type { BrowserProvider, Provider } from 'ethers'
-import Safe, { type PredictedSafeProps } from '@safe-global/protocol-kit'
+import Safe from '@safe-global/protocol-kit'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { EthersAdapter } from '@safe-global/protocol-kit'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -54,7 +55,7 @@ type SafeCoreSDKProps = {
   version: SafeInfo['version']
   implementationVersionState: SafeInfo['implementationVersionState']
   implementation: SafeInfo['implementation']['value']
-  undeployedSafe?: PredictedSafeProps
+  undeployedSafe?: UndeployedSafe
 }
 
 // Safe Core SDK
@@ -67,6 +68,9 @@ export const initSafeSDK = async ({
   implementation,
   undeployedSafe,
 }: SafeCoreSDKProps): Promise<Safe | undefined> => {
+  const providerNetwork = (await provider.getNetwork()).chainId
+  if (providerNetwork !== BigInt(chainId)) return
+
   const safeVersion = version ?? (await Gnosis_safe__factory.connect(address, provider).VERSION())
   let isL1SafeSingleton = chainId === chains.eth
 
@@ -94,7 +98,7 @@ export const initSafeSDK = async ({
     return Safe.create({
       ethAdapter: createReadOnlyEthersAdapter(provider),
       isL1SafeSingleton: isL1SafeSingleton,
-      predictedSafe: undeployedSafe,
+      predictedSafe: undeployedSafe.props,
     })
   }
 

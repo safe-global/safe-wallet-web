@@ -27,8 +27,8 @@ const rpcUriBuilder = (): IBuilder<RpcUri> => {
 
 const blockExplorerUriTemplateBuilder = (): IBuilder<BlockExplorerUriTemplate> => {
   return Builder.new<BlockExplorerUriTemplate>().with({
-    address: faker.finance.ethereumAddress(),
-    txHash: faker.string.hexadecimal(),
+    address: faker.internet.url({ appendSlash: false }),
+    txHash: faker.internet.url({ appendSlash: false }),
     api: faker.internet.url({ appendSlash: false }),
   })
 }

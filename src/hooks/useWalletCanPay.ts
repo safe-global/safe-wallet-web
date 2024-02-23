@@ -17,7 +17,7 @@ const useWalletCanPay = ({
   if (gasLimit === undefined || maxFeePerGas === undefined || maxFeePerGas === null || walletBalance === undefined)
     return true
 
-  const totalFee = getTotalFee(maxFeePerGas, maxPriorityFeePerGas, gasLimit)
+  const totalFee = getTotalFee(maxFeePerGas, gasLimit)
 
   return walletBalance >= totalFee
 }
