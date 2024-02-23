@@ -108,6 +108,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     return walletConnect.onSessionPropose((proposalData) => {
       setError(null)
       setProposal(proposalData)
+      isResponded.current = false
     })
   }, [walletConnect, setError])
 
