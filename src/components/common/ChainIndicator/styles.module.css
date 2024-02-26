@@ -23,7 +23,7 @@
   padding: 0;
   min-width: 115px;
   font-size: 14px;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 @media (max-width: 899.95px) {
