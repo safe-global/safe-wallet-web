@@ -1,7 +1,7 @@
 import { render, waitFor } from '@/tests/test-utils'
-import CooldownButton from './index'
+import CooldownLink from './index'
 
-describe('CooldownButton', () => {
+describe('CooldownLink', () => {
   beforeAll(() => {
     jest.useFakeTimers()
   })
@@ -12,9 +12,9 @@ describe('CooldownButton', () => {
   it('should be disabled initially if startDisabled is set and become enabled after <cooldown> seconds', async () => {
     const onClickEvent = jest.fn()
     const result = render(
-      <CooldownButton cooldown={30} onClick={onClickEvent} startDisabled>
+      <CooldownLink cooldown={30} onClick={onClickEvent} startDisabled>
         Try again
-      </CooldownButton>,
+      </CooldownLink>,
     )
 
     expect(result.getByRole('button')).toBeDisabled()
@@ -50,9 +50,9 @@ describe('CooldownButton', () => {
   it('should be enabled initially if startDisabled is not set and become disabled after click', async () => {
     const onClickEvent = jest.fn()
     const result = render(
-      <CooldownButton cooldown={30} onClick={onClickEvent}>
+      <CooldownLink cooldown={30} onClick={onClickEvent}>
         Try again
-      </CooldownButton>,
+      </CooldownLink>,
     )
 
     expect(result.getByRole('button')).toBeEnabled()

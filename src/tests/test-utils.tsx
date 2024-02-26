@@ -1,5 +1,4 @@
-import type { RenderHookOptions } from '@testing-library/react'
-import { render, renderHook } from '@testing-library/react'
+import { fireEvent, render, renderHook, type RenderHookOptions } from '@testing-library/react'
 import type { NextRouter } from 'next/router'
 import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime'
 import type { Theme } from '@mui/material/styles'
@@ -132,6 +131,16 @@ const mockWeb3Provider = (
   )
 }
 
+const typeInFocusedElement = (text: string) => {
+  let activeElement = document.activeElement! as HTMLInputElement
+  activeElement.value = text
+  fireEvent.input(activeElement, {
+    currentTarget: {
+      value: text,
+    },
+  })
+}
+
 // re-export everything
 export * from '@testing-library/react'
 
@@ -139,3 +148,4 @@ export * from '@testing-library/react'
 export { customRender as render }
 export { customRenderHook as renderHook }
 export { mockWeb3Provider }
+export { typeInFocusedElement }
