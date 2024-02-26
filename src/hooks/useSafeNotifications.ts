@@ -73,7 +73,7 @@ const useSafeNotifications = (): void => {
 
     const dismissedNotificationTimestamp = dismissedUpdateNotifications?.[chainId]?.[safeAddress]
 
-    if (dismissedNotificationTimestamp) {
+    if (dismissedNotificationTimestamp !== undefined) {
       if (Date.now() >= dismissedNotificationTimestamp) {
         const newState = { ...dismissedUpdateNotifications }
         delete newState?.[chainId]?.[safeAddress]

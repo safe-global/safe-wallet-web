@@ -10,7 +10,7 @@ import { type JsonRpcProvider } from 'ethers'
 
 export function _getRemainingTimeout(defaultTimeout: number, submittedAt?: number) {
   const timeoutInMs = defaultTimeout * 60_000
-  const timeSinceSubmission = submittedAt ? Date.now() - submittedAt : 0
+  const timeSinceSubmission = submittedAt !== undefined ? Date.now() - submittedAt : 0
 
   return Math.max(timeoutInMs - timeSinceSubmission, 1)
 }

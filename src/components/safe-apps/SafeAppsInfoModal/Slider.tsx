@@ -17,7 +17,7 @@ const Slider: React.FC<SliderProps> = ({ onSlideChange, children, initialStep })
   const [disabledBtn, setDisabledBtn] = useState(false)
 
   useEffect(() => {
-    let id: ReturnType<typeof setTimeout>
+    let id: ReturnType<typeof setTimeout> | undefined
 
     if (disabledBtn) {
       id = setTimeout(() => {

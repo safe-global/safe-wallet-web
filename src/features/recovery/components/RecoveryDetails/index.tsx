@@ -33,7 +33,7 @@ export function RecoveryDetails({ item }: { item: RecoveryQueueItem }): ReactEle
           <TxDataRow title="Created:">{dateString(Number(timestamp))}</TxDataRow>
           <TxDataRow title="Executable:">{dateString(Number(validFrom))}</TxDataRow>
 
-          {expiresAt ? <TxDataRow title="Expires:">{dateString(Number(expiresAt))}</TxDataRow> : null}
+          {expiresAt !== null && <TxDataRow title="Expires:">{dateString(Number(expiresAt))}</TxDataRow>}
 
           <Link className={summaryCss.buttonExpand} onClick={toggleExpanded} component="button" variant="body1">
             Advanced details

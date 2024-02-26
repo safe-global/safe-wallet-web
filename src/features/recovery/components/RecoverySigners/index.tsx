@@ -18,7 +18,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
   const { isExecutable, isExpired, isNext, remainingSeconds } = useRecoveryTxState(item)
 
   const desc = isExecutable ? (
-    item.expiresAt ? (
+    item.expiresAt !== null ? (
       <>
         The recovery proposal can be executed{' '}
         <Typography color="primary.main">until {formatDateTime(Number(item.expiresAt))}.</Typography>

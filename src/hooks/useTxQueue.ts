@@ -45,7 +45,7 @@ export const useQueuedTxsLength = (): string => {
   const { length } = queue.data?.results.filter(isTransactionListItem) ?? []
   const recoveryQueueSize = useRecoveryQueue().length
   const totalSize = length + recoveryQueueSize
-  if (!totalSize) return ''
+  if (totalSize === 0) return ''
   const hasNextPage = queue.data?.next != null
   return `${totalSize}${hasNextPage ? '+' : ''}`
 }

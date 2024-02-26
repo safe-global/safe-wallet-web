@@ -66,7 +66,7 @@ const SrcEthHashInfo = ({
       {showAvatar && (
         <div
           className={css.avatarContainer}
-          style={avatarSize ? { width: `${avatarSize}px`, height: `${avatarSize}px` } : undefined}
+          style={avatarSize !== undefined ? { width: `${avatarSize}px`, height: `${avatarSize}px` } : undefined}
         >
           {customAvatar ? (
             <ImageFallback src={customAvatar} fallbackComponent={identicon} width={avatarSize} height={avatarSize} />

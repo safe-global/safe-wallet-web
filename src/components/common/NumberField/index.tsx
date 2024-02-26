@@ -15,7 +15,7 @@ export const _formatNumber = (value: string) => {
 
   let index = 0
   // replace all dots except the first one
-  value = value.replace(/\./g, (item) => (!index++ ? item : ''))
+  value = value.replace(/\./g, (item) => (index++ === 0 ? item : ''))
 
   // Remove all characters except numbers and dots
   value = value.replace(/[^0-9.]/g, '')
