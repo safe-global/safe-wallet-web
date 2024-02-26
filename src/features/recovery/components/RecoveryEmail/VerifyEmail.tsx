@@ -1,27 +1,32 @@
-import { Button, DialogActions, DialogContent, Typography, Stack } from '@mui/material'
-import { resendEmailVerificationCode, verifyEmail } from '@safe-global/safe-gateway-typescript-sdk'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
-import CodeInput from '@/components/common/CodeInput'
 import { useState } from 'react'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import useRecoveryEmail from '@/features/recovery/components/RecoveryEmail/useRecoveryEmail'
+import { Button, DialogActions, DialogContent, Typography, Stack, Link } from '@mui/material'
+import CodeInput from '@/components/common/CodeInput'
 import CooldownLink from 'src/components/common/CooldownLink'
 import ModalDialog from '@/components/common/ModalDialog'
 
 const CODE_LENGTH = 6
 
-const VerifyEmail = ({ onCancel }: { onCancel: () => void }) => {
+export const NotVerifiedMessage = ({ onVerify }: { onVerify: () => void }) => {
+  return (
+    <ErrorMessage level="border">
+      <Typography fontWeight="bold">Email not verified</Typography>
+      You didn&apos;t finish the verification yet. Once confirmed, it will be added as your notification email.{' '}
+      <Link href="#" onClick={onVerify}>
+        Verify email
+      </Link>
+    </ErrorMessage>
+  )
+}
+
+const VerifyEmail = ({ onCancel, open }: { onCancel: () => void; open: boolean }) => {
   const [verificationCode, setVerificationCode] = useState<string>('')
-  const onboard = useOnboard()
-  const { safe, safeAddress } = useSafeInfo()
+  const { verifyEmailAddress, resendVerification } = useRecoveryEmail()
 
   const handleRetry = async () => {
-    if (!onboard) return
-
     try {
-      const signer = await getAssertedChainSigner(onboard, safe.chainId)
-
-      await resendEmailVerificationCode(safe.chainId, safeAddress, signer.address)
+      await resendVerification()
     } catch (e) {
       console.log(e)
       // TODO: logError
@@ -29,12 +34,8 @@ const VerifyEmail = ({ onCancel }: { onCancel: () => void }) => {
   }
 
   const handleVerify = async () => {
-    if (!onboard) return
-
     try {
-      const signer = await getAssertedChainSigner(onboard, safe.chainId)
-
-      await verifyEmail(safe.chainId, safeAddress, signer.address, { code: verificationCode })
+      await verifyEmailAddress(verificationCode)
     } catch (e) {
       console.log(e)
       // TODO: logError
@@ -44,7 +45,7 @@ const VerifyEmail = ({ onCancel }: { onCancel: () => void }) => {
   const isDisabled = verificationCode.length < CODE_LENGTH
 
   return (
-    <ModalDialog open dialogTitle="Verify your email address" onClose={onCancel} hideChainIndicator>
+    <ModalDialog open={open} dialogTitle="Verify your email address" onClose={onCancel} hideChainIndicator>
       <DialogContent>
         <Stack mt={2} direction="column" gap={2}>
           <Typography>Enter the 6-digit code that we sent to the email address you provided.</Typography>
