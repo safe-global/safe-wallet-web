@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react'
 import type Safe from '@safe-global/protocol-kit'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
@@ -66,11 +65,6 @@ const useGasLimit = (
     return getEncodedSafeTx(safeSDK, safeTx, isOwner ? walletAddress : undefined, safeTx.signatures.size < threshold)
   }, [safeSDK, safeTx, walletAddress, isOwner, threshold])
 
-  const operationType = useMemo<number>(
-    () => (safeTx?.data.operation == OperationType.DelegateCall ? 1 : 0),
-    [safeTx?.data.operation],
-  )
-
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint>(() => {
     if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
 
@@ -79,7 +73,6 @@ const useGasLimit = (
         to: safeAddress,
         from: walletAddress,
         data: encodedSafeTx,
-        type: operationType,
       })
       .then((gasLimit) => {
         // Due to a bug in Nethermind estimation, we need to increment the gasLimit by 30%
@@ -91,7 +84,7 @@ const useGasLimit = (
 
         return gasLimit
       })
-  }, [currentChainId, safeAddress, hasSafeTxGas, walletAddress, encodedSafeTx, web3ReadOnly, operationType])
+  }, [currentChainId, safeAddress, hasSafeTxGas, walletAddress, encodedSafeTx, web3ReadOnly])
 
   useEffect(() => {
     if (gasLimitError) {
