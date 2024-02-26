@@ -8,6 +8,13 @@ import Stack from '@mui/material/Stack'
 import { registerEmail } from '@safe-global/safe-gateway-typescript-sdk'
 import { useForm } from 'react-hook-form'
 
+/**
+ * This is the same pattern we use on the CGW
+ * https://github.com/safe-global/safe-client-gateway/blob/main/src/domain/account/entities/account.entity.ts#L24
+ */
+const EMAIL_REGEXP =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
 const RegisterEmail = ({
   onCancel,
   onRegister,
@@ -18,7 +25,7 @@ const RegisterEmail = ({
   const onboard = useOnboard()
   const { safe, safeAddress } = useSafeInfo()
 
-  const { watch, register } = useForm<{ emailAddress: string }>({
+  const { watch, register, formState } = useForm<{ emailAddress: string }>({
     mode: 'onChange',
   })
 
@@ -53,14 +60,19 @@ const RegisterEmail = ({
       if (isWalletRejection(error)) return
     }
   }
+
+  const isInvalidEmail = !formState.isValid && formState.isDirty
+
   return (
     <Grid container gap={2} my={2}>
-      <Grid item xs>
+      <Grid item xs md={6}>
         <TextField
-          {...register('emailAddress')}
+          {...register('emailAddress', { required: true, pattern: EMAIL_REGEXP })}
+          error={isInvalidEmail}
           variant="outlined"
           label="Enter email address"
-          helperText="We will send a verification code to this email"
+          helperText={isInvalidEmail ? 'Enter a valid email address' : 'We will send a verification code to this email'}
+          fullWidth
         />
       </Grid>
       <Grid item xs={12}>
@@ -68,7 +80,7 @@ const RegisterEmail = ({
           <Button variant="outlined" size="small" onClick={onCancel}>
             Cancel
           </Button>
-          <Button variant="contained" size="small" onClick={handleContinue} disabled={!emailAddress}>
+          <Button variant="contained" size="small" onClick={handleContinue} disabled={isInvalidEmail}>
             Continue
           </Button>
         </Stack>
