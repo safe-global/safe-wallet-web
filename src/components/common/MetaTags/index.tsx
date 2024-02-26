@@ -10,7 +10,7 @@ const titleText = 'Safe{Wallet}'
 const MetaTags = ({ prefetchUrl }: { prefetchUrl: string }) => (
   <>
     <meta name="description" content={descriptionText} />
-    <meta name="robots" content="noindex" />
+    {!IS_PRODUCTION && <meta name="robots" content="noindex" />}
 
     {/* Social sharing */}
     <meta name="og:image" content="https://app.safe.global/images/social-share.png" />
