@@ -1,9 +1,13 @@
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 
-export const encodeSignatures = (safeTx: SafeTransaction, from?: string): string => {
+export const encodeSignatures = (
+  safeTx: SafeTransaction,
+  from: string | undefined,
+  needsSignature: boolean,
+): string => {
   const owner = from?.toLowerCase()
-  const needsOwnerSig = owner && !safeTx.signatures.has(owner)
+  const needsOwnerSig = needsSignature && owner !== undefined && !safeTx.signatures.has(owner)
 
   // https://docs.gnosis.io/safe/docs/contracts_signatures/#pre-validated-signatures
   if (needsOwnerSig) {

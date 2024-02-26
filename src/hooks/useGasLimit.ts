@@ -7,13 +7,18 @@ import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import chains from '@/config/chains'
-import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
 import { Errors, logError } from '@/services/exceptions'
+import useSafeInfo from './useSafeInfo'
 
-const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string): string | undefined => {
+const getEncodedSafeTx = (
+  safeSDK: Safe,
+  safeTx: SafeTransaction,
+  from: string | undefined,
+  needsSignature: boolean,
+): string | undefined => {
   const EXEC_TX_METHOD = 'execTransaction'
 
   return safeSDK
@@ -28,7 +33,7 @@ const getEncodedSafeTx = (safeSDK: Safe, safeTx: SafeTransaction, from?: string)
       safeTx.data.gasPrice,
       safeTx.data.gasToken,
       safeTx.data.refundReceiver,
-      encodeSignatures(safeTx, from),
+      encodeSignatures(safeTx, from, needsSignature),
     ])
 }
 
@@ -45,7 +50,9 @@ const useGasLimit = (
 } => {
   const safeSDK = useSafeSDK()
   const web3ReadOnly = useWeb3ReadOnly()
-  const safeAddress = useSafeAddress()
+  const { safe } = useSafeInfo()
+  const safeAddress = safe.address.value
+  const threshold = safe.threshold
   const wallet = useWallet()
   const walletAddress = wallet?.address
   const isOwner = useIsSafeOwner()
@@ -56,8 +63,8 @@ const useGasLimit = (
     if (!safeTx || !safeSDK || !walletAddress) {
       return ''
     }
-    return getEncodedSafeTx(safeSDK, safeTx, isOwner ? walletAddress : undefined)
-  }, [safeSDK, safeTx, walletAddress, isOwner])
+    return getEncodedSafeTx(safeSDK, safeTx, isOwner ? walletAddress : undefined, safeTx.signatures.size < threshold)
+  }, [safeSDK, safeTx, walletAddress, isOwner, threshold])
 
   const operationType = useMemo<number>(
     () => (safeTx?.data.operation == OperationType.DelegateCall ? 1 : 0),
