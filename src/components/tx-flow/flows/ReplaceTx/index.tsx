@@ -1,4 +1,4 @@
-import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Divider, SvgIcon, Tooltip, Typography } from '@mui/material'
 
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ReplaceTxIcon from '@/public/images/transactions/replace-tx.svg'
@@ -7,12 +7,13 @@ import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { TxModalContext } from '../..'
 import TokenTransferFlow from '../TokenTransfer'
 import RejectTx from '../RejectTx'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import TxCard from '@/components/tx-flow/common/TxCard'
+import DeleteTxModal from './DeleteTxModal'
 
 // TODO: Move this to the status widget
 /*
@@ -45,12 +46,13 @@ const btnWidth = {
   },
 }
 
-const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
+const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: string | undefined }) => {
   const { setTxFlow } = useContext(TxModalContext)
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
   const canCancel = !queuedTxsByNonce?.some(
     (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
   )
+  const [isDeleting, setIsDeleting] = useState(false)
 
   return (
     <TxLayout title="Replace transaction" step={0} hideNonce isReplacement>
@@ -109,6 +111,18 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
             </Tooltip>
           </div>
         </div>
+
+        {safeTxHash !== undefined && (
+          <>
+            <Divider />
+
+            <Button variant="outlined" onClick={() => setIsDeleting(true)} fullWidth>
+              Delete transaction
+            </Button>
+
+            {isDeleting && <DeleteTxModal onClose={() => setIsDeleting(false)} safeTxHash={safeTxHash} />}
+          </>
+        )}
       </TxCard>
     </TxLayout>
   )

@@ -1,5 +1,6 @@
+import type { JsonRpcSigner } from 'ethers'
+import { type ChainInfo, deleteTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { WC_APP_PROD, WC_APP_DEV } from '@/config/constants'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const _replaceTemplate = (uri: string, data: Record<string, string>): string => {
   // Template syntax returned from gateway is {{this}}
@@ -30,4 +31,37 @@ export const getExplorerLink = (
 
 export const isWalletConnectSafeApp = (url: string): boolean => {
   return url === WC_APP_PROD.url || url === WC_APP_DEV.url
+}
+
+export const deleteTx = async ({
+  chainId,
+  safeAddress,
+  safeTxHash,
+  signer,
+}: {
+  chainId: string
+  safeAddress: string
+  safeTxHash: string
+  signer: JsonRpcSigner
+}) => {
+  const domain = {
+    name: 'Safe Transaction Service',
+    version: '1.0',
+    chainId: chainId,
+    verifyingContract: safeAddress,
+  }
+  const types = {
+    DeleteRequest: [
+      { name: 'safeTxHash', type: 'bytes32' },
+      { name: 'totp', type: 'uint256' },
+    ],
+  }
+  const message = {
+    safeTxHash: safeTxHash,
+    totp: Math.round(Date.now() / 3600e3),
+  }
+
+  const signature = await signer.signTypedData(domain, types, message)
+
+  return await deleteTransaction(chainId, safeTxHash, signature)
 }
