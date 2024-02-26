@@ -40,12 +40,14 @@ describe('useGasLimit', () => {
     jest.spyOn(useIsSafeOwner, 'default').mockReturnValue(true)
     mockWeb3 = mockWeb3Provider([])
   })
-  it('should return undefined for undefined safeTx', () => {
+  it('should return undefined for undefined safeTx', async () => {
     const { result } = renderHook(() => useGasLimit())
-    expect(result.current).toEqual({ gasLimit: undefined, gasLimitLoading: false, gasLimitError: undefined })
+    await waitFor(async () => {
+      expect(result.current).toEqual({ gasLimit: undefined, gasLimitLoading: false, gasLimitError: undefined })
+    })
   })
 
-  it('should return undefined if no owner is connected', () => {
+  it('should return undefined if no owner is connected', async () => {
     jest.spyOn(useWallet, 'default').mockReturnValue(
       connectedWalletBuilder()
         .with({
@@ -60,7 +62,9 @@ describe('useGasLimit', () => {
     })
 
     const { result } = renderHook(() => useGasLimit(safeTx))
-    expect(result.current).toEqual({ gasLimit: undefined, gasLimitLoading: false, gasLimitError: undefined })
+    await waitFor(async () => {
+      expect(result.current).toEqual({ gasLimit: undefined, gasLimitLoading: false, gasLimitError: undefined })
+    })
   })
 
   it('should return estimated gas', async () => {

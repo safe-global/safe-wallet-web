@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import type Safe from '@safe-global/protocol-kit'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -58,15 +58,15 @@ const useGasLimit = (
   const currentChainId = useChainId()
   const hasSafeTxGas = !!safeTx?.data?.safeTxGas
 
-  const encodedSafeTx = useMemo<string | undefined>(() => {
-    if (!safeTx || !safeSDK || !walletAddress) {
-      return ''
-    }
-    return getEncodedSafeTx(safeSDK, safeTx, isOwner ? walletAddress : undefined, safeTx.signatures.size < threshold)
-  }, [safeSDK, safeTx, walletAddress, isOwner, threshold])
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint | undefined>(async () => {
+    if (!safeAddress || !walletAddress || !safeSDK || !web3ReadOnly || !safeTx) return
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint>(() => {
-    if (!safeAddress || !walletAddress || !encodedSafeTx || !web3ReadOnly) return
+    const encodedSafeTx = getEncodedSafeTx(
+      safeSDK,
+      safeTx,
+      isOwner ? walletAddress : undefined,
+      safeTx.signatures.size < threshold,
+    )
 
     return web3ReadOnly
       .estimateGas({
@@ -84,7 +84,7 @@ const useGasLimit = (
 
         return gasLimit
       })
-  }, [currentChainId, safeAddress, hasSafeTxGas, walletAddress, encodedSafeTx, web3ReadOnly])
+  }, [safeAddress, walletAddress, safeSDK, web3ReadOnly, safeTx, isOwner, currentChainId, hasSafeTxGas, threshold])
 
   useEffect(() => {
     if (gasLimitError) {
