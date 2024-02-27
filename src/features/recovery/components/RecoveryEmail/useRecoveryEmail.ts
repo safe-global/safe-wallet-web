@@ -1,4 +1,5 @@
 import {
+  deleteRegisteredEmail,
   getRegisteredEmail,
   registerEmail,
   resendEmailVerificationCode,
@@ -64,10 +65,25 @@ const useRecoveryEmail = () => {
     return resendEmailVerificationCode(safe.chainId, safeAddress, signer.address)
   }
 
+  const deleteEmailAddress = async () => {
+    if (!onboard) return
+
+    const signer = await getAssertedChainSigner(onboard, safe.chainId)
+    const timestamp = Date.now().toString()
+    const messageToSign = `email-delete-${safe.chainId}-${safeAddress}-${signer.address}-${timestamp}`
+    const signedMessage = await signer.signMessage(messageToSign)
+
+    return deleteRegisteredEmail(safe.chainId, safeAddress, signer.address, {
+      'Safe-Wallet-Signature': signedMessage,
+      'Safe-Wallet-Signature-Timestamp': timestamp,
+    })
+  }
+
   return {
     getSignerEmailAddress,
     registerEmailAddress,
     verifyEmailAddress,
+    deleteEmailAddress,
     resendVerification,
   }
 }
