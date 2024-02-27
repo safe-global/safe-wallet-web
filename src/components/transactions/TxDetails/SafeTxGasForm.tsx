@@ -58,7 +58,7 @@ const SafeTxGasForm = () => {
   const { safeTx, safeTxGas = 0 } = useContext(SafeTxContext)
   const { safe } = useSafeInfo()
   const isOldSafe = safe.version && isLegacyVersion(safe.version)
-  const isEditable = safeTx?.signatures.size === 0 && (safeTxGas > 0 || isOldSafe)
+  const isEditable = safeTx?.signatures.size === 0 && (Number(safeTxGas) > 0 || isOldSafe)
   const [editing, setEditing] = useState(false)
 
   return (
