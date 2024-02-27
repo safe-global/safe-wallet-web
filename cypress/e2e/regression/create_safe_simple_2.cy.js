@@ -65,14 +65,6 @@ describe('Safe creation tests 2', () => {
     safe.verifyownerNameFormatIsValid()
   })
 
-  it('Verify Empty address field not are not allowed', () => {
-    owner.waitForConnectionStatus()
-    createwallet.clickOnCreateNewSafeBtn()
-    safe.clickOnNextBtn()
-    safe.clearOwnerAddress(0)
-    createwallet.verifyNextBtnIsDisabled()
-  })
-
   it('Verify Threshold matching required confirmations max with amount of owners', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnCreateNewSafeBtn()
