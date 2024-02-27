@@ -25,7 +25,7 @@ const SafeListRemoveDialog = ({
   const dispatch = useAppDispatch()
   const addressBook = useAddressBook()
   const trackingLabel =
-    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.quick_remove
+    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   const safe = addressBook?.[address] || address
 
