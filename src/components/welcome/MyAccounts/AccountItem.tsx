@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useCallback, useMemo } from 'react'
 import { ListItemButton, Box, Typography } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
@@ -26,23 +27,35 @@ type AccountItemProps = {
   onLinkClick?: () => void
 }
 
-const getSafeHref = (prefix: string, address: string) => ({
-  pathname: AppRoutes.home,
-  query: { safe: `${prefix}:${address}` },
-})
-
 const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
   const router = useRouter()
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
-  const trackingLabel =
-    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+  const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
+  const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
+
+  const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+
+  /**
+   * Navigate to the dashboard when selecting a safe on the welcome page,
+   * navigate to the history when selecting a safe on a single tx page,
+   * otherwise keep the current route
+   */
+  const getHref = useCallback(
+    (chain: ChainInfo, address: string) => {
+      return {
+        pathname: isWelcomePage ? AppRoutes.home : isSingleTxPage ? AppRoutes.transactions.history : router.pathname,
+        query: { ...router.query, safe: `${chain.shortName}:${address}` },
+      }
+    },
+    [isWelcomePage, isSingleTxPage, router.pathname, router.query],
+  )
 
   const href = useMemo(() => {
-    return chain ? getSafeHref(chain.shortName, address) : ''
-  }, [chain, address])
+    return chain ? getHref(chain, address) : ''
+  }, [chain, getHref, address])
 
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
 
