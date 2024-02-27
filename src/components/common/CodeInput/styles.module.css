@@ -14,3 +14,8 @@
 .codeDigit:focus-visible {
   outline: 1px solid var(--color-primary-main);
 }
+
+.codeDigit.error {
+  border-color: var(--color-error-main);
+  outline-color: var(--color-error-main);
+}

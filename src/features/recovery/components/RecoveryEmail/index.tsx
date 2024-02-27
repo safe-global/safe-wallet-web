@@ -38,6 +38,10 @@ const RecoveryEmail = () => {
     setVerifyEmailOpen(true)
   }
 
+  const toggleVerifyEmailDialog = () => {
+    setVerifyEmailOpen((prev) => !prev)
+  }
+
   return (
     <Box mt={4}>
       <Typography fontWeight="bold" mb={1}>
@@ -47,7 +51,7 @@ const RecoveryEmail = () => {
       {email ? (
         <>
           <Typography>{email.email}</Typography>
-          {!email.verified && <NotVerifiedMessage onVerify={() => setVerifyEmailOpen(true)} />}
+          {!email.verified && <NotVerifiedMessage onVerify={toggleVerifyEmailDialog} />}
         </>
       ) : showRegisterForm ? (
         <RegisterEmail onCancel={onCancel} onRegister={onRegister} />
@@ -71,7 +75,7 @@ const RecoveryEmail = () => {
         We will contact you via your notification email address about any initiated recovery attempts and their status.
       </Typography>
 
-      <VerifyEmail onCancel={() => setVerifyEmailOpen(false)} open={verifyEmailOpen} />
+      {verifyEmailOpen && <VerifyEmail onCancel={toggleVerifyEmailDialog} />}
     </Box>
   )
 }

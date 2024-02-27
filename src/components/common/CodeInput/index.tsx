@@ -1,3 +1,4 @@
+import classnames from 'classnames'
 import useDebounce from '@/hooks/useDebounce'
 import { Box } from '@mui/material'
 import { createRef, type FormEvent, useState, useEffect, type ClipboardEvent, type KeyboardEvent } from 'react'
@@ -87,7 +88,15 @@ const useCodeInput = (length: number, onCodeChanged: (code: string) => void) => 
   return { code, handleChange, handlePaste, inputRefsArray, handleKeyDown }
 }
 
-const CodeInput = ({ length, onCodeChanged }: { length: number; onCodeChanged: (code: string) => void }) => {
+const CodeInput = ({
+  length,
+  onCodeChanged,
+  error = false,
+}: {
+  length: number
+  onCodeChanged: (code: string) => void
+  error?: boolean
+}) => {
   const { code, handleChange, handlePaste, inputRefsArray, handleKeyDown } = useCodeInput(length, onCodeChanged)
   // create an array of refs
   const onInput = (event: FormEvent<HTMLInputElement>, index: number) => {
@@ -103,7 +112,8 @@ const CodeInput = ({ length, onCodeChanged }: { length: number; onCodeChanged: (
     <Box display="inline-flex" gap={2}>
       {inputRefsArray.map((ref, idx) => (
         <input
-          className={css.codeDigit}
+          autoFocus={idx === 0}
+          className={classnames(css.codeDigit, { [css.error]: error })}
           value={code[idx]}
           required
           ref={ref}
