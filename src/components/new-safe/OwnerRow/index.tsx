@@ -109,7 +109,7 @@ export const OwnerRow = ({
         <Grid item ml={-2} xs={1} alignSelf="stretch" display="flex" alignItems="center" flexShrink={0}>
           {removable && (
             <>
-              <IconButton onClick={() => remove?.(index)} aria-label="Remove owner">
+              <IconButton data-testid="remove-owner-btn" onClick={() => remove?.(index)} aria-label="Remove owner">
                 <SvgIcon component={DeleteIcon} inheritViewBox />
               </IconButton>
             </>
