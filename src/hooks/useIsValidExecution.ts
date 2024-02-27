@@ -63,7 +63,7 @@ const useIsValidExecution = (
   const isOwner = useIsSafeOwner()
 
   const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(async () => {
-    if (!safeTx || !wallet || !gasLimit || !readOnlyProvider) {
+    if (!safeTx || !wallet || gasLimit === undefined || !readOnlyProvider) {
       return
     }
 

@@ -6,7 +6,12 @@ const UnreadBadge = ({
   count,
   ...props
 }: Pick<BadgeProps, 'children' | 'invisible' | 'anchorOrigin'> & { count?: number }) => (
-  <Badge variant={count ? 'standard' : 'dot'} badgeContent={count} color={count ? 'secondary' : 'success'} {...props}>
+  <Badge
+    variant={count !== undefined ? 'standard' : 'dot'}
+    badgeContent={count}
+    color={count !== undefined ? 'secondary' : 'success'}
+    {...props}
+  >
     {children}
   </Badge>
 )

@@ -66,7 +66,7 @@ const SrcEthHashInfo = ({
       {showAvatar && (
         <div
           className={css.avatarContainer}
-          style={avatarSize ? { width: `${avatarSize}px`, height: `${avatarSize}px` } : undefined}
+          style={avatarSize !== undefined ? { width: `${avatarSize}px`, height: `${avatarSize}px` } : undefined}
         >
           {customAvatar ? (
             <ImageFallback src={customAvatar} fallbackComponent={identicon} width={avatarSize} height={avatarSize} />
@@ -84,7 +84,7 @@ const SrcEthHashInfo = ({
         )}
 
         <div className={css.addressContainer}>
-          <Box fontWeight="inherit" fontSize="inherit">
+          <Box fontWeight="inherit" fontSize="inherit" overflow="hidden" textOverflow="ellipsis">
             {copyAddress ? (
               <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted}>
                 {addressElement}

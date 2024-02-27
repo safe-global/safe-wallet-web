@@ -48,7 +48,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       return !hasConfirmed
     })
 
-    return missingSigners.length ? missingSigners : undefined
+    return missingSigners.length > 0 ? missingSigners : undefined
   }
 
   const getMultisigExecutionInfo = ({
@@ -60,7 +60,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       type: detailedExecutionInfo.type,
       nonce: detailedExecutionInfo.nonce,
       confirmationsRequired: detailedExecutionInfo.confirmationsRequired,
-      confirmationsSubmitted: detailedExecutionInfo.confirmations?.length || 0,
+      confirmationsSubmitted: detailedExecutionInfo.confirmations?.length ?? 0,
       missingSigners: getMissingSigners(detailedExecutionInfo),
     }
   }
@@ -75,7 +75,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
     ? isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
       ? txDetails.detailedExecutionInfo.submittedAt
       : now
-    : txDetails.executedAt || now
+    : txDetails.executedAt ?? now
 
   return {
     type: TransactionListItemType.TRANSACTION,
@@ -285,7 +285,7 @@ export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransactio
 }
 
 export const isRejectionTx = (tx?: SafeTransaction) => {
-  return !!tx && !!tx.data.data && !!isEmptyHexData(tx.data.data) && tx.data.value === '0'
+  return !!tx && !!tx.data.data && isEmptyHexData(tx.data.data) && tx.data.value === '0'
 }
 
 export const isTrustedTx = (tx: TransactionSummary) => {

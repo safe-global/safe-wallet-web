@@ -162,7 +162,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
           <WrongChainWarning />
 
-          {recovery?.delay && (
+          {recovery?.delay !== undefined && (
             <ErrorMessage level="info">
               Recovery will be{' '}
               {recovery.delay === 0n ? 'immediately possible' : `possible in ${getPeriod(Number(recovery.delay))}`}{' '}

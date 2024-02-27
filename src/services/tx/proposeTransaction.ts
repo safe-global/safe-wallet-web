@@ -10,7 +10,7 @@ const proposeTx = async (
   safeTxHash: string,
   origin?: string,
 ): Promise<TransactionDetails> => {
-  const signatures = tx.signatures.size ? tx.encodedSignatures() : undefined
+  const signatures = tx.signatures.size > 0 ? tx.encodedSignatures() : undefined
 
   return proposeTransaction(chainId, safeAddress, {
     ...tx.data,

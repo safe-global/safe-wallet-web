@@ -29,7 +29,7 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
   const canSign = isSignableBy(txSummary, wallet?.address || '')
 
   useEffect(() => {
-    txNonce && setNonce(txNonce)
+    txNonce !== undefined && setNonce(txNonce)
   }, [setNonce, txNonce])
 
   useEffect(() => {

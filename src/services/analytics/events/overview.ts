@@ -148,7 +148,7 @@ export enum OVERVIEW_LABELS {
   sidebar = 'sidebar',
   quick_add = 'quick_add',
   quick_remove = 'quick_remove',
-  login_page = 'login_page',
   top_bar = 'top_bar',
   welcome_page = 'welcome_page',
+  login_page = 'login_page',
 }

@@ -28,10 +28,10 @@ const getVisibleFiatTotal = (balances: SafeBalanceResponse, hiddenAssets: string
     balances.items
       .reduce((acc, balanceItem) => {
         if (hiddenAssets.includes(balanceItem.tokenInfo.address)) {
-          return acc - BigInt(safeParseUnits(truncateNumber(balanceItem.fiatBalance), PRECISION) || 0)
+          return acc - BigInt(safeParseUnits(truncateNumber(balanceItem.fiatBalance), PRECISION) ?? 0)
         }
         return acc
-      }, BigInt(balances.fiatTotal === '' ? 0 : safeParseUnits(truncateNumber(balances.fiatTotal), PRECISION) || 0))
+      }, BigInt(balances.fiatTotal === '' ? 0 : safeParseUnits(truncateNumber(balances.fiatTotal), PRECISION) ?? 0))
       .toString(),
     PRECISION,
   )

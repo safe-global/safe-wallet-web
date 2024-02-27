@@ -54,7 +54,12 @@ describe('[SMOKE] Load Safe tests', () => {
     safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
     safe.clickOnNextBtn()
-    safe.verifyDataInReviewSection(testSafeName, testOwnerName)
+    safe.verifyDataInReviewSection(
+      testSafeName,
+      testOwnerName,
+      constants.commonThresholds.oneOfOne,
+      constants.networks.sepolia,
+    )
     safe.clickOnAddBtn()
     main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_2)
     safe.veriySidebarSafeNameIsVisible(testSafeName)
@@ -70,7 +75,7 @@ describe('[SMOKE] Load Safe tests', () => {
   it('[SMOKE] Verify that after loading existing Safe, its name input is not empty', () => {
     safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
     safe.clickOnNextBtn()
-    safe.verifyOnwerInputIsNotEmpty()
+    safe.verifyOnwerInputIsNotEmpty(0)
   })
 
   it('[SMOKE] Verify that when changing a network in dropdown, the same network is displayed in right top corner', () => {

@@ -20,7 +20,7 @@ export const SetThreshold = ({
   onSubmit: (data: RemoveOwnerFlowProps) => void
 }): ReactElement => {
   const { safe } = useSafeInfo()
-  const [selectedThreshold, setSelectedThreshold] = useState<number>(params.threshold || 1)
+  const [selectedThreshold, setSelectedThreshold] = useState<number>(params.threshold ?? 1)
 
   const handleChange = (event: SelectChangeEvent<number>) => {
     setSelectedThreshold(parseInt(event.target.value.toString()))

@@ -272,7 +272,9 @@ export const addressBookData = {
     11155111: { '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'Owner1' },
   },
   sepoliaAddress2: {
-    11155111: { '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'Automation owner' },
+    11155111: {
+      '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'Automation owner',
+    },
   },
   dataSet: {
     5: {
@@ -330,6 +332,14 @@ export const addressBookData = {
     11155111: {
       '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AA Safe',
       '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'BB Safe',
+    },
+  },
+  sameOwnerName: {
+    11155111: {
+      '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'Automation owner Sepolia',
+    },
+    1: {
+      '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'Automation owner Eth',
     },
   },
   pagination: {

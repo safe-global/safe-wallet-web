@@ -3,6 +3,7 @@
   align-items: center;
   gap: 0.5em;
   line-height: 1.4;
+  width: 100%;
 }
 
 .avatarContainer {
@@ -10,7 +11,7 @@
   position: relative;
 }
 
-.avatarContainer > * {
+.avatarContainer>* {
   width: 100% !important;
   height: 100% !important;
 }
