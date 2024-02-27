@@ -1,4 +1,6 @@
 import { asError } from '@/services/exceptions/utils'
+import { useAppDispatch } from '@/store'
+import { showNotification } from '@/store/notificationsSlice'
 import { useState } from 'react'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useRecoveryEmail from '@/features/recovery/components/RecoveryEmail/useRecoveryEmail'
@@ -21,10 +23,15 @@ export const NotVerifiedMessage = ({ onVerify }: { onVerify: () => void }) => {
   )
 }
 
-const VerifyEmail = ({ onCancel }: { onCancel: () => void }) => {
+const isNoContentResponse = (error: unknown): error is boolean => {
+  return error === 'Invalid response content: No Content'
+}
+
+const VerifyEmail = ({ onCancel, onSuccess }: { onCancel: () => void; onSuccess: () => void }) => {
   const [error, setError] = useState<string>()
   const [verificationCode, setVerificationCode] = useState<string>('')
   const { verifyEmailAddress, resendVerification } = useRecoveryEmail()
+  const dispatch = useAppDispatch()
 
   const handleRetry = async () => {
     try {
@@ -39,8 +46,22 @@ const VerifyEmail = ({ onCancel }: { onCancel: () => void }) => {
   const handleVerify = async () => {
     try {
       setError(undefined)
-      await verifyEmailAddress(verificationCode)
+      const result = await verifyEmailAddress(verificationCode)
     } catch (e) {
+      const error = asError(e)
+
+      // TODO: Handle empty body responses in the SDK or CGW
+      if (isNoContentResponse(error.message)) {
+        dispatch(
+          showNotification({
+            variant: 'success',
+            groupKey: 'verify-email-complete',
+            message: 'Your email address is verified',
+          }),
+        )
+        onSuccess()
+      }
+
       setError('Wrong verification code. Try again.')
     }
   }

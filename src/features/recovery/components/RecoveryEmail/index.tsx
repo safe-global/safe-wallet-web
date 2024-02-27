@@ -42,6 +42,17 @@ const RecoveryEmail = () => {
     setVerifyEmailOpen((prev) => !prev)
   }
 
+  const onVerifySuccess = () => {
+    toggleVerifyEmailDialog()
+    setEmail(
+      (prev) =>
+        prev && {
+          email: prev.email,
+          verified: true,
+        },
+    )
+  }
+
   return (
     <Box mt={4}>
       <Typography fontWeight="bold" mb={1}>
@@ -75,7 +86,7 @@ const RecoveryEmail = () => {
         We will contact you via your notification email address about any initiated recovery attempts and their status.
       </Typography>
 
-      {verifyEmailOpen && <VerifyEmail onCancel={toggleVerifyEmailDialog} />}
+      {verifyEmailOpen && <VerifyEmail onCancel={toggleVerifyEmailDialog} onSuccess={onVerifySuccess} />}
     </Box>
   )
 }
