@@ -75,10 +75,6 @@ export const SETTINGS_EVENTS = {
     },
   },
   DATA: {
-    IMPORT_ADDED_SAFES: {
-      action: 'Imported added safes via Import all',
-      category: SETTINGS_CATEGORY,
-    },
     IMPORT_ADDRESS_BOOK: {
       action: 'Imported address book via Import all',
       category: SETTINGS_CATEGORY,

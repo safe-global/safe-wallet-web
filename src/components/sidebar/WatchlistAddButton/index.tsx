@@ -1,4 +1,4 @@
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -21,8 +21,6 @@ const WatchlistAddButton = () => {
   const isInWatchlist = !!addedSafes?.[address]
 
   const onClick = () => {
-    trackEvent({ ...OVERVIEW_EVENTS.ADD_SAFE })
-
     router.push({
       pathname: AppRoutes.newSafe.load,
       query: {

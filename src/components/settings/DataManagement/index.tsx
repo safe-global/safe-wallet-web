@@ -14,6 +14,8 @@ import { SAFE_EXPORT_VERSION } from '@/components/settings/DataManagement/useGlo
 import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
 
 import css from './styles.module.css'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 
 const getExportFileName = () => {
   const today = new Date().toISOString().slice(0, 10)
@@ -84,9 +86,11 @@ const DataManagement = () => {
               }
               title={<b>{exportFileName}</b>}
               action={
-                <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
-                  <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
-                </Button>
+                <Track {...OVERVIEW_EVENTS.EXPORT_DATA} label={OVERVIEW_LABELS.settings}>
+                  <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
+                    <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
+                  </Button>
+                </Track>
               }
               addedSafes={addedSafes}
               addressBook={addressBook}

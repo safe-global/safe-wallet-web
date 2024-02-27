@@ -23,16 +23,16 @@ export const OVERVIEW_EVENTS = {
     action: 'Open Safe on block explorer',
     category: OVERVIEW_CATEGORY,
   },
-  ADD_SAFE: {
-    action: 'Add Safe to watchlist',
-    category: OVERVIEW_CATEGORY,
-  },
   ADD_TO_WATCHLIST: {
-    action: 'Add to watchlist',
+    action: 'Add Safe to watchlist',
     category: OVERVIEW_CATEGORY,
   },
   REMOVE_FROM_WATCHLIST: {
     action: 'Remove from watchlist',
+    category: OVERVIEW_CATEGORY,
+  },
+  DELETED_FROM_WATCHLIST: {
+    action: 'Deleted from watchlist',
     category: OVERVIEW_CATEGORY,
   },
   SIDEBAR: {
@@ -151,4 +151,5 @@ export enum OVERVIEW_LABELS {
   top_bar = 'top_bar',
   welcome_page = 'welcome_page',
   login_page = 'login_page',
+  settings = 'settings',
 }
