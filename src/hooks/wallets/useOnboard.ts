@@ -150,10 +150,15 @@ export const switchWallet = async (onboard: OnboardAPI) => {
   }
 }
 
-const lastWalletStorage = localItem<string>('lastWallet')
+const lastWalletTypeStorage = localItem<string>('lastWallet')
+const lastWalletAddressStorage = localItem<string>('lastWalletAddress')
+
+export const getLastWalletAddress = () => {
+  return lastWalletAddressStorage.get()
+}
 
 const connectLastWallet = async (onboard: OnboardAPI) => {
-  const lastWalletLabel = lastWalletStorage.get()
+  const lastWalletLabel = lastWalletTypeStorage.get()
   if (lastWalletLabel) {
     const isUnlocked = await isWalletUnlocked(lastWalletLabel)
 
@@ -163,10 +168,6 @@ const connectLastWallet = async (onboard: OnboardAPI) => {
       })
     }
   }
-}
-
-const saveLastWallet = (walletLabel: string) => {
-  lastWalletStorage.set(walletLabel)
 }
 
 // Disable/enable wallets according to chain
@@ -213,14 +214,16 @@ export const useInitOnboard = () => {
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       const newWallet = getConnectedWallet(wallets)
       if (newWallet) {
+        lastWalletAddressStorage.set(newWallet.address)
+
         if (newWallet.label !== lastConnectedWallet) {
           lastConnectedWallet = newWallet.label
-          saveLastWallet(lastConnectedWallet)
+          lastWalletTypeStorage.set(lastConnectedWallet)
           trackWalletType(newWallet)
         }
       } else if (lastConnectedWallet) {
         lastConnectedWallet = ''
-        saveLastWallet(lastConnectedWallet)
+        lastWalletTypeStorage.set(lastConnectedWallet)
       }
     })
 

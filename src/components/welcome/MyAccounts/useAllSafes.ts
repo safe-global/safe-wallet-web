@@ -9,6 +9,7 @@ import useChainId from '@/hooks/useChainId'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectUndeployedSafes } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
+import useLastWallet from '@/hooks/wallets/useLastWallet'
 
 export type SafeItems = Array<{
   chainId: string
@@ -37,7 +38,7 @@ export const useHasSafes = () => {
 }
 
 const useAllSafes = (): SafeItems => {
-  const { address: walletAddress = '' } = useWallet() || {}
+  const walletAddress = useLastWallet() || ''
   const [allOwned = {}] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
   const { configs } = useChains()
