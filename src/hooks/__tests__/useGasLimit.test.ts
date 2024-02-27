@@ -13,6 +13,7 @@ import { createMockSafeTransaction } from '@/tests/transactions'
 import { safeInfoBuilder } from '@/tests/builders/safe'
 import { type JsonRpcProvider, zeroPadValue } from 'ethers'
 import { Gnosis_safe__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
+import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils'
 
 const contractManager = mockContractManager()
 
@@ -104,6 +105,36 @@ describe('useGasLimit', () => {
       safeTx.data.gasToken,
       safeTx.data.refundReceiver,
       safeTx.encodedSignatures(),
+    ])
+
+    const { result } = renderHook(() => useGasLimit(safeTx))
+    await waitFor(async () => {
+      expect(result.current).toEqual({ gasLimit: 50_000n, gasLimitLoading: false, gasLimitError: undefined })
+    })
+    expect(mockWeb3.estimateGas).toHaveBeenCalledWith({
+      to: safeInfo.address.value,
+      from: walletAddress,
+      data: expectedCallData,
+    })
+  })
+
+  it('should add a prevalidated signature if a signature is missing', async () => {
+    const safeTx = createMockSafeTransaction({
+      data: '0x00',
+      to: faker.finance.ethereumAddress(),
+    })
+    const prevalidatedSignature = generatePreValidatedSignature(walletAddress)
+    const expectedCallData = Gnosis_safe__factory.createInterface().encodeFunctionData('execTransaction', [
+      safeTx.data.to,
+      safeTx.data.value,
+      safeTx.data.data,
+      safeTx.data.operation,
+      safeTx.data.safeTxGas,
+      safeTx.data.baseGas,
+      safeTx.data.gasPrice,
+      safeTx.data.gasToken,
+      safeTx.data.refundReceiver,
+      prevalidatedSignature.staticPart(),
     ])
 
     const { result } = renderHook(() => useGasLimit(safeTx))
