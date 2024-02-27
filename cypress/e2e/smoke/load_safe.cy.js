@@ -59,6 +59,7 @@ describe('[SMOKE] Load Safe tests', () => {
       testOwnerName,
       constants.commonThresholds.oneOfOne,
       constants.networks.sepolia,
+      constants.SEPOLIA_OWNER_2,
     )
     safe.clickOnAddBtn()
     main.verifyHomeSafeUrl(constants.SEPOLIA_TEST_SAFE_2)
