@@ -10,8 +10,9 @@ import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import { trackEvent } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useHasSafes } from '../MyAccounts/useAllSafes'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
+import WalletLogin from './WalletLogin'
 
 const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
   loading: () => <Skeleton variant="rounded" height={42} width="100%" />,
@@ -22,8 +23,15 @@ const WelcomeLogin = () => {
   const wallet = useWallet()
   const isSocialLoginEnabled = useHasFeature(FEATURES.SOCIAL_LOGIN)
   const { isLoaded, hasSafes } = useHasSafes()
+  const [shouldRedirect, setShouldRedirect] = useState(false)
+
+  const onLogin = useCallback(() => {
+    setShouldRedirect(true)
+  }, [])
 
   useEffect(() => {
+    if (!shouldRedirect) return
+
     if (wallet && isLoaded) {
       if (hasSafes) {
         router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
@@ -32,7 +40,7 @@ const WelcomeLogin = () => {
         router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
       }
     }
-  }, [hasSafes, isLoaded, router, wallet])
+  }, [hasSafes, isLoaded, router, wallet, shouldRedirect])
 
   return (
     <Paper className={css.loginCard} data-testid="welcome-login">
@@ -49,7 +57,7 @@ const WelcomeLogin = () => {
             : 'Connect your wallet to create a new Safe Account or open an existing one'}
         </Typography>
 
-        <ConnectWalletButton text="Connect wallet" />
+        {wallet ? <WalletLogin onLogin={onLogin} /> : <ConnectWalletButton text="Connect wallet" onConnect={onLogin} />}
 
         {isSocialLoginEnabled && (
           <>
