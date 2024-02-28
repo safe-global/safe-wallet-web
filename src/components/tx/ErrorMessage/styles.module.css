@@ -19,6 +19,10 @@
   color: var(--color-primary-main);
 }
 
+.container.border {
+  background-color: var(--color-border-background);
+}
+
 .container.info svg {
   color: var(--color-text-secondary);
 }
