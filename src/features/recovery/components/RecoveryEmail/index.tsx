@@ -1,35 +1,24 @@
 import CheckWallet from '@/components/common/CheckWallet'
 import RegisterEmail from '@/features/recovery/components/RecoveryEmail/RegisterEmail'
-import useOnboard from '@/hooks/wallets/useOnboard'
+import useRecoveryEmail from '@/features/recovery/components/RecoveryEmail/useRecoveryEmail'
+import VerifyEmail, { NotVerifiedMessage } from '@/features/recovery/components/RecoveryEmail/VerifyEmail'
 import { asError } from '@/services/exceptions/utils'
-import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 import { isWalletRejection } from '@/utils/wallets'
 import type { GetEmailResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/emails'
 import { useState } from 'react'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Button, Typography } from '@mui/material'
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
-import { getRegisteredEmail } from '@safe-global/safe-gateway-typescript-sdk'
 
 const RecoveryEmail = () => {
   const [showRegisterForm, setShowRegisterForm] = useState<boolean>(false)
+  const [verifyEmailOpen, setVerifyEmailOpen] = useState<boolean>(false)
   const [email, setEmail] = useState<GetEmailResponse>()
-  const onboard = useOnboard()
-  const { safe, safeAddress } = useSafeInfo()
+
+  const { getSignerEmailAddress } = useRecoveryEmail()
 
   const signToViewEmail = async () => {
-    if (!onboard) return
-
     try {
-      const signer = await getAssertedChainSigner(onboard, safe.chainId)
-      const timestamp = Date.now().toString()
-      const messageToSign = `email-retrieval-${safe.chainId}-${safeAddress}-${signer.address}-${timestamp}`
-      const signedMessage = await signer.signMessage(messageToSign)
-
-      const response = await getRegisteredEmail(safe.chainId, safeAddress, signer.address, {
-        'Safe-Wallet-Signature': signedMessage,
-        'Safe-Wallet-Signature-Timestamp': timestamp,
-      })
+      const response = await getSignerEmailAddress()
 
       setEmail(response)
     } catch (e) {
@@ -46,7 +35,22 @@ const RecoveryEmail = () => {
 
   const onRegister = (emailAddress: string) => {
     setEmail({ email: emailAddress, verified: false })
-    setShowRegisterForm(false)
+    setVerifyEmailOpen(true)
+  }
+
+  const toggleVerifyEmailDialog = () => {
+    setVerifyEmailOpen((prev) => !prev)
+  }
+
+  const onVerifySuccess = () => {
+    toggleVerifyEmailDialog()
+    setEmail(
+      (prev) =>
+        prev && {
+          email: prev.email,
+          verified: true,
+        },
+    )
   }
 
   return (
@@ -54,8 +58,12 @@ const RecoveryEmail = () => {
       <Typography fontWeight="bold" mb={1}>
         Notification email
       </Typography>
+
       {email ? (
-        <Typography>{email.email}</Typography>
+        <>
+          <Typography>{email.email}</Typography>
+          {!email.verified && <NotVerifiedMessage onVerify={toggleVerifyEmailDialog} />}
+        </>
       ) : showRegisterForm ? (
         <RegisterEmail onCancel={onCancel} onRegister={onRegister} />
       ) : (
@@ -73,9 +81,12 @@ const RecoveryEmail = () => {
           )}
         </CheckWallet>
       )}
+
       <Typography mt={1}>
         We will contact you via your notification email address about any initiated recovery attempts and their status.
       </Typography>
+
+      {verifyEmailOpen && <VerifyEmail onCancel={toggleVerifyEmailDialog} onSuccess={onVerifySuccess} />}
     </Box>
   )
 }

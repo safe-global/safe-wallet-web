@@ -1,8 +1,8 @@
-import { Button } from '@mui/material'
+import { Link } from '@mui/material'
 import { useState, useCallback, useEffect, type ReactNode } from 'react'
 
-// TODO: Extract into a hook so it can be reused for links and not just buttons
-const CooldownButton = ({
+// TODO: Extract into a hook so it can be reused for buttons and not just links
+const CooldownLink = ({
   onClick,
   cooldown,
   startDisabled = false,
@@ -10,7 +10,8 @@ const CooldownButton = ({
 }: {
   onClick: () => void
   startDisabled?: boolean
-  cooldown: number // Cooldown in seconds
+  /** Cooldown in seconds */
+  cooldown: number
   children: ReactNode
 }) => {
   const [remainingSeconds, setRemainingSeconds] = useState(startDisabled ? cooldown : 0)
@@ -36,13 +37,23 @@ const CooldownButton = ({
   const isDisabled = remainingSeconds > 0
 
   return (
-    <Button onClick={handleClick} variant="contained" size="small" disabled={isDisabled}>
+    <Link
+      sx={{
+        color: ({ palette }) => (isDisabled ? palette.text.disabled : undefined),
+        textDecorationColor: ({ palette }) => (isDisabled ? palette.text.disabled : undefined),
+        pointerEvents: isDisabled ? 'none' : undefined,
+        verticalAlign: 'inherit',
+      }}
+      component="button"
+      onClick={handleClick}
+      disabled={remainingSeconds > 0}
+    >
       <span>
         {children}
         {remainingSeconds > 0 && ` in ${Math.floor(remainingSeconds)}s`}
       </span>
-    </Button>
+    </Link>
   )
 }
 
-export default CooldownButton
+export default CooldownLink

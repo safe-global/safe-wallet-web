@@ -5,6 +5,7 @@ import WarningIcon from '@/public/images/notifications/warning.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 
+// TODO: Rename this to AlertMessage and make it a more generalized wrapper to be used instead of MUI Alert
 const ErrorMessage = ({
   children,
   error,
@@ -14,7 +15,7 @@ const ErrorMessage = ({
   children: ReactNode
   error?: Error & { reason?: string }
   className?: string
-  level?: 'error' | 'warning' | 'info'
+  level?: 'error' | 'warning' | 'info' | 'border'
 }): ReactElement => {
   const [showDetails, setShowDetails] = useState<boolean>(false)
 
@@ -27,7 +28,7 @@ const ErrorMessage = ({
     <div data-testid="error-message" className={classNames(css.container, css[level], className, 'errorMessage')}>
       <div className={css.message}>
         <SvgIcon
-          component={level === 'info' ? InfoIcon : WarningIcon}
+          component={level === 'info' || level === 'border' ? InfoIcon : WarningIcon}
           inheritViewBox
           fontSize="small"
           sx={{ color: ({ palette }) => `${palette[level].main} !important` }}
