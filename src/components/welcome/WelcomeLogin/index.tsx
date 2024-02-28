@@ -11,7 +11,6 @@ import { trackEvent } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useHasSafes } from '../MyAccounts/useAllSafes'
 import { useCallback, useEffect, useState } from 'react'
-import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import WalletLogin from './WalletLogin'
 
 const SocialSigner = dynamic(() => import('@/components/common/SocialSigner'), {
@@ -57,7 +56,7 @@ const WelcomeLogin = () => {
             : 'Connect your wallet to create a new Safe Account or open an existing one'}
         </Typography>
 
-        {wallet ? <WalletLogin onLogin={onLogin} /> : <ConnectWalletButton text="Connect wallet" onConnect={onLogin} />}
+        <WalletLogin onLogin={onLogin} />
 
         {isSocialLoginEnabled && (
           <>

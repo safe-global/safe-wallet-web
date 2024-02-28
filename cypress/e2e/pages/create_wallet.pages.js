@@ -4,15 +4,14 @@ import * as main from '../pages/main.page'
 const welcomeLoginScreen = '[data-testid="welcome-login"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
 const nameInput = 'input[name="name"]'
-const selectNetworkBtn = '[data-cy="create-safe-select-network"]'
 const ownerInput = 'input[name^="owners"][name$="name"]'
 const ownerAddress = 'input[name^="owners"][name$="address"]'
 const thresholdInput = 'input[name="threshold"]'
 export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
 const connectingContainer = 'div[class*="connecting-container"]'
 const createNewSafeBtn = '[data-testid="create-safe-btn"]'
-const continueWithWalletBtn = 'span[data-track="create-safe: Continue to my accounts"]'
 const connectWalletBtn = 'Connect wallet'
+const continueWithWalletBtn = 'Continue with E2E Wallet'
 const googleConnectBtn = '[data-testid="google-connect-btn"]'
 const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
 export const accountInfoHeader = '[data-testid="open-account-center"]'
@@ -30,7 +29,6 @@ const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
 const safeCreationComplete = 'Your Safe Account is being indexed'
 const changeNetworkWarningStr = 'Change your wallet network'
-const safeAccountSetupStr = 'Safe Account setup'
 const policy1_2 = '1/1 policy'
 export const walletName = 'test1-sepolia-safe'
 export const defaultSepoliaPlaceholder = 'Sepolia Safe'
@@ -118,7 +116,7 @@ export function clickOnCreateNewSafeBtn() {
 }
 
 export function clickOnContinueWithWalletBtn() {
-  cy.get(continueWithWalletBtn).click().wait(1000)
+  cy.get('button').contains(continueWithWalletBtn).click().wait(1000)
 }
 
 export function clickOnConnectWalletBtn() {

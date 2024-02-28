@@ -26,7 +26,7 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
               gap={1}
             >
               <Box display="flex" flexDirection="column" alignItems="flex-start">
-                <Typography variant="subtitle2" fontWeight={700}>
+                <Typography variant="subtitle2" fontWeight={700} component="span">
                   Continue with {wallet.label}
                 </Typography>
                 {wallet.address && (
