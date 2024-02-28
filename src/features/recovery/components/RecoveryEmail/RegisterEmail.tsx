@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
  * This is the same pattern we use on the CGW
  * https://github.com/safe-global/safe-client-gateway/blob/main/src/domain/account/entities/account.entity.ts#L24
  */
-const EMAIL_REGEXP =
+export const EMAIL_REGEXP =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const RegisterEmail = ({

@@ -61,6 +61,7 @@ export function UpsertRecoveryFlowReview({
   const recoverer = params[UpsertRecoveryFlowFields.recoverer]
   const delay = periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.delay])!.label
   const expiry = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.label
+  const emailAddress = params[UpsertRecoveryFlowFields.emailAddress]
 
   useEffect(() => {
     if (!web3ReadOnly) {
@@ -142,6 +143,8 @@ export function UpsertRecoveryFlowReview({
           {expiry}
         </TxDataRow>
       )}
+
+      {emailAddress !== '' && <TxDataRow title="Notification email">{emailAddress}</TxDataRow>}
     </SignOrExecuteForm>
   )
 }
