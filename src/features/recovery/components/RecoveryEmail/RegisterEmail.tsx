@@ -15,21 +15,26 @@ const EMAIL_REGEXP =
 const RegisterEmail = ({
   onCancel,
   onRegister,
+  initialValue,
 }: {
   onCancel: () => void
   onRegister: (emailAddress: string) => void
+  initialValue?: string
 }) => {
-  const { registerEmailAddress } = useRecoveryEmail()
+  const { registerEmailAddress, editEmailAddress } = useRecoveryEmail()
 
   const { watch, register, formState } = useForm<{ emailAddress: string }>({
     mode: 'onChange',
+    defaultValues: {
+      emailAddress: initialValue,
+    },
   })
 
   const emailAddress = watch('emailAddress')
 
   const handleContinue = async () => {
     try {
-      await registerEmailAddress(emailAddress)
+      initialValue ? await editEmailAddress(emailAddress) : await registerEmailAddress(emailAddress)
 
       onRegister(emailAddress)
     } catch (e) {

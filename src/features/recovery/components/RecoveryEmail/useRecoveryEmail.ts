@@ -1,4 +1,5 @@
 import {
+  changeEmail,
   deleteRegisteredEmail,
   getRegisteredEmail,
   registerEmail,
@@ -79,11 +80,32 @@ const useRecoveryEmail = () => {
     })
   }
 
+  const editEmailAddress = async (emailAddress: string) => {
+    if (!onboard) return
+
+    const signer = await getAssertedChainSigner(onboard, safe.chainId)
+    const timestamp = Date.now().toString()
+    const messageToSign = `email-edit-${safe.chainId}-${safeAddress}-${emailAddress}-${signer.address}-${timestamp}`
+    const signedMessage = await signer.signMessage(messageToSign)
+
+    return changeEmail(
+      safe.chainId,
+      safeAddress,
+      signer.address,
+      { emailAddress },
+      {
+        'Safe-Wallet-Signature': signedMessage,
+        'Safe-Wallet-Signature-Timestamp': timestamp,
+      },
+    )
+  }
+
   return {
     getSignerEmailAddress,
     registerEmailAddress,
     verifyEmailAddress,
     deleteEmailAddress,
+    editEmailAddress,
     resendVerification,
   }
 }
