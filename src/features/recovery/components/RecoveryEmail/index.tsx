@@ -6,6 +6,7 @@ import VerifyEmail, {
   NotVerifiedMessage,
 } from '@/features/recovery/components/RecoveryEmail/VerifyEmail'
 import DeleteIcon from '@/public/images/common/delete.svg'
+import EditIcon from '@/public/images/common/edit.svg'
 import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
@@ -53,6 +54,7 @@ const RecoveryEmail = () => {
 
   const onVerifySuccess = () => {
     toggleVerifyEmailDialog()
+    setShowRegisterForm(false)
     setEmail(
       (prev) =>
         prev && {
@@ -82,33 +84,47 @@ const RecoveryEmail = () => {
     }
   }
 
+  const onEdit = async () => {
+    setShowRegisterForm(true)
+  }
+
   return (
     <Box mt={4}>
       <Typography fontWeight="bold" mb={2}>
         Notification email
       </Typography>
 
-      {email ? (
+      {showRegisterForm ? (
+        <RegisterEmail onCancel={onCancel} onRegister={onRegister} initialValue={email?.email} />
+      ) : email ? (
         <>
           <Stack direction="row" alignItems="center" gap={0.5}>
             <SvgIcon component={MailOutlineRoundedIcon} inheritViewBox fontSize="small" />
             <Typography>{email.email}</Typography>
             <CheckWallet>
               {(isOk) => (
-                <Tooltip title={isOk ? 'Delete email' : undefined}>
-                  <span>
-                    <IconButton onClick={onDelete} size="small" disabled={!isOk} sx={{ ml: 1 }}>
-                      <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                    </IconButton>
-                  </span>
-                </Tooltip>
+                <>
+                  <Tooltip title={isOk ? 'Edit email' : undefined}>
+                    <span>
+                      <IconButton onClick={onEdit} size="small" disabled={!isOk} sx={{ ml: 1 }}>
+                        <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+
+                  <Tooltip title={isOk ? 'Delete email' : undefined}>
+                    <span>
+                      <IconButton onClick={onDelete} size="small" disabled={!isOk}>
+                        <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                </>
               )}
             </CheckWallet>
           </Stack>
           {!email.verified && <NotVerifiedMessage onVerify={toggleVerifyEmailDialog} />}
         </>
-      ) : showRegisterForm ? (
-        <RegisterEmail onCancel={onCancel} onRegister={onRegister} />
       ) : (
         <CheckWallet>
           {(isOk) => (
