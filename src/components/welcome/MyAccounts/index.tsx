@@ -15,7 +15,8 @@ import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWallet
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
 import useTrackSafesCount from './useTrackedSafesCount'
-
+import { useAppSelector } from '@/store'
+import { selectAllVisitedSafesOrderedByTimestamp } from '@/store/visitedSafesSlice'
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 
 type AccountsListProps = {
@@ -23,11 +24,14 @@ type AccountsListProps = {
   onLinkClick?: () => void
 }
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
+
+  const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
+  const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
+  const visitedSafes = useAppSelector(selectAllVisitedSafesOrderedByTimestamp)
+  console.log('visited safes', visitedSafes)
   const wallet = useWallet()
   const router = useRouter()
 
-  const ownedSafes = useMemo(() => safes?.filter(({ isWatchlist }) => !isWatchlist), [safes])
-  const watchlistSafes = useMemo(() => safes?.filter(({ isWatchlist }) => isWatchlist), [safes])
   useTrackSafesCount(ownedSafes, watchlistSafes)
 
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
@@ -89,6 +93,16 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           onLinkClick={onLinkClick}
         />
 
+        <PaginatedSafeList
+          safes={visitedSafes}
+          title={
+            <>
+              <VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: '10px' }} fontSize="small" />
+              History
+            </>
+          }
+          noSafesMessage={"You haven't visited any safes yet"}
+        />
         <DataWidget />
       </Box>
     </Box>

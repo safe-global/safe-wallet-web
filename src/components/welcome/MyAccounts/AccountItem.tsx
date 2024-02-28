@@ -24,10 +24,11 @@ type AccountItemProps = {
   address: string
   threshold?: number
   owners?: number
+  lastAccessed?: number
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, chainId, address, lastAccessed, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
@@ -78,6 +79,9 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
             {chain?.shortName}:
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
+            </Typography>
+            <Typography color="text.secondary" fontSize="inherit">
+              {lastAccessed && `Last accessed ${new Date(lastAccessed).toLocaleString()}`}
             </Typography>
           </Typography>
 

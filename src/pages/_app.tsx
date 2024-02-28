@@ -44,6 +44,7 @@ import { useNotificationTracking } from '@/components/settings/PushNotifications
 import Recovery from '@/features/recovery/components/Recovery'
 import WalletProvider from '@/components/common/WalletProvider'
 import CounterfactualHooks from '@/features/counterfactual/CounterfactualHooks'
+import { useVisitedSafes } from '@/hooks/useVisitedSafes'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -69,7 +70,7 @@ const InitApp = (): null => {
   useSafeMsgTracking()
   useBeamer()
   useRehydrateSocialWallet()
-
+  useVisitedSafes()
   return null
 }
 
@@ -106,6 +107,8 @@ const WebCoreApp = ({
   emotionCache = clientSideEmotionCache,
 }: WebCoreAppProps): ReactElement => {
   const safeKey = useChangedValue(router.query.safe?.toString())
+
+  // const router = useRouter()
 
   return (
     <Provider store={reduxStore}>
