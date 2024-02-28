@@ -23,7 +23,7 @@ export const NotVerifiedMessage = ({ onVerify }: { onVerify: () => void }) => {
   )
 }
 
-const isNoContentResponse = (error: unknown): error is boolean => {
+export const isNoContentResponse = (error: string) => {
   return error === 'Invalid response content: No Content'
 }
 
