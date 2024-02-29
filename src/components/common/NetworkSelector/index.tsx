@@ -4,30 +4,20 @@ import { useTheme } from '@mui/material/styles'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
-import { ListSubheader, MenuItem, Select, Skeleton, Tooltip } from '@mui/material'
+import { ListSubheader, MenuItem, Select, Skeleton } from '@mui/material'
 import partition from 'lodash/partition'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
-import { type ReactElement, forwardRef, useMemo } from 'react'
+import { type ReactElement, useMemo } from 'react'
 import { useCallback } from 'react'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-
-const MenuWithTooltip = forwardRef<HTMLUListElement>(function MenuWithTooltip(props: any, ref) {
-  return (
-    <Tooltip title="More network support coming soon" arrow placement="left">
-      <ul ref={ref} {...props}>
-        {props.children}
-      </ul>
-    </Tooltip>
-  )
-})
 
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const wallet = useWallet()
@@ -104,7 +94,6 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
       IconComponent={ExpandMoreIcon}
       MenuProps={{
         transitionDuration: 0,
-        MenuListProps: { component: isSocialLogin ? MenuWithTooltip : undefined },
         sx: {
           '& .MuiPaper-root': {
             overflow: 'auto',

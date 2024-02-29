@@ -1,18 +1,15 @@
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
-import { Box, Button, LinearProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, LinearProgress, SvgIcon, Typography } from '@mui/material'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
-import InfoIcon from '@/public/images/notifications/info.svg'
 
 import css from './styles.module.css'
 import useWallet from '@/hooks/wallets/useWallet'
 import Track from '@/components/common/Track'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import useChains, { useCurrentChain } from '@/hooks/useChains'
-import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { CGW_NAMES } from '@/hooks/wallets/consts'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -26,41 +23,19 @@ export const _getSupportedChains = (chains: ChainInfo[]) => {
     .filter((chain) => CGW_NAMES.SOCIAL_LOGIN && !chain.disabledWallets.includes(CGW_NAMES.SOCIAL_LOGIN))
     .map((chainConfig) => chainConfig.chainName)
 }
-const useGetSupportedChains = () => {
-  const chains = useChains()
-
-  return useMemo(() => {
-    return _getSupportedChains(chains.configs)
-  }, [chains.configs])
-}
-
-const useIsSocialWalletEnabled = () => {
-  const currentChain = useCurrentChain()
-
-  return isSocialWalletEnabled(currentChain)
-}
 
 type SocialSignerLoginProps = {
   socialWalletService: ISocialWalletService | undefined
   wallet: ReturnType<typeof useWallet>
-  supportedChains: ReturnType<typeof useGetSupportedChains>
-  isMPCLoginEnabled: ReturnType<typeof useIsSocialWalletEnabled>
   onLogin?: () => void
   onRequirePassword?: () => void
 }
 
-export const SocialSigner = ({
-  socialWalletService,
-  wallet,
-  supportedChains,
-  isMPCLoginEnabled,
-  onLogin,
-  onRequirePassword,
-}: SocialSignerLoginProps) => {
+export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePassword }: SocialSignerLoginProps) => {
   const [loginPending, setLoginPending] = useState<boolean>(false)
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
   const userInfo = socialWalletService?.getUserInfo()
-  const isDisabled = loginPending || !isMPCLoginEnabled
+  const isDisabled = loginPending
 
   const isWelcomePage = !!onLogin
 
@@ -156,26 +131,6 @@ export const SocialSigner = ({
         )}
         {loginError && <ErrorMessage className={css.loginError}>{loginError}</ErrorMessage>}
       </Box>
-
-      {!isMPCLoginEnabled && (
-        <Typography variant="body2" color="text.secondary" display="flex" gap={1}>
-          <Tooltip title="More network support coming soon." arrow placement="top">
-            <span>
-              <SvgIcon
-                component={InfoIcon}
-                inheritViewBox
-                color="border"
-                fontSize="small"
-                sx={{
-                  verticalAlign: 'middle',
-                  ml: 0.5,
-                }}
-              />
-            </span>
-          </Tooltip>
-          <span>Currently only supported on {supportedChains.join(supportedChains.length === 2 ? ' and ' : ', ')}</span>
-        </Typography>
-      )}
     </>
   )
 }
@@ -183,6 +138,4 @@ export const SocialSigner = ({
 export default madProps(SocialSigner, {
   socialWalletService: useSocialWallet,
   wallet: useWallet,
-  supportedChains: useGetSupportedChains,
-  isMPCLoginEnabled: useIsSocialWalletEnabled,
 })
