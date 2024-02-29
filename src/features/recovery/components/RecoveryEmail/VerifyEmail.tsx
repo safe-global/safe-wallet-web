@@ -77,7 +77,7 @@ const VerifyEmail = ({ onCancel, onSuccess }: { onCancel: () => void; onSuccess:
           <Typography>
             Didn&apos;t get the code?{' '}
             <CooldownLink onClick={handleRetry} cooldown={60}>
-              Resend
+              Resend code
             </CooldownLink>
           </Typography>
 

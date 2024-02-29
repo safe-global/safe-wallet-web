@@ -45,6 +45,7 @@ const RecoveryEmail = () => {
 
   const onRegister = (emailAddress: string) => {
     setEmail({ email: emailAddress, verified: false })
+    setShowRegisterForm(false)
     setVerifyEmailOpen(true)
   }
 
