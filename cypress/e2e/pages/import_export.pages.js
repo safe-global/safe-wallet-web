@@ -1,4 +1,3 @@
-import { ms } from 'date-fns/locale'
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page.js'
 import { format } from 'date-fns'
