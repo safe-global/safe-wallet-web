@@ -3,7 +3,7 @@ import type { ReactElement, Dispatch, SetStateAction } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
 import { useAppDispatch } from '@/store'
-import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
+import { trackEvent, SETTINGS_EVENTS, OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { addedSafesSlice } from '@/store/addedSafesSlice'
 import { addressBookSlice } from '@/store/addressBookSlice'
 import { safeAppsSlice } from '@/store/safeAppsSlice'
@@ -52,8 +52,8 @@ export const ImportDialog = ({
     if (addedSafes) {
       dispatch(addedSafesSlice.actions.setAddedSafes(addedSafes))
       trackEvent({
-        ...SETTINGS_EVENTS.DATA.IMPORT_ADDED_SAFES,
-        label: addedSafesCount,
+        ...OVERVIEW_EVENTS.IMPORT_DATA,
+        label: OVERVIEW_LABELS.settings,
       })
     }
 

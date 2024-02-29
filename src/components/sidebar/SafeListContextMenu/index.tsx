@@ -13,9 +13,11 @@ import { selectAddedSafes } from '@/store/addedSafesSlice'
 import EditIcon from '@/public/images/common/edit.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import ContextMenu from '@/components/common/ContextMenu'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { trackEvent, OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { SvgIcon } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
+import { AppRoutes } from '@/config/routes'
+import router from 'next/router'
 
 enum ModalType {
   RENAME = 'rename',
@@ -41,6 +43,9 @@ const SafeListContextMenu = ({
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
 
+  const trackingLabel =
+    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+
   const handleOpenContextMenu = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     setAnchorEl(e.currentTarget)
   }
@@ -55,7 +60,7 @@ const SafeListContextMenu = ({
       handleCloseContextMenu()
       setOpen((prev) => ({ ...prev, [type]: true }))
 
-      trackEvent(event)
+      trackEvent({ ...event, label: trackingLabel })
     }
 
   const handleCloseModal = () => {
@@ -76,7 +81,7 @@ const SafeListContextMenu = ({
         </MenuItem>
 
         {isAdded && (
-          <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.SIDEBAR_REMOVE)}>
+          <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.REMOVE_FROM_WATCHLIST)}>
             <ListItemIcon>
               <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="error" />
             </ListItemIcon>

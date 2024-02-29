@@ -9,11 +9,13 @@ import ExportIcon from '@/public/images/common/export.svg'
 import ImportIcon from '@/public/images/common/import.svg'
 import { exportAppData } from '@/components/settings/DataManagement'
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
-import { OVERVIEW_EVENTS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
 import css from './styles.module.css'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 
 export const DataWidget = (): ReactElement => {
   const [importModalOpen, setImportModalOpen] = useState(false)
@@ -21,7 +23,10 @@ export const DataWidget = (): ReactElement => {
   const [jsonData, setJsonData] = useState<string>()
   const addressBook = useAppSelector(selectAllAddressBooks)
   const addedSafes = useAppSelector(selectAllAddedSafes)
+  const router = useRouter()
   const hasData = Object.keys(addressBook).length > 0 || Object.keys(addedSafes).length > 0
+  const trackingLabel =
+    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   const onImport = () => {
     setImportModalOpen(true)
@@ -54,7 +59,7 @@ export const DataWidget = (): ReactElement => {
         <Grid container spacing={2} sx={{ maxWidth: 240, margin: 'auto', paddingRight: 2 }}>
           {hasData && (
             <Grid item xs={6}>
-              <Track {...OVERVIEW_EVENTS.EXPORT_DATA}>
+              <Track {...OVERVIEW_EVENTS.EXPORT_DATA} label={trackingLabel}>
                 <Button
                   variant="outlined"
                   size="small"
@@ -68,7 +73,7 @@ export const DataWidget = (): ReactElement => {
             </Grid>
           )}
           <Grid item xs={6}>
-            <Track {...OVERVIEW_EVENTS.IMPORT_DATA}>
+            <Track {...OVERVIEW_EVENTS.IMPORT_DATA} label={trackingLabel}>
               <Button
                 variant="outlined"
                 size="small"

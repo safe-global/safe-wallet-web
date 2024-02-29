@@ -1,4 +1,4 @@
-import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -9,6 +9,7 @@ import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import { useState } from 'react'
 import { VisibilityOutlined } from '@mui/icons-material'
+import Track from '@/components/common/Track'
 
 const WatchlistAddButton = () => {
   const [open, setOpen] = useState(false)
@@ -20,8 +21,6 @@ const WatchlistAddButton = () => {
   const isInWatchlist = !!addedSafes?.[address]
 
   const onClick = () => {
-    trackEvent({ ...OVERVIEW_EVENTS.ADD_SAFE })
-
     router.push({
       pathname: AppRoutes.newSafe.load,
       query: {
@@ -33,31 +32,35 @@ const WatchlistAddButton = () => {
 
   return (
     <>
-      {!isInWatchlist ? (
-        <Button
-          data-testid="add-watchlist-btn"
-          onClick={onClick}
-          variant="outlined"
-          size="small"
-          fullWidth
-          disableElevation
-          sx={{ py: 1.3 }}
-          startIcon={<VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: 1 }} />}
-        >
-          Add to watchlist
-        </Button>
+      {isInWatchlist ? (
+        <Track {...OVERVIEW_EVENTS.REMOVE_FROM_WATCHLIST} label={OVERVIEW_LABELS.quick_remove}>
+          <Button
+            data-testid="remove-watchlist-btn"
+            onClick={() => setOpen(true)}
+            variant="outlined"
+            size="small"
+            fullWidth
+            disableElevation
+            sx={{ py: 1.3, px: 1 }}
+          >
+            Remove from watchlist
+          </Button>
+        </Track>
       ) : (
-        <Button
-          data-testid="add-watchlist-btn"
-          onClick={() => setOpen(true)}
-          variant="outlined"
-          size="small"
-          fullWidth
-          disableElevation
-          sx={{ py: 1.3, px: 1 }}
-        >
-          Remove from watchlist
-        </Button>
+        <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={OVERVIEW_LABELS.quick_add}>
+          <Button
+            data-testid="add-watchlist-btn"
+            onClick={onClick}
+            variant="outlined"
+            size="small"
+            fullWidth
+            disableElevation
+            sx={{ py: 1.3 }}
+            startIcon={<VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: 1 }} />}
+          >
+            Add to watchlist
+          </Button>
+        </Track>
       )}
 
       {open && chainId && (

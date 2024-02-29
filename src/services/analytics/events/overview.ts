@@ -23,12 +23,16 @@ export const OVERVIEW_EVENTS = {
     action: 'Open Safe on block explorer',
     category: OVERVIEW_CATEGORY,
   },
-  ADD_SAFE: {
-    action: 'Add Safe',
+  ADD_TO_WATCHLIST: {
+    action: 'Add Safe to watchlist',
     category: OVERVIEW_CATEGORY,
   },
-  ADD_TO_WATCHLIST: {
-    action: 'Add to watchlist',
+  REMOVE_FROM_WATCHLIST: {
+    action: 'Remove from watchlist',
+    category: OVERVIEW_CATEGORY,
+  },
+  DELETED_FROM_WATCHLIST: {
+    action: 'Deleted from watchlist',
     category: OVERVIEW_CATEGORY,
   },
   SIDEBAR: {
@@ -74,10 +78,6 @@ export const OVERVIEW_EVENTS = {
     action: 'Rename Safe from sidebar',
     category: OVERVIEW_CATEGORY,
   },
-  SIDEBAR_REMOVE: {
-    action: 'Remove Safe from sidebar',
-    category: OVERVIEW_CATEGORY,
-  },
   SAFE_TOKEN_WIDGET: {
     action: 'Open Safe Governance App from widget',
     category: OVERVIEW_CATEGORY,
@@ -91,11 +91,11 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
   },
   EXPORT_DATA: {
-    action: 'Export data from sidebar',
+    action: 'Export data',
     category: OVERVIEW_CATEGORY,
   },
   IMPORT_DATA: {
-    action: 'Import data from sidebar',
+    action: 'Import data',
     category: OVERVIEW_CATEGORY,
   },
   RELAYING_HELP_ARTICLE: {
@@ -146,5 +146,10 @@ export enum OPEN_SAFE_LABELS {
 
 export enum OVERVIEW_LABELS {
   sidebar = 'sidebar',
+  quick_add = 'quick_add',
+  quick_remove = 'quick_remove',
+  top_bar = 'top_bar',
+  welcome_page = 'welcome_page',
   login_page = 'login_page',
+  settings = 'settings',
 }
