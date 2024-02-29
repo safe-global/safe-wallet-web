@@ -1,3 +1,4 @@
+import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Box, Button, CardActions, Divider, InputAdornment, TextField, Typography } from '@mui/material'
@@ -19,6 +20,7 @@ const UpsertRecoveryFlowEmail = ({
   params: UpsertRecoveryFlowProps
   onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }) => {
+  const [error, setError] = useState<string>()
   const [verifyEmailOpen, setVerifyEmailOpen] = useState<boolean>(false)
   const { getSignerEmailAddress, registerEmailAddress } = useRecoveryEmail()
 
@@ -33,7 +35,12 @@ const UpsertRecoveryFlowEmail = ({
   const verified = watch('verified')
 
   const onFormSubmit = (data: { emailAddress: string }) => {
-    onSubmit({ ...params, ...data })
+    // In case the user skips but already typed in an email
+    if (verified === undefined) {
+      return onSubmit({ ...params })
+    }
+
+    return onSubmit({ ...params, ...data })
   }
 
   const signToViewEmail = async () => {
@@ -62,6 +69,8 @@ const UpsertRecoveryFlowEmail = ({
     } catch (e) {
       const error = asError(e)
       if (isWalletRejection(error)) return
+
+      setError('Failed to register email address. Please try again.')
     }
   }
 
@@ -115,6 +124,8 @@ const UpsertRecoveryFlowEmail = ({
             </Box>
 
             {verified === false && <NotVerifiedMessage onVerify={toggleVerifyEmailDialog} />}
+
+            {error && <ErrorMessage>{error}</ErrorMessage>}
 
             <Divider className={commonCss.nestedDivider} />
 
