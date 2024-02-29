@@ -5,6 +5,10 @@ const executeStr = 'Execute'
 const connectedOwnerBlock = '[data-testid="open-account-center"]'
 export const modalDialogCloseBtn = '[data-testid="modal-dialog-close-btn"]'
 
+export function checkElementBackgroundColor(element, color) {
+  cy.get(element).should('have.css', 'background-color', color)
+}
+
 export function clickOnExecuteBtn() {
   cy.get('button').contains(executeStr).click()
 }
