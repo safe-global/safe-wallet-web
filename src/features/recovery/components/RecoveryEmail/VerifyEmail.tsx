@@ -46,7 +46,7 @@ const VerifyEmail = ({ onCancel, onSuccess }: { onCancel: () => void; onSuccess:
   const handleVerify = async () => {
     try {
       setError(undefined)
-      const result = await verifyEmailAddress(verificationCode)
+      await verifyEmailAddress(verificationCode)
     } catch (e) {
       const error = asError(e)
 

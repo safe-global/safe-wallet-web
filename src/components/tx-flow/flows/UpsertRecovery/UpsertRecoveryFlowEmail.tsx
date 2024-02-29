@@ -44,13 +44,12 @@ const UpsertRecoveryFlowEmail = ({
         setValue('emailAddress', response.email)
         setValue('verified', response.verified)
       }
-
-      console.log(response)
     } catch (e) {
       const error = asError(e)
-      console.log(error)
       if (isWalletRejection(error)) return
 
+      // If we didn't detect an email
+      // TODO: Move this into the try clause once the SDK is fixed for 204 responses
       registerEmail()
     }
   }
@@ -119,7 +118,7 @@ const UpsertRecoveryFlowEmail = ({
 
             <Divider className={commonCss.nestedDivider} />
 
-            <CardActions sx={{ mt: '0 !important', flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <CardActions sx={{ mt: '0 !important', flexDirection: 'row !important', justifyContent: 'flex-end' }}>
               {verified === undefined && (
                 <Button type="submit" disabled={false}>
                   Skip for now

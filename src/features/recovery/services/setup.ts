@@ -176,18 +176,20 @@ export async function getRecoveryUpsertTransactions({
   provider: JsonRpcProvider
   chainId: string
   safeAddress: string
-}): Promise<Array<MetaTransactionData>> {
+}): Promise<{ transactions: Array<MetaTransactionData>; expectedModuleAddress?: string }> {
   if (moduleAddress) {
-    return _getEditRecoveryTransactions({
+    const transactions = await _getEditRecoveryTransactions({
       moduleAddress,
       newDelay: delay,
       newExpiry: expiry,
       newRecoverers: [recoverer],
       provider,
     })
+
+    return { transactions }
   }
 
-  const { transactions } = await _getRecoverySetupTransactions({
+  const { transactions, expectedModuleAddress } = await _getRecoverySetupTransactions({
     delay,
     expiry,
     recoverers: [recoverer],
@@ -196,5 +198,5 @@ export async function getRecoveryUpsertTransactions({
     provider,
   })
 
-  return transactions
+  return { transactions, expectedModuleAddress }
 }
