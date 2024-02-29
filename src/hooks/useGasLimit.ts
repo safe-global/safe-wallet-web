@@ -11,6 +11,13 @@ import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
 import { Errors, logError } from '@/services/exceptions'
 import useSafeInfo from './useSafeInfo'
+import { estimateTxBaseGas } from '@safe-global/protocol-kit/dist/src/utils/transactions/gas'
+import {
+  getCompatibilityFallbackHandlerContract,
+  getSimulateTxAccessorContract,
+} from '@safe-global/protocol-kit/dist/src/contracts/safeDeploymentContracts'
+import { type JsonRpcProvider } from 'ethers'
+import { type ExtendedSafeInfo } from '@/store/safeInfoSlice'
 
 const getEncodedSafeTx = (
   safeSDK: Safe,
@@ -38,6 +45,79 @@ const getEncodedSafeTx = (
 
 const incrementByPercentage = (value: bigint, percentage: bigint) => {
   return (value * (BigInt(100) + percentage)) / BigInt(100)
+}
+
+/**
+ * Estimates the gas limit for a transaction that will be executed on the zkSync network.
+ *
+ *  The rpc call for estimateGas is failing for the zkSync network, when the from address
+ *  is a Safe. Quote from this discussion:
+ *  https://github.com/zkSync-Community-Hub/zksync-developers/discussions/144
+ *  ======================
+ *  zkSync has native account abstraction and, under the hood, all accounts are a smart
+ *  contract account. Even EOA use the DefaultAccount smart contract. All smart contract
+ *  accounts on zkSync must be deployed using the createAccount or create2Account
+ *  methods of the ContractDeployer system contract.
+ *
+ * When processing a transaction, the protocol checks the code of the from account and,
+ * in this case, as Safe accounts are not deployed as native accounts on zkSync
+ * (via createAccount or create2Account), it fails with the error above.
+ * ======================
+ *
+ * We do some "magic" here by simulating the transaction on the SafeProxy contract
+ *
+ * @param safe
+ * @param web3
+ * @param safeSDK
+ * @param safeTx
+ */
+const getGasLimitForZkSync = async (
+  safe: ExtendedSafeInfo,
+  web3: JsonRpcProvider,
+  safeSDK: Safe,
+  safeTx: SafeTransaction,
+) => {
+  const customContracts = safeSDK.getContractManager().contractNetworks?.[safe.chainId]
+  const safeVersion = await safeSDK.getContractVersion()
+  const ethAdapter = safeSDK.getEthAdapter()
+  const fallbackHandlerContract = await getCompatibilityFallbackHandlerContract({
+    ethAdapter,
+    safeVersion,
+    customContracts,
+  })
+
+  const simulateTxAccessorContract = await getSimulateTxAccessorContract({
+    ethAdapter,
+    safeVersion,
+    customContracts,
+  })
+
+  // 2. Add a simulate call to the predicted SafeProxy as second transaction
+  const transactionDataToEstimate: string = simulateTxAccessorContract.encode('simulate', [
+    safeTx.data.to,
+    safeTx.data.value,
+    safeTx.data.data,
+    safeTx.data.operation,
+  ])
+
+  const safeFunctionToEstimate: string = fallbackHandlerContract.encode('simulate', [
+    await simulateTxAccessorContract.getAddress(),
+    transactionDataToEstimate,
+  ])
+
+  const gas = await web3.estimateGas({
+    to: safe.address.value,
+    // use a random EOA address as the from address
+    // https://github.com/zkSync-Community-Hub/zksync-developers/discussions/144
+    from: '0x330d9F4906EDA1f73f668660d1946bea71f48827',
+    value: '0',
+    data: safeFunctionToEstimate,
+  })
+
+  // The estimateTxBaseGas function seems to estimate too low for zkSync
+  const baseGas = BigInt(await estimateTxBaseGas(safeSDK, safeTx)) * 20n
+
+  return BigInt(gas) + baseGas
 }
 
 const useGasLimit = (
@@ -68,6 +148,11 @@ const useGasLimit = (
       safeTx.signatures.size < threshold,
     )
 
+    // if we are dealing with zksync and the walletAddress is a Safe, we have to do some magic
+    if (safe.chainId === chains.zksync && (await web3ReadOnly.getCode(walletAddress)) !== '0x') {
+      return getGasLimitForZkSync(safe, web3ReadOnly, safeSDK, safeTx)
+    }
+
     return web3ReadOnly
       .estimateGas({
         to: safeAddress,
@@ -84,7 +169,18 @@ const useGasLimit = (
 
         return gasLimit
       })
-  }, [safeAddress, walletAddress, safeSDK, web3ReadOnly, safeTx, isOwner, currentChainId, hasSafeTxGas, threshold])
+  }, [
+    safeAddress,
+    walletAddress,
+    safeSDK,
+    web3ReadOnly,
+    safeTx,
+    isOwner,
+    currentChainId,
+    hasSafeTxGas,
+    threshold,
+    safe,
+  ])
 
   useEffect(() => {
     if (gasLimitError) {
