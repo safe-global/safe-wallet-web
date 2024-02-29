@@ -47,7 +47,7 @@ export function RecoveryDescription({ item }: { item: RecoveryQueueItem }): Reac
   }
 
   return (
-    <InfoDetails title="Add owner(s):">
+    <InfoDetails title="Add signer(s):">
       {newSetup.owners.map((owner) => (
         <EthHashInfo key={owner.value} address={owner.value} shortAddress={false} showCopyButton hasExplorer />
       ))}

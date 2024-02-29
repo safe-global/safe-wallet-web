@@ -33,13 +33,13 @@ const e2eWalletStr = 'E2E Wallet'
 const max50charsLimitStr = 'Maximum 50 symbols'
 const executeBtnStr = 'Execute'
 const backbtnStr = 'Back'
-const removeOwnerStr = 'Remove owner'
-const selectedOwnerStr = 'Selected owner'
-const addNewOwnerStr = 'Add new owner'
+const removeOwnerStr = 'Remove signer'
+const selectedOwnerStr = 'Selected signer'
+const addNewOwnerStr = 'Add new signer'
 const processedTransactionStr = 'Transaction was successful'
 
 export const safeAccountNonceStr = 'Safe Account nonce'
-export const nonOwnerErrorMsg = 'Your connected wallet is not an owner of this Safe Account'
+export const nonOwnerErrorMsg = 'Your connected wallet is not an signer of this Safe Account'
 export const disconnectedUserErrorMsg = 'Please connect your wallet'
 
 export function verifyOwnerTransactionComplted() {
@@ -88,7 +88,7 @@ export function getThresholdOptions() {
 }
 
 export function verifyThresholdLimit(startValue, endValue) {
-  cy.get('p').contains(`out of ${endValue} owner(s)`)
+  cy.get('p').contains(`out of ${endValue} signer(s)`)
   clickOnThresholdDropdown()
   getThresholdOptions().eq(0).should('have.text', startValue).click()
 }
@@ -238,7 +238,7 @@ export function verifyConfirmTransactionWindowDisplayed() {
 
 export function verifyThreshold(startValue, endValue) {
   main.verifyInputValue(thresholdInput, startValue)
-  cy.get('p').contains(`out of ${endValue} owner(s)`).should('be.visible')
+  cy.get('p').contains(`out of ${endValue} signer(s)`).should('be.visible')
   cy.get(thresholdInput).parent().click()
   cy.get(thresholdList).contains(endValue).should('be.visible')
   cy.get(thresholdList).find('li').should('have.length', endValue)

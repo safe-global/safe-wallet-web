@@ -32,13 +32,13 @@ export function CancelRecoveryFlowReview({ recovery }: { recovery: RecoveryQueue
   return (
     <SignOrExecuteForm onSubmit={onSubmit} isBatchable={false}>
       <Typography mb={1}>
-        All actions initiated by the Recoverer will be cancelled. The current owners will remain the owners of the Safe
-        Account.
+        All actions initiated by the Recoverer will be cancelled. The current signers will remain the signers of the
+        Safe Account.
       </Typography>
 
       <ErrorMessage level="info">
         This transaction will initiate the cancellation of the{' '}
-        {recovery.isMalicious ? 'malicious transaction' : 'recovery proposal'}. It requires other owner signatures in
+        {recovery.isMalicious ? 'malicious transaction' : 'recovery proposal'}. It requires other signer signatures in
         order to be executed.
       </ErrorMessage>
     </SignOrExecuteForm>

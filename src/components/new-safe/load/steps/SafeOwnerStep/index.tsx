@@ -69,7 +69,7 @@ const SafeOwnerStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className={layoutCss.row}>
           {fields.map((field, index) => (
-            <OwnerRow key={field.id} index={index} groupName="owners" readOnly />
+            <OwnerRow key={field.id} index={index} groupName="signers" readOnly />
           ))}
         </Box>
         <Divider />

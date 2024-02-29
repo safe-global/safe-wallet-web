@@ -85,11 +85,11 @@ export const ChooseOwner = ({
             <>
               <Typography variant="body2" mb={1}>
                 {params.removedOwner &&
-                  'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'}
+                  'Review the signer you want to replace in the active Safe Account, then specify the new signer you want to replace it with:'}
               </Typography>
               <Box my={3}>
                 <Typography variant="body2" color="text.secondary" mb={1}>
-                  Current owner
+                  Current signer
                 </Typography>
                 <EthHashInfo address={params.removedOwner.address} showCopyButton shortAddress={false} hasExplorer />
               </Box>
@@ -98,9 +98,9 @@ export const ChooseOwner = ({
 
           <FormControl fullWidth>
             <NameInput
-              label="New owner"
+              label="New signer"
               name="newOwner.name"
-              placeholder={fallbackName || 'Owner name'}
+              placeholder={fallbackName || 'Signer name'}
               InputLabelProps={{ shrink: true }}
               InputProps={{
                 endAdornment: resolving && (
@@ -115,7 +115,7 @@ export const ChooseOwner = ({
           <FormControl fullWidth>
             <AddressBookInput
               name="newOwner.address"
-              label="Owner address or ENS"
+              label="Signer address or ENS"
               validate={combinedValidate}
               required
             />
@@ -169,7 +169,7 @@ export const ChooseOwner = ({
                   />
                 </Grid>
                 <Grid item>
-                  <Typography>out of {newNumberOfOwners} owner(s)</Typography>
+                  <Typography>out of {newNumberOfOwners} signer(s)</Typography>
                 </Grid>
               </Grid>
             </FormControl>

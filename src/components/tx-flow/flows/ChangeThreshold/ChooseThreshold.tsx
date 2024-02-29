@@ -90,7 +90,7 @@ export const ChooseThreshold = ({
                   </Grid>
 
                   <Grid item>
-                    <Typography>out of {safe.owners.length} owner(s)</Typography>
+                    <Typography>out of {safe.owners.length} signer(s)</Typography>
                   </Grid>
 
                   <Grid item xs={12}>

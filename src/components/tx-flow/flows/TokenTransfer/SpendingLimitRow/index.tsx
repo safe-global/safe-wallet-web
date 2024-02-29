@@ -63,7 +63,7 @@ const SpendingLimitRow = ({
                     <Tooltip
                       title={
                         <>
-                          A standard transaction requires the signatures of other owners before the specified funds can
+                          A standard transaction requires the signatures of other signers before the specified funds can
                           be transferred.&nbsp;
                           <ExternalLink
                             href={HelpCenterArticle.SPENDING_LIMITS}
@@ -107,7 +107,7 @@ const SpendingLimitRow = ({
                     title={
                       <>
                         A spending limit transaction allows you to transfer the specified funds without the need to
-                        collect the signatures of other owners.&nbsp;
+                        collect the signatures of other signers.&nbsp;
                         <ExternalLink href={HelpCenterArticle.SPENDING_LIMITS} title="Learn more about spending limits">
                           Learn more about spending limits
                         </ExternalLink>

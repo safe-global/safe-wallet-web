@@ -96,7 +96,7 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
           <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
           <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />
           <ReviewRow
-            name="Owners"
+            name="Signers"
             value={
               <Box className={css.ownersArray}>
                 {data.owners.map((owner, index) => (
@@ -118,7 +118,7 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
             name="Threshold"
             value={
               <Typography>
-                {data.threshold} out of {data.owners.length} owner(s)
+                {data.threshold} out of {data.owners.length} signer(s)
               </Typography>
             }
           />

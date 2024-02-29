@@ -35,7 +35,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
     }
     case SettingsInfoType.ADD_OWNER:
     case SettingsInfoType.REMOVE_OWNER: {
-      const title = settingsInfo.type === SettingsInfoType.ADD_OWNER ? 'Add owner:' : 'Remove owner:'
+      const title = settingsInfo.type === SettingsInfoType.ADD_OWNER ? 'Add signer:' : 'Remove signer:'
       return (
         <>
           <ThresholdWarning />
@@ -55,8 +55,8 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
     }
     case SettingsInfoType.SWAP_OWNER: {
       return (
-        <InfoDetails datatestid="swap-owner" title="Swap owner:">
-          <InfoDetails datatestid="old-owner" title="Old owner">
+        <InfoDetails datatestid="swap-owner" title="Swap signer:">
+          <InfoDetails datatestid="old-owner" title="Old signer">
             <EthHashInfo
               address={settingsInfo.oldOwner.value}
               name={settingsInfo.oldOwner?.name}
@@ -64,7 +64,7 @@ export const SettingsChangeTxInfo = ({ settingsInfo }: SettingsChangeTxInfoProps
               {...addressInfoProps}
             />
           </InfoDetails>
-          <InfoDetails datatestid="new-owner" title="New owner">
+          <InfoDetails datatestid="new-owner" title="New signer">
             <EthHashInfo
               address={settingsInfo.newOwner.value}
               name={settingsInfo.newOwner?.name}

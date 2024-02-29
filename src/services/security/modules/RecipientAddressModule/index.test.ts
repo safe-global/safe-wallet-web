@@ -97,7 +97,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -137,7 +137,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -176,7 +176,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -215,7 +215,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -258,7 +258,7 @@ describe('RecipientAddressModule', () => {
             address: recipient1,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -267,7 +267,7 @@ describe('RecipientAddressModule', () => {
             address: recipient2,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -311,7 +311,7 @@ describe('RecipientAddressModule', () => {
           address: recipient,
           description: {
             short: 'Address is not known',
-            long: 'The address is not an owner or present in your address book and is not a smart contract',
+            long: 'The address is not a signer or present in your address book and is not a smart contract',
           },
           type: 'UNKNOWN_ADDRESS',
         },
@@ -358,7 +358,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -407,7 +407,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -455,7 +455,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -503,7 +503,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -555,7 +555,7 @@ describe('RecipientAddressModule', () => {
             address: recipient1,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -573,7 +573,7 @@ describe('RecipientAddressModule', () => {
             address: recipient2,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -619,7 +619,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -669,7 +669,7 @@ describe('RecipientAddressModule', () => {
           address: recipient,
           description: {
             short: 'Address is not known',
-            long: 'The address is not an owner or present in your address book and is not a smart contract',
+            long: 'The address is not a signer or present in your address book and is not a smart contract',
           },
           type: 'UNKNOWN_ADDRESS',
         },
@@ -715,7 +715,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -763,7 +763,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -810,7 +810,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -857,7 +857,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -908,7 +908,7 @@ describe('RecipientAddressModule', () => {
             address: recipient1,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -926,7 +926,7 @@ describe('RecipientAddressModule', () => {
             address: recipient2,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },
@@ -971,7 +971,7 @@ describe('RecipientAddressModule', () => {
             address: recipient,
             description: {
               short: 'Address is not known',
-              long: 'The address is not an owner or present in your address book and is not a smart contract',
+              long: 'The address is not a signer or present in your address book and is not a smart contract',
             },
             type: 'UNKNOWN_ADDRESS',
           },

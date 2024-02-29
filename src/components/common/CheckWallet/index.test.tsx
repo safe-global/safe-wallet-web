@@ -65,7 +65,7 @@ describe('CheckWallet', () => {
     expect(container.querySelector('button')).toBeDisabled()
     expect(container.querySelector('span[aria-label]')).toHaveAttribute(
       'aria-label',
-      `Your connected wallet is not an owner of this Safe Account`,
+      `Your connected wallet is not a signer of this Safe Account`,
     )
   })
 
