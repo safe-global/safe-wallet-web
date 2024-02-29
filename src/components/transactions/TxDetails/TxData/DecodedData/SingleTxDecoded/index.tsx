@@ -34,7 +34,8 @@ export const SingleTxDecoded = ({
   onChange,
 }: SingleTxDecodedProps) => {
   const chain = useCurrentChain()
-  const method = tx.dataDecoded?.method || ''
+  const isNativeTransfer = tx.value !== '0'
+  const method = tx.dataDecoded?.method || (isNativeTransfer ? 'native transfer' : 'Unknown contract interaction')
   const { decimals, symbol } = chain?.nativeCurrency || {}
   const amount = tx.value ? formatVisualAmount(tx.value, decimals) : 0
 
@@ -62,7 +63,7 @@ export const SingleTxDecoded = ({
           <Typography>{actionTitle}</Typography>
           <Typography ml="8px">
             {name ? name + ': ' : ''}
-            <b>{method || 'native transfer'}</b>
+            <b>{method}</b>
           </Typography>
         </div>
       </AccordionSummary>
