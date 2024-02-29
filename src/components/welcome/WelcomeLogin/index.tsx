@@ -1,7 +1,7 @@
 import { AppRoutes } from '@/config/routes'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { Paper, SvgIcon, Typography, Divider, Box, Skeleton } from '@mui/material'
+import { Paper, SvgIcon, Typography, Divider, Box, Skeleton, Button, Link } from '@mui/material'
 import SafeLogo from '@/public/images/logo-text.svg'
 import dynamic from 'next/dynamic'
 import css from './styles.module.css'
@@ -69,6 +69,17 @@ const WelcomeLogin = () => {
             <SocialSigner />
           </>
         )}
+
+        <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
+          <Typography color="text.secondary" fontWeight={700} variant="overline">
+            or
+          </Typography>
+        </Divider>
+        <Link href={AppRoutes.newSafe.load}>
+          <Button disableElevation size="small">
+            Watch any account
+          </Button>
+        </Link>
       </Box>
     </Paper>
   )
