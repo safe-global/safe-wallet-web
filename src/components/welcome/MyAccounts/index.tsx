@@ -1,10 +1,10 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Box, Button, Link, SvgIcon, Typography } from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
 import PaginatedSafeList from './PaginatedSafeList'
@@ -13,21 +13,31 @@ import AddIcon from '@/public/images/common/add.svg'
 import { AppRoutes } from '@/config/routes'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import useWallet from '@/hooks/wallets/useWallet'
-
-const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 import { useRouter } from 'next/router'
 
+const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
+
 type AccountsListProps = {
-  safes: SafeItems
+  safes: SafeItems | undefined
   onLinkClick?: () => void
 }
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
-  const router = useRouter()
-  const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
-  const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
   const wallet = useWallet()
-  const trackingLabel =
-    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+  const router = useRouter()
+
+  const ownedSafes = useMemo(() => safes?.filter(({ isWatchlist }) => !isWatchlist), [safes])
+  const watchlistSafes = useMemo(() => safes?.filter(({ isWatchlist }) => isWatchlist), [safes])
+
+  const isLoginPage = router.pathname === AppRoutes.welcome.accounts
+  const trackingLabel = isLoginPage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+
+  useEffect(() => {
+    // track owned and watchlist safe counts once when the user logs in
+    if (watchlistSafes && ownedSafes && isLoginPage) {
+      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_OWNED, label: ownedSafes.length })
+      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_WATCHLIST, label: watchlistSafes.length })
+    }
+  }, [isLoginPage, ownedSafes, watchlistSafes])
 
   return (
     <Box data-testid="sidebar-safe-container" className={css.container}>
@@ -43,7 +53,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
 
         <PaginatedSafeList
           title="My accounts"
-          safes={ownedSafes}
+          safes={ownedSafes || []}
           onLinkClick={onLinkClick}
           noSafesMessage={
             wallet ? (
@@ -66,7 +76,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               Watchlist
             </>
           }
-          safes={watchlistSafes}
+          safes={watchlistSafes || []}
           action={
             <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
               <Link href={AppRoutes.newSafe.load}>
