@@ -88,7 +88,7 @@ const OwnerPolicyStep = ({
   })
 
   return (
-    <form onSubmit={onFormSubmit} id={OWNER_POLICY_STEP_FORM_ID}>
+    <form data-testid="owner-policy-step-form" onSubmit={onFormSubmit} id={OWNER_POLICY_STEP_FORM_ID}>
       <FormProvider {...formMethods}>
         <Box className={layoutCss.row}>
           {ownerFields.map((field, i) => (
@@ -101,6 +101,7 @@ const OwnerPolicyStep = ({
             />
           ))}
           <Button
+            data-testid="add-owner-btn"
             variant="text"
             onClick={() => appendOwner({ name: '', address: '' }, { shouldFocus: true })}
             startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}

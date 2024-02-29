@@ -241,4 +241,6 @@ export function verifyThreshold(startValue, endValue) {
   cy.get('p').contains(`out of ${endValue} owner(s)`).should('be.visible')
   cy.get(thresholdInput).parent().click()
   cy.get(thresholdList).contains(endValue).should('be.visible')
+  cy.get(thresholdList).find('li').should('have.length', endValue)
+  cy.get('body').click()
 }

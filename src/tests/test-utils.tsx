@@ -106,30 +106,32 @@ type MockCallImplementation = {
 const mockWeb3Provider = (
   callImplementations: MockCallImplementation[],
   resolveName?: (name: string) => string,
-): jest.SpyInstance<any, unknown[]> => {
-  return jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
-    () =>
-      ({
-        call: (tx: { data: string; to: string }) => {
-          {
-            const matchedImplementation = callImplementations.find((implementation) => {
-              return tx.data.startsWith(id(implementation.signature).slice(0, 10))
-            })
+): JsonRpcProvider => {
+  const mockWeb3ReadOnly = {
+    call: jest.fn((tx: { data: string; to: string }) => {
+      {
+        const matchedImplementation = callImplementations.find((implementation) => {
+          return tx.data.startsWith(id(implementation.signature).slice(0, 10))
+        })
 
-            if (!matchedImplementation) {
-              throw new Error(`No matcher for call data: ${tx.data}`)
-            }
+        if (!matchedImplementation) {
+          throw new Error(`No matcher for call data: ${tx.data}`)
+        }
 
-            return AbiCoder.defaultAbiCoder().encode(
-              [matchedImplementation.returnType],
-              [matchedImplementation.returnValue],
-            )
-          }
-        },
-        _isProvider: true,
-        resolveName: resolveName,
-      } as unknown as JsonRpcProvider),
-  )
+        return AbiCoder.defaultAbiCoder().encode(
+          [matchedImplementation.returnType],
+          [matchedImplementation.returnValue],
+        )
+      }
+    }),
+    estimateGas: jest.fn(() => {
+      return Promise.resolve(50_000n)
+    }),
+    _isProvider: true,
+    resolveName: resolveName,
+  } as unknown as JsonRpcProvider
+  jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockWeb3ReadOnly)
+  return mockWeb3ReadOnly
 }
 
 // re-export everything

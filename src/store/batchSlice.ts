@@ -66,7 +66,7 @@ export const batchSlice = createSlice({
       const { chainId, safeAddress, id } = action.payload
       state[chainId] = state[chainId] || {}
       state[chainId][safeAddress] = state[chainId][safeAddress] || []
-      state[chainId][safeAddress] = state[chainId][safeAddress].filter((item: DraftBatchItem) => item.id !== id)
+      state[chainId][safeAddress] = state[chainId][safeAddress].filter((item) => item.id !== id)
     },
   },
 })
