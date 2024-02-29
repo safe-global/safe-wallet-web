@@ -92,6 +92,7 @@ const FileUpload = ({
   }
   return (
     <Box
+      data-testid="file-upload-section"
       {...getRootProps()}
       className={css.dropbox}
       sx={{

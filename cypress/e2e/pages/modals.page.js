@@ -4,6 +4,7 @@ export const modal = '[data-testid="modal-view"]'
 export const modalTitiles = {
   editEntry: 'Edit entry',
   deleteEntry: 'Delete entry',
+  dataImport: 'Data import',
 }
 
 export function verifyModalTitle(title) {

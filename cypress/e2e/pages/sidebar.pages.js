@@ -3,6 +3,7 @@ import * as main from './main.page'
 import * as modal from '../pages/modals.page'
 import * as navigation from './navigation.page'
 import { safeHeaderInfo } from './import_export.pages'
+import * as file from '../pages/import_export.pages'
 
 export const chainLogo = '[data-testid="chain-logo"]'
 const safeIcon = '[data-testid="safe-icon"]'
@@ -29,12 +30,24 @@ const currencySection = '[data-testid="currency-section"]'
 const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
 const showMoreBtn = '[data-testid="show-more-btn" ]'
+const importBtn = '[data-testid="import-btn"]'
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
 export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
 export const testSafeHeaderDetails = ['2/2', constants.SEPOLIA_TEST_SAFE_13_SHORT]
 const receiveAssetsStr = 'Receive assets'
+
+export function getImportBtn() {
+  return cy.get(importBtn).scrollIntoView().should('be.visible')
+}
+export function clickOnSidebarImportBtn() {
+  cy.get(sidebarSafeContainer).find(sideSafeListItem).last().scrollIntoView()
+
+  getImportBtn().click()
+  modal.verifyModalTitle(modal.modalTitiles.dataImport)
+  file.verifyValidImportInputExists()
+}
 
 export function showAllSafes() {
   cy.get('body').then(($body) => {

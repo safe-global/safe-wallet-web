@@ -75,6 +75,7 @@ export const DataWidget = (): ReactElement => {
           <Grid item xs={6}>
             <Track {...OVERVIEW_EVENTS.IMPORT_DATA} label={trackingLabel}>
               <Button
+                data-testid="import-btn"
                 variant="outlined"
                 size="small"
                 onClick={onImport}

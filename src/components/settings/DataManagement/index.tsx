@@ -75,7 +75,7 @@ const DataManagement = () => {
             </Typography>
           </Grid>
 
-          <Grid item container xs>
+          <Grid data-testid="export-file-section" item container xs>
             <Typography>Download your local data with your added Safe Accounts, address book and settings.</Typography>
 
             <FileListCard
