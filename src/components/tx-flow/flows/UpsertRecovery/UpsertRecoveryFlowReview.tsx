@@ -1,6 +1,6 @@
 import { SvgIcon, Tooltip, Typography } from '@mui/material'
 import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -37,22 +37,13 @@ const getAddressType = async (address: string, chainId: string) => {
   return AddressType.Other
 }
 
-const onSubmit = async (
-  isEdit: boolean,
-  params: UpsertRecoveryFlowProps,
-  chainId: string,
-  predictedModuleAddress?: string,
-) => {
+const onSubmit = async (isEdit: boolean, params: UpsertRecoveryFlowProps, chainId: string) => {
   const addressType = await getAddressType(params.recoverer, chainId)
   const creationEvent = isEdit ? RECOVERY_EVENTS.SUBMIT_RECOVERY_EDIT : RECOVERY_EVENTS.SUBMIT_RECOVERY_CREATE
   const settings = `delay_${params.delay},expiry_${params.expiry},type_${addressType}`
 
   trackEvent({ ...creationEvent })
   trackEvent({ ...RECOVERY_EVENTS.RECOVERY_SETTINGS, label: settings })
-
-  if (predictedModuleAddress) {
-    // TODO: Register the module address for alerts
-  }
 }
 
 export function UpsertRecoveryFlowReview({
@@ -62,7 +53,6 @@ export function UpsertRecoveryFlowReview({
   params: UpsertRecoveryFlowProps
   moduleAddress?: string
 }): ReactElement {
-  const predictedModuleAddress = useRef<string>()
   const web3ReadOnly = useWeb3ReadOnly()
   const { safe, safeAddress } = useSafeInfo()
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
@@ -85,11 +75,7 @@ export function UpsertRecoveryFlowReview({
       safeAddress,
       moduleAddress,
     })
-      .then(({ transactions, expectedModuleAddress }) => {
-        if (expectedModuleAddress) {
-          predictedModuleAddress.current = expectedModuleAddress
-        }
-
+      .then((transactions) => {
         return transactions.length > 1 ? createMultiSendCallOnlyTx(transactions) : createTx(transactions[0])
       })
       .then(setSafeTx)
@@ -105,7 +91,7 @@ export function UpsertRecoveryFlowReview({
   const isEdit = !!moduleAddress
 
   return (
-    <SignOrExecuteForm onSubmit={() => onSubmit(isEdit, params, safe.chainId, predictedModuleAddress.current)}>
+    <SignOrExecuteForm onSubmit={() => onSubmit(isEdit, params, safe.chainId)}>
       <Typography>
         This transaction will {moduleAddress ? 'update' : 'enable'} the Account recovery feature once executed.
       </Typography>
