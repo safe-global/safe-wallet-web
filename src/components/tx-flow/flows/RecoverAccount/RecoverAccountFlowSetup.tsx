@@ -114,7 +114,7 @@ export function RecoverAccountFlowSetup({
 
                       const isDuplicate = newOwners.filter((owner) => owner.value === value).length > 1
                       if (isDuplicate) {
-                        return 'Already designated to be an signer'
+                        return 'Already designated to be a signer'
                       }
                     }}
                   />

@@ -39,7 +39,7 @@ const addNewOwnerStr = 'Add new signer'
 const processedTransactionStr = 'Transaction was successful'
 
 export const safeAccountNonceStr = 'Safe Account nonce'
-export const nonOwnerErrorMsg = 'Your connected wallet is not an signer of this Safe Account'
+export const nonOwnerErrorMsg = 'Your connected wallet is not a signer of this Safe Account'
 export const disconnectedUserErrorMsg = 'Please connect your wallet'
 
 export function verifyOwnerTransactionComplted() {
