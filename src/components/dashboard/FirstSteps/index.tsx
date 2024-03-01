@@ -201,7 +201,7 @@ const FirstSteps = () => {
 
   return (
     <WidgetContainer>
-      <WidgetBody>
+      <WidgetBody data-testid="activation-section">
         <Grid container gap={3} mb={2} flexWrap="nowrap" alignItems="center">
           <Grid item position="relative" display="inline-flex">
             <svg className={css.gradient}>
