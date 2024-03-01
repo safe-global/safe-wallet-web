@@ -31,6 +31,7 @@ const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
 const showMoreBtn = '[data-testid="show-more-btn" ]'
 const importBtn = '[data-testid="import-btn"]'
+export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
@@ -229,4 +230,8 @@ export function checkCurrencyInHeader(currency) {
   cy.get(sidebarSafeHeader).within(() => {
     cy.get(currencySection).contains(currency)
   })
+}
+
+export function checkSafeAddressInHeader(address) {
+  main.verifyValuesExist(sidebarSafeHeader, address)
 }

@@ -109,7 +109,7 @@ const CreationDialog = () => {
         </Grid>
 
         {undeployedSafe && (
-          <Alert severity="info" sx={{ mb: 2 }}>
+          <Alert data-testid="safe-backup-alert" severity="info" sx={{ mb: 2 }}>
             We recommend{' '}
             <Link href="#" onClick={(e) => onBackup(e, undeployedSafe)}>
               backing up your Safe Account
@@ -119,7 +119,7 @@ const CreationDialog = () => {
         )}
 
         <Box display="flex" justifyContent="center">
-          <Button onClick={onClose} variant="contained" size="stretched">
+          <Button data-testid="dialog-confirm-btn" onClick={onClose} variant="contained" size="stretched">
             Got it
           </Button>
         </Box>

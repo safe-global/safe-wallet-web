@@ -1,5 +1,7 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
+import { connectedWalletExecMethod } from '../pages/create_tx.pages'
+import * as sidebar from '../pages/sidebar.pages'
 
 const welcomeLoginScreen = '[data-testid="welcome-login"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
@@ -24,7 +26,9 @@ const networkFeeSection = '[data-tetid="network-fee-section"]'
 const nextBtn = '[data-testid="next-btn"]'
 const backBtn = '[data-testid="back-btn"]'
 const cancelBtn = '[data-testid="cancel-btn"]'
-const loginBtn = '[data-testid="login-btn"]'
+const safeBackupAlert = '[data-testid="safe-backup-alert"]'
+const dialogConfirmBtn = '[data-testid="dialog-confirm-btn"]'
+const safeActivationSection = '[data-testid="activation-section"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -35,10 +39,23 @@ export const walletName = 'test1-sepolia-safe'
 export const defaultSepoliaPlaceholder = 'Sepolia Safe'
 const welcomeToSafeStr = 'Welcome to Safe'
 
-export function clickOnLoginBtn() {
-  cy.get(loginBtn).click()
+export function verifyNewSafeDialogModal() {
+  main.verifyElementsIsVisible([safeBackupAlert, dialogConfirmBtn])
 }
 
+export function verifyCFSafeCreated() {
+  sidebar.checkSafeAddressInHeader([constants.CF_SAFE_SHORT])
+  main.verifyElementsIsVisible([sidebar.pendingActivationIcon, safeActivationSection])
+}
+
+export function clickOnGotitBtn() {
+  cy.get(dialogConfirmBtn).click()
+  main.verifyElementsCount(connectedWalletExecMethod, 0)
+}
+
+export function selectPayLaterOption() {
+  cy.get(connectedWalletExecMethod).click()
+}
 export function cancelWalletCreation() {
   cy.get(cancelBtn).click()
   cy.get('button').contains(continueWithWalletBtn).should('be.visible')
@@ -59,6 +76,7 @@ export function verifySafeCreationIsComplete() {
 
 export function clickOnReviewStepNextBtn() {
   cy.get(reviewStepNextBtn).click()
+  cy.get(reviewStepNextBtn, { timeout: 60000 }).should('not.exist')
 }
 export function verifyOwnerInfoIsPresent() {
   return cy.get(reviewStepOwnerInfo).shoul('exist')
