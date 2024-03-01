@@ -128,6 +128,7 @@ export function verifySafeCount(count) {
 
 export function openSidebar() {
   cy.get(openSafesIcon).click()
+  cy.wait(500)
   showAllSafes()
   main.verifyElementsExist([sidebarSafeContainer])
 }
