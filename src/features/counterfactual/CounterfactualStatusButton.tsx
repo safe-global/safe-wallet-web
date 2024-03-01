@@ -42,6 +42,7 @@ const CounterfactualStatusButton = () => {
       arrow
     >
       <IconButton
+        data-testid="pending-activation-icon"
         className={classnames(css.statusButton, { [css.processing]: processing })}
         size="small"
         color={processing ? 'info' : 'warning'}
