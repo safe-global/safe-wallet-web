@@ -17,7 +17,7 @@ const RejectTxButton = ({
   safeTxHash,
 }: {
   txSummary: TransactionSummary
-  safeTxHash: string
+  safeTxHash: string | undefined
 }): ReactElement | null => {
   const { setTxFlow } = useContext(TxModalContext)
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined

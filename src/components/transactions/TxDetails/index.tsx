@@ -32,6 +32,7 @@ import useIsPending from '@/hooks/useIsPending'
 import { isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import useWallet from '@/hooks/wallets/useWallet'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -41,6 +42,7 @@ type TxDetailsProps = {
 }
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
+  const wallet = useWallet()
   const isPending = useIsPending(txSummary.id)
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
   const isQueue = isTxQueued(txSummary.txStatus)
@@ -55,9 +57,13 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   // If we have no token list we always trust the transfer
   const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
 
-  const safeTxHash = isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
-    ? txDetails.detailedExecutionInfo.safeTxHash
-    : undefined
+  const proposedSafeTxHash =
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
+    isMultisigExecutionInfo(txSummary.executionInfo) &&
+    wallet &&
+    wallet.address === txSummary.executionInfo.proposer?.value
+      ? txDetails.detailedExecutionInfo.safeTxHash
+      : undefined
 
   return (
     <>
@@ -115,7 +121,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           {isQueue && (
             <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
               {awaitingExecution ? <ExecuteTxButton txSummary={txSummary} /> : <SignTxButton txSummary={txSummary} />}
-              <RejectTxButton txSummary={txSummary} safeTxHash={safeTxHash} />
+              <RejectTxButton txSummary={txSummary} safeTxHash={proposedSafeTxHash} />
             </Box>
           )}
         </div>
