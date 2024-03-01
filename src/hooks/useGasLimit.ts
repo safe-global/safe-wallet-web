@@ -77,6 +77,10 @@ const getGasLimitForZkSync = async (
   safeSDK: Safe,
   safeTx: SafeTransaction,
 ) => {
+  // use a random EOA address as the from address
+  // https://github.com/zkSync-Community-Hub/zksync-developers/discussions/144
+  const fakeEOAFromAddress = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
+  const zkSyncBaseFeeMultiplier = 20n
   const customContracts = safeSDK.getContractManager().contractNetworks?.[safe.chainId]
   const safeVersion = await safeSDK.getContractVersion()
   const ethAdapter = safeSDK.getEthAdapter()
@@ -107,15 +111,13 @@ const getGasLimitForZkSync = async (
 
   const gas = await web3.estimateGas({
     to: safe.address.value,
-    // use a random EOA address as the from address
-    // https://github.com/zkSync-Community-Hub/zksync-developers/discussions/144
-    from: '0x330d9F4906EDA1f73f668660d1946bea71f48827',
+    from: fakeEOAFromAddress,
     value: '0',
     data: safeFunctionToEstimate,
   })
 
   // The estimateTxBaseGas function seems to estimate too low for zkSync
-  const baseGas = BigInt(await estimateTxBaseGas(safeSDK, safeTx)) * 20n
+  const baseGas = BigInt(await estimateTxBaseGas(safeSDK, safeTx)) * zkSyncBaseFeeMultiplier
 
   return BigInt(gas) + baseGas
 }
