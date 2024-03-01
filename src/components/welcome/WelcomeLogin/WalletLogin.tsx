@@ -8,6 +8,11 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   const wallet = useWallet()
   const connectWallet = useConnectWallet()
 
+  const onConnectWallet = () => {
+    connectWallet()
+    onLogin()
+  }
+
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   if (wallet !== null && !isSocialLogin) {
@@ -52,7 +57,7 @@ const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
 
   return (
     <Button
-      onClick={connectWallet}
+      onClick={onConnectWallet}
       sx={{ minHeight: '42px' }}
       variant="contained"
       size="small"
