@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@/tests/test-utils'
 import AppFrame from '@/components/safe-apps/AppFrame'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import {
   ConflictType,
   DetailedExecutionInfoType,
@@ -55,6 +56,7 @@ describe('AppFrame', () => {
                     nonce: 3,
                     confirmationsRequired: 2,
                     confirmationsSubmitted: 1,
+                    proposer: { value: ZERO_ADDRESS },
                     missingSigners: [
                       {
                         value: '0xbc2BB26a6d821e69A38016f3858561a1D80d4182',

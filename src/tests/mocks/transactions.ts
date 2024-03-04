@@ -1,3 +1,4 @@
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import {
   type AddressEx,
   ConflictType,
@@ -43,6 +44,7 @@ export const defaultTx: TransactionSummary = {
     nonce: 1,
     confirmationsRequired: 2,
     confirmationsSubmitted: 2,
+    proposer: { value: ZERO_ADDRESS },
   },
 }
 

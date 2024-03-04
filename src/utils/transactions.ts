@@ -62,6 +62,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       confirmationsRequired: detailedExecutionInfo.confirmationsRequired,
       confirmationsSubmitted: detailedExecutionInfo.confirmations?.length ?? 0,
       missingSigners: getMissingSigners(detailedExecutionInfo),
+      proposer: detailedExecutionInfo.signers[0],
     }
   }
 

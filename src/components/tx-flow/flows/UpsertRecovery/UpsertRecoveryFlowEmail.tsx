@@ -53,10 +53,8 @@ const UpsertRecoveryFlowEmail = ({
       }
     } catch (e) {
       const error = asError(e)
-      if (isWalletRejection(error)) return
+      if (error.message !== 'Not Found') return
 
-      // If we didn't detect an email
-      // TODO: Move this into the try clause once the SDK is fixed for 204 responses
       registerEmail()
     }
   }
