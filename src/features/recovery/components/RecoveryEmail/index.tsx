@@ -10,7 +10,6 @@ import EditIcon from '@/public/images/common/edit.svg'
 import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { isWalletRejection } from '@/utils/wallets'
 import Stack from '@mui/material/Stack'
 import type { GetEmailResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/emails'
 import { useState } from 'react'
@@ -33,7 +32,7 @@ const RecoveryEmail = () => {
       setEmail(response)
     } catch (e) {
       const error = asError(e)
-      if (isWalletRejection(error)) return
+      if (error.message !== 'Not Found') return
 
       setShowRegisterForm(true)
     }
@@ -45,6 +44,7 @@ const RecoveryEmail = () => {
 
   const onRegister = (emailAddress: string) => {
     setEmail({ email: emailAddress, verified: false })
+    setShowRegisterForm(false)
     setVerifyEmailOpen(true)
   }
 
@@ -126,7 +126,7 @@ const RecoveryEmail = () => {
           {!email.verified && <NotVerifiedMessage onVerify={toggleVerifyEmailDialog} />}
         </>
       ) : (
-        <CheckWallet>
+        <CheckWallet allowSpendingLimit>
           {(isOk) => (
             <Button
               onClick={signToViewEmail}

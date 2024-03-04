@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 import useRecoveryEmail from '@/features/recovery/components/RecoveryEmail/useRecoveryEmail'
 import { asError } from '@/services/exceptions/utils'
 import { isWalletRejection } from '@/utils/wallets'
@@ -21,6 +23,7 @@ const RegisterEmail = ({
   onRegister: (emailAddress: string) => void
   initialValue?: string
 }) => {
+  const [error, setError] = useState<string>()
   const { registerEmailAddress, editEmailAddress } = useRecoveryEmail()
 
   const { watch, register, formState } = useForm<{ emailAddress: string }>({
@@ -40,6 +43,8 @@ const RegisterEmail = ({
     } catch (e) {
       const error = asError(e)
       if (isWalletRejection(error)) return
+
+      setError('Failed to register email address. Please try again.')
     }
   }
 
@@ -63,10 +68,12 @@ const RegisterEmail = ({
             Cancel
           </Button>
           <Button variant="contained" size="small" onClick={handleContinue} disabled={isInvalidEmail}>
-            Continue
+            Verify
           </Button>
         </Stack>
       </Grid>
+
+      {error && <ErrorMessage>{error}</ErrorMessage>}
     </Grid>
   )
 }
