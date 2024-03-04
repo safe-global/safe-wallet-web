@@ -40,7 +40,7 @@ const CooldownLink = ({
     <Link
       sx={{
         color: ({ palette }) => (isDisabled ? palette.text.disabled : undefined),
-        textDecorationColor: ({ palette }) => (isDisabled ? palette.text.disabled : undefined),
+        textDecoration: 'none',
         pointerEvents: isDisabled ? 'none' : undefined,
         verticalAlign: 'inherit',
       }}
