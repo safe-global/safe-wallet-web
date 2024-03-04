@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -8,6 +9,7 @@ import {
   DialogActions,
   Button,
   Box,
+  SvgIcon,
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import madProps from '@/utils/mad-props'
@@ -16,7 +18,10 @@ import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { deleteTx } from '@/utils/gateway'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
-import { useState } from 'react'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import ExternalLink from '@/components/common/ExternalLink'
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 type DeleteTxModalProps = {
   safeTxHash: string
@@ -54,10 +59,16 @@ const _DeleteTxModal = ({ safeTxHash, onClose, onboard, safeAddress, chainId }: 
   return (
     <Dialog open onClose={onClose}>
       <DialogTitle>
-        <Box data-testid="untrusted-token-warning" display="flex" flexDirection="row" alignItems="center" gap={1}>
-          <Typography variant="h6" fontWeight={700}>
-            Confirm deletion
+        <Box data-testid="untrusted-token-warning" display="flex" alignItems="center">
+          <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <SvgIcon component={InfoIcon} inheritViewBox color="error" />
+            Delete this transaction?
           </Typography>
+
+          <Box flexGrow={1} />
+
+          <ChainIndicator chainId={chainId} />
+
           <IconButton aria-label="close" onClick={onClose} sx={{ marginLeft: 'auto' }}>
             <Close />
           </IconButton>
@@ -67,13 +78,33 @@ const _DeleteTxModal = ({ safeTxHash, onClose, onboard, safeAddress, chainId }: 
       <Divider />
 
       <DialogContent>
-        Are you sure? Beware of risks.
-        {error && <Typography color="error">{error.message}</Typography>}
+        <Box>
+          Are you sure you want to delete this transaction? This will permanently remove it from the queue but the
+          already given signatures will remain valid.
+        </Box>
+
+        <Box mt={2}>
+          Make sure that you are aware of the{' '}
+          <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
+            potential risks
+          </ExternalLink>{' '}
+          related to deleting a transaction off-chain.
+        </Box>
+
+        {error && (
+          <Box mt={2}>
+            <ErrorMessage error={error}>Error deleting transaction</ErrorMessage>
+          </Box>
+        )}
       </DialogContent>
 
       <Divider />
 
-      <DialogActions sx={{ padding: 3 }}>
+      <DialogActions sx={{ padding: 3, justifyContent: 'space-between' }}>
+        <Button size="small" variant="text" onClick={onClose}>
+          Keep it
+        </Button>
+
         <Button size="small" variant="contained" color="primary" onClick={onConfirm}>
           Yes, delete
         </Button>
