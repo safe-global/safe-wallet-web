@@ -43,8 +43,13 @@ const getEncodedSafeTx = (
     ])
 }
 
-const incrementByPercentage = (value: bigint, percentage: bigint) => {
-  return (value * (BigInt(100) + percentage)) / BigInt(100)
+const GasMultipliers = {
+  [chains.gno]: 1.3,
+  [chains.zksync]: 20,
+}
+
+const incrementByGasMultiplier = (value: bigint, multiplier: number) => {
+  return (value * BigInt(100 * multiplier)) / BigInt(100)
 }
 
 /**
@@ -80,7 +85,6 @@ const getGasLimitForZkSync = async (
   // use a random EOA address as the from address
   // https://github.com/zkSync-Community-Hub/zksync-developers/discussions/144
   const fakeEOAFromAddress = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
-  const zkSyncBaseFeeMultiplier = 20n
   const customContracts = safeSDK.getContractManager().contractNetworks?.[safe.chainId]
   const safeVersion = await safeSDK.getContractVersion()
   const ethAdapter = safeSDK.getEthAdapter()
@@ -117,7 +121,10 @@ const getGasLimitForZkSync = async (
   })
 
   // The estimateTxBaseGas function seems to estimate too low for zkSync
-  const baseGas = BigInt(await estimateTxBaseGas(safeSDK, safeTx)) * zkSyncBaseFeeMultiplier
+  const baseGas = incrementByGasMultiplier(
+    BigInt(await estimateTxBaseGas(safeSDK, safeTx)),
+    GasMultipliers[chains.zksync],
+  )
 
   return BigInt(gas) + baseGas
 }
@@ -165,8 +172,7 @@ const useGasLimit = (
         // Due to a bug in Nethermind estimation, we need to increment the gasLimit by 30%
         // when the safeTxGas is defined and not 0. Currently Nethermind is used only for Gnosis Chain.
         if (currentChainId === chains.gno && hasSafeTxGas) {
-          const incrementPercentage = BigInt(30) // value defined in %, ex. 30%
-          return incrementByPercentage(gasLimit, incrementPercentage)
+          return incrementByGasMultiplier(gasLimit, GasMultipliers[chains.gno])
         }
 
         return gasLimit
