@@ -37,7 +37,8 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
       trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_OWNED, label: ownedSafes.length })
       trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_WATCHLIST, label: watchlistSafes.length })
     }
-  }, [isLoginPage, ownedSafes, watchlistSafes])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoginPage])
 
   return (
     <Box data-testid="sidebar-safe-container" className={css.container}>
