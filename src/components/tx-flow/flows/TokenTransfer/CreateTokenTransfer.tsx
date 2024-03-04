@@ -24,7 +24,7 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
     <TokenIcon logoUri={item.tokenInfo.logoUri} key={item.tokenInfo.address} tokenSymbol={item.tokenInfo.symbol} />
 
     <Grid item xs>
-      <Typography variant="body2" whiteSpace={'normal'}>
+      <Typography variant="body2" whiteSpace="normal">
         {item.tokenInfo.name}
       </Typography>
 
