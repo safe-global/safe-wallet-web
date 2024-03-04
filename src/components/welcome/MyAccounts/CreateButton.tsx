@@ -2,7 +2,7 @@ import { Button } from '@mui/material'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 
-const buttonSx = { width: ['100%', 'auto'] }
+const buttonSx = { width: ['100%', 'auto'], height: '37.5px' }
 
 const CreateButton = () => {
   return (

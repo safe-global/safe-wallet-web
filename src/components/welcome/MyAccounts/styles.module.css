@@ -7,12 +7,11 @@
 
 .myAccounts {
   width: 100%;
-  max-width: 600px;
+  max-width: 663px;
   margin: var(--space-2);
 }
 
 .safeList {
-  padding: var(--space-3);
   margin-bottom: var(--space-3);
 }
 
@@ -23,18 +22,22 @@
 .header {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   padding: var(--space-3) 0;
-  gap: var(--space-1);
+  gap: var(--space-2);
+}
+
+.title {
+  flex: 1;
 }
 
 .listItem {
-  border: 1px solid var(--color-border-light);
   border-radius: var(--space-1);
   margin-bottom: 12px;
   padding-top: 0;
   padding-bottom: 0;
   padding-left: 0;
+  margin-bottom: var(--space-1);
+  background-color: var(--color-background-paper);
 }
 
 .currentListItem {
@@ -43,7 +46,7 @@
   background-color: var(--color-secondary-background) !important;
 }
 
-.listItem> :first-child {
+.listItem > :first-child {
   flex: 1;
   width: 90%;
 }

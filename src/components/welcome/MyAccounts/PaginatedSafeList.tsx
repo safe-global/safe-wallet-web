@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
-import { Paper, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import AccountItem from './AccountItem'
 import { type SafeItems } from './useAllSafes'
 import css from './styles.module.css'
@@ -28,22 +28,15 @@ const PaginatedSafeList = ({ safes, noSafesMessage, onLinkClick }: PaginatedSafe
   const onShowMoreSafes = () => setMaxShownSafes((prev) => prev + PAGE_SIZE)
 
   return (
-    <Paper className={css.safeList}>
+    <div className={css.safeList}>
       {shownSafes.length ? (
-        shownSafes.map((item) => (
-          <AccountItem
-            onLinkClick={onLinkClick}
-            isReadonly={item.isReadonly}
-            {...item}
-            key={item.chainId + item.address}
-          />
-        ))
+        shownSafes.map((item) => <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />)
       ) : (
         <Typography variant="body2" color="text.secondary" textAlign="center" py={3} mx="auto" width={250}>
           {noSafesMessage}
         </Typography>
       )}
-    </Paper>
+    </div>
   )
 }
 

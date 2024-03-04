@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Button, Link, Typography } from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
@@ -32,8 +32,22 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
       <Box className={css.myAccounts}>
         <Box className={css.header}>
           <Typography variant="h1" fontWeight={700} className={css.title}>
-            Safe accounts
+            My accounts
           </Typography>
+          <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
+            <Link href={AppRoutes.newSafe.load}>
+              <Button
+                data-testid="create-safe-btn"
+                disableElevation
+                size="small"
+                variant="outlined"
+                component="a"
+                onClick={onLinkClick}
+              >
+                Watch Account
+              </Button>
+            </Link>
+          </Track>
           <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
             <CreateButton />
           </Track>
