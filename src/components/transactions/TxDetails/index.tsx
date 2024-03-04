@@ -33,6 +33,7 @@ import { isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import useWallet from '@/hooks/wallets/useWallet'
+import { sameAddress } from '@/utils/addresses'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -61,7 +62,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
     isMultisigExecutionInfo(txSummary.executionInfo) &&
     wallet &&
-    wallet.address === txSummary.executionInfo.proposer?.value
+    sameAddress(wallet.address, txSummary.executionInfo.proposer?.value)
       ? txDetails.detailedExecutionInfo.safeTxHash
       : undefined
 
