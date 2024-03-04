@@ -12,7 +12,7 @@ import { sameAddress } from '@/utils/addresses'
 export type SafeItems = Array<{
   chainId: string
   address: string
-  isWatchlist: boolean
+  isReadonly: boolean
   threshold?: number
   owners?: number
 }>
@@ -60,7 +60,7 @@ const useAllSafes = (): SafeItems | undefined => {
         return {
           address,
           chainId,
-          isWatchlist: !isOwned && !isUndeployed,
+          isReadonly: !isOwned && !isUndeployed,
           threshold: allAdded[chainId]?.[address]?.threshold,
           owners: allAdded[chainId]?.[address]?.owners.length,
         }

@@ -18,7 +18,7 @@ const useGetSafeInfo = () => {
       chainId: parseInt(chainId, 10),
       owners: safe.owners.map((owner) => owner.value),
       threshold: safe.threshold,
-      isReadOnly: !isOwner,
+      isReadonly: !isOwner,
       network: getLegacyChainName(chainName || '', chainId).toUpperCase(),
     }),
     [chainId, chainName, isOwner, safeAddress, safe.owners, safe.threshold],

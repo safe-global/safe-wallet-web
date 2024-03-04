@@ -1,5 +1,4 @@
-import { useMemo } from 'react'
-import { Box, Button, Link, SvgIcon, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
@@ -8,13 +7,10 @@ import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
 import PaginatedSafeList from './PaginatedSafeList'
-import { VisibilityOutlined } from '@mui/icons-material'
-import AddIcon from '@/public/images/common/add.svg'
 import { AppRoutes } from '@/config/routes'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
-import useTrackSafesCount from './useTrackedSafesCount'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 
@@ -26,9 +22,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const wallet = useWallet()
   const router = useRouter()
 
-  const ownedSafes = useMemo(() => safes?.filter(({ isWatchlist }) => !isWatchlist), [safes])
-  const watchlistSafes = useMemo(() => safes?.filter(({ isWatchlist }) => isWatchlist), [safes])
-  useTrackSafesCount(ownedSafes, watchlistSafes)
+  // useTrackSafesCount(ownedSafes, watchlistSafes)
 
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
   const trackingLabel = isLoginPage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
@@ -46,8 +40,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
         </Box>
 
         <PaginatedSafeList
-          title="My accounts"
-          safes={ownedSafes || []}
+          safes={safes || []}
           onLinkClick={onLinkClick}
           noSafesMessage={
             wallet ? (
@@ -62,33 +55,6 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
             )
           }
         />
-
-        <PaginatedSafeList
-          title={
-            <>
-              <VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: '10px' }} fontSize="small" />
-              Watchlist
-            </>
-          }
-          safes={watchlistSafes || []}
-          action={
-            <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
-              <Link href={AppRoutes.newSafe.load}>
-                <Button
-                  disableElevation
-                  size="small"
-                  onClick={onLinkClick}
-                  startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-                >
-                  Add
-                </Button>
-              </Link>
-            </Track>
-          }
-          noSafesMessage={NO_SAFES_MESSAGE}
-          onLinkClick={onLinkClick}
-        />
-
         <DataWidget />
       </Box>
     </Box>

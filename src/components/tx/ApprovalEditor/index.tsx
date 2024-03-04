@@ -60,7 +60,7 @@ export const ApprovalEditor = ({
     createSafeTx().then(setSafeTx).catch(setSafeTxError)
   }
 
-  const isReadOnly = (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined
+  const isReadonly = (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined
 
   return (
     <Box display="flex" flexDirection="column" gap={2} mb={3}>
@@ -69,7 +69,7 @@ export const ApprovalEditor = ({
         <Alert severity="error">Error while decoding approval transactions.</Alert>
       ) : loading || !readableApprovals ? (
         <Skeleton variant="rounded" height={100} data-testid="approval-editor-loading" />
-      ) : isReadOnly ? (
+      ) : isReadonly ? (
         <Approvals approvalInfos={readableApprovals} />
       ) : (
         <ApprovalEditorForm approvalInfos={readableApprovals} updateApprovals={updateApprovals} />

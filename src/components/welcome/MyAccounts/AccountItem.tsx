@@ -1,6 +1,7 @@
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
 import { ListItemButton, Box, Typography } from '@mui/material'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
@@ -22,12 +23,13 @@ import { useRouter } from 'next/router'
 type AccountItemProps = {
   chainId: string
   address: string
+  isReadonly: boolean
   threshold?: number
   owners?: number
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, chainId, address, isReadonly, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
@@ -75,10 +77,21 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
                 {name}
               </Typography>
             )}
-            {chain?.shortName}:
+            <b>{chain?.shortName}: </b>
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
             </Typography>
+            {isReadonly && (
+              <Typography
+                variant="body2"
+                display="flex"
+                alignItems="center"
+                sx={({ palette }) => ({ color: palette.border.main })}
+              >
+                <VisibilityIcon fontSize="inherit" sx={{ marginRight: 1 }} />
+                Read-only
+              </Typography>
+            )}
           </Typography>
 
           <Box flex={1} />
