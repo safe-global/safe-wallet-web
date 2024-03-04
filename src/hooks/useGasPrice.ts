@@ -1,5 +1,5 @@
 import { formatVisualAmount } from '@/utils/formatters'
-import { type FeeData, parseUnits } from 'ethers'
+import { type FeeData } from 'ethers'
 import type {
   ChainInfo,
   GasPrice,
@@ -33,8 +33,6 @@ type GasFeeParams = {
 // Update gas fees every 20 seconds
 const REFRESH_DELAY = 20e3
 
-const ETHER_SCAN_URL = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle'
-
 type EtherscanResult = {
   LastBlock: string
   SafeGasPrice: string
@@ -42,6 +40,10 @@ type EtherscanResult = {
   FastGasPrice: string
   suggestBaseFee: string
   gasUsedRatio: string
+}
+
+const isEtherscanResult = (data: any): data is EtherscanResult => {
+  return 'FastGasPrice' in data && 'suggestBaseFee' in data
 }
 
 /**
@@ -52,9 +54,9 @@ type EtherscanResult = {
  * @param result {@link EtherscanResult}
  * @see https://docs.etherscan.io/api-endpoints/gas-tracker
  */
-const parseEtherscanOracleResult = (result: EtherscanResult): EstimatedGasPrice => {
-  const maxFeePerGas = parseUnits(result.FastGasPrice, 9)
-  const baseFee = parseUnits(result.suggestBaseFee, 9)
+const parseEtherscanOracleResult = (result: EtherscanResult, gweiFactor: string): EstimatedGasPrice => {
+  const maxFeePerGas = BigInt(Number(result.FastGasPrice) * Number(gweiFactor))
+  const baseFee = BigInt(Number(result.suggestBaseFee) * Number(gweiFactor))
 
   return {
     maxFeePerGas: maxFeePerGas,
@@ -75,8 +77,8 @@ const fetchGasOracle = async (gasPriceOracle: GasPriceOracle): Promise<Estimated
   const json = await response.json()
   const data = json.data || json.result || json
 
-  if (uri.startsWith(ETHER_SCAN_URL)) {
-    return parseEtherscanOracleResult(data)
+  if (isEtherscanResult(data)) {
+    return parseEtherscanOracleResult(data, gweiFactor)
   }
   return { gasPrice: BigInt(data[gasParameter] * Number(gweiFactor)) }
 }
