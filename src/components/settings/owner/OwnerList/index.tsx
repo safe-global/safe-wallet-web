@@ -150,7 +150,7 @@ function exportOwners({ chainId, address, owners }: SafeInfo, addressBook: Addre
   const link = document.createElement('a')
 
   Object.assign(link, {
-    download: `${chainId}-${address.value}-owners.csv`,
+    download: `${chainId}-${address.value}-signers.csv`,
     href: window.URL.createObjectURL(blob),
   })
 
