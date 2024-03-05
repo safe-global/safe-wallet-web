@@ -83,7 +83,7 @@ const WelcomeLogin = () => {
             {hasSafes ? (
               <Link href={AppRoutes.welcome.accounts}>
                 <Button disableElevation size="small">
-                  View my Watchlist
+                  View my accounts
                 </Button>
               </Link>
             ) : (
