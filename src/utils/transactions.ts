@@ -34,6 +34,7 @@ import { toBeHex, AbiCoder } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
+import { sameAddress } from './addresses'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -297,4 +298,19 @@ export const isTrustedTx = (tx: TransactionSummary) => {
     !isERC20Transfer(tx.txInfo.transferInfo) ||
     Boolean(tx.txInfo.transferInfo.trusted)
   )
+}
+
+export const getProposedTxHash = (
+  txSummary: TransactionSummary,
+  txDetails: TransactionDetails,
+  walletAddress: string | undefined,
+) => {
+  const proposedSafeTxHash =
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
+    isMultisigExecutionInfo(txSummary.executionInfo) &&
+    walletAddress &&
+    sameAddress(walletAddress, txSummary.executionInfo.proposer?.value)
+      ? txDetails.detailedExecutionInfo.safeTxHash
+      : undefined
+  return proposedSafeTxHash
 }

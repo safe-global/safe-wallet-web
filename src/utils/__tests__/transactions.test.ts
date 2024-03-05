@@ -4,10 +4,12 @@ import type {
   Label,
   SafeAppData,
   Transaction,
+  TransactionDetails,
+  TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import { isMultiSendTxInfo } from '../transaction-guards'
-import { getQueuedTransactionCount, getTxOrigin } from '../transactions'
+import { getQueuedTransactionCount, getTxOrigin, getProposedTxHash } from '../transactions'
 
 describe('transactions', () => {
   describe('getQueuedTransactionCount', () => {
@@ -183,6 +185,34 @@ describe('transactions', () => {
           },
         }),
       ).toBe(false)
+    })
+  })
+
+  describe('getProposedTxHash', () => {
+    const txSummary = {
+      executionInfo: {
+        type: 'MULTISIG',
+        proposer: {
+          value: '0x1234567890',
+        },
+      },
+    } as unknown as TransactionSummary
+
+    const txDetails = {
+      detailedExecutionInfo: {
+        type: 'MULTISIG',
+        safeTxHash: '0x123',
+      },
+    } as unknown as TransactionDetails
+
+    it('should return the hash of a proposed tx', () => {
+      const walletAddress = '0x1234567890'
+      expect(getProposedTxHash(txSummary, txDetails, walletAddress)).toBe('0x123')
+    })
+
+    it('should return undefined if the tx is not proposed by the wallet', () => {
+      const walletAddress = '0x999999999999'
+      expect(getProposedTxHash(txSummary, txDetails, walletAddress)).toBe(undefined)
     })
   })
 })

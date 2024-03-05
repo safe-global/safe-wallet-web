@@ -29,11 +29,10 @@ import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsPending from '@/hooks/useIsPending'
-import { isTrustedTx } from '@/utils/transactions'
+import { getProposedTxHash, isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import useWallet from '@/hooks/wallets/useWallet'
-import { sameAddress } from '@/utils/addresses'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -58,13 +57,8 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   // If we have no token list we always trust the transfer
   const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
 
-  const proposedSafeTxHash =
-    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
-    isMultisigExecutionInfo(txSummary.executionInfo) &&
-    wallet &&
-    sameAddress(wallet.address, txSummary.executionInfo.proposer?.value)
-      ? txDetails.detailedExecutionInfo.safeTxHash
-      : undefined
+  // Get the safe tx hash if the wallet is the proposer of this tx
+  const proposedSafeTxHash = getProposedTxHash(txSummary, txDetails, wallet?.address)
 
   return (
     <>

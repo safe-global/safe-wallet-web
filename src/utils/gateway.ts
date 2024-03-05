@@ -33,17 +33,12 @@ export const isWalletConnectSafeApp = (url: string): boolean => {
   return url === WC_APP_PROD.url || url === WC_APP_DEV.url
 }
 
-export const deleteTx = async ({
-  chainId,
-  safeAddress,
-  safeTxHash,
-  signer,
-}: {
-  chainId: string
-  safeAddress: string
-  safeTxHash: string
-  signer: JsonRpcSigner
-}) => {
+const signTxServiceMessage = async (
+  chainId: string,
+  safeAddress: string,
+  safeTxHash: string,
+  signer: JsonRpcSigner,
+): Promise<string> => {
   const domain = {
     name: 'Safe Transaction Service',
     version: '1.0',
@@ -62,6 +57,20 @@ export const deleteTx = async ({
   }
 
   const signature = await signer.signTypedData(domain, types, message)
+  return signature
+}
 
+export const deleteTx = async ({
+  chainId,
+  safeAddress,
+  safeTxHash,
+  signer,
+}: {
+  chainId: string
+  safeAddress: string
+  safeTxHash: string
+  signer: JsonRpcSigner
+}) => {
+  const signature = await signTxServiceMessage(chainId, safeAddress, safeTxHash, signer)
   return await deleteTransaction(chainId, safeTxHash, signature)
 }
