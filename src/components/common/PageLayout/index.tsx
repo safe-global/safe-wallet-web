@@ -1,3 +1,4 @@
+import { useIsHeaderRoute } from '@/hooks/useIsHeaderRoute'
 import { useContext, useEffect, useState, type ReactElement } from 'react'
 import classnames from 'classnames'
 
@@ -12,6 +13,7 @@ import BatchSidebar from '@/components/batch/BatchSidebar'
 
 const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
   const [isSidebarRoute, isAnimated] = useIsSidebarRoute(pathname)
+  const isHeaderRoute = useIsHeaderRoute(pathname)
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true)
   const [isBatchOpen, setBatchOpen] = useState<boolean>(false)
   const { setFullWidth } = useContext(TxModalContext)
@@ -22,9 +24,11 @@ const PageLayout = ({ pathname, children }: { pathname: string; children: ReactE
 
   return (
     <>
-      <header className={css.header}>
-        <Header onMenuToggle={isSidebarRoute ? setSidebarOpen : undefined} onBatchToggle={setBatchOpen} />
-      </header>
+      {isHeaderRoute && (
+        <header className={css.header}>
+          <Header onMenuToggle={isSidebarRoute ? setSidebarOpen : undefined} onBatchToggle={setBatchOpen} />
+        </header>
+      )}
 
       {isSidebarRoute && <SideDrawer isOpen={isSidebarOpen} onToggle={setSidebarOpen} />}
 

@@ -15,6 +15,7 @@ const NO_SIDEBAR_ROUTES = [
   AppRoutes.cookie,
   AppRoutes.terms,
   AppRoutes.licenses,
+  AppRoutes.unsubscribe,
 ]
 
 const TOGGLE_SIDEBAR_ROUTES = [AppRoutes.apps.open]
