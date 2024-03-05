@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Box, Button, Link, SvgIcon, Typography } from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
 import PaginatedSafeList from './PaginatedSafeList'
@@ -14,6 +14,7 @@ import { AppRoutes } from '@/config/routes'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
+import useTrackSafesCount from './useTrackedSafesCount'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 
@@ -27,18 +28,10 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
 
   const ownedSafes = useMemo(() => safes?.filter(({ isWatchlist }) => !isWatchlist), [safes])
   const watchlistSafes = useMemo(() => safes?.filter(({ isWatchlist }) => isWatchlist), [safes])
+  useTrackSafesCount(ownedSafes, watchlistSafes)
 
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
   const trackingLabel = isLoginPage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
-
-  useEffect(() => {
-    // track owned and watchlist safe counts once when the user logs in
-    if (watchlistSafes && ownedSafes && isLoginPage) {
-      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_OWNED, label: ownedSafes.length })
-      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_WATCHLIST, label: watchlistSafes.length })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoginPage])
 
   return (
     <Box data-testid="sidebar-safe-container" className={css.container}>
