@@ -17,19 +17,18 @@ type PaginatedSafeListProps = {
 
 const DEFAULT_SHOWN = 5
 const MAX_DEFAULT_SHOWN = 7
-const PAGE_SIZE = 5
 
 const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }: PaginatedSafeListProps) => {
-  const [maxShownSafes, setMaxShownSafes] = useState<number>(DEFAULT_SHOWN)
+  const [isListExpanded, setIsListExpanded] = useState<boolean>(false)
 
   const shownSafes = useMemo(() => {
     if (safes.length <= MAX_DEFAULT_SHOWN) {
       return safes
     }
-    return safes.slice(0, maxShownSafes)
-  }, [safes, maxShownSafes])
+    return isListExpanded ? safes : safes.slice(0, DEFAULT_SHOWN)
+  }, [safes, isListExpanded])
 
-  const onShowMoreSafes = () => setMaxShownSafes((prev) => prev + PAGE_SIZE)
+  const onShowMoreSafes = () => setIsListExpanded(true)
 
   return (
     <Paper className={css.safeList}>
@@ -52,7 +51,7 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
           {noSafesMessage}
         </Typography>
       )}
-      {safes.length > shownSafes.length && (
+      {!isListExpanded && (
         <Box display="flex" justifyContent="center">
           <Track {...OVERVIEW_EVENTS.SHOW_MORE_SAFES}>
             <Button data-testid="show-more-btn" onClick={onShowMoreSafes}>
