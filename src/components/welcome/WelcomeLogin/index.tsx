@@ -73,16 +73,28 @@ const WelcomeLogin = () => {
           </>
         )}
 
-        <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
-          <Typography color="text.secondary" fontWeight={700} variant="overline">
-            or
-          </Typography>
-        </Divider>
-        <Link href={AppRoutes.newSafe.load}>
-          <Button disableElevation size="small">
-            Watch any account
-          </Button>
-        </Link>
+        {!wallet && (
+          <>
+            <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
+              <Typography color="text.secondary" fontWeight={700} variant="overline">
+                or
+              </Typography>
+            </Divider>
+            {hasSafes ? (
+              <Link href={AppRoutes.welcome.accounts}>
+                <Button disableElevation size="small">
+                  View my accounts
+                </Button>
+              </Link>
+            ) : (
+              <Link href={AppRoutes.newSafe.load}>
+                <Button disableElevation size="small">
+                  Watch any account
+                </Button>
+              </Link>
+            )}
+          </>
+        )}
       </Box>
     </Paper>
   )
