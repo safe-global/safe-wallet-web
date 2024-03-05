@@ -1,3 +1,4 @@
+import { isEmptyHexData } from '@/utils/hex'
 import { type InternalTransaction, Operation, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -34,7 +35,8 @@ export const SingleTxDecoded = ({
   onChange,
 }: SingleTxDecodedProps) => {
   const chain = useCurrentChain()
-  const method = tx.dataDecoded?.method || ''
+  const isNativeTransfer = tx.value !== '0' && tx.data && isEmptyHexData(tx.data)
+  const method = tx.dataDecoded?.method || (isNativeTransfer ? 'native transfer' : 'Unknown contract interaction')
   const { decimals, symbol } = chain?.nativeCurrency || {}
   const amount = tx.value ? formatVisualAmount(tx.value, decimals) : 0
 
@@ -62,7 +64,7 @@ export const SingleTxDecoded = ({
           <Typography>{actionTitle}</Typography>
           <Typography ml="8px">
             {name ? name + ': ' : ''}
-            <b>{method || 'native transfer'}</b>
+            <b>{method}</b>
           </Typography>
         </div>
       </AccordionSummary>
