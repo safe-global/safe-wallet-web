@@ -11,11 +11,13 @@ const ErrorMessage = ({
   error,
   className,
   level = 'error',
+  noMargin = false,
 }: {
   children: ReactNode
   error?: Error & { reason?: string }
   className?: string
   level?: 'error' | 'warning' | 'info' | 'border'
+  noMargin?: boolean
 }): ReactElement => {
   const [showDetails, setShowDetails] = useState<boolean>(false)
 
@@ -25,7 +27,10 @@ const ErrorMessage = ({
   }
 
   return (
-    <div data-testid="error-message" className={classNames(css.container, css[level], className, 'errorMessage')}>
+    <div
+      data-testid="error-message"
+      className={classNames(css.container, css[level], className, 'errorMessage', { [css.noMargin]: noMargin })}
+    >
       <div className={css.message}>
         <SvgIcon
           component={level === 'info' || level === 'border' ? InfoIcon : WarningIcon}
