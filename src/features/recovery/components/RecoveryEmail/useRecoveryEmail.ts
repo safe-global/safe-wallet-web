@@ -1,8 +1,10 @@
+import useRecovery from '@/features/recovery/hooks/useRecovery'
 import {
   changeEmail,
   deleteRegisteredEmail,
   getRegisteredEmail,
   registerEmail,
+  registerRecoveryModule,
   resendEmailVerificationCode,
   verifyEmail,
 } from '@safe-global/safe-gateway-typescript-sdk'
@@ -13,6 +15,7 @@ import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 const useRecoveryEmail = () => {
   const onboard = useOnboard()
   const { safe, safeAddress } = useSafeInfo()
+  const [recovery] = useRecovery()
 
   const registerEmailAddress = async (emailAddress: string) => {
     if (!onboard) return
@@ -100,6 +103,12 @@ const useRecoveryEmail = () => {
     )
   }
 
+  const registerRecovery = () => {
+    if (!recovery || recovery.length === 0) return
+
+    return registerRecoveryModule(safe.chainId, safeAddress, { moduleAddress: recovery[0].address })
+  }
+
   return {
     getSignerEmailAddress,
     registerEmailAddress,
@@ -107,6 +116,7 @@ const useRecoveryEmail = () => {
     deleteEmailAddress,
     editEmailAddress,
     resendVerification,
+    registerRecovery,
   }
 }
 

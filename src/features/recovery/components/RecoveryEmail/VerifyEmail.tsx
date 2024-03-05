@@ -1,4 +1,3 @@
-import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
 import { useState } from 'react'
@@ -23,14 +22,10 @@ export const NotVerifiedMessage = ({ onVerify }: { onVerify: () => void }) => {
   )
 }
 
-export const isNoContentResponse = (error: string) => {
-  return error === 'Invalid response content: No Content'
-}
-
 const VerifyEmail = ({ onCancel, onSuccess }: { onCancel: () => void; onSuccess: () => void }) => {
   const [error, setError] = useState<string>()
   const [verificationCode, setVerificationCode] = useState<string>('')
-  const { verifyEmailAddress, resendVerification } = useRecoveryEmail()
+  const { verifyEmailAddress, resendVerification, registerRecovery } = useRecoveryEmail()
   const dispatch = useAppDispatch()
 
   const handleRetry = async () => {
@@ -38,30 +33,24 @@ const VerifyEmail = ({ onCancel, onSuccess }: { onCancel: () => void; onSuccess:
       await resendVerification()
       setError(undefined)
     } catch (e) {
-      console.log(e)
-      // TODO: logError
+      setError('Error requesting verification code. Please try again.')
     }
   }
 
   const handleVerify = async () => {
     try {
       setError(undefined)
-      const result = await verifyEmailAddress(verificationCode)
+      await verifyEmailAddress(verificationCode)
+      dispatch(
+        showNotification({
+          variant: 'success',
+          groupKey: 'verify-email-complete',
+          message: 'Your email address is verified',
+        }),
+      )
+      onSuccess()
+      await registerRecovery()
     } catch (e) {
-      const error = asError(e)
-
-      // TODO: Handle empty body responses in the SDK or CGW
-      if (isNoContentResponse(error.message)) {
-        dispatch(
-          showNotification({
-            variant: 'success',
-            groupKey: 'verify-email-complete',
-            message: 'Your email address is verified',
-          }),
-        )
-        onSuccess()
-      }
-
       setError('Wrong verification code. Try again.')
     }
   }

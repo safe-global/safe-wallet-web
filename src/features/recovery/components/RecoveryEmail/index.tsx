@@ -1,10 +1,7 @@
 import CheckWallet from '@/components/common/CheckWallet'
 import RegisterEmail from '@/features/recovery/components/RecoveryEmail/RegisterEmail'
 import useRecoveryEmail from '@/features/recovery/components/RecoveryEmail/useRecoveryEmail'
-import VerifyEmail, {
-  isNoContentResponse,
-  NotVerifiedMessage,
-} from '@/features/recovery/components/RecoveryEmail/VerifyEmail'
+import VerifyEmail, { NotVerifiedMessage } from '@/features/recovery/components/RecoveryEmail/VerifyEmail'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import EditIcon from '@/public/images/common/edit.svg'
 import { asError } from '@/services/exceptions/utils'
@@ -67,20 +64,17 @@ const RecoveryEmail = () => {
   const onDelete = async () => {
     try {
       await deleteEmailAddress()
+      setEmail(undefined)
+
+      dispatch(
+        showNotification({
+          variant: 'success',
+          groupKey: 'delete-email-complete',
+          message: 'Your email was deleted',
+        }),
+      )
     } catch (e) {
-      const error = asError(e)
-
-      if (isNoContentResponse(error.message)) {
-        setEmail(undefined)
-
-        dispatch(
-          showNotification({
-            variant: 'success',
-            groupKey: 'delete-email-complete',
-            message: 'Your email was deleted',
-          }),
-        )
-      }
+      console.log(e)
     }
   }
 

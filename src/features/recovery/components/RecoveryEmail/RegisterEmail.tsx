@@ -44,7 +44,7 @@ const RegisterEmail = ({
       const error = asError(e)
       if (isWalletRejection(error)) return
 
-      setError('Failed to register email address. Please try again.')
+      setError(`Failed to ${initialValue ? 'edit' : 'register'} email address. Please try again.`)
     }
   }
 
