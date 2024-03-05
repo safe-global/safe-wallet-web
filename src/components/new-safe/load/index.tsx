@@ -25,8 +25,8 @@ export const LoadSafeSteps: TxStepperProps<LoadSafeFormData>['steps'] = [
     ),
   },
   {
-    title: 'Owners and confirmations',
-    subtitle: 'Optional: Provide a name for each owner.',
+    title: 'Signers and confirmations',
+    subtitle: 'Optional: Provide a name for each signer.',
     render: (data, onSubmit, onBack, setStep) => (
       <SafeOwnerStep onSubmit={onSubmit} onBack={onBack} data={data} setStep={setStep} />
     ),

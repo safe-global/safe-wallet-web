@@ -50,7 +50,7 @@ export const OwnerList = () => {
                 <CheckWallet>
                   {(isOk) => (
                     <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
-                      <Tooltip title={isOk ? 'Replace owner' : undefined}>
+                      <Tooltip title={isOk ? 'Replace signer' : undefined}>
                         <span>
                           <IconButton
                             onClick={() => setTxFlow(<ReplaceOwnerFlow address={address} />)}
@@ -71,7 +71,7 @@ export const OwnerList = () => {
                   <CheckWallet>
                     {(isOk) => (
                       <Track {...SETTINGS_EVENTS.SETUP.REMOVE_OWNER}>
-                        <Tooltip title={isOk ? 'Remove owner' : undefined}>
+                        <Tooltip title={isOk ? 'Remove signer' : undefined}>
                           <span>
                             <IconButton
                               onClick={() => setTxFlow(<RemoveOwnerFlow name={name} address={address} />)}
@@ -99,13 +99,13 @@ export const OwnerList = () => {
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
-            Manage Safe Account owners
+            Manage Safe Account signers
           </Typography>
         </Grid>
 
         <Grid item xs>
           <Typography mb={2}>
-            Add, remove and replace or rename existing owners. Owner names are only stored locally and will never be
+            Add, remove and replace or rename existing signers. Signer names are only stored locally and will never be
             shared with us or any third parties.
           </Typography>
 
@@ -122,7 +122,7 @@ export const OwnerList = () => {
                     startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
                     disabled={!isOk}
                   >
-                    Add new owner
+                    Add new signer
                   </Button>
                 </Track>
               )}
@@ -150,7 +150,7 @@ function exportOwners({ chainId, address, owners }: SafeInfo, addressBook: Addre
   const link = document.createElement('a')
 
   Object.assign(link, {
-    download: `${chainId}-${address.value}-owners.csv`,
+    download: `${chainId}-${address.value}-signers.csv`,
     href: window.URL.createObjectURL(blob),
   })
 

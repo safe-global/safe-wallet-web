@@ -77,7 +77,7 @@ export class RecipientAddressModule
       address,
       description: {
         short: 'Address is not known',
-        long: 'The address is not an owner or present in your address book and is not a smart contract',
+        long: 'The address is not a signer or present in your address book and is not a smart contract',
       },
       type: RecipietAddressIssueType.UNKNOWN_ADDRESS,
     })

@@ -39,7 +39,7 @@ export const UpdateSafeReview = () => {
       </Typography>
 
       <Typography mb={2}>
-        You will need to confirm this update just like any other transaction. This means other owners will have to
+        You will need to confirm this update just like any other transaction. This means other signers will have to
         confirm the update in case more than one confirmation is required for this Safe Account.
       </Typography>
 

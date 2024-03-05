@@ -21,7 +21,7 @@ export function OwnerList({
     <Paper className={css.container} sx={sx}>
       <Typography color="text.secondary" display="flex" alignItems="center">
         <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-        {title ?? `New owner${owners.length > 1 ? 's' : ''}`}
+        {title ?? `New signer${owners.length > 1 ? 's' : ''}`}
       </Typography>
       {owners.map((newOwner) => (
         <EthHashInfo

@@ -15,7 +15,7 @@ export const NoSpendingLimits = () => {
           <b>Select beneficiary</b>
         </Typography>
         <Typography>
-          Choose an account that will benefit from this allowance. The beneficiary does not have to be an owner of this
+          Choose an account that will benefit from this allowance. The beneficiary does not have to be a signer of this
           Safe Account
         </Typography>
       </Grid>

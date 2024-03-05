@@ -46,7 +46,7 @@ export const OwnerRow = ({
     async (address: string) => {
       const owners = getValues('owners')
       if (owners.filter((owner: NamedAddress) => sameAddress(owner.address, address)).length > 1) {
-        return 'Owner is already added'
+        return 'Signer is already added'
       }
     },
     [getValues],
@@ -80,9 +80,9 @@ export const OwnerRow = ({
           <NameInput
             data-testid="owner-name"
             name={`${fieldName}.name`}
-            label="Owner name"
+            label="Signer name"
             InputLabelProps={{ shrink: true }}
-            placeholder={ens || `Owner ${index + 1}`}
+            placeholder={ens || `Signer ${index + 1}`}
             helperText={walletIsOwner && 'Your connected wallet'}
             InputProps={{
               endAdornment: resolving ? (
@@ -101,7 +101,7 @@ export const OwnerRow = ({
           </Typography>
         ) : (
           <FormControl fullWidth>
-            <AddressBookInput name={`${fieldName}.address`} label="Owner" validate={validateSafeAddress} deps={deps} />
+            <AddressBookInput name={`${fieldName}.address`} label="Signer" validate={validateSafeAddress} deps={deps} />
           </FormControl>
         )}
       </Grid>
@@ -109,7 +109,7 @@ export const OwnerRow = ({
         <Grid item ml={-2} xs={1} alignSelf="stretch" display="flex" alignItems="center" flexShrink={0}>
           {removable && (
             <>
-              <IconButton data-testid="remove-owner-btn" onClick={() => remove?.(index)} aria-label="Remove owner">
+              <IconButton data-testid="remove-owner-btn" onClick={() => remove?.(index)} aria-label="Remove signer">
                 <SvgIcon component={DeleteIcon} inheritViewBox />
               </IconButton>
             </>

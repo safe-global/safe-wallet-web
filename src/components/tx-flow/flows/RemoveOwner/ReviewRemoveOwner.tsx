@@ -36,7 +36,7 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
       <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: 2 }}>
         <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
           <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-          Selected owner
+          Selected signer
         </Typography>
         <EthHashInfo
           address={removedOwner.address}
@@ -52,7 +52,7 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
           Any transaction requires the confirmation of:
         </Typography>
         <Typography>
-          <b>{threshold}</b> out of <b>{newOwnerLength}</b> owners
+          <b>{threshold}</b> out of <b>{newOwnerLength}</b> signers
         </Typography>
       </Box>
       <Divider className={commonCss.nestedDivider} />

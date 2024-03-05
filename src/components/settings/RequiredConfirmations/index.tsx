@@ -21,7 +21,7 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
         <Grid item xs>
           <Typography>Any transaction requires the confirmation of:</Typography>
           <Typography paddingTop={3}>
-            <b>{threshold}</b> out of <b>{owners}</b> owners.
+            <b>{threshold}</b> out of <b>{owners}</b> signers.
           </Typography>
 
           {owners > 1 && (
