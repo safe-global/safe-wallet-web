@@ -154,7 +154,13 @@ export const SetupRecoveryButton = ({ eventLabel }: { eventLabel: string }) => {
       <CheckWallet>
         {(isOk) => (
           <Track {...RECOVERY_EVENTS.SETUP_RECOVERY} label={eventLabel}>
-            <Button variant="contained" disabled={!isOk} onClick={() => setOpen(true)} sx={{ mt: 2 }}>
+            <Button
+              data-testid="setup-recovery-btn"
+              variant="contained"
+              disabled={!isOk}
+              onClick={() => setOpen(true)}
+              sx={{ mt: 2 }}
+            >
               Set up recovery
             </Button>
           </Track>

@@ -64,6 +64,7 @@ export function ExecuteRecoveryButton({
           >
             <span>
               <Button
+                data-testid="execute-btn"
                 onClick={onClick}
                 variant="contained"
                 disabled={isDisabled}

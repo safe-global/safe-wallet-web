@@ -38,7 +38,7 @@ export function CancelRecoveryOverview({ onSubmit }: { onSubmit: () => void }): 
             Go back
           </Button>
 
-          <Button variant="contained" onClick={onSubmit} className={css.button}>
+          <Button data-testid="cancel-proposal-btn" variant="contained" onClick={onSubmit} className={css.button}>
             Yes, cancel proposal
           </Button>
         </Box>

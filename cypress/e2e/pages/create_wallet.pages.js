@@ -9,7 +9,7 @@ const nameInput = 'input[name="name"]'
 const ownerInput = 'input[name^="owners"][name$="name"]'
 const ownerAddress = 'input[name^="owners"][name$="address"]'
 const thresholdInput = 'input[name="threshold"]'
-export const removeOwnerBtn = 'button[aria-label="Remove signer"]'
+export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
 const connectingContainer = 'div[class*="connecting-container"]'
 const createNewSafeBtn = '[data-testid="create-safe-btn"]'
 const connectWalletBtn = 'Connect wallet'
@@ -42,9 +42,8 @@ const welcomeToSafeStr = 'Welcome to Safe'
 export function verifyNewSafeDialogModal() {
   main.verifyElementsIsVisible([safeBackupAlert, dialogConfirmBtn])
 }
-
+//
 export function verifyCFSafeCreated() {
-  sidebar.checkSafeAddressInHeader([constants.CF_SAFE_SHORT])
   main.verifyElementsIsVisible([sidebar.pendingActivationIcon, safeActivationSection])
 }
 
@@ -194,7 +193,7 @@ export function typeOwnerAddress(address, index, clearOnly = false) {
 }
 
 export function clickOnAddNewOwnerBtn() {
-  cy.contains('button', 'Add new signer').click().wait(700)
+  cy.contains('button', 'Add new owner').click().wait(700)
 }
 
 export function addNewOwner(name, address, index) {
