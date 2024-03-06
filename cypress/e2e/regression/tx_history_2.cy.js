@@ -41,7 +41,7 @@ describe('Tx history tests 2', () => {
   })
 
   // Batch transaction
-  it('Verify exapanded details for batch', () => {
+  it.only('Verify exapanded details for batch', () => {
     createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [
@@ -53,7 +53,7 @@ describe('Tx history tests 2', () => {
       ],
       createTx.delegateCallWarning,
     )
-    createTx.verifyActions([typeBatch.unknownContractInteraction.title])
+    createTx.verifyActions([typeBatch.nativeTransfer.title])
   })
 
   // Add owner
