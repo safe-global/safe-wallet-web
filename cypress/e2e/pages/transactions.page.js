@@ -1,5 +1,3 @@
-import * as main from '../pages/main.page'
-
 const executeNowOption = '[data-testid="execute-checkbox"]'
 const executeLaterOption = '[data-testid="sign-checkbox"]'
 const connectedWalletExecutionMethod = '[data-testid="connected-wallet-execution-method"]'
