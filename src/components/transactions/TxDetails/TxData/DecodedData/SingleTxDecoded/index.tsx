@@ -35,7 +35,7 @@ export const SingleTxDecoded = ({
   onChange,
 }: SingleTxDecodedProps) => {
   const chain = useCurrentChain()
-  const isNativeTransfer = tx.value !== '0' && tx.data && isEmptyHexData(tx.data)
+  const isNativeTransfer = tx.value !== '0' && (!tx.data || isEmptyHexData(tx.data))
   const method = tx.dataDecoded?.method || (isNativeTransfer ? 'native transfer' : 'Unknown contract interaction')
   const { decimals, symbol } = chain?.nativeCurrency || {}
   const amount = tx.value ? formatVisualAmount(tx.value, decimals) : 0
