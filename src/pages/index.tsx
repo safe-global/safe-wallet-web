@@ -10,7 +10,7 @@ const IndexPage: NextPage = () => {
   const { hasSafes } = useHasSafes()
 
   useEffect(() => {
-    if (!router.isReady || router.pathname !== AppRoutes.index) {
+    if (!router.isReady || router.pathname !== AppRoutes.index || hasSafes === undefined) {
       return
     }
 
