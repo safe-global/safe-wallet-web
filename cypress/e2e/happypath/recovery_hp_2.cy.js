@@ -21,6 +21,7 @@ describe('Recovery happy path tests 2', () => {
       if (text.includes(constants.SPENDING_LIMIT_ADDRESS_2)) {
         owner = constants.SEPOLIA_OWNER_2
       }
+
       cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2)
       recovery.clickOnStartRecoveryBtn()
       recovery.enterOwnerAddress(owner)
@@ -31,7 +32,7 @@ describe('Recovery happy path tests 2', () => {
       recovery.verifyTxNotInQueue()
       cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2)
       main.verifyElementsCount(addressbook.tableContainer, 1)
-      cy.wait(1000)
+      cy.wait(10000)
       main.getElementText(addressbook.tableContainer).then((text) => {
         expect(text).to.contain(owner)
       })

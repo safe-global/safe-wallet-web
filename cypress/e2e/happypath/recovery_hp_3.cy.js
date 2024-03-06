@@ -11,7 +11,7 @@ describe('Recovery happy path tests 3', () => {
     cy.clearLocalStorage()
     main.acceptCookies()
   })
-
+  //
   // Check that an owner can cancel account recovery tx
   it('Recovery setup happy path 3', { defaultCommandTimeout: 300000 }, () => {
     owner.waitForConnectionStatus()
