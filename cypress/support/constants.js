@@ -201,7 +201,7 @@ export const addressBookErrrMsg = {
   exceedChars: 'Maximum 50 symbols',
   ownSafe: 'Cannot use Safe Account itself as signer',
   alreadyAdded: 'Address already added',
-  ownerAdded: 'Owner is already added',
+  ownerAdded: 'Signer is already added',
   failedResolve: 'Failed to resolve the address',
   emptyAddress: 'Owner',
   safeAlreadyAdded: 'Safe Account is already added',
