@@ -177,7 +177,12 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           <CardActions sx={{ mt: 'var(--space-1) !important' }}>
             <CheckWallet allowNonOwner>
               {(isOk) => (
-                <Button variant="contained" disabled={!isOk || submitDisabled} onClick={onSubmit}>
+                <Button
+                  data-testid="execute-btn"
+                  variant="contained"
+                  disabled={!isOk || submitDisabled}
+                  onClick={onSubmit}
+                >
                   {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
                 </Button>
               )}

@@ -59,7 +59,7 @@ export function UpsertRecoveryFlowIntro({ onSubmit }: { onSubmit: () => void }):
       <Divider className={commonCss.nestedDivider} />
 
       <CardActions sx={{ mt: 'var(--space-1) !important' }}>
-        <Button variant="contained" onClick={onSubmit}>
+        <Button data-testid="next-btn" variant="contained" onClick={onSubmit}>
           Next
         </Button>
       </CardActions>

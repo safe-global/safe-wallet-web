@@ -188,6 +188,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
           {currentType === RecoveryMethod.SelfCustody ? (
             <Track {...RECOVERY_EVENTS.CONTINUE_WITH_RECOVERY} label={currentType}>
               <Button
+                data-testid="setup-btn"
                 variant="contained"
                 onClick={() => {
                   setTxFlow(<UpsertRecoveryFlow />)

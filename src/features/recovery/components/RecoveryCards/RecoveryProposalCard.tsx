@@ -60,7 +60,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   )
 
   const recoveryButton = (
-    <Button variant="contained" onClick={onRecover} className={css.button}>
+    <Button data-testid="start-recovery-btn" variant="contained" onClick={onRecover} className={css.button}>
       Start recovery
     </Button>
   )
@@ -118,6 +118,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
 
         <Grid item container justifyContent="flex-end" gap={{ md: 1 }}>
           <Button
+            data-testid="postpone-recovery-btn"
             onClick={() => {
               trackEvent(RECOVERY_EVENTS.DISMISS_PROPOSAL_CARD)
               onClose?.()
