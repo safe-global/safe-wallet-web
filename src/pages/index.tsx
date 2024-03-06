@@ -2,25 +2,27 @@ import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
-import { useHasSafes } from '@/components/welcome/MyAccounts/useAllSafes'
+
+const ADDED_SAFES_KEY = 'SAFE_v2__addedSafes'
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
   const { chain } = router.query
-  const { hasSafes } = useHasSafes()
 
   useEffect(() => {
-    if (!router.isReady || router.pathname !== AppRoutes.index || hasSafes === undefined) {
+    if (!router.isReady || router.pathname !== AppRoutes.index) {
       return
     }
 
-    const pathname = hasSafes ? AppRoutes.welcome.accounts : AppRoutes.welcome.index
+    // read directly from localstorage so we have value on first render
+    const localSafes = localStorage.getItem(ADDED_SAFES_KEY)
+    const pathname = localSafes ? AppRoutes.welcome.accounts : AppRoutes.welcome.index
 
     router.replace({
       pathname,
       query: chain ? { chain } : undefined,
     })
-  }, [router, chain, hasSafes])
+  }, [router, chain])
 
   return <></>
 }
