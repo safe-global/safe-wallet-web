@@ -28,7 +28,7 @@ const ownersConfirmationsStr = 'Owners and confirmations'
 const transactionStr = 'Transactions'
 const qrErrorMsg = 'The QR could not be read'
 const safeAddressError = 'Address given is not a valid Safe Account address'
-const ownerNameLabel = 'Owner name'
+const ownerNameLabel = 'Signer name'
 
 const mandatoryNetworks = [constants.networks.sepolia, constants.networks.polygon, constants.networks.ethereum]
 

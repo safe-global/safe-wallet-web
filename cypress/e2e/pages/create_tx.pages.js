@@ -351,7 +351,7 @@ export function clickOnNoLaterOption() {
 }
 
 export function clickOnSignTransactionBtn() {
-  cy.contains(signBtnStr).click()
+  cy.get('button').contains(signBtnStr).click()
 }
 
 export function waitForProposeRequest() {

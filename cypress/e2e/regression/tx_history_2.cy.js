@@ -53,7 +53,7 @@ describe('Tx history tests 2', () => {
       ],
       createTx.delegateCallWarning,
     )
-    createTx.verifyActions([typeBatch.nativeTransfer.title])
+    createTx.verifyActions([typeBatch.unknownContractInteraction.title])
   })
 
   // Add owner
