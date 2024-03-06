@@ -9,11 +9,15 @@ const TxHeader = ({ children }: { children?: ReactNode }): ReactElement => {
     <PageHeader
       title="Transactions"
       action={
-        <div className={css.pageHeader}>
-          <div className={css.navWrapper}>
+        <div data-sid="39251" className={css.pageHeader}>
+          <div data-sid="91602" className={css.navWrapper}>
             <TxNavigation />
           </div>
-          {children && <div className={css.actionsWrapper}>{children}</div>}
+          {children && (
+            <div data-sid="61849" className={css.actionsWrapper}>
+              {children}
+            </div>
+          )}
         </div>
       }
     />

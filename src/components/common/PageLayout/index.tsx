@@ -1,14 +1,14 @@
-import { useContext, useEffect, useState, type ReactElement } from 'react'
 import classnames from 'classnames'
+import { useContext, useEffect, useState, type ReactElement } from 'react'
 
-import Header from '@/components/common/Header'
-import css from './styles.module.css'
-import SafeLoadingError from '../SafeLoadingError'
-import Footer from '../Footer'
-import SideDrawer from './SideDrawer'
-import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
-import { TxModalContext } from '@/components/tx-flow'
 import BatchSidebar from '@/components/batch/BatchSidebar'
+import Header from '@/components/common/Header'
+import { TxModalContext } from '@/components/tx-flow'
+import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
+import Footer from '../Footer'
+import SafeLoadingError from '../SafeLoadingError'
+import SideDrawer from './SideDrawer'
+import css from './styles.module.css'
 
 const PageLayout = ({ pathname, children }: { pathname: string; children: ReactElement }): ReactElement => {
   const [isSidebarRoute, isAnimated] = useIsSidebarRoute(pathname)
@@ -34,7 +34,7 @@ const PageLayout = ({ pathname, children }: { pathname: string; children: ReactE
           [css.mainAnimated]: isSidebarRoute && isAnimated,
         })}
       >
-        <div className={css.content}>
+        <div data-sid="23699" className={css.content}>
           <SafeLoadingError>{children}</SafeLoadingError>
         </div>
 

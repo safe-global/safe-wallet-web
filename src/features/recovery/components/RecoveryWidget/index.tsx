@@ -2,10 +2,10 @@ import { SetupRecoveryButton } from '@/features/recovery/components/RecoverySett
 import { Box, Card, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import RecoveryLogo from '@/public/images/common/recovery.svg'
-import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import { Chip } from '@/components/common/Chip'
+import { WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
+import RecoveryLogo from '@/public/images/common/recovery.svg'
 
 import css from './styles.module.css'
 
@@ -26,7 +26,7 @@ function RecoveryWidget(): ReactElement {
             </Grid>
 
             <Grid item xs>
-              <Box className={css.wrapper}>
+              <Box data-sid="48257" className={css.wrapper}>
                 <Typography variant="h4" className={css.title}>
                   Introducing {`Safe{RecoveryHub}`}{' '}
                 </Typography>

@@ -1,31 +1,31 @@
 .container {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
+  display        : flex;
+  align-items    : center;
+  gap            : var(--space-1);
   justify-content: center;
 }
 
 .imageContainer {
-  display: flex;
+  display        : flex;
   justify-content: center;
-  position: relative;
+  position       : relative;
 }
 
 .walletIcon {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  bottom: -6px;
-  right: -6px;
-  border-radius: 50%;
-  border: 2px solid var(--color-background-paper);
+  position        : absolute;
+  display         : flex;
+  justify-content : center;
+  align-items     : center;
+  bottom          : -6px;
+  right           : -6px;
+  border-radius   : 50%;
+  border          : 2px solid var(--color-background-paper);
   background-color: var(--color-background-main);
-  overflow: hidden;
+  overflow        : hidden;
 }
 
 .walletIcon img {
-  padding: 2px;
+  padding: 1px;
 }
 
 [data-theme='dark'] .imageContainer img[alt*='Ledger'] {
@@ -42,11 +42,11 @@
   }
 
   .imageContainer img {
-    width: 22px;
+    width : 22px;
     height: auto;
   }
 
-  .socialLoginInfo > div > div:last-child {
+  .socialLoginInfo>div>div:last-child {
     display: none;
   }
 }

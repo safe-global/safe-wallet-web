@@ -1,16 +1,15 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material'
+import { Box, Grid, IconButton, Paper, SvgIcon, Typography } from '@mui/material'
 
-import ExternalLink from '@/components/common/ExternalLink'
-import { RemoveModuleFlow } from '@/components/tx-flow/flows'
-import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useContext } from 'react'
+import ExternalLink from '@/components/common/ExternalLink'
 import { TxModalContext } from '@/components/tx-flow'
-import { selectDelayModifierByAddress } from '@/features/recovery/services/selectors'
-import { RemoveRecoveryFlow } from '@/components/tx-flow/flows'
+import { RemoveModuleFlow, RemoveRecoveryFlow } from '@/components/tx-flow/flows'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
+import { selectDelayModifierByAddress } from '@/features/recovery/services/selectors'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import { useContext } from 'react'
 
 import css from '../TransactionGuards/styles.module.css'
 
@@ -36,7 +35,7 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
   }
 
   return (
-    <Box className={css.guardDisplay}>
+    <Box data-sid="29327" className={css.guardDisplay}>
       <EthHashInfo
         name={name}
         shortAddress={false}

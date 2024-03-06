@@ -1,21 +1,21 @@
-import type { ReactElement } from 'react'
-import { useMemo } from 'react'
-import { useRouter } from 'next/router'
-import dynamic from 'next/dynamic'
+import { AppRoutes } from '@/config/routes'
+import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useTxQueue from '@/hooks/useTxQueue'
+import useWallet from '@/hooks/wallets/useWallet'
+import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
+import { isExecutable, isSignableBy } from '@/utils/transaction-guards'
 import { getLatestTransactions } from '@/utils/tx-list'
 import { Box, Skeleton, Typography } from '@mui/material'
+import type { SafeInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import { Card, ViewAllLink, WidgetBody, WidgetContainer } from '../styled'
 import PendingTxListItem from './PendingTxListItem'
-import useTxQueue from '@/hooks/useTxQueue'
-import { AppRoutes } from '@/config/routes'
-import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
 import css from './styles.module.css'
-import { isSignableBy, isExecutable } from '@/utils/transaction-guards'
-import useWallet from '@/hooks/wallets/useWallet'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
-import type { SafeInfo, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 const PendingRecoveryListItem = dynamic(() => import('./PendingRecoveryListItem'))
 
@@ -24,7 +24,15 @@ const MAX_TXS = 4
 const EmptyState = () => {
   return (
     <Card>
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%" gap={2}>
+      <Box
+        data-sid="84861"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="100%"
+        gap={2}
+      >
         <NoTransactionsIcon data-testid="no-tx-icon" />
 
         <Typography data-testid="no-tx-text" variant="body1" color="primary.light">
@@ -36,7 +44,7 @@ const EmptyState = () => {
 }
 
 const LoadingState = () => (
-  <div className={css.list}>
+  <div data-sid="12718" className={css.list}>
     {Array.from(Array(MAX_TXS).keys()).map((key) => (
       <Skeleton key={key} variant="rectangular" height={52} />
     ))}
@@ -104,7 +112,7 @@ const PendingTxsList = (): ReactElement | null => {
 
   return (
     <WidgetContainer data-testid="pending-tx-widget">
-      <div className={css.title}>
+      <div data-sid="24590" className={css.title}>
         <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
           Pending transactions
         </Typography>
@@ -116,7 +124,7 @@ const PendingTxsList = (): ReactElement | null => {
         {loading ? (
           <LoadingState />
         ) : totalTxs > 0 ? (
-          <div className={css.list}>
+          <div data-sid="19731" className={css.list}>
             {recoveryTxs.map((tx) => (
               <PendingRecoveryListItem transaction={tx} key={tx.transactionHash} />
             ))}

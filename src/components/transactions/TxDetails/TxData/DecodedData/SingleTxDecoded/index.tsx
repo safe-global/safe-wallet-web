@@ -1,18 +1,18 @@
-import { type InternalTransaction, Operation, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
-import type { AccordionProps } from '@mui/material/Accordion/Accordion'
-import { useCurrentChain } from '@/hooks/useChains'
-import { formatVisualAmount } from '@/utils/formatters'
-import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
-import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import css from './styles.module.css'
-import accordionCss from '@/styles/accordion.module.css'
-import CodeIcon from '@mui/icons-material/Code'
-import { DelegateCallWarning } from '@/components/transactions/Warning'
-import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { HexEncodedData } from '@/components/transactions/HexEncodedData'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
+import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
+import { DelegateCallWarning } from '@/components/transactions/Warning'
+import { useCurrentChain } from '@/hooks/useChains'
+import accordionCss from '@/styles/accordion.module.css'
+import { formatVisualAmount } from '@/utils/formatters'
+import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
+import CodeIcon from '@mui/icons-material/Code'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import type { AccordionProps } from '@mui/material/Accordion/Accordion'
+import { Operation, type InternalTransaction, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import css from './styles.module.css'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction
@@ -57,7 +57,7 @@ export const SingleTxDecoded = ({
   return (
     <Accordion variant={variant} expanded={expanded} onChange={onChange}>
       <AccordionSummary data-testid="action-item" expandIcon={<ExpandMoreIcon />} className={accordionCss.accordion}>
-        <div className={css.summary}>
+        <div data-sid="87339" className={css.summary}>
           <CodeIcon color="border" fontSize="small" />
           <Typography>{actionTitle}</Typography>
           <Typography ml="8px">

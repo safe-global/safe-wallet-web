@@ -1,12 +1,12 @@
+import AddressBookInput from '@/components/common/AddressBookInput'
+import ImageFallback from '@/components/common/ImageFallback'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
+import NftIcon from '@/public/images/common/nft.svg'
 import { Box, Button, CardActions, Divider, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
 import { type SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { FormProvider, useForm } from 'react-hook-form'
-import NftIcon from '@/public/images/common/nft.svg'
-import AddressBookInput from '@/components/common/AddressBookInput'
 import type { NftTransferParams } from '.'
-import ImageFallback from '@/components/common/ImageFallback'
 import TxCard from '../../common/TxCard'
-import commonCss from '@/components/tx-flow/common/styles.module.css'
 
 enum Field {
   recipient = 'recipient',
@@ -22,7 +22,7 @@ type SendNftBatchProps = {
 const NftItem = ({ image, name, description }: { image: string; name: string; description?: string }) => (
   <Grid container gap={2} alignItems="center" wrap="nowrap">
     <Grid item>
-      <Box width={40} height={40}>
+      <Box data-sid="97251" width={40} height={40}>
         <ImageFallback
           src={image}
           fallbackSrc=""
@@ -125,7 +125,7 @@ const SendNftBatch = ({ params, onSubmit }: SendNftBatchProps) => {
           <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
           <CardActions>
-            <Button variant="contained" type="submit">
+            <Button data-sid="35745" variant="contained" type="submit">
               Next
             </Button>
           </CardActions>

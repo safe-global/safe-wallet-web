@@ -1,18 +1,16 @@
-import { type SyntheticEvent, useEffect } from 'react'
-import { useCallback, useContext } from 'react'
-import dynamic from 'next/dynamic'
-import { Button, Divider, Drawer, IconButton, SvgIcon, Typography } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
-import { useDraftBatch, useUpdateBatch } from '@/hooks/useDraftBatch'
-import css from './styles.module.css'
-import { NewTxFlow } from '@/components/tx-flow/flows'
-import { TxModalContext } from '@/components/tx-flow'
-import { ConfirmBatchFlow } from '@/components/tx-flow/flows'
-import Track from '@/components/common/Track'
-import { BATCH_EVENTS } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
+import Track from '@/components/common/Track'
+import { TxModalContext } from '@/components/tx-flow'
+import { ConfirmBatchFlow, NewTxFlow } from '@/components/tx-flow/flows'
+import { useDraftBatch, useUpdateBatch } from '@/hooks/useDraftBatch'
 import PlusIcon from '@/public/images/common/plus.svg'
+import { BATCH_EVENTS } from '@/services/analytics'
+import CloseIcon from '@mui/icons-material/Close'
+import { Button, Divider, Drawer, IconButton, SvgIcon, Typography } from '@mui/material'
+import dynamic from 'next/dynamic'
+import { useCallback, useContext, useEffect, type SyntheticEvent } from 'react'
 import EmptyBatch from './EmptyBatch'
+import css from './styles.module.css'
 
 const BatchReorder = dynamic(() => import('./BatchReorder'))
 
@@ -72,14 +70,14 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
 
         {batchTxs.length ? (
           <>
-            <div className={css.txs}>
+            <div data-sid="19447" className={css.txs}>
               <BatchReorder txItems={batchTxs} onDelete={deleteTx} onReorder={onReorder} />
             </div>
 
             <CheckWallet>
               {(isOk) => (
                 <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
-                  <Button onClick={onAddClick} disabled={!isOk}>
+                  <Button data-sid="41972" onClick={onAddClick} disabled={!isOk}>
                     <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
                     Add new transaction
                   </Button>
@@ -93,6 +91,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
               {(isOk) => (
                 <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
                   <Button
+                    data-sid="44948"
                     variant="contained"
                     onClick={onConfirmClick}
                     disabled={!batchTxs.length || !isOk}
@@ -109,7 +108,7 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
             <CheckWallet>
               {(isOk) => (
                 <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
-                  <Button onClick={onAddClick} variant="contained" disabled={!isOk}>
+                  <Button data-sid="14856" onClick={onAddClick} variant="contained" disabled={!isOk}>
                     New transaction
                   </Button>
                 </Track>

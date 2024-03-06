@@ -1,7 +1,7 @@
-import type { ReactElement, CSSProperties } from 'react'
-import { useMemo } from 'react'
-import { blo } from 'blo'
 import Skeleton from '@mui/material/Skeleton'
+import { blo } from 'blo'
+import type { CSSProperties, ReactElement } from 'react'
+import { useMemo } from 'react'
 
 import css from './styles.module.css'
 
@@ -27,7 +27,7 @@ const Identicon = ({ address, size = 40 }: IdenticonProps): ReactElement => {
   return !style ? (
     <Skeleton variant="circular" width={size} height={size} />
   ) : (
-    <div className={css.icon} style={style} />
+    <div data-sid="74097" className={css.icon} style={style} />
   )
 }
 

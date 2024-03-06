@@ -1,11 +1,11 @@
-import type { ReactElement, ReactNode } from 'react'
-import { useMemo, useState } from 'react'
-import { Button, Box, Paper, Typography } from '@mui/material'
-import AccountItem from './AccountItem'
-import { type SafeItems } from './useAllSafes'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
+import { Box, Button, Paper, Typography } from '@mui/material'
+import type { ReactElement, ReactNode } from 'react'
+import { useMemo, useState } from 'react'
+import AccountItem from './AccountItem'
 import css from './styles.module.css'
+import { type SafeItems } from './useAllSafes'
 
 type PaginatedSafeListProps = {
   safes: SafeItems
@@ -33,7 +33,7 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
 
   return (
     <Paper className={css.safeList}>
-      <div className={css.listHeader}>
+      <div data-sid="89225" className={css.listHeader}>
         <Typography variant="h5" fontWeight={700} mb={2} className={css.listTitle}>
           {title}
           {safes.length > 0 && (
@@ -53,9 +53,9 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
         </Typography>
       )}
       {safes.length > shownSafes.length && (
-        <Box display="flex" justifyContent="center">
+        <Box data-sid="84401" display="flex" justifyContent="center">
           <Track {...OVERVIEW_EVENTS.SHOW_MORE_SAFES}>
-            <Button data-testid="show-more-btn" onClick={onShowMoreSafes}>
+            <Button data-sid="39314" data-testid="show-more-btn" onClick={onShowMoreSafes}>
               Show more
             </Button>
           </Track>

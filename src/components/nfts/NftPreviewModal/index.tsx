@@ -1,10 +1,10 @@
-import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import ModalDialog from '@/components/common/ModalDialog'
-import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
-import { nftPlatforms } from '../config'
+import ModalDialog from '@/components/common/ModalDialog'
 import useChainId from '@/hooks/useChainId'
 import { CircularProgress } from '@mui/material'
+import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import { nftPlatforms } from '../config'
+import css from './styles.module.css'
 
 const NftPreviewModal = ({ nft, onClose }: { nft?: SafeCollectibleResponse; onClose: () => void }) => {
   const chainId = useChainId()
@@ -20,8 +20,8 @@ const NftPreviewModal = ({ nft, onClose }: { nft?: SafeCollectibleResponse; onCl
       sx={{ margin: [0, 2], '.MuiPaper-root': { borderRadius: [0, '6px'] } }}
     >
       {nft && (
-        <div className={css.wrapper}>
-          <div className={css.imageWrapper} onClick={onClose}>
+        <div data-sid="33193" className={css.wrapper}>
+          <div data-sid="79287" className={css.imageWrapper} onClick={onClose}>
             <img src={nft.imageUri} alt={nft.name} />
 
             <CircularProgress className={css.loader} />

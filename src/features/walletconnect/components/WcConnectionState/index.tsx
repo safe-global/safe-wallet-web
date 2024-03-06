@@ -1,9 +1,9 @@
-import { SvgIcon, Typography } from '@mui/material'
-import classNames from 'classnames'
-import type { CoreTypes } from '@walletconnect/types'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import SafeLogo from '@/public/images/logo-no-text.svg'
 import ConnectionDots from '@/public/images/common/connection-dots.svg'
+import SafeLogo from '@/public/images/logo-no-text.svg'
+import { SvgIcon, Typography } from '@mui/material'
+import type { CoreTypes } from '@walletconnect/types'
+import classNames from 'classnames'
 import css from './styles.module.css'
 
 const WcConnectionState = ({ metadata, isDelete }: { metadata?: CoreTypes.Metadata; isDelete: boolean }) => {
@@ -11,7 +11,7 @@ const WcConnectionState = ({ metadata, isDelete }: { metadata?: CoreTypes.Metada
   const icon = metadata?.icons[0] || ''
 
   return (
-    <div className={css.container}>
+    <div data-sid="53988" className={css.container}>
       <div>
         <SafeLogo alt="Safe logo" width="28px" height="28px" />
 

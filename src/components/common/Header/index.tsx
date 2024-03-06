@@ -1,26 +1,26 @@
-import type { Dispatch, SetStateAction } from 'react'
-import { type ReactElement } from 'react'
-import { useRouter } from 'next/router'
-import { IconButton, Paper } from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import classnames from 'classnames'
-import css from './styles.module.css'
+import BatchIndicator from '@/components/batch/BatchIndicator'
 import ConnectWallet from '@/components/common/ConnectWallet'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
-import NotificationCenter from '@/components/notification-center/NotificationCenter'
-import { AppRoutes } from '@/config/routes'
-import useChainId from '@/hooks/useChainId'
-import SafeLogo from '@/public/images/logo.svg'
-import Link from 'next/link'
-import useSafeAddress from '@/hooks/useSafeAddress'
-import BatchIndicator from '@/components/batch/BatchIndicator'
-import WalletConnect from '@/features/walletconnect/components'
-import { PushNotificationsBanner } from '@/components/settings/PushNotifications/PushNotificationsBanner'
-import { FEATURES } from '@/utils/chains'
-import { useHasFeature } from '@/hooks/useChains'
 import Track from '@/components/common/Track'
+import NotificationCenter from '@/components/notification-center/NotificationCenter'
+import { PushNotificationsBanner } from '@/components/settings/PushNotifications/PushNotificationsBanner'
+import { AppRoutes } from '@/config/routes'
+import WalletConnect from '@/features/walletconnect/components'
+import useChainId from '@/hooks/useChainId'
+import { useHasFeature } from '@/hooks/useChains'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import SafeLogo from '@/public/images/logo.svg'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { FEATURES } from '@/utils/chains'
+import MenuIcon from '@mui/icons-material/Menu'
+import { IconButton, Paper } from '@mui/material'
+import classnames from 'classnames'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import type { Dispatch, SetStateAction } from 'react'
+import { type ReactElement } from 'react'
+import css from './styles.module.css'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -53,49 +53,52 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
 
   return (
     <Paper className={css.container}>
-      <div className={classnames(css.element, css.menuButton, !onMenuToggle ? css.hideSidebarMobile : null)}>
+      <div
+        data-sid="42635"
+        className={classnames(css.element, css.menuButton, !onMenuToggle ? css.hideSidebarMobile : null)}
+      >
         <IconButton onClick={handleMenuToggle} size="large" edge="start" color="default" aria-label="menu">
           <MenuIcon />
         </IconButton>
       </div>
 
-      <div className={classnames(css.element, css.hideMobile, css.logo)}>
+      <div data-sid="64042" className={classnames(css.element, css.hideMobile, css.logo)}>
         <Link href={logoHref} passHref>
           <SafeLogo alt="Safe logo" />
         </Link>
       </div>
 
       {showSafeToken && (
-        <div className={classnames(css.element, css.hideMobile)}>
+        <div data-sid="80958" className={classnames(css.element, css.hideMobile)}>
           <SafeTokenWidget />
         </div>
       )}
 
-      <div className={css.element}>
+      <div data-sid="15477" className={css.element}>
         <PushNotificationsBanner>
           <NotificationCenter />
         </PushNotificationsBanner>
       </div>
 
       {safeAddress && (
-        <div className={classnames(css.element, css.hideMobile)}>
+        <div data-sid="74836" className={classnames(css.element, css.hideMobile)}>
           <BatchIndicator onClick={handleBatchToggle} />
         </div>
       )}
 
       {enableWc && (
-        <div className={classnames(css.element, css.hideMobile)}>
+        <div data-sid="18922" className={classnames(css.element, css.hideMobile)}>
           <WalletConnect />
         </div>
       )}
 
-      <div className={classnames(css.element, css.connectWallet)}>
+      <div data-sid="94585" className={classnames(css.element, css.connectWallet)}>
         <Track label={OVERVIEW_LABELS.top_bar} {...OVERVIEW_EVENTS.OPEN_ONBOARD}>
           <ConnectWallet />
         </Track>
       </div>
 
-      <div className={classnames(css.element, css.networkSelector)}>
+      <div data-sid="11841" className={classnames(css.element, css.networkSelector)}>
         <NetworkSelector />
       </div>
     </Paper>

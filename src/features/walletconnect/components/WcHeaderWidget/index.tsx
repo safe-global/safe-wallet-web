@@ -1,6 +1,6 @@
-import { type ReactNode, useRef } from 'react'
-import type { SessionTypes } from '@walletconnect/types'
 import Popup from '@/components/common/Popup'
+import type { SessionTypes } from '@walletconnect/types'
+import { useRef, type ReactNode } from 'react'
 import WcIcon from './WcIcon'
 
 type WcHeaderWidgetProps = {
@@ -17,7 +17,7 @@ const WcHeaderWidget = ({ sessions, ...props }: WcHeaderWidgetProps) => {
 
   return (
     <>
-      <div ref={iconRef}>
+      <div data-sid="37227" ref={iconRef}>
         <WcIcon
           onClick={props.onOpen}
           sessionCount={sessions.length}

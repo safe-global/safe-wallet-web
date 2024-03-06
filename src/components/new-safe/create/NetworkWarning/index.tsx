@@ -1,6 +1,6 @@
-import { Alert, AlertTitle, Box } from '@mui/material'
-import { useCurrentChain } from '@/hooks/useChains'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
+import { useCurrentChain } from '@/hooks/useChains'
+import { Alert, AlertTitle, Box } from '@mui/material'
 
 const NetworkWarning = () => {
   const chain = useCurrentChain()
@@ -12,7 +12,7 @@ const NetworkWarning = () => {
       <AlertTitle sx={{ fontWeight: 700 }}>Change your wallet network</AlertTitle>
       You are trying to create a Safe Account on {chain.chainName}. Make sure that your wallet is set to the same
       network.
-      <Box mt={2}>
+      <Box data-sid="88733" mt={2}>
         <ChainSwitcher />
       </Box>
     </Alert>

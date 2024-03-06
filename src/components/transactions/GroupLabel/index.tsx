@@ -1,8 +1,8 @@
-import type { ReactElement } from 'react'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import type { Label } from '@safe-global/safe-gateway-typescript-sdk'
 import { LabelValue } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ReactElement } from 'react'
 import css from './styles.module.css'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
 const GroupLabel = ({ item }: { item: Label }): ReactElement => {
   const { safe } = useSafeInfo()
@@ -12,7 +12,11 @@ const GroupLabel = ({ item }: { item: Label }): ReactElement => {
       ? `${item.label} - transaction with nonce ${safe.nonce} needs to be executed first`
       : item.label
 
-  return <div className={css.container}>{label}</div>
+  return (
+    <div data-sid="49265" className={css.container}>
+      {label}
+    </div>
+  )
 }
 
 export default GroupLabel

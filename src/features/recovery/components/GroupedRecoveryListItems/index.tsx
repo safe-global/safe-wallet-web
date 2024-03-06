@@ -1,16 +1,16 @@
 import Track from '@/components/common/Track'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Paper, Typography } from '@mui/material'
-import partition from 'lodash/partition'
-import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import type { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
+import partition from 'lodash/partition'
 import type { ReactElement } from 'react'
 
-import { isRecoveryQueueItem } from '@/utils/transaction-guards'
-import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
-import { RecoveryListItem } from '../RecoveryListItem'
 import ExternalLink from '@/components/common/ExternalLink'
+import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { isRecoveryQueueItem } from '@/utils/transaction-guards'
+import { RecoveryListItem } from '../RecoveryListItem'
 
 import css from '@/components/transactions/GroupedTxListItems/styles.module.css'
 import customCss from './styles.module.css'
@@ -44,15 +44,15 @@ export function GroupedRecoveryListItems({ items }: { items: Array<Transaction |
 
   return (
     <Paper className={[css.container, customCss.recoveryGroupContainer].join(' ')}>
-      <Box gridArea="warning" className={css.disclaimerContainer}>
+      <Box data-sid="59060" gridArea="warning" className={css.disclaimerContainer}>
         <Disclaimer isMalicious={isMalicious} />
       </Box>
 
-      <Box gridArea="line" className={css.line} />
+      <Box data-sid="35990" gridArea="line" className={css.line} />
 
-      <Box gridArea="items" className={css.txItems}>
+      <Box data-sid="57048" gridArea="items" className={css.txItems}>
         {cancellations.map((tx) => (
-          <div key={tx.transaction.id}>
+          <div data-sid="12717" key={tx.transaction.id}>
             <ExpandableTransactionItem item={tx} />
           </div>
         ))}

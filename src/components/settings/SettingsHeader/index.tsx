@@ -2,8 +2,8 @@ import type { ReactElement } from 'react'
 
 import NavTabs from '@/components/common/NavTabs'
 import PageHeader from '@/components/common/PageHeader'
-import { generalSettingsNavItems, settingsNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import css from '@/components/common/PageHeader/styles.module.css'
+import { generalSettingsNavItems, settingsNavItems } from '@/components/sidebar/SidebarNavigation/config'
 import useSafeAddress from '@/hooks/useSafeAddress'
 
 const SettingsHeader = (): ReactElement => {
@@ -15,7 +15,7 @@ const SettingsHeader = (): ReactElement => {
     <PageHeader
       title={safeAddress ? 'Settings' : 'Preferences'}
       action={
-        <div className={css.navWrapper}>
+        <div data-sid="44096" className={css.navWrapper}>
           <NavTabs tabs={navItems} />
         </div>
       }

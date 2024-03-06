@@ -1,22 +1,22 @@
 import { Button, Checkbox, Divider, FormControlLabel, Typography } from '@mui/material'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { ReactElement, ChangeEvent } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
+import type { ChangeEvent, ReactElement } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import css from './styles.module.css'
-import ProposalVerification from './ProposalVerification'
-import { CompatibilityWarning } from './CompatibilityWarning'
-import useChains from '@/hooks/useChains'
 import {
   getPeerName,
   getSupportedChainIds,
   isBlockedBridge,
   isWarnedBridge,
 } from '@/features/walletconnect/services/utils'
+import useChains from '@/hooks/useChains'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
-import useSafeInfo from '@/hooks/useSafeInfo'
+import { CompatibilityWarning } from './CompatibilityWarning'
+import ProposalVerification from './ProposalVerification'
+import css from './styles.module.css'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -76,13 +76,13 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
   }, [url, isUnsupportedChain])
 
   return (
-    <div className={css.container}>
+    <div data-sid="22948" className={css.container}>
       <Typography variant="body2" color="text.secondary">
         WalletConnect
       </Typography>
 
       {proposer.metadata.icons[0] && (
-        <div className={css.icon}>
+        <div data-sid="85234" className={css.icon}>
           <SafeAppIconCard src={proposer.metadata.icons[0]} width={32} height={32} alt={`${name || 'dApp'} logo`} />
         </div>
       )}
@@ -95,7 +95,7 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
         {proposal.verifyContext.verified.origin}
       </Typography>
 
-      <div className={css.info}>
+      <div data-sid="13915" className={css.info}>
         <ProposalVerification proposal={proposal} />
 
         <CompatibilityWarning proposal={proposal} chainIds={chainIds} />
@@ -111,12 +111,12 @@ const WcProposalForm = ({ proposal, onApprove, onReject }: ProposalFormProps): R
 
       <Divider flexItem className={css.divider} />
 
-      <div className={css.buttons}>
-        <Button variant="danger" onClick={onReject} className={css.button}>
+      <div data-sid="12622" className={css.buttons}>
+        <Button data-sid="38521" variant="danger" onClick={onReject} className={css.button}>
           Reject
         </Button>
 
-        <Button variant="contained" onClick={onApprove} className={css.button} disabled={disabled}>
+        <Button data-sid="76872" variant="contained" onClick={onApprove} className={css.button} disabled={disabled}>
           Approve
         </Button>
       </div>

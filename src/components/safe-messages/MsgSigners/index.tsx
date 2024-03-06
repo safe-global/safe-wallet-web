@@ -1,13 +1,13 @@
-import { useState, type ReactElement } from 'react'
-import { Box, Link, List, ListItem, ListItemIcon, ListItemText, Skeleton, SvgIcon, Typography } from '@mui/material'
-import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
+import { Box, Link, List, ListItem, ListItemIcon, ListItemText, Skeleton, SvgIcon, Typography } from '@mui/material'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { useState, type ReactElement } from 'react'
 
-import CreatedIcon from '@/public/images/messages/created.svg'
-import SignedIcon from '@/public/images/messages/signed.svg'
-import DotIcon from '@/public/images/messages/dot.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import CreatedIcon from '@/public/images/messages/created.svg'
+import DotIcon from '@/public/images/messages/dot.svg'
+import SignedIcon from '@/public/images/messages/signed.svg'
 
 import css from '@/components/safe-messages/MsgSigners/styles.module.css'
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
@@ -84,7 +84,7 @@ export const MsgSigners = ({
         </ListItemIcon>
         <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
           Confirmations{' '}
-          <Box component="span" className={txSignersCss.confirmationsTotal}>
+          <Box data-sid="64462" component="span" className={txSignersCss.confirmationsTotal}>
             ({`${confirmationsSubmitted} of ${confirmationsRequired}`})
           </Box>
         </ListItemText>
@@ -119,7 +119,7 @@ export const MsgSigners = ({
               <SvgIcon component={CircleOutlinedIcon} className={css.dot} color="border" fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+              <Box data-sid="19719" display="flex" flexDirection="row" alignItems="center" gap={1}>
                 <Skeleton variant="circular" width={36} height={36} />
                 <Typography variant="body2" color={'text.secondary'}>
                   Confirmation #{idx + 1 + confirmationsSubmitted}

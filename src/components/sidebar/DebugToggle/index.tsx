@@ -1,10 +1,10 @@
-import { type ChangeEvent, type ReactElement } from 'react'
-import { Box, FormControlLabel, Switch } from '@mui/material'
+import { useDarkMode } from '@/hooks/useDarkMode'
 import { localItem } from '@/services/local-storage/local'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { setDarkMode } from '@/store/settingsSlice'
-import { useDarkMode } from '@/hooks/useDarkMode'
 import { useAppDispatch } from '@/store'
+import { setDarkMode } from '@/store/settingsSlice'
+import { Box, FormControlLabel, Switch } from '@mui/material'
+import { type ChangeEvent, type ReactElement } from 'react'
 
 const LS_KEY = 'debugProdCgw'
 
@@ -25,7 +25,7 @@ const DebugToggle = (): ReactElement => {
   }
 
   return (
-    <Box py={2} ml={2}>
+    <Box data-sid="40162" py={2} ml={2}>
       <FormControlLabel
         control={<Switch checked={isDarkMode} onChange={(_, checked) => dispatch(setDarkMode(checked))} />}
         label="Dark mode"

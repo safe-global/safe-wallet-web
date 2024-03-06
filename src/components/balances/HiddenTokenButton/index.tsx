@@ -1,10 +1,10 @@
-import { type ReactElement } from 'react'
-import { Typography, Button } from '@mui/material'
-import { ASSETS_EVENTS } from '@/services/analytics'
-import useHiddenTokens from '@/hooks/useHiddenTokens'
-import useBalances from '@/hooks/useBalances'
-import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined'
 import Track from '@/components/common/Track'
+import useBalances from '@/hooks/useBalances'
+import useHiddenTokens from '@/hooks/useHiddenTokens'
+import { ASSETS_EVENTS } from '@/services/analytics'
+import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined'
+import { Button, Typography } from '@mui/material'
+import { type ReactElement } from 'react'
 
 import css from './styles.module.css'
 
@@ -22,9 +22,10 @@ const HiddenTokenButton = ({
     balances.items?.filter((item) => currentHiddenAssets.includes(item.tokenInfo.address)).length || 0
 
   return (
-    <div className={css.hiddenTokenButton}>
+    <div data-sid="42394" className={css.hiddenTokenButton}>
       <Track {...ASSETS_EVENTS.SHOW_HIDDEN_ASSETS}>
         <Button
+          data-sid="46237"
           sx={{
             gap: 1,
             padding: 1,

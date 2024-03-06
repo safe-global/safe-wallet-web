@@ -1,20 +1,20 @@
-import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
-import type { ChainInfo, SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
-import type { UrlObject } from 'url'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import SafeIcon from '@/components/common/SafeIcon'
+import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
+import { AppRoutes } from '@/config/routes'
+import useLastSafe from '@/hooks/useLastSafe'
+import useOwnedSafes from '@/hooks/useOwnedSafes'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
 import { useAppSelector } from '@/store'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { selectChains } from '@/store/chainsSlice'
-import useLastSafe from '@/hooks/useLastSafe'
 import { parsePrefixedAddress } from '@/utils/addresses'
-import SafeIcon from '@/components/common/SafeIcon'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import { AppRoutes } from '@/config/routes'
-import useOwnedSafes from '@/hooks/useOwnedSafes'
-import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
-import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import type { ChainInfo, SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
+import type { UrlObject } from 'url'
 
 type Props = {
   appUrl: string
@@ -62,7 +62,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
 
       button = (
         <Link href={href} passHref legacyBehavior>
-          <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse}>
+          <Button data-sid="88973" variant="contained" sx={{ width: CTA_BUTTON_WIDTH }} disabled={!safeToUse}>
             Use app
           </Button>
         </Link>
@@ -76,7 +76,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
       }
       button = (
         <Link href={createSafeHrefWithRedirect} passHref legacyBehavior>
-          <Button variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
+          <Button data-sid="21910" variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
             Create new Safe Account
           </Button>
         </Link>
@@ -84,7 +84,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
       break
     default:
       button = (
-        <Button onClick={onConnectWallet} variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
+        <Button data-sid="83291" onClick={onConnectWallet} variant="contained" sx={{ width: CTA_BUTTON_WIDTH }}>
           Connect wallet
         </Button>
       )

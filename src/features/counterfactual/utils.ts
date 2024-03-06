@@ -1,15 +1,16 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
+import type { TempAPI } from '@/components/safe-apps/types'
 import { LATEST_SAFE_VERSION, POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
+import { SafeCreationEvent, safeCreationDispatch } from '@/features/counterfactual/services/safeCreationEvents'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { asError } from '@/services/exceptions/utils'
 import ExternalStore from '@/services/ExternalStore'
+import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain, getUncheckedSafeSDK, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
-import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
+import { TaskState, getRelayTxStatus } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
@@ -20,15 +21,17 @@ import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import {
-  type ChainInfo,
   ImplementationVersionState,
+  TokenType,
+  type ChainInfo,
   type SafeBalanceResponse,
   type SafeInfo,
-  TokenType,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import type { OnboardAPI } from '@web3-onboard/core'
-import type { BrowserProvider, ContractTransactionResponse, Provider } from 'ethers'
+
+import type { ContractTransactionResponse, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
+import type { Hex } from 'viem'
+import { type PublicClient } from 'viem'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
   return {
@@ -50,7 +53,7 @@ export const CF_TX_GROUP_KEY = 'cf-tx'
 export const dispatchTxExecutionAndDeploySafe = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
-  onboard: OnboardAPI,
+  onboard: TempAPI,
   chainId: SafeInfo['chainId'],
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
@@ -86,7 +89,7 @@ export const deploySafeAndExecuteTx = async (
   chainId: string,
   wallet: ConnectedWallet | null,
   safeTx?: SafeTransaction,
-  onboard?: OnboardAPI,
+  onboard?: TempAPI,
 ) => {
   assertTx(safeTx)
   assertWallet(wallet)
@@ -99,7 +102,7 @@ export const { getStore: getNativeBalance, setStore: setNativeBalance } = new Ex
 
 export const getCounterfactualBalance = async (
   safeAddress: string,
-  provider?: BrowserProvider,
+  publicClient?: PublicClient,
   chain?: ChainInfo,
   ignoreCache?: boolean,
 ) => {
@@ -109,8 +112,8 @@ export const getCounterfactualBalance = async (
 
   // Fetch balance via the connected wallet.
   // If there is no wallet connected we fetch and cache the balance instead
-  if (provider) {
-    balance = await provider.getBalance(safeAddress)
+  if (publicClient) {
+    balance = await publicClient.getBalance({ address: safeAddress as Hex })
   } else {
     const cachedBalance = getNativeBalance()
     const useCache = cachedBalance !== undefined && cachedBalance > 0n && !ignoreCache

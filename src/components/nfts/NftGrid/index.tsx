@@ -1,7 +1,8 @@
-import type { Dispatch, ReactNode, SetStateAction, SyntheticEvent } from 'react'
-import { useMemo, useState } from 'react'
-import { useCallback } from 'react'
-import { type ReactElement } from 'react'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import ExternalLink from '@/components/common/ExternalLink'
+import useChainId from '@/hooks/useChainId'
+import NftIcon from '@/public/images/common/nft.svg'
+import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import {
   Box,
   Checkbox,
@@ -9,7 +10,6 @@ import {
   Paper,
   Skeleton,
   SvgIcon,
-  type SvgIconProps,
   Table,
   TableBody,
   TableCell,
@@ -17,16 +17,14 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
   Tooltip,
+  Typography,
+  type SvgIconProps,
 } from '@mui/material'
-import FilterAltIcon from '@mui/icons-material/FilterAlt'
-import NftIcon from '@/public/images/common/nft.svg'
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import ExternalLink from '@/components/common/ExternalLink'
-import useChainId from '@/hooks/useChainId'
+import type { Dispatch, ReactNode, SetStateAction, SyntheticEvent } from 'react'
+import { useCallback, useMemo, useState, type ReactElement } from 'react'
 import { nftPlatforms } from '../config'
-import EthHashInfo from '@/components/common/EthHashInfo'
 
 interface NftsTableProps {
   nfts: SafeCollectibleResponse[]
@@ -152,7 +150,7 @@ const NftGrid = ({
                   }}
                 >
                   {headCell.id === 'collection' ? (
-                    <Box display="flex" alignItems="center" alignContent="center" gap={1}>
+                    <Box data-sid="65689" display="flex" alignItems="center" alignContent="center" gap={1}>
                       <TextField
                         placeholder="Collection"
                         hiddenLabel
@@ -202,7 +200,7 @@ const NftGrid = ({
                 <TableRow data-testid={`nfts-table-row-${index + 1}`} tabIndex={-1} key={`${item.address}-${item.id}`}>
                   {/* Collection name */}
                   <TableCell onClick={onClick} sx={sx}>
-                    <Box display="flex" alignItems="center" gap={2}>
+                    <Box data-sid="89687" display="flex" alignItems="center" gap={2}>
                       {item.imageUri ? activeNftIcon : inactiveNftIcon}
 
                       <div>
@@ -230,7 +228,7 @@ const NftGrid = ({
 
                   {/* Links */}
                   <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
-                    <Box display="flex" alignItems="center" alignContent="center" gap={2.5}>
+                    <Box data-sid="78316" display="flex" alignItems="center" alignContent="center" gap={2.5}>
                       {linkTemplates?.map(({ title, logo, getUrl }) => (
                         <ExternalLink href={getUrl(item)} key={title} onClick={stopPropagation} noIcon>
                           <img src={logo} width={24} height={24} alt={title} />
@@ -263,7 +261,7 @@ const NftGrid = ({
                       key={headCell.id}
                       sx={headCell.xsHidden ? { display: { xs: 'none', sm: 'table-cell' } } : undefined}
                     >
-                      <Box height="42px" width="42px" />
+                      <Box data-sid="30905" height="42px" width="42px" />
                     </TableCell>
                   ))}
                 </TableRow>

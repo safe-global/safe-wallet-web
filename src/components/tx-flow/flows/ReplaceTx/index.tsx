@@ -1,27 +1,27 @@
 import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
 
-import InfoIcon from '@/public/images/notifications/info.svg'
-import ReplaceTxIcon from '@/public/images/transactions/replace-tx.svg'
 import { SendTokensButton } from '@/components/tx-flow/common/TxButton'
 import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ReplaceTxIcon from '@/public/images/transactions/replace-tx.svg'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 
-import css from './styles.module.css'
+import TxCard from '@/components/tx-flow/common/TxCard'
+import TxLayout from '@/components/tx-flow/common/TxLayout'
 import { useContext } from 'react'
 import { TxModalContext } from '../..'
-import TokenTransferFlow from '../TokenTransfer'
 import RejectTx from '../RejectTx'
-import TxLayout from '@/components/tx-flow/common/TxLayout'
-import TxCard from '@/components/tx-flow/common/TxCard'
+import TokenTransferFlow from '../TokenTransfer'
+import css from './styles.module.css'
 
 // TODO: Move this to the status widget
 /*
 
-const wrapIcon = (icon: React.ReactNode) => <div className={css.circle}>{icon}</div>
+const wrapIcon = (icon: React.ReactNode) => <div data-sid="48520" className={css.circle}>{icon}</div>
 const steps = [
   {
     label: 'Create new transaction with same nonce',
-    icon: <div className={css.redCircle} />,
+    icon: <div data-sid="11520" className={css.redCircle} />,
   },
   {
     label: 'Collect confirmations from owners',
@@ -55,7 +55,7 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
   return (
     <TxLayout title="Replace transaction" step={0} hideNonce isReplacement>
       <TxCard>
-        <Box my={4} textAlign="center">
+        <Box data-sid="80211" my={4} textAlign="center">
           <ReplaceTxIcon />
         </Box>
         <Typography variant="h4" fontWeight="700" textAlign="center">
@@ -65,7 +65,7 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
           A signed transaction cannot be removed but it can be replaced with a new transaction with the same nonce.
         </Typography>
 
-        <div className={css.buttons}>
+        <div data-sid="11824" className={css.buttons}>
           <div>
             <SendTokensButton onClick={() => setTxFlow(<TokenTransferFlow txNonce={txNonce} />)} sx={btnWidth} />
           </div>
@@ -74,7 +74,7 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
             or
           </Typography>
 
-          <div className={css.rejectButton}>
+          <div data-sid="60000" className={css.rejectButton}>
             <Tooltip
               arrow
               placement="top"
@@ -82,6 +82,7 @@ const ReplaceTxMenu = ({ txNonce }: { txNonce: number }) => {
             >
               <span style={{ width: '100%' }}>
                 <Button
+                  data-sid="24846"
                   onClick={() => setTxFlow(<RejectTx txNonce={txNonce} />)}
                   variant="outlined"
                   fullWidth

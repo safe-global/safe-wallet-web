@@ -1,17 +1,17 @@
-import { type SyntheticEvent, useMemo, useCallback } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, ButtonBase, ListItem, SvgIcon } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import css from './styles.module.css'
-import { type DraftBatchItem } from '@/store/batchSlice'
-import TxType from '@/components/transactions/TxType'
-import TxInfo from '@/components/transactions/TxInfo'
-import DeleteIcon from '@/public/images/common/delete.svg'
-import DragIcon from '@/public/images/common/drag.svg'
+import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
-import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import { dateString } from '@/utils/formatters'
+import TxInfo from '@/components/transactions/TxInfo'
+import TxType from '@/components/transactions/TxType'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import DragIcon from '@/public/images/common/drag.svg'
 import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
+import { type DraftBatchItem } from '@/store/batchSlice'
+import { dateString } from '@/utils/formatters'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary, Box, ButtonBase, ListItem, SvgIcon } from '@mui/material'
+import { useCallback, useMemo, type SyntheticEvent } from 'react'
+import css from './styles.module.css'
 
 type BatchTxItemProps = DraftBatchItem & {
   id: string
@@ -58,11 +58,13 @@ const BatchTxItem = ({
 
   return (
     <ListItem disablePadding sx={{ gap: 2, alignItems: 'flex-start' }}>
-      <div className={css.number}>{count}</div>
+      <div data-sid="67642" className={css.number}>
+        {count}
+      </div>
 
       <Accordion elevation={0} sx={{ flex: 1 }} onChange={handleExpand}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} disabled={dragging} className={css.accordion}>
-          <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4} width="100%">
+          <Box data-sid="73250" flex={1} display="flex" alignItems="center" gap={2} py={0.4} width="100%">
             {draggable && (
               <SvgIcon
                 component={DragIcon}
@@ -75,26 +77,26 @@ const BatchTxItem = ({
 
             <TxType tx={txSummary} />
 
-            <Box flex={1}>
+            <Box data-sid="50851" flex={1}>
               <TxInfo info={txDetails.txInfo} />
             </Box>
 
             {onDelete && (
               <>
-                <Box className={css.separator} />
+                <Box data-sid="99788" className={css.separator} />
 
-                <ButtonBase onClick={handleDelete} title="Delete transaction" sx={{ p: 0.5 }}>
+                <ButtonBase data-sid="94870" onClick={handleDelete} title="Delete transaction" sx={{ p: 0.5 }}>
                   <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" />
                 </ButtonBase>
 
-                <Box className={css.separator} mr={2} />
+                <Box data-sid="87155" className={css.separator} mr={2} />
               </>
             )}
           </Box>
         </AccordionSummary>
 
         <AccordionDetails>
-          <div className={css.details}>
+          <div data-sid="38855" className={css.details}>
             <TxData txDetails={txDetails} trusted />
 
             <TxDataRow title="Created:">{timestamp ? dateString(timestamp) : null}</TxDataRow>

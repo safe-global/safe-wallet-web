@@ -1,30 +1,30 @@
-import { useState, useMemo, type ReactElement, type MouseEvent } from 'react'
-import ButtonBase from '@mui/material/ButtonBase'
-import Popover from '@mui/material/Popover'
-import Paper from '@mui/material/Paper'
-import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import MuiLink from '@mui/material/Link'
+import UnreadBadge from '@/components/common/UnreadBadge'
+import NotificationCenterList from '@/components/notification-center/NotificationCenterList'
+import { AppRoutes } from '@/config/routes'
 import BellIcon from '@/public/images/common/notifications.svg'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import { useAppDispatch, useAppSelector } from '@/store'
 import {
-  selectNotifications,
-  readNotification,
   closeNotification,
   deleteAllNotifications,
+  readNotification,
+  selectNotifications,
 } from '@/store/notificationsSlice'
-import NotificationCenterList from '@/components/notification-center/NotificationCenterList'
-import UnreadBadge from '@/components/common/UnreadBadge'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ButtonBase from '@mui/material/ButtonBase'
+import IconButton from '@mui/material/IconButton'
+import MuiLink from '@mui/material/Link'
+import Paper from '@mui/material/Paper'
+import Popover from '@mui/material/Popover'
+import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { AppRoutes } from '@/config/routes'
-import SettingsIcon from '@/public/images/sidebar/settings.svg'
+import { useMemo, useState, type MouseEvent, type ReactElement } from 'react'
 
-import css from './styles.module.css'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import SvgIcon from '@mui/icons-material/ExpandLess'
+import css from './styles.module.css'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
@@ -90,7 +90,7 @@ const NotificationCenter = (): ReactElement => {
 
   return (
     <>
-      <ButtonBase className={css.bell} onClick={handleClick}>
+      <ButtonBase data-sid="25479" className={css.bell} onClick={handleClick}>
         <UnreadBadge
           invisible={!hasUnread}
           count={unreadCount}
@@ -123,7 +123,7 @@ const NotificationCenter = (): ReactElement => {
         transitionDuration={0}
       >
         <Paper className={css.popoverContainer}>
-          <div className={css.popoverHeader}>
+          <div data-sid="14123" className={css.popoverHeader}>
             <div>
               <Typography variant="h4" component="span" fontWeight={700}>
                 Notifications
@@ -143,7 +143,7 @@ const NotificationCenter = (): ReactElement => {
           <div>
             <NotificationCenterList notifications={notificationsToShow} handleClose={handleClose} />
           </div>
-          <div className={css.popoverFooter}>
+          <div data-sid="97948" className={css.popoverFooter}>
             {canExpand && (
               <>
                 <IconButton onClick={() => setShowAll((prev) => !prev)} disableRipple className={css.expandButton}>

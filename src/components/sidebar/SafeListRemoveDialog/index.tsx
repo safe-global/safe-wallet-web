@@ -1,16 +1,16 @@
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
-import { useAppDispatch } from '@/store'
-import useAddressBook from '@/hooks/useAddressBook'
-import { removeSafe } from '@/store/addedSafesSlice'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
+import useAddressBook from '@/hooks/useAddressBook'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { useAppDispatch } from '@/store'
+import { removeSafe } from '@/store/addedSafesSlice'
 import router from 'next/router'
 
 const SafeListRemoveDialog = ({
@@ -43,11 +43,11 @@ const SafeListRemoveDialog = ({
       </DialogContent>
 
       <DialogActions>
-        <Button data-testid="cancel-btn" onClick={handleClose}>
+        <Button data-sid="28094" data-testid="cancel-btn" onClick={handleClose}>
           Cancel
         </Button>
         <Track {...OVERVIEW_EVENTS.DELETED_FROM_WATCHLIST} label={trackingLabel}>
-          <Button data-testid="delete-btn" onClick={handleConfirm} variant="danger" disableElevation>
+          <Button data-sid="52820" data-testid="delete-btn" onClick={handleConfirm} variant="danger" disableElevation>
             Delete
           </Button>
         </Track>

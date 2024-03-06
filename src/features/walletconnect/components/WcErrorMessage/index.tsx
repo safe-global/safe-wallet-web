@@ -8,7 +8,7 @@ const WcErrorMessage = ({ error, onClose }: { error: Error; onClose: () => void 
   const [summary, details] = splitError(message)
 
   return (
-    <div className={css.errorContainer}>
+    <div data-sid="91579" className={css.errorContainer}>
       <WcLogoHeader errorMessage={summary} />
 
       {details && (
@@ -17,7 +17,7 @@ const WcErrorMessage = ({ error, onClose }: { error: Error; onClose: () => void 
         </Typography>
       )}
 
-      <Button variant="contained" onClick={onClose} className={css.button}>
+      <Button data-sid="72804" variant="contained" onClick={onClose} className={css.button}>
         OK
       </Button>
     </div>

@@ -1,9 +1,9 @@
-import { useMemo } from 'react'
-import type { ReactElement } from 'react'
-import { Typography } from '@mui/material'
-import { isAddress, isArrayParameter } from '@/utils/transaction-guards'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
+import { isAddress, isArrayParameter } from '@/utils/transaction-guards'
+import { Typography } from '@mui/material'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import css from './styles.module.css'
 
 type ValueArrayProps = {
@@ -35,7 +35,7 @@ export const Value = ({ type, value, ...props }: ValueArrayProps): ReactElement 
     return (
       <Typography component="div" variant="body2">
         [
-        <div className={css.nestedWrapper}>
+        <div data-sid="50949" className={css.nestedWrapper}>
           {parsedValue.map((address, index) => {
             const key = `${props.key || props.method}-${index}`
             if (Array.isArray(address)) {
@@ -47,7 +47,7 @@ export const Value = ({ type, value, ...props }: ValueArrayProps): ReactElement 
               return <Value key={key} {...newProps} />
             }
             return (
-              <div key={`${address}_${key}`}>
+              <div data-sid="37355" key={`${address}_${key}`}>
                 <EthHashInfo address={address} showAvatar={false} shortAddress={false} showCopyButton hasExplorer />
               </div>
             )
@@ -68,13 +68,15 @@ const getTextValue = (value: string, key?: string) => {
 const getArrayValue = (parentId: string, value: string[], separator?: boolean) => (
   <Typography component="div" variant="body2">
     [
-    <div className={css.nestedWrapper}>
+    <div data-sid="61539" className={css.nestedWrapper}>
       {value.map((currentValue, index, values) => {
         const key = `${parentId}-value-${index}`
         const hasSeparator = index < values.length - 1
 
         return Array.isArray(currentValue) ? (
-          <div key={key}>{getArrayValue(key, currentValue, hasSeparator)}</div>
+          <div data-sid="24097" key={key}>
+            {getArrayValue(key, currentValue, hasSeparator)}
+          </div>
         ) : (
           getTextValue(currentValue, key)
         )

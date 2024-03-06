@@ -1,21 +1,21 @@
-import { jsonToCSV } from 'react-papaparse'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import CheckWallet from '@/components/common/CheckWallet'
+import EnhancedTable from '@/components/common/EnhancedTable'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { AddOwnerFlow, ReplaceOwnerFlow, RemoveOwnerFlow } from '@/components/tx-flow/flows'
+import Track from '@/components/common/Track'
+import { TxModalContext } from '@/components/tx-flow'
+import { AddOwnerFlow, RemoveOwnerFlow, ReplaceOwnerFlow } from '@/components/tx-flow/flows'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Grid, Typography, Button, SvgIcon, Tooltip, IconButton } from '@mui/material'
-import { useContext, useMemo } from 'react'
-import { EditOwnerDialog } from '../EditOwnerDialog'
-import EnhancedTable from '@/components/common/EnhancedTable'
 import AddIcon from '@/public/images/common/add.svg'
-import Track from '@/components/common/Track'
-import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
-import CheckWallet from '@/components/common/CheckWallet'
-import { TxModalContext } from '@/components/tx-flow'
-import ReplaceOwnerIcon from '@/public/images/settings/setup/replace-owner.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
+import ReplaceOwnerIcon from '@/public/images/settings/setup/replace-owner.svg'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
 import type { AddressBook } from '@/store/addressBookSlice'
+import { Box, Button, Grid, IconButton, SvgIcon, Tooltip, Typography } from '@mui/material'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useContext, useMemo } from 'react'
+import { jsonToCSV } from 'react-papaparse'
+import { EditOwnerDialog } from '../EditOwnerDialog'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -46,7 +46,7 @@ export const OwnerList = () => {
             rawValue: '',
             sticky: true,
             content: (
-              <div className={tableCss.actions}>
+              <div data-sid="31518" className={tableCss.actions}>
                 <CheckWallet>
                   {(isOk) => (
                     <Track {...SETTINGS_EVENTS.SETUP.REPLACE_OWNER}>
@@ -95,7 +95,7 @@ export const OwnerList = () => {
   }, [safe.owners, safe.chainId, addressBook, setTxFlow])
 
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Box data-sid="21025" display="flex" flexDirection="column" gap={2}>
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
@@ -111,11 +111,12 @@ export const OwnerList = () => {
 
           <EnhancedTable rows={rows} headCells={headCells} />
 
-          <Box pt={2} display="flex" justifyContent="space-between">
+          <Box data-sid="56065" pt={2} display="flex" justifyContent="space-between">
             <CheckWallet>
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
                   <Button
+                    data-sid="50712"
                     data-testid="add-owner-btn"
                     onClick={() => setTxFlow(<AddOwnerFlow />)}
                     variant="text"
@@ -128,7 +129,7 @@ export const OwnerList = () => {
               )}
             </CheckWallet>
 
-            <Button variant="text" onClick={() => exportOwners(safe, addressBook)}>
+            <Button data-sid="79796" variant="text" onClick={() => exportOwners(safe, addressBook)}>
               Export as CSV
             </Button>
           </Box>

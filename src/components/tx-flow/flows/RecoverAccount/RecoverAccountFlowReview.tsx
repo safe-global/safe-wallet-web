@@ -1,37 +1,37 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { CardActions, Button, Typography, Divider, Box, CircularProgress } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { Box, Button, CardActions, CircularProgress, Divider, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { getRecoveryProposalTransactions } from '@/features/recovery/services/transaction'
+import CheckWallet from '@/components/common/CheckWallet'
 import DecodedTx from '@/components/tx/DecodedTx'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { RedefineBalanceChanges } from '@/components/tx/security/redefine/RedefineBalanceChange'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import TxChecks from '@/components/tx/SignOrExecuteForm/TxChecks'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import useDecodeTx from '@/hooks/useDecodeTx'
-import TxCard from '../../common/TxCard'
-import { SafeTxContext } from '../../SafeTxProvider'
-import CheckWallet from '@/components/common/CheckWallet'
-import { dispatchRecoveryProposal } from '@/features/recovery/services/recovery-sender'
-import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
-import { RecoverAccountFlowFields } from '.'
-import { OwnerList } from '../../common/OwnerList'
-import { selectDelayModifierByRecoverer } from '@/features/recovery/services/selectors'
-import useWallet from '@/hooks/wallets/useWallet'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import { TxModalContext } from '../..'
-import { asError } from '@/services/exceptions/utils'
-import { trackError, Errors } from '@/services/exceptions'
-import { getPeriod } from '@/utils/date'
-import useRecovery from '@/features/recovery/hooks/useRecovery'
-import { useIsValidRecoveryExecTransactionFromModule } from '@/features/recovery/hooks/useIsValidRecoveryExecution'
-import type { RecoverAccountFlowProps } from '.'
-import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import { RedefineBalanceChanges } from '@/components/tx/security/redefine/RedefineBalanceChange'
+import { useIsValidRecoveryExecTransactionFromModule } from '@/features/recovery/hooks/useIsValidRecoveryExecution'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
+import { dispatchRecoveryProposal } from '@/features/recovery/services/recovery-sender'
+import { selectDelayModifierByRecoverer } from '@/features/recovery/services/selectors'
+import { getRecoveryProposalTransactions } from '@/features/recovery/services/transaction'
+import useDecodeTx from '@/hooks/useDecodeTx'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import useWallet from '@/hooks/wallets/useWallet'
+import { Errors, trackError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
+import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
+import { getPeriod } from '@/utils/date'
+import { isWalletRejection } from '@/utils/wallets'
+import type { RecoverAccountFlowProps } from '.'
+import { RecoverAccountFlowFields } from '.'
+import { TxModalContext } from '../..'
+import { SafeTxContext } from '../../SafeTxProvider'
+import { OwnerList } from '../../common/OwnerList'
+import TxCard from '../../common/TxCard'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -115,7 +115,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <Divider className={commonCss.nestedDivider} sx={{ mt: 'var(--space-2) !important' }} />
 
-        <Box my={1}>
+        <Box data-sid="32712" my={1}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
             After recovery, Safe Account transactions will require:
           </Typography>
@@ -177,7 +177,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           <CardActions sx={{ mt: 'var(--space-1) !important' }}>
             <CheckWallet allowNonOwner>
               {(isOk) => (
-                <Button variant="contained" disabled={!isOk || submitDisabled} onClick={onSubmit}>
+                <Button data-sid="44825" variant="contained" disabled={!isOk || submitDisabled} onClick={onSubmit}>
                   {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
                 </Button>
               )}

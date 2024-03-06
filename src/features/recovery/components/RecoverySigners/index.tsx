@@ -1,16 +1,16 @@
 import { Box, List, ListItem, ListItemIcon, ListItemText, SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import CircleIcon from '@/public/images/common/circle.svg'
-import CheckIcon from '@/public/images/common/circle-check.svg'
-import EthHashInfo from '@/components/common/EthHashInfo'
 import { Countdown } from '@/components/common/Countdown'
-import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
-import { CancelRecoveryButton } from '../CancelRecoveryButton'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
-import { RecoveryValidationErrors } from '../RecoveryValidationErrors'
-import { formatDateTime } from '@/utils/date'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import CheckIcon from '@/public/images/common/circle-check.svg'
+import CircleIcon from '@/public/images/common/circle.svg'
+import { formatDateTime } from '@/utils/date'
+import { CancelRecoveryButton } from '../CancelRecoveryButton'
+import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
+import { RecoveryValidationErrors } from '../RecoveryValidationErrors'
 
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
 
@@ -64,7 +64,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
         </ListItem>
       </List>
 
-      <Box className={txSignersCss.listFooter}>
+      <Box data-sid="51832" className={txSignersCss.listFooter}>
         <Typography sx={({ palette }) => ({ color: palette.border.main, mb: 1 })}>{desc}</Typography>
 
         {isNext && <Countdown seconds={remainingSeconds} />}
@@ -72,7 +72,7 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
 
       <RecoveryValidationErrors item={item} />
 
-      <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
+      <Box data-sid="57055" display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
         <ExecuteRecoveryButton recovery={item} />
         <CancelRecoveryButton recovery={item} />
       </Box>

@@ -1,17 +1,17 @@
-import type { ReactElement, SyntheticEvent } from 'react'
-import { Box, Grid, Typography, Link } from '@mui/material'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import { Card, WidgetBody, WidgetContainer } from '../styled'
-import { useRouter } from 'next/router'
-import NextLink from 'next/link'
-import { AppRoutes } from '@/config/routes'
-import { SafeAppsTag } from '@/config/constants'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import { isWalletConnectSafeApp } from '@/utils/gateway'
+import { SafeAppsTag } from '@/config/constants'
+import { AppRoutes } from '@/config/routes'
 import { openWalletConnect } from '@/features/walletconnect/components'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { isWalletConnectSafeApp } from '@/utils/gateway'
+import { Box, Grid, Link, Typography } from '@mui/material'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import type { ReactElement, SyntheticEvent } from 'react'
+import { Card, WidgetBody, WidgetContainer } from '../styled'
 
 const FeaturedAppCard = ({ app }: { app: SafeAppData }) => (
   <Card>
@@ -21,7 +21,7 @@ const FeaturedAppCard = ({ app }: { app: SafeAppData }) => (
       </Grid>
 
       <Grid item xs={12} md={9}>
-        <Box mb={1.01}>
+        <Box data-sid="71188" mb={1.01}>
           <Typography fontSize="lg">{app.description}</Typography>
         </Box>
 

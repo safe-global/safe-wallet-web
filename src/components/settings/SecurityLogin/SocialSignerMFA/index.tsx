@@ -1,30 +1,30 @@
 import Track from '@/components/common/Track'
-import {
-  Typography,
-  Button,
-  Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Grid,
-  FormControl,
-  SvgIcon,
-  Divider,
-  Alert,
-} from '@mui/material'
-import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { useRouter } from 'next/router'
-import { useState, useMemo, type ChangeEvent } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import CheckIcon from '@/public/images/common/check-filled.svg'
-import LockWarningIcon from '@/public/images/common/lock-warning.svg'
 import PasswordInput from '@/components/settings/SecurityLogin/SocialSignerMFA/PasswordInput'
 import css from '@/components/settings/SecurityLogin/SocialSignerMFA/styles.module.css'
-import BarChartIcon from '@/public/images/common/bar-chart.svg'
-import ShieldIcon from '@/public/images/common/shield.svg'
-import ShieldOffIcon from '@/public/images/common/shield-off.svg'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import BarChartIcon from '@/public/images/common/bar-chart.svg'
+import CheckIcon from '@/public/images/common/check-filled.svg'
+import LockWarningIcon from '@/public/images/common/lock-warning.svg'
+import ShieldOffIcon from '@/public/images/common/shield-off.svg'
+import ShieldIcon from '@/public/images/common/shield.svg'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  Grid,
+  SvgIcon,
+  Typography,
+} from '@mui/material'
+import { useRouter } from 'next/router'
+import { useMemo, useState, type ChangeEvent } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 
 enum PasswordFieldNames {
   currentPassword = 'currentPassword',
@@ -145,14 +145,14 @@ const SocialSignerMFA = () => {
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" flexDirection="column" gap={3} alignItems="baseline">
+        <Box data-sid="47170" display="flex" flexDirection="column" gap={3} alignItems="baseline">
           <Typography>
             Protect your social login signer with a password. It will be used to restore access in another browser or on
             another device.
           </Typography>
           <Accordion expanded={open} defaultExpanded={false} onChange={toggleAccordion}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Box display="flex" alignItems="center" gap={1}>
+              <Box data-sid="10728" display="flex" alignItems="center" gap={1}>
                 <SvgIcon component={CheckIcon} sx={{ color: isPasswordSet ? 'success.main' : 'border.light' }} />
                 <Typography fontWeight="bold">Password</Typography>
               </Box>
@@ -251,12 +251,24 @@ const SocialSignerMFA = () => {
 
                   {submitError && <Alert severity="error">{submitError}</Alert>}
 
-                  <Box display="flex" justifyContent="space-between" width={1}>
-                    <Button sx={{ fontSize: '14px' }} variant="text" onClick={onReset} disabled={!formState.isDirty}>
+                  <Box data-sid="61416" display="flex" justifyContent="space-between" width={1}>
+                    <Button
+                      data-sid="19911"
+                      sx={{ fontSize: '14px' }}
+                      variant="text"
+                      onClick={onReset}
+                      disabled={!formState.isDirty}
+                    >
                       Cancel
                     </Button>
                     <Track {...MPC_WALLET_EVENTS.UPSERT_PASSWORD}>
-                      <Button sx={{ fontSize: '14px' }} disabled={isSubmitDisabled} type="submit" variant="contained">
+                      <Button
+                        data-sid="66251"
+                        sx={{ fontSize: '14px' }}
+                        disabled={isSubmitDisabled}
+                        type="submit"
+                        variant="contained"
+                      >
                         {isPasswordSet ? 'Change' : 'Create'} Password
                       </Button>
                     </Track>

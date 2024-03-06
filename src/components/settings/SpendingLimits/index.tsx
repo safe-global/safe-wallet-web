@@ -1,16 +1,16 @@
-import { useContext } from 'react'
-import { Paper, Grid, Typography, Box, Button } from '@mui/material'
-import { NoSpendingLimits } from '@/components/settings/SpendingLimits/NoSpendingLimits'
-import { SpendingLimitsTable } from '@/components/settings/SpendingLimits/SpendingLimitsTable'
-import { useSelector } from 'react-redux'
-import { selectSpendingLimits, selectSpendingLimitsLoading } from '@/store/spendingLimitsSlice'
-import { FEATURES } from '@/utils/chains'
-import { useHasFeature } from '@/hooks/useChains'
-import { NewSpendingLimitFlow } from '@/components/tx-flow/flows'
-import { SETTINGS_EVENTS } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
+import { NoSpendingLimits } from '@/components/settings/SpendingLimits/NoSpendingLimits'
+import { SpendingLimitsTable } from '@/components/settings/SpendingLimits/SpendingLimitsTable'
 import { TxModalContext } from '@/components/tx-flow'
+import { NewSpendingLimitFlow } from '@/components/tx-flow/flows'
+import { useHasFeature } from '@/hooks/useChains'
+import { SETTINGS_EVENTS } from '@/services/analytics'
+import { selectSpendingLimits, selectSpendingLimitsLoading } from '@/store/spendingLimitsSlice'
+import { FEATURES } from '@/utils/chains'
+import { Box, Button, Grid, Paper, Typography } from '@mui/material'
+import { useContext } from 'react'
+import { useSelector } from 'react-redux'
 
 const SpendingLimits = () => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -39,6 +39,7 @@ const SpendingLimits = () => {
                 {(isOk) => (
                   <Track {...SETTINGS_EVENTS.SPENDING_LIMIT.NEW_LIMIT}>
                     <Button
+                      data-sid="77487"
                       data-testid="new-spending-limit"
                       onClick={() => setTxFlow(<NewSpendingLimitFlow />)}
                       sx={{ mt: 2 }}

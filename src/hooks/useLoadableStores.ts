@@ -1,25 +1,25 @@
-import { useEffect } from 'react'
-import { type Slice } from '@reduxjs/toolkit'
 import { useAppDispatch } from '@/store'
+import { type Slice } from '@reduxjs/toolkit'
+import { useEffect } from 'react'
 import { type AsyncResult } from './useAsync'
 
 // Import all the loadable hooks
+import useLoadBalances from './loadables/useLoadBalances'
 import useLoadChains from './loadables/useLoadChains'
 import useLoadSafeInfo from './loadables/useLoadSafeInfo'
-import useLoadBalances from './loadables/useLoadBalances'
+import useLoadMessages from './loadables/useLoadSafeMessages'
 import useLoadTxHistory from './loadables/useLoadTxHistory'
 import useLoadTxQueue from './loadables/useLoadTxQueue'
-import useLoadMessages from './loadables/useLoadSafeMessages'
 
 // Import all the loadable slices
+import useLoadSpendingLimits from '@/hooks/loadables/useLoadSpendingLimits'
+import { balancesSlice } from '@/store/balancesSlice'
 import { chainsSlice } from '@/store/chainsSlice'
 import { safeInfoSlice } from '@/store/safeInfoSlice'
-import { balancesSlice } from '@/store/balancesSlice'
+import { safeMessagesSlice } from '@/store/safeMessagesSlice'
+import { spendingLimitSlice } from '@/store/spendingLimitsSlice'
 import { txHistorySlice } from '@/store/txHistorySlice'
 import { txQueueSlice } from '@/store/txQueueSlice'
-import { spendingLimitSlice } from '@/store/spendingLimitsSlice'
-import useLoadSpendingLimits from '@/hooks/loadables/useLoadSpendingLimits'
-import { safeMessagesSlice } from '@/store/safeMessagesSlice'
 
 // Dispatch into the corresponding store when the loadable is loaded
 const useUpdateStore = (slice: Slice, useLoadHook: () => AsyncResult<unknown>): void => {

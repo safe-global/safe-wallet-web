@@ -1,19 +1,19 @@
-import { type ReactElement, useEffect, useState } from 'react'
-import { Box } from '@mui/material'
 import TxList from '@/components/transactions/TxList'
-import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import type useTxHistory from '@/hooks/useTxHistory'
-import useTxQueue from '@/hooks/useTxQueue'
-import PagePlaceholder from '../PagePlaceholder'
-import InfiniteScroll from '../InfiniteScroll'
-import SkeletonTxList from './SkeletonTxList'
-import { type TxFilter, useTxFilter } from '@/utils/tx-history-filter'
-import { isTransactionListItem } from '@/utils/transaction-guards'
-import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
+import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
+import type useTxHistory from '@/hooks/useTxHistory'
+import useTxQueue from '@/hooks/useTxQueue'
+import NoTransactionsIcon from '@/public/images/transactions/no-transactions.svg'
+import { isTransactionListItem } from '@/utils/transaction-guards'
+import { useTxFilter, type TxFilter } from '@/utils/tx-history-filter'
+import { Box } from '@mui/material'
+import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import { useEffect, useState, type ReactElement } from 'react'
+import InfiniteScroll from '../InfiniteScroll'
+import PagePlaceholder from '../PagePlaceholder'
+import SkeletonTxList from './SkeletonTxList'
 
 const NoQueuedTxns = () => {
   return <PagePlaceholder img={<NoTransactionsIcon />} text="Queued transactions will appear here" />
@@ -45,7 +45,7 @@ const TxPage = ({
   return (
     <>
       {isFirstPage && filter && page && (
-        <Box display="flex" flexDirection="column" alignItems="flex-end" pt={[2, 0]} pb={3}>
+        <Box data-sid="94909" display="flex" flexDirection="column" alignItems="flex-end" pt={[2, 0]} pb={3}>
           {getFilterResultCount(filter, page)}
         </Box>
       )}
@@ -60,7 +60,7 @@ const TxPage = ({
       {loading && !hasPending && <SkeletonTxList />}
 
       {page?.next && onNextPage && (
-        <Box my={4} textAlign="center">
+        <Box data-sid="26483" my={4} textAlign="center">
           <InfiniteScroll onLoadMore={() => onNextPage(page.next!)} />
         </Box>
       )}
@@ -84,7 +84,7 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   }
 
   return (
-    <Box position="relative">
+    <Box data-sid="70118" position="relative">
       {pages.map((pageUrl, index) => (
         <TxPage
           key={pageUrl}

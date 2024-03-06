@@ -1,17 +1,17 @@
-import { useEffect, type ReactElement } from 'react'
-import classnames from 'classnames'
-import type { CheckboxProps } from '@mui/material'
-import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
+import type { CheckboxProps } from '@mui/material'
+import { Box, Button, Checkbox, FormControlLabel, Grid, Paper, SvgIcon, Typography } from '@mui/material'
+import classnames from 'classnames'
+import { useEffect, type ReactElement } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectCookies, CookieType, saveCookieConsent } from '@/store/cookiesSlice'
-import { selectCookieBanner, openCookieBanner, closeCookieBanner } from '@/store/popupSlice'
+import { CookieType, saveCookieConsent, selectCookies } from '@/store/cookiesSlice'
+import { closeCookieBanner, openCookieBanner, selectCookieBanner } from '@/store/popupSlice'
 
-import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
 import ExternalLink from '../ExternalLink'
+import css from './styles.module.css'
 
 const COOKIE_WARNING: Record<CookieType, string> = {
   [CookieType.NECESSARY]: '',
@@ -78,13 +78,13 @@ export const CookieBanner = ({
 
             <Grid container alignItems="center" gap={4}>
               <Grid item xs={12} sm>
-                <Box mb={2}>
+                <Box data-sid="34265" mb={2}>
                   <CookieCheckbox checkboxProps={{ id: 'necessary', disabled: true }} label="Necessary" checked />
                   <br />
                   <Typography variant="body2">Locally stored data for core functionality</Typography>
                 </Box>
 
-                <Box mb={2}>
+                <Box data-sid="69162" mb={2}>
                   <CookieCheckbox
                     checkboxProps={{ ...register(CookieType.UPDATES), id: 'beamer' }}
                     label="Beamer"
@@ -111,14 +111,28 @@ export const CookieBanner = ({
             <Grid container alignItems="center" justifyContent="center" mt={4} gap={2}>
               <Grid item>
                 <Typography>
-                  <Button onClick={handleAccept} variant="text" size="small" color="inherit" disableElevation>
+                  <Button
+                    data-sid="85703"
+                    onClick={handleAccept}
+                    variant="text"
+                    size="small"
+                    color="inherit"
+                    disableElevation
+                  >
                     Save settings
                   </Button>
                 </Typography>
               </Grid>
 
               <Grid item>
-                <Button onClick={handleAcceptAll} variant="contained" color="secondary" size="small" disableElevation>
+                <Button
+                  data-sid="50353"
+                  onClick={handleAcceptAll}
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  disableElevation
+                >
                   Accept all
                 </Button>
               </Grid>
@@ -147,7 +161,7 @@ const CookieBannerPopup = (): ReactElement | null => {
   }, [dispatch, shouldOpen])
 
   return cookiePopup?.open ? (
-    <div className={css.popup}>
+    <div data-sid="44637" className={css.popup}>
       <CookieBanner warningKey={cookiePopup.warningKey} inverted />
     </div>
   ) : null

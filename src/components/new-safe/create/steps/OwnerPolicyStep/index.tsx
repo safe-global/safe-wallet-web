@@ -1,20 +1,20 @@
 import CounterfactualHint from '@/features/counterfactual/CounterfactualHint'
-import { Button, SvgIcon, MenuItem, Tooltip, Typography, Divider, Box, Grid, TextField } from '@mui/material'
-import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import { Box, Button, Divider, Grid, MenuItem, SvgIcon, TextField, Tooltip, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
+import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import AddIcon from '@/public/images/common/add.svg'
-import InfoIcon from '@/public/images/notifications/info.svg'
-import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
+import OwnerRow from '@/components/new-safe/OwnerRow'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafeInfos'
 import { useSafeSetupHints } from '@/components/new-safe/create/steps/OwnerPolicyStep/useSafeSetupHints'
-import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
+import type { NamedAddress } from '@/components/new-safe/create/types'
+import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
+import AddIcon from '@/public/images/common/add.svg'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import OwnerRow from '@/components/new-safe/OwnerRow'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 enum OwnerPolicyStepFields {
   owners = 'owners',
@@ -90,7 +90,7 @@ const OwnerPolicyStep = ({
   return (
     <form data-testid="owner-policy-step-form" onSubmit={onFormSubmit} id={OWNER_POLICY_STEP_FORM_ID}>
       <FormProvider {...formMethods}>
-        <Box className={layoutCss.row}>
+        <Box data-sid="40090" className={layoutCss.row}>
           {ownerFields.map((field, i) => (
             <OwnerRow
               key={field.id}
@@ -101,6 +101,7 @@ const OwnerPolicyStep = ({
             />
           ))}
           <Button
+            data-sid="52167"
             data-testid="add-owner-btn"
             variant="text"
             onClick={() => appendOwner({ name: '', address: '' }, { shouldFocus: true })}
@@ -109,7 +110,7 @@ const OwnerPolicyStep = ({
           >
             Add new owner
           </Button>
-          <Box p={2} mt={3} sx={{ backgroundColor: 'background.main', borderRadius: '8px' }}>
+          <Box data-sid="75862" p={2} mt={3} sx={{ backgroundColor: 'background.main', borderRadius: '8px' }}>
             <Typography variant="subtitle1" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
               {'Safe{Wallet}'} mobile owner key (optional){' '}
               <Tooltip
@@ -127,7 +128,7 @@ const OwnerPolicyStep = ({
         </Box>
 
         <Divider />
-        <Box className={layoutCss.row}>
+        <Box data-sid="53880" className={layoutCss.row}>
           <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
             Threshold
             <Tooltip
@@ -167,9 +168,10 @@ const OwnerPolicyStep = ({
           {ownerFields.length > 1 && <CounterfactualHint />}
         </Box>
         <Divider />
-        <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+        <Box data-sid="92826" className={layoutCss.row}>
+          <Box data-sid="55053" display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
             <Button
+              data-sid="54771"
               data-testid="back-btn"
               variant="outlined"
               size="small"
@@ -178,7 +180,14 @@ const OwnerPolicyStep = ({
             >
               Back
             </Button>
-            <Button data-testid="next-btn" type="submit" variant="contained" size="stretched" disabled={isDisabled}>
+            <Button
+              data-sid="58357"
+              data-testid="next-btn"
+              type="submit"
+              variant="contained"
+              size="stretched"
+              disabled={isDisabled}
+            >
               Next
             </Button>
           </Box>

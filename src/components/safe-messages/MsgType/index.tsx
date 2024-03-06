@@ -9,7 +9,7 @@ const FALLBACK_LOGO_URI = '/images/transactions/custom.svg'
 
 const MsgType = ({ msg }: { msg: SafeMessage }) => {
   return (
-    <Box className={txTypeCss.txType}>
+    <Box data-sid="95073" className={txTypeCss.txType}>
       <ImageFallback
         src={msg.logoUri || FALLBACK_LOGO_URI}
         fallbackSrc={FALLBACK_LOGO_URI}

@@ -1,15 +1,15 @@
 import { Button, Tooltip } from '@mui/material'
-import { useContext } from 'react'
-import type { SyntheticEvent, ReactElement } from 'react'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ReactElement, SyntheticEvent } from 'react'
+import { useContext } from 'react'
 
-import useWallet from '@/hooks/wallets/useWallet'
+import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
-import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
-import useIsSafeMessageSignableBy from '@/hooks/messages/useIsSafeMessageSignableBy'
 import { TxModalContext } from '@/components/tx-flow'
 import { SignMessageFlow } from '@/components/tx-flow/flows'
-import CheckWallet from '@/components/common/CheckWallet'
+import useIsSafeMessageSignableBy from '@/hooks/messages/useIsSafeMessageSignableBy'
+import useWallet from '@/hooks/wallets/useWallet'
+import { MESSAGE_EVENTS } from '@/services/analytics/events/txList'
 
 const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: boolean }): ReactElement => {
   const wallet = useWallet()
@@ -28,6 +28,7 @@ const SignMsgButton = ({ msg, compact = false }: { msg: SafeMessage; compact?: b
           <span>
             <Track {...MESSAGE_EVENTS.SIGN}>
               <Button
+                data-sid="79350"
                 onClick={onClick}
                 variant={isSignable ? 'contained' : 'outlined'}
                 disabled={!isOk || !isSignable}

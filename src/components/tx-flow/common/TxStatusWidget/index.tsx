@@ -1,16 +1,16 @@
-import { useContext } from 'react'
-import { Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material'
-import CreatedIcon from '@/public/images/messages/created.svg'
-import SignedIcon from '@/public/images/messages/signed.svg'
-import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isMultisigExecutionInfo, isSignableBy, isConfirmableBy } from '@/utils/transaction-guards'
-import classnames from 'classnames'
-import css from './styles.module.css'
-import CloseIcon from '@mui/icons-material/Close'
 import useWallet from '@/hooks/wallets/useWallet'
 import SafeLogo from '@/public/images/logo-no-text.svg'
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import CreatedIcon from '@/public/images/messages/created.svg'
+import SignedIcon from '@/public/images/messages/signed.svg'
+import { isConfirmableBy, isMultisigExecutionInfo, isSignableBy } from '@/utils/transaction-guards'
+import CloseIcon from '@mui/icons-material/Close'
+import { Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material'
+import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import classnames from 'classnames'
+import { useContext } from 'react'
+import css from './styles.module.css'
 
 const TxStatusWidget = ({
   step,
@@ -40,7 +40,7 @@ const TxStatusWidget = ({
 
   return (
     <Paper>
-      <div className={css.header}>
+      <div data-sid="86447" className={css.header}>
         <Typography fontWeight="700" display="flex" alignItems="center" gap={1}>
           <SafeLogo width={16} height={16} className={css.logo} />
           {isMessage ? 'Message' : 'Transaction'} status
@@ -53,7 +53,7 @@ const TxStatusWidget = ({
 
       <Divider />
 
-      <div className={css.content}>
+      <div data-sid="14578" className={css.content}>
         <List className={css.status}>
           <ListItem>
             <ListItemIcon>

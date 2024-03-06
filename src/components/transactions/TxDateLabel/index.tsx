@@ -7,7 +7,7 @@ import css from './styles.module.css'
 
 const TxDateLabel = ({ item }: { item: DateLabel | SafeMessageDateLabel }): ReactElement => {
   return (
-    <div className={css.container}>
+    <div data-sid="14270" className={css.container}>
       <span>{formatWithSchema(item.timestamp, 'MMM d, yyyy')}</span>
     </div>
   )

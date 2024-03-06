@@ -1,27 +1,28 @@
-import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
+import { type SpendingLimitTxParams } from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
+import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
+import { asError } from '@/services/exceptions/utils'
+import { sponsoredCall } from '@/services/tx/relaying'
+import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
 import type { EthersError } from '@/utils/ethers-utils'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
 import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
-import { type SpendingLimitTxParams } from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
-import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
-import type { ContractTransactionResponse, Overrides } from 'ethers'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
+import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
+import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+
+import type { ContractTransactionResponse, Overrides } from 'ethers'
 import proposeTx from '../proposeTransaction'
-import { txDispatch, TxEvent } from '../txEvents'
-import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
-import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
-import { sponsoredCall } from '@/services/tx/relaying'
+import { TxEvent, txDispatch } from '../txEvents'
 import {
+  assertWalletChain,
   getAndValidateSafeSDK,
   getSafeSDKWithSigner,
   getUncheckedSafeSDK,
-  assertWalletChain,
   tryOffChainTxSigning,
 } from './sdk'
-import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { type OnboardAPI } from '@web3-onboard/core'
-import { asError } from '@/services/exceptions/utils'
+import type { TempAPI } from '@/components/safe-apps/types'
 
 /**
  * Propose a transaction
@@ -75,7 +76,7 @@ export const dispatchTxProposal = async ({
 export const dispatchTxSigning = async (
   safeTx: SafeTransaction,
   safeVersion: SafeInfo['version'],
-  onboard: OnboardAPI,
+  onboard: TempAPI,
   chainId: SafeInfo['chainId'],
   txId?: string,
 ): Promise<SafeTransaction> => {
@@ -103,7 +104,7 @@ export const dispatchTxSigning = async (
 export const dispatchOnChainSigning = async (
   safeTx: SafeTransaction,
   txId: string,
-  onboard: OnboardAPI,
+  onboard: TempAPI,
   chainId: SafeInfo['chainId'],
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
@@ -133,7 +134,7 @@ export const dispatchTxExecution = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
   txId: string,
-  onboard: OnboardAPI,
+  onboard: TempAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
 ): Promise<string> => {
@@ -186,7 +187,7 @@ export const dispatchBatchExecution = async (
   txs: TransactionDetails[],
   multiSendContract: MultiSendCallOnlyEthersContract,
   multiSendTxData: string,
-  onboard: OnboardAPI,
+  onboard: TempAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
   overrides: Overrides,
@@ -277,7 +278,7 @@ export const dispatchBatchExecution = async (
 export const dispatchSpendingLimitTxExecution = async (
   txParams: SpendingLimitTxParams,
   txOptions: TransactionOptions,
-  onboard: OnboardAPI,
+  onboard: TempAPI,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
 ) => {
@@ -335,7 +336,7 @@ export const dispatchSpendingLimitTxExecution = async (
 export const dispatchSafeAppsTx = async (
   safeTx: SafeTransaction,
   safeAppRequestId: RequestId,
-  onboard: OnboardAPI,
+  onboard: TempAPI,
   chainId: SafeInfo['chainId'],
   txId?: string,
 ): Promise<string> => {

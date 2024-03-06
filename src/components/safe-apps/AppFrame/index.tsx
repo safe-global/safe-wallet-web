@@ -1,12 +1,5 @@
 import useBalances from '@/hooks/useBalances'
-import { useContext, useState } from 'react'
-import type { ReactElement } from 'react'
-import { useMemo } from 'react'
-import { useCallback, useEffect } from 'react'
 import { CircularProgress, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
-import Head from 'next/head'
-import { getBalances, getTransactionDetails, getSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type {
   AddressBookItem,
   BaseTransaction,
@@ -16,40 +9,45 @@ import type {
   SendTransactionRequestParams,
 } from '@safe-global/safe-apps-sdk'
 import { Methods } from '@safe-global/safe-apps-sdk'
+import { getBalances, getSafeMessage, getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import type { ReactElement } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
-import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
-import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
-import useChainId from '@/hooks/useChainId'
-import useAddressBook from '@/hooks/useAddressBook'
-import { useSafePermissions } from '@/hooks/safe-apps/permissions'
-import { useCurrentChain } from '@/hooks/useChains'
-import { isSameUrl } from '@/utils/url'
 import useTransactionQueueBarState from '@/components/safe-apps/AppFrame/useTransactionQueueBarState'
+import PermissionsPrompt from '@/components/safe-apps/PermissionsPrompt'
+import { PermissionStatus, type SafeAppDataWithPermissions } from '@/components/safe-apps/types'
+import { useSafePermissions } from '@/hooks/safe-apps/permissions'
+import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
+import useAddressBook from '@/hooks/useAddressBook'
+import useChainId from '@/hooks/useChainId'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { gtmTrackPageview } from '@/services/analytics/gtm'
-import useThirdPartyCookies from './useThirdPartyCookies'
-import useAnalyticsFromSafeApp from './useFromAppAnalytics'
-import useAppIsLoading from './useAppIsLoading'
-import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
-import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
-import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
-import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
+import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
+import { SafeMsgEvent, safeMsgSubscribe } from '@/services/safe-messages/safeMsgEvents'
+import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useAppSelector } from '@/store'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
 import { isSafeMessageListItem } from '@/utils/safe-message-guards'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
-import PermissionsPrompt from '@/components/safe-apps/PermissionsPrompt'
-import { PermissionStatus, type SafeAppDataWithPermissions } from '@/components/safe-apps/types'
+import { isSameUrl } from '@/utils/url'
+import { ThirdPartyCookiesWarning } from './ThirdPartyCookiesWarning'
+import TransactionQueueBar, { TRANSACTION_BAR_HEIGHT } from './TransactionQueueBar'
+import useAppCommunicator, { CommunicatorMessages } from './useAppCommunicator'
+import useAppIsLoading from './useAppIsLoading'
+import useAnalyticsFromSafeApp from './useFromAppAnalytics'
+import useThirdPartyCookies from './useThirdPartyCookies'
 
-import css from './styles.module.css'
-import SafeAppIframe from './SafeAppIframe'
-import useGetSafeInfo from './useGetSafeInfo'
-import { hasFeature, FEATURES } from '@/utils/chains'
-import { selectTokenList, selectOnChainSigning, TOKEN_LISTS } from '@/store/settingsSlice'
 import { TxModalContext } from '@/components/tx-flow'
 import { SafeAppsTxFlow, SignMessageFlow, SignMessageOnChainFlow } from '@/components/tx-flow/flows'
+import { TOKEN_LISTS, selectOnChainSigning, selectTokenList } from '@/store/settingsSlice'
+import { FEATURES, hasFeature } from '@/utils/chains'
+import SafeAppIframe from './SafeAppIframe'
+import css from './styles.module.css'
+import useGetSafeInfo from './useGetSafeInfo'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -278,7 +276,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
   }, [communicator, currentRequestId])
 
   if (!safeLoaded) {
-    return <div />
+    return <div data-sid="67963" />
   }
 
   return (
@@ -287,11 +285,11 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
         <title>{`Safe Apps - Viewer - ${remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}`}</title>
       </Head>
 
-      <div className={css.wrapper}>
+      <div data-sid="12906" className={css.wrapper}>
         {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
 
         {appIsLoading && (
-          <div className={css.loadingContainer}>
+          <div data-sid="53486" className={css.loadingContainer}>
             {isLoadingSlow && (
               <Typography variant="h4" gutterBottom>
                 The Safe App is taking too long to load, consider refreshing.

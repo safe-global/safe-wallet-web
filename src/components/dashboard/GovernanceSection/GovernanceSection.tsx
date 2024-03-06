@@ -1,35 +1,35 @@
-import { useRef } from 'react'
-import { Typography, Card, Box, Alert, IconButton, Link, SvgIcon } from '@mui/material'
-import { WidgetBody } from '@/components/dashboard/styled'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import css from './styles.module.css'
-import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
-import { DISCORD_URL, SafeAppsTag } from '@/config/constants'
-import { useDarkMode } from '@/hooks/useDarkMode'
-import { OpenInNew } from '@mui/icons-material'
-import NetworkError from '@/public/images/common/network-error.svg'
-import useChainId from '@/hooks/useChainId'
 import { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
+import { WidgetBody } from '@/components/dashboard/styled'
 import SafeAppIframe from '@/components/safe-apps/AppFrame/SafeAppIframe'
 import type { UseAppCommunicatorHandlers } from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import useAppCommunicator from '@/components/safe-apps/AppFrame/useAppCommunicator'
-import { useCurrentChain } from '@/hooks/useChains'
 import useGetSafeInfo from '@/components/safe-apps/AppFrame/useGetSafeInfo'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
-import useAsync from '@/hooks/useAsync'
 import { getOrigin } from '@/components/safe-apps/utils'
+import { DISCORD_URL, SafeAppsTag } from '@/config/constants'
+import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import useAsync from '@/hooks/useAsync'
+import useChainId from '@/hooks/useChainId'
+import { useCurrentChain } from '@/hooks/useChains'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import NetworkError from '@/public/images/common/network-error.svg'
+import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
+import { OpenInNew } from '@mui/icons-material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Alert, Box, Card, IconButton, Link, SvgIcon, Typography } from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import { useRef } from 'react'
+import css from './styles.module.css'
 
 // A fallback component when the Safe App fails to load
 const WidgetLoadErrorFallback = () => (
-  <Box display="flex" flexDirection="column" alignItems="center" height="100%">
+  <Box data-sid="49503" display="flex" flexDirection="column" alignItems="center" height="100%">
     <Card className={css.loadErrorCard}>
-      <Box className={css.loadErrorMsgContainer}>
+      <Box data-sid="64707" className={css.loadErrorMsgContainer}>
         <Typography variant="h4" color="text.primary" fontWeight="bold">
           Couldn&apos;t load governance widgets
         </Typography>

@@ -1,13 +1,13 @@
-import type { DataDecoded, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box } from '@mui/material'
+import { MultisendActionsHeader } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import css from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/styles.module.css'
+import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import { isCustomTxInfo, isNativeTokenTransfer, isTransferTxInfo } from '@/utils/transaction-guards'
-import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
-import css from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend/styles.module.css'
-import { useState } from 'react'
-import { MultisendActionsHeader } from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import { Box } from '@mui/material'
 import { type AccordionProps } from '@mui/material/Accordion/Accordion'
+import type { DataDecoded, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { useState } from 'react'
 
 const DecodedTxs = ({ txs }: { txs: TransactionDetails[] | undefined }) => {
   const [openMap, setOpenMap] = useState<Record<number, boolean>>()
@@ -19,7 +19,7 @@ const DecodedTxs = ({ txs }: { txs: TransactionDetails[] | undefined }) => {
     <>
       <MultisendActionsHeader title="Batched transactions" setOpen={setOpenMap} amount={txs.length} compact />
 
-      <Box className={css.compact}>
+      <Box data-sid="41009" className={css.compact}>
         {txs.map((transaction, idx) => {
           if (!transaction.txData) return null
 

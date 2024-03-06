@@ -1,26 +1,26 @@
-import { useContext, useEffect, useRef } from 'react'
+import ExternalLink from '@/components/common/ExternalLink'
+import Track from '@/components/common/Track'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import { RedefineHint } from '@/components/tx/security/redefine/RedefineHint'
 import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
-import { SecuritySeverity } from '@/services/security/modules/types'
-import groupBy from 'lodash/groupBy'
-import { Alert, Box, Checkbox, FormControlLabel, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
-import ExternalLink from '@/components/common/ExternalLink'
-import { FEATURES } from '@/utils/chains'
-import { useHasFeature } from '@/hooks/useChains'
-import { ErrorBoundary } from '@sentry/react'
-import { REDEFINE_ARTICLE, REDEFINE_SIMULATION_URL } from '@/config/constants'
-import css from 'src/components/tx/security/redefine/styles.module.css'
 import sharedCss from '@/components/tx/security/shared/styles.module.css'
+import { REDEFINE_ARTICLE, REDEFINE_SIMULATION_URL } from '@/config/constants'
+import { useHasFeature } from '@/hooks/useChains'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import RedefineLogoDark from '@/public/images/transactions/redefine-dark-mode.png'
 import RedefineLogo from '@/public/images/transactions/redefine.png'
-import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
-import { useDarkMode } from '@/hooks/useDarkMode'
+import { SecuritySeverity } from '@/services/security/modules/types'
+import { FEATURES } from '@/utils/chains'
+import { Alert, Box, Checkbox, FormControlLabel, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import { RedefineHint } from '@/components/tx/security/redefine/RedefineHint'
-import InfoIcon from '@/public/images/notifications/info.svg'
+import { ErrorBoundary } from '@sentry/react'
+import groupBy from 'lodash/groupBy'
 import Image from 'next/image'
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import { useContext, useEffect, useRef } from 'react'
+import css from 'src/components/tx/security/redefine/styles.module.css'
 
 const MAX_SHOWN_WARNINGS = 3
 
@@ -49,7 +49,7 @@ const RedefineBlock = () => {
   }, [isRiskIgnored, checkboxRef])
 
   return (
-    <div className={css.wrapperBox}>
+    <div data-sid="81831" className={css.wrapperBox}>
       <Paper
         variant="outlined"
         className={sharedCss.wrapper}
@@ -89,13 +89,13 @@ const RedefineBlock = () => {
 
           <Typography variant="caption" className={sharedCss.poweredBy} position="relative">
             Powered by{' '}
-            <div className={css.redefine}>
+            <div data-sid="93164" className={css.redefine}>
               <Image src={isDarkMode ? RedefineLogoDark : RedefineLogo} alt="Redefine logo" width={52} />
             </div>
           </Typography>
         </div>
 
-        <div className={sharedCss.result}>
+        <div data-sid="57404" className={sharedCss.result}>
           {isLoading ? (
             <CircularProgress
               size={22}
@@ -122,7 +122,7 @@ const RedefineBlock = () => {
       </Paper>
       <div>
         {needsRiskConfirmation && (
-          <Box pl={2} ref={checkboxRef}>
+          <Box data-sid="42994" pl={2} ref={checkboxRef}>
             <Track {...MODALS_EVENTS.ACCEPT_RISK}>
               <FormControlLabel
                 label={`I understand the risks and would like to sign this ${
@@ -169,7 +169,7 @@ export const RedefineMessage = () => {
   if (sortedSeverities.length === 0 && hiddenWarningCount === 0 && !simulationUuid) return null
 
   return (
-    <Box display="flex" flexDirection="column" gap={1}>
+    <Box data-sid="91253" display="flex" flexDirection="column" gap={1}>
       {sortedSeverities.map((key) => (
         <RedefineHint
           key={key}

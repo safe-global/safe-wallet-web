@@ -1,13 +1,13 @@
-import { useCallback, useContext } from 'react'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import { ProgressBar } from '@/components/common/ProgressBar'
 import { SendNFTsButton, SendTokensButton, TxBuilderButton } from '@/components/tx-flow/common/TxButton'
+import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
+import NewTxIcon from '@/public/images/transactions/new-tx.svg'
 import { Container, Grid, Paper, SvgIcon, Typography } from '@mui/material'
+import { useCallback, useContext } from 'react'
 import { TxModalContext } from '../../'
 import TokenTransferFlow from '../TokenTransfer'
-import AssetsIcon from '@/public/images/sidebar/assets.svg'
-import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
-import { ProgressBar } from '@/components/common/ProgressBar'
-import ChainIndicator from '@/components/common/ChainIndicator'
-import NewTxIcon from '@/public/images/transactions/new-tx.svg'
 
 import css from './styles.module.css'
 
@@ -33,7 +33,7 @@ const NewTxFlow = () => {
               <ProgressBar value={progress} />
             </Grid>
             <Grid item xs={12} md={6} className={css.pane} gap={3}>
-              <div className={css.globs}>
+              <div data-sid="92158" className={css.globs}>
                 <NewTxIcon />
               </div>
 

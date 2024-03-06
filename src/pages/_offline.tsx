@@ -1,5 +1,5 @@
-import { Box, Paper, Typography } from '@mui/material'
 import WifiOffIcon from '@mui/icons-material/WifiOff'
+import { Box, Paper, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 
@@ -11,9 +11,9 @@ const Offline: NextPage = () => {
       </Head>
 
       <main>
-        <Box display="flex" justifyContent="center">
+        <Box data-sid="15410" display="flex" justifyContent="center">
           <Paper sx={{ p: 4, mb: 2, maxWidth: 900 }}>
-            <Box display="flex" justifyContent="center" mb={2} fontSize={100}>
+            <Box data-sid="94674" display="flex" justifyContent="center" mb={2} fontSize={100}>
               <WifiOffIcon fontSize="inherit" />
             </Box>
 

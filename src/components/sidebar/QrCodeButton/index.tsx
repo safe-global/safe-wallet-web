@@ -1,5 +1,5 @@
-import { type ReactElement, type ReactNode, useState, Suspense } from 'react'
 import dynamic from 'next/dynamic'
+import { Suspense, useState, type ReactElement, type ReactNode } from 'react'
 
 const QrModal = dynamic(() => import('./QrModal'))
 
@@ -8,7 +8,7 @@ const QrCodeButton = ({ children }: { children: ReactNode }): ReactElement => {
 
   return (
     <>
-      <div data-testid="qr-modal-btn" onClick={() => setModalOpen(true)}>
+      <div data-sid="95763" data-testid="qr-modal-btn" onClick={() => setModalOpen(true)}>
         {children}
       </div>
 

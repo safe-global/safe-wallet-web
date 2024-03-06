@@ -1,13 +1,13 @@
+import NumberField from '@/components/common/NumberField'
+import { AutocompleteItem } from '@/components/tx-flow/flows/TokenTransfer/CreateTokenTransfer'
 import { safeFormatUnits } from '@/utils/formatters'
+import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import { Button, Divider, FormControl, InputLabel, MenuItem, TextField } from '@mui/material'
 import { type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import css from './styles.module.css'
-import NumberField from '@/components/common/NumberField'
-import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
-import { AutocompleteItem } from '@/components/tx-flow/flows/TokenTransfer/CreateTokenTransfer'
-import { useFormContext } from 'react-hook-form'
 import classNames from 'classnames'
 import { useCallback } from 'react'
+import { useFormContext } from 'react-hook-form'
+import css from './styles.module.css'
 
 export enum TokenAmountFields {
   tokenAddress = 'tokenAddress',
@@ -61,14 +61,14 @@ const TokenAmountInput = ({
       <InputLabel shrink required className={css.label}>
         {errors[TokenAmountFields.tokenAddress]?.message || errors[TokenAmountFields.amount]?.message || 'Amount'}
       </InputLabel>
-      <div className={css.inputs}>
+      <div data-sid="26206" className={css.inputs}>
         <NumberField
           data-testid="token-amount-field"
           variant="standard"
           InputProps={{
             disableUnderline: true,
             endAdornment: maxAmount !== undefined && (
-              <Button data-testid="max-btn" className={css.max} onClick={onMaxAmountClick}>
+              <Button data-sid="32912" data-testid="max-btn" className={css.max} onClick={onMaxAmountClick}>
                 Max
               </Button>
             ),

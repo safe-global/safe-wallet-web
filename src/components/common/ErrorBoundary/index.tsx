@@ -1,4 +1,4 @@
-import { Typography, Link } from '@mui/material'
+import { Link, Typography } from '@mui/material'
 import type { FallbackRender } from '@sentry/react'
 
 import { HELP_CENTER_URL, IS_PRODUCTION } from '@/config/constants'
@@ -6,13 +6,13 @@ import { AppRoutes } from '@/config/routes'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 
 import css from '@/components/common/ErrorBoundary/styles.module.css'
-import CircularIcon from '../icons/CircularIcon'
 import ExternalLink from '../ExternalLink'
+import CircularIcon from '../icons/CircularIcon'
 
 const ErrorBoundary: FallbackRender = ({ error, componentStack }) => {
   return (
-    <div className={css.container}>
-      <div className={css.wrapper}>
+    <div data-sid="83711" className={css.container}>
+      <div data-sid="98635" className={css.wrapper}>
         <Typography variant="h3" color="text.primary">
           Something went wrong,
           <br />

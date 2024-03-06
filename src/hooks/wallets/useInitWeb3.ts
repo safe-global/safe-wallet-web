@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
-
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import { createWeb3, createWeb3ReadOnly, setWeb3, setWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
+import { useEffect } from 'react'
+import { getRpcUrl } from '../useClient'
 
 export const useInitWeb3 = () => {
   const chain = useCurrentChain()
@@ -27,7 +27,8 @@ export const useInitWeb3 = () => {
       setWeb3ReadOnly(undefined)
       return
     }
-    const web3ReadOnly = createWeb3ReadOnly(chain, customRpcUrl)
+
+    const web3ReadOnly = createWeb3ReadOnly(chain, getRpcUrl(Number(chainId || 1)) || customRpcUrl)
     setWeb3ReadOnly(web3ReadOnly)
-  }, [chain, customRpcUrl])
+  }, [chain, customRpcUrl, chainId])
 }

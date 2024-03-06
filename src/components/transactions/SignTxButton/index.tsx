@@ -1,16 +1,16 @@
+import { Button, Tooltip } from '@mui/material'
+import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SyntheticEvent } from 'react'
 import { useContext, type ReactElement } from 'react'
-import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button, Tooltip } from '@mui/material'
 
-import { isSignableBy } from '@/utils/transaction-guards'
-import useWallet from '@/hooks/wallets/useWallet'
-import Track from '@/components/common/Track'
-import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import Track from '@/components/common/Track'
 import { TxModalContext } from '@/components/tx-flow'
 import { ConfirmTxFlow } from '@/components/tx-flow/flows'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import useWallet from '@/hooks/wallets/useWallet'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
+import { isSignableBy } from '@/utils/transaction-guards'
 
 const SignTxButton = ({
   txSummary,
@@ -38,6 +38,7 @@ const SignTxButton = ({
           <span>
             <Track {...TX_LIST_EVENTS.CONFIRM}>
               <Button
+                data-sid="38786"
                 onClick={onClick}
                 variant={compact ? 'outlined' : 'contained'}
                 disabled={!isOk || isDisabled}

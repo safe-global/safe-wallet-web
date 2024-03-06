@@ -1,20 +1,20 @@
 import Track from '@/components/common/Track'
-import { ChooseRecoveryMethodModal } from './ChooseRecoveryMethodModal'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Box, Button, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
-import { type ReactElement, useMemo, useState } from 'react'
+import { useMemo, useState, type ReactElement } from 'react'
+import { ChooseRecoveryMethodModal } from './ChooseRecoveryMethodModal'
 
-import { Chip } from '@/components/common/Chip'
-import ExternalLink from '@/components/common/ExternalLink'
-import { DelayModifierRow } from './DelayModifierRow'
-import useRecovery from '@/features/recovery/hooks/useRecovery'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import EnhancedTable from '@/components/common/EnhancedTable'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import CheckWallet from '@/components/common/CheckWallet'
-import { getPeriod } from '@/utils/date'
-import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { Chip } from '@/components/common/Chip'
+import EnhancedTable from '@/components/common/EnhancedTable'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import ExternalLink from '@/components/common/ExternalLink'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { getPeriod } from '@/utils/date'
+import { DelayModifierRow } from './DelayModifierRow'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
@@ -99,7 +99,7 @@ function RecoverySettings(): ReactElement {
               rawValue: '',
               sticky: true,
               content: (
-                <div className={tableCss.actions}>
+                <div data-sid="51168" className={tableCss.actions}>
                   <DelayModifierRow delayModifier={delayModifier} />
                 </div>
               ),
@@ -114,7 +114,7 @@ function RecoverySettings(): ReactElement {
     <Paper sx={{ p: 4 }}>
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
-          <Box display="flex" alignItems="center" gap={1} mb={1}>
+          <Box data-sid="11037" display="flex" alignItems="center" gap={1} mb={1}>
             <Typography variant="h4" fontWeight="bold">
               Account recovery
             </Typography>
@@ -154,7 +154,7 @@ export const SetupRecoveryButton = ({ eventLabel }: { eventLabel: string }) => {
       <CheckWallet>
         {(isOk) => (
           <Track {...RECOVERY_EVENTS.SETUP_RECOVERY} label={eventLabel}>
-            <Button variant="contained" disabled={!isOk} onClick={() => setOpen(true)} sx={{ mt: 2 }}>
+            <Button data-sid="14286" variant="contained" disabled={!isOk} onClick={() => setOpen(true)} sx={{ mt: 2 }}>
               Set up recovery
             </Button>
           </Track>

@@ -1,6 +1,19 @@
+import AddressInput from '@/components/common/AddressInput'
+import NameInput from '@/components/common/NameInput'
+import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
+import css from '@/components/new-safe/create/steps/SetNameStep/styles.module.css'
+import layoutCss from '@/components/new-safe/create/styles.module.css'
 import type { LoadSafeFormData } from '@/components/new-safe/load'
-import { FormProvider, useForm } from 'react-hook-form'
+import { AppRoutes } from '@/config/routes'
+import { useAddressResolver } from '@/hooks/useAddressResolver'
+import useChainId from '@/hooks/useChainId'
+import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { LOAD_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import { useAppSelector } from '@/store'
+import { selectAddedSafes } from '@/store/addedSafesSlice'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import {
   Box,
   Button,
@@ -12,24 +25,10 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import layoutCss from '@/components/new-safe/create/styles.module.css'
-import NameInput from '@/components/common/NameInput'
-import InfoIcon from '@/public/images/notifications/info.svg'
-import css from '@/components/new-safe/create/steps/SetNameStep/styles.module.css'
-import NetworkSelector from '@/components/common/NetworkSelector'
-import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
-import { useAddressResolver } from '@/hooks/useAddressResolver'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import AddressInput from '@/components/common/AddressInput'
-import React from 'react'
-import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import useChainId from '@/hooks/useChainId'
-import { useAppSelector } from '@/store'
-import { selectAddedSafes } from '@/store/addedSafesSlice'
-import { LOAD_SAFE_EVENTS, trackEvent } from '@/services/analytics'
-import { AppRoutes } from '@/config/routes'
 import MUILink from '@mui/material/Link'
+import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import Link from 'next/link'
+import { FormProvider, useForm } from 'react-hook-form'
 
 enum Field {
   name = 'name',
@@ -101,7 +100,7 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={onFormSubmit}>
-        <Box className={layoutCss.row}>
+        <Box data-sid="60717" className={layoutCss.row}>
           <Grid container spacing={[3, 1]} mb={3} pr="40px">
             <Grid item xs={12} md>
               <NameInput
@@ -129,7 +128,7 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
               />
             </Grid>
             <Grid item order={[-1, 1]}>
-              <Box className={css.select}>
+              <Box data-sid="70929" className={css.select}>
                 <NetworkSelector />
               </Box>
             </Grid>
@@ -157,12 +156,19 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
 
         <Divider />
 
-        <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-            <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
+        <Box data-sid="17151" className={layoutCss.row}>
+          <Box data-sid="11226" display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+            <Button
+              data-sid="52105"
+              variant="outlined"
+              size="small"
+              onClick={handleBack}
+              startIcon={<ArrowBackIcon fontSize="small" />}
+            >
               Back
             </Button>
             <Button
+              data-sid="93886"
               data-testid="load-safe-next-btn"
               type="submit"
               variant="contained"

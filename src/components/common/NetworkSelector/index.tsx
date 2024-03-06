@@ -1,23 +1,22 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
-import { useDarkMode } from '@/hooks/useDarkMode'
-import { useTheme } from '@mui/material/styles'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import Link from 'next/link'
-import type { SelectChangeEvent } from '@mui/material'
-import { ListSubheader, MenuItem, Select, Skeleton } from '@mui/material'
-import partition from 'lodash/partition'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useChains from '@/hooks/useChains'
-import { useRouter } from 'next/router'
-import css from './styles.module.css'
-import { useChainId } from '@/hooks/useChainId'
-import { type ReactElement, useMemo } from 'react'
-import { useCallback } from 'react'
 import { AppRoutes } from '@/config/routes'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { useChainId } from '@/hooks/useChainId'
+import useChains from '@/hooks/useChains'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import useSwitchChain from '@/hooks/useSwitchChain'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import type { SelectChangeEvent } from '@mui/material'
+import { ListSubheader, MenuItem, Select, Skeleton } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import partition from 'lodash/partition'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useCallback, useMemo, type ReactElement } from 'react'
+import css from './styles.module.css'
 
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const wallet = useWallet()
@@ -28,6 +27,8 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
   const router = useRouter()
 
   const [testNets, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
+
+  const { switchChain } = useSwitchChain()
 
   const getNetworkLink = useCallback(
     (shortName: string) => {
@@ -59,8 +60,9 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
     const shortName = configs.find((item) => item.chainId === newChainId)?.shortName
 
     if (shortName) {
-      trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: newChainId })
-      router.push(getNetworkLink(shortName))
+      switchChain(Number(newChainId)).then(() => {
+        router.push(getNetworkLink(shortName))
+      })
     }
   }
 

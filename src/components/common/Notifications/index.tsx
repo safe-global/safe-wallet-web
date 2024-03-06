@@ -1,17 +1,17 @@
-import type { ReactElement, SyntheticEvent } from 'react'
-import { useCallback, useEffect } from 'react'
-import groupBy from 'lodash/groupBy'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { useAppDispatch, useAppSelector } from '@/store'
 import type { Notification } from '@/store/notificationsSlice'
 import { closeNotification, readNotification, selectNotifications } from '@/store/notificationsSlice'
+import { isRelativeUrl } from '@/utils/url'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import type { AlertColor, SnackbarCloseReason } from '@mui/material'
 import { Alert, Link, Snackbar, Typography } from '@mui/material'
-import css from './styles.module.css'
+import groupBy from 'lodash/groupBy'
 import NextLink from 'next/link'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import type { ReactElement, SyntheticEvent } from 'react'
+import { useCallback, useEffect } from 'react'
 import Track from '../Track'
-import { isRelativeUrl } from '@/utils/url'
+import css from './styles.module.css'
 
 const toastStyle = { position: 'static', margin: 1 }
 
@@ -127,9 +127,9 @@ const Notifications = (): ReactElement | null => {
   }
 
   return (
-    <div className={css.container}>
+    <div data-sid="68864" className={css.container}>
       {visible.map((item) => (
-        <div className={css.row} key={item.id}>
+        <div data-sid="57287" className={css.row} key={item.id}>
           <Toast {...item} onClose={() => handleClose(item)} />
         </div>
       ))}

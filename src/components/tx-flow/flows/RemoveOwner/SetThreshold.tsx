@@ -1,14 +1,14 @@
-import { useState } from 'react'
-import { Button, Box, CardActions, Divider, Grid, MenuItem, Select, Typography, SvgIcon, Tooltip } from '@mui/material'
-import type { ReactElement, SyntheticEvent } from 'react'
 import type { SelectChangeEvent } from '@mui/material'
+import { Box, Button, CardActions, Divider, Grid, MenuItem, Select, SvgIcon, Tooltip, Typography } from '@mui/material'
+import type { ReactElement, SyntheticEvent } from 'react'
+import { useState } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import TxCard from '../../common/TxCard'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import type { RemoveOwnerFlowProps } from '.'
+import TxCard from '../../common/TxCard'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -36,7 +36,7 @@ export const SetThreshold = ({
   return (
     <TxCard>
       <form onSubmit={onSubmitHandler}>
-        <Box mb={3}>
+        <Box data-sid="11981" mb={3}>
           <Typography mb={2}>Review the owner you want to remove from the active Safe Account:</Typography>
           {/* TODO: Update the EthHashInfo style from the replace owner PR */}
           <EthHashInfo address={params.removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
@@ -44,7 +44,7 @@ export const SetThreshold = ({
 
         <Divider className={commonCss.nestedDivider} />
 
-        <Box my={3}>
+        <Box data-sid="53663" my={3}>
           <Typography variant="h4" fontWeight={700}>
             Threshold
             <Tooltip title={TOOLTIP_TITLES.THRESHOLD} arrow placement="top">
@@ -82,7 +82,7 @@ export const SetThreshold = ({
         <Divider className={commonCss.nestedDivider} />
 
         <CardActions>
-          <Button data-testid="next-btn" variant="contained" type="submit">
+          <Button data-sid="23639" data-testid="next-btn" variant="contained" type="submit">
             Next
           </Button>
         </CardActions>

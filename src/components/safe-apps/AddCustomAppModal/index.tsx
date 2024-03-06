@@ -1,35 +1,35 @@
-import { useCallback } from 'react'
-import { useRouter } from 'next/router'
-import type { SubmitHandler } from 'react-hook-form'
-import { useForm } from 'react-hook-form'
+import ModalDialog from '@/components/common/ModalDialog'
+import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
+import useAsync from '@/hooks/useAsync'
+import { useCurrentChain } from '@/hooks/useChains'
+import useDebounce from '@/hooks/useDebounce'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
+import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
+import { isSameUrl, trimTrailingSlash } from '@/utils/url'
+import { isValidURL } from '@/utils/validation'
+import CheckIcon from '@mui/icons-material/Check'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import {
+  Box,
+  Button,
+  Checkbox,
   DialogActions,
   DialogContent,
-  Typography,
-  Button,
-  TextField,
   FormControlLabel,
-  Checkbox,
-  Box,
   FormHelperText,
+  TextField,
+  Typography,
 } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import ModalDialog from '@/components/common/ModalDialog'
-import { isValidURL } from '@/utils/validation'
-import { useCurrentChain } from '@/hooks/useChains'
-import useAsync from '@/hooks/useAsync'
-import useDebounce from '@/hooks/useDebounce'
-import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
-import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
-import { isSameUrl, trimTrailingSlash } from '@/utils/url'
-import CustomAppPlaceholder from './CustomAppPlaceholder'
+import { useRouter } from 'next/router'
+import { useCallback } from 'react'
+import type { SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import CustomApp from './CustomApp'
-import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
+import CustomAppPlaceholder from './CustomAppPlaceholder'
 
-import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
+import css from './styles.module.css'
 
 type Props = {
   open: boolean
@@ -98,7 +98,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
     <ModalDialog open={open} onClose={handleClose} dialogTitle="Add custom Safe App">
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent className={css.addCustomAppContainer}>
-          <div className={css.addCustomAppFields}>
+          <div data-sid="37414" className={css.addCustomAppFields}>
             <TextField
               required
               label="Safe App URL"
@@ -114,12 +114,12 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                 },
               })}
             />
-            <Box mt={2}>
+            <Box data-sid="97667" mt={2}>
               {safeApp ? (
                 <>
                   <CustomApp safeApp={safeApp} shareUrl={isCustomAppInTheDefaultList ? shareSafeAppUrl : ''} />
                   {isCustomAppInTheDefaultList ? (
-                    <Box display="flex" mt={2} alignItems="center">
+                    <Box data-sid="36883" display="flex" mt={2} alignItems="center">
                       <CheckIcon color="success" />
                       <Typography ml={1}>This Safe App is already registered</Typography>
                     </Box>
@@ -150,7 +150,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
             </Box>
           </div>
 
-          <div className={css.addCustomAppHelp}>
+          <div data-sid="24241" className={css.addCustomAppHelp}>
             <InfoOutlinedIcon className={css.addCustomAppHelpIcon} />
             <Typography ml={0.5}>Learn more about building</Typography>
             <ExternalLink className={css.addCustomAppHelpLink} href={HELP_LINK} fontWeight={700}>
@@ -161,8 +161,10 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
         </DialogContent>
 
         <DialogActions disableSpacing>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit" variant="contained" disabled={!isSafeAppValid}>
+          <Button data-sid="67995" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button data-sid="67203" type="submit" variant="contained" disabled={!isSafeAppValid}>
             Add
           </Button>
         </DialogActions>

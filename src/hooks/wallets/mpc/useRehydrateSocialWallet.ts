@@ -5,12 +5,12 @@ import useOnboard, { connectWallet } from '@/hooks/wallets/useOnboard'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { type WalletState } from '@web3-onboard/core'
 import { type UserInfo } from '@web3auth/mpc-core-kit'
 import { useCallback, useEffect } from 'react'
 import { checksumAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
 import { isSocialWalletEnabled } from '../wallets'
+import type { WalletState } from '@/components/safe-apps/types'
 
 const useRehydrateSocialWallet = () => {
   const chain = useCurrentChain()

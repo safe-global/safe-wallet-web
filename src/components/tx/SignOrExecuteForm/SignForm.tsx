@@ -1,22 +1,22 @@
 import madProps from '@/utils/mad-props'
-import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
+import { Box, Button, CardActions, CircularProgress, Divider } from '@mui/material'
+import { useContext, useState, type ReactElement, type SyntheticEvent } from 'react'
 
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import { trackError, Errors } from '@/services/exceptions'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useAlreadySigned, useTxActions } from './hooks'
-import type { SignOrExecuteProps } from '.'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import { TxSecurityContext } from '../security/shared/TxSecurityContext'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
-import BatchButton from './BatchButton'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
 import { isWalletRejection } from '@/utils/wallets'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SignOrExecuteProps } from '.'
+import { TxSecurityContext } from '../security/shared/TxSecurityContext'
+import BatchButton from './BatchButton'
+import { useAlreadySigned, useTxActions } from './hooks'
 
 export const SignForm = ({
   safeTx,
@@ -106,7 +106,7 @@ export const SignForm = ({
       )}
 
       {isRejectedByUser && (
-        <Box mt={1}>
+        <Box data-sid="11871" mt={1}>
           <WalletRejectionError />
         </Box>
       )}
@@ -114,7 +114,7 @@ export const SignForm = ({
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
       <CardActions>
-        <Box display="flex" gap={2}>
+        <Box data-sid="86163" display="flex" gap={2}>
           {/* Batch button */}
           {isCreation && !isBatch && (
             <BatchButton
@@ -128,6 +128,7 @@ export const SignForm = ({
           <CheckWallet>
             {(isOk) => (
               <Button
+                data-sid="75943"
                 data-testid="sign-btn"
                 variant="contained"
                 type="submit"

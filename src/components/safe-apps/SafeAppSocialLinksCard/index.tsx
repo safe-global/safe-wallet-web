@@ -1,15 +1,15 @@
-import Link from 'next/link'
-import Card from '@mui/material/Card'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import Divider from '@mui/material/Divider'
-import { default as MuiLink } from '@mui/material/Link'
-import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded'
 import TwitterIcon from '@mui/icons-material/Twitter'
-import { SafeAppSocialPlatforms } from '@safe-global/safe-gateway-typescript-sdk'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import { default as MuiLink } from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
 import type { SafeAppData, SafeAppSocialProfile } from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeAppSocialPlatforms } from '@safe-global/safe-gateway-typescript-sdk'
+import Link from 'next/link'
 
 import DiscordIcon from '@/public/images/common/discord-icon.svg'
 import css from './styles.module.css'
@@ -33,9 +33,9 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
 
   return (
     <Card className={css.container}>
-      <Box display="flex" alignItems="center" gap={1} component="a">
+      <Box data-sid="71962" display="flex" alignItems="center" gap={1} component="a">
         {/* Team Link section */}
-        <div className={css.questionMarkIcon}>
+        <div data-sid="65630" className={css.questionMarkIcon}>
           <HelpOutlineRoundedIcon color="info" />
         </div>
         <div>
@@ -48,7 +48,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
         </div>
       </Box>
 
-      <Box className={css.socialLinksSectionContainer} display="flex" gap={4}>
+      <Box data-sid="89779" className={css.socialLinksSectionContainer} display="flex" gap={4}>
         {/* Social links section */}
         {hasSocialLinks && (
           <div>
@@ -56,7 +56,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
               Social Media
             </Typography>
 
-            <Box display="flex" mt={0.2} minHeight="40px">
+            <Box data-sid="41040" display="flex" mt={0.2} minHeight="40px">
               {discordSocialLink && (
                 <IconButton aria-label="Discord link" component="a" target="_blank" href={discordSocialLink.url}>
                   <DiscordIcon />
@@ -90,7 +90,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
 
         {/* Developer website section */}
         {developerWebsite && (
-          <Box display="flex" flexDirection="column">
+          <Box data-sid="61940" display="flex" flexDirection="column">
             <Typography color="border.main" variant="body2">
               Website
             </Typography>

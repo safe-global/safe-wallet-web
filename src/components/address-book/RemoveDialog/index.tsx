@@ -1,14 +1,14 @@
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import Typography from '@mui/material/Typography'
 import type { ReactElement } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
+import useAddressBook from '@/hooks/useAddressBook'
+import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
 import { removeAddressBookEntry } from '@/store/addressBookSlice'
-import useChainId from '@/hooks/useChainId'
-import useAddressBook from '@/hooks/useAddressBook'
 
 const RemoveDialog = ({ handleClose, address }: { handleClose: () => void; address: string }): ReactElement => {
   const dispatch = useAppDispatch()
@@ -31,8 +31,10 @@ const RemoveDialog = ({ handleClose, address }: { handleClose: () => void; addre
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleConfirm} variant="danger" disableElevation>
+        <Button data-sid="79863" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button data-sid="24026" onClick={handleConfirm} variant="danger" disableElevation>
           Delete
         </Button>
       </DialogActions>

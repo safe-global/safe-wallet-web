@@ -2,17 +2,17 @@ import Track from '@/components/common/Track'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button, Card, Divider, Grid, Typography } from '@mui/material'
-import { useContext } from 'react'
 import type { ReactElement } from 'react'
+import { useContext } from 'react'
 
-import { useDarkMode } from '@/hooks/useDarkMode'
 import ExternalLink from '@/components/common/ExternalLink'
+import type { TxModalContextType } from '@/components/tx-flow'
+import { TxModalContext } from '@/components/tx-flow'
 import { RecoverAccountFlow } from '@/components/tx-flow/flows'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { useDarkMode } from '@/hooks/useDarkMode'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import madProps from '@/utils/mad-props'
-import { TxModalContext } from '@/components/tx-flow'
-import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
-import type { TxModalContextType } from '@/components/tx-flow'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
@@ -60,7 +60,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   )
 
   const recoveryButton = (
-    <Button variant="contained" onClick={onRecover} className={css.button}>
+    <Button data-sid="84614" variant="contained" onClick={onRecover} className={css.button}>
       Start recovery
     </Button>
   )
@@ -118,6 +118,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
 
         <Grid item container justifyContent="flex-end" gap={{ md: 1 }}>
           <Button
+            data-sid="40050"
             onClick={() => {
               trackEvent(RECOVERY_EVENTS.DISMISS_PROPOSAL_CARD)
               onClose?.()

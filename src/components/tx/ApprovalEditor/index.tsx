@@ -1,22 +1,22 @@
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
-import { Alert, Box, Divider, Skeleton, SvgIcon, Typography } from '@mui/material'
-import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { useContext } from 'react'
-import css from './styles.module.css'
-import { ApprovalEditorForm } from './ApprovalEditorForm'
-import { updateApprovalTxs } from './utils/approvals'
-import { useApprovalInfos } from './hooks/useApprovalInfos'
-import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
-import EditIcon from '@/public/images/common/edit.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import Approvals from '@/components/tx/ApprovalEditor/Approvals'
+import EditIcon from '@/public/images/common/edit.svg'
+import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
+import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
+import { Alert, Box, Divider, Skeleton, SvgIcon, Typography } from '@mui/material'
+import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
+import { useContext } from 'react'
+import { ApprovalEditorForm } from './ApprovalEditorForm'
+import { useApprovalInfos } from './hooks/useApprovalInfos'
+import css from './styles.module.css'
+import { updateApprovalTxs } from './utils/approvals'
 
 const Title = () => {
   return (
-    <div className={css.wrapper}>
-      <div className={css.icon}>
+    <div data-sid="14924" className={css.wrapper}>
+      <div data-sid="83457" className={css.icon}>
         <SvgIcon component={EditIcon} inheritViewBox fontSize="small" />
       </div>
       <div>
@@ -63,7 +63,7 @@ export const ApprovalEditor = ({
   const isReadOnly = (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} mb={3}>
+    <Box data-sid="18128" display="flex" flexDirection="column" gap={2} mb={3}>
       <Title />
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>
@@ -75,7 +75,7 @@ export const ApprovalEditor = ({
         <ApprovalEditorForm approvalInfos={readableApprovals} updateApprovals={updateApprovals} />
       )}
 
-      <Box mt={2}>
+      <Box data-sid="49327" mt={2}>
         <Divider className={commonCss.nestedDivider} />
       </Box>
     </Box>

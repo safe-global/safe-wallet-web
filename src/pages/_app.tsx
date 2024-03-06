@@ -1,49 +1,50 @@
-import { SentryErrorBoundary } from '@/services/sentry' // needs to be imported first
+import CookieBanner from '@/components/common/CookieBanner'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
+import MetaTags from '@/components/common/MetaTags'
+import Notifications from '@/components/common/Notifications'
+import PageLayout from '@/components/common/PageLayout'
+import WalletProvider from '@/components/common/WalletProvider'
+import ConnectKitProvider from '@/components/connectKitProvider'
+import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
+import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
+import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
+import { TxModalProvider } from '@/components/tx-flow'
+import { GATEWAY_URL_PRODUCTION, GATEWAY_URL_STAGING, IS_PRODUCTION } from '@/config/constants'
+import CounterfactualHooks from '@/features/counterfactual/CounterfactualHooks'
+import Recovery from '@/features/recovery/components/Recovery'
+import useBeamer from '@/hooks/Beamer/useBeamer'
+import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
+import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifications'
+import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
+import { useSafeMsgTracking } from '@/hooks/messages/useSafeMsgTracking'
+import useAdjustUrl from '@/hooks/useAdjustUrl'
+import useChangedValue from '@/hooks/useChangedValue'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import { useInitSession } from '@/hooks/useInitSession'
+import useLoadableStores from '@/hooks/useLoadableStores'
+import useSafeNotifications from '@/hooks/useSafeNotifications'
+import useTxNotifications from '@/hooks/useTxNotifications'
+import useTxPendingStatuses from '@/hooks/useTxPendingStatuses'
+import { useTxTracking } from '@/hooks/useTxTracking'
 import useRehydrateSocialWallet from '@/hooks/wallets/mpc/useRehydrateSocialWallet'
+import { useInitWeb3 } from '@/hooks/wallets/useInitWeb3'
+import { useInitOnboard } from '@/hooks/wallets/useOnboard'
+import useGtm from '@/services/analytics/useGtm'
 import PasswordRecoveryModal from '@/services/mpc/PasswordRecoveryModal'
-import type { ReactNode } from 'react'
-import { type ReactElement } from 'react'
-import { type AppProps } from 'next/app'
-import Head from 'next/head'
-import { Provider } from 'react-redux'
+import { SentryErrorBoundary } from '@/services/sentry' // needs to be imported first
+import { makeStore, useHydrateStore } from '@/store'
+import '@/styles/globals.css'
+import createEmotionCache from '@/utils/createEmotionCache'
+import { CacheProvider, type EmotionCache } from '@emotion/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import type { Theme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
 import { setBaseUrl as setGatewayBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
-import { CacheProvider, type EmotionCache } from '@emotion/react'
-import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
-import '@/styles/globals.css'
-import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/config/constants'
-import { makeStore, useHydrateStore } from '@/store'
-import PageLayout from '@/components/common/PageLayout'
-import useLoadableStores from '@/hooks/useLoadableStores'
-import { useInitOnboard } from '@/hooks/wallets/useOnboard'
-import { useInitWeb3 } from '@/hooks/wallets/useInitWeb3'
-import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
-import useTxNotifications from '@/hooks/useTxNotifications'
-import useSafeNotifications from '@/hooks/useSafeNotifications'
-import useTxPendingStatuses from '@/hooks/useTxPendingStatuses'
-import { useInitSession } from '@/hooks/useInitSession'
-import Notifications from '@/components/common/Notifications'
-import CookieBanner from '@/components/common/CookieBanner'
-import { useDarkMode } from '@/hooks/useDarkMode'
-import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
-import { useTxTracking } from '@/hooks/useTxTracking'
-import { useSafeMsgTracking } from '@/hooks/messages/useSafeMsgTracking'
-import useGtm from '@/services/analytics/useGtm'
-import useBeamer from '@/hooks/Beamer/useBeamer'
-import ErrorBoundary from '@/components/common/ErrorBoundary'
-import createEmotionCache from '@/utils/createEmotionCache'
-import MetaTags from '@/components/common/MetaTags'
-import useAdjustUrl from '@/hooks/useAdjustUrl'
-import useSafeMessageNotifications from '@/hooks/messages/useSafeMessageNotifications'
-import useSafeMessagePendingStatuses from '@/hooks/messages/useSafeMessagePendingStatuses'
-import useChangedValue from '@/hooks/useChangedValue'
-import { TxModalProvider } from '@/components/tx-flow'
-import { useNotificationTracking } from '@/components/settings/PushNotifications/hooks/useNotificationTracking'
-import Recovery from '@/features/recovery/components/Recovery'
-import WalletProvider from '@/components/common/WalletProvider'
-import CounterfactualHooks from '@/features/counterfactual/CounterfactualHooks'
+import { type AppProps } from 'next/app'
+import Head from 'next/head'
+import type { ReactNode } from 'react'
+import { type ReactElement } from 'react'
+import { Provider } from 'react-redux'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -113,28 +114,29 @@ const WebCoreApp = ({
         <title key="default-title">{'Safe{Wallet}'}</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
       </Head>
+      <ConnectKitProvider>
+        <CacheProvider value={emotionCache}>
+          <AppProviders>
+            <CssBaseline />
 
-      <CacheProvider value={emotionCache}>
-        <AppProviders>
-          <CssBaseline />
+            <InitApp />
 
-          <InitApp />
+            <PageLayout pathname={router.pathname}>
+              <Component {...pageProps} key={safeKey} />
+            </PageLayout>
 
-          <PageLayout pathname={router.pathname}>
-            <Component {...pageProps} key={safeKey} />
-          </PageLayout>
+            <CookieBanner />
 
-          <CookieBanner />
+            <Notifications />
 
-          <Notifications />
+            <PasswordRecoveryModal />
 
-          <PasswordRecoveryModal />
+            <Recovery />
 
-          <Recovery />
-
-          <CounterfactualHooks />
-        </AppProviders>
-      </CacheProvider>
+            <CounterfactualHooks />
+          </AppProviders>
+        </CacheProvider>
+      </ConnectKitProvider>
     </Provider>
   )
 }

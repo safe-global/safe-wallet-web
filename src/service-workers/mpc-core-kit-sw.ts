@@ -133,11 +133,11 @@ export const mpcCoreKitServiceWorker = () => {
                   </head>
 
                   <body>
-                    <div id="message" class="container">
-                      <div class="spinner content" id="spinner">
-                        <div class="beat beat-odd"></div>
-                        <div class="beat beat-even"></div>
-                        <div class="beat beat-odd"></div>
+                    <div data-sid="46301" id="message" class="container">
+                      <div data-sid="61201" class="spinner content" id="spinner">
+                        <div data-sid="57213" class="beat beat-odd"></div>
+                        <div data-sid="18791" class="beat beat-even"></div>
+                        <div data-sid="40447" class="beat beat-odd"></div>
                       </div>
                       <h1 class="title content" id="closeText" style="display: none;">You can close this window now</h1>
                     </div>

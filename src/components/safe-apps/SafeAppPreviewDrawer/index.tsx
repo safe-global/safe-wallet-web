@@ -1,22 +1,22 @@
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import Drawer from '@mui/material/Drawer'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import SvgIcon from '@mui/material/SvgIcon'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { getSafeAppUrl } from '@/components/safe-apps/SafeAppCard'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import SafeAppActionButtons from '@/components/safe-apps/SafeAppActionButtons'
-import SafeAppTags from '@/components/safe-apps/SafeAppTags'
+import { getSafeAppUrl } from '@/components/safe-apps/SafeAppCard'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import SafeAppSocialLinksCard from '@/components/safe-apps/SafeAppSocialLinksCard'
-import CloseIcon from '@/public/images/common/close.svg'
+import SafeAppTags from '@/components/safe-apps/SafeAppTags'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
+import CloseIcon from '@/public/images/common/close.svg'
 import css from './styles.module.css'
 
 type SafeAppPreviewDrawerProps = {
@@ -40,11 +40,11 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
 
   return (
     <Drawer anchor="right" open={isOpen} onClose={onClose}>
-      <Box className={css.drawerContainer}>
+      <Box data-sid="62884" className={css.drawerContainer}>
         {/* Toolbar */}
 
         {safeApp && (
-          <Box display="flex" justifyContent="right">
+          <Box data-sid="82352" display="flex" justifyContent="right">
             <SafeAppActionButtons safeApp={safeApp} isBookmarked={isBookmarked} onBookmarkSafeApp={onBookmark} />
             <Tooltip title={`Close ${safeApp.name} preview`} placement="top">
               <IconButton
@@ -62,7 +62,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         )}
 
         {/* Safe App Info */}
-        <Box sx={{ px: 1 }}>
+        <Box data-sid="49930" sx={{ px: 1 }}>
           <SafeAppIconCard src={safeApp?.iconUrl || ''} alt={`${safeApp?.name} logo`} width={90} height={90} />
         </Box>
 
@@ -82,7 +82,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
           Available networks
         </Typography>
 
-        <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+        <Box data-sid="97355" sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
           {safeApp?.chainIds.map((chainId) => (
             <ChainIndicator key={chainId} chainId={chainId} inline showUnknown={false} />
           ))}
@@ -91,6 +91,7 @@ const SafeAppPreviewDrawer = ({ isOpen, safeApp, isBookmarked, onClose, onBookma
         {/* Open Safe App button */}
         <Link href={safeAppUrl} passHref legacyBehavior>
           <Button
+            data-sid="44043"
             fullWidth
             variant="contained"
             color="primary"

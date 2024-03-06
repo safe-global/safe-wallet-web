@@ -1,31 +1,31 @@
 import {
-  Typography,
-  Divider,
-  CardActions,
-  Button,
-  SvgIcon,
-  Grid,
-  MenuItem,
-  TextField,
-  IconButton,
-  Tooltip,
   Alert,
+  Button,
+  CardActions,
+  Divider,
+  Grid,
+  IconButton,
+  MenuItem,
+  SvgIcon,
+  TextField,
+  Tooltip,
+  Typography,
 } from '@mui/material'
-import { useForm, FormProvider, useFieldArray, Controller } from 'react-hook-form'
-import { Fragment } from 'react'
 import type { ReactElement } from 'react'
+import { Fragment } from 'react'
+import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import TxCard from '../../common/TxCard'
+import AddressBookInput from '@/components/common/AddressBookInput'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import AddIcon from '@/public/images/common/add.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
-import { RecoverAccountFlowFields } from '.'
-import AddressBookInput from '@/components/common/AddressBookInput'
-import { TOOLTIP_TITLES } from '../../common/constants'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { sameAddress } from '@/utils/addresses'
-import type { RecoverAccountFlowProps } from '.'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
+import type { RecoverAccountFlowProps } from '.'
+import { RecoverAccountFlowFields } from '.'
+import TxCard from '../../common/TxCard'
+import { TOOLTIP_TITLES } from '../../common/constants'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -132,6 +132,7 @@ export function RecoverAccountFlowSetup({
           </Grid>
 
           <Button
+            data-sid="41899"
             onClick={() => append({ value: '' })}
             variant="text"
             startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
@@ -200,7 +201,7 @@ export function RecoverAccountFlowSetup({
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions sx={{ mt: '0 !important' }}>
-            <Button variant="contained" type="submit" sx={{ mt: 1 }} disabled={isSameSetup}>
+            <Button data-sid="64477" variant="contained" type="submit" sx={{ mt: 1 }} disabled={isSameSetup}>
               Next
             </Button>
           </CardActions>

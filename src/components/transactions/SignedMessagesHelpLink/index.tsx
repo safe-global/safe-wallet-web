@@ -1,9 +1,9 @@
-import { Box, SvgIcon, Typography } from '@mui/material'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
+import { HelpCenterArticle } from '@/config/constants'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import { useAppSelector } from '@/store'
 import { selectSafeMessages } from '@/store/safeMessagesSlice'
-import { HelpCenterArticle } from '@/config/constants'
+import { Box, SvgIcon, Typography } from '@mui/material'
 
 const SignedMessagesHelpLink = () => {
   const safeMessages = useAppSelector(selectSafeMessages)
@@ -14,7 +14,7 @@ const SignedMessagesHelpLink = () => {
   }
 
   return (
-    <Box display="flex" alignItems="center" gap={1}>
+    <Box data-sid="52647" display="flex" alignItems="center" gap={1}>
       <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
       <ExternalLink noIcon href={HelpCenterArticle.SIGNED_MESSAGES}>
         <Typography variant="body2" fontWeight={700}>

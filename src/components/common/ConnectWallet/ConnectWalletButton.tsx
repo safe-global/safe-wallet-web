@@ -1,5 +1,6 @@
-import { Button } from '@mui/material'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import { Button } from '@mui/material'
+import { ConnectButton } from '@particle-network/connectkit'
 
 const ConnectWalletButton = ({
   onConnect,
@@ -20,16 +21,27 @@ const ConnectWalletButton = ({
   }
 
   return (
-    <Button
-      onClick={handleConnect}
-      variant={contained ? 'contained' : 'text'}
-      size={small ? 'small' : 'medium'}
-      disableElevation
-      fullWidth
-      sx={{ fontSize: small ? ['12px', '13px'] : '' }}
-    >
-      {text || 'Connect'}
-    </Button>
+    <ConnectButton.Custom>
+      {({ account, openConnectModal }) => {
+        return (
+          <div>
+            {!account && (
+              <Button
+                data-sid="10294"
+                onClick={openConnectModal}
+                variant={contained ? 'contained' : 'text'}
+                size={small ? 'small' : 'medium'}
+                disableElevation
+                fullWidth
+                sx={{ fontSize: small ? ['12px', '13px'] : '' }}
+              >
+                {text || 'Connect'}
+              </Button>
+            )}
+          </div>
+        )
+      }}
+    </ConnectButton.Custom>
   )
 }
 

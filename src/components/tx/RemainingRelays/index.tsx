@@ -1,7 +1,7 @@
-import { SvgIcon, Tooltip, Typography } from '@mui/material'
+import { MAX_HOUR_RELAYS } from '@/hooks/useRemainingRelays'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import type { RelayResponse } from '@/services/tx/relaying'
-import { MAX_HOUR_RELAYS } from '@/hooks/useRemainingRelays'
+import { SvgIcon, Tooltip, Typography } from '@mui/material'
 import css from '../BalanceInfo/styles.module.css'
 
 const RemainingRelays = ({ relays, tooltip }: { relays?: RelayResponse; tooltip?: string }) => {
@@ -10,7 +10,7 @@ const RemainingRelays = ({ relays, tooltip }: { relays?: RelayResponse; tooltip?
   }
 
   return (
-    <div className={css.container}>
+    <div data-sid="28697" className={css.container}>
       <Typography variant="body2" color="primary.light" display="flex" alignItems="center" gap={0.5}>
         <b>{relays?.remaining ?? MAX_HOUR_RELAYS}</b> free transactions left this hour
         <Tooltip title={tooltip} placement="top" arrow>

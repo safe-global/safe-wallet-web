@@ -1,16 +1,16 @@
-import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
-import { type ReactElement, useState, useMemo } from 'react'
-import { Controller, get, useFormContext, useWatch } from 'react-hook-form'
-import { Box, SvgIcon, Typography } from '@mui/material'
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
-import useAddressBook from '@/hooks/useAddressBook'
-import AddressInput, { type AddressInputProps } from '../AddressInput'
-import EthHashInfo from '../EthHashInfo'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import EntryDialog from '@/components/address-book/EntryDialog'
-import css from './styles.module.css'
+import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
+import useAddressBook from '@/hooks/useAddressBook'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import inputCss from '@/styles/inputs.module.css'
 import { isValidAddress } from '@/utils/validation'
+import { Box, SvgIcon, Typography } from '@mui/material'
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
+import { useMemo, useState, type ReactElement } from 'react'
+import { Controller, get, useFormContext, useWatch } from 'react-hook-form'
+import AddressInput, { type AddressInputProps } from '../AddressInput'
+import EthHashInfo from '../EthHashInfo'
+import css from './styles.module.css'
 
 const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
@@ -56,7 +56,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
     const fieldError = get(formState.errors, name)
 
     return (
-      <Box data-testid="address-book-recipient" onClick={() => setValue(name, '')}>
+      <Box data-sid="83986" data-testid="address-book-recipient" onClick={() => setValue(name, '')}>
         <AddressInputReadOnly
           address={addressValue}
           label={fieldError?.message || (typeof props.label === 'string' ? props.label : 'Sending to')}

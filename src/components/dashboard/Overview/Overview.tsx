@@ -1,20 +1,20 @@
+import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 import TokenAmount from '@/components/common/TokenAmount'
 import Track from '@/components/common/Track'
 import QrCodeButton from '@/components/sidebar/QrCodeButton'
 import { TxModalContext } from '@/components/tx-flow'
 import { NewTxFlow } from '@/components/tx-flow/flows'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+import ArrowIconSE from '@/public/images/common/arrow-se.svg'
+import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 import { formatCurrency } from '@/utils/formatNumber'
-import { useContext, useMemo, type ReactElement } from 'react'
 import { Button, Grid, Skeleton, Typography } from '@mui/material'
+import { useContext, useMemo, type ReactElement } from 'react'
 import { WidgetBody, WidgetContainer } from '../styled'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { useVisibleBalances } from '@/hooks/useVisibleBalances'
-import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
-import ArrowIconSE from '@/public/images/common/arrow-se.svg'
-import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 
 const SkeletonOverview = (
   <>
@@ -94,6 +94,7 @@ const Overview = (): ReactElement => {
 
                   <Grid item xs={6} sm="auto">
                     <Button
+                      data-sid="98274"
                       onClick={handleOnSend}
                       size="small"
                       variant="outlined"
@@ -107,7 +108,14 @@ const Overview = (): ReactElement => {
                   <Grid item xs={6} sm="auto">
                     <Track {...OVERVIEW_EVENTS.SHOW_QR} label="dashboard">
                       <QrCodeButton>
-                        <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />} fullWidth>
+                        <Button
+                          data-sid="90456"
+                          size="small"
+                          variant="outlined"
+                          color="primary"
+                          startIcon={<ArrowIconSE />}
+                          fullWidth
+                        >
                           Receive
                         </Button>
                       </QrCodeButton>

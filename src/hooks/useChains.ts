@@ -1,10 +1,10 @@
-import { useMemo } from 'react'
-import isEqual from 'lodash/isEqual'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import { selectChainById, selectChains } from '@/store/chainsSlice'
+import { hasFeature, type FEATURES } from '@/utils/chains'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import isEqual from 'lodash/isEqual'
+import { useMemo } from 'react'
 import { useChainId } from './useChainId'
-import { type FEATURES, hasFeature } from '@/utils/chains'
 
 const useChains = (): { configs: ChainInfo[]; error?: string; loading?: boolean } => {
   const state = useAppSelector(selectChains, isEqual)

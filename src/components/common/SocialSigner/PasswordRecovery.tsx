@@ -1,20 +1,20 @@
-import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import {
-  Typography,
-  FormControlLabel,
-  Checkbox,
-  Button,
-  Box,
-  Divider,
-  Grid,
-  LinearProgress,
-  FormControl,
-} from '@mui/material'
-import { useState } from 'react'
 import Track from '@/components/common/Track'
-import { FormProvider, useForm } from 'react-hook-form'
 import PasswordInput from '@/components/settings/SecurityLogin/SocialSignerMFA/PasswordInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
+import {
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  LinearProgress,
+  Typography,
+} from '@mui/material'
+import { useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import css from './styles.module.css'
 
@@ -63,12 +63,12 @@ export const PasswordRecovery = ({
             <Typography variant="h2" fontWeight="bold" mb={3}>
               Verify your account
             </Typography>
-            <Box bgcolor="background.paper" borderRadius={1}>
+            <Box data-sid="35823" bgcolor="background.paper" borderRadius={1}>
               <LinearProgress
                 color="secondary"
                 sx={{ borderTopLeftRadius: '6px', borderTopRightRadius: '6px', opacity: isDisabled ? 1 : 0 }}
               />
-              <Box p={4}>
+              <Box data-sid="70360" p={4}>
                 <Typography variant="h6" fontWeight="bold" mb={0.5}>
                   Enter security password
                 </Typography>
@@ -78,7 +78,7 @@ export const PasswordRecovery = ({
                 </Typography>
               </Box>
               <Divider />
-              <Box className={css.passwordWrapper}>
+              <Box data-sid="81786" className={css.passwordWrapper}>
                 <FormControl fullWidth>
                   <PasswordInput
                     name="password"
@@ -99,9 +99,9 @@ export const PasswordRecovery = ({
               </Box>
 
               <Divider />
-              <Box p={4} display="flex" justifyContent="flex-end">
+              <Box data-sid="37485" p={4} display="flex" justifyContent="flex-end">
                 <Track {...MPC_WALLET_EVENTS.RECOVER_PASSWORD}>
-                  <Button variant="contained" type="submit" disabled={isDisabled}>
+                  <Button data-sid="57318" variant="contained" type="submit" disabled={isDisabled}>
                     Submit
                   </Button>
                 </Track>

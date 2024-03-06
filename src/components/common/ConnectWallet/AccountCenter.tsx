@@ -1,17 +1,19 @@
-import type { MouseEvent } from 'react'
-import { useState } from 'react'
-import { Box, ButtonBase, Paper, Popover } from '@mui/material'
 import css from '@/components/common/ConnectWallet/styles.module.css'
+import WalletInfo from '@/components/common/WalletInfo'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { useAppSelector } from '@/store'
+import { selectChainById } from '@/store/chainsSlice'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { Box, ButtonBase, Paper, Popover } from '@mui/material'
+import type { MouseEvent } from 'react'
+import { useState } from 'react'
 import WalletOverview from '../WalletOverview'
-import WalletInfo from '@/components/common/WalletInfo'
 
 export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const { balance } = wallet
-
+  const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const openWalletInfo = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -26,16 +28,17 @@ export const AccountCenter = ({ wallet }: { wallet: ConnectedWallet }) => {
   return (
     <>
       <ButtonBase
+        data-sid="20638"
         onClick={openWalletInfo}
         aria-describedby={id}
         disableRipple
         sx={{ alignSelf: 'stretch' }}
         data-testid="open-account-center"
       >
-        <Box className={css.buttonContainer}>
-          <WalletOverview wallet={wallet} balance={balance} showBalance />
+        <Box data-sid="40219" className={css.buttonContainer}>
+          <WalletOverview wallet={wallet} balance={balance} showBalance={!!chainInfo?.chainName} />
 
-          <Box display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
+          <Box data-sid="40187" display="flex" alignItems="center" justifyContent="flex-end" marginLeft="auto">
             {open ? <ExpandLessIcon color="border" /> : <ExpandMoreIcon color="border" />}
           </Box>
         </Box>

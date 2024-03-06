@@ -1,17 +1,17 @@
 import CopyButton from '@/components/common/CopyButton'
 import ModalDialog from '@/components/common/ModalDialog'
+import css from '@/components/settings/SecurityLogin/SocialSignerExport/styles.module.css'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { trackEvent } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
+import { logError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import { asError } from '@/services/exceptions/utils'
+import { Close, Visibility, VisibilityOff } from '@mui/icons-material'
 import { Box, Button, DialogContent, DialogTitle, IconButton, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Visibility, VisibilityOff, Close } from '@mui/icons-material'
-import css from '@/components/settings/SecurityLogin/SocialSignerExport/styles.module.css'
-import ErrorCodes from '@/services/exceptions/ErrorCodes'
-import { logError } from '@/services/exceptions'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import { asError } from '@/services/exceptions/utils'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 
 enum ExportFieldNames {
   password = 'password',
@@ -78,11 +78,18 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
 
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box display="flex" flexDirection="column" gap={2} alignItems="flex-start" sx={{ width: '100%' }}>
+          <Box
+            data-sid="74439"
+            display="flex"
+            flexDirection="column"
+            gap={2}
+            alignItems="flex-start"
+            sx={{ width: '100%' }}
+          >
             <Typography>For security reasons you have to enter your password to reveal your account key.</Typography>
 
             {exportedKey ? (
-              <Box display="flex" flexDirection="row" alignItems="center" gap={1} width="100%">
+              <Box data-sid="88772" display="flex" flexDirection="row" alignItems="center" gap={1} width="100%">
                 <TextField
                   fullWidth
                   multiline={showPassword}
@@ -128,11 +135,17 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
               width="100%"
               mt={2}
             >
-              <Button variant="outlined" onClick={handleClose}>
+              <Button data-sid="43656" variant="outlined" onClick={handleClose}>
                 Close
               </Button>
               {exportedKey === undefined && (
-                <Button color="primary" variant="contained" disabled={formState.isSubmitting} type="submit">
+                <Button
+                  data-sid="76444"
+                  color="primary"
+                  variant="contained"
+                  disabled={formState.isSubmitting}
+                  type="submit"
+                >
                   Export
                 </Button>
               )}

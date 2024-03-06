@@ -1,16 +1,16 @@
 import { Button, Tooltip } from '@mui/material'
+import type { ReactElement, SyntheticEvent } from 'react'
 import { useContext } from 'react'
-import type { SyntheticEvent, ReactElement } from 'react'
 
 import CheckWallet from '@/components/common/CheckWallet'
-import { dispatchRecoveryExecution } from '@/features/recovery/services/recovery-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
+import { dispatchRecoveryExecution } from '@/features/recovery/services/recovery-sender'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useOnboard from '@/hooks/wallets/useOnboard'
 import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
-import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 export function ExecuteRecoveryButton({
   recovery,
@@ -64,6 +64,7 @@ export function ExecuteRecoveryButton({
           >
             <span>
               <Button
+                data-sid="31356"
                 onClick={onClick}
                 variant="contained"
                 disabled={isDisabled}

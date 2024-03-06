@@ -1,21 +1,21 @@
+import { Box, Button, Grid, Paper, SvgIcon, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { Paper, Grid, Typography, Button, SvgIcon, Box } from '@mui/material'
 
-import FileIcon from '@/public/images/settings/data/file.svg'
+import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
+import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
+import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFileUpload'
+import { SAFE_EXPORT_VERSION } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import ExportIcon from '@/public/images/common/export.svg'
+import FileIcon from '@/public/images/settings/data/file.svg'
 import { getPersistedState, useAppSelector } from '@/store'
-import { addressBookSlice, selectAllAddressBooks } from '@/store/addressBookSlice'
 import { addedSafesSlice, selectAllAddedSafes } from '@/store/addedSafesSlice'
+import { addressBookSlice, selectAllAddressBooks } from '@/store/addressBookSlice'
 import { safeAppsSlice, selectSafeApps } from '@/store/safeAppsSlice'
 import { selectSettings, settingsSlice } from '@/store/settingsSlice'
-import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFileUpload'
-import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
-import { SAFE_EXPORT_VERSION } from '@/components/settings/DataManagement/useGlobalImportFileParser'
-import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
 
-import css from './styles.module.css'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import css from './styles.module.css'
 
 const getExportFileName = () => {
   const today = new Date().toISOString().slice(0, 10)
@@ -80,14 +80,18 @@ const DataManagement = () => {
 
             <FileListCard
               avatar={
-                <Box className={css.fileIcon} sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
+                <Box
+                  data-sid="74246"
+                  className={css.fileIcon}
+                  sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}
+                >
                   <SvgIcon component={FileIcon} inheritViewBox fontSize="small" sx={{ fill: 'none' }} />
                 </Box>
               }
               title={<b>{exportFileName}</b>}
               action={
                 <Track {...OVERVIEW_EVENTS.EXPORT_DATA} label={OVERVIEW_LABELS.settings}>
-                  <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
+                  <Button data-sid="63250" variant="contained" className={css.exportIcon} onClick={exportAppData}>
                     <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
                   </Button>
                 </Track>

@@ -1,5 +1,5 @@
-import { Box, Typography, SvgIcon } from '@mui/material'
 import ShieldIcon from '@/public/images/settings/permissions/shield.svg'
+import { Box, SvgIcon, Typography } from '@mui/material'
 
 import { getBrowserPermissionDisplayValues } from '@/hooks/safe-apps/permissions'
 import PermissionsCheckbox from '../PermissionCheckbox'
@@ -31,10 +31,10 @@ const AllowedFeaturesList: React.FC<SafeAppsInfoAllowedFeaturesProps> = ({
         Manage the features Safe Apps can use
       </Typography>
 
-      <Box mx={1} my={3} textAlign="left">
+      <Box data-sid="62886" mx={1} my={3} textAlign="left">
         <Typography>This Safe App is requesting permission to use:</Typography>
 
-        <Box display="flex" flexDirection="column" ml={2} mt={1}>
+        <Box data-sid="47177" display="flex" flexDirection="column" ml={2} mt={1}>
           {features
             .filter(({ feature }) => isBrowserFeature(feature))
             .map(({ feature, checked }, index) => (

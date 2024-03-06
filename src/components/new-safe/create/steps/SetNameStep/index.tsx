@@ -1,19 +1,19 @@
-import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Grid } from '@mui/material'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
+import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { Box, Button, Divider, Grid, InputAdornment, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { FormProvider, useForm } from 'react-hook-form'
 
+import NameInput from '@/components/common/NameInput'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import css from '@/components/new-safe/create/steps/SetNameStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
-import NameInput from '@/components/common/NameInput'
-import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import MUILink from '@mui/material/Link'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -71,7 +71,7 @@ function SetNameStep({
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onFormSubmit)} id={SET_NAME_STEP_FORM_ID}>
-        <Box className={layoutCss.row}>
+        <Box data-sid="52972" className={layoutCss.row}>
           <Grid container spacing={1}>
             <Grid item xs={12} md={8}>
               <NameInput
@@ -95,7 +95,7 @@ function SetNameStep({
               />
             </Grid>
             <Grid item>
-              <Box className={css.select} data-cy="create-safe-select-network">
+              <Box data-sid="17517" className={css.select} data-cy="create-safe-select-network">
                 <NetworkSelector />
               </Box>
             </Grid>
@@ -115,12 +115,19 @@ function SetNameStep({
           {isWrongChain && <NetworkWarning />}
         </Box>
         <Divider />
-        <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-            <Button data-testid="cancel-btn" variant="outlined" onClick={onCancel} size="small">
+        <Box data-sid="92520" className={layoutCss.row}>
+          <Box data-sid="16437" display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+            <Button data-sid="30750" data-testid="cancel-btn" variant="outlined" onClick={onCancel} size="small">
               Cancel
             </Button>
-            <Button data-testid="next-btn" type="submit" variant="contained" size="stretched" disabled={isDisabled}>
+            <Button
+              data-sid="95117"
+              data-testid="next-btn"
+              type="submit"
+              variant="contained"
+              size="stretched"
+              disabled={isDisabled}
+            >
               Next
             </Button>
           </Box>

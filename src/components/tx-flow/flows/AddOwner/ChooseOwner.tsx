@@ -1,32 +1,32 @@
 import {
   Box,
-  Typography,
-  FormControl,
-  InputAdornment,
-  CircularProgress,
   Button,
   CardActions,
+  CircularProgress,
   Divider,
+  FormControl,
   Grid,
-  TextField,
+  InputAdornment,
   MenuItem,
   SvgIcon,
+  TextField,
   Tooltip,
+  Typography,
 } from '@mui/material'
-import { useForm, FormProvider, Controller } from 'react-hook-form'
+import { Controller, FormProvider, useForm } from 'react-hook-form'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import NameInput from '@/components/common/NameInput'
+import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { uniqueAddress, addressIsNotCurrentSafe } from '@/utils/validation'
-import type { AddOwnerFlowProps } from '.'
-import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
-import TxCard from '../../common/TxCard'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import commonCss from '@/components/tx-flow/common/styles.module.css'
-import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import { addressIsNotCurrentSafe, uniqueAddress } from '@/utils/validation'
+import type { AddOwnerFlowProps } from '.'
+import TxCard from '../../common/TxCard'
+import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
 
 type FormData = Pick<AddOwnerFlowProps | ReplaceOwnerFlowProps, 'newOwner' | 'threshold'>
 
@@ -87,7 +87,7 @@ export const ChooseOwner = ({
                 {params.removedOwner &&
                   'Review the owner you want to replace in the active Safe Account, then specify the new owner you want to replace it with:'}
               </Typography>
-              <Box my={3}>
+              <Box data-sid="58758" my={3}>
                 <Typography variant="body2" color="text.secondary" mb={1}>
                   Current owner
                 </Typography>
@@ -178,7 +178,13 @@ export const ChooseOwner = ({
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions>
-            <Button data-testid="add-owner-next-btn" variant="contained" type="submit" disabled={!isValid || resolving}>
+            <Button
+              data-sid="28702"
+              data-testid="add-owner-next-btn"
+              variant="contained"
+              type="submit"
+              disabled={!isValid || resolving}
+            >
               Next
             </Button>
           </CardActions>

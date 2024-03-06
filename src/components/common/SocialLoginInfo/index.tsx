@@ -1,14 +1,14 @@
-import WalletBalance from '@/components/common/WalletBalance'
-import { Badge, Box, Typography } from '@mui/material'
-import css from './styles.module.css'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import CopyAddressButton from '@/components/common/CopyAddressButton'
 import ExplorerButton from '@/components/common/ExplorerButton'
-import { getBlockExplorerLink } from '@/utils/chains'
+import WalletBalance from '@/components/common/WalletBalance'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import { getBlockExplorerLink } from '@/utils/chains'
+import { Badge, Box, Typography } from '@mui/material'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import css from './styles.module.css'
 
 const SocialLoginInfo = ({
   wallet,
@@ -34,8 +34,8 @@ const SocialLoginInfo = ({
   if (!userInfo) return <></>
 
   return (
-    <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
-      <Box position="relative">
+    <Box data-sid="84550" width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
+      <Box data-sid="42488" position="relative">
         <img
           src={userInfo.profileImage}
           className={css.profileImg}
@@ -46,7 +46,7 @@ const SocialLoginInfo = ({
         />
         {!socialWalletService?.isMFAEnabled() && <Badge variant="dot" color="warning" className={css.bubble} />}
       </Box>
-      <div className={css.profileData}>
+      <div data-sid="47853" className={css.profileData}>
         <Typography className={css.text} variant="body2">
           {userInfo.name}
         </Typography>
@@ -61,8 +61,8 @@ const SocialLoginInfo = ({
         )}
       </div>
       {!hideActions && (
-        <div className={css.actionButtons}>
-          <Box color="border.main">
+        <div data-sid="92477" className={css.actionButtons}>
+          <Box data-sid="91273" color="border.main">
             <CopyAddressButton prefix={prefix} copyPrefix={settings.shortName.copy} address={wallet.address} />
             <ExplorerButton title={link?.title || ''} href={link?.href || ''} />
           </Box>

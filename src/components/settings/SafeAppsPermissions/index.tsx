@@ -1,18 +1,18 @@
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import PermissionsCheckbox from '@/components/safe-apps/PermissionCheckbox'
+import type { AllowedFeatures } from '@/components/safe-apps/types'
+import { PermissionStatus } from '@/components/safe-apps/types'
 import {
   getBrowserPermissionDisplayValues,
   getSafePermissionDisplayValues,
   useBrowserPermissions,
   useSafePermissions,
 } from '@/hooks/safe-apps/permissions'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import { Grid, Link, Paper, SvgIcon, Typography } from '@mui/material'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import { useCallback, useMemo } from 'react'
-import type { AllowedFeatures } from '@/components/safe-apps/types'
-import { PermissionStatus } from '@/components/safe-apps/types'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import { Grid, Link, Paper, SvgIcon, Typography } from '@mui/material'
-import PermissionsCheckbox from '@/components/safe-apps/PermissionCheckbox'
-import DeleteIcon from '@/public/images/common/delete.svg'
 
 const SafeAppsPermissions = (): ReactElement => {
   const { allSafeApps } = useSafeApps()
@@ -91,7 +91,7 @@ const SafeAppsPermissions = (): ReactElement => {
   }, [allSafeApps])
 
   if (!allSafeApps.length) {
-    return <div />
+    return <div data-sid="39905" />
   }
 
   return (

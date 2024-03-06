@@ -1,9 +1,9 @@
-import type { ReactElement } from 'react'
+import { useDarkMode } from '@/hooks/useDarkMode'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import type { TooltipProps } from '@mui/material'
 import { Box, Button, SvgIcon, Tooltip } from '@mui/material'
-import InfoIcon from '@/public/images/notifications/info.svg'
-import { useDarkMode } from '@/hooks/useDarkMode'
+import type { ReactElement } from 'react'
 
 /**
  * The OnboardingTooltip renders a sticky Tooltip with an arrow pointing towards the wrapped component.
@@ -38,10 +38,11 @@ export const OnboardingTooltip = ({
       placement={placement}
       arrow
       title={
-        <Box display="flex" alignItems="center" gap={1} padding={1}>
+        <Box data-sid="46736" display="flex" alignItems="center" gap={1} padding={1}>
           <SvgIcon component={InfoIcon} inheritViewBox fontSize="small" />
           <span>{text}</span>
           <Button
+            data-sid="74045"
             size="small"
             color={isDarkMode ? 'background' : 'secondary'}
             variant="text"

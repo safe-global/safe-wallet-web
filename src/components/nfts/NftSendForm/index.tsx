@@ -1,9 +1,9 @@
-import type { ReactElement } from 'react'
-import { Box, Button, Grid, SvgIcon, Typography } from '@mui/material'
-import ArrowIcon from '@/public/images/common/arrow-nw.svg'
-import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { Sticky } from '@/components/common/Sticky'
 import CheckWallet from '@/components/common/CheckWallet'
+import { Sticky } from '@/components/common/Sticky'
+import ArrowIcon from '@/public/images/common/arrow-nw.svg'
+import { Box, Button, Grid, SvgIcon, Typography } from '@mui/material'
+import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ReactElement } from 'react'
 
 type NftSendFormProps = {
   selectedNfts: SafeCollectibleResponse[]
@@ -17,8 +17,8 @@ const NftSendForm = ({ selectedNfts }: NftSendFormProps): ReactElement => {
     <Sticky>
       <Grid container spacing={1} justifyContent="flex-end" alignItems="center">
         <Grid item display={['none', 'block']} flex="1">
-          <Box bgcolor="secondary.background" py={0.75} px={2} flex={1} borderRadius={1} mr={1}>
-            <Box display="flex" alignItems="center" gap={1.5}>
+          <Box data-sid="29943" bgcolor="secondary.background" py={0.75} px={2} flex={1} borderRadius={1} mr={1}>
+            <Box data-sid="60357" display="flex" alignItems="center" gap={1.5}>
               <SvgIcon component={ArrowIcon} inheritViewBox color="border" sx={{ width: 12, height: 12 }} />
 
               <Typography variant="body2" lineHeight="inherit">
@@ -32,6 +32,7 @@ const NftSendForm = ({ selectedNfts }: NftSendFormProps): ReactElement => {
           <CheckWallet>
             {(isOk) => (
               <Button
+                data-sid="24143"
                 data-testid={`nft-send-btn-${!isOk || noSelected}`}
                 type="submit"
                 variant="contained"

@@ -1,5 +1,5 @@
-import { Box } from '@mui/material'
 import css from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner/styles.module.css'
+import { Box } from '@mui/material'
 import classnames from 'classnames'
 import { useCallback, useEffect, useRef } from 'react'
 
@@ -60,12 +60,15 @@ const LoadingSpinner = ({ status }: { status: SpinnerStatus }) => {
   }, [isSuccess, onFinish])
 
   return (
-    <Box className={classnames(css.box, { [css.rectError]: isError }, { [css.rectSuccess]: isSuccess })}>
-      <div className={classnames(css.rect, css.rectTl)} ref={rectTl} />
-      <div className={classnames(css.rect, css.rectTr)} ref={rectTr} />
-      <div className={classnames(css.rect, css.rectBl)} ref={rectBl} />
-      <div className={classnames(css.rect, css.rectBr)} ref={rectBr} />
-      <div className={classnames(css.rect, css.rectCenter)} ref={rectCenter} />
+    <Box
+      data-sid="82377"
+      className={classnames(css.box, { [css.rectError]: isError }, { [css.rectSuccess]: isSuccess })}
+    >
+      <div data-sid="51305" className={classnames(css.rect, css.rectTl)} ref={rectTl} />
+      <div data-sid="51840" className={classnames(css.rect, css.rectTr)} ref={rectTr} />
+      <div data-sid="44693" className={classnames(css.rect, css.rectBl)} ref={rectBl} />
+      <div data-sid="96226" className={classnames(css.rect, css.rectBr)} ref={rectBr} />
+      <div data-sid="54023" className={classnames(css.rect, css.rectCenter)} ref={rectCenter} />
 
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
         <defs>

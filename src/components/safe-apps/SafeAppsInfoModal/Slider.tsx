@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/material'
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import css from './styles.module.css'
 
 type SliderProps = {
@@ -54,7 +54,7 @@ const Slider: React.FC<SliderProps> = ({ onSlideChange, children, initialStep })
 
   return (
     <>
-      <div className={css.sliderContainer}>
+      <div data-sid="78052" className={css.sliderContainer}>
         <div
           className={css.sliderInner}
           style={{
@@ -62,18 +62,19 @@ const Slider: React.FC<SliderProps> = ({ onSlideChange, children, initialStep })
           }}
         >
           {allSlides.map((slide, index) => (
-            <div className={css.sliderItem} key={index}>
+            <div data-sid="63444" className={css.sliderItem} key={index}>
               {slide}
             </div>
           ))}
         </div>
       </div>
-      <Box display="flex" justifyContent="center" width="100%">
-        <Button color="primary" variant="outlined" size="small" fullWidth onClick={prevSlide}>
+      <Box data-sid="25333" display="flex" justifyContent="center" width="100%">
+        <Button data-sid="46378" color="primary" variant="outlined" size="small" fullWidth onClick={prevSlide}>
           {isFirstStep ? 'Cancel' : 'Back'}
         </Button>
 
         <Button
+          data-sid="80190"
           color="primary"
           variant="contained"
           size="small"

@@ -1,17 +1,17 @@
-import type { SyntheticEvent } from 'react'
-import { type ReactElement, useContext } from 'react'
-import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { Button, Tooltip } from '@mui/material'
+import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SyntheticEvent } from 'react'
+import { useContext, type ReactElement } from 'react'
 
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import Track from '@/components/common/Track'
-import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import Track from '@/components/common/Track'
 import { TxModalContext } from '@/components/tx-flow'
 import { ConfirmTxFlow } from '@/components/tx-flow/flows'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
 
 const ExecuteTxButton = ({
   txSummary,
@@ -51,6 +51,7 @@ const ExecuteTxButton = ({
             <span>
               <Track {...TX_LIST_EVENTS.EXECUTE}>
                 <Button
+                  data-sid="92571"
                   onClick={onClick}
                   onMouseEnter={onMouseEnter}
                   onMouseLeave={onMouseLeave}

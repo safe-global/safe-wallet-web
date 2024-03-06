@@ -1,9 +1,9 @@
-import css from './styles.module.css'
-import { Box, Grid, IconButton, Link, SvgIcon, type SvgIconTypeMap, Typography } from '@mui/material'
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import FileIcon from '@/public/images/settings/data/file.svg'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import { Box, Grid, IconButton, Link, SvgIcon, Typography, type SvgIconTypeMap } from '@mui/material'
 import type { MouseEventHandler, ReactElement } from 'react'
 import type { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
+import css from './styles.module.css'
 
 export type FileInfo = {
   name: string
@@ -40,7 +40,7 @@ const UploadSummary = ({ fileInfo, onRemove }: { fileInfo: FileInfo; onRemove: (
         </Grid>
       </Grid>
       <Grid item xs={12} display="flex" justifyContent="flex-start">
-        <div className={css.verticalLine} />
+        <div data-sid="14837" className={css.verticalLine} />
       </Grid>
       <>
         {fileInfo.summary.map((summaryItem, idx) => (
@@ -106,7 +106,7 @@ const FileUpload = ({
     >
       {getInputProps && <input {...getInputProps()} />}
 
-      <Box display="flex" alignItems="center" gap={1}>
+      <Box data-sid="39795" display="flex" alignItems="center" gap={1}>
         <SvgIcon
           component={FileIcon}
           inheritViewBox

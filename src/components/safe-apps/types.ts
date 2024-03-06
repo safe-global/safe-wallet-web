@@ -51,3 +51,34 @@ export const isBrowserFeature = (featureKey: string): featureKey is AllowedFeatu
 export type AllowedFeatureSelection = { feature: AllowedFeatures; checked: boolean }
 
 export type SafeAppDataWithPermissions = SafeAppData & { safeAppsPermissions: AllowedFeatures[] }
+
+export interface TempAPI {
+  connectWallet: any
+  disconnectWallet: any
+  setChain: (chainId: any) => void
+  state: {
+    get: () => any
+    select: (stateKey: string) => any
+    actions: {
+      setWalletModules: any
+      setLocale: any
+      updateNotify: any
+      customNotification: any
+      preflightNotifications: any
+      updateBalances: any
+      updateAccountCenter: any
+      setPrimaryWallet: any
+      updateTheme: any
+      updateAppMetadata: any
+    }
+  }
+}
+
+export interface WalletState {
+  label: string
+  icon: string
+  provider: any
+  accounts: any[]
+  chains: any[]
+  instance?: unknown
+}

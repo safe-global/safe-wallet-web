@@ -1,33 +1,33 @@
-import { Button, Chip, Grid, SvgIcon, Typography, IconButton } from '@mui/material'
+import { Button, Chip, Grid, IconButton, SvgIcon, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactElement } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
+import CheckWallet from '@/components/common/CheckWallet'
 import { CustomTooltip } from '@/components/common/CustomTooltip'
 import { AppRoutes } from '@/config/routes'
-import { useAppSelector } from '@/store'
-import { selectAddedSafes, selectAllAddedSafes, selectTotalAdded } from '@/store/addedSafesSlice'
-import PushNotificationIcon from '@/public/images/notifications/push-notification.svg'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { useNotificationRegistrations } from '../hooks/useNotificationRegistrations'
-import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
-import { trackEvent } from '@/services/analytics'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import CheckWallet from '@/components/common/CheckWallet'
-import CloseIcon from '@/public/images/common/close.svg'
-import { useNotificationPreferences } from '../hooks/useNotificationPreferences'
-import { sameAddress } from '@/utils/addresses'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
-import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
-import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
-import type { NotifiableSafes } from '../logic'
-import useWallet from '@/hooks/wallets/useWallet'
-import CircularProgress from '@mui/material/CircularProgress'
 import useDebounce from '@/hooks/useDebounce'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import useWallet from '@/hooks/wallets/useWallet'
+import CloseIcon from '@/public/images/common/close.svg'
+import PushNotificationIcon from '@/public/images/notifications/push-notification.svg'
+import { trackEvent } from '@/services/analytics'
+import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
+import { useAppSelector } from '@/store'
+import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
+import { selectAddedSafes, selectAllAddedSafes, selectTotalAdded } from '@/store/addedSafesSlice'
+import { sameAddress } from '@/utils/addresses'
+import { FEATURES } from '@/utils/chains'
+import CircularProgress from '@mui/material/CircularProgress'
+import { useNotificationPreferences } from '../hooks/useNotificationPreferences'
+import { useNotificationRegistrations } from '../hooks/useNotificationRegistrations'
+import type { NotifiableSafes } from '../logic'
 import css from './styles.module.css'
 
 const DISMISS_PUSH_NOTIFICATIONS_KEY = 'dismissPushNotifications'
@@ -202,9 +202,10 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
               {/* Cannot wrap singular button as it causes style inconsistencies */}
               <CheckWallet>
                 {(isOk) => (
-                  <div className={css.buttons}>
+                  <div data-sid="48724" className={css.buttons}>
                     {totalAddedSafes > 0 && (
                       <Button
+                        data-sid="21139"
                         variant="contained"
                         size="small"
                         className={css.button}
@@ -217,7 +218,7 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
                     )}
                     {safe && (
                       <Link passHref href={{ pathname: AppRoutes.settings.notifications, query }} onClick={onCustomize}>
-                        <Button variant="outlined" size="small" className={css.button}>
+                        <Button data-sid="21495" variant="outlined" size="small" className={css.button}>
                           Customize
                         </Button>
                       </Link>

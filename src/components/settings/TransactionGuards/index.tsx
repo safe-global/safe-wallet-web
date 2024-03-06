@@ -1,17 +1,17 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { Paper, Grid, Typography, Box, IconButton, SvgIcon } from '@mui/material'
+import { Box, Grid, IconButton, Paper, SvgIcon, Typography } from '@mui/material'
 
-import css from './styles.module.css'
-import ExternalLink from '@/components/common/ExternalLink'
-import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
-import { hasSafeFeature } from '@/utils/safe-versions'
-import { HelpCenterArticle } from '@/config/constants'
-import DeleteIcon from '@/public/images/common/delete.svg'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useContext } from 'react'
+import ExternalLink from '@/components/common/ExternalLink'
 import { TxModalContext } from '@/components/tx-flow'
 import { RemoveGuardFlow } from '@/components/tx-flow/flows'
+import { HelpCenterArticle } from '@/config/constants'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import { hasSafeFeature } from '@/utils/safe-versions'
+import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
+import { useContext } from 'react'
+import css from './styles.module.css'
 
 const NoTransactionGuard = () => {
   return (
@@ -25,7 +25,7 @@ const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId
   const { setTxFlow } = useContext(TxModalContext)
 
   return (
-    <Box className={css.guardDisplay}>
+    <Box data-sid="62111" className={css.guardDisplay}>
       <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} />
       <CheckWallet>
         {(isOk) => (

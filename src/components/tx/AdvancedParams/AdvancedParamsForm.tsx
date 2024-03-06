@@ -1,14 +1,14 @@
-import { type SyntheticEvent } from 'react'
-import { Button, DialogActions, FormControl, Grid, Typography, DialogContent } from '@mui/material'
-import { FormProvider, useForm } from 'react-hook-form'
-import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
-import { FLOAT_REGEX } from '@/utils/validation'
-import ModalDialog from '@/components/common/ModalDialog'
-import { AdvancedField, type AdvancedParameters } from './types.d'
-import GasLimitInput from './GasLimitInput'
 import ExternalLink from '@/components/common/ExternalLink'
+import ModalDialog from '@/components/common/ModalDialog'
 import NumberField from '@/components/common/NumberField'
 import { HelpCenterArticle } from '@/config/constants'
+import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
+import { FLOAT_REGEX } from '@/utils/validation'
+import { Button, DialogActions, DialogContent, FormControl, Grid, Typography } from '@mui/material'
+import { type SyntheticEvent } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
+import GasLimitInput from './GasLimitInput'
+import { AdvancedField, type AdvancedParameters } from './types.d'
 
 type AdvancedParamsFormProps = {
   params: AdvancedParameters
@@ -137,11 +137,11 @@ const AdvancedParamsForm = ({ params, ...props }: AdvancedParamsFormProps) => {
 
           {/* Buttons */}
           <DialogActions>
-            <Button color="inherit" onClick={onBack}>
+            <Button data-sid="51635" color="inherit" onClick={onBack}>
               Back
             </Button>
 
-            <Button variant="contained" type="submit">
+            <Button data-sid="82287" variant="contained" type="submit">
               Confirm
             </Button>
           </DialogActions>

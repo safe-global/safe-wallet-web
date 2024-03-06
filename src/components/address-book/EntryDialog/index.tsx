@@ -1,5 +1,5 @@
-import type { ReactElement, BaseSyntheticEvent } from 'react'
 import { Box, Button, DialogActions, DialogContent } from '@mui/material'
+import type { BaseSyntheticEvent, ReactElement } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import AddressInput from '@/components/common/AddressInput'
@@ -55,7 +55,7 @@ function EntryDialog({
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
           <DialogContent>
-            <Box mb={2}>
+            <Box data-sid="95325" mb={2}>
               <NameInput data-testid="name-input" label="Name" autoFocus name="name" required />
             </Box>
 
@@ -72,10 +72,11 @@ function EntryDialog({
           </DialogContent>
 
           <DialogActions>
-            <Button data-testid="cancel-btn" onClick={handleClose}>
+            <Button data-sid="12417" data-testid="cancel-btn" onClick={handleClose}>
               Cancel
             </Button>
             <Button
+              data-sid="57451"
               data-testid="save-btn"
               type="submit"
               variant="contained"

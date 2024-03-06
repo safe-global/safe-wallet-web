@@ -1,11 +1,11 @@
-import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
-import useAsync from '@/hooks/useAsync'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { Box, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
+import useAsync from '@/hooks/useAsync'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { Box, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 
 const useDelegates = () => {
   const {
@@ -26,7 +26,7 @@ const DelegatesList = () => {
 
   return (
     <Paper sx={{ p: 4, mt: 2 }}>
-      <Box display="flex" flexDirection="column" gap={2}>
+      <Box data-sid="21380" display="flex" flexDirection="column" gap={2}>
         <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight={700}>

@@ -1,4 +1,14 @@
-import { type SyntheticEvent, type ReactElement, memo } from 'react'
+import ExternalLink from '@/components/common/ExternalLink'
+import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
+import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
+import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import { HelpCenterArticle } from '@/config/constants'
+import useAsync from '@/hooks/useAsync'
+import useChainId from '@/hooks/useChainId'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import accordionCss from '@/styles/accordion.module.css'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import {
   Accordion,
   AccordionDetails,
@@ -11,19 +21,9 @@ import {
 } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { getTransactionDetails, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
-import useChainId from '@/hooks/useChainId'
-import useAsync from '@/hooks/useAsync'
-import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
+import { Operation, getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { memo, type ReactElement, type SyntheticEvent } from 'react'
 import ErrorMessage from '../ErrorMessage'
-import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
-import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
-import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
-import InfoIcon from '@/public/images/notifications/info.svg'
-import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle } from '@/config/constants'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import accordionCss from '@/styles/accordion.module.css'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -62,7 +62,7 @@ const DecodedTx = ({
   return (
     <div>
       {isMultisend && showMultisend && (
-        <Box my={2}>
+        <Box data-sid="42576" my={2}>
           <Multisend
             txData={{
               dataDecoded: decodedData,
@@ -97,7 +97,7 @@ const DecodedTx = ({
             decodedDataLoading && <Skeleton />
           )}
 
-          <Box mt={2}>
+          <Box data-sid="47513" mt={2}>
             <Typography variant="overline" fontWeight="bold" color="border.main" display="flex" alignItems="center">
               Advanced details
               <Tooltip

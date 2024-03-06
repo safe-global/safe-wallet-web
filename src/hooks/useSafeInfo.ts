@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
-import isEqual from 'lodash/isEqual'
 import { useAppSelector } from '@/store'
-import { defaultSafeInfo, type ExtendedSafeInfo, selectSafeInfo } from '@/store/safeInfoSlice'
+import { defaultSafeInfo, selectSafeInfo, type ExtendedSafeInfo } from '@/store/safeInfoSlice'
+import isEqual from 'lodash/isEqual'
+import { useMemo } from 'react'
 
 const useSafeInfo = (): {
   safe: ExtendedSafeInfo

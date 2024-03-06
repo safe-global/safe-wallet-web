@@ -1,13 +1,12 @@
-import React from 'react'
-import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box } from '@mui/system'
-import css from './styles.module.css'
-import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
+import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { dateString } from '@/utils/formatters'
 import { isCreationTxInfo } from '@/utils/transaction-guards'
-import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
+import { Box } from '@mui/system'
+import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
+import css from './styles.module.css'
 
 type SafeCreationTxProps = {
   txSummary: TransactionSummary
@@ -21,7 +20,7 @@ const SafeCreationTx = ({ txSummary }: SafeCreationTxProps) => {
 
   return (
     <>
-      <Box className={css.txCreation}>
+      <Box data-sid="42769" className={css.txCreation}>
         <InfoDetails title="Creator:">
           <EthHashInfo address={creator.value} shortAddress={false} showCopyButton hasExplorer />
         </InfoDetails>
@@ -46,7 +45,7 @@ const SafeCreationTx = ({ txSummary }: SafeCreationTxProps) => {
           )}
         </InfoDetails>
       </Box>
-      <Box className={css.txSummary}>
+      <Box data-sid="17446" className={css.txSummary}>
         <TxDataRow title="Transaction hash:">{generateDataRowValue(transactionHash, 'hash', true)}</TxDataRow>
         <TxDataRow title="Created:">{timestamp ? dateString(timestamp) : null}</TxDataRow>
       </Box>

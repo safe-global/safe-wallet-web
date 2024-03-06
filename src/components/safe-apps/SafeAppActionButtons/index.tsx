@@ -1,17 +1,17 @@
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
 import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
-import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import CopyButton from '@/components/common/CopyButton'
-import ShareIcon from '@/public/images/common/share.svg'
+import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
+import ShareIcon from '@/public/images/common/share.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 
 type SafeAppActionButtonsProps = {
   safeApp: SafeAppData
@@ -37,7 +37,7 @@ const SafeAppActionButtons = ({
   }
 
   return (
-    <Box display="flex" gap={1} alignItems="center">
+    <Box data-sid="58497" display="flex" gap={1} alignItems="center">
       {/* Open the preview drawer */}
       {openPreviewDrawer && (
         <IconButton

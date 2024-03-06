@@ -1,10 +1,10 @@
-import { type ReactNode, useState, type ReactElement, useId } from 'react'
-import { IconButton, InputAdornment, InputLabel, OutlinedInput, SvgIcon, Typography } from '@mui/material'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import SaveAddressIcon from '@/public/images/common/save-address.svg'
-import css from './styles.module.css'
 import EntryDialog from '@/components/address-book/EntryDialog'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import useAddressBook from '@/hooks/useAddressBook'
+import SaveAddressIcon from '@/public/images/common/save-address.svg'
+import { IconButton, InputAdornment, InputLabel, OutlinedInput, SvgIcon, Typography } from '@mui/material'
+import { useId, useState, type ReactElement, type ReactNode } from 'react'
+import css from './styles.module.css'
 
 const AddressInputReadOnly = ({
   label,
@@ -22,7 +22,7 @@ const AddressInputReadOnly = ({
 
   return (
     <>
-      <div className={css.wrapper}>
+      <div data-sid="57662" className={css.wrapper}>
         <InputLabel shrink error={error} htmlFor={id}>
           {label}
         </InputLabel>

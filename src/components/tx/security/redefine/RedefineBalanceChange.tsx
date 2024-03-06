@@ -1,8 +1,13 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
+import ExternalLink from '@/components/common/ExternalLink'
 import TokenIcon from '@/components/common/TokenIcon'
+import { REDEFINE_ARTICLE } from '@/config/constants'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
 import { useHasFeature } from '@/hooks/useChains'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import ArrowDownwardIcon from '@/public/images/transactions/incoming.svg'
+import ArrowOutwardIcon from '@/public/images/transactions/outgoing.svg'
 import { type RedefineModuleResponse } from '@/services/security/modules/RedefineModule'
 import { sameAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
@@ -12,11 +17,6 @@ import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ErrorBoundary } from '@sentry/react'
 import { useContext } from 'react'
 import { TxSecurityContext } from '../shared/TxSecurityContext'
-import ArrowOutwardIcon from '@/public/images/transactions/outgoing.svg'
-import ArrowDownwardIcon from '@/public/images/transactions/incoming.svg'
-import InfoIcon from '@/public/images/notifications/info.svg'
-import ExternalLink from '@/components/common/ExternalLink'
-import { REDEFINE_ARTICLE } from '@/config/constants'
 
 import css from './styles.module.css'
 
@@ -92,7 +92,7 @@ const BalanceChange = ({
 }) => {
   return (
     <Grid item xs={12} md={12}>
-      <Box className={css.balanceChange}>
+      <Box data-sid="93406" className={css.balanceChange}>
         {positive ? <ArrowDownwardIcon /> : <ArrowOutwardIcon />}
         {change.type === 'ERC721' ? <NFTBalanceChange change={change} /> : <FungibleBalanceChange change={change} />}
       </Box>
@@ -106,7 +106,7 @@ const BalanceChanges = () => {
 
   if (isLoading && !balanceChange) {
     return (
-      <div className={css.loader}>
+      <div data-sid="25749" className={css.loader}>
         <CircularProgress
           size={22}
           sx={{
@@ -150,7 +150,7 @@ export const RedefineBalanceChanges = () => {
   }
 
   return (
-    <div className={css.box}>
+    <div data-sid="85383" className={css.box}>
       <Typography variant="subtitle2" fontWeight={700} flexShrink={0}>
         Balance change
         <Tooltip

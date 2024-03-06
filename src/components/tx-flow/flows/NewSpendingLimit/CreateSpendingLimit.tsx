@@ -1,19 +1,19 @@
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
+import { Button, CardActions, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import { AbiCoder, parseUnits } from 'ethers'
 import { useCallback, useMemo } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import { Button, CardActions, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
-import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
-import { parseUnits, AbiCoder } from 'ethers'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
-import useChainId from '@/hooks/useChainId'
-import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
-import { useVisibleBalances } from '@/hooks/useVisibleBalances'
-import type { NewSpendingLimitFlowProps } from '.'
-import TxCard from '../../common/TxCard'
-import css from '@/components/tx/ExecuteCheckbox/styles.module.css'
 import TokenAmountInput from '@/components/common/TokenAmountInput'
-import { SpendingLimitFields } from '.'
+import { getResetTimeOptions } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
+import css from '@/components/tx/ExecuteCheckbox/styles.module.css'
+import useChainId from '@/hooks/useChainId'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
+import type { NewSpendingLimitFlowProps } from '.'
+import { SpendingLimitFields } from '.'
+import TxCard from '../../common/TxCard'
 
 export const _validateSpendingLimit = (val: string, decimals?: number) => {
   // Allowance amount is uint96 https://github.com/safe-global/safe-modules/blob/master/allowances/contracts/AlowanceModule.sol#L52
@@ -109,7 +109,7 @@ export const CreateSpendingLimit = ({
           </FormControl>
 
           <CardActions>
-            <Button data-testid="next-btn" variant="contained" type="submit">
+            <Button data-sid="80143" data-testid="next-btn" variant="contained" type="submit">
               Next
             </Button>
           </CardActions>

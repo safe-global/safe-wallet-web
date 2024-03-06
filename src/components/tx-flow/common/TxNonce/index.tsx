@@ -1,35 +1,35 @@
-import { memo, type ReactElement, useContext, useMemo, useState, useEffect } from 'react'
 import {
   Autocomplete,
   Box,
   IconButton,
   InputAdornment,
+  ListSubheader,
+  MenuItem,
+  Popper,
   Skeleton,
   Tooltip,
-  Popper,
-  type PopperProps,
-  type MenuItemProps,
-  MenuItem,
   Typography,
-  ListSubheader,
   type ListSubheaderProps,
+  type MenuItemProps,
+  type PopperProps,
 } from '@mui/material'
 import { createFilterOptions } from '@mui/material/Autocomplete'
+import { memo, useContext, useEffect, useMemo, useState, type ReactElement } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import NumberField from '@/components/common/NumberField'
-import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
-import useSafeInfo from '@/hooks/useSafeInfo'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import useAddressBook from '@/hooks/useAddressBook'
-import { getLatestTransactions } from '@/utils/tx-list'
-import { getTransactionType } from '@/hooks/useTransactionType'
 import usePreviousNonces from '@/hooks/usePreviousNonces'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { getTransactionType } from '@/hooks/useTransactionType'
+import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isRejectionTx } from '@/utils/transactions'
+import { getLatestTransactions } from '@/utils/tx-list'
+import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 
-import css from './styles.module.css'
 import classNames from 'classnames'
+import css from './styles.module.css'
 
 const CustomPopper = function ({
   // Don't set width of Popper to that of the field
@@ -214,7 +214,7 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
               const isInitialPreviousNonce = option === previousNonces[0]
 
               return (
-                <div key={option}>
+                <div data-sid="52558" key={option}>
                   {isRecommendedNonce && <NonceFormHeader>Recommended nonce</NonceFormHeader>}
                   {isInitialPreviousNonce && <NonceFormHeader sx={{ pt: 3 }}>Replace existing</NonceFormHeader>}
                   <NonceFormOption key={option} menuItemProps={props} nonce={option} />
@@ -273,7 +273,7 @@ const TxNonce = () => {
   const { nonce, recommendedNonce } = useContext(SafeTxContext)
 
   return (
-    <Box data-testid="nonce-fld" display="flex" alignItems="center" gap={1}>
+    <Box data-sid="16175" data-testid="nonce-fld" display="flex" alignItems="center" gap={1}>
       Nonce{' '}
       <Typography component="span" fontWeight={700}>
         #

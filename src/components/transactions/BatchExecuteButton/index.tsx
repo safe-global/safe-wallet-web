@@ -1,15 +1,15 @@
-import { useCallback, useContext } from 'react'
-import { Button, Tooltip } from '@mui/material'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
-import { useAppSelector } from '@/store'
-import { selectPendingTxs } from '@/store/pendingTxsSlice'
-import useBatchedTxs from '@/hooks/useBatchedTxs'
+import { TxModalContext } from '@/components/tx-flow'
 import { ExecuteBatchFlow } from '@/components/tx-flow/flows'
+import useBatchedTxs from '@/hooks/useBatchedTxs'
+import useTxQueue from '@/hooks/useTxQueue'
+import useWallet from '@/hooks/wallets/useWallet'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import useWallet from '@/hooks/wallets/useWallet'
-import useTxQueue from '@/hooks/useTxQueue'
-import { TxModalContext } from '@/components/tx-flow'
+import { useAppSelector } from '@/store'
+import { selectPendingTxs } from '@/store/pendingTxsSlice'
+import { Button, Tooltip } from '@mui/material'
+import { useCallback, useContext } from 'react'
 
 const BatchExecuteButton = () => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -53,6 +53,7 @@ const BatchExecuteButton = () => {
       >
         <span>
           <Button
+            data-sid="76865"
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
             variant="contained"

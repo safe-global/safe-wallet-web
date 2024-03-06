@@ -1,6 +1,5 @@
-import type { ChangeEvent, ReactNode } from 'react'
-import React, { useState } from 'react'
 import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import type { SortDirection } from '@mui/material/TableCell'
@@ -10,12 +9,13 @@ import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
-import Paper from '@mui/material/Paper'
 import { visuallyHidden } from '@mui/utils'
 import classNames from 'classnames'
+import type { ChangeEvent, ReactNode } from 'react'
+import { useState } from 'react'
 
-import css from './styles.module.css'
 import { Collapse } from '@mui/material'
+import css from './styles.module.css'
 
 type EnhancedCell = {
   content: ReactNode
@@ -87,7 +87,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                 >
                   {headCell.label}
                   {orderBy === headCell.id ? (
-                    <Box component="span" sx={visuallyHidden}>
+                    <Box data-sid="62517" component="span" sx={visuallyHidden}>
                       {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                     </Box>
                   ) : null}
@@ -134,7 +134,7 @@ function EnhancedTable({ rows, headCells, mobileVariant }: EnhancedTableProps) {
   const pagedRows = orderedRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box data-sid="97098" sx={{ width: '100%' }}>
       <TableContainer data-testid="table-container" component={Paper} sx={{ width: '100%', mb: 2 }}>
         <Table aria-labelledby="tableTitle" className={mobileVariant ? css.mobileColumn : undefined}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />

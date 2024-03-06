@@ -1,15 +1,15 @@
-import { memo, useMemo, useState } from 'react'
-import { alpha, Box } from '@mui/system'
 import { Grid, LinearProgress } from '@mui/material'
+import { alpha, Box } from '@mui/system'
+import { memo, useMemo, useState } from 'react'
 
 import type { BrowserPermission } from '@/hooks/safe-apps/permissions'
-import Slider from './Slider'
-import LegalDisclaimer from './LegalDisclaimer'
-import AllowedFeaturesList from './AllowedFeaturesList'
 import type { AllowedFeatures, AllowedFeatureSelection } from '../types'
 import { PermissionStatus } from '../types'
-import UnknownAppWarning from './UnknownAppWarning'
 import { getOrigin } from '../utils'
+import AllowedFeaturesList from './AllowedFeaturesList'
+import LegalDisclaimer from './LegalDisclaimer'
+import Slider from './Slider'
+import UnknownAppWarning from './UnknownAppWarning'
 
 type SafeAppsInfoModalProps = {
   onCancel: () => void
@@ -110,7 +110,14 @@ const SafeAppsInfoModal = ({
   const origin = useMemo(() => getOrigin(appUrl), [appUrl])
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" height="calc(100vh - 52px)">
+    <Box
+      data-sid="19458"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      flexDirection="column"
+      height="calc(100vh - 52px)"
+    >
       <Box
         data-testid="app-info-modal"
         sx={({ palette }) => ({

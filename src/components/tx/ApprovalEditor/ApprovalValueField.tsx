@@ -2,7 +2,7 @@ import NumberField from '@/components/common/NumberField'
 import TokenIcon from '@/components/common/TokenIcon'
 import { shortenAddress } from '@/utils/formatters'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
-import { Autocomplete, Box, type MenuItemProps, Typography, MenuItem } from '@mui/material'
+import { Autocomplete, Box, MenuItem, Typography, type MenuItemProps } from '@mui/material'
 import { useController, useFormContext } from 'react-hook-form'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
 import css from './styles.module.css'
@@ -79,7 +79,7 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
                 flexWrap: 'nowrap !important',
               },
               startAdornment: (
-                <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
+                <Box data-sid="51584" display="flex" flexDirection="row" alignItems="center" gap="4px">
                   <TokenIcon size={32} logoUri={tx.tokenInfo?.logoUri} tokenSymbol={tx.tokenInfo?.symbol} />
                   <Typography>{tx.tokenInfo?.symbol || shortenAddress(tx.tokenAddress)}</Typography>
                 </Box>

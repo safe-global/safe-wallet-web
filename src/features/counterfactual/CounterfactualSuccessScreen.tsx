@@ -1,8 +1,8 @@
 import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
-import { useEffect, useState } from 'react'
-import { Box, Button, Dialog, DialogContent, Typography } from '@mui/material'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
+import { Box, Button, Dialog, DialogContent, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
 
 const CounterfactualSuccessScreen = () => {
   const [open, setOpen] = useState<boolean>(false)
@@ -42,7 +42,7 @@ const CounterfactualSuccessScreen = () => {
         >
           <CheckRoundedIcon sx={{ width: 50, height: 50 }} color="success" />
         </Box>
-        <Box textAlign="center">
+        <Box data-sid="77814" textAlign="center">
           <Typography variant="h3" fontWeight="bold" mb={1}>
             Account is activated!
           </Typography>
@@ -51,7 +51,7 @@ const CounterfactualSuccessScreen = () => {
             setup and security.
           </Typography>
         </Box>
-        <Button variant="contained" onClick={() => setOpen(false)}>
+        <Button data-sid="26387" variant="contained" onClick={() => setOpen(false)}>
           Continue
         </Button>
       </DialogContent>

@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
-import { Fab, Typography } from '@mui/material'
-import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
-import classnames from 'classnames'
-import CodeIcon from '@/public/images/apps/code-icon.svg'
-import { SAFE_APPS_SDK_DOCS_URL } from '@/config/constants'
-import css from './styles.module.css'
 import ExternalLink from '@/components/common/ExternalLink'
+import { SAFE_APPS_SDK_DOCS_URL } from '@/config/constants'
+import CodeIcon from '@/public/images/apps/code-icon.svg'
+import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
+import { Fab, Typography } from '@mui/material'
+import classnames from 'classnames'
+import { useEffect, useState } from 'react'
+import css from './styles.module.css'
 
 const SafeAppsSDKLink = () => {
   const [isMini, setMini] = useState(false)
@@ -25,7 +25,7 @@ const SafeAppsSDKLink = () => {
   }, [])
 
   return (
-    <div className={classnames(css.container, { [css.mini]: isMini })} tabIndex={0}>
+    <div data-sid="66116" className={classnames(css.container, { [css.mini]: isMini })} tabIndex={0}>
       <CodeIcon />
 
       <Typography variant="h6" className={css.title}>

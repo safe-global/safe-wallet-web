@@ -1,53 +1,53 @@
+import EthHashInfo from '@/components/common/EthHashInfo'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import RequiredIcon from '@/public/images/messages/required.svg'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import {
-  Grid,
-  Button,
-  Box,
-  Typography,
-  SvgIcon,
-  CardContent,
-  CardActions,
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  CardActions,
+  CardContent,
+  Grid,
+  SvgIcon,
+  Typography,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { useContext, useEffect } from 'react'
+import type { RequestId } from '@safe-global/safe-apps-sdk'
+import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeMessageListItemType, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
-import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import type { RequestId } from '@safe-global/safe-apps-sdk'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import RequiredIcon from '@/public/images/messages/required.svg'
-import useSafeInfo from '@/hooks/useSafeInfo'
+import { useContext, useEffect } from 'react'
 
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import useWallet from '@/hooks/wallets/useWallet'
-import useSafeMessage from '@/hooks/messages/useSafeMessage'
-import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
-import { TxModalContext } from '@/components/tx-flow'
 import CopyButton from '@/components/common/CopyButton'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import MsgSigners from '@/components/safe-messages/MsgSigners'
-import useDecodedSafeMessage from '@/hooks/messages/useDecodedSafeMessage'
-import useSyncSafeMessageSigner from '@/hooks/messages/useSyncSafeMessageSigner'
-import SuccessMessage from '@/components/tx/SuccessMessage'
-import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
-import InfoBox from '@/components/safe-messages/InfoBox'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
+import InfoBox from '@/components/safe-messages/InfoBox'
+import MsgSigners from '@/components/safe-messages/MsgSigners'
+import { TxModalContext } from '@/components/tx-flow'
 import TxCard from '@/components/tx-flow/common/TxCard'
-import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
-import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
-import { SafeTxContext } from '../../SafeTxProvider'
+import ApprovalEditor from '@/components/tx/ApprovalEditor'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
+import SuccessMessage from '@/components/tx/SuccessMessage'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
+import useDecodedSafeMessage from '@/hooks/messages/useDecodedSafeMessage'
+import useSafeMessage from '@/hooks/messages/useSafeMessage'
+import useSyncSafeMessageSigner from '@/hooks/messages/useSyncSafeMessageSigner'
+import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
+import useWallet from '@/hooks/wallets/useWallet'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 import { isEIP712TypedData } from '@/utils/safe-messages'
-import ApprovalEditor from '@/components/tx/ApprovalEditor'
-import { ErrorBoundary } from '@sentry/react'
 import { isWalletRejection } from '@/utils/wallets'
+import { ErrorBoundary } from '@sentry/react'
+import { SafeTxContext } from '../../SafeTxProvider'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -81,7 +81,7 @@ const MessageHashField = ({ label, hashValue }: { label: string; hashValue: stri
 
 const DialogHeader = ({ threshold }: { threshold: number }) => (
   <>
-    <Box textAlign="center" mb={2}>
+    <Box data-sid="19265" textAlign="center" mb={2}>
       <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="large" />
     </Box>
     <Typography variant="h4" textAlign="center" gutterBottom>
@@ -134,7 +134,7 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
           Your connected wallet has already signed this message.
         </Grid>
         <Grid item xs={4}>
-          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+          <Button data-sid="68656" variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
             Switch wallet
           </Button>
         </Grid>
@@ -152,7 +152,13 @@ const SuccessCard = ({ safeMessage, onContinue }: { safeMessage: SafeMessage; on
 
       <MsgSigners msg={safeMessage} showOnlyConfirmations showMissingSignatures />
       <CardActions>
-        <Button variant="contained" color="primary" onClick={onContinue} disabled={!safeMessage.preparedSignature}>
+        <Button
+          data-sid="57358"
+          variant="contained"
+          color="primary"
+          onClick={onContinue}
+          disabled={!safeMessage.preparedSignature}
+        >
           Continue
         </Button>
       </CardActions>
@@ -295,7 +301,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </TxCard>
           <TxCard>
             <CardActions>
-              <Button variant="contained" color="primary" onClick={handleSign} disabled={isDisabled}>
+              <Button data-sid="18611" variant="contained" color="primary" onClick={handleSign} disabled={isDisabled}>
                 Sign
               </Button>
             </CardActions>

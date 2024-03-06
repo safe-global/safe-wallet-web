@@ -1,22 +1,22 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
-import { resolveHref } from 'next/dist/client/resolve-href'
-import classNames from 'classnames'
-import type { ReactNode, SyntheticEvent } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import classNames from 'classnames'
+import { resolveHref } from 'next/dist/client/resolve-href'
+import Link from 'next/link'
 import type { NextRouter } from 'next/router'
+import { useRouter } from 'next/router'
+import type { ReactNode, SyntheticEvent } from 'react'
 
-import type { UrlObject } from 'url'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import SafeAppActionButtons from '@/components/safe-apps/SafeAppActionButtons'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import SafeAppTags from '@/components/safe-apps/SafeAppTags'
 import { isOptimizedForBatchTransactions } from '@/components/safe-apps/utils'
 import { AppRoutes } from '@/config/routes'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
+import type { UrlObject } from 'url'
 import css from './styles.module.css'
 
 type SafeAppCardProps = {
@@ -89,7 +89,7 @@ const SafeAppCardGridView = ({
       <CardHeader
         className={css.safeAppHeader}
         avatar={
-          <div className={css.safeAppIconContainer}>
+          <div data-sid="65054" className={css.safeAppIconContainer}>
             {/* Batch transactions Icon */}
             {isOptimizedForBatchTransactions(safeApp) && (
               <BatchIcon className={css.safeAppBatchIcon} alt="batch transactions icon" />

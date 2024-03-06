@@ -7,7 +7,7 @@ import txTypeCss from '@/components/transactions/TxType/styles.module.css'
 
 export function RecoveryType({ isMalicious }: { isMalicious: boolean }): ReactElement {
   return (
-    <Box className={txTypeCss.txType}>
+    <Box data-sid="46230" className={txTypeCss.txType}>
       <SvgIcon
         component={RecoveryPlusIcon}
         inheritViewBox

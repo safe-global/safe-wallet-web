@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { Errors, logError } from '@/services/exceptions'
 import { getChainsConfig, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useEffect } from 'react'
 import useAsync, { type AsyncResult } from '../useAsync'
-import { logError, Errors } from '@/services/exceptions'
 
 const getConfigs = async (): Promise<ChainInfo[]> => {
   const data = await getChainsConfig()

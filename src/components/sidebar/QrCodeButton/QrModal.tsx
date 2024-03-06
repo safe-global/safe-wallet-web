@@ -1,12 +1,12 @@
-import { type ReactElement } from 'react'
-import { Box, Switch, DialogContent, FormControlLabel, Typography } from '@mui/material'
-import ModalDialog from '@/components/common/ModalDialog'
-import useSafeAddress from '@/hooks/useSafeAddress'
-import { useCurrentChain } from '@/hooks/useChains'
-import QRCode from '@/components/common/QRCode'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import ModalDialog from '@/components/common/ModalDialog'
+import QRCode from '@/components/common/QRCode'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeAddress from '@/hooks/useSafeAddress'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setQrShortName } from '@/store/settingsSlice'
+import { Box, DialogContent, FormControlLabel, Switch, Typography } from '@mui/material'
+import { type ReactElement } from 'react'
 
 const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   const safeAddress = useSafeAddress()
@@ -21,7 +21,14 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   return (
     <ModalDialog open dialogTitle="Receive assets" onClose={onClose} hideChainIndicator>
       <DialogContent>
-        <Box bgcolor={chain?.theme.backgroundColor} color={chain?.theme.textColor} px={3} py={2} mx={-3}>
+        <Box
+          data-sid="32544"
+          bgcolor={chain?.theme.backgroundColor}
+          color={chain?.theme.textColor}
+          px={3}
+          py={2}
+          mx={-3}
+        >
           {chainName} network &mdash; only send {chainName} assets to this Safe Account.
         </Box>
 
@@ -30,8 +37,16 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
           Only send {nativeToken} and tokens (e.g. ERC20, ERC721) to this address.
         </Typography>
 
-        <Box display="flex" flexDirection="column" flexWrap="wrap" justifyContent="center" alignItems="center" my={2}>
-          <Box mt={1} mb={1} p={1} border="1px solid" borderColor="border.main" borderRadius={1}>
+        <Box
+          data-sid="12564"
+          display="flex"
+          flexDirection="column"
+          flexWrap="wrap"
+          justifyContent="center"
+          alignItems="center"
+          my={2}
+        >
+          <Box data-sid="43887" mt={1} mb={1} p={1} border="1px solid" borderColor="border.main" borderRadius={1}>
             <QRCode value={qrCode} size={164} />
           </Box>
 
@@ -46,7 +61,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
             }
           />
 
-          <Box mt={2}>
+          <Box data-sid="78922" mt={2}>
             <EthHashInfo address={safeAddress} shortAddress={false} hasExplorer showCopyButton />
           </Box>
         </Box>

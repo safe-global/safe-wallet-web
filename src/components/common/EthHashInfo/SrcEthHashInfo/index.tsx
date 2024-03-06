@@ -1,12 +1,12 @@
-import type { ReactNode, ReactElement, SyntheticEvent } from 'react'
-import { isAddress } from 'ethers'
-import { useTheme } from '@mui/material/styles'
+import { shortenAddress } from '@/utils/formatters'
 import Box from '@mui/material/Box'
+import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import Identicon from '../../Identicon'
+import { isAddress } from 'ethers'
+import type { ReactElement, ReactNode, SyntheticEvent } from 'react'
 import CopyAddressButton from '../../CopyAddressButton'
 import ExplorerButton, { type ExplorerButtonProps } from '../../ExplorerButton'
-import { shortenAddress } from '@/utils/formatters'
+import Identicon from '../../Identicon'
 import ImageFallback from '../../ImageFallback'
 import css from './styles.module.css'
 
@@ -62,7 +62,7 @@ const SrcEthHashInfo = ({
   )
 
   return (
-    <div className={css.container}>
+    <div data-sid="69778" className={css.container}>
       {showAvatar && (
         <div
           className={css.avatarContainer}
@@ -76,15 +76,15 @@ const SrcEthHashInfo = ({
         </div>
       )}
 
-      <Box overflow="hidden">
+      <Box data-sid="40527" overflow="hidden">
         {name && (
-          <Box textOverflow="ellipsis" overflow="hidden" title={name}>
+          <Box data-sid="64213" textOverflow="ellipsis" overflow="hidden" title={name}>
             {name}
           </Box>
         )}
 
-        <div className={css.addressContainer}>
-          <Box fontWeight="inherit" fontSize="inherit" overflow="hidden" textOverflow="ellipsis">
+        <div data-sid="22724" className={css.addressContainer}>
+          <Box data-sid="54489" fontWeight="inherit" fontSize="inherit" overflow="hidden" textOverflow="ellipsis">
             {copyAddress ? (
               <CopyAddressButton prefix={prefix} address={address} copyPrefix={shouldCopyPrefix} trusted={trusted}>
                 {addressElement}
@@ -99,7 +99,7 @@ const SrcEthHashInfo = ({
           )}
 
           {hasExplorer && ExplorerButtonProps && (
-            <Box color="border.main">
+            <Box data-sid="96910" color="border.main">
               <ExplorerButton {...ExplorerButtonProps} onClick={stopPropagation} />
             </Box>
           )}

@@ -1,17 +1,16 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
-import type { NamedAddress } from '@/components/new-safe/create/types'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
+import ReviewRow from '@/components/new-safe/ReviewRow'
 import type { NewSafeFormData } from '@/components/new-safe/create'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
-import ReviewRow from '@/components/new-safe/ReviewRow'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import { RELAY_SPONSORS } from '@/components/tx/SponsoredBy'
@@ -19,7 +18,7 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 import PayNowPayLater, { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { createCounterfactualSafe } from '@/features/counterfactual/utils'
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
-import useGasPrice from '@/hooks/useGasPrice'
+import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { MAX_HOUR_RELAYS, useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
@@ -59,7 +58,7 @@ export const NetworkFee = ({
 
   if (!isSocialLogin) {
     return (
-      <Box className={classnames(css.networkFee, { [css.networkFeeInline]: inline })}>
+      <Box data-sid="40519" className={classnames(css.networkFee, { [css.networkFeeInline]: inline })}>
         <Typography className={classnames({ [css.sponsoredFee]: willRelay })}>
           <b>
             &asymp; {totalFee} {chain?.nativeCurrency.symbol}
@@ -115,7 +114,7 @@ export const SafeSetupOverview = ({
       <ReviewRow
         name="Owners"
         value={
-          <Box data-testid="review-step-owner-info" className={css.ownersArray}>
+          <Box data-sid="57011" data-testid="review-step-owner-info" className={css.ownersArray}>
             {owners.map((owner, index) => (
               <EthHashInfo
                 address={owner.address}
@@ -244,14 +243,14 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   return (
     <>
-      <Box className={layoutCss.row}>
+      <Box data-sid="39209" className={layoutCss.row}>
         <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} />
       </Box>
 
       {isCounterfactual && (
         <>
           <Divider />
-          <Box className={layoutCss.row}>
+          <Box data-sid="98811" className={layoutCss.row}>
             <PayNowPayLater totalFee={totalFee} canRelay={canRelay} payMethod={payMethod} setPayMethod={setPayMethod} />
 
             {canRelay && !isSocialLogin && payMethod === PayMethod.PayNow && (
@@ -284,7 +283,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       {!isCounterfactual && (
         <>
           <Divider />
-          <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
+          <Box data-sid="29290" className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
             {canRelay && !isSocialLogin && (
               <Grid container spacing={3}>
                 <ReviewRow
@@ -330,10 +329,11 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       <Divider />
 
-      <Box className={layoutCss.row}>
+      <Box data-sid="77503" className={layoutCss.row}>
         {submitError && <ErrorMessage className={css.errorMessage}>{submitError}</ErrorMessage>}
-        <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+        <Box data-sid="55395" display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
           <Button
+            data-sid="14480"
             data-testid="back-btn"
             variant="outlined"
             size="small"
@@ -343,6 +343,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             Back
           </Button>
           <Button
+            data-sid="11448"
             data-testid="review-step-next-btn"
             onClick={createSafe}
             variant="contained"

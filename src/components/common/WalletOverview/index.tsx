@@ -1,25 +1,22 @@
-import Identicon from '@/components/common/Identicon'
-import { Box, Typography } from '@mui/material'
-import { Suspense } from 'react'
-import type { ReactElement } from 'react'
-
 import EthHashInfo from '@/components/common/EthHashInfo'
-import WalletIcon from '@/components/common/WalletIcon'
+import Identicon from '@/components/common/Identicon'
+import SocialLoginInfo from '@/components/common/SocialLoginInfo'
+import WalletBalance from '@/components/common/WalletBalance'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
-import WalletBalance from '@/components/common/WalletBalance'
-
+import { Box, Typography } from '@mui/material'
+import { Suspense, type ReactElement } from 'react'
+import WalletIcon from '../WalletIcon'
 import css from './styles.module.css'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 
 export const WalletIdenticon = ({ wallet, size = 32 }: { wallet: ConnectedWallet; size?: number }) => {
   return (
-    <Box className={css.imageContainer}>
+    <Box data-sid="73813" className={css.imageContainer}>
       <Identicon address={wallet.address} size={size} />
       <Suspense>
-        <Box className={css.walletIcon}>
+        <Box data-sid="66607" className={css.walletIcon}>
           <WalletIcon provider={wallet.label} icon={wallet.icon} width={size / 2} height={size / 2} />
         </Box>
       </Suspense>
@@ -43,7 +40,7 @@ const WalletOverview = ({
 
   if (isSocialLogin) {
     return (
-      <div className={css.socialLoginInfo}>
+      <div data-sid="61503" className={css.socialLoginInfo}>
         <SocialLoginInfo
           wallet={wallet}
           chainInfo={walletChain}
@@ -56,10 +53,10 @@ const WalletOverview = ({
   }
 
   return (
-    <Box className={css.container}>
+    <Box data-sid="62024" className={css.container}>
       <WalletIdenticon wallet={wallet} />
 
-      <Box className={css.walletDetails}>
+      <Box data-sid="63797" className={css.walletDetails}>
         <Typography variant="body2" component="div">
           {wallet.ens ? (
             <div>{wallet.ens}</div>

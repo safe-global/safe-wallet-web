@@ -1,33 +1,33 @@
-import CheckBalance from '@/features/counterfactual/CheckBalance'
-import { type ReactElement, useMemo, useContext } from 'react'
-import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
-import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
-import css from './styles.module.css'
+import AddFundsCTA from '@/components/common/AddFunds'
+import CheckWallet from '@/components/common/CheckWallet'
+import EnhancedTable, { type EnhancedTableProps } from '@/components/common/EnhancedTable'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount from '@/components/common/TokenAmount'
-import TokenIcon from '@/components/common/TokenIcon'
-import EnhancedTable, { type EnhancedTableProps } from '@/components/common/EnhancedTable'
 import TokenExplorerLink from '@/components/common/TokenExplorerLink'
+import TokenIcon from '@/components/common/TokenIcon'
 import Track from '@/components/common/Track'
-import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
-import InfoIcon from '@/public/images/notifications/info.svg'
-import { VisibilityOutlined } from '@mui/icons-material'
-import TokenMenu from '../TokenMenu'
-import useBalances from '@/hooks/useBalances'
-import useHiddenTokens from '@/hooks/useHiddenTokens'
-import { useHideAssets } from './useHideAssets'
-import CheckWallet from '@/components/common/CheckWallet'
-import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
 import { TokenTransferFlow } from '@/components/tx-flow/flows'
-import AddFundsCTA from '@/components/common/AddFunds'
+import CheckBalance from '@/features/counterfactual/CheckBalance'
+import useBalances from '@/hooks/useBalances'
+import useHiddenTokens from '@/hooks/useHiddenTokens'
+import useSpendingLimit from '@/hooks/useSpendingLimit'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { ASSETS_EVENTS } from '@/services/analytics/events/assets'
+import { VisibilityOutlined } from '@mui/icons-material'
+import { Box, Button, Checkbox, IconButton, Skeleton, SvgIcon, Tooltip, Typography } from '@mui/material'
+import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import { useContext, useMemo, type ReactElement } from 'react'
+import TokenMenu from '../TokenMenu'
+import css from './styles.module.css'
+import { useHideAssets } from './useHideAssets'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
     rawValue: '0x0',
     content: (
-      <div className={css.token}>
+      <div data-sid="29403" className={css.token}>
         <Skeleton variant="rounded" width="26px" height="26px" />
         <Typography>
           <Skeleton width="80px" />
@@ -102,6 +102,7 @@ const SendButton = ({
       {(isOk) => (
         <Track {...ASSETS_EVENTS.SEND}>
           <Button
+            data-sid="76488"
             variant="contained"
             color="primary"
             size="small"
@@ -163,7 +164,7 @@ const AssetsTable = ({
               rawValue: item.tokenInfo.name,
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
-                <div className={css.token}>
+                <div data-sid="68082" className={css.token}>
                   <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
                   <Typography>{item.tokenInfo.name}</Typography>
@@ -214,7 +215,7 @@ const AssetsTable = ({
               sticky: true,
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
-                <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+                <Box data-sid="94411" display="flex" flexDirection="row" gap={1} alignItems="center">
                   <>
                     <SendButton tokenInfo={item.tokenInfo} onClick={() => onSendClick(item.tokenInfo.address)} />
 
@@ -254,7 +255,7 @@ const AssetsTable = ({
       {hasNoAssets ? (
         <AddFundsCTA />
       ) : (
-        <div className={css.container}>
+        <div data-sid="26491" className={css.container}>
           <EnhancedTable rows={rows} headCells={headCells} />
         </div>
       )}

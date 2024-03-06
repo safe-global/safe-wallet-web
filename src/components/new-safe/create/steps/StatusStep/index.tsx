@@ -1,25 +1,25 @@
-import { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Divider, Paper, Tooltip, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
+import { useCallback, useEffect, useState } from 'react'
 
 import Track from '@/components/common/Track'
-import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
-import StatusMessage from '@/components/new-safe/create/steps/StatusStep/StatusMessage'
-import useWallet from '@/hooks/wallets/useWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import type { NewSafeFormData } from '@/components/new-safe/create'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
-import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
-import StatusStepper from '@/components/new-safe/create/steps/StatusStep/StatusStepper'
-import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import type { NewSafeFormData } from '@/components/new-safe/create'
 import { getRedirect } from '@/components/new-safe/create/logic'
+import StatusMessage from '@/components/new-safe/create/steps/StatusStep/StatusMessage'
+import StatusStepper from '@/components/new-safe/create/steps/StatusStep/StatusStepper'
+import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
+import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import { AppRoutes } from '@/config/routes'
 import lightPalette from '@/components/theme/lightPalette'
+import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from '@/hooks/useChains'
-import { usePendingSafe } from './usePendingSafe'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import useWallet from '@/hooks/wallets/useWallet'
+import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
 import useSyncSafeCreationStep from '../../useSyncSafeCreationStep'
+import { usePendingSafe } from './usePendingSafe'
 
 export const getInitialCreationStatus = (willRelay: boolean): SafeCreationStatus =>
   willRelay ? SafeCreationStatus.PROCESSING : SafeCreationStatus.AWAITING
@@ -87,14 +87,14 @@ export const CreateSafeStatus = ({ data, setProgressColor, setStep }: StepRender
         textAlign: 'center',
       }}
     >
-      <Box className={layoutCss.row}>
+      <Box data-sid="86054" className={layoutCss.row}>
         <StatusMessage status={status} isError={isError} />
       </Box>
 
       {!isError && pendingSafe && (
         <>
           <Divider />
-          <Box className={layoutCss.row}>
+          <Box data-sid="54413" className={layoutCss.row}>
             <StatusStepper status={status} />
           </Box>
         </>
@@ -103,9 +103,9 @@ export const CreateSafeStatus = ({ data, setProgressColor, setStep }: StepRender
       {displaySafeLink && (
         <>
           <Divider />
-          <Box className={layoutCss.row}>
+          <Box data-sid="75976" className={layoutCss.row}>
             <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.after_create}>
-              <Button data-testid="start-using-safe-btn" variant="contained" onClick={onFinish}>
+              <Button data-sid="41990" data-testid="start-using-safe-btn" variant="contained" onClick={onFinish}>
                 Start using {'Safe{Wallet}'}
               </Button>
             </Track>
@@ -116,10 +116,10 @@ export const CreateSafeStatus = ({ data, setProgressColor, setStep }: StepRender
       {isError && (
         <>
           <Divider />
-          <Box className={layoutCss.row}>
-            <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+          <Box data-sid="62807" className={layoutCss.row}>
+            <Box data-sid="51850" display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
               <Track {...CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE}>
-                <Button onClick={onClose} variant="outlined">
+                <Button data-sid="23597" onClick={onClose} variant="outlined">
                   Cancel
                 </Button>
               </Track>
@@ -128,7 +128,7 @@ export const CreateSafeStatus = ({ data, setProgressColor, setStep }: StepRender
                   title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}
                 >
                   <Typography display="flex" height={1}>
-                    <Button onClick={handleRetry} variant="contained" disabled={!isConnected}>
+                    <Button data-sid="66168" onClick={handleRetry} variant="contained" disabled={!isConnected}>
                       Retry
                     </Button>
                   </Typography>

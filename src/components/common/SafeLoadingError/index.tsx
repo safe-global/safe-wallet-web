@@ -1,9 +1,9 @@
-import type { ReactElement, ReactNode } from 'react'
-import { Button } from '@mui/material'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import PagePlaceholder from '../PagePlaceholder'
 import { AppRoutes } from '@/config/routes'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { Button } from '@mui/material'
 import Link from 'next/link'
+import type { ReactElement, ReactNode } from 'react'
+import PagePlaceholder from '../PagePlaceholder'
 
 const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement => {
   const { safeError } = useSafeInfo()
@@ -16,7 +16,7 @@ const SafeLoadingError = ({ children }: { children: ReactNode }): ReactElement =
       text="This Safe Account couldn't be loaded"
     >
       <Link href={AppRoutes.welcome.index} passHref legacyBehavior>
-        <Button variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
+        <Button data-sid="15018" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
           Go to the main page
         </Button>
       </Link>

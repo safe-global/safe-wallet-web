@@ -1,17 +1,17 @@
-import { useCallback, useEffect } from 'react'
-import { Grid, Typography, Divider, SvgIcon, IconButton, Tooltip, Box } from '@mui/material'
-import type { ReactElement } from 'react'
-import type { SessionTypes } from '@walletconnect/types'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import Track from '@/components/common/Track'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { Box, Divider, Grid, IconButton, SvgIcon, Tooltip, Typography } from '@mui/material'
+import type { SessionTypes } from '@walletconnect/types'
+import type { ReactElement } from 'react'
+import { useCallback, useEffect } from 'react'
 import WcHints from '../WcHints'
-import WcSessionList from '../WcSessionList'
 import WcInput from '../WcInput'
 import WcLogoHeader from '../WcLogoHeader'
+import WcSessionList from '../WcSessionList'
 import css from './styles.module.css'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import Track from '@/components/common/Track'
-import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 const WC_HINTS_KEY = 'wcHints'
 
@@ -63,7 +63,7 @@ export const WcConnectionForm = ({
         </Typography>
 
         {safeLoaded ? (
-          <Box mt={3}>
+          <Box data-sid="45972" mt={3}>
             <WcInput uri={uri} />
           </Box>
         ) : null}

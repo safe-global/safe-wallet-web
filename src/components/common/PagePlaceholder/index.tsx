@@ -1,5 +1,5 @@
-import type { ReactElement, ReactNode } from 'react'
 import { Typography } from '@mui/material'
+import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
 
 type PagePlaceholderProps = {
@@ -10,7 +10,7 @@ type PagePlaceholderProps = {
 
 const PagePlaceholder = ({ img, text, children }: PagePlaceholderProps): ReactElement => {
   return (
-    <div className={css.container}>
+    <div data-sid="12697" className={css.container}>
       {img}
 
       {typeof text === 'string' ? (

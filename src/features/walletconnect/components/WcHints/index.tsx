@@ -1,23 +1,23 @@
+import Question from '@/public/images/common/question.svg'
+import { trackEvent } from '@/services/analytics'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import {
   Accordion,
+  AccordionDetails,
   AccordionSummary,
   Avatar,
   Box,
-  Typography,
-  AccordionDetails,
-  SvgIcon,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  SvgIcon,
+  Typography,
 } from '@mui/material'
-import { useState } from 'react'
 import type { ReactElement } from 'react'
-import Question from '@/public/images/common/question.svg'
+import { useState } from 'react'
 import css from './styles.module.css'
-import { trackEvent } from '@/services/analytics'
-import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 const HintAccordion = ({
   title,
@@ -85,7 +85,7 @@ const WcHints = (): ReactElement => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" gap={1}>
+    <Box data-sid="25361" display="flex" flexDirection="column" gap={1}>
       <HintAccordion
         title={ConnectionTitle}
         items={ConnectionSteps}

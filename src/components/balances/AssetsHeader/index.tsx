@@ -11,11 +11,15 @@ const AssetsHeader = ({ children }: { children?: ReactNode }): ReactElement => {
     <PageHeader
       title="Assets"
       action={
-        <div className={css.pageHeader}>
-          <div className={css.navWrapper}>
+        <div data-sid="24815" className={css.pageHeader}>
+          <div data-sid="64956" className={css.navWrapper}>
             <NavTabs tabs={balancesNavItems} />
           </div>
-          {children && <div className={css.actionsWrapper}>{children}</div>}
+          {children && (
+            <div data-sid="50586" className={css.actionsWrapper}>
+              {children}
+            </div>
+          )}
         </div>
       }
     />

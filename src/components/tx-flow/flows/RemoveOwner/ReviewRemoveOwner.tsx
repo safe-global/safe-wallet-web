@@ -1,16 +1,16 @@
-import { useContext, useEffect } from 'react'
-import { Typography, Divider, Box, Paper, SvgIcon } from '@mui/material'
+import { Box, Divider, Paper, SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
+import { useContext, useEffect } from 'react'
 
+import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAddressBook from '@/hooks/useAddressBook'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
-import { createRemoveOwnerTx } from '@/services/tx/tx-sender'
 import MinusIcon from '@/public/images/common/minus.svg'
-import { SafeTxContext } from '../../SafeTxProvider'
+import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
+import { createRemoveOwnerTx } from '@/services/tx/tx-sender'
 import type { RemoveOwnerFlowProps } from '.'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import { SafeTxContext } from '../../SafeTxProvider'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -47,7 +47,7 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
         />
       </Paper>
       <Divider className={commonCss.nestedDivider} />
-      <Box m={1}>
+      <Box data-sid="11458" m={1}>
         <Typography variant="body2" color="text.secondary" mb={0.5}>
           Any transaction requires the confirmation of:
         </Typography>

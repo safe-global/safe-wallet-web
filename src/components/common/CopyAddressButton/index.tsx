@@ -1,6 +1,6 @@
 import { checksumAddress } from '@/utils/addresses'
 import { Box, Typography } from '@mui/material'
-import type { ReactNode, ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import CopyButton from '../CopyButton'
 import EthHashInfo from '../EthHashInfo'
 
@@ -22,7 +22,7 @@ const CopyAddressButton = ({
   const checksummedAddress = checksumAddress(address)
 
   const dialogContent = trusted ? undefined : (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Box data-sid="70855" display="flex" flexDirection="column" gap={2}>
       <EthHashInfo
         address={checksummedAddress}
         shortAddress={false}

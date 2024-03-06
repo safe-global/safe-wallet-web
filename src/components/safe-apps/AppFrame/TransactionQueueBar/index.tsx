@@ -1,16 +1,16 @@
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
-import { Backdrop, Typography, Box, IconButton, Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ClickAwayListener } from '@mui/base'
 import CloseIcon from '@mui/icons-material/Close'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import { Accordion, AccordionDetails, AccordionSummary, Backdrop, Box, IconButton, Typography } from '@mui/material'
+import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
-import useTxQueue from '@/hooks/useTxQueue'
 import PaginatedTxns from '@/components/common/PaginatedTxns'
-import styles from './styles.module.css'
-import { getQueuedTransactionCount } from '@/utils/transactions'
-import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
 import BatchExecuteButton from '@/components/transactions/BatchExecuteButton'
+import { BatchExecuteHoverProvider } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
+import useTxQueue from '@/hooks/useTxQueue'
+import { getQueuedTransactionCount } from '@/utils/transactions'
 import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import styles from './styles.module.css'
 
 type Props = {
   expanded: boolean
@@ -38,7 +38,7 @@ const TransactionQueueBar = ({
   const barTitle = `(${queuedTxCount}) Transaction queue`
   return (
     <>
-      <Box className={styles.barWrapper}>
+      <Box data-sid="71051" className={styles.barWrapper}>
         <ClickAwayListener onClickAway={() => setExpanded(false)} mouseEvent="onMouseDown" touchEvent="onTouchStart">
           <Accordion
             expanded={expanded}
@@ -81,7 +81,7 @@ const TransactionQueueBar = ({
             </AccordionSummary>
             <AccordionDetails>
               <BatchExecuteHoverProvider>
-                <Box display="flex" flexDirection="column" alignItems="flex-end">
+                <Box data-sid="84358" display="flex" flexDirection="column" alignItems="flex-end">
                   <BatchExecuteButton />
                 </Box>
                 <PaginatedTxns useTxns={useTxQueue} />

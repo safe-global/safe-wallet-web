@@ -1,35 +1,35 @@
 import {
-  Grid,
-  Paper,
-  Typography,
+  Alert,
   Checkbox,
+  Divider,
   FormControlLabel,
   FormGroup,
-  Alert,
-  Switch,
-  Divider,
+  Grid,
   Link as MuiLink,
+  Paper,
+  Switch,
+  Typography,
 } from '@mui/material'
 import Link from 'next/link'
-import { useState } from 'react'
 import type { ReactElement } from 'react'
+import { useState } from 'react'
 
-import useSafeInfo from '@/hooks/useSafeInfo'
+import CheckWallet from '@/components/common/CheckWallet'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { WebhookType } from '@/service-workers/firebase-messaging/webhook-types'
-import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
-import { useNotificationPreferences } from './hooks/useNotificationPreferences'
-import { GlobalPushNotifications } from './GlobalPushNotifications'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle, IS_DEV } from '@/config/constants'
+import { AppRoutes } from '@/config/routes'
+import { useIsMac } from '@/hooks/useIsMac'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { WebhookType } from '@/service-workers/firebase-messaging/webhook-types'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
-import { AppRoutes } from '@/config/routes'
-import CheckWallet from '@/components/common/CheckWallet'
-import { useIsMac } from '@/hooks/useIsMac'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
-import ExternalLink from '@/components/common/ExternalLink'
+import { GlobalPushNotifications } from './GlobalPushNotifications'
+import { useNotificationPreferences } from './hooks/useNotificationPreferences'
+import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
 
 import css from './styles.module.css'
 
@@ -127,7 +127,7 @@ export const PushNotifications = (): ReactElement => {
                 <>
                   <Divider />
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div data-sid="46103" style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <EthHashInfo
                       address={safe.address.value}
                       showCopyButton

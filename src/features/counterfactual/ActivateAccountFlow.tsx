@@ -31,7 +31,7 @@ import { hasRemainingRelays } from '@/utils/relaying'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -144,7 +144,7 @@ const ActivateAccountFlow = () => {
         <SafeSetupOverview owners={owners.map((owner) => ({ name: '', address: owner }))} threshold={threshold} />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
-        <Box display="flex" flexDirection="column" gap={3}>
+        <Box data-sid="55981" display="flex" flexDirection="column" gap={3}>
           {canRelay && !isSocialLogin && (
             <Grid container spacing={3}>
               <ReviewRow
@@ -178,7 +178,7 @@ const ActivateAccountFlow = () => {
           </Grid>
 
           {submitError && (
-            <Box mt={1}>
+            <Box data-sid="84758" mt={1}>
               <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
             </Box>
           )}
@@ -194,8 +194,8 @@ const ActivateAccountFlow = () => {
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
-        <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
-          <Button onClick={createSafe} variant="contained" size="stretched" disabled={submitDisabled}>
+        <Box data-sid="69593" display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
+          <Button data-sid="75248" onClick={createSafe} variant="contained" size="stretched" disabled={submitDisabled}>
             {!isSubmittable ? <CircularProgress size={20} /> : 'Activate'}
           </Button>
         </Box>

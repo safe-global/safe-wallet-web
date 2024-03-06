@@ -1,8 +1,8 @@
+import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefine'
+import AlertIcon from '@/public/images/notifications/alert.svg'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { Alert, Box, List, ListItem, SvgIcon, Typography } from '@mui/material'
 import css from 'src/components/tx/security/redefine/styles.module.css'
-import AlertIcon from '@/public/images/notifications/alert.svg'
-import { mapRedefineSeverity } from '@/components/tx/security/redefine/useRedefine'
 
 export const RedefineHint = ({ severity, warnings }: { severity: SecuritySeverity; warnings: string[] }) => {
   const severityProps = mapRedefineSeverity[severity]
@@ -37,7 +37,7 @@ export const RedefineHint = ({ severity, warnings }: { severity: SecuritySeverit
             {pluralizedLabel}
           </Typography>
         )}
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Box data-sid="32755" display="flex" flexDirection="column" gap={2}>
           <List sx={{ listStyle: 'disc', pl: 2, '& li:last-child': { m: 0 } }}>
             {warnings.map((warning) => (
               <ListItem key={warning} disablePadding sx={{ display: 'list-item', mb: 1 }}>

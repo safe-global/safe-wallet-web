@@ -1,13 +1,13 @@
-import { useEffect } from 'react'
-import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
-import useAsync, { type AsyncResult } from '../useAsync'
 import { Errors, logError } from '@/services/exceptions'
-import useSafeInfo from '../useSafeInfo'
 import { getTxHistory } from '@/services/transactions'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { useHasFeature } from '../useChains'
 import { FEATURES } from '@/utils/chains'
+import { type TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import { useEffect } from 'react'
+import useAsync, { type AsyncResult } from '../useAsync'
+import { useHasFeature } from '../useChains'
+import useSafeInfo from '../useSafeInfo'
 
 export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   const { safe, safeAddress, safeLoaded } = useSafeInfo()

@@ -1,7 +1,6 @@
-import * as React from 'react'
-import { DialogActions, DialogContent, Typography, Button } from '@mui/material'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import ModalDialog from '@/components/common/ModalDialog'
+import { Button, DialogActions, DialogContent, Typography } from '@mui/material'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 type Props = {
   open: boolean
@@ -18,8 +17,10 @@ const RemoveCustomAppModal = ({ open, onClose, onConfirm, app }: Props) => (
       </Typography>
     </DialogContent>
     <DialogActions disableSpacing>
-      <Button onClick={onClose}>Cancel</Button>
-      <Button variant="danger" onClick={() => onConfirm(app.id)}>
+      <Button data-sid="56526" onClick={onClose}>
+        Cancel
+      </Button>
+      <Button data-sid="73929" variant="danger" onClick={() => onConfirm(app.id)}>
         Remove
       </Button>
     </DialogActions>

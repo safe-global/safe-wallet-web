@@ -24,7 +24,7 @@ const CircularIcon = ({
       }}
       className={css.badge}
     >
-      <Box className={css.circle} width={size} height={size}>
+      <Box data-sid="50231" className={css.circle} width={size} height={size}>
         <SvgIcon
           component={icon}
           inheritViewBox

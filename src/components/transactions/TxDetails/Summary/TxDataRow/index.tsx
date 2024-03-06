@@ -1,11 +1,11 @@
-import type { ReactElement, ReactNode } from 'react'
-import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import CopyButton from '@/components/common/CopyButton'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { Typography } from '@mui/material'
+import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import { dataLength } from 'ethers'
+import type { ReactElement, ReactNode } from 'react'
 import css from './styles.module.css'
-import EthHashInfo from '@/components/common/EthHashInfo'
 
 type TxDataRowProps = {
   datatestid?: String
@@ -16,8 +16,8 @@ type TxDataRowProps = {
 export const TxDataRow = ({ datatestid, title, children }: TxDataRowProps): ReactElement | null => {
   if (children == undefined) return null
   return (
-    <div data-testid={datatestid} className={css.gridRow}>
-      <div data-testid="tx-row-title" className={css.title}>
+    <div data-sid="10812" data-testid={datatestid} className={css.gridRow}>
+      <div data-sid="86008" data-testid="tx-row-title" className={css.title}>
         {title}
       </div>
 
@@ -57,7 +57,7 @@ export const generateDataRowValue = (
       )
     case 'rawData':
       return (
-        <div data-testid="tx-data-row" className={css.rawData}>
+        <div data-sid="88508" data-testid="tx-data-row" className={css.rawData}>
           <div>{value ? dataLength(value) : 0} bytes</div>
           <CopyButton text={value} />
         </div>

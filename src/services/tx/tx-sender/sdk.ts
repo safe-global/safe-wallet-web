@@ -1,20 +1,21 @@
+import type { TempAPI } from '@/components/safe-apps/types'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import type Safe from '@safe-global/protocol-kit'
-import { EthersAdapter, SigningMethod } from '@safe-global/protocol-kit'
-import type { JsonRpcSigner } from 'ethers'
-import { ethers } from 'ethers'
-import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
-import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
-import { hasSafeFeature } from '@/utils/safe-versions'
-import { createWeb3 } from '@/hooks/wallets/web3'
-import { toQuantity } from 'ethers'
-import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { connectWallet, getConnectedWallet, getOnboardStore } from '@/hooks/wallets/useOnboard'
+import { createWeb3 } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
+import { hasSafeFeature } from '@/utils/safe-versions'
+import { isHardwareWallet, isWalletRejection } from '@/utils/wallets'
+import { chains } from '@particle-network/chains'
+import type Safe from '@safe-global/protocol-kit'
+import { EthersAdapter, SigningMethod } from '@safe-global/protocol-kit'
+import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
+import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+
+import type { JsonRpcSigner } from 'ethers'
+import { ethers } from 'ethers'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -26,41 +27,39 @@ export const getAndValidateSafeSDK = (): Safe => {
   return safeSDK
 }
 
-export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet | null> => {
-  const currentWallet = getConnectedWallet(onboard.state.get().wallets)
+export const switchWalletChain = async (onboard: TempAPI, chainId: string): Promise<ConnectedWallet | null> => {
+  const currentWallet = getConnectedWallet(getOnboardStore?.()?.state.get().wallets)
 
   if (!currentWallet) {
     return null
   }
 
-  if (isHardwareWallet(currentWallet)) {
-    await onboard.disconnectWallet({ label: currentWallet.label })
-    const wallets = await connectWallet(onboard, { autoSelect: currentWallet.label })
+  try {
+    if (isHardwareWallet(currentWallet)) {
+      await onboard.disconnectWallet({ label: currentWallet.label })
+      const wallets = await connectWallet(onboard, { autoSelect: currentWallet.label })
 
-    return wallets ? getConnectedWallet(wallets) : null
-  }
+      return wallets ? getConnectedWallet(wallets) : null
+    }
 
-  const didSwitch = await onboard.setChain({ chainId: toQuantity(parseInt(chainId)) })
-  if (!didSwitch) {
+    const targetChain = chains.getEVMChainInfoById(Number(chainId))
+    await currentWallet.switchChain(targetChain)
+
+    /**
+     * Onboard doesn't update immediately and otherwise returns a stale wallet if we directly get its state
+     */
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(getConnectedWallet(getOnboardStore?.()?.state.get().wallets))
+      }, 100)
+    })
+  } catch (error) {
     return currentWallet
   }
-
-  /**
-   * Onboard doesn't update immediately and otherwise returns a stale wallet if we directly get its state
-   */
-  return new Promise((resolve) => {
-    const source$ = onboard.state.select('wallets').subscribe((newWallets) => {
-      const newWallet = getConnectedWallet(newWallets)
-      if (newWallet && newWallet.chainId === chainId) {
-        source$.unsubscribe()
-        resolve(newWallet)
-      }
-    })
-  })
 }
 
-export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet> => {
-  const wallet = getConnectedWallet(onboard.state.get().wallets)
+export const assertWalletChain = async (onboard: TempAPI, chainId: string): Promise<ConnectedWallet> => {
+  const wallet = getConnectedWallet(getOnboardStore?.()?.state.get().wallets)
 
   if (!wallet) {
     throw new Error('No wallet connected.')
@@ -84,7 +83,7 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): P
 }
 
 export const getAssertedChainSigner = async (
-  onboard: OnboardAPI,
+  onboard: TempAPI,
   chainId: SafeInfo['chainId'],
 ): Promise<JsonRpcSigner> => {
   const wallet = await assertWalletChain(onboard, chainId)
@@ -98,7 +97,7 @@ export const getAssertedChainSigner = async (
  * most of the values of transactionResponse which is needed when
  * dealing with smart-contract wallet owners
  */
-export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+export const getUncheckedSafeSDK = async (onboard: TempAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
   const signer = await getAssertedChainSigner(onboard, chainId)
   const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(signer.provider, await signer.getAddress())
   const sdk = getAndValidateSafeSDK()
@@ -111,7 +110,7 @@ export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo
   return sdk.connect({ ethAdapter })
 }
 
-export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
+export const getSafeSDKWithSigner = async (onboard: TempAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
   const signer = await getAssertedChainSigner(onboard, chainId)
   const sdk = getAndValidateSafeSDK()
 

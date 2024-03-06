@@ -1,18 +1,18 @@
-import { DialogContent, Alert, AlertTitle, DialogActions, Button, Box, SvgIcon } from '@mui/material'
-import type { ReactElement, Dispatch, SetStateAction } from 'react'
+import { Alert, AlertTitle, Box, Button, DialogActions, DialogContent, SvgIcon } from '@mui/material'
+import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
-import { useAppDispatch } from '@/store'
-import { trackEvent, SETTINGS_EVENTS, OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
-import { addedSafesSlice } from '@/store/addedSafesSlice'
-import { addressBookSlice } from '@/store/addressBookSlice'
-import { safeAppsSlice } from '@/store/safeAppsSlice'
-import { settingsSlice } from '@/store/settingsSlice'
 import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
+import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFileUpload'
 import { useGlobalImportJsonParser } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import FileIcon from '@/public/images/settings/data/file.svg'
-import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFileUpload'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS, SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
+import { useAppDispatch } from '@/store'
+import { addedSafesSlice } from '@/store/addedSafesSlice'
+import { addressBookSlice } from '@/store/addressBookSlice'
 import { showNotification } from '@/store/notificationsSlice'
+import { safeAppsSlice } from '@/store/safeAppsSlice'
+import { settingsSlice } from '@/store/settingsSlice'
 
 import css from './styles.module.css'
 
@@ -82,14 +82,14 @@ export const ImportDialog = ({
     <ModalDialog open onClose={handleClose} dialogTitle="Data import" hideChainIndicator>
       <DialogContent>
         {!jsonData || !fileName ? (
-          <Box mt={2}>
+          <Box data-sid="86821" mt={2}>
             <ImportFileUpload setFileName={setFileName} setJsonData={setJsonData} />
           </Box>
         ) : (
           <>
             <FileListCard
               avatar={
-                <Box sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
+                <Box data-sid="98851" sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
                   <SvgIcon
                     component={FileIcon}
                     inheritViewBox
@@ -118,10 +118,11 @@ export const ImportDialog = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button data-testid="dialog-cancel-btn" onClick={handleClose}>
+        <Button data-sid="74494" data-testid="dialog-cancel-btn" onClick={handleClose}>
           Cancel
         </Button>
         <Button
+          data-sid="41226"
           data-testid="dialog-import-btn"
           onClick={handleImport}
           variant="contained"

@@ -2,8 +2,8 @@ import { Button, CardActions, Divider, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
-import TxCard from '../../common/TxCard'
 import type { RecoveryFlowProps } from '.'
+import TxCard from '../../common/TxCard'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -42,7 +42,7 @@ export function RemoveRecoveryFlowOverview({
       <Divider className={commonCss.nestedDivider} />
 
       <CardActions sx={{ mt: '0 !important' }}>
-        <Button variant="contained" onClick={onSubmit}>
+        <Button data-sid="69260" variant="contained" onClick={onSubmit}>
           Next
         </Button>
       </CardActions>

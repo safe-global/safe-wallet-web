@@ -1,21 +1,21 @@
-import { Button, Grid, SvgIcon, Card, CardHeader, CardContent, Tooltip } from '@mui/material'
-import { useState } from 'react'
+import { Button, Card, CardContent, CardHeader, Grid, SvgIcon, Tooltip } from '@mui/material'
 import type { ReactElement } from 'react'
+import { useState } from 'react'
 
+import Track from '@/components/common/Track'
+import { exportAppData } from '@/components/settings/DataManagement'
+import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
+import ExportIcon from '@/public/images/common/export.svg'
+import ImportIcon from '@/public/images/common/import.svg'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
-import ExportIcon from '@/public/images/common/export.svg'
-import ImportIcon from '@/public/images/common/import.svg'
-import { exportAppData } from '@/components/settings/DataManagement'
-import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
-import Track from '@/components/common/Track'
-import InfoIcon from '@/public/images/notifications/info.svg'
 
-import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
+import css from './styles.module.css'
 
 export const DataWidget = (): ReactElement => {
   const [importModalOpen, setImportModalOpen] = useState(false)
@@ -61,6 +61,7 @@ export const DataWidget = (): ReactElement => {
             <Grid item xs={6}>
               <Track {...OVERVIEW_EVENTS.EXPORT_DATA} label={trackingLabel}>
                 <Button
+                  data-sid="54328"
                   variant="outlined"
                   size="small"
                   onClick={exportAppData}
@@ -75,6 +76,7 @@ export const DataWidget = (): ReactElement => {
           <Grid item xs={6}>
             <Track {...OVERVIEW_EVENTS.IMPORT_DATA} label={trackingLabel}>
               <Button
+                data-sid="69449"
                 data-testid="import-btn"
                 variant="outlined"
                 size="small"

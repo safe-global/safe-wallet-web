@@ -1,8 +1,8 @@
+import { AppRoutes } from '@/config/routes'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 import { Button } from '@mui/material'
 import Link from 'next/link'
-import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 
 const buttonSx = { width: ['100%', 'auto'] }
 
@@ -17,6 +17,7 @@ const CreateButton = () => {
   return (
     <Link href={AppRoutes.newSafe.create} passHref legacyBehavior>
       <Button
+        data-sid="46607"
         data-testid="create-safe-btn"
         disableElevation
         size="small"

@@ -1,9 +1,9 @@
-import { type ReactElement } from 'react'
-import { Badge, ButtonBase, SvgIcon } from '@mui/material'
-import WalletConnectIcon from '@/public/images/common/walletconnect.svg'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import Track from '@/components/common/Track'
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
+import WalletConnectIcon from '@/public/images/common/walletconnect.svg'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
+import { Badge, ButtonBase, SvgIcon } from '@mui/material'
+import { type ReactElement } from 'react'
 
 type WcIconProps = {
   onClick: () => void
@@ -17,7 +17,7 @@ const WcIcon = ({ sessionCount, sessionIcon, isError, onClick }: WcIconProps): R
 
   return (
     <Track {...WALLETCONNECT_EVENTS.POPUP_OPENED}>
-      <ButtonBase onClick={onClick} title="WalletConnect" sx={{ p: 2 }}>
+      <ButtonBase data-sid="70304" onClick={onClick} title="WalletConnect" sx={{ p: 2 }}>
         <Badge
           variant={isError ? 'dot' : 'standard'}
           badgeContent={

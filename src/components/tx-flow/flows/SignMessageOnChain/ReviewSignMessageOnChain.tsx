@@ -1,34 +1,33 @@
-import type { ReactElement } from 'react'
-import { useContext, useEffect, useState } from 'react'
-import { useMemo } from 'react'
-import { hashMessage, TypedDataEncoder } from 'ethers'
-import { Box } from '@mui/system'
-import { Typography, SvgIcon } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
-import { type EIP712TypedData, Methods, type RequestId } from '@safe-global/safe-apps-sdk'
+import { SvgIcon, Typography } from '@mui/material'
+import { Box } from '@mui/system'
+import { Methods, type EIP712TypedData, type RequestId } from '@safe-global/safe-apps-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
+import { TypedDataEncoder, hashMessage } from 'ethers'
+import type { ReactElement } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 
-import SendFromBlock from '@/components/tx/SendFromBlock'
-import { InfoDetails } from '@/components/transactions/InfoDetails'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
-import useChainId from '@/hooks/useChainId'
-import { getReadOnlySignMessageLibContract } from '@/services/contracts/safeContracts'
-import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
-import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
-import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
+import { InfoDetails } from '@/components/transactions/InfoDetails'
+import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { asError } from '@/services/exceptions/utils'
-import { isEIP712TypedData } from '@/utils/safe-messages'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
-import { ErrorBoundary } from '@sentry/react'
+import SendFromBlock from '@/components/tx/SendFromBlock'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAsync from '@/hooks/useAsync'
+import useChainId from '@/hooks/useChainId'
+import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { getReadOnlySignMessageLibContract } from '@/services/contracts/safeContracts'
+import { asError } from '@/services/exceptions/utils'
+import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
+import { isEIP712TypedData } from '@/utils/safe-messages'
+import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import { ErrorBoundary } from '@sentry/react'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -132,7 +131,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       )}
 
       {safeTx && (
-        <Box pb={1}>
+        <Box data-sid="17127" pb={1}>
           <Typography mt={2} color="primary.light">
             Data (hex encoded)
           </Typography>
@@ -149,7 +148,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
       </Typography>
       <DecodedMsg message={decodedMessage} isInModal />
 
-      <Box display="flex" alignItems="center" my={2}>
+      <Box data-sid="76158" display="flex" alignItems="center" my={2}>
         <SvgIcon component={WarningIcon} inheritViewBox color="warning" />
         <Typography ml={1}>
           Signing a message with your Safe Account requires a transaction on the blockchain

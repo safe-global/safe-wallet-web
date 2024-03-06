@@ -1,12 +1,11 @@
-import React from 'react'
 import { Box, Button, Grid, Typography } from '@mui/material'
-import css from './styles.module.css'
 import Link from 'next/link'
+import css from './styles.module.css'
 
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import WelcomeLogin from './WelcomeLogin'
 import GnosisChainLogo from '@/public/images/common/gnosis-chain-logo.png'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import Image from 'next/image'
+import WelcomeLogin from './WelcomeLogin'
 
 const BulletListItem = ({ text }: { text: string }) => (
   <li>
@@ -34,8 +33,8 @@ const NewSafeSocial = () => {
           <WelcomeLogin />
         </Grid>
         <Grid item xs={12} lg={6} flex={1}>
-          <div className={css.content}>
-            <Box pt={5} alignSelf="center" margin="auto">
+          <div data-sid="69011" className={css.content}>
+            <Box data-sid="28560" pt={5} alignSelf="center" margin="auto">
               <Typography
                 variant="h1"
                 fontSize={[44, null, 52]}
@@ -53,13 +52,13 @@ const NewSafeSocial = () => {
               </ul>
 
               <Link href="https://safe.global/campaigns/social-login-gnosis" passHref>
-                <Button startIcon={<ChevronLeftIcon />} className={css.button}>
+                <Button data-sid="37528" startIcon={<ChevronLeftIcon />} className={css.button}>
                   Back to landing page
                 </Button>
               </Link>
             </Box>
 
-            <div className={css.marquee}>
+            <div data-sid="21032" className={css.marquee}>
               <ul className={css.marqueeContent}>
                 <MarqueeItem />
                 <MarqueeItem />

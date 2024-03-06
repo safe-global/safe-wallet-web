@@ -1,18 +1,18 @@
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
-import type { Dispatch, SetStateAction, ReactElement, ChangeEvent } from 'react'
+import type { ChangeEvent, Dispatch, ReactElement, SetStateAction } from 'react'
 
-import useWallet from '@/hooks/wallets/useWallet'
 import WalletIcon from '@/components/common/WalletIcon'
-import SponsoredBy from '../SponsoredBy'
-import RemainingRelays from '../RemainingRelays'
+import useWallet from '@/hooks/wallets/useWallet'
 import type { RelayResponse } from '@/services/tx/relaying'
+import RemainingRelays from '../RemainingRelays'
+import SponsoredBy from '../SponsoredBy'
 
-import css from './styles.module.css'
 import BalanceInfo from '@/components/tx/BalanceInfo'
-import madProps from '@/utils/mad-props'
 import { useCurrentChain } from '@/hooks/useChains'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import madProps from '@/utils/mad-props'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import css from './styles.module.css'
 
 export const enum ExecutionMethod {
   RELAY = 'RELAY',
@@ -43,8 +43,8 @@ const _ExecutionMethodSelector = ({
   }
 
   return (
-    <Box className={css.container} sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
-      <div className={css.method}>
+    <Box data-sid="50254" className={css.container} sx={{ borderRadius: ({ shape }) => `${shape.borderRadius}px` }}>
+      <div data-sid="43638" className={css.method}>
         <FormControl sx={{ display: 'flex' }}>
           {!noLabel ? (
             <Typography variant="body2" className={css.label}>

@@ -4,25 +4,25 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent } from '@/services/analytics'
 import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
 import { useAppSelector } from '@/store'
-import type { PredictedSafeProps } from '@safe-global/protocol-kit'
-import React, { type ElementType, type MouseEvent } from 'react'
 import { Alert, Box, Button, Dialog, DialogContent, Grid, Link, SvgIcon, Typography } from '@mui/material'
+import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 import { useRouter } from 'next/router'
+import React, { type ElementType, type MouseEvent } from 'react'
 
-import HomeIcon from '@/public/images/sidebar/home.svg'
-import TransactionIcon from '@/public/images/sidebar/transactions.svg'
-import AppsIcon from '@/public/images/sidebar/apps.svg'
-import SettingsIcon from '@/public/images/sidebar/settings.svg'
-import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
-import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
+import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { useCurrentChain } from '@/hooks/useChains'
-import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
+import AppsIcon from '@/public/images/sidebar/apps.svg'
+import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
+import HomeIcon from '@/public/images/sidebar/home.svg'
+import SettingsIcon from '@/public/images/sidebar/settings.svg'
+import TransactionIcon from '@/public/images/sidebar/transactions.svg'
+import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
 
 const HintItem = ({ Icon, title, description }: { Icon: ElementType; title: string; description: string }) => {
   return (
     <Grid item md={6}>
-      <Box display="flex" alignItems="center" gap={1} mb={1}>
+      <Box data-sid="30290" display="flex" alignItems="center" gap={1} mb={1}>
         <SvgIcon component={Icon} inheritViewBox fontSize="small" />
         <Typography variant="subtitle2" fontWeight="700">
           {title}
@@ -118,8 +118,14 @@ const CreationDialog = () => {
           </Alert>
         )}
 
-        <Box display="flex" justifyContent="center">
-          <Button data-testid="dialog-confirm-btn" onClick={onClose} variant="contained" size="stretched">
+        <Box data-sid="94790" display="flex" justifyContent="center">
+          <Button
+            data-sid="87508"
+            data-testid="dialog-confirm-btn"
+            onClick={onClose}
+            variant="contained"
+            size="stretched"
+          >
             Got it
           </Button>
         </Box>

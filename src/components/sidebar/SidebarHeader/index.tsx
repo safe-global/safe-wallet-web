@@ -1,36 +1,36 @@
 import TokenAmount from '@/components/common/TokenAmount'
 import CounterfactualStatusButton from '@/features/counterfactual/CounterfactualStatusButton'
-import { type ReactElement, useMemo } from 'react'
-import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
+import { useMemo, type ReactElement } from 'react'
 
-import { formatCurrency } from '@/utils/formatNumber'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import SafeIcon from '@/components/common/SafeIcon'
 import NewTxButton from '@/components/sidebar/NewTxButton'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
+import { formatCurrency } from '@/utils/formatNumber'
 
-import css from './styles.module.css'
-import QrIconBold from '@/public/images/sidebar/qr-bold.svg'
 import CopyIconBold from '@/public/images/sidebar/copy-bold.svg'
 import LinkIconBold from '@/public/images/sidebar/link-bold.svg'
+import QrIconBold from '@/public/images/sidebar/qr-bold.svg'
+import css from './styles.module.css'
 
-import { selectSettings } from '@/store/settingsSlice'
-import { useCurrentChain } from '@/hooks/useChains'
-import { getBlockExplorerLink } from '@/utils/chains'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import QrCodeButton from '../QrCodeButton'
-import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
-import { SvgIcon } from '@mui/material'
-import { useVisibleBalances } from '@/hooks/useVisibleBalances'
-import EnvHintButton from '@/components/settings/EnvironmentVariables/EnvHintButton'
-import useSafeAddress from '@/hooks/useSafeAddress'
-import ExplorerButton from '@/components/common/ExplorerButton'
 import CopyTooltip from '@/components/common/CopyTooltip'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import ExplorerButton from '@/components/common/ExplorerButton'
+import Track from '@/components/common/Track'
+import EnvHintButton from '@/components/settings/EnvironmentVariables/EnvHintButton'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { useVisibleBalances } from '@/hooks/useVisibleBalances'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import { selectSettings } from '@/store/settingsSlice'
+import { getBlockExplorerLink } from '@/utils/chains'
+import { SvgIcon } from '@mui/material'
+import QrCodeButton from '../QrCodeButton'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
@@ -51,10 +51,10 @@ const SafeHeader = (): ReactElement => {
   const blockExplorerLink = chain ? getBlockExplorerLink(chain, safeAddress) : undefined
 
   return (
-    <div className={css.container}>
-      <div className={css.info}>
-        <div data-testid="safe-header-info" className={css.safe}>
-          <div data-testid="safe-icon">
+    <div data-sid="86445" className={css.container}>
+      <div data-sid="53604" className={css.info}>
+        <div data-sid="93459" data-testid="safe-header-info" className={css.safe}>
+          <div data-sid="17607" data-testid="safe-icon">
             {safeAddress ? (
               <SafeIcon address={safeAddress} threshold={threshold} owners={owners?.length} />
             ) : (
@@ -62,7 +62,7 @@ const SafeHeader = (): ReactElement => {
             )}
           </div>
 
-          <div className={css.address}>
+          <div data-sid="50285" className={css.address}>
             {safeAddress ? (
               <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
             ) : (
@@ -86,7 +86,7 @@ const SafeHeader = (): ReactElement => {
           </div>
         </div>
 
-        <div className={css.iconButtons}>
+        <div data-sid="54371" className={css.iconButtons}>
           <Track {...OVERVIEW_EVENTS.SHOW_QR} label="sidebar">
             <QrCodeButton>
               <Tooltip title="Open QR code" placement="top">

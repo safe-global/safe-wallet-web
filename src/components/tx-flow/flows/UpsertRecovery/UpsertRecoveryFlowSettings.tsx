@@ -1,40 +1,40 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import {
-  Divider,
-  CardActions,
-  Button,
-  Typography,
-  SvgIcon,
-  MenuItem,
-  TextField,
-  Collapse,
-  Checkbox,
-  FormControlLabel,
-  Tooltip,
-  Alert,
-} from '@mui/material'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { useForm, FormProvider, Controller } from 'react-hook-form'
-import { useState } from 'react'
 import type { TextFieldProps } from '@mui/material'
+import {
+  Alert,
+  Button,
+  CardActions,
+  Checkbox,
+  Collapse,
+  Divider,
+  FormControlLabel,
+  MenuItem,
+  SvgIcon,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import type { ReactElement } from 'react'
+import { useState } from 'react'
+import { Controller, FormProvider, useForm } from 'react-hook-form'
 
-import TxCard from '../../common/TxCard'
-import { UpsertRecoveryFlowFields } from '.'
-import { useRecoveryPeriods } from './useRecoveryPeriods'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import { sameAddress } from '@/utils/addresses'
+import ExternalLink from '@/components/common/ExternalLink'
+import Track from '@/components/common/Track'
+import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import type { RecoveryStateItem } from '@/features/recovery/services/recovery-state'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import { RecovererWarning } from './RecovererSmartContractWarning'
-import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
-import { TOOLTIP_TITLES } from '../../common/constants'
-import Track from '@/components/common/Track'
+import { sameAddress } from '@/utils/addresses'
 import type { UpsertRecoveryFlowProps } from '.'
-import type { RecoveryStateItem } from '@/features/recovery/services/recovery-state'
+import { UpsertRecoveryFlowFields } from '.'
+import TxCard from '../../common/TxCard'
+import { TOOLTIP_TITLES } from '../../common/constants'
+import { RecovererWarning } from './RecovererSmartContractWarning'
+import { useRecoveryPeriods } from './useRecoveryPeriods'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
@@ -208,7 +208,7 @@ export function UpsertRecoveryFlowSettings({
             <Divider className={commonCss.nestedDivider} />
 
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit" disabled={isDisabled}>
+              <Button data-sid="77396" variant="contained" type="submit" disabled={isDisabled}>
                 Next
               </Button>
             </CardActions>

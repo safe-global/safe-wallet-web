@@ -1,13 +1,13 @@
-import type { ReactElement } from 'react'
-import { useContext } from 'react'
+import ExternalLink from '@/components/common/ExternalLink'
+import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
+import { HelpCenterArticle } from '@/config/constants'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { Box, Paper, Typography } from '@mui/material'
 import type { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
-import css from './styles.module.css'
+import type { ReactElement } from 'react'
+import { useContext } from 'react'
 import { ReplaceTxHoverContext, ReplaceTxHoverProvider } from './ReplaceTxHoverProvider'
-import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle } from '@/config/constants'
+import css from './styles.module.css'
 
 const Disclaimer = () => (
   <Typography>
@@ -33,13 +33,13 @@ const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): Rea
     <Paper className={css.container}>
       <Typography gridArea="nonce">{nonce}</Typography>
 
-      <Box gridArea="warning" className={css.disclaimerContainer}>
+      <Box data-sid="12824" gridArea="warning" className={css.disclaimerContainer}>
         <Disclaimer />
       </Box>
 
-      <Box gridArea="line" className={css.line} />
+      <Box data-sid="59917" gridArea="line" className={css.line} />
 
-      <Box gridArea="items" className={css.txItems}>
+      <Box data-sid="78300" gridArea="items" className={css.txItems}>
         {groupedListItems.map((tx) => (
           <div
             key={tx.transaction.id}

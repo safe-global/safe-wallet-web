@@ -1,19 +1,19 @@
+import ChainIndicator from '@/components/common/ChainIndicator'
+import { ProgressBar } from '@/components/common/ProgressBar'
+import { TxInfoProvider } from '@/components/tx-flow/TxInfoProvider'
+import SecurityWarnings from '@/components/tx/security/SecurityWarnings'
+import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { type ComponentType, type ReactElement, type ReactNode, useContext, useEffect, useState } from 'react'
-import { Box, Container, Grid, Typography, Button, Paper, SvgIcon, IconButton, useMediaQuery } from '@mui/material'
+import SafeLogo from '@/public/images/logo-no-text.svg'
+import { Box, Button, Container, Grid, IconButton, Paper, SvgIcon, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
-import { ProgressBar } from '@/components/common/ProgressBar'
+import { useContext, useEffect, useState, type ComponentType, type ReactElement, type ReactNode } from 'react'
 import SafeTxProvider, { SafeTxContext } from '../../SafeTxProvider'
-import { TxInfoProvider } from '@/components/tx-flow/TxInfoProvider'
 import TxNonce from '../TxNonce'
 import TxStatusWidget from '../TxStatusWidget'
 import css from './styles.module.css'
-import SafeLogo from '@/public/images/logo-no-text.svg'
-import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
-import ChainIndicator from '@/components/common/ChainIndicator'
-import SecurityWarnings from '@/components/tx/security/SecurityWarnings'
 
 const TxLayoutHeader = ({
   hideNonce,
@@ -30,10 +30,10 @@ const TxLayoutHeader = ({
   if (hideNonce && !icon && !subtitle) return null
 
   return (
-    <Box className={css.headerInner}>
-      <Box display="flex" alignItems="center">
+    <Box data-sid="28491" className={css.headerInner}>
+      <Box data-sid="30529" display="flex" alignItems="center">
         {icon && (
-          <div className={css.icon}>
+          <div data-sid="49428" className={css.icon}>
             <SvgIcon component={icon} inheritViewBox />
           </div>
         )}
@@ -113,7 +113,7 @@ const TxLayout = ({
               <Grid container gap={3} justifyContent="center">
                 {/* Main content */}
                 <Grid item xs={12} md={7}>
-                  <div className={css.titleWrapper}>
+                  <div data-sid="36618" className={css.titleWrapper}>
                     <Typography
                       data-testid="modal-title"
                       variant="h3"
@@ -129,7 +129,7 @@ const TxLayout = ({
 
                   <Paper data-testid="modal-header" className={css.header}>
                     {!hideProgress && (
-                      <Box className={css.progressBar}>
+                      <Box data-sid="22602" className={css.progressBar}>
                         <ProgressBar value={progress} />
                       </Box>
                     )}
@@ -137,11 +137,12 @@ const TxLayout = ({
                     <TxLayoutHeader subtitle={subtitle} icon={icon} hideNonce={hideNonce} />
                   </Paper>
 
-                  <div className={css.step}>
+                  <div data-sid="25464" className={css.step}>
                     {steps[step]}
 
                     {onBack && step > 0 && (
                       <Button
+                        data-sid="13724"
                         data-testid="modal-back-btn"
                         variant="contained"
                         onClick={onBack}
@@ -166,7 +167,7 @@ const TxLayout = ({
                     />
                   )}
 
-                  <Box className={css.sticky}>
+                  <Box data-sid="20816" className={css.sticky}>
                     <SecurityWarnings />
                   </Box>
                 </Grid>

@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { Box } from '@mui/system'
 import lightPalette from '@/components/theme/lightPalette'
+import { Avatar, Card, CardContent, CardHeader, LinearProgress, Typography } from '@mui/material'
+import { Box } from '@mui/system'
+import { useState } from 'react'
 import css from './styles.module.css'
-import { Card, LinearProgress, CardHeader, Avatar, Typography, CardContent } from '@mui/material'
 import type { TxStepperProps } from './useCardStepper'
 import { useCardStepper } from './useCardStepper'
 
@@ -15,7 +15,7 @@ export function CardStepper<StepperData>(props: TxStepperProps<StepperData>) {
 
   return (
     <Card className={css.card}>
-      <Box className={css.progress} color={progressColor}>
+      <Box data-sid="63731" className={css.progress} color={progressColor}>
         <LinearProgress color="inherit" variant="determinate" value={Math.min(progress, 100)} />
       </Box>
       {currentStep.title && (

@@ -1,24 +1,25 @@
+import ChainSwitcher from '@/components/common/ChainSwitcher'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 import WalletBalance from '@/components/common/WalletBalance'
 import { WalletIdenticon } from '@/components/common/WalletOverview'
-import { Box, Button, Typography } from '@mui/material'
-import css from './styles.module.css'
-import SocialLoginInfo from '@/components/common/SocialLoginInfo'
-import Link from 'next/link'
-import { AppRoutes } from '@/config/routes'
-import LockIcon from '@/public/images/common/lock-small.svg'
-import EthHashInfo from '@/components/common/EthHashInfo'
-import ChainSwitcher from '@/components/common/ChainSwitcher'
 import { IS_PRODUCTION } from '@/config/constants'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import useOnboard, { type ConnectedWallet, switchWallet } from '@/hooks/wallets/useOnboard'
-import { useRouter } from 'next/router'
+import { AppRoutes } from '@/config/routes'
 import useAddressBook from '@/hooks/useAddressBook'
+import useChainId from '@/hooks/useChainId'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import useOnboard, { switchWallet, type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import LockIcon from '@/public/images/common/lock-small.svg'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import madProps from '@/utils/mad-props'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
-import useChainId from '@/hooks/useChainId'
+import { Box, Button, Typography } from '@mui/material'
+import { useParticleConnect } from '@particle-network/connectkit'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import css from './styles.module.css'
 
 type WalletInfoProps = {
   wallet: ConnectedWallet
@@ -44,6 +45,8 @@ export const WalletInfo = ({
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const prefix = chainInfo?.shortName
 
+  const { disconnect: evmDisconnect } = useParticleConnect()
+
   const handleSwitchWallet = () => {
     if (onboard) {
       handleClose()
@@ -54,10 +57,13 @@ export const WalletInfo = ({
   const resetAccount = () => socialWalletService?.__deleteAccount()
 
   const handleDisconnect = () => {
-    onboard?.disconnectWallet({
-      label: wallet.label,
-    })
-
+    evmDisconnect()
+      .then(() => {
+        location.replace('/')
+      })
+      .catch((e) => {
+        console.error('Failed to disconnect wallet', e)
+      })
     handleClose()
   }
 
@@ -65,7 +71,7 @@ export const WalletInfo = ({
 
   return (
     <>
-      <Box display="flex" gap="12px">
+      <Box data-sid="81448" display="flex" gap="12px">
         {isSocialLogin ? (
           <Box>
             <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} size={36} />
@@ -73,6 +79,7 @@ export const WalletInfo = ({
             {socialWalletService && !socialWalletService.isMFAEnabled() && (
               <Link href={{ pathname: AppRoutes.settings.securityLogin, query: router.query }} passHref>
                 <Button
+                  data-sid="47897"
                   fullWidth
                   variant="contained"
                   color="warning"
@@ -105,20 +112,20 @@ export const WalletInfo = ({
         )}
       </Box>
 
-      <Box className={css.rowContainer}>
-        <Box className={css.row}>
+      <Box data-sid="79935" className={css.rowContainer}>
+        <Box data-sid="76014" className={css.row}>
           <Typography variant="body2" color="primary.light">
             Wallet
           </Typography>
           <Typography variant="body2">{wallet.label}</Typography>
         </Box>
 
-        <Box className={css.row}>
+        <Box data-sid="15629" className={css.row}>
           <Typography variant="body2" color="primary.light">
             Balance
           </Typography>
           <Typography variant="body2" textAlign="right">
-            <WalletBalance balance={balance} />
+            {!!chainInfo?.chainName && <WalletBalance balance={balance} />}
 
             {currentChainId !== chainInfo?.chainId && (
               <>
@@ -131,14 +138,15 @@ export const WalletInfo = ({
         </Box>
       </Box>
 
-      <Box display="flex" flexDirection="column" gap={2} width={1}>
+      <Box data-sid="77746" display="flex" flexDirection="column" gap={2} width={1}>
         <ChainSwitcher fullWidth />
 
-        <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
-          Switch wallet
-        </Button>
+        {/* <Button data-sid="15983"    variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+          Switch wallet ！！！！
+        </Button> */}
 
         <Button
+          data-sid="40680"
           onClick={handleDisconnect}
           variant="danger"
           size="small"
@@ -150,7 +158,7 @@ export const WalletInfo = ({
         </Button>
 
         {!IS_PRODUCTION && isSocialLogin && (
-          <Button onClick={resetAccount} variant="danger" size="small" fullWidth disableElevation>
+          <Button data-sid="62748" onClick={resetAccount} variant="danger" size="small" fullWidth disableElevation>
             Delete account
           </Button>
         )}

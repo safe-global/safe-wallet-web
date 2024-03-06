@@ -1,7 +1,7 @@
-import { type ReactElement } from 'react'
-import { IconButton, Dialog, DialogTitle, type DialogProps } from '@mui/material'
-import classnames from 'classnames'
 import CloseIcon from '@mui/icons-material/Close'
+import { Dialog, DialogTitle, IconButton, type DialogProps } from '@mui/material'
+import classnames from 'classnames'
+import { type ReactElement } from 'react'
 import css from './styles.module.css'
 
 interface ModalDialogProps extends DialogProps {
@@ -31,7 +31,7 @@ const TxModalDialog = ({
       }}
     >
       <DialogTitle className={css.title}>
-        <div className={css.buttons}>
+        <div data-sid="37371" className={css.buttons}>
           <IconButton
             className={css.close}
             aria-label="close"

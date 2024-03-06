@@ -1,13 +1,13 @@
-import { Box, CircularProgress, type Palette, Typography } from '@mui/material'
-import type { ReactElement } from 'react'
-import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { Box, CircularProgress, Typography, type Palette } from '@mui/material'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ReactElement } from 'react'
 
 import DateTime from '@/components/common/DateTime'
 import MsgType from '@/components/safe-messages/MsgType'
 import SignMsgButton from '@/components/safe-messages/SignMsgButton'
-import useSafeMessageStatus from '@/hooks/messages/useSafeMessageStatus'
 import TxConfirmations from '@/components/transactions/TxConfirmations'
+import useSafeMessageStatus from '@/hooks/messages/useSafeMessageStatus'
 
 import css from '@/components/transactions/TxSummary/styles.module.css'
 import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
@@ -30,18 +30,20 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const isPending = useIsSafeMessagePending(msg.messageHash)
 
   return (
-    <Box className={css.gridContainer}>
-      <Box gridArea="type">
+    <Box data-sid="61027" className={css.gridContainer}>
+      <Box data-sid="58983" gridArea="type">
         <MsgType msg={msg} />
       </Box>
 
-      <Box gridArea="info">Off-chain signature</Box>
+      <Box data-sid="91185" gridArea="info">
+        Off-chain signature
+      </Box>
 
-      <Box gridArea="date" className={css.date}>
+      <Box data-sid="47907" gridArea="date" className={css.date}>
         <DateTime value={msg.modifiedTimestamp} />
       </Box>
 
-      <Box gridArea="confirmations">
+      <Box data-sid="63069" gridArea="confirmations">
         {confirmationsRequired > 0 && (
           <TxConfirmations
             submittedConfirmations={confirmationsSubmitted}
@@ -50,7 +52,7 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
         )}
       </Box>
 
-      <Box gridArea="status">
+      <Box data-sid="18676" gridArea="status">
         {isConfirmed || isPending ? (
           <Typography
             variant="caption"

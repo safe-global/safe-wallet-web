@@ -1,12 +1,12 @@
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import type { OnboardAPI } from '@web3-onboard/core'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'
 import { generateSafeMessageHash, isEIP712TypedData, tryOffChainMsgSigning } from '@/utils/safe-messages'
 import { normalizeTypedData } from '@/utils/web3'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 import { asError } from '../exceptions/utils'
+import type { TempAPI } from '@/components/safe-apps/types'
 
 export const dispatchSafeMsgProposal = async ({
   onboard,
@@ -14,7 +14,7 @@ export const dispatchSafeMsgProposal = async ({
   message,
   safeAppId,
 }: {
-  onboard: OnboardAPI
+  onboard: TempAPI
   safe: SafeInfo
   message: SafeMessage['message']
   safeAppId?: number
@@ -54,7 +54,7 @@ export const dispatchSafeMsgConfirmation = async ({
   safe,
   message,
 }: {
-  onboard: OnboardAPI
+  onboard: TempAPI
   safe: SafeInfo
   message: SafeMessage['message']
 }): Promise<void> => {

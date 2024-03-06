@@ -1,10 +1,8 @@
 import Track from '@/components/common/Track'
-import { RECOVERY_FEEDBACK_FORM, HelpCenterArticle } from '@/config/constants'
+import { HelpCenterArticle, RECOVERY_FEEDBACK_FORM } from '@/config/constants'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { type ChangeEvent, type ReactElement, useContext } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import Link from 'next/link'
+import CloseIcon from '@mui/icons-material/Close'
 import {
   Box,
   Button,
@@ -20,16 +18,18 @@ import {
   RadioGroup,
   Typography,
 } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
+import Link from 'next/link'
+import { useContext, type ChangeEvent, type ReactElement } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 
-import { UpsertRecoveryFlow } from '@/components/tx-flow/flows'
 import ExternalLink from '@/components/common/ExternalLink'
+import { TxModalContext } from '@/components/tx-flow'
+import { UpsertRecoveryFlow } from '@/components/tx-flow/flows'
+import CheckIcon from '@/public/images/common/check.svg'
+import RecoveryCoincoverIcon from '@/public/images/common/recovery_coincover.svg'
 import RecoveryCustomIcon from '@/public/images/common/recovery_custom.svg'
 import RecoverySygnumIcon from '@/public/images/common/recovery_sygnum.svg'
-import RecoveryCoincoverIcon from '@/public/images/common/recovery_coincover.svg'
-import { TxModalContext } from '@/components/tx-flow'
 import css from './styles.module.css'
-import CheckIcon from '@/public/images/common/check.svg'
 
 const SYGNUM_WAITLIST_LINK = 'https://wn2n6ocviur.typeform.com/to/cJbJW0KR'
 const COINCOVER_WAITLIST_LINK = 'https://wn2n6ocviur.typeform.com/to/ijqSzOkr'
@@ -98,7 +98,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   value={RecoveryMethod.SelfCustody}
                   control={<Radio />}
                   label={
-                    <div className={css.method}>
+                    <div data-sid="63590" className={css.method}>
                       <RecoveryCustomIcon style={{ display: 'block' }} />
                       <Typography fontWeight="bold" mb={1} mt={2}>
                         Self Custodial Recovery
@@ -125,7 +125,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   value={RecoveryMethod.Sygnum}
                   control={<Radio />}
                   label={
-                    <div className={css.method}>
+                    <div data-sid="30455" className={css.method}>
                       <RecoverySygnumIcon style={{ display: 'block' }} />
                       <Typography fontWeight="bold" mb={1} mt={2}>
                         Sygnum
@@ -152,7 +152,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   value={RecoveryMethod.Coincover}
                   control={<Radio />}
                   label={
-                    <div className={css.method}>
+                    <div data-sid="18657" className={css.method}>
                       <RecoveryCoincoverIcon style={{ display: 'block' }} />
                       <Typography fontWeight="bold" mb={1} mt={2}>
                         Coincover
@@ -184,10 +184,11 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
             <ExternalLink href={RECOVERY_FEEDBACK_FORM}>Give us feedback</ExternalLink>
           </Track>
         </Typography>
-        <Box display="flex" justifyContent="center" mt={3}>
+        <Box data-sid="21020" display="flex" justifyContent="center" mt={3}>
           {currentType === RecoveryMethod.SelfCustody ? (
             <Track {...RECOVERY_EVENTS.CONTINUE_WITH_RECOVERY} label={currentType}>
               <Button
+                data-sid="95540"
                 variant="contained"
                 onClick={() => {
                   setTxFlow(<UpsertRecoveryFlow />)
@@ -204,7 +205,9 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                 target="_blank"
                 passHref
               >
-                <Button variant="contained">Join waitlist</Button>
+                <Button data-sid="31565" variant="contained">
+                  Join waitlist
+                </Button>
               </Link>
             </Track>
           )}

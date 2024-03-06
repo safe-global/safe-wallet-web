@@ -1,15 +1,15 @@
+import { POLLING_INTERVAL } from '@/config/constants'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { getUndeployedSafeInfo } from '@/features/counterfactual/utils'
+import { Errors, logError } from '@/services/exceptions'
 import { useAppSelector } from '@/store'
-import { useEffect } from 'react'
 import { getSafeInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useEffect } from 'react'
 import useAsync, { type AsyncResult } from '../useAsync'
-import useSafeAddress from '../useSafeAddress'
 import { useChainId } from '../useChainId'
 import useIntervalCounter from '../useIntervalCounter'
+import useSafeAddress from '../useSafeAddress'
 import useSafeInfo from '../useSafeInfo'
-import { Errors, logError } from '@/services/exceptions'
-import { POLLING_INTERVAL } from '@/config/constants'
 
 export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   const address = useSafeAddress()
@@ -19,6 +19,9 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   const isStoredSafeValid = safe.chainId === chainId && safe.address.value === address
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
 
+  /**
+   * Load the SafeInfo from the gateway
+   */
   const [data, error, loading] = useAsync<SafeInfo | undefined>(async () => {
     if (!chainId || !address) return
 

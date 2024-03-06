@@ -1,11 +1,11 @@
-import { Box, Grid, Paper, Typography } from '@mui/material'
-import SocialSignerMFA from './SocialSignerMFA'
-import SocialSignerExport from './SocialSignerExport'
+import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import SpendingLimits from '../SpendingLimits'
+import { Box, Grid, Paper, Typography } from '@mui/material'
 import dynamic from 'next/dynamic'
-import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+import SpendingLimits from '../SpendingLimits'
+import SocialSignerExport from './SocialSignerExport'
+import SocialSignerMFA from './SocialSignerMFA'
 
 const RecoverySettings = dynamic(() => import('@/features/recovery/components/RecoverySettings'))
 
@@ -15,7 +15,7 @@ const SecurityLogin = () => {
   const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Box data-sid="38537" display="flex" flexDirection="column" gap={2}>
       {isRecoverySupported && <RecoverySettings />}
 
       {isSocialLogin && (

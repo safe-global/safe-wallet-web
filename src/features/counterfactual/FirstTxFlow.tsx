@@ -1,23 +1,23 @@
-import { AppRoutes } from '@/config/routes'
-import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
-import useRecovery from '@/features/recovery/hooks/useRecovery'
-import dynamic from 'next/dynamic'
-import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { useRouter } from 'next/router'
-import { type ElementType, useContext } from 'react'
-import { Box, ButtonBase, Grid, SvgIcon, Typography } from '@mui/material'
 import ModalDialog from '@/components/common/ModalDialog'
 import { TxModalContext } from '@/components/tx-flow'
 import { AddOwnerFlow, TokenTransferFlow, UpsertRecoveryFlow } from '@/components/tx-flow/flows'
-const ActivateAccountFlow = dynamic(() => import('./ActivateAccountFlow'))
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded'
+import { AppRoutes } from '@/config/routes'
+import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
-import AssetsIcon from '@/public/images/sidebar/assets.svg'
-import SaveAddressIcon from '@/public/images/common/save-address.svg'
 import RecoveryPlus from '@/public/images/common/recovery-plus.svg'
+import SaveAddressIcon from '@/public/images/common/save-address.svg'
 import SwapIcon from '@/public/images/common/swap.svg'
 import SafeLogo from '@/public/images/logo-no-text.svg'
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded'
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined'
+import { Box, ButtonBase, Grid, SvgIcon, Typography } from '@mui/material'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import { useContext, type ElementType } from 'react'
+const ActivateAccountFlow = dynamic(() => import('./ActivateAccountFlow'))
 
 import css from './styles.module.css'
 
@@ -33,8 +33,8 @@ const TxButton = ({
   onClick: () => void
 }) => {
   return (
-    <ButtonBase className={css.newTxButton} onClick={onClick}>
-      <div className={css.iconBg}>
+    <ButtonBase data-sid="54243" className={css.newTxButton} onClick={onClick}>
+      <div data-sid="53404" className={css.iconBg}>
         <SvgIcon component={icon} fontSize="small" inheritViewBox />
       </div>
       <Box>

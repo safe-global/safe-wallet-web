@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import Card from '@mui/material/Card'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import { useState } from 'react'
 
-import AddCustomAppIcon from '@/public/images/apps/add-custom-app.svg'
 import { AddCustomAppModal } from '@/components/safe-apps/AddCustomAppModal'
+import AddCustomAppIcon from '@/public/images/apps/add-custom-app.svg'
 
 type Props = { onSave: (data: SafeAppData) => void; safeAppList: SafeAppData[] }
 
@@ -15,12 +15,13 @@ const AddCustomSafeAppCard = ({ onSave, safeAppList }: Props) => {
   return (
     <>
       <Card>
-        <Box padding="48px 12px" display="flex" flexDirection="column" alignItems="center">
+        <Box data-sid="75718" padding="48px 12px" display="flex" flexDirection="column" alignItems="center">
           {/* Add Custom Safe App Icon */}
           <AddCustomAppIcon alt="Add Custom Safe App card" />
 
           {/*  Add Custom Safe App Button */}
           <Button
+            data-sid="75872"
             variant="contained"
             size="small"
             onClick={() => setAddCustomAppModalOpen(true)}

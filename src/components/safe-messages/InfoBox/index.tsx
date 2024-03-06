@@ -1,7 +1,7 @@
-import { type ReactElement, type ReactNode } from 'react'
-import { Typography, SvgIcon, Divider } from '@mui/material'
-import classNames from 'classnames'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import { Divider, SvgIcon, Typography } from '@mui/material'
+import classNames from 'classnames'
+import { type ReactElement, type ReactNode } from 'react'
 import css from './styles.module.css'
 
 const InfoBox = ({
@@ -16,8 +16,8 @@ const InfoBox = ({
   className?: string
 }): ReactElement => {
   return (
-    <div className={classNames(css.container, className)}>
-      <div className={css.message}>
+    <div data-sid="49050" className={classNames(css.container, className)}>
+      <div data-sid="84499" className={css.message}>
         <SvgIcon component={InfoIcon} color="info" inheritViewBox fontSize="medium" />
         <div>
           <Typography variant="subtitle1" fontWeight="bold">

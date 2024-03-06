@@ -1,8 +1,8 @@
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import useWallet from '@/hooks/wallets/useWallet'
+import { estimateSafeCreationGas, type SafeCreationProps } from '@/components/new-safe/create/logic'
 import useAsync from '@/hooks/useAsync'
 import { useCurrentChain } from '@/hooks/useChains'
-import { estimateSafeCreationGas, type SafeCreationProps } from '@/components/new-safe/create/logic'
+import useWallet from '@/hooks/wallets/useWallet'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 export const useEstimateSafeCreationGas = (
   safeParams: SafeCreationProps,

@@ -1,10 +1,10 @@
-import { type ReactNode } from 'react'
-import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
 import TokenIcon from '@/components/common/TokenIcon'
-import { formatAmountPrecise } from '@/utils/formatNumber'
 import { PSEUDO_APPROVAL_VALUES } from '@/components/tx/ApprovalEditor/utils/approvals'
 import FieldsGrid from '@/components/tx/FieldsGrid'
+import { formatAmountPrecise } from '@/utils/formatNumber'
+import { Box, Typography } from '@mui/material'
+import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ReactNode } from 'react'
 
 const SendAmountBlock = ({
   amount,
@@ -19,7 +19,7 @@ const SendAmountBlock = ({
 }) => {
   return (
     <FieldsGrid title={title}>
-      <Box display="flex" alignItems="center" gap={1}>
+      <Box data-sid="22269" display="flex" alignItems="center" gap={1}>
         <TokenIcon logoUri={tokenInfo.logoUri} tokenSymbol={tokenInfo.symbol} />
 
         <Typography fontWeight="bold">{tokenInfo.symbol}</Typography>

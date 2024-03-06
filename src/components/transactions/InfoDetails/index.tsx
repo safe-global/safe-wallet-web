@@ -9,7 +9,7 @@ type InfoDetailsProps = {
 }
 
 export const InfoDetails = ({ datatestid, children, title }: InfoDetailsProps): ReactElement => (
-  <div data-testid={datatestid} className={css.container}>
+  <div data-sid="50423" data-testid={datatestid} className={css.container}>
     <Typography>
       <b>{title}</b>
     </Typography>

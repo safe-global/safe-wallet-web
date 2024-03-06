@@ -2,16 +2,16 @@ import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import useSafeTokenAllocation, { useSafeVotingPower, type Vesting } from '@/hooks/useSafeTokenAllocation'
+import SafeTokenIcon from '@/public/images/common/safe-token.svg'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Button, ButtonBase, Skeleton, Tooltip, Typography } from '@mui/material'
+import classnames from 'classnames'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import Track from '../Track'
-import SafeTokenIcon from '@/public/images/common/safe-token.svg'
-import css from './styles.module.css'
 import UnreadBadge from '../UnreadBadge'
-import classnames from 'classnames'
+import css from './styles.module.css'
 
 const TOKEN_DECIMALS = 18
 
@@ -57,12 +57,13 @@ const SafeTokenWidget = () => {
   const flooredSafeBalance = formatVisualAmount(allocation || BigInt(0), TOKEN_DECIMALS, 2)
 
   return (
-    <Box className={css.container}>
+    <Box data-sid="77855" className={css.container}>
       <Tooltip title="Go to Safe{DAO} Governance">
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
             <Link href={url} passHref legacyBehavior>
               <ButtonBase
+                data-sid="99461"
                 aria-describedby="safe-token-widget"
                 className={classnames(css.tokenButton, { [css.sep5]: canRedeemSep5 })}
                 disabled={url === undefined}
@@ -91,7 +92,7 @@ const SafeTokenWidget = () => {
                 </Typography>
                 {canRedeemSep5 && (
                   <Track {...OVERVIEW_EVENTS.SEP5_ALLOCATION_BUTTON}>
-                    <Button variant="contained" className={css.redeemButton}>
+                    <Button data-sid="72290" variant="contained" className={css.redeemButton}>
                       New allocation
                     </Button>
                   </Track>

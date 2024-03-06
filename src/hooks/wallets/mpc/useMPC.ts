@@ -1,18 +1,19 @@
 import { IS_PRODUCTION } from '@/config/constants'
-import { connectWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { connectWallet, getConnectedWallet, getOnboardStore } from '@/hooks/wallets/useOnboard'
 import ExternalStore from '@/services/ExternalStore'
 import { SOCIAL_WALLET_OPTIONS } from '@/services/mpc/config'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { type OnboardAPI } from '@web3-onboard/core'
+
 import { CHAIN_NAMESPACES } from '@web3auth/base'
 import type { Web3AuthMPCCoreKit } from '@web3auth/mpc-core-kit'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { getRpcServiceUrl } from '../web3'
+import type { TempAPI } from '@/components/safe-apps/types'
 
 const { getStore, setStore, useStore } = new ExternalStore<Web3AuthMPCCoreKit>()
 
-export const initMPC = async (chain: ChainInfo, onboard: OnboardAPI) => {
+export const initMPC = async (chain: ChainInfo, onboard: TempAPI) => {
   const chainConfig = {
     chainId: `0x${Number(chain.chainId).toString(16)}`,
     chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -55,7 +56,7 @@ export const initMPC = async (chain: ChainInfo, onboard: OnboardAPI) => {
         return web3AuthCoreKit
       }
 
-      const connectedWallet = getConnectedWallet(onboard.state.get().wallets)
+      const connectedWallet = getConnectedWallet(getOnboardStore?.()?.state.get().wallets)
       if (!connectedWallet) {
         connectWallet(onboard, {
           autoSelect: {

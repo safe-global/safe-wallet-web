@@ -4,13 +4,13 @@ import { Button, Card, Divider, Grid, Typography } from '@mui/material'
 import { useRouter } from 'next/dist/client/router'
 import type { ReactElement } from 'react'
 
-import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
 import { Countdown } from '@/components/common/Countdown'
-import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 import ExternalLink from '@/components/common/ExternalLink'
-import { AppRoutes } from '@/config/routes'
 import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
+import { AppRoutes } from '@/config/routes'
+import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import RecoveryPending from '@/public/images/common/recovery-pending.svg'
 
 import css from './styles.module.css'
 
@@ -110,7 +110,7 @@ export function RecoveryInProgressCard({ orientation = 'vertical', onClose, reco
         <Divider flexItem sx={{ mx: -4 }} />
 
         <Track {...RECOVERY_EVENTS.CHECK_RECOVERY_PROPOSAL}>
-          <Button variant="contained" onClick={onClick} sx={{ alignSelf: 'flex-end' }}>
+          <Button data-sid="21805" variant="contained" onClick={onClick} sx={{ alignSelf: 'flex-end' }}>
             Go to queue
           </Button>
         </Track>

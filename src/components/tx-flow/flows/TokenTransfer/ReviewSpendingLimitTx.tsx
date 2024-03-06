@@ -1,31 +1,31 @@
-import type { ReactElement, SyntheticEvent } from 'react'
-import { useContext, useMemo, useState } from 'react'
-import { type BigNumberish, type BytesLike, parseUnits } from 'ethers'
-import { Button, CardActions, Typography } from '@mui/material'
-import SendToBlock from '@/components/tx/SendToBlock'
-import { type TokenTransferParams } from '@/components/tx-flow/flows/TokenTransfer/index'
+import { TxModalContext } from '@/components/tx-flow'
+import TxCard from '@/components/tx-flow/common/TxCard'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
+import { type TokenTransferParams } from '@/components/tx-flow/flows/TokenTransfer/index'
+import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import SendToBlock from '@/components/tx/SendToBlock'
+import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useBalances from '@/hooks/useBalances'
+import { useCurrentChain } from '@/hooks/useChains'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import useSpendingLimitGas from '@/hooks/useSpendingLimitGas'
-import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import useSafeInfo from '@/hooks/useSafeInfo'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { Errors, logError } from '@/services/exceptions'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
-import { useCurrentChain } from '@/hooks/useChains'
+import { asError } from '@/services/exceptions/utils'
 import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
-import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
-import { asError } from '@/services/exceptions/utils'
-import TxCard from '@/components/tx-flow/common/TxCard'
-import { TxModalContext } from '@/components/tx-flow'
-import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
-import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
+import { Button, CardActions, Typography } from '@mui/material'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { parseUnits, type BigNumberish, type BytesLike } from 'ethers'
+import type { ReactElement, SyntheticEvent } from 'react'
+import { useContext, useMemo, useState } from 'react'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -142,7 +142,7 @@ const ReviewSpendingLimitTx = ({
         </Typography>
 
         <CardActions>
-          <Button variant="contained" type="submit" disabled={submitDisabled}>
+          <Button data-sid="64834" variant="contained" type="submit" disabled={submitDisabled}>
             Submit
           </Button>
         </CardActions>

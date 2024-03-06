@@ -1,21 +1,21 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button } from '@mui/material'
+import type { ReactElement, SyntheticEvent } from 'react'
 import { useContext } from 'react'
-import type { SyntheticEvent, ReactElement } from 'react'
 
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import { CancelRecoveryFlow } from '@/components/tx-flow/flows'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
 import { dispatchRecoverySkipExpired } from '@/features/recovery/services/recovery-sender'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { trackError, Errors } from '@/services/exceptions'
+import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
-import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
-import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 export function CancelRecoveryButton({
   recovery,
@@ -61,7 +61,13 @@ export function CancelRecoveryButton({
         const isDisabled = isPending || (isOwner ? !isOk : !isOk || !isExpired)
 
         return (
-          <Button onClick={onClick} variant="danger" disabled={isDisabled} size={compact ? 'small' : 'stretched'}>
+          <Button
+            data-sid="39354"
+            onClick={onClick}
+            variant="danger"
+            disabled={isDisabled}
+            size={compact ? 'small' : 'stretched'}
+          >
             Cancel
           </Button>
         )

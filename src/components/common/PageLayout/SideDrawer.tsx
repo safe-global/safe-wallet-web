@@ -1,14 +1,14 @@
-import { useEffect, type ReactElement } from 'react'
-import { IconButton, Drawer, useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-import DoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded'
 import DoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded'
+import DoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRightRounded'
+import { Drawer, IconButton, useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { useEffect, type ReactElement } from 'react'
 
-import classnames from 'classnames'
 import Sidebar from '@/components/sidebar/Sidebar'
-import css from './styles.module.css'
 import useDebounce from '@/hooks/useDebounce'
 import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
+import classnames from 'classnames'
+import css from './styles.module.css'
 
 type SideDrawerProps = {
   isOpen: boolean
@@ -44,8 +44,8 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
       </Drawer>
 
       {showSidebarToggle && (
-        <div className={classnames(css.sidebarTogglePosition, isOpen && css.sidebarOpen)}>
-          <div className={css.sidebarToggle} role="button" onClick={() => onToggle(!isOpen)}>
+        <div data-sid="18708" className={classnames(css.sidebarTogglePosition, isOpen && css.sidebarOpen)}>
+          <div data-sid="37103" className={css.sidebarToggle} role="button" onClick={() => onToggle(!isOpen)}>
             <IconButton aria-label="collapse sidebar" size="small" disableRipple>
               {isOpen ? <DoubleArrowLeftIcon fontSize="inherit" /> : <DoubleArrowRightIcon fontSize="inherit" />}
             </IconButton>

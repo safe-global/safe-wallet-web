@@ -1,22 +1,22 @@
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
+import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
 import { Box, Button, LinearProgress, SvgIcon, Typography } from '@mui/material'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { useState } from 'react'
-import GoogleLogo from '@/public/images/welcome/logo-google.svg'
 
-import css from './styles.module.css'
-import useWallet from '@/hooks/wallets/useWallet'
 import Track from '@/components/common/Track'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import { CGW_NAMES } from '@/hooks/wallets/consts'
+import useWallet from '@/hooks/wallets/useWallet'
 import { CREATE_SAFE_EVENTS } from '@/services/analytics'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import { CGW_NAMES } from '@/hooks/wallets/consts'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
-import ErrorMessage from '@/components/tx/ErrorMessage'
 import { open } from '@/services/mpc/PasswordRecoveryModal'
+import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
+import madProps from '@/utils/mad-props'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import css from './styles.module.css'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -69,10 +69,11 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
 
   return (
     <>
-      <Box display="flex" flexDirection="column" gap={2} sx={{ width: '100%' }}>
+      <Box data-sid="73474" display="flex" flexDirection="column" gap={2} sx={{ width: '100%' }}>
         {isSocialLogin && userInfo ? (
           <Track {...CREATE_SAFE_EVENTS.CONTINUE_TO_CREATION}>
             <Button
+              data-sid="16498"
               data-testid="signed-in-account-btn"
               variant="outlined"
               sx={{ px: 2, py: 1, borderWidth: '1px !important' }}
@@ -88,14 +89,14 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
                   opacity: loginPending ? 1 : 0,
                 }}
               />
-              <Box width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
+              <Box data-sid="47773" width="100%" display="flex" flexDirection="row" alignItems="center" gap={1}>
                 <img
                   src={userInfo.profileImage}
                   className={css.profileImg}
                   alt="Profile Image"
                   referrerPolicy="no-referrer"
                 />
-                <div className={css.profileData}>
+                <div data-sid="55373" className={css.profileData}>
                   <Typography variant="subtitle2" fontWeight={700}>
                     Continue as {userInfo.name}
                   </Typography>
@@ -108,6 +109,7 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
         ) : (
           <Track {...MPC_WALLET_EVENTS.CONNECT_GOOGLE} label={isWelcomePage ? 'welcomePage' : 'navBar'}>
             <Button
+              data-sid="76956"
               data-testid="google-connect-btn"
               variant="outlined"
               onClick={login}
@@ -123,7 +125,7 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
                   opacity: loginPending ? 1 : 0,
                 }}
               />
-              <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+              <Box data-sid="74730" display="flex" flexDirection="row" alignItems="center" gap={1}>
                 <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Continue with Google
               </Box>
             </Button>

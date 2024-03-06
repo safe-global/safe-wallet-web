@@ -1,14 +1,14 @@
 import { Button, CardActions, Divider, Grid, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
 
-import TxCard from '../../common/TxCard'
 import RecoveryRecoverers from '@/public/images/settings/spending-limit/beneficiary.svg'
-import RecoveryRecoverer from '@/public/images/transactions/recovery-recoverer.svg'
 import RecoveryDelay from '@/public/images/settings/spending-limit/time.svg'
 import RecoveryExecution from '@/public/images/transactions/recovery-execution.svg'
+import RecoveryRecoverer from '@/public/images/transactions/recovery-recoverer.svg'
+import TxCard from '../../common/TxCard'
 
-import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import css from './styles.module.css'
 
 const RecoverySteps = [
   {
@@ -59,7 +59,7 @@ export function UpsertRecoveryFlowIntro({ onSubmit }: { onSubmit: () => void }):
       <Divider className={commonCss.nestedDivider} />
 
       <CardActions sx={{ mt: 'var(--space-1) !important' }}>
-        <Button variant="contained" onClick={onSubmit}>
+        <Button data-sid="88326" variant="contained" onClick={onSubmit}>
           Next
         </Button>
       </CardActions>

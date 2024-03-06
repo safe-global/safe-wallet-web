@@ -1,12 +1,12 @@
-import { useParams } from 'next/navigation'
-import { parse, type ParsedUrlQuery } from 'querystring'
-import { IS_PRODUCTION } from '@/config/constants'
 import chains from '@/config/chains'
+import { IS_PRODUCTION } from '@/config/constants'
 import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
 import { parsePrefixedAddress } from '@/utils/addresses'
-import useWallet from './wallets/useWallet'
+import { useParams } from 'next/navigation'
+import { parse, type ParsedUrlQuery } from 'querystring'
 import useChains from './useChains'
+import useWallet from './wallets/useWallet'
 
 const defaultChainId = IS_PRODUCTION ? chains.eth : chains.sep
 

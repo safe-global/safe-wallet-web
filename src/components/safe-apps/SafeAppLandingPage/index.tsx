@@ -1,18 +1,18 @@
-import { useEffect } from 'react'
-import { Box, CircularProgress, Paper } from '@mui/material'
-import Grid from '@mui/material/Unstable_Grid2'
-import { OVERVIEW_EVENTS, SAFE_APPS_EVENTS, trackEvent, trackSafeAppEvent } from '@/services/analytics'
-import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
-import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
+import { AppActions } from '@/components/safe-apps/SafeAppLandingPage/AppActions'
 import { SafeAppDetails } from '@/components/safe-apps/SafeAppLandingPage/SafeAppDetails'
 import { TryDemo } from '@/components/safe-apps/SafeAppLandingPage/TryDemo'
-import { AppActions } from '@/components/safe-apps/SafeAppLandingPage/AppActions'
-import useWallet from '@/hooks/wallets/useWallet'
-import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
+import { AppRoutes } from '@/config/routes'
+import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
+import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
 import useOnboard from '@/hooks/wallets/useOnboard'
+import useWallet from '@/hooks/wallets/useWallet'
+import { OVERVIEW_EVENTS, SAFE_APPS_EVENTS, trackEvent, trackSafeAppEvent } from '@/services/analytics'
 import { Errors, logError } from '@/services/exceptions'
+import { Box, CircularProgress, Paper } from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useEffect } from 'react'
 
 type Props = {
   appUrl: string
@@ -51,7 +51,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
 
   if (isLoading || backendAppLoading) {
     return (
-      <Box py={4} textAlign="center">
+      <Box data-sid="80480" py={4} textAlign="center">
         <CircularProgress size={40} />
       </Box>
     )

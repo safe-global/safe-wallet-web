@@ -1,19 +1,26 @@
-import useAsync, { type AsyncResult } from '../useAsync'
+import { useParticleProvider } from '@particle-network/connectkit'
+import type { AsyncResult } from '../useAsync'
+import useAsync from '../useAsync'
 import useWallet from './useWallet'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 
 const useWalletBalance = (): AsyncResult<bigint | undefined> => {
-  const web3ReadOnly = useWeb3ReadOnly()
   const wallet = useWallet()
 
+  const provider = useParticleProvider() as any
+
   return useAsync<bigint | undefined>(async () => {
-    if (!wallet || !web3ReadOnly) {
+    if (!wallet || !provider) {
       return undefined
     }
+    let balance = await provider.request({
+      method: 'eth_getBalance',
+      params: [wallet.address, 'latest'],
+      chainId: wallet.chainId,
+    })
+    balance = BigInt(balance)
 
-    const balance = await web3ReadOnly.getBalance(wallet.address, 'latest')
     return balance
-  }, [wallet, web3ReadOnly])
+  }, [wallet, provider])
 }
 
 export default useWalletBalance

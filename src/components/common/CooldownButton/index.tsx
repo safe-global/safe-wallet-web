@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import { useState, useCallback, useEffect, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 
 // TODO: Extract into a hook so it can be reused for links and not just buttons
 const CooldownButton = ({
@@ -36,7 +36,7 @@ const CooldownButton = ({
   const isDisabled = remainingSeconds > 0
 
   return (
-    <Button onClick={handleClick} variant="contained" size="small" disabled={isDisabled}>
+    <Button data-sid="25762" onClick={handleClick} variant="contained" size="small" disabled={isDisabled}>
       <span>
         {children}
         {remainingSeconds > 0 && ` in ${Math.floor(remainingSeconds)}s`}

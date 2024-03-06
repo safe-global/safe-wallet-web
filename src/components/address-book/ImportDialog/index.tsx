@@ -1,23 +1,23 @@
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 import Typography from '@mui/material/Typography'
-import { useCSVReader, formatFileSize } from 'react-papaparse'
 import type { ParseResult } from 'papaparse'
-import { type ReactElement, useState, type MouseEvent, useMemo } from 'react'
+import { useMemo, useState, type MouseEvent, type ReactElement } from 'react'
+import { formatFileSize, useCSVReader } from 'react-papaparse'
 
 import ModalDialog from '@/components/common/ModalDialog'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 
-import css from './styles.module.css'
-import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
-import { abCsvReaderValidator, abOnUploadValidator } from './validation'
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import { Errors, logError } from '@/services/exceptions'
-import FileUpload, { FileTypes, type FileInfo } from '@/components/common/FileUpload'
 import ExternalLink from '@/components/common/ExternalLink'
+import FileUpload, { FileTypes, type FileInfo } from '@/components/common/FileUpload'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 import { HelpCenterArticle } from '@/config/constants'
+import { ADDRESS_BOOK_EVENTS, trackEvent } from '@/services/analytics'
+import { Errors, logError } from '@/services/exceptions'
+import css from './styles.module.css'
+import { abCsvReaderValidator, abOnUploadValidator } from './validation'
 
 type AddressBookCSVRow = ['address', 'name', 'chainId']
 
@@ -147,7 +147,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
           }}
         </CSVReader>
 
-        <div className={css.horizontalDivider} />
+        <div data-sid="12773" className={css.horizontalDivider} />
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
@@ -163,10 +163,11 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button data-testid="cancel-btn" onClick={handleClose}>
+        <Button data-sid="43917" data-testid="cancel-btn" onClick={handleClose}>
           Cancel
         </Button>
         <Button
+          data-sid="96876"
           data-testid="import-btn"
           onClick={handleImport}
           variant="contained"

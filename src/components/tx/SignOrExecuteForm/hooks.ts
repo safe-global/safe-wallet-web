@@ -1,11 +1,9 @@
-import { assertTx, assertWallet, assertOnboard } from '@/utils/helpers'
-import { useMemo } from 'react'
-import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
+import useAsync from '@/hooks/useAsync'
+import { useUpdateBatch } from '@/hooks/useDraftBatch'
+import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { isSmartContractWallet } from '@/utils/wallets'
+import useWallet from '@/hooks/wallets/useWallet'
 import {
   dispatchOnChainSigning,
   dispatchTxExecution,
@@ -13,11 +11,13 @@ import {
   dispatchTxRelay,
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
-import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonce'
-import useAsync from '@/hooks/useAsync'
-import { useUpdateBatch } from '@/hooks/useDraftBatch'
+import { getNonces, getSafeTxGas } from '@/services/tx/tx-sender/recommendedNonce'
+import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
+import { isSmartContractWallet } from '@/utils/wallets'
+import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
+import { type SafeTransaction, type TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { useMemo } from 'react'
 
 type TxActions = {
   addToBatch: (safeTx?: SafeTransaction, origin?: string) => Promise<string>

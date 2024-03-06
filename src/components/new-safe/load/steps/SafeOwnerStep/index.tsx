@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react'
-import { getSafeInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { Box, Button, Divider } from '@mui/material'
+import { getSafeInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useEffect } from 'react'
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
+import layoutCss from '@/components/new-safe/create/styles.module.css'
+import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { LoadSafeFormData } from '@/components/new-safe/load'
+import { OwnerRow } from '@/components/new-safe/OwnerRow'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
-import type { NamedAddress } from '@/components/new-safe/create/types'
-import layoutCss from '@/components/new-safe/create/styles.module.css'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { OwnerRow } from '@/components/new-safe/OwnerRow'
 
 enum Field {
   owners = 'owners',
@@ -67,18 +67,24 @@ const SafeOwnerStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box className={layoutCss.row}>
+        <Box data-sid="24945" className={layoutCss.row}>
           {fields.map((field, index) => (
             <OwnerRow key={field.id} index={index} groupName="owners" readOnly />
           ))}
         </Box>
         <Divider />
-        <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-            <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
+        <Box data-sid="16643" className={layoutCss.row}>
+          <Box data-sid="10207" display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+            <Button
+              data-sid="18537"
+              variant="outlined"
+              size="small"
+              onClick={handleBack}
+              startIcon={<ArrowBackIcon fontSize="small" />}
+            >
               Back
             </Button>
-            <Button type="submit" variant="contained" size="stretched" disabled={!isValid}>
+            <Button data-sid="60273" type="submit" variant="contained" size="stretched" disabled={!isValid}>
               Next
             </Button>
           </Box>

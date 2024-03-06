@@ -2,14 +2,14 @@ import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWallet
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import madProps from '@/utils/mad-props'
-import { Popover, ButtonBase, Typography, Paper, Box } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Box, ButtonBase, Paper, Popover, Typography } from '@mui/material'
 import classnames from 'classnames'
 import { useState, type MouseEvent, type ReactElement } from 'react'
 
-import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 import WalletDetails from '@/components/common/ConnectWallet/WalletDetails'
+import KeyholeIcon from '@/components/common/icons/KeyholeIcon'
 
 import css from '@/components/common/ConnectWallet/styles.module.css'
 
@@ -29,7 +29,7 @@ export const ConnectionCenter = ({ isSocialLoginEnabled }: { isSocialLoginEnable
 
   if (!isSocialLoginEnabled) {
     return (
-      <Box className={css.buttonContainer}>
+      <Box data-sid="79363" className={css.buttonContainer}>
         <ConnectWalletButton small={true} />
       </Box>
     )
@@ -37,7 +37,7 @@ export const ConnectionCenter = ({ isSocialLoginEnabled }: { isSocialLoginEnable
 
   return (
     <>
-      <ButtonBase disableRipple onClick={handleClick} className={css.buttonContainer}>
+      <ButtonBase data-sid="66275" disableRipple onClick={handleClick} className={css.buttonContainer}>
         <KeyholeIcon />
 
         <Typography variant="caption" className={css.notConnected}>

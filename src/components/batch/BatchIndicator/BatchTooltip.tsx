@@ -1,9 +1,9 @@
-import { type ReactElement, useEffect, useState } from 'react'
 import { Box, SvgIcon } from '@mui/material'
+import { useEffect, useState, type ReactElement } from 'react'
 
+import { CustomTooltip } from '@/components/common/CustomTooltip'
 import SuccessIcon from '@/public/images/common/success.svg'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
-import { CustomTooltip } from '@/components/common/CustomTooltip'
 
 const BatchTooltip = ({ children }: { children: ReactElement }) => {
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
@@ -25,8 +25,8 @@ const BatchTooltip = ({ children }: { children: ReactElement }) => {
       open={showTooltip}
       onClose={() => setShowTooltip(false)}
       title={
-        <Box display="flex" flexDirection="column" alignItems="center" p={2} gap={2}>
-          <Box fontSize="53px">
+        <Box data-sid="13038" display="flex" flexDirection="column" alignItems="center" p={2} gap={2}>
+          <Box data-sid="92994" fontSize="53px">
             <SvgIcon component={SuccessIcon} inheritViewBox fontSize="inherit" />
           </Box>
           Transaction is added to batch

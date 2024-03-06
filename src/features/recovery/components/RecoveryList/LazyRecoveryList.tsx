@@ -1,14 +1,14 @@
-import { useMemo } from 'react'
 import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 
 import { TxListGrid } from '@/components/transactions/TxList'
 import { RecoveryListItem } from '@/features/recovery/components/RecoveryListItem'
 import { useRecoveryQueue } from '@/features/recovery/hooks/useRecoveryQueue'
-import { groupRecoveryTransactions } from '@/utils/tx-list'
-import useTxQueue from '@/hooks/useTxQueue'
-import { GroupedRecoveryListItems } from '../GroupedRecoveryListItems'
-import { isRecoveryQueueItem } from '@/utils/transaction-guards'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import useTxQueue from '@/hooks/useTxQueue'
+import { isRecoveryQueueItem } from '@/utils/transaction-guards'
+import { groupRecoveryTransactions } from '@/utils/tx-list'
+import { GroupedRecoveryListItems } from '../GroupedRecoveryListItems'
 
 import labelCss from '@/components/transactions/GroupLabel/styles.module.css'
 
@@ -50,7 +50,9 @@ function LazyRecoveryList(): ReactElement | null {
 
   return (
     <>
-      <div className={labelCss.container}>Pending recovery</div>
+      <div data-sid="74192" className={labelCss.container}>
+        Pending recovery
+      </div>
 
       <TxListGrid>
         <_RecoveryList recoveryQueue={recoveryQueue} />

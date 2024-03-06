@@ -1,11 +1,11 @@
-import { Box, FormControlLabel, Grid, Paper, Switch, Typography } from '@mui/material'
+import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import QRCode from '@/components/common/QRCode'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setQrShortName } from '@/store/settingsSlice'
-import BuyCryptoButton from '@/components/common/BuyCryptoButton'
+import { Box, FormControlLabel, Grid, Paper, Switch, Typography } from '@mui/material'
 
 const AddFundsCTA = () => {
   const safeAddress = useSafeAddress()
@@ -20,7 +20,14 @@ const AddFundsCTA = () => {
       <Grid container gap={3} alignItems="center" justifyContent="center" p={4}>
         <Grid item>
           <div>
-            <Box p={2} border="1px solid" borderColor="border.light" borderRadius={1} display="inline-block">
+            <Box
+              data-sid="19626"
+              p={2}
+              border="1px solid"
+              borderColor="border.light"
+              borderRadius={1}
+              display="inline-block"
+            >
               <QRCode value={qrCode} size={195} />
             </Box>
           </div>
@@ -42,11 +49,18 @@ const AddFundsCTA = () => {
             Add funds directly from your bank account or copy your address to send tokens from a different account.
           </Typography>
 
-          <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" fontSize="14px">
+          <Box
+            data-sid="25848"
+            bgcolor="background.main"
+            p={2}
+            borderRadius="6px"
+            alignSelf="flex-start"
+            fontSize="14px"
+          >
             <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton hasExplorer avatarSize={24} />
           </Box>
 
-          <Box alignSelf="flex-start">
+          <Box data-sid="33053" alignSelf="flex-start">
             <BuyCryptoButton />
           </Box>
         </Grid>

@@ -1,13 +1,14 @@
 import { getChainLogo } from '@/config/chains'
-import type { ReactElement } from 'react'
-import { useMemo } from 'react'
-import classnames from 'classnames'
+import useChainId from '@/hooks/useChainId'
 import { useAppSelector } from '@/store'
 import { selectChainById, selectChains } from '@/store/chainsSlice'
-import css from './styles.module.css'
-import useChainId from '@/hooks/useChainId'
 import { Skeleton } from '@mui/material'
+import { chains as particleChains } from '@particle-network/chains'
+import classnames from 'classnames'
 import isEmpty from 'lodash/isEmpty'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
+import css from './styles.module.css'
 
 type ChainIndicatorProps = {
   chainId?: string
@@ -67,7 +68,11 @@ const ChainIndicator = ({
     >
       {showLogo && (
         <img
-          src={getChainLogo(chainConfig.chainId)}
+          src={
+            getChainLogo(chainConfig.chainId) ||
+            particleChains.getEVMChainInfoById(Number(chainConfig.chainId || 1))?.icon ||
+            ''
+          }
           alt={`${chainConfig.chainName} Logo`}
           width={24}
           height={24}

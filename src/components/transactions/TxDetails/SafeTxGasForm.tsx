@@ -1,10 +1,10 @@
-import { useContext, useState } from 'react'
-import { Link, Box, Paper, Button } from '@mui/material'
-import { useForm } from 'react-hook-form'
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import NumberField from '@/components/common/NumberField'
-import useSafeInfo from '@/hooks/useSafeInfo'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { isLegacyVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { Box, Button, Link, Paper } from '@mui/material'
+import { useContext, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 type FormFields = {
   safeTxGas: string
@@ -46,7 +46,7 @@ const Form = ({ onSubmit }: { onSubmit: () => void }) => {
             onBlur,
           })}
         />
-        <Button type="submit" size="small" variant="contained" sx={{ ml: 1 }}>
+        <Button data-sid="73905" type="submit" size="small" variant="contained" sx={{ ml: 1 }}>
           Save
         </Button>
       </form>
@@ -62,7 +62,7 @@ const SafeTxGasForm = () => {
   const [editing, setEditing] = useState(false)
 
   return (
-    <Box display="flex" alignItems="center" gap={1} position="relative">
+    <Box data-sid="53531" display="flex" alignItems="center" gap={1} position="relative">
       {safeTxGas}
 
       {isEditable && (

@@ -1,13 +1,13 @@
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
-import type { TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
-import { useState, useEffect } from 'react'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
-import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
 import { Button, Divider, Stack } from '@mui/material'
-import css from './styles.module.css'
+import type { AccordionProps } from '@mui/material/Accordion/Accordion'
+import type { TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
+import type { Dispatch, ReactElement, SetStateAction } from 'react'
+import { useEffect, useState } from 'react'
+import css from './styles.module.css'
 
 type MultisendProps = {
   txData?: TransactionData
@@ -31,13 +31,17 @@ export const MultisendActionsHeader = ({
   }
 
   return (
-    <div data-testid="all-actions" className={classnames(css.actionsHeader, { [css.compactHeader]: compact })}>
+    <div
+      data-sid="68385"
+      data-testid="all-actions"
+      className={classnames(css.actionsHeader, { [css.compactHeader]: compact })}
+    >
       {title}
       <Stack direction="row" divider={<Divider className={css.divider} />}>
-        <Button data-testid="expande-all-btn" onClick={onClickAll(true)} variant="text">
+        <Button data-sid="85276" data-testid="expande-all-btn" onClick={onClickAll(true)} variant="text">
           Expand all
         </Button>
-        <Button data-testid="collapse-all-btn" onClick={onClickAll(false)} variant="text">
+        <Button data-sid="63540" data-testid="collapse-all-btn" onClick={onClickAll(false)} variant="text">
           Collapse all
         </Button>
       </Stack>
@@ -85,7 +89,7 @@ export const Multisend = ({
     <>
       <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} compact={compact} />
 
-      <div className={compact ? css.compact : ''}>
+      <div data-sid="75147" className={compact ? css.compact : ''}>
         {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
           const onChange: AccordionProps['onChange'] = (_, expanded) => {
             setOpenMap((prev) => ({

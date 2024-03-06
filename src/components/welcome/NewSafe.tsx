@@ -1,7 +1,6 @@
-import React from 'react'
+import CheckFilled from '@/public/images/common/check-filled.svg'
 import { Grid, SvgIcon, Typography } from '@mui/material'
 import css from './styles.module.css'
-import CheckFilled from '@/public/images/common/check-filled.svg'
 
 import WelcomeLogin from './WelcomeLogin'
 
@@ -22,7 +21,7 @@ const NewSafe = () => {
           <WelcomeLogin />
         </Grid>
         <Grid item xs={12} lg={6} flex={1}>
-          <div className={css.content}>
+          <div data-sid="19469" className={css.content}>
             <Typography variant="h1" fontSize={[44, null, 52]} lineHeight={1} letterSpacing={-1.5} color="static.main">
               Unlock a new way of ownership
             </Typography>

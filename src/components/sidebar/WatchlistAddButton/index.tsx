@@ -1,15 +1,15 @@
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
-import { useRouter } from 'next/router'
+import Track from '@/components/common/Track'
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import { Button } from '@mui/material'
-import SafeListRemoveDialog from '../SafeListRemoveDialog'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
-import { useState } from 'react'
 import { VisibilityOutlined } from '@mui/icons-material'
-import Track from '@/components/common/Track'
+import { Button } from '@mui/material'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import SafeListRemoveDialog from '../SafeListRemoveDialog'
 
 const WatchlistAddButton = () => {
   const [open, setOpen] = useState(false)
@@ -35,6 +35,7 @@ const WatchlistAddButton = () => {
       {isInWatchlist ? (
         <Track {...OVERVIEW_EVENTS.REMOVE_FROM_WATCHLIST} label={OVERVIEW_LABELS.quick_remove}>
           <Button
+            data-sid="28418"
             data-testid="remove-watchlist-btn"
             onClick={() => setOpen(true)}
             variant="outlined"
@@ -49,6 +50,7 @@ const WatchlistAddButton = () => {
       ) : (
         <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={OVERVIEW_LABELS.quick_add}>
           <Button
+            data-sid="52120"
             data-testid="add-watchlist-btn"
             onClick={onClick}
             variant="outlined"

@@ -1,9 +1,9 @@
+import ExternalLink from '@/components/common/ExternalLink'
+import { IS_OFFICIAL_HOST } from '@/config/constants'
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { IS_OFFICIAL_HOST } from '@/config/constants'
-import { Typography, Table, TableBody, TableRow, TableCell, TableHead, TableContainer, Box } from '@mui/material'
-import ExternalLink from '@/components/common/ExternalLink'
-import Paper from '@mui/material/Paper'
 
 const SafeLicenses = () => (
   <>
@@ -13,7 +13,7 @@ const SafeLicenses = () => (
     <Typography variant="h3" mb={2}>
       Libraries we use
     </Typography>
-    <Box mb={4}>
+    <Box data-sid="98637" mb={4}>
       <Typography mb={3}>
         This page contains a list of attribution notices for third party software that may be contained in portions of
         the {'Safe{Wallet}'}. We thank the open source community for all of their contributions.
@@ -215,7 +215,7 @@ const SafeLicenses = () => (
         </Table>
       </TableContainer>
     </Box>
-    <Box mb={4}>
+    <Box data-sid="48358" mb={4}>
       <Typography variant="h2" mb={2}>
         iOS
       </Typography>
@@ -492,14 +492,6 @@ const SafeLicenses = () => (
             </TableRow>
             <TableRow>
               <TableCell>@web3-onboard/coinbase</TableCell>
-              <TableCell>
-                <ExternalLink href="https://github.com/blocknative/web3-onboard/blob/main/LICENSE">
-                  https://github.com/blocknative/web3-onboard/blob/main/LICENSE
-                </ExternalLink>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>@web3-onboard/core</TableCell>
               <TableCell>
                 <ExternalLink href="https://github.com/blocknative/web3-onboard/blob/main/LICENSE">
                   https://github.com/blocknative/web3-onboard/blob/main/LICENSE

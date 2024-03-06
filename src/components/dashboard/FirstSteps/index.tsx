@@ -3,6 +3,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import ModalDialog from '@/components/common/ModalDialog'
 import QRCode from '@/components/common/QRCode'
 import Track from '@/components/common/Track'
+import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
 import FirstTxFlow from '@/features/counterfactual/FirstTxFlow'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -11,13 +12,12 @@ import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setQrShortName } from '@/store/settingsSlice'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
-import classnames from 'classnames'
-import { type ReactNode, useState } from 'react'
-import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
-import { Box, Button, CircularProgress, Divider, FormControlLabel, Grid, Switch, Typography } from '@mui/material'
-import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
+import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
+import { Box, Button, CircularProgress, Divider, FormControlLabel, Grid, Switch, Typography } from '@mui/material'
+import classnames from 'classnames'
+import { useState, type ReactNode } from 'react'
 import css from './styles.module.css'
 
 const calculateProgress = (items: boolean[]) => {
@@ -41,10 +41,10 @@ const StatusCard = ({
 }) => {
   return (
     <Card className={css.card}>
-      <div className={css.topBadge}>
+      <div data-sid="19050" className={css.topBadge}>
         <Typography variant="body2">{badge}</Typography>
       </div>
-      <div className={css.status}>
+      <div data-sid="50029" className={css.status}>
         {completed ? (
           <CheckCircleRoundedIcon color="success" fontSize="medium" />
         ) : (
@@ -80,9 +80,15 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
     <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
       {!completed && (
         <>
-          <Box mt={2}>
+          <Box data-sid="41093" mt={2}>
             <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
-              <Button onClick={toggleDialog} variant="contained" size="small" sx={{ minHeight: '40px' }}>
+              <Button
+                data-sid="20462"
+                onClick={toggleDialog}
+                variant="contained"
+                size="small"
+                sx={{ minHeight: '40px' }}
+              >
                 Add funds
               </Button>
             </Track>
@@ -93,10 +99,17 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
             dialogTitle="Add funds to your Safe Account"
             hideChainIndicator
           >
-            <Box px={4} pb={5} pt={4}>
+            <Box data-sid="78638" px={4} pb={5} pt={4}>
               <Grid container spacing={2} alignItems="center" justifyContent="center" mb={4}>
                 <Grid item textAlign="center">
-                  <Box p={1} border={1} borderRadius="6px" borderColor="border.light" display="inline-flex">
+                  <Box
+                    data-sid="61202"
+                    p={1}
+                    border={1}
+                    borderRadius="6px"
+                    borderColor="border.light"
+                    display="inline-flex"
+                  >
                     <QRCode value={qrCode} size={132} />
                   </Box>
                   <Box>
@@ -121,7 +134,14 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                     account.
                   </Typography>
 
-                  <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" fontSize="14px">
+                  <Box
+                    data-sid="36110"
+                    bgcolor="background.main"
+                    p={2}
+                    borderRadius="6px"
+                    alignSelf="flex-start"
+                    fontSize="14px"
+                  >
                     <EthHashInfo
                       address={safeAddress}
                       showName={false}
@@ -134,7 +154,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                 </Grid>
               </Grid>
 
-              <Box mb={4} position="relative" textAlign="center">
+              <Box data-sid="28763" mb={4} position="relative" textAlign="center">
                 <Typography className={css.orDivider}>or</Typography>
                 <Divider />
               </Box>
@@ -160,7 +180,13 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
       <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
         {!completed && (
           <Track {...OVERVIEW_EVENTS.NEW_TRANSACTION} label="onboarding">
-            <Button onClick={() => setOpen(true)} variant="outlined" size="small" sx={{ mt: 2, minHeight: '40px' }}>
+            <Button
+              data-sid="74285"
+              onClick={() => setOpen(true)}
+              variant="outlined"
+              size="small"
+              sx={{ mt: 2, minHeight: '40px' }}
+            >
               Create transaction
             </Button>
           </Track>
@@ -174,7 +200,7 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
 const AccountReadyWidget = () => {
   return (
     <Card className={classnames(css.card, css.accountReady)}>
-      <div className={classnames(css.checkIcon)}>
+      <div data-sid="95014" className={classnames(css.checkIcon)}>
         <CheckCircleOutlineRoundedIcon sx={{ width: '60px', height: '60px' }} />
       </div>
       <Typography variant="h4" fontWeight="bold" mb={2} mt={2}>

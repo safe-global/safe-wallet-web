@@ -1,8 +1,8 @@
-import { type ReactElement } from 'react'
-import { Typography, Button, SvgIcon } from '@mui/material'
+import Track from '@/components/common/Track'
 import GhostIcon from '@/public/images/transactions/ghost.svg'
 import { TX_LIST_EVENTS } from '@/services/analytics'
-import Track from '@/components/common/Track'
+import { Button, SvgIcon, Typography } from '@mui/material'
+import { type ReactElement } from 'react'
 
 const _TrustedToggleButton = ({
   onlyTrusted,
@@ -24,6 +24,7 @@ const _TrustedToggleButton = ({
   return (
     <Track {...TX_LIST_EVENTS.TOGGLE_UNTRUSTED} label={onlyTrusted ? 'show' : 'hide'}>
       <Button
+        data-sid="31947"
         sx={{
           gap: 1,
           height: '38px',

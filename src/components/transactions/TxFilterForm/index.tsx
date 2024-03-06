@@ -1,27 +1,27 @@
-import Paper from '@mui/material/Paper'
-import Grid from '@mui/material/Grid'
-import FormControl from '@mui/material/FormControl'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormLabel from '@mui/material/FormLabel'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Radio from '@mui/material/Radio'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import { isBefore, isAfter, startOfDay } from 'date-fns'
-import { Controller, FormProvider, useForm, useFormState, type DefaultValues } from 'react-hook-form'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormLabel from '@mui/material/FormLabel'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import { isAfter, isBefore, startOfDay } from 'date-fns'
 import { useMemo, type ReactElement } from 'react'
+import { Controller, FormProvider, useForm, useFormState, type DefaultValues } from 'react-hook-form'
 
 import AddressBookInput from '@/components/common/AddressBookInput'
 import DatePickerInput from '@/components/common/DatePickerInput'
-import { validateAmount } from '@/utils/validation'
+import NumberField from '@/components/common/NumberField'
+import { useCurrentChain } from '@/hooks/useChains'
 import { trackEvent } from '@/services/analytics'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
-import { txFilter, useTxFilter, TxFilterType, type TxFilter } from '@/utils/tx-history-filter'
-import { useCurrentChain } from '@/hooks/useChains'
-import NumberField from '@/components/common/NumberField'
+import { TxFilterType, txFilter, useTxFilter, type TxFilter } from '@/utils/tx-history-filter'
+import { validateAmount } from '@/utils/validation'
 
-import css from './styles.module.css'
 import inputCss from '@/styles/inputs.module.css'
+import css from './styles.module.css'
 
 enum TxFilterFormFieldNames {
   FILTER_TYPE = 'type',
@@ -260,10 +260,10 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
               </FormControl>
 
               <Grid item container md={6} sx={{ gap: 2, mt: 3 }}>
-                <Button variant="contained" onClick={clearFilter} disabled={!canClear}>
+                <Button data-sid="45821" variant="contained" onClick={clearFilter} disabled={!canClear}>
                   Clear
                 </Button>
-                <Button type="submit" variant="contained" color="primary" disabled={!isValid}>
+                <Button data-sid="77651" type="submit" variant="contained" color="primary" disabled={!isValid}>
                   Apply
                 </Button>
               </Grid>

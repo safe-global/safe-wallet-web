@@ -1,15 +1,15 @@
-import { useRouter } from 'next/router'
-import Typography from '@mui/material/Typography'
-import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import { useRouter } from 'next/router'
 
-import { WidgetContainer } from '../styled'
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
-import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
-import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer'
 import SafeAppCard, { SafeAppCardContainer } from '@/components/safe-apps/SafeAppCard'
+import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer'
 import { AppRoutes } from '@/config/routes'
+import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
+import { WidgetContainer } from '../styled'
 
 import css from './styles.module.css'
 
@@ -62,7 +62,7 @@ const ExploreSafeAppsCard = () => {
     <SafeAppCardContainer safeAppUrl={safeAppsLink} className={css.container}>
       <ExploreSafeAppsIcon alt="Explore Safe Apps icon" />
 
-      <Button data-testid="explore-apps-btn" variant="contained" size="small">
+      <Button data-sid="77003" data-testid="explore-apps-btn" variant="contained" size="small">
         Explore Safe Apps
       </Button>
     </SafeAppCardContainer>

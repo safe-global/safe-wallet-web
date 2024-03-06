@@ -20,24 +20,6 @@ const mockOnboardState = {
   accountCenter: {},
 }
 
-jest.mock('@web3-onboard/core', () => () => ({
-  connectWallet: jest.fn(),
-  disconnectWallet: jest.fn(),
-  setChain: jest.fn(),
-  state: {
-    select: (key) => ({
-      subscribe: (next) => {
-        next(mockOnboardState[key])
-
-        return {
-          unsubscribe: jest.fn(),
-        }
-      },
-    }),
-    get: () => mockOnboardState,
-  },
-}))
-
 // to avoid failing tests in some environments
 const NumberFormat = Intl.NumberFormat
 const englishTestLocale = 'en'

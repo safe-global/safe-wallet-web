@@ -1,15 +1,15 @@
-import { useForm, FormProvider } from 'react-hook-form'
-import { Paper, Grid, Typography, TextField, Button, Tooltip, IconButton, SvgIcon } from '@mui/material'
-import InputAdornment from '@mui/material/InputAdornment'
-import RotateLeftIcon from '@mui/icons-material/RotateLeft'
-import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, setRpc, setTenderly } from '@/store/settingsSlice'
+import ExternalLink from '@/components/common/ExternalLink'
 import { TENDERLY_SIMULATE_ENDPOINT_URL } from '@/config/constants'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
-import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import ExternalLink from '@/components/common/ExternalLink'
+import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { selectSettings, setRpc, setTenderly } from '@/store/settingsSlice'
+import RotateLeftIcon from '@mui/icons-material/RotateLeft'
+import { Button, Grid, IconButton, Paper, SvgIcon, TextField, Tooltip, Typography } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
+import { FormProvider, useForm } from 'react-hook-form'
 
 export enum EnvVariablesField {
   rpc = 'rpc',
@@ -209,7 +209,7 @@ const EnvironmentVariables = () => {
                 </Grid>
               </Grid>
 
-              <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+              <Button data-sid="74510" type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                 Save
               </Button>
             </form>

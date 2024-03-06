@@ -1,34 +1,33 @@
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { type BrowserProvider, type Provider } from 'ethers'
 
-import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { NewSafeFormData } from '@/components/new-safe/create'
+import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
+import type { PendingSafeTx } from '@/components/new-safe/create/types'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { AppRoutes } from '@/config/routes'
+import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import {
   getReadOnlyFallbackHandlerContract,
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
-import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
-import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { Errors, trackError } from '@/services/exceptions'
-import { isWalletRejection } from '@/utils/wallets'
-import type { PendingSafeTx } from '@/components/new-safe/create/types'
-import type { NewSafeFormData } from '@/components/new-safe/create'
-import type { UrlObject } from 'url'
-import { AppRoutes } from '@/config/routes'
-import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
+import { sponsoredCall } from '@/services/tx/relaying'
 import type { AppDispatch, AppThunk } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { SafeFactory } from '@safe-global/protocol-kit'
+import { didRevert, type EthersError } from '@/utils/ethers-utils'
+import { formatError } from '@/utils/formatters'
+import { isWalletRejection } from '@/utils/wallets'
 import type Safe from '@safe-global/protocol-kit'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
-import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
-
-import { backOff } from 'exponential-backoff'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { SafeFactory } from '@safe-global/protocol-kit'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import { formatError } from '@/utils/formatters'
-import { sponsoredCall } from '@/services/tx/relaying'
+import { getSafeInfo, type ChainInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { backOff } from 'exponential-backoff'
+import type { UrlObject } from 'url'
 
 export type SafeCreationProps = {
   owners: string[]

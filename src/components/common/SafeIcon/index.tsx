@@ -1,15 +1,15 @@
-import type { ReactElement } from 'react'
 import { Box } from '@mui/material'
+import type { ReactElement } from 'react'
 
-import css from './styles.module.css'
 import Identicon, { type IdenticonProps } from '../Identicon'
+import css from './styles.module.css'
 
 interface ThresholdProps {
   threshold: number | string
   owners: number | string
 }
 const Threshold = ({ threshold, owners }: ThresholdProps): ReactElement => (
-  <Box className={css.threshold} sx={{ color: ({ palette }) => palette.static.main }}>
+  <Box data-sid="36199" className={css.threshold} sx={{ color: ({ palette }) => palette.static.main }}>
     {threshold}/{owners}
   </Box>
 )
@@ -21,7 +21,7 @@ interface SafeIconProps extends IdenticonProps {
 }
 
 const SafeIcon = ({ address, threshold, owners, size }: SafeIconProps): ReactElement => (
-  <div className={css.container}>
+  <div data-sid="66580" className={css.container}>
     {threshold && owners ? <Threshold threshold={threshold} owners={owners} /> : null}
     <Identicon address={address} size={size} />
   </div>

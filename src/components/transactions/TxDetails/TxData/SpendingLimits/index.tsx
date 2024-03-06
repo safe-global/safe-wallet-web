@@ -1,19 +1,19 @@
-import type { ReactElement } from 'react'
-import React, { useMemo } from 'react'
-import type { Custom, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import TokenIcon from '@/components/common/TokenIcon'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
+import TokenIcon from '@/components/common/TokenIcon'
+import chains from '@/config/chains'
 import { useCurrentChain } from '@/hooks/useChains'
-import { selectTokens } from '@/store/balancesSlice'
 import { useAppSelector } from '@/store'
+import { selectTokens } from '@/store/balancesSlice'
 import { sameAddress } from '@/utils/addresses'
 import { formatVisualAmount } from '@/utils/formatters'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
 import { isSetAllowance } from '@/utils/transaction-guards'
+import { Box, Typography } from '@mui/material'
+import type { Custom, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 import css from './styles.module.css'
-import chains from '@/config/chains'
 
 type SpendingLimitsProps = {
   txData?: TransactionData
@@ -42,11 +42,11 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
   if (!txData) return null
 
   return (
-    <Box className={css.container}>
+    <Box data-sid="66920" className={css.container}>
       <Typography>
         <b>{`${isSetAllowanceMethod ? 'Modify' : 'Delete'} spending limit:`}</b>
       </Typography>
-      <Box className={css.group}>
+      <Box data-sid="18690" className={css.group}>
         <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Beneficiary</Typography>
         <EthHashInfo
           address={(beneficiary as string) || txTo?.value || '0x'}
@@ -57,11 +57,11 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
           hasExplorer
         />
       </Box>
-      <Box className={css.group}>
+      <Box data-sid="22018" className={css.group}>
         <Typography sx={({ palette }) => ({ color: palette.primary.light })}>
           {isSetAllowanceMethod ? (tokenInfo ? 'Amount' : 'Raw Amount (in decimals)') : 'Token'}
         </Typography>
-        <Box className={css.inline}>
+        <Box data-sid="51120" className={css.inline}>
           {tokenInfo && (
             <>
               <TokenIcon logoUri={tokenInfo.logoUri} size={32} tokenSymbol={tokenInfo.symbol} />
@@ -83,7 +83,7 @@ export const SpendingLimits = ({ txData, txInfo, type }: SpendingLimitsProps): R
         </Box>
       </Box>
       {isSetAllowanceMethod && (
-        <Box className={css.group}>
+        <Box data-sid="85255" className={css.group}>
           <Typography sx={({ palette }) => ({ color: palette.primary.light })}>Reset time</Typography>
           <SpendingLimitLabel label={resetTimeLabel || 'One-time spending limit'} isOneTime={!resetTimeLabel} />
         </Box>

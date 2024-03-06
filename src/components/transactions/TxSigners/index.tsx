@@ -1,4 +1,3 @@
-import { useState, type ReactElement } from 'react'
 import {
   Box,
   Link,
@@ -6,30 +5,31 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  type Palette,
   SvgIcon,
   Typography,
   type ListItemIconProps,
+  type Palette,
 } from '@mui/material'
 import type {
   DetailedExecutionInfo,
   TransactionDetails,
   TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { useState, type ReactElement } from 'react'
 
-import useWallet from '@/hooks/wallets/useWallet'
-import useIsPending from '@/hooks/useIsPending'
-import { isCancellationTxInfo, isExecutable, isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import useIsPending from '@/hooks/useIsPending'
+import useWallet from '@/hooks/wallets/useWallet'
+import { isCancellationTxInfo, isExecutable, isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
-import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import useTransactionStatus from '@/hooks/useTransactionStatus'
+import CancelIcon from '@/public/images/common/cancel.svg'
+import CheckIcon from '@/public/images/common/circle-check.svg'
+import CircleIcon from '@/public/images/common/circle.svg'
 import CreatedIcon from '@/public/images/common/created.svg'
 import DotIcon from '@/public/images/common/dot.svg'
-import CircleIcon from '@/public/images/common/circle.svg'
-import CheckIcon from '@/public/images/common/circle-check.svg'
-import CancelIcon from '@/public/images/common/cancel.svg'
-import useTransactionStatus from '@/hooks/useTransactionStatus'
+import css from './styles.module.css'
 
 // Icons
 const Created = () => (
@@ -160,7 +160,9 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
           </StyledListItemIcon>
           <ListItemText data-testid="confirmation-action" primaryTypographyProps={{ fontWeight: 700 }}>
             Confirmations{' '}
-            <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
+            <Box data-sid="13170" className={css.confirmationsTotal}>
+              ({`${confirmationsCount} of ${confirmationsRequired}`})
+            </Box>
           </ListItemText>
         </ListItem>
         {!hideConfirmations &&
@@ -196,7 +198,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
         </ListItem>
       </List>
       {executor ? (
-        <Box data-testid="executor" className={css.listFooter}>
+        <Box data-sid="73069" data-testid="executor" className={css.listFooter}>
           <EthHashInfo
             address={executor.value}
             name={executor.name}
@@ -207,7 +209,7 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
         </Box>
       ) : (
         !isConfirmed && (
-          <Box className={css.listFooter}>
+          <Box data-sid="53254" className={css.listFooter}>
             <Typography sx={({ palette }) => ({ color: palette.border.main })}>
               Can be executed once the threshold is reached
             </Typography>

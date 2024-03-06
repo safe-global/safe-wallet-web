@@ -1,23 +1,23 @@
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { useCallback, useMemo } from 'react'
-import { ListItemButton, Box, Typography } from '@mui/material'
-import Link from 'next/link'
+import ChainIndicator from '@/components/common/ChainIndicator'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
-import { AppRoutes } from '@/config/routes'
-import { useAppSelector } from '@/store'
-import { selectChainById } from '@/store/chainsSlice'
-import ChainIndicator from '@/components/common/ChainIndicator'
-import css from './styles.module.css'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
-import { shortenAddress } from '@/utils/formatters'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
-import useSafeAddress from '@/hooks/useSafeAddress'
+import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { useAppSelector } from '@/store'
+import { selectAllAddressBooks } from '@/store/addressBookSlice'
+import { selectChainById } from '@/store/chainsSlice'
 import { sameAddress } from '@/utils/addresses'
+import { shortenAddress } from '@/utils/formatters'
+import { Box, ListItemButton, Typography } from '@mui/material'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useCallback, useMemo } from 'react'
+import css from './styles.module.css'
 
 type AccountItemProps = {
   chainId: string
@@ -81,7 +81,7 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
             </Typography>
           </Typography>
 
-          <Box flex={1} />
+          <Box data-sid="22946" flex={1} />
 
           <ChainIndicator chainId={chainId} responsive />
         </Link>

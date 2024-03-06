@@ -1,26 +1,26 @@
-import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
-import InputAdornment from '@mui/material/InputAdornment'
-import SvgIcon from '@mui/material/SvgIcon'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import ListItemText from '@mui/material/ListItemText'
-import Select from '@mui/material/Select'
-import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
-import FormLabel from '@mui/material/FormLabel'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import Tooltip from '@mui/material/Tooltip'
-import CloseIcon from '@mui/icons-material/Close'
+import FormLabel from '@mui/material/FormLabel'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
+import InputLabel from '@mui/material/InputLabel'
+import ListItemText from '@mui/material/ListItemText'
+import MenuItem from '@mui/material/MenuItem'
+import OutlinedInput from '@mui/material/OutlinedInput'
 import type { SelectChangeEvent } from '@mui/material/Select'
+import Select from '@mui/material/Select'
+import SvgIcon from '@mui/material/SvgIcon'
+import TextField from '@mui/material/TextField'
+import Tooltip from '@mui/material/Tooltip'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { getUniqueTags } from '@/components/safe-apps/utils'
-import SearchIcon from '@/public/images/common/search.svg'
 import BatchIcon from '@/public/images/apps/batch-icon.svg'
+import SearchIcon from '@/public/images/common/search.svg'
 import css from './styles.module.css'
 
 export type safeAppCatogoryOptionType = {
@@ -148,7 +148,7 @@ const SafeAppsFilters = ({
       <Grid item xs={12} sm={6} md={3} lg={3}>
         <Tooltip
           title={
-            <div style={{ textAlign: 'center' }}>
+            <div data-sid="93125" style={{ textAlign: 'center' }}>
               Merge multiple transactions into one to save time and gas fees inside apps offering this feature
             </div>
           }
@@ -161,7 +161,7 @@ const SafeAppsFilters = ({
                 onChangeOptimizedWithBatch(value)
               }}
               label={
-                <Box display="flex" alignItems="center" gap={1}>
+                <Box data-sid="72369" display="flex" alignItems="center" gap={1}>
                   <span>Batch transactions</span> <BatchIcon />
                 </Box>
               }

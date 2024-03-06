@@ -1,9 +1,9 @@
-import { type ReactElement, useContext } from 'react'
-import Button from '@mui/material/Button'
-import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import { NewTxFlow } from '@/components/tx-flow/flows'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import Button from '@mui/material/Button'
+import { useContext, type ReactElement } from 'react'
 import WatchlistAddButton from '../WatchlistAddButton'
 
 const NewTxButton = (): ReactElement => {
@@ -19,6 +19,7 @@ const NewTxButton = (): ReactElement => {
       {(isOk) =>
         isOk ? (
           <Button
+            data-sid="42834"
             data-testid="new-tx-btn"
             onClick={onClick}
             variant="contained"

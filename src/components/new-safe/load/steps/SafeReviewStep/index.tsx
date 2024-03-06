@@ -1,22 +1,21 @@
-import React from 'react'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 
-import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import type { LoadSafeFormData } from '@/components/new-safe/load'
-import layoutCss from '@/components/new-safe/create/styles.module.css'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ChainIndicator from '@/components/common/ChainIndicator'
-import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { useCurrentChain } from '@/hooks/useChains'
-import { useAppDispatch } from '@/store'
-import { useRouter } from 'next/router'
-import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
-import { LOAD_SAFE_EVENTS, OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { AppRoutes } from '@/config/routes'
+import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import ReviewRow from '@/components/new-safe/ReviewRow'
+import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
+import layoutCss from '@/components/new-safe/create/styles.module.css'
+import type { LoadSafeFormData } from '@/components/new-safe/load'
+import { AppRoutes } from '@/config/routes'
+import { useCurrentChain } from '@/hooks/useChains'
+import { LOAD_SAFE_EVENTS, OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { useAppDispatch } from '@/store'
+import { addOrUpdateSafe } from '@/store/addedSafesSlice'
+import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { useRouter } from 'next/router'
 
 const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => {
   const chain = useCurrentChain()
@@ -91,14 +90,14 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
 
   return (
     <>
-      <Box className={layoutCss.row}>
+      <Box data-sid="24250" className={layoutCss.row}>
         <Grid container spacing={3}>
           <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
           <ReviewRow name="Name" value={<Typography>{data.name}</Typography>} />
           <ReviewRow
             name="Owners"
             value={
-              <Box className={css.ownersArray}>
+              <Box data-sid="46404" className={css.ownersArray}>
                 {data.owners.map((owner, index) => (
                   <EthHashInfo
                     address={owner.address}
@@ -125,12 +124,18 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
         </Grid>
       </Box>
       <Divider />
-      <Box className={layoutCss.row}>
-        <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-          <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
+      <Box data-sid="97596" className={layoutCss.row}>
+        <Box data-sid="82500" display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+          <Button
+            data-sid="46284"
+            variant="outlined"
+            size="small"
+            onClick={handleBack}
+            startIcon={<ArrowBackIcon fontSize="small" />}
+          >
             Back
           </Button>
-          <Button onClick={addSafe} variant="contained" size="stretched">
+          <Button data-sid="26750" onClick={addSafe} variant="contained" size="stretched">
             Add
           </Button>
         </Box>

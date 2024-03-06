@@ -1,17 +1,16 @@
-import { useContext, useMemo } from 'react'
-import { Box, SvgIcon, Typography, Alert, AlertTitle, Skeleton, Button } from '@mui/material'
-import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import CheckWallet from '@/components/common/CheckWallet'
+import ExternalLink from '@/components/common/ExternalLink'
+import { TxModalContext } from '@/components/tx-flow'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { sameAddress } from '@/utils/addresses'
 import type { MasterCopy } from '@/hooks/useMasterCopies'
 import { MasterCopyDeployer, useMasterCopies } from '@/hooks/useMasterCopies'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import { TxModalContext } from '@/components/tx-flow'
-import { UpdateSafeFlow } from '@/components/tx-flow/flows'
-import ExternalLink from '@/components/common/ExternalLink'
-import CheckWallet from '@/components/common/CheckWallet'
+import { sameAddress } from '@/utils/addresses'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import { Alert, AlertTitle, Box, Button, Skeleton, SvgIcon, Typography } from '@mui/material'
+import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import { useContext, useMemo } from 'react'
 
 export const ContractVersion = () => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -35,7 +34,7 @@ export const ContractVersion = () => {
       <Typography variant="body1" fontWeight={400}>
         {safeLoaded ? safe.version ? safe.version : 'Unsupported contract' : <Skeleton width="60px" />}
       </Typography>
-      <Box mt={2}>
+      <Box data-sid="89707" mt={2}>
         {safeLoaded ? (
           showUpdateDialog ? (
             <Alert
@@ -52,7 +51,12 @@ export const ContractVersion = () => {
 
               <CheckWallet>
                 {(isOk) => (
-                  <Button onClick={() => setTxFlow(<UpdateSafeFlow />)} variant="contained" disabled={!isOk}>
+                  <Button
+                    data-sid="23243"
+                    onClick={() => setTxFlow(<UpdateSafeFlow />)}
+                    variant="contained"
+                    disabled={!isOk}
+                  >
                     Update
                   </Button>
                 )}

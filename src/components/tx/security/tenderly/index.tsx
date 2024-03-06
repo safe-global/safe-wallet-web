@@ -1,25 +1,25 @@
 import { Alert, Button, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
-import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
+import { useContext, useEffect } from 'react'
 
+import ExternalLink from '@/components/common/ExternalLink'
+import type { SimulationTxParams } from '@/components/tx/security/tenderly/utils'
+import { isTxSimulationEnabled } from '@/components/tx/security/tenderly/utils'
+import { useCurrentChain } from '@/hooks/useChains'
+import { useDarkMode } from '@/hooks/useDarkMode'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import CheckIcon from '@/public/images/common/check.svg'
 import CloseIcon from '@/public/images/common/close.svg'
-import { useDarkMode } from '@/hooks/useDarkMode'
 import CircularProgress from '@mui/material/CircularProgress'
-import ExternalLink from '@/components/common/ExternalLink'
-import { useCurrentChain } from '@/hooks/useChains'
-import { isTxSimulationEnabled } from '@/components/tx/security/tenderly/utils'
-import type { SimulationTxParams } from '@/components/tx/security/tenderly/utils'
 
-import css from './styles.module.css'
-import sharedCss from '@/components/tx/security/shared/styles.module.css'
-import { TxInfoContext } from '@/components/tx-flow/TxInfoProvider'
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import Track from '@/components/common/Track'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import { TxInfoContext } from '@/components/tx-flow/TxInfoProvider'
+import sharedCss from '@/components/tx/security/shared/styles.module.css'
+import InfoIcon from '@/public/images/notifications/info.svg'
 import { MODALS_EVENTS } from '@/services/analytics'
+import css from './styles.module.css'
 
 export type TxSimulationProps = {
   transactions?: SimulationTxParams['transactions']
@@ -61,7 +61,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
 
   return (
     <Paper variant="outlined" className={sharedCss.wrapper}>
-      <div className={css.wrapper}>
+      <div data-sid="86544" className={css.wrapper}>
         <Typography variant="body2" fontWeight={700}>
           Run a simulation
           <Tooltip
@@ -94,7 +94,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
         </Typography>
       </div>
 
-      <div className={sharedCss.result}>
+      <div data-sid="55147" className={sharedCss.result}>
         {isLoading ? (
           <CircularProgress
             size={22}
@@ -117,6 +117,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
         ) : (
           <Track {...MODALS_EVENTS.SIMULATE_TX}>
             <Button
+              data-sid="90474"
               variant="outlined"
               size="small"
               className={css.simulate}

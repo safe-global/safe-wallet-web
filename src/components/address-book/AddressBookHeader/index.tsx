@@ -1,19 +1,19 @@
-import { Button, SvgIcon, Grid } from '@mui/material'
-import type { ReactElement, ElementType } from 'react'
-import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@/public/images/common/search.svg'
+import { Button, Grid, SvgIcon } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
+import type { ElementType, ReactElement } from 'react'
 
-import Track from '@/components/common/Track'
-import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
 import PageHeader from '@/components/common/PageHeader'
-import { ModalType } from '../AddressBookTable'
-import { useAppSelector } from '@/store'
-import { type AddressBookState, selectAllAddressBooks } from '@/store/addressBookSlice'
-import ImportIcon from '@/public/images/common/import.svg'
-import ExportIcon from '@/public/images/common/export.svg'
+import Track from '@/components/common/Track'
 import AddCircleIcon from '@/public/images/common/add-outlined.svg'
+import ExportIcon from '@/public/images/common/export.svg'
+import ImportIcon from '@/public/images/common/import.svg'
+import { ADDRESS_BOOK_EVENTS } from '@/services/analytics/events/addressBook'
+import { useAppSelector } from '@/store'
+import { selectAllAddressBooks, type AddressBookState } from '@/store/addressBookSlice'
 import mapProps from '@/utils/mad-props'
+import { ModalType } from '../AddressBookTable'
 
 const HeaderButton = ({
   icon,
@@ -29,7 +29,15 @@ const HeaderButton = ({
   const svg = <SvgIcon component={icon} inheritViewBox fontSize="small" />
 
   return (
-    <Button onClick={onClick} disabled={disabled} variant="text" color="primary" size="small" startIcon={svg}>
+    <Button
+      data-sid="15336"
+      onClick={onClick}
+      disabled={disabled}
+      variant="text"
+      color="primary"
+      size="small"
+      startIcon={svg}
+    >
       {children}
     </Button>
   )

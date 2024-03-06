@@ -1,14 +1,15 @@
+import { POLLING_INTERVAL } from '@/config/constants'
 import { getCounterfactualBalance } from '@/features/counterfactual/utils'
 import { useWeb3 } from '@/hooks/wallets/web3'
-import { useEffect, useMemo } from 'react'
-import { getBalances, type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { useAppSelector } from '@/store'
-import useAsync, { type AsyncResult } from '../useAsync'
 import { Errors, logError } from '@/services/exceptions'
-import { selectCurrency, selectSettings, TOKEN_LISTS } from '@/store/settingsSlice'
-import { useCurrentChain } from '../useChains'
+import { useAppSelector } from '@/store'
+import { TOKEN_LISTS, selectCurrency, selectSettings } from '@/store/settingsSlice'
 import { FEATURES, hasFeature } from '@/utils/chains'
-import { POLLING_INTERVAL } from '@/config/constants'
+import { getBalances, type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import { useEffect, useMemo } from 'react'
+import useAsync, { type AsyncResult } from '../useAsync'
+import { useCurrentChain } from '../useChains'
+import useClient from '../useClient'
 import useIntervalCounter from '../useIntervalCounter'
 import useSafeInfo from '../useSafeInfo'
 
@@ -33,13 +34,15 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const chain = useCurrentChain()
   const chainId = safe.chainId
 
+  const publicClient = useClient((state) => state.publicClient)
+
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(
     () => {
       if (!chainId || !safeAddress || isTrustedTokenList === undefined) return
 
       if (!safe.deployed) {
-        return getCounterfactualBalance(safeAddress, web3, chain)
+        return getCounterfactualBalance(safeAddress, publicClient, chain)
       }
 
       return getBalances(chainId, safeAddress, currency, {

@@ -1,16 +1,16 @@
-import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { Button } from '@mui/material'
+import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 
-import type { ReactElement } from 'react'
-import { useContext } from 'react'
-import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
-import useIsPending from '@/hooks/useIsPending'
-import Track from '@/components/common/Track'
-import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import Track from '@/components/common/Track'
 import { TxModalContext } from '@/components/tx-flow'
 import { ReplaceTxFlow } from '@/components/tx-flow/flows'
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import useIsPending from '@/hooks/useIsPending'
+import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import type { ReactElement } from 'react'
+import { useContext } from 'react'
 
 const RejectTxButton = ({
   txSummary,
@@ -35,6 +35,7 @@ const RejectTxButton = ({
       {(isOk) => (
         <Track {...TX_LIST_EVENTS.REJECT}>
           <Button
+            data-sid="65598"
             onClick={openReplacementModal}
             variant="danger"
             disabled={!isOk || isDisabled}

@@ -19,7 +19,7 @@ type ${name}Props = {
 
 const ${name} = (props: ${name}Props): ReactElement => {
   return (
-    <div className={css.container}>
+    <div data-sid="83432" className={css.container}>
     </div>
   )
 }

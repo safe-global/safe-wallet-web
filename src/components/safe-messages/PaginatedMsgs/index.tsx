@@ -1,18 +1,17 @@
-import { Box } from '@mui/material'
-import { Typography, Link, SvgIcon } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Box, Link, SvgIcon, Typography } from '@mui/material'
 import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react'
 
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import useSafeMessages from '@/hooks/messages/useSafeMessages'
-import LinkIcon from '@/public/images/common/link.svg'
-import NoMessagesIcon from '@/public/images/messages/no-messages.svg'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
 import PagePlaceholder from '@/components/common/PagePlaceholder'
-import MsgList from '@/components/safe-messages/MsgList'
 import SkeletonTxList from '@/components/common/PaginatedTxns/SkeletonTxList'
+import MsgList from '@/components/safe-messages/MsgList'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 import { HelpCenterArticle } from '@/config/constants'
+import useSafeMessages from '@/hooks/messages/useSafeMessages'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import LinkIcon from '@/public/images/common/link.svg'
+import NoMessagesIcon from '@/public/images/messages/no-messages.svg'
 
 const NoMessages = (): ReactElement => {
   return (
@@ -53,7 +52,7 @@ const MsgPage = ({
       {loading && <SkeletonTxList />}
 
       {page?.next && onNextPage && (
-        <Box my={4} textAlign="center">
+        <Box data-sid="52610" my={4} textAlign="center">
           <InfiniteScroll onLoadMore={() => onNextPage(page.next!)} />
         </Box>
       )}
@@ -76,7 +75,7 @@ const PaginatedMsgs = (): ReactElement => {
   }, [safe.chainId, safeAddress])
 
   return (
-    <Box mb={4} position="relative">
+    <Box data-sid="89078" mb={4} position="relative">
       {pages.map((pageUrl, index) => (
         <MsgPage key={pageUrl} pageUrl={pageUrl} onNextPage={index === pages.length - 1 ? onNextPage : undefined} />
       ))}

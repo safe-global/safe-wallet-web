@@ -1,24 +1,24 @@
-import { Controller, useForm } from 'react-hook-form'
 import {
-  TextField,
-  MenuItem,
+  Box,
   Button,
   CardActions,
   Divider,
-  Typography,
-  Box,
   Grid,
+  MenuItem,
   SvgIcon,
+  TextField,
   Tooltip,
+  Typography,
 } from '@mui/material'
 import type { ReactElement } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 
-import useSafeInfo from '@/hooks/useSafeInfo'
 import TxCard from '@/components/tx-flow/common/TxCard'
-import { ChangeThresholdFlowFieldNames } from '@/components/tx-flow/flows/ChangeThreshold'
-import type { ChangeThresholdFlowProps } from '@/components/tx-flow/flows/ChangeThreshold'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
+import type { ChangeThresholdFlowProps } from '@/components/tx-flow/flows/ChangeThreshold'
+import { ChangeThresholdFlowFieldNames } from '@/components/tx-flow/flows/ChangeThreshold'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import InfoIcon from '@/public/images/notifications/info.svg'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 
@@ -63,7 +63,7 @@ export const ChooseThreshold = ({
       </div>
 
       <form onSubmit={formMethods.handleSubmit(onSubmit)}>
-        <Box mb={2}>
+        <Box data-sid="46696" mb={2}>
           <Controller
             control={formMethods.control}
             rules={{
@@ -118,6 +118,7 @@ export const ChooseThreshold = ({
 
         <CardActions>
           <Button
+            data-sid="67959"
             variant="contained"
             type="submit"
             disabled={

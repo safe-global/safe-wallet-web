@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react'
-import { Box, Skeleton, StepLabel, SvgIcon } from '@mui/material'
+import Identicon from '@/components/common/Identicon'
 import css from '@/components/new-safe/create/steps/StatusStep/styles.module.css'
 import CircleIcon from '@mui/icons-material/Circle'
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
-import Identicon from '@/components/common/Identicon'
+import { Box, Skeleton, StepLabel, SvgIcon } from '@mui/material'
+import type { ReactNode } from 'react'
 
 const StatusStep = ({
   isLoading,
@@ -29,7 +29,7 @@ const StatusStep = ({
         color={color}
         sx={{ color: ({ palette }) => (isLoading ? palette.border.main : palette.text.primary) }}
       >
-        <Box flexShrink={0}>
+        <Box data-sid="45790" flexShrink={0}>
           {safeAddress && !isLoading ? (
             <Identicon address={safeAddress} size={32} />
           ) : (

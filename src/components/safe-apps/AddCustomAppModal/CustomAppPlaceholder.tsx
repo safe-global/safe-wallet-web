@@ -11,7 +11,7 @@ type CustomAppPlaceholderProps = {
 
 const CustomAppPlaceholder = ({ error = '' }: CustomAppPlaceholderProps) => {
   return (
-    <div className={css.customAppPlaceholderContainer}>
+    <div data-sid="15625" className={css.customAppPlaceholderContainer}>
       <SvgIcon
         className={classNames({
           [css.customAppPlaceholderIconError]: error,

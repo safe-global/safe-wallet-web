@@ -1,7 +1,7 @@
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { OnboardAPI } from '@web3-onboard/core'
+
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { TransactionResponse } from 'ethers'
 
@@ -12,13 +12,14 @@ import { asError } from '@/services/exceptions/utils'
 import { assertWalletChain } from '../../../services/tx/tx-sender/sdk'
 import { isSmartContractWallet } from '@/utils/wallets'
 import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
+import type { TempAPI } from '@/components/safe-apps/types'
 
 async function getDelayModifierContract({
   onboard,
   chainId,
   delayModifierAddress,
 }: {
-  onboard: OnboardAPI
+  onboard: TempAPI
   chainId: string
   delayModifierAddress: string
 }) {
@@ -85,7 +86,7 @@ export async function dispatchRecoveryProposal({
   safeTx,
   delayModifierAddress,
 }: {
-  onboard: OnboardAPI
+  onboard: TempAPI
   safe: SafeInfo
   safeTx: SafeTransaction
   delayModifierAddress: string
@@ -148,7 +149,7 @@ export async function dispatchRecoveryExecution({
   args,
   delayModifierAddress,
 }: {
-  onboard: OnboardAPI
+  onboard: TempAPI
   chainId: string
   args: TransactionAddedEvent.Log['args']
   delayModifierAddress: string
@@ -197,7 +198,7 @@ export async function dispatchRecoverySkipExpired({
   delayModifierAddress,
   recoveryTxHash,
 }: {
-  onboard: OnboardAPI
+  onboard: TempAPI
   chainId: string
   delayModifierAddress: string
   recoveryTxHash: string

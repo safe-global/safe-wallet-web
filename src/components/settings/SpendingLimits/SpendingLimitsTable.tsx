@@ -1,18 +1,18 @@
+import CheckWallet from '@/components/common/CheckWallet'
 import EnhancedTable from '@/components/common/EnhancedTable'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
+import TokenIcon from '@/components/common/TokenIcon'
+import Track from '@/components/common/Track'
+import { TxModalContext } from '@/components/tx-flow'
+import { RemoveSpendingLimitFlow } from '@/components/tx-flow/flows'
 import DeleteIcon from '@/public/images/common/delete.svg'
+import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
+import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
+import { relativeTime } from '@/utils/date'
 import { safeFormatUnits } from '@/utils/formatters'
 import { Box, IconButton, Skeleton, SvgIcon, Typography } from '@mui/material'
-import { relativeTime } from '@/utils/date'
-import EthHashInfo from '@/components/common/EthHashInfo'
 import { useContext, useMemo } from 'react'
-import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
-import { RemoveSpendingLimitFlow } from '@/components/tx-flow/flows'
-import { TxModalContext } from '@/components/tx-flow'
-import Track from '@/components/common/Track'
-import { SETTINGS_EVENTS } from '@/services/analytics/events/settings'
-import TokenIcon from '@/components/common/TokenIcon'
-import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
-import CheckWallet from '@/components/common/CheckWallet'
 
 const SKELETON_ROWS = new Array(3).fill('').map(() => {
   return {
@@ -20,7 +20,7 @@ const SKELETON_ROWS = new Array(3).fill('').map(() => {
       beneficiary: {
         rawValue: '0x',
         content: (
-          <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+          <Box data-sid="73963" display="flex" flexDirection="row" gap={1} alignItems="center">
             <Skeleton variant="circular" width={26} height={26} />
             <div>
               <Typography>
@@ -36,7 +36,7 @@ const SKELETON_ROWS = new Array(3).fill('').map(() => {
       spent: {
         rawValue: '0',
         content: (
-          <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+          <Box data-sid="37010" display="flex" flexDirection="row" gap={1} alignItems="center">
             <Skeleton variant="circular" width={26} height={26} />
             <Typography>
               <Skeleton width={100} />
@@ -97,7 +97,7 @@ export const SpendingLimitsTable = ({
                 spent: {
                   rawValue: spendingLimit.spent,
                   content: (
-                    <Box data-testid="spent-amount" display="flex" alignItems="center" gap={1}>
+                    <Box data-sid="79045" data-testid="spent-amount" display="flex" alignItems="center" gap={1}>
                       <TokenIcon logoUri={spendingLimit.token.logoUri} tokenSymbol={spendingLimit.token.symbol} />
                       {`${formattedSpent} of ${formattedAmount} ${spendingLimit.token.symbol}`}
                     </Box>

@@ -1,14 +1,14 @@
-import Link from 'next/link'
-import { useMemo } from 'react'
-import { useRouter } from 'next/router'
 import { ChevronRight } from '@mui/icons-material'
 import { Box } from '@mui/material'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import type { ReactElement } from 'react'
+import { useMemo } from 'react'
 
+import { AppRoutes } from '@/config/routes'
 import { RecoveryInfo } from '@/features/recovery/components/RecoveryInfo'
 import { RecoveryStatus } from '@/features/recovery/components/RecoveryStatus'
 import { RecoveryType } from '@/features/recovery/components/RecoveryType'
-import { AppRoutes } from '@/config/routes'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 import css from './styles.module.css'
@@ -27,8 +27,8 @@ function PendingRecoveryListItem({ transaction }: { transaction: RecoveryQueueIt
 
   return (
     <Link href={url} passHref>
-      <Box className={css.container} minHeight={50}>
-        <Box flex={1}>
+      <Box data-sid="35825" className={css.container} minHeight={50}>
+        <Box data-sid="82731" flex={1}>
           <RecoveryType isMalicious={isMalicious} />
         </Box>
 

@@ -9,26 +9,26 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import madProps from '@/utils/mad-props'
-import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
+import { Alert, Box, Button, CardActions, CircularProgress, Divider } from '@mui/material'
 import classNames from 'classnames'
+import { useContext, useState, type ReactElement, type SyntheticEvent } from 'react'
 
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import { trackError, Errors } from '@/services/exceptions'
-import { useCurrentChain } from '@/hooks/useChains'
-import { getTxOptions } from '@/utils/transactions'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useIsExecutionLoop } from '@/components/tx/SignOrExecuteForm/hooks'
-import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm'
+import { useIsExecutionLoop } from '@/components/tx/SignOrExecuteForm/hooks'
+import { useCurrentChain } from '@/hooks/useChains'
+import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
+import { getTxOptions } from '@/utils/transactions'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-import css from '@/components/tx/SignOrExecuteForm/styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
+import css from '@/components/tx/SignOrExecuteForm/styles.module.css'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
 export const CounterfactualForm = ({
   safeTx,
@@ -134,7 +134,7 @@ export const CounterfactualForm = ({
           </ul>
         </Alert>
 
-        <div className={classNames(css.params)}>
+        <div data-sid="42983" className={classNames(css.params)}>
           <AdvancedParams
             willExecute
             params={advancedParams}
@@ -164,7 +164,7 @@ export const CounterfactualForm = ({
         )}
 
         {submitError && (
-          <Box mt={1}>
+          <Box data-sid="16871" mt={1}>
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}
@@ -175,7 +175,13 @@ export const CounterfactualForm = ({
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
+              <Button
+                data-sid="31333"
+                variant="contained"
+                type="submit"
+                disabled={!isOk || submitDisabled}
+                sx={{ minWidth: '112px' }}
+              >
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}

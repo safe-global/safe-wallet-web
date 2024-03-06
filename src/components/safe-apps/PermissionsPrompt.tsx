@@ -1,6 +1,6 @@
-import type { ReactElement } from 'react'
-import type { PermissionRequest } from '@safe-global/safe-apps-sdk/dist/types/types/permissions'
 import { Button, Dialog, DialogActions, DialogContent, Divider, Typography } from '@mui/material'
+import type { PermissionRequest } from '@safe-global/safe-apps-sdk/dist/types/types/permissions'
+import type { ReactElement } from 'react'
 
 import { ModalDialogTitle } from '@/components/common/ModalDialog'
 import { getSafePermissionDisplayValues } from '@/hooks/safe-apps/permissions'
@@ -44,6 +44,7 @@ const PermissionsPrompt = ({
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'center', my: 3 }}>
         <Button
+          data-sid="60956"
           variant="contained"
           color="error"
           size="small"
@@ -52,7 +53,13 @@ const PermissionsPrompt = ({
         >
           Reject
         </Button>
-        <Button variant="contained" size="small" onClick={() => onAccept(origin, requestId)} sx={{ minWidth: '130px' }}>
+        <Button
+          data-sid="66056"
+          variant="contained"
+          size="small"
+          onClick={() => onAccept(origin, requestId)}
+          sx={{ minWidth: '130px' }}
+        >
           Accept
         </Button>
       </DialogActions>

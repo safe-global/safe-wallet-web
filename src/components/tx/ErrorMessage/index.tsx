@@ -1,8 +1,8 @@
-import { type ReactElement, type ReactNode, type SyntheticEvent, useState } from 'react'
-import { Link, Typography, SvgIcon } from '@mui/material'
-import classNames from 'classnames'
-import WarningIcon from '@/public/images/notifications/warning.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import WarningIcon from '@/public/images/notifications/warning.svg'
+import { Link, SvgIcon, Typography } from '@mui/material'
+import classNames from 'classnames'
+import { useState, type ReactElement, type ReactNode, type SyntheticEvent } from 'react'
 import css from './styles.module.css'
 
 const ErrorMessage = ({
@@ -24,8 +24,12 @@ const ErrorMessage = ({
   }
 
   return (
-    <div data-testid="error-message" className={classNames(css.container, css[level], className, 'errorMessage')}>
-      <div className={css.message}>
+    <div
+      data-sid="28846"
+      data-testid="error-message"
+      className={classNames(css.container, css[level], className, 'errorMessage')}
+    >
+      <div data-sid="24820" className={css.message}>
         <SvgIcon
           component={level === 'info' ? InfoIcon : WarningIcon}
           inheritViewBox

@@ -1,9 +1,8 @@
 import ExternalLink from '@/components/common/ExternalLink'
 import { NOT_AVAILABLE } from '@/components/transactions/TxDetails'
-import type { MultisigExecutionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, Typography } from '@mui/material'
-import React from 'react'
 import { HelpCenterArticle } from '@/config/constants'
+import { Box, Typography } from '@mui/material'
+import type { MultisigExecutionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 interface Props {
   nonce?: MultisigExecutionDetails['nonce']
@@ -26,9 +25,9 @@ const RejectionTxInfo = ({ nonce, isTxExecuted }: Props) => {
         {message}
       </Typography>
       {!isTxExecuted && (
-        <Box mt={2} sx={{ width: 'fit-content' }}>
+        <Box data-sid="61951" mt={2} sx={{ width: 'fit-content' }}>
           <ExternalLink href={HelpCenterArticle.CANCELLING_TRANSACTIONS} title={title}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Box data-sid="23219" sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Typography sx={{ textDecoration: 'underline' }}>{title}</Typography>
             </Box>
           </ExternalLink>

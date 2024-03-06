@@ -1,17 +1,16 @@
-import { Box } from '@mui/material'
-import React, { useMemo } from 'react'
-import { ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
-import WalletIcon from '@/components/common/WalletIcon'
-import NextLink from 'next/link'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
+import WalletIcon from '@/components/common/WalletIcon'
+import { AppRoutes } from '@/config/routes'
 import useWallet from '@/hooks/wallets/useWallet'
+import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { shortenAddress } from '@/utils/formatters'
+import CheckIcon from '@mui/icons-material/Check'
+import { Box, ButtonBase, SvgIcon, Tooltip, Typography } from '@mui/material'
+import classnames from 'classnames'
+import NextLink from 'next/link'
+import { useMemo } from 'react'
 import type { UrlObject } from 'url'
 import css from './styles.module.css'
-import classnames from 'classnames'
-import { AppRoutes } from '@/config/routes'
 
 const PendingActionButtons = ({
   totalQueued,
@@ -39,12 +38,13 @@ const PendingActionButtons = ({
   const shortAddress = shortenAddress(wallet?.address || '')
 
   return (
-    <Box className={css.pendingButtons}>
+    <Box data-sid="82009" className={css.pendingButtons}>
       {wallet && totalToSign && (
         <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
           <NextLink href={queueLink} passHref legacyBehavior>
             <Tooltip title={`${shortAddress} can confirm ${totalToSign} transaction(s)`} placement="top" arrow>
               <ButtonBase
+                data-sid="11932"
                 data-testid="missing-signature-info"
                 className={classnames(css.pendingButton, css.missingSignatures)}
                 onClick={closeDrawer}
@@ -66,6 +66,7 @@ const PendingActionButtons = ({
           <NextLink href={queueLink} passHref legacyBehavior>
             <Tooltip title={`${totalQueued} transactions in the queue`} placement="top" arrow>
               <ButtonBase
+                data-sid="17234"
                 data-testid="queued-tx-info"
                 className={classnames(css.pendingButton, css.queued)}
                 onClick={closeDrawer}

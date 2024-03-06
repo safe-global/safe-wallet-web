@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material'
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
 import lightPalette from '@/components/theme/lightPalette'
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined'
+import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material'
+import { useState } from 'react'
 import Domain from './Domain'
 
 type UnknownAppWarningProps = {
@@ -18,8 +18,8 @@ const UnknownAppWarning = ({ url, onHideWarning }: UnknownAppWarningProps): Reac
   }
 
   return (
-    <Box display="flex" flexDirection="column" height="100%" alignItems="center">
-      <Box display="block" alignItems="center" mt={6}>
+    <Box data-sid="64250" display="flex" flexDirection="column" height="100%" alignItems="center">
+      <Box data-sid="92780" display="block" alignItems="center" mt={6}>
         <WarningAmberOutlinedIcon fontSize="large" color="warning" />
         <Typography variant="h3" fontWeight={700} mt={2} color={lightPalette.warning.main}>
           Warning
@@ -36,7 +36,7 @@ const UnknownAppWarning = ({ url, onHideWarning }: UnknownAppWarningProps): Reac
       {url && <Domain url={url} showInOneLine />}
 
       {onHideWarning && (
-        <Box mt={2}>
+        <Box data-sid="47484" mt={2}>
           <FormControlLabel
             control={
               <Checkbox

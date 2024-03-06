@@ -1,35 +1,35 @@
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import madProps from '@/utils/mad-props'
-import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
+import { Box, Button, CardActions, CircularProgress, Divider } from '@mui/material'
 import classNames from 'classnames'
+import { useContext, useState, type ReactElement, type SyntheticEvent } from 'react'
 
-import ErrorMessage from '@/components/tx/ErrorMessage'
-import { trackError, Errors } from '@/services/exceptions'
-import { useCurrentChain } from '@/hooks/useChains'
-import { getTxOptions } from '@/utils/transactions'
-import useIsValidExecution from '@/hooks/useIsValidExecution'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useIsExecutionLoop, useTxActions } from './hooks'
-import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
-import useWalletCanRelay from '@/hooks/useWalletCanRelay'
-import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
-import { hasRemainingRelays } from '@/utils/relaying'
-import type { SignOrExecuteProps } from '.'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import { SuccessScreenFlow } from '@/components/tx-flow/flows'
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import { useCurrentChain } from '@/hooks/useChains'
 import useGasLimit from '@/hooks/useGasLimit'
-import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
+import useIsValidExecution from '@/hooks/useIsValidExecution'
+import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
+import useWalletCanRelay from '@/hooks/useWalletCanRelay'
+import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
+import { hasRemainingRelays } from '@/utils/relaying'
+import { getTxOptions } from '@/utils/transactions'
 import { isWalletRejection } from '@/utils/wallets'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SignOrExecuteProps } from '.'
+import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
+import { ExecutionMethod, ExecutionMethodSelector } from '../ExecutionMethodSelector'
+import { useIsExecutionLoop, useTxActions } from './hooks'
 
-import css from './styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import { TxSecurityContext } from '../security/shared/TxSecurityContext'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { TxSecurityContext } from '../security/shared/TxSecurityContext'
+import css from './styles.module.css'
 
 export const ExecuteForm = ({
   safeTx,
@@ -133,7 +133,7 @@ export const ExecuteForm = ({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className={classNames(css.params, { [css.noBottomBorderRadius]: canRelay })}>
+        <div data-sid="24010" className={classNames(css.params, { [css.noBottomBorderRadius]: canRelay })}>
           <AdvancedParams
             willExecute
             params={advancedParams}
@@ -144,7 +144,7 @@ export const ExecuteForm = ({
           />
 
           {canRelay && (
-            <div className={css.noTopBorder}>
+            <div data-sid="61829" className={css.noTopBorder}>
               <ExecutionMethodSelector
                 executionMethod={executionMethod}
                 setExecutionMethod={setExecutionMethod}
@@ -173,13 +173,13 @@ export const ExecuteForm = ({
         )}
 
         {submitError && (
-          <Box mt={1}>
+          <Box data-sid="96223" mt={1}>
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}
 
         {isRejectedByUser && (
-          <Box mt={1}>
+          <Box data-sid="81211" mt={1}>
             <WalletRejectionError />
           </Box>
         )}
@@ -190,7 +190,13 @@ export const ExecuteForm = ({
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
+              <Button
+                data-sid="45170"
+                variant="contained"
+                type="submit"
+                disabled={!isOk || submitDisabled}
+                sx={{ minWidth: '112px' }}
+              >
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}

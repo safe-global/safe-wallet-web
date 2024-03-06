@@ -1,14 +1,14 @@
-import { useMemo } from 'react'
-import uniq from 'lodash/uniq'
-import isEmpty from 'lodash/isEmpty'
+import useChainId from '@/hooks/useChainId'
+import useChains from '@/hooks/useChains'
+import useWallet from '@/hooks/wallets/useWallet'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
-import useAllOwnedSafes from './useAllOwnedSafes'
-import useChains from '@/hooks/useChains'
-import useChainId from '@/hooks/useChainId'
-import useWallet from '@/hooks/wallets/useWallet'
 import { selectUndeployedSafes } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
+import isEmpty from 'lodash/isEmpty'
+import uniq from 'lodash/uniq'
+import { useMemo } from 'react'
+import useAllOwnedSafes from './useAllOwnedSafes'
 
 export type SafeItems = Array<{
   chainId: string

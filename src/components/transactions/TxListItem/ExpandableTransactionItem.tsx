@@ -1,15 +1,15 @@
-import { type Transaction, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import TxSummary from '@/components/transactions/TxSummary'
-import TxDetails from '@/components/transactions/TxDetails'
-import CreateTxInfo from '@/components/transactions/SafeCreationTx'
-import { isCreationTxInfo } from '@/utils/transaction-guards'
-import { useContext } from 'react'
 import { BatchExecuteHoverContext } from '@/components/transactions/BatchExecuteButton/BatchExecuteHoverProvider'
-import css from './styles.module.css'
+import CreateTxInfo from '@/components/transactions/SafeCreationTx'
+import TxDetails from '@/components/transactions/TxDetails'
+import TxSummary from '@/components/transactions/TxSummary'
+import { TX_LIST_EVENTS, trackEvent } from '@/services/analytics'
+import { isCreationTxInfo } from '@/utils/transaction-guards'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton } from '@mui/material'
+import { type Transaction, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import classNames from 'classnames'
-import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
+import { useContext } from 'react'
+import css from './styles.module.css'
 
 type ExpandableTransactionItemProps = {
   isGrouped?: boolean
@@ -72,7 +72,7 @@ export const ExpandableTransactionItem = ({
 
 export const TransactionSkeleton = () => (
   <>
-    <Box pt="20px" pb="4px">
+    <Box data-sid="49922" pt="20px" pb="4px">
       <Skeleton variant="text" width="35px" />
     </Box>
 

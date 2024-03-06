@@ -1,17 +1,17 @@
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 import Typography from '@mui/material/Typography'
-import { useCSVDownloader } from 'react-papaparse'
 import type { SyntheticEvent } from 'react'
 import { useMemo, type ReactElement } from 'react'
+import { useCSVDownloader } from 'react-papaparse'
 
-import ModalDialog from '@/components/common/ModalDialog'
-import { type AddressBookState, selectAllAddressBooks } from '@/store/addressBookSlice'
-import { useAppSelector } from '@/store'
-import { trackEvent, ADDRESS_BOOK_EVENTS } from '@/services/analytics'
 import ExternalLink from '@/components/common/ExternalLink'
+import ModalDialog from '@/components/common/ModalDialog'
 import { HelpCenterArticle } from '@/config/constants'
+import { ADDRESS_BOOK_EVENTS, trackEvent } from '@/services/analytics'
+import { useAppSelector } from '@/store'
+import { selectAllAddressBooks, type AddressBookState } from '@/store/addressBookSlice'
 import madProps from '@/utils/mad-props'
 
 const COL_1 = 'address'
@@ -82,9 +82,17 @@ function ExportDialog({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button data-sid="92855" onClick={handleClose}>
+          Cancel
+        </Button>
         <CSVDownloader filename={filename} bom config={{ delimiter: ',' }} data={csvData} style={{ order: 2 }}>
-          <Button data-testid="export-modal-btn" variant="contained" disableElevation onClick={onSubmit}>
+          <Button
+            data-sid="40656"
+            data-testid="export-modal-btn"
+            variant="contained"
+            disableElevation
+            onClick={onSubmit}
+          >
             Export
           </Button>
         </CSVDownloader>

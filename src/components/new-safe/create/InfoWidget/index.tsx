@@ -1,3 +1,7 @@
+import LightbulbIcon from '@/public/images/common/lightbulb.svg'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import type { AlertColor } from '@mui/material'
 import {
   Accordion,
   AccordionDetails,
@@ -10,12 +14,8 @@ import {
   SvgIcon,
   Typography,
 } from '@mui/material'
-import type { AlertColor } from '@mui/material'
 import type { ReactElement } from 'react'
-import LightbulbIcon from '@/public/images/common/lightbulb.svg'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import css from 'src/components/new-safe/create/InfoWidget/styles.module.css'
-import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 
 type InfoWidgetProps = {
   title: string
@@ -40,7 +40,7 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
       <CardHeader
         className={css.cardHeader}
         title={
-          <Box className={css.title} sx={{ backgroundColor: ({ palette }) => palette[variant]?.main }}>
+          <Box data-sid="44623" className={css.title} sx={{ backgroundColor: ({ palette }) => palette[variant]?.main }}>
             <SvgIcon component={LightbulbIcon} inheritViewBox className={css.titleIcon} />
             <Typography variant="caption">
               <b>{title}</b>
@@ -48,7 +48,7 @@ const InfoWidget = ({ title, steps, variant, startExpanded = false }: InfoWidget
           </Box>
         }
       />
-      <Box className={css.tipsList}>
+      <Box data-sid="42375" className={css.tipsList}>
         <CardContent>
           {steps.map(({ title, text }) => {
             return (

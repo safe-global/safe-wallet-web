@@ -1,41 +1,41 @@
 import { selectUndeployedSafes, type UndeployedSafesState } from '@/features/counterfactual/store/undeployedSafesSlice'
 import {
   Box,
-  Grid,
-  Paper,
-  Typography,
-  Checkbox,
   Button,
+  Checkbox,
+  CircularProgress,
   Divider,
+  Grid,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  CircularProgress,
+  Paper,
+  Typography,
 } from '@mui/material'
-import mapValues from 'lodash/mapValues'
-import difference from 'lodash/difference'
-import pickBy from 'lodash/pickBy'
-import { Fragment, useEffect, useMemo, useState } from 'react'
-import type { ReactElement } from 'react'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import difference from 'lodash/difference'
+import mapValues from 'lodash/mapValues'
+import pickBy from 'lodash/pickBy'
+import type { ReactElement } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
+import CheckWallet from '@/components/common/CheckWallet'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import { sameAddress } from '@/utils/addresses'
 import useChains from '@/hooks/useChains'
-import { useAppSelector } from '@/store'
-import { useNotificationPreferences } from './hooks/useNotificationPreferences'
-import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
-import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
+import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
+import { useAppSelector } from '@/store'
+import type { AddedSafesState } from '@/store/addedSafesSlice'
+import { selectAllAddedSafes } from '@/store/addedSafesSlice'
+import { sameAddress } from '@/utils/addresses'
+import { useNotificationPreferences } from './hooks/useNotificationPreferences'
+import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
+import type { NotifiableSafes } from './logic'
 import { requestNotificationPermission } from './logic'
 import { useDismissPushNotificationsBanner } from './PushNotificationsBanner'
-import type { NotifiableSafes } from './logic'
-import type { AddedSafesState } from '@/store/addedSafesSlice'
-import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
-import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
 
@@ -378,7 +378,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
           My Safes Accounts ({totalNotifiableSafes})
         </Typography>
 
-        <Box display="flex" alignItems="center">
+        <Box data-sid="60304" display="flex" alignItems="center">
           {totalSignaturesRequired > 0 && (
             <Typography display="inline" mr={2} textAlign="right">
               We&apos;ll ask you to verify ownership of each Safe Account with your signature per chain{' '}
@@ -388,7 +388,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
           <CheckWallet allowNonOwner>
             {(isOk) => (
-              <Button variant="contained" disabled={!canSave || !isOk || isLoading} onClick={onSave}>
+              <Button data-sid="21675" variant="contained" disabled={!canSave || !isOk || isLoading} onClick={onSave}>
                 {isLoading ? <CircularProgress size={20} /> : 'Save'}
               </Button>
             )}

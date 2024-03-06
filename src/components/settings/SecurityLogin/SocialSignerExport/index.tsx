@@ -1,9 +1,9 @@
 import Track from '@/components/common/Track'
+import ExportMPCAccountModal from '@/components/settings/SecurityLogin/SocialSignerExport/ExportMPCAccountModal'
+import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { MPC_WALLET_EVENTS } from '@/services/analytics/events/mpcWallet'
 import { Alert, Box, Button, Tooltip, Typography } from '@mui/material'
 import { useState } from 'react'
-import ExportMPCAccountModal from '@/components/settings/SecurityLogin/SocialSignerExport/ExportMPCAccountModal'
-import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 
 const SocialSignerExport = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -14,7 +14,7 @@ const SocialSignerExport = () => {
 
   return (
     <>
-      <Box display="flex" flexDirection="column" gap={2} alignItems="flex-start">
+      <Box data-sid="35522" display="flex" flexDirection="column" gap={2} alignItems="flex-start">
         <Typography>
           Signers created via Google can be exported and imported to any non-custodial wallet outside of Safe.
         </Typography>
@@ -27,6 +27,7 @@ const SocialSignerExport = () => {
           <Tooltip title={isPasswordSet ? '' : 'Private key export is only available if you set a recovery password'}>
             <span>
               <Button
+                data-sid="47831"
                 color="primary"
                 variant="contained"
                 sx={{ pointerEvents: 'all !important' }}

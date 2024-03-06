@@ -1,7 +1,7 @@
-import type { MouseEventHandler, ReactNode } from 'react'
+import { IS_OFFICIAL_HOST } from '@/config/constants'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { IS_OFFICIAL_HOST } from '@/config/constants'
+import type { MouseEventHandler, ReactNode } from 'react'
 
 const SmoothScroll = ({ children }: { children: ReactNode }) => {
   const onClick: MouseEventHandler = (e) => {
@@ -15,7 +15,11 @@ const SmoothScroll = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  return <div onClick={onClick}>{children}</div>
+  return (
+    <div data-sid="84656" onClick={onClick}>
+      {children}
+    </div>
+  )
 }
 
 const SafePrivacyPolicy = () => (

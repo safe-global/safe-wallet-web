@@ -1,23 +1,23 @@
+import { Box, CircularProgress } from '@mui/material'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
-import { Box, CircularProgress } from '@mui/material'
 
-import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
-import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
-import SafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal'
-import useSafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal/useSafeAppsInfoModal'
+import AppFrame from '@/components/safe-apps/AppFrame'
 import SafeAppsErrorBoundary from '@/components/safe-apps/SafeAppsErrorBoundary'
 import SafeAppsLoadError from '@/components/safe-apps/SafeAppsErrorBoundary/SafeAppsLoadError'
-import AppFrame from '@/components/safe-apps/AppFrame'
-import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
-import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
-import useChainId from '@/hooks/useChainId'
-import { AppRoutes } from '@/config/routes'
+import SafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal'
+import useSafeAppsInfoModal from '@/components/safe-apps/SafeAppsInfoModal/useSafeAppsInfoModal'
 import { getOrigin } from '@/components/safe-apps/utils'
+import { AppRoutes } from '@/config/routes'
+import { openWalletConnect } from '@/features/walletconnect/components'
+import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
+import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
+import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
+import useChainId from '@/hooks/useChainId'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { openWalletConnect } from '@/features/walletconnect/components'
 import { isWalletConnectSafeApp } from '@/utils/gateway'
 
 const SafeApps: NextPage = () => {
@@ -82,7 +82,7 @@ const SafeApps: NextPage = () => {
 
   if (isLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+      <Box data-sid="42445" display="flex" justifyContent="center" alignItems="center" height="100%">
         <CircularProgress />
       </Box>
     )

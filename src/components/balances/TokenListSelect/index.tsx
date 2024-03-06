@@ -1,15 +1,15 @@
-import { useAppDispatch, useAppSelector } from '@/store'
-import { selectSettings, setTokenList, TOKEN_LISTS } from '@/store/settingsSlice'
-import { FEATURES } from '@/utils/chains'
-import type { SelectChangeEvent } from '@mui/material'
-import { Box, SvgIcon, Tooltip, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { OnboardingTooltip } from '@/components/common/OnboardingTooltip'
 import Track from '@/components/common/Track'
-import { ASSETS_EVENTS, trackEvent } from '@/services/analytics'
 import { HelpCenterArticle } from '@/config/constants'
 import { useHasFeature } from '@/hooks/useChains'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { ASSETS_EVENTS, trackEvent } from '@/services/analytics'
+import { useAppDispatch, useAppSelector } from '@/store'
+import { TOKEN_LISTS, selectSettings, setTokenList } from '@/store/settingsSlice'
+import { FEATURES } from '@/utils/chains'
+import type { SelectChangeEvent } from '@mui/material'
+import { Box, FormControl, InputLabel, MenuItem, Select, SvgIcon, Tooltip, Typography } from '@mui/material'
 
 const LS_TOKENLIST_ONBOARDING = 'tokenlist_onboarding'
 
@@ -58,7 +58,7 @@ const TokenListSelect = () => {
         >
           <MenuItem value={TOKEN_LISTS.TRUSTED}>
             <Track {...ASSETS_EVENTS.SHOW_DEFAULT_TOKENS}>
-              <Box display="flex" flexDirection="row" gap="4px" alignItems="center" minWidth={155}>
+              <Box data-sid="16997" display="flex" flexDirection="row" gap="4px" alignItems="center" minWidth={155}>
                 {TokenListLabel.TRUSTED}
                 <Tooltip
                   arrow
