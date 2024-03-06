@@ -26,7 +26,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
     cy.findByRole('button', { name: safeapps.testTransfer1 })
-    cy.findByRole('button', { name: safeapps.testNativeTransfer2 })
+    cy.findByRole('button', { name: safeapps.nativeTransfer2 })
   })
 
   it('Verify partial drain can be created', () => {
@@ -38,7 +38,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
       getBody().findAllByText(safeapps.transfer2AssetsStr).click()
     })
     cy.findByRole('button', { name: safeapps.testTransfer2 })
-    cy.findByRole('button', { name: safeapps.testNativeTransfer1 })
+    cy.findByRole('button', { name: safeapps.nativeTransfer1 })
   })
 
   // TODO: ENS does not resolve
@@ -48,7 +48,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
     cy.findByRole('button', { name: safeapps.testTransfer1 })
-    cy.findByRole('button', { name: safeapps.testNativeTransfer2 })
+    cy.findByRole('button', { name: safeapps.nativeTransfer2 })
   })
 
   it('Verify when cancelling a drain, previous data is preserved', () => {

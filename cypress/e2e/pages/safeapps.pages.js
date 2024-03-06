@@ -62,8 +62,8 @@ export const transfer2AssetsStr = 'Transfer 2 assets'
 
 export const testTransfer1 = '1 transfer'
 export const testTransfer2 = '2 transfer'
-export const testNativeTransfer2 = '2 Unknown contract interaction'
-export const testNativeTransfer1 = '1 Unknown contract interaction'
+export const nativeTransfer2 = '2 native transfer'
+export const nativeTransfer1 = '1 native transfer'
 
 export const testNativeTransfer = 'native transfer'
 
