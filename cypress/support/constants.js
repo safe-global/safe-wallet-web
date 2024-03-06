@@ -106,7 +106,7 @@ export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
 export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png'
 
 export const commonThresholds = {
-  oneOfOne: '1 out of 1 owner(s)',
+  oneOfOne: '1 out of 1 signer(s)',
 }
 export const TXActionNames = {
   resetAllowance: 'resetAllowance',
@@ -199,7 +199,7 @@ export const addressBookErrrMsg = {
   invalidFormat: 'Invalid address format',
   invalidChecksum: 'Invalid address checksum',
   exceedChars: 'Maximum 50 symbols',
-  ownSafe: 'Cannot use Safe Account itself as owner',
+  ownSafe: 'Cannot use Safe Account itself as signer',
   alreadyAdded: 'Address already added',
   ownerAdded: 'Owner is already added',
   failedResolve: 'Failed to resolve the address',

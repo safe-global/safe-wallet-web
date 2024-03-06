@@ -9,7 +9,7 @@ const nameInput = 'input[name="name"]'
 const ownerInput = 'input[name^="owners"][name$="name"]'
 const ownerAddress = 'input[name^="owners"][name$="address"]'
 const thresholdInput = 'input[name="threshold"]'
-export const removeOwnerBtn = 'button[aria-label="Remove owner"]'
+export const removeOwnerBtn = 'button[aria-label="Remove signer"]'
 const connectingContainer = 'div[class*="connecting-container"]'
 const createNewSafeBtn = '[data-testid="create-safe-btn"]'
 const connectWalletBtn = 'Connect wallet'
@@ -193,7 +193,7 @@ export function typeOwnerAddress(address, index, clearOnly = false) {
 }
 
 export function clickOnAddNewOwnerBtn() {
-  cy.contains('button', 'Add new owner').click().wait(700)
+  cy.contains('button', 'Add new signer').click().wait(700)
 }
 
 export function addNewOwner(name, address, index) {
