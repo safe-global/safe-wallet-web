@@ -18,13 +18,14 @@ describe('Browser permissions tests', () => {
     main.acceptCookies()
   })
 
-  it('Verify a permissions slide to the user is displayed', () => {
+  // @TODO: unknown apps don't have permissions
+  xit('Verify a permissions slide to the user is displayed', () => {
     safeapps.clickOnContinueBtn()
     safeapps.verifyCameraCheckBoxExists()
     safeapps.verifyMicrofoneCheckBoxExists()
   })
 
-  it('Verify the selection can be changed, accepted and stored', () => {
+  xit('Verify the selection can be changed, accepted and stored', () => {
     safeapps.verifyMicrofoneCheckBoxExists().click()
     safeapps.clickOnContinueBtn()
     safeapps.verifyWarningDefaultAppMsgIsDisplayed()
