@@ -68,7 +68,7 @@ const useAllSafes = (): SafeItems => {
         }
       })
     })
-  }, [currentChainId, allAdded, allOwned, configs, undeployedSafes, walletAddress])
+  }, [allAdded, allOwned, configs, undeployedSafes, walletAddress])
 }
 
 export default useAllSafes
