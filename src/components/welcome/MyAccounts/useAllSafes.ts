@@ -45,7 +45,7 @@ const useAllSafes = (): SafeItems => {
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
   return useMemo<SafeItems>(() => {
-    const chains = uniq([currentChainId].concat(Object.keys(allAdded)).concat(Object.keys(allOwned)))
+    const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned)))
 
     return chains.flatMap((chainId) => {
       if (!configs.some((item) => item.chainId === chainId)) return []
