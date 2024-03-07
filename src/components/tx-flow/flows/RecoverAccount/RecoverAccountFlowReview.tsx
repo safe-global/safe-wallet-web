@@ -107,7 +107,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
     <>
       <TxCard>
         <Typography mb={1}>
-          This transaction will reset the Account setup, changing the owners
+          This transaction will reset the Account setup, changing the signers
           {newThreshold !== safe.threshold ? ' and threshold' : ''}.
         </Typography>
 
@@ -120,7 +120,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
             After recovery, Safe Account transactions will require:
           </Typography>
           <Typography>
-            <b>{params.threshold}</b> out of <b>{params[RecoverAccountFlowFields.owners].length} owners.</b>
+            <b>{params.threshold}</b> out of <b>{params[RecoverAccountFlowFields.owners].length} signers.</b>
           </Typography>
         </Box>
 
@@ -177,7 +177,12 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           <CardActions sx={{ mt: 'var(--space-1) !important' }}>
             <CheckWallet allowNonOwner>
               {(isOk) => (
-                <Button variant="contained" disabled={!isOk || submitDisabled} onClick={onSubmit}>
+                <Button
+                  data-testid="execute-btn"
+                  variant="contained"
+                  disabled={!isOk || submitDisabled}
+                  onClick={onSubmit}
+                >
                   {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
                 </Button>
               )}

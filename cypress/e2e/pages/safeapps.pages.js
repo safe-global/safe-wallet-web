@@ -30,7 +30,7 @@ export const addTransactionStr = /add transaction/i
 export const createBatchStr = /create batch/i
 export const sendBatchStr = /send batch/i
 export const transactionDetailsStr = /transaction details/i
-export const addOwnerWithThreshold = /add owner with threshold/i
+export const addOwnerWithThreshold = /add signer with threshold/i
 export const enterABIStr = /Enter ABI/i
 export const toAddressStr = /to address/i
 export const tokenAmount = /ETH value */i
@@ -62,13 +62,14 @@ export const transfer2AssetsStr = 'Transfer 2 assets'
 
 export const testTransfer1 = '1 transfer'
 export const testTransfer2 = '2 transfer'
-export const testNativeTransfer2 = '2 native transfer'
-export const testNativeTransfer1 = '1 native transfer'
+export const nativeTransfer2 = '2 native transfer'
+export const nativeTransfer1 = '1 native transfer'
+
 export const testNativeTransfer = 'native transfer'
 
 export const newValueBool = 'newValue(bool):'
-export const ownerAddressStr = 'owner (address)'
-export const ownerAddressStr2 = 'owner(address)'
+export const ownerAddressStr = 'signer (address)'
+export const ownerAddressStr2 = 'signer(address)'
 export const thresholdStr = '_threshold (uint256) *'
 export const thresholdStr2 = '_threshold(uint256):'
 

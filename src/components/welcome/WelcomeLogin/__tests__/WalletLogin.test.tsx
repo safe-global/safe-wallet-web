@@ -69,7 +69,7 @@ describe('WalletLogin', () => {
     })
   })
 
-  it('should not invoke the callback if connection fails', async () => {
+  it('should invoke the callback if user actively connects', async () => {
     const mockOnLogin = jest.fn()
     jest.spyOn(useWallet, 'default').mockReturnValue(null)
 
@@ -81,7 +81,7 @@ describe('WalletLogin', () => {
       expect(result.findByText('Connect wallet')).resolves.toBeDefined()
     })
 
-    // We do not automatically invoke the callback as the user did not actively connect
+    // We do not automatically invoke the callback as the user has not actively connected yet
     expect(mockOnLogin).not.toHaveBeenCalled()
 
     act(() => {
@@ -90,7 +90,7 @@ describe('WalletLogin', () => {
     })
 
     await waitFor(() => {
-      expect(mockOnLogin).not.toHaveBeenCalled()
+      expect(mockOnLogin).toHaveBeenCalled()
     })
   })
 })

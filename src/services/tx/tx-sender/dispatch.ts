@@ -22,6 +22,7 @@ import {
 import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
+import chains from '@/config/chains'
 
 /**
  * Propose a transaction
@@ -97,6 +98,8 @@ export const dispatchTxSigning = async (
   return signedTx
 }
 
+const ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT = 4_500_000
+
 /**
  * On-Chain sign a transaction
  */
@@ -110,10 +113,13 @@ export const dispatchOnChainSigning = async (
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
   const eventParams = { txId }
 
+  const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
+
   try {
     // With the unchecked signer, the contract call resolves once the tx
     // has been submitted in the wallet not when it has been executed
-    await sdkUnchecked.approveTransactionHash(safeTxHash)
+    await sdkUnchecked.approveTransactionHash(safeTxHash, options)
+
     txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
   } catch (err) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(err) })

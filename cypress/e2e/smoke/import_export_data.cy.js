@@ -60,7 +60,7 @@ describe('[SMOKE] Import Export Data tests', () => {
   })
 
   it('[SMOKE] Verify imported data in settings', () => {
-    const unchecked = [file.prependChainPrefixStr, file.copyAddressStr]
+    const unchecked = [file.copyAddressStr]
     const checked = [file.darkModeStr]
 
     cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3).then(() => {

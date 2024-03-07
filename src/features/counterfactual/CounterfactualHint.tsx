@@ -7,7 +7,7 @@ const CounterfactualHint = () => {
         Create now, pay later! Only for 1/1 Accounts
       </Typography>
       Explore Safe{'{Wallet}'} without additional hassle. Pay the gas fees later at any time, and don&apos;t forget to
-      add extra owners for better security.
+      add extra signers for better security.
     </Alert>
   )
 }

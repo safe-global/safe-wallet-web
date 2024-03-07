@@ -37,7 +37,7 @@ export const SetThreshold = ({
     <TxCard>
       <form onSubmit={onSubmitHandler}>
         <Box mb={3}>
-          <Typography mb={2}>Review the owner you want to remove from the active Safe Account:</Typography>
+          <Typography mb={2}>Review the signer you want to remove from the active Safe Account:</Typography>
           {/* TODO: Update the EthHashInfo style from the replace owner PR */}
           <EthHashInfo address={params.removedOwner.address} shortAddress={false} showCopyButton hasExplorer />
         </Box>
@@ -74,7 +74,7 @@ export const SetThreshold = ({
               </Select>
             </Grid>
             <Grid item>
-              <Typography>out of {newNumberOfOwners} owner(s)</Typography>
+              <Typography>out of {newNumberOfOwners} signer(s)</Typography>
             </Grid>
           </Grid>
         </Box>

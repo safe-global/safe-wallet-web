@@ -113,7 +113,7 @@ export const SafeSetupOverview = ({
       <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
       {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
       <ReviewRow
-        name="Owners"
+        name="Signers"
         value={
           <Box data-testid="review-step-owner-info" className={css.ownersArray}>
             {owners.map((owner, index) => (
@@ -135,7 +135,7 @@ export const SafeSetupOverview = ({
         name="Threshold"
         value={
           <Typography>
-            {threshold} out of {owners.length} owner(s)
+            {threshold} out of {owners.length} signer(s)
           </Typography>
         }
       />

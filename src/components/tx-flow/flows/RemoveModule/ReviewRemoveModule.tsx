@@ -37,7 +37,7 @@ export const ReviewRemoveModule = ({ params }: { params: RemoveModuleFlowProps }
       </Grid>
       <Typography my={2}>
         After removing this module, any feature or app that uses this module might no longer work. If this Safe Account
-        requires more then one signature, the module removal will have to be confirmed by other owners as well.
+        requires more then one signature, the module removal will have to be confirmed by other signers as well.
       </Typography>
     </SignOrExecuteForm>
   )

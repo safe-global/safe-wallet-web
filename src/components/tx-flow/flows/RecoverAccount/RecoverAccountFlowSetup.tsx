@@ -88,11 +88,11 @@ export function RecoverAccountFlowSetup({
         <TxCard>
           <div>
             <Typography variant="h6" fontWeight={700} gutterBottom>
-              Add owner(s)
+              Add signer(s)
             </Typography>
 
             <Typography variant="body2" mb={1}>
-              Set the new owner wallet(s) of this Safe Account and how many need to confirm a transaction before it can
+              Set the new signer wallet(s) of this Safe Account and how many need to confirm a transaction before it can
               be executed.
             </Typography>
           </div>
@@ -102,7 +102,7 @@ export function RecoverAccountFlowSetup({
               <Fragment key={index}>
                 <Grid item xs={11}>
                   <AddressBookInput
-                    label={`Owner ${index + 1}`}
+                    label={`Signer ${index + 1}`}
                     name={`${RecoverAccountFlowFields.owners}.${index}.value`}
                     required
                     fullWidth
@@ -114,7 +114,7 @@ export function RecoverAccountFlowSetup({
 
                       const isDuplicate = newOwners.filter((owner) => owner.value === value).length > 1
                       if (isDuplicate) {
-                        return 'Already designated to be an owner'
+                        return 'Already designated to be a signer'
                       }
                     }}
                   />
@@ -137,7 +137,7 @@ export function RecoverAccountFlowSetup({
             startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
             sx={{ alignSelf: 'flex-start', my: 1 }}
           >
-            Add new owner
+            Add new signer
           </Button>
 
           <Divider className={commonCss.nestedDivider} />
@@ -187,7 +187,7 @@ export function RecoverAccountFlowSetup({
             </Grid>
 
             <Grid item>
-              <Typography>out of {fields.length} owner(s)</Typography>
+              <Typography>out of {fields.length} signer(s)</Typography>
             </Grid>
           </Grid>
 
@@ -200,7 +200,7 @@ export function RecoverAccountFlowSetup({
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions sx={{ mt: '0 !important' }}>
-            <Button variant="contained" type="submit" sx={{ mt: 1 }} disabled={isSameSetup}>
+            <Button data-testid="next-btn" variant="contained" type="submit" sx={{ mt: 1 }} disabled={isSameSetup}>
               Next
             </Button>
           </CardActions>

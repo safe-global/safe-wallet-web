@@ -118,8 +118,16 @@ export const ImportDialog = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleImport} variant="contained" disableElevation disabled={isDisabled}>
+        <Button data-testid="dialog-cancel-btn" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button
+          data-testid="dialog-import-btn"
+          onClick={handleImport}
+          variant="contained"
+          disableElevation
+          disabled={isDisabled}
+        >
           Import
         </Button>
       </DialogActions>
