@@ -95,7 +95,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         </div>
 
         {isMultiSendTxInfo(txDetails.txInfo) && (
-          <div className={`${css.multiSend}`}>
+          <div className={css.multiSend}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <Multisend txData={txDetails.txData} />
             </ErrorBoundary>
@@ -109,7 +109,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
 
           {isQueue && (
-            <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
+            <Box className={css.buttons}>
               {awaitingExecution ? <ExecuteTxButton txSummary={txSummary} /> : <SignTxButton txSummary={txSummary} />}
               <RejectTxButton txSummary={txSummary} />
             </Box>
