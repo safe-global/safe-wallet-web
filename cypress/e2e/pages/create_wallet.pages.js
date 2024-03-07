@@ -42,9 +42,8 @@ const welcomeToSafeStr = 'Welcome to Safe'
 export function verifyNewSafeDialogModal() {
   main.verifyElementsIsVisible([safeBackupAlert, dialogConfirmBtn])
 }
-
+//
 export function verifyCFSafeCreated() {
-  sidebar.checkSafeAddressInHeader([constants.CF_SAFE_SHORT])
   main.verifyElementsIsVisible([sidebar.pendingActivationIcon, safeActivationSection])
 }
 

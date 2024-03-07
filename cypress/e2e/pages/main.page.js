@@ -184,3 +184,7 @@ export function formatAddressInCaps(address) {
     return 'Invalid address format'
   }
 }
+
+export function getElementText(element) {
+  return cy.get(element).invoke('text')
+}

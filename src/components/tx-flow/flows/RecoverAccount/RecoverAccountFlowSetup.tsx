@@ -200,7 +200,7 @@ export function RecoverAccountFlowSetup({
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions sx={{ mt: '0 !important' }}>
-            <Button variant="contained" type="submit" sx={{ mt: 1 }} disabled={isSameSetup}>
+            <Button data-testid="next-btn" variant="contained" type="submit" sx={{ mt: 1 }} disabled={isSameSetup}>
               Next
             </Button>
           </CardActions>

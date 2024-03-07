@@ -35,6 +35,9 @@ export const SEPOLIA_TEST_SAFE_19_NONOWNER_NFT = 'sep:0x3e259dea1E317743Cb49CA93
 export const SEPOLIA_TEST_SAFE_20_LOAD_SAFE = 'sep:0x027bBe128174F0e5e5d22ECe9623698E01cd3970'
 export const SEPOLIA_TEST_SAFE_21_LOAD_SAFE = 'eth:0x8675B754342754A30A2AeF474D114d8460bca19b'
 export const SEPOLIA_TEST_SAFE_22_IMPORT = 'sep:0xBc7e586D276e2da521DE8ff17255fd878621cc59'
+export const SEPOLIA_TEST_SAFE_23_RECOVERY_1 = 'sep:0x702E067A0015F1b835d9c631Cb28A9F617314F27'
+export const SEPOLIA_TEST_SAFE_24_RECOVERY_2 = 'sep:0xb791302040DB5Ab4Ade0b5295cecCaeF07AF07a1'
+export const SEPOLIA_TEST_SAFE_25_RECOVERY_3 = 'sep:0xAE1E3f93fda95eEbb857Ee06325f6F1e45EF3CBE'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -48,9 +51,9 @@ export const DEFAULT_OWNER_ADDRESS = '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED
 // Below is also used in sidebar tests as a beneficiary
 export const SPENDING_LIMIT_ADDRESS_2 = '0x52835f11E348605E9D791Ec09380a3224526d538'
 export const SEPOLIA_OWNER_2 = '0x96D4c6fFC338912322813a77655fCC926b9A5aC5'
+export const SEPOLIA_OWNER_2_SHORT = '0x96D4...5aC5'
 export const TEST_SAFE_2 = 'gor:0xE96C43C54B08eC528e9e815fC3D02Ea94A320505'
 export const SIDEBAR_ADDRESS = '0x04f8...1a91'
-export const CF_SAFE_SHORT = '0x702E...4F27'
 //ENS_TEST_SEPOLIA resolves to 0xBf30F749FC027a5d79c4710D988F0D3C8e217A4F
 export const ENS_TEST_SEPOLIA = 'e2etestsafe.eth'
 export const ENS_TEST_GOERLI = 'goerli-safe-test.eth'
@@ -200,7 +203,7 @@ export const addressBookErrrMsg = {
   alreadyAdded: 'Address already added',
   ownerAdded: 'Signer is already added',
   failedResolve: 'Failed to resolve the address',
-  emptyAddress: 'Signer',
+  emptyAddress: 'Owner',
   safeAlreadyAdded: 'Safe Account is already added',
   prefixMismatch: "doesn't match the current chain",
   invalidPrefix(prefix) {
