@@ -1,6 +1,6 @@
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
-import { ListItemButton, Box, Typography, Chip } from '@mui/material'
+import { ListItemButton, Box, Typography, Chip, SvgIcon, IconButton, Tooltip } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
@@ -19,6 +19,8 @@ import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
+import BookmarkIcon from '@/public/images/apps/bookmark.svg'
+import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 
 type AccountItemProps = {
   chainId: string
@@ -96,6 +98,17 @@ const AccountItem = ({ onLinkClick, chainId, address, isReadonly, ...rest }: Acc
           <Box flex={1} />
 
           <ChainIndicator chainId={chainId} responsive />
+
+          <Tooltip placement="top" arrow title="Bookmark this account">
+            <IconButton data-testid="safe-options-btn" edge="end" size="small" sx={{ ml: 2 }}>
+              <SvgIcon
+                component={true ? BookmarkedIcon : BookmarkIcon}
+                inheritViewBox
+                color={true ? 'primary' : undefined}
+                fontSize="medium"
+              />
+            </IconButton>
+          </Tooltip>
         </Link>
       </Track>
 

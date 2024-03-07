@@ -21,7 +21,7 @@
   align-items: center;
   gap: var(--space-1);
   padding: 0;
-  min-width: 115px;
+  min-width: 120px;
   font-size: 14px;
   justify-content: flex-start;
 }
