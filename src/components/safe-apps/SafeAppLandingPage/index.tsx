@@ -22,8 +22,8 @@ type Props = {
 const CHAIN_ID_WITH_A_DEMO = '1'
 
 const SafeAppLanding = ({ appUrl, chain }: Props) => {
-  const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chain.chainId)
   const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl, chain.chainId)
+  const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chain.chainId, backendApp)
   const wallet = useWallet()
   const onboard = useOnboard()
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend

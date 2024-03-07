@@ -63,7 +63,7 @@ export const getLegacyChainName = (chainName: string, chainId: string): string =
   return network
 }
 
-export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
+export const getEmptySafeApp = (url = '', appData?: SafeAppData): SafeAppDataWithPermissions => {
   return {
     id: Math.random(),
     url,
@@ -75,10 +75,11 @@ export const getEmptySafeApp = (url = ''): SafeAppDataWithPermissions => {
       type: SafeAppAccessPolicyTypes.NoRestrictions,
     },
     tags: [],
-    safeAppsPermissions: [],
     features: [],
-    socialProfiles: [],
     developerWebsite: '',
+    socialProfiles: [],
+    ...appData,
+    safeAppsPermissions: [],
   }
 }
 

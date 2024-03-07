@@ -24,11 +24,11 @@ const SafeApps: NextPage = () => {
   const chainId = useChainId()
   const router = useRouter()
   const appUrl = useSafeAppUrl()
-  const { safeApp, isLoading } = useSafeAppFromManifest(appUrl || '', chainId)
+  const { allSafeApps, remoteSafeAppsLoading } = useSafeApps()
+  const safeAppData = allSafeApps.find((app) => app.url === appUrl)
+  const { safeApp, isLoading } = useSafeAppFromManifest(appUrl || '', chainId, safeAppData)
   const isSafeAppsEnabled = useHasFeature(FEATURES.SAFE_APPS)
   const isWalletConnectEnabled = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
-
-  const { remoteSafeApps, remoteSafeAppsLoading } = useSafeApps()
 
   const { addPermissions, getPermissions, getAllowedFeaturesList } = useBrowserPermissions()
   const origin = getOrigin(appUrl)
@@ -41,7 +41,7 @@ const SafeApps: NextPage = () => {
     onComplete,
   } = useSafeAppsInfoModal({
     url: origin,
-    safeApp: remoteSafeApps.find((app) => app.url === appUrl),
+    safeApp: safeAppData,
     permissions: safeApp?.safeAppsPermissions || [],
     addPermissions,
     getPermissions,

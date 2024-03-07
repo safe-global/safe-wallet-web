@@ -4,6 +4,8 @@ import * as safeapps from '../pages/safeapps.pages'
 
 const testAppName = 'Cypress Test App'
 const testAppDescr = 'Cypress Test App Description'
+const unknownApp = 'unknown'
+const confirmTx = 'Confirm transaction'
 
 describe('Transaction modal tests', () => {
   beforeEach(() => {
@@ -28,7 +30,8 @@ describe('Transaction modal tests', () => {
       safeapps.verifyWarningDefaultAppMsgIsDisplayed()
       safeapps.clickOnContinueBtn()
       cy.findByRole('dialog').within(() => {
-        cy.findByText(testAppName)
+        cy.findByText(confirmTx)
+        cy.findByText(unknownApp)
       })
     },
   )
