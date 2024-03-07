@@ -1,6 +1,6 @@
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
-import { ListItemButton, Box, Typography } from '@mui/material'
+import { ListItemButton, Box, Typography, Chip } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
@@ -81,16 +81,15 @@ const AccountItem = ({ onLinkClick, chainId, address, isReadonly, ...rest }: Acc
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
             </Typography>
+            <br />
             {isReadonly && (
-              <Typography
-                variant="body2"
-                display="flex"
-                alignItems="center"
-                sx={({ palette }) => ({ color: palette.border.main })}
-              >
-                <VisibilityIcon fontSize="inherit" sx={{ marginRight: 1 }} />
-                Read-only
-              </Typography>
+              <Chip
+                className={css.readOnlyChip}
+                variant="outlined"
+                size="small"
+                icon={<VisibilityIcon className={css.visibilityIcon} />}
+                label="Read-only"
+              />
             )}
           </Typography>
 
