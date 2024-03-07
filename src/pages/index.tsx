@@ -2,25 +2,28 @@ import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
-import { useHasSafes } from '@/components/welcome/MyAccounts/useAllSafes'
+import { isEmpty } from 'lodash'
+import local from '@/services/local-storage/local'
+import { addedSafesSlice, type AddedSafesState } from '@/store/addedSafesSlice'
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
   const { chain } = router.query
-  const { hasSafes } = useHasSafes()
 
   useEffect(() => {
     if (!router.isReady || router.pathname !== AppRoutes.index) {
       return
     }
-
-    const pathname = hasSafes ? AppRoutes.welcome.accounts : AppRoutes.welcome.index
+    // TODO: Replace with useLocalStorage. For now read directly from localstorage so we have value on first render
+    const addedSafes = local.getItem<AddedSafesState>(addedSafesSlice.name)
+    const hasAddedSafes = addedSafes !== null && !isEmpty(addedSafes)
+    const pathname = hasAddedSafes ? AppRoutes.welcome.accounts : AppRoutes.welcome.index
 
     router.replace({
       pathname,
       query: chain ? { chain } : undefined,
     })
-  }, [router, chain, hasSafes])
+  }, [router, chain])
 
   return <></>
 }
