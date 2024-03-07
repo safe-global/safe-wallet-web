@@ -1,4 +1,3 @@
-import { getChainLogo } from '@/config/chains'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import classnames from 'classnames'
@@ -68,7 +67,7 @@ const ChainIndicator = ({
     >
       {showLogo && (
         <img
-          src={chainConfig.chainLogoUri || getChainLogo(chainConfig.chainId)}
+          src={chainConfig.chainLogoUri ?? undefined}
           alt={`${chainConfig.chainName} Logo`}
           width={24}
           height={24}
