@@ -1,5 +1,6 @@
 import { type CowSwapWidgetParams, TradeType, CowSwapWidget } from '@cowprotocol/widget-react'
-import { useState, useEffect, type MutableRefObject } from 'react'
+import { CowEvents, type CowEventListeners, type ToastMessageType } from '@cowprotocol/events'
+import { useState, useEffect, type MutableRefObject, useMemo } from 'react'
 import { Container, Grid, useTheme } from '@mui/material'
 import useChainId from '@/hooks/useChainId'
 import { useRef } from 'react'
@@ -12,6 +13,8 @@ import {
 import { useCurrentChain } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
+import { showNotification } from '@/store/notificationsSlice'
+import { useAppDispatch, useAppSelector } from '@/store'
 
 const supportedChains = [1, 100, 11155111]
 
@@ -39,6 +42,94 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
   const chainId = useChainId()
   const { palette } = useTheme()
   const darkMode = useDarkMode()
+  const dispatch = useAppDispatch()
+
+  const [toasts, setToasts] = useState<String[]>([])
+  const toast = toasts.length > 0 ? toasts[0] : undefined
+
+  const openToast = (message: string) => {
+    setToasts((t) => [...t, message])
+  }
+
+  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setToasts((t) => t.slice(1))
+  }
+
+  // SWAP_ETH_FLOW_SENT_TX = "SWAP_ETH_FLOW_SENT_TX",
+  //   SWAP_POSTED_API = "SWAP_POSTED_API",
+  //   SWAP_SIGNING_ERROR = "SWAP_SIGNING_ERROR",
+  //   SWAP_TRADE_EXECUTED = "SWAP_TRADE_EXECUTED",
+  //   SWAP_ORDER_CANCELLED = "SWAP_ORDER_CANCELLED"
+  const groupKey = 'swap-order-status'
+  const listeners = useMemo<CowEventListeners>(() => {
+    return [
+      {
+        event: CowEvents.ON_TOAST_MESSAGE,
+        handler: (event) => {
+          console.info('🍞 New toast message:', event)
+          const { message, messageType, data } = event
+          switch (messageType) {
+            case 'ORDER_CREATED':
+              dispatch(
+                showNotification({
+                  title: 'Order created',
+                  message: 'Order created but waiting for presignature',
+                  groupKey: groupKey,
+                  variant: 'info',
+                }),
+              )
+              break
+            case 'ORDER_PRESIGNED':
+              dispatch(
+                showNotification({
+                  title: 'Order presigned waiting for fullfillment',
+                  message: 'Order was presigned and waiting for match',
+                  groupKey: groupKey,
+                  variant: 'info',
+                }),
+              )
+              break
+            case 'ORDER_FULFILLED':
+              dispatch(
+                showNotification({
+                  title: 'Order fullfilled',
+                  message: 'Order was fullfilled',
+                  groupKey: groupKey,
+                  variant: 'info',
+                }),
+              )
+              break
+            case 'ORDER_EXPIRED':
+              dispatch(
+                showNotification({
+                  title: 'Order expired',
+                  message: message,
+                  groupKey: groupKey,
+                  variant: 'warning',
+                }),
+              )
+              break
+            case 'ORDER_CANCELLED':
+              dispatch(
+                showNotification({
+                  title: 'Order cancelled',
+                  message: message,
+                  groupKey: groupKey,
+                  variant: 'warning',
+                }),
+              )
+              break
+          }
+          openToast(event.message)
+        },
+      },
+     
+    ]
+  }, [openToast])
 
   const [params, setParams] = useState<CowSwapWidgetParams | null>(null)
   useEffect(() => {
@@ -48,11 +139,22 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
       height: '860px',
       // provider: safeAppWeb3Provider, // Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com
       chainId: chainId, // 1 (Mainnet), 5 (Goerli), 100 (Gnosis)
-      tokenLists: [
-        // All default enabled token lists. Also see https://tokenlists.org
-        'https://files.cow.fi/tokens/CowSwap.json',
-        'https://tokens.coingecko.com/uniswap/all.json',
-      ],
+      // standaloneMode: false,
+      baseUrl: 'https://swap-dev-git-feat-snackbars-from-events-8-cowswap.vercel.app/',
+      disableToastMessages: true,
+      disablePostedOrderConfirmationModal: true,
+      hideLogo: true,
+      hideNetworkSelector: true,
+      sounds: {
+        orderError: null,
+        orderExecuted: null,
+        postOrder: null,
+      },
+      // tokenLists: [
+      //   // All default enabled token lists. Also see https://tokenlists.org
+      //   'https://files.cow.fi/tokens/CowSwap.json',
+      //   'https://tokens.coingecko.com/uniswap/all.json',
+      // ],
       tradeType: TradeType.SWAP, // TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED
       sell: sell
         ? sell
@@ -61,12 +163,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
             asset: '',
             amount: '0',
           },
-      enabledTradeTypes: [
-        // TradeType.SWAP, TradeType.LIMIT and/or TradeType.ADVANCED
-        TradeType.SWAP,
-        TradeType.LIMIT,
-        TradeType.ADVANCED,
-      ],
+      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
       // env: 'dev',
       theme: {
         baseTheme: darkMode ? 'dark' : 'light',
@@ -80,7 +177,10 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
         warning: palette.warning.main,
         alert: palette.warning.main,
       },
-      interfaceFeeBips: '50', // 0.5% - COMING SOON! Fill the form above if you are interested
+      partnerFee: {
+        bps: 50,
+        recipient: '0x0B00b3227A5F3df3484f03990A87e02EbaD2F888',
+      },
     })
   }, [sell, chainId, palette, darkMode])
 
@@ -111,9 +211,11 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
     )
   }
 
+  console.log('params', params, listeners)
+
   return (
     <Box sx={{ height: '100%' }} id={'swapWidget'}>
-      <CowSwapWidget params={params} />
+      <CowSwapWidget params={params} listeners={listeners} />
     </Box>
   )
 }
