@@ -40,7 +40,7 @@
 .currentListItem {
   border: 1px solid var(--color-secondary-light);
   border-left-width: 6px;
-  background-color: var(--color-secondary-background) !important;
+  background-color: var(--color-background-light) !important;
 }
 
 .listItem> :first-child {
