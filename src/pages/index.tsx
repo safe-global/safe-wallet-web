@@ -3,8 +3,10 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { isEmpty } from 'lodash'
+import local from '@/services/local-storage/local'
+import type { AddedSafesState } from '@/store/addedSafesSlice'
 
-const ADDED_SAFES_KEY = 'SAFE_v2__addedSafes'
+const ADDED_SAFES_KEY = 'addedSafes'
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
@@ -15,8 +17,8 @@ const IndexPage: NextPage = () => {
       return
     }
     // read directly from localstorage so we have value on first render
-    const addedSafes = localStorage.getItem(ADDED_SAFES_KEY)
-    const hasAddedSafes = addedSafes !== null && !isEmpty(JSON.parse(addedSafes))
+    const addedSafes = local.getItem<AddedSafesState>(ADDED_SAFES_KEY)
+    const hasAddedSafes = addedSafes !== null && !isEmpty(addedSafes)
     const pathname = hasAddedSafes ? AppRoutes.welcome.accounts : AppRoutes.welcome.index
 
     router.replace({
