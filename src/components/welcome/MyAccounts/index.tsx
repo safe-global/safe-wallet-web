@@ -13,21 +13,25 @@ import AddIcon from '@/public/images/common/add.svg'
 import { AppRoutes } from '@/config/routes'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useRouter } from 'next/router'
+import useTrackSafesCount from './useTrackedSafesCount'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
-import { useRouter } from 'next/router'
 
 type AccountsListProps = {
-  safes: SafeItems
+  safes: SafeItems | undefined
   onLinkClick?: () => void
 }
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
-  const router = useRouter()
-  const ownedSafes = useMemo(() => safes.filter(({ isWatchlist }) => !isWatchlist), [safes])
-  const watchlistSafes = useMemo(() => safes.filter(({ isWatchlist }) => isWatchlist), [safes])
   const wallet = useWallet()
-  const trackingLabel =
-    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+  const router = useRouter()
+
+  const ownedSafes = useMemo(() => safes?.filter(({ isWatchlist }) => !isWatchlist), [safes])
+  const watchlistSafes = useMemo(() => safes?.filter(({ isWatchlist }) => isWatchlist), [safes])
+  useTrackSafesCount(ownedSafes, watchlistSafes)
+
+  const isLoginPage = router.pathname === AppRoutes.welcome.accounts
+  const trackingLabel = isLoginPage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   return (
     <Box data-testid="sidebar-safe-container" className={css.container}>
@@ -43,7 +47,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
 
         <PaginatedSafeList
           title="My accounts"
-          safes={ownedSafes}
+          safes={ownedSafes || []}
           onLinkClick={onLinkClick}
           noSafesMessage={
             wallet ? (
@@ -66,7 +70,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               Watchlist
             </>
           }
-          safes={watchlistSafes}
+          safes={watchlistSafes || []}
           action={
             <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
               <Link href={AppRoutes.newSafe.load}>

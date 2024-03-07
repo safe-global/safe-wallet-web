@@ -35,13 +35,16 @@ export const OVERVIEW_EVENTS = {
     action: 'Deleted from watchlist',
     category: OVERVIEW_CATEGORY,
   },
-  SIDEBAR: {
-    action: 'Sidebar',
+  TOTAL_SAFES_OWNED: {
+    action: 'Total Safes owned',
     category: OVERVIEW_CATEGORY,
   },
-  TOTAL_ADDED_SAFES: {
-    event: EventType.META,
-    action: 'Total added Safes',
+  TOTAL_SAFES_WATCHLIST: {
+    action: 'Total Safes watchlist',
+    category: OVERVIEW_CATEGORY,
+  },
+  SIDEBAR: {
+    action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
   },
   WHATS_NEW: {

@@ -35,14 +35,15 @@ export const useHasSafes = () => {
   return { isLoaded: true, hasSafes: hasOwned }
 }
 
-const useAllSafes = (): SafeItems => {
+const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
-  const [allOwned = {}] = useAllOwnedSafes(walletAddress)
+  const [allOwned] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
   const { configs } = useChains()
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
-  return useMemo<SafeItems>(() => {
+  return useMemo<SafeItems | undefined>(() => {
+    if (!allOwned) return
     const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned)))
 
     return chains.flatMap((chainId) => {
