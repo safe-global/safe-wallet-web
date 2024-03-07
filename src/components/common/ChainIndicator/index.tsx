@@ -25,6 +25,7 @@ const fallbackChainConfig = {
     backgroundColor: '#ddd',
     textColor: '#000',
   },
+  chainLogoUri: null,
 }
 
 const ChainIndicator = ({
@@ -67,7 +68,7 @@ const ChainIndicator = ({
     >
       {showLogo && (
         <img
-          src={getChainLogo(chainConfig.chainId)}
+          src={chainConfig.chainLogoUri || getChainLogo(chainConfig.chainId)}
           alt={`${chainConfig.chainName} Logo`}
           width={24}
           height={24}
