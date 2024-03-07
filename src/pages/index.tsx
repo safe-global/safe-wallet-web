@@ -16,7 +16,7 @@ const IndexPage: NextPage = () => {
     if (!router.isReady || router.pathname !== AppRoutes.index) {
       return
     }
-    // read directly from localstorage so we have value on first render
+    // TODO: Replace with useLocalStorage. For now read directly from localstorage so we have value on first render
     const addedSafes = local.getItem<AddedSafesState>(ADDED_SAFES_KEY)
     const hasAddedSafes = addedSafes !== null && !isEmpty(addedSafes)
     const pathname = hasAddedSafes ? AppRoutes.welcome.accounts : AppRoutes.welcome.index
