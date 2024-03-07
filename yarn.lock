@@ -1194,17 +1194,24 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cowprotocol/widget-lib@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-lib/-/widget-lib-0.3.0.tgz#fb2b396ab18e502a2816ccb6d9959c181e541c1c"
-  integrity sha512-yE7d0DpcLpc/PivhYrIPTq/tE/84vft+BnTPPtDhZWZ4iRR1/VVlzoHVBL3xnqvHE0nevoSx2qig6lcqdUmJFA==
+"@cowprotocol/events@^0.1.0-RC.1":
+  version "0.1.0-RC.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/events/-/events-0.1.0-RC.1.tgz#805e7764ac1ff233e3c74fb7e726c56abeb81605"
+  integrity sha512-HVs1YzKFzeKkDI+WJwunyS5PKI8csK97ccyDxy3wAEjjFz55IbaFz1Zf7O4iFaL08OLnDSkO3wtwp+chnZ2BQw==
 
-"@cowprotocol/widget-react@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-react/-/widget-react-0.3.0.tgz#dea4159384e4303fa2b8deb31a27d4e3b93368be"
-  integrity sha512-+465oFfQ1yFgkrGoedmDXNNyq2jCFCg0VLzzkD2wnWk8sVLaN2ucti4sRB0JlDAcQxkAO9EgNwHeF/GEsi9UEw==
+"@cowprotocol/widget-lib@^0.6.0-RC.4":
+  version "0.6.0-RC.4"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-lib/-/widget-lib-0.6.0-RC.4.tgz#07f669c7c16225d1de94b4423e8ee680103252f6"
+  integrity sha512-8Q36wpY88p0n0ipZmiSZwrcsml4mXUcM37pQEdkHMfrCngy9sN6fxRPOm2ho3e8S7IWEcxWjkY1utVlYeDDMCQ==
   dependencies:
-    "@cowprotocol/widget-lib" "^0.3.0"
+    "@cowprotocol/events" "^0.1.0-RC.1"
+
+"@cowprotocol/widget-react@0.5.0-RC.4":
+  version "0.5.0-RC.4"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-react/-/widget-react-0.5.0-RC.4.tgz#d6b568a49d95e7b2ab818ba48cf1509b570b25d9"
+  integrity sha512-MjvwqQ6iXdYE5qheQlxW8yUhLRg5bSoTd9KdZCqRxD+aP4yS49Kek0eT7WmdPQDuEYuluqmaEsoLkZSvTI7Zng==
+  dependencies:
+    "@cowprotocol/widget-lib" "^0.6.0-RC.4"
 
 "@cypress/request@2.88.12":
   version "2.88.12"
