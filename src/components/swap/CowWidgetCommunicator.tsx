@@ -1,5 +1,5 @@
 import { type CowSwapWidgetParams, TradeType, CowSwapWidget } from '@cowprotocol/widget-react'
-import { CowEvents, type CowEventListeners, type ToastMessageType } from '@cowprotocol/events'
+import { CowEvents, type CowEventListeners } from '@cowprotocol/events'
 import { useState, useEffect, type MutableRefObject, useMemo } from 'react'
 import { Container, Grid, useTheme } from '@mui/material'
 import useChainId from '@/hooks/useChainId'
@@ -14,7 +14,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 import { showNotification } from '@/store/notificationsSlice'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppDispatch } from '@/store'
 
 const supportedChains = [1, 100, 11155111]
 
@@ -59,11 +59,6 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
     setToasts((t) => t.slice(1))
   }
 
-  // SWAP_ETH_FLOW_SENT_TX = "SWAP_ETH_FLOW_SENT_TX",
-  //   SWAP_POSTED_API = "SWAP_POSTED_API",
-  //   SWAP_SIGNING_ERROR = "SWAP_SIGNING_ERROR",
-  //   SWAP_TRADE_EXECUTED = "SWAP_TRADE_EXECUTED",
-  //   SWAP_ORDER_CANCELLED = "SWAP_ORDER_CANCELLED"
   const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
     return [
@@ -73,6 +68,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
           console.info('🍞 New toast message:', event)
           const { message, messageType, data } = event
           switch (messageType) {
+            // @ts-ignore
             case 'ORDER_CREATED':
               dispatch(
                 showNotification({
@@ -83,6 +79,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
                 }),
               )
               break
+            // @ts-ignore
             case 'ORDER_PRESIGNED':
               dispatch(
                 showNotification({
@@ -93,6 +90,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
                 }),
               )
               break
+            // @ts-ignore
             case 'ORDER_FULFILLED':
               dispatch(
                 showNotification({
@@ -103,6 +101,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
                 }),
               )
               break
+            // @ts-ignore
             case 'ORDER_EXPIRED':
               dispatch(
                 showNotification({
@@ -113,6 +112,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
                 }),
               )
               break
+            // @ts-ignore
             case 'ORDER_CANCELLED':
               dispatch(
                 showNotification({
@@ -127,7 +127,6 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
           openToast(event.message)
         },
       },
-     
     ]
   }, [openToast])
 
