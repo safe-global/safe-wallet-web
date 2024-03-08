@@ -45,19 +45,6 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
   const dispatch = useAppDispatch()
 
   const [toasts, setToasts] = useState<String[]>([])
-  const toast = toasts.length > 0 ? toasts[0] : undefined
-
-  const openToast = (message: string) => {
-    setToasts((t) => [...t, message])
-  }
-
-  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setToasts((t) => t.slice(1))
-  }
 
   const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
@@ -124,11 +111,10 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
               )
               break
           }
-          openToast(event.message)
         },
       },
     ]
-  }, [openToast])
+  }, [dispatch])
 
   const [params, setParams] = useState<CowSwapWidgetParams | null>(null)
   useEffect(() => {
