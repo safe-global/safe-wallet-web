@@ -26,16 +26,21 @@
   gap: var(--space-2);
 }
 
+.header :global .MuiButtonBase-root {
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+}
+
 .title {
   flex: 1;
 }
 
 .listItem {
   border-radius: var(--space-1);
-  margin-bottom: 12px;
   padding-top: 0;
   padding-bottom: 0;
   padding-left: 0;
+  padding-right: 0;
   margin-bottom: var(--space-1);
   background-color: var(--color-background-paper);
 }
@@ -54,7 +59,7 @@
 .safeLink {
   display: flex;
   align-items: center;
-  padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
+  padding: var(--space-2) var(--space-12) var(--space-2) var(--space-2);
 }
 
 .safeAddress {
@@ -130,7 +135,7 @@
   }
 
   .header {
-    padding: var(--space-3);
+    padding: var(--space-2);
     border-bottom: 1px solid var(--color-border-light);
   }
 

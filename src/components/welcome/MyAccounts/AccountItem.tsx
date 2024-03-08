@@ -1,6 +1,15 @@
 import { getSafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
-import { ListItemButton, Box, Typography, Chip, SvgIcon, IconButton, Tooltip } from '@mui/material'
+import {
+  ListItemButton,
+  Box,
+  Typography,
+  Chip,
+  SvgIcon,
+  IconButton,
+  Tooltip,
+  ListItemSecondaryAction,
+} from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
@@ -128,22 +137,24 @@ const AccountItem = ({
         </Link>
       </Track>
 
-      <Tooltip placement="top" arrow title="Bookmark this account">
-        <IconButton
-          edge="end"
-          size="small"
-          sx={{ mx: 1 }}
-          onClick={isBookmarked ? removeFromBookmarks : addToBookmarks}
-        >
-          <SvgIcon
-            component={isBookmarked ? BookmarkedIcon : BookmarkIcon}
-            inheritViewBox
-            color={isBookmarked ? 'primary' : undefined}
-            fontSize="medium"
-          />
-        </IconButton>
-      </Tooltip>
-      <SafeListContextMenu name={name} address={address} chainId={chainId} />
+      <ListItemSecondaryAction>
+        <Tooltip placement="top" arrow title="Bookmark this account">
+          <IconButton
+            edge="end"
+            size="small"
+            sx={{ mx: 1 }}
+            onClick={isBookmarked ? removeFromBookmarks : addToBookmarks}
+          >
+            <SvgIcon
+              component={isBookmarked ? BookmarkedIcon : BookmarkIcon}
+              inheritViewBox
+              color={isBookmarked ? 'primary' : undefined}
+              fontSize="medium"
+            />
+          </IconButton>
+        </Tooltip>
+        <SafeListContextMenu name={name} address={address} chainId={chainId} />
+      </ListItemSecondaryAction>
     </ListItemButton>
   )
 }
