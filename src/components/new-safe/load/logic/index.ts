@@ -31,12 +31,12 @@ export const addSafeToWatchlist = (dispatch: AppDispatch, safe: SafeInfo, safeNa
   )
 
   // Add all owners of the safe to address book
-  for (const { value } of safe.owners) {
+  for (const [index, { value }] of safe.owners.entries()) {
     dispatch(
       upsertAddressBookEntry({
         chainId: safe.chainId,
         address: value,
-        name: `${safeName} owner`,
+        name: `Signer ${index}`,
       }),
     )
   }

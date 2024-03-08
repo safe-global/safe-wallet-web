@@ -27,7 +27,7 @@ import { removeSafe } from '@/store/addedSafesSlice'
 type AccountItemProps = {
   chainId: string
   address: string
-  isReadonly: boolean
+  isReadOnly: boolean
   isBookmarked: boolean
   threshold?: number
   owners?: number
@@ -40,7 +40,7 @@ const AccountItem = ({
   onBookmarkClick,
   chainId,
   address,
-  isReadonly,
+  isReadOnly,
   isBookmarked,
   ...rest
 }: AccountItemProps) => {
@@ -111,7 +111,7 @@ const AccountItem = ({
               {shortenAddress(address)}
             </Typography>
             <br />
-            {isReadonly && (
+            {isReadOnly && (
               <Chip
                 className={css.readOnlyChip}
                 variant="outlined"

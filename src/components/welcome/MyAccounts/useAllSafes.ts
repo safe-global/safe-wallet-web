@@ -12,7 +12,7 @@ import { sameAddress } from '@/utils/addresses'
 export type SafeItems = Array<{
   chainId: string
   address: string
-  isReadonly: boolean
+  isReadOnly: boolean
   isBookmarked: boolean
   threshold?: number
   owners?: number
@@ -61,7 +61,7 @@ const useAllSafes = (): SafeItems | undefined => {
         return {
           address,
           chainId,
-          isReadonly: !isOwned && !isUndeployed,
+          isReadOnly: !isOwned && !isUndeployed,
           isBookmarked,
           threshold: allAdded[chainId]?.[address]?.threshold,
           owners: allAdded[chainId]?.[address]?.owners.length,
