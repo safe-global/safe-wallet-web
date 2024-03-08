@@ -112,6 +112,7 @@ export class SafeWalletProvider {
         const tx = {
           value: '0',
           data: '0x',
+          // @ts-ignore
           ...(params[0] as { gas: string | number; to: string }),
         }
         return this.eth_sendTransaction(tx, appInfo)
