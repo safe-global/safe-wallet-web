@@ -13,6 +13,7 @@ export type SafeItems = Array<{
   chainId: string
   address: string
   isReadonly: boolean
+  isBookmarked: boolean
   threshold?: number
   owners?: number
 }>
@@ -42,25 +43,26 @@ const useAllSafes = (): SafeItems | undefined => {
   const { configs } = useChains()
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
-  return useMemo<SafeItems | undefined>(() => {
-    const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned || {})))
+  return useMemo<SafeItems>(() => {
+    const chains = configs.map(({ chainId }) => chainId)
 
     return chains.flatMap((chainId) => {
       if (!configs.some((item) => item.chainId === chainId)) return []
       const addedOnChain = Object.keys(allAdded[chainId] || {})
-      const ownedOnChain = (allOwned || {})[chainId]
+      const ownedOnChain = (allOwned || {})[chainId] || []
       const undeployedOnChain = Object.keys(undeployedSafes[chainId] || {})
-      const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
-
+      const uniqueAddresses = uniq(ownedOnChain.concat(addedOnChain)).filter(Boolean)
       return uniqueAddresses.map((address) => {
         const owners = allAdded?.[chainId]?.[address]?.owners
         const isOwner = owners?.some(({ value }) => sameAddress(walletAddress, value))
         const isUndeployed = undeployedOnChain.includes(address)
-        const isOwned = (ownedOnChain || []).includes(address) || isOwner
+        const isOwned = ownedOnChain.includes(address) || isOwner
+        const isBookmarked = addedOnChain.some((addedAddress) => addedAddress === address)
         return {
           address,
           chainId,
           isReadonly: !isOwned && !isUndeployed,
+          isBookmarked,
           threshold: allAdded[chainId]?.[address]?.threshold,
           owners: allAdded[chainId]?.[address]?.owners.length,
         }

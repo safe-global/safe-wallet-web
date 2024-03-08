@@ -11,10 +11,21 @@ type PaginatedSafeListProps = {
 }
 
 const PaginatedSafeList = ({ safes, noSafesMessage, onLinkClick }: PaginatedSafeListProps) => {
+  const handleBookmarkClick = () => {
+    console.log('bookmarked')
+  }
+
   return (
     <div className={css.safeList}>
       {safes.length ? (
-        safes.map((item) => <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />)
+        safes.map((item) => (
+          <AccountItem
+            onLinkClick={onLinkClick}
+            onBookmarkClick={handleBookmarkClick}
+            {...item}
+            key={item.chainId + item.address}
+          />
+        ))
       ) : (
         <Typography variant="body2" color="text.secondary" textAlign="center" py={3} mx="auto" width={250}>
           {noSafesMessage}
