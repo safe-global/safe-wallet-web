@@ -1,7 +1,6 @@
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 export const addSafeToWatchlist = (dispatch: AppDispatch, safe: SafeInfo, safeName: string) => {
@@ -22,22 +21,22 @@ export const addSafeToWatchlist = (dispatch: AppDispatch, safe: SafeInfo, safeNa
   )
 
   // Add safe to address book
-  dispatch(
-    upsertAddressBookEntry({
-      chainId: safe.chainId,
-      address: safe.address.value,
-      name: safeName,
-    }),
-  )
+  // dispatch(
+  //   upsertAddressBookEntry({
+  //     chainId: safe.chainId,
+  //     address: safe.address.value,
+  //     name: safeName,
+  //   }),
+  // )
 
   // Add all owners of the safe to address book
-  for (const [index, { value }] of safe.owners.entries()) {
-    dispatch(
-      upsertAddressBookEntry({
-        chainId: safe.chainId,
-        address: value,
-        name: '',
-      }),
-    )
-  }
+  // for (const [index, { value }] of safe.owners.entries()) {
+  //   dispatch(
+  //     upsertAddressBookEntry({
+  //       chainId: safe.chainId,
+  //       address: value,
+  //       name: '',
+  //     }),
+  //   )
+  // }
 }
