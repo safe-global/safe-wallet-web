@@ -8,7 +8,7 @@
 .myAccounts {
   width: 100%;
   max-width: 663px;
-  margin: var(--space-2);
+  padding: var(--space-2);
 }
 
 .safeList {
@@ -107,7 +107,7 @@
 
 @container my-accounts-container (max-width: 500px) {
   .myAccounts {
-    margin: 0;
+    padding: 0;
   }
 
   .header {
