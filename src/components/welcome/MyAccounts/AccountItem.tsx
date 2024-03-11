@@ -98,7 +98,7 @@ const AccountItem = ({ onLinkClick, chainId, address, isReadOnly, isBookmarked, 
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
             {name && (
-              <Typography fontWeight="bold" fontSize="inherit">
+              <Typography noWrap fontWeight="bold" fontSize="inherit">
                 {name}
               </Typography>
             )}

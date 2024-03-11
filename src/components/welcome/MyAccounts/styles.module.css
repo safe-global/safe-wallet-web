@@ -12,7 +12,7 @@
 }
 
 .safeList {
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-1);
 }
 
 .safeList :last-child {
@@ -24,11 +24,6 @@
   flex-wrap: wrap;
   padding: var(--space-3) 0;
   gap: var(--space-2);
-}
-
-.header :global .MuiButtonBase-root {
-  padding-left: var(--space-2);
-  padding-right: var(--space-2);
 }
 
 .title {
@@ -45,15 +40,15 @@
   background-color: var(--color-background-paper);
 }
 
+.listItem > :first-child {
+  flex: 1;
+  width: 90%;
+}
+
 .currentListItem {
   border: 1px solid var(--color-secondary-light);
   border-left-width: 6px;
   background-color: var(--color-secondary-background) !important;
-}
-
-.listItem > :first-child {
-  flex: 1;
-  width: 90%;
 }
 
 .safeLink {
@@ -68,16 +63,7 @@
   overflow: hidden;
   margin-right: 10px;
   text-overflow: ellipsis;
-}
-
-.listHeader {
-  padding-bottom: var(--space-1);
-  display: flex;
-  justify-content: space-between;
-}
-
-.listTitle {
-  margin: auto 0;
+  max-width: 80%;
 }
 
 .card {
@@ -119,16 +105,6 @@
   padding-right: var(--space-1);
 }
 
-@media (max-width: 899.95px) {
-  .container {
-    width: auto;
-  }
-
-  .safeLink {
-    padding-right: 0;
-  }
-}
-
 @container my-accounts-container (max-width: 500px) {
   .myAccounts {
     margin: 0;
@@ -137,18 +113,23 @@
   .header {
     padding: var(--space-2);
     border-bottom: 1px solid var(--color-border-light);
+    gap: var(--space-1);
   }
 
   .safeList {
-    border-radius: 0;
-    margin-bottom: 0;
+    padding: var(--space-2);
+  }
+
+  .listItem {
+    border: 1px solid var(--color-border-light);
   }
 
   .title {
-    font-size: 20px;
+    font-size: 22px;
   }
 
-  .card {
-    border-top: 1px solid var(--color-border-light);
+  .header :global .MuiButtonBase-root {
+    padding-left: var(--space-1);
+    padding-right: var(--space-1);
   }
 }
