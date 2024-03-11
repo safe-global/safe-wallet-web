@@ -38,14 +38,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           </Typography>
           <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
             <Link href={AppRoutes.newSafe.load}>
-              <Button
-                data-testid="create-safe-btn"
-                disableElevation
-                size="small"
-                variant="outlined"
-                component="a"
-                onClick={onLinkClick}
-              >
+              <Button disableElevation size="small" variant="outlined" component="a" onClick={onLinkClick}>
                 Watch Account
               </Button>
             </Link>
