@@ -36,7 +36,7 @@ export const addSafeToWatchlist = (dispatch: AppDispatch, safe: SafeInfo, safeNa
       upsertAddressBookEntry({
         chainId: safe.chainId,
         address: value,
-        name: `Signer ${index}`,
+        name: '',
       }),
     )
   }
