@@ -26,7 +26,7 @@
   justify-content: flex-start;
 }
 
-@media (max-width: 899.95px) {
+@media (max-width: 499.95px) {
   .indicator {
     min-width: 35px;
   }

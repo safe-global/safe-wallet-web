@@ -63,7 +63,7 @@
   overflow: hidden;
   margin-right: 10px;
   text-overflow: ellipsis;
-  max-width: 80%;
+  max-width: 60%;
 }
 
 .card {
