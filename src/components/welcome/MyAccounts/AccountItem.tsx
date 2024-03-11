@@ -44,15 +44,7 @@ type AccountItemProps = {
   onBookmarkClick?: () => void
 }
 
-const AccountItem = ({
-  onLinkClick,
-  onBookmarkClick,
-  chainId,
-  address,
-  isReadOnly,
-  isBookmarked,
-  ...rest
-}: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, chainId, address, isReadOnly, isBookmarked, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
@@ -63,11 +55,6 @@ const AccountItem = ({
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
-
-  // const handleBookmarkClick = async () => {
-  //   const safeInfo = await getSafeInfo(chainId, address)
-  //   addSafeToWatchlist(dispatch, safeInfo, '')
-  // }
 
   const addToBookmarks = async () => {
     const safeInfo = await getSafeInfo(chainId, address)

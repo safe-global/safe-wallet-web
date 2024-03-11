@@ -4,28 +4,17 @@ import AccountItem from './AccountItem'
 import { type SafeItems } from './useAllSafes'
 import css from './styles.module.css'
 
-type PaginatedSafeListProps = {
+type SafeListProps = {
   safes: SafeItems
   noSafesMessage?: ReactNode
   onLinkClick?: () => void
 }
 
-const PaginatedSafeList = ({ safes, noSafesMessage, onLinkClick }: PaginatedSafeListProps) => {
-  const handleBookmarkClick = () => {
-    console.log('bookmarked')
-  }
-
+const SafeList = ({ safes, noSafesMessage, onLinkClick }: SafeListProps) => {
   return (
     <div className={css.safeList}>
       {safes.length ? (
-        safes.map((item) => (
-          <AccountItem
-            onLinkClick={onLinkClick}
-            onBookmarkClick={handleBookmarkClick}
-            {...item}
-            key={item.chainId + item.address}
-          />
-        ))
+        safes.map((item) => <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />)
       ) : (
         <Typography variant="body2" color="text.secondary" textAlign="center" py={3} mx="auto" width={250}>
           {noSafesMessage}
@@ -35,4 +24,4 @@ const PaginatedSafeList = ({ safes, noSafesMessage, onLinkClick }: PaginatedSafe
   )
 }
 
-export default PaginatedSafeList
+export default SafeList

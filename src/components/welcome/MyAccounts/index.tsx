@@ -6,7 +6,7 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
-import PaginatedSafeList from './PaginatedSafeList'
+import SafeList from './SafeList'
 import { AppRoutes } from '@/config/routes'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -53,7 +53,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           </Track>
         </Box>
 
-        <PaginatedSafeList
+        <SafeList
           safes={safes || []}
           onLinkClick={onLinkClick}
           noSafesMessage={
