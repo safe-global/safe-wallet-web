@@ -1,4 +1,4 @@
-import { Box, Button, Link, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, Link, Typography } from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
 import useAllSafes, { type SafeItems } from './useAllSafes'
@@ -8,7 +8,6 @@ import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
-import classNames from 'classnames'
 import AccountItem from './AccountItem'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 
@@ -21,8 +20,6 @@ type AccountsListProps = {
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const wallet = useWallet()
   const router = useRouter()
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   // useTrackSafesCount(ownedSafes, watchlistSafes)
 
@@ -30,7 +27,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const trackingLabel = isLoginPage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   return (
-    <Box data-testid="sidebar-safe-container" className={classNames({ [css.sidebar]: !isLoginPage }, css.container)}>
+    <Box data-testid="sidebar-safe-container" className={css.container}>
       <Box className={css.myAccounts}>
         <Box className={css.header}>
           <Typography variant="h1" fontWeight={700} className={css.title}>
