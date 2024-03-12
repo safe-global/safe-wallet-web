@@ -41,24 +41,22 @@
 .or {
   text-align: center;
   padding: var(--space-2) var(--space-3);
-}
-
-.buttons {
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
   display: flex;
-  align-items: center;
   justify-content: center;
-}
-
-.rejectButton {
-  position: relative;
-  display: flex;
   align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) 0;
+  font-weight: 700;
 }
 
-.rejectHint {
-  position: absolute;
-  right: calc(-1 * var(--space-3));
-  z-index: 1;
+.or:before,
+.or:after {
+  content: '';
+  flex: 1;
+  display: block;
+  border-top: 1px solid var(--color-border-light);
 }
 
 @media (max-width: 599.95px) {
