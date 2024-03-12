@@ -405,83 +405,79 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
           <Divider />
 
-          {ownedSafes &&
-            Object.entries(ownedSafes).map(([chainId, safeAddresses], i, arr) => {
-              {
-                /* {Object.entries(notifiableSafes).map(([chainId, safeAddresses], i, arr) => { */
-              }
-              if (safeAddresses.length === 0) return
-              const chain = chains.configs?.find((chain) => chain.chainId === chainId)
+          {Object.entries(notifiableSafes).map(([chainId, safeAddresses], i, arr) => {
+            if (safeAddresses.length === 0) return
+            const chain = chains.configs?.find((chain) => chain.chainId === chainId)
 
-              const isChainSelected = safeAddresses.every((address) => {
-                return selectedSafes[chainId]?.includes(address)
+            const isChainSelected = safeAddresses.every((address) => {
+              return selectedSafes[chainId]?.includes(address)
+            })
+
+            const onSelectChain = () => {
+              setSelectedSafes((prev) => {
+                return {
+                  ...prev,
+                  [chainId]: isChainSelected ? [] : safeAddresses,
+                }
               })
+            }
 
-              const onSelectChain = () => {
-                setSelectedSafes((prev) => {
-                  return {
-                    ...prev,
-                    [chainId]: isChainSelected ? [] : safeAddresses,
-                  }
-                })
-              }
+            return (
+              <Fragment key={chainId}>
+                <List>
+                  <ListItem disablePadding className={css.item}>
+                    <ListItemButton onClick={onSelectChain} dense>
+                      <ListItemIcon className={css.icon}>
+                        <Checkbox edge="start" checked={isChainSelected} disableRipple />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`${chain?.chainName} Safe Accounts`}
+                        primaryTypographyProps={{ variant: 'h5' }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
 
-              return (
-                <Fragment key={chainId}>
-                  <List>
-                    <ListItem disablePadding className={css.item}>
-                      <ListItemButton onClick={onSelectChain} dense>
-                        <ListItemIcon className={css.icon}>
-                          <Checkbox edge="start" checked={isChainSelected} disableRipple />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={`${chain?.chainName} Safe Accounts`}
-                          primaryTypographyProps={{ variant: 'h5' }}
-                        />
-                      </ListItemButton>
-                    </ListItem>
+                  <List disablePadding className={css.item}>
+                    {safeAddresses.map((safeAddress) => {
+                      const isSafeSelected = selectedSafes[chainId]?.includes(safeAddress) ?? false
 
-                    <List disablePadding className={css.item}>
-                      {safeAddresses.map((safeAddress) => {
-                        const isSafeSelected = selectedSafes[chainId]?.includes(safeAddress) ?? false
+                      const onSelectSafe = () => {
+                        setSelectedSafes((prev) => {
+                          return {
+                            ...prev,
+                            [chainId]: isSafeSelected
+                              ? prev[chainId]?.filter((addr) => !sameAddress(addr, safeAddress))
+                              : [...(prev[chainId] ?? []), safeAddress],
+                          }
+                        })
+                      }
 
-                        const onSelectSafe = () => {
-                          setSelectedSafes((prev) => {
-                            return {
-                              ...prev,
-                              [chainId]: isSafeSelected
-                                ? prev[chainId]?.filter((addr) => !sameAddress(addr, safeAddress))
-                                : [...(prev[chainId] ?? []), safeAddress],
-                            }
-                          })
-                        }
-
-                        return (
-                          <ListItem disablePadding key={safeAddress}>
-                            <ListItemButton sx={{ pl: 7, py: 0.5 }} onClick={onSelectSafe} dense>
-                              <ListItemIcon className={css.icon}>
-                                <Checkbox edge="start" checked={isSafeSelected} disableRipple />
-                              </ListItemIcon>
-                              <EthHashInfo
-                                avatarSize={36}
-                                prefix={chain?.shortName}
-                                key={safeAddress}
-                                address={safeAddress || ''}
-                                shortAddress={false}
-                                showName={true}
-                                chainId={chainId}
-                              />
-                            </ListItemButton>
-                          </ListItem>
-                        )
-                      })}
-                    </List>
+                      return (
+                        <ListItem disablePadding key={safeAddress}>
+                          <ListItemButton sx={{ pl: 7, py: 0.5 }} onClick={onSelectSafe} dense>
+                            <ListItemIcon className={css.icon}>
+                              <Checkbox edge="start" checked={isSafeSelected} disableRipple />
+                            </ListItemIcon>
+                            <EthHashInfo
+                              avatarSize={36}
+                              prefix={chain?.shortName}
+                              key={safeAddress}
+                              address={safeAddress || ''}
+                              shortAddress={false}
+                              showName={true}
+                              chainId={chainId}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      )
+                    })}
                   </List>
+                </List>
 
-                  {i !== arr.length - 1 ? <Divider /> : null}
-                </Fragment>
-              )
-            })}
+                {i !== arr.length - 1 ? <Divider /> : null}
+              </Fragment>
+            )
+          })}
         </Paper>
       </Grid>
     </Grid>
