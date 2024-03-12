@@ -1,7 +1,7 @@
 import { ContractVersions, getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import type { Delay, SupportedNetworks } from '@gnosis.pm/zodiac'
-import type { JsonRpcProvider } from 'ethers'
+import { type JsonRpcProvider, isAddress } from 'ethers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { sameAddress } from '@/utils/addresses'
@@ -13,6 +13,8 @@ export async function _getZodiacContract(
   moduleAddress: string,
   provider: JsonRpcProvider,
 ): Promise<string | undefined> {
+  if (!isAddress(moduleAddress)) return
+
   const bytecode = await provider.getCode(moduleAddress)
 
   if (isGenericProxy(bytecode)) {
