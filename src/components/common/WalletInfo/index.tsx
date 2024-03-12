@@ -90,7 +90,7 @@ export const WalletInfo = ({
         ) : (
           <>
             <WalletIdenticon wallet={wallet} size={36} />
-            <Typography variant="body2" className={css.address}>
+            <Typography variant="body2" className={css.address} component="div">
               <EthHashInfo
                 address={wallet.address}
                 name={addressBook[wallet.address] || wallet.ens || wallet.label}
