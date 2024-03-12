@@ -156,21 +156,23 @@ const TxLayout = ({
                 </Grid>
 
                 {/* Sidebar */}
-                <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
-                  {statusVisible && !isReplacement && (
-                    <TxStatusWidget
-                      step={step}
-                      txSummary={txSummary}
-                      handleClose={() => setStatusVisible(false)}
-                      isBatch={isBatch}
-                      isMessage={isMessage}
-                    />
-                  )}
+                {!isReplacement && (
+                  <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
+                    {statusVisible && (
+                      <TxStatusWidget
+                        step={step}
+                        txSummary={txSummary}
+                        handleClose={() => setStatusVisible(false)}
+                        isBatch={isBatch}
+                        isMessage={isMessage}
+                      />
+                    )}
 
-                  <Box className={css.sticky}>
-                    <SecurityWarnings />
-                  </Box>
-                </Grid>
+                    <Box className={css.sticky}>
+                      <SecurityWarnings />
+                    </Box>
+                  </Grid>
+                )}
               </Grid>
             </Container>
           </>
