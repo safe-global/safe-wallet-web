@@ -1,4 +1,4 @@
-import { getSafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
 import {
   ListItemButton,
@@ -16,7 +16,7 @@ import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import css from './styles.module.css'
@@ -30,8 +30,6 @@ import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
-import { addSafeToWatchlist } from '@/components/new-safe/load/logic'
-import { removeSafe } from '@/store/addedSafesSlice'
 
 type AccountItemProps = {
   chainId: string
@@ -42,28 +40,29 @@ type AccountItemProps = {
   owners?: number
   onLinkClick?: () => void
   onBookmarkClick?: () => void
+  addToBookmarks: (chainId: string, address: string) => void
+  removeFromBookmarks: (chainId: string, address: string) => void
 }
 
-const AccountItem = ({ onLinkClick, chainId, address, isReadOnly, isBookmarked, ...rest }: AccountItemProps) => {
+const AccountItem = ({
+  onLinkClick,
+  chainId,
+  address,
+  isReadOnly,
+  isBookmarked,
+  addToBookmarks,
+  removeFromBookmarks,
+  ...rest
+}: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
   const router = useRouter()
-  const dispatch = useAppDispatch()
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
 
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
-
-  const addToBookmarks = async () => {
-    const safeInfo = await getSafeInfo(chainId, address)
-    addSafeToWatchlist(dispatch, safeInfo, '')
-  }
-
-  const removeFromBookmarks = () => {
-    dispatch(removeSafe({ chainId, address }))
-  }
 
   /**
    * Navigate to the dashboard when selecting a safe on the welcome page,
@@ -85,6 +84,9 @@ const AccountItem = ({ onLinkClick, chainId, address, isReadOnly, isBookmarked, 
   }, [chain, getHref, address])
 
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
+
+  const handleBookmarkClick = () =>
+    isBookmarked ? removeFromBookmarks(chainId, address) : addToBookmarks(chainId, address)
 
   return (
     <ListItemButton
@@ -126,12 +128,7 @@ const AccountItem = ({ onLinkClick, chainId, address, isReadOnly, isBookmarked, 
 
       <ListItemSecondaryAction>
         <Tooltip placement="top" arrow title="Bookmark this account">
-          <IconButton
-            edge="end"
-            size="small"
-            sx={{ mx: 1 }}
-            onClick={isBookmarked ? removeFromBookmarks : addToBookmarks}
-          >
+          <IconButton edge="end" size="small" sx={{ mx: 1 }} onClick={handleBookmarkClick}>
             <SvgIcon
               component={isBookmarked ? BookmarkedIcon : BookmarkIcon}
               inheritViewBox

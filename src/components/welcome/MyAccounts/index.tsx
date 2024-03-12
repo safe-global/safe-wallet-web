@@ -10,6 +10,11 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
 import AccountItem from './AccountItem'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
+import { useAppDispatch } from '@/store'
+import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { addSafeToWatchlist } from '@/components/new-safe/load/logic'
+import { removeSafe } from '@/store/addedSafesSlice'
+import { useEffect, useMemo, useState } from 'react'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 
@@ -20,11 +25,38 @@ type AccountsListProps = {
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const wallet = useWallet()
   const router = useRouter()
+  const dispatch = useAppDispatch()
+  const [updatedSafes, setUpdatedSafes] = useState<SafeItems | undefined>()
 
   // useTrackSafesCount(ownedSafes, watchlistSafes)
 
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
   const trackingLabel = isLoginPage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+
+  useEffect(() => {
+    setUpdatedSafes(undefined)
+  }, [wallet])
+
+  const displayedSafes = useMemo(() => {
+    return updatedSafes || safes?.sort((a, b) => Number(b.isBookmarked) - Number(a.isBookmarked))
+  }, [safes, updatedSafes])
+
+  const addToBookmarks = async (chainId: string, address: string) => {
+    const updatedSafes = displayedSafes?.map((safe) => {
+      return chainId === safe.chainId && address === safe.address ? { ...safe, isBookmarked: true } : safe
+    })
+    setUpdatedSafes(updatedSafes)
+    const safeInfo = await getSafeInfo(chainId, address)
+    addSafeToWatchlist(dispatch, safeInfo, '')
+  }
+
+  const removeFromBookmarks = (chainId: string, address: string) => {
+    const updatedSafes = displayedSafes?.map((safe) => {
+      return chainId === safe.chainId && address === safe.address ? { ...safe, isBookmarked: false } : safe
+    })
+    setUpdatedSafes(updatedSafes)
+    dispatch(removeSafe({ chainId, address }))
+  }
 
   return (
     <Box data-testid="sidebar-safe-container" className={css.container}>
@@ -46,8 +78,16 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
         </Box>
 
         <div className={css.safeList}>
-          {safes?.length ? (
-            safes.map((item) => <AccountItem onLinkClick={onLinkClick} {...item} key={item.chainId + item.address} />)
+          {displayedSafes?.length ? (
+            displayedSafes.map((item) => (
+              <AccountItem
+                onLinkClick={onLinkClick}
+                {...item}
+                key={item.chainId + item.address}
+                addToBookmarks={addToBookmarks}
+                removeFromBookmarks={removeFromBookmarks}
+              />
+            ))
           ) : (
             <Typography variant="body2" color="text.secondary" textAlign="center" py={3} mx="auto" width={250}>
               {wallet ? (
