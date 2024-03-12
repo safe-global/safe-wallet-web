@@ -13,7 +13,7 @@ const nonceTxValue = '[data-testid="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
 export const transactionItem = '[data-testid="transaction-item"]'
-export const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
+const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
 const addToBatchBtn = '[data-track="batching: Add to batch"]'
 const accordionDetails = '[data-testid="accordion-details"]'
 const copyIcon = '[data-testid="copy-btn-icon"]'
@@ -25,10 +25,11 @@ const txRowTitle = '[data-testid="tx-row-title"]'
 const advancedDetails = '[data-testid="tx-advanced-details"]'
 const baseGas = '[data-testid="tx-bas-gas"]'
 const requiredConfirmation = '[data-testid="required-confirmations"]'
-export const txDate = '[data-testid="tx-date"]'
+const txDate = '[data-testid="tx-date"]'
 const spamTokenWarningIcon = '[data-testid="warning"]'
 const untrustedTokenWarningModal = '[data-testid="untrusted-token-warning"]'
 const sendTokensBtn = '[data-testid="send-tokens-btn"]'
+export const replacementNewSigner = '[data-testid="new-owner"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -407,4 +408,8 @@ export function verifyTxDestinationAddress(receivedAddress) {
   cy.get(receivedAddress).then((address) => {
     cy.contains(address).should('exist')
   })
+}
+
+export function verifyReplacedSigner(newSignerName) {
+  cy.get(replacementNewSigner).should('exist').contains(newSignerName)
 }
