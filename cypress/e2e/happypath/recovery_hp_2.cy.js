@@ -13,13 +13,6 @@ describe('Recovery happy path tests 2', () => {
 
   // Check that recoverer can start and complete the process if not cancelled by the owner
   it('Recovery setup happy path 2', { defaultCommandTimeout: 300000 }, () => {
-    cy.on('uncaught:exception', (e, runnable) => {
-      console.log('error', e)
-      console.log('runnable', runnable)
-      console.log('error', e.message)
-      return false
-    })
-
     owner.waitForConnectionStatus()
     recovery.postponeRecovery()
 
@@ -33,9 +26,13 @@ describe('Recovery happy path tests 2', () => {
       recovery.clickOnStartRecoveryBtn()
       recovery.enterOwnerAddress(owner)
       recovery.clickOnNextBtn()
+      cy.wait(1000)
       recovery.clickOnRecoveryExecuteBtn()
+      cy.wait(1000)
       recovery.clickOnGoToQueueBtn()
+      cy.wait(1000)
       recovery.clickOnRecoveryExecuteBtn()
+      cy.wait(1000)
       recovery.verifyTxNotInQueue()
       cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2)
       main.verifyElementsCount(addressbook.tableContainer, 1)
