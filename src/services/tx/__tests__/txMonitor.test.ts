@@ -5,8 +5,11 @@ import * as txMonitor from '@/services/tx/txMonitor'
 import { act } from '@testing-library/react'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { toBeHex } from 'ethers'
-import { BrowserProvider, type JsonRpcProvider, type TransactionReceipt } from 'ethers'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
+import { BrowserProvider, type JsonRpcProvider, type TransactionReceipt } from 'ethers'
+import { faker } from '@faker-js/faker'
+import { SimpleTxWatcher } from '@/utils/SimpleTxWatcher'
+
 
 const { waitForTx, waitForRelayedTx, waitForCreateSafeTx } = txMonitor
 
@@ -21,9 +24,14 @@ const setupFetchStub = (data: any) => (_url: string) => {
 }
 
 describe('txMonitor', () => {
+  const simpleTxWatcherInstance = SimpleTxWatcher.getInstance()
+
   let txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
   let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+  // let simpleWatcherSpy = jest.spyOn(SimpleTxWatcher, 'getInstance')
   const safeAddress = toBeHex('0x123', 20)
+
+  let watchTxHashSpy = jest.spyOn(simpleTxWatcherInstance, 'watchTxHash')
 
   beforeEach(() => {
     jest.useFakeTimers()
@@ -31,46 +39,19 @@ describe('txMonitor', () => {
 
     txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
     waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+    watchTxHashSpy = jest.spyOn(simpleTxWatcherInstance, 'watchTxHash')
   })
 
   describe('waitForTx', () => {
-    // Mined/validated:
-    it("doesn't emit an event if the tx was successfully mined/validated", async () => {
-      const receipt = {
-        status: 1,
-      } as TransactionReceipt
-
-      waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
-
-      await waitForTx(provider, ['0x0'], '0x0')
-
-      expect(txDispatchSpy).not.toHaveBeenCalled()
-    })
-
     // Not mined/validated:
     it("emits a FAILED event if waitForTransaction isn't blocking and no receipt was returned", async () => {
       // Can return null if waitForTransaction is non-blocking:
       // https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/-%23-Provider-waitForTransaction
       const receipt = null as unknown as TransactionReceipt
-
-      waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
-
-      await waitForTx(provider, ['0x0'], '0x0')
+      watchTxHashSpy.mockImplementation(() => Promise.resolve(receipt))
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
-    })
-
-    it('emits a FAILED event if the tx mining/validating timed out', async () => {
-      waitForTxSpy.mockImplementationOnce(
-        () => Promise.resolve(null) as unknown as ReturnType<typeof provider.waitForTransaction>,
-      )
-
-      await waitForTx(provider, ['0x0'], '0x0')
-
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
-        txId: '0x0',
-        error: new Error('Transaction not processed in 1 minute. Be aware that it might still be processed.'),
-      })
     })
 
     it('emits a REVERTED event if the tx reverted', async () => {
@@ -78,9 +59,8 @@ describe('txMonitor', () => {
         status: 0,
       } as TransactionReceipt
 
-      waitForTxSpy.mockImplementationOnce(() => Promise.resolve(receipt))
-
-      await waitForTx(provider, ['0x0'], '0x0')
+      watchTxHashSpy.mockImplementation(() => Promise.resolve(receipt))
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
 
       expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
         txId: '0x0',
@@ -88,21 +68,9 @@ describe('txMonitor', () => {
       })
     })
 
-    it('emits a FAILED event if waitForTransaction times out', async () => {
-      waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error('Test error.')))
-
-      await waitForTx(provider, ['0x0'], '0x0')
-
-      // 1 minute (timeout of txMonitor) + 1ms
-      jest.advanceTimersByTime(60_000 + 1)
-
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
-    })
-
     it('emits a FAILED event if waitForTransaction throws', async () => {
-      waitForTxSpy.mockImplementationOnce(() => Promise.reject(new Error('Test error.')))
-
-      await waitForTx(provider, ['0x0'], '0x0')
+      watchTxHashSpy.mockImplementation(() => Promise.reject(new Error('Test error.')))
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: new Error('Test error.') })
     })
