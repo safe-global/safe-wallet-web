@@ -1,8 +1,7 @@
 import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AllOwnedSafes, ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
-  _transformAddedSafes,
   _mergeNotifiableSafes,
   _transformCurrentSubscribedSafes,
   _getTotalNotifiableSafes,
@@ -16,41 +15,14 @@ import {
   _sanitizeNotifiableSafes,
   _filterUndeployedSafes,
 } from '../GlobalPushNotifications'
-import type { AddedSafesState } from '@/store/addedSafesSlice'
 
 describe('GlobalPushNotifications', () => {
-  describe('transformAddedSafes', () => {
-    it('should transform added safes into notifiable safes', () => {
-      const addedSafes = {
-        '1': {
-          '0x123': {},
-          '0x456': {},
-        },
-        '4': {
-          '0x789': {},
-        },
-      } as unknown as AddedSafesState
-
-      const expectedNotifiableSafes = {
-        '1': ['0x123', '0x456'],
-        '4': ['0x789'],
-      }
-
-      expect(_transformAddedSafes(addedSafes)).toEqual(expectedNotifiableSafes)
-    })
-  })
-
   describe('mergeNotifiableSafes', () => {
     it('should merge added safes and current subscriptions', () => {
-      const addedSafes = {
-        '1': {
-          '0x123': {},
-          '0x456': {},
-        },
-        '4': {
-          '0x789': {},
-        },
-      } as unknown as AddedSafesState
+      const ownedSafes = {
+        '1': ['0x123', '0x456'],
+        '4': ['0x789'],
+      } as unknown as AllOwnedSafes
 
       const currentSubscriptions = {
         '1': ['0x123', '0x789'],
@@ -62,21 +34,16 @@ describe('GlobalPushNotifications', () => {
         '4': ['0x789'],
       }
 
-      expect(_mergeNotifiableSafes(addedSafes, currentSubscriptions)).toEqual(expectedNotifiableSafes)
+      expect(_mergeNotifiableSafes(ownedSafes, currentSubscriptions)).toEqual(expectedNotifiableSafes)
     })
 
-    it('should return added safes if there are no current subscriptions', () => {
-      const addedSafes = {
-        '1': {
-          '0x123': {},
-          '0x456': {},
-        },
-        '4': {
-          '0x789': {},
-        },
-      } as unknown as AddedSafesState
+    it('should return owned safes if there are no current subscriptions', () => {
+      const ownedSafes = {
+        '1': ['0x123', '0x456'],
+        '4': ['0x789'],
+      } as unknown as AllOwnedSafes
 
-      expect(_mergeNotifiableSafes(addedSafes)).toEqual(_transformAddedSafes(addedSafes))
+      expect(_mergeNotifiableSafes(ownedSafes)).toEqual(ownedSafes)
     })
   })
 

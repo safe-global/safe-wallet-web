@@ -19,7 +19,8 @@ import difference from 'lodash/difference'
 import pickBy from 'lodash/pickBy'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AllOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
@@ -27,21 +28,22 @@ import useChains from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
-import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { requestNotificationPermission } from './logic'
 import { useDismissPushNotificationsBanner } from './PushNotificationsBanner'
 import type { NotifiableSafes } from './logic'
-import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
+import useAllOwnedSafes from '@/components/welcome/MyAccounts/useAllOwnedSafes'
+import useWallet from '@/hooks/wallets/useWallet'
+import { isEmpty } from 'lodash'
 
 // UI logic
 
-export const _filterUndeployedSafes = (safes: NotifiableSafes, undeployedSafes: UndeployedSafesState) => {
+export const _filterUndeployedSafes = (safes: NotifiableSafes | undefined, undeployedSafes: UndeployedSafesState) => {
   return pickBy(
     mapValues(safes, (safeAddresses, chainId) => {
       const undeployedAddresses = undeployedSafes[chainId] ? Object.keys(undeployedSafes[chainId]) : []
@@ -49,14 +51,6 @@ export const _filterUndeployedSafes = (safes: NotifiableSafes, undeployedSafes: 
     }),
     (safeAddresses) => safeAddresses.length > 0,
   )
-}
-
-// Convert data structure of added Safes
-export const _transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {
-  return Object.entries(addedSafes).reduce<NotifiableSafes>((acc, [chainId, addedSafesOnChain]) => {
-    acc[chainId] = Object.keys(addedSafesOnChain)
-    return acc
-  }, {})
 }
 
 // Convert data structure of currently notified Safes
@@ -95,18 +89,17 @@ export const _sanitizeNotifiableSafes = (
 
 // Merges added Safes and currently notified Safes into a single data structure without duplicates
 export const _mergeNotifiableSafes = (
-  addedSafes: AddedSafesState,
+  ownedSafes: AllOwnedSafes | undefined,
   currentSubscriptions?: NotifiableSafes,
-): NotifiableSafes => {
-  const notifiableSafes = _transformAddedSafes(addedSafes)
-
-  if (!currentSubscriptions) {
-    return notifiableSafes
+): NotifiableSafes | undefined => {
+  if (isEmpty(currentSubscriptions) || !ownedSafes) {
+    return isEmpty(currentSubscriptions) ? ownedSafes : currentSubscriptions
   }
 
   // Locally registered Safes (if not already added)
+  let notifiableSafes: NotifiableSafes = {}
   for (const [chainId, safeAddresses] of Object.entries(currentSubscriptions)) {
-    const notifiableSafesOnChain = notifiableSafes[chainId] ?? []
+    const notifiableSafesOnChain = ownedSafes[chainId] ?? []
     const uniqueSafeAddresses = Array.from(new Set([...notifiableSafesOnChain, ...safeAddresses]))
 
     notifiableSafes[chainId] = uniqueSafeAddresses
@@ -248,9 +241,10 @@ export const _shouldUnregisterDevice = (
 
 export const GlobalPushNotifications = (): ReactElement | null => {
   const chains = useChains()
-  const addedSafes = useAppSelector(selectAllAddedSafes)
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const [isLoading, setIsLoading] = useState(false)
+  const { address = '' } = useWallet() || {}
+  const [ownedSafes] = useAllOwnedSafes(address)
 
   const { dismissPushNotificationBanner } = useDismissPushNotificationsBanner()
   const { getAllPreferences } = useNotificationPreferences()
@@ -281,10 +275,10 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   // Merged added Safes and `currentNotifiedSafes` (in case subscriptions aren't added)
   const notifiableSafes = useMemo(() => {
-    const safes = _mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
+    const safes = _mergeNotifiableSafes(ownedSafes, currentNotifiedSafes)
     const deployedSafes = _filterUndeployedSafes(safes, undeployedSafes)
     return _sanitizeNotifiableSafes(chains.configs, deployedSafes)
-  }, [addedSafes, currentNotifiedSafes, undeployedSafes, chains.configs])
+  }, [ownedSafes, currentNotifiedSafes, undeployedSafes, chains.configs])
 
   const totalNotifiableSafes = useMemo(() => {
     return _getTotalNotifiableSafes(notifiableSafes)
@@ -411,78 +405,83 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
           <Divider />
 
-          {Object.entries(notifiableSafes).map(([chainId, safeAddresses], i, arr) => {
-            const chain = chains.configs?.find((chain) => chain.chainId === chainId)
+          {ownedSafes &&
+            Object.entries(ownedSafes).map(([chainId, safeAddresses], i, arr) => {
+              {
+                /* {Object.entries(notifiableSafes).map(([chainId, safeAddresses], i, arr) => { */
+              }
+              if (safeAddresses.length === 0) return
+              const chain = chains.configs?.find((chain) => chain.chainId === chainId)
 
-            const isChainSelected = safeAddresses.every((address) => {
-              return selectedSafes[chainId]?.includes(address)
-            })
-
-            const onSelectChain = () => {
-              setSelectedSafes((prev) => {
-                return {
-                  ...prev,
-                  [chainId]: isChainSelected ? [] : safeAddresses,
-                }
+              const isChainSelected = safeAddresses.every((address) => {
+                return selectedSafes[chainId]?.includes(address)
               })
-            }
 
-            return (
-              <Fragment key={chainId}>
-                <List>
-                  <ListItem disablePadding className={css.item}>
-                    <ListItemButton onClick={onSelectChain} dense>
-                      <ListItemIcon className={css.icon}>
-                        <Checkbox edge="start" checked={isChainSelected} disableRipple />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={`${chain?.chainName} Safe Accounts`}
-                        primaryTypographyProps={{ variant: 'h5' }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
+              const onSelectChain = () => {
+                setSelectedSafes((prev) => {
+                  return {
+                    ...prev,
+                    [chainId]: isChainSelected ? [] : safeAddresses,
+                  }
+                })
+              }
 
-                  <List disablePadding className={css.item}>
-                    {safeAddresses.map((safeAddress) => {
-                      const isSafeSelected = selectedSafes[chainId]?.includes(safeAddress) ?? false
+              return (
+                <Fragment key={chainId}>
+                  <List>
+                    <ListItem disablePadding className={css.item}>
+                      <ListItemButton onClick={onSelectChain} dense>
+                        <ListItemIcon className={css.icon}>
+                          <Checkbox edge="start" checked={isChainSelected} disableRipple />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`${chain?.chainName} Safe Accounts`}
+                          primaryTypographyProps={{ variant: 'h5' }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
 
-                      const onSelectSafe = () => {
-                        setSelectedSafes((prev) => {
-                          return {
-                            ...prev,
-                            [chainId]: isSafeSelected
-                              ? prev[chainId]?.filter((addr) => !sameAddress(addr, safeAddress))
-                              : [...(prev[chainId] ?? []), safeAddress],
-                          }
-                        })
-                      }
+                    <List disablePadding className={css.item}>
+                      {safeAddresses.map((safeAddress) => {
+                        const isSafeSelected = selectedSafes[chainId]?.includes(safeAddress) ?? false
 
-                      return (
-                        <ListItem disablePadding key={safeAddress}>
-                          <ListItemButton sx={{ pl: 7, py: 0.5 }} onClick={onSelectSafe} dense>
-                            <ListItemIcon className={css.icon}>
-                              <Checkbox edge="start" checked={isSafeSelected} disableRipple />
-                            </ListItemIcon>
-                            <EthHashInfo
-                              avatarSize={36}
-                              prefix={chain?.shortName}
-                              key={safeAddress}
-                              address={safeAddress || ''}
-                              shortAddress={false}
-                              showName={true}
-                              chainId={chainId}
-                            />
-                          </ListItemButton>
-                        </ListItem>
-                      )
-                    })}
+                        const onSelectSafe = () => {
+                          setSelectedSafes((prev) => {
+                            return {
+                              ...prev,
+                              [chainId]: isSafeSelected
+                                ? prev[chainId]?.filter((addr) => !sameAddress(addr, safeAddress))
+                                : [...(prev[chainId] ?? []), safeAddress],
+                            }
+                          })
+                        }
+
+                        return (
+                          <ListItem disablePadding key={safeAddress}>
+                            <ListItemButton sx={{ pl: 7, py: 0.5 }} onClick={onSelectSafe} dense>
+                              <ListItemIcon className={css.icon}>
+                                <Checkbox edge="start" checked={isSafeSelected} disableRipple />
+                              </ListItemIcon>
+                              <EthHashInfo
+                                avatarSize={36}
+                                prefix={chain?.shortName}
+                                key={safeAddress}
+                                address={safeAddress || ''}
+                                shortAddress={false}
+                                showName={true}
+                                chainId={chainId}
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        )
+                      })}
+                    </List>
                   </List>
-                </List>
 
-                {i !== arr.length - 1 ? <Divider /> : null}
-              </Fragment>
-            )
-          })}
+                  {i !== arr.length - 1 ? <Divider /> : null}
+                </Fragment>
+              )
+            })}
         </Paper>
       </Grid>
     </Grid>
