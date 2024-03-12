@@ -32,7 +32,7 @@ describe('Recovery happy path tests 2', () => {
       recovery.verifyTxNotInQueue()
       cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2)
       main.verifyElementsCount(addressbook.tableContainer, 1)
-      cy.wait(10000)
+      cy.wait(15000)
       main.getElementText(addressbook.tableContainer).then((text) => {
         expect(text).to.contain(owner)
       })
