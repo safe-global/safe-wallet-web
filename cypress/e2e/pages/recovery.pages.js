@@ -25,8 +25,8 @@ export function clickOnExecuteRecoveryCancelBtn() {
 }
 export function cancelRecoveryTx() {
   cy.get(txDate).click()
-  cy.get(cancelRecoveryBtn).click()
-  cy.get(cancelProposalBtn).click()
+  cy.get(cancelRecoveryBtn).scrollIntoView().click()
+  cy.get(cancelProposalBtn).scrollIntoView().click()
 }
 export function clickOnRecoveryExecuteBtn() {
   cy.get(executeBtn).eq(0).should('be.enabled', { timeout: 300000 }).click()
