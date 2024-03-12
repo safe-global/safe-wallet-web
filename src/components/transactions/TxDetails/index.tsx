@@ -58,7 +58,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
 
   // Get the safe tx hash if the wallet is the proposer of this tx
-  const proposedSafeTxHash = getProposedTxHash(txSummary, txDetails, wallet?.address)
+  const proposedSafeTxHash = getProposedTxHash(txDetails, wallet?.address)
 
   return (
     <>

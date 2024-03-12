@@ -60,7 +60,6 @@ describe('AppFrame', () => {
                         value: '0xbc2BB26a6d821e69A38016f3858561a1D80d4182',
                       },
                     ],
-                    proposer: null,
                   },
                 },
                 conflictType: ConflictType.NONE,

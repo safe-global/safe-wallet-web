@@ -43,7 +43,6 @@ export const defaultTx: TransactionSummary = {
     nonce: 1,
     confirmationsRequired: 2,
     confirmationsSubmitted: 2,
-    proposer: null,
   },
 }
 

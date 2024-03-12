@@ -63,7 +63,6 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       confirmationsRequired: detailedExecutionInfo.confirmationsRequired,
       confirmationsSubmitted: detailedExecutionInfo.confirmations?.length ?? 0,
       missingSigners: getMissingSigners(detailedExecutionInfo),
-      proposer: null,
     }
   }
 
@@ -300,16 +299,11 @@ export const isTrustedTx = (tx: TransactionSummary) => {
   )
 }
 
-export const getProposedTxHash = (
-  txSummary: TransactionSummary,
-  txDetails: TransactionDetails,
-  walletAddress: string | undefined,
-) => {
+export const getProposedTxHash = (txDetails: TransactionDetails, walletAddress: string | undefined) => {
   const proposedSafeTxHash =
     isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
-    isMultisigExecutionInfo(txSummary.executionInfo) &&
     walletAddress &&
-    sameAddress(walletAddress, txSummary.executionInfo.proposer?.value)
+    sameAddress(walletAddress, txDetails.detailedExecutionInfo.proposer?.value)
       ? txDetails.detailedExecutionInfo.safeTxHash
       : undefined
   return proposedSafeTxHash
