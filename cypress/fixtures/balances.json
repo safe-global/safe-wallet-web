@@ -19,9 +19,9 @@
         "type": "NATIVE_TOKEN",
         "address": "0x0000000000000000000000000000000000000000",
         "decimals": 18,
-        "symbol": "GOR",
-        "name": "Görli Ether",
-        "logoUri": "https://safe-transaction-assets.staging.5afe.dev/chains/5/currency_logo.png"
+        "symbol": "ETH",
+        "name": "Sepolia Ether",
+        "logoUri": "https://safe-transaction-assets.staging.5afe.dev/chains/11155111/currency_logo.png"
       },
       "balance": "21000000000000000",
       "fiatBalance": "35.14308",

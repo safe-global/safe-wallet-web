@@ -29,13 +29,7 @@ describe('SocialSignerLogin', () => {
 
     const result = render(
       <TxModalProvider>
-        <SocialSigner
-          socialWalletService={mockSocialWalletService}
-          wallet={mockWallet}
-          supportedChains={['Goerli']}
-          isMPCLoginEnabled={true}
-          onLogin={mockOnLogin}
-        />
+        <SocialSigner socialWalletService={mockSocialWalletService} wallet={mockWallet} onLogin={mockOnLogin} />
         <PasswordRecoveryModal />
       </TxModalProvider>,
     )
@@ -58,13 +52,7 @@ describe('SocialSignerLogin', () => {
 
     const result = render(
       <TxModalProvider>
-        <SocialSigner
-          socialWalletService={mockSocialWalletService}
-          wallet={null}
-          supportedChains={['Goerli']}
-          isMPCLoginEnabled={true}
-          onLogin={mockOnLogin}
-        />
+        <SocialSigner socialWalletService={mockSocialWalletService} wallet={null} onLogin={mockOnLogin} />
         <PasswordRecoveryModal />
       </TxModalProvider>,
     )
@@ -81,13 +69,7 @@ describe('SocialSignerLogin', () => {
 
     const result = render(
       <TxModalProvider>
-        <SocialSigner
-          socialWalletService={mockSocialWalletService}
-          wallet={mockWallet}
-          supportedChains={['Goerli']}
-          isMPCLoginEnabled={true}
-          onLogin={mockOnLogin}
-        />
+        <SocialSigner socialWalletService={mockSocialWalletService} wallet={mockWallet} onLogin={mockOnLogin} />
         <PasswordRecoveryModal />
       </TxModalProvider>,
     )
@@ -100,20 +82,6 @@ describe('SocialSignerLogin', () => {
     expect(mockOnLogin).toHaveBeenCalled()
   })
 
-  it('should disable the Google Login button with a message when not on gnosis chain', async () => {
-    const result = render(
-      <SocialSigner
-        socialWalletService={mockSocialWalletService}
-        wallet={mockWallet}
-        supportedChains={['Goerli']}
-        isMPCLoginEnabled={false}
-      />,
-    )
-
-    expect(result.getByText('Currently only supported on Goerli')).toBeInTheDocument()
-    expect(await result.findByRole('button')).toBeDisabled()
-  })
-
   it('should display Password Recovery form and display a Continue as button when login succeeds', async () => {
     const mockOnLogin = jest.fn()
     mockSocialWalletService.loginAndCreate = jest.fn(() => Promise.resolve(COREKIT_STATUS.REQUIRED_SHARE))
@@ -122,13 +90,7 @@ describe('SocialSignerLogin', () => {
 
     const result = render(
       <TxModalProvider>
-        <SocialSigner
-          socialWalletService={mockSocialWalletService}
-          wallet={mockWallet}
-          supportedChains={['Goerli']}
-          isMPCLoginEnabled={true}
-          onLogin={mockOnLogin}
-        />
+        <SocialSigner socialWalletService={mockSocialWalletService} wallet={mockWallet} onLogin={mockOnLogin} />
         <PasswordRecoveryModal />
       </TxModalProvider>,
     )
@@ -166,13 +128,7 @@ describe('SocialSignerLogin', () => {
 
     result.rerender(
       <TxModalProvider>
-        <SocialSigner
-          socialWalletService={mockSocialWalletService}
-          wallet={mockWallet}
-          supportedChains={['Goerli']}
-          isMPCLoginEnabled={true}
-          onLogin={mockOnLogin}
-        />
+        <SocialSigner socialWalletService={mockSocialWalletService} wallet={mockWallet} onLogin={mockOnLogin} />
         <PasswordRecoveryModal />
       </TxModalProvider>,
     )

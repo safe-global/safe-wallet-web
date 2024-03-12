@@ -61,7 +61,13 @@ export function CancelRecoveryButton({
         const isDisabled = isPending || (isOwner ? !isOk : !isOk || !isExpired)
 
         return (
-          <Button onClick={onClick} variant="danger" disabled={isDisabled} size={compact ? 'small' : 'stretched'}>
+          <Button
+            data-testid="cancel-recovery-btn"
+            onClick={onClick}
+            variant="danger"
+            disabled={isDisabled}
+            size={compact ? 'small' : 'stretched'}
+          >
             Cancel
           </Button>
         )

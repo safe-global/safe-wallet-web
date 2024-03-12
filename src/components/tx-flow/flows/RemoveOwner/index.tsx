@@ -33,7 +33,7 @@ const RemoveOwnerFlow = (props: Owner) => {
   return (
     <TxLayout
       title={step === 0 ? 'New transaction' : 'Confirm transaction'}
-      subtitle="Remove owner"
+      subtitle="Remove signer"
       icon={SaveAddressIcon}
       step={step}
       onBack={prevStep}

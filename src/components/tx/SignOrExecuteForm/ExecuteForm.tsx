@@ -162,7 +162,9 @@ export const ExecuteForm = ({
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
         ) : !walletCanPay && !willRelay ? (
-          <ErrorMessage>Your connected wallet doesn&apos;t have enough funds to execute this transaction.</ErrorMessage>
+          <ErrorMessage level={'info'}>
+            Your connected wallet doesn&apos;t have enough funds to execute this transaction.
+          </ErrorMessage>
         ) : (
           (executionValidationError || gasLimitError) && (
             <ErrorMessage error={executionValidationError || gasLimitError}>
@@ -190,7 +192,13 @@ export const ExecuteForm = ({
           {/* Submit button */}
           <CheckWallet allowNonOwner={onlyExecute}>
             {(isOk) => (
-              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
+              <Button
+                data-testid="execute-form-btn"
+                variant="contained"
+                type="submit"
+                disabled={!isOk || submitDisabled}
+                sx={{ minWidth: '112px' }}
+              >
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}

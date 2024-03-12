@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { gtmTrack } from '@/services/analytics/gtm'
-import { OVERVIEW_EVENTS, TX_LIST_EVENTS, ASSETS_EVENTS } from './events'
-import { selectTotalAdded } from '@/store/addedSafesSlice'
+import { TX_LIST_EVENTS, ASSETS_EVENTS } from './events'
 import { selectQueuedTransactions } from '@/store/txQueueSlice'
 import { useAppSelector } from '@/store'
 import useChainId from '@/hooks/useChainId'
@@ -13,17 +12,6 @@ import useHiddenTokens from '@/hooks/useHiddenTokens'
 const useMetaEvents = () => {
   const chainId = useChainId()
   const { safeAddress } = useSafeInfo()
-
-  // Total added safes
-  const totalAddedSafes = useAppSelector(selectTotalAdded)
-  useEffect(() => {
-    if (totalAddedSafes === 0) return
-
-    gtmTrack({
-      ...OVERVIEW_EVENTS.TOTAL_ADDED_SAFES,
-      label: totalAddedSafes.toString(),
-    })
-  }, [totalAddedSafes])
 
   // Queue size
   const queue = useAppSelector(selectQueuedTransactions)

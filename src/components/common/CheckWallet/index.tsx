@@ -14,7 +14,7 @@ type CheckWalletProps = {
 
 enum Message {
   WalletNotConnected = 'Please connect your wallet',
-  NotSafeOwner = 'Your connected wallet is not an owner of this Safe Account',
+  NotSafeOwner = 'Your connected wallet is not a signer of this Safe Account',
   OnlySpendingLimitBeneficiary = 'You can only create ERC-20 transactions within your spending limit',
 }
 

@@ -26,6 +26,7 @@ import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { gtmSetSafeAddress } from '@/services/analytics/gtm'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppDispatch } from '@/store'
@@ -112,7 +113,7 @@ export const SafeSetupOverview = ({
       <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
       {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
       <ReviewRow
-        name="Owners"
+        name="Signers"
         value={
           <Box data-testid="review-step-owner-info" className={css.ownersArray}>
             {owners.map((owner, index) => (
@@ -134,7 +135,7 @@ export const SafeSetupOverview = ({
         name="Threshold"
         value={
           <Typography>
-            {threshold} out of {owners.length} owner(s)
+            {threshold} out of {owners.length} signer(s)
           </Typography>
         }
       />
@@ -212,6 +213,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
+        gtmSetSafeAddress(safeAddress)
+
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
         await createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
         trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })

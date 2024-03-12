@@ -61,6 +61,7 @@ const useIsValidExecution = (
   const { safe } = useSafeInfo()
   const readOnlyProvider = useWeb3ReadOnly()
   const isOwner = useIsSafeOwner()
+  const threshold = safe.threshold
 
   const [isValidExecution, executionValidationError, isValidExecutionLoading] = useAsync(async () => {
     if (!safeTx || !wallet || gasLimit === undefined || !readOnlyProvider) {
@@ -88,7 +89,7 @@ const useIsValidExecution = (
         safeTx.data.gasPrice,
         safeTx.data.gasToken,
         safeTx.data.refundReceiver,
-        encodeSignatures(safeTx, isOwner ? wallet.address : undefined),
+        encodeSignatures(safeTx, isOwner ? wallet.address : undefined, safeTx.signatures.size < threshold),
         { from: wallet.address, gasLimit: gasLimit.toString() },
       )
     } catch (_err) {
@@ -101,7 +102,7 @@ const useIsValidExecution = (
 
       throw err
     }
-  }, [safeTx, wallet, gasLimit, safe, readOnlyProvider, isOwner])
+  }, [safeTx, wallet, gasLimit, safe, readOnlyProvider, isOwner, threshold])
 
   return { isValidExecution, executionValidationError, isValidExecutionLoading }
 }

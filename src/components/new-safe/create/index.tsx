@@ -55,17 +55,17 @@ const staticHints: Record<
     steps: [
       {
         title: 'Flat hierarchy',
-        text: 'Every owner has the same rights within the Safe Account and can propose, sign and execute transactions that have the required confirmations.',
+        text: 'Every signer has the same rights within the Safe Account and can propose, sign and execute transactions that have the required confirmations.',
       },
       {
-        title: 'Managing Owners',
-        text: 'You can always change the number of owners and required confirmations in your Safe Account after creation.',
+        title: 'Managing Signers',
+        text: 'You can always change the number of signers and required confirmations in your Safe Account after creation.',
       },
       {
         title: 'Safe Account setup',
         text: (
           <>
-            Not sure how many owners and confirmations you need for your Safe Account?
+            Not sure how many signers and confirmations you need for your Safe Account?
             <br />
             <ExternalLink href={HelpCenterArticle.SAFE_SETUP} fontWeight="bold">
               Learn more about setting up your Safe Account.
@@ -120,9 +120,9 @@ const CreateSafe = () => {
       ),
     },
     {
-      title: 'Owners and confirmations',
+      title: 'Signers and confirmations',
       subtitle:
-        'Set the owner wallets of your Safe Account and how many need to confirm to execute a valid transaction.',
+        'Set the signer wallets of your Safe Account and how many need to confirm to execute a valid transaction.',
       render: (data, onSubmit, onBack, setStep) => (
         <OwnerPolicyStep
           setDynamicHint={setDynamicHint}

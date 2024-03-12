@@ -61,7 +61,7 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
         <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: 2 }}>
           <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
             <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-            Previous owner
+            Previous signer
           </Typography>
           <EthHashInfo
             name={params.removedOwner.name}
@@ -77,7 +77,7 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
       <Box>
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
         <Typography>
-          <b>{threshold}</b> out of <b>{safe.owners.length + (removedOwner ? 0 : 1)} owners</b>
+          <b>{threshold}</b> out of <b>{safe.owners.length + (removedOwner ? 0 : 1)} signers</b>
         </Typography>
       </Box>
       <Divider className={commonCss.nestedDivider} />

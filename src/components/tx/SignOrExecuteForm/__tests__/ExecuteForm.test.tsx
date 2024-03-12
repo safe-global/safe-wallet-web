@@ -51,7 +51,7 @@ describe('ExecuteForm', () => {
     const { getByText } = render(<ExecuteForm {...defaultProps} isOwner={false} onlyExecute={false} />)
 
     expect(
-      getByText("You are currently not an owner of this Safe Account and won't be able to submit this transaction."),
+      getByText("You are currently not a signer of this Safe Account and won't be able to submit this transaction."),
     ).toBeInTheDocument()
   })
 
@@ -59,7 +59,7 @@ describe('ExecuteForm', () => {
     const { queryByText } = render(<ExecuteForm {...defaultProps} isOwner={false} onlyExecute={true} />)
 
     expect(
-      queryByText("You are currently not an owner of this Safe Account and won't be able to submit this transaction."),
+      queryByText("You are currently not a signer of this Safe Account and won't be able to submit this transaction."),
     ).not.toBeInTheDocument()
   })
 

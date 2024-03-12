@@ -1,4 +1,4 @@
-import { act, renderHook } from '@/tests/test-utils'
+import { act, renderHook, waitFor } from '@/tests/test-utils'
 import useGasPrice, { getTotalFee } from '@/hooks/useGasPrice'
 import { useCurrentChain } from '../useChains'
 
@@ -63,7 +63,8 @@ describe('useGasPrice', () => {
           json: () =>
             Promise.resolve({
               data: {
-                FastGasPrice: 47,
+                FastGasPrice: '47',
+                suggestBaseFee: '44',
               },
             }),
         }),
@@ -90,7 +91,7 @@ describe('useGasPrice', () => {
     expect(result.current[0]?.maxFeePerGas?.toString()).toBe('47000000000')
 
     // assert the priority fee is correct
-    expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toEqual('4975')
+    expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toEqual('3000000000')
   })
 
   it('should return the fetched gas price from the second oracle if the first one fails', async () => {
@@ -118,16 +119,13 @@ describe('useGasPrice', () => {
     // assert the hook is loading
     expect(result.current[2]).toBe(true)
 
-    // wait for the hook to fetch the gas price
-    await act(async () => {
-      await Promise.resolve()
+    await waitFor(() => {
+      // assert the hook is not loading
+      expect(result.current[2]).toBe(false)
+
+      expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
+      expect(fetch).toHaveBeenCalledWith('https://ethgasstation.info/json/ethgasAPI.json')
     })
-
-    expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
-    expect(fetch).toHaveBeenCalledWith('https://ethgasstation.info/json/ethgasAPI.json')
-
-    // assert the hook is not loading
-    expect(result.current[2]).toBe(false)
 
     // assert the gas price is correct
     expect(result.current[0]?.maxFeePerGas?.toString()).toBe('60000000000')
@@ -231,7 +229,8 @@ describe('useGasPrice', () => {
             json: () =>
               Promise.resolve({
                 data: {
-                  FastGasPrice: 21,
+                  FastGasPrice: '21',
+                  suggestBaseFee: '19',
                 },
               }),
           }),
@@ -242,7 +241,8 @@ describe('useGasPrice', () => {
             json: () =>
               Promise.resolve({
                 data: {
-                  FastGasPrice: 22,
+                  FastGasPrice: '22',
+                  suggestBaseFee: '19',
                 },
               }),
           }),

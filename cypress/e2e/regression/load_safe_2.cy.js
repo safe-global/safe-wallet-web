@@ -46,7 +46,7 @@ describe('Load Safe tests 2', () => {
   it('Verify names with primary ENS name are filled by default', () => {
     safe.inputAddress(constants.SEPOLIA_TEST_SAFE_20_LOAD_SAFE)
     safe.clickOnNextBtn()
-    safe.verifyOnwerENS(1, constants.ENS_TEST_SEPOLIA_VALID)
+    safe.verifyOnwerNameENS(1, constants.ENS_TEST_SEPOLIA_VALID)
   })
 
   it('Verify correct owner names are displayed for certain networks', () => {

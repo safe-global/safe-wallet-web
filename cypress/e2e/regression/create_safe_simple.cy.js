@@ -12,6 +12,7 @@ describe('Safe creation tests', () => {
 
   it('Verify Next button is disabled until switching to network is done', () => {
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.selectNetwork(constants.networks.ethereum)
     createwallet.clickOnCreateNewSafeBtn()
     createwallet.checkNetworkChangeWarningMsg()
@@ -23,6 +24,7 @@ describe('Safe creation tests', () => {
   // TODO: Check unit tests
   it('Verify error message is displayed if wallet name input exceeds 50 characters', () => {
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     createwallet.typeWalletName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
@@ -33,6 +35,7 @@ describe('Safe creation tests', () => {
   // TODO: Check unit tests
   it('Verify there is no error message is displayed if wallet name input contains less than 50 characters', () => {
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     createwallet.typeWalletName(main.generateRandomString(50))
     owner.verifyValidWalletName(constants.addressBookErrrMsg.exceedChars)
@@ -40,6 +43,7 @@ describe('Safe creation tests', () => {
 
   it('Verify current connected account is shown as default owner', () => {
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     createwallet.clickOnNextBtn()
     owner.verifyExistingOwnerAddress(0, constants.DEFAULT_OWNER_ADDRESS)
@@ -48,6 +52,7 @@ describe('Safe creation tests', () => {
   // TODO: Check unit tests
   it('Verify error message is displayed if owner name input exceeds 50 characters', () => {
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     owner.typeExistingOwnerName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
@@ -56,6 +61,7 @@ describe('Safe creation tests', () => {
   // TODO: Check unit tests
   it('Verify there is no error message is displayed if owner name input contains less than 50 characters', () => {
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     owner.typeExistingOwnerName(main.generateRandomString(50))
     owner.verifyValidWalletName(constants.addressBookErrrMsg.exceedChars)
@@ -64,6 +70,7 @@ describe('Safe creation tests', () => {
   it('Verify data persistence', () => {
     const ownerName = 'David'
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     createwallet.clickOnNextBtn()
     createwallet.clickOnAddNewOwnerBtn()
@@ -96,6 +103,7 @@ describe('Safe creation tests', () => {
 
   it('Verify tip is displayed on right side for threshold 1/1', () => {
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     createwallet.clickOnNextBtn()
     createwallet.verifyPolicy1_1()
@@ -104,6 +112,7 @@ describe('Safe creation tests', () => {
   // TODO: Check unit tests
   it('Verify address input validation rules', () => {
     owner.waitForConnectionStatus()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
     createwallet.clickOnNextBtn()
     createwallet.clickOnAddNewOwnerBtn()

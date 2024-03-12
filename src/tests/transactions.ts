@@ -1,9 +1,10 @@
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { solidityPacked, concat } from 'ethers'
-import { OperationType, type SafeSignature } from '@safe-global/safe-core-sdk-types'
+import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import { ERC20__factory, ERC721__factory, Multi_send__factory } from '@/types/contracts'
+import EthSafeTransaction from '@safe-global/protocol-kit/dist/src/utils/transactions/SafeTransaction'
 
 export const getMockErc20TransferCalldata = (to: string) => {
   const erc20Interface = ERC20__factory.createInterface()
@@ -74,28 +75,16 @@ export const createMockSafeTransaction = ({
   data: string
   operation?: OperationType
 }): SafeTransaction => {
-  const signatures = new Map<string, SafeSignature>([])
-
-  return {
-    data: {
-      to,
-      data,
-      baseGas: '0',
-      gasPrice: '0',
-      gasToken: ZERO_ADDRESS,
-      nonce: 1,
-      operation,
-      refundReceiver: ZERO_ADDRESS,
-      safeTxGas: '0',
-      value: '0x0',
-    },
-    signatures,
-    addSignature: (sig: SafeSignature) => {
-      signatures.set(sig.signer, sig)
-    },
-    encodedSignatures: () => {
-      return '0x'
-    },
-    getSignature: (signer: string) => signatures.get(signer),
-  }
+  return new EthSafeTransaction({
+    to,
+    data,
+    operation,
+    value: '0',
+    baseGas: '0',
+    gasPrice: '0',
+    gasToken: ZERO_ADDRESS,
+    nonce: 0,
+    refundReceiver: ZERO_ADDRESS,
+    safeTxGas: '0',
+  })
 }

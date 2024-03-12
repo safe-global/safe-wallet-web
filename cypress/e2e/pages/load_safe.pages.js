@@ -1,6 +1,7 @@
 import * as constants from '../../support/constants'
 import * as sidebar from '../pages/sidebar.pages'
 import * as main from '../pages/main.page'
+import { addressBookRecipient } from '../pages/address_book.page'
 
 const addExistingAccountBtnStr = 'Add existing one'
 const contactStr = 'Choose address, network and a name'
@@ -8,6 +9,10 @@ export const invalidAddressFormatErrorMsg = 'Invalid address format'
 const invalidAddressNameLengthErrorMsg = 'Maximum 50 symbols'
 
 const safeDataForm = '[data-testid=load-safe-form]'
+const removeOwnerBtn = '[data-testid="remove-owner-btn"]'
+const addOwnerBtn = '[data-testid="add-owner-btn"]'
+const ownerPolicyStepForm = '[data-testid="owner-policy-step-form"]'
+const addressItem = '[data-testid="address-item"]'
 const nameInput = 'input[name="name"]'
 const addressInput = 'input[name="address"]'
 const sideBarIcon = '[data-testid="ChevronRightIcon"]'
@@ -23,11 +28,49 @@ const ownersConfirmationsStr = 'Owners and confirmations'
 const transactionStr = 'Transactions'
 const qrErrorMsg = 'The QR could not be read'
 const safeAddressError = 'Address given is not a valid Safe Account address'
+const ownerNameLabel = 'Signer name'
 
 const mandatoryNetworks = [constants.networks.sepolia, constants.networks.polygon, constants.networks.ethereum]
 
 export function verifyAddresFormatIsValid() {
   cy.get(addressSection).find('label').contains(constants.addressBookErrrMsg.invalidFormat).should('not.exist')
+}
+
+export function clickOnAddNewOwnerBtn() {
+  cy.get(addOwnerBtn).click()
+}
+
+export function verifyOnwerName(index, name) {
+  cy.get(ownerName).eq(index).find('input').should('have.value', name)
+  cy.get(addressBookRecipient).eq(index).should('contain', name)
+}
+
+export function pasteAddress(index, address) {
+  cy.get(addressItem)
+    .eq(index)
+    .find('input')
+    .invoke('val', address)
+    .wait(1000)
+    .trigger('input')
+    .wait(1000)
+    .trigger('change')
+}
+
+export function verifyNumberOfOwners(owners) {
+  cy.get(addressItem).should('have.length', owners)
+  cy.get(ownerName).should('have.length', owners)
+}
+
+export function verifyOwnerAddress(index, address) {
+  cy.get(addressItem).eq(index).find('input').should('have.value', address)
+}
+
+export function clickOnRemoveOwnerBtn(index) {
+  cy.get(removeOwnerBtn).eq(index).click()
+}
+
+export function verifyownerNameFormatIsValid() {
+  cy.get(ownerName).find('label').contains(ownerNameLabel).should('be.visible')
 }
 
 export function clickOnBackBtn() {
@@ -38,6 +81,14 @@ export function verifyAddressCheckSum(address) {
 }
 export function verifyOwnerNames(names) {
   main.verifyValuesExist(safeDataForm, names)
+}
+
+export function verifyOwnerNamesInConfirmationStep(names) {
+  main.verifyValuesExist(ownerPolicyStepForm, names)
+}
+
+export function verifyDataDoesNotExist(data) {
+  main.verifyValuesDoNotExist(ownerPolicyStepForm, data)
 }
 
 export function inputOwnerName(index, name) {
@@ -52,7 +103,23 @@ export function inputOwnerName(index, name) {
     })
 }
 
-export function verifyOnwerENS(index, ens) {
+export function clearOwnerAddress(index) {
+  cy.get(addressItem).eq(index).find('input').clear()
+}
+
+export function inputOwnerAddress(index, name) {
+  cy.get(addressItem)
+    .eq(index)
+    .find('input')
+    .clear()
+    .type(name)
+    .then(($input) => {
+      const typedValue = $input.val()
+      expect(name).to.contain(typedValue)
+    })
+}
+
+export function verifyOnwerNameENS(index, ens) {
   cy.get(ownerName).eq(index).find('input').invoke('attr', 'placeholder').should('contain', ens)
 }
 
@@ -137,9 +204,10 @@ export function clickOnNextBtn() {
   cy.contains(nextBtnStr).click()
 }
 
-export function verifyDataInReviewSection(safeName, ownerName, threshold = null, network = null) {
+export function verifyDataInReviewSection(safeName, ownerName, threshold = null, network = null, ownerAddress = null) {
   cy.findByText(safeName).should('be.visible')
   cy.findByText(ownerName).should('be.visible')
+  if (ownerAddress !== null) cy.get(safeDataForm).contains(ownerAddress).should('be.visible')
   if (threshold !== null) cy.get(safeDataForm).contains(threshold).should('be.visible')
   if (network !== null) cy.get(sidebar.chainLogo).eq(1).contains(network).should('be.visible')
 }

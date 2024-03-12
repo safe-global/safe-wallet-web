@@ -5,6 +5,10 @@ const executeStr = 'Execute'
 const connectedOwnerBlock = '[data-testid="open-account-center"]'
 export const modalDialogCloseBtn = '[data-testid="modal-dialog-close-btn"]'
 
+export function checkElementBackgroundColor(element, color) {
+  cy.get(element).should('have.css', 'background-color', color)
+}
+
 export function clickOnExecuteBtn() {
   cy.get('button').contains(executeStr).click()
 }
@@ -109,7 +113,7 @@ export function verifyElementsExist(elements) {
 
 export function verifyElementsIsVisible(elements) {
   elements.forEach((element) => {
-    cy.get(element).should('be.visible')
+    cy.get(element).scrollIntoView().should('be.visible')
   })
 }
 
@@ -179,4 +183,8 @@ export function formatAddressInCaps(address) {
   } else {
     return 'Invalid address format'
   }
+}
+
+export function getElementText(element) {
+  return cy.get(element).invoke('text')
 }

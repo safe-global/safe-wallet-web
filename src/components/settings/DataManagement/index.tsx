@@ -12,9 +12,10 @@ import { ImportFileUpload } from '@/components/settings/DataManagement/ImportFil
 import { ImportDialog } from '@/components/settings/DataManagement/ImportDialog'
 import { SAFE_EXPORT_VERSION } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import { FileListCard } from '@/components/settings/DataManagement/FileListCard'
-import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 
 import css from './styles.module.css'
+import Track from '@/components/common/Track'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 
 const getExportFileName = () => {
   const today = new Date().toISOString().slice(0, 10)
@@ -47,8 +48,6 @@ export const exportAppData = () => {
   link.href = window.URL.createObjectURL(blob)
   link.dataset.downloadurl = ['text/json', link.download, link.href].join(':')
   link.dispatchEvent(new MouseEvent('click'))
-
-  trackEvent(SETTINGS_EVENTS.DATA.EXPORT_ALL_BUTTON)
 }
 
 const DataManagement = () => {
@@ -76,7 +75,7 @@ const DataManagement = () => {
             </Typography>
           </Grid>
 
-          <Grid item container xs>
+          <Grid data-testid="export-file-section" item container xs>
             <Typography>Download your local data with your added Safe Accounts, address book and settings.</Typography>
 
             <FileListCard
@@ -87,9 +86,11 @@ const DataManagement = () => {
               }
               title={<b>{exportFileName}</b>}
               action={
-                <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
-                  <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
-                </Button>
+                <Track {...OVERVIEW_EVENTS.EXPORT_DATA} label={OVERVIEW_LABELS.settings}>
+                  <Button variant="contained" className={css.exportIcon} onClick={exportAppData}>
+                    <SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />
+                  </Button>
+                </Track>
               }
               addedSafes={addedSafes}
               addressBook={addressBook}

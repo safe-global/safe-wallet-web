@@ -34,7 +34,7 @@ const ReviewChangeThreshold = ({ params }: { params: ChangeThresholdFlowProps })
         </Typography>
 
         <Typography>
-          <b>{newThreshold}</b> out of <b>{safe.owners.length} owner(s)</b>
+          <b>{newThreshold}</b> out of <b>{safe.owners.length} signer(s)</b>
         </Typography>
       </div>
       <Box my={1}>

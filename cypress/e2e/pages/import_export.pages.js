@@ -1,4 +1,5 @@
 import * as constants from '../../support/constants'
+import * as main from '../pages/main.page.js'
 import { format } from 'date-fns'
 const path = require('path')
 
@@ -13,17 +14,77 @@ const appearenceTabStr = 'Appearance'
 const showMoreTabsBtn = '[data-testid="KeyboardArrowRightIcon"]'
 const dataTabStr = 'Data'
 const tab = 'div[role="tablist"] a'
+const importDialog = 'div[role="dialog"]'
+const dialogImportBtn = '[data-testid="dialog-import-btn"]'
+const dialogCancelBtn = '[data-testid="dialog-cancel-btn"]'
+const fileUploadSection = '[data-testid="file-upload-section"]'
+
+const exportFileSection = '[data-testid="export-file-section"]'
+
 export const safeHeaderInfo = '[data-testid="safe-header-info"]'
 export const prependChainPrefixStr = 'Prepend chain prefix to addresses'
 export const copyAddressStr = 'Copy addresses with chain prefix'
 export const darkModeStr = 'Dark mode'
 
-export function verifyImportBtnIsVisible() {
-  cy.contains('button', 'Import').should('be.visible')
+// Import messages for data_import.json
+const importMessages = [
+  'Added Safe Accounts on 4 chains',
+  'Address book for 4 chains',
+  'Address book for 4 chains',
+  'Settings (appearance, currency, hidden tokens and custom environment variables)',
+  'Bookmarked Safe Apps',
+]
+
+export function verifyExportFileSectionIsVisible() {
+  main.verifyElementsIsVisible([exportFileSection])
 }
+export const importErrorMessages = {
+  noImportableData: 'This file contains no importable data.',
+}
+
+const colors = {
+  pink: 'rgb(255, 180, 189)',
+}
+
+export const jsonInput = 'input[accept="application/json,.json"]'
+
+export function verifyValidImportInputExists() {
+  cy.get(jsonInput).should('exist')
+}
+
+export function verifyUploadErrorMessage(msg) {
+  cy.contains(msg)
+}
+export function verifyErrorOnUpload() {
+  main.checkElementBackgroundColor(fileUploadSection, colors.pink)
+}
+export function verifyImportMessages() {
+  main.checkTextsExistWithinElement(importDialog, importMessages)
+}
+
+export function dragAndDropFile(file) {
+  cy.get(jsonInput).selectFile(file, { action: 'drag-drop', force: true })
+}
+export function verifyImportBtnIsVisible() {
+  cy.get(dialogImportBtn).scrollIntoView().should('be.visible')
+}
+
+export function verifyImportBtnStatus(status) {
+  main.verifyElementsStatus([dialogImportBtn], status)
+}
+
+export function verifyImportSectionVisible() {
+  main.verifyElementsIsVisible([fileUploadSection])
+}
+
 export function clickOnImportBtn() {
   verifyImportBtnIsVisible()
-  cy.contains('button', 'Import').click()
+  cy.get(dialogImportBtn).last().scrollIntoView().click()
+}
+
+export function clickOnCancelBtn() {
+  cy.get(dialogCancelBtn).last().scrollIntoView().click()
+  main.verifyElementsCount(dialogImportBtn, 0)
 }
 
 export function clickOnImportBtnDataImportModal() {

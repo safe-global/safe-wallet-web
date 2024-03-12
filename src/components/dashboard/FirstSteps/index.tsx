@@ -1,4 +1,5 @@
 import { BuyCryptoOptions } from '@/components/common/BuyCryptoButton'
+import CheckWallet from '@/components/common/CheckWallet'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ModalDialog from '@/components/common/ModalDialog'
 import QRCode from '@/components/common/QRCode'
@@ -81,11 +82,21 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
       {!completed && (
         <>
           <Box mt={2}>
-            <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
-              <Button onClick={toggleDialog} variant="contained" size="small" sx={{ minHeight: '40px' }}>
-                Add funds
-              </Button>
-            </Track>
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
+                  <Button
+                    onClick={toggleDialog}
+                    variant="contained"
+                    size="small"
+                    sx={{ minHeight: '40px' }}
+                    disabled={!isOk}
+                  >
+                    Add funds
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
           </Box>
           <ModalDialog
             open={open}
@@ -159,11 +170,21 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
     <>
       <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
         {!completed && (
-          <Track {...OVERVIEW_EVENTS.NEW_TRANSACTION} label="onboarding">
-            <Button onClick={() => setOpen(true)} variant="outlined" size="small" sx={{ mt: 2, minHeight: '40px' }}>
-              Create transaction
-            </Button>
-          </Track>
+          <CheckWallet>
+            {(isOk) => (
+              <Track {...OVERVIEW_EVENTS.NEW_TRANSACTION} label="onboarding">
+                <Button
+                  onClick={() => setOpen(true)}
+                  variant="outlined"
+                  size="small"
+                  sx={{ mt: 2, minHeight: '40px' }}
+                  disabled={!isOk}
+                >
+                  Create transaction
+                </Button>
+              </Track>
+            )}
+          </CheckWallet>
         )}
       </StatusCard>
       <FirstTxFlow open={open} onClose={() => setOpen(false)} />
@@ -201,7 +222,7 @@ const FirstSteps = () => {
 
   return (
     <WidgetContainer>
-      <WidgetBody>
+      <WidgetBody data-testid="activation-section">
         <Grid container gap={3} mb={2} flexWrap="nowrap" alignItems="center">
           <Grid item position="relative" display="inline-flex">
             <svg className={css.gradient}>

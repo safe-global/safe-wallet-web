@@ -1,30 +1,29 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import useLastSafe from '@/hooks/useLastSafe'
 import { AppRoutes } from '@/config/routes'
-
-const useIsomorphicEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
+import { isEmpty } from 'lodash'
+import local from '@/services/local-storage/local'
+import { addedSafesSlice, type AddedSafesState } from '@/store/addedSafesSlice'
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
-  const { safe, chain } = router.query
-  const lastSafe = useLastSafe()
-  const safeAddress = safe || lastSafe
+  const { chain } = router.query
 
-  useIsomorphicEffect(() => {
-    if (router.pathname !== AppRoutes.index) {
+  useEffect(() => {
+    if (!router.isReady || router.pathname !== AppRoutes.index) {
       return
     }
+    // TODO: Replace with useLocalStorage. For now read directly from localstorage so we have value on first render
+    const addedSafes = local.getItem<AddedSafesState>(addedSafesSlice.name)
+    const hasAddedSafes = addedSafes !== null && !isEmpty(addedSafes)
+    const pathname = hasAddedSafes ? AppRoutes.welcome.accounts : AppRoutes.welcome.index
 
-    router.replace(
-      safeAddress
-        ? `${AppRoutes.home}?safe=${safeAddress}`
-        : chain
-        ? `${AppRoutes.welcome.index}?chain=${chain}`
-        : AppRoutes.welcome.index,
-    )
-  }, [router, safeAddress, chain])
+    router.replace({
+      pathname,
+      query: chain ? { chain } : undefined,
+    })
+  }, [router, chain])
 
   return <></>
 }

@@ -40,8 +40,8 @@ export const uniqueAddress =
 export const addressIsNotCurrentSafe =
   (safeAddress: string) =>
   (address: string): string | undefined => {
-    const OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe Account itself as owner.'
-    return sameAddress(safeAddress, address) ? OWNER_ADDRESS_IS_SAFE_ADDRESS_ERROR : undefined
+    const SIGNER_ADDRESS_IS_SAFE_ADDRESS_ERROR = 'Cannot use Safe Account itself as signer.'
+    return sameAddress(safeAddress, address) ? SIGNER_ADDRESS_IS_SAFE_ADDRESS_ERROR : undefined
   }
 
 export const FLOAT_REGEX = /^[0-9]+([,.][0-9]+)?$/

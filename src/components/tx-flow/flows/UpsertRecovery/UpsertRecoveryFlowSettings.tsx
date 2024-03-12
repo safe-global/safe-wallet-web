@@ -144,7 +144,13 @@ export function UpsertRecoveryFlowSettings({
               control={formMethods.control}
               name={UpsertRecoveryFlowFields.delay}
               render={({ field: { ref, ...field } }) => (
-                <SelectField label="Recovery delay" fullWidth inputRef={ref} {...field}>
+                <SelectField
+                  data-testid="recovery-delay-select"
+                  label="Recovery delay"
+                  fullWidth
+                  inputRef={ref}
+                  {...field}
+                >
                   {periods.delay.map(({ label, value }, index) => (
                     <MenuItem key={index} value={value}>
                       {label}
@@ -200,6 +206,7 @@ export function UpsertRecoveryFlowSettings({
 
           <TxCard>
             <FormControlLabel
+              data-testid="warning-section"
               label="I understand that the Recoverer will be able to initiate recovery of this Safe Account and that I will only be informed within the Safe{Wallet}."
               control={<Checkbox checked={understandsRisk} onChange={(_, checked) => setUnderstandsRisk(checked)} />}
               sx={{ pl: 2 }}
@@ -208,7 +215,7 @@ export function UpsertRecoveryFlowSettings({
             <Divider className={commonCss.nestedDivider} />
 
             <CardActions sx={{ mt: '0 !important' }}>
-              <Button variant="contained" type="submit" disabled={isDisabled}>
+              <Button data-testid="next-btn" variant="contained" type="submit" disabled={isDisabled}>
                 Next
               </Button>
             </CardActions>

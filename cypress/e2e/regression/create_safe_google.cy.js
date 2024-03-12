@@ -31,6 +31,7 @@ describe('Safe creation Google tests', () => {
 
   it.skip('Verify a successful safe creation with a Google account', { defaultCommandTimeout: 90000 }, () => {
     createwallet.verifyGoogleSignin().click()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.verifyOwnerInfoIsPresent()
     createwallet.clickOnReviewStepNextBtn()
     createwallet.verifySafeIsBeingCreated()
@@ -39,6 +40,7 @@ describe('Safe creation Google tests', () => {
 
   it.skip('Verify a successful transaction creation with Google account', { defaultCommandTimeout: 90000 }, () => {
     createwallet.verifyGoogleSignin().click()
+    createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnReviewStepNextBtn()
     createwallet.verifySafeCreationIsComplete()
     navigation.clickOnSideNavigation(navigation.sideNavSettingsIcon)

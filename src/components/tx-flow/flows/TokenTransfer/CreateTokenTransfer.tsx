@@ -21,10 +21,12 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 
 export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }): ReactElement => (
   <Grid container alignItems="center" gap={1}>
-    <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
+    <TokenIcon logoUri={item.tokenInfo.logoUri} key={item.tokenInfo.address} tokenSymbol={item.tokenInfo.symbol} />
 
     <Grid item xs>
-      <Typography variant="body2">{item.tokenInfo.name}</Typography>
+      <Typography variant="body2" whiteSpace="normal">
+        {item.tokenInfo.name}
+      </Typography>
 
       <Typography variant="caption" component="p">
         {formatVisualAmount(item.balance, item.tokenInfo.decimals)} {item.tokenInfo.symbol}
