@@ -7,7 +7,7 @@ import type { ReactElement } from 'react'
 import { CustomTooltip } from '@/components/common/CustomTooltip'
 import { AppRoutes } from '@/config/routes'
 import { useAppSelector } from '@/store'
-import { selectAddedSafes, selectAllAddedSafes, selectTotalAdded } from '@/store/addedSafesSlice'
+import { selectAddedSafes, selectTotalAdded } from '@/store/addedSafesSlice'
 import PushNotificationIcon from '@/public/images/notifications/push-notification.svg'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useNotificationRegistrations } from '../hooks/useNotificationRegistrations'
@@ -29,33 +29,41 @@ import useWallet from '@/hooks/wallets/useWallet'
 import CircularProgress from '@mui/material/CircularProgress'
 import useDebounce from '@/hooks/useDebounce'
 import css from './styles.module.css'
+import useAllOwnedSafes from '@/components/welcome/MyAccounts/useAllOwnedSafes'
 
 const DISMISS_PUSH_NOTIFICATIONS_KEY = 'dismissPushNotifications'
 const BANNER_DELAY = 3000
 
 export const useDismissPushNotificationsBanner = () => {
-  const addedSafes = useAppSelector(selectAllAddedSafes)
   const { safe } = useSafeInfo()
+  const { address = '' } = useWallet() || {}
+  const [ownedSafes] = useAllOwnedSafes(address)
 
   const [dismissedBannerPerChain = {}, setDismissedBannerPerChain] = useLocalStorage<{
     [chainId: string]: { [safeAddress: string]: boolean }
   }>(DISMISS_PUSH_NOTIFICATIONS_KEY)
 
-  const dismissPushNotificationBanner = (chainId: string) => {
-    const safesOnChain = Object.keys(addedSafes[chainId] || {})
+  const dismissPushNotificationBanner = (chainId: string, safeAddress?: string) => {
+    const safesOnChain = ownedSafes?.[chainId]
 
-    if (safesOnChain.length === 0) {
+    if (!safesOnChain || safesOnChain.length === 0) {
       return
     }
 
+    // Dismiss banner for all existing safes on current chain.
     const dismissedSafesOnChain = safesOnChain.reduce<{ [safeAddress: string]: boolean }>((acc, safeAddress) => {
       acc[safeAddress] = true
       return acc
     }, {})
 
+    // Explicitly dismiss for current safe to account for delays from GCW in returning newly created safes.
+    if (safeAddress) {
+      dismissedSafesOnChain[safeAddress] = true
+    }
+
     setDismissedBannerPerChain((prev) => ({
       ...prev,
-      [safe.chainId]: dismissedSafesOnChain,
+      [chainId]: dismissedSafesOnChain,
     }))
   }
 
@@ -119,11 +127,13 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const { dismissPushNotificationBanner, isPushNotificationBannerDismissed } = useDismissPushNotificationsBanner()
 
   const isSafeAdded = !!addedSafesOnChain?.[safeAddress]
+  const isSafeOwned = safe.owners.some(({ value }) => value === wallet?.address)
   const isSafeRegistered = getPreferences(safe.chainId, safeAddress)
   const shouldShowBanner = useDebounce(
     isNotificationFeatureEnabled &&
       !isPushNotificationBannerDismissed &&
-      isSafeAdded &&
+      isSafeOwned &&
+      // isSafeAdded &&
       !isSafeRegistered &&
       !!wallet &&
       safe.deployed,
@@ -133,8 +143,8 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const { registerNotifications } = useNotificationRegistrations()
 
   const dismissBanner = useCallback(() => {
-    dismissPushNotificationBanner(safe.chainId)
-  }, [dismissPushNotificationBanner, safe.chainId])
+    dismissPushNotificationBanner(safe.chainId, safe.address.value)
+  }, [dismissPushNotificationBanner, safe])
 
   const onDismiss = () => {
     trackEvent(PUSH_NOTIFICATION_EVENTS.DISMISS_BANNER)
