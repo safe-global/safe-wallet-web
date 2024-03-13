@@ -39,7 +39,8 @@ import CheckWallet from '@/components/common/CheckWallet'
 import css from './styles.module.css'
 import useAllOwnedSafes from '@/components/welcome/MyAccounts/useAllOwnedSafes'
 import useWallet from '@/hooks/wallets/useWallet'
-import { isEmpty } from 'lodash'
+import { selectAllAddedSafes, type AddedSafesState } from '@/store/addedSafesSlice'
+import { uniq } from 'lodash'
 
 // UI logic
 
@@ -51,6 +52,13 @@ export const _filterUndeployedSafes = (safes: NotifiableSafes | undefined, undep
     }),
     (safeAddresses) => safeAddresses.length > 0,
   )
+}
+
+export const _transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {
+  return Object.entries(addedSafes).reduce<NotifiableSafes>((acc, [chainId, addedSafesOnChain]) => {
+    acc[chainId] = Object.keys(addedSafesOnChain)
+    return acc
+  }, {})
 }
 
 // Convert data structure of currently notified Safes
@@ -90,18 +98,26 @@ export const _sanitizeNotifiableSafes = (
 // Merges added Safes and currently notified Safes into a single data structure without duplicates
 export const _mergeNotifiableSafes = (
   ownedSafes: AllOwnedSafes | undefined,
+  addedSafes: AddedSafesState,
   currentSubscriptions?: NotifiableSafes,
 ): NotifiableSafes | undefined => {
-  if (isEmpty(currentSubscriptions) || !ownedSafes) {
-    return isEmpty(currentSubscriptions) ? ownedSafes : currentSubscriptions
-  }
+  const added = _transformAddedSafes(addedSafes)
+
+  const chains = uniq(
+    Object.keys(addedSafes)
+      .concat(Object.keys(currentSubscriptions || {}))
+      .concat(Object.keys(ownedSafes || {})),
+  )
 
   // Locally registered Safes (if not already added)
   let notifiableSafes: NotifiableSafes = {}
-  for (const [chainId, safeAddresses] of Object.entries(currentSubscriptions)) {
-    const notifiableSafesOnChain = ownedSafes[chainId] ?? []
-    const uniqueSafeAddresses = Array.from(new Set([...notifiableSafesOnChain, ...safeAddresses]))
-
+  for (const chainId of chains) {
+    const ownedSafesOnChain = ownedSafes?.[chainId] ?? []
+    const addedSafesOnChain = added[chainId] || []
+    const currentSubscriptionsOnChain = currentSubscriptions?.[chainId] || []
+    const uniqueSafeAddresses = Array.from(
+      new Set([...currentSubscriptionsOnChain, ...addedSafesOnChain, ...ownedSafesOnChain]),
+    )
     notifiableSafes[chainId] = uniqueSafeAddresses
   }
 
@@ -245,6 +261,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   const [isLoading, setIsLoading] = useState(false)
   const { address = '' } = useWallet() || {}
   const [ownedSafes] = useAllOwnedSafes(address)
+  const addedSafes = useAppSelector(selectAllAddedSafes)
 
   const { dismissPushNotificationBanner } = useDismissPushNotificationsBanner()
   const { getAllPreferences } = useNotificationPreferences()
@@ -275,10 +292,10 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   // Merged added Safes and `currentNotifiedSafes` (in case subscriptions aren't added)
   const notifiableSafes = useMemo(() => {
-    const safes = _mergeNotifiableSafes(ownedSafes, currentNotifiedSafes)
+    const safes = _mergeNotifiableSafes(ownedSafes, addedSafes, currentNotifiedSafes)
     const deployedSafes = _filterUndeployedSafes(safes, undeployedSafes)
     return _sanitizeNotifiableSafes(chains.configs, deployedSafes)
-  }, [ownedSafes, currentNotifiedSafes, undeployedSafes, chains.configs])
+  }, [ownedSafes, addedSafes, currentNotifiedSafes, undeployedSafes, chains.configs])
 
   const totalNotifiableSafes = useMemo(() => {
     return _getTotalNotifiableSafes(notifiableSafes)
