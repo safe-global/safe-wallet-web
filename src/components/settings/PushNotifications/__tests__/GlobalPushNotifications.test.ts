@@ -14,10 +14,32 @@ import {
   _shouldUnregisterDevice,
   _sanitizeNotifiableSafes,
   _filterUndeployedSafes,
+  _transformAddedSafes,
 } from '../GlobalPushNotifications'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 
 describe('GlobalPushNotifications', () => {
+  describe('transformAddedSafes', () => {
+    it('should transform added safes into notifiable safes', () => {
+      const addedSafes = {
+        '1': {
+          '0x123': {},
+          '0x456': {},
+        },
+        '4': {
+          '0x789': {},
+        },
+      } as unknown as AddedSafesState
+
+      const expectedNotifiableSafes = {
+        '1': ['0x123', '0x456'],
+        '4': ['0x789'],
+      }
+
+      expect(_transformAddedSafes(addedSafes)).toEqual(expectedNotifiableSafes)
+    })
+  })
+
   describe('mergeNotifiableSafes', () => {
     it('should merge added safes and current subscriptions', () => {
       const currentSubscriptions = {

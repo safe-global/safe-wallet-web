@@ -68,7 +68,6 @@ export const useDismissPushNotificationsBanner = () => {
   }
 
   const isPushNotificationBannerDismissed = !!dismissedBannerPerChain[safe.chainId]?.[safe.address.value]
-  debugger
   return {
     dismissPushNotificationBanner,
     isPushNotificationBannerDismissed,
