@@ -21,6 +21,20 @@ export function waitForHistoryCallToComplete() {
   cy.wait('@History')
 }
 
+export const fetchSafeData = (safeAddress) => {
+  return cy
+    .request({
+      method: 'GET',
+      url: `${constants.stagingTxServiceUrl}${constants.stagingTxServiceSafesUrl}${safeAddress}`,
+      headers: {
+        accept: 'application/json',
+      },
+    })
+    .then((response) => {
+      expect(response.status).to.eq(200)
+    })
+}
+
 export function acceptCookies(index = 0) {
   cy.wait(1000)
 
