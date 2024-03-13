@@ -1,10 +1,8 @@
 import { type ReactNode, useState, type ReactElement, useId } from 'react'
-import { IconButton, InputAdornment, InputLabel, OutlinedInput, SvgIcon, Typography } from '@mui/material'
+import { InputAdornment, InputLabel, OutlinedInput, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import SaveAddressIcon from '@/public/images/common/save-address.svg'
 import css from './styles.module.css'
 import EntryDialog from '@/components/address-book/EntryDialog'
-import useAddressBook from '@/hooks/useAddressBook'
 
 const AddressInputReadOnly = ({
   label,
@@ -15,14 +13,13 @@ const AddressInputReadOnly = ({
   address: string
   error?: boolean
 }): ReactElement => {
-  const addressBook = useAddressBook()
   const [open, setOpen] = useState(false)
 
   const id = useId()
 
   return (
     <>
-      <div className={css.wrapper}>
+      <div className={css.wrapper} title={address}>
         <InputLabel shrink error={error} htmlFor={id}>
           {label}
         </InputLabel>
@@ -31,20 +28,11 @@ const AddressInputReadOnly = ({
           className={css.input}
           error={error}
           startAdornment={
-            <InputAdornment position="start">
-              <Typography variant="body2" component="div">
+            <InputAdornment position="start" className={css.value}>
+              <Typography variant="body2" component="div" width={1}>
                 <EthHashInfo address={address} shortAddress={false} copyAddress={false} />
               </Typography>
             </InputAdornment>
-          }
-          endAdornment={
-            !addressBook[address] ? (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setOpen(true)}>
-                  <SvgIcon component={SaveAddressIcon} inheritViewBox fontSize="small" />
-                </IconButton>
-              </InputAdornment>
-            ) : null
           }
           label={label}
           readOnly

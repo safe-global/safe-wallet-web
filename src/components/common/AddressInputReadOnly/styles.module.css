@@ -42,3 +42,7 @@
   font-weight: bold;
   color: var(--color-text-primary);
 }
+
+.value {
+  width: 100%;
+}
