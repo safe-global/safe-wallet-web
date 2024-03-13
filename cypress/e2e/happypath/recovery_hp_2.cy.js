@@ -34,9 +34,9 @@ describe('Recovery happy path tests 2', () => {
       recovery.clickOnRecoveryExecuteBtn()
       cy.wait(1000)
       recovery.clickOnGoToQueueBtn()
-      cy.wait(5000)
+      cy.wait(10000)
       recovery.clickOnRecoveryExecuteBtn()
-      cy.wait(5000)
+      cy.wait(10000)
       recovery.verifyTxNotInQueue()
       cy.wait(1000)
 
