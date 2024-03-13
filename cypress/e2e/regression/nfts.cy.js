@@ -66,7 +66,7 @@ describe('NFTs tests', () => {
   })
 
   it('Verify Send NFT transaction has been created', () => {
-    cy.visit(constants.balanceNftsUrl + constants.SEPOLIA_TEST_SAFE_26_SEND_NFT)
+    cy.visit(constants.balanceNftsUrl + constants.SEPOLIA_TEST_SAFE_27_SEND_NFT)
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(1)
     nfts.sendNFT()
