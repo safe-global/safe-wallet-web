@@ -30,15 +30,13 @@ describe('Recovery happy path tests 2', () => {
       recovery.clickOnStartRecoveryBtn()
       recovery.enterOwnerAddress(owner)
       recovery.clickOnNextBtn()
-      cy.wait(1000)
       recovery.clickOnRecoveryExecuteBtn()
-      cy.wait(1000)
       recovery.clickOnGoToQueueBtn()
       cy.wait(10000)
       recovery.clickOnRecoveryExecuteBtn()
       cy.wait(10000)
       recovery.verifyTxNotInQueue()
-      cy.wait(1000)
+      cy.wait(2000)
 
       main.fetchSafeData(constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2.substring(4)).then((response) => {
         const owners = response.body.owners
