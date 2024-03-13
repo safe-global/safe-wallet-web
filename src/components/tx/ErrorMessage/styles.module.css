@@ -4,6 +4,10 @@
   border-radius: 4px;
 }
 
+.container.noMargin {
+  margin: 0;
+}
+
 .container.error {
   background-color: var(--color-error-background);
   color: var(--color-error-dark);

@@ -4,6 +4,7 @@ import {
   getRegisteredEmail,
   registerEmail,
   resendEmailVerificationCode,
+  unsubscribeSingle,
   verifyEmail,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -100,6 +101,10 @@ const useRecoveryEmail = () => {
     )
   }
 
+  const unsubscribeFromSingleCategory = (token: string, category: string) => {
+    return unsubscribeSingle({ token, category })
+  }
+
   return {
     getSignerEmailAddress,
     registerEmailAddress,
@@ -107,6 +112,7 @@ const useRecoveryEmail = () => {
     deleteEmailAddress,
     editEmailAddress,
     resendVerification,
+    unsubscribeFromSingleCategory,
   }
 }
 
