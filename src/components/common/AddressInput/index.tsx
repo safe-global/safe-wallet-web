@@ -124,14 +124,14 @@ const AddressInput = ({
         label={<>{error?.message || props.label || `Recipient address${isDomainLookupEnabled ? ' or ENS' : ''}`}</>}
         error={!!error}
         fullWidth
-        onClick={addressBook[rawValueRef.current] ? () => setValue(name, '') : undefined}
+        onClick={addressBook[watchedValue] ? () => setValue(name, '') : undefined}
         spellCheck={false}
         InputProps={{
           ...(props.InputProps || {}),
-          className: addressBook[rawValueRef.current] ? css.readOnly : undefined,
+          className: addressBook[watchedValue] ? css.readOnly : undefined,
 
-          startAdornment: addressBook[rawValueRef.current] ? (
-            <AddressInputReadOnly address={rawValueRef.current} />
+          startAdornment: addressBook[watchedValue] ? (
+            <AddressInputReadOnly address={watchedValue} />
           ) : (
             // Display the current short name in the adornment, unless the value contains the same prefix
             <InputAdornment position="end" sx={{ ml: 0, gap: 1 }}>
