@@ -29,6 +29,7 @@ export const txDate = '[data-testid="tx-date"]'
 const spamTokenWarningIcon = '[data-testid="warning"]'
 const untrustedTokenWarningModal = '[data-testid="untrusted-token-warning"]'
 const sendTokensBtn = '[data-testid="send-tokens-btn"]'
+export const replacementNewSigner = '[data-testid="new-owner"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -407,4 +408,8 @@ export function verifyTxDestinationAddress(receivedAddress) {
   cy.get(receivedAddress).then((address) => {
     cy.contains(address).should('exist')
   })
+}
+
+export function verifyReplacedSigner(newSignerName) {
+  cy.get(replacementNewSigner).should('exist').contains(newSignerName)
 }

@@ -98,6 +98,8 @@ export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
 export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
+export const stagingTxServiceUrl = 'https://safe-transaction-sepolia.staging.5afe.dev/api/v1'
+export const stagingTxServiceSafesUrl = '/safes/'
 
 export const proposeEndpoint = '/**/propose'
 export const appsEndpoint = '/**/safe-apps'
