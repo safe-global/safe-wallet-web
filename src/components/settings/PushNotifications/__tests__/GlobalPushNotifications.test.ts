@@ -15,35 +15,63 @@ import {
   _sanitizeNotifiableSafes,
   _filterUndeployedSafes,
 } from '../GlobalPushNotifications'
+import type { AddedSafesState } from '@/store/addedSafesSlice'
 
 describe('GlobalPushNotifications', () => {
   describe('mergeNotifiableSafes', () => {
     it('should merge added safes and current subscriptions', () => {
-      const ownedSafes = {
-        '1': ['0x123', '0x456'],
-        '4': ['0x789'],
-      } as unknown as AllOwnedSafes
-
       const currentSubscriptions = {
-        '1': ['0x123', '0x789'],
-        '4': ['0x789'],
+        '1': ['0x111', '0x222'],
+        '4': ['0x111'],
       }
+
+      const addedSafes = {
+        '1': {
+          '0x111': {},
+          '0x333': {},
+        },
+        '4': {
+          '0x222': {},
+          '0x333': {},
+        },
+      } as unknown as AddedSafesState
+
+      const ownedSafes = {
+        '1': ['0x111', '0x444'],
+        '4': ['0x222'],
+      } as unknown as AllOwnedSafes
 
       const expectedNotifiableSafes = {
-        '1': ['0x123', '0x456', '0x789'],
-        '4': ['0x789'],
+        '1': ['0x111', '0x222', '0x333', '0x444'],
+        '4': ['0x111', '0x222', '0x333'],
       }
 
-      expect(_mergeNotifiableSafes(ownedSafes, currentSubscriptions)).toEqual(expectedNotifiableSafes)
+      expect(_mergeNotifiableSafes(ownedSafes, addedSafes, currentSubscriptions)).toEqual(expectedNotifiableSafes)
     })
 
-    it('should return owned safes if there are no current subscriptions', () => {
+    it('should return owned safes and added safes if there are no current subscriptions', () => {
+      const addedSafes = {
+        '1': {
+          '0x111': {},
+          '0x333': {},
+        },
+        '4': {
+          '0x222': {},
+          '0x333': {},
+        },
+      } as unknown as AddedSafesState
+
       const ownedSafes = {
-        '1': ['0x123', '0x456'],
-        '4': ['0x789'],
+        '1': ['0x111', '0x444'],
+        '4': ['0x222'],
       } as unknown as AllOwnedSafes
 
-      expect(_mergeNotifiableSafes(ownedSafes)).toEqual(ownedSafes)
+      const expectedNotifiableSafes = {
+        '1': ['0x111', '0x333', '0x444'],
+        '4': ['0x222', '0x333'],
+      }
+
+      expect(_mergeNotifiableSafes(ownedSafes, addedSafes)).toEqual(expectedNotifiableSafes)
     })
   })
 

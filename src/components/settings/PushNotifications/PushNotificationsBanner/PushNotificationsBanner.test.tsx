@@ -13,6 +13,7 @@ import type { AddedSafesOnChain } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import type { EIP1193Provider } from '@web3-onboard/core'
+import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 
 Object.defineProperty(globalThis, 'crypto', {
   value: {
@@ -117,6 +118,18 @@ describe('PushNotificationsBanner', () => {
 
     it('should only track display of the banner once', () => {
       jest.spyOn(tracking, 'trackEvent')
+      jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
+        () =>
+          ({
+            safe: {
+              version: '1.0.0',
+              chainId: '5',
+              owners: [{ value: '0x1230000000000000000000000000000000000000' }],
+              deployed: true,
+            },
+            safeAddress: '0x0000000000000000000000000000000000000123',
+          } as unknown as ReturnType<typeof useSafeInfoHook.default>),
+      )
 
       const ui = (
         <PushNotificationsBanner>
@@ -246,6 +259,19 @@ describe('PushNotificationsBanner', () => {
         'SAFE_v2__dismissPushNotifications',
         JSON.stringify({ '1': { [toBeHex('0x123', 20)]: true } }),
       )
+      jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
+        () =>
+          ({
+            safe: {
+              address: { value: '0x0000000000000000000000000000000000000123' },
+              version: '1.0.0',
+              chainId: '1',
+              owners: [{ value: '0x1230000000000000000000000000000000000000' }],
+              deployed: true,
+            },
+            safeAddress: '0x0000000000000000000000000000000000000123',
+          } as unknown as ReturnType<typeof useSafeInfoHook.default>),
+      )
 
       const result = render(
         <PushNotificationsBanner>
@@ -281,36 +307,6 @@ describe('PushNotificationsBanner', () => {
         jest.advanceTimersByTime(3000)
         return Promise.resolve()
       })
-
-      expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
-    })
-
-    it('should not show the banner if the Safe is not added', () => {
-      const result = render(
-        <PushNotificationsBanner>
-          <></>
-        </PushNotificationsBanner>,
-        {
-          initialReduxState: {
-            chains: {
-              loading: false,
-              error: undefined,
-              data: [
-                {
-                  chainId: '1',
-                  features: ['PUSH_NOTIFICATIONS'],
-                } as unknown as ChainInfo,
-              ],
-            },
-            addedSafes: {}, // Not added
-            safeInfo: {
-              loading: false,
-              error: undefined,
-              data: extendedSafeInfo,
-            },
-          },
-        },
-      )
 
       expect(result.queryByText('Get notified about pending signatures', { exact: false })).not.toBeInTheDocument()
     })

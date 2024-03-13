@@ -68,7 +68,7 @@ export const useDismissPushNotificationsBanner = () => {
   }
 
   const isPushNotificationBannerDismissed = !!dismissedBannerPerChain[safe.chainId]?.[safe.address.value]
-
+  debugger
   return {
     dismissPushNotificationBanner,
     isPushNotificationBannerDismissed,
@@ -126,14 +126,12 @@ export const PushNotificationsBanner = ({ children }: { children: ReactElement }
   const { getPreferences, getAllPreferences } = useNotificationPreferences()
   const { dismissPushNotificationBanner, isPushNotificationBannerDismissed } = useDismissPushNotificationsBanner()
 
-  const isSafeAdded = !!addedSafesOnChain?.[safeAddress]
   const isSafeOwned = safe.owners.some(({ value }) => value === wallet?.address)
   const isSafeRegistered = getPreferences(safe.chainId, safeAddress)
   const shouldShowBanner = useDebounce(
     isNotificationFeatureEnabled &&
       !isPushNotificationBannerDismissed &&
       isSafeOwned &&
-      // isSafeAdded &&
       !isSafeRegistered &&
       !!wallet &&
       safe.deployed,
