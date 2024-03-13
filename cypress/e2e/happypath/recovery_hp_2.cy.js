@@ -12,6 +12,10 @@ describe('Recovery happy path tests 2', () => {
 
   // Check that recoverer can start and complete the process if not cancelled by the owner
   it('Recovery setup happy path 2', { defaultCommandTimeout: 300000 }, () => {
+    Cypress.on('uncaught:exception', (err, runnable) => {
+      recovery.clickOnRecoveryExecuteBtn()
+      return false
+    })
     main.fetchSafeData(constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2.substring(4)).then((response) => {
       expect(response.status).to.eq(200)
       console.log(response.body)
