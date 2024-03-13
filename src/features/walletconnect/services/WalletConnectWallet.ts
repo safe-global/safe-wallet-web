@@ -89,7 +89,8 @@ class WalletConnectWallet {
 
     const supportedChainIds = [currentChainId].concat(
       requiredChains.map(stripEip155Prefix),
-      optionalChains.map(stripEip155Prefix),
+      // disable optional chains for now as some dapps end up sending request after the session is approved to the wrong chain
+      // optionalChains.map(stripEip155Prefix),
     )
 
     const eip155ChainIds = supportedChainIds.map(getEip155ChainId)
