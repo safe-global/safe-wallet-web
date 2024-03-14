@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as createwallet from '../pages/create_wallet.pages'
 import * as owner from '../pages/owners.pages'
+import * as ls from '../../support/localstorage_data.js'
 
 describe('Safe creation tests', () => {
   beforeEach(() => {
@@ -127,5 +128,21 @@ describe('Safe creation tests', () => {
 
     createwallet.typeOwnerAddress(constants.ENS_TEST_SEPOLIA_INVALID, 1)
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.failedResolve)
+  })
+
+  it('Verify duplicated signer error using the autocomplete feature', () => {
+    cy.visit(constants.createNewSafeSepoliaUrl + '?chain=sep')
+    main
+      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName)
+      .then(() => {
+        owner.waitForConnectionStatus()
+        createwallet.clickOnContinueWithWalletBtn()
+        createwallet.clickOnCreateNewSafeBtn()
+        createwallet.clickOnNextBtn()
+        createwallet.clickOnAddNewOwnerBtn()
+        createwallet.clickOnSignerAddressInput(1)
+        createwallet.selectSignerOnAutocomplete(2)
+        owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.ownerAdded)
+      })
   })
 })
