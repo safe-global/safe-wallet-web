@@ -94,7 +94,7 @@ export const _sanitizeNotifiableSafes = (
   }, {})
 }
 
-// Merges added Safes and currently notified Safes into a single data structure without duplicates
+// Merges added Safes, currently notified Safes, and owned safes into a single data structure without duplicates
 export const _mergeNotifiableSafes = (
   ownedSafes: AllOwnedSafes | undefined,
   addedSafes: AddedSafesState,
@@ -110,7 +110,6 @@ export const _mergeNotifiableSafes = (
     ]),
   )
 
-  // Locally registered Safes (if not already added)
   let notifiableSafes: NotifiableSafes = {}
   for (const chainId of chains) {
     const ownedSafesOnChain = ownedSafes?.[chainId] ?? []

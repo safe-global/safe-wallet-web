@@ -56,7 +56,7 @@ export const useDismissPushNotificationsBanner = () => {
       return acc
     }, {})
 
-    // Explicitly dismiss for current safe to account for delays from GCW in returning newly created safes.
+    // Explicitly dismiss the banner for the current safe in order to account for delays from GCW in returning newly created safes.
     if (safeAddress) {
       dismissedSafesOnChain[safeAddress] = true
     }
