@@ -21,6 +21,10 @@ export const isLedger = (wallet: ConnectedWallet): boolean => {
   return wallet.label.toUpperCase() === WALLET_KEYS.LEDGER
 }
 
+export const isWalletConnect = (wallet: ConnectedWallet): boolean => {
+  return wallet.label.toUpperCase() === WALLET_KEYS.WALLETCONNECT_V2
+}
+
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
     wallet.label.toUpperCase() as WALLET_KEYS,
