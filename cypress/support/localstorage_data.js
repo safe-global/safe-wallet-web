@@ -614,3 +614,12 @@ export const addedSafes = {
 export const pinnedApps = {
   transactionBuilder: { 11155111: { pinned: [24], opened: [] } },
 }
+
+export const dismissedNotifications = {
+  11155111: {
+    '0xc2F3645bfd395516d1a18CA6ad9298299d328C01': true,
+    '0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415': true,
+    '0xBb26E3717172d5000F87DeFd391994f789D80aEB': true,
+    '0xBf30F749FC027a5d79c4710D988F0D3C8e217A4F': true,
+  },
+}

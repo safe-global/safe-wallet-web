@@ -241,6 +241,7 @@ export const localStorageKeys = {
   SAFE_v2__settings: 'SAFE_v2__settings',
   SAFE_v2__addedSafes: 'SAFE_v2__addedSafes',
   SAFE_v2__safeApps: 'SAFE_v2__safeApps',
+  SAFE_v2__dismissPushNotifications: 'SAFE_v2__dismissPushNotifications',
 }
 
 export const connectWalletNames = {
