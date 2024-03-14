@@ -1,4 +1,4 @@
-import { Chip, Box, Tooltip, Typography } from '@mui/material'
+import { Box, Tooltip, Typography } from '@mui/material'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import CancelIcon from '@/public/images/common/cancel.svg'
 import ReplaceTxIcon from '@/public/images/transactions/replace-tx.svg'
@@ -16,6 +16,7 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import DeleteTxModal from './DeleteTxModal'
 import ExternalLink from '@/components/common/ExternalLink'
 import ChoiceButton from '@/components/common/ChoiceButton'
+import { Chip } from '@/components/common/Chip'
 
 const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: string | undefined }) => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -34,8 +35,10 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
 
         <Typography variant="body2" mt={-1} mb={1}>
           You can replace or reject this transaction on-chain. It requires gas fees and your signature.{' '}
-          <ExternalLink href="https://help.safe.global/">Read more</ExternalLink>{' '}
-          <Chip label="Recommended" sx={{ backgroundColor: 'secondary.light', borderRadius: 0.75 }} />
+          <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
+            Read more
+          </ExternalLink>{' '}
+          <Chip label="Recommended" />
         </Typography>
 
         <Box display="flex" flexDirection="column" gap={2}>
@@ -65,7 +68,7 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
 
           {safeTxHash !== undefined && (
             <>
-              <Typography variant="body2" className={css.or}>
+              <Typography variant="overline" className={css.or}>
                 or
               </Typography>
 
