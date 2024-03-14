@@ -7,6 +7,7 @@
   width: 100%;
   color: var(--color-text-primary);
   gap: var(--space-2);
+  position: relative;
 }
 
 .txButton:disabled {
@@ -22,4 +23,16 @@
   display: inline-flex;
   border-radius: 50%;
   padding: var(--space-1);
+}
+
+.chip {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: var(--space-2);
+  background-color: var(--color-background-default);
+  color: var(--color-primary-light);
+  border-radius: 0 0 4px 4px;
+  font-size: 12px;
+  padding: 2px 8px;
 }

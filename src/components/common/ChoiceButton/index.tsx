@@ -10,6 +10,7 @@ const ChoiceButton = ({
   iconColor,
   onClick,
   disabled,
+  chip,
 }: {
   title: string
   description?: string
@@ -17,6 +18,7 @@ const ChoiceButton = ({
   iconColor?: SvgIconOwnProps['color']
   onClick: () => void
   disabled?: boolean
+  chip?: string
 }) => {
   return (
     <ButtonBase className={css.txButton} onClick={onClick} disabled={disabled}>
@@ -27,15 +29,19 @@ const ChoiceButton = ({
         <SvgIcon component={icon} fontSize="small" inheritViewBox color={iconColor} />
       </Box>
 
-      <Box>
+      <Box py={0.2}>
         <Typography fontWeight="bold">{title}</Typography>
+
         {description && (
           <Typography variant="body2" color="primary.light">
             {description}
           </Typography>
         )}
       </Box>
+
       <SvgIcon component={ChevronRightRoundedIcon} color="border" sx={{ ml: 'auto' }} />
+
+      {chip && <Box className={css.chip}>{chip}</Box>}
     </ButtonBase>
   )
 }

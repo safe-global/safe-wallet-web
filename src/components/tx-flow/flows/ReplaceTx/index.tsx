@@ -16,7 +16,6 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import DeleteTxModal from './DeleteTxModal'
 import ExternalLink from '@/components/common/ExternalLink'
 import ChoiceButton from '@/components/common/ChoiceButton'
-import { Chip } from '@/components/common/Chip'
 
 const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: string | undefined }) => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -38,7 +37,6 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
           <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
             Read more
           </ExternalLink>{' '}
-          <Chip label="Recommended" />
         </Typography>
 
         <Box display="flex" flexDirection="column" gap={2}>
@@ -47,6 +45,7 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
             onClick={() => setTxFlow(<TokenTransferFlow txNonce={txNonce} />)}
             title="Replace with another transaction"
             description="Overwrite by a new transaction with the same nonce"
+            chip="Recommended"
           />
 
           <Tooltip
@@ -62,6 +61,7 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
                 disabled={!canCancel}
                 title="Reject transaction"
                 description="Create a cancellation transaction with the same nonce to avoid security risks"
+                chip="Recommended"
               />
             </span>
           </Tooltip>
