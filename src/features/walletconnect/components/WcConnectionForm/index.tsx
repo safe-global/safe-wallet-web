@@ -15,15 +15,7 @@ import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 const WC_HINTS_KEY = 'wcHints'
 
-export const WcConnectionForm = ({
-  sessions,
-  onDisconnect,
-  uri,
-}: {
-  sessions: SessionTypes.Struct[]
-  onDisconnect: (session: SessionTypes.Struct) => Promise<void>
-  uri: string
-}): ReactElement => {
+export const WcConnectionForm = ({ sessions, uri }: { sessions: SessionTypes.Struct[]; uri: string }): ReactElement => {
   const [showHints = true, setShowHints] = useLocalStorage<boolean>(WC_HINTS_KEY)
   const { safeLoaded } = useSafeInfo()
 
@@ -72,7 +64,7 @@ export const WcConnectionForm = ({
       <Divider flexItem />
 
       <Grid item>
-        <WcSessionList sessions={sessions} onDisconnect={onDisconnect} />
+        <WcSessionList sessions={sessions} />
       </Grid>
 
       {showHints && (
