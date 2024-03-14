@@ -40,7 +40,6 @@ import css from './styles.module.css'
 import useAllOwnedSafes from '@/components/welcome/MyAccounts/useAllOwnedSafes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectAllAddedSafes, type AddedSafesState } from '@/store/addedSafesSlice'
-import { uniq } from 'lodash'
 
 // UI logic
 
@@ -103,10 +102,12 @@ export const _mergeNotifiableSafes = (
 ): NotifiableSafes | undefined => {
   const added = _transformAddedSafes(addedSafes)
 
-  const chains = uniq(
-    Object.keys(addedSafes)
-      .concat(Object.keys(currentSubscriptions || {}))
-      .concat(Object.keys(ownedSafes || {})),
+  const chains = Array.from(
+    new Set([
+      ...Object.keys(addedSafes || {}),
+      ...Object.keys(currentSubscriptions || {}),
+      ...Object.keys(ownedSafes || {}),
+    ]),
   )
 
   // Locally registered Safes (if not already added)
