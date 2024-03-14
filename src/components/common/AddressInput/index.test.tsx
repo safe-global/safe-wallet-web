@@ -1,3 +1,6 @@
+import * as addressBook from '@/hooks/useAddressBook'
+import * as allAddressBooks from '@/hooks/useAllAddressBooks'
+import * as urlChainId from '@/hooks/useChainId'
 import { act, fireEvent, waitFor } from '@testing-library/react'
 import { render } from '@/tests/test-utils'
 import { useForm, FormProvider } from 'react-hook-form'
@@ -9,11 +12,13 @@ import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 
 const mockChain = chainBuilder()
   .with({ features: [FEATURES.DOMAIN_LOOKUP] })
+  .with({ chainId: '11155111' })
   .build()
 
 // mock useCurrentChain
 jest.mock('@/hooks/useChains', () => ({
   useCurrentChain: jest.fn(() => mockChain),
+  useChain: jest.fn(() => mockChain),
 }))
 
 // mock useNameResolver
@@ -73,6 +78,7 @@ describe('AddressInput tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     ;(useCurrentChain as jest.Mock).mockImplementation(() => mockChain)
+    jest.spyOn(addressBook, 'default').mockReturnValue({})
   })
 
   it('should render with a default address value', () => {
@@ -273,5 +279,23 @@ describe('AddressInput tests', () => {
     })
 
     await waitFor(() => expect(input.value).toBe(TEST_ADDRESS_A))
+  })
+
+  it('should display a read-only input if the address is in the address book', async () => {
+    const mockChainId = '11155111'
+    const mockSafeName = 'Test Safe'
+    const mockAB = { [TEST_ADDRESS_A]: mockSafeName }
+
+    jest.spyOn(urlChainId, 'default').mockImplementation(() => mockChainId)
+    jest.spyOn(allAddressBooks, 'default').mockReturnValue({ [mockChainId]: mockAB })
+    jest.spyOn(addressBook, 'default').mockImplementation(() => mockAB)
+
+    const { input, utils } = setup(TEST_ADDRESS_A)
+
+    act(() => {
+      fireEvent.change(input, { target: { value: TEST_ADDRESS_A } })
+    })
+
+    await waitFor(() => expect(utils.getByText(mockSafeName)).toBeInTheDocument())
   })
 })

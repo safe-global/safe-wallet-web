@@ -13,3 +13,8 @@
 .rotated svg {
   transform: rotate(180deg);
 }
+
+.readOnly :global .MuiInputBase-input {
+  visibility: hidden;
+  position: absolute;
+}

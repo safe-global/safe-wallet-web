@@ -21,6 +21,10 @@ const useChains = (): { configs: ChainInfo[]; error?: string; loading?: boolean 
 
 export default useChains
 
+export const useChain = (chainId: string): ChainInfo | undefined => {
+  return useAppSelector((state) => selectChainById(state, chainId), isEqual)
+}
+
 export const useCurrentChain = (): ChainInfo | undefined => {
   const chainId = useChainId()
   const chainInfo = useAppSelector((state) => selectChainById(state, chainId), isEqual)
