@@ -30,7 +30,7 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): P
   const currentWallet = getConnectedWallet(onboard.state.get().wallets)
   if (!currentWallet) return null
 
-  // Onboard incorrectly returns WalletConnect's chainId, so it needs to be switched uncnoditionally
+  // Onboard incorrectly returns WalletConnect's chainId, so it needs to be switched unconditionally
   if (currentWallet.chainId === chainId && !isWalletConnect(currentWallet)) {
     return currentWallet
   }
