@@ -52,7 +52,6 @@ export const BlockedBridges = [
   'bridge.zora.energy',
   'bridge.mantle.xyz',
   'bridge.metis.io',
-  'scroll.io',
   'pacific-bridge.manta.network',
   'tokenbridge.rsk.co',
   'canto.io',
@@ -89,6 +88,7 @@ export const WarnedBridges = [
   'portal.txsync.io',
   'bridge.wanchain.org',
   'app.xy.finance',
+  'scroll.io',
 ]
 
 export const WarnedBridgeNames = ['Across Bridge', 'Hop']
