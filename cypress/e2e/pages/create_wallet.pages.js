@@ -29,6 +29,7 @@ const cancelBtn = '[data-testid="cancel-btn"]'
 const safeBackupAlert = '[data-testid="safe-backup-alert"]'
 const dialogConfirmBtn = '[data-testid="dialog-confirm-btn"]'
 const safeActivationSection = '[data-testid="activation-section"]'
+const addressAutocompleteOptions = '[data-testid="address-item"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -177,6 +178,14 @@ export function verifyOwnerAddress(address, index) {
 
 export function verifyThreshold(number) {
   cy.get(thresholdInput).should('have.value', number)
+}
+
+export function clickOnSignerAddressInput(index) {
+  cy.get(getOwnerAddressInput(index)).clear()
+}
+
+export function selectSignerOnAutocomplete(index) {
+  cy.get(addressAutocompleteOptions).eq(index).click()
 }
 
 export function typeOwnerName(name, index) {
