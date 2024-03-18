@@ -1,6 +1,8 @@
 import type { JsonRpcSigner } from 'ethers'
 import { type ChainInfo, deleteTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { WC_APP_PROD, WC_APP_DEV } from '@/config/constants'
+import { adjustVInSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
+import { SigningMethod } from '@safe-global/protocol-kit'
 
 export const _replaceTemplate = (uri: string, data: Record<string, string>): string => {
   // Template syntax returned from gateway is {{this}}
@@ -57,7 +59,7 @@ const signTxServiceMessage = async (
   }
 
   const signature = await signer.signTypedData(domain, types, message)
-  return signature
+  return adjustVInSignature(SigningMethod.ETH_SIGN_TYPED_DATA, signature)
 }
 
 export const deleteTx = async ({
