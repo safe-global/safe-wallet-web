@@ -1,32 +1,5 @@
-.wrapper :global .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline,
-.wrapper :global .MuiInputBase-root .MuiOutlinedInput-notchedOutline {
-  border-color: var(--color-border-light) !important;
-  border-width: 1px;
-}
-
-.wrapper :global .MuiInputBase-root.Mui-error .MuiOutlinedInput-notchedOutline {
-  border-color: var(--color-error-main) !important;
-}
-
-.wrapper :global .MuiInputLabel-root {
-  color: var(--color-text-secondary);
-}
-
-.wrapper :global .MuiInputLabel-root.Mui-error {
-  color: var(--color-error-main);
-}
-
-.wrapper :global .MuiInputBase-root {
-  height: 66px;
-}
-
-.wrapper :global input[text] {
-  padding: 0;
-}
-
 .input {
-  width: 100%;
-  padding: 12px var(--space-2);
+  width: calc(100% - 40px);
 }
 
 .input :global .MuiInputBase-input {

@@ -1,3 +1,5 @@
+import AddressInputReadOnly from '@/components/common/AddressInputReadOnly'
+import useAddressBook from '@/hooks/useAddressBook'
 import type { ReactElement } from 'react'
 import { useEffect, useCallback, useRef, useMemo } from 'react'
 import {
@@ -55,6 +57,8 @@ const AddressInput = ({
   const rawValueRef = useRef<string>('')
   const watchedValue = useWatch({ name, control })
   const currentShortName = currentChain?.shortName || ''
+
+  const addressBook = useAddressBook()
 
   // Fetch an ENS resolution for the current address
   const isDomainLookupEnabled = !!currentChain && hasFeature(currentChain, FEATURES.DOMAIN_LOOKUP)
@@ -120,12 +124,16 @@ const AddressInput = ({
         label={<>{error?.message || props.label || `Recipient address${isDomainLookupEnabled ? ' or ENS' : ''}`}</>}
         error={!!error}
         fullWidth
+        onClick={addressBook[watchedValue] ? () => setValue(name, '') : undefined}
         spellCheck={false}
         InputProps={{
           ...(props.InputProps || {}),
+          className: addressBook[watchedValue] ? css.readOnly : undefined,
 
-          // Display the current short name in the adornment, unless the value contains the same prefix
-          startAdornment: (
+          startAdornment: addressBook[watchedValue] ? (
+            <AddressInputReadOnly address={watchedValue} />
+          ) : (
+            // Display the current short name in the adornment, unless the value contains the same prefix
             <InputAdornment position="end" sx={{ ml: 0, gap: 1 }}>
               {watchedValue && !fieldError ? (
                 <Identicon address={watchedValue} size={32} />
