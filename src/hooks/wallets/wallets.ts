@@ -75,7 +75,7 @@ export const isWalletSupported = (disabledWallets: string[], walletLabel: string
 }
 
 export const getSupportedWallets = (chain: ChainInfo): WalletInit[] => {
-    if (window.Cypress && CYPRESS_MNEMONIC) {
+  if (window.Cypress && CYPRESS_MNEMONIC) {
     return [e2eWalletModule(chain.rpcUri)]
   }
   const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
