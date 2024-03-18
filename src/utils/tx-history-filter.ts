@@ -119,13 +119,14 @@ export const fetchFilteredTxHistory = async (
   chainId: string,
   safeAddress: string,
   filterData: TxFilter,
+  onlyTrusted: boolean,
   pageUrl?: string,
 ): Promise<TransactionListPage> => {
   const fetchPage = () => {
     const query = {
       ...filterData.filter,
       timezone_offset: getTimezoneOffset(),
-      trusted: false, // load all transactions, mark untrusted in the UI
+      trusted: onlyTrusted ?? false,
       executed: filterData.type === TxFilterType.MULTISIG ? 'true' : undefined,
     }
 
