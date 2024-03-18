@@ -33,10 +33,10 @@ export const ContractVersion = () => {
       </Typography>
 
       <Typography variant="body1" fontWeight={400}>
-        {safeLoaded ? safe.version ? safe.version : 'Unsupported contract' : <Skeleton width="60px" />}
+        {safeLoaded ? safe.version ?? 'Unsupported contract' : <Skeleton width="60px" />}
       </Typography>
       <Box mt={2}>
-        {safeLoaded ? (
+        {safeLoaded && safe.version ? (
           showUpdateDialog ? (
             <Alert
               sx={{ borderRadius: '2px', borderColor: '#B0FFC9' }}
