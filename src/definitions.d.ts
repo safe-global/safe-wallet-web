@@ -12,6 +12,14 @@ declare global {
       }
       isConnected?: () => boolean
     }
+    klaytn?: {
+      autoRefreshOnNetworkChange: boolean
+      isKaikas: boolean
+      _kaikas: {
+        isUnlocked: () => Promise<boolean>
+      }
+      isConnected?: () => boolean
+    }
     beamer_config?: BeamerConfig
     Beamer?: BeamerMethods
     dataLayer?: any[]

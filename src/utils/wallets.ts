@@ -22,9 +22,12 @@ export const isLedger = (wallet: ConnectedWallet): boolean => {
 }
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
-  return [WALLET_KEYS.LEDGER, WALLET_KEYS.TREZOR, WALLET_KEYS.KEYSTONE].includes(
-    wallet.label.toUpperCase() as WALLET_KEYS,
-  )
+  return [
+    WALLET_KEYS.DCENT,
+    WALLET_KEYS.LEDGER,
+    WALLET_KEYS.TREZOR,
+    WALLET_KEYS.KEYSTONE,
+  ].includes(wallet.label.toUpperCase() as WALLET_KEYS)
 }
 
 export const isSmartContractWallet = memoize(
@@ -45,6 +48,7 @@ export const isWalletUnlocked = async (walletName: string): Promise<boolean | un
   const METAMASK = 'MetaMask'
 
   // Only MetaMask exposes a method to check if the wallet is unlocked
+  // TODO: kaikas
   if (walletName === METAMASK) {
     if (typeof window === 'undefined' || !window.ethereum?._metamask) return false
     try {

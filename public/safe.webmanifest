@@ -1,7 +1,7 @@
 {
-  "name": "Safe",
-  "short_name": "Safe",
-  "description": "Safe (prev. Gnosis Safe) is the most trusted platform to manage digital assets on Ethereum and multiple EVMs. Over $40B secured.",
+  "name": "KlaytnSafe",
+  "short_name": "KlaytnSafe",
+  "description": "Klaytn Safe is the most trusted platform to manage digital assets on Klaytn blockchain network",
   "icons": [
     {
       "src": "/favicons/android-chrome-192x192.png",

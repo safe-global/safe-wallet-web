@@ -45,7 +45,7 @@ type CustomAppFormData = {
   safeApp: SafeAppData
 }
 
-const HELP_LINK = 'https://docs.safe.global/apps-sdk-overview'
+const HELP_LINK = 'https://docs.klaytn.foundation/apps-sdk-overview'
 const APP_ALREADY_IN_THE_LIST_ERROR = 'This Safe App is already in the list'
 const MANIFEST_ERROR = "The app doesn't support Safe App functionality"
 const INVALID_URL_ERROR = 'The url is invalid'
@@ -134,7 +134,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
                             })}
                           />
                         }
-                        label="This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk."
+                        label="This Safe App is not part of KlaytnSafe{Wallet} and I agree to use it at my own risk."
                         sx={{ mt: 2 }}
                       />
 

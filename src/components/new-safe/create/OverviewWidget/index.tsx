@@ -23,7 +23,7 @@ const OverviewWidget = ({ safeName }: { safeName: string }): ReactElement | null
     <Grid item xs={12}>
       <Card className={css.card}>
         <div className={css.header}>
-          <SafeLogo alt="Safe logo" width={LOGO_DIMENSIONS} height={LOGO_DIMENSIONS} />
+          <SafeLogo alt="Klaytn Safe logo" width={LOGO_DIMENSIONS} height={LOGO_DIMENSIONS} />
           <Typography variant="h4">Your Safe Account preview</Typography>
         </div>
         {wallet ? (

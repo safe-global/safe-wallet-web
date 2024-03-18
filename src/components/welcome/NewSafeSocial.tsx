@@ -52,7 +52,7 @@ const NewSafeSocial = () => {
                 <BulletListItem text="Add more signers later to level up your security" />
               </ul>
 
-              <Link href="https://safe.global/campaigns/social-login-gnosis" passHref>
+              <Link href="https://safe.klaytn.foundation/campaigns/social-login-gnosis" passHref>
                 <Button startIcon={<ChevronLeftIcon />} className={css.button}>
                   Back to landing page
                 </Button>

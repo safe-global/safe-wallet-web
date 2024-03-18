@@ -32,7 +32,7 @@ const Appearance: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Appearance'}</title>
+        <title>{'KlaytnSafe{Wallet} – Settings – Appearance'}</title>
       </Head>
 
       <SettingsHeader />
@@ -50,7 +50,7 @@ const Appearance: NextPage = () => {
               <Typography mb={2}>
                 Choose whether to copy{' '}
                 <ExternalLink href="https://eips.ethereum.org/EIPS/eip-3770">EIP-3770</ExternalLink> prefixes when
-                copying Ethereum addresses.
+                copying Klaytn addresses.
               </Typography>
               <FormGroup>
                 <FormControlLabel

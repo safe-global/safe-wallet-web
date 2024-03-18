@@ -3,315 +3,260 @@ import Head from 'next/head'
 import { Typography } from '@mui/material'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
-import { AppRoutes } from '@/config/routes'
-import { DISCORD_URL, HELP_CENTER_URL, TWITTER_URL } from '@/config/constants'
 import { IS_OFFICIAL_HOST } from '@/config/constants'
 
 const SafeTerms = () => (
   <div>
     <Typography variant="h1" mb={2}>
-      Terms and Conditions
+      Terms and Service
     </Typography>
     <p>Last updated: January 2024.</p>
-
-    <h3>1. What is the scope of the Terms?</h3>
-    <ol start={1}>
-      <li>
-        These Terms and Conditions (&ldquo;Terms&rdquo;) become part of any contract (&ldquo;Agreement&rdquo;) between
-        you (&ldquo;you&rdquo;, &ldquo;yours&rdquo; or &ldquo;User&rdquo;) and Core Contributors GmbH (&ldquo;CC&rdquo;,
-        &ldquo;we&rdquo;, &ldquo;our&rdquo; or &ldquo;us&rdquo;) provided we made these Terms accessible to you prior to
-        entering into the Agreement and you consent to these Terms. We are a limited liability company registered with
-        the commercial register of Berlin Charlottenburg under company number HRB 240421&nbsp;B, with its registered
-        office at Gontardstraße 11, 10178 Berlin, Germany. You can contact us by writing to info@cc0x.dev.
-      </li>
-      <li>
-        The Agreement is concluded by using the Mobile App, Web App and/or Browser Extension&nbsp;subject to these
-        Terms.&nbsp;The use of our Services is only permitted to legal entities, partnerships and natural persons with
-        unlimited legal capacity. In particular, minors are prohibited from using our Services.
-      </li>
-      <li>
-        The application of your general terms and conditions is excluded. Your deviating, conflicting or supplementary
-        general terms and conditions shall only become part of the Agreement if and to the extent that CC has expressly
-        agreed to their application in writing. This consent requirement shall apply in any case, even if for example
-        CC, being aware of your general terms and conditions, accepts payments by the contractual partner without
-        reservations.
-      </li>
-      <li>
-        We reserve the right to change these Terms at any time and without giving reasons, while considering and
-        weighing your interests. The new Terms will be communicated to you in advance. They are considered as agreed
-        upon if you do not object to their validity within 14 days after receipt of the notification. We will separately
-        inform you about the essential changes, the possibility to object, the deadline and the consequences of
-        inactivity. If you object, the current version of the Terms remains applicable. Our right to terminate the
-        contract according to Clause 8 remains unaffected.
-      </li>
-    </ol>
-
-    <h3>2. What do some of the capitalized terms mean in the Agreement?</h3>
-    <ol start={1}>
-      <li>
-        &ldquo;Blockchain&rdquo; means a mathematically secured consensus ledger such as the Ethereum Virtual Machine,
-        an Ethereum Virtual Machine compatible validation mechanism, or other decentralized validation mechanisms.
-      </li>
-      <li>
-        &ldquo;Transaction&rdquo; means a change to the data set through a new entry in the continuous Blockchain.
-      </li>
-      <li>
-        &ldquo;Smart Contract&rdquo; means a piece of source code deployed as an application on the Blockchain which can
-        be executed, including self-execution of Transactions as well as execution triggered by 3rd parties.
-      </li>
-      <li>
-        &ldquo;Token&rdquo; means a digital asset transferred in a Transaction, including ETH, ERC20, ERC721 and ERC1155
-        tokens.
-      </li>
-      <li>
-        &ldquo;Wallet&rdquo; means a cryptographic storage solution permitting you to store cryptographic assets by
-        correlation of a (i) Public Key and (ii) a Private Key, or a Smart Contract to receive, manage and send Tokens.
-      </li>
-      <li>
-        &ldquo;Recovery Phrase&rdquo; means a series of secret words used to generate one or more Private Keys and
-        derived Public Keys.
-      </li>
-      <li>
-        &ldquo;Public Key&rdquo; means a unique sequence of numbers and letters within the Blockchain to distinguish the
-        network participants from each other.
-      </li>
-      <li>
-        &ldquo;Private Key&rdquo; means a unique sequence of numbers and/or letters required to initiate a Blockchain
-        Transaction and should only be known by the legal owner of the Wallet.
-      </li>
-    </ol>
-
-    <h3>3. What are the Services offered?</h3>
     <p>
-      Our services (&ldquo;Services&rdquo;) primarily consist of enabling users to create their Safe Accounts and
-      ongoing interaction with it on the Blockchain.
-    </p>
-    <ol start={1}>
-      <li>&ldquo;Safe Account&rdquo; </li>
-    </ol>
-    <p>
-      A Safe Account is a modular, self-custodial (i.e. not supervised by us) smart contract-based wallet not provided
-      by CC. Safe Accounts are{' '}
-      <Link href="https://github.com/safe-global/safe-contracts/" passHref legacyBehavior>
+      These Terms of Service (the &ldquo;Agreement&rdquo;) are a legal agreement between you (&ldquo;you&rdquo;,
+      &ldquo;yours&rdquo; or &ldquo;User&rdquo;) and Klaytn Foundation Limited (&ldquo;Klaytn&rdquo;, &ldquo;we&rdquo;,
+      &ldquo;our&rdquo; or &ldquo;us&rdquo;). We are a company registered in Singapore. You can contact us by writing to
+      &nbsp;
+      <Link href="mailto:contact@klaytn.foundation" passHref legacyBehavior>
         <MUILink target="_blank" rel="noreferrer">
-          open-source
+          contact@klaytn.foundation
         </MUILink>
       </Link>
-      &nbsp;released under LGPL-3.0.
+      .
     </p>
-    <p>
-      Smart contract wallet means, unlike a standard private key Wallet, that access control for authorizing any
-      Transaction is defined in code. An example are multi-signature wallets which require that any Transaction must be
-      signed by a minimum number of signing wallets whereby the specifics of the requirements to authorize a Transaction
-      can be configured in code.{' '}
-    </p>
-    <p>
-      Owners need to connect a signing wallet with a Safe Account. Safe Accounts are compatible inter alia with standard
-      private key Wallets such as hardware wallets, browser extension wallets and mobile wallets that support
-      WalletConnect.
-    </p>
-    <ol start={2}>
-      <li>&ldquo;Safe App&rdquo;</li>
-    </ol>
-    <p>
-      You may access Safe Accounts using the {'Safe{Wallet}'} web app, mobile app for iOS and android, or the browser
-      extension&nbsp;(each a &ldquo;Safe App&rdquo;). The Safe App may be used to manage your personal digital assets on
-      Ethereum and other common EVM chains when you connect a Safe Account with third-party&nbsp;services (as defined
-      below). The Safe App provides certain features that may be amended from time to time.{' '}
-    </p>
-    <ol start={3}>
-      <li>&ldquo;Third-Party&nbsp;Safe Apps&rdquo;</li>
-    </ol>
-    <p>
-      The Safe App allows you to connect Safe Accounts to third-party decentralized applications
-      (&ldquo;Third-Party&nbsp;Safe Apps&rdquo;) and use third-party&nbsp;services such as from the decentralized
-      finance sector, DAO Tools or services related to NFTs (&ldquo;Third-Party&nbsp;Services&quot;). The
-      Third-Party&nbsp;Safe Apps are integrated in the user interface of the Safe App via inline framing. The provider
-      of the Third-Party&nbsp;Safe App and related Third-Party Service is responsible for the operation of the service
-      and the correctness, completeness and actuality of any information provided therein. We make a pre-selection of
-      Third-Party&nbsp;Safe Apps that we show in the Safe App. However, we only perform a rough triage in advance for
-      obvious problems and functionality in terms of loading time and resolution capability of the transactions.
-      Accordingly, in the event of any (technical) issues concerning the Third-Party Services, the user must only
-      contact the respective service provider directly. The terms of service, if any, shall be governed by the
-      applicable contractual provisions between the User and the respective provider of the Third-Party&nbsp;Service.
-      Accordingly, we are not liable in the event of a breach of contract, damage or loss related to the use of such
-      Third-Party Service.
-    </p>
-
-    <h3>4. What do the Services not consist of?</h3>
-    <p>Our Services do not&nbsp;consist of:</p>
+    <h3>1. What is the Klaytn Safe?</h3>
+    Klaytn Safe is a multi-sig wallet for the Klaytn ecosystem. It is a fork of the well-known multi-sig wallet Safe
+    (prev. Gnosis Safe).
+    <br />
+    The following are the benefits of Klaytn Safe.
     <ol start={1}>
       <li>
-        activity regulated by the Federal Financial Supervisory Authority (BaFin) or any other regulatory agency in any
-        jurisdiction;
-      </li>
-      <li>coverage underwritten by any regulatory agency&rsquo;s compensation scheme;</li>
-      <li>
-        custody of your Recovery Phrase, Private Keys, Tokens or the ability to remove or freeze your Tokens, i.e. a
-        Safe Account is a self-custodial wallet;
-      </li>
-      <li>the storage or transmission of fiat currencies;</li>
-      <li>
-        back-up services to recover your Recovery Phrase or Private Keys, for whose safekeeping you are solely
-        responsible; CC has no means to recover your access to your Tokens, when you lose access to your Safe Account;
+        <b>Store and Transfer KLAY, KCTs (KIP7, KIP13):</b> Users can deposit your virtual assets such as KLAY and
+        Klaytn Compatible Tokens (KCTs, fungible or non-fungible) to a KSafe address and also transfer to a destination
+        address.
       </li>
       <li>
-        any form of legal, financial, investment, accounting, tax or other professional advice regarding Transactions
-        and their suitability to you;{' '}
+        <b>Security:</b> Assets in your KSafe wallet are highly secured, because the confirmation threshold gives users
+        the liberty to decide which transaction should be executed, so you don&apos;t have to worry about one owner
+        running off with the asset.
       </li>
       <li>
-        the responsibility to monitor authorized Transactions or to check the correctness or completeness of
-        Transactions before you are authorizing them.
+        <b>Safe Apps:</b> KSafe&apos;s functionality is expanded by the addition of custom apps that enable batch
+        transactions and interaction with other dApps. One example of this safe app is the Transaction Builder. With a
+        transaction builder, you don&apos;t have to worry about executing sets of transactions one after another. This
+        batch transactions feature allows for transactions to be combined and executed at a click.
       </li>
     </ol>
-
-    <h3>5. What do you need to know about Third-Party Services?</h3>
+    <h3>2. Terms</h3>
     <ol start={1}>
       <li>
-        We provide you the possibility to interact with your Safe Account through&nbsp;Third-Party Services. Any
-        activities you engage in with, or services you receive from a third party is between you and that third party
-        directly. The conditions of service provisions, if any, shall be governed by the applicable contractual
-        provisions between you and the respective provider of the Third-Party Service.{' '}
+        &ldquo;KSafe&rdquo; or &ldquo;Services&rdquo; refers to the Klaytn Safe services, the Klay Safe, provided by
+        Klaytn, whether through{' '}
+        <Link href="https://klaytn.foundation/">
+          <MUILink target="_blank" rel="noreferrer">
+            Klaytn Foundation
+          </MUILink>
+        </Link>{' '}
+        website any associated website, API, or mobile application related, linked or otherwise connected thereto. You
+        may use the Services by accessing the{' '}
+        <Link href="https://safe.klaytn.foundation">
+          <MUILink target="_blank" rel="noreferrer">
+            KSafe
+          </MUILink>
+        </Link>{' '}
+        website and connecting your blockchain wallet such as Kaikas. For the avoidance of doubts, all content and
+        functionality on the Services is the exclusive property of Klaytn or its licensors and is protected by
+        applicable laws. Klaytn hereby grants you a limited, non-exclusive, non-transferable, revocable license pursuant
+        to Section 8 herein to use the Services solely for your own benefit, provided that you comply with this
+        Agreement. Nothing on this Services should be construed as granting directly or indirectly or by implication any
+        license or right to use any Klaytn intellectual property other than as expressly set forth herein. All rights
+        not expressly granted are reserved.
       </li>
       <li>
-        The Services rely in part on third-party and open-source software, including the Blockchain, and the continued
-        development and support by third parties. There is no assurance or guarantee that those third parties will
-        maintain their support of their software or that open-source software will continue to be maintained. This may
-        have a material adverse effect on the Services.
-      </li>
-      <li>This means specifically:</li>
-    </ol>
-    <ul>
-      <li>
-        We do not have any oversight over your activities with Third-Party&nbsp;Services especially by using
-        Third-Party&nbsp;Safe Apps, and therefore we do not and cannot make any representation regarding their
-        appropriateness and suitability for you.
-      </li>
-      <li>
-        Third-Party&nbsp;Services are not hosted, owned, controlled or maintained by us. We also do not participate in
-        the Transaction and will not and cannot monitor, verify, censor or edit the functioning or content of any
-        Third-Party Service.
-      </li>
-      <li>
-        We have not conducted any security audit, bug bounty or formal verification (whether internal or external) of
-        the Third-Party Services.
-      </li>
-      <li>
-        We have no control over, do not recommend, endorse, or otherwise take a position on the integrity, functioning
-        of, content and your use of Third-Party&nbsp;Services, whose sole responsibility lies with the person from whom
-        such services or content originated.
+        By using any Services offered by us, you agree that you have read, understood, and accept all of the terms and
+        conditions contained in this Agreement, including the &nbsp;
+        <Link href="https://docs.klaytn.foundation/misc/terms-of-use">
+          <MUILink target="_blank" rel="noreferrer">
+            terms of use
+          </MUILink>
+        </Link>{' '}
+        of Klaytn website and the{' '}
+        <Link href="https://klaytn.foundation/privacy/">
+          <MUILink target="_blank" rel="noreferrer">
+            privacy policy
+          </MUILink>
+        </Link>{' '}
+        of Klaytn website incorporated herein by reference, as amended from time to time (Agreement and terms of use and
+        privacy policy of Klaytn website collectively referred to as the &ldquo;Terms of Use&rdquo; ).&nbsp;
+        <b>
+          IF YOU DO NOT AGREE WITH ALL OR PART OF THESE TERMS OF USE, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING KSAFE
+          AND MUST STOP OR DISCONTINUE USING THE SERVICES IMMEDIATELY
+        </b>
+        .
       </li>
       <li>
-        When you access or use Third-Party&nbsp;Services you accept that there are risks in doing so and that you alone
-        assume any such risks when choosing to interact with them. We are not liable for any errors or omissions or for
-        any damages or loss you might suffer through interacting with those Third-Party&nbsp;Services, such as
-        Third-Party&nbsp;Safe Apps.
+        You may easily find this Agreement on the Services screen. Each time you use KSafe you will be bound by the
+        Agreement in force at that time. From time to time, we may change this Agreement. We will publish those changes
+        on{' '}
+        <Link href="https://safe.klaytn.foundation">
+          <MUILink target="_blank" rel="noreferrer">
+            KSafe
+          </MUILink>
+        </Link>{' '}
+        website seven (7) days prior to the enforcement date of the amended terms of the Agreement and you will be bound
+        by the amended Agreement at the time you use KSafe after such enforcement date. For your benefit, if any of the
+        amended terms may materially affect your use of KSafe, we will make notice of such changes thirty (30) days
+        prior to the enforcement date. If you do not agree to those changes, you must not use KSafe. You can always ask
+        us about the Agreement in effect at the time of your access to the KSafe by writing to &nbsp;{' '}
+        <Link href="mailto:partnership@klaytn.foundation">
+          <MUILink target="_blank" rel="noreferrer">
+            partnership@klaytn.foundation
+          </MUILink>
+        </Link>
+        . Every time you wish to use KSafe, please check and ensure that you agree with the latest updated version of
+        the Agreement. Any failure to check the Agreement or object to the Agreement by not using the Services shall be
+        your responsibility.
       </li>
       <li>
-        You know of the inherent risks of cryptographic and Blockchain-based systems and the high volatility of Token
-        markets. Transactions undertaken in the Blockchain are irrevocable and irreversible and there is no possibility
-        to refund Token that have been deployed.
-      </li>
-      <li>
-        You should read the license requirements, terms and conditions as well as privacy policy of each
-        Third-Party&nbsp;Service that you access or use. Certain Third-Party&nbsp;Services may involve complex
-        Transactions that entail a high degree of risk.
-      </li>
-      <li>
-        If you contribute integrations to Third-Party&nbsp;Services, you are responsible for all content you contribute,
-        in any manner, and you must have all rights necessary to do so, in the manner in which you contribute it. You
-        are responsible for all your activity in connection with any such Third-Party&nbsp;Service.{' '}
-      </li>
-      <li>
-        Your interactions with persons found on or through the Third-Party&nbsp;Service, including payment and delivery
-        of goods and services, financial transactions, and any other terms associated with such dealings, are solely
-        between you and such persons. You agree that we shall not be responsible or liable for any loss or damage of any
-        sort incurred as the result of any such dealings.
-      </li>
-      <li>
-        If there is a dispute between you and the Third-Party&nbsp;Service provider or/and other users of the
-        Third-Party&nbsp;Service, you agree that we are under no obligation to become involved. In the event that you
-        have a dispute with one or more other users, you release us, our officers, employees, agents, contractors and
-        successors from claims, demands, and damages of every kind or nature, known or unknown, suspected or
-        unsuspected, disclosed or undisclosed, arising out of or in any way related to such disputes and/or our
-        Services.
-      </li>
-    </ul>
-
-    <h3>6. What are the fees for the Services?</h3>
-    <ol start={1}>
-      <li>
-        The use of the Safe App or Third-Party&nbsp;Safe Apps may cause fees, including network fees, as indicated in
-        the respective app. CC has no control over the fees charged by the Third-Party Services. CC may change its own
-        fees at any time. Price changes will be communicated to the User in due time before taking effect.
-      </li>
-      <li>
-        The User is only entitled to offset and/or assert rights of retention if his counterclaims are legally
-        established, undisputed or recognized by CC.
+        The information provided on the Services is not intended for distribution to or use by any person or entity in
+        any jurisdiction or country where such distribution or use would be contrary to law or regulation or which would
+        subject us to any registration requirement within such jurisdiction or country. Accordingly, those persons who
+        choose to access the Services do so on their own initiative and are solely responsible for compliance with local
+        laws, if and to the extent local laws are applicable.
       </li>
     </ol>
-
-    <h3>7. Are we responsible for the security of your Private Keys, Recovery Phrase or other credentials?</h3>
+    <h3>3. User Representations</h3>
     <ol start={1}>
       <li>
-        We shall not be responsible&nbsp;to secure your Private Keys, Recovery Phrase, credentials or other means of
-        authorization of your wallet(s).
+        By using the KSafe, you represent and warrant that: (1) you are 19 years of age or older, you have legal
+        capacity, and you agree to comply with these Terms of Use; (2) you will not access the KSafe through automated
+        or non-human means, whether through a bot, script, or otherwise; (3) you will not use KSafe for any illegal or
+        unauthorized purpose; and (4) your use of KSafe will not violate any applicable law or regulation.
       </li>
       <li>
-        You must own and control any wallet you use in connection with our Services. You are responsible for
-        implementing all appropriate measures for securing any wallet you use, including any Private Key(s), Recovery
-        Phrase, credentials or other means of authorization necessary to access such storage mechanism(s).
+        If any of the information you provided is untrue, inaccurate, not current, or incomplete, Klaytn has the right
+        to suspend or terminate your account and refuse any and all current and future use of KSafe.
       </li>
       <li>
-        We exclude any and all liability for any security breaches or other acts or omissions, which result in your loss
-        of access or custody of any cryptographic assets stored thereon.
+        The obligation to manage your wallet information shall be borne by you and you shall not allow a third person to
+        use such information or use the same for the purpose of lease, transfer, collateral, etc. You shall be liable
+        for all disadvantages caused by a breach of this section or the third person&apos;s wilful misconduct or
+        negligence.
       </li>
     </ol>
-
-    <h3>8. Can we terminate or limit your right to use our Services?</h3>
+    <h3>4. What you agree to and warrant ?</h3>
     <ol start={1}>
       <li>
-        We may terminate the Agreement and refuse access to the Safe&nbsp;Apps at any time giving 30 days&rsquo; prior
-        notice. The right of the parties to terminate the Agreement for cause remains unaffected. In case of our
-        termination of the Agreement, you may no longer access your Safe Account via our Services. However, you may
-        continue to access your Safe Account and any Tokens via a third-party wallet provider using your Recovery Phrase
-        and Private Keys.
-      </li>
-      <li>
-        We reserve the right to limit the use of the Safe&nbsp;Apps to a specified number of Users if necessary to
-        protect or ensure the stability and integrity of the Services. We will only be able to limit access to the
-        Services. At no time will we be able to limit or block access to or transfer your funds without your consent.
+        By using KSafe you hereby agree, and warrant that:
+        <ol style={{ listStyleType: 'lower-alpha' }}>
+          <li>
+            You are of 19-year-old age or older and you agree to provide documentation providing such status if
+            requested or required by Klaytn.
+          </li>
+          <li>You have read and understood this Agreement and agree to be bound by the Terms of Use.</li>
+          <li>
+            Your usage of KSafe is legal under the laws of your jurisdiction or under the laws or regulation, including,
+            without limitation, any applicable export control laws.
+          </li>
+          <li>
+            You will comply with any applicable tax obligations in your jurisdiction arising from your use of KSafe.
+          </li>
+          <li>
+            You understand the functionality, usage, storage, transmission mechanisms and intricacies associated with
+            assets as well as blockchain technology and blockchain-based software systems.
+          </li>
+          <li>
+            You understand and agree that transactions on Klaytn blockchain are irreversible and may not be erased, that
+            your KSafe address and transactions are displayed permanently and publicly and that you relinquish any right
+            of rectification or erasure of your data.
+          </li>
+          <li>
+            You will not misuse or gain unauthorized access to KSafe by knowingly inserting viruses, cross-site
+            scripting, Trojan horses, worms, time-bombs, keystroke loggers, spyware, adware or any other harmful
+            programs or similar computer program designed to negatively affect KSafe and that in the event you do so or
+            otherwise attack KSafe, we reserve the right to report any such activity to the relevant law enforcement
+            authorities and we will take full measures to cooperate with those authorities as required.
+          </li>
+          <li>
+            You will not use our KSafe to store, trade or transmit assets that are proceed of criminal or fraudulent
+            activity.
+          </li>
+          <li>
+            You will not interfere with the normal provision of the Services by Klaytn by using the Services in ways
+            other than those provided by Klaytn (automatic access program, etc.).
+          </li>
+          <li>
+            You will not use KSafe for activities for unlawful or fraudulent or have such purpose of effect or otherwise
+            support any activities that breach local, national or international regulation or law.
+          </li>
+          <li>
+            You will not tarnish the reputation or disrupt the business of Klaytn, Services and other third parties.
+          </li>
+          <li>
+            You understand that KSafe is in early development stage, and we accordingly do not guarantee a 100%
+            error-free process and give no price or liquidity guarantee.
+          </li>
+          <li>You are using KSafe at your own risk.</li>
+        </ol>
+        <li>You will make a joint effort toward smooth Service operation and a sound online community culture.</li>
+        <li>
+          You agree to notify us of bugs, system errors, defects, etc., found in the course of using the Services, and
+          shall not disseminate the same to other user or misuse them.
+        </li>
+        <li>
+          You shall have an obligation to faithfully respond to our inquiries into whether you use illegal programs,
+          macro programs or in a manner prohibited in this Agreement.
+        </li>
+        <li>
+          You shall be responsible for managing their accounts on PCs and mobile devices. We shall not be responsible
+          for any losses caused by the management of Member&apos;s accounts, PCs, mobile devices and other various
+          authentication tools or by allowing another person to use the same.
+        </li>
       </li>
     </ol>
-
-    <h3>9. Can you terminate your Agreement with us?</h3>
-    <p>You may terminate the Agreement at any time without notice.</p>
-    <h3>10. What licenses and access do we grant to you?</h3>
+    <h3>5. What Licenses and access do we grant to you ?</h3>
     <ol start={1}>
       <li>
-        All intellectual property rights in Safe Accounts and the Services throughout the world belong to us as owner or
-        our licensors. Nothing in these Terms gives you any rights in respect of any intellectual property owned by us
-        or our licensors and you acknowledge that you do not acquire any ownership rights by downloading the Safe App or
-        any content from the Safe App.
+        We license but do not sell to you the Services you download solely for your own personal, non-commercial use. If
+        you are a business user, we license but do not sell to you the Services you download to use solely for your own
+        internal business use.
       </li>
       <li>
-        If you are a consumer we grant you a simple, limited license, but do not sell, to you the Services you download
-        solely for your own personal, non-commercial use.{' '}
+        The Services may contain code, commonly referred to as open-source software, which is distributed under
+        open-source license terms, including terms which allow the free distribution and modification of the relevant
+        software&apos;s source code and/or which require all distributors to make such source code freely available upon
+        request, including any contributions or modifications made by such distributor (&ldquo;Open-Source
+        Software&rdquo;). To the extent that the Services contain any Open-Source Software, that element only is
+        licensed to you under the relevant license terms of the applicable third party licensor (&ldquo;Open-Source
+        License Terms&rdquo;) and not under this Agreement, and you accept and agree to be bound by such Open-Source
+        License Terms.
       </li>
     </ol>
-
-    <h3>11. What can you expect from the Services and can we make changes to them?</h3>
+    <h3>6. What can you expect from the Services and can we make changes to them ?</h3>
     <ol start={1}>
       <li>
-        Without limiting your mandatory warranties, we provide the Services to you &ldquo;as is&rdquo; and &ldquo;as
-        available&rdquo; in relation to merchantability, fitness for a particular purpose, availability, security, title
-        or non-infringement.{' '}
+        Except as set out in this Agreement, we do not warrant, represent or guarantee that the Services will be
+        accurate, complete, correct, reliable integer, fit for purpose, secure or free from weaknesses, vulnerabilities
+        or bugs.
       </li>
       <li>
-        If you use the Safe App via web browser, the strict liability of CC for damages (sec. 536a German Civil Code)
-        for defects existing at the time of conclusion of the contract is precluded.{' '}
+        To the fullest extent permitted by law, we provide the Services to you &ldquo;as is&rdquo; and &ldquo;as
+        available&rdquo;, &ldquo;with all faults&rdquo; basis and without any warranty, representation or assurance
+        (whether express or implied) in relation to merchantability, fitness for a particular purpose, availability,
+        security, title or non-infringement.
       </li>
-      <li>The foregoing provisions will not limit CC&rsquo;s liability as defined in Clause 13. </li>
+      <li>
+        We may temporarily suspend the provision of the Services in the event of maintenance, replacement and breakdown
+        of information and communication facilities such as computers, communication failure or other significant
+        operational reasons. In such a case, we will notify you of this fact by publishing the notice on the Services
+        screen; provided, however, we may provide such notification after the fact when it has an inevitable reason for
+        failing to do so.
+      </li>
+      <li>
+        We may conduct regular inspections when necessary for the provision of the Services, and the time of such
+        inspections shall be published on the Services screen. In the event of a regular inspection, there may be
+        restrictions on the use of the Services, in whole or in part, and we shall not be held liable for any damage
+        caused thereby unless such damage is caused by our wilful misconduct or gross negligence.
+      </li>
       <li>
         We reserve the right to change the format and features of the Services by making any updates to Services
         available for you to download or, where your device settings permit it, by automatic delivery of updates.
@@ -319,283 +264,188 @@ const SafeTerms = () => (
       <li>
         You are not obliged to download the updated Services, but we may cease to provide and/or update prior versions
         of the Services and, depending on the nature of the update, in some circumstances you may not be able to
-        continue using the Services until you have downloaded the updated version.
+        continue using the Services until you have downloaded the updated version. You shall be solely responsible for
+        any failure to timely upload or update the Services and we shall not be held liable for any damage caused
+        thereby unless such damage is caused by our wilful misconduct or gross negligence.
+      </li>
+      <li>
+        We shall not be held liable for any problems that cause restrictions on the use of certain functions of the
+        Services due to disruptions in services provided by third parties in relation to the Services or inspections,
+        etc., unless such problems are caused by our wilful misconduct or gross negligence. In such a case, we will
+        announce or notify you of such fact.
       </li>
       <li>
         We may cease to provide and/or update content to the Services, with or without notice to you, if it improves the
         Services we provide to you, or we need to do so for security, legal or any other reasons.
       </li>
+      <li>
+        We may provide various information or notifications deemed necessary in the course of your use of the Services
+        through pop-up appearing on the Services screen or other reasonable means; provided, however, that you may, at
+        any given time, refuse to receive information, except for transaction-related information pursuant to applicable
+        law and responses to customer inquiries, etc.
+      </li>
+      <li>
+        We may publish advertisements on the Services screen. Users who have received such advertisements may express
+        their intention to refuse to receive such transmissions from us.
+      </li>
+      <li>
+        We are not liable for any losses incurred by you as a result of your failure to update and download the updated
+        version of the Services.
+      </li>
     </ol>
-
-    <h3>12. What do you agree, warrant and represent?</h3>
-    <p>By using our Services you hereby agree, represent and warrant that:</p>
+    <h3>7. What about third-party risk and the terms of third-party platform providers and application stores ?</h3>
     <ol start={1}>
       <li>
-        You are not a citizen, resident, or member of any jurisdiction or group that is subject to economic sanctions by
-        the European Union or the United States or any other relevant jurisdiction.
+        KSafe relies in part on third party and open-source software, including the Klaytn blockchain, and the continued
+        development and support by third parties. There is no assurance or guarantee that those third parties will
+        maintain their support of their own software or that open-source software will continue to be maintained. This
+        may have a material adverse effect on KSafe.
       </li>
       <li>
-        You do not appear on HMT Sanctions List, the U.S. Treasury Department&rsquo;s Office of Foreign Asset
-        Control&rsquo;s sanctions lists, the U.S. commerce department&apos;s consolidated screening list, the EU
-        consolidated list of persons, groups or entities subject to EU Financial Sanctions, nor do you act on behalf of
-        a person sanctioned thereunder.
-      </li>
-      <li>You have read and understood these Terms and agree to be bound by its terms.</li>
-      <li>
-        Your usage of our Services is legal under the laws of your jurisdiction or under the laws of any other
-        jurisdiction to which you may be subject.
+        WE DO NOT WARRANT THAT THE DATA, SOFTWARE, FUNCTIONS, OR ANY OTHER INFORMATION OFFERED ON OR THROUGH OUR
+        SERVICES WILL BE UNINTERRUPTED, UPDATED OR FREE OF ERRORS OF FACT OR OMISSIONS, VIRUSES OR OTHER HARMFUL
+        COMPONENTS AND DO NOT WARRANT THAT ANY OF THE FOREGOING WILL BE CORRECTED. WE DO NOT WARRANT OR MAKE ANY
+        REPRESENTATIONS REGARDING THE USE OR THE RESULTS OF THE USE OF THE SERVICES IN TERMS OF CORRECTNESS, ACCURACY,
+        RELIABILITY, OR OTHERWISE.
       </li>
       <li>
-        You won&rsquo;t use the Services or interact with the Services in a manner that violates any law or regulation,
-        including, without limitation, any applicable export control laws.
+        YOU UNDERSTAND AND AGREE THAT IF YOU USE, ACCESS, DOWNLOAD, OR OTHERWISE OBTAIN INFORMATION, MATERIALS, OR DATA
+        THROUGH OUR SERVICES, THE SAME SHALL BE AT YOUR OWN DISCRETION AND RISK AND THAT YOU WILL BE SOLELY RESPONSIBLE
+        FOR ANY DAMAGE TO YOUR PROPERTY (INCLUDING YOUR COMPUTER SYSTEM AND/OR OTHER DEVICE) OR LOSS OF DATA THAT
+        RESULTS FROM THE DOWNLOAD OR USE OF SUCH MATERIAL OR DATA.
       </li>
       <li>
-        You understand the functionality, usage, storage, transmission mechanisms and intricacies associated with Tokens
-        as well as wallet (including Safe Account) and Blockchains.
+        KSAFE MAY INCLUDE CONTENT, MATERIAL, LINKS OR SERVICES INCLUDING WITHOUT LIMITATION THIRD PARTY WEBSITES, APPS
+        OR DAPPS FROM THE THIRD-PARTY (COLLECTIVELY, &ldquo;THIRD PARTY SERVICES&rdquo;). SUCH THIRD PARTY SERVICES ARE
+        PROVIDED FOR USER&apos;S CONVENIENCE AND WE SHALL NOT GUARANTEE THE SAFETY, LEGALITY OR SUSTAINABILITY OF SUCH
+        THIRD PARTY SERVICES. WE ARE NOT RESPONSIBLE FOR THE MAINTENANCE AND MANAGEMENT OF THIRD PARTY SERVICES OR
+        MATERIALS REFERENCED FROM THIRD PARTY SERVICES, AND PROVIDE NO GUARANTEE OF ANY KIND REGARDING THIRD PARTY
+        SERVICES.
       </li>
       <li>
-        You understand that Transactions on the Blockchain are irreversible and may not be erased and that your Safe
-        Account address and Transactions are displayed permanently and publicly.
-      </li>
-      <li>
-        You will comply with any applicable tax obligations in your jurisdiction arising from your use of the Services.
-      </li>
-      <li>
-        You will not misuse or gain unauthorized access to our Services by knowingly introducing viruses, cross-site
-        scripting, Trojan horses, worms, time-bombs, keystroke loggers, spyware, adware or any other harmful programs or
-        similar computer code designed to adversely affect our Services and that in the event you do so or otherwise
-        attack our Services, we reserve the right to report any such activity to the relevant law enforcement
-        authorities and we will cooperate with those authorities as required.
-      </li>
-      <li>
-        You won&rsquo;t access without authority, interfere with, damage or disrupt any part of our Services, any
-        equipment or network on which our Services is stored, any software used in the provision of our Services or any
-        equipment or network or software owned or used by any third party.
-      </li>
-      <li>
-        You won&rsquo;t use our Services for activities that are unlawful or fraudulent or have such purpose or effect
-        or otherwise support any activities that breach applicable local, national or international law or regulations.
-      </li>
-      <li>
-        You won&rsquo;t use our Services to store, trade or transmit Tokens that are proceeds of criminal or fraudulent
-        activity.
-      </li>
-      <li>
-        You understand that the Services and the underlying Blockchain are in an early development stage and we
-        accordingly do not guarantee an error-free process and give no price or liquidity guarantee.
-      </li>
-      <li>You are using the Services at your own risk.</li>
-    </ol>
-
-    <h3>13. What about our liability to you?</h3>
-    <p>All our liability is excluded, except for the following:</p>
-
-    <ol>
-      <li>
-        In the event of intent and gross negligence on our part, we are liable for damages – regardless of the legal
-        grounds.
-      </li>
-      <li>
-        In the event of negligence on our part, we are liable for damages resulting from injury to life, body or health.
-      </li>
-      <li>
-        In the event of simple negligence on our part, we are only liable for damages resulting from the breach of an
-        essential contractual duty (e.g. a duty, the performance of which enables the proper execution of the contract
-        in the first place and on the compliance of which the contractual partner regularly relies and may rely),
-        whereby our liability shall be limited to compensation of the foreseeable, typically occurring damage. Liability
-        for the violation of a non-essential contractual duty is excluded.
-      </li>
-      <li>
-        The liability for simple negligence only applies to the extent that we do not offer the Safe App and the
-        Services free of charge (please note, in this context, that any service, network and/or transaction fees may be
-        charged by third parties via the Blockchain and not necessarily by us). Conversely, this means that we are not
-        liable in cases of simple negligence, when you obtain the Safe App or the service from us free of charge.
-      </li>
-      <li>
-        The limitations of liability according to Clauses 13.2 to 13.4. do not apply as far as we have assumed a
-        guarantee or we have fraudulently concealed a defect in the Services. These limitations of liability also do not
-        apply to your claims according to the Product Liability Act (”Produkthaftungsgesetz”) and any applicable data
-        privacy laws.
-      </li>
-      <li>
-        If you suffer damages from the loss of data, we are not liable for this, as far as the damages would have been
-        avoided by your regular and complete backup of all relevant data.
-      </li>
-      <li>
-        In the event of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain
-        that we are not responsible for, we shall be exempt from our obligation to perform. This also applies if we are
-        prevented from performing due to force majeure or other circumstances, the elimination of which is not possible
-        or cannot be economically expected of CC.
+        WE SHALL NOT BE HELD LIABLE FOR ANY DAMAGES, LOSSES OR OTHER IMPACT, DIRECTLY OR INDIRECTLY CAUSED BY THE USE OF
+        THIRD PARTY SERVICES THAT ARE NOT BELONGED TO US.
       </li>
     </ol>
-
-    <h3>14. What about viruses, bugs and security vulnerabilities?</h3>
-    <ol start={1}>
-      <li>We endeavor to provide our Service free from material bugs, security vulnerabilities or viruses.</li>
-      <li>
-        You are responsible for configuring your information technology and computer programmes to access our Services
-        and to use your own virus protection software.
-      </li>
-      <li>If you become aware of any exploits, bugs or vulnerabilities, please inform bounty@safe.global.</li>
-      <li>
-        You must not misuse our Services by knowingly introducing material that is malicious or technologically harmful.
-        If you do, your right to use our Services will cease immediately.
-      </li>
-    </ol>
-
-    <h3>15. What if an event outside our control happens that affects our Services?</h3>
+    <h3>8. What about our liability to you ?</h3>
     <ol start={1}>
       <li>
-        We may update and change our Services from time to time. We may suspend or withdraw or restrict the availability
-        of all or any part of our Services for business, operational or regulatory reasons or because of a Force Majeure
-        Event at no notice.
+        To the fullest extent permitted by applicable laws, in no event shall we be liable for any losses, including any
+        loss of your asset (including without limitation, KLAY, KCTs or any other virtual assets either tangible or
+        intangible) or any indirect or consequential losses, or for any loss of profit, revenue, contracts, data,
+        goodwill or other similar losses.
       </li>
       <li>
-        A &ldquo;Force Majeure Event&rdquo; shall mean any event, circumstance or cause beyond our reasonable control,
-        which prevents, hinders or delays the provision of our Services or makes their provision impossible or onerous,
-        including, without limitation:
+        We are neither aware of purposes of your use of Services nor willing to involve in your use of the Service for a
+        certain purpose, unless such use is in accordance with this Agreement or the Terms of Use or any applicable law.
+        You understand and accept that you use the Services at your own risk.
+      </li>
+      <li>
+        We are neither aware of purposes of your use of Services nor willing to involve in your use of the Service for a
+        certain purpose, unless such use is in accordance with this Agreement or the Terms of Use or any applicable law.
+        You understand and accept that you use the Services at your own risk.
+      </li>
+      <li>
+        Where we are operating in conjunction with third parties and/or any other third-party systems (collectively,
+        &ldquo;Third Party Activity&rdquo;), we are not responsible for any loss as a result of such Third Party
+        Activity. If your use of Services, including any transaction or transmission, as a result of your actions or
+        those of a third party, mistakenly or fraudulently signed for using your private key, we are not liable.
+      </li>
+      <li>
+        We shall not be held liable for any damages incurred by you when it is unable to provide the Services for any
+        one of the following reasons: <br />
+        <ol style={{ listStyleType: 'lower-alpha' }}>
+          <li>A force majeure event or a state equivalent thereto beyond the control of the Klaytn.</li>
+          <li>Damages caused by false or inaccurate information provided by you.</li>
+          <li>Disruption to Service use or damages incurred due to causes attributable to you or users.</li>
+          <li>
+            Damages incurred by an infringement of a third party&apos;s intellectual property rights caused by your
+            actions.
+          </li>
+          <li>Other reasons where there is no willful misconduct or gross negligence on the part of the Klaytn.</li>
+        </ol>
+      </li>
+      <li>
+        We shall not be liable whatsoever for any disadvantages, damages or losses incurred by you due to any
+        transaction between users or between users and a third party where the Services were used as a medium, unless
+        caused by our gross negligence or willful misconduct.
       </li>
     </ol>
-    <ul>
-      <li>acts of God, flood, storm, drought, earthquake or other natural disaster;</li>
-      <li>epidemic or pandemic (for the avoidance of doubt, including the 2020 Coronavirus Pandemic);</li>
-      <li>
-        terrorist attack, hacking or cyber threats, civil war, civil commotion or riots, war, threat of or preparation
-        for war, armed conflict, imposition of sanctions, embargo, or breaking off of diplomatic relations;
-      </li>
-      <li>
-        equipment or software malfunction or bugs including network splits or forks or unexpected changes in the
-        Blockchain, as well as hacks, phishing attacks, distributed denials of service or any other security attacks;
-      </li>
-      <li>nuclear, chemical or biological contamination;</li>
-      <li>
-        any law statutes, ordinances, rules, regulations, judgments, injunctions, orders and decrees or any action taken
-        by a government or public authority, including without limitation imposing a prohibition, or failing to grant a
-        necessary license or consent;
-      </li>
-      <li>collapse of buildings, breakdown of plant or machinery, fire, explosion or accident; and</li>
-      <li>strike, industrial action or lockout.</li>
-    </ul>
-    <ol start={3}>
-      <li>
-        We shall not be liable or responsible to you, or be deemed to have defaulted under or breached this Agreement,
-        for any failure or delay in the provision of the Services or the performance of this Agreement, if and to the
-        extent such failure or delay is caused by or results from or is connected to acts beyond our reasonable control,
-        including the occurrence of a Force Majeure Event.
-      </li>
-    </ol>
-
-    <h3>16. Who is responsible for your tax liabilities?</h3>
-    <p>
-      You are solely responsible to determine if your use of the Services have tax implications, in particular income
-      tax and capital gains tax relating to the purchase or sale of Tokens, for you. By using the Services you agree not
-      to hold us liable for any tax liability associated with or arising from the operation of the Services or any other
-      action or transaction related thereto.
-    </p>
-
-    <h3>17. What if a court disagrees with part of this Agreement?</h3>
-    <p>
-      Should individual provisions of these Terms be or become invalid or unenforceable in whole or in part, this shall
-      not affect the validity of the remaining provisions. The invalid or unenforceable provision shall be replaced by
-      the statutory provision. If there is no statutory provision or if the statutory provision would lead to an
-      unacceptable result, the parties shall enter negotiations to replace the invalid or unenforceable provision with a
-      valid provision that comes as close as possible to the economic purpose of the invalid or unenforceable provision.
-    </p>
-
-    <h3>18. What if we do not enforce certain rights under this Agreement?</h3>
-    <p>
-      Our failure to exercise or enforce any right or remedy provided under this Agreement or by law shall not
-      constitute a waiver of that or any other right or remedy, nor shall it prevent or restrict any further exercise of
-      that or any other right or remedy.
-    </p>
-
-    <h3>19. Do third parties have rights?</h3>
-    <p>
-      Unless it expressly states otherwise, this Agreement does not give rise to any third-party rights, which may be
-      enforced against us.
-    </p>
-
-    <h3>20. Can this Agreement be assigned?</h3>
+    <h3>9. Privacy Policy</h3>
     <ol start={1}>
       <li>
-        We are entitled to transfer our rights and obligations under the Agreement in whole or in part to third parties
-        with a notice period of four weeks. In this case, you have the right to terminate the Agreement without notice.
+        We do not collect or use your personal information in the course of providing the Services and KSafe does not
+        require your personal information for your access to the Services. You will only need to connect your blockchain
+        wallet without providing any personal information.
       </li>
       <li>
-        You shall not be entitled to assign this Agreement to any third party without our express prior written consent.
+        Notwithstanding the foregoing, we care about data privacy and security. Please review Klaytn&apos;s privacy
+        policy on{' '}
+        <Link href="https://klaytn.foundation/privacy/">
+          <MUILink target="_blank" rel="noreferrer">
+            https://klaytn.foundation/privacy/
+          </MUILink>
+        </Link>
+        . By using KSafe, you are agreeing to be bound by Klaytn privacy policy, which is incorporated into the Terms of
+        Use.
       </li>
     </ol>
-
-    <h3>21. Which Clauses of this Agreement survive termination?</h3>
+    <h3>10. Term and Termination</h3>
+    <ol start={1}>
+      <li>
+        The Terms of Use Shall remain in full force and effect while you are using the KSafe. Without limiting any other
+        provision of the Terms of Use, we reserve the right to, in our sole discretion and without notice or liability,
+        deny access to and use of the KSafe, to any person for any reason or for no reason, including without limitation
+        for breach of any representation, warranty contained in this Agreement or any terms in the Terms of Use of any
+        applicable law or regulation.
+      </li>
+      <li>
+        You may terminate this Agreement at any given time by not using this Services or by requesting termination to
+        the contact information provided herein. All benefits acquired through the use of the Services shall expire upon
+        termination of this Agreement. You shall be solely responsible for moving or securing any assets within your
+        KSafe before your termination and we shall neither be held liable for or obligated to compensate for such loss.
+      </li>
+      <li>
+        We may terminate your use or participation of KSafe or delete any content or information that you posted at any
+        time, in our sole discretion, for any of the following reasons:
+        <ol style={{ listStyleType: 'lower-alpha' }}>
+          <li>
+            When you cause interruption upon the operation of the Services by your willful misconduct or negligence.
+          </li>
+          <li>When there is a breach of this Agreement or any part of the Terms of Use.</li>
+          <li>
+            When such restriction or suspension is inevitable due to inspection and maintenance of Service-related
+            facilities or construction.
+          </li>
+          <li>
+            When normal Service provision is impossible due to facility maintenance or inspection, etc., of
+            facilities-based telecommunications business entities.
+          </li>
+          <li>
+            When there is a disruption in Service use due to national emergencies, power outage, equipment failure or
+            excessive traffic.
+          </li>
+          <li>
+            When the we recognize that it is inappropriate to continue the provision of the Services for other reasons.
+          </li>
+        </ol>
+      </li>
+    </ol>
+    <h3>11. Dispute Resolution</h3>
     <p>
-      All covenants, agreements, representations and warranties made in this Agreement shall survive your acceptance of
-      this Agreement and its termination.
+      This Agreement shall be prescribed and implemented in accordance with the laws of the Republic of Singapore
+      excluding any principles of conflict of lawsand courts of Singapore shall have exclusive jurisdiction over any
+      disputes between you and Klaytn with regard to the use of the Services. If there is any conflict between Klaytn
+      website terms of use and this Agreement, this Agreement shall prevail.
     </p>
-
-    <h3>22. Data Protection</h3>
+    <h3>12. Contact Us</h3>
     <p>
-      We inform you about our processing of personal data, including the disclosure to third parties and your rights as
-      an affected party, in the{' '}
-      <Link href={AppRoutes.privacy} passHref legacyBehavior>
-        <MUILink>Privacy Policy</MUILink>
+      Klaytn Foundation Limited. <br />
+      <Link href="mailto:contact@klaytn.foundation">
+        <MUILink target="_blank" rel="noreferrer">
+          contact@klaytn.foundation
+        </MUILink>
       </Link>
-      .
-    </p>
-
-    <h3>23. Which laws apply to the Agreement?</h3>
-    <p>
-      The Agreement including these Terms shall be governed by German law. The application of the UN Convention on
-      Contracts for the International Sale of Goods is excluded. For consumers domiciled in another European country but
-      Germany, the mandatory provisions of the consumer protection laws of the member state in which the consumer is
-      domiciled shall also apply, provided that these are more advantageous for the consumer than the provisions of the
-      German law.
-    </p>
-
-    <h3>24. How can you get support for Safe Accounts and tell us about any problems?</h3>
-    <p>
-      If you want to learn more about Safe Accounts or the Service or have any problems using them or have any
-      complaints please get in touch via any of the following channels:
-    </p>
-    <ol start={1}>
-      <li>
-        Intercom:{' '}
-        <Link href={HELP_CENTER_URL} passHref legacyBehavior>
-          <MUILink target="_blank" rel="noreferrer">
-            {HELP_CENTER_URL}
-          </MUILink>
-        </Link>
-      </li>
-      <li>
-        Discord:{' '}
-        <Link href={DISCORD_URL} passHref legacyBehavior>
-          <MUILink target="_blank" rel="noreferrer">
-            {DISCORD_URL}
-          </MUILink>
-        </Link>
-      </li>
-      <li>
-        Twitter:{' '}
-        <Link href={TWITTER_URL} passHref legacyBehavior>
-          <MUILink target="_blank" rel="noreferrer">
-            {TWITTER_URL}
-          </MUILink>
-        </Link>
-      </li>
-    </ol>
-
-    <h3>25. Where is the place of legal proceedings?</h3>
-    <p>
-      For users who are merchants within the meaning of the German Commercial Code (Handelsgesetzbuch), a special fund
-      (Sonderverm&ouml;gen) under public law or a legal person under public law, Berlin shall be the exclusive place of
-      jurisdiction for all disputes arising from the contractual relationship.
-    </p>
-
-    <h3>26. Is this all?</h3>
-    <p>
-      These Terms constitute the entire agreement between you and us in relation to the Agreement&rsquo;s subject
-      matter. It replaces and extinguishes any and all prior agreements, draft agreements, arrangements, warranties,
-      statements, assurances, representations and undertakings of any nature made by, or on behalf of either of us,
-      whether oral or written, public or private, in relation to that subject matter.
     </p>
   </div>
 )
@@ -604,7 +454,7 @@ const Terms: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Terms'}</title>
+        <title>{'KlaytnSafe{Wallet} – Terms'}</title>
       </Head>
 
       <main>{IS_OFFICIAL_HOST && <SafeTerms />}</main>

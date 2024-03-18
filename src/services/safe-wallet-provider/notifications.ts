@@ -27,13 +27,13 @@ export const NotificationMessages: Record<
   SIGNATURE_REQUEST: (appInfo: AppInfo) => ({
     title: 'Signature request',
     options: {
-      body: `${appInfo.name} wants you to sign a message. Open the Safe{Wallet} to continue.`,
+      body: `${appInfo.name} wants you to sign a message. Open the KlaytnSafe{Wallet} to continue.`,
     },
   }),
   TRANSACTION_REQUEST: (appInfo: AppInfo) => ({
     title: 'Transaction request',
     options: {
-      body: `${appInfo.name} wants to submit a transaction. Open the Safe{Wallet} to continue.`,
+      body: `${appInfo.name} wants to submit a transaction. Open the KlaytnSafe{Wallet} to continue.`,
     },
   }),
 }

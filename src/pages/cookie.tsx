@@ -29,7 +29,7 @@ const SafeCookiePolicy = () => (
     <p>Last updated: January 2024.</p>
     <p>
       As described in our{' '}
-      <Link href={AppRoutes.privacy} passHref legacyBehavior>
+      <Link href={AppRoutes.terms} passHref legacyBehavior>
         <MUILink>Privacy Policy</MUILink>
       </Link>
       , for general web-browsing of this website, your personal data is not revealed to us, although certain statistical
@@ -40,15 +40,15 @@ const SafeCookiePolicy = () => (
     </p>
     <p>
       This Cookie Policy applies to our website at{' '}
-      <Link href="https://app.safe.global" passHref legacyBehavior>
-        <MUILink>https://app.safe.global</MUILink>
+      <Link href="https://safe.klaytn.foundation" passHref legacyBehavior>
+        <MUILink>https://safe.klaytn.foundation</MUILink>
       </Link>
       &nbsp;and sets out some further detail on how and why we use these technologies on our website.{' '}
     </p>
     <p>
-      In this policy, &quot;we&quot;, &quot;us&quot; and &quot;our&quot; refers to Core Contributors GmbH a company
-      incorporated in Germany with its registered address at Gontardstraße 11, 10178 Berlin, Germany. The terms
-      &ldquo;you&rdquo; and &ldquo;your&rdquo; includes our clients, business partners and users of this website.{' '}
+      In this policy, &quot;we&quot;, &quot;us&quot; and &quot;our&quot; refers to Klaytn Foundation Limited a company
+      incorporated in Singapore. The terms &ldquo;you&rdquo; and &ldquo;your&rdquo; includes our clients, business
+      partners and users of this website.{' '}
     </p>
     <p>
       By using our website, you consent to storage and access to cookies and other technologies on your device, in
@@ -315,151 +315,6 @@ const SafeCookiePolicy = () => (
     </p>
     <h2>APPENDIX</h2>
     <p>Overview of cookies placed and the consequences if the cookies are not placed.</p>
-    <h3>First-party cookies</h3>
-    <table>
-      <tbody>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>#</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Name of cookie</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Domain</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Purpose(s) of cookie</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Storage period of cookie</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Consequences is cookie is not accepted</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>1</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_BEAMER_FILTER_BY_URL_{'{productID}'}</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>app.safe.global</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Stores whether to apply URL filtering on the feed.</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>20 minutes</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>2</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_BEAMER_DATE_{'{productID}'}</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>app.safe.global</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Stores the latest date in which the feed was opened.</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>300 days</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>3</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_BEAMER_LAST_POST_SHOWN_{'{productID}'}</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>app.safe.global</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Stores the ID of the last post shown as a teaser.</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Session</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>4</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_BEAMER_BOOSTED_ANNOUNCEMENT_DATE_{'{productID}'}</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>app.safe.global</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Stores the latest date in which a boosted announcement was displayed.</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>300 days</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>5</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_BEAMER_FIRST_VISIT_{'{productID}'}</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>app.safe.global</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Stores the date of this user&rsquo;s first visit to the site.</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>300 days</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>6</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_BEAMER_USER_ID_{'{productID}'}</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>app.safe.global</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Stores an internal ID for this user.</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>300 days</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
     <h3>Third-party cookies</h3>
     <p>The cookies from this table can be set by third-party wallets.</p>
     <table>
@@ -492,93 +347,13 @@ const SafeCookiePolicy = () => (
             <p>_ga</p>
           </td>
           <td colSpan={1} rowSpan={1}>
-            <p>safe.global</p>
+            <p>safe.klaytn.foundation</p>
           </td>
           <td colSpan={1} rowSpan={1}>
             <p>Used to distinguish users</p>
           </td>
           <td colSpan={1} rowSpan={1}>
             <p>2 years from set/update</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>2</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_ga</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>getbeamer.com</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Used to distinguish users</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>2 years from set/update</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>3</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_gid</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>getbeamer.com</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Used to distinguish users</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>24 hours</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>4</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>_BEAMER_USER_ID_{'{productID}'}</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>getbeamer.com</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Stores an internal ID for this user.</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>300 days</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>User activity won&apos;t be tracked</p>
-          </td>
-        </tr>
-        <tr>
-          <td colSpan={1} rowSpan={1}>
-            <p>5</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>JSESSIONID</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>app.getbeamer.com</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Stores an internal ID for this user.</p>
-          </td>
-          <td colSpan={1} rowSpan={1}>
-            <p>Session</p>
           </td>
           <td colSpan={1} rowSpan={1}>
             <p>User activity won&apos;t be tracked</p>
@@ -593,7 +368,7 @@ const CookiePolicy: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Cookie policy'}</title>
+        <title>{'Klaytn Safe{Wallet} – Cookie policy'}</title>
       </Head>
 
       <main>{IS_OFFICIAL_HOST && <SafeCookiePolicy />}</main>

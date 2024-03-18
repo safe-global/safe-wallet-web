@@ -110,7 +110,7 @@ const WebCoreApp = ({
   return (
     <Provider store={reduxStore}>
       <Head>
-        <title key="default-title">{'Safe{Wallet}'}</title>
+        <title key="default-title">{'KlaytnSafe{Wallet}'}</title>
         <MetaTags prefetchUrl={GATEWAY_URL} />
       </Head>
 

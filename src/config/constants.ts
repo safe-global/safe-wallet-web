@@ -4,8 +4,9 @@ export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === 'true'
 export const IS_DEV = process.env.NODE_ENV === 'development'
 
 export const GATEWAY_URL_PRODUCTION =
-  process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.safe.global'
-export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-client.staging.5afe.dev'
+  process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-gateway.klaytn.foundation/cgw'
+export const GATEWAY_URL_STAGING =
+  process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING || 'https://safe-gateway.klaytn.foundation/cgw'
 
 // Magic numbers
 export const POLLING_INTERVAL = 15_000
@@ -20,8 +21,8 @@ export const BEAMER_ID = process.env.NEXT_PUBLIC_BEAMER_ID || ''
 
 // Wallets
 export const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WC_PROJECT_ID || ''
-export const TREZOR_APP_URL = 'app.safe.global'
-export const TREZOR_EMAIL = 'support@safe.global'
+export const TREZOR_APP_URL = 'safe.klaytn.foundation'
+export const TREZOR_EMAIL = 'support@klaytn.foundation'
 
 // Cypress
 export const CYPRESS_MNEMONIC = process.env.NEXT_PUBLIC_CYPRESS_MNEMONIC || ''
@@ -34,9 +35,9 @@ export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
 
 // Safe Apps
 export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN || INFURA_TOKEN
-export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
-export const SAFE_APPS_DEMO_SAFE_MAINNET = 'eth:0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7'
-export const SAFE_APPS_SDK_DOCS_URL = 'https://docs.safe.global/apps-sdk-overview'
+export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = ''
+export const SAFE_APPS_DEMO_SAFE_MAINNET = ''
+export const SAFE_APPS_SDK_DOCS_URL = 'https://docs.klaytn.foundation/apps-sdk-overview'
 
 // Google Tag Manager
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || ''
@@ -61,21 +62,21 @@ export enum SafeAppsTag {
 
 export const WC_APP_PROD = {
   id: 111,
-  url: 'https://apps-portal.safe.global/wallet-connect',
+  url: 'https://apps-portal.klaytn.foundation/wallet-connect',
 }
 export const WC_APP_DEV = {
   id: 25,
-  url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
+  url: 'https://safe-apps.klaytn.foundation/wallet-connect',
 }
 
 // Safe Gelato relay service
 export const SAFE_RELAY_SERVICE_URL_PRODUCTION =
-  process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_PRODUCTION || 'https://safe-client.safe.global/v1/relay'
+  process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_PRODUCTION || 'https://safe-client.klaytn.foundation/v1/relay'
 export const SAFE_RELAY_SERVICE_URL_STAGING =
-  process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_STAGING || 'https://safe-client.staging.5afe.dev/v1/relay'
+  process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_STAGING || 'https://safe-client.klaytn.foundation/v1/relay'
 
 // Help Center
-export const HELP_CENTER_URL = 'https://help.safe.global'
+export const HELP_CENTER_URL = 'https://help.safe.glob'
 export const HelpCenterArticle = {
   ADDRESS_BOOK_DATA: `${HELP_CENTER_URL}/en/articles/40811-address-book-export-and-import`,
   ADVANCED_PARAMS: `${HELP_CENTER_URL}/en/articles/40837-advanced-transaction-parameters`,
@@ -103,7 +104,7 @@ export const RECOVERY_FEEDBACK_FORM =
   'https://noteforms.com/forms/safe-feedback-form-hk16ds?notionforms=1&utm_source=notionforms'
 
 // Social
-export const DISCORD_URL = 'https://chat.safe.global'
+export const DISCORD_URL = 'https://discord.com/invite/klaytnofficial'
 export const TWITTER_URL = 'https://twitter.com/safe'
 
 // Legal

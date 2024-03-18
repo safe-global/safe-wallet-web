@@ -61,7 +61,7 @@ describe('useNotificationRegistrations', () => {
         uuid: self.crypto.randomUUID(),
         cloudMessagingToken: 'token',
         buildNumber: '0',
-        bundle: 'https://app.safe.global',
+        bundle: 'https://safe.klaytn.foundation',
         deviceType: DeviceType.WEB,
         version: '1.17.0',
         timestamp: Math.floor(new Date().getTime() / 1000).toString(),

@@ -1,4 +1,12 @@
 FROM node:18-alpine
+
+# Grab needed environment variables from .env.example
+ARG NEXT_PUBLIC_GATEWAY_URL_PRODUCTION
+ARG NEXT_PUBLIC_WC_PROJECT_ID
+
+ENV NEXT_PUBLIC_GATEWAY_URL_PRODUCTION $NEXT_PUBLIC_GATEWAY_URL_PRODUCTION
+ENV NEXT_PUBLIC_WC_PROJECT_ID $NEXT_PUBLIC_WC_PROJECT_ID
+
 RUN apk add --no-cache libc6-compat git python3 py3-pip make g++ libusb-dev eudev-dev linux-headers
 WORKDIR /app
 COPY . .

@@ -1,6 +1,6 @@
 {
-  "name": "safe-wallet-web",
-  "homepage": "https://github.com/safe-global/safe-wallet-web",
+  "name": "klaytn-safe-wallet-web",
+  "homepage": "https://github.com/klaytn/klaytn-safe-wallet-web",
   "license": "GPL-3.0",
   "version": "1.31.0",
   "type": "module",
@@ -70,6 +70,7 @@
     "@walletconnect/web3wallet": "^1.10.1",
     "@web3-onboard/coinbase": "^2.2.6",
     "@web3-onboard/core": "^2.21.2",
+    "@web3-onboard/dcent": "^2.2.7",
     "@web3-onboard/injected-wallets": "^2.10.7",
     "@web3-onboard/keystone": "^2.3.7",
     "@web3-onboard/ledger": "2.3.2",
