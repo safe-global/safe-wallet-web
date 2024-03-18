@@ -13,9 +13,7 @@ import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { formatAmount } from '@/utils/formatNumber'
 import { localItem } from '@/services/local-storage/local'
-import { isWalletUnlocked } from '@/utils/wallets'
-
-const WALLETCONNECT = 'WalletConnect'
+import { isWalletConnect, isWalletUnlocked } from '@/utils/wallets'
 
 export type ConnectedWallet = {
   label: string
@@ -83,9 +81,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
 
 const getWalletConnectLabel = async (wallet: ConnectedWallet): Promise<string | undefined> => {
   const UNKNOWN_PEER = 'Unknown'
-  const { label } = wallet
-  const isWalletConnect = label.startsWith(WALLETCONNECT)
-  if (!isWalletConnect) return
+  if (!isWalletConnect(wallet)) return
   const { connector } = wallet.provider as unknown as any
   const peerWalletV2 = connector.session?.peer?.metadata?.name
   return peerWalletV2 || UNKNOWN_PEER
