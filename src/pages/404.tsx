@@ -10,7 +10,7 @@ export const _getRedirectUrl = (location: Location): string | undefined => {
   const [, pathSafe] = pathname.match(re) || []
 
   if (pathSafe) {
-    let newPath = pathname.replace(re, '') || '/'
+    let newPath = pathname.replace(re, '') || AppRoutes.home
     let newSearch = search ? '&' + search.slice(1) : ''
 
     // TxId used to be in the path, rewrite it to the query

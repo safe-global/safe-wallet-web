@@ -9,6 +9,14 @@ describe('_getRedirectUrl', () => {
     expect(url).toBe('/balances?safe=eth:0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6')
   })
 
+  it('adds home to the path in case there is no path defined', () => {
+    const url = _getRedirectUrl({
+      pathname: '/eth:0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6',
+      search: '',
+    } as Location)
+    expect(url).toBe('/home?safe=eth:0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6')
+  })
+
   it('returns undefined if the path is not a safe address', () => {
     const url = _getRedirectUrl({
       pathname: '/welcome',
