@@ -26,7 +26,6 @@ const networkFeeSection = '[data-tetid="network-fee-section"]'
 const nextBtn = '[data-testid="next-btn"]'
 const backBtn = '[data-testid="back-btn"]'
 const cancelBtn = '[data-testid="cancel-btn"]'
-const safeBackupAlert = '[data-testid="safe-backup-alert"]'
 const dialogConfirmBtn = '[data-testid="dialog-confirm-btn"]'
 const safeActivationSection = '[data-testid="activation-section"]'
 const addressAutocompleteOptions = '[data-testid="address-item"]'
@@ -41,7 +40,7 @@ export const defaultSepoliaPlaceholder = 'Sepolia Safe'
 const welcomeToSafeStr = 'Welcome to Safe'
 
 export function verifyNewSafeDialogModal() {
-  main.verifyElementsIsVisible([safeBackupAlert, dialogConfirmBtn])
+  main.verifyElementsIsVisible([dialogConfirmBtn])
 }
 //
 export function verifyCFSafeCreated() {
