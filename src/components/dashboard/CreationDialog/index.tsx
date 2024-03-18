@@ -1,12 +1,5 @@
-import { selectUndeployedSafe, type UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import useChainId from '@/hooks/useChainId'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { trackEvent } from '@/services/analytics'
-import { COUNTERFACTUAL_EVENTS } from '@/services/analytics/events/counterfactual'
-import { useAppSelector } from '@/store'
-import type { PredictedSafeProps } from '@safe-global/protocol-kit'
-import React, { type ElementType, type MouseEvent } from 'react'
-import { Alert, Box, Button, Dialog, DialogContent, Grid, Link, SvgIcon, Typography } from '@mui/material'
+import React, { type ElementType } from 'react'
+import { Box, Button, Dialog, DialogContent, Grid, SvgIcon, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import HomeIcon from '@/public/images/sidebar/home.svg'
@@ -34,43 +27,17 @@ const HintItem = ({ Icon, title, description }: { Icon: ElementType; title: stri
   )
 }
 
-const getExportFileName = () => {
-  const today = new Date().toISOString().slice(0, 10)
-  return `safe-backup-${today}.json`
-}
-
-const backupSafe = (chainId: string, safeAddress: string, undeployedSafe: PredictedSafeProps) => {
-  const data = JSON.stringify({ chainId, safeAddress, safeProps: undeployedSafe }, null, 2)
-
-  const blob = new Blob([data], { type: 'text/json' })
-  const link = document.createElement('a')
-
-  link.download = getExportFileName()
-  link.href = window.URL.createObjectURL(blob)
-  link.dataset.downloadurl = ['text/json', link.download, link.href].join(':')
-  link.dispatchEvent(new MouseEvent('click'))
-}
-
 const CreationDialog = () => {
   const router = useRouter()
   const [open, setOpen] = React.useState(true)
   const [remoteSafeApps = []] = useRemoteSafeApps()
   const chain = useCurrentChain()
-  const chainId = useChainId()
-  const { safeAddress } = useSafeInfo()
-  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, safeAddress))
 
   const onClose = () => {
     const { [CREATION_MODAL_QUERY_PARM]: _, ...query } = router.query
     router.replace({ pathname: router.pathname, query })
 
     setOpen(false)
-  }
-
-  const onBackup = (e: MouseEvent<HTMLAnchorElement>, undeployedSafe: UndeployedSafe) => {
-    e.preventDefault()
-    trackEvent(COUNTERFACTUAL_EVENTS.BACKUP_COUNTERFACTUAL_SAFE)
-    backupSafe(chainId, safeAddress, undeployedSafe.props)
   }
 
   return (
@@ -107,16 +74,6 @@ const CreationDialog = () => {
             description="Have any questions? Check out our collection of articles."
           />
         </Grid>
-
-        {undeployedSafe && (
-          <Alert data-testid="safe-backup-alert" severity="info" sx={{ mb: 2 }}>
-            We recommend{' '}
-            <Link href="#" onClick={(e) => onBackup(e, undeployedSafe)}>
-              backing up your Safe Account
-            </Link>{' '}
-            in case you lose access to this device.
-          </Alert>
-        )}
 
         <Box display="flex" justifyContent="center">
           <Button data-testid="dialog-confirm-btn" onClick={onClose} variant="contained" size="stretched">
