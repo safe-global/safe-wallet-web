@@ -1,23 +1,23 @@
+import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
+import { WCLoadingState } from '@/features/walletconnect/components/WalletConnectProvider'
+import { getPeerName } from '@/features/walletconnect/services/utils'
 import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import { asError } from '@/services/exceptions/utils'
-import type { SessionTypes } from '@walletconnect/types'
 import { Button, CircularProgress, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText } from '@mui/material'
-import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { getPeerName } from '@/features/walletconnect/services/utils'
-import { useCallback, useContext, useState } from 'react'
-import WcNoSessions from './WcNoSessions'
+import type { SessionTypes } from '@walletconnect/types'
+import { useCallback, useContext } from 'react'
 import css from './styles.module.css'
+import WcNoSessions from './WcNoSessions'
 
 type WcSesstionListProps = {
   sessions: SessionTypes.Struct[]
 }
 
 const WcSessionListItem = ({ session }: { session: SessionTypes.Struct }) => {
-  const { walletConnect, setError } = useContext(WalletConnectContext)
-  const [isDisconnecting, setIsDisconnecting] = useState<boolean>(false)
+  const { walletConnect, setError, isLoading, setIsLoading } = useContext(WalletConnectContext)
 
   const MAX_NAME_LENGTH = 23
   const { safeLoaded } = useSafeInfo()
@@ -33,17 +33,17 @@ const WcSessionListItem = ({ session }: { session: SessionTypes.Struct }) => {
     const label = session.peer.metadata.url
     trackEvent({ ...WALLETCONNECT_EVENTS.DISCONNECT_CLICK, label })
 
-    setIsDisconnecting(true)
+    setIsLoading(WCLoadingState.DISCONNECT)
 
     try {
       await walletConnect.disconnectSession(session)
     } catch (error) {
-      setIsDisconnecting(false)
+      setIsLoading(undefined)
       setError(asError(error))
     }
 
-    setIsDisconnecting(false)
-  }, [walletConnect, setError, session])
+    setIsLoading(undefined)
+  }, [walletConnect, session, setIsLoading, setError])
 
   return (
     <ListItem className={css.sessionListItem}>
@@ -56,8 +56,8 @@ const WcSessionListItem = ({ session }: { session: SessionTypes.Struct }) => {
       <ListItemText primary={name} primaryTypographyProps={{ color: safeLoaded ? undefined : 'text.secondary' }} />
 
       <ListItemIcon className={css.sessionListSecondaryAction}>
-        <Button variant="danger" onClick={onDisconnect} className={css.button} disabled={isDisconnecting}>
-          {isDisconnecting ? <CircularProgress size={20} /> : 'Disconnect'}
+        <Button variant="danger" onClick={onDisconnect} className={css.button} disabled={!!isLoading}>
+          {isLoading === WCLoadingState.DISCONNECT ? <CircularProgress size={20} /> : 'Disconnect'}
         </Button>
       </ListItemIcon>
     </ListItem>

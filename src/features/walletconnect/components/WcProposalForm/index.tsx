@@ -1,25 +1,25 @@
-import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
-
-import { asError } from '@/services/exceptions/utils'
-import { Button, Checkbox, CircularProgress, Divider, FormControlLabel, Typography } from '@mui/material'
-import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import type { ReactElement, ChangeEvent } from 'react'
-import type { Web3WalletTypes } from '@walletconnect/web3wallet'
-
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import css from './styles.module.css'
-import ProposalVerification from './ProposalVerification'
-import { CompatibilityWarning } from './CompatibilityWarning'
-import useChains from '@/hooks/useChains'
+import { WCLoadingState } from '@/features/walletconnect/components/WalletConnectProvider'
 import {
   getPeerName,
   getSupportedChainIds,
   isBlockedBridge,
   isWarnedBridge,
 } from '@/features/walletconnect/services/utils'
+import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
+import useChains from '@/hooks/useChains'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
-import useSafeInfo from '@/hooks/useSafeInfo'
+
+import { asError } from '@/services/exceptions/utils'
+import { Button, Checkbox, CircularProgress, Divider, FormControlLabel, Typography } from '@mui/material'
+import type { Web3WalletTypes } from '@walletconnect/web3wallet'
+import type { ChangeEvent, ReactElement } from 'react'
+import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { CompatibilityWarning } from './CompatibilityWarning'
+import ProposalVerification from './ProposalVerification'
+import css from './styles.module.css'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -27,9 +27,7 @@ type ProposalFormProps = {
 }
 
 const WcProposalForm = ({ proposal, setProposal }: ProposalFormProps): ReactElement => {
-  const { walletConnect, setError } = useContext(WalletConnectContext)
-  const [isApproving, setIsApproving] = useState<boolean>(false)
-  const [isRejecting, setIsRejecting] = useState<boolean>(false)
+  const { walletConnect, setError, setIsLoading, isLoading } = useContext(WalletConnectContext)
 
   const { configs } = useChains()
   const { safeLoaded, safe, safeAddress } = useSafeInfo()
@@ -45,7 +43,7 @@ const WcProposalForm = ({ proposal, setProposal }: ProposalFormProps): ReactElem
   const name = getPeerName(proposer) || 'Unknown dApp'
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin, name)
   const isBlocked = isScam || isBlockedBridge(origin)
-  const disabled = !safeLoaded || isUnsupportedChain || isBlocked || (isHighRisk && !understandsRisk) || isApproving
+  const disabled = !safeLoaded || isUnsupportedChain || isBlocked || (isHighRisk && !understandsRisk) || !!isLoading
 
   // On session approve
   const onApprove = useCallback(async () => {
@@ -54,20 +52,20 @@ const WcProposalForm = ({ proposal, setProposal }: ProposalFormProps): ReactElem
     const label = proposal?.params.proposer.metadata.url
     trackEvent({ ...WALLETCONNECT_EVENTS.APPROVE_CLICK, label })
 
-    setIsApproving(true)
+    setIsLoading(WCLoadingState.APPROVE)
 
     try {
       await walletConnect.approveSession(proposal, chainId, safeAddress)
     } catch (e) {
-      setIsApproving(false)
+      setIsLoading(undefined)
       setError(asError(e))
       return
     }
 
     trackEvent({ ...WALLETCONNECT_EVENTS.CONNECTED, label })
-    setIsApproving(false)
+    setIsLoading(undefined)
     setProposal(undefined)
-  }, [walletConnect, chainId, safeAddress, proposal, setProposal, setError])
+  }, [walletConnect, chainId, safeAddress, proposal, setIsLoading, setProposal, setError])
 
   // On session reject
   const onReject = useCallback(async () => {
@@ -76,18 +74,18 @@ const WcProposalForm = ({ proposal, setProposal }: ProposalFormProps): ReactElem
     const label = proposal?.params.proposer.metadata.url
     trackEvent({ ...WALLETCONNECT_EVENTS.REJECT_CLICK, label })
 
-    setIsRejecting(true)
+    setIsLoading(WCLoadingState.REJECT)
 
     try {
       await walletConnect.rejectSession(proposal)
     } catch (e) {
-      setIsRejecting(false)
+      setIsLoading(undefined)
       setError(asError(e))
     }
 
-    setIsRejecting(false)
+    setIsLoading(undefined)
     setProposal(undefined)
-  }, [walletConnect, proposal, setProposal, setError])
+  }, [walletConnect, proposal, setIsLoading, setProposal, setError])
 
   const onCheckboxClick = useCallback(
     (_: ChangeEvent, checked: boolean) => {
@@ -160,12 +158,12 @@ const WcProposalForm = ({ proposal, setProposal }: ProposalFormProps): ReactElem
       <Divider flexItem className={css.divider} />
 
       <div className={css.buttons}>
-        <Button variant="danger" onClick={onReject} className={css.button} disabled={isRejecting}>
-          {isRejecting ? <CircularProgress size={20} /> : 'Reject'}
+        <Button variant="danger" onClick={onReject} className={css.button} disabled={!!isLoading}>
+          {isLoading === WCLoadingState.REJECT ? <CircularProgress size={20} /> : 'Reject'}
         </Button>
 
         <Button variant="contained" onClick={onApprove} className={css.button} disabled={disabled}>
-          {isApproving ? <CircularProgress size={20} /> : 'Approve'}
+          {isLoading === WCLoadingState.APPROVE ? <CircularProgress size={20} /> : 'Approve'}
         </Button>
       </div>
     </div>
