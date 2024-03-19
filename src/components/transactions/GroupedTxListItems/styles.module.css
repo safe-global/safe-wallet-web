@@ -14,9 +14,14 @@
 
 .disclaimerContainer {
   background-color: var(--color-warning-background);
+  color: var(--color-static-main);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--space-1);
   flex: 1;
+}
+
+.disclaimerContainer a {
+  color: inherit;
 }
 
 .disclaimerContainer a > * {
