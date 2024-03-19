@@ -27,7 +27,3 @@
   background-color: var(--color-secondary-background);
   padding: var(--space-2);
 }
-
-[data-theme='dark'] .globalInfo {
-  background-color: var(--color-info-background);
-}
