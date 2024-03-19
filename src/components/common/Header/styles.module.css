@@ -51,10 +51,6 @@
   display: none;
 }
 
-.menuButton > Button {
-  padding: var(--space-2);
-}
-
 .networkSelector {
   border-right: none;
 }
