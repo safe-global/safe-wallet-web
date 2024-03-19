@@ -70,10 +70,6 @@
 }
 
 @media (max-width: 599.95px) {
-  .menuButton {
-    padding-left: var(--space-2);
-  }
-
   .hideMobile {
     display: none;
   }

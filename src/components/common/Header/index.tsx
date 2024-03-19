@@ -54,7 +54,7 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
   return (
     <Paper className={css.container}>
       <div className={classnames(css.element, css.menuButton, !onMenuToggle ? css.hideSidebarMobile : null)}>
-        <IconButton onClick={handleMenuToggle} size="large" edge="start" color="default" aria-label="menu">
+        <IconButton onClick={handleMenuToggle} size="large" color="default" aria-label="menu">
           <MenuIcon />
         </IconButton>
       </div>
