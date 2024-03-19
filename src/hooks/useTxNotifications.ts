@@ -21,6 +21,7 @@ const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',
   [TxEvent.PROPOSED]: 'Successfully added to queue.',
   [TxEvent.PROPOSE_FAILED]: 'Failed to add to queue. Please try again.',
+  [TxEvent.DELETED]: 'Successfully deleted transaction.',
   [TxEvent.SIGNATURE_PROPOSED]: 'Successfully signed.',
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: 'Failed to send signature. Please try again.',
   [TxEvent.EXECUTING]: 'Confirm the execution in your wallet.',

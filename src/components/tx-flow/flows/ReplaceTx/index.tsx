@@ -25,6 +25,12 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
   )
   const [isDeleting, setIsDeleting] = useState(false)
 
+  const onDeleteSuccess = () => {
+    setIsDeleting(false)
+    setTxFlow(undefined)
+  }
+  const onDeleteClose = () => setIsDeleting(false)
+
   return (
     <TxLayout title="Reject transaction" step={0} hideNonce isReplacement>
       <TxCard>
@@ -84,7 +90,9 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
                 description="Remove this transaction from the queue permanently"
               />
 
-              {isDeleting && <DeleteTxModal onClose={() => setIsDeleting(false)} safeTxHash={safeTxHash} />}
+              {isDeleting && (
+                <DeleteTxModal onSuccess={onDeleteSuccess} onClose={onDeleteClose} safeTxHash={safeTxHash} />
+              )}
             </>
           )}
         </Box>
