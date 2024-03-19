@@ -51,6 +51,10 @@
   display: none;
 }
 
+.menuButton > Button {
+  padding: var(--space-2);
+}
+
 .networkSelector {
   border-right: none;
 }
@@ -70,10 +74,6 @@
 }
 
 @media (max-width: 599.95px) {
-  .menuButton {
-    padding-left: var(--space-2);
-  }
-
   .hideMobile {
     display: none;
   }
