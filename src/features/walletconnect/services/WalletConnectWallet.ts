@@ -126,6 +126,7 @@ class WalletConnectWallet {
     await this.chainChanged(session.topic, currentChainId)
 
     // Workaround: WalletConnect doesn't have a session_add event
+    // and we want to update our state inside the useWalletConnectSessions hook
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
 
     // Return updated session as it may have changed
@@ -256,7 +257,8 @@ class WalletConnectWallet {
     })
 
     // Workaround: WalletConnect doesn't emit session_delete event when disconnecting from the wallet side
-    this.web3Wallet?.events.emit('session_delete', session)
+    // and we want to update the state inside the useWalletConnectSessions hook
+    this.web3Wallet.events.emit('session_delete', session)
   }
 
   /**
