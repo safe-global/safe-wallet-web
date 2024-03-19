@@ -27,6 +27,7 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 type DeleteTxModalProps = {
   safeTxHash: string
+  txId: string
   onClose: () => void
   onSuccess: () => void
   onboard: ReturnType<typeof useOnboard>
@@ -34,7 +35,15 @@ type DeleteTxModalProps = {
   safeAddress: ReturnType<typeof useSafeAddress>
 }
 
-const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, chainId }: DeleteTxModalProps) => {
+const _DeleteTxModal = ({
+  safeTxHash,
+  txId,
+  onSuccess,
+  onClose,
+  onboard,
+  safeAddress,
+  chainId,
+}: DeleteTxModalProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -58,7 +67,7 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, 
         signer,
       })
 
-      txDispatch(TxEvent.DELETED, { safeTxHash })
+      txDispatch(TxEvent.DELETED, { txId })
 
       onSuccess()
     } catch (error) {
@@ -122,7 +131,7 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, 
           color="primary"
           onClick={onConfirm}
           disabled={isLoading}
-          sx={{ minWidth: '122px' }}
+          sx={{ minWidth: '122px', minHeight: '36px' }}
         >
           {isLoading ? <CircularProgress size={20} /> : 'Yes, delete'}
         </Button>

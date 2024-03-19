@@ -27,7 +27,7 @@ const RejectTxButton = ({
 
   const openReplacementModal = () => {
     if (txNonce === undefined) return
-    setTxFlow(<ReplaceTxFlow txNonce={txNonce} safeTxHash={safeTxHash} />, undefined, false)
+    setTxFlow(<ReplaceTxFlow txId={txSummary.id} txNonce={txNonce} safeTxHash={safeTxHash} />, undefined, false)
   }
 
   return (

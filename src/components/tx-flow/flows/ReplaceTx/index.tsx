@@ -17,7 +17,15 @@ import DeleteTxModal from './DeleteTxModal'
 import ExternalLink from '@/components/common/ExternalLink'
 import ChoiceButton from '@/components/common/ChoiceButton'
 
-const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: string | undefined }) => {
+const ReplaceTxMenu = ({
+  txId,
+  txNonce,
+  safeTxHash,
+}: {
+  txId: string
+  txNonce: number
+  safeTxHash: string | undefined
+}) => {
   const { setTxFlow } = useContext(TxModalContext)
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
   const canCancel = !queuedTxsByNonce?.some(
@@ -32,7 +40,7 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
   const onDeleteClose = () => setIsDeleting(false)
 
   return (
-    <TxLayout title="Reject transaction" step={0} hideNonce isReplacement>
+    <TxLayout title={`Reject transaction #${txNonce}`} step={0} hideNonce isReplacement>
       <TxCard>
         <Box mt={2} textAlign="center">
           <ReplaceTxIcon />
@@ -91,7 +99,12 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
               />
 
               {isDeleting && (
-                <DeleteTxModal onSuccess={onDeleteSuccess} onClose={onDeleteClose} safeTxHash={safeTxHash} />
+                <DeleteTxModal
+                  onSuccess={onDeleteSuccess}
+                  onClose={onDeleteClose}
+                  txId={txId}
+                  safeTxHash={safeTxHash}
+                />
               )}
             </>
           )}

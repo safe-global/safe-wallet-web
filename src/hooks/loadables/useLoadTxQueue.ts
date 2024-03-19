@@ -30,8 +30,8 @@ export const useLoadTxQueue = (): AsyncResult<TransactionListPage> => {
     const unsubscribeProposed = txSubscribe(TxEvent.PROPOSED, ({ txId }) => {
       setUpdatedTxId(txId)
     })
-    const unsubscribeDeleted = txSubscribe(TxEvent.DELETED, ({ safeTxHash }) => {
-      setUpdatedTxId(safeTxHash)
+    const unsubscribeDeleted = txSubscribe(TxEvent.DELETED, ({ txId }) => {
+      setUpdatedTxId(txId)
     })
     return () => {
       unsubscribeProposed()
