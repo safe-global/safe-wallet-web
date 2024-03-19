@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Typography, Card, Box, Alert, IconButton, Link, SvgIcon } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -137,6 +137,16 @@ const GovernanceSection = () => {
 // Prevent `GovernanceSection` hooks from needlessly being called
 const GovernanceSectionWrapper = () => {
   const chainId = useChainId()
+  const [isLayoutReady, setIsLayoutReady] = useState(false)
+
+  useEffect(() => {
+    setIsLayoutReady(true)
+  }, [])
+
+  if (!isLayoutReady) {
+    return null
+  }
+
   if (!getSafeTokenAddress(chainId)) {
     return null
   }
