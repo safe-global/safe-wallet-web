@@ -19,6 +19,7 @@ enum Errors {
 export enum WCLoadingState {
   APPROVE = 'Approve',
   REJECT = 'Reject',
+  CONNECT = 'Connect',
   DISCONNECT = 'Disconnect',
 }
 
