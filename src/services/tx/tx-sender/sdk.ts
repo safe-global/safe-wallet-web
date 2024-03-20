@@ -3,7 +3,7 @@ import type Safe from '@safe-global/protocol-kit'
 import { EthersAdapter, SigningMethod } from '@safe-global/protocol-kit'
 import type { JsonRpcSigner } from 'ethers'
 import { ethers } from 'ethers'
-import { isWalletRejection, isHardwareWallet } from '@/utils/wallets'
+import { isWalletRejection, isHardwareWallet, isWalletConnect } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
@@ -28,26 +28,21 @@ export const getAndValidateSafeSDK = (): Safe => {
 
 export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet | null> => {
   const currentWallet = getConnectedWallet(onboard.state.get().wallets)
+  if (!currentWallet) return null
 
-  if (!currentWallet) {
-    return null
-  }
-
-  if (isHardwareWallet(currentWallet)) {
-    await onboard.disconnectWallet({ label: currentWallet.label })
-    const wallets = await connectWallet(onboard, { autoSelect: currentWallet.label })
-
-    return wallets ? getConnectedWallet(wallets) : null
-  }
-
-  const didSwitch = await onboard.setChain({ chainId: toQuantity(parseInt(chainId)) })
-  if (!didSwitch) {
+  // Onboard incorrectly returns WalletConnect's chainId, so it needs to be switched unconditionally
+  if (currentWallet.chainId === chainId && !isWalletConnect(currentWallet)) {
     return currentWallet
   }
 
-  /**
-   * Onboard doesn't update immediately and otherwise returns a stale wallet if we directly get its state
-   */
+  // Hardware wallets cannot switch chains
+  if (isHardwareWallet(currentWallet)) {
+    await onboard.disconnectWallet({ label: currentWallet.label })
+    const wallets = await connectWallet(onboard, { autoSelect: currentWallet.label })
+    return wallets ? getConnectedWallet(wallets) : null
+  }
+
+  // Onboard doesn't update immediately and otherwise returns a stale wallet if we directly get its state
   return new Promise((resolve) => {
     const source$ = onboard.state.select('wallets').subscribe((newWallets) => {
       const newWallet = getConnectedWallet(newWallets)
@@ -56,6 +51,17 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): P
         resolve(newWallet)
       }
     })
+
+    // Switch chain for all other wallets
+    currentWallet.provider
+      .request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: toQuantity(parseInt(chainId)) }],
+      })
+      .catch(() => {
+        source$.unsubscribe()
+        resolve(currentWallet)
+      })
   })
 }
 
@@ -64,10 +70,6 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): P
 
   if (!wallet) {
     throw new Error('No wallet connected.')
-  }
-
-  if (wallet.chainId === chainId) {
-    return wallet
   }
 
   const newWallet = await switchWalletChain(onboard, chainId)
