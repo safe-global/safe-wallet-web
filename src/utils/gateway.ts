@@ -55,7 +55,7 @@ const signTxServiceMessage = async (
   }
   const message = {
     safeTxHash: safeTxHash,
-    totp: Math.round(Date.now() / 3600e3),
+    totp: Math.floor(Date.now() / 3600e3),
   }
 
   const signature = await signer.signTypedData(domain, types, message)
