@@ -7,7 +7,7 @@ import * as logic from '@/components/new-safe/create/logic'
 import * as contracts from '@/services/contracts/safeContracts'
 import * as txMonitor from '@/services/tx/txMonitor'
 import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/usePendingSafe'
-import { BrowserProvider, type Eip1193Provider, zeroPadValue, type JsonRpcProvider } from 'ethers'
+import { BrowserProvider, zeroPadValue, type JsonRpcProvider } from 'ethers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { chainBuilder } from '@/tests/builders/chains'
 import { waitFor } from '@testing-library/react'
@@ -15,6 +15,7 @@ import type Safe from '@safe-global/protocol-kit'
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/protocol-kit/dist/src/adapters/ethers/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import * as gasPrice from '@/hooks/useGasPrice'
+import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 const mockSafeInfo = {
   data: '0x',
@@ -50,7 +51,7 @@ describe('useSafeCreation', () => {
   const mockSetPendingSafe = jest.fn()
   const mockStatus = SafeCreationStatus.AWAITING
   const mockSetStatus = jest.fn()
-  const mockProvider: BrowserProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
+  const mockProvider: BrowserProvider = new BrowserProvider(MockEip1193Provider)
   const mockReadOnlyProvider = {
     getCode: jest.fn(),
   } as unknown as JsonRpcProvider

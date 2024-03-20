@@ -38,9 +38,10 @@
     "@web3-onboard/trezor/**/protobufjs": "^7.2.4",
     "@walletconnect/core": "^2.11.1",
     "@walletconnect/ethereum-provider": "^2.11.2",
-    "@safe-global/safe-core-sdk-types/**/ethers": "^6.10.0",
-    "@safe-global/protocol-kit/**/ethers": "^6.10.0",
-    "@safe-global/api-kit/**/ethers": "^6.10.0"
+    "@safe-global/safe-core-sdk-types/**/ethers": "^6.11.1",
+    "@safe-global/protocol-kit/**/ethers": "^6.11.1",
+    "@safe-global/api-kit/**/ethers": "^6.11.1",
+    "@gnosis.pm/zodiac/**/ethers": "^6.11.1"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^9.7.1",
@@ -80,7 +81,7 @@
     "bn.js": "^5.2.1",
     "classnames": "^2.3.1",
     "date-fns": "^2.30.0",
-    "ethers": "^6.10.0",
+    "ethers": "^6.11.1",
     "exponential-backoff": "^3.1.0",
     "firebase": "^10.3.1",
     "framer-motion": "^10.13.1",

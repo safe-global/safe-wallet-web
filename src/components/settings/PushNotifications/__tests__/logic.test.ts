@@ -1,11 +1,12 @@
 import * as firebase from 'firebase/messaging'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/notifications'
-import { BrowserProvider, type JsonRpcSigner, toBeHex, type Eip1193Provider } from 'ethers'
+import { BrowserProvider, type JsonRpcSigner, toBeHex } from 'ethers'
 
 import * as logic from '../logic'
 import * as web3 from '@/hooks/wallets/web3'
 import packageJson from '../../../../../package.json'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 jest.mock('firebase/messaging')
 
@@ -120,7 +121,7 @@ describe('Notifications', () => {
       const token = crypto.randomUUID()
       jest.spyOn(firebase, 'getToken').mockImplementation(() => Promise.resolve(token))
 
-      const mockProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
+      const mockProvider = new BrowserProvider(MockEip1193Provider)
 
       jest.spyOn(mockProvider, 'getSigner').mockImplementation((address?: string | number | undefined) =>
         Promise.resolve({
@@ -169,7 +170,7 @@ describe('Notifications', () => {
       const token = crypto.randomUUID()
       jest.spyOn(firebase, 'getToken').mockImplementation(() => Promise.resolve(token))
 
-      const mockProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
+      const mockProvider = new BrowserProvider(MockEip1193Provider)
 
       jest.spyOn(mockProvider, 'getSigner').mockImplementation(() =>
         Promise.resolve({

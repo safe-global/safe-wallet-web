@@ -7,7 +7,8 @@ import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/u
 import * as addressbook from '@/components/new-safe/create/logic/address-book'
 import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
 import type { PendingSafeData } from '@/components/new-safe/create/types'
-import { type Eip1193Provider, toBeHex, BrowserProvider } from 'ethers'
+import { toBeHex, BrowserProvider } from 'ethers'
+import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 describe('useSafeCreationEffects', () => {
   beforeEach(() => {
@@ -15,7 +16,7 @@ describe('useSafeCreationEffects', () => {
     jest.spyOn(pendingSafe, 'pollSafeInfo').mockImplementation(jest.fn(() => Promise.resolve({} as SafeInfo)))
     jest.spyOn(addressbook, 'updateAddressBook').mockReturnValue(() => {})
 
-    const mockProvider: BrowserProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
+    const mockProvider: BrowserProvider = new BrowserProvider(MockEip1193Provider)
     jest.spyOn(web3, 'useWeb3').mockImplementation(() => mockProvider)
   })
 

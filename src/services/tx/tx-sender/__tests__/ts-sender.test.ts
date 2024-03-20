@@ -29,11 +29,12 @@ const setupFetchStub = (data: any) => (_url: string) => {
     ok: true,
   })
 }
-import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
+import type { OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
 import { toBeHex } from 'ethers'
 import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 import { createMockSafeTransaction } from '@/tests/transactions'
 import type { JsonRpcSigner } from 'ethers'
+import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
@@ -59,10 +60,6 @@ jest.mock('../../proposeTransaction', () => ({
   default: jest.fn(() => Promise.resolve({ txId: '123' })),
 }))
 
-const mockProvider = {
-  request: jest.fn,
-} as unknown as EIP1193Provider
-
 const mockOnboardState = {
   chains: [],
   walletModules: [],
@@ -70,7 +67,7 @@ const mockOnboardState = {
     {
       label: 'Wallet 1',
       icon: '',
-      provider: mockProvider,
+      provider: MockEip1193Provider,
       chains: [{ id: '0x5' }],
       accounts: [
         {
@@ -133,13 +130,13 @@ const mockSafeSDK = {
 
 describe('txSender', () => {
   beforeAll(() => {
-    const mockBrowserProvider = new BrowserProvider(jest.fn() as unknown as EIP1193Provider)
+    const mockBrowserProvider = new BrowserProvider(MockEip1193Provider)
 
     jest.spyOn(mockBrowserProvider, 'getSigner').mockImplementation(
       async (address?: string | number | undefined) =>
         Promise.resolve({
           getAddress: jest.fn(() => Promise.resolve('0x0000000000000000000000000000000000000123')),
-          provider: mockProvider,
+          provider: MockEip1193Provider,
         }) as unknown as JsonRpcSigner,
     )
 
