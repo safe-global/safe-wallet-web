@@ -62,6 +62,7 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
       setLoginError(error.message)
     } finally {
       setLoginPending(false)
+      onLogin?.()
     }
   }
 
