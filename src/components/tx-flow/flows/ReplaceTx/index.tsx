@@ -17,15 +17,7 @@ import DeleteTxModal from './DeleteTxModal'
 import ExternalLink from '@/components/common/ExternalLink'
 import ChoiceButton from '@/components/common/ChoiceButton'
 
-const ReplaceTxMenu = ({
-  txId,
-  txNonce,
-  safeTxHash,
-}: {
-  txId: string
-  txNonce: number
-  safeTxHash: string | undefined
-}) => {
+const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: string | undefined }) => {
   const { setTxFlow } = useContext(TxModalContext)
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
   const canCancel = !queuedTxsByNonce?.some(
@@ -99,12 +91,7 @@ const ReplaceTxMenu = ({
               />
 
               {isDeleting && (
-                <DeleteTxModal
-                  onSuccess={onDeleteSuccess}
-                  onClose={onDeleteClose}
-                  txId={txId}
-                  safeTxHash={safeTxHash}
-                />
+                <DeleteTxModal onSuccess={onDeleteSuccess} onClose={onDeleteClose} safeTxHash={safeTxHash} />
               )}
             </>
           )}

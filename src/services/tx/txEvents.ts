@@ -31,7 +31,7 @@ interface TxEvents {
   [TxEvent.SIGN_FAILED]: { txId?: string; error: Error }
   [TxEvent.PROPOSE_FAILED]: { error: Error }
   [TxEvent.PROPOSED]: { txId: string }
-  [TxEvent.DELETED]: { txId: string }
+  [TxEvent.DELETED]: { safeTxHash: string }
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
   [TxEvent.SIGNATURE_PROPOSED]: { txId: string; signerAddress: string }
   [TxEvent.SIGNATURE_INDEXED]: { txId: string }
