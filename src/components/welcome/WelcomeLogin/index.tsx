@@ -69,7 +69,7 @@ const WelcomeLogin = () => {
               </Typography>
             </Divider>
 
-            <SocialSigner />
+            <SocialSigner onLogin={onLogin} />
           </>
         )}
 
