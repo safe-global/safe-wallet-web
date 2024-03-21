@@ -1,3 +1,5 @@
+import { useContext, useState } from 'react'
+import { type NextRouter, useRouter } from 'next/router'
 import { Box, Tooltip, Typography } from '@mui/material'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import CancelIcon from '@/public/images/common/cancel.svg'
@@ -7,7 +9,6 @@ import { useQueuedTxByNonce } from '@/hooks/useTxQueue'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 
 import css from './styles.module.css'
-import { useContext, useState } from 'react'
 import { TxModalContext } from '../..'
 import TokenTransferFlow from '../TokenTransfer'
 import RejectTx from '../RejectTx'
@@ -16,17 +17,41 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import DeleteTxModal from './DeleteTxModal'
 import ExternalLink from '@/components/common/ExternalLink'
 import ChoiceButton from '@/components/common/ChoiceButton'
+import useWallet from '@/hooks/wallets/useWallet'
+import { sameAddress } from '@/utils/addresses'
+import { AppRoutes } from '@/config/routes'
 
-const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: string | undefined }) => {
+const goToQueue = (router: NextRouter) => {
+  if (router.pathname === AppRoutes.transactions.tx) {
+    router.push({
+      pathname: AppRoutes.transactions.queue,
+      query: { safe: router.query.safe },
+    })
+  }
+}
+
+const ReplaceTxMenu = ({
+  txNonce,
+  safeTxHash,
+  proposer,
+}: {
+  txNonce: number
+  safeTxHash?: string
+  proposer?: string
+}) => {
+  const router = useRouter()
+  const wallet = useWallet()
   const { setTxFlow } = useContext(TxModalContext)
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
   const canCancel = !queuedTxsByNonce?.some(
     (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
   )
+  const canDelete = proposer && wallet && sameAddress(wallet.address, proposer)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const onDeleteSuccess = () => {
     setIsDeleting(false)
+    goToQueue(router)
     setTxFlow(undefined)
   }
   const onDeleteClose = () => setIsDeleting(false)
@@ -72,7 +97,7 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
             </span>
           </Tooltip>
 
-          {safeTxHash !== undefined && (
+          {canDelete && (
             <>
               <Typography variant="overline" className={css.or}>
                 or
@@ -90,7 +115,7 @@ const ReplaceTxMenu = ({ txNonce, safeTxHash }: { txNonce: number; safeTxHash: s
                 description="Remove this transaction from the queue permanently"
               />
 
-              {isDeleting && (
+              {safeTxHash && isDeleting && (
                 <DeleteTxModal onSuccess={onDeleteSuccess} onClose={onDeleteClose} safeTxHash={safeTxHash} />
               )}
             </>

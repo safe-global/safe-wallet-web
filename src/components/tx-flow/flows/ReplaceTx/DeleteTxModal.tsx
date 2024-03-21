@@ -57,14 +57,15 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, 
         chainId,
         signer,
       })
-
-      txDispatch(TxEvent.DELETED, { safeTxHash })
-
-      onSuccess()
     } catch (error) {
+      setIsLoading(false)
       setError(error as Error)
+      return
     }
+
     setIsLoading(false)
+    txDispatch(TxEvent.DELETED, { safeTxHash })
+    onSuccess()
   }
 
   return (

@@ -15,9 +15,11 @@ import { ReplaceTxFlow } from '@/components/tx-flow/flows'
 const RejectTxButton = ({
   txSummary,
   safeTxHash,
+  proposer,
 }: {
   txSummary: TransactionSummary
-  safeTxHash: string | undefined
+  safeTxHash?: string
+  proposer?: string
 }): ReactElement | null => {
   const { setTxFlow } = useContext(TxModalContext)
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
@@ -27,7 +29,7 @@ const RejectTxButton = ({
 
   const openReplacementModal = () => {
     if (txNonce === undefined) return
-    setTxFlow(<ReplaceTxFlow txNonce={txNonce} safeTxHash={safeTxHash} />, undefined, false)
+    setTxFlow(<ReplaceTxFlow txNonce={txNonce} safeTxHash={safeTxHash} proposer={proposer} />, undefined, false)
   }
 
   return (

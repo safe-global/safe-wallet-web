@@ -29,10 +29,9 @@ import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsPending from '@/hooks/useIsPending'
-import { getProposedTxHash, isTrustedTx } from '@/utils/transactions'
+import { isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import useWallet from '@/hooks/wallets/useWallet'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -42,7 +41,6 @@ type TxDetailsProps = {
 }
 
 const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement => {
-  const wallet = useWallet()
   const isPending = useIsPending(txSummary.id)
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
   const isQueue = isTxQueued(txSummary.txStatus)
@@ -57,8 +55,11 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   // If we have no token list we always trust the transfer
   const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
 
-  // Get the safe tx hash if the wallet is the proposer of this tx
-  const proposedSafeTxHash = getProposedTxHash(txDetails, wallet?.address)
+  let proposer, safeTxHash
+  if (isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)) {
+    proposer = txDetails.detailedExecutionInfo.proposer?.value
+    safeTxHash = txDetails.detailedExecutionInfo.safeTxHash
+  }
 
   return (
     <>
@@ -116,7 +117,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           {isQueue && (
             <Box className={css.buttons}>
               {awaitingExecution ? <ExecuteTxButton txSummary={txSummary} /> : <SignTxButton txSummary={txSummary} />}
-              <RejectTxButton txSummary={txSummary} safeTxHash={proposedSafeTxHash} />
+              <RejectTxButton txSummary={txSummary} safeTxHash={safeTxHash} proposer={proposer} />
             </Box>
           )}
         </div>
