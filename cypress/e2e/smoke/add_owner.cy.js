@@ -2,19 +2,11 @@ import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
 import * as navigation from '../pages/navigation.page'
-import * as ls from '../../support/localstorage_data.js'
 
 describe('[SMOKE] Add Owners tests', () => {
   beforeEach(() => {
+    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
     cy.clearLocalStorage()
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1, {
-      onBeforeLoad: (win) => {
-        win.localStorage.setItem(
-          constants.localStorageKeys.SAFE_v2__dismissPushNotifications,
-          JSON.stringify(ls.dismissedNotifications),
-        )
-      },
-    })
     main.waitForHistoryCallToComplete()
     main.acceptCookies()
     main.verifyElementsExist([navigation.setupSection])

@@ -1,7 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
-import * as ls from '../../support/localstorage_data.js'
 
 const sendValue = 0.00002
 const currentNonce = 2
@@ -16,15 +15,7 @@ function happyPathToStepTwo() {
 describe('[SMOKE] Create transactions tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_16_CREATE_TX, {
-      onBeforeLoad: (win) => {
-        win.localStorage.setItem(
-          constants.localStorageKeys.SAFE_v2__dismissPushNotifications,
-          JSON.stringify(ls.dismissedNotifications),
-        )
-      },
-    })
-
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_16_CREATE_TX)
     main.acceptCookies()
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()

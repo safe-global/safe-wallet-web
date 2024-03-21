@@ -11,14 +11,7 @@ const funds_second_tx = '0.002'
 describe('[SMOKE] Batch transaction tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5, {
-      onBeforeLoad: (win) => {
-        win.localStorage.setItem(
-          constants.localStorageKeys.SAFE_v2__dismissPushNotifications,
-          JSON.stringify(ls.dismissedNotifications),
-        )
-      },
-    })
+    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
     owner.waitForConnectionStatus()
     main.acceptCookies()
   })

@@ -31,7 +31,6 @@ import { useNotificationRegistrations } from './hooks/useNotificationRegistratio
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { requestNotificationPermission } from './logic'
-import { useDismissPushNotificationsBanner } from './PushNotificationsBanner'
 import type { NotifiableSafes } from './logic'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import CheckWallet from '@/components/common/CheckWallet'
@@ -113,7 +112,7 @@ export const _mergeNotifiableSafes = (
   let notifiableSafes: NotifiableSafes = {}
   for (const chainId of chains) {
     const ownedSafesOnChain = ownedSafes?.[chainId] ?? []
-    const addedSafesOnChain = added[chainId] || []
+    const addedSafesOnChain = added[chainId]?.filter((addedAddress) => ownedSafesOnChain.includes(addedAddress)) || []
     const currentSubscriptionsOnChain = currentSubscriptions?.[chainId] || []
     const uniqueSafeAddresses = Array.from(
       new Set([...currentSubscriptionsOnChain, ...addedSafesOnChain, ...ownedSafesOnChain]),
@@ -263,7 +262,6 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   const [ownedSafes] = useAllOwnedSafes(address)
   const addedSafes = useAppSelector(selectAllAddedSafes)
 
-  const { dismissPushNotificationBanner } = useDismissPushNotificationsBanner()
   const { getAllPreferences } = useNotificationPreferences()
   const { unregisterDeviceNotifications, unregisterSafeNotifications, registerNotifications } =
     useNotificationRegistrations()
@@ -352,11 +350,6 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     const safesToRegister = _getSafesToRegister(selectedSafes, currentNotifiedSafes)
     if (safesToRegister) {
       registrationPromises.push(registerNotifications(safesToRegister))
-
-      // Dismiss the banner for all chains that have been registered
-      Object.keys(safesToRegister).forEach((chainId) => {
-        dismissPushNotificationBanner(chainId)
-      })
     }
 
     const safesToUnregister = _getSafesToUnregister(selectedSafes, currentNotifiedSafes)
@@ -379,7 +372,11 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   }
 
   if (totalNotifiableSafes === 0) {
-    return <Typography color={({ palette }) => palette.primary.light}>No Safes added</Typography>
+    return (
+      <Typography color={({ palette }) => palette.primary.light}>
+        {address ? 'No owned Safes' : 'No wallet connected'}
+      </Typography>
+    )
   }
 
   return (
