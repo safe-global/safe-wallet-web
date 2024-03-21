@@ -114,6 +114,7 @@ export const _mergeNotifiableSafes = (
     const ownedSafesOnChain = ownedSafes?.[chainId] ?? []
     const addedSafesOnChain = added[chainId]?.filter((addedAddress) => ownedSafesOnChain.includes(addedAddress)) || []
     const currentSubscriptionsOnChain = currentSubscriptions?.[chainId] || []
+    // The display order of safes will be subscribed, added & owned, owned
     const uniqueSafeAddresses = Array.from(
       new Set([...currentSubscriptionsOnChain, ...addedSafesOnChain, ...ownedSafesOnChain]),
     )

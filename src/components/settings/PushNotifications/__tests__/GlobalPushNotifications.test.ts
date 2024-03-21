@@ -41,7 +41,7 @@ describe('GlobalPushNotifications', () => {
   })
 
   describe('mergeNotifiableSafes', () => {
-    it('should merge added safes and current subscriptions', () => {
+    it('should merge added safes and current subscriptions, removing unowned safes', () => {
       const currentSubscriptions = {
         '1': ['0x111', '0x222'],
         '4': ['0x111'],
@@ -64,18 +64,17 @@ describe('GlobalPushNotifications', () => {
       } as unknown as AllOwnedSafes
 
       const expectedNotifiableSafes = {
-        '1': ['0x111', '0x222', '0x333', '0x444'],
-        '4': ['0x111', '0x222', '0x333'],
+        '1': ['0x111', '0x222', '0x444'],
+        '4': ['0x111', '0x222'],
       }
 
       expect(_mergeNotifiableSafes(ownedSafes, addedSafes, currentSubscriptions)).toEqual(expectedNotifiableSafes)
     })
 
-    it('should return owned safes and added safes if there are no current subscriptions', () => {
+    it('should remove unowned safes and display added safes first', () => {
       const addedSafes = {
         '1': {
-          '0x111': {},
-          '0x333': {},
+          '0x222': {},
         },
         '4': {
           '0x222': {},
@@ -84,13 +83,13 @@ describe('GlobalPushNotifications', () => {
       } as unknown as AddedSafesState
 
       const ownedSafes = {
-        '1': ['0x111', '0x444'],
+        '1': ['0x111', '0x222', '0x333', '0x444'],
         '4': ['0x222'],
       } as unknown as AllOwnedSafes
 
       const expectedNotifiableSafes = {
-        '1': ['0x111', '0x333', '0x444'],
-        '4': ['0x222', '0x333'],
+        '1': ['0x222', '0x111', '0x333', '0x444'],
+        '4': ['0x222'],
       }
 
       expect(_mergeNotifiableSafes(ownedSafes, addedSafes)).toEqual(expectedNotifiableSafes)
