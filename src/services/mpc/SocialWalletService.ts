@@ -10,7 +10,7 @@ import { asError } from '../exceptions/utils'
 import { type ISocialWalletService } from './interfaces'
 import { isSocialWalletOptions, SOCIAL_WALLET_OPTIONS } from './config'
 
-const ERROR_MSG_NO_NEW_ACCOUNTS = 'No new account creations are allowed as this feature will be deprecated soon.'
+const ERROR_MSG_NO_NEW_ACCOUNTS = 'Social Login is deprecated and will be removed on 01.05.2024. New accounts cannot be created.'
 
 /**
  * Singleton Service for accessing the social login wallet
