@@ -18,11 +18,14 @@ type WcSessionManagerProps = {
   uri: string
 }
 
+// chainId -> origin -> boolean
+type WcAutoApproveProps = Record<string, Record<string, boolean>>
+
 const WC_AUTO_APPROVE_KEY = 'wcAutoApprove'
 
 const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
-  const [autoApprove = {}, setAutoApprove] = useLocalStorage<Record<string, boolean>>(WC_AUTO_APPROVE_KEY)
-  const { walletConnect, error, setError, open, setIsLoading } = useContext(WalletConnectContext)
+  const [autoApprove = {}, setAutoApprove] = useLocalStorage<WcAutoApproveProps>(WC_AUTO_APPROVE_KEY)
+  const { walletConnect, error, setError, open, setOpen, setIsLoading } = useContext(WalletConnectContext)
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
@@ -44,8 +47,13 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
 
         // Auto approve future sessions for verified dApps
         if (sessionProposal.verifyContext.verified.validation === 'VALID') {
-          setAutoApprove((prev) => ({ ...prev, [sessionProposal.verifyContext.verified.origin]: true }))
+          setAutoApprove((prev) => ({
+            ...prev,
+            [chainId]: { ...prev?.[chainId], [sessionProposal.verifyContext.verified.origin]: true },
+          }))
         }
+
+        setOpen(false)
       } catch (e) {
         setIsLoading(undefined)
         setError(asError(e))
@@ -70,14 +78,14 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     return walletConnect.onSessionPropose((proposalData) => {
       setError(null)
 
-      if (autoApprove[proposalData.verifyContext.verified.origin]) {
+      if (autoApprove[chainId]?.[proposalData.verifyContext.verified.origin]) {
         onApprove(proposalData)
         return
       }
 
       setProposal(proposalData)
     })
-  }, [walletConnect, setError, autoApprove, onApprove])
+  }, [walletConnect, setError, autoApprove, onApprove, chainId])
 
   // Track errors
   useEffect(() => {
