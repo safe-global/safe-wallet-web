@@ -40,6 +40,12 @@ export const SEPOLIA_TEST_SAFE_24_RECOVERY_2 = 'sep:0xb791302040DB5Ab4Ade0b5295c
 export const SEPOLIA_TEST_SAFE_25_RECOVERY_3 = 'sep:0xAE1E3f93fda95eEbb857Ee06325f6F1e45EF3CBE'
 export const SEPOLIA_TEST_SAFE_26_REPLACE_OWNER = 'sep:0x6860336C97966c17fDD812939c2E2400626a181a'
 export const SEPOLIA_TEST_SAFE_27_SEND_NFT = 'sep:0xE72d4D7E87672c14Df3d449C6b79f20151c18fC1'
+export const SEPOLIA_TEST_SAFE_28_SEND_FUNDS_HP1 = 'sep:0x74D5228112a9652a9825a6A285Fb39e290269172'
+export const SEPOLIA_TEST_SAFE_29_SEND_FUNDS_HP2 = 'sep:0xA6D975f30d48402D9952E3F3D569AADAd161f336'
+export const SEPOLIA_TEST_SAFE_30_SEND_NFT_HP1 = 'sep:0x6C7d3939Ae99dd3e4422D8b3e442e13Ee21EFCEc'
+export const SEPOLIA_TEST_SAFE_31_SEND_NFT_HP2 = 'sep:0x97143f05ad523027b0F6F86FeD96E5e51F58DdAc'
+export const SEPOLIA_TEST_SAFE_32_SEND_NATIVE_HP1 = 'sep:0xe5DC58EfDA6ebe93014AaE7A5a673C5F80118171'
+export const SEPOLIA_TEST_SAFE_33_SEND_NATIVE_HP2 = 'sep:0x9DF284917ff80c0a95c20ea2151Eb2a39a13cf4E'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -100,6 +106,15 @@ export const validAppUrl = 'https://my-valid-custom-app.com'
 export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
 export const stagingTxServiceUrl = 'https://safe-transaction-sepolia.staging.5afe.dev/api/v1'
 export const stagingTxServiceSafesUrl = '/safes/'
+export const stagingTxServiceBalancesUrl = '/balances/'
+
+export const stagingCGWUrlv1 = 'https://safe-client.staging.5afe.dev/v1'
+export const stagingCGWUrlv2 = 'https://safe-client.staging.5afe.dev/v2'
+export const stagingCGWChains = '/chains/'
+export const stagingCGWSafes = '/safes/'
+export const stagingCGWNone = '/nonces/'
+export const stagingCGWCollectibles = '/collectibles/'
+export const stagingCGWAllTokensBalances = '/balances/USD?trusted=false&exclude_spam=false'
 
 export const proposeEndpoint = '/**/propose'
 export const appsEndpoint = '/**/safe-apps'
@@ -150,6 +165,9 @@ export const tokenAbbreviation = {
   usds: 'USDC',
   aave: 'AAVE',
   link: 'LINK',
+  ttone: 'TTONE',
+  dor: 'DOR',
+  eth: 'ETH',
 }
 
 export const currencies = {

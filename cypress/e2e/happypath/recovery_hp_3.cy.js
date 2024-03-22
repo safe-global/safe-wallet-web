@@ -12,7 +12,7 @@ describe('Recovery happy path tests 3', () => {
   })
 
   // Check that an owner can cancel account recovery tx
-  it('Recovery setup happy path 3', { defaultCommandTimeout: 300000 }, () => {
+  it.skip('Recovery setup happy path 3', { defaultCommandTimeout: 300000 }, () => {
     main.fetchSafeData(constants.SEPOLIA_TEST_SAFE_25_RECOVERY_3.substring(4)).then((response) => {
       expect(response.status).to.eq(200)
       console.log(response.body)

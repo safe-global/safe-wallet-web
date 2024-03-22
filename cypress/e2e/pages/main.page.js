@@ -35,6 +35,82 @@ export const fetchSafeData = (safeAddress) => {
     })
 }
 
+export const getSafeBalance = (safeAddress, chain) => {
+  return cy
+    .request({
+      method: 'GET',
+      url: `${constants.stagingCGWUrlv1}${constants.stagingCGWChains}${chain}${constants.stagingCGWSafes}${safeAddress}${constants.stagingCGWAllTokensBalances}`,
+      headers: {
+        accept: 'application/json',
+      },
+    })
+    .then((response) => {
+      expect(response.status).to.eq(200)
+    })
+}
+
+export const getSafeNFTs = (safeAddress, chain) => {
+  return cy
+    .request({
+      method: 'GET',
+      url: `${constants.stagingCGWUrlv2}${constants.stagingCGWChains}${chain}${constants.stagingCGWSafes}${safeAddress}${constants.stagingCGWCollectibles}`,
+      headers: {
+        accept: 'application/json',
+      },
+    })
+    .then((response) => {
+      expect(response.status).to.eq(200)
+    })
+}
+
+export const getSafeNonce = (safeAddress, chain) => {
+  return cy
+    .request({
+      method: 'GET',
+      url: `${constants.stagingCGWUrlv1}${constants.stagingCGWChains}${chain}${constants.stagingCGWSafes}${safeAddress}${constants.stagingCGWNone}`,
+      headers: {
+        accept: 'application/json',
+      },
+    })
+    .then((response) => {
+      expect(response.status).to.eq(200)
+    })
+}
+
+export function fetchCurrentNonce(safeAddress) {
+  return getSafeNonce(safeAddress.substring(4), constants.networkKeys.sepolia).then(
+    (response) => response.body.currentNonce,
+  )
+}
+
+export function verifyNonceChange(safeAddress, expectedNonce) {
+  fetchCurrentNonce(safeAddress).then((newNonce) => {
+    expect(newNonce).to.equal(expectedNonce)
+  })
+}
+
+export function checkTokenBalance(safeAddress, tokenSymbol, expectedBalance) {
+  getSafeBalance(safeAddress.substring(4), constants.networkKeys.sepolia).then((response) => {
+    const targetToken = response.body.items.find((token) => token.tokenInfo.symbol === tokenSymbol)
+    console.log(targetToken)
+    expect(targetToken.balance).to.include(expectedBalance)
+  })
+}
+
+export function checkNFTBalance(safeAddress, tokenSymbol, expectedBalance) {
+  getSafeNFTs(safeAddress.substring(4), constants.networkKeys.sepolia).then((response) => {
+    const targetToken = response.body.results.find((token) => token.tokenSymbol === tokenSymbol)
+    expect(targetToken.tokenName).to.equal(expectedBalance)
+  })
+}
+
+export function checkTokenBalanceIsNull(safeAddress, tokenSymbol) {
+  getSafeNFTs(safeAddress.substring(4), constants.networkKeys.sepolia).then((response) => {
+    const targetToken = response.body.results.find((token) => token.tokenSymbol === tokenSymbol)
+    expect(targetToken).to.be.undefined
+  })
+}
+
 export function acceptCookies(index = 0) {
   cy.wait(1000)
 
