@@ -112,12 +112,6 @@ export function clickOnOpenSafeListSidebar() {
   cy.contains('My Safe Accounts').click()
 }
 
-export function clickOnClosePushNotificationsBanner() {
-  cy.waitForSelector(() => {
-    return cy.get('h6').contains(enablePushNotificationsStr).siblings('.MuiButtonBase-root').click({ force: true })
-  })
-}
-
 export function clickOnAddressBookBtn() {
   cy.contains(addressBookBtnStr).click()
 }
