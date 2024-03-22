@@ -104,14 +104,12 @@ export const useTxActions = (): TxActions => {
       if (isRelayed && safeTx.signatures.size < safe.threshold) {
         if (txId) {
           safeTx = await signRelayedTx(safeTx)
-        }
-
-        tx = await proposeTx(wallet.address, safeTx, txId, origin)
-        txId = tx.txId
-
-        if (!txId) {
+          tx = await proposeTx(wallet.address, safeTx, txId, origin)
+        } else {
+          tx = await proposeTx(wallet.address, safeTx, txId, origin)
           safeTx = await signRelayedTx(safeTx)
         }
+        txId = tx.txId
       }
 
       // Propose the tx if there's no id yet ("immediate execution")
