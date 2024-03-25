@@ -1,7 +1,7 @@
 import madProps from '@/utils/mad-props'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider } from '@mui/material'
-
+import Stack from '@mui/system/Stack'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { trackError, Errors } from '@/services/exceptions'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
@@ -114,7 +114,13 @@ export const SignForm = ({
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
       <CardActions>
-        <Box display="flex" gap={2}>
+        <Stack
+          sx={{
+            width: ['100%', '100%', '100%', 'auto'],
+          }}
+          direction={{ xs: 'column-reverse', lg: 'row' }}
+          spacing={{ xs: 2, md: 2 }}
+        >
           {/* Batch button */}
           {isCreation && !isBatch && (
             <BatchButton
@@ -132,13 +138,13 @@ export const SignForm = ({
                 variant="contained"
                 type="submit"
                 disabled={!isOk || submitDisabled}
-                sx={{ minWidth: '82px' }}
+                sx={{ minWidth: '82px', order: '1', width: ['100%', '100%', '100%', 'auto'] }}
               >
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Sign'}
               </Button>
             )}
           </CheckWallet>
-        </Box>
+        </Stack>
       </CardActions>
     </form>
   )

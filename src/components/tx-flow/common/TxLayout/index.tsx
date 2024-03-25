@@ -82,6 +82,7 @@ const TxLayout = ({
 
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const isDesktop = useMediaQuery(theme.breakpoints.down('lg'))
 
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
@@ -143,7 +144,7 @@ const TxLayout = ({
                     {onBack && step > 0 && (
                       <Button
                         data-testid="modal-back-btn"
-                        variant="contained"
+                        variant={isDesktop ? 'text' : 'contained'}
                         onClick={onBack}
                         className={css.backButton}
                       >
