@@ -10,13 +10,10 @@ import * as mpcCoreKit from '@web3auth/mpc-core-kit'
 import * as socialWalletOptions from '@/services/mpc/config'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
-import { toBeHex } from 'ethers'
 import SocialWalletService from '../SocialWalletService'
 
 /** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
-/** Mock address for successful login */
-const mockSignerAddress = toBeHex('0x1', 20)
 
 /**
  * Helper class for mocking MPC Core Kit login flow
@@ -180,7 +177,7 @@ describe('useMPCWallet', () => {
       // We should be logged in and onboard should get connected
       await waitFor(() => {
         expect(status).rejects.toEqual(
-          new Error('No new account creations are allowed as this feature will be deprecated soon.'),
+          new Error('Social Login is deprecated and will be removed on 01.05.2024. New accounts cannot be created.'),
         )
         expect(mockOnConnect).not.toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).not.toHaveBeenCalled()
