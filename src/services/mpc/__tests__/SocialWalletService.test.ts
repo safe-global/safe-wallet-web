@@ -26,8 +26,8 @@ class MockMPCCoreKit {
   state: {
     userInfo: UserInfo | undefined
   } = {
-    userInfo: undefined,
-  }
+      userInfo: undefined,
+    }
 
   private stateAfterLogin: COREKIT_STATUS
   private userInfoAfterLogin: UserInfo | undefined
@@ -180,7 +180,7 @@ describe('useMPCWallet', () => {
       // We should be logged in and onboard should get connected
       await waitFor(() => {
         expect(status).rejects.toEqual(
-          new Error('No new account creations are allowed as this feature will be deprecated soon.'),
+          new Error('Social Login is deprecated and will be removed on 01.05.2024. New accounts cannot be created.'),
         )
         expect(mockOnConnect).not.toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).not.toHaveBeenCalled()
