@@ -14,10 +14,12 @@ import { ReplaceTxFlow } from '@/components/tx-flow/flows'
 
 const RejectTxButton = ({
   txSummary,
-  compact = false,
+  safeTxHash,
+  proposer,
 }: {
   txSummary: TransactionSummary
-  compact?: boolean
+  safeTxHash?: string
+  proposer?: string
 }): ReactElement | null => {
   const { setTxFlow } = useContext(TxModalContext)
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
@@ -27,20 +29,15 @@ const RejectTxButton = ({
 
   const openReplacementModal = () => {
     if (txNonce === undefined) return
-    setTxFlow(<ReplaceTxFlow txNonce={txNonce} />, undefined, false)
+    setTxFlow(<ReplaceTxFlow txNonce={txNonce} safeTxHash={safeTxHash} proposer={proposer} />, undefined, false)
   }
 
   return (
     <CheckWallet>
       {(isOk) => (
         <Track {...TX_LIST_EVENTS.REJECT}>
-          <Button
-            onClick={openReplacementModal}
-            variant="danger"
-            disabled={!isOk || isDisabled}
-            size={compact ? 'small' : 'stretched'}
-          >
-            Replace
+          <Button onClick={openReplacementModal} variant="danger" disabled={!isOk || isDisabled} size="stretched">
+            Reject
           </Button>
         </Track>
       )}

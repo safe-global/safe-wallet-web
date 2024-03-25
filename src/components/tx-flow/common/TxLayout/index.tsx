@@ -100,14 +100,16 @@ const TxLayout = ({
         <TxSecurityProvider>
           <>
             {/* Header status button */}
-            <IconButton
-              className={css.statusButton}
-              aria-label="Transaction status"
-              size="large"
-              onClick={toggleStatus}
-            >
-              <SafeLogo width={16} height={16} />
-            </IconButton>
+            {!isReplacement && (
+              <IconButton
+                className={css.statusButton}
+                aria-label="Transaction status"
+                size="large"
+                onClick={toggleStatus}
+              >
+                <SafeLogo width={16} height={16} />
+              </IconButton>
+            )}
 
             <Container className={css.container}>
               <Grid container gap={3} justifyContent="center">
@@ -154,22 +156,23 @@ const TxLayout = ({
                 </Grid>
 
                 {/* Sidebar */}
-                <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
-                  {statusVisible && (
-                    <TxStatusWidget
-                      step={step}
-                      txSummary={txSummary}
-                      handleClose={() => setStatusVisible(false)}
-                      isReplacement={isReplacement}
-                      isBatch={isBatch}
-                      isMessage={isMessage}
-                    />
-                  )}
+                {!isReplacement && (
+                  <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
+                    {statusVisible && (
+                      <TxStatusWidget
+                        step={step}
+                        txSummary={txSummary}
+                        handleClose={() => setStatusVisible(false)}
+                        isBatch={isBatch}
+                        isMessage={isMessage}
+                      />
+                    )}
 
-                  <Box className={css.sticky}>
-                    <SecurityWarnings />
-                  </Box>
-                </Grid>
+                    <Box className={css.sticky}>
+                      <SecurityWarnings />
+                    </Box>
+                  </Grid>
+                )}
               </Grid>
             </Container>
           </>

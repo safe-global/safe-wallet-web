@@ -55,6 +55,12 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   // If we have no token list we always trust the transfer
   const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
 
+  let proposer, safeTxHash
+  if (isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)) {
+    proposer = txDetails.detailedExecutionInfo.proposer?.value
+    safeTxHash = txDetails.detailedExecutionInfo.safeTxHash
+  }
+
   return (
     <>
       {/* /Details */}
@@ -111,7 +117,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           {isQueue && (
             <Box className={css.buttons}>
               {awaitingExecution ? <ExecuteTxButton txSummary={txSummary} /> : <SignTxButton txSummary={txSummary} />}
-              <RejectTxButton txSummary={txSummary} />
+              <RejectTxButton txSummary={txSummary} safeTxHash={safeTxHash} proposer={proposer} />
             </Box>
           )}
         </div>
