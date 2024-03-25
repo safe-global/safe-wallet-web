@@ -102,7 +102,7 @@ export const MsgSigners = ({
         ))}
       {!showOnlyConfirmations && confirmations.length > 0 && (
         <ListItem>
-          <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
+          <ListItemIcon sx={{ backgroundColor }}>
             <Dot />
           </ListItemIcon>
           <ListItemText>

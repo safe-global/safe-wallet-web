@@ -44,7 +44,7 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
     if (typeof newOwner.name !== 'undefined') {
       dispatch(
         upsertAddressBookEntry({
-          chainId: chainId,
+          chainId,
           address: newOwner.address,
           name: newOwner.name,
         }),
