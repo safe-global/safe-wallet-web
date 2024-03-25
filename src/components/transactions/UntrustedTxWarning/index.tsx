@@ -3,7 +3,7 @@ import WarningIcon from '@/public/images/notifications/warning.svg'
 
 const UntrustedTxWarning = () => {
   return (
-    <Tooltip title={`This token is unfamiliar and may pose risks when interacting with it or involved addresses`}>
+    <Tooltip title="This token is unfamiliar and may pose risks when interacting with it or involved addresses">
       <Box
         lineHeight="16px"
         sx={{
