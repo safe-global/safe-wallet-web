@@ -45,8 +45,11 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
       try {
         await walletConnect.approveSession(sessionProposal, chainId, safeAddress)
 
-        // Auto approve future sessions for verified dApps
-        if (sessionProposal.verifyContext.verified.validation === 'VALID') {
+        // Auto approve future sessions for non-malicious dApps
+        if (
+          sessionProposal.verifyContext.verified.validation !== 'INVALID' &&
+          !sessionProposal.verifyContext.verified.isScam
+        ) {
           setAutoApprove((prev) => ({
             ...prev,
             [chainId]: { ...prev?.[chainId], [sessionProposal.verifyContext.verified.origin]: true },
@@ -64,7 +67,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
       setIsLoading(undefined)
       setProposal(undefined)
     },
-    [proposal, walletConnect, chainId, safeAddress, setIsLoading, setAutoApprove, setError],
+    [proposal, walletConnect, chainId, safeAddress, setIsLoading, setOpen, setAutoApprove, setError],
   )
 
   // Reset error
