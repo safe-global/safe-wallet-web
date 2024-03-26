@@ -5,10 +5,11 @@ import {
   getSafeSingletonDeployment,
 } from '@safe-global/safe-deployments'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { type Eip1193Provider, Interface, BrowserProvider, type JsonRpcProvider } from 'ethers'
+import { Interface, BrowserProvider, type JsonRpcProvider } from 'ethers'
 import { createUpdateSafeTxs } from '../safeUpdateParams'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as web3 from '@/hooks/wallets/web3'
+import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 
@@ -29,9 +30,7 @@ jest.mock('@safe-global/protocol-kit', () => {
 describe('safeUpgradeParams', () => {
   jest
     .spyOn(web3, 'getWeb3ReadOnly')
-    .mockImplementation(
-      () => new BrowserProvider(jest.fn() as unknown as Eip1193Provider) as unknown as JsonRpcProvider,
-    )
+    .mockImplementation(() => new BrowserProvider(MockEip1193Provider) as unknown as JsonRpcProvider)
 
   it('Should add empty setFallbackHandler transaction data for older Safes', async () => {
     const mockSafe = {

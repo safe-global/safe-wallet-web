@@ -10,6 +10,8 @@ import { JsonRpcProvider, BrowserProvider } from 'ethers'
 import * as contracts from '@/services/contracts/safeContracts'
 
 import type { SafeContractEthers } from '@safe-global/protocol-kit'
+import { MockEip1193Provider } from '@/tests/mocks/providers'
+
 const createSafeTx = (data = '0x'): SafeTransaction => {
   return {
     data: {
@@ -38,7 +40,7 @@ const createSafeTx = (data = '0x'): SafeTransaction => {
 
 describe('useIsValidExecution', () => {
   const mockReadOnlyProvider: JsonRpcProvider = new JsonRpcProvider()
-  const mockProvider: BrowserProvider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider)
+  const mockProvider: BrowserProvider = new BrowserProvider(MockEip1193Provider)
   const mockWallet = {
     address: '',
     chainId: '5',
