@@ -11,7 +11,7 @@ import SafeMilesLogo from '@/public/images/common/safe-miles-logo.svg'
 import classNames from 'classnames'
 import useChainId from '@/hooks/useChainId'
 import { useRouter } from 'next/router'
-import { getSafeAppUrl } from '@/components/safe-apps/SafeAppCard'
+import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
 
 // Chains
 export const Chains = {
@@ -58,7 +58,7 @@ const ActivityAppSection = () => {
     today >= SEPTEMBER_10_TIMESTAMP,
   ]
 
-  const activityAppUrl = governanceApp ? `${getSafeAppUrl(router, governanceApp.url)}/activity` : ''
+  const activityAppUrl = useShareSafeAppUrl(governanceApp?.url || '')
 
   return (
     <Accordion className={css.accordion} defaultExpanded>
