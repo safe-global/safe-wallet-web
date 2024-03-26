@@ -20,6 +20,8 @@ import ChoiceButton from '@/components/common/ChoiceButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import { sameAddress } from '@/utils/addresses'
 import { AppRoutes } from '@/config/routes'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const goToQueue = (router: NextRouter) => {
   if (router.pathname === AppRoutes.transactions.tx) {
@@ -46,7 +48,8 @@ const ReplaceTxMenu = ({
   const canCancel = !queuedTxsByNonce?.some(
     (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
   )
-  const canDelete = proposer && wallet && sameAddress(wallet.address, proposer)
+  const isDeleteEnabled = useHasFeature(FEATURES.DELETE_TX)
+  const canDelete = isDeleteEnabled && proposer && wallet && sameAddress(wallet.address, proposer)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const onDeleteSuccess = () => {
