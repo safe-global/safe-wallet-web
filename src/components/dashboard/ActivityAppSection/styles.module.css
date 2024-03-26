@@ -44,30 +44,13 @@
   flex-grow: 1;
 }
 
-.loadErrorCard:last-of-type {
-  min-width: 300px;
-}
-
-.loadErrorMsgContainer {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  max-width: 80%;
-}
-
-.loadErroricon {
-  font-size: 54px;
-  position: relative;
-  left: 3px;
-  top: 3px;
-}
-
 .milesIcon {
   height: 21px;
   width: 118px;
+}
+
+.milesIconLight path {
+  fill: var(--color-text-primary);
 }
 
 .gradientText {
@@ -91,7 +74,7 @@
   content: counter(item);
   width: 24px;
   height: 24px;
-  background: var(--color-primary-light);
+  background: var(--color-border-main);
   border-radius: 50%;
   color: #121312;
   text-align: center;

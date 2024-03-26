@@ -10,8 +10,8 @@ import { SafeAppsTag } from '@/config/constants'
 import SafeMilesLogo from '@/public/images/common/safe-miles-logo.svg'
 import classNames from 'classnames'
 import useChainId from '@/hooks/useChainId'
-import { useRouter } from 'next/router'
 import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 // Chains
 export const Chains = {
@@ -47,7 +47,7 @@ const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
 const ActivityAppSection = () => {
   const chainId = useChainId()
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.SAFE_GOVERNANCE_APP)
-  const router = useRouter()
+  const isDarkMode = useDarkMode()
 
   const governanceApp = matchingApps?.[0]
   const today = Date.now()
@@ -79,8 +79,19 @@ const ActivityAppSection = () => {
           <Card className={css.widgetWrapper}>
             <Grid container xs={12} p={5} spacing={2}>
               <Grid item xs={6}>
-                <SvgIcon component={SafeMilesLogo} inheritViewBox className={css.milesIcon} />
-                <Typography variant="h1" fontWeight={700} mt={4} maxWidth="80%" className={css.gradientText}>
+                <SvgIcon
+                  component={SafeMilesLogo}
+                  inheritViewBox
+                  color="border"
+                  className={classNames(css.milesIcon, { [css.milesIconLight]: !isDarkMode })}
+                />
+                <Typography
+                  variant="h1"
+                  fontWeight={700}
+                  mt={4}
+                  maxWidth="80%"
+                  className={isDarkMode ? css.gradientText : ''}
+                >
                   Interact with Safe and get rewards
                 </Typography>
                 <Button variant="contained" sx={{ mt: 3 }} href={activityAppUrl}>
