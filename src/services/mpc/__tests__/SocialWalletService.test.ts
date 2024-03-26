@@ -14,7 +14,6 @@ import SocialWalletService from '../SocialWalletService'
 
 /** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
-/** Mock address for successful login */
 
 /**
  * Helper class for mocking MPC Core Kit login flow
