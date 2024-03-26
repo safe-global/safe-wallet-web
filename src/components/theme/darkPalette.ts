@@ -42,7 +42,7 @@ const darkPalette = {
     dark: '#C04C32',
     main: '#FF8061',
     light: '#FFBC9F',
-    background: '#FFF1E0',
+    background: '#2F2318',
   },
   background: {
     default: '#121312',

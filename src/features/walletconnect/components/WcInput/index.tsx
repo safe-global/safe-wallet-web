@@ -1,13 +1,14 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { Button, InputAdornment, TextField } from '@mui/material'
+import Track from '@/components/common/Track'
+import { WCLoadingState } from '@/features/walletconnect/components/WalletConnectProvider'
+import { isPairingUri } from '@/features/walletconnect/services/utils'
 import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
+import useDebounce from '@/hooks/useDebounce'
+import { trackEvent } from '@/services/analytics'
+import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import { asError } from '@/services/exceptions/utils'
 import { getClipboard, isClipboardSupported } from '@/utils/clipboard'
-import { isPairingUri } from '@/features/walletconnect/services/utils'
-import Track from '@/components/common/Track'
-import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
-import { trackEvent } from '@/services/analytics'
-import useDebounce from '@/hooks/useDebounce'
+import { Button, CircularProgress, InputAdornment, TextField } from '@mui/material'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
 const useTrackErrors = (error?: Error) => {
   const debouncedErrorMessage = useDebounce(error?.message, 1000)
@@ -21,10 +22,9 @@ const useTrackErrors = (error?: Error) => {
 }
 
 const WcInput = ({ uri }: { uri: string }) => {
-  const { walletConnect } = useContext(WalletConnectContext)
+  const { walletConnect, isLoading, setIsLoading } = useContext(WalletConnectContext)
   const [value, setValue] = useState('')
   const [error, setError] = useState<Error>()
-  const [connecting, setConnecting] = useState(false)
   useTrackErrors(error)
 
   const onInput = useCallback(
@@ -42,7 +42,7 @@ const WcInput = ({ uri }: { uri: string }) => {
 
       if (!val) return
 
-      setConnecting(true)
+      setIsLoading(WCLoadingState.CONNECT)
 
       try {
         await walletConnect.connect(val)
@@ -50,9 +50,9 @@ const WcInput = ({ uri }: { uri: string }) => {
         setError(asError(e))
       }
 
-      setConnecting(false)
+      setIsLoading(undefined)
     },
-    [walletConnect],
+    [setIsLoading, walletConnect],
   )
 
   // Insert a pre-filled uri
@@ -76,7 +76,7 @@ const WcInput = ({ uri }: { uri: string }) => {
       fullWidth
       autoComplete="off"
       autoFocus
-      disabled={connecting}
+      disabled={!!isLoading}
       error={!!error}
       label={error ? error.message : 'Pairing code'}
       placeholder="wc:"
@@ -86,8 +86,12 @@ const WcInput = ({ uri }: { uri: string }) => {
         endAdornment: isClipboardSupported() ? undefined : (
           <InputAdornment position="end">
             <Track {...WALLETCONNECT_EVENTS.PASTE_CLICK}>
-              <Button variant="contained" onClick={onPaste} sx={{ py: 1 }} disabled={connecting}>
-                Paste
+              <Button variant="contained" onClick={onPaste} sx={{ py: 1 }} disabled={!!isLoading}>
+                {isLoading === WCLoadingState.CONNECT || isLoading === WCLoadingState.APPROVE ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  'Paste'
+                )}
               </Button>
             </Track>
           </InputAdornment>

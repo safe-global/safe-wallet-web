@@ -5,6 +5,8 @@ import { WALLET_KEYS } from '@/hooks/wallets/consts'
 import memoize from 'lodash/memoize'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 
+const WALLETCONNECT = 'WalletConnect'
+
 const isWCRejection = (err: Error): boolean => {
   return /rejected/.test(err?.message)
 }
@@ -19,6 +21,10 @@ export const isWalletRejection = (err: EthersError | Error): boolean => {
 
 export const isLedger = (wallet: ConnectedWallet): boolean => {
   return wallet.label.toUpperCase() === WALLET_KEYS.LEDGER
+}
+
+export const isWalletConnect = (wallet: ConnectedWallet): boolean => {
+  return wallet.label.toLowerCase().startsWith(WALLETCONNECT.toLowerCase())
 }
 
 export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {

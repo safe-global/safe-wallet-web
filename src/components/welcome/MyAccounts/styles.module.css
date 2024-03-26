@@ -43,7 +43,7 @@
   background-color: var(--color-background-light) !important;
 }
 
-.listItem> :first-child {
+.listItem > :first-child {
   flex: 1;
   width: 90%;
 }

@@ -10,6 +10,9 @@ import { asError } from '../exceptions/utils'
 import { type ISocialWalletService } from './interfaces'
 import { isSocialWalletOptions, SOCIAL_WALLET_OPTIONS } from './config'
 
+const ERROR_MSG_NO_NEW_ACCOUNTS =
+  'Social Login is deprecated and will be removed on 01.05.2024. New accounts cannot be created.'
+
 /**
  * Singleton Service for accessing the social login wallet
  */
@@ -29,6 +32,36 @@ class SocialWalletService implements ISocialWalletService {
   isMFAEnabled() {
     const { shareDescriptions } = this.mpcCoreKit.getKeyDetails()
     return !Object.values(shareDescriptions).some((value) => value[0]?.includes('hashedShare'))
+  }
+
+  /**
+   *
+   * An Account is considered new if
+   * - It has no MFA setup
+   * - the hashedShare was created in the past 5 minutes
+   *
+   * @returns true if account is new, false otherwise
+   */
+  isAccountNew() {
+    const { shareDescriptions } = this.mpcCoreKit.getKeyDetails()
+    const hashedShare = Object.values(shareDescriptions).find((value) => value[0]?.includes('hashedShare'))
+
+    if (!hashedShare || hashedShare.length > 1) {
+      return false
+    }
+
+    try {
+      const firstShare = hashedShare[0]
+      const data = JSON.parse(firstShare)
+      if ('dateAdded' in data) {
+        const dateAdded = Number(data.dateAdded)
+        const timeDiff = Date.now() - dateAdded
+        if (timeDiff < 1000 * 5 * 60) {
+          return true
+        }
+      }
+    } catch {}
+    return false
   }
 
   isRecoveryPasswordSet() {
@@ -102,6 +135,10 @@ class SocialWalletService implements ISocialWalletService {
       return this.mpcCoreKit.status
     } catch (err) {
       const error = asError(err)
+      if (error.message === ERROR_MSG_NO_NEW_ACCOUNTS) {
+        logError(ErrorCodes._307, error)
+        throw err
+      }
       logError(ErrorCodes._306, error)
       throw new Error('Something went wrong. Please try to login again.')
     }
@@ -109,6 +146,9 @@ class SocialWalletService implements ISocialWalletService {
 
   private async finalizeLogin() {
     if (this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN) {
+      if (this.isAccountNew()) {
+        throw new Error(ERROR_MSG_NO_NEW_ACCOUNTS)
+      }
       await this.mpcCoreKit.commitChanges()
       await this.mpcCoreKit.provider?.request({ method: 'eth_accounts', params: [] })
       await this.onConnect()

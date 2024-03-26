@@ -18,6 +18,7 @@ enum ErrorCodes {
   _304 = '304: Error enabling MFA',
   _305 = '305: Error exporting account key',
   _306 = '306: Error logging in',
+  _307 = '307: Error attempted new account creation',
 
   _400 = '400: Error requesting browser notification permissions',
   _401 = '401: Error tracking push notifications',

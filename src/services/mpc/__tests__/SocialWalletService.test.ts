@@ -10,13 +10,10 @@ import * as mpcCoreKit from '@web3auth/mpc-core-kit'
 import * as socialWalletOptions from '@/services/mpc/config'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
-import { toBeHex } from 'ethers'
 import SocialWalletService from '../SocialWalletService'
 
 /** time until mock login resolves */
 const MOCK_LOGIN_TIME = 1000
-/** Mock address for successful login */
-const mockSignerAddress = toBeHex('0x1', 20)
 
 /**
  * Helper class for mocking MPC Core Kit login flow
@@ -32,16 +29,23 @@ class MockMPCCoreKit {
   private stateAfterLogin: COREKIT_STATUS
   private userInfoAfterLogin: UserInfo | undefined
   private expectedFactorKey: BN
+  private expectedKeyDetails: { shareDescriptions: Record<string, string[]> }
   /**
    *
    * @param stateAfterLogin State after loginWithOauth resolves
    * @param userInfoAfterLogin  User info to set in the state after loginWithOauth resolves
    * @param expectedFactorKey For MFA login flow the expected factor key. If inputFactorKey gets called with the expected factor key the state switches to logged in
    */
-  constructor(stateAfterLogin: COREKIT_STATUS, userInfoAfterLogin: UserInfo, expectedFactorKey: BN = new BN(-1)) {
+  constructor(
+    stateAfterLogin: COREKIT_STATUS,
+    userInfoAfterLogin: UserInfo,
+    expectedFactorKey: BN = new BN(-1),
+    expectedKeyDetails = { shareDescriptions: {} },
+  ) {
     this.stateAfterLogin = stateAfterLogin
     this.userInfoAfterLogin = userInfoAfterLogin
     this.expectedFactorKey = expectedFactorKey
+    this.expectedKeyDetails = expectedKeyDetails
   }
 
   loginWithOauth(params: OauthLoginParams): Promise<void> {
@@ -69,6 +73,10 @@ class MockMPCCoreKit {
   getUserInfo() {
     return this.state.userInfo
   }
+
+  getKeyDetails() {
+    return this.expectedKeyDetails
+  }
 }
 
 describe('useMPCWallet', () => {
@@ -87,10 +95,24 @@ describe('useMPCWallet', () => {
     it('should handle successful log in for SFA account', async () => {
       const mockOnConnect = jest.fn()
 
-      const mockCoreKit = new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, {
-        email: 'test@test.com',
-        name: 'Test',
-      } as unknown as UserInfo) as unknown as Web3AuthMPCCoreKit
+      const mockCoreKit = new MockMPCCoreKit(
+        COREKIT_STATUS.LOGGED_IN,
+        {
+          email: 'test@test.com',
+          name: 'Test',
+        } as unknown as UserInfo,
+        new BN(-1),
+        {
+          shareDescriptions: {
+            1: [
+              JSON.stringify({
+                dateAdded: Date.now() - 30 * 24 * 60 * 60 * 60 * 1000,
+                module: 'hashedShare',
+              }),
+            ],
+          },
+        },
+      ) as unknown as Web3AuthMPCCoreKit
 
       const testService = new SocialWalletService(mockCoreKit)
       testService.setOnConnect(mockOnConnect)
@@ -112,6 +134,53 @@ describe('useMPCWallet', () => {
         expect(status).resolves.toEqual(COREKIT_STATUS.LOGGED_IN)
         expect(mockOnConnect).toHaveBeenCalled()
         expect(mockCoreKit.commitChanges).toHaveBeenCalled()
+      })
+    })
+
+    it('should not allow logins to newly created SFA accounts', async () => {
+      const mockOnConnect = jest.fn()
+
+      const mockCoreKit = new MockMPCCoreKit(
+        COREKIT_STATUS.LOGGED_IN,
+        {
+          email: 'test@test.com',
+          name: 'Test',
+        } as unknown as UserInfo,
+        new BN(-1),
+        {
+          shareDescriptions: {
+            1: [
+              JSON.stringify({
+                dateAdded: Date.now() - 5,
+                module: 'hashedShare',
+              }),
+            ],
+          },
+        },
+      ) as unknown as Web3AuthMPCCoreKit
+
+      const testService = new SocialWalletService(mockCoreKit)
+      testService.setOnConnect(mockOnConnect)
+
+      let status: Promise<COREKIT_STATUS>
+      act(() => {
+        status = testService.loginAndCreate()
+      })
+
+      expect(mockOnConnect).not.toHaveBeenCalled()
+
+      // Resolve mock login
+      act(() => {
+        jest.advanceTimersByTime(MOCK_LOGIN_TIME)
+      })
+
+      // We should be logged in and onboard should get connected
+      await waitFor(() => {
+        expect(status).rejects.toEqual(
+          new Error('Social Login is deprecated and will be removed on 01.05.2024. New accounts cannot be created.'),
+        )
+        expect(mockOnConnect).not.toHaveBeenCalled()
+        expect(mockCoreKit.commitChanges).not.toHaveBeenCalled()
       })
     })
 

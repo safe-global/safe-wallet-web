@@ -82,6 +82,7 @@ const TxLayout = ({
 
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const isDesktop = useMediaQuery(theme.breakpoints.down('lg'))
 
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
@@ -100,14 +101,16 @@ const TxLayout = ({
         <TxSecurityProvider>
           <>
             {/* Header status button */}
-            <IconButton
-              className={css.statusButton}
-              aria-label="Transaction status"
-              size="large"
-              onClick={toggleStatus}
-            >
-              <SafeLogo width={16} height={16} />
-            </IconButton>
+            {!isReplacement && (
+              <IconButton
+                className={css.statusButton}
+                aria-label="Transaction status"
+                size="large"
+                onClick={toggleStatus}
+              >
+                <SafeLogo width={16} height={16} />
+              </IconButton>
+            )}
 
             <Container className={css.container}>
               <Grid container gap={3} justifyContent="center">
@@ -143,7 +146,7 @@ const TxLayout = ({
                     {onBack && step > 0 && (
                       <Button
                         data-testid="modal-back-btn"
-                        variant="contained"
+                        variant={isDesktop ? 'text' : 'contained'}
                         onClick={onBack}
                         className={css.backButton}
                       >
@@ -154,22 +157,23 @@ const TxLayout = ({
                 </Grid>
 
                 {/* Sidebar */}
-                <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
-                  {statusVisible && (
-                    <TxStatusWidget
-                      step={step}
-                      txSummary={txSummary}
-                      handleClose={() => setStatusVisible(false)}
-                      isReplacement={isReplacement}
-                      isBatch={isBatch}
-                      isMessage={isMessage}
-                    />
-                  )}
+                {!isReplacement && (
+                  <Grid item xs={12} md={4} className={classnames(css.widget, { [css.active]: statusVisible })}>
+                    {statusVisible && (
+                      <TxStatusWidget
+                        step={step}
+                        txSummary={txSummary}
+                        handleClose={() => setStatusVisible(false)}
+                        isBatch={isBatch}
+                        isMessage={isMessage}
+                      />
+                    )}
 
-                  <Box className={css.sticky}>
-                    <SecurityWarnings />
-                  </Box>
-                </Grid>
+                    <Box className={css.sticky}>
+                      <SecurityWarnings />
+                    </Box>
+                  </Grid>
+                )}
               </Grid>
             </Container>
           </>

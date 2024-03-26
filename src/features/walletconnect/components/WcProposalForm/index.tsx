@@ -24,13 +24,14 @@ import css from './styles.module.css'
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
   setProposal: Dispatch<SetStateAction<Web3WalletTypes.SessionProposal | undefined>>
+  onApprove: () => void
 }
 
-const WcProposalForm = ({ proposal, setProposal }: ProposalFormProps): ReactElement => {
+const WcProposalForm = ({ proposal, setProposal, onApprove }: ProposalFormProps): ReactElement => {
   const { walletConnect, setError, setIsLoading, isLoading } = useContext(WalletConnectContext)
 
   const { configs } = useChains()
-  const { safeLoaded, safe, safeAddress } = useSafeInfo()
+  const { safeLoaded, safe } = useSafeInfo()
   const { chainId } = safe
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const { proposer } = proposal.params
@@ -44,28 +45,6 @@ const WcProposalForm = ({ proposal, setProposal }: ProposalFormProps): ReactElem
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin, name)
   const isBlocked = isScam || isBlockedBridge(origin)
   const disabled = !safeLoaded || isUnsupportedChain || isBlocked || (isHighRisk && !understandsRisk) || !!isLoading
-
-  // On session approve
-  const onApprove = useCallback(async () => {
-    if (!walletConnect || !chainId || !safeAddress || !proposal) return
-
-    const label = proposal?.params.proposer.metadata.url
-    trackEvent({ ...WALLETCONNECT_EVENTS.APPROVE_CLICK, label })
-
-    setIsLoading(WCLoadingState.APPROVE)
-
-    try {
-      await walletConnect.approveSession(proposal, chainId, safeAddress)
-    } catch (e) {
-      setIsLoading(undefined)
-      setError(asError(e))
-      return
-    }
-
-    trackEvent({ ...WALLETCONNECT_EVENTS.CONNECTED, label })
-    setIsLoading(undefined)
-    setProposal(undefined)
-  }, [walletConnect, chainId, safeAddress, proposal, setIsLoading, setProposal, setError])
 
   // On session reject
   const onReject = useCallback(async () => {
@@ -162,7 +141,7 @@ const WcProposalForm = ({ proposal, setProposal }: ProposalFormProps): ReactElem
           {isLoading === WCLoadingState.REJECT ? <CircularProgress size={20} /> : 'Reject'}
         </Button>
 
-        <Button variant="contained" onClick={onApprove} className={css.button} disabled={disabled}>
+        <Button variant="contained" onClick={() => onApprove()} className={css.button} disabled={disabled}>
           {isLoading === WCLoadingState.APPROVE ? <CircularProgress size={20} /> : 'Approve'}
         </Button>
       </div>
