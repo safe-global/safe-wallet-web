@@ -99,7 +99,7 @@ const ActivityRewardsSection = () => {
               </Grid>
               <Grid item xs={12} md={6} p={0}>
                 <Typography variant="overline" color="primary.light">
-                  How it works?
+                  How it works
                 </Typography>
                 <div className={css.steps}>
                   <Step title="Lock SAFE to boost your miles!" active={stepsActive[0]} />
