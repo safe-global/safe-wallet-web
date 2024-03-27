@@ -540,8 +540,7 @@ describe('SignOrExecute hooks', () => {
         'Cannot relay an unsigned transaction from a smart contract wallet',
       )
 
-      // We are proposing before signing
-      expect(proposeSpy).toHaveBeenCalled()
+      expect(proposeSpy).not.toHaveBeenCalled()
       expect(signSpy).not.toHaveBeenCalled()
       expect(relaySpy).not.toHaveBeenCalled()
     })
