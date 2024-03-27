@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from 'react'
 import type { Dispatch, ReactNode, SetStateAction, ReactElement } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { createTx } from '@/services/tx/tx-sender'
-import { useRecommendedNonce } from '../tx/SignOrExecuteForm/hooks'
+import { useRecommendedNonce, useSafeTxGas } from '../tx/SignOrExecuteForm/hooks'
 import { Errors, logError } from '@/services/exceptions'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -45,12 +45,13 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
   // Signed txs cannot be updated
   const isSigned = safeTx && safeTx.signatures.size > 0
 
-  // Recommended nonce
+  // Recommended nonce and safeTxGas
   const recommendedNonce = useRecommendedNonce()
+  const recommendedSafeTxGas = useSafeTxGas(safeTx)
 
   // Priority to external nonce, then to the recommended one
   const finalNonce = isSigned ? safeTx?.data.nonce : nonce ?? recommendedNonce ?? safeTx?.data.nonce
-  const finalSafeTxGas = isSigned ? safeTx?.data.safeTxGas : safeTxGas ?? safeTx?.data.safeTxGas
+  const finalSafeTxGas = isSigned ? safeTx?.data.safeTxGas : safeTxGas ?? recommendedSafeTxGas ?? safeTx?.data.safeTxGas
 
   // Update the tx when the nonce or safeTxGas change
   useEffect(() => {
