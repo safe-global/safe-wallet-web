@@ -51,9 +51,7 @@ const Dashboard = (): ReactElement => {
               </Grid>
             ) : null}
 
-            <Grid item xs={12}>
-              <ActivityRewardsSection />
-            </Grid>
+            <ActivityRewardsSection />
 
             <Grid item xs={12} lg={showRecoveryWidget ? 12 : 6}>
               <FeaturedApps stackedLayout={!showRecoveryWidget} />

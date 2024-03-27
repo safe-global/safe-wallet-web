@@ -60,22 +60,24 @@ const ActivityRewardsSection = () => {
 
   const activityAppUrl = useShareSafeAppUrl(governanceApp?.url || '')
 
-  return (
-    <Accordion className={css.accordion} defaultExpanded>
-      <AccordionSummary
-        expandIcon={
-          <IconButton size="small">
-            <ExpandMoreIcon color="border" />
-          </IconButton>
-        }
-      >
-        <Typography component="h2" variant="subtitle1" fontWeight={700}>
-          Safe Activity App
-        </Typography>
-      </AccordionSummary>
+  if (!governanceApp) return null
 
-      <AccordionDetails>
-        {governanceApp && (
+  return (
+    <Grid item xs={12}>
+      <Accordion className={css.accordion} defaultExpanded>
+        <AccordionSummary
+          expandIcon={
+            <IconButton size="small">
+              <ExpandMoreIcon color="border" />
+            </IconButton>
+          }
+        >
+          <Typography component="h2" variant="subtitle1" fontWeight={700}>
+            Safe Activity App
+          </Typography>
+        </AccordionSummary>
+
+        <AccordionDetails>
           <Card className={css.widgetWrapper}>
             <Grid container xs={12} sx={{ gap: { xs: 4, md: 0 } }}>
               <Grid item xs={12} md={6} p={0}>
@@ -122,9 +124,9 @@ const ActivityRewardsSection = () => {
               </Grid>
             </Grid>
           </Card>
-        )}
-      </AccordionDetails>
-    </Accordion>
+        </AccordionDetails>
+      </Accordion>
+    </Grid>
   )
 }
 
