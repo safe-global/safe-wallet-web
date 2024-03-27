@@ -79,7 +79,7 @@ describe('Safe creation tests 2', () => {
     owner.verifyThreshold(1, 2)
   })
 
-  it('Verify deleting owner rows updates the currenlty set policies value', () => {
+  it('Verify deleting owner rows updates the currently set policies value', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()

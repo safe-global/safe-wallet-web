@@ -56,7 +56,7 @@ describe('useCompatibilityWarning', () => {
 
       expect(result.current).toEqual({
         message:
-          'While using Fake Bridge, please make sure that the desination address you send funds to matches the Safe address you have on the respective chain. Otherwise, the funds will be lost.',
+          'While using Fake Bridge, please make sure that the destination address you send funds to matches the Safe address you have on the respective chain. Otherwise, the funds will be lost.',
         severity: 'warning',
       })
     })
