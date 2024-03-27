@@ -15,6 +15,10 @@ export function selectConnectedWalletOption() {
   cy.get(connectedWalletExecutionMethod).click()
 }
 
+export function selectRelayOtion() {
+  cy.get(connectedWalletExecutionMethod).prev().click()
+}
+
 export function clickOnExecuteBtn() {
   cy.get('button').contains(executeBtnStr).click()
 }
@@ -30,6 +34,14 @@ export function waitForTxToComplete() {
 export function executeFlow_1() {
   selectExecuteNow()
   selectConnectedWalletOption()
+  clickOnExecuteBtn()
+  waitForTxToComplete()
+  clickOnFinishBtn()
+}
+
+export function executeFlow_2() {
+  selectExecuteNow()
+  selectRelayOtion()
   clickOnExecuteBtn()
   waitForTxToComplete()
   clickOnFinishBtn()
