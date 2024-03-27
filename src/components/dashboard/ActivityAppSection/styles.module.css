@@ -25,14 +25,8 @@
 
 .widgetWrapper {
   border: none;
-  /* height: 300px; */
-}
-
-/* iframe sm breakpoint + paddings */
-@media (max-width: 662px) {
-  .widgetWrapper {
-    height: 624px;
-  }
+  margin: 0;
+  padding: 40px;
 }
 
 .loadErrorCard {
@@ -57,6 +51,10 @@
   background: linear-gradient(225deg, #5fddff 12.5%, #12ff80 88.07%);
   background-clip: text;
   color: transparent;
+}
+
+.header {
+  max-width: 80%;
 }
 
 .steps {
@@ -89,4 +87,14 @@
   border-radius: 4px;
   color: #121312;
   padding: 4px 8px;
+}
+
+@media (max-width: 899.99px) {
+  .header {
+    max-width: 100%;
+  }
+
+  .widgetWrapper {
+    padding: 32px;
+  }
 }

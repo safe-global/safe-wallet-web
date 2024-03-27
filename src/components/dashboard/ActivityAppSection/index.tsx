@@ -74,11 +74,11 @@ const ActivityAppSection = () => {
         </Typography>
       </AccordionSummary>
 
-      <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
+      <AccordionDetails>
         {governanceApp && (
           <Card className={css.widgetWrapper}>
-            <Grid container xs={12} p={5} spacing={2}>
-              <Grid item xs={6}>
+            <Grid container xs={12}>
+              <Grid item xs={12} md={6} p={0}>
                 <SvgIcon
                   component={SafeMilesLogo}
                   inheritViewBox
@@ -89,8 +89,7 @@ const ActivityAppSection = () => {
                   variant="h1"
                   fontWeight={700}
                   mt={4}
-                  maxWidth="80%"
-                  className={isDarkMode ? css.gradientText : ''}
+                  className={classNames(css.header, { [css.gradientText]: isDarkMode })}
                 >
                   Interact with Safe and get rewards
                 </Typography>
@@ -98,7 +97,7 @@ const ActivityAppSection = () => {
                   Open Activity App
                 </Button>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6} p={0}>
                 <Typography variant="overline" color="primary.light">
                   How it works?
                 </Typography>
