@@ -18,6 +18,7 @@ import {
 } from '@safe-global/protocol-kit/dist/src/contracts/safeDeploymentContracts'
 import { type JsonRpcProvider } from 'ethers'
 import { type ExtendedSafeInfo } from '@/store/safeInfoSlice'
+import { estimateGas } from '@/utils/op-gas'
 
 const getEncodedSafeTx = (
   safeSDK: Safe,
@@ -162,21 +163,29 @@ const useGasLimit = (
       return getGasLimitForZkSync(safe, web3ReadOnly, safeSDK, safeTx)
     }
 
-    return web3ReadOnly
-      .estimateGas({
-        to: safeAddress,
-        from: walletAddress,
-        data: encodedSafeTx,
-      })
-      .then((gasLimit) => {
-        // Due to a bug in Nethermind estimation, we need to increment the gasLimit by 30%
-        // when the safeTxGas is defined and not 0. Currently Nethermind is used only for Gnosis Chain.
-        if (currentChainId === chains.gno && hasSafeTxGas) {
-          return incrementByGasMultiplier(gasLimit, GasMultipliers[chains.gno])
-        }
+    const txRequest = {
+      to: safeAddress,
+      from: walletAddress,
+      data: encodedSafeTx,
+    }
 
-        return gasLimit
-      })
+    // TODO: figure out how to control this through the config service
+    // this kind of gaslimit estimation should work on all OP-based chains
+    if (safe.chainId === chains.oeth) {
+      const { gas } = await estimateGas(txRequest, web3ReadOnly)
+
+      return gas
+    }
+
+    return web3ReadOnly.estimateGas(txRequest).then((gasLimit) => {
+      // Due to a bug in Nethermind estimation, we need to increment the gasLimit by 30%
+      // when the safeTxGas is defined and not 0. Currently Nethermind is used only for Gnosis Chain.
+      if (currentChainId === chains.gno && hasSafeTxGas) {
+        return incrementByGasMultiplier(gasLimit, GasMultipliers[chains.gno])
+      }
+
+      return gasLimit
+    })
   }, [
     safeAddress,
     walletAddress,
