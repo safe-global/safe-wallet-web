@@ -14,7 +14,7 @@ import {
   dispatchTxSigning,
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
-import { getNonces } from '@/services/tx/tx-sender/recommendedNonce'
+import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonce'
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -168,6 +168,30 @@ export const useRecommendedNonce = (): number | undefined => {
   )
 
   return recommendedNonce
+}
+
+export const useSafeTxGas = (safeTx: SafeTransaction | undefined): string | undefined => {
+  const { safeAddress, safe } = useSafeInfo()
+
+  // Memoize only the necessary params so that the useAsync hook is not called every time safeTx changes
+  const safeTxParams = useMemo(() => {
+    return !safeTx?.data?.to
+      ? undefined
+      : {
+          to: safeTx?.data.to,
+          value: safeTx?.data?.value,
+          data: safeTx?.data?.data,
+          operation: safeTx?.data?.operation,
+        }
+  }, [safeTx?.data.to, safeTx?.data.value, safeTx?.data.data, safeTx?.data.operation])
+
+  const [safeTxGas] = useAsync(() => {
+    if (!safe.chainId || !safeAddress || !safeTxParams || !safe.version) return
+
+    return getSafeTxGas(safe.chainId, safeAddress, safe.version, safeTxParams)
+  }, [safeAddress, safe.chainId, safe.version, safeTxParams])
+
+  return safeTxGas
 }
 
 export const useAlreadySigned = (safeTx: SafeTransaction | undefined): boolean => {
