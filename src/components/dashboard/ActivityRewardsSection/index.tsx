@@ -44,7 +44,7 @@ const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
   )
 }
 
-const ActivityAppSection = () => {
+const ActivityRewardsSection = () => {
   const chainId = useChainId()
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.SAFE_GOVERNANCE_APP)
   const isDarkMode = useDarkMode()
@@ -128,4 +128,4 @@ const ActivityAppSection = () => {
   )
 }
 
-export default ActivityAppSection
+export default ActivityRewardsSection
