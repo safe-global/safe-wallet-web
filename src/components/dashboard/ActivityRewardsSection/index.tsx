@@ -77,7 +77,7 @@ const ActivityRewardsSection = () => {
       <AccordionDetails>
         {governanceApp && (
           <Card className={css.widgetWrapper}>
-            <Grid container xs={12}>
+            <Grid container xs={12} sx={{ gap: { xs: 4, md: 0 } }}>
               <Grid item xs={12} md={6} p={0}>
                 <SvgIcon
                   component={SafeMilesLogo}
