@@ -18,6 +18,9 @@
 .accordion :global .MuiAccordionSummary-root {
   pointer-events: none;
 }
+.accordion :global .MuiAccordionSummary-content {
+  margin-top: 0;
+}
 
 .accordion :global .MuiAccordionSummary-expandIconWrapper {
   pointer-events: auto;
