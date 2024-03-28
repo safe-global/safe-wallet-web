@@ -1,10 +1,12 @@
 import { BuyCryptoOptions } from '@/components/common/BuyCryptoButton'
 import CheckWallet from '@/components/common/CheckWallet'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import ExternalLink from '@/components/common/ExternalLink'
 import ModalDialog from '@/components/common/ModalDialog'
 import QRCode from '@/components/common/QRCode'
 import Track from '@/components/common/Track'
 import FirstTxFlow from '@/features/counterfactual/FirstTxFlow'
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -12,6 +14,7 @@ import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectSettings, setQrShortName } from '@/store/settingsSlice'
 import { selectOutgoingTransactions } from '@/store/txHistorySlice'
+import { getExplorerLink } from '@/utils/gateway'
 import classnames from 'classnames'
 import { type ReactNode, useState } from 'react'
 import { Card, WidgetBody, WidgetContainer } from '@/components/dashboard/styled'
@@ -19,6 +22,7 @@ import { Box, Button, CircularProgress, Divider, FormControlLabel, Grid, Switch,
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined'
 import css from './styles.module.css'
 
 const calculateProgress = (items: boolean[]) => {
@@ -34,17 +38,15 @@ const StatusCard = ({
   completed,
   children,
 }: {
-  badge: string
+  badge: ReactNode
   title: string
   content: string
   completed: boolean
-  children: ReactNode
+  children?: ReactNode
 }) => {
   return (
     <Card className={css.card}>
-      <div className={css.topBadge}>
-        <Typography variant="body2">{badge}</Typography>
-      </div>
+      <div className={css.topBadge}>{badge}</div>
       <div className={css.status}>
         {completed ? (
           <CheckCircleRoundedIcon color="success" fontSize="medium" />
@@ -58,6 +60,53 @@ const StatusCard = ({
       <Typography>{content}</Typography>
       {children}
     </Card>
+  )
+}
+
+const ActivationStatusWidget = ({ explorerLink }: { explorerLink?: string }) => {
+  return (
+    <StatusCard
+      badge={
+        <Typography
+          variant="body2"
+          sx={{ backgroundColor: 'border.light', borderRadius: '0 0 4px 4px', padding: '4px 8px' }}
+        >
+          Just submitted
+        </Typography>
+      }
+      title="Transaction pending"
+      content="Depending on network usage, it can take some time until the transaction is successfully processed and executed."
+      completed={false}
+    >
+      <ExternalLink href={explorerLink} sx={{ mt: 2 }}>
+        View Explorer
+      </ExternalLink>
+    </StatusCard>
+  )
+}
+
+const UsefulHintsWidget = () => {
+  return (
+    <StatusCard
+      badge={
+        <Typography
+          variant="body2"
+          sx={{
+            backgroundColor: 'info.main',
+            borderRadius: '0 0 4px 4px',
+            padding: '4px 8px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <LightbulbOutlinedIcon fontSize="small" sx={{ mr: 0.5 }} />
+          Did you know
+        </Typography>
+      }
+      title="Explore over 70+ dApps"
+      content="In our Safe App section you can connect your Safe to over 70 dApps directly or via Wallet Connect to interact with any application."
+      completed={false}
+    />
   )
 }
 
@@ -78,7 +127,19 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
   }
 
   return (
-    <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
+    <StatusCard
+      badge={
+        <Typography
+          variant="body2"
+          sx={{ backgroundColor: 'secondary.light', borderRadius: '0 0 4px 4px', padding: '4px 8px' }}
+        >
+          First interaction
+        </Typography>
+      }
+      title={title}
+      content={content}
+      completed={completed}
+    >
       {!completed && (
         <>
           <Box mt={2}>
@@ -168,7 +229,19 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
 
   return (
     <>
-      <StatusCard badge="First interaction" title={title} content={content} completed={completed}>
+      <StatusCard
+        badge={
+          <Typography
+            variant="body2"
+            sx={{ backgroundColor: 'secondary.light', borderRadius: '0 0 4px 4px', padding: '4px 8px' }}
+          >
+            First interaction
+          </Typography>
+        }
+        title={title}
+        content={content}
+        completed={completed}
+      >
         {!completed && (
           <CheckWallet>
             {(isOk) => (
@@ -208,8 +281,10 @@ const AccountReadyWidget = () => {
 
 const FirstSteps = () => {
   const { balances } = useBalances()
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const outgoingTransactions = useAppSelector(selectOutgoingTransactions)
+  const chain = useCurrentChain()
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, safeAddress))
 
   const hasNonZeroBalance = balances && (balances.items.length > 1 || BigInt(balances.items[0]?.balance || 0) > 0)
   const hasOutgoingTransactions = !!outgoingTransactions && outgoingTransactions.length > 0
@@ -219,6 +294,8 @@ const FirstSteps = () => {
   const stepsCompleted = completedItems.filter((item) => item).length
 
   if (safe.deployed) return null
+
+  const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
   return (
     <WidgetContainer>
@@ -242,7 +319,7 @@ const FirstSteps = () => {
             </svg>
             <CircularProgress variant="determinate" value={100} className={css.circleBg} size={60} thickness={5} />
             <CircularProgress
-              variant="determinate"
+              variant={isActivating ? 'indeterminate' : 'determinate'}
               value={progress === 0 ? 3 : progress} // Just to give an indication of the progress even at 0%
               className={css.circleProgress}
               size={60}
@@ -252,23 +329,36 @@ const FirstSteps = () => {
           </Grid>
           <Grid item>
             <Typography component="div" variant="h2" fontWeight={700} mb={1}>
-              Activate your Safe Account
+              {isActivating ? 'Account is being activated...' : 'Activate your Safe Account'}
             </Typography>
-            <Typography variant="body2">
-              <strong>
-                {stepsCompleted} of {completedItems.length} steps completed.
-              </strong>{' '}
-              Finish the next steps to start using all Safe Account features:
-            </Typography>
+
+            {isActivating ? (
+              <Typography variant="body2">
+                <strong>This may take a few minutes.</strong> Once activated, your account will be up and running.
+              </Typography>
+            ) : (
+              <Typography variant="body2">
+                <strong>
+                  {stepsCompleted} of {completedItems.length} steps completed.
+                </strong>{' '}
+                Finish the next steps to start using all Safe Account features:
+              </Typography>
+            )}
           </Grid>
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <AddFundsWidget completed={hasNonZeroBalance} />
+            {isActivating && undeployedSafe?.status.txHash && chain ? (
+              <ActivationStatusWidget
+                explorerLink={getExplorerLink(undeployedSafe.status.txHash, chain.blockExplorerUriTemplate).href}
+              />
+            ) : (
+              <AddFundsWidget completed={hasNonZeroBalance} />
+            )}
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <FirstTransactionWidget completed={hasOutgoingTransactions} />
+            {isActivating ? <UsefulHintsWidget /> : <FirstTransactionWidget completed={hasOutgoingTransactions} />}
           </Grid>
 
           <Grid item xs={12} md={4}>
