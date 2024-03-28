@@ -41,6 +41,8 @@ const Dashboard = (): ReactElement => {
 
         {safe.deployed && (
           <>
+            <ActivityRewardsSection />
+
             <Grid item xs={12} lg={6}>
               <PendingTxsList />
             </Grid>
@@ -50,8 +52,6 @@ const Dashboard = (): ReactElement => {
                 <RecoveryWidget />
               </Grid>
             ) : null}
-
-            <ActivityRewardsSection />
 
             <Grid item xs={12} lg={showRecoveryWidget ? 12 : 6}>
               <FeaturedApps stackedLayout={!showRecoveryWidget} />
