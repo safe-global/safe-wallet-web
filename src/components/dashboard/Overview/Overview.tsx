@@ -2,7 +2,7 @@ import TokenAmount from '@/components/common/TokenAmount'
 import Track from '@/components/common/Track'
 import QrCodeButton from '@/components/sidebar/QrCodeButton'
 import { TxModalContext } from '@/components/tx-flow'
-import { NewTxFlow } from '@/components/tx-flow/flows'
+import { TokenTransferFlow } from '@/components/tx-flow/flows'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
@@ -49,7 +49,7 @@ const Overview = (): ReactElement => {
   const isLoading = safeLoading || balancesLoading || isInitialState
 
   const handleOnSend = () => {
-    setTxFlow(<NewTxFlow />, undefined, false)
+    setTxFlow(<TokenTransferFlow />, undefined, false)
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
 

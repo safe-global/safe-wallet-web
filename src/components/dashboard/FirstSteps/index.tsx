@@ -4,7 +4,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import ModalDialog from '@/components/common/ModalDialog'
 import QRCode from '@/components/common/QRCode'
 import Track from '@/components/common/Track'
-import FirstTxFlow from '@/features/counterfactual/FirstTxFlow'
+import { NewTxFlow } from '@/components/tx-flow/flows'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -187,7 +187,7 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
           </CheckWallet>
         )}
       </StatusCard>
-      <FirstTxFlow open={open} onClose={() => setOpen(false)} />
+      <NewTxFlow open={open} onClose={() => setOpen(false)} />
     </>
   )
 }

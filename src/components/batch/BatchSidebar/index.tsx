@@ -1,13 +1,12 @@
-import { type SyntheticEvent, useEffect } from 'react'
+import { type SyntheticEvent, useEffect, useState } from 'react'
 import { useCallback, useContext } from 'react'
 import dynamic from 'next/dynamic'
 import { Button, Divider, Drawer, IconButton, SvgIcon, Typography } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { useDraftBatch, useUpdateBatch } from '@/hooks/useDraftBatch'
 import css from './styles.module.css'
-import { NewTxFlow } from '@/components/tx-flow/flows'
 import { TxModalContext } from '@/components/tx-flow'
-import { ConfirmBatchFlow } from '@/components/tx-flow/flows'
+import { ConfirmBatchFlow, NewTxFlow } from '@/components/tx-flow/flows'
 import Track from '@/components/common/Track'
 import { BATCH_EVENTS } from '@/services/analytics'
 import CheckWallet from '@/components/common/CheckWallet'
@@ -17,6 +16,7 @@ import EmptyBatch from './EmptyBatch'
 const BatchReorder = dynamic(() => import('./BatchReorder'))
 
 const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: boolean) => void }) => {
+  const [open, setOpen] = useState<boolean>(false)
   const { txFlow, setTxFlow } = useContext(TxModalContext)
   const batchTxs = useDraftBatch()
   const [, deleteTx, onReorder] = useUpdateBatch()
@@ -41,9 +41,10 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
   const onAddClick = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault()
-      setTxFlow(<NewTxFlow />, undefined, false)
+      setOpen(true)
+      closeSidebar()
     },
-    [setTxFlow],
+    [closeSidebar],
   )
 
   const onConfirmClick = useCallback(
@@ -62,67 +63,70 @@ const BatchSidebar = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: (open: 
   }, [txFlow, closeSidebar])
 
   return (
-    <Drawer variant="temporary" anchor="right" open={isOpen} onClose={closeSidebar} transitionDuration={100}>
-      <aside className={css.aside}>
-        <Typography variant="h4" fontWeight={700} mb={1}>
-          Batched transactions
-        </Typography>
+    <>
+      <Drawer variant="temporary" anchor="right" open={isOpen} onClose={closeSidebar} transitionDuration={100}>
+        <aside className={css.aside}>
+          <Typography variant="h4" fontWeight={700} mb={1}>
+            Batched transactions
+          </Typography>
 
-        <Divider />
+          <Divider />
 
-        {batchTxs.length ? (
-          <>
-            <div className={css.txs}>
-              <BatchReorder txItems={batchTxs} onDelete={deleteTx} onReorder={onReorder} />
-            </div>
+          {batchTxs.length ? (
+            <>
+              <div className={css.txs}>
+                <BatchReorder txItems={batchTxs} onDelete={deleteTx} onReorder={onReorder} />
+              </div>
 
-            <CheckWallet>
-              {(isOk) => (
-                <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
-                  <Button onClick={onAddClick} disabled={!isOk}>
-                    <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-                    Add new transaction
-                  </Button>
-                </Track>
-              )}
-            </CheckWallet>
+              <CheckWallet>
+                {(isOk) => (
+                  <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
+                    <Button onClick={onAddClick} disabled={!isOk}>
+                      <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
+                      Add new transaction
+                    </Button>
+                  </Track>
+                )}
+              </CheckWallet>
 
-            <Divider />
+              <Divider />
 
-            <CheckWallet>
-              {(isOk) => (
-                <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
-                  <Button
-                    variant="contained"
-                    onClick={onConfirmClick}
-                    disabled={!batchTxs.length || !isOk}
-                    className={css.confirmButton}
-                  >
-                    Confirm batch
-                  </Button>
-                </Track>
-              )}
-            </CheckWallet>
-          </>
-        ) : (
-          <EmptyBatch>
-            <CheckWallet>
-              {(isOk) => (
-                <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
-                  <Button onClick={onAddClick} variant="contained" disabled={!isOk}>
-                    New transaction
-                  </Button>
-                </Track>
-              )}
-            </CheckWallet>
-          </EmptyBatch>
-        )}
+              <CheckWallet>
+                {(isOk) => (
+                  <Track {...BATCH_EVENTS.BATCH_CONFIRM} label={batchTxs.length}>
+                    <Button
+                      variant="contained"
+                      onClick={onConfirmClick}
+                      disabled={!batchTxs.length || !isOk}
+                      className={css.confirmButton}
+                    >
+                      Confirm batch
+                    </Button>
+                  </Track>
+                )}
+              </CheckWallet>
+            </>
+          ) : (
+            <EmptyBatch>
+              <CheckWallet>
+                {(isOk) => (
+                  <Track {...BATCH_EVENTS.BATCH_NEW_TX}>
+                    <Button onClick={onAddClick} variant="contained" disabled={!isOk}>
+                      New transaction
+                    </Button>
+                  </Track>
+                )}
+              </CheckWallet>
+            </EmptyBatch>
+          )}
 
-        <IconButton className={css.close} aria-label="close" onClick={closeSidebar} size="small">
-          <CloseIcon fontSize="medium" />
-        </IconButton>
-      </aside>
-    </Drawer>
+          <IconButton className={css.close} aria-label="close" onClick={closeSidebar} size="small">
+            <CloseIcon fontSize="medium" />
+          </IconButton>
+        </aside>
+      </Drawer>
+      <NewTxFlow open={open} onClose={() => setOpen(false)} />
+    </>
   )
 }
 
