@@ -3,14 +3,16 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { useAppSelector } from '@/store'
 import LoopRoundedIcon from '@mui/icons-material/LoopRounded'
-import { IconButton, Tooltip } from '@mui/material'
+import { IconButton, type SvgIconProps, Tooltip } from '@mui/material'
 import classnames from 'classnames'
 import css from './styles.module.css'
 
-const LoopIcon = () => {
+export const LoopIcon = (props: SvgIconProps) => {
   return (
     <LoopRoundedIcon
+      {...props}
       sx={{
+        ...props.sx,
         animation: 'spin 2s linear infinite',
         '@keyframes spin': {
           '0%': {

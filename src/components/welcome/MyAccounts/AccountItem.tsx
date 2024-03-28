@@ -1,6 +1,8 @@
+import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
-import { ListItemButton, Box, Typography } from '@mui/material'
+import { ListItemButton, Box, Typography, Chip } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
@@ -18,6 +20,7 @@ import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
 type AccountItemProps = {
   chainId: string
@@ -29,6 +32,7 @@ type AccountItemProps = {
 
 const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProps) => {
   const chain = useAppSelector((state) => selectChainById(state, chainId))
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
   const router = useRouter()
@@ -59,6 +63,8 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
 
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
 
+  const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
+
   return (
     <ListItemButton
       data-testid="safe-list-item"
@@ -71,7 +77,7 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
             {name && (
-              <Typography fontWeight="bold" fontSize="inherit">
+              <Typography variant="subtitle2" component="p" fontWeight="bold">
                 {name}
               </Typography>
             )}
@@ -79,6 +85,24 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
             </Typography>
+            {undeployedSafe && (
+              <div>
+                <Chip
+                  size="small"
+                  label={isActivating ? 'Activating account' : 'Not activated'}
+                  icon={
+                    isActivating ? (
+                      <LoopIcon fontSize="small" color="info" sx={{ mr: '-4px', ml: '4px' }} />
+                    ) : (
+                      <ErrorOutlineIcon fontSize="small" color="warning" />
+                    )
+                  }
+                  className={classnames(css.chip, {
+                    [css.pendingAccount]: isActivating,
+                  })}
+                />
+              </div>
+            )}
           </Typography>
 
           <Box flex={1} />
