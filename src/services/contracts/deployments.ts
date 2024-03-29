@@ -9,7 +9,6 @@ import {
 } from '@/bitlayer-safe-deployments/src'
 import type { SingletonDeployment, DeploymentFilter } from '@/bitlayer-safe-deployments/src'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { bitlayerContract } from '@/bitlayer/bitlayerContract'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 // import { LATEST_SAFE_VERSION } from '@/config/constants'

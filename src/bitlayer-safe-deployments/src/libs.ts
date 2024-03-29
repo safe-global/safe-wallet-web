@@ -7,7 +7,7 @@ import MultiSendCallOnly130 from './assets/v1.3.0/multi_send_call_only.json'
 import MultiSendCallOnly141 from './assets/v1.4.1/multi_send_call_only.json'
 import SignMessageLib130 from './assets/v1.3.0/sign_message_lib.json'
 import SignMessageLib141 from './assets/v1.4.1/sign_message_lib.json'
-import { DeploymentFilter, SingletonDeployment } from './types'
+import type { DeploymentFilter, SingletonDeployment } from './types'
 import { findDeployment } from './utils'
 
 // This is a sorted array (by preference, currently we use 111 in most cases)
@@ -16,7 +16,7 @@ const multiSendDeployments: SingletonDeployment[] = [
 ]
 
 export const getMultiSendDeployment = (filter?: DeploymentFilter): SingletonDeployment | undefined => {
-    return findDeployment(filter, multiSendDeployments)
+  return findDeployment(filter, multiSendDeployments)
 }
 
 // This is a sorted array (by preference)
@@ -25,7 +25,7 @@ const multiSendCallOnlyDeployments: SingletonDeployment[] = [
 ]
 
 export const getMultiSendCallOnlyDeployment = (filter?: DeploymentFilter): SingletonDeployment | undefined => {
-    return findDeployment(filter, multiSendCallOnlyDeployments)
+  return findDeployment(filter, multiSendCallOnlyDeployments)
 }
 
 // This is a sorted array (by preference)
@@ -34,7 +34,7 @@ const createCallDeployments: SingletonDeployment[] = [
 ]
 
 export const getCreateCallDeployment = (filter?: DeploymentFilter): SingletonDeployment | undefined => {
-    return findDeployment(filter, createCallDeployments)
+  return findDeployment(filter, createCallDeployments)
 }
 
 const signMessageLibDeployments: SingletonDeployment[] = [
@@ -42,5 +42,5 @@ const signMessageLibDeployments: SingletonDeployment[] = [
 ]
 
 export const getSignMessageLibDeployment = (filter?: DeploymentFilter): SingletonDeployment | undefined => {
-    return findDeployment(filter, signMessageLibDeployments)
+  return findDeployment(filter, signMessageLibDeployments)
 }

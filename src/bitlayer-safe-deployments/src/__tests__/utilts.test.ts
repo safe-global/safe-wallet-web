@@ -8,7 +8,7 @@ import GnosisSafe111 from '../assets/v1.1.1/gnosis_safe.json';
 import GnosisSafe100 from '../assets/v1.0.0/gnosis_safe.json';
 import { findDeployment } from '../utils';
 import { _safeDeployments, _safeL2Deployments } from '../safes';
-import { SingletonDeployment } from '../types';
+import type { SingletonDeployment } from '../types';
 
 const _safeDeploymentsReverse = [..._safeDeployments].reverse();
 
