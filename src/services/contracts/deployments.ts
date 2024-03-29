@@ -11,7 +11,7 @@ import type { SingletonDeployment, DeploymentFilter } from '@safe-global/safe-de
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { bitlayerContract } from '@/bitlayer/bitlayerContract'
 
-import { LATEST_SAFE_VERSION } from '@/config/constants'
+// import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 export const _tryDeploymentVersions = (
   getDeployment: (filter?: DeploymentFilter) => SingletonDeployment | undefined,
