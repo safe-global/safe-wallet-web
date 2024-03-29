@@ -1,6 +1,6 @@
 import { useParams } from 'next/navigation'
 import { parse, type ParsedUrlQuery } from 'querystring'
-import { IS_PRODUCTION } from '@/config/constants'
+// import { IS_PRODUCTION } from '@/config/constants'
 import chains from '@/config/chains'
 import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'

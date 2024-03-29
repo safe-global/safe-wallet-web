@@ -1,0 +1,15 @@
+build/
+node_modules/
+.DS_Store
+.zos.session
+.openzeppelin/.session
+deployments/
+env/
+.env
+dist/
+bin/
+solc
+coverage/
+coverage.json
+yarn-error.log
+.idea

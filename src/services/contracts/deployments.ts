@@ -6,10 +6,11 @@ import {
   getFallbackHandlerDeployment,
   getProxyFactoryDeployment,
   getSignMessageLibDeployment,
-} from '@safe-global/safe-deployments'
-import type { SingletonDeployment, DeploymentFilter } from '@safe-global/safe-deployments'
+} from '@/bitlayer-safe-deployments/src'
+import type { SingletonDeployment, DeploymentFilter } from '@/bitlayer-safe-deployments/src'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { bitlayerContract } from '@/bitlayer/bitlayerContract'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 // import { LATEST_SAFE_VERSION } from '@/config/constants'
 
@@ -18,18 +19,21 @@ export const _tryDeploymentVersions = (
   network: string,
   version: SafeInfo['version'],
 ): SingletonDeployment | undefined => {
-
   // Unsupported Safe version
   if (version === null) {
     // Assume latest version as fallback
-    return bitlayerContract
+    return getDeployment({
+      version: LATEST_SAFE_VERSION,
+      network,
+    })
   }
 
   // Supported Safe version
-  console.log('!!!!!!!!!!!!!!!!!', bitlayerContract)
-  return bitlayerContract
+  return getDeployment({
+    version,
+    network,
+  })
 }
-
 export const _isLegacy = (safeVersion: SafeInfo['version']): boolean => {
   const LEGACY_VERSIONS = '<=1.0.0'
   return !!safeVersion && semverSatisfies(safeVersion, LEGACY_VERSIONS)

@@ -3956,7 +3956,7 @@
   integrity sha512-7S2QCvIDw3NsErF0f8tIfiTBz32btCAkw7IYuQFPc+G7clLrvDNhDaZYSoDsa8F0EoEhn+605VA7XP//iL6AIg==
   dependencies:
     "@noble/hashes" "^1.3.3"
-    "@safe-global/safe-deployments" "^1.33.0"
+    "@/bitlayer-safe-deployments/src" "^1.33.0"
     ethereumjs-util "^7.1.5"
     ethers "^6.7.1"
     semver "^7.5.4"
@@ -3977,7 +3977,7 @@
   resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-4.0.1.tgz#7fb87abc3e709eaf217423d582749e95b8d4d39f"
   integrity sha512-cXW6petRWqUw1n04ZhVPgjzIL65FkAMqbPwkFAAlQ1lBxTt6xdxktLoAhgEDlqLNGibvncsNvKhxa1ib4T9MGg==
   dependencies:
-    "@safe-global/safe-deployments" "^1.33.0"
+    "@/bitlayer-safe-deployments/src" "^1.33.0"
     ethers "^6.7.1"
     web3-core "^1.10.3"
     web3-utils "^1.10.3"
@@ -3989,7 +3989,7 @@
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/contracts" "^5.7.0"
-    "@safe-global/safe-deployments" "^1.20.2"
+    "@/bitlayer-safe-deployments/src" "^1.20.2"
     web3-core "^1.8.1"
     web3-utils "^1.8.1"
 
@@ -4010,22 +4010,22 @@
     "@ethersproject/solidity" "^5.7.0"
     "@safe-global/safe-core-sdk-types" "^1.9.2"
     "@safe-global/safe-core-sdk-utils" "^1.7.4"
-    "@safe-global/safe-deployments" "^1.25.0"
+    "@/bitlayer-safe-deployments/src" "^1.25.0"
     ethereumjs-util "^7.1.5"
     semver "^7.3.8"
     web3-utils "^1.8.1"
     zksync-web3 "^0.14.3"
 
-"@safe-global/safe-deployments@1.33.0", "@safe-global/safe-deployments@^1.33.0":
+"@/bitlayer-safe-deployments/src@1.33.0", "@/bitlayer-safe-deployments/src@^1.33.0":
   version "1.33.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.33.0.tgz#5fc33354e752d02fa06b3ab1c1060ba23f484038"
+  resolved "https://registry.yarnpkg.com/@/bitlayer-safe-deployments/src/-/safe-deployments-1.33.0.tgz#5fc33354e752d02fa06b3ab1c1060ba23f484038"
   integrity sha512-G9qGMsha6idMnDuk98dE//inQL09w97hcQ5ZTdSWIHCzJ9mFdN0K4DH2afjZOwdt+Y4g8gZmY3z+kR38MPEToQ==
   dependencies:
     semver "^7.3.7"
 
-"@safe-global/safe-deployments@^1.20.2", "@safe-global/safe-deployments@^1.25.0":
+"@/bitlayer-safe-deployments/src@^1.20.2", "@/bitlayer-safe-deployments/src@^1.25.0":
   version "1.32.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.32.0.tgz#3632194d883aa07bd446a6e530e825ba022c9b76"
+  resolved "https://registry.yarnpkg.com/@/bitlayer-safe-deployments/src/-/safe-deployments-1.32.0.tgz#3632194d883aa07bd446a6e530e825ba022c9b76"
   integrity sha512-7RXmnBrUzJ9+Iat74yx3Gel0kygmsaWjJhqr+0Fy8mkP5ly/6dTZ/2ize1pv3j9Yal04NTOqXbaJG4JnbTANQw==
   dependencies:
     semver "^7.3.7"

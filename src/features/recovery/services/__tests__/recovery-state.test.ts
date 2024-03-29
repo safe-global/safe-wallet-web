@@ -13,7 +13,7 @@ import {
 } from '../recovery-state'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
-import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@/bitlayer-safe-deployments/src'
 import { Interface } from 'ethers'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 
@@ -100,43 +100,43 @@ describe('recovery-state', () => {
           expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
         })
       })
-      ;[...PRE_MULTI_SEND_CALL_ONLY_VERSIONS, ...SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS].forEach((version) => {
-        it(`should return true if the transaction is an official MultiSend call and not every transaction in the batch calls the Safe itself for Safe version ${version}`, () => {
-          const chainId = '5'
-          const version = LATEST_SAFE_VERSION
-          const safeAddress = faker.finance.ethereumAddress()
+        ;[...PRE_MULTI_SEND_CALL_ONLY_VERSIONS, ...SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS].forEach((version) => {
+          it(`should return true if the transaction is an official MultiSend call and not every transaction in the batch calls the Safe itself for Safe version ${version}`, () => {
+            const chainId = '5'
+            const version = LATEST_SAFE_VERSION
+            const safeAddress = faker.finance.ethereumAddress()
 
-          const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
-          const safeInterface = new Interface(safeAbi)
+            const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
+            const safeInterface = new Interface(safeAbi)
 
-          const multiSendDeployment =
-            getMultiSendCallOnlyDeployment({ network: chainId, version }) ??
-            getMultiSendCallOnlyDeployment({ network: chainId, version: '1.3.0' })
-          const multiSendInterface = new Interface(multiSendDeployment!.abi)
+            const multiSendDeployment =
+              getMultiSendCallOnlyDeployment({ network: chainId, version }) ??
+              getMultiSendCallOnlyDeployment({ network: chainId, version: '1.3.0' })
+            const multiSendInterface = new Interface(multiSendDeployment!.abi)
 
-          const multiSendData = encodeMultiSendData([
-            {
-              to: faker.finance.ethereumAddress(), // Not Safe
-              value: '0',
-              data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 1]),
-              operation: 0,
-            },
-            {
-              to: faker.finance.ethereumAddress(), // Not Safe
-              value: '0',
-              data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 2]),
-              operation: 0,
-            },
-          ])
+            const multiSendData = encodeMultiSendData([
+              {
+                to: faker.finance.ethereumAddress(), // Not Safe
+                value: '0',
+                data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 1]),
+                operation: 0,
+              },
+              {
+                to: faker.finance.ethereumAddress(), // Not Safe
+                value: '0',
+                data: safeInterface.encodeFunctionData('addOwnerWithThreshold', [faker.finance.ethereumAddress(), 2]),
+                operation: 0,
+              },
+            ])
 
-          const transaction = {
-            to: multiSendDeployment!.networkAddresses[chainId],
-            data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
-          }
+            const transaction = {
+              to: multiSendDeployment!.networkAddresses[chainId],
+              data: multiSendInterface.encodeFunctionData('multiSend', [multiSendData]),
+            }
 
-          expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
+            expect(_isMaliciousRecovery({ chainId, version, safeAddress, transaction })).toBe(true)
+          })
         })
-      })
 
       SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS.forEach((version) => {
         it(`should return false if the transaction is an official MultiSend call and every transaction in the batch calls the Safe itself for Safe version ${version}`, () => {

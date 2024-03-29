@@ -2,7 +2,7 @@ import { id } from 'ethers'
 import type { FunctionFragment } from 'ethers'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 
-import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
+import { Multi_send__factory } from '@/bitlayer-safe-deployments/src/assets/v1.3.0'
 import { ERC20__factory } from '@/types/contracts/factories/@openzeppelin/contracts/build/contracts/ERC20__factory'
 import { ERC721__factory } from '@/types/contracts/factories/@openzeppelin/contracts/build/contracts/ERC721__factory'
 import { decodeMultiSendTxs } from '@/utils/transactions'

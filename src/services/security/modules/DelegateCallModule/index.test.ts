@@ -1,5 +1,5 @@
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
+import { getMultiSendCallOnlyDeployment } from '@/bitlayer-safe-deployments/src'
 import { toBeHex } from 'ethers'
 
 import { DelegateCallModule } from '.'

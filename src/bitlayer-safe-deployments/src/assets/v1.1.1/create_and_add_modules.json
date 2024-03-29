@@ -1,0 +1,49 @@
+{
+  "defaultAddress": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0",
+  "released": true,
+  "contractName": "CreateAndAddModules",
+  "version": "1.1.1",
+  "networkAddresses": {
+    "1": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0",
+    "4": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0",
+    "5": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0",
+    "42": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0",
+    "88": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0",
+    "100": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0",
+    "246": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0",
+    "73799": "0xF61A721642B0c0C8b334bA3763BA1326F53798C0"
+  },
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "proxyFactory",
+          "type": "address"
+        },
+        { "internalType": "bytes", "name": "data", "type": "bytes" }
+      ],
+      "name": "createAndAddModules",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "contract Module",
+          "name": "module",
+          "type": "address"
+        }
+      ],
+      "name": "enableModule",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+}

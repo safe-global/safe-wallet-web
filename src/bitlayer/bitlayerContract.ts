@@ -187,7 +187,7 @@ export const bitlayerContract = {
         "1666700000": "0x017062a1dE2FE6b99BE3d9d37841FeD19F573804",
         "11297108099": "0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4",
         "11297108109": "0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4",
-        '200810': '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4'
+        '200810': '0xc22834581ebc8527d974f8a1c97e1bea4ef910bc'
     },
     "abi": [
         {

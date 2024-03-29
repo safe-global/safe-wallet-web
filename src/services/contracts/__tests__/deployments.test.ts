@@ -1,5 +1,5 @@
 import { LATEST_SAFE_VERSION } from '@/config/constants'
-import * as safeDeployments from '@safe-global/safe-deployments'
+import * as safeDeployments from '@/bitlayer-safe-deployments/src'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import * as deployments from '../deployments'
