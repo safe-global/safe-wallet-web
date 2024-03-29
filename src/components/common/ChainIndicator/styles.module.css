@@ -36,6 +36,7 @@
   .responsive {
     min-width: 0;
   }
+
   .responsive .name {
     display: none;
   }
