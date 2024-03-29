@@ -24,10 +24,6 @@ export function clickOnNewTxBtn() {
   cy.get(newTxBtn).click()
 }
 
-export function clickOnNewTxBtnS() {
-  cy.get('button').contains('Next').click()
-}
-
 export function clickOnWalletExpandMoreIcon() {
   cy.get(expandMoreIcon).eq(0).click()
   cy.get(sentinelStart).next().should('exist')

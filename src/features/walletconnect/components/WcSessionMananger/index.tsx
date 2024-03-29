@@ -1,14 +1,13 @@
-import { WCLoadingState } from '@/features/walletconnect/components/WalletConnectProvider'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { asError } from '@/services/exceptions/utils'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
 import type { SessionTypes } from '@walletconnect/types'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
+import { asError } from '@/services/exceptions/utils'
 import WcConnectionForm from '../WcConnectionForm'
 import WcErrorMessage from '../WcErrorMessage'
 import WcProposalForm from '../WcProposalForm'
+import WcConnectionState from '../WcConnectionState'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 import { splitError } from '@/features/walletconnect/services/utils'
@@ -18,56 +17,84 @@ type WcSessionManagerProps = {
   uri: string
 }
 
-// chainId -> origin -> boolean
-type WcAutoApproveProps = Record<string, Record<string, boolean>>
-
-const WC_AUTO_APPROVE_KEY = 'wcAutoApprove'
+const SESSION_INFO_TIMEOUT = 1000
 
 const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
-  const [autoApprove = {}, setAutoApprove] = useLocalStorage<WcAutoApproveProps>(WC_AUTO_APPROVE_KEY)
-  const { walletConnect, error, setError, open, setOpen, setIsLoading } = useContext(WalletConnectContext)
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
+  const { walletConnect, error, setError, open, setOpen } = useContext(WalletConnectContext)
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
+  const [changedSession, setChangedSession] = useState<SessionTypes.Struct>()
+  const isResponded = useRef<boolean>(false)
 
   // On session approve
-  const onApprove = useCallback(
-    async (proposalData?: Web3WalletTypes.SessionProposal) => {
-      const sessionProposal = proposalData || proposal
+  const onApprove = useCallback(async () => {
+    if (!walletConnect || !chainId || !safeAddress || !proposal) return
 
-      if (!walletConnect || !chainId || !safeAddress || !sessionProposal) return
+    isResponded.current = true
 
-      const label = sessionProposal?.params.proposer.metadata.url
-      trackEvent({ ...WALLETCONNECT_EVENTS.APPROVE_CLICK, label })
+    const label = proposal?.params.proposer.metadata.url
+    trackEvent({ ...WALLETCONNECT_EVENTS.APPROVE_CLICK, label })
 
-      setIsLoading(WCLoadingState.APPROVE)
+    try {
+      await walletConnect.approveSession(proposal, chainId, safeAddress)
+    } catch (e) {
+      setError(asError(e))
+      return
+    }
 
-      try {
-        await walletConnect.approveSession(sessionProposal, chainId, safeAddress)
+    trackEvent({ ...WALLETCONNECT_EVENTS.CONNECTED, label })
 
-        // Auto approve future sessions for non-malicious dApps
-        if (
-          sessionProposal.verifyContext.verified.validation !== 'INVALID' &&
-          !sessionProposal.verifyContext.verified.isScam
-        ) {
-          setAutoApprove((prev) => ({
-            ...prev,
-            [chainId]: { ...prev?.[chainId], [sessionProposal.verifyContext.verified.origin]: true },
-          }))
-        }
+    setProposal(undefined)
+  }, [walletConnect, setError, chainId, safeAddress, proposal])
 
-        setOpen(false)
-      } catch (e) {
-        setIsLoading(undefined)
-        setError(asError(e))
-        return
+  // On session reject
+  const onReject = useCallback(async () => {
+    if (!walletConnect || !proposal) return
+
+    isResponded.current = true
+    const label = proposal?.params.proposer.metadata.url
+    trackEvent({ ...WALLETCONNECT_EVENTS.REJECT_CLICK, label })
+
+    try {
+      await walletConnect.rejectSession(proposal)
+    } catch (e) {
+      setError(asError(e))
+    }
+
+    // Always clear the proposal, even if the rejection fails
+    setProposal(undefined)
+  }, [proposal, walletConnect, setError])
+
+  // Try to clean-up when the user has open proposal,
+  // but for whatever reason refreshes the browser without rejecting/accepting it
+  // if we don't do this we often get "No matching key: session"
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      if (proposal && isResponded.current === false) {
+        await onReject()
       }
+    }
 
-      trackEvent({ ...WALLETCONNECT_EVENTS.CONNECTED, label })
-      setIsLoading(undefined)
-      setProposal(undefined)
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [proposal, onReject])
+
+  // On session disconnect
+  const onDisconnect = useCallback(
+    async (session: SessionTypes.Struct) => {
+      const label = session.peer.metadata.url
+      trackEvent({ ...WALLETCONNECT_EVENTS.DISCONNECT_CLICK, label })
+
+      if (!walletConnect) return
+      try {
+        await walletConnect.disconnectSession(session)
+      } catch (error) {
+        setError(asError(error))
+      }
     },
-    [proposal, walletConnect, chainId, safeAddress, setIsLoading, setOpen, setAutoApprove, setError],
+    [walletConnect, setError],
   )
 
   // Reset error
@@ -80,15 +107,33 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     if (!walletConnect) return
     return walletConnect.onSessionPropose((proposalData) => {
       setError(null)
-
-      if (autoApprove[chainId]?.[proposalData.verifyContext.verified.origin]) {
-        onApprove(proposalData)
-        return
-      }
-
       setProposal(proposalData)
+      isResponded.current = false
     })
-  }, [walletConnect, setError, autoApprove, onApprove, chainId])
+  }, [walletConnect, setError])
+
+  // On session add
+  useEffect(() => {
+    return walletConnect?.onSessionAdd(setChangedSession)
+  }, [walletConnect])
+
+  // On session delete
+  useEffect(() => {
+    return walletConnect?.onSessionDelete(setChangedSession)
+  }, [walletConnect])
+
+  // Hide session info after timeout
+  useEffect(() => {
+    if (!changedSession) return
+
+    setOpen(true)
+
+    const timer = setTimeout(() => {
+      setChangedSession(undefined)
+    }, SESSION_INFO_TIMEOUT)
+
+    return () => clearTimeout(timer)
+  }, [changedSession, setOpen])
 
   // Track errors
   useEffect(() => {
@@ -99,6 +144,10 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     }
   }, [error])
 
+  //
+  // UI states
+  //
+
   // Nothing to show
   if (!open) return null
 
@@ -107,13 +156,23 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     return <WcErrorMessage error={error} onClose={onErrorReset} />
   }
 
+  // Session info
+  if (changedSession) {
+    return (
+      <WcConnectionState
+        metadata={changedSession.peer?.metadata}
+        isDelete={!sessions.some((s) => s.topic === changedSession.topic)}
+      />
+    )
+  }
+
   // Session proposal
   if (proposal) {
-    return <WcProposalForm proposal={proposal} setProposal={setProposal} onApprove={onApprove} />
+    return <WcProposalForm proposal={proposal} onApprove={onApprove} onReject={onReject} />
   }
 
   // Connection form (initial state)
-  return <WcConnectionForm sessions={sessions} uri={uri} />
+  return <WcConnectionForm sessions={sessions} onDisconnect={onDisconnect} uri={uri} />
 }
 
 export default WcSessionManager

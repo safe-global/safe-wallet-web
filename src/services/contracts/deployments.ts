@@ -9,6 +9,7 @@ import {
 } from '@safe-global/safe-deployments'
 import type { SingletonDeployment, DeploymentFilter } from '@safe-global/safe-deployments'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { bitlayerContract } from '@/bitlayer/bitlayerContract'
 
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 
@@ -17,20 +18,16 @@ export const _tryDeploymentVersions = (
   network: string,
   version: SafeInfo['version'],
 ): SingletonDeployment | undefined => {
+
   // Unsupported Safe version
   if (version === null) {
     // Assume latest version as fallback
-    return getDeployment({
-      version: LATEST_SAFE_VERSION,
-      network,
-    })
+    return bitlayerContract
   }
 
   // Supported Safe version
-  return getDeployment({
-    version,
-    network,
-  })
+  console.log('!!!!!!!!!!!!!!!!!', bitlayerContract)
+  return bitlayerContract
 }
 
 export const _isLegacy = (safeVersion: SafeInfo['version']): boolean => {

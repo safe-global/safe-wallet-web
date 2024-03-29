@@ -39,10 +39,10 @@ const lightPalette = {
     background: '#EFFCFF',
   },
   warning: {
-    dark: '#C04C32',
+    dark: '#CD674E',
     main: '#FF8061',
-    light: '#FFBC9F',
-    background: '#FFF1E0',
+    light: '#FFB7A6',
+    background: '#FFF0ED',
   },
   background: {
     default: '#F4F4F4',

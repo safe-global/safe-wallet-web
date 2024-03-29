@@ -19,14 +19,7 @@ const WcSampleDapps = ({ onUnload }: { onUnload: () => void }) => {
   }, [onUnload])
 
   return (
-    <Typography
-      variant="body2"
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      mt={3}
-      component="div"
-    >
+    <Typography variant="body2" display="flex" justifyContent="space-between" alignItems="center" mt={3}>
       {SAMPLE_DAPPS.map((item) => (
         <Typography variant="body2" key={item.url}>
           <ExternalLink href={item.url} noIcon px={1}>

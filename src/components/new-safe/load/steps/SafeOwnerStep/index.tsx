@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { getSafeInfo, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { Box, Button, Divider } from '@mui/material'
 
@@ -11,6 +11,7 @@ import type { NamedAddress } from '@/components/new-safe/create/types'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { OwnerRow } from '@/components/new-safe/OwnerRow'
+import { getSafeInfo } from '@/components/new-safe/create/logic'
 
 enum Field {
   owners = 'owners',

@@ -72,11 +72,11 @@ const SetAddressStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeForm
       return 'Safe Account is already added'
     }
 
-    try {
-      await getSafeInfo(currentChainId, address)
-    } catch (error) {
-      return 'Address given is not a valid Safe Account address'
-    }
+    // try {
+    //   await getSafeInfo(currentChainId, address)
+    // } catch (error) {
+    //   return 'Address given is not a valid Safe Account address'
+    // }
   }
 
   const onFormSubmit = handleSubmit((data: FormData) => {

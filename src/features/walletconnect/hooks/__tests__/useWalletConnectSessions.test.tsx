@@ -32,15 +32,7 @@ describe('useWalletConnectSessions', () => {
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider
-        value={{
-          walletConnect: mockWalletConnect,
-          error: null,
-          setError: () => {},
-          open: false,
-          setOpen: () => {},
-          isLoading: undefined,
-          setIsLoading: () => {},
-        }}
+        value={{ walletConnect: mockWalletConnect, error: null, setError: () => {}, open: false, setOpen: () => {} }}
       >
         {children}
       </WalletConnectContext.Provider>
@@ -60,15 +52,7 @@ describe('useWalletConnectSessions', () => {
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider
-        value={{
-          walletConnect: mockWalletConnect,
-          error: null,
-          setError: () => {},
-          open: false,
-          setOpen: () => {},
-          isLoading: undefined,
-          setIsLoading: () => {},
-        }}
+        value={{ walletConnect: mockWalletConnect, error: null, setError: () => {}, open: false, setOpen: () => {} }}
       >
         {children}
       </WalletConnectContext.Provider>
@@ -118,15 +102,7 @@ describe('useWalletConnectSessions', () => {
 
     const wrapper = ({ children }: any) => (
       <WalletConnectContext.Provider
-        value={{
-          walletConnect: mockWalletConnect,
-          error: null,
-          setError: () => {},
-          open: false,
-          setOpen: () => {},
-          isLoading: undefined,
-          setIsLoading: () => {},
-        }}
+        value={{ walletConnect: mockWalletConnect, error: null, setError: () => {}, open: false, setOpen: () => {} }}
       >
         {children}
       </WalletConnectContext.Provider>

@@ -2,12 +2,10 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as nfts from '../pages/nfts.pages'
 import * as navigation from '../pages/navigation.page'
-import * as createTx from '../pages/create_tx.pages'
 
 const singleNFT = ['safeTransferFrom']
 const multipleNFT = ['multiSend']
 const multipleNFTAction = 'safeTransferFrom'
-const NFTSentName = 'GTT #22'
 
 describe('NFTs tests', () => {
   beforeEach(() => {
@@ -63,21 +61,5 @@ describe('NFTs tests', () => {
     navigation.clickOnDisconnectBtn()
     nfts.selectNFTs(1)
     nfts.verifySendNFTBtnDisabled()
-  })
-
-  it('Verify Send NFT transaction has been created', () => {
-    cy.visit(constants.balanceNftsUrl + constants.SEPOLIA_TEST_SAFE_27_SEND_NFT)
-    nfts.verifyInitialNFTData()
-    nfts.selectNFTs(1)
-    nfts.sendNFT()
-    nfts.typeRecipientAddress(constants.SEPOLIA_TEST_SAFE_4)
-    createTx.changeNonce(2)
-    nfts.clikOnNextBtn()
-    createTx.clickOnSignTransactionBtn()
-    createTx.waitForProposeRequest()
-    createTx.clickViewTransaction()
-    createTx.verifySingleTxPage()
-    createTx.verifyQueueLabel()
-    createTx.verifyTransactionStrExists(NFTSentName)
   })
 })

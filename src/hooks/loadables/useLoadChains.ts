@@ -1,24 +1,32 @@
-import { useEffect } from 'react'
-import { getChainsConfig, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import useAsync, { type AsyncResult } from '../useAsync'
-import { logError, Errors } from '@/services/exceptions'
+import { useEffect } from 'react';
+import { getChainsConfig, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk';
+import useAsync, { type AsyncResult } from '../useAsync';
+import { logError, Errors } from '@/services/exceptions';
+import { bitlayerConfig } from '@/bitlayer/bitlayerConfig';
 
 const getConfigs = async (): Promise<ChainInfo[]> => {
-  const data = await getChainsConfig()
-  return data.results || []
-}
+  const data = {
+    "count": 1,
+    "next": 1,
+    "previous": 1,
+    "results": [
+      bitlayerConfig
+    ]
+  };
+  return data.results || [];
+};
 
 export const useLoadChains = (): AsyncResult<ChainInfo[]> => {
-  const [data, error, loading] = useAsync<ChainInfo[]>(getConfigs, [])
+  const [data, error, loading] = useAsync<ChainInfo[]>(getConfigs, []);
 
   // Log errors
   useEffect(() => {
     if (error) {
-      logError(Errors._620, error.message)
+      logError(Errors._620, error.message);
     }
-  }, [error])
+  }, [error]);
 
-  return [data, error, loading]
-}
+  return [data, error, loading];
+};
 
-export default useLoadChains
+export default useLoadChains;

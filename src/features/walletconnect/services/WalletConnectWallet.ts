@@ -81,18 +81,15 @@ class WalletConnectWallet {
     })
   }
 
-  private getNamespaces(
-    proposal: Web3WalletTypes.SessionProposal,
-    currentChainId: string,
-    safeAddress: string,
-    optional = false,
-  ) {
+  private getNamespaces(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
+    // Most dApps require mainnet, but we aren't always on mainnet
+    // As workaround, we pretend include all required and optional chains with the Safe chainId
     const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
     const optionalChains = proposal.params.optionalNamespaces[EIP155]?.chains || []
 
     const supportedChainIds = [currentChainId].concat(
       requiredChains.map(stripEip155Prefix),
-      optional ? optionalChains.map(stripEip155Prefix) : [],
+      optionalChains.map(stripEip155Prefix),
     )
 
     const eip155ChainIds = supportedChainIds.map(getEip155ChainId)
@@ -126,17 +123,9 @@ class WalletConnectWallet {
       namespaces,
     })
 
-    const updatedNamespaces = {
-      ...session.namespaces,
-      ...this.getNamespaces(proposal, currentChainId, safeAddress, true),
-    }
-
-    await this.web3Wallet.updateSession({ topic: session.topic, namespaces: updatedNamespaces })
-
     await this.chainChanged(session.topic, currentChainId)
 
     // Workaround: WalletConnect doesn't have a session_add event
-    // and we want to update our state inside the useWalletConnectSessions hook
     this.web3Wallet?.events.emit(SESSION_ADD_EVENT, session)
 
     // Return updated session as it may have changed
@@ -267,8 +256,7 @@ class WalletConnectWallet {
     })
 
     // Workaround: WalletConnect doesn't emit session_delete event when disconnecting from the wallet side
-    // and we want to update the state inside the useWalletConnectSessions hook
-    this.web3Wallet.events.emit('session_delete', session)
+    this.web3Wallet?.events.emit('session_delete', session)
   }
 
   /**

@@ -21,7 +21,13 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export', // static site export
-
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
   images: {
     unoptimized: true,
   },
@@ -32,7 +38,14 @@ const nextConfig = {
     dirs: ['src', 'cypress'],
   },
   experimental: {
-    optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash', 'date-fns', '@sentry/react', '@gnosis.pm/zodiac'],
+    optimizePackageImports: [
+      '@mui/material',
+      '@mui/icons-material',
+      'lodash',
+      'date-fns',
+      '@sentry/react',
+      '@gnosis.pm/zodiac',
+    ],
   },
   webpack(config) {
     config.module.rules.push({

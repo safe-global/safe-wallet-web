@@ -5,12 +5,11 @@ import * as txMonitor from '@/services/tx/txMonitor'
 import { act } from '@testing-library/react'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { toBeHex } from 'ethers'
-import { BrowserProvider, type JsonRpcProvider, type TransactionReceipt } from 'ethers'
-import { MockEip1193Provider } from '@/tests/mocks/providers'
+import { BrowserProvider, type JsonRpcProvider, type Eip1193Provider, type TransactionReceipt } from 'ethers'
 
 const { waitForTx, waitForRelayedTx, waitForCreateSafeTx } = txMonitor
 
-const provider = new BrowserProvider(MockEip1193Provider) as unknown as JsonRpcProvider
+const provider = new BrowserProvider(jest.fn() as unknown as Eip1193Provider) as unknown as JsonRpcProvider
 
 const setupFetchStub = (data: any) => (_url: string) => {
   return Promise.resolve({

@@ -78,6 +78,7 @@ export const useSafeCreation = (
     const { owners, threshold, saltNonce } = pendingSafe
     const ownersAddresses = owners.map((owner) => owner.address)
 
+
     try {
       if (willRelay) {
         const taskId = await relaySafeCreation(chain, ownersAddresses, threshold, saltNonce)
@@ -87,7 +88,7 @@ export const useSafeCreation = (
         waitForCreateSafeTx(taskId, setStatus)
       } else {
         const tx = await getSafeCreationTxInfo(provider, owners, threshold, saltNonce, chain, wallet)
-
+        console.log('txtxtxtx', tx)
         const safeParams = {
           threshold,
           owners: owners.map((owner) => owner.address),
@@ -104,10 +105,10 @@ export const useSafeCreation = (
 
         const options: DeploySafeProps['options'] = isEIP1559
           ? {
-              maxFeePerGas: maxFeePerGas?.toString(),
-              maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
-              gasLimit: gasLimit.toString(),
-            }
+            maxFeePerGas: maxFeePerGas?.toString(),
+            maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
+            gasLimit: gasLimit.toString(),
+          }
           : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit.toString() }
 
         await createNewSafe(provider, {

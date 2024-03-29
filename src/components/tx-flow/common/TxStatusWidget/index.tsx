@@ -16,12 +16,14 @@ const TxStatusWidget = ({
   step,
   txSummary,
   handleClose,
+  isReplacement = false,
   isBatch = false,
   isMessage = false,
 }: {
   step: number
   txSummary?: TransactionSummary
   handleClose: () => void
+  isReplacement?: boolean
   isBatch?: boolean
   isMessage?: boolean
 }) => {
@@ -59,7 +61,7 @@ const TxStatusWidget = ({
             </ListItemIcon>
 
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>
-              {isBatch ? 'Queue transactions' : 'Create'}
+              {isReplacement ? 'Create replacement transaction' : isBatch ? 'Queue transactions' : 'Create'}
             </ListItemText>
           </ListItem>
 
@@ -95,6 +97,16 @@ const TxStatusWidget = ({
 
             <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>{isMessage ? 'Done' : 'Execute'}</ListItemText>
           </ListItem>
+
+          {isReplacement && (
+            <ListItem className={css.incomplete}>
+              <ListItemIcon>
+                <SignedIcon />
+              </ListItemIcon>
+
+              <ListItemText primaryTypographyProps={{ fontWeight: 700 }}>Transaction is replaced</ListItemText>
+            </ListItem>
+          )}
         </List>
       </div>
     </Paper>

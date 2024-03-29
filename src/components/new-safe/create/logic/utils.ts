@@ -7,6 +7,8 @@ export const getAvailableSaltNonce = async (provider: BrowserProvider, props: De
   const safeAddress = await computeNewSafeAddress(provider, props)
   const isContractDeployed = await isSmartContract(provider, safeAddress)
 
+  console.log('isisis', isContractDeployed)
+
   // Safe is already deployed so we try the next saltNonce
   if (isContractDeployed) {
     return getAvailableSaltNonce(provider, { ...props, saltNonce: (Number(props.saltNonce) + 1).toString() })

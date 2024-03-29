@@ -19,8 +19,7 @@ import difference from 'lodash/difference'
 import pickBy from 'lodash/pickBy'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
-import type { AllOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { sameAddress } from '@/utils/addresses'
@@ -28,21 +27,21 @@ import useChains from '@/hooks/useChains'
 import { useAppSelector } from '@/store'
 import { useNotificationPreferences } from './hooks/useNotificationPreferences'
 import { useNotificationRegistrations } from './hooks/useNotificationRegistrations'
+import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import { trackEvent } from '@/services/analytics'
 import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notifications'
 import { requestNotificationPermission } from './logic'
+import { useDismissPushNotificationsBanner } from './PushNotificationsBanner'
 import type { NotifiableSafes } from './logic'
+import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { PushNotificationPreferences } from '@/services/push-notifications/preferences'
 import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
-import useAllOwnedSafes from '@/components/welcome/MyAccounts/useAllOwnedSafes'
-import useWallet from '@/hooks/wallets/useWallet'
-import { selectAllAddedSafes, type AddedSafesState } from '@/store/addedSafesSlice'
 
 // UI logic
 
-export const _filterUndeployedSafes = (safes: NotifiableSafes | undefined, undeployedSafes: UndeployedSafesState) => {
+export const _filterUndeployedSafes = (safes: NotifiableSafes, undeployedSafes: UndeployedSafesState) => {
   return pickBy(
     mapValues(safes, (safeAddresses, chainId) => {
       const undeployedAddresses = undeployedSafes[chainId] ? Object.keys(undeployedSafes[chainId]) : []
@@ -52,6 +51,7 @@ export const _filterUndeployedSafes = (safes: NotifiableSafes | undefined, undep
   )
 }
 
+// Convert data structure of added Safes
 export const _transformAddedSafes = (addedSafes: AddedSafesState): NotifiableSafes => {
   return Object.entries(addedSafes).reduce<NotifiableSafes>((acc, [chainId, addedSafesOnChain]) => {
     acc[chainId] = Object.keys(addedSafesOnChain)
@@ -93,31 +93,22 @@ export const _sanitizeNotifiableSafes = (
   }, {})
 }
 
-// Merges added Safes, currently notified Safes, and owned safes into a single data structure without duplicates
+// Merges added Safes and currently notified Safes into a single data structure without duplicates
 export const _mergeNotifiableSafes = (
-  ownedSafes: AllOwnedSafes | undefined,
   addedSafes: AddedSafesState,
   currentSubscriptions?: NotifiableSafes,
-): NotifiableSafes | undefined => {
-  const added = _transformAddedSafes(addedSafes)
+): NotifiableSafes => {
+  const notifiableSafes = _transformAddedSafes(addedSafes)
 
-  const chains = Array.from(
-    new Set([
-      ...Object.keys(addedSafes || {}),
-      ...Object.keys(currentSubscriptions || {}),
-      ...Object.keys(ownedSafes || {}),
-    ]),
-  )
+  if (!currentSubscriptions) {
+    return notifiableSafes
+  }
 
-  let notifiableSafes: NotifiableSafes = {}
-  for (const chainId of chains) {
-    const ownedSafesOnChain = ownedSafes?.[chainId] ?? []
-    const addedSafesOnChain = added[chainId]?.filter((addedAddress) => ownedSafesOnChain.includes(addedAddress)) || []
-    const currentSubscriptionsOnChain = currentSubscriptions?.[chainId] || []
-    // The display order of safes will be subscribed, added & owned, owned
-    const uniqueSafeAddresses = Array.from(
-      new Set([...currentSubscriptionsOnChain, ...addedSafesOnChain, ...ownedSafesOnChain]),
-    )
+  // Locally registered Safes (if not already added)
+  for (const [chainId, safeAddresses] of Object.entries(currentSubscriptions)) {
+    const notifiableSafesOnChain = notifiableSafes[chainId] ?? []
+    const uniqueSafeAddresses = Array.from(new Set([...notifiableSafesOnChain, ...safeAddresses]))
+
     notifiableSafes[chainId] = uniqueSafeAddresses
   }
 
@@ -257,12 +248,11 @@ export const _shouldUnregisterDevice = (
 
 export const GlobalPushNotifications = (): ReactElement | null => {
   const chains = useChains()
+  const addedSafes = useAppSelector(selectAllAddedSafes)
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const [isLoading, setIsLoading] = useState(false)
-  const { address = '' } = useWallet() || {}
-  const [ownedSafes] = useAllOwnedSafes(address)
-  const addedSafes = useAppSelector(selectAllAddedSafes)
 
+  const { dismissPushNotificationBanner } = useDismissPushNotificationsBanner()
   const { getAllPreferences } = useNotificationPreferences()
   const { unregisterDeviceNotifications, unregisterSafeNotifications, registerNotifications } =
     useNotificationRegistrations()
@@ -291,10 +281,10 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   // Merged added Safes and `currentNotifiedSafes` (in case subscriptions aren't added)
   const notifiableSafes = useMemo(() => {
-    const safes = _mergeNotifiableSafes(ownedSafes, addedSafes, currentNotifiedSafes)
+    const safes = _mergeNotifiableSafes(addedSafes, currentNotifiedSafes)
     const deployedSafes = _filterUndeployedSafes(safes, undeployedSafes)
     return _sanitizeNotifiableSafes(chains.configs, deployedSafes)
-  }, [ownedSafes, addedSafes, currentNotifiedSafes, undeployedSafes, chains.configs])
+  }, [addedSafes, currentNotifiedSafes, undeployedSafes, chains.configs])
 
   const totalNotifiableSafes = useMemo(() => {
     return _getTotalNotifiableSafes(notifiableSafes)
@@ -351,6 +341,11 @@ export const GlobalPushNotifications = (): ReactElement | null => {
     const safesToRegister = _getSafesToRegister(selectedSafes, currentNotifiedSafes)
     if (safesToRegister) {
       registrationPromises.push(registerNotifications(safesToRegister))
+
+      // Dismiss the banner for all chains that have been registered
+      Object.keys(safesToRegister).forEach((chainId) => {
+        dismissPushNotificationBanner(chainId)
+      })
     }
 
     const safesToUnregister = _getSafesToUnregister(selectedSafes, currentNotifiedSafes)
@@ -373,11 +368,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
   }
 
   if (totalNotifiableSafes === 0) {
-    return (
-      <Typography color={({ palette }) => palette.primary.light}>
-        {address ? 'No owned Safes' : 'No wallet connected'}
-      </Typography>
-    )
+    return <Typography color={({ palette }) => palette.primary.light}>No Safes added</Typography>
   }
 
   return (
@@ -421,7 +412,6 @@ export const GlobalPushNotifications = (): ReactElement | null => {
           <Divider />
 
           {Object.entries(notifiableSafes).map(([chainId, safeAddresses], i, arr) => {
-            if (safeAddresses.length === 0) return
             const chain = chains.configs?.find((chain) => chain.chainId === chainId)
 
             const isChainSelected = safeAddresses.every((address) => {

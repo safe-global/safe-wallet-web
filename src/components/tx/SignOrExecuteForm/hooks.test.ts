@@ -539,7 +539,6 @@ describe('SignOrExecute hooks', () => {
       await expect(executeTx({ gasPrice: 1 }, tx, '123', 'origin.com', true)).rejects.toThrowError(
         'Cannot relay an unsigned transaction from a smart contract wallet',
       )
-
       expect(proposeSpy).not.toHaveBeenCalled()
       expect(signSpy).not.toHaveBeenCalled()
       expect(relaySpy).not.toHaveBeenCalled()

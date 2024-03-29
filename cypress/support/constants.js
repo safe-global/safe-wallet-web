@@ -38,24 +38,6 @@ export const SEPOLIA_TEST_SAFE_22_IMPORT = 'sep:0xBc7e586D276e2da521DE8ff17255fd
 export const SEPOLIA_TEST_SAFE_23_RECOVERY_1 = 'sep:0x702E067A0015F1b835d9c631Cb28A9F617314F27'
 export const SEPOLIA_TEST_SAFE_24_RECOVERY_2 = 'sep:0xb791302040DB5Ab4Ade0b5295cecCaeF07AF07a1'
 export const SEPOLIA_TEST_SAFE_25_RECOVERY_3 = 'sep:0xAE1E3f93fda95eEbb857Ee06325f6F1e45EF3CBE'
-export const SEPOLIA_TEST_SAFE_26_REPLACE_OWNER = 'sep:0x6860336C97966c17fDD812939c2E2400626a181a'
-export const SEPOLIA_TEST_SAFE_27_SEND_NFT = 'sep:0xE72d4D7E87672c14Df3d449C6b79f20151c18fC1'
-export const SEPOLIA_TEST_SAFE_28_SEND_FUNDS_HP1 = 'sep:0x74D5228112a9652a9825a6A285Fb39e290269172'
-export const SEPOLIA_TEST_SAFE_29_SEND_FUNDS_HP2 = 'sep:0xA6D975f30d48402D9952E3F3D569AADAd161f336'
-export const SEPOLIA_TEST_SAFE_30_SEND_NFT_HP1 = 'sep:0x6C7d3939Ae99dd3e4422D8b3e442e13Ee21EFCEc'
-export const SEPOLIA_TEST_SAFE_31_SEND_NFT_HP2 = 'sep:0x97143f05ad523027b0F6F86FeD96E5e51F58DdAc'
-export const SEPOLIA_TEST_SAFE_32_SEND_NATIVE_HP1 = 'sep:0xe5DC58EfDA6ebe93014AaE7A5a673C5F80118171'
-export const SEPOLIA_TEST_SAFE_33_SEND_NATIVE_HP2 = 'sep:0x9DF284917ff80c0a95c20ea2151Eb2a39a13cf4E'
-
-export const SEPOLIA_TEST_SAFE_34_SEND_FUNDS_HP3 = 'sep:0xFE8697FE746Ff566C4962675270F446a9F54a187'
-export const SEPOLIA_TEST_SAFE_35_SEND_FUNDS_HP4 = 'sep:0x9711ad5B73Ae6B2e01031D1D798949a8e7E889a6'
-
-export const SEPOLIA_TEST_SAFE_36_SEND_FUNDS_HP5 = 'sep:0x21074f7A5C7bc2BCfD818fFeFfB442ab4877D2d2'
-export const SEPOLIA_TEST_SAFE_37_SEND_FUNDS_HP6 = 'sep:0xAd65717D60f7f2c65895c800148bc53eedC73c24'
-
-export const SEPOLIA_TEST_SAFE_38_SEND_FUNDS_HP7 = 'sep:0xad23bd2D4cDB86FF2a6600c74995c01eA209AfC1'
-export const SEPOLIA_TEST_SAFE_39_SEND_FUNDS_HP8 = 'sep:0xEbED8ABaAe1FCFA9D3343B34a2373a57A558abd1'
-
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -114,17 +96,6 @@ export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
 export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
-export const stagingTxServiceUrl = 'https://safe-transaction-sepolia.staging.5afe.dev/api/v1'
-export const stagingTxServiceSafesUrl = '/safes/'
-export const stagingTxServiceBalancesUrl = '/balances/'
-
-export const stagingCGWUrlv1 = 'https://safe-client.staging.5afe.dev/v1'
-export const stagingCGWUrlv2 = 'https://safe-client.staging.5afe.dev/v2'
-export const stagingCGWChains = '/chains/'
-export const stagingCGWSafes = '/safes/'
-export const stagingCGWNone = '/nonces/'
-export const stagingCGWCollectibles = '/collectibles/'
-export const stagingCGWAllTokensBalances = '/balances/USD?trusted=false&exclude_spam=false'
 
 export const proposeEndpoint = '/**/propose'
 export const appsEndpoint = '/**/safe-apps'
@@ -175,10 +146,6 @@ export const tokenAbbreviation = {
   usds: 'USDC',
   aave: 'AAVE',
   link: 'LINK',
-  ttone: 'TTONE',
-  dor: 'DOR',
-  eth: 'ETH',
-  gtt: 'GTT',
 }
 
 export const currencies = {

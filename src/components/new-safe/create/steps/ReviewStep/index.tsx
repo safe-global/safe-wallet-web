@@ -194,7 +194,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     if (!wallet || !provider || !chain) return
 
     setIsCreating(true)
-
     try {
       const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
         chain.chainId,
@@ -208,9 +207,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
         },
       }
-
       const saltNonce = await getAvailableSaltNonce(provider, { ...props, saltNonce: '0' })
       const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce })
+      console.log('address', safeAddress)
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
@@ -231,6 +230,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'deployment', category: CREATE_SAFE_CATEGORY })
 
       setPendingSafe(pendingSafe)
+      console.log('pending', pendingSafe)
       onSubmit(pendingSafe)
     } catch (_err) {
       setSubmitError('Error creating the Safe Account. Please try again later.')

@@ -22,7 +22,6 @@ const useTxHistory = (
   const [filter] = useTxFilter()
   const { showOnlyTrustedTransactions } = useAppSelector(selectSettings)
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
-  const onlyTrusted = (hasDefaultTokenlist && showOnlyTrustedTransactions) || false
 
   const {
     safe: { chainId },
@@ -35,10 +34,10 @@ const useTxHistory = (
       if (!(filter || pageUrl)) return
 
       return filter
-        ? fetchFilteredTxHistory(chainId, safeAddress, filter, onlyTrusted, pageUrl)
-        : getTxHistory(chainId, safeAddress, onlyTrusted, pageUrl)
+        ? fetchFilteredTxHistory(chainId, safeAddress, filter, pageUrl)
+        : getTxHistory(chainId, safeAddress, hasDefaultTokenlist && showOnlyTrustedTransactions, pageUrl)
     },
-    [chainId, safeAddress, pageUrl, filter, onlyTrusted],
+    [chainId, safeAddress, pageUrl, filter, hasDefaultTokenlist, showOnlyTrustedTransactions],
     false,
   )
 

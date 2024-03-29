@@ -13,6 +13,8 @@ import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { contractNetworks } from '@/bitlayer/bitlayerSafe';
+
 
 export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
@@ -99,6 +101,7 @@ export const initSafeSDK = async ({
       ethAdapter: createReadOnlyEthersAdapter(provider),
       isL1SafeSingleton: isL1SafeSingleton,
       predictedSafe: undeployedSafe.props,
+      contractNetworks,
     })
   }
 
@@ -106,6 +109,7 @@ export const initSafeSDK = async ({
     ethAdapter: createReadOnlyEthersAdapter(provider),
     safeAddress: address,
     isL1SafeSingleton: isL1SafeSingleton,
+    contractNetworks,
   })
 }
 
