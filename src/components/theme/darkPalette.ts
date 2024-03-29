@@ -6,14 +6,14 @@ const darkPalette = {
   },
   primary: {
     dark: '#0cb259',
-    main: '#12FF80',
-    light: '#A1A3A7',
+    main: '#FF9500', // 橙色
+    light: '#FFAD33', // 浅橙色
   },
   secondary: {
     dark: '#636669',
-    main: '#FFFFFF',
-    light: '#12FF80',
-    background: '#1B2A22',
+    main: '#FFA500', // 橙色
+    light: '#FFB74D', // 浅橙色
+    background: '#303033', // 背景色保持原色
   },
   border: {
     main: '#636669',
@@ -27,10 +27,10 @@ const darkPalette = {
     background: '#2F2527',
   },
   success: {
-    dark: '#028D4C',
-    main: '#00B460',
-    light: '#81C784',
-    background: '#1F2920',
+    dark: '#CD7F00', // 橙色的暗色调，用于成功状态的深色版本
+    main: '#FFA500', // 橙色的暗色调，用于成功状态的主要颜色
+    light: '#FFC489', // 橙色的浅色调，用于成功状态的浅版本
+    background: '#1F2920', // 成功状态的背景色保持原色
   },
   info: {
     dark: '#52BFDC',
@@ -54,7 +54,7 @@ const darkPalette = {
     main: '#636669',
   },
   logo: {
-    main: '#FFFFFF',
+    main: '#FFA500', // 橙色
     background: '#303033',
   },
   static: {
