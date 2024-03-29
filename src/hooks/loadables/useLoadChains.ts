@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getChainsConfig, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk';
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk';
 import useAsync, { type AsyncResult } from '../useAsync';
 import { logError, Errors } from '@/services/exceptions';
 import { bitlayerConfig } from '@/bitlayer/bitlayerConfig';

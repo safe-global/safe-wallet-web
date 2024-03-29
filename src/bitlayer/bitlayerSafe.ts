@@ -1,4 +1,4 @@
-import { ContractNetworksConfig } from "@safe-global/protocol-kit";
+import type { ContractNetworksConfig } from "@safe-global/protocol-kit";
 import * as chains from "viem/chains";
 
 const defaultL2Addresses = {
