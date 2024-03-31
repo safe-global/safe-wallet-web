@@ -35,6 +35,7 @@
     "node": ">=16"
   },
   "resolutions": {
+    "**/@safe-global/safe-deployments": "1.34.0",
     "@walletconnect/core": "^2.11.2",
     "@walletconnect/ethereum-provider": "^2.11.2",
     "@safe-global/safe-core-sdk-types/**/ethers": "^6.11.1",
@@ -58,7 +59,7 @@
     "@safe-global/safe-apps-sdk": "^9.0.0-next.1",
     "@safe-global/safe-core-sdk": "^3.3.5",
     "@safe-global/safe-core-sdk-utils": "^1.7.4",
-    "@safe-global/safe-deployments": "1.33.0",
+    "@safe-global/safe-deployments": "1.34.0",
     "@safe-global/safe-ethers-lib": "^1.9.4",
     "@safe-global/safe-gateway-typescript-sdk": "3.19.0",
     "@safe-global/safe-modules-deployments": "^1.2.0",
