@@ -86,6 +86,10 @@ const NotificationCenter = (): ReactElement => {
     dispatch(deleteAllNotifications())
   }
 
+  const onSettingsClick = () => {
+    setTimeout(handleClose, 300)
+  }
+
   const ExpandIcon = showAll ? ExpandLessIcon : ExpandMoreIcon
 
   return (
@@ -170,7 +174,7 @@ const NotificationCenter = (): ReactElement => {
               passHref
               legacyBehavior
             >
-              <MuiLink className={css.settingsLink} variant="body2" onClick={handleClose}>
+              <MuiLink className={css.settingsLink} variant="body2" onClick={onSettingsClick}>
                 <SvgIcon component={SettingsIcon} inheritViewBox fontSize="small" /> Push notifications settings
               </MuiLink>
             </Link>
