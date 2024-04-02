@@ -1,3 +1,4 @@
+import MockDate from 'mockdate'
 import {
   getIncomingTransfers,
   getMultisigTransactions,
@@ -18,6 +19,8 @@ import {
 import { renderHook } from '@/tests/test-utils'
 import type { NextRouter } from 'next/router'
 import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
+
+MockDate.set('2021-01-01T00:00:00.000Z')
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   getIncomingTransfers: jest.fn(() => Promise.resolve({ results: [] })),
@@ -377,8 +380,6 @@ describe('tx-history-filter', () => {
   describe('fetchFilteredTxHistory', () => {
     beforeEach(() => {
       jest.clearAllMocks()
-
-      Date.prototype.getTimezoneOffset = jest.fn(() => -60)
     })
 
     it('should get incoming transfers relevant to `type`', () => {
