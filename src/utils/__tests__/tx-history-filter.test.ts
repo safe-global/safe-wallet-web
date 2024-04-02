@@ -377,6 +377,8 @@ describe('tx-history-filter', () => {
   describe('fetchFilteredTxHistory', () => {
     beforeEach(() => {
       jest.clearAllMocks()
+
+      Date.prototype.getTimezoneOffset = jest.fn(() => -60)
     })
 
     it('should get incoming transfers relevant to `type`', () => {
