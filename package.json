@@ -136,6 +136,7 @@
     "husky": "^9.0.11",
     "jest": "^29.6.2",
     "jest-environment-jsdom": "^29.6.2",
+    "mockdate": "^3.0.5",
     "prettier": "^2.7.0",
     "ts-prune": "^0.10.3",
     "typechain": "^8.3.2",
