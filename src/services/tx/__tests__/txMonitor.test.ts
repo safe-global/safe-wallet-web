@@ -10,7 +10,6 @@ import { BrowserProvider, type JsonRpcProvider, type TransactionReceipt } from '
 import { faker } from '@faker-js/faker'
 import { SimpleTxWatcher } from '@/utils/SimpleTxWatcher'
 
-
 const { waitForTx, waitForRelayedTx, waitForCreateSafeTx } = txMonitor
 
 const provider = new BrowserProvider(MockEip1193Provider) as unknown as JsonRpcProvider

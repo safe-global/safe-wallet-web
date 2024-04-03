@@ -62,7 +62,7 @@ export const SpeedUpModal = ({
     const txOptions = getTxOptions(
       {
         ...speedUpFee,
-        gasLimit: gasLimit,
+        gasLimit,
       },
       chainInfo,
     )
@@ -138,7 +138,7 @@ export const SpeedUpModal = ({
 
         <Typography data-testid="speedup-summary">
           This will speed up the pending transaction by{' '}
-          <Typography component={'span'} fontWeight={700}>
+          <Typography component="span" fontWeight={700}>
             replacing
           </Typography>{' '}
           the original gas parameters with new ones.
@@ -150,7 +150,7 @@ export const SpeedUpModal = ({
               params={{
                 // nonce: safeTx?.data?.nonce,
                 userNonce: signerNonce,
-                gasLimit: gasLimit,
+                gasLimit,
                 maxFeePerGas: speedUpFee.maxFeePerGas,
                 maxPriorityFeePerGas: speedUpFee.maxPriorityFeePerGas,
               }}
@@ -166,7 +166,7 @@ export const SpeedUpModal = ({
         <Button onClick={handleClose}>Cancel</Button>
 
         <Tooltip title="Speed up transaction">
-          <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant={'contained'} disableElevation>
+          <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>
             {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
           </Button>
         </Tooltip>

@@ -17,7 +17,7 @@ export const ProcessingStatus = ({ txId, pendingTx }: Props) => (
     </Typography>
     <Box>
       {pendingTx.status === PendingStatus.PROCESSING && (
-        <SpeedUpMonitor txId={txId} pendingTx={pendingTx} modalTrigger={'alertBox'} />
+        <SpeedUpMonitor txId={txId} pendingTx={pendingTx} modalTrigger="alertBox" />
       )}
     </Box>
   </Box>

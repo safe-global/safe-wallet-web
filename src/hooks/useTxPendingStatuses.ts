@@ -95,7 +95,7 @@ const useTxPendingStatuses = (): void => {
       dispatch(
         setPendingTx({
           chainId,
-          safeAddress: safeAddress,
+          safeAddress,
           txId,
           signerAddress: detail.signerAddress,
           status: PendingStatus.SIGNING,
@@ -119,7 +119,7 @@ const useTxPendingStatuses = (): void => {
         detail.txType === 'Custom'
           ? {
               chainId,
-              safeAddress: safeAddress,
+              safeAddress,
               txId,
               status: PendingStatus.PROCESSING,
               txHash: detail.txHash,
@@ -132,7 +132,7 @@ const useTxPendingStatuses = (): void => {
             }
           : {
               chainId,
-              safeAddress: safeAddress,
+              safeAddress,
               txId,
               status: PendingStatus.PROCESSING,
               txHash: detail.txHash,
@@ -161,7 +161,7 @@ const useTxPendingStatuses = (): void => {
       dispatch(
         setPendingTx({
           chainId,
-          safeAddress: safeAddress,
+          safeAddress,
           txId,
           status: PendingStatus.SUBMITTING,
         }),
@@ -184,7 +184,7 @@ const useTxPendingStatuses = (): void => {
       dispatch(
         setPendingTx({
           chainId,
-          safeAddress: safeAddress,
+          safeAddress,
           txId,
           txHash: detail.txHash,
           status: PendingStatus.INDEXING,
@@ -207,7 +207,7 @@ const useTxPendingStatuses = (): void => {
       dispatch(
         setPendingTx({
           chainId,
-          safeAddress: safeAddress,
+          safeAddress,
           txId,
           status: PendingStatus.RELAYING,
           taskId: detail.taskId,
