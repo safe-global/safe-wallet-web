@@ -38,13 +38,17 @@ const signTypedDataFallback = async (signer: JsonRpcSigner, typedData: EIP712Typ
 }
 
 export const signTypedData = async (signer: JsonRpcSigner, typedData: EIP712TypedData): Promise<string> => {
-  const { domain, types, message } = typedData
-
+  const UNSUPPORTED_OPERATION = 'UNSUPPORTED_OPERATION'
   let signature = ''
   try {
+    const { domain, types, message } = typedData
     signature = await signer.signTypedData(domain as TypedDataDomain, types, message)
-  } catch {
-    signature = await signTypedDataFallback(signer, typedData)
+  } catch (e) {
+    if ((e as Error & { code: string }).code === UNSUPPORTED_OPERATION) {
+      signature = await signTypedDataFallback(signer, typedData)
+    } else {
+      throw e
+    }
   }
   return adjustVInSignature(SigningMethod.ETH_SIGN_TYPED_DATA, signature)
 }
