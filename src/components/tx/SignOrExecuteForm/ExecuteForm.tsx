@@ -162,7 +162,7 @@ export const ExecuteForm = ({
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
         ) : !walletCanPay && !willRelay ? (
-          <ErrorMessage level={'info'}>
+          <ErrorMessage level="info">
             Your connected wallet doesn&apos;t have enough funds to execute this transaction.
           </ErrorMessage>
         ) : (

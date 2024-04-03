@@ -132,7 +132,7 @@ const usePendingSafeStatus = (): void => {
             chainId: safe.chainId,
             address: safeAddress,
             status: {
-              status: status,
+              status,
               txHash: 'txHash' in detail ? detail.txHash : undefined,
               taskId: 'taskId' in detail ? detail.taskId : undefined,
               startBlock: await provider?.getBlockNumber(),

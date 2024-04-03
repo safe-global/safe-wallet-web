@@ -111,7 +111,7 @@ describe('SignOrExecute hooks', () => {
       jest.spyOn(wallet, 'default').mockReturnValue({
         chainId: '1',
         label: 'MetaMask',
-        address: address,
+        address,
       } as ConnectedWallet)
 
       const { result } = renderHook(() => useIsExecutionLoop())

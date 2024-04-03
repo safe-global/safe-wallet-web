@@ -164,7 +164,7 @@ export const estimateSafeCreationGas = async (
   const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
 
   const gas = await provider.estimateGas({
-    from: from,
+    from,
     to: await readOnlyProxyFactoryContract.getAddress(),
     data: encodedSafeCreationTx,
   })

@@ -66,7 +66,7 @@ export function useRecoveryTxNotifications(): void {
             title,
             message,
             detailedMessage: isError ? detail.error.message : undefined,
-            groupKey: groupKey,
+            groupKey,
             variant: isError ? 'error' : isSuccess ? 'success' : 'info',
             link,
           }),

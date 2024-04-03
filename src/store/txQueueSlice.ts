@@ -61,7 +61,7 @@ export const txQueueListener = (listenerMiddleware: typeof listenerMiddlewareIns
             sameAddress(address.value, awaitingSigner),
           )
         ) {
-          txDispatch(TxEvent.SIGNATURE_INDEXED, { txId: txId })
+          txDispatch(TxEvent.SIGNATURE_INDEXED, { txId })
         }
       }
     },

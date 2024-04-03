@@ -44,7 +44,7 @@ const signTxServiceMessage = async (
   const domain = {
     name: 'Safe Transaction Service',
     version: '1.0',
-    chainId: chainId,
+    chainId,
     verifyingContract: safeAddress,
   }
   const types = {
@@ -54,7 +54,7 @@ const signTxServiceMessage = async (
     ],
   }
   const message = {
-    safeTxHash: safeTxHash,
+    safeTxHash,
     totp: Math.floor(Date.now() / 3600e3),
   }
 
