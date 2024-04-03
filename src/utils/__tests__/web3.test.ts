@@ -44,20 +44,33 @@ describe('web3', () => {
     })
 
     it('should fall back to signTypedData if signTypedData_v4 is not available', async () => {
+      const error = new Error('error') as Error & { code: string }
+      error.code = 'UNSUPPORTED_OPERATION'
+
       const signer = {
-        signTypedData_v4: undefined,
-        signTypedData: jest.fn().mockResolvedValue(mockSignature),
+        signTypedData: jest.fn().mockRejectedValue(error),
+        address: '0x1234567890123456789012345678901234567890',
+        provider: {
+          send: jest.fn().mockResolvedValue(mockSignature),
+        },
       }
       const typedData = {
-        domain: {
-          chainId: 1,
-          name: 'name',
-          version: '1',
-        },
         types: {
-          EIP712Domain: [],
+          DeleteRequest: [
+            { name: 'safeTxHash', type: 'bytes32' },
+            { name: 'totp', type: 'uint256' },
+          ],
         },
-        message: {},
+        domain: {
+          name: 'Safe Transaction Service',
+          version: '1.0',
+          chainId: 1,
+          verifyingContract: '0x1234567890123456789012345678901234567890',
+        },
+        message: {
+          safeTxHash: '0x1234567890123456789012345678901234567890123456789012345678901234',
+          totp: Math.floor(Date.now() / 3600e3),
+        },
       }
       const result = await signTypedData(signer as unknown as JsonRpcSigner, typedData)
       expect(result).toBe(mockSignature)
