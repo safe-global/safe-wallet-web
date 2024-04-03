@@ -1,6 +1,9 @@
+import type { JsonRpcSigner } from 'ethers'
 import { TypedDataEncoder } from 'ethers'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TypedDataDomain } from 'ethers'
+import { adjustVInSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
+import { SigningMethod } from '@safe-global/protocol-kit'
 
 export type EIP712Normalized = EIP712TypedData & { primaryType: string }
 
@@ -24,4 +27,24 @@ export const normalizeTypedData = (typedData: EIP712TypedData): EIP712Normalized
   }
 
   return payload
+}
+
+// Fall back to `eth_signTypedData` for Ledger that doesn't support `eth_signTypedData_v4`
+const signTypedDataFallback = async (signer: JsonRpcSigner, typedData: EIP712TypedData): Promise<string> => {
+  return await signer.provider.send('eth_signTypedData', [
+    signer.address.toLowerCase(),
+    TypedDataEncoder.getPayload(typedData.domain as TypedDataDomain, typedData.types, typedData.message),
+  ])
+}
+
+export const signTypedData = async (signer: JsonRpcSigner, typedData: EIP712TypedData): Promise<string> => {
+  const { domain, types, message } = typedData
+
+  let signature = ''
+  try {
+    signature = await signer.signTypedData(domain as TypedDataDomain, types, message)
+  } catch {
+    signature = await signTypedDataFallback(signer, typedData)
+  }
+  return adjustVInSignature(SigningMethod.ETH_SIGN_TYPED_DATA, signature)
 }
