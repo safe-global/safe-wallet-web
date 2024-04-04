@@ -32,7 +32,7 @@
 
 .gridContainer.grouped {
   grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(--grid-status);
-  grid-template-areas: 'type info date confirmations status';
+  grid-template-areas: 'type info date confirmations status actions';
 }
 
 .gridContainer.untrusted {
