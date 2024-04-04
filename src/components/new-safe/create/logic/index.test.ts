@@ -10,9 +10,8 @@ import {
 import { type ErrorCode } from 'ethers'
 import { EthersTxReplacedReason } from '@/utils/ethers-utils'
 import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { relayTransaction, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
-import * as relaying from '@/services/tx/relaying'
 import {
   Gnosis_safe__factory,
   Proxy_factory__factory,
@@ -23,6 +22,7 @@ import {
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
+import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 
 const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
 
@@ -245,7 +245,7 @@ describe('createNewSafeViaRelayer', () => {
   })
 
   it('returns taskId if create Safe successfully relayed', async () => {
-    const sponsoredCallSpy = jest.spyOn(relaying, 'sponsoredCall').mockResolvedValue({ taskId: '0x123' })
+    jest.spyOn(gateway, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
@@ -273,18 +273,17 @@ describe('createNewSafeViaRelayer', () => {
     const taskId = await relaySafeCreation(mockChainInfo, [owner1, owner2], expectedThreshold, expectedSaltNonce)
 
     expect(taskId).toEqual('0x123')
-    expect(sponsoredCallSpy).toHaveBeenCalledTimes(1)
-    expect(sponsoredCallSpy).toHaveBeenCalledWith({
-      chainId: '5',
+    expect(relayTransaction).toHaveBeenCalledTimes(1)
+    expect(relayTransaction).toHaveBeenCalledWith('5', {
       to: proxyFactoryAddress,
       data: expectedCallData,
+      version: LATEST_SAFE_VERSION,
     })
   })
 
   it('should throw an error if relaying fails', () => {
     const relayFailedError = new Error('Relay failed')
-
-    jest.spyOn(relaying, 'sponsoredCall').mockRejectedValue(relayFailedError)
+    jest.spyOn(gateway, 'relayTransaction').mockRejectedValue(relayFailedError)
 
     expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
   })
