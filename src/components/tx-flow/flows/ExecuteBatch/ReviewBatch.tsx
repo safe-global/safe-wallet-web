@@ -110,7 +110,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       multiSendTxData,
       safe.chainId,
       safe.address.value,
-      safe.version || LATEST_SAFE_VERSION,
+      safe.version ?? LATEST_SAFE_VERSION,
     )
   }
 

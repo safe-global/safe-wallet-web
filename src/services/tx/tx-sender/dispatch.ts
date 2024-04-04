@@ -378,7 +378,7 @@ export const dispatchTxRelay = async (
       to: safe.address.value,
       data,
       gasLimit: gasLimit?.toString(),
-      version: safe.version || LATEST_SAFE_VERSION,
+      version: safe.version ?? LATEST_SAFE_VERSION,
     })
     const taskId = relayResponse.taskId
 

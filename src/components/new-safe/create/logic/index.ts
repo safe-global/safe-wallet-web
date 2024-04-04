@@ -298,8 +298,10 @@ export const relaySafeCreation = async (
   owners: string[],
   threshold: number,
   saltNonce: number,
-  safeVersion = LATEST_SAFE_VERSION,
+  version?: SafeVersion,
 ) => {
+  const safeVersion = version ?? LATEST_SAFE_VERSION
+
   const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(chain.chainId, safeVersion)
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()
   const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, safeVersion)
