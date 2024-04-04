@@ -8,7 +8,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useAppDispatch } from '@/store'
-import { dispatchCustomTxSpeedUp, dispatchSafeTxSpeedUp } from '@/services/tx/tx-sender'
+import { createExistingTx, dispatchCustomTxSpeedUp, dispatchSafeTxSpeedUp } from '@/services/tx/tx-sender'
 import { showNotification } from '@/store/notificationsSlice'
 import { useCallback, useState } from 'react'
 import GasParams from '@/components/tx/GasParams'
@@ -20,6 +20,7 @@ import { FEATURES } from '@/utils/chains'
 import { isWalletRejection } from '@/utils/wallets'
 import { type TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { PendingTxType, type PendingProcessingTx } from '@/store/pendingTxsSlice'
+import useAsync from '@/hooks/useAsync'
 
 type Props = {
   open: boolean
@@ -53,9 +54,17 @@ export const SpeedUpModal = ({
   const dispatch = useAppDispatch()
 
   const isDisabled = waitingForConfirmation || !wallet || !speedUpFee || !onboard
+  const [safeTx] = useAsync(async () => {
+    if (!chainInfo?.chainId || !safeAddress) {
+      return null
+    }
+    return createExistingTx(chainInfo.chainId, safeAddress, txId)
+  }, [txId, chainInfo?.chainId, safeAddress])
+
+  const safeTxHasSignatures = !!safeTx?.signatures?.size ? true : false
 
   const onSubmit = useCallback(async () => {
-    if (!wallet || !speedUpFee || !onboard || !chainInfo) {
+    if (!wallet || !speedUpFee || !onboard || !chainInfo || !safeTx) {
       return null
     }
 
@@ -123,10 +132,58 @@ export const SpeedUpModal = ({
     txHash,
     txId,
     wallet,
+    safeTx,
   ])
 
   if (!hasActions) {
     return null
+  }
+
+  if (safeTxHasSignatures) {
+    return (
+      <ModalDialog open={open} onClose={handleClose} dialogTitle="Speed up transaction">
+        <DialogContent sx={{ p: '24px !important' }}>
+          <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+            <SvgIcon inheritViewBox component={RocketSpeedup} sx={{ width: 90, height: 90 }} />
+          </Box>
+
+          <Typography data-testid="speedup-summary">
+            This will speed up the pending transaction by{' '}
+            <Typography component="span" fontWeight={700}>
+              replacing
+            </Typography>{' '}
+            the original gas parameters with new ones.
+          </Typography>
+
+          <Box mt={2}>
+            {speedUpFee && signerNonce && (
+              <GasParams
+                params={{
+                  // nonce: safeTx?.data?.nonce,
+                  userNonce: signerNonce,
+                  gasLimit,
+                  maxFeePerGas: speedUpFee.maxFeePerGas,
+                  maxPriorityFeePerGas: speedUpFee.maxPriorityFeePerGas,
+                }}
+                isExecution={true}
+                isEIP1559={isEIP1559}
+                willRelay={false}
+              />
+            )}
+          </Box>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+
+          <Tooltip title="Speed up transaction">
+            <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>
+              {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
+            </Button>
+          </Tooltip>
+        </DialogActions>
+      </ModalDialog>
+    )
   }
 
   return (
@@ -137,40 +194,10 @@ export const SpeedUpModal = ({
         </Box>
 
         <Typography data-testid="speedup-summary">
-          This will speed up the pending transaction by{' '}
-          <Typography component="span" fontWeight={700}>
-            replacing
-          </Typography>{' '}
-          the original gas parameters with new ones.
+          Is this transaction taking too long? Speed it up by using the &quot;speed up&quot; option in your connected
+          wallet.
         </Typography>
-
-        <Box mt={2}>
-          {speedUpFee && signerNonce && (
-            <GasParams
-              params={{
-                // nonce: safeTx?.data?.nonce,
-                userNonce: signerNonce,
-                gasLimit,
-                maxFeePerGas: speedUpFee.maxFeePerGas,
-                maxPriorityFeePerGas: speedUpFee.maxPriorityFeePerGas,
-              }}
-              isExecution={true}
-              isEIP1559={isEIP1559}
-              willRelay={false}
-            />
-          )}
-        </Box>
       </DialogContent>
-
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-
-        <Tooltip title="Speed up transaction">
-          <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>
-            {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
-          </Button>
-        </Tooltip>
-      </DialogActions>
     </ModalDialog>
   )
 }
