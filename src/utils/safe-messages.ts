@@ -1,8 +1,8 @@
-import { getBytes, hashMessage, type JsonRpcSigner } from 'ethers'
+import { getBytes, hashMessage, type TypedDataDomain, type JsonRpcSigner } from 'ethers'
 import { gte } from 'semver'
 import { adjustVInSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 
-import { hashTypedData, signTypedData } from '@/utils/web3'
+import { hashTypedData } from '@/utils/web3'
 import { isValidAddress } from './validation'
 import { isWalletRejection } from '@/utils/wallets'
 import { getSupportedSigningMethods } from '@/services/tx/tx-sender/sdk'
@@ -117,7 +117,14 @@ export const tryOffChainMsgSigning = async (
     try {
       if (signingMethod === 'eth_signTypedData') {
         const typedData = generateSafeMessageTypedData(safe, message)
-        return signTypedData(signer, typedData)
+        const signature = await signer.signTypedData(
+          typedData.domain as TypedDataDomain,
+          typedData.types,
+          typedData.message,
+        )
+
+        // V needs adjustment when signing with ledger / trezor through metamask
+        return adjustVInSignature(signingMethod, signature)
       }
 
       if (signingMethod === 'eth_sign') {
