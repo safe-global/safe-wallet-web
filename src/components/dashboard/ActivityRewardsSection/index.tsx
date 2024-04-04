@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Typography, Card, IconButton, Link, SvgIcon, Grid, Button } from '@mui/material'
+import { Typography, Card, IconButton, SvgIcon, Grid, Button, Link } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -9,26 +9,11 @@ import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag } from '@/config/constants'
 import SafeMilesLogo from '@/public/images/common/safe-miles-logo.svg'
 import classNames from 'classnames'
-import useChainId from '@/hooks/useChainId'
-import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
 import { useDarkMode } from '@/hooks/useDarkMode'
-
-// Chains
-export const Chains = {
-  MAINNET: '1',
-  SEPOLIA: '11155111',
-}
-
-// Strictly type configuration for each chain above
-type ChainConfig<T> = Record<(typeof Chains)[keyof typeof Chains], T>
-
-const CHAIN_START_TIMESTAMPS: ChainConfig<number> = {
-  1: 1713866400000, // 23rd April 2024
-  11155111: 1709290800000, // 01st March 2024
-}
-
-const JUNE_10_TIMESTAMP = 1718013600000
-const SEPTEMBER_10_TIMESTAMP = 1725962400000
+import { useRouter } from 'next/router'
+import { getSafeAppUrl } from '@/components/safe-apps/SafeAppCard'
+import NextLink from 'next/link'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 
 const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
   return (
@@ -45,22 +30,19 @@ const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
 }
 
 const ActivityRewardsSection = () => {
-  const chainId = useChainId()
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.SAFE_GOVERNANCE_APP)
   const isDarkMode = useDarkMode()
+  const router = useRouter()
 
   const governanceApp = matchingApps?.[0]
-  const today = Date.now()
 
-  const stepsActive = [
-    today >= CHAIN_START_TIMESTAMPS[chainId],
-    today >= JUNE_10_TIMESTAMP,
-    today >= SEPTEMBER_10_TIMESTAMP,
-  ]
+  if (!governanceApp || !governanceApp?.url) return null
 
-  const activityAppUrl = useShareSafeAppUrl(governanceApp?.url || '')
+  const appUrl = getSafeAppUrl(router, governanceApp?.url)
 
-  if (!governanceApp) return null
+  const onClick = () => {
+    trackEvent(OVERVIEW_EVENTS.OPEN_ACTIVITY_APP)
+  }
 
   return (
     <Grid item xs={12}>
@@ -95,16 +77,18 @@ const ActivityRewardsSection = () => {
                 >
                   Interact with Safe and get rewards
                 </Typography>
-                <Button variant="contained" sx={{ mt: 3 }} href={activityAppUrl}>
-                  Open Activity App
-                </Button>
+                <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
+                  <Button variant="contained" sx={{ mt: 3 }}>
+                    Open Activity App
+                  </Button>
+                </NextLink>
               </Grid>
               <Grid item xs={12} md={6} p={0}>
                 <Typography variant="overline" color="primary.light">
                   How it works
                 </Typography>
                 <div className={css.steps}>
-                  <Step title="Lock SAFE to boost your miles!" active={stepsActive[0]} />
+                  <Step title="Lock SAFE to boost your miles!" active={true} />
                   <Step
                     title={
                       <>
@@ -114,11 +98,12 @@ const ActivityRewardsSection = () => {
                         </Typography>
                       </>
                     }
-                    active={stepsActive[1]}
+                    active={false}
                   />
-                  <Step title="Receive rewards" active={stepsActive[2]} />
+                  <Step title="Receive rewards" active={false} />
                 </div>
-                <Link color="primary.main" fontWeight="bold" href={activityAppUrl}>
+                {/** TODO: insert link to landing page once it exists */}
+                <Link color="primary.main" fontWeight="bold" href="">
                   Read more about the program
                 </Link>
               </Grid>
