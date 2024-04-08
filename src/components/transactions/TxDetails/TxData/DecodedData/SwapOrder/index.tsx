@@ -1,5 +1,5 @@
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import { Operation, SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import { useState, useEffect } from 'react'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
@@ -8,14 +8,15 @@ import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedD
 import { Button, Divider, Stack } from '@mui/material'
 import css from './styles.module.css'
 import classnames from 'classnames'
+import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
+import Image from 'next/image'
 
-type MultisendProps = {
+type SwapOrderProps = {
   txData?: TransactionData
-  showDelegateCallWarning?: boolean
-  compact?: boolean
+  txInfo?: SwapOrder
 }
 
-export const MultisendActionsHeader = ({
+export const SwapOrderHeader = ({
   setOpen,
   amount,
   compact = false,
@@ -45,28 +46,66 @@ export const MultisendActionsHeader = ({
   )
 }
 
-export const Multisend = ({
-  txData,
-  showDelegateCallWarning = true,
-  compact = false,
-}: MultisendProps): ReactElement | null => {
+const SellOrder = ({ order }: { order: SwapOrder }) => {
+  const { buyToken, sellToken, orderUid, expiresTimestamp, status, surplusLabel } = order
+  return (
+    <div className="sell-order">
+      <h2>Sell order</h2>
+      <div className="sell-details">
+        <div className="detail">
+          <span className="label">Amount:</span>
+          <div className="value">
+            <div>
+              Sell{' '}
+              <span className="value">
+              <Image src={sellToken.logo} alt={sellToken.symbol}  width={32} height={32}/> {sellToken.amount} {sellToken.symbol}
+            </span>
+            </div>
+            <div>
+              For at least{' '}
+              <span className="value">
+             <Image src={buyToken.logo} alt={buyToken.symbol} width={32} height={32}/>{buyToken.amount} {buyToken.symbol}
+            </span>
+
+            </div>
+                      </div>
+        </div>
+        <div className="detail">
+          <span className="label">Expiry:</span>
+          <span className="value">{expiresTimestamp}</span>
+        </div>
+        <div className="detail">
+          <span className="label">Order ID:</span>
+          <span className="value">{orderUid}</span>
+        </div>
+        <div className={`status status-${status.toLowerCase()}`}>
+          <span className="status-label">{status}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | null => {
   const [openMap, setOpenMap] = useState<Record<number, boolean>>()
   const isOpenMapUndefined = openMap == null
 
-  console.log('multisend tx', txData)
+  // const { amount, limitPrice, expiry, orderId, status } = txInfo
+  // console.log('multisend tx', txData)
   // multiSend method receives one parameter `transactions`
   const multiSendTransactions = txData?.dataDecoded?.parameters?.[0].valueDecoded
 
-  useEffect(() => {
-    // Initialise whether each transaction should be expanded or not
-    if (isOpenMapUndefined && multiSendTransactions) {
-      setOpenMap(
-        multiSendTransactions.map(({ operation }) => {
-          return showDelegateCallWarning ? operation === Operation.DELEGATE : false
-        }),
-      )
-    }
-  }, [multiSendTransactions, isOpenMapUndefined, showDelegateCallWarning])
+  console.log('swap order', txInfo)
+  // useEffect(() => {
+  //   // Initialise whether each transaction should be expanded or not
+  //   if (isOpenMapUndefined && multiSendTransactions) {
+  //     setOpenMap(
+  //       multiSendTransactions.map(({ operation }) => {
+  //         return showDelegateCallWarning ? operation === Operation.DELEGATE : false
+  //       }),
+  //     )
+  //   }
+  // }, [multiSendTransactions, isOpenMapUndefined, showDelegateCallWarning])
 
   if (!txData) return null
 
@@ -78,13 +117,19 @@ export const Multisend = ({
     return null
   }
 
-  if (!multiSendTransactions) {
-    return null
-  }
+  // if (multiSendTransactions) {
+  //   return <Multisend txData={txData} />
+  // }
 
   return (
     <>
-      <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} compact={compact} />
+      <SellOrder order={txInfo} />
+      {multiSendTransactions && <Multisend txData={txData} />}
+    </>
+  )
+  return (
+    <>
+      <SwapOrderHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />
 
       <div className={compact ? css.compact : ''}>
         {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
@@ -119,4 +164,4 @@ export const Multisend = ({
   )
 }
 
-export default Multisend
+export default SwapOrder

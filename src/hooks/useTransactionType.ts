@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import {
+  type AddressEx,
   SettingsInfoType,
   TransactionInfoType,
-  type AddressEx,
   type TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -36,6 +36,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
   const toAddress = getTxTo(tx)
   const addressBookName = toAddress?.value ? addressBook[toAddress.value] : undefined
 
+  console.log('tx.txInfo.type:', tx.txInfo.type, TransactionInfoType.SWAP_ORDER)
   switch (tx.txInfo.type) {
     case TransactionInfoType.CREATION: {
       return {
@@ -59,6 +60,12 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       return {
         icon: '/images/transactions/settings.svg',
         text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method,
+      }
+    }
+    case TransactionInfoType.SWAP_ORDER: {
+      return {
+        icon: '/images/transactions/cow-logo.png',
+        text: 'Swap order',
       }
     }
     case TransactionInfoType.CUSTOM: {
