@@ -70,9 +70,11 @@ const ReplaceTxMenu = ({
 
         <Typography variant="body2" mt={-1} mb={1}>
           You can replace or reject this transaction on-chain. It requires gas fees and your signature.{' '}
-          <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
-            Read more
-          </ExternalLink>{' '}
+          <Track {...REJECT_TX_EVENTS.READ_MORE}>
+            <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
+              Read more
+            </ExternalLink>
+          </Track>
         </Typography>
 
         <Box display="flex" flexDirection="column" gap={2}>
@@ -81,7 +83,7 @@ const ReplaceTxMenu = ({
               icon={CachedIcon}
               onClick={() => setTxFlow(<TokenTransferFlow txNonce={txNonce} />)}
               title="Replace with another transaction"
-              description="Overwrite by a new transaction with the same nonce"
+              description="Propose a new transaction with the same nonce to overwrite this one"
               chip="Recommended"
             />
           </Track>
@@ -99,7 +101,7 @@ const ReplaceTxMenu = ({
                   onClick={() => setTxFlow(<RejectTx txNonce={txNonce} />)}
                   disabled={!canCancel}
                   title="Reject transaction"
-                  description="Create a cancellation transaction with the same nonce to avoid security risks"
+                  description="Propose an on-chain cancellation transaction with the same nonce"
                   chip={canDelete ? 'Recommended' : undefined}
                 />
               </Track>
@@ -122,7 +124,7 @@ const ReplaceTxMenu = ({
                   iconColor="error"
                   onClick={() => setIsDeleting(true)}
                   title="Delete from the queue"
-                  description="Remove this transaction from the queue permanently"
+                  description="Remove this transaction from the off-chain queue"
                 />
               </Track>
 

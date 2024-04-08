@@ -1,6 +1,11 @@
 const category = 'reject-tx'
 
 export const REJECT_TX_EVENTS = {
+  READ_MORE: {
+    action: 'Reject tx read more',
+    category,
+  },
+
   REPLACE_TX_BUTTON: {
     action: 'Replace tx button',
     category,
