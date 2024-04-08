@@ -30,6 +30,7 @@ const TxStatusLabel = ({ tx }: { tx: TransactionSummary }) => {
       alignItems="center"
       gap={1}
       color={({ palette }) => getStatusColor(tx.txStatus, palette)}
+      data-testid="tx-status-label"
     >
       {isPending && <CircularProgress size={14} color="inherit" />}
       {txStatusLabel}
