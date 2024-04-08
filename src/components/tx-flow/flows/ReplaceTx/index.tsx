@@ -22,6 +22,8 @@ import { sameAddress } from '@/utils/addresses'
 import { AppRoutes } from '@/config/routes'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import Track from '@/components/common/Track'
+import { REJECT_TX_EVENTS } from '@/services/analytics/events/reject-tx'
 
 const goToQueue = (router: NextRouter) => {
   if (router.pathname === AppRoutes.transactions.tx) {
@@ -68,19 +70,23 @@ const ReplaceTxMenu = ({
 
         <Typography variant="body2" mt={-1} mb={1}>
           You can replace or reject this transaction on-chain. It requires gas fees and your signature.{' '}
-          <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
-            Read more
-          </ExternalLink>{' '}
+          <Track {...REJECT_TX_EVENTS.READ_MORE}>
+            <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
+              Read more
+            </ExternalLink>
+          </Track>
         </Typography>
 
         <Box display="flex" flexDirection="column" gap={2}>
-          <ChoiceButton
-            icon={CachedIcon}
-            onClick={() => setTxFlow(<TokenTransferFlow txNonce={txNonce} />)}
-            title="Replace with another transaction"
-            description="Overwrite by a new transaction with the same nonce"
-            chip="Recommended"
-          />
+          <Track {...REJECT_TX_EVENTS.REPLACE_TX_BUTTON} as="div">
+            <ChoiceButton
+              icon={CachedIcon}
+              onClick={() => setTxFlow(<TokenTransferFlow txNonce={txNonce} />)}
+              title="Replace with another transaction"
+              description="Propose a new transaction with the same nonce to overwrite this one"
+              chip="Recommended"
+            />
+          </Track>
 
           <Tooltip
             arrow
@@ -88,15 +94,17 @@ const ReplaceTxMenu = ({
             title={canCancel ? '' : `Transaction with nonce ${txNonce} already has a reject transaction`}
           >
             <span style={{ width: '100%' }}>
-              <ChoiceButton
-                icon={CancelIcon}
-                iconColor="warning"
-                onClick={() => setTxFlow(<RejectTx txNonce={txNonce} />)}
-                disabled={!canCancel}
-                title="Reject transaction"
-                description="Create a cancellation transaction with the same nonce to avoid security risks"
-                chip="Recommended"
-              />
+              <Track {...REJECT_TX_EVENTS.REJECT_ONCHAIN_BUTTON} as="div">
+                <ChoiceButton
+                  icon={CancelIcon}
+                  iconColor="warning"
+                  onClick={() => setTxFlow(<RejectTx txNonce={txNonce} />)}
+                  disabled={!canCancel}
+                  title="Reject transaction"
+                  description="Propose an on-chain cancellation transaction with the same nonce"
+                  chip={canDelete ? 'Recommended' : undefined}
+                />
+              </Track>
             </span>
           </Tooltip>
 
@@ -110,13 +118,15 @@ const ReplaceTxMenu = ({
                 Don’t want to have this transaction anymore? Remove it permanently from the queue.
               </Typography>
 
-              <ChoiceButton
-                icon={DeleteIcon}
-                iconColor="error"
-                onClick={() => setIsDeleting(true)}
-                title="Delete from the queue"
-                description="Remove this transaction from the queue permanently"
-              />
+              <Track {...REJECT_TX_EVENTS.DELETE_OFFCHAIN_BUTTON} as="div">
+                <ChoiceButton
+                  icon={DeleteIcon}
+                  iconColor="error"
+                  onClick={() => setIsDeleting(true)}
+                  title="Delete from the queue"
+                  description="Remove this transaction from the off-chain queue"
+                />
+              </Track>
 
               {safeTxHash && isDeleting && (
                 <DeleteTxModal onSuccess={onDeleteSuccess} onClose={onDeleteClose} safeTxHash={safeTxHash} />
