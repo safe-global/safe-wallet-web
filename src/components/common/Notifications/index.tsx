@@ -104,6 +104,8 @@ const Notifications = (): ReactElement | null => {
 
   const visible = getVisibleNotifications(notifications)
 
+  const visibleItems = visible.length
+
   const handleClose = useCallback(
     (item: Notification) => {
       dispatch(closeNotification(item))
@@ -122,7 +124,7 @@ const Notifications = (): ReactElement | null => {
     })
   }, [notifications, handleClose])
 
-  if (!visible.length) {
+  if (visibleItems === 0) {
     return null
   }
 

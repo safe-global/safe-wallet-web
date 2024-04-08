@@ -25,7 +25,7 @@ const WatchlistAddButton = () => {
       pathname: AppRoutes.newSafe.load,
       query: {
         chain: chain?.shortName,
-        address: address,
+        address,
       },
     })
   }

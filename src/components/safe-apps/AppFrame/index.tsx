@@ -107,9 +107,9 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
       const data = {
         app: safeAppFromManifest,
         appId: remoteApp ? String(remoteApp.id) : undefined,
-        requestId: requestId,
-        txs: txs,
-        params: params,
+        requestId,
+        txs,
+        params,
       }
 
       setCurrentRequestId(requestId)

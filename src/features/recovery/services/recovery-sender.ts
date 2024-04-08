@@ -119,14 +119,14 @@ export async function dispatchRecoveryProposal({
       recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
         moduleAddress: delayModifierAddress,
         recoveryTxHash,
-        txType: txType,
+        txType,
         txHash: tx.hash,
       })
     } else {
       waitForRecoveryTx({
         moduleAddress: delayModifierAddress,
         recoveryTxHash,
-        txType: txType,
+        txType,
         tx,
       })
     }
@@ -134,7 +134,7 @@ export async function dispatchRecoveryProposal({
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash,
-      txType: txType,
+      txType,
       error: asError(error),
     })
 
@@ -168,14 +168,14 @@ export async function dispatchRecoveryExecution({
       recoveryDispatch(RecoveryEvent.PROCESSING_BY_SMART_CONTRACT_WALLET, {
         moduleAddress: delayModifierAddress,
         recoveryTxHash: args.txHash,
-        txType: txType,
+        txType,
         txHash: tx.hash,
       })
     } else {
       waitForRecoveryTx({
         moduleAddress: delayModifierAddress,
         recoveryTxHash: args.txHash,
-        txType: txType,
+        txType,
         tx,
       })
     }
@@ -183,7 +183,7 @@ export async function dispatchRecoveryExecution({
     recoveryDispatch(RecoveryEvent.FAILED, {
       moduleAddress: delayModifierAddress,
       recoveryTxHash: args.txHash,
-      txType: txType,
+      txType,
       error: asError(error),
     })
 
