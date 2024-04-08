@@ -97,7 +97,7 @@ export const initSafeSDK = async ({
   if (undeployedSafe) {
     return Safe.create({
       ethAdapter: createReadOnlyEthersAdapter(provider),
-      isL1SafeSingleton: isL1SafeSingleton,
+      isL1SafeSingleton,
       predictedSafe: undeployedSafe.props,
     })
   }
@@ -105,7 +105,7 @@ export const initSafeSDK = async ({
   return Safe.create({
     ethAdapter: createReadOnlyEthersAdapter(provider),
     safeAddress: address,
-    isL1SafeSingleton: isL1SafeSingleton,
+    isL1SafeSingleton,
   })
 }
 

@@ -1,8 +1,7 @@
 import type { JsonRpcSigner } from 'ethers'
 import { type ChainInfo, deleteTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { WC_APP_PROD, WC_APP_DEV } from '@/config/constants'
-import { adjustVInSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
-import { SigningMethod } from '@safe-global/protocol-kit'
+import { signTypedData } from './web3'
 
 export const _replaceTemplate = (uri: string, data: Record<string, string>): string => {
   // Template syntax returned from gateway is {{this}}
@@ -41,25 +40,24 @@ const signTxServiceMessage = async (
   safeTxHash: string,
   signer: JsonRpcSigner,
 ): Promise<string> => {
-  const domain = {
-    name: 'Safe Transaction Service',
-    version: '1.0',
-    chainId: chainId,
-    verifyingContract: safeAddress,
-  }
-  const types = {
-    DeleteRequest: [
-      { name: 'safeTxHash', type: 'bytes32' },
-      { name: 'totp', type: 'uint256' },
-    ],
-  }
-  const message = {
-    safeTxHash: safeTxHash,
-    totp: Math.floor(Date.now() / 3600e3),
-  }
-
-  const signature = await signer.signTypedData(domain, types, message)
-  return adjustVInSignature(SigningMethod.ETH_SIGN_TYPED_DATA, signature)
+  return await signTypedData(signer, {
+    types: {
+      DeleteRequest: [
+        { name: 'safeTxHash', type: 'bytes32' },
+        { name: 'totp', type: 'uint256' },
+      ],
+    },
+    domain: {
+      name: 'Safe Transaction Service',
+      version: '1.0',
+      chainId,
+      verifyingContract: safeAddress,
+    },
+    message: {
+      safeTxHash,
+      totp: Math.floor(Date.now() / 3600e3),
+    },
+  })
 }
 
 export const deleteTx = async ({

@@ -17,7 +17,7 @@ export class UncheckedJsonRpcSigner extends JsonRpcSigner {
   async sendTransaction(transaction: TransactionRequest): Promise<TransactionResponse> {
     return this.sendUncheckedTransaction(transaction).then((hash) => {
       return <TransactionResponse>(<unknown>{
-        hash: hash,
+        hash,
         nonce: null,
         gasLimit: null,
         gasPrice: null,

@@ -85,7 +85,7 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
         )}
 
         {hasSocialLinks && developerWebsite && (
-          <Divider sx={{ height: '40px' }} orientation="vertical" component={'div'} />
+          <Divider sx={{ height: '40px' }} orientation="vertical" component="div" />
         )}
 
         {/* Developer website section */}

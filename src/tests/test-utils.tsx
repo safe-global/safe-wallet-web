@@ -128,7 +128,7 @@ const mockWeb3Provider = (
       return Promise.resolve(50_000n)
     }),
     _isProvider: true,
-    resolveName: resolveName,
+    resolveName,
   } as unknown as JsonRpcProvider
   jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(mockWeb3ReadOnly)
   return mockWeb3ReadOnly

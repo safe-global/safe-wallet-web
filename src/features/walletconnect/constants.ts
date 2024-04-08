@@ -64,6 +64,7 @@ export const BlockedBridges = [
 
 // Bridges that initially select the same address on the destination chain but allow changing it
 export const WarnedBridges = [
+  'core.app',
   'across.to', // doesn't send their URL in the session proposal
   'app.allbridge.io',
   'bridge.arbitrum.io',

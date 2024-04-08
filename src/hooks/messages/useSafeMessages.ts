@@ -34,7 +34,7 @@ const useSafeMessages = (
       {
         page,
         error: error?.message,
-        loading: loading,
+        loading,
       }
     : // Stored page
       {

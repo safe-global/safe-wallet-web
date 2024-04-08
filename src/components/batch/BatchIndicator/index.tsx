@@ -15,7 +15,7 @@ const BatchIndicator = ({ onClick }: { onClick?: () => void }) => {
           <Badge
             variant="standard"
             badgeContent={length}
-            color={'secondary'}
+            color="secondary"
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'right',
