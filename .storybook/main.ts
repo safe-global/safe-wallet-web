@@ -26,11 +26,30 @@ const config: StorybookConfig = {
       imageRule['exclude'] = /\.svg$/;
     }
 
-    // Configure .svg files to be loaded with @svgr/webpack
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    });
+      config.module.rules.push({
+        test: /\.svg$/i,
+        issuer: { and: [/\.(js|ts|md)x?$/] },
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: {
+              prettier: false,
+              svgo: false,
+              svgoConfig: {
+                plugins: [
+                  {
+                    name: 'preset-default',
+                    params: {
+                      overrides: { removeViewBox: false },
+                    },
+                  },
+                ],
+              },
+              titleProp: true,
+            },
+          },
+        ],
+      })
 
     return config;
   },
