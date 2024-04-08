@@ -140,7 +140,7 @@ export function clearSearchAppInput() {
 }
 
 export function verifyLinkName(name) {
-  cy.findAllByRole('link', { name: name }).should('have.length', 1)
+  cy.findAllByRole('link', { name }).should('have.length', 1)
 }
 
 export function clickOnApp(app) {

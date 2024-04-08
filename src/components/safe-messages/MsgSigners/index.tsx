@@ -102,7 +102,7 @@ export const MsgSigners = ({
         ))}
       {!showOnlyConfirmations && confirmations.length > 0 && (
         <ListItem>
-          <ListItemIcon sx={{ backgroundColor: backgroundColor }}>
+          <ListItemIcon sx={{ backgroundColor }}>
             <Dot />
           </ListItemIcon>
           <ListItemText>
@@ -121,7 +121,7 @@ export const MsgSigners = ({
             <ListItemText>
               <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
                 <Skeleton variant="circular" width={36} height={36} />
-                <Typography variant="body2" color={'text.secondary'}>
+                <Typography variant="body2" color="text.secondary">
                   Confirmation #{idx + 1 + confirmationsSubmitted}
                 </Typography>
               </Box>

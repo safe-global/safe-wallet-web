@@ -223,7 +223,7 @@ export function verifyEditedNameNotExists(name) {
 }
 
 export function clickOnWhatsNewBtn(force = false) {
-  cy.contains(whatsNewBtnStr).click({ force: force })
+  cy.contains(whatsNewBtnStr).click({ force })
 }
 
 export function acceptBeamerCookies() {

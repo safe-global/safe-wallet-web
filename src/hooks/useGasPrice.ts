@@ -59,7 +59,7 @@ const parseEtherscanOracleResult = (result: EtherscanResult, gweiFactor: string)
   const baseFee = BigInt(Number(result.suggestBaseFee) * Number(gweiFactor))
 
   return {
-    maxFeePerGas: maxFeePerGas,
+    maxFeePerGas,
     maxPriorityFeePerGas: maxFeePerGas - baseFee,
   }
 }
