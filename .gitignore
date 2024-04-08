@@ -53,10 +53,6 @@ yalc.lock
 /public/workbox-*.js
 /public/workbox-*.js.map
 /public/fallback*
-<<<<<<< Updated upstream
-/public/*.js.LICENSE.txt
-=======
 /public/*.js.LICENSE.txt
 certificates
 *storybook.log
->>>>>>> Stashed changes
