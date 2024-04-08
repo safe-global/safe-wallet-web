@@ -13,7 +13,7 @@ import {
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
-  isMultisigExecutionInfo,
+  isMultisigExecutionInfo, isSwapTxInfo,
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -32,6 +32,7 @@ import useIsPending from '@/hooks/useIsPending'
 import { isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { SwapOrder } from '@/components/transactions/TxDetails/TxData/DecodedData/SwapOrder'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -99,6 +100,14 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           )}
           <Summary txDetails={txDetails} />
         </div>
+
+        {isSwapTxInfo(txDetails.txInfo) && (
+          <div className={css.multiSend}>
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo}/>
+            </ErrorBoundary>
+          </div>
+        )}
 
         {isMultiSendTxInfo(txDetails.txInfo) && (
           <div className={css.multiSend}>

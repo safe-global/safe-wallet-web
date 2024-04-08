@@ -1194,24 +1194,24 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cowprotocol/events@^0.1.0-RC.1":
-  version "0.1.0-RC.1"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/events/-/events-0.1.0-RC.1.tgz#805e7764ac1ff233e3c74fb7e726c56abeb81605"
-  integrity sha512-HVs1YzKFzeKkDI+WJwunyS5PKI8csK97ccyDxy3wAEjjFz55IbaFz1Zf7O4iFaL08OLnDSkO3wtwp+chnZ2BQw==
+"@cowprotocol/events@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/events/-/events-0.2.0.tgz#0e92a571b49c9fad995a8112c94c91a0b5cd9b26"
+  integrity sha512-bKMh8ktVXCVHp5wxjLlm5FIyzEgzzCNAgoDtLNvH7sb6mpNMSdIoCSPu1G7vT7JUi/RtO7ngvCzx25vridWEpw==
 
-"@cowprotocol/widget-lib@^0.6.0-RC.4":
-  version "0.6.0-RC.4"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-lib/-/widget-lib-0.6.0-RC.4.tgz#07f669c7c16225d1de94b4423e8ee680103252f6"
-  integrity sha512-8Q36wpY88p0n0ipZmiSZwrcsml4mXUcM37pQEdkHMfrCngy9sN6fxRPOm2ho3e8S7IWEcxWjkY1utVlYeDDMCQ==
+"@cowprotocol/widget-lib@^0.7.0":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-lib/-/widget-lib-0.7.1.tgz#81c678aa32620f1ef254bd076762401e6bc8113a"
+  integrity sha512-1OggHG9rcWotXC1wm0tUYwYtQ42YHiwaPNkmw6Uvs4DwNmfyaUfzk0td6NQRyMK1fIv9lhnD9VzksEunNcIMhQ==
   dependencies:
-    "@cowprotocol/events" "^0.1.0-RC.1"
+    "@cowprotocol/events" "^0.2.0"
 
-"@cowprotocol/widget-react@0.5.0-RC.4":
-  version "0.5.0-RC.4"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-react/-/widget-react-0.5.0-RC.4.tgz#d6b568a49d95e7b2ab818ba48cf1509b570b25d9"
-  integrity sha512-MjvwqQ6iXdYE5qheQlxW8yUhLRg5bSoTd9KdZCqRxD+aP4yS49Kek0eT7WmdPQDuEYuluqmaEsoLkZSvTI7Zng==
+"@cowprotocol/widget-react@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-react/-/widget-react-0.5.0.tgz#bf013096d314543742bdf1ce1a3fd07419a2b209"
+  integrity sha512-LeUZ0E70gLOB1zO3WEj+mJg2iJE3M5aI8jz3x84e43ITJdwZZkEDIgkbS0Rm+cxJQkqwyNoT9IrfqhTNCNNqIg==
   dependencies:
-    "@cowprotocol/widget-lib" "^0.6.0-RC.4"
+    "@cowprotocol/widget-lib" "^0.7.0"
 
 "@cypress/request@2.88.12":
   version "2.88.12"
