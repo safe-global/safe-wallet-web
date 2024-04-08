@@ -12,12 +12,7 @@ const WalletIcon = ({
   icon?: string
 }) => {
   return icon ? (
-    <img
-      width={width}
-      height={height}
-      src={`data:image/svg+xml;utf8,${encodeURIComponent(icon)}`}
-      alt={`${provider} logo`}
-    />
+    <img width={width} height={height} src={icon} alt={`${provider} logo`} />
   ) : (
     <Skeleton variant="circular" width={width} height={height} />
   )
