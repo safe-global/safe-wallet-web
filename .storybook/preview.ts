@@ -1,0 +1,30 @@
+import type { Preview } from '@storybook/react'
+
+import { ThemeProvider, CssBaseline } from '@mui/material'
+import { withThemeFromJSXProvider } from '@storybook/addon-themes'
+import createSafeTheme from '../src/components/theme/safeTheme'
+
+const preview: Preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i,
+      },
+    },
+  },
+
+  decorators: [
+    withThemeFromJSXProvider({
+      GlobalStyles: CssBaseline,
+      Provider: ThemeProvider,
+      themes: {
+        light: createSafeTheme('light'),
+        dark: createSafeTheme('dark'),
+      },
+      defaultTheme: 'light',
+    }),
+  ],
+}
+
+export default preview
