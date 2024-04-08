@@ -22,6 +22,7 @@ export enum TxEvent {
   SUCCESS = 'SUCCESS',
   SAFE_APPS_REQUEST = 'SAFE_APPS_REQUEST',
   BATCH_ADD = 'BATCH_ADD',
+  SPEEDUP_FAILED = 'SPEEDUP_FAILED',
 }
 
 type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
@@ -38,13 +39,18 @@ interface TxEvents {
   [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id
   [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id
   [TxEvent.EXECUTING]: Id
-  [TxEvent.PROCESSING]: Id & { txHash: string }
+  [TxEvent.PROCESSING]: Id & {
+    txHash: string
+    signerAddress: string
+    signerNonce: number
+  } & ({ txType: 'Custom'; data: string; to: string } | { txType: 'SafeTx'; gasLimit: string | number | undefined })
+  [TxEvent.SPEEDUP_FAILED]: Id & { error: Error }
   [TxEvent.PROCESSING_MODULE]: Id & { txHash: string }
-  [TxEvent.PROCESSED]: Id & { safeAddress: string }
+  [TxEvent.PROCESSED]: Id & { safeAddress: string; txHash?: string }
   [TxEvent.REVERTED]: Id & { error: Error }
   [TxEvent.RELAYING]: Id & { taskId: string }
   [TxEvent.FAILED]: Id & { error: Error }
-  [TxEvent.SUCCESS]: Id
+  [TxEvent.SUCCESS]: Id & { txHash?: string }
   [TxEvent.SAFE_APPS_REQUEST]: { safeAppRequestId: RequestId; safeTxHash: string; txId?: string }
   [TxEvent.BATCH_ADD]: Id
 }

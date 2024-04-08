@@ -289,8 +289,8 @@ describe('useNotificationPreferences', () => {
 
         const preferences = {
           [`${chainId}:${safeAddress}`]: {
-            chainId: chainId,
-            safeAddress: safeAddress,
+            chainId,
+            safeAddress,
             preferences: DEFAULT_NOTIFICATION_PREFERENCES,
           },
         }
@@ -307,8 +307,8 @@ describe('useNotificationPreferences', () => {
         await waitFor(() => {
           expect(result.current.getAllPreferences()).toEqual({
             [`${chainId}:${safeAddress}`]: {
-              chainId: chainId,
-              safeAddress: safeAddress,
+              chainId,
+              safeAddress,
               preferences: {
                 ...DEFAULT_NOTIFICATION_PREFERENCES,
                 [WebhookType.CONFIRMATION_REQUEST]: false,

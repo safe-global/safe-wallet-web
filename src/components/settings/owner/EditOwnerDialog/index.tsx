@@ -25,8 +25,8 @@ export const EditOwnerDialog = ({ chainId, address, name }: { chainId: string; a
     if (data.name !== name) {
       dispatch(
         upsertAddressBookEntry({
-          chainId: chainId,
-          address: address,
+          chainId,
+          address,
           name: data.name,
         }),
       )

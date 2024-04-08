@@ -14,7 +14,10 @@
         "additionalHooks": "useAsync"
       }
     ],
-    "no-only-tests/no-only-tests": "error"
+    "no-only-tests/no-only-tests": "error",
+    "object-shorthand": ["error", "properties"],
+    "jsx-quotes": ["error", "prefer-double"],
+    "react/jsx-curly-brace-presence": ["error", { "props": "never", "children": "never" }]
   },
   "ignorePatterns": ["node_modules/", ".next/", ".github/"],
   "plugins": ["unused-imports", "@typescript-eslint", "no-only-tests"]

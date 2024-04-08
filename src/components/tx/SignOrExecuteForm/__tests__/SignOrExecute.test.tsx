@@ -81,7 +81,7 @@ describe('SignOrExecute', () => {
         safeTx={safeTxBuilder().build()}
         onSubmit={jest.fn()}
         safeTxError={undefined}
-        txId={'someid'}
+        txId="someid"
         isExecutable={true}
         chainId="1"
       />,

@@ -84,7 +84,7 @@ const SafeAppCardGridView = ({
   openPreviewDrawer,
 }: SafeAppCardViewProps) => {
   return (
-    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp} height={'100%'}>
+    <SafeAppCardContainer safeAppUrl={safeAppUrl} onClickSafeApp={onClickSafeApp} height="100%">
       {/* Safe App Header */}
       <CardHeader
         className={css.safeAppHeader}

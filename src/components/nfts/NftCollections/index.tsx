@@ -86,7 +86,7 @@ const NftCollections = (): ReactElement => {
       )}
 
       {/* NFT preview */}
-      {<NftPreviewModal onClose={() => setPreviewNft(undefined)} nft={previewNft} />}
+      <NftPreviewModal onClose={() => setPreviewNft(undefined)} nft={previewNft} />
     </>
   )
 }
