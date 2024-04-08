@@ -102,6 +102,13 @@ describe('TxSummary', () => {
     expect(getByTestId('tx-status-label')).toBeInTheDocument()
   })
 
+  it('should display a status label if transaction is not in queue', () => {
+    jest.spyOn(pending, 'default').mockReturnValue(true)
+    const { getByTestId } = render(<TxSummary item={mockTransactionInHistory} isGrouped={false} />)
+
+    expect(getByTestId('tx-status-label')).toBeInTheDocument()
+  })
+
   it('should not display a status label if transaction is in queue and not pending', () => {
     jest.spyOn(pending, 'default').mockReturnValue(false)
     const { queryByTestId } = render(<TxSummary item={mockTransaction} isGrouped={false} />)
