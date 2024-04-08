@@ -11,7 +11,7 @@ const ReplacedStatus = 'WILL_BE_REPLACED'
 
 type TxLocalStatus = TransactionStatus | PendingStatus | typeof ReplacedStatus
 
-const STATUS_LABELS: Record<TxLocalStatus, string> = {
+export const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [TransactionStatus.AWAITING_CONFIRMATIONS]: 'Awaiting confirmations',
   [TransactionStatus.AWAITING_EXECUTION]: 'Awaiting execution',
   [TransactionStatus.CANCELLED]: 'Cancelled',
