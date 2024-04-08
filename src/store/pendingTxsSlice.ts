@@ -11,16 +11,68 @@ export enum PendingStatus {
   INDEXING = 'INDEXING',
 }
 
-export type PendingTx = {
+export enum PendingTxType {
+  CUSTOM_TX = 'CUSTOM',
+  SAFE_TX = 'SAFE_TX',
+}
+
+const ActivePendingStates = [PendingStatus.RELAYING, PendingStatus.INDEXING, PendingStatus.PROCESSING]
+
+export type PendingTxCommonProps = {
   chainId: string
   safeAddress: string
-  status: PendingStatus
-  txHash?: string
   groupKey?: string
-  signerAddress?: string
-  taskId?: string
-  submittedAt?: number
 }
+
+type PendingSigningTx = PendingTxCommonProps & {
+  status: PendingStatus.SIGNING
+  signerAddress: string
+}
+
+type PendingSubmittingTx = PendingTxCommonProps & {
+  status: PendingStatus.SUBMITTING
+}
+
+export type PendingProcessingTx = PendingTxCommonProps &
+  (
+    | {
+        txHash: string
+        submittedAt: number
+        signerNonce: number
+        signerAddress: string
+        gasLimit?: string | number | undefined
+        status: PendingStatus.PROCESSING
+        txType: PendingTxType.SAFE_TX
+      }
+    | {
+        txHash: string
+        submittedAt: number
+        signerNonce: number
+        signerAddress: string
+        gasLimit?: string | number | undefined
+        data: string
+        to: string
+        status: PendingStatus.PROCESSING
+        txType: PendingTxType.CUSTOM_TX
+      }
+  )
+
+type PendingRelayingTx = PendingTxCommonProps & {
+  taskId: string
+  status: PendingStatus.RELAYING
+}
+
+type PendingIndexingTx = PendingTxCommonProps & {
+  status: PendingStatus.INDEXING
+  txHash?: string
+}
+
+export type PendingTx =
+  | PendingSigningTx
+  | PendingSubmittingTx
+  | PendingProcessingTx
+  | PendingRelayingTx
+  | PendingIndexingTx
 
 export type PendingTxsState = {
   [txId: string]: PendingTx

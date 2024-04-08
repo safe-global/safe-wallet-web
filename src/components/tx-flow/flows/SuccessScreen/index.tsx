@@ -1,17 +1,20 @@
-import StatusMessage from './StatusMessage'
 import StatusStepper from './StatusStepper'
 import { Button, Container, Divider, Paper } from '@mui/material'
 import classnames from 'classnames'
 import Link from 'next/link'
 import css from './styles.module.css'
 import { useAppSelector } from '@/store'
-import { selectPendingTxById } from '@/store/pendingTxsSlice'
-import { useEffect, useState, useCallback, useContext } from 'react'
+import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { getTxLink } from '@/hooks/useTxNotifications'
 import { useCurrentChain } from '@/hooks/useChains'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { TxModalContext } from '../..'
+import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/steps/StatusStep/LoadingSpinner'
+import { ProcessingStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/ProcessingStatus'
+import { IndexingStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/IndexingStatus'
+import { DefaultStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/DefaultStatus'
 
 const SuccessScreen = ({ txId }: { txId: string }) => {
   const [localTxHash, setLocalTxHash] = useState<string>()
@@ -20,7 +23,8 @@ const SuccessScreen = ({ txId }: { txId: string }) => {
   const chain = useCurrentChain()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
   const { safeAddress } = useSafeInfo()
-  const { txHash = '', status } = pendingTx || {}
+  const { status } = pendingTx || {}
+  const txHash = pendingTx && 'txHash' in pendingTx ? pendingTx.txHash : undefined
   const txLink = chain && getTxLink(txId, chain, safeAddress)
 
   useEffect(() => {
@@ -32,16 +36,32 @@ const SuccessScreen = ({ txId }: { txId: string }) => {
   useEffect(() => {
     const unsubFns: Array<() => void> = ([TxEvent.FAILED, TxEvent.REVERTED] as const).map((event) =>
       txSubscribe(event, (detail) => {
-        if (detail.txId === txId) setError(detail.error)
+        if (detail.txId === txId && pendingTx) setError(detail.error)
       }),
     )
 
     return () => unsubFns.forEach((unsubscribe) => unsubscribe())
-  }, [txId])
+  }, [txId, pendingTx])
 
   const onClose = useCallback(() => {
     setTxFlow(undefined)
   }, [setTxFlow])
+
+  const isSuccess = status === undefined
+  const spinnerStatus = error ? SpinnerStatus.ERROR : isSuccess ? SpinnerStatus.SUCCESS : SpinnerStatus.PROCESSING
+
+  let StatusComponent
+  switch (status) {
+    case PendingStatus.PROCESSING:
+    case PendingStatus.RELAYING:
+      StatusComponent = <ProcessingStatus txId={txId} pendingTx={pendingTx} />
+      break
+    case PendingStatus.INDEXING:
+      StatusComponent = <IndexingStatus />
+      break
+    default:
+      StatusComponent = <DefaultStatus error={error} />
+  }
 
   return (
     <Container
@@ -54,7 +74,8 @@ const SuccessScreen = ({ txId }: { txId: string }) => {
       maxWidth={false}
     >
       <div className={css.row}>
-        <StatusMessage status={status} error={error} />
+        <LoadingSpinner status={spinnerStatus} />
+        {StatusComponent}
       </div>
 
       {!error && (
