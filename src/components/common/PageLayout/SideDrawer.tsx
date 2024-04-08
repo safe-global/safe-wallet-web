@@ -33,13 +33,13 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
 
   // Close the drawer whenever the route changes
   useEffect(() => {
-    const onRouteChange = () => onToggle(false)
+    const onRouteChange = () => isSmallScreen && onToggle(false)
     router.events.on('routeChangeStart', onRouteChange)
 
     return () => {
       router.events.off('routeChangeStart', onRouteChange)
     }
-  }, [onToggle, router])
+  }, [onToggle, router, isSmallScreen])
 
   return (
     <>
