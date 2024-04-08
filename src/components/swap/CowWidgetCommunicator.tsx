@@ -125,7 +125,6 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
       // provider: safeAppWeb3Provider, // Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com
       chainId: chainId, // 1 (Mainnet), 5 (Goerli), 100 (Gnosis)
       // standaloneMode: false,
-      baseUrl: 'https://swap-dev-git-feat-snackbars-from-events-8-cowswap.vercel.app/',
       disableToastMessages: true,
       disablePostedOrderConfirmationModal: true,
       hideLogo: true,
