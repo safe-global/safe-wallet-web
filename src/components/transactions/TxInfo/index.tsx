@@ -6,6 +6,7 @@ import type {
   TransactionInfo,
   MultiSend,
   SettingsChange,
+  SwapOrder,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
@@ -17,6 +18,7 @@ import {
   isMultiSendTxInfo,
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
+  isSwapTxInfo,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
@@ -87,6 +89,13 @@ const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   )
 }
 
+const SwapTx = ({ info }: { info: SwapOrder }): ReactElement => {
+  return (
+    <>
+      Swap {info.sellToken.symbol} to {info.buyToken.symbol}
+    </>
+  )
+}
 const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   if (
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
@@ -117,6 +126,10 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
 
   if (isCreationTxInfo(info)) {
     return <CreationTx info={info} />
+  }
+
+  if (isSwapTxInfo(info)) {
+    return <SwapTx info={info} />
   }
 
   return <></>
