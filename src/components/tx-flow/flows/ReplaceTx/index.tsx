@@ -92,7 +92,7 @@ const ReplaceTxMenu = ({
             title={canCancel ? '' : `Transaction with nonce ${txNonce} already has a reject transaction`}
           >
             <span style={{ width: '100%' }}>
-              <Track {...REJECT_TX_EVENTS.REPLACE_TX_BUTTON} as="div">
+              <Track {...REJECT_TX_EVENTS.REJECT_ONCHAIN_BUTTON} as="div">
                 <ChoiceButton
                   icon={CancelIcon}
                   iconColor="warning"
