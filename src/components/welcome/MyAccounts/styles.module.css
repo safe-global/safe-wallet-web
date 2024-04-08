@@ -104,7 +104,11 @@
 }
 
 .pendingAccount {
-  background-color: var(--color-info-background);
+  background-color: var(--color-info-light);
+}
+
+.pendingLoopIcon {
+  color: var(--color-info-dark) !important;
 }
 
 @media (max-width: 899.95px) {

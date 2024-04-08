@@ -92,7 +92,7 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
                   label={isActivating ? 'Activating account' : 'Not activated'}
                   icon={
                     isActivating ? (
-                      <LoopIcon fontSize="small" color="info" sx={{ mr: '-4px', ml: '4px' }} />
+                      <LoopIcon fontSize="small" className={css.pendingLoopIcon} sx={{ mr: '-4px', ml: '4px' }} />
                     ) : (
                       <ErrorOutlineIcon fontSize="small" color="warning" />
                     )
