@@ -54,12 +54,12 @@ export const MODALS_EVENTS = {
     event: EventType.META,
   },
   OPEN_SPEED_UP_MODAL: {
-    action: 'Open speed up modal',
+    action: 'Open speed-up modal',
     category: MODALS_CATEGORY,
     event: EventType.CLICK,
   },
   CANCEL_SPEED_UP: {
-    action: 'Cancel speed up',
+    action: 'Cancel speed-up',
     category: MODALS_CATEGORY,
     event: EventType.CLICK,
   },
