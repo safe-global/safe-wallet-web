@@ -41,7 +41,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
             Safe accounts
           </Typography>
           <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
-            <CreateButton />
+            <CreateButton isPrimary={!!wallet} />
           </Track>
         </Box>
 
@@ -56,7 +56,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               <>
                 <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
                 <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={trackingLabel}>
-                  <ConnectWalletButton text="Connect a wallet" contained={false} />
+                  <ConnectWalletButton text="Connect a wallet" contained />
                 </Track>
               </>
             )
