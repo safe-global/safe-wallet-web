@@ -72,9 +72,9 @@ export const useCustomAppCommunicator = (
       const data = {
         app: appData,
         appId: appData ? String(appData.id) : undefined,
-        requestId: requestId,
-        txs: txs,
-        params: params,
+        requestId,
+        txs,
+        params,
       }
 
       setCurrentRequestId(requestId)

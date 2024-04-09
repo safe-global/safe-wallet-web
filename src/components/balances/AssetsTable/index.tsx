@@ -138,7 +138,7 @@ const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: numbe
                 query: {
                   ...router.query,
                   token: tokenInfo.symbol,
-                  amount: amount,
+                  amount,
                 },
               })
             }}

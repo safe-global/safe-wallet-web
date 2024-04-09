@@ -39,6 +39,7 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
+import type { SwapOrder } from '../../../safe-gateway-typescript-sdk'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -88,7 +89,7 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
   )
 }
 
-export const isSwapTxInfo = (value: TransactionInfo): value is MultiSend => {
+export const isSwapTxInfo = (value: TransactionInfo): value is SwapOrder => {
   return value.type === TransactionInfoType.SWAP_ORDER
 }
 

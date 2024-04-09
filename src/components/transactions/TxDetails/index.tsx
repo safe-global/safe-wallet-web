@@ -13,7 +13,8 @@ import {
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
-  isMultisigExecutionInfo, isSwapTxInfo,
+  isMultisigExecutionInfo,
+  isSwapTxInfo,
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -104,7 +105,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         {isSwapTxInfo(txDetails.txInfo) && (
           <div className={css.multiSend}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
-              <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo}/>
+              <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
             </ErrorBoundary>
           </div>
         )}
