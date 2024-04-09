@@ -41,7 +41,7 @@ export const SpeedUpMonitor = ({ txId, pendingTx, modalTrigger = 'alertBox' }: S
   const onOpen: MouseEventHandler = (e) => {
     e.stopPropagation()
     setOpenSpeedUpModal(true)
-    trackEvent(MODALS_EVENTS.OPEN_SPEEDUP_MODAL)
+    trackEvent(MODALS_EVENTS.OPEN_SPEED_UP_MODAL)
   }
 
   return (

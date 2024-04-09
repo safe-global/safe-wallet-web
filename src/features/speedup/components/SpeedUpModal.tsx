@@ -182,7 +182,7 @@ export const SpeedUpModal = ({
         </DialogContent>
 
         <DialogActions>
-          <Track {...MODALS_EVENTS.CANCEL_SPEEDUP}>
+          <Track {...MODALS_EVENTS.CANCEL_SPEED_UP}>
             <Button onClick={handleClose}>Cancel</Button>
           </Track>
 

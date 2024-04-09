@@ -48,7 +48,7 @@ export const TX_EVENTS = {
   },
   SPEED_UP: {
     event: EventType.TX_EXECUTED,
-    action: 'Speedup transaction',
+    action: 'Speed up transaction',
     category: TX_CATEGORY,
   },
 }
