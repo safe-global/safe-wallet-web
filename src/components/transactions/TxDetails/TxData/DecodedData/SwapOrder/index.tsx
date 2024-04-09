@@ -1,10 +1,6 @@
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { Operation, SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
-import type { TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
-import { useState, useEffect } from 'react'
+import { type SwapOrder as SwapOrderType, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
-import type { AccordionProps } from '@mui/material/Accordion/Accordion'
-import SingleTxDecoded from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded'
 import { Button, Divider, Stack } from '@mui/material'
 import css from './styles.module.css'
 import classnames from 'classnames'
@@ -13,7 +9,7 @@ import Image from 'next/image'
 
 type SwapOrderProps = {
   txData?: TransactionData
-  txInfo?: SwapOrder
+  txInfo?: SwapOrderType
 }
 
 export const SwapOrderHeader = ({
@@ -46,7 +42,7 @@ export const SwapOrderHeader = ({
   )
 }
 
-const SellOrder = ({ order }: { order: SwapOrder }) => {
+const SellOrder = ({ order }: { order: SwapOrderType }) => {
   const { buyToken, sellToken, orderUid, expiresTimestamp, status, surplusLabel } = order
   return (
     <div className="sell-order">
@@ -58,17 +54,18 @@ const SellOrder = ({ order }: { order: SwapOrder }) => {
             <div>
               Sell{' '}
               <span className="value">
-              <Image src={sellToken.logo} alt={sellToken.symbol}  width={32} height={32}/> {sellToken.amount} {sellToken.symbol}
-            </span>
+                {sellToken.logo && <Image src={sellToken.logo} alt={sellToken.symbol} width={32} height={32} />}{' '}
+                {sellToken.amount} {sellToken.symbol}
+              </span>
             </div>
             <div>
               For at least{' '}
               <span className="value">
-             <Image src={buyToken.logo} alt={buyToken.symbol} width={32} height={32}/>{buyToken.amount} {buyToken.symbol}
-            </span>
-
+                {buyToken.logo && <Image src={buyToken.logo} alt={buyToken.symbol} width={32} height={32} />}
+                {buyToken.amount} {buyToken.symbol}
+              </span>
             </div>
-                      </div>
+          </div>
         </div>
         <div className="detail">
           <span className="label">Expiry:</span>
@@ -87,25 +84,7 @@ const SellOrder = ({ order }: { order: SwapOrder }) => {
 }
 
 export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | null => {
-  const [openMap, setOpenMap] = useState<Record<number, boolean>>()
-  const isOpenMapUndefined = openMap == null
-
-  // const { amount, limitPrice, expiry, orderId, status } = txInfo
-  // console.log('multisend tx', txData)
-  // multiSend method receives one parameter `transactions`
   const multiSendTransactions = txData?.dataDecoded?.parameters?.[0].valueDecoded
-
-  console.log('swap order', txInfo)
-  // useEffect(() => {
-  //   // Initialise whether each transaction should be expanded or not
-  //   if (isOpenMapUndefined && multiSendTransactions) {
-  //     setOpenMap(
-  //       multiSendTransactions.map(({ operation }) => {
-  //         return showDelegateCallWarning ? operation === Operation.DELEGATE : false
-  //       }),
-  //     )
-  //   }
-  // }, [multiSendTransactions, isOpenMapUndefined, showDelegateCallWarning])
 
   if (!txData) return null
 
@@ -117,49 +96,10 @@ export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | nu
     return null
   }
 
-  // if (multiSendTransactions) {
-  //   return <Multisend txData={txData} />
-  // }
-
   return (
     <>
-      <SellOrder order={txInfo} />
+      {txInfo && <SellOrder order={txInfo} />}
       {multiSendTransactions && <Multisend txData={txData} />}
-    </>
-  )
-  return (
-    <>
-      <SwapOrderHeader setOpen={setOpenMap} amount={multiSendTransactions.length} />
-
-      <div className={compact ? css.compact : ''}>
-        {multiSendTransactions.map(({ dataDecoded, data, value, to, operation }, index) => {
-          const onChange: AccordionProps['onChange'] = (_, expanded) => {
-            setOpenMap((prev) => ({
-              ...prev,
-              [index]: expanded,
-            }))
-          }
-
-          return (
-            <SingleTxDecoded
-              key={`${data ?? to}-${index}`}
-              tx={{
-                dataDecoded,
-                data,
-                value,
-                to,
-                operation,
-              }}
-              txData={txData}
-              showDelegateCallWarning={showDelegateCallWarning}
-              actionTitle={`${index + 1}`}
-              variant={compact ? 'outlined' : 'elevation'}
-              expanded={openMap?.[index] ?? false}
-              onChange={onChange}
-            />
-          )
-        })}
-      </div>
     </>
   )
 }

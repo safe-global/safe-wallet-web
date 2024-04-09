@@ -61,7 +61,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
                 showNotification({
                   title: 'Order created',
                   message: 'Order created but waiting for presignature',
-                  groupKey: groupKey,
+                  groupKey,
                   variant: 'info',
                 }),
               )
@@ -72,7 +72,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
                 showNotification({
                   title: 'Order presigned waiting for fullfillment',
                   message: 'Order was presigned and waiting for match',
-                  groupKey: groupKey,
+                  groupKey,
                   variant: 'info',
                 }),
               )
@@ -83,7 +83,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
                 showNotification({
                   title: 'Order fullfilled',
                   message: 'Order was fullfilled',
-                  groupKey: groupKey,
+                  groupKey,
                   variant: 'info',
                 }),
               )
@@ -93,8 +93,8 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
               dispatch(
                 showNotification({
                   title: 'Order expired',
-                  message: message,
-                  groupKey: groupKey,
+                  message,
+                  groupKey,
                   variant: 'warning',
                 }),
               )
@@ -104,8 +104,8 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
               dispatch(
                 showNotification({
                   title: 'Order cancelled',
-                  message: message,
-                  groupKey: groupKey,
+                  message,
+                  groupKey,
                   variant: 'warning',
                 }),
               )
@@ -123,7 +123,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
       width: '100%', // Width in pixels (or 100% to use all available space)
       height: '860px',
       // provider: safeAppWeb3Provider, // Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com
-      chainId: chainId, // 1 (Mainnet), 5 (Goerli), 100 (Gnosis)
+      chainId, // 1 (Mainnet), 5 (Goerli), 100 (Gnosis)
       // standaloneMode: false,
       disableToastMessages: true,
       disablePostedOrderConfirmationModal: true,
@@ -198,7 +198,7 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
   console.log('params', params, listeners)
 
   return (
-    <Box sx={{ height: '100%' }} id={'swapWidget'}>
+    <Box sx={{ height: '100%' }} id="swapWidget">
       <CowSwapWidget params={params} listeners={listeners} />
     </Box>
   )
