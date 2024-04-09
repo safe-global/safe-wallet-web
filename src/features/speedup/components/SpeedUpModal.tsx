@@ -24,6 +24,8 @@ import useAsync from '@/hooks/useAsync'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
+import { trackError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 
 type Props = {
   open: boolean
@@ -121,6 +123,7 @@ export const SpeedUpModal = ({
       const error = asError(e)
       setWaitingForConfirmation(false)
       if (!isWalletRejection(error)) {
+        trackError(ErrorCodes._814, error)
         dispatch(
           showNotification({
             message: 'Speed up failed',
