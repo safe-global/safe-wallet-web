@@ -76,7 +76,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       {(!isQueue || isPending) && (
-        <Box gridArea="status" justifyContent="flex-end" display="flex" mr={5}>
+        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
           <TxStatusLabel tx={tx} />
         </Box>
       )}

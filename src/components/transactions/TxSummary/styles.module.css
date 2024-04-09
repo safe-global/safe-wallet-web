@@ -39,6 +39,10 @@
   opacity: 0.4;
 }
 
+.gridContainer .status {
+  margin-right: var(--space-3);
+}
+
 .date {
   color: var(--color-text-secondary);
 }
@@ -56,5 +60,9 @@
 
   .date {
     width: 100%;
+  }
+
+  .status {
+    margin: 0 var(--space-1);
   }
 }
