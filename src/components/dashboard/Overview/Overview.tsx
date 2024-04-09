@@ -121,7 +121,7 @@ const Overview = (): ReactElement => {
               )}
 
               <Grid item xs={6} sm="auto">
-                <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type={'button'}>
+                <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
                   <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconNW />} fullWidth>
                     Swap
                   </Button>
