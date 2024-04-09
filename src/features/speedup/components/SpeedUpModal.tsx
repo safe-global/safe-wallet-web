@@ -24,7 +24,6 @@ import useAsync from '@/hooks/useAsync'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
-import Track from '@/components/common/Track'
 
 type Props = {
   open: boolean
