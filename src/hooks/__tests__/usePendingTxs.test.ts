@@ -1,14 +1,19 @@
 import { type PendingTx } from '@/store/pendingTxsSlice'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { act, renderHook } from '@/tests/test-utils'
-import type { Label, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type Label,
+  type Transaction,
+  getTransactionQueue,
+  TransactionListItemType,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import { useHasPendingTxs, usePendingTxsQueue } from '../usePendingTxs'
 
 // Mock getTransactionQueue
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
-  getTransactionQueue: () =>
+  getTransactionQueue: jest.fn(() =>
     Promise.resolve({
       next: null,
       previous: null,
@@ -31,6 +36,7 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
         },
       ],
     }),
+  ),
 }))
 
 describe('usePendingTxsQueue', () => {
@@ -54,6 +60,82 @@ describe('usePendingTxsQueue', () => {
   })
 
   it('should return the pending txs queue', async () => {
+    const { result } = renderHook(() => usePendingTxsQueue(), {
+      initialReduxState: {
+        pendingTxs: {
+          multisig_123: {
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000001',
+            txHash: 'tx123',
+          } as PendingTx,
+        },
+      },
+    })
+
+    expect(result?.current.loading).toBe(true)
+
+    await act(() => Promise.resolve(true))
+
+    const resultItems = result?.current.page?.results
+
+    expect(result?.current.loading).toBe(false)
+    expect(result?.current.page).toBeDefined()
+    expect(resultItems?.length).toBe(2)
+    expect((resultItems?.[0] as Label).label).toBe('Pending')
+    expect((resultItems?.[1] as Transaction).transaction.id).toBe('multisig_123')
+  })
+
+  it('should return undefined if none of the returned txs are pending', async () => {
+    const { result } = renderHook(() => usePendingTxsQueue(), {
+      initialReduxState: {
+        pendingTxs: {
+          multisig_567: {
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000001',
+            txHash: 'tx567',
+          } as PendingTx,
+        },
+      },
+    })
+
+    expect(result?.current.loading).toBe(true)
+
+    await act(() => Promise.resolve(true))
+
+    expect(result?.current.loading).toBe(false)
+    expect(result?.current.page).toBeUndefined()
+  })
+
+  it('should remove conflicting header if only one of the conflicting txs is pending', async () => {
+    ;(getTransactionQueue as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        next: null,
+        previous: null,
+        results: [
+          {
+            type: 'LABEL',
+            label: 'Next',
+          },
+          {
+            type: TransactionListItemType.CONFLICT_HEADER,
+            nonce: 2,
+          },
+          {
+            type: 'TRANSACTION',
+            transaction: {
+              id: 'multisig_123',
+            },
+          },
+          {
+            type: 'TRANSACTION',
+            transaction: {
+              id: 'multisig_456',
+            },
+          },
+        ],
+      }),
+    )
+
     const { result } = renderHook(() => usePendingTxsQueue(), {
       initialReduxState: {
         pendingTxs: {

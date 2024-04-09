@@ -1,5 +1,6 @@
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { txDispatch, txSubscribe, TxEvent } from '../txEvents'
+import { faker } from '@faker-js/faker'
 
 const tx = {
   safeTxHash: '0x123',
@@ -12,8 +13,11 @@ describe('txEvents', () => {
     const detail = {
       txId: '123',
       txHash: '0x123',
-      tx,
-    }
+      signerAddress: faker.finance.ethereumAddress(),
+      signerNonce: 0,
+      gasLimit: 40_000,
+      txType: 'SafeTx',
+    } as const
 
     const callback = jest.fn()
 
@@ -26,8 +30,12 @@ describe('txEvents', () => {
     const detail2 = {
       txId: '123',
       txHash: '0x456',
-      tx,
-    }
+      signerAddress: faker.finance.ethereumAddress(),
+      signerNonce: 0,
+      data: '0x123456',
+      to: faker.finance.ethereumAddress(),
+      txType: 'Custom',
+    } as const
 
     txDispatch(event, detail2)
 
