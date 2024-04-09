@@ -8,6 +8,8 @@ import useAsync from '@/hooks/useAsync'
 import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSpeedableTx } from '@/features/speedup/utils/IsSpeedableTx'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 type SpeedUpMonitorProps = {
   txId: string
@@ -22,13 +24,14 @@ export const SpeedUpMonitor = ({ txId, pendingTx, modalTrigger = 'alertBox' }: S
   const wallet = useWallet()
   const counter = useCounter(pendingTx.submittedAt)
   const web3ReadOnly = useWeb3ReadOnly()
+  const isFeatureEnabled = useHasFeature(FEATURES.SPEED_UP_TX)
 
   const [smartContract] = useAsync(async () => {
     if (!pendingTx.signerAddress || !web3ReadOnly) return false
     return isSmartContract(web3ReadOnly, pendingTx.signerAddress)
   }, [pendingTx.signerAddress, web3ReadOnly])
 
-  if (!isSpeedableTx(pendingTx, smartContract, wallet?.address ?? '')) {
+  if (!isFeatureEnabled || !isSpeedableTx(pendingTx, smartContract, wallet?.address ?? '')) {
     return null
   }
 
