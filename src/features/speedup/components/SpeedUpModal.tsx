@@ -67,6 +67,11 @@ export const SpeedUpModal = ({
 
   const safeTxHasSignatures = !!safeTx?.signatures?.size ? true : false
 
+  const onCancel = () => {
+    trackEvent(MODALS_EVENTS.CANCEL_SPEED_UP)
+    handleClose()
+  }
+
   const onSubmit = useCallback(async () => {
     if (!wallet || !speedUpFee || !onboard || !chainInfo || !safeTx) {
       return null
@@ -149,7 +154,7 @@ export const SpeedUpModal = ({
 
   if (safeTxHasSignatures) {
     return (
-      <ModalDialog open={open} onClose={handleClose} dialogTitle="Speed up transaction">
+      <ModalDialog open={open} onClose={onCancel} dialogTitle="Speed up transaction">
         <DialogContent sx={{ p: '24px !important' }}>
           <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
             <SvgIcon inheritViewBox component={RocketSpeedup} sx={{ width: 90, height: 90 }} />
@@ -182,9 +187,7 @@ export const SpeedUpModal = ({
         </DialogContent>
 
         <DialogActions>
-          <Track {...MODALS_EVENTS.CANCEL_SPEED_UP}>
-            <Button onClick={handleClose}>Cancel</Button>
-          </Track>
+          <Button onClick={onCancel}>Cancel</Button>
 
           <Tooltip title="Speed up transaction">
             <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>
