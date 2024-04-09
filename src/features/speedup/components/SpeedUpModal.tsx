@@ -21,6 +21,10 @@ import { isWalletRejection } from '@/utils/wallets'
 import { type TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { PendingTxType, type PendingProcessingTx } from '@/store/pendingTxsSlice'
 import useAsync from '@/hooks/useAsync'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
+import Track from '@/components/common/Track'
 
 type Props = {
   open: boolean
@@ -84,9 +88,11 @@ export const SpeedUpModal = ({
           txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
           txId,
           onboard,
-          chainInfo?.chainId,
+          chainInfo.chainId,
           safeAddress,
         )
+        const txType = await getTransactionTrackingType(chainInfo.chainId, txId)
+        trackEvent({ ...TX_EVENTS.SPEED_UP, label: txType })
       } else {
         await dispatchCustomTxSpeedUp(
           txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
@@ -97,6 +103,8 @@ export const SpeedUpModal = ({
           chainInfo?.chainId,
           safeAddress,
         )
+        // Currently all custom txs are batch executes
+        trackEvent({ ...TX_EVENTS.SPEED_UP, label: 'batch' })
       }
 
       if (txHash) {
@@ -174,7 +182,9 @@ export const SpeedUpModal = ({
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Track {...MODALS_EVENTS.CANCEL_SPEEDUP}>
+            <Button onClick={handleClose}>Cancel</Button>
+          </Track>
 
           <Tooltip title="Speed up transaction">
             <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>

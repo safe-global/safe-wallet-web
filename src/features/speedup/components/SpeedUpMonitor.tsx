@@ -2,12 +2,14 @@ import { Alert, AlertTitle, Box, Button, SvgIcon, Typography } from '@mui/materi
 import { SpeedUpModal } from '@/features/speedup/components/SpeedUpModal'
 import Rocket from '@/public/images/common/rocket.svg'
 import { useCounter } from '@/components/common/Notifications/useCounter'
+import type { MouseEventHandler } from 'react'
 import { useState } from 'react'
 import type { PendingProcessingTx } from '@/store/pendingTxsSlice'
 import useAsync from '@/hooks/useAsync'
 import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSpeedableTx } from '@/features/speedup/utils/IsSpeedableTx'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 
 type SpeedUpMonitorProps = {
   txId: string
@@ -36,6 +38,12 @@ export const SpeedUpMonitor = ({ txId, pendingTx, modalTrigger = 'alertBox' }: S
     return null
   }
 
+  const onOpen: MouseEventHandler = (e) => {
+    e.stopPropagation()
+    setOpenSpeedUpModal(true)
+    trackEvent(MODALS_EVENTS.OPEN_SPEEDUP_MODAL)
+  }
+
   return (
     <>
       <Box>
@@ -53,14 +61,7 @@ export const SpeedUpMonitor = ({ txId, pendingTx, modalTrigger = 'alertBox' }: S
           <Alert
             severity="warning"
             icon={<SvgIcon component={Rocket} />}
-            action={
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setOpenSpeedUpModal(true)
-                }}
-              >{`Speed up >`}</Button>
-            }
+            action={<Button onClick={onOpen}>{`Speed up >`}</Button>}
           >
             <AlertTitle>
               <Typography textAlign="left">Taking too long?</Typography>
@@ -68,15 +69,7 @@ export const SpeedUpMonitor = ({ txId, pendingTx, modalTrigger = 'alertBox' }: S
             Try to speed up with better gas parameters.
           </Alert>
         ) : (
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ py: 0.6 }}
-            onClick={(e) => {
-              e.stopPropagation()
-              setOpenSpeedUpModal(true)
-            }}
-          >
+          <Button variant="outlined" size="small" sx={{ py: 0.6 }} onClick={onOpen}>
             Speed up
           </Button>
         )}
