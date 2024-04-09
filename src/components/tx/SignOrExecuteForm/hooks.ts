@@ -40,6 +40,7 @@ export const useTxActions = (): TxActions => {
   return useMemo<TxActions>(() => {
     const safeAddress = safe.address.value
     const { chainId, version } = safe
+    console.log('即将交易')
 
     const proposeTx = async (sender: string, safeTx: SafeTransaction, txId?: string, origin?: string) => {
       return dispatchTxProposal({
@@ -52,11 +53,13 @@ export const useTxActions = (): TxActions => {
       })
     }
 
+    console.log('准备add')
     const addToBatch: TxActions['addToBatch'] = async (safeTx, origin) => {
       assertTx(safeTx)
       assertWallet(wallet)
-
+      console.log('2')
       const tx = await proposeTx(wallet.address, safeTx, undefined, origin)
+      console.log('txtxtx', tx)
       await addTxToBatch(tx)
       return tx.txId
     }
@@ -83,6 +86,7 @@ export const useTxActions = (): TxActions => {
         // If the first signature is a smart contract wallet, we have to propose w/o signatures
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed
+        console.log('3')
         const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin)).txId
         await dispatchOnChainSigning(safeTx, id, onboard, chainId)
         return id
@@ -90,6 +94,7 @@ export const useTxActions = (): TxActions => {
 
       // Otherwise, sign off-chain
       const signedTx = await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
+      console.log('4')
       const tx = await proposeTx(wallet.address, signedTx, txId, origin)
       return tx.txId
     }
@@ -103,12 +108,15 @@ export const useTxActions = (): TxActions => {
       // Relayed transactions must be fully signed, so request a final signature if needed
       if (isRelayed && safeTx.signatures.size < safe.threshold) {
         safeTx = await signRelayedTx(safeTx)
+        console.log('5')
         tx = await proposeTx(wallet.address, safeTx, txId, origin)
         txId = tx.txId
       }
 
       // Propose the tx if there's no id yet ("immediate execution")
       if (!txId) {
+        console.log('6')
+        console.log('txid', txId)
         tx = await proposeTx(wallet.address, safeTx, txId, origin)
         txId = tx.txId
       }
@@ -173,11 +181,11 @@ export const useSafeTxGas = (safeTx: SafeTransaction | undefined): string | unde
     return !safeTx?.data?.to
       ? undefined
       : {
-          to: safeTx?.data.to,
-          value: safeTx?.data?.value,
-          data: safeTx?.data?.data,
-          operation: safeTx?.data?.operation,
-        }
+        to: safeTx?.data.to,
+        value: safeTx?.data?.value,
+        data: safeTx?.data?.data,
+        operation: safeTx?.data?.operation,
+      }
   }, [safeTx?.data.to, safeTx?.data.value, safeTx?.data.data, safeTx?.data.operation])
 
   const [safeTxGas] = useAsync(() => {

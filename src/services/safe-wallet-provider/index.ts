@@ -166,18 +166,18 @@ export class SafeWalletProvider {
     appInfo: AppInfo,
   ): Promise<
     | {
-        jsonrpc: string
-        id: number
-        result: unknown
-      }
+      jsonrpc: string
+      id: number
+      result: unknown
+    }
     | {
-        jsonrpc: string
-        id: number
-        error: {
-          code: number
-          message: string
-        }
+      jsonrpc: string
+      id: number
+      error: {
+        code: number
+        message: string
       }
+    }
   > {
     try {
       return {
@@ -293,7 +293,7 @@ export class SafeWalletProvider {
     try {
       const resp = await this.sdk.getBySafeTxHash(txHash)
       txHash = resp.txHash || txHash
-    } catch (e) {}
+    } catch (e) { }
 
     // Use fake transaction if we don't have a real tx hash
     if (this.submittedTxs.has(txHash)) {
@@ -307,7 +307,7 @@ export class SafeWalletProvider {
     try {
       const resp = await this.sdk.getBySafeTxHash(txHash)
       txHash = resp.txHash || txHash
-    } catch (e) {}
+    } catch (e) { }
     return this.sdk.proxy('eth_getTransactionReceipt', [txHash]) as Promise<TransactionReceipt>
   }
 
@@ -349,7 +349,7 @@ export class SafeWalletProvider {
 
     try {
       tx = await this.sdk.getBySafeTxHash(safeTxHash)
-    } catch (e) {}
+    } catch (e) { }
 
     if (!tx || !tx.txData?.dataDecoded) {
       throw new Error('Transaction not found')

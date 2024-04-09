@@ -11,7 +11,7 @@ import type { NamedAddress } from '@/components/new-safe/create/types'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { OwnerRow } from '@/components/new-safe/OwnerRow'
-import { getSafeInfo } from '@/components/new-safe/create/logic'
+import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 enum Field {
   owners = 'owners',

@@ -45,10 +45,12 @@ export const dispatchTxProposal = async ({
 }): Promise<TransactionDetails> => {
   const safeSDK = getAndValidateSafeSDK()
   const safeTxHash = await safeSDK.getTransactionHash(safeTx)
-
+  console.log('safeTxHash', safeTxHash)
   let proposedTx: TransactionDetails | undefined
   try {
+    console.log('proposedTx start')
     proposedTx = await proposeTx(chainId, safeAddress, sender, safeTx, safeTxHash, origin)
+    console.log('proposedTx done')
   } catch (error) {
     if (txId) {
       txDispatch(TxEvent.SIGNATURE_PROPOSE_FAILED, { txId, error: asError(error) })

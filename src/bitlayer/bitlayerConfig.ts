@@ -15,7 +15,7 @@ export const bitlayerConfig = {
     "blockExplorerUriTemplate": {
         "address": "https://testnet-scan.bitlayer.org/en-us/address/{{address}}",
         "txHash": "https://testnet-scan.bitlayer.org/en-us/tx/{{txHash}}",
-        "api": "https://api-sepolia.etherscan.io/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
+        "api": "https://testnet-scan.bitlayer.org/en-us/api?module={{module}}&action={{action}}&address={{address}}&apiKey={{apiKey}}"
     },
     "disabledWallets": [
         "socialSigner"

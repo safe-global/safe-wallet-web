@@ -10,7 +10,8 @@ import useIntervalCounter from '../useIntervalCounter';
 import useSafeInfo from '../useSafeInfo';
 import { Errors, logError } from '@/services/exceptions';
 import { POLLING_INTERVAL } from '@/config/constants';
-import { getSafeInfo } from '@/components/new-safe/create/logic';
+// import { getSafeInfo } from '@/components/new-safe/create/logic';
+import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
   const address = useSafeAddress();
