@@ -168,7 +168,7 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
     const lockingContractBalancePromise = fetchLockingContractBalance(chainId, safeAddress)
     return Promise.all([tokenBalancePromise, lockingContractBalancePromise]).then(
       ([tokenBalance, lockingContractBalance]) => {
-        return BigInt(tokenBalance) + BigInt(lockingContractBalance)
+        return (BigInt(tokenBalance) + BigInt(lockingContractBalance)).toString(16)
       },
     )
     // If the history tag changes we could have claimed / redeemed tokens
@@ -191,7 +191,7 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
     )
 
     // add balance
-    const totalAllocation = tokensInVesting + BigInt(balance)
+    const totalAllocation = tokensInVesting + BigInt(balance.startsWith('0x') ? balance : '0x' + balance)
     return totalAllocation
   }, [allocationData, balance])
 
