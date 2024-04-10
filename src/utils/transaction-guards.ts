@@ -24,6 +24,7 @@ import type {
   TransactionSummary,
   Transfer,
   TransferInfo,
+  SwapOrder,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -39,7 +40,6 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
-import type { SwapOrder } from '../../../safe-gateway-typescript-sdk'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
