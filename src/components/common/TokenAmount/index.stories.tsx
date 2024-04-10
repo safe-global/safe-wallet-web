@@ -23,7 +23,6 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-
 export const WithTokenLogo: Story = {
   args: {
     value: '100',
