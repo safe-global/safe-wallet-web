@@ -279,7 +279,7 @@ describe('Allocations', () => {
       })
     })
 
-    it('return total balance of tokens held and tokens in locking contract if no allocation exists', async () => {
+    it('should return total balance of tokens held and tokens in locking contract if no allocation exists', async () => {
       jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(
         () =>
           ({

@@ -162,13 +162,13 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
   const { safe, safeAddress } = useSafeInfo()
   const chainId = safe.chainId
 
-  const [balance, balanceError, balanceLoading] = useAsync<string>(() => {
+  const [balance, balanceError, balanceLoading] = useAsync<bigint>(() => {
     if (!safeAddress) return
     const tokenBalancePromise = fetchTokenBalance(chainId, safeAddress)
     const lockingContractBalancePromise = fetchLockingContractBalance(chainId, safeAddress)
     return Promise.all([tokenBalancePromise, lockingContractBalancePromise]).then(
       ([tokenBalance, lockingContractBalance]) => {
-        return (BigInt(tokenBalance) + BigInt(lockingContractBalance)).toString(16)
+        return BigInt(tokenBalance) + BigInt(lockingContractBalance)
       },
     )
     // If the history tag changes we could have claimed / redeemed tokens
@@ -176,13 +176,13 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
   }, [chainId, safeAddress, safe.txHistoryTag])
 
   const allocation = useMemo(() => {
-    if (!balance) {
+    if (balance === undefined) {
       return
     }
 
     // Return current balance if no allocation exists
     if (!allocationData) {
-      return BigInt(balance.startsWith('0x') ? balance : '0x' + balance)
+      return balance
     }
 
     const tokensInVesting = allocationData.reduce(
@@ -191,7 +191,7 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
     )
 
     // add balance
-    const totalAllocation = tokensInVesting + BigInt(balance.startsWith('0x') ? balance : '0x' + balance)
+    const totalAllocation = tokensInVesting + balance
     return totalAllocation
   }, [allocationData, balance])
 
