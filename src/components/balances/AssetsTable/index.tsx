@@ -1,4 +1,5 @@
 import CheckBalance from '@/features/counterfactual/CheckBalance'
+import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import { type ReactElement, useMemo, useContext } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -25,6 +26,7 @@ import AddFundsCTA from '@/components/common/AddFunds'
 import { SWAP_EVENTS } from '@/services/analytics/events/swaps'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
+import SwapIcon from '@/public/images/sidebar/swap.svg'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -108,8 +110,10 @@ const SendButton = ({
             variant="contained"
             color="primary"
             size="small"
+            startIcon={<ArrowIconNW />}
             onClick={() => onClick(tokenInfo.address)}
             disabled={!isOk}
+            sx={{ height: '37.5px' }}
           >
             Send
           </Button>
@@ -128,9 +132,10 @@ const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: numbe
       {(isOk) => (
         <Track {...SWAP_EVENTS.SWAP_ASSETS}>
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             size="small"
+            startIcon={<SwapIcon />}
             onClick={() => {
               console.log('tokenInfo', tokenInfo)
               router.push({
