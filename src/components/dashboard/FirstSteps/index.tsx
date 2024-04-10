@@ -78,9 +78,11 @@ const ActivationStatusWidget = ({ explorerLink }: { explorerLink?: string }) => 
       content="Depending on network usage, it can take some time until the transaction is successfully processed and executed."
       completed={false}
     >
-      <ExternalLink href={explorerLink} sx={{ mt: 2 }}>
-        View Explorer
-      </ExternalLink>
+      {explorerLink && (
+        <ExternalLink href={explorerLink} sx={{ mt: 2 }}>
+          View Explorer
+        </ExternalLink>
+      )}
     </StatusCard>
   )
 }
@@ -348,9 +350,13 @@ const FirstSteps = () => {
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            {isActivating && undeployedSafe?.status.txHash && chain ? (
+            {isActivating && chain ? (
               <ActivationStatusWidget
-                explorerLink={getExplorerLink(undeployedSafe.status.txHash, chain.blockExplorerUriTemplate).href}
+                explorerLink={
+                  undeployedSafe?.status.txHash
+                    ? getExplorerLink(undeployedSafe.status.txHash, chain.blockExplorerUriTemplate).href
+                    : undefined
+                }
               />
             ) : (
               <AddFundsWidget completed={hasNonZeroBalance} />
