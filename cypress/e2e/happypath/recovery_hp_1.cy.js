@@ -14,6 +14,8 @@ describe('Recovery happy path tests 1', () => {
   // Check that recovery can be setup and removed
   it('Recovery setup happy path 1', () => {
     owner.waitForConnectionStatus()
+    cy.reload()
+    recovery.clearRecoverers()
     recovery.clickOnSetupRecoveryBtn()
     recovery.clickOnSetupRecoveryModalBtn()
     recovery.clickOnNextBtn()
@@ -22,9 +24,13 @@ describe('Recovery happy path tests 1', () => {
     recovery.clickOnNextBtn()
     tx.executeFlow_1()
     recovery.verifyRecovererAdded([constants.SEPOLIA_OWNER_2_SHORT])
-    recovery.removeRecoverer(0, constants.SEPOLIA_OWNER_2)
-    recovery.clickOnNextBtn()
-    tx.executeFlow_1()
+
+    recovery.clearRecoverers()
+
+    // recovery.removeRecoverer(0, constants.SEPOLIA_OWNER_2)
+    // recovery.clickOnNextBtn()
+    // tx.executeFlow_1()
+
     recovery.getSetupRecoveryBtn()
   })
 })
