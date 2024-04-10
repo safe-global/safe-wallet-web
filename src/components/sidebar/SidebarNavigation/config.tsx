@@ -7,6 +7,7 @@ import TransactionIcon from '@/public/images/sidebar/transactions.svg'
 import ABIcon from '@/public/images/sidebar/address-book.svg'
 import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
+import SwapIcon from '@/public/images/sidebar/swap.svg'
 import { SvgIcon } from '@mui/material'
 
 export type NavItem = {
@@ -28,7 +29,7 @@ export const navItems: NavItem[] = [
   },
   {
     label: 'Swap',
-    icon: <SvgIcon component={AssetsIcon} inheritViewBox />,
+    icon: <SvgIcon component={SwapIcon} inheritViewBox />,
     href: AppRoutes.swap,
   },
   {
