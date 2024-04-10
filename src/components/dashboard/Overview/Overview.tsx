@@ -3,6 +3,7 @@ import Track from '@/components/common/Track'
 import QrCodeButton from '@/components/sidebar/QrCodeButton'
 import { TxModalContext } from '@/components/tx-flow'
 import { NewTxFlow } from '@/components/tx-flow/flows'
+import SwapIcon from '@/public/images/sidebar/swap.svg'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
@@ -117,16 +118,16 @@ const Overview = (): ReactElement => {
                       </QrCodeButton>
                     </Track>
                   </Grid>
+
+                  <Grid item xs={6} sm="auto">
+                    <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
+                      <Button size="small" variant="outlined" color="primary" startIcon={<SwapIcon />} fullWidth>
+                        Swap
+                      </Button>
+                    </Link>
+                  </Grid>
                 </Grid>
               )}
-
-              <Grid item xs={6} sm="auto">
-                <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
-                  <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconNW />} fullWidth>
-                    Swap
-                  </Button>
-                </Link>
-              </Grid>
             </Grid>
           </>
         )}
