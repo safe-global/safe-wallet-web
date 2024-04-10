@@ -1,18 +1,16 @@
 import type { ReactElement } from 'react'
 import type { Label } from '@safe-global/safe-gateway-typescript-sdk'
 import { LabelValue } from '@safe-global/safe-gateway-typescript-sdk'
+import QueueLabelText from './QueueLabelText'
 import css from './styles.module.css'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
 const GroupLabel = ({ item }: { item: Label }): ReactElement => {
-  const { safe } = useSafeInfo()
-
-  const label =
-    item.label === LabelValue.Queued
-      ? `${item.label} - transaction with nonce ${safe.nonce} needs to be executed first`
-      : item.label
-
-  return <div className={css.container}>{label}</div>
+  return (
+    <div className={css.container}>
+      {item.label}
+      {item.label === LabelValue.Queued && <QueueLabelText />}
+    </div>
+  )
 }
 
 export default GroupLabel
