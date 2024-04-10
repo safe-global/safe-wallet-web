@@ -1,3 +1,5 @@
+import { DataRow } from '@/components/common/Table/DataRow'
+import { DataTable } from '@/components/common/Table/DataTable'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { type SwapOrder as SwapOrderType, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
@@ -43,14 +45,13 @@ export const SwapOrderHeader = ({
 }
 
 const SellOrder = ({ order }: { order: SwapOrderType }) => {
-  const { buyToken, sellToken, orderUid, expiresTimestamp, status, surplusLabel } = order
+  const { buyToken, sellToken, orderUid, expiresTimestamp, status, executionPriceLabel, surplusLabel } = order
   return (
-    <div className="sell-order">
-      <h2>Sell order</h2>
-      <div className="sell-details">
-        <div className="detail">
-          <span className="label">Amount:</span>
-          <div className="value">
+    <DataTable
+      header="Sell order"
+      rows={[
+        <DataRow key="Amount" title="Amount">
+          <div>
             <div>
               Sell{' '}
               <span className="value">
@@ -66,20 +67,24 @@ const SellOrder = ({ order }: { order: SwapOrderType }) => {
               </span>
             </div>
           </div>
-        </div>
-        <div className="detail">
-          <span className="label">Expiry:</span>
-          <span className="value">{expiresTimestamp}</span>
-        </div>
-        <div className="detail">
-          <span className="label">Order ID:</span>
-          <span className="value">{orderUid}</span>
-        </div>
-        <div className={`status status-${status.toLowerCase()}`}>
-          <span className="status-label">{status}</span>
-        </div>
-      </div>
-    </div>
+        </DataRow>,
+        <DataRow key="Execution price" title="Execution price">
+          {executionPriceLabel}
+        </DataRow>,
+        <DataRow key="Surplus" title="Surplus">
+          {surplusLabel}
+        </DataRow>,
+        <DataRow key="Expiry" title="Expiry">
+          {expiresTimestamp}
+        </DataRow>,
+        <DataRow key="Order ID" title="Order ID">
+          {orderUid}
+        </DataRow>,
+        <DataRow key="Status" title="Status">
+          {status}
+        </DataRow>,
+      ]}
+    />
   )
 }
 
