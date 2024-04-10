@@ -2,22 +2,22 @@ import { PendingSafeStatus, selectUndeployedSafe } from '@/features/counterfactu
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { useAppSelector } from '@/store'
-import LoopRoundedIcon from '@mui/icons-material/LoopRounded'
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
 import { IconButton, Tooltip } from '@mui/material'
 import classnames from 'classnames'
 import css from './styles.module.css'
 
 const LoopIcon = () => {
   return (
-    <LoopRoundedIcon
+    <AutorenewRoundedIcon
       sx={{
         animation: 'spin 2s linear infinite',
         '@keyframes spin': {
           '0%': {
-            transform: 'rotate(360deg)',
+            transform: 'rotate(0)',
           },
           '100%': {
-            transform: 'rotate(0deg)',
+            transform: 'rotate(360deg)',
           },
         },
       }}
