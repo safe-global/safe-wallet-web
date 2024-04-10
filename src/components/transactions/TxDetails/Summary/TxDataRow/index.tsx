@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactElement } from 'react'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import CopyButton from '@/components/common/CopyButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
@@ -6,31 +6,9 @@ import { Typography } from '@mui/material'
 import { dataLength } from 'ethers'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { DataRow } from '@/components/common/Table/DataRow'
 
-type TxDataRowProps = {
-  datatestid?: String
-  title: ReactNode
-  children?: ReactNode
-}
-
-export const TxDataRow = ({ datatestid, title, children }: TxDataRowProps): ReactElement | null => {
-  if (children == undefined) return null
-  return (
-    <div data-testid={datatestid} className={css.gridRow}>
-      <div data-testid="tx-row-title" className={css.title}>
-        {title}
-      </div>
-
-      {typeof children === 'string' ? (
-        <Typography component="div" data-testid="tx-data-row">
-          {children}
-        </Typography>
-      ) : (
-        children
-      )}
-    </div>
-  )
-}
+export const TxDataRow = DataRow
 
 export const generateDataRowValue = (
   value?: string,
