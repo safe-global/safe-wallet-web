@@ -56,6 +56,9 @@ export const SEPOLIA_TEST_SAFE_37_SEND_FUNDS_HP6 = 'sep:0xAd65717D60f7f2c65895c8
 export const SEPOLIA_TEST_SAFE_38_SEND_FUNDS_HP7 = 'sep:0xad23bd2D4cDB86FF2a6600c74995c01eA209AfC1'
 export const SEPOLIA_TEST_SAFE_39_SEND_FUNDS_HP8 = 'sep:0xEbED8ABaAe1FCFA9D3343B34a2373a57A558abd1'
 
+export const SEPOLIA_TEST_SAFE_40_SEND_FUNDS_HP9 = 'sep:0xAC456f5422C13b93d4ac819c3E52bA418E401EaA'
+export const SEPOLIA_TEST_SAFE_41_SEND_FUNDS_HP10 = 'sep:0x20Acedd07F00192F9C3B4e30935B68D1ef4E3560'
+export const SEPOLIA_TEST_SAFE_41_SEND_FUNDS_HP11 = 'sep:0xBB5887698819c893105E706973C51A8Ac5ee46F7'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -114,7 +117,7 @@ export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
 export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
-export const stagingTxServiceUrl = 'https://safe-transaction-sepolia.staging.5afe.dev/api/v1'
+export const stagingTxServiceUrl = 'https://safe-transaction-sepolia.staging.5afe.dev/api'
 export const stagingTxServiceSafesUrl = '/safes/'
 export const stagingTxServiceBalancesUrl = '/balances/'
 

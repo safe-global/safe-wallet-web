@@ -253,7 +253,7 @@ describe('EthHashInfo', () => {
       )
 
       const { container } = render(
-        <EthHashInfo address={'0xe26920604f9a02c5a877d449faa71b7504f0c2508dcc7c0384078a024b8e592f'} showCopyButton />,
+        <EthHashInfo address="0xe26920604f9a02c5a877d449faa71b7504f0c2508dcc7c0384078a024b8e592f" showCopyButton />,
       )
 
       const button = container.querySelector('button')

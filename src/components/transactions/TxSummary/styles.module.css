@@ -4,6 +4,8 @@
   --grid-info: minmax(150px, 3fr);
   --grid-date: minmax(200px, 3fr);
   --grid-confirmations: minmax(150px, 1fr);
+
+  --grid-actions: minmax(120px, 1fr);
   --grid-status: minmax(120px, 1fr);
 
   width: 100%;
@@ -11,10 +13,12 @@
   gap: var(--space-2);
   align-items: center;
   white-space: nowrap;
-  grid-template-columns: var(--grid-nonce) var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(
+  grid-template-columns: var(--grid-nonce) var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations)
+  var(--grid-actions)
+  var(
       --grid-status
     );
-  grid-template-areas: 'nonce type info date confirmations status';
+  grid-template-areas: 'nonce type info date confirmations  status actions';
 }
 
 .gridContainer > * {
@@ -28,11 +32,15 @@
 
 .gridContainer.grouped {
   grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(--grid-status);
-  grid-template-areas: 'type info date confirmations status';
+  grid-template-areas: 'type info date confirmations status actions';
 }
 
 .gridContainer.untrusted {
   opacity: 0.4;
+}
+
+.gridContainer .status {
+  margin-right: var(--space-3);
 }
 
 .date {
@@ -52,5 +60,9 @@
 
   .date {
     width: 100%;
+  }
+
+  .status {
+    margin: 0 var(--space-1);
   }
 }

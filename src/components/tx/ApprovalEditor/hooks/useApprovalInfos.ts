@@ -56,7 +56,7 @@ export const useApprovalInfos = (payload: {
               ? PSEUDO_APPROVAL_VALUES.UNLIMITED
               : formatUnits(approval.amount, tokenInfo?.decimals)
 
-          return { ...approval, tokenInfo: tokenInfo, amountFormatted }
+          return { ...approval, tokenInfo, amountFormatted }
         }),
       )
     },

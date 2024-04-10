@@ -14,9 +14,9 @@ export const updateAddressBook = (
   return (dispatch) => {
     dispatch(
       upsertAddressBookEntry({
-        chainId: chainId,
-        address: address,
-        name: name,
+        chainId,
+        address,
+        name,
       }),
     )
 
@@ -37,7 +37,7 @@ export const updateAddressBook = (
             value: owner.address,
             name: owner.name || owner.ens,
           })),
-          chainId: chainId,
+          chainId,
           nonce: 0,
         },
       }),

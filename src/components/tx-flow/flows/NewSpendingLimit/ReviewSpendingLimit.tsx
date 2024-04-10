@@ -87,7 +87,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
               >
                 {existingAmount}
               </Typography>
-              {'→'}
+              →
             </>
           )}
         </SendAmountBlock>

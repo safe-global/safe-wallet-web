@@ -94,6 +94,47 @@ describe('useGasPrice', () => {
     expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toEqual('3000000000')
   })
 
+  it('should speed up the gas price', async () => {
+    // Mock fetch
+    Object.defineProperty(window, 'fetch', {
+      writable: true,
+      value: jest.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              data: {
+                FastGasPrice: '30',
+                suggestBaseFee: '10',
+              },
+            }),
+        }),
+      ),
+    })
+
+    // render the hook
+    const { result } = renderHook(() => useGasPrice(true))
+
+    // assert the hook is loading
+    expect(result.current[2]).toBe(true)
+
+    // wait for the hook to fetch the gas price
+    await act(async () => {
+      await Promise.resolve()
+    })
+
+    expect(fetch).toHaveBeenCalledWith('https://api.etherscan.io/api?module=gastracker&action=gasoracle')
+
+    // assert the hook is not loading
+    expect(result.current[2]).toBe(false)
+
+    // assert the gas price is correct
+    expect(result.current[0]?.maxFeePerGas?.toString()).toBe('50000000000')
+
+    // assert the priority fee is correct
+    expect(result.current[0]?.maxPriorityFeePerGas?.toString()).toEqual('40000000000')
+  })
+
   it('should return the fetched gas price from the second oracle if the first one fails', async () => {
     // Mock fetch
     jest.spyOn(window, 'fetch').mockImplementation(

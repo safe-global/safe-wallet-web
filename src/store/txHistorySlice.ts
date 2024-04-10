@@ -34,10 +34,14 @@ export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareI
 
         const txId = result.transaction.id
 
-        if (pendingTxs[txId]) {
+        const pendingTx = pendingTxs[txId]
+
+        if (pendingTx) {
+          const txHash = 'txHash' in pendingTx ? pendingTx.txHash : undefined
           txDispatch(TxEvent.SUCCESS, {
             txId,
             groupKey: pendingTxs[txId].groupKey,
+            txHash,
           })
         }
       }

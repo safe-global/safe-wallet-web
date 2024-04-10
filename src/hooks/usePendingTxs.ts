@@ -8,7 +8,7 @@ import {
 import { useAppSelector } from '@/store'
 import { selectPendingTxIdsBySafe } from '@/store/pendingTxsSlice'
 import useAsync from './useAsync'
-import { isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
+import { isConflictHeaderListItem, isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
 import useSafeInfo from './useSafeInfo'
 
 const usePendingTxIds = (): Array<TransactionSummary['id']> => {
@@ -62,6 +62,17 @@ export const usePendingTxsQueue = (): {
     // Adjust the first label ("Next" -> "Pending")
     if (results[0] && isLabelListItem(results[0])) {
       results[0].label = 'Pending' as LabelValue
+
+      if (results.filter((item) => isTransactionListItem(item)).length === 0) {
+        results.splice(0, 1)
+      }
+    }
+
+    if (results[1] && isConflictHeaderListItem(results[1])) {
+      // Check if we both conflicting txs are still pending
+      if (results.filter((item) => isTransactionListItem(item)).length <= 1) {
+        results.splice(1, 1)
+      }
     }
 
     return results.length ? { results } : undefined

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { useEffect, type ReactElement } from 'react'
 import { IconButton, Drawer, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
@@ -23,11 +24,22 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
   // Keep the sidebar hidden on small screens via CSS until we collapse it via JS.
   // With a small delay to avoid flickering.
   const smDrawerHidden = useDebounce(!isSmallScreen, 300)
+  const router = useRouter()
 
   useEffect(() => {
     const closeSidebar = isSmallScreen || isSafeAppRoute
     onToggle(!closeSidebar)
   }, [isSmallScreen, isSafeAppRoute, onToggle])
+
+  // Close the drawer whenever the route changes
+  useEffect(() => {
+    const onRouteChange = () => isSmallScreen && onToggle(false)
+    router.events.on('routeChangeStart', onRouteChange)
+
+    return () => {
+      router.events.off('routeChangeStart', onRouteChange)
+    }
+  }, [onToggle, router, isSmallScreen])
 
   return (
     <>
