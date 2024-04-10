@@ -4,6 +4,8 @@ import { ThemeProvider, CssBaseline } from '@mui/material'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import createSafeTheme from '../src/components/theme/safeTheme'
 
+import '../src/styles/globals.css'
+
 const preview: Preview = {
   parameters: {
     controls: {
