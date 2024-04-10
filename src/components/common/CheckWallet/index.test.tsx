@@ -80,7 +80,7 @@ describe('CheckWallet', () => {
     expect(container.querySelector('button')).toBeDisabled()
     expect(container.querySelector('span[aria-label]')).toHaveAttribute(
       'aria-label',
-      'You can only create ERC-20 transactions within your spending limit',
+      'Your connected wallet is not a signer of this Safe Account',
     )
 
     const { container: allowContainer } = render(

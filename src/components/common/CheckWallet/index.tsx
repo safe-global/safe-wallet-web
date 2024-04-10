@@ -15,7 +15,6 @@ type CheckWalletProps = {
 enum Message {
   WalletNotConnected = 'Please connect your wallet',
   NotSafeOwner = 'Your connected wallet is not a signer of this Safe Account',
-  OnlySpendingLimitBeneficiary = 'You can only create ERC-20 transactions within your spending limit',
 }
 
 const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }: CheckWalletProps): ReactElement => {
@@ -24,13 +23,12 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }:
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
 
-  const message = !wallet
-    ? Message.WalletNotConnected
-    : !isSafeOwner && !isSpendingLimit && !allowNonOwner
-    ? Message.NotSafeOwner
-    : isSpendingLimit && !allowSpendingLimit && !allowNonOwner
-    ? Message.OnlySpendingLimitBeneficiary
-    : ''
+  const message =
+    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit))
+      ? ''
+      : !wallet
+      ? Message.WalletNotConnected
+      : Message.NotSafeOwner
 
   if (!message) return children(true)
 
