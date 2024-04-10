@@ -35,6 +35,7 @@ import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
+import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -46,6 +47,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [relays] = useRelaysBySafe()
   const { setTxFlow } = useContext(TxModalContext)
   const [gasPrice] = useGasPrice()
+
+  const userNonce = useUserNonce()
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -83,11 +86,13 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
+    if (!userNonce || !onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
 
     const overrides: Overrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
       : { gasPrice: maxFeePerGas?.toString() }
+
+    overrides.nonce = userNonce
 
     await dispatchBatchExecution(
       txsWithDetails,
@@ -96,7 +101,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       onboard,
       safe.chainId,
       safe.address.value,
-      overrides,
+      overrides as Overrides & { nonce: number },
     )
   }
 
