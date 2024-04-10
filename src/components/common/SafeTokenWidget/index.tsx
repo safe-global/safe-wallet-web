@@ -1,4 +1,4 @@
-import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES } from '@/config/constants'
+import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES, SAFE_LOCKING_ADDRESS } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import useSafeTokenAllocation, { useSafeVotingPower, type Vesting } from '@/hooks/useSafeTokenAllocation'
@@ -22,6 +22,10 @@ export const useSafeTokenAddress = () => {
 
 export const getSafeTokenAddress = (chainId: string): string | undefined => {
   return SAFE_TOKEN_ADDRESSES[chainId]
+}
+
+export const getSafeLockingAddress = (chainId: string): string | undefined => {
+  return SAFE_LOCKING_ADDRESS[chainId]
 }
 
 const canRedeemSep5Airdrop = (allocation?: Vesting[]): boolean => {
