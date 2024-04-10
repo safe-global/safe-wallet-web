@@ -67,6 +67,14 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     <>
       {/* /Details */}
       <div className={`${css.details} ${isUnsigned ? css.noSigners : ''}`}>
+        {isSwapTxInfo(txDetails.txInfo) && (
+          <div className={css.multiSend}>
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
+            </ErrorBoundary>
+          </div>
+        )}
+
         <div className={css.shareLink}>
           <TxShareLink id={txSummary.id} />
         </div>
@@ -101,14 +109,6 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           )}
           <Summary txDetails={txDetails} />
         </div>
-
-        {isSwapTxInfo(txDetails.txInfo) && (
-          <div className={css.multiSend}>
-            <ErrorBoundary fallback={<div>Error parsing data</div>}>
-              <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
-            </ErrorBoundary>
-          </div>
-        )}
 
         {isMultiSendTxInfo(txDetails.txInfo) && (
           <div className={css.multiSend}>
