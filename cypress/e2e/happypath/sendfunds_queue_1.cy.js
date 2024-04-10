@@ -7,8 +7,10 @@ import SafeApiKit from '@safe-global/api-kit'
 import { createEthersAdapter, createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
 
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const receiver = walletCredentials.OWNER_2_WALLET_ADDRESS
+
 const tokenAmount = '0.0001'
-const receiver = Cypress.env('OWNER_2_WALLET_ADDRESS')
 const netwrok = 'sepolia'
 const network_pref = 'sep:'
 const unit_eth = 'ether'
@@ -24,7 +26,7 @@ let apiKit,
 let safes = []
 
 const provider = new ethers.InfuraProvider(netwrok, Cypress.env('INFURA_API_KEY'))
-const privateKeys = [Cypress.env('OWNER_1_PRIVATE_KEY'), Cypress.env('OWNER_2_PRIVATE_KEY')]
+const privateKeys = [walletCredentials.OWNER_1_PRIVATE_KEY, walletCredentials.OWNER_2_PRIVATE_KEY]
 
 const signers = createSigners(privateKeys, provider)
 
