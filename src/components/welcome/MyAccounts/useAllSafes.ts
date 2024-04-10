@@ -9,13 +9,15 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { selectUndeployedSafes } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
 
-export type SafeItems = Array<{
+export type SafeItem = {
   chainId: string
   address: string
   isWatchlist: boolean
   threshold?: number
   owners?: number
-}>
+}
+
+export type SafeItems = SafeItem[]
 
 const useAddedSafes = () => {
   const allAdded = useAppSelector(selectAllAddedSafes)

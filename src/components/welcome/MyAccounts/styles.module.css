@@ -60,6 +60,7 @@
   overflow: hidden;
   margin-right: 10px;
   text-overflow: ellipsis;
+  min-width: 13em;
 }
 
 .listHeader {
