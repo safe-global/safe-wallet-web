@@ -3,7 +3,7 @@ import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxQueue, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
 import useSafeInfo from './useSafeInfo'
-import { isTransactionListItem } from '@/utils/transaction-guards'
+import { isTransactionListItem, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { useRecoveryQueue } from '../features/recovery/hooks/useRecoveryQueue'
 
 const useTxQueue = (
@@ -39,6 +39,8 @@ const useTxQueue = (
       }
 }
 
+export default useTxQueue
+
 // Get the size of the queue as a string with an optional '+' if there are more pages
 export const useQueuedTxsLength = (): string => {
   const queue = useAppSelector(selectTxQueue)
@@ -54,4 +56,17 @@ export const useQueuedTxByNonce = (nonce?: number) => {
   return useAppSelector((state) => selectQueuedTransactionsByNonce(state, nonce))
 }
 
-export default useTxQueue
+export const useFirstQueuedNonce = () => {
+  const { safe } = useSafeInfo()
+  const queue = useTxQueue()
+
+  if (queue.page) {
+    for (let item of queue.page.results) {
+      if (isTransactionListItem(item) && isMultisigExecutionInfo(item.transaction.executionInfo)) {
+        return item.transaction.executionInfo.nonce
+      }
+    }
+  }
+
+  return safe.nonce
+}
