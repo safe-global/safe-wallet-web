@@ -68,12 +68,6 @@ export const WC_APP_DEV = {
   url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
 }
 
-// Safe Gelato relay service
-export const SAFE_RELAY_SERVICE_URL_PRODUCTION =
-  process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_PRODUCTION || 'https://safe-client.safe.global/v1/relay'
-export const SAFE_RELAY_SERVICE_URL_STAGING =
-  process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_STAGING || 'https://safe-client.staging.5afe.dev/v1/relay'
-
 // Help Center
 export const HELP_CENTER_URL = 'https://help.safe.global'
 export const HelpCenterArticle = {

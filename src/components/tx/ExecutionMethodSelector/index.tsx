@@ -5,13 +5,12 @@ import useWallet from '@/hooks/wallets/useWallet'
 import WalletIcon from '@/components/common/WalletIcon'
 import SponsoredBy from '../SponsoredBy'
 import RemainingRelays from '../RemainingRelays'
-import type { RelayResponse } from '@/services/tx/relaying'
 
 import css from './styles.module.css'
 import BalanceInfo from '@/components/tx/BalanceInfo'
 import madProps from '@/utils/mad-props'
 import { useCurrentChain } from '@/hooks/useChains'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, RelayCountResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
 export const enum ExecutionMethod {
@@ -32,7 +31,7 @@ const _ExecutionMethodSelector = ({
   chain?: ChainInfo
   executionMethod: ExecutionMethod
   setExecutionMethod: Dispatch<SetStateAction<ExecutionMethod>>
-  relays?: RelayResponse
+  relays?: RelayCountResponse
   noLabel?: boolean
   tooltip?: string
 }): ReactElement | null => {
