@@ -1,12 +1,12 @@
 import type { ReactElement } from 'react'
 import type { Label } from '@safe-global/safe-gateway-typescript-sdk'
 import { LabelValue } from '@safe-global/safe-gateway-typescript-sdk'
-import { useFirstQueuedNonce } from '@/hooks/useTxQueue'
 import css from './styles.module.css'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 const QueueLabelText = () => {
-  const firstNonce = useFirstQueuedNonce()
-  return ` - transaction with nonce ${firstNonce} needs to be executed first`
+  const { safe } = useSafeInfo()
+  return ` - transaction with nonce ${safe.nonce} needs to be executed first`
 }
 
 const GroupLabel = ({ item }: { item: Label }): ReactElement => {

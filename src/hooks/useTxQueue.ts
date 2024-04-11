@@ -3,7 +3,7 @@ import { useAppSelector } from '@/store'
 import useAsync from './useAsync'
 import { selectTxQueue, selectQueuedTransactionsByNonce } from '@/store/txQueueSlice'
 import useSafeInfo from './useSafeInfo'
-import { isTransactionListItem, isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isTransactionListItem } from '@/utils/transaction-guards'
 import { useRecoveryQueue } from '../features/recovery/hooks/useRecoveryQueue'
 
 const useTxQueue = (
@@ -28,15 +28,15 @@ const useTxQueue = (
   // Return the new page or the stored page
   return pageUrl
     ? {
-        page,
-        error: error?.message,
-        loading,
-      }
+      page,
+      error: error?.message,
+      loading,
+    }
     : {
-        page: queueState.data,
-        error: queueState.error,
-        loading: queueState.loading,
-      }
+      page: queueState.data,
+      error: queueState.error,
+      loading: queueState.loading,
+    }
 }
 
 export default useTxQueue
@@ -54,19 +54,4 @@ export const useQueuedTxsLength = (): string => {
 
 export const useQueuedTxByNonce = (nonce?: number) => {
   return useAppSelector((state) => selectQueuedTransactionsByNonce(state, nonce))
-}
-
-export const useFirstQueuedNonce = () => {
-  const { safe } = useSafeInfo()
-  const queue = useTxQueue()
-
-  if (queue.page) {
-    for (let item of queue.page.results) {
-      if (isTransactionListItem(item) && isMultisigExecutionInfo(item.transaction.executionInfo)) {
-        return item.transaction.executionInfo.nonce
-      }
-    }
-  }
-
-  return safe.nonce
 }
