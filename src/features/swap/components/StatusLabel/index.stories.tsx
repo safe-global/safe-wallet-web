@@ -46,4 +46,3 @@ export const Expired: Story = {
     status: 'expired',
   },
 }
-

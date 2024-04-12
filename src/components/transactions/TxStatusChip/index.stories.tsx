@@ -28,4 +28,3 @@ export const Default: Story = {
     children: 'Processing',
   },
 }
-
