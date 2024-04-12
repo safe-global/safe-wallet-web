@@ -23,6 +23,7 @@ import { useAppSelector } from '@/store'
 import { selectOnChainSigning } from '@/store/settingsSlice'
 import { isOffchainEIP1271Supported } from '@/utils/safe-messages'
 import { getCreateCallContractDeployment } from '../contracts/deployments'
+import type { OperationType } from '@safe-global/safe-core-sdk-types'
 
 export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK | undefined => {
   const { safe } = useSafeInfo()
@@ -53,7 +54,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       message: string | EIP712TypedData,
       appInfo: AppInfo,
       method: Methods.signMessage | Methods.signTypedMessage,
-    ): Promise<{ signature: string }> => {
+    ): Promise<{ signature: string; messageHash: string }> => {
       const id = Math.random().toString(36).slice(2)
       const shouldSignOffChain =
         isOffchainEIP1271Supported(safe, currentChain) && !onChainSigning && settings.offChainSigning
@@ -72,9 +73,9 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
 
         const unsubscribeSignaturePrepared = safeMsgSubscribe(
           SafeMsgEvent.SIGNATURE_PREPARED,
-          ({ requestId, signature }) => {
+          ({ requestId, signature, messageHash }) => {
             if (requestId === id) {
-              resolve({ signature })
+              resolve({ signature, messageHash })
               unsubscribe()
             }
           },
@@ -111,7 +112,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
         return await signMessage(typedData as EIP712TypedData, appInfo, Methods.signTypedMessage)
       },
 
-      async send(params: { txs: any[]; params: { safeTxGas: number } }, appInfo) {
+      async send(params: { txs: any[]; params: { safeTxGas: number; operation?: OperationType } }, appInfo) {
         const id = Math.random().toString(36).slice(2)
 
         const transactions = params.txs.map(({ to, value, data }) => {
