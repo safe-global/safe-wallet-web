@@ -42,6 +42,8 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
           prod: ${{ github.ref == 'refs/heads/main' }}
 
+      - uses: ./.github/workflows/build-storybook
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
