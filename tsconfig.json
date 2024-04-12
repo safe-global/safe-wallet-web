@@ -17,7 +17,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/public/*": ["./public/*"]
+      "@/public/*": ["./public/*"],
+      "viem": ["src/types/disable-viem-wagmi.d.ts"],
+      "wagmi": ["src/types/disable-viem-wagmi.d.ts"],
+      "wagmi/*": ["src/types/disable-viem-wagmi.d.ts"],
+      "@wagmi/*": ["src/types/disable-viem-wagmi.d.ts"]
     },
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },

@@ -2,6 +2,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import { TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionReceipt } from 'ethers'
 import { numberToHex } from '@/utils/hex'
+import type { OperationType } from '@safe-global/safe-core-sdk-types'
 
 type SafeInfo = {
   safeAddress: string
@@ -21,10 +22,10 @@ export type AppInfo = {
 }
 
 export type WalletSDK = {
-  signMessage: (message: string, appInfo: AppInfo) => Promise<{ signature?: string }>
+  signMessage: (message: string, appInfo: AppInfo) => Promise<{ signature?: string; messageHash: string }>
   signTypedMessage: (typedData: unknown, appInfo: AppInfo) => Promise<{ signature?: string }>
   send: (
-    params: { txs: unknown[]; params: { safeTxGas: number } },
+    params: { txs: unknown[]; params: { safeTxGas: number; operation?: OperationType } },
     appInfo: AppInfo,
   ) => Promise<{ safeTxHash: string; txHash?: string }>
   getBySafeTxHash: (safeTxHash: string) => Promise<TransactionDetails>
