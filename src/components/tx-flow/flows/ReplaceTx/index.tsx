@@ -24,6 +24,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import Track from '@/components/common/Track'
 import { REJECT_TX_EVENTS } from '@/services/analytics/events/reject-tx'
+import { useRecommendedNonce } from '@/components/tx/SignOrExecuteForm/hooks'
 
 const goToQueue = (router: NextRouter) => {
   if (router.pathname === AppRoutes.transactions.tx) {
@@ -32,6 +33,73 @@ const goToQueue = (router: NextRouter) => {
       query: { safe: router.query.safe },
     })
   }
+}
+
+/**
+ * To avoid nonce gaps in the queue, we allow deleting the last transaction in the queue or duplicates.
+ * The recommended nonce is used to calculate the last transaction in the queue.
+ */
+const useIsNonceDeletable = (txNonce: number) => {
+  const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
+  const recommendedNonce = useRecommendedNonce() || 0
+  const duplicateCount = queuedTxsByNonce?.length || 0
+  return duplicateCount > 1 || txNonce === recommendedNonce - 1
+}
+
+const DeleteTxButton = ({
+  safeTxHash,
+  txNonce,
+  onSuccess,
+}: {
+  safeTxHash: string
+  txNonce: number
+  onSuccess: () => void
+}) => {
+  const router = useRouter()
+  const isDeletable = useIsNonceDeletable(txNonce)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const onDeleteSuccess = () => {
+    setIsDeleting(false)
+    goToQueue(router)
+    onSuccess()
+  }
+  const onDeleteClose = () => setIsDeleting(false)
+
+  return (
+    <>
+      <Typography variant="overline" className={css.or}>
+        or
+      </Typography>
+
+      <Typography variant="body2" mb={0.5}>
+        Don’t want to have this transaction anymore? Remove it permanently from the queue.
+      </Typography>
+
+      <Tooltip
+        arrow
+        placement="top"
+        title={isDeletable ? '' : 'You can only delete the last transaction in the queue or duplicates'}
+      >
+        <span style={{ width: '100%' }}>
+          <Track {...REJECT_TX_EVENTS.DELETE_OFFCHAIN_BUTTON} as="div">
+            <ChoiceButton
+              icon={DeleteIcon}
+              iconColor="error"
+              onClick={() => setIsDeleting(true)}
+              title="Delete from the queue"
+              description="Remove this transaction from the off-chain queue"
+              disabled={!isDeletable}
+            />
+          </Track>
+        </span>
+      </Tooltip>
+
+      {safeTxHash && isDeleting && (
+        <DeleteTxModal onSuccess={onDeleteSuccess} onClose={onDeleteClose} safeTxHash={safeTxHash} />
+      )}
+    </>
+  )
 }
 
 const ReplaceTxMenu = ({
@@ -43,23 +111,15 @@ const ReplaceTxMenu = ({
   safeTxHash?: string
   proposer?: string
 }) => {
-  const router = useRouter()
   const wallet = useWallet()
   const { setTxFlow } = useContext(TxModalContext)
   const queuedTxsByNonce = useQueuedTxByNonce(txNonce)
   const canCancel = !queuedTxsByNonce?.some(
     (item) => isCustomTxInfo(item.transaction.txInfo) && item.transaction.txInfo.isCancellation,
   )
-  const isDeleteEnabled = useHasFeature(FEATURES.DELETE_TX)
-  const canDelete = isDeleteEnabled && proposer && wallet && sameAddress(wallet.address, proposer)
-  const [isDeleting, setIsDeleting] = useState(false)
 
-  const onDeleteSuccess = () => {
-    setIsDeleting(false)
-    goToQueue(router)
-    setTxFlow(undefined)
-  }
-  const onDeleteClose = () => setIsDeleting(false)
+  const isDeleteEnabled = useHasFeature(FEATURES.DELETE_TX)
+  const canDelete = safeTxHash && isDeleteEnabled && proposer && wallet && sameAddress(wallet.address, proposer)
 
   return (
     <TxLayout title={`Reject transaction #${txNonce}`} step={0} hideNonce isReplacement>
@@ -109,29 +169,7 @@ const ReplaceTxMenu = ({
           </Tooltip>
 
           {canDelete && (
-            <>
-              <Typography variant="overline" className={css.or}>
-                or
-              </Typography>
-
-              <Typography variant="body2" mb={0.5}>
-                Don’t want to have this transaction anymore? Remove it permanently from the queue.
-              </Typography>
-
-              <Track {...REJECT_TX_EVENTS.DELETE_OFFCHAIN_BUTTON} as="div">
-                <ChoiceButton
-                  icon={DeleteIcon}
-                  iconColor="error"
-                  onClick={() => setIsDeleting(true)}
-                  title="Delete from the queue"
-                  description="Remove this transaction from the off-chain queue"
-                />
-              </Track>
-
-              {safeTxHash && isDeleting && (
-                <DeleteTxModal onSuccess={onDeleteSuccess} onClose={onDeleteClose} safeTxHash={safeTxHash} />
-              )}
-            </>
+            <DeleteTxButton safeTxHash={safeTxHash} txNonce={txNonce} onSuccess={() => setTxFlow(undefined)} />
           )}
         </Box>
       </TxCard>
