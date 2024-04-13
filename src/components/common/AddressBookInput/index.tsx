@@ -35,6 +35,11 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
     [addressBookEntries, addressValue],
   )
 
+  const isInAddressBook = useMemo(
+    () => addressBookEntries.some((entry) => entry.label === addressValue),
+    [addressBookEntries, addressValue],
+  )
+
   const customFilterOptions = (options: any, state: any) => {
     // Don't show suggestions from the address book once a valid address has been entered.
     if (isValidAddress(addressValue)) return []
@@ -94,7 +99,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
         )}
       />
 
-      {canAdd ? (
+      {canAdd && !isInAddressBook ? (
         <Typography variant="body2" className={css.unknownAddress}>
           <SvgIcon component={InfoIcon} fontSize="small" />
           <span>
