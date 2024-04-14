@@ -10,6 +10,7 @@ import EntryDialog from '@/components/address-book/EntryDialog'
 import css from './styles.module.css'
 import inputCss from '@/styles/inputs.module.css'
 import { isValidAddress } from '@/utils/validation'
+import { sameAddress } from '@/utils/addresses'
 
 const abFilterOptions = createFilterOptions({
   stringify: (option: { label: string; name: string }) => option.name + ' ' + option.label,
@@ -36,7 +37,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
   )
 
   const isInAddressBook = useMemo(
-    () => addressBookEntries.some((entry) => entry.label === addressValue),
+    () => addressBookEntries.some((entry) => sameAddress(entry.label, addressValue)),
     [addressBookEntries, addressValue],
   )
 
