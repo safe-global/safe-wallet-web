@@ -66,7 +66,7 @@ export const CounterfactualForm = ({
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
-    onSubmit?.('mockId')
+    onSubmit?.(Math.random().toString())
 
     if (needsRiskConfirmation && !isRiskConfirmed) {
       setIsRiskIgnored(true)
