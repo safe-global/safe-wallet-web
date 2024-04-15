@@ -1,50 +1,29 @@
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
-import classnames from 'classnames'
+import OrderId from '@/features/swap/components/OrderId'
+import StatusLabel from '@/features/swap/components/StatusLabel'
+import { formatTimeInWords } from '@/utils/date'
+import type { ReactElement } from 'react'
 import Image from 'next/image'
 import { type SwapOrder as SwapOrderType, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
-import { Button, Divider, Stack } from '@mui/material'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import css from '@/features/swap/components/SwapOrder/styles.module.css'
 
 type SwapOrderProps = {
   txData?: TransactionData
   txInfo?: SwapOrderType
 }
 
-export const SwapOrderHeader = ({
-  setOpen,
-  amount,
-  compact = false,
-  title = 'All actions',
-}: {
-  setOpen: Dispatch<SetStateAction<Record<number, boolean> | undefined>>
-  amount: number
-  compact?: boolean
-  title?: string
-}) => {
-  const onClickAll = (expanded: boolean) => () => {
-    setOpen(Array(amount).fill(expanded))
-  }
-
-  return (
-    <div data-testid="all-actions" className={classnames(css.actionsHeader, { [css.compactHeader]: compact })}>
-      {title}
-      <Stack direction="row" divider={<Divider className={css.divider} />}>
-        <Button data-testid="expande-all-btn" onClick={onClickAll(true)} variant="text">
-          Expand all
-        </Button>
-        <Button data-testid="collapse-all-btn" onClick={onClickAll(false)} variant="text">
-          Collapse all
-        </Button>
-      </Stack>
-    </div>
-  )
-}
-
 const SellOrder = ({ order }: { order: SwapOrderType }) => {
-  const { buyToken, sellToken, orderUid, expiresTimestamp, status, executionPriceLabel, surplusLabel } = order
+  const {
+    buyToken,
+    sellToken,
+    orderUid,
+    expiresTimestamp,
+    status,
+    executionPriceLabel,
+    limitPriceLabel,
+    surplusLabel,
+  } = order
 
   return (
     <DataTable
@@ -71,17 +50,20 @@ const SellOrder = ({ order }: { order: SwapOrderType }) => {
         <DataRow key="Execution price" title="Execution price">
           {executionPriceLabel}
         </DataRow>,
+        <DataRow key="Limit price" title="Limit price">
+          {limitPriceLabel}
+        </DataRow>,
         <DataRow key="Surplus" title="Surplus">
           {surplusLabel}
         </DataRow>,
         <DataRow key="Expiry" title="Expiry">
-          {expiresTimestamp}
+          {formatTimeInWords(expiresTimestamp * 1000)}
         </DataRow>,
         <DataRow key="Order ID" title="Order ID">
-          {orderUid}
+          <OrderId orderId={orderUid} />
         </DataRow>,
         <DataRow key="Status" title="Status">
-          {status}
+          <StatusLabel status={status} />
         </DataRow>,
       ]}
     />

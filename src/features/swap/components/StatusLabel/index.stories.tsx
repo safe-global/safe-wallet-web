@@ -25,7 +25,7 @@ type Story = StoryObj<typeof meta>
 
 export const Filled: Story = {
   args: {
-    status: 'filled',
+    status: 'fulfilled',
   },
 }
 
