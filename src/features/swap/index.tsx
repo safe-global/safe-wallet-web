@@ -38,7 +38,7 @@ const appData: SafeAppData = {
   features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
   socialProfiles: [],
 }
-export const CowWidgetCommunicator = ({ sell }: Params) => {
+const SwapWidget = ({ sell }: Params) => {
   const chainId = useChainId()
   const { palette } = useTheme()
   const darkMode = useDarkMode()
@@ -203,3 +203,5 @@ export const CowWidgetCommunicator = ({ sell }: Params) => {
     </Box>
   )
 }
+
+export default SwapWidget
