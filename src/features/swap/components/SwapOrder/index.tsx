@@ -23,6 +23,7 @@ const SellOrder = ({ order }: { order: SwapOrderType }) => {
     executionPriceLabel,
     limitPriceLabel,
     surplusLabel,
+    explorerUrl,
   } = order
 
   return (
@@ -60,7 +61,7 @@ const SellOrder = ({ order }: { order: SwapOrderType }) => {
           {formatTimeInWords(expiresTimestamp * 1000)}
         </DataRow>,
         <DataRow key="Order ID" title="Order ID">
-          <OrderId orderId={orderUid} />
+          <OrderId orderId={orderUid} href={explorerUrl} />
         </DataRow>,
         <DataRow key="Status" title="Status">
           <StatusLabel status={status} />
