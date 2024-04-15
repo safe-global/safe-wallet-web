@@ -7,7 +7,6 @@ import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import css from '@/features/swap/components/SwapOrder/styles.module.css'
-import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -46,6 +45,7 @@ export const SwapOrderHeader = ({
 
 const SellOrder = ({ order }: { order: SwapOrderType }) => {
   const { buyToken, sellToken, orderUid, expiresTimestamp, status, executionPriceLabel, surplusLabel } = order
+
   return (
     <DataTable
       header="Sell order"
@@ -89,9 +89,7 @@ const SellOrder = ({ order }: { order: SwapOrderType }) => {
 }
 
 export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | null => {
-  const multiSendTransactions = txData?.dataDecoded?.parameters?.[0].valueDecoded
-
-  if (!txData) return null
+  if (!txData || !txInfo) return null
 
   // ? when can a multiSend call take no parameters?
   if (!txData.dataDecoded?.parameters) {
@@ -101,12 +99,7 @@ export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | nu
     return null
   }
 
-  return (
-    <>
-      {txInfo && <SellOrder order={txInfo} />}
-      {multiSendTransactions && <Multisend txData={txData} />}
-    </>
-  )
+  return <SellOrder order={txInfo} />
 }
 
 export default SwapOrder

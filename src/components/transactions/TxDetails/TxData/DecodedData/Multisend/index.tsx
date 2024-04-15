@@ -53,7 +53,6 @@ export const Multisend = ({
   const [openMap, setOpenMap] = useState<Record<number, boolean>>()
   const isOpenMapUndefined = openMap == null
 
-  console.log('multisend tx', txData)
   // multiSend method receives one parameter `transactions`
   const multiSendTransactions = txData?.dataDecoded?.parameters?.[0].valueDecoded
 
