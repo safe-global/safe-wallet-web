@@ -33,7 +33,7 @@ import useIsPending from '@/hooks/useIsPending'
 import { isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { SwapOrder } from '@/components/transactions/TxDetails/TxData/DecodedData/SwapOrder'
+import { SwapOrder } from '@/features/swap/components/SwapOrder'
 
 export const NOT_AVAILABLE = 'n/a'
 
