@@ -1,11 +1,12 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { CowWidgetCommunicator } from '@/components/swap/CowWidgetCommunicator'
+import SwapWidget from '@/features/swap'
 
 const Swap: NextPage = () => {
   const router = useRouter()
   const { token, amount } = router.query
+
   let sell = undefined
   if (token && amount) {
     sell = {
@@ -20,7 +21,7 @@ const Swap: NextPage = () => {
       </Head>
 
       <main>
-        <CowWidgetCommunicator sell={sell} />
+        <SwapWidget sell={sell} />
       </main>
     </>
   )

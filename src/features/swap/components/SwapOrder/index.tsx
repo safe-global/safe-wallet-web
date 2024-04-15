@@ -1,13 +1,13 @@
+import type { Dispatch, ReactElement, SetStateAction } from 'react'
+import classnames from 'classnames'
+import Image from 'next/image'
+import { type SwapOrder as SwapOrderType, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import { Button, Divider, Stack } from '@mui/material'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { type SwapOrder as SwapOrderType, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
-import { Button, Divider, Stack } from '@mui/material'
-import css from './styles.module.css'
-import classnames from 'classnames'
+import css from '@/features/swap/components/SwapOrder/styles.module.css'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
-import Image from 'next/image'
 
 type SwapOrderProps = {
   txData?: TransactionData
