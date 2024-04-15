@@ -5,7 +5,7 @@ import { Paper } from '@mui/material'
 const meta = {
   component: OrderId,
   parameters: {
-    componentSubtitle: 'Renders a CowSwap order id with an external link and a copy button',
+    componentSubtitle: 'Renders an order id with an external link and a copy button',
   },
 
   decorators: [
@@ -27,5 +27,6 @@ export const Default: Story = {
   args: {
     orderId:
       '0x1282e32a3a69aeb5a65fcdec0ae40fe16b398d54609bc9a3c8be3eb57d1a0fd07a9af6ef9197041a5841e84cb27873bebd3486e2661510ab',
+    href: 'https://explorer.cow.fi/orders/0x1282e32a3a69aeb5a65fcdec0ae40fe16b398d54609bc9a3c8be3eb57d1a0fd07a9af6ef9197041a5841e84cb27873bebd3486e2661510ab',
   },
 }
