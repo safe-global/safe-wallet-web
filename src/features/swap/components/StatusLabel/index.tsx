@@ -1,15 +1,31 @@
 import { Chip as MuiChip, SvgIcon } from '@mui/material'
+import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import CheckIcon from '@/public/images/common/circle-check.svg'
 import ClockIcon from '@/public/images/common/clock.svg'
 import BlockIcon from '@/public/images/common/block.svg'
 
 type Props = {
-  status: 'filled' | 'open' | 'cancelled' | 'expired'
+  status: OrderStatuses
 }
 
-const statusMap = {
-  filled: {
+type StatusProps = {
+  label: string
+  color: string
+  backgroundColor: string
+  iconColor: string
+  icon: any
+}
+
+const statusMap: Record<OrderStatuses, StatusProps> = {
+  presignaturePending: {
+    label: 'Pending',
+    color: 'info.dark',
+    backgroundColor: 'info.light',
+    iconColor: 'info.dark',
+    icon: ClockIcon,
+  },
+  fulfilled: {
     label: 'Filled',
     color: 'success.dark',
     backgroundColor: 'secondary.light',
