@@ -3,14 +3,14 @@ import ExplorerButton from '@/components/common/ExplorerButton'
 import { Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
 
-const COW_EXPLORER_BASE_URL = 'https://explorer.cow.fi/orders/'
-
 const OrderId = ({
   orderId,
+  href,
   length = 8,
   showCopyButton = true,
 }: {
   orderId: string
+  href: string
   length?: number
   showCopyButton?: boolean
 }) => {
@@ -21,7 +21,7 @@ const OrderId = ({
       <span>{truncatedOrderId}</span>
       {showCopyButton && <CopyButton text={orderId} />}
       <Box color="border.main">
-        <ExplorerButton href={`${COW_EXPLORER_BASE_URL}${orderId}`} />
+        <ExplorerButton href={href} />
       </Box>
     </Stack>
   )
