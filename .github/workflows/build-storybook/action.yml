@@ -1,0 +1,14 @@
+name: 'Build Storybook'
+
+description: 'Build the storybook'
+
+inputs:
+  secrets:
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Build Storybook
+      shell: bash
+      run: yarn build-storybook -o ./out/storybook
