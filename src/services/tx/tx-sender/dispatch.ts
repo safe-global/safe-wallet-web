@@ -1,4 +1,4 @@
-import type { SafeInfo, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import { didRevert } from '@/utils/ethers-utils'
 import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
@@ -10,7 +10,6 @@ import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
-import { sponsoredCall } from '@/services/tx/relaying'
 import {
   getAndValidateSafeSDK,
   getSafeSDKWithSigner,
@@ -22,6 +21,7 @@ import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { asError } from '@/services/exceptions/utils'
 import chains from '@/config/chains'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { createExistingTx } from './create'
 
 /**
@@ -420,7 +420,12 @@ export const dispatchTxRelay = async (
   ])
 
   try {
-    const relayResponse = await sponsoredCall({ chainId: safe.chainId, to: safe.address.value, data, gasLimit })
+    const relayResponse = await relayTransaction(safe.chainId, {
+      to: safe.address.value,
+      data,
+      gasLimit: gasLimit?.toString(),
+      version: safe.version ?? LATEST_SAFE_VERSION,
+    })
     const taskId = relayResponse.taskId
 
     if (!taskId) {
@@ -443,6 +448,7 @@ export const dispatchBatchExecutionRelay = async (
   multiSendTxData: string,
   chainId: string,
   safeAddress: string,
+  safeVersion: string,
 ) => {
   const to = await multiSendContract.getAddress()
   const data = multiSendContract.contract.interface.encodeFunctionData('multiSend', [multiSendTxData])
@@ -450,10 +456,10 @@ export const dispatchBatchExecutionRelay = async (
 
   let relayResponse
   try {
-    relayResponse = await sponsoredCall({
-      chainId,
+    relayResponse = await relayTransaction(chainId, {
       to,
       data,
+      version: safeVersion,
     })
   } catch (error) {
     txs.forEach(({ txId }) => {

@@ -37,8 +37,6 @@ Here's the list of all the environment variables:
 | `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH`           | Preview GTM key
 | `NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH`             | Production GTM key
 | `NEXT_PUBLIC_SENTRY_DSN`                               | [Sentry](https://sentry.io) id for tracking runtime errors
-| `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_PRODUCTION` | [Safe Gelato Relay Service](https://github.com/safe-global/safe-gelato-relay-service) URL to allow relaying transactions via Gelato
-| `NEXT_PUBLIC_SAFE_GELATO_RELAY_SERVICE_URL_STAGING`    | Relay URL on staging
 | `NEXT_PUBLIC_IS_OFFICIAL_HOST`                         | Whether it's the official distribution of the app, or a fork; has legal implications. Set to true only if you also update the legal pages like Imprint and Terms of use
 | `NEXT_PUBLIC_REDEFINE_API`                             | Redefine API base URL
 | `NEXT_PUBLIC_FIREBASE_OPTIONS_PRODUCTION`              | Firebase Cloud Messaging (FCM) `initializeApp` options on production

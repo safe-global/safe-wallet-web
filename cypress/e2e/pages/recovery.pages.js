@@ -1,6 +1,7 @@
 import * as constants from '../../support/constants'
 import * as main from './main.page'
 import * as safe from '../pages/load_safe.pages'
+import * as tx from '../pages/transactions.page'
 import { tableContainer } from '../pages/address_book.page'
 import { txDate } from '../pages/create_tx.pages'
 
@@ -46,7 +47,7 @@ export function setRecoveryDelay(option) {
 }
 
 export function getSetupRecoveryBtn() {
-  return cy.get(setupRecoveryBtn).should('be.visible')
+  return cy.get(setupRecoveryBtn)
 }
 
 export function clickOnSetupRecoveryBtn() {
@@ -83,9 +84,16 @@ export function verifyRecovererAdded(address) {
   main.verifyValuesExist(tableContainer, address)
 }
 
-export function removeRecoverer(index, recoverer) {
-  cy.get(removeRecovererBtn).eq(index).click()
-  cy.get(removeRecovererSection).contains(recoverer)
+export function clearRecoverers() {
+  cy.get('body').then(($body) => {
+    if ($body.find(removeRecovererBtn).length) {
+      cy.get(removeRecovererBtn).each(($btn) => {
+        cy.wrap($btn).click()
+        clickOnNextBtn()
+        tx.executeFlow_1()
+      })
+    }
+  })
 }
 
 export function clickOnStartRecoveryBtn() {

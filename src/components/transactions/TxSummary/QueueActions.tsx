@@ -20,7 +20,7 @@ const QueueActions = ({ tx }: { tx: TransactionSummary }) => {
   }
 
   return (
-    <Box data-testid="tx-actions" my={-1} mr={2} display="flex" justifyContent="center">
+    <Box data-testid="tx-actions" mr={2} display="flex" justifyContent="center">
       {ExecutionComponent}
       {pendingTx && pendingTx.status === PendingStatus.PROCESSING && (
         <SpeedUpMonitor txId={tx.id} pendingTx={pendingTx} modalTrigger="alertButton" />

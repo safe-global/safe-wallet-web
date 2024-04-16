@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import 'dotenv/config'
 import * as fs from 'fs'
 
 export default defineConfig({
@@ -22,6 +23,9 @@ export default defineConfig({
           }
         }
       })
+    },
+    env: {
+      ...process.env,
     },
     baseUrl: 'http://localhost:3000',
     testIsolation: false,

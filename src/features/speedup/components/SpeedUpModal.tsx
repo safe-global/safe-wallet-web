@@ -21,6 +21,11 @@ import { isWalletRejection } from '@/utils/wallets'
 import { type TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import { PendingTxType, type PendingProcessingTx } from '@/store/pendingTxsSlice'
 import useAsync from '@/hooks/useAsync'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
+import { trackError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 
 type Props = {
   open: boolean
@@ -63,6 +68,11 @@ export const SpeedUpModal = ({
 
   const safeTxHasSignatures = !!safeTx?.signatures?.size ? true : false
 
+  const onCancel = () => {
+    trackEvent(MODALS_EVENTS.CANCEL_SPEED_UP)
+    handleClose()
+  }
+
   const onSubmit = useCallback(async () => {
     if (!wallet || !speedUpFee || !onboard || !chainInfo || !safeTx) {
       return null
@@ -84,9 +94,11 @@ export const SpeedUpModal = ({
           txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
           txId,
           onboard,
-          chainInfo?.chainId,
+          chainInfo.chainId,
           safeAddress,
         )
+        const txType = await getTransactionTrackingType(chainInfo.chainId, txId)
+        trackEvent({ ...TX_EVENTS.SPEED_UP, label: txType })
       } else {
         await dispatchCustomTxSpeedUp(
           txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
@@ -97,6 +109,8 @@ export const SpeedUpModal = ({
           chainInfo?.chainId,
           safeAddress,
         )
+        // Currently all custom txs are batch executes
+        trackEvent({ ...TX_EVENTS.SPEED_UP, label: 'batch' })
       }
 
       if (txHash) {
@@ -109,6 +123,7 @@ export const SpeedUpModal = ({
       const error = asError(e)
       setWaitingForConfirmation(false)
       if (!isWalletRejection(error)) {
+        trackError(ErrorCodes._814, error)
         dispatch(
           showNotification({
             message: 'Speed up failed',
@@ -141,7 +156,7 @@ export const SpeedUpModal = ({
 
   if (safeTxHasSignatures) {
     return (
-      <ModalDialog open={open} onClose={handleClose} dialogTitle="Speed up transaction">
+      <ModalDialog open={open} onClose={onCancel} dialogTitle="Speed up transaction">
         <DialogContent sx={{ p: '24px !important' }}>
           <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
             <SvgIcon inheritViewBox component={RocketSpeedup} sx={{ width: 90, height: 90 }} />
@@ -174,7 +189,7 @@ export const SpeedUpModal = ({
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={onCancel}>Cancel</Button>
 
           <Tooltip title="Speed up transaction">
             <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>
