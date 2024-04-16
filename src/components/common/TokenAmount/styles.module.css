@@ -1,10 +1,17 @@
 .container {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--space-1);
   color: var(--color-text-primary);
 }
 
 .verticalAlign {
   vertical-align: middle;
+}
+
+.label {
+  display: block;
+  width: 100%;
+  flex: 1;
 }
