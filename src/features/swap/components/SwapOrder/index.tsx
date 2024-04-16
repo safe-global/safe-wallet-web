@@ -7,6 +7,7 @@ import { type SwapOrder as SwapOrderType, type TransactionData } from '@safe-glo
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
+import css from './styles.module.css'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -33,16 +34,15 @@ const SellOrder = ({ order }: { order: SwapOrderType }) => {
         <DataRow key="Amount" title="Amount">
           <div>
             <div>
-              Sell{' '}
-              <span className="value">
-                {sellToken.logo && <Image src={sellToken.logo} alt={sellToken.symbol} width={32} height={32} />}{' '}
+              <span className={css.value}>
+                Sell {sellToken.logo && <Image src={sellToken.logo} alt={sellToken.symbol} width={24} height={24} />}{' '}
                 {sellToken.amount} {sellToken.symbol}
               </span>
             </div>
             <div>
-              For at least{' '}
-              <span className="value">
-                {buyToken.logo && <Image src={buyToken.logo} alt={buyToken.symbol} width={32} height={32} />}
+              <span className={css.value}>
+                For at least{' '}
+                {buyToken.logo && <Image src={buyToken.logo} alt={buyToken.symbol} width={24} height={24} />}
                 {buyToken.amount} {buyToken.symbol}
               </span>
             </div>
