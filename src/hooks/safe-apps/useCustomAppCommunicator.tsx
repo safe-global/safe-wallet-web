@@ -37,7 +37,7 @@ import type AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import useBalances from '@/hooks/useBalances'
 
 export const useCustomAppCommunicator = (
-  iframeRef: MutableRefObject<HTMLIFrameElement | null | undefined>,
+  iframeRef: MutableRefObject<HTMLIFrameElement | null>,
   app: SafeAppData,
   chain: WebCoreChainInfo | undefined,
   overrideHandlers?: Partial<UseAppCommunicatorHandlers>,
