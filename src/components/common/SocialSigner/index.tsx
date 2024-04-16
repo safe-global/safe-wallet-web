@@ -17,7 +17,6 @@ import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { open } from '@/services/mpc/PasswordRecoveryModal'
-import SocialLoginDeprecation from '../SocialLoginDeprecation'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
