@@ -43,3 +43,9 @@
 .compact > div:global(.Mui-expanded) {
   border-color: var(--color-border-light);
 }
+
+.value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
