@@ -42,7 +42,7 @@ async function switchOrAddChain(walletProvider: ConnectedWallet['provider'], cha
 
     const chain = await getChainConfig(chainId)
 
-    return await walletProvider.request({
+    return walletProvider.request({
       method: 'wallet_addEthereumChain',
       params: [
         {
