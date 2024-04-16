@@ -7,7 +7,8 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import css from './styles.module.css'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag } from '@/config/constants'
-import SafeMilesLogo from '@/public/images/common/safe-miles-logo.svg'
+import SafePass from '@/public/images/common/safe-pass-logo.svg'
+
 import classNames from 'classnames'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useRouter } from 'next/router'
@@ -64,7 +65,7 @@ const ActivityRewardsSection = () => {
             <Grid container xs={12} sx={{ gap: { xs: 4, md: 0 } }}>
               <Grid item xs={12} md={6} p={0}>
                 <SvgIcon
-                  component={SafeMilesLogo}
+                  component={SafePass}
                   inheritViewBox
                   color="border"
                   className={classNames(css.milesIcon, { [css.milesIconLight]: !isDarkMode })}
@@ -88,11 +89,11 @@ const ActivityRewardsSection = () => {
                   How it works
                 </Typography>
                 <div className={css.steps}>
-                  <Step title="Lock SAFE to boost your miles!" active={true} />
+                  <Step title="Lock SAFE to boost points" active={true} />
                   <Step
                     title={
                       <>
-                        Get activity miles
+                        Get activity points
                         <Typography variant="caption" component="span" className={css.comingSoon}>
                           Coming soon
                         </Typography>
@@ -100,7 +101,7 @@ const ActivityRewardsSection = () => {
                     }
                     active={false}
                   />
-                  <Step title="Receive rewards" active={false} />
+                  <Step title="Get rewards from your activity points" active={false} />
                 </div>
                 {/** TODO: insert link to landing page once it exists */}
                 <Link color="primary.main" fontWeight="bold" href="">
