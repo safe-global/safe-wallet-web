@@ -21,14 +21,14 @@ const statusMap: Record<OrderStatuses, StatusProps> = {
   presignaturePending: {
     label: 'Pending',
     color: 'info.dark',
-    backgroundColor: 'info.light',
+    backgroundColor: 'info.background',
     iconColor: 'info.dark',
     icon: ClockIcon,
   },
   fulfilled: {
     label: 'Filled',
     color: 'success.dark',
-    backgroundColor: 'secondary.light',
+    backgroundColor: 'secondary.background',
     iconColor: 'success.dark',
     icon: CheckIcon,
   },
