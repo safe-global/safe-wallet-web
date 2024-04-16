@@ -1,6 +1,6 @@
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
-import { Box, Button, LinearProgress, SvgIcon, Typography } from '@mui/material'
+import { Alert, Box, Button, LinearProgress, SvgIcon, Typography } from '@mui/material'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { useState } from 'react'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -17,6 +17,7 @@ import madProps from '@/utils/mad-props'
 import { asError } from '@/services/exceptions/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { open } from '@/services/mpc/PasswordRecoveryModal'
+import SocialLoginDeprecation from '../SocialLoginDeprecation'
 
 export const _getSupportedChains = (chains: ChainInfo[]) => {
   return chains
@@ -132,6 +133,10 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
         )}
         {loginError && <ErrorMessage className={css.loginError}>{loginError}</ErrorMessage>}
       </Box>
+
+      <Alert severity="warning" sx={{ mx: 3, mt: 3, width: '100%' }}>
+        From <b>01.05.2024</b> we will no longer support account creation and login with Google.
+      </Alert>
     </>
   )
 }
