@@ -170,7 +170,7 @@ const SwapWidget = ({ sell }: Params) => {
 
   const chain = useCurrentChain()
 
-  const iframeRef: MutableRefObject<HTMLIFrameElement | null | undefined> = useRef<HTMLIFrameElement | null>()
+  const iframeRef: MutableRefObject<HTMLIFrameElement | null> = useRef<HTMLIFrameElement | null>(null)
 
   useEffect(() => {
     const iframeElement = document.querySelector('#swapWidget iframe')
