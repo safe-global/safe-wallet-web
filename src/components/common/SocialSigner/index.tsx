@@ -133,7 +133,7 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
         {loginError && <ErrorMessage className={css.loginError}>{loginError}</ErrorMessage>}
       </Box>
 
-      <Alert severity="warning" sx={{ mx: 3, mt: 3, width: '100%' }}>
+      <Alert severity="warning" sx={{ mt: 1, width: '100%' }}>
         From <b>01.05.2024</b> we will no longer support account creation and login with Google.
       </Alert>
     </>
