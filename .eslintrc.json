@@ -5,6 +5,7 @@
     "plugin:prettier/recommended",
     "plugin:storybook/recommended"
   ],
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "@next/next/no-img-element": "off",
     "@next/next/google-font-display": "off",

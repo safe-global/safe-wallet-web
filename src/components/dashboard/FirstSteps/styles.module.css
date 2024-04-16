@@ -22,6 +22,19 @@
   border-radius: 0 0 4px 4px;
 }
 
+.badgeText {
+  background-color: var(--color-secondary-light);
+  color: var(--color-static-main);
+  border-radius: 0 0 4px 4px;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+}
+
+.badgeTextInfo {
+  background-color: var(--color-info-main);
+}
+
 .status {
   align-self: flex-start;
   margin-bottom: auto;
