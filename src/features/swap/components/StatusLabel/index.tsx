@@ -4,6 +4,7 @@ import type { ReactElement } from 'react'
 import CheckIcon from '@/public/images/common/circle-check.svg'
 import ClockIcon from '@/public/images/common/clock.svg'
 import BlockIcon from '@/public/images/common/block.svg'
+import SignatureIcon from '@/public/images/common/document_signature.svg'
 
 type Props = {
   status: OrderStatuses
@@ -19,11 +20,11 @@ type StatusProps = {
 
 const statusMap: Record<OrderStatuses, StatusProps> = {
   presignaturePending: {
-    label: 'Pending',
-    color: 'info.dark',
-    backgroundColor: 'info.background',
-    iconColor: 'info.dark',
-    icon: ClockIcon,
+    label: 'Pending signature',
+    color: 'warning.main',
+    backgroundColor: 'warning.background',
+    iconColor: 'warning.main',
+    icon: SignatureIcon,
   },
   fulfilled: {
     label: 'Filled',
