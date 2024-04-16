@@ -57,7 +57,7 @@
 }
 
 .header {
-  max-width: 80%;
+  max-width: 350px;
 }
 
 .steps {
@@ -90,6 +90,14 @@
   border-radius: 4px;
   color: #121312;
   padding: 4px 8px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: var(--space-3);
+  text-wrap: nowrap;
 }
 
 @media (max-width: 899.99px) {

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Typography, Card, IconButton, SvgIcon, Grid, Button, Link } from '@mui/material'
+import { Typography, Card, IconButton, SvgIcon, Grid, Button, Link, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -78,18 +78,22 @@ const ActivityRewardsSection = () => {
                 >
                   Interact with Safe and get rewards
                 </Typography>
-                <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
-                  <Button variant="contained" sx={{ mt: 3 }}>
-                    Open Activity App
-                  </Button>
-                </NextLink>
+                <Box className={css.links} gap={2}>
+                  <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
+                    <Button variant="contained">Open Activity App</Button>
+                  </NextLink>
+                  {/** TODO: insert link to landing page once it exists */}
+                  <Link underline="hover" color="text.primary" fontWeight="bold" href="">
+                    Read about the program
+                  </Link>
+                </Box>
               </Grid>
               <Grid item xs={12} md={6} p={0}>
                 <Typography variant="overline" color="primary.light">
                   How it works
                 </Typography>
                 <div className={css.steps}>
-                  <Step title="Lock SAFE to boost points" active={true} />
+                  <Step title="Lock SAFE to boost your points!" active={true} />
                   <Step
                     title={
                       <>
@@ -101,12 +105,8 @@ const ActivityRewardsSection = () => {
                     }
                     active={false}
                   />
-                  <Step title="Get rewards from your activity points" active={false} />
+                  <Step title="Receive rewards" active={false} />
                 </div>
-                {/** TODO: insert link to landing page once it exists */}
-                <Link color="primary.main" fontWeight="bold" href="">
-                  Read more about the program
-                </Link>
               </Grid>
             </Grid>
           </Card>
