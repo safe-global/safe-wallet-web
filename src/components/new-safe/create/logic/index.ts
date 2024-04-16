@@ -1,7 +1,7 @@
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { type BrowserProvider, type Provider } from 'ethers'
 
-import { getSafeInfo, type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   getReadOnlyFallbackHandlerContract,
   getReadOnlyGnosisSafeContract,
@@ -28,7 +28,6 @@ import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
-import { sponsoredCall } from '@/services/tx/relaying'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -164,7 +163,7 @@ export const estimateSafeCreationGas = async (
   const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
 
   const gas = await provider.estimateGas({
-    from: from,
+    from,
     to: await readOnlyProxyFactoryContract.getAddress(),
     data: encodedSafeCreationTx,
   })
@@ -299,17 +298,13 @@ export const relaySafeCreation = async (
   owners: string[],
   threshold: number,
   saltNonce: number,
-  safeVersion?: SafeVersion,
+  version?: SafeVersion,
 ) => {
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(
-    chain.chainId,
-    safeVersion ?? LATEST_SAFE_VERSION,
-  )
+  const safeVersion = version ?? LATEST_SAFE_VERSION
+
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(chain.chainId, safeVersion)
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
-    chain.chainId,
-    safeVersion ?? LATEST_SAFE_VERSION,
-  )
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, safeVersion)
   const fallbackHandlerAddress = await readOnlyFallbackHandlerContract.getAddress()
   const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain)
   const safeContractAddress = await readOnlySafeContract.getAddress()
@@ -342,10 +337,10 @@ export const relaySafeCreation = async (
     saltNonce,
   ])
 
-  const relayResponse = await sponsoredCall({
-    chainId: chain.chainId,
+  const relayResponse = await relayTransaction(chain.chainId, {
     to: proxyFactoryAddress,
     data: createProxyWithNonceCallData,
+    version: safeVersion,
   })
 
   return relayResponse.taskId

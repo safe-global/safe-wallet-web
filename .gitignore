@@ -54,3 +54,5 @@ yalc.lock
 /public/workbox-*.js.map
 /public/fallback*
 /public/*.js.LICENSE.txt
+certificates
+*storybook.log

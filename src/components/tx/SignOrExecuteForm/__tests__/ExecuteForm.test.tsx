@@ -1,6 +1,5 @@
 import { defaultSecurityContextValues } from '@/components/tx/security/shared/TxSecurityContext'
 import { type AsyncResult } from '@/hooks/useAsync'
-import { type RelayResponse } from '@/services/tx/relaying'
 import { createMockSafeTransaction } from '@/tests/transactions'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { type ReactElement } from 'react'
@@ -12,6 +11,7 @@ import * as relayUtils from '@/utils/relaying'
 import * as walletCanPay from '@/hooks/useWalletCanPay'
 import { render } from '@/tests/test-utils'
 import { fireEvent, waitFor } from '@testing-library/react'
+import type { RelayCountResponse } from '@safe-global/safe-gateway-typescript-sdk'
 
 // We assume that CheckWallet always returns true
 jest.mock('@/components/common/CheckWallet', () => ({
@@ -32,7 +32,7 @@ describe('ExecuteForm', () => {
     onSubmit: jest.fn(),
     isOwner: true,
     isExecutionLoop: false,
-    relays: [undefined, undefined, false] as AsyncResult<RelayResponse>,
+    relays: [undefined, undefined, false] as AsyncResult<RelayCountResponse>,
     txActions: { signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn() },
     txSecurity: defaultSecurityContextValues,
   }

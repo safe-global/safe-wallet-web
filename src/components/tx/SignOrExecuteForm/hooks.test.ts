@@ -111,7 +111,7 @@ describe('SignOrExecute hooks', () => {
       jest.spyOn(wallet, 'default').mockReturnValue({
         chainId: '1',
         label: 'MetaMask',
-        address: address,
+        address,
       } as ConnectedWallet)
 
       const { result } = renderHook(() => useIsExecutionLoop())
@@ -540,8 +540,7 @@ describe('SignOrExecute hooks', () => {
         'Cannot relay an unsigned transaction from a smart contract wallet',
       )
 
-      // We are proposing before signing
-      expect(proposeSpy).toHaveBeenCalled()
+      expect(proposeSpy).not.toHaveBeenCalled()
       expect(signSpy).not.toHaveBeenCalled()
       expect(relaySpy).not.toHaveBeenCalled()
     })

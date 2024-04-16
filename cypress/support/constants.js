@@ -46,6 +46,19 @@ export const SEPOLIA_TEST_SAFE_30_SEND_NFT_HP1 = 'sep:0x6C7d3939Ae99dd3e4422D8b3
 export const SEPOLIA_TEST_SAFE_31_SEND_NFT_HP2 = 'sep:0x97143f05ad523027b0F6F86FeD96E5e51F58DdAc'
 export const SEPOLIA_TEST_SAFE_32_SEND_NATIVE_HP1 = 'sep:0xe5DC58EfDA6ebe93014AaE7A5a673C5F80118171'
 export const SEPOLIA_TEST_SAFE_33_SEND_NATIVE_HP2 = 'sep:0x9DF284917ff80c0a95c20ea2151Eb2a39a13cf4E'
+
+export const SEPOLIA_TEST_SAFE_34_SEND_FUNDS_HP3 = 'sep:0xFE8697FE746Ff566C4962675270F446a9F54a187'
+export const SEPOLIA_TEST_SAFE_35_SEND_FUNDS_HP4 = 'sep:0x9711ad5B73Ae6B2e01031D1D798949a8e7E889a6'
+
+export const SEPOLIA_TEST_SAFE_36_SEND_FUNDS_HP5 = 'sep:0x21074f7A5C7bc2BCfD818fFeFfB442ab4877D2d2'
+export const SEPOLIA_TEST_SAFE_37_SEND_FUNDS_HP6 = 'sep:0xAd65717D60f7f2c65895c800148bc53eedC73c24'
+
+export const SEPOLIA_TEST_SAFE_38_SEND_FUNDS_HP7 = 'sep:0xad23bd2D4cDB86FF2a6600c74995c01eA209AfC1'
+export const SEPOLIA_TEST_SAFE_39_SEND_FUNDS_HP8 = 'sep:0xEbED8ABaAe1FCFA9D3343B34a2373a57A558abd1'
+
+export const SEPOLIA_TEST_SAFE_40_SEND_FUNDS_HP9 = 'sep:0xAC456f5422C13b93d4ac819c3E52bA418E401EaA'
+export const SEPOLIA_TEST_SAFE_41_SEND_FUNDS_HP10 = 'sep:0x20Acedd07F00192F9C3B4e30935B68D1ef4E3560'
+export const SEPOLIA_TEST_SAFE_41_SEND_FUNDS_HP11 = 'sep:0xBB5887698819c893105E706973C51A8Ac5ee46F7'
 export const SEPOLIA_CONTRACT_SHORT = '0x11AB...34aF'
 export const SEPOLIA_RECIPIENT_ADDR_SHORT = '0x4DD4...7bde'
 export const GNO_TEST_SAFE = 'gno:0xB8d760a90a5ed54D3c2b3EFC231277e99188642A'
@@ -104,7 +117,7 @@ export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
 export const sepoliaEtherscanlLink = 'https://sepolia.etherscan.io/address'
-export const stagingTxServiceUrl = 'https://safe-transaction-sepolia.staging.5afe.dev/api/v1'
+export const stagingTxServiceUrl = 'https://safe-transaction-sepolia.staging.5afe.dev/api'
 export const stagingTxServiceSafesUrl = '/safes/'
 export const stagingTxServiceBalancesUrl = '/balances/'
 
@@ -168,6 +181,7 @@ export const tokenAbbreviation = {
   ttone: 'TTONE',
   dor: 'DOR',
   eth: 'ETH',
+  gtt: 'GTT',
 }
 
 export const currencies = {

@@ -29,7 +29,7 @@ type GasParamsProps = {
   params: AdvancedParameters
   isExecution: boolean
   isEIP1559: boolean
-  onEdit: () => void
+  onEdit?: () => void
   gasLimitError?: Error
   willRelay?: boolean
 }
@@ -64,8 +64,20 @@ export const _GasParams = ({
 
   const onEditClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    onEdit()
+    onEdit?.()
   }
+
+  const EditComponent = (
+    <>
+      {gasLimitError || !isExecution || (isExecution && !isLoading) ? (
+        <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
+          Edit
+        </Link>
+      ) : (
+        <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em', mt: 2 }} />
+      )}
+    </>
+  )
 
   return (
     <div className={classnames({ [css.error]: gasLimitError })}>
@@ -132,13 +144,7 @@ export const _GasParams = ({
             </>
           )}
 
-          {gasLimitError || !isExecution || (isExecution && !isLoading) ? (
-            <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
-              Edit
-            </Link>
-          ) : (
-            <Skeleton variant="text" sx={{ display: 'inline-block', minWidth: '2em', mt: 2 }} />
-          )}
+          {onEdit && EditComponent}
         </AccordionDetails>
       </Accordion>
     </div>

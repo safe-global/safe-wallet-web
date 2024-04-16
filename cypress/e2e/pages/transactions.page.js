@@ -3,6 +3,7 @@ const executeLaterOption = '[data-testid="sign-checkbox"]'
 const connectedWalletExecutionMethod = '[data-testid="connected-wallet-execution-method"]'
 const txStatus = '[data-testid="transaction-status"]'
 const finishTransactionBtn = '[data-testid="finish-transaction-btn"]'
+const executeFormBtn = '[data-testid="execute-form-btn"]'
 
 const executeBtnStr = 'Execute'
 const txCompletedStr = 'Transaction was successful'
@@ -15,8 +16,12 @@ export function selectConnectedWalletOption() {
   cy.get(connectedWalletExecutionMethod).click()
 }
 
+export function selectRelayOtion() {
+  cy.get(connectedWalletExecutionMethod).prev().click()
+}
+
 export function clickOnExecuteBtn() {
-  cy.get('button').contains(executeBtnStr).click()
+  cy.get(executeFormBtn).click()
 }
 
 export function clickOnFinishBtn() {
@@ -29,6 +34,21 @@ export function waitForTxToComplete() {
 
 export function executeFlow_1() {
   selectExecuteNow()
+  selectConnectedWalletOption()
+  clickOnExecuteBtn()
+  waitForTxToComplete()
+  clickOnFinishBtn()
+}
+
+export function executeFlow_2() {
+  selectExecuteNow()
+  selectRelayOtion()
+  clickOnExecuteBtn()
+  waitForTxToComplete()
+  clickOnFinishBtn()
+}
+
+export function executeFlow_3() {
   selectConnectedWalletOption()
   clickOnExecuteBtn()
   waitForTxToComplete()

@@ -24,6 +24,9 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import ExternalLink from '@/components/common/ExternalLink'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { REJECT_TX_EVENTS } from '@/services/analytics/events/reject-tx'
+import { trackEvent } from '@/services/analytics'
+import { isWalletRejection } from '@/utils/wallets'
 
 type DeleteTxModalProps = {
   safeTxHash: string
@@ -41,10 +44,12 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, 
   const onConfirm = async () => {
     setError(undefined)
     setIsLoading(true)
+    trackEvent(REJECT_TX_EVENTS.DELETE_CONFIRM)
 
     if (!onboard || !safeAddress || !chainId || !safeTxHash) {
       setIsLoading(false)
       setError(new Error('Please connect your wallet first'))
+      trackEvent(REJECT_TX_EVENTS.DELETE_FAIL)
       return
     }
 
@@ -60,12 +65,19 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, 
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)
+      trackEvent(isWalletRejection(error as Error) ? REJECT_TX_EVENTS.DELETE_CANCEL : REJECT_TX_EVENTS.DELETE_FAIL)
       return
     }
 
     setIsLoading(false)
     txDispatch(TxEvent.DELETED, { safeTxHash })
     onSuccess()
+    trackEvent(REJECT_TX_EVENTS.DELETE_SUCCESS)
+  }
+
+  const onCancel = () => {
+    trackEvent(REJECT_TX_EVENTS.DELETE_CANCEL)
+    onClose()
   }
 
   return (
@@ -113,7 +125,7 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, 
       <Divider />
 
       <DialogActions sx={{ padding: 3, justifyContent: 'space-between' }}>
-        <Button size="small" variant="text" onClick={onClose}>
+        <Button size="small" variant="text" onClick={onCancel}>
           Keep it
         </Button>
 

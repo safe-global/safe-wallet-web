@@ -1,5 +1,6 @@
 import * as main from './main.page'
 import * as addressbook from '../pages/address_book.page'
+import * as createTx from '../pages/create_tx.pages'
 
 let etherscanLinkSepolia = 'a[aria-label="View on sepolia.etherscan.io"]'
 export const balanceSingleRow = '[aria-labelledby="tableTitle"] > tbody tr'
@@ -28,6 +29,8 @@ const hideTokenDefaultString = 'Hide tokens'
 const assetNameSortBtnStr = 'Asset'
 const assetBalanceSortBtnStr = 'Balance'
 export const sendBtnStr = 'Send'
+export const confirmBtnStr = 'Confirm'
+export const executeBtnStr = 'Execute'
 const sendTokensStr = 'Send tokens'
 
 const pageRowsDefault = '25'
@@ -130,6 +133,32 @@ export function clickOnSendBtn(index) {
         .contains(sendBtnStr)
         .then((elements) => {
           cy.wrap(elements[0]).invoke('css', 'opacity', 100).click()
+        })
+    })
+}
+
+export function clickOnConfirmBtn(index) {
+  cy.wait(2000)
+  cy.get(createTx.transactionItem)
+    .eq(index)
+    .within(() => {
+      cy.get('button')
+        .contains(confirmBtnStr)
+        .then((elements) => {
+          cy.wrap(elements[0]).click()
+        })
+    })
+}
+
+export function clickOnExecuteBtn(index) {
+  cy.wait(2000)
+  cy.get(createTx.transactionItem)
+    .eq(index)
+    .within(() => {
+      cy.get('button')
+        .contains(executeBtnStr)
+        .then((elements) => {
+          cy.wrap(elements[0]).click()
         })
     })
 }

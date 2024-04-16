@@ -59,7 +59,7 @@ const parseEtherscanOracleResult = (result: EtherscanResult, gweiFactor: string)
   const baseFee = BigInt(Number(result.suggestBaseFee) * Number(gweiFactor))
 
   return {
-    maxFeePerGas: maxFeePerGas,
+    maxFeePerGas,
     maxPriorityFeePerGas: maxFeePerGas - baseFee,
   }
 }
@@ -159,8 +159,8 @@ const getGasParameters = (
   }
 }
 
-export const getTotalFee = (maxFeePerGas: bigint, gasLimit: bigint) => {
-  return maxFeePerGas * gasLimit
+export const getTotalFee = (maxFeePerGas: bigint, gasLimit: bigint | string | number) => {
+  return maxFeePerGas * BigInt(gasLimit)
 }
 
 export const getTotalFeeFormatted = (
@@ -173,7 +173,20 @@ export const getTotalFeeFormatted = (
     : '> 0.001'
 }
 
-const useGasPrice = (): AsyncResult<GasFeeParams> => {
+const SPEED_UP_MAX_PRIO_FACTOR = 2n
+
+const SPEED_UP_GAS_PRICE_FACTOR = 150n
+
+/**
+ * Estimates the gas price through the configured methods:
+ * - Oracle
+ * - Fixed gas prices
+ * - Or using ethers' getFeeData
+ *
+ * @param isSpeedUp if true, increases the returned gas parameters
+ * @returns [gasPrice, error, loading]
+ */
+const useGasPrice = (isSpeedUp: boolean = false): AsyncResult<GasFeeParams> => {
   const chain = useCurrentChain()
   const gasPriceConfigs = chain?.gasPrice
   const [counter] = useIntervalCounter(REFRESH_DELAY)
@@ -191,7 +204,27 @@ const useGasPrice = (): AsyncResult<GasFeeParams> => {
       ])
 
       // Prepare the return values
-      return getGasParameters(gasEstimation, feeData, isEIP1559)
+      const gasParameters = getGasParameters(gasEstimation, feeData, isEIP1559)
+
+      if (!isSpeedUp) {
+        return gasParameters
+      }
+
+      if (isEIP1559 && gasParameters.maxFeePerGas && gasParameters.maxPriorityFeePerGas) {
+        return {
+          maxFeePerGas:
+            gasParameters.maxFeePerGas +
+            (gasParameters.maxPriorityFeePerGas * SPEED_UP_MAX_PRIO_FACTOR - gasParameters.maxPriorityFeePerGas),
+          maxPriorityFeePerGas: gasParameters.maxPriorityFeePerGas * SPEED_UP_MAX_PRIO_FACTOR,
+        }
+      }
+
+      return {
+        maxFeePerGas: gasParameters.maxFeePerGas
+          ? (gasParameters.maxFeePerGas * SPEED_UP_GAS_PRICE_FACTOR) / 100n
+          : undefined,
+        maxPriorityFeePerGas: undefined,
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [gasPriceConfigs, provider, counter, isEIP1559],
