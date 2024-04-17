@@ -1,3 +1,6 @@
+import useAddressBook from '@/hooks/useAddressBook'
+import useChainId from '@/hooks/useChainId'
+import { type AddressBookItem, Methods } from '@safe-global/safe-apps-sdk'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import { useCallback, useEffect } from 'react'
@@ -35,7 +38,9 @@ type AppFrameProps = {
 }
 
 const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrameProps): ReactElement => {
-  const { safe, safeLoaded, safeAddress } = useSafeInfo()
+  const { safe, safeLoaded } = useSafeInfo()
+  const addressBook = useAddressBook()
+  const chainId = useChainId()
   const chain = useCurrentChain()
   const router = useRouter()
   const {
@@ -50,10 +55,21 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
   useAnalyticsFromSafeApp(iframeRef)
-  const { permissionsRequest, setPermissionsRequest, confirmPermissionRequest } = useSafePermissions()
+  const { permissionsRequest, setPermissionsRequest, confirmPermissionRequest, getPermissions, hasPermission } =
+    useSafePermissions()
   const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
 
-  const communicator = useCustomAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain)
+  const communicator = useCustomAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain, {
+    onGetPermissions: getPermissions,
+    onRequestAddressBook: (origin: string): AddressBookItem[] => {
+      if (hasPermission(origin, Methods.requestAddressBook)) {
+        return Object.entries(addressBook).map(([address, name]) => ({ address, name, chainId }))
+      }
+
+      return []
+    },
+    onSetPermissions: setPermissionsRequest,
+  })
 
   const onAcceptPermissionRequest = (_origin: string, requestId: RequestId) => {
     const permissions = confirmPermissionRequest(PermissionStatus.GRANTED)
