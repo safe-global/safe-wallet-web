@@ -1,20 +1,22 @@
 import OrderId from '@/features/swap/components/OrderId'
 import StatusLabel from '@/features/swap/components/StatusLabel'
-import { formatTimeInWords } from '@/utils/date'
+import { formatDateTime, formatTimeInWords } from '@/utils/date'
 import type { ReactElement } from 'react'
 import Image from 'next/image'
 import { type SwapOrder as SwapOrderType, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
+import { compareAsc } from 'date-fns'
 import css from './styles.module.css'
+import { Typography } from '@mui/material'
 
 type SwapOrderProps = {
   txData?: TransactionData
   txInfo?: SwapOrderType
 }
 
-const SellOrder = ({ order }: { order: SwapOrderType }) => {
+export const SellOrder = ({ order }: { order: SwapOrderType }) => {
   const {
     buyToken,
     sellToken,
@@ -26,6 +28,9 @@ const SellOrder = ({ order }: { order: SwapOrderType }) => {
     surplusLabel,
     explorerUrl,
   } = order
+
+  const expires = new Date(expiresTimestamp * 1000)
+  const now = new Date()
 
   return (
     <DataTable
@@ -48,18 +53,36 @@ const SellOrder = ({ order }: { order: SwapOrderType }) => {
             </div>
           </div>
         </DataRow>,
-        <DataRow key="Execution price" title="Execution price">
-          {executionPriceLabel}
-        </DataRow>,
-        <DataRow key="Limit price" title="Limit price">
-          {limitPriceLabel}
-        </DataRow>,
-        <DataRow key="Surplus" title="Surplus">
-          {surplusLabel}
-        </DataRow>,
-        <DataRow key="Expiry" title="Expiry">
-          {formatTimeInWords(expiresTimestamp * 1000)}
-        </DataRow>,
+        status === 'fulfilled' ? (
+          <DataRow key="Execution price" title="Execution price">
+            {executionPriceLabel}
+          </DataRow>
+        ) : (
+          <DataRow key="Limit price" title="Limit price">
+            {limitPriceLabel}
+          </DataRow>
+        ),
+        status === 'fulfilled' ? (
+          <DataRow key="Surplus" title="Surplus">
+            {surplusLabel}
+          </DataRow>
+        ) : (
+          <></>
+        ),
+        compareAsc(now, expires) !== 1 ? (
+          <DataRow key="Expiry" title="Expiry">
+            <Typography>
+              <Typography fontWeight={700} component={'span'}>
+                {formatTimeInWords(expiresTimestamp * 1000)}
+              </Typography>{' '}
+              ({formatDateTime(expiresTimestamp * 1000)})
+            </Typography>
+          </DataRow>
+        ) : (
+          <DataRow key="Expiry" title="Expiry">
+            {formatDateTime(expiresTimestamp * 1000)}
+          </DataRow>
+        ),
         <DataRow key="Order ID" title="Order ID">
           <OrderId orderId={orderUid} href={explorerUrl} />
         </DataRow>,
