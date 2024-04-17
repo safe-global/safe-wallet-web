@@ -20,7 +20,7 @@ type StatusProps = {
 
 const statusMap: Record<OrderStatuses, StatusProps> = {
   presignaturePending: {
-    label: 'Pending signature',
+    label: 'Execution needed',
     color: 'warning.main',
     backgroundColor: 'warning.background',
     iconColor: 'warning.main',
