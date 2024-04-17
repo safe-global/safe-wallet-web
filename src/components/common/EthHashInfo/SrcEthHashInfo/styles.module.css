@@ -22,3 +22,8 @@
   gap: 0.25em;
   white-space: nowrap;
 }
+
+.inline {
+  display: flex;
+  align-items: center;
+}
