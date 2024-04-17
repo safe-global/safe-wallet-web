@@ -49,6 +49,7 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   Operation: {
     CALL: 0,
   },
+  relayTransaction: jest.fn(() => Promise.resolve({ taskId: '0xdead1' })),
 }))
 
 // Mock extractTxInfo
@@ -584,7 +585,7 @@ describe('txSender', () => {
       }
       global.fetch = jest.fn().mockImplementationOnce(setupFetchStub(mockData))
 
-      await dispatchBatchExecutionRelay(txs, multisendContractMock, '0x1234', '5', safeAddress)
+      await dispatchBatchExecutionRelay(txs, multisendContractMock, '0x1234', '5', safeAddress, '1.3.0')
 
       expect(txEvents.txDispatch).toHaveBeenCalledWith('RELAYING', {
         txId: 'multisig_0x01',

@@ -25,7 +25,7 @@ export const fetchSafeData = (safeAddress) => {
   return cy
     .request({
       method: 'GET',
-      url: `${constants.stagingTxServiceUrl}${constants.stagingTxServiceSafesUrl}${safeAddress}`,
+      url: `${constants.stagingTxServiceUrl}/v1${constants.stagingTxServiceSafesUrl}${safeAddress}`,
       headers: {
         accept: 'application/json',
       },

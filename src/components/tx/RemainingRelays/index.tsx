@@ -1,10 +1,10 @@
 import { SvgIcon, Tooltip, Typography } from '@mui/material'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import type { RelayResponse } from '@/services/tx/relaying'
 import { MAX_HOUR_RELAYS } from '@/hooks/useRemainingRelays'
 import css from '../BalanceInfo/styles.module.css'
+import type { RelayCountResponse } from '@safe-global/safe-gateway-typescript-sdk'
 
-const RemainingRelays = ({ relays, tooltip }: { relays?: RelayResponse; tooltip?: string }) => {
+const RemainingRelays = ({ relays, tooltip }: { relays?: RelayCountResponse; tooltip?: string }) => {
   if (!tooltip) {
     tooltip = `${relays?.limit ?? MAX_HOUR_RELAYS} transactions per hour for free`
   }

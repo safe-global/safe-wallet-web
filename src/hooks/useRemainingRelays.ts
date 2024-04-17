@@ -2,7 +2,7 @@ import useAsync from '@/hooks/useAsync'
 import useSafeInfo from './useSafeInfo'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
-import { getRelays } from '@/services/tx/relaying'
+import { getRelayCount } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const MAX_HOUR_RELAYS = 5
 
@@ -13,7 +13,7 @@ export const useRelaysBySafe = () => {
   return useAsync(() => {
     if (!safeAddress || !chain || !hasFeature(chain, FEATURES.RELAYING)) return
 
-    return getRelays(chain.chainId, safeAddress)
+    return getRelayCount(chain.chainId, safeAddress)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain, safeAddress, safe.txHistoryTag])
 }
@@ -25,7 +25,7 @@ export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
   return useAsync(() => {
     if (!chain || !hasFeature(chain, FEATURES.RELAYING)) return
 
-    return Promise.all(ownerAddresses.map((address) => getRelays(chain.chainId, address)))
+    return Promise.all(ownerAddresses.map((address) => getRelayCount(chain.chainId, address)))
       .then((result) => {
         const min = Math.min(...result.map((r) => r.remaining))
         return result.find((r) => r.remaining === min)
