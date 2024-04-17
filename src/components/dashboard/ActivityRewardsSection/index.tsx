@@ -15,6 +15,8 @@ import { useRouter } from 'next/router'
 import { getSafeAppUrl } from '@/components/safe-apps/SafeAppCard'
 import NextLink from 'next/link'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
   return (
@@ -35,9 +37,10 @@ const ActivityRewardsSection = () => {
   const isDarkMode = useDarkMode()
   const router = useRouter()
 
+  const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
   const governanceApp = matchingApps?.[0]
 
-  if (!governanceApp || !governanceApp?.url) return null
+  if (!governanceApp || !governanceApp?.url || !isSAPBannerEnabled) return null
 
   const appUrl = getSafeAppUrl(router, governanceApp?.url)
 
