@@ -1,11 +1,10 @@
 import { useState, useEffect, useContext, type MutableRefObject } from 'react'
 import type { UseAppCommunicatorHandlers } from '@/components/safe-apps/AppFrame/useAppCommunicator'
 import useAppCommunicator, { CommunicatorMessages } from '@/components/safe-apps/AppFrame/useAppCommunicator'
+import type { Methods } from '@safe-global/safe-apps-sdk'
 import {
-  type AddressBookItem,
   type BaseTransaction,
   type EIP712TypedData,
-  Methods,
   type RequestId,
   type SafeSettings,
   type SendTransactionRequestParams,
@@ -30,8 +29,6 @@ import { trackSafeAppEvent, SAFE_APPS_EVENTS } from '@/services/analytics'
 import { safeMsgSubscribe, SafeMsgEvent } from '@/services/safe-messages/safeMsgEvents'
 import { txSubscribe, TxEvent } from '@/services/tx/txEvents'
 import type { ChainInfo as WebCoreChainInfo } from '@safe-global/safe-gateway-typescript-sdk/dist/types/chains'
-import { useSafePermissions } from '@/hooks/safe-apps/permissions'
-import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
 import type AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import useBalances from '@/hooks/useBalances'
@@ -50,9 +47,6 @@ export const useCustomAppCommunicator = (
   const [settings, setSettings] = useState<SafeSettings>({
     offChainSigning: true,
   })
-  const { getPermissions, hasPermission, permissionsRequest, setPermissionsRequest, confirmPermissionRequest } =
-    useSafePermissions()
-  const addressBook = useAddressBook()
   const appData = app
   const onTxFlowClose = () => {
     setCurrentRequestId((prevId) => {
@@ -115,15 +109,9 @@ export const useCustomAppCommunicator = (
         )
       }
     },
-    onGetPermissions: getPermissions,
-    onSetPermissions: setPermissionsRequest,
-    onRequestAddressBook: (origin: string): AddressBookItem[] => {
-      if (hasPermission(origin, Methods.requestAddressBook)) {
-        return Object.entries(addressBook).map(([address, name]) => ({ address, name, chainId }))
-      }
-
-      return []
-    },
+    onGetPermissions: () => [],
+    onSetPermissions: () => {},
+    onRequestAddressBook: () => [],
     onGetTxBySafeTxHash: (safeTxHash) => getTransactionDetails(chainId, safeTxHash),
     onGetEnvironmentInfo: () => ({
       origin: document.location.origin,
