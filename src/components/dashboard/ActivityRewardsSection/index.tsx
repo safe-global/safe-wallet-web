@@ -103,8 +103,7 @@ const ActivityRewardsSection = () => {
                   <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
                     <Button variant="contained">{'Get Safe{Pass}'}</Button>
                   </NextLink>
-                  {/** TODO: insert link to landing page once it exists */}
-                  <NextLink href="#" passHref rel="noreferrer" onClick={onClick}>
+                  <NextLink href="https://safe.global/pass" passHref rel="noreferrer" onClick={onClick}>
                     <Button variant="outlined">Learn more</Button>
                   </NextLink>
                 </Box>
