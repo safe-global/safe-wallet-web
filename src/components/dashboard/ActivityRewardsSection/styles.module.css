@@ -86,9 +86,9 @@
 }
 
 .comingSoon {
-  background-color: #12ff80;
+  background-color: var(--color-border-light);
   border-radius: 4px;
-  color: #121312;
+  color: var(--color-text-primary);
   padding: 4px 8px;
 }
 
