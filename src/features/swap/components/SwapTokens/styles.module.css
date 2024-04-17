@@ -1,6 +1,7 @@
 .container {
   display: flex;
   gap: var(--space-1);
+  position: relative;
 }
 
 .swapToken {
