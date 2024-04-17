@@ -72,7 +72,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
         compareAsc(now, expires) !== 1 ? (
           <DataRow key="Expiry" title="Expiry">
             <Typography>
-              <Typography fontWeight={700} component={'span'}>
+              <Typography fontWeight={700} component="span">
                 {formatTimeInWords(expiresTimestamp * 1000)}
               </Typography>{' '}
               ({formatDateTime(expiresTimestamp * 1000)})
