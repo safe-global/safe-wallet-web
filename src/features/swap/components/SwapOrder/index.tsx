@@ -9,6 +9,7 @@ import { DataTable } from '@/components/common/Table/DataTable'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { compareAsc } from 'date-fns'
 import css from './styles.module.css'
+import { Typography } from '@mui/material'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -70,7 +71,12 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
         ),
         compareAsc(now, expires) !== 1 ? (
           <DataRow key="Expiry" title="Expiry">
-            {formatTimeInWords(expiresTimestamp * 1000)} ({formatDateTime(expiresTimestamp * 1000)})
+            <Typography>
+              <Typography fontWeight={700} component={'span'}>
+                {formatTimeInWords(expiresTimestamp * 1000)}
+              </Typography>{' '}
+              ({formatDateTime(expiresTimestamp * 1000)})
+            </Typography>
           </DataRow>
         ) : (
           <DataRow key="Expiry" title="Expiry">
