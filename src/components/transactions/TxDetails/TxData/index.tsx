@@ -1,4 +1,5 @@
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
+import SwapTxInfo from '@/features/swap/components/SwapTxInfo'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
@@ -8,6 +9,7 @@ import {
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
   isSupportedSpendingLimitAddress,
+  isSwapTxInfo,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
@@ -42,6 +44,10 @@ const TxData = ({ txDetails, trusted }: { txDetails: TransactionDetails; trusted
   const method = txDetails.txData?.dataDecoded?.method as SpendingLimitMethods
   if (isCustomTxInfo(txInfo) && isSupportedSpendingLimitAddress(txInfo, chainId) && isSpendingLimitMethod(method)) {
     return <SpendingLimits txData={txDetails.txData} txInfo={txInfo} type={method} />
+  }
+
+  if (isSwapTxInfo(txInfo)) {
+    return <SwapTxInfo txData={txDetails.txData} />
   }
 
   return <DecodedData txData={txDetails.txData} txInfo={txInfo} />
