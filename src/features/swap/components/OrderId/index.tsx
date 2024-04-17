@@ -14,7 +14,8 @@ const OrderId = ({
   length?: number
   showCopyButton?: boolean
 }) => {
-  const truncatedOrderId = orderId.slice(0, length)
+  // CoWSwap doesn't show the 0x at the beginning of a tx
+  const truncatedOrderId = orderId.replace('0x', '').slice(0, length)
 
   return (
     <Stack direction="row">
