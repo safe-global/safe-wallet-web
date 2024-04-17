@@ -105,6 +105,7 @@ export function checkNFTBalance(safeAddress, tokenSymbol, expectedBalance) {
 }
 
 export function checkTokenBalanceIsNull(safeAddress, tokenSymbol) {
+  cy.wait(2000)
   getSafeNFTs(safeAddress.substring(4), constants.networkKeys.sepolia).then((response) => {
     const targetToken = response.body.results.find((token) => token.tokenSymbol === tokenSymbol)
     expect(targetToken).to.be.undefined
