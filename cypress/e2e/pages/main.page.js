@@ -60,6 +60,7 @@ export const getSafeNFTs = (safeAddress, chain) => {
     })
     .then((response) => {
       expect(response.status).to.eq(200)
+      return response
     })
 }
 
@@ -105,11 +106,25 @@ export function checkNFTBalance(safeAddress, tokenSymbol, expectedBalance) {
 }
 
 export function checkTokenBalanceIsNull(safeAddress, tokenSymbol) {
-  cy.wait(2000)
-  getSafeNFTs(safeAddress.substring(4), constants.networkKeys.sepolia).then((response) => {
-    const targetToken = response.body.results.find((token) => token.tokenSymbol === tokenSymbol)
-    expect(targetToken).to.be.undefined
-  })
+  let pollCount = 0
+
+  function poll() {
+    getSafeNFTs(safeAddress.substring(4), constants.networkKeys.sepolia).then((response) => {
+      const targetToken = response.body.results.find((token) => token.tokenSymbol === tokenSymbol)
+      if (targetToken === undefined) {
+        console.log('Token is undefined as expected. Stopping polling.')
+        return true
+      } else if (pollCount < 9) {
+        pollCount++
+        console.log('Token is not undefined, retrying...')
+        cy.wait(1000)
+        poll()
+      } else {
+        throw new Error('Failed to validate token status -undefined- within the allowed polling attempts.')
+      }
+    })
+  }
+  cy.wrap(null).then(poll).should('be.true')
 }
 
 export function acceptCookies(index = 0) {
