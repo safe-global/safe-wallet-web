@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
+import type { Url } from 'next/dist/shared/lib/router/router'
 import { IconButton, Paper } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import classnames from 'classnames'
@@ -26,6 +27,14 @@ type HeaderProps = {
   onBatchToggle?: Dispatch<SetStateAction<boolean>>
 }
 
+function getLogoLink(router: ReturnType<typeof useRouter>): Url {
+  return router.pathname === AppRoutes.home || !router.query.safe
+    ? router.pathname === AppRoutes.welcome.accounts
+      ? AppRoutes.welcome.index
+      : AppRoutes.welcome.accounts
+    : { pathname: AppRoutes.home, query: { safe: router.query.safe } }
+}
+
 const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
@@ -33,7 +42,8 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
   const router = useRouter()
   const enableWc = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
 
-  const logoHref = router.pathname === AppRoutes.welcome.accounts ? AppRoutes.welcome.index : AppRoutes.welcome.accounts
+  // If on the home page, the logo should link to the Accounts or Welcome page, otherwise to the home page
+  const logoHref = getLogoLink(router)
 
   const handleMenuToggle = () => {
     if (onMenuToggle) {
