@@ -614,3 +614,8 @@ export const addedSafes = {
 export const pinnedApps = {
   transactionBuilder: { 11155111: { pinned: [24], opened: [] } },
 }
+
+export const cookies = {
+  acceptedCookies: { necessary: true, updates: true, analytics: true },
+  acceptedTokenListOnboarding: true,
+}

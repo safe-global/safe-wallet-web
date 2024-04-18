@@ -5,14 +5,15 @@ import * as loadsafe from '../pages/load_safe.pages'
 import * as navigation from '../pages/navigation.page'
 import * as tx from '../pages/transactions.page'
 import * as nfts from '../pages/nfts.pages'
+import * as ls from '../../support/localstorage_data.js'
 import { ethers } from 'ethers'
 import SafeApiKit from '@safe-global/api-kit'
 import { createEthersAdapter, createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 
-const safeBalanceEth = 5200000000000000n
-const qtrustBanance = 91000000000000000025n
+const safeBalanceEth = 305220000000000000n
+const qtrustBanance = 93000000000000000025n
 const transferAmount = '1'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -44,12 +45,15 @@ const ethAdapterOwner2 = createEthersAdapter(owner2Signer)
 
 function visit(url) {
   cy.visit(url)
-  cy.clearLocalStorage()
-  main.acceptCookies()
 }
 
 describe('Send funds with connected signer happy path tests', { defaultCommandTimeout: 60000 }, () => {
   before(async () => {
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__cookies, ls.cookies.acceptedCookies)
+    main.addToLocalStorage(
+      constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
+      ls.cookies.acceptedTokenListOnboarding,
+    )
     apiKit = new SafeApiKit({
       chainId: BigInt(1),
       txServiceUrl: constants.stagingTxServiceUrl,
@@ -94,7 +98,6 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
           const tx = await contractWithWallet.safeTransferFrom(walletAddress.toString(), originatingSafe, 1, {
             gasLimit: 200000,
           })
-
           await tx.wait()
           main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
         })
