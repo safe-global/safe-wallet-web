@@ -63,11 +63,7 @@ const ActivityRewardsSection = () => {
               <ExpandMoreIcon color="border" />
             </IconButton>
           }
-        >
-          {/* <Typography component="h2" variant="subtitle1" fontWeight={700}>
-            Safe Activity App
-          </Typography> */}
-        </AccordionSummary>
+        ></AccordionSummary>
 
         <AccordionDetails>
           <SvgIcon
