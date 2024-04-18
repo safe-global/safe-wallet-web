@@ -1,0 +1,84 @@
+.widgetWrapper {
+  position: relative;
+  border: none;
+  margin: 0;
+  padding: 40px;
+}
+
+.loadErrorCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-2);
+  text-align: center;
+  flex-grow: 1;
+}
+
+.milesIcon {
+  height: 21px;
+  width: 118px;
+}
+
+.milesIconLight path {
+  fill: var(--color-text-primary);
+}
+
+.gradientText {
+  background: linear-gradient(225deg, #5fddff 12.5%, #12ff80 88.07%);
+  background-clip: text;
+  color: transparent;
+}
+
+.header {
+  padding-right: var(--space-8);
+}
+
+.steps {
+  z-index: 1;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.step {
+  margin-bottom: 18px;
+  counter-increment: item;
+}
+
+.step:before {
+  content: counter(item);
+  width: 24px;
+  height: 24px;
+  background: var(--color-border-main);
+  border-radius: 50%;
+  color: #121312;
+  text-align: center;
+}
+
+.activeStep:before {
+  background-color: #12ff80;
+}
+
+.comingSoon {
+  background-color: var(--color-border-light);
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  padding: 4px 8px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: var(--space-3);
+  text-wrap: nowrap;
+}
+
+@media (max-width: 899.99px) {
+  .header {
+    padding: 0;
+  }
+
+  .widgetWrapper {
+    padding: 32px;
+  }
+}

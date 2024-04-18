@@ -21,6 +21,7 @@ export enum FEATURES {
   COUNTERFACTUAL = 'COUNTERFACTUAL',
   DELETE_TX = 'DELETE_TX',
   SPEED_UP_TX = 'SPEED_UP_TX',
+  SAP_BANNER = 'SAP_BANNER',
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {
