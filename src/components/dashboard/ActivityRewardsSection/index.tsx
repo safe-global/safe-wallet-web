@@ -86,7 +86,7 @@ const ActivityRewardsSection = () => {
               <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
                 <Button variant="contained">{'Get Safe{Pass}'}</Button>
               </NextLink>
-              <NextLink href="https://safe.global/pass" passHref rel="noreferrer" onClick={onClick}>
+              <NextLink href="https://safe.global/pass" target="_blank" passHref rel="noreferrer" onClick={onClick}>
                 <Button variant="outlined">Learn more</Button>
               </NextLink>
             </Box>
