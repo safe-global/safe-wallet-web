@@ -11,6 +11,9 @@ const ALLOWED_DOMAINS: RegExp[] = [
   /^https:\/\/safe-apps\.dev\.5afe\.dev$/,
   /^https:\/\/apps\.gnosis-safe\.io$/,
   /^https:\/\/apps-portal\.safe\.global$/,
+  /^https:\/\/community\.safe\.global$/,
+  /^https:\/\/safe-dao-governance\.staging\.5afe\.dev$/,
+  /^https:\/\/safe-dao-governance\.dev\.5afe\.dev$/,
 ]
 
 const useAnalyticsFromSafeApp = (iframeRef: MutableRefObject<HTMLIFrameElement | null>): void => {
