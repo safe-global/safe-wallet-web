@@ -1,32 +1,5 @@
-.accordion {
-  box-shadow: none;
-  border: none;
-  background: transparent;
-}
-
-.accordion :global .MuiAccordionSummary-root,
-.accordion :global .MuiAccordionDetails-root {
-  padding: 0;
-}
-
-.accordion:hover :global .MuiAccordionSummary-root,
-.accordion :global .MuiAccordionSummary-root:hover,
-.accordion :global .Mui-expanded.MuiAccordionSummary-root {
-  background: inherit;
-}
-
-.accordion :global .MuiAccordionSummary-root {
-  pointer-events: none;
-}
-.accordion :global .MuiAccordionSummary-content {
-  margin-top: 0;
-}
-
-.accordion :global .MuiAccordionSummary-expandIconWrapper {
-  pointer-events: auto;
-}
-
 .widgetWrapper {
+  position: relative;
   border: none;
   margin: 0;
   padding: 40px;

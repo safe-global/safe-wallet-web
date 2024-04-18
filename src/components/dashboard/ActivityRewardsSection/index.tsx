@@ -1,9 +1,5 @@
 import type { ReactNode } from 'react'
-import { Typography, Card, IconButton, SvgIcon, Grid, Button, Box } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
+import { Typography, Card, SvgIcon, Grid, Button, Box } from '@mui/material'
 import css from './styles.module.css'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import { SafeAppsTag } from '@/config/constants'
@@ -56,68 +52,57 @@ const ActivityRewardsSection = () => {
 
   return (
     <Grid item xs={12}>
-      <Accordion className={css.accordion} defaultExpanded>
-        <AccordionSummary
-          expandIcon={
-            <IconButton size="small">
-              <ExpandMoreIcon color="border" />
-            </IconButton>
-          }
-        ></AccordionSummary>
-
-        <AccordionDetails>
-          <SvgIcon
-            component={Asterix}
-            inheritViewBox
-            sx={{
-              color: 'transparent',
-              position: 'absolute',
-              right: 0,
-              height: '208px',
-              width: 'inherit',
-              display: { xs: 'none', sm: 'block' },
-            }}
-          />
-          <Card className={css.widgetWrapper}>
-            <Grid container xs={12} sx={{ gap: { xs: 4, lg: 0 } }}>
-              <Grid item xs={12} lg={6} p={0}>
-                <SvgIcon
-                  component={SafePass}
-                  inheritViewBox
-                  color="border"
-                  className={classNames(css.milesIcon, { [css.milesIconLight]: !isDarkMode })}
-                />
-                <Typography
-                  variant="h1"
-                  fontWeight={700}
-                  mt={4}
-                  className={classNames(css.header, { [css.gradientText]: isDarkMode })}
-                >
-                  Interact with Safe and get rewards
-                </Typography>
-                <Box className={css.links} gap={2}>
-                  <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
-                    <Button variant="contained">{'Get Safe{Pass}'}</Button>
-                  </NextLink>
-                  <NextLink href="https://safe.global/pass" passHref rel="noreferrer" onClick={onClick}>
-                    <Button variant="outlined">Learn more</Button>
-                  </NextLink>
-                </Box>
-              </Grid>
-              <Grid item xs={12} lg={6} p={0}>
-                <Typography variant="overline" color="primary.light">
-                  How it works
-                </Typography>
-                <div className={css.steps}>
-                  <Step title="Lock SAFE to boost your points!" active={true} />
-                  <Step title="Get activity points" active={false} />
-                  <Step title="Receive rewards" active={false} />
-                </div>
-              </Grid>
-            </Grid>
-          </Card>
-        </AccordionDetails>
-      </Accordion>
+      <Card className={css.widgetWrapper}>
+        <SvgIcon
+          component={Asterix}
+          inheritViewBox
+          sx={{
+            color: 'transparent',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            height: '208px',
+            width: 'inherit',
+            display: { xs: 'none', sm: 'block' },
+          }}
+        />
+        <Grid container xs={12} sx={{ gap: { xs: 4, lg: 0 } }}>
+          <Grid item xs={12} lg={6} p={0}>
+            <SvgIcon
+              component={SafePass}
+              inheritViewBox
+              color="border"
+              className={classNames(css.milesIcon, { [css.milesIconLight]: !isDarkMode })}
+            />
+            <Typography
+              variant="h1"
+              fontWeight={700}
+              mt={4}
+              className={classNames(css.header, { [css.gradientText]: isDarkMode })}
+            >
+              Interact with Safe and get rewards
+            </Typography>
+            <Box className={css.links} gap={2}>
+              <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
+                <Button variant="contained">{'Get Safe{Pass}'}</Button>
+              </NextLink>
+              <NextLink href="https://safe.global/pass" passHref rel="noreferrer" onClick={onClick}>
+                <Button variant="outlined">Learn more</Button>
+              </NextLink>
+            </Box>
+          </Grid>
+          <Grid item xs={12} lg={6} p={0}>
+            <Typography variant="overline" color="primary.light">
+              How it works
+            </Typography>
+            <div className={css.steps}>
+              <Step title="Lock SAFE to boost your points!" active={true} />
+              <Step title="Get activity points" active={false} />
+              <Step title="Receive rewards" active={false} />
+            </div>
+          </Grid>
+        </Grid>
+      </Card>
     </Grid>
   )
 }
