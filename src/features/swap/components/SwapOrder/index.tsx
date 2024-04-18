@@ -1,8 +1,10 @@
+import TokenIcon from '@/components/common/TokenIcon'
 import OrderId from '@/features/swap/components/OrderId'
 import StatusLabel from '@/features/swap/components/StatusLabel'
+import { capitalize } from '@/hooks/useMnemonicName'
 import { formatDateTime, formatTimeInWords } from '@/utils/date'
+import Stack from '@mui/material/Stack'
 import type { ReactElement } from 'react'
-import Image from 'next/image'
 import { type SwapOrder as SwapOrderType, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
@@ -21,6 +23,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
     buyToken,
     sellToken,
     orderUid,
+    orderKind,
     expiresTimestamp,
     status,
     executionPriceLabel,
@@ -32,26 +35,30 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
   const expires = new Date(expiresTimestamp * 1000)
   const now = new Date()
 
+  const orderKindLabel = capitalize(orderKind)
+  const isSellOrder = orderKind === 'sell'
+
   return (
     <DataTable
-      header="Sell order"
+      header={`${orderKindLabel} order`}
       rows={[
         <DataRow key="Amount" title="Amount">
-          <div>
+          <Stack flexDirection={isSellOrder ? 'column' : 'column-reverse'}>
             <div>
               <span className={css.value}>
-                Sell {sellToken.logo && <Image src={sellToken.logo} alt={sellToken.symbol} width={24} height={24} />}{' '}
-                {sellToken.amount} {sellToken.symbol}
+                {isSellOrder ? 'Sell' : 'For at most'}{' '}
+                {sellToken.logo && <TokenIcon logoUri={sellToken.logo} size={24} />} {sellToken.amount}{' '}
+                {sellToken.symbol}
               </span>
             </div>
             <div>
               <span className={css.value}>
-                For at least{' '}
-                {buyToken.logo && <Image src={buyToken.logo} alt={buyToken.symbol} width={24} height={24} />}
+                {isSellOrder ? 'for at least' : 'Buy'}{' '}
+                {buyToken.logo && <TokenIcon logoUri={buyToken.logo} size={24} />}
                 {buyToken.amount} {buyToken.symbol}
               </span>
             </div>
-          </div>
+          </Stack>
         </DataRow>,
         status === 'fulfilled' ? (
           <DataRow key="Execution price" title="Execution price">
@@ -69,19 +76,23 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
         ) : (
           <></>
         ),
-        compareAsc(now, expires) !== 1 ? (
-          <DataRow key="Expiry" title="Expiry">
-            <Typography>
-              <Typography fontWeight={700} component="span">
-                {formatTimeInWords(expiresTimestamp * 1000)}
-              </Typography>{' '}
-              ({formatDateTime(expiresTimestamp * 1000)})
-            </Typography>
-          </DataRow>
+        status !== 'fulfilled' ? (
+          compareAsc(now, expires) !== 1 ? (
+            <DataRow key="Expiry" title="Expiry">
+              <Typography>
+                <Typography fontWeight={700} component="span">
+                  {formatTimeInWords(expiresTimestamp * 1000)}
+                </Typography>{' '}
+                ({formatDateTime(expiresTimestamp * 1000)})
+              </Typography>
+            </DataRow>
+          ) : (
+            <DataRow key="Expiry" title="Expiry">
+              {formatDateTime(expiresTimestamp * 1000)}
+            </DataRow>
+          )
         ) : (
-          <DataRow key="Expiry" title="Expiry">
-            {formatDateTime(expiresTimestamp * 1000)}
-          </DataRow>
+          <></>
         ),
         <DataRow key="Order ID" title="Order ID">
           <OrderId orderId={orderUid} href={explorerUrl} />
