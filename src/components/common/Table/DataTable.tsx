@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import type { DataRow } from '@/components/common/Table/DataRow'
 
 type DataTableProps = {
@@ -9,13 +9,13 @@ type DataTableProps = {
 
 export const DataTable = ({ header, rows }: DataTableProps): ReactElement | null => {
   return (
-    <Box>
+    <Stack gap="4px">
       <Typography variant="body1">
         <b>{header}</b>
       </Typography>
-      {rows.map((row, index) => {
+      {rows.map((row) => {
         return row
       })}
-    </Box>
+    </Stack>
   )
 }
