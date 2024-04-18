@@ -97,6 +97,7 @@ export function verifyShareBtnWorks(index, data) {
   cy.get(copyShareBtn)
     .eq(index)
     .click()
+    .wait(1000)
     .then(() =>
       cy.window().then((win) => {
         win.navigator.clipboard.readText().then((text) => {
