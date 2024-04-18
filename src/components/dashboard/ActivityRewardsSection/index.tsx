@@ -64,9 +64,9 @@ const ActivityRewardsSection = () => {
             </IconButton>
           }
         >
-          <Typography component="h2" variant="subtitle1" fontWeight={700}>
+          {/* <Typography component="h2" variant="subtitle1" fontWeight={700}>
             Safe Activity App
-          </Typography>
+          </Typography> */}
         </AccordionSummary>
 
         <AccordionDetails>
