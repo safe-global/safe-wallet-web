@@ -1206,10 +1206,10 @@
   dependencies:
     "@cowprotocol/events" "^1.2.1"
 
-"@cowprotocol/widget-react@0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-react/-/widget-react-0.8.0.tgz#cf3dafae06d2f1de9a5528fdb227ee44d97997dd"
-  integrity sha512-kRXiKQKiEdOgd01FSig6rCSig9+7nZR1aiIq0vR+0DRoFDGB5XyRuAzLueX20Rj7jy87rrqkJThjpMnRPFr1Ew==
+"@cowprotocol/widget-react@0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/widget-react/-/widget-react-0.8.1.tgz#552472995e14d55dc20800ad4461ebcb7446db7d"
+  integrity sha512-1svkBpSkVPhFUPahKpa2GsNx0WXDtHyA7BtCa28hFmfDrpJqzGavqgFbZd58NH2CDR+DGkemp9U56DefwPf0gw==
   dependencies:
     "@cowprotocol/widget-lib" "^0.10.0"
 
