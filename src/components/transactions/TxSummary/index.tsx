@@ -1,3 +1,4 @@
+import StatusLabel from '@/features/swap/components/StatusLabel'
 import { Box } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
@@ -5,7 +6,7 @@ import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import DateTime from '@/components/common/DateTime'
 import TxInfo from '@/components/transactions/TxInfo'
-import { isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
+import { isExpiredSwap, isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import TxType from '@/components/transactions/TxType'
 import classNames from 'classnames'
 import { isTrustedTx } from '@/utils/transactions'
@@ -31,6 +32,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const isTrusted = !hasDefaultTokenlist || isTrustedTx(tx)
   const isPending = useIsPending(tx.id)
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
+  const expiredSwap = isExpiredSwap(tx.txInfo)
 
   return (
     <Box
@@ -78,6 +80,12 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       {(!isQueue || isPending) && (
         <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
           <TxStatusLabel tx={tx} />
+        </Box>
+      )}
+
+      {expiredSwap && (
+        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
+          <StatusLabel status="expired" />
         </Box>
       )}
 
