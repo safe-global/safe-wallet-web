@@ -18,6 +18,8 @@ import { useAppDispatch } from '@/store'
 
 const supportedChains = [1, 100, 11155111]
 
+const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
+
 const isSupportedChainForSwap = (chainId: number) => supportedChains.includes(chainId)
 type Params = {
   sell?: {
@@ -147,6 +149,9 @@ const SwapWidget = ({ sell }: Params) => {
             asset: '',
             amount: '0',
           },
+      images: {
+        emptyOrders: BASE_URL + '/images/common/swap-empty.svg',
+      },
       enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
       // env: 'dev',
       theme: {
