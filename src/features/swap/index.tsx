@@ -59,8 +59,8 @@ const SwapWidget = ({ sell }: Params) => {
             case 'ORDER_CREATED':
               dispatch(
                 showNotification({
-                  title: 'Order created',
-                  message: 'Order created but waiting for presignature',
+                  title: 'Swap transaction created',
+                  message: 'Waiting for confirmation from signers of your Safe',
                   groupKey,
                   variant: 'info',
                 }),
@@ -70,8 +70,8 @@ const SwapWidget = ({ sell }: Params) => {
             case 'ORDER_PRESIGNED':
               dispatch(
                 showNotification({
-                  title: 'Order presigned waiting for fullfillment',
-                  message: 'Order was presigned and waiting for match',
+                  title: 'Swap transaction confirmed',
+                  message: 'Waiting for swap execution by the CoW Protocol',
                   groupKey,
                   variant: 'info',
                 }),
@@ -81,8 +81,8 @@ const SwapWidget = ({ sell }: Params) => {
             case 'ORDER_FULFILLED':
               dispatch(
                 showNotification({
-                  title: 'Order fullfilled',
-                  message: 'Order was fullfilled',
+                  title: 'Swap executed',
+                  message: 'Your swap has been successful',
                   groupKey,
                   variant: 'info',
                 }),
@@ -92,8 +92,8 @@ const SwapWidget = ({ sell }: Params) => {
             case 'ORDER_EXPIRED':
               dispatch(
                 showNotification({
-                  title: 'Order expired',
-                  message,
+                  title: 'Swap expired',
+                  message: 'Your swap has reached the expiry time and has become invalid',
                   groupKey,
                   variant: 'warning',
                 }),
@@ -103,8 +103,8 @@ const SwapWidget = ({ sell }: Params) => {
             case 'ORDER_CANCELLED':
               dispatch(
                 showNotification({
-                  title: 'Order cancelled',
-                  message,
+                  title: 'Swap cancelled',
+                  message: 'Your swap has been cancelled',
                   groupKey,
                   variant: 'warning',
                 }),
