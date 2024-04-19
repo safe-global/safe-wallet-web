@@ -4,7 +4,7 @@ import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sd
 import { Button, Tooltip } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isExpiredSwap, isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
@@ -26,8 +26,10 @@ const ExecuteTxButton = ({
   const { setSelectedTxId } = useContext(ReplaceTxHoverContext)
   const safeSDK = useSafeSDK()
 
+  const expiredSwap = isExpiredSwap(txSummary.txInfo)
+
   const isNext = txNonce !== undefined && txNonce === safe.nonce
-  const isDisabled = !isNext || !safeSDK
+  const isDisabled = !isNext || !safeSDK || expiredSwap
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()
