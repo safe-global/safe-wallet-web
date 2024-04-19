@@ -93,6 +93,14 @@ export const isSwapTxInfo = (value: TransactionInfo): value is SwapOrder => {
   return value.type === TransactionInfoType.SWAP_ORDER
 }
 
+export const isExpiredSwap = (value: TransactionInfo) => {
+  return isSwapTxInfo(value) && value.status === 'expired'
+}
+
+export const isCancelledSwap = (value: TransactionInfo) => {
+  return isSwapTxInfo(value) && value.status === 'cancelled'
+}
+
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
   return isCustomTxInfo(value) && value.isCancellation
 }
