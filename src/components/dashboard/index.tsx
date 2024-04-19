@@ -14,6 +14,7 @@ import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSection'
+import TransactionHeatmap from './TransactionHeatmap'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
 
@@ -45,6 +46,10 @@ const Dashboard = (): ReactElement => {
 
             <Grid item xs={12} lg={6}>
               <PendingTxsList />
+            </Grid>
+
+            <Grid item xs={12} lg={6}>
+              <TransactionHeatmap />
             </Grid>
 
             {showRecoveryWidget ? (
