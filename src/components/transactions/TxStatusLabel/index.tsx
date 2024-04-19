@@ -1,11 +1,11 @@
-import { isSwapTxInfo } from '@/utils/transaction-guards'
+import { isCancelledSwap } from '@/utils/transaction-guards'
 import { CircularProgress, type Palette, Typography } from '@mui/material'
 import { TransactionStatus, type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsPending from '@/hooks/useIsPending'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 
 const getStatusColor = (tx: TransactionSummary, palette: Palette) => {
-  if (isSwapTxInfo(tx.txInfo) && tx.txInfo.status === 'cancelled') {
+  if (isCancelledSwap(tx.txInfo)) {
     return palette.error.main
   }
 

@@ -10,6 +10,7 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import {
   isAwaitingExecution,
+  isExpiredSwap,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
@@ -63,7 +64,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     safeTxHash = txDetails.detailedExecutionInfo.safeTxHash
   }
 
-  const isExpiredSwap = isSwapTxInfo(txSummary.txInfo) && txSummary.txInfo.status === 'expired'
+  const expiredSwap = isExpiredSwap(txSummary.txInfo)
 
   return (
     <>
@@ -133,7 +134,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
             </Box>
           )}
 
-          {isExpiredSwap && (
+          {expiredSwap && (
             <Typography color="text.secondary" mt={2}>
               This order has expired. Reject this transaction and try again.
             </Typography>
