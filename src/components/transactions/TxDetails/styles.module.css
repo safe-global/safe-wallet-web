@@ -68,6 +68,14 @@
   margin-top: var(--space-2);
 }
 
+.buttons > * {
+  flex: 1;
+}
+
+.buttons button {
+  width: 100%;
+}
+
 @media (max-width: 599.95px) {
   .container {
     flex-direction: column;
