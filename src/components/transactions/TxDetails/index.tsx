@@ -1,7 +1,7 @@
 import React, { type ReactElement } from 'react'
 import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
@@ -62,6 +62,8 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     proposer = txDetails.detailedExecutionInfo.proposer?.value
     safeTxHash = txDetails.detailedExecutionInfo.safeTxHash
   }
+
+  const isExpiredSwap = isSwapTxInfo(txSummary.txInfo) && txSummary.txInfo.status === 'expired'
 
   return (
     <>
@@ -129,6 +131,12 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
               {awaitingExecution ? <ExecuteTxButton txSummary={txSummary} /> : <SignTxButton txSummary={txSummary} />}
               <RejectTxButton txSummary={txSummary} safeTxHash={safeTxHash} proposer={proposer} />
             </Box>
+          )}
+
+          {isExpiredSwap && (
+            <Typography color="text.secondary" mt={2}>
+              This order has expired. Reject this transaction and try again.
+            </Typography>
           )}
         </div>
       )}
