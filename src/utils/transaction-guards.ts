@@ -101,6 +101,10 @@ export const isCancelledSwap = (value: TransactionInfo) => {
   return isSwapTxInfo(value) && value.status === 'cancelled'
 }
 
+export const isOpenSwap = (value: TransactionInfo) => {
+  return isSwapTxInfo(value) && value.status === 'open'
+}
+
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
   return isCustomTxInfo(value) && value.isCancellation
 }
