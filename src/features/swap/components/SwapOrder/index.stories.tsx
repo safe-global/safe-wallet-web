@@ -1,43 +1,46 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { SellOrder as SellOrderComponent } from './index'
 import { Paper } from '@mui/material'
-import type { OrderKind, OrderStatuses, TransactionInfoType, SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
+import type { OrderStatuses, TransactionInfoType, SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 
 const FulfilledSwapOrder: SwapOrder = {
   type: 'SwapOrder' as TransactionInfoType.SWAP_ORDER,
-  humanDescription: null,
-  richDecodedInfo: null,
-  orderUid:
-    '0xdfbc181c3cea514808cf74363a1914a9988881db2d125b026c3e5feffb359f9e7a9af6ef9197041a5841e84cb27873bebd3486e26613f9d1',
-  status: 'fulfilled' as OrderStatuses,
-  orderKind: 'sell' as OrderKind,
+  uid: '0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
+  status: 'fulfilled',
+  kind: 'sell',
+  class: 'limit',
+  validUntil: 1713520008,
+  sellAmount: '10000000000000000',
+  buyAmount: '3388586928324482608',
+  executedSellAmount: '10000000000000000',
+  executedBuyAmount: '3391712661908938761',
   sellToken: {
-    logo: 'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0x0625aFB445C3B6B7B929342a04A22599fd5dBB59.png',
-    symbol: 'COW',
-    amount: '5',
+    address: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14',
+    decimals: 18,
+    logoUri:
+      'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14.png',
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
+    trusted: false,
   },
   buyToken: {
-    logo: 'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0xbe72E441BF55620febc26715db68d3494213D8Cb.png',
+    address: '0xbe72E441BF55620febc26715db68d3494213D8Cb',
+    decimals: 18,
+    logoUri:
+      'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0xbe72E441BF55620febc26715db68d3494213D8Cb.png',
+    name: 'USDC (test)',
     symbol: 'USDC',
-    amount: '34.240403272089864',
+    trusted: false,
   },
-  expiresTimestamp: new Date().getTime() / 1000 + 28 * 60,
-  filledPercentage: '100.00',
   explorerUrl:
-    'https://explorer.cow.fi/orders/0xdfbc181c3cea514808cf74363a1914a9988881db2d125b026c3e5feffb359f9e7a9af6ef9197041a5841e84cb27873bebd3486e26613f9d1',
-  executionPriceLabel: '1 COW = 0.14508041726505666 USDC',
-  surplusLabel: '0.22324174807285857 USDC',
+    'https://explorer.cow.fi/orders/0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
+  executedSurplusFee: '276529971173727',
 }
 
 const NonFulfilledSwapOrder = {
   ...FulfilledSwapOrder,
   status: 'open' as OrderStatuses,
-  limitPriceLabel: FulfilledSwapOrder.executionPriceLabel,
   expiresTimestamp: new Date().getTime() / 1000 + 28 * 60,
-}
-
-if (NonFulfilledSwapOrder.executionPriceLabel) {
-  delete NonFulfilledSwapOrder.executionPriceLabel
 }
 
 const meta = {
@@ -79,6 +82,7 @@ export const Pending: Story = {
     order: {
       ...NonFulfilledSwapOrder,
       status: 'presignaturePending' as OrderStatuses,
+      validUntil: new Date().getTime() / 1000 + 28 * 60,
     },
   },
   parameters: {
@@ -108,7 +112,7 @@ export const Cancelled: Story = {
     order: {
       ...NonFulfilledSwapOrder,
       status: 'cancelled' as OrderStatuses,
-      expiresTimestamp: new Date().getTime() / 1000 - 28 * 60,
+      validUntil: new Date().getTime() / 1000 - 28 * 60,
     },
   },
   parameters: {
@@ -124,8 +128,7 @@ export const Expired: Story = {
     order: {
       ...NonFulfilledSwapOrder,
       status: 'expired' as OrderStatuses,
-      limitPriceLabel: FulfilledSwapOrder.executionPriceLabel,
-      expiresTimestamp: new Date().getTime() / 1000 - 28 * 60,
+      validUntil: new Date().getTime() / 1000 - 28 * 60,
     },
   },
   parameters: {
