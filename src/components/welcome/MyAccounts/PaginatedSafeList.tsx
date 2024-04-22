@@ -20,7 +20,7 @@ type SafeListPageProps = {
   onLinkClick: PaginatedSafeListProps['onLinkClick']
 }
 
-const PAGE_SIZE = 7
+const PAGE_SIZE = 10
 
 const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
   const [overviews] = useSafeOverviews(safes)
