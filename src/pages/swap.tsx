@@ -20,7 +20,7 @@ const Swap: NextPage = () => {
         <title>{'Safe{Wallet} – Swap'}</title>
       </Head>
 
-      <main>
+      <main className="swapWrapper">
         <SwapWidget sell={sell} />
       </main>
     </>
