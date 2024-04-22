@@ -16,6 +16,8 @@ import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunic
 import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 
+import css from './styles.module.css'
+
 const supportedChains = [1, 100, 11155111]
 
 const isSupportedChainForSwap = (chainId: number) => supportedChains.includes(chainId)
@@ -124,7 +126,7 @@ const SwapWidget = ({ sell }: Params) => {
       height: '860px',
       // provider: safeAppWeb3Provider, // Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com
       chainId, // 1 (Mainnet), 5 (Goerli), 100 (Gnosis)
-      // standaloneMode: false,
+      standaloneMode: true,
       disableToastMessages: true,
       disablePostedOrderConfirmationModal: true,
       hideLogo: true,
@@ -198,7 +200,7 @@ const SwapWidget = ({ sell }: Params) => {
   console.log('params', params, listeners)
 
   return (
-    <Box sx={{ height: '100%' }} id="swapWidget">
+    <Box className={css.swapWidget} id="swapWidget">
       <CowSwapWidget params={params} listeners={listeners} />
     </Box>
   )
