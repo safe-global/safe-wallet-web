@@ -6,6 +6,7 @@ import memoize from 'lodash/memoize'
 const LOWER_LIMIT = 0.00001
 const COMPACT_LIMIT = 99_999_999.5
 const UPPER_LIMIT = 999 * 10 ** 12
+const NO_DECIMALS_LIMIT = 1000
 
 /**
  * Formatter that restricts the upper and lower limit of numbers that can be formatted
@@ -140,13 +141,12 @@ const getCurrencyFormatterMaxFractionDigits = (
 ): Intl.NumberFormatOptions['maximumFractionDigits'] => {
   const float = Number(number)
 
-  if (float < 1_000_000) {
+  if (float < NO_DECIMALS_LIMIT) {
     const [, decimals] = getMinimumCurrencyDenominator(currency).toString().split('.')
     return decimals?.length ?? 0
   }
 
-  // Represents numbers like 767.343M
-  if (float < UPPER_LIMIT) {
+  if (float >= COMPACT_LIMIT) {
     return 3
   }
 
