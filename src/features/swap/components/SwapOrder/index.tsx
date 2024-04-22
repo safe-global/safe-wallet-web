@@ -1,6 +1,7 @@
 import TokenIcon from '@/components/common/TokenIcon'
 import OrderId from '@/features/swap/components/OrderId'
 import StatusLabel from '@/features/swap/components/StatusLabel'
+import SwapProgress from '@/features/swap/components/SwapProgress'
 import { capitalize } from '@/hooks/useMnemonicName'
 import { formatDateTime, formatTimeInWords } from '@/utils/date'
 import Stack from '@mui/material/Stack'
@@ -31,10 +32,10 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
     buyToken,
     sellAmount,
     buyAmount,
-    executedSellAmount,
-    executedBuyAmount,
+    class: swapClass,
     explorerUrl,
   } = order
+
   const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
   const surplusPrice = getSurplusPrice(order)
@@ -97,6 +98,13 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
               {formatDateTime(validUntil * 1000)}
             </DataRow>
           )
+        ) : (
+          <></>
+        ),
+        swapClass === 'limit' ? (
+          <DataRow title="Filled" key="Filled">
+            <SwapProgress order={order} />
+          </DataRow>
         ) : (
           <></>
         ),
