@@ -9,7 +9,7 @@ function useSafeOverviews(safes: Array<{ address: string; chainId: string }>) {
   const excludeSpam = useTokenListSetting() || false
   const currency = useAppSelector(selectCurrency)
   const wallet = useWallet()
-  const walletAddress = wallet?.address || ''
+  const walletAddress = wallet?.address
 
   return useAsync(async () => {
     const safesStrings = safes.map((safe) => `${safe.chainId}:${safe.address}` as `${number}:0x${string}`)
