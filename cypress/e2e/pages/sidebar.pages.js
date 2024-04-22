@@ -91,14 +91,16 @@ export function verifyCopyAddressBtn(data) {
   cy.get(sidebarContainer)
     .should('be.visible')
     .within(() => {
-      cy.get(copyAddressBtn).click()
-      cy.wait(500).then(() =>
-        cy.window().then((win) => {
-          win.navigator.clipboard.readText().then((text) => {
-            expect(text).to.contain(data)
-          })
-        }),
-      )
+      cy.get(copyAddressBtn)
+        .click()
+        .wait(1000)
+        .then(() =>
+          cy.window().then((win) => {
+            win.navigator.clipboard.readText().then((text) => {
+              expect(text).to.contain(data)
+            })
+          }),
+        )
     })
 }
 

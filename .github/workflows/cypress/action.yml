@@ -55,3 +55,4 @@ runs:
         CYPRESS_RECORD_KEY: ${{ inputs.record_key || fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
         CYPRESS_PROJECT_ID: ${{ inputs.project_id }}
+        CYPRESS_WALLET_CREDENTIALS: ${{ fromJSON(inputs.secrets).CYPRESS_WALLET_CREDENTIALS }}

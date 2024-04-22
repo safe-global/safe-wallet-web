@@ -138,6 +138,11 @@ export const OVERVIEW_EVENTS = {
     action: 'Proceed with transaction',
     category: OVERVIEW_CATEGORY,
   },
+  OPEN_ACTIVITY_APP: {
+    event: EventType.CLICK,
+    action: 'Open activity app from widget',
+    category: OVERVIEW_CATEGORY,
+  },
 }
 
 export enum OPEN_SAFE_LABELS {

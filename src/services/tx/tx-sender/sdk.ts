@@ -5,7 +5,7 @@ import type { JsonRpcSigner } from 'ethers'
 import { ethers } from 'ethers'
 import { isWalletRejection, isHardwareWallet, isWalletConnect } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { getChainConfig, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'
 import { createWeb3 } from '@/hooks/wallets/web3'
@@ -24,6 +24,37 @@ export const getAndValidateSafeSDK = (): Safe => {
     )
   }
   return safeSDK
+}
+
+async function switchOrAddChain(walletProvider: ConnectedWallet['provider'], chainId: string): Promise<void> {
+  const UNKNOWN_CHAIN_ERROR_CODE = 4902
+  const hexChainId = toQuantity(parseInt(chainId))
+
+  try {
+    return await walletProvider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: hexChainId }],
+    })
+  } catch (error) {
+    if ((error as Error & { code: number }).code !== UNKNOWN_CHAIN_ERROR_CODE) {
+      throw error
+    }
+
+    const chain = await getChainConfig(chainId)
+
+    return walletProvider.request({
+      method: 'wallet_addEthereumChain',
+      params: [
+        {
+          chainId: hexChainId,
+          chainName: chain.chainName,
+          nativeCurrency: chain.nativeCurrency,
+          rpcUrls: [chain.publicRpcUri.value],
+          blockExplorerUrls: [new URL(chain.blockExplorerUriTemplate.address).origin],
+        },
+      ],
+    })
+  }
 }
 
 export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet | null> => {
@@ -53,15 +84,10 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): P
     })
 
     // Switch chain for all other wallets
-    currentWallet.provider
-      .request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: toQuantity(parseInt(chainId)) }],
-      })
-      .catch(() => {
-        source$.unsubscribe()
-        resolve(currentWallet)
-      })
+    switchOrAddChain(currentWallet.provider, chainId).catch(() => {
+      source$.unsubscribe()
+      resolve(currentWallet)
+    })
   })
 }
 

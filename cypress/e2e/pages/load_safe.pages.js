@@ -108,6 +108,7 @@ export function clearOwnerAddress(index) {
 }
 
 export function inputOwnerAddress(index, name) {
+  cy.wait(500)
   cy.get(addressItem)
     .eq(index)
     .find('input')

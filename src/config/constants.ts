@@ -32,11 +32,17 @@ export const SAFE_TOKEN_ADDRESSES: { [chainId: string]: string } = {
   [chains.sep]: '0xd16d9C09d13E9Cf77615771eADC5d51a1Ae92a26',
 }
 
+export const SAFE_LOCKING_ADDRESS: { [chainId: string]: string } = {
+  [chains.eth]: '0x0a7CB434f96f65972D46A5c1A64a9654dC9959b2',
+  [chains.sep]: '0xb161ccb96b9b817F9bDf0048F212725128779DE9',
+}
+
 // Safe Apps
 export const SAFE_APPS_INFURA_TOKEN = process.env.NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN || INFURA_TOKEN
 export const SAFE_APPS_THIRD_PARTY_COOKIES_CHECK_URL = 'https://third-party-cookies-check.gnosis-safe.com'
 export const SAFE_APPS_DEMO_SAFE_MAINNET = 'eth:0xfF501B324DC6d78dC9F983f140B9211c3EdB4dc7'
-export const SAFE_APPS_SDK_DOCS_URL = 'https://docs.safe.global/apps-sdk-overview'
+export const SAFE_APPS_SDK_DOCS_URL =
+  'https://help.safe.global/en/articles/145503-how-to-create-a-safe-app-with-safe-apps-sdk-and-list-it'
 
 // Google Tag Manager
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || ''
@@ -67,12 +73,6 @@ export const WC_APP_DEV = {
   id: 25,
   url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
 }
-
-// Safe Gelato relay service
-export const SAFE_RELAY_SERVICE_URL_PRODUCTION =
-  process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_PRODUCTION || 'https://safe-client.safe.global/v1/relay'
-export const SAFE_RELAY_SERVICE_URL_STAGING =
-  process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_STAGING || 'https://safe-client.staging.5afe.dev/v1/relay'
 
 // Help Center
 export const HELP_CENTER_URL = 'https://help.safe.global'

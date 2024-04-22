@@ -13,6 +13,7 @@ import { useRouter } from 'next/router'
 import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSection'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
 
@@ -40,6 +41,8 @@ const Dashboard = (): ReactElement => {
 
         {safe.deployed && (
           <>
+            <ActivityRewardsSection />
+
             <Grid item xs={12} lg={6}>
               <PendingTxsList />
             </Grid>
@@ -55,11 +58,11 @@ const Dashboard = (): ReactElement => {
             </Grid>
 
             <Grid item xs={12}>
-              <GovernanceSection />
+              <SafeAppsDashboardSection />
             </Grid>
 
             <Grid item xs={12}>
-              <SafeAppsDashboardSection />
+              <GovernanceSection />
             </Grid>
           </>
         )}

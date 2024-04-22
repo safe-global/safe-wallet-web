@@ -91,16 +91,7 @@ const UsefulHintsWidget = () => {
   return (
     <StatusCard
       badge={
-        <Typography
-          variant="body2"
-          sx={{
-            backgroundColor: 'info.main',
-            borderRadius: '0 0 4px 4px',
-            padding: '4px 8px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+        <Typography variant="body2" className={classnames(css.badgeText, css.badgeTextInfo)}>
           <LightbulbOutlinedIcon fontSize="small" sx={{ mr: 0.5 }} />
           Did you know
         </Typography>
@@ -131,10 +122,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
   return (
     <StatusCard
       badge={
-        <Typography
-          variant="body2"
-          sx={{ backgroundColor: 'secondary.light', borderRadius: '0 0 4px 4px', padding: '4px 8px' }}
-        >
+        <Typography variant="body2" className={css.badgeText}>
           First interaction
         </Typography>
       }
@@ -233,10 +221,7 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
     <>
       <StatusCard
         badge={
-          <Typography
-            variant="body2"
-            sx={{ backgroundColor: 'secondary.light', borderRadius: '0 0 4px 4px', padding: '4px 8px' }}
-          >
+          <Typography variant="body2" className={css.badgeText}>
             First interaction
           </Typography>
         }
