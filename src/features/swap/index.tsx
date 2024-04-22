@@ -126,7 +126,7 @@ const SwapWidget = ({ sell }: Params) => {
       height: '860px',
       // provider: safeAppWeb3Provider, // Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com
       chainId, // 1 (Mainnet), 5 (Goerli), 100 (Gnosis)
-      standaloneMode: true,
+      standaloneMode: false,
       disableToastMessages: true,
       disablePostedOrderConfirmationModal: true,
       hideLogo: true,
