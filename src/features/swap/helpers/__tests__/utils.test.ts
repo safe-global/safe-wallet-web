@@ -42,11 +42,11 @@ describe('Swap helpers', () => {
 
   test('buyToken has more decimals than sellToken', () => {
     const mockOrder = {
-      executedSellAmount: '100000000000000000000', // 100 tokens
+      executedSellAmount: '10000000000', // 100 tokens
       executedBuyAmount: '50000000000000000000', // 50 tokens
       buyToken: { decimals: 18 },
       sellToken: { decimals: 8 },
-      sellAmount: '100000000000000000000',
+      sellAmount: '10000000000',
       buyAmount: '50000000000000000000',
     } as unknown as SwapOrder
 
