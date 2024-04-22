@@ -12,6 +12,9 @@ import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { compareAsc } from 'date-fns'
 import css from './styles.module.css'
 import { Typography } from '@mui/material'
+import { formatAmount } from '@/utils/formatNumber'
+import { formatVisualAmount } from '@/utils/formatters'
+import { getExecutionPrice, getLimitPrice, getSurplusPrice } from '@/features/swap/helpers/utils'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -20,23 +23,26 @@ type SwapOrderProps = {
 
 export const SellOrder = ({ order }: { order: SwapOrderType }) => {
   const {
-    buyToken,
-    sellToken,
-    orderUid,
-    orderKind,
-    expiresTimestamp,
+    uid,
+    kind,
+    validUntil,
     status,
-    executionPriceLabel,
-    limitPriceLabel,
-    surplusLabel,
+    sellToken,
+    buyToken,
+    sellAmount,
+    buyAmount,
+    executedSellAmount,
+    executedBuyAmount,
     explorerUrl,
   } = order
-
-  const expires = new Date(expiresTimestamp * 1000)
+  const executionPrice = getExecutionPrice(order)
+  const limitPrice = getLimitPrice(order)
+  const surplusPrice = getSurplusPrice(order)
+  const expires = new Date(validUntil * 1000)
   const now = new Date()
 
-  const orderKindLabel = capitalize(orderKind)
-  const isSellOrder = orderKind === 'sell'
+  const orderKindLabel = capitalize(kind)
+  const isSellOrder = kind === 'sell'
 
   return (
     <DataTable
@@ -47,31 +53,31 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
             <div>
               <span className={css.value}>
                 {isSellOrder ? 'Sell' : 'For at most'}{' '}
-                {sellToken.logo && <TokenIcon logoUri={sellToken.logo} size={24} />} {sellToken.amount}{' '}
-                {sellToken.symbol}
+                {sellToken.logoUri && <TokenIcon logoUri={sellToken.logoUri} size={24} />}{' '}
+                {formatVisualAmount(sellAmount, sellToken.decimals)} {sellToken.symbol}
               </span>
             </div>
             <div>
               <span className={css.value}>
                 {isSellOrder ? 'for at least' : 'Buy'}{' '}
-                {buyToken.logo && <TokenIcon logoUri={buyToken.logo} size={24} />}
-                {buyToken.amount} {buyToken.symbol}
+                {buyToken.logoUri && <TokenIcon logoUri={buyToken.logoUri} size={24} />}
+                {formatVisualAmount(buyAmount, buyToken.decimals)} {buyToken.symbol}
               </span>
             </div>
           </Stack>
         </DataRow>,
         status === 'fulfilled' ? (
           <DataRow key="Execution price" title="Execution price">
-            {executionPriceLabel}
+            1 {buyToken.symbol} = {formatAmount(executionPrice)} {sellToken.symbol}
           </DataRow>
         ) : (
           <DataRow key="Limit price" title="Limit price">
-            {limitPriceLabel}
+            1 {buyToken.symbol} = {formatAmount(limitPrice)} {sellToken.symbol}
           </DataRow>
         ),
         status === 'fulfilled' ? (
           <DataRow key="Surplus" title="Surplus">
-            {surplusLabel}
+            {formatAmount(surplusPrice)} {buyToken.symbol}
           </DataRow>
         ) : (
           <></>
@@ -81,21 +87,21 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
             <DataRow key="Expiry" title="Expiry">
               <Typography>
                 <Typography fontWeight={700} component="span">
-                  {formatTimeInWords(expiresTimestamp * 1000)}
+                  {formatTimeInWords(validUntil * 1000)}
                 </Typography>{' '}
-                ({formatDateTime(expiresTimestamp * 1000)})
+                ({formatDateTime(validUntil * 1000)})
               </Typography>
             </DataRow>
           ) : (
             <DataRow key="Expiry" title="Expiry">
-              {formatDateTime(expiresTimestamp * 1000)}
+              {formatDateTime(validUntil * 1000)}
             </DataRow>
           )
         ) : (
           <></>
         ),
         <DataRow key="Order ID" title="Order ID">
-          <OrderId orderId={orderUid} href={explorerUrl} />
+          <OrderId orderId={uid} href={explorerUrl} />
         </DataRow>,
         <DataRow key="Status" title="Status">
           <StatusLabel status={status} />
