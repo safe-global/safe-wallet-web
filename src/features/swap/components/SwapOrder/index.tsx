@@ -14,7 +14,7 @@ import css from './styles.module.css'
 import { Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
-import { getExecutionPrice, getLimitPrice, getSurplusPrice } from '@/features/swap/helpers/label'
+import { getExecutionPrice, getLimitPrice, getSurplusPrice } from '@/features/swap/helpers/utils'
 
 type SwapOrderProps = {
   txData?: TransactionData
