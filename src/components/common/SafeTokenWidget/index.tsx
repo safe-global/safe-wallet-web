@@ -38,7 +38,7 @@ const canRedeemSep5Airdrop = (allocation?: Vesting[]): boolean => {
   return !sep5Allocation.isRedeemed && !sep5Allocation.isExpired
 }
 
-const GOVERNANCE_APP_URL = IS_PRODUCTION ? 'https://governance.safe.global' : 'https://safe-dao-governance.dev.5afe.dev'
+const GOVERNANCE_APP_URL = IS_PRODUCTION ? 'https://community.safe.global' : 'https://safe-dao-governance.dev.5afe.dev'
 
 const SafeTokenWidget = () => {
   const chainId = useChainId()
