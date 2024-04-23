@@ -23,18 +23,7 @@ type SwapOrderProps = {
 }
 
 export const SellOrder = ({ order }: { order: SwapOrderType }) => {
-  const {
-    uid,
-    kind,
-    validUntil,
-    status,
-    sellToken,
-    buyToken,
-    sellAmount,
-    buyAmount,
-    class: swapClass,
-    explorerUrl,
-  } = order
+  const { uid, kind, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, orderClass, explorerUrl } = order
 
   const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
@@ -101,7 +90,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
         ) : (
           <></>
         ),
-        swapClass === 'limit' ? (
+        orderClass === 'limit' ? (
           <DataRow title="Filled" key="Filled">
             <SwapProgress order={order} />
           </DataRow>

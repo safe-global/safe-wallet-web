@@ -20,7 +20,7 @@ export function swapOrderBuilder(): IBuilder<SwapOrder> {
     uid: faker.string.uuid(),
     status: faker.helpers.arrayElement(['presignaturePending', 'open', 'cancelled', 'fulfilled', 'expired']),
     kind: faker.helpers.arrayElement(['buy', 'sell']),
-    class: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),
+    orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),
     validUntil: faker.date.future().getTime(),
     sellAmount: faker.string.numeric(),
     buyAmount: faker.string.numeric(),
