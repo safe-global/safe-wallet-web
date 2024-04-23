@@ -1,3 +1,4 @@
+import { orderTokenBuilder, swapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
 import type { Meta, StoryObj } from '@storybook/react'
 import SwapProgress from './index'
 import { Paper } from '@mui/material'
@@ -25,9 +26,12 @@ type Story = StoryObj<typeof meta>
 
 export const Filled: Story = {
   args: {
-    progress: '100.00',
-    tokenAmount: '1',
-    tokenSymbol: 'ETH',
+    order: swapOrderBuilder()
+      .with({ kind: 'sell' })
+      .with({ sellAmount: '10000000' })
+      .with({ executedSellAmount: '10000000' })
+      .with({ sellToken: { ...orderTokenBuilder().build(), decimals: 6 } })
+      .build(),
   },
   parameters: {
     design: {
@@ -39,16 +43,22 @@ export const Filled: Story = {
 
 export const PartiallyFilled: Story = {
   args: {
-    progress: '40.00',
-    tokenAmount: '1',
-    tokenSymbol: 'ETH',
+    order: swapOrderBuilder()
+      .with({ kind: 'sell' })
+      .with({ sellAmount: '5000000' })
+      .with({ executedSellAmount: '1000000' })
+      .with({ sellToken: { ...orderTokenBuilder().build(), decimals: 6 } })
+      .build(),
   },
 }
 
 export const NotFilled: Story = {
   args: {
-    progress: '0.00',
-    tokenAmount: '1',
-    tokenSymbol: 'ETH',
+    order: swapOrderBuilder()
+      .with({ kind: 'sell' })
+      .with({ sellAmount: '5000000' })
+      .with({ executedSellAmount: '0' })
+      .with({ sellToken: { ...orderTokenBuilder().build(), decimals: 6 } })
+      .build(),
   },
 }
