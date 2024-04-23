@@ -150,7 +150,9 @@ const SwapWidget = ({ sell }: Params) => {
             amount: '0',
           },
       images: {
-        emptyOrders: darkMode ? BASE_URL + '/images/common/swap-empty-dark.svg' : BASE_URL + '/images/common/swap-empty-light.svg',
+        emptyOrders: darkMode
+          ? BASE_URL + '/images/common/swap-empty-dark.svg'
+          : BASE_URL + '/images/common/swap-empty-light.svg',
       },
       enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
       // env: 'dev',
