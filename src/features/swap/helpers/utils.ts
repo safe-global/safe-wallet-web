@@ -35,7 +35,6 @@ export const getLimitPrice = (order: SwapOrder): number => {
     },
   )
 
-  console.log('limit ratio', sellAmount, buyAmount, ratio)
   return ratio
 }
 
@@ -50,4 +49,31 @@ export const getSurplusPrice = (order: SwapOrder): number => {
     asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - asDecimal(BigInt(buyAmount), buyToken.decimals)
 
   return surplus
+}
+
+export const getFilledPercentage = (order: SwapOrder): string => {
+  let executed: number
+  let total: number
+
+  if (order.kind === 'buy') {
+    executed = Number(order.executedBuyAmount)
+    total = Number(order.buyAmount)
+  } else if (order.kind === 'sell') {
+    executed = Number(order.executedSellAmount)
+    total = Number(order.sellAmount)
+  } else {
+    return '0'
+  }
+
+  return ((executed / total) * 100).toFixed(0)
+}
+
+export const getFilledAmount = (order: SwapOrder): string => {
+  if (order.kind === 'buy') {
+    return formatUnits(order.executedBuyAmount, order.buyToken.decimals)
+  } else if (order.kind === 'sell') {
+    return formatUnits(order.executedSellAmount, order.sellToken.decimals)
+  } else {
+    return '0'
+  }
 }
