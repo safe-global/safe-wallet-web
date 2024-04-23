@@ -1,4 +1,4 @@
-import { getExecutionPrice, getLimitPrice, getSurplusPrice } from '../utils'
+import { getExecutionPrice, getFilledPercentage, getLimitPrice, getSurplusPrice } from '../utils'
 import { type SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('Swap helpers', () => {
@@ -76,5 +76,70 @@ describe('Swap helpers', () => {
     expect(executionPrice).toBe(2)
     expect(limitPrice).toBe(2)
     expect(surplusPrice).toBe(0)
+  })
+
+  describe('getFilledPercentage', () => {
+    it('returns 0 if no amount was executed', () => {
+      const mockOrder = {
+        executedSellAmount: '0',
+        executedBuyAmount: '0',
+        buyToken: { decimals: 8 },
+        sellToken: { decimals: 18 },
+        sellAmount: '100000000000000000000',
+        buyAmount: '5000000000',
+      } as unknown as SwapOrder
+
+      const result = getFilledPercentage(mockOrder)
+
+      expect(result).toEqual('0')
+    })
+
+    it('returns the percentage for buy orders', () => {
+      const mockOrder = {
+        executedSellAmount: '10000000000000000000',
+        executedBuyAmount: '50000000',
+        buyToken: { decimals: 8 },
+        sellToken: { decimals: 18 },
+        sellAmount: '100000000000000000000',
+        buyAmount: '5000000000',
+        kind: 'buy',
+      } as unknown as SwapOrder
+
+      const result = getFilledPercentage(mockOrder)
+
+      expect(result).toEqual('1')
+    })
+
+    it('returns the percentage for sell orders', () => {
+      const mockOrder = {
+        executedSellAmount: '10000000000000000000',
+        executedBuyAmount: '50000000',
+        buyToken: { decimals: 8 },
+        sellToken: { decimals: 18 },
+        sellAmount: '100000000000000000000',
+        buyAmount: '5000000000',
+        kind: 'sell',
+      } as unknown as SwapOrder
+
+      const result = getFilledPercentage(mockOrder)
+
+      expect(result).toEqual('10')
+    })
+
+    it('returns 0 if the executed amount is below 1%', () => {
+      const mockOrder = {
+        executedSellAmount: '10000000000000000000',
+        executedBuyAmount: '50',
+        buyToken: { decimals: 8 },
+        sellToken: { decimals: 18 },
+        sellAmount: '100000000000000000000',
+        buyAmount: '5000000000',
+        kind: 'buy',
+      } as unknown as SwapOrder
+
+      const result = getFilledPercentage(mockOrder)
+
+      expect(result).toEqual('0')
+    })
   })
 })
