@@ -1,3 +1,5 @@
+import { POLLING_INTERVAL } from '@/config/constants'
+import useIntervalCounter from '@/hooks/useIntervalCounter'
 import React, { type ReactElement } from 'react'
 import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
@@ -15,6 +17,7 @@ import {
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
+  isOpenSwap,
   isSwapTxInfo,
   isTxQueued,
 } from '@/utils/transaction-guards'
@@ -155,12 +158,15 @@ const TxDetails = ({
   const chainId = useChainId()
   const { safe } = useSafeInfo()
 
+  const [pollCount] = useIntervalCounter(POLLING_INTERVAL)
+  const swapPollCount = isOpenSwap(txSummary.txInfo) ? pollCount : 0
+
   const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
     async () => {
       return txDetails || getTransactionDetails(chainId, txSummary.id)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [txDetails, chainId, txSummary.id, safe.txQueuedTag],
+    [txDetails, chainId, txSummary.id, safe.txQueuedTag, swapPollCount],
     false,
   )
 
