@@ -8,7 +8,7 @@ const FulfilledSwapOrder: SwapOrder = {
   uid: '0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
   status: 'fulfilled',
   kind: 'sell',
-  class: 'limit',
+  orderClass: 'limit',
   validUntil: 1713520008,
   sellAmount: '10000000000000000',
   buyAmount: '3388586928324482608',
