@@ -10,7 +10,11 @@ function asDecimal(amount: number | bigint, decimals: number): number {
   return Number(formatUnits(amount, decimals))
 }
 
-export const getExecutionPrice = (order: SwapOrder): number => {
+type SwapOrderProps = Pick<
+  SwapOrder,
+  'executedBuyAmount' | 'executedSellAmount' | 'buyToken' | 'sellToken' | 'sellAmount' | 'buyAmount' | 'kind'
+>
+export const getExecutionPrice = (order: SwapOrderProps): number => {
   const { executedSellAmount, executedBuyAmount, buyToken, sellToken } = order
 
   const ratio = calculateRatio(
@@ -24,7 +28,7 @@ export const getExecutionPrice = (order: SwapOrder): number => {
   return ratio
 }
 
-export const getLimitPrice = (order: SwapOrder): number => {
+export const getLimitPrice = (order: SwapOrderProps): number => {
   const { sellAmount, buyAmount, buyToken, sellToken } = order
 
   const ratio = calculateRatio(
@@ -42,7 +46,7 @@ const calculateRatio = (a: Quantity, b: Quantity) => {
   return asDecimal(BigInt(a.amount), a.decimals) / asDecimal(BigInt(b.amount), b.decimals)
 }
 
-export const getSurplusPrice = (order: SwapOrder): number => {
+export const getSurplusPrice = (order: SwapOrderProps): number => {
   const { executedBuyAmount, buyAmount, buyToken } = order
 
   const surplus =
@@ -51,7 +55,7 @@ export const getSurplusPrice = (order: SwapOrder): number => {
   return surplus
 }
 
-export const getFilledPercentage = (order: SwapOrder): string => {
+export const getFilledPercentage = (order: SwapOrderProps): string => {
   let executed: number
   let total: number
 
@@ -68,7 +72,7 @@ export const getFilledPercentage = (order: SwapOrder): string => {
   return ((executed / total) * 100).toFixed(0)
 }
 
-export const getFilledAmount = (order: SwapOrder): string => {
+export const getFilledAmount = (order: SwapOrderProps): string => {
   if (order.kind === 'buy') {
     return formatUnits(order.executedBuyAmount, order.buyToken.decimals)
   } else if (order.kind === 'sell') {

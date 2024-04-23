@@ -1,7 +1,34 @@
 import { Builder, type IBuilder } from '@/tests/Builder'
 import { faker } from '@faker-js/faker'
-import type { SwapOrder, OrderToken, TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import type {
+  SwapOrder,
+  OrderToken,
+  TransactionInfoType,
+  CowSwapConfirmationView,
+} from '@safe-global/safe-gateway-typescript-sdk'
 
+export function appDataBuilder(): IBuilder<Record<string, unknown>> {
+  return Builder.new<Record<string, unknown>>().with({
+    appCode: 'Safe Wallet Swaps',
+    metadata: {
+      orderClass: {
+        orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),
+      },
+      partnerFee: {
+        bps: 50,
+        recipient: '0x0B00b3227A5F3df3484f03990A87e02EbaD2F888',
+      },
+      quote: {
+        slippageBips: 50,
+      },
+      widget: {
+        appCode: 'CoW Swap-SafeApp',
+        environment: 'production',
+      },
+    },
+    version: '1.1.0',
+  })
+}
 export function orderTokenBuilder(): IBuilder<OrderToken> {
   return Builder.new<OrderToken>().with({
     address: faker.finance.ethereumAddress(),
@@ -31,5 +58,27 @@ export function swapOrderBuilder(): IBuilder<SwapOrder> {
     explorerUrl:
       'https://explorer.cow.fi/orders/0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
     executedSurplusFee: faker.string.numeric(),
+    fullAppData: appDataBuilder().build(),
+  })
+}
+
+// create a builder for SwapOrderConfirmationView
+export function swapOrderConfirmationViewBuilder(): IBuilder<CowSwapConfirmationView> {
+  return Builder.new<CowSwapConfirmationView>().with({
+    type: 'COW_SWAP_ORDER',
+    uid: faker.string.uuid(),
+    kind: faker.helpers.arrayElement(['buy', 'sell']),
+    orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),
+    validUntil: faker.date.future().getTime(),
+    status: faker.helpers.arrayElement(['presignaturePending', 'open', 'cancelled', 'fulfilled', 'expired']),
+    sellToken: orderTokenBuilder().build(),
+    buyToken: orderTokenBuilder().build(),
+    sellAmount: faker.string.numeric(),
+    buyAmount: faker.string.numeric(),
+    executedSellAmount: faker.string.numeric(),
+    executedBuyAmount: faker.string.numeric(),
+    explorerUrl:
+      'https://explorer.cow.fi/orders/0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
+    fullAppData: appDataBuilder().build(),
   })
 }
