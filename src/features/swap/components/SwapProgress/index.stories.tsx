@@ -1,4 +1,4 @@
-import { orderTokenBuilder, swapOrderBuilder } from '@/features/swap/helpers/__tests__/swapOrderBuilder'
+import { orderTokenBuilder, swapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
 import type { Meta, StoryObj } from '@storybook/react'
 import SwapProgress from './index'
 import { Paper } from '@mui/material'
