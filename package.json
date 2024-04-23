@@ -45,7 +45,7 @@
     "@gnosis.pm/zodiac/**/ethers": "^6.11.1"
   },
   "dependencies": {
-    "@cowprotocol/widget-react": "0.8.1",
+    "@cowprotocol/widget-react": "0.8.2",
     "@ducanh2912/next-pwa": "^9.7.1",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.0",
