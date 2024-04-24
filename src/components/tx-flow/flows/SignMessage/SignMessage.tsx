@@ -161,15 +161,15 @@ const BlindSigningWarning = ({
 
   return (
     <ErrorMessage level={isBlindSigningEnabled ? 'warning' : 'error'}>
-      This is a blind signing request. Signing this message has unpredictable effects. <br />
+      This request involves blind signing, which can lead to unpredictable outcomes. <br />
+      <br />
       {isBlindSigningEnabled ? (
         'Proceed with caution.'
       ) : (
         <>
-          For security reasons blind signing is disabled by default. If you still want to proceed you first have to
-          enable blind signing{' '}
+          If you wish to proceed, you must first{' '}
           <Link component={NextLink} href={AppRoutes.settings.securityLogin}>
-            here
+            enable blind signing
           </Link>
           .
         </>

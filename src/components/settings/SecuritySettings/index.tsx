@@ -17,8 +17,8 @@ const SecuritySettings = () => {
 
         <Grid item xs>
           <Typography mb={2}>
-            Enabling this setting allows signing of unreadable signature requests. Signing such messages can have
-            unpredictable implications including loss of funds or control of your account.
+            Enabling this setting allows the signing of unreadable signature requests. Signing these messages can lead
+            to unpredictable consequences, including the potential loss of funds or control over your account.
           </Typography>
           <FormGroup>
             <FormControlLabel
