@@ -19,7 +19,13 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   const groupedItems = useMemo(() => groupConflictingTxs(items), [items])
 
   const transactions = groupedItems.map((item, index) => {
-    if (Array.isArray(item)) {
+    const isBatchTx = Array.isArray(item) && item.length === 1
+    if (isBatchTx) {
+      return <TxListItem key={index} item={item[0]} />
+    }
+
+    const isConflictingTxGroup = Array.isArray(item)
+    if (isConflictingTxGroup) {
       return <GroupedTxListItems key={index} groupedListItems={item} />
     }
 
