@@ -7,20 +7,11 @@ import { shortenAddress } from '@/utils/formatters'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 
-type Props = {
-  address: string
-}
-
-export const BlockedAddress = (props: Props): ReactElement => {
-  const { address } = props
+export const BlockedAddress = ({ address }: { address: string }): ReactElement => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const displayAddress = isMobile ? shortenAddress(address) : address
   const router = useRouter()
-
-  const handleDismissButton = () => {
-    router.push(AppRoutes.home)
-  }
 
   return (
     <div className={css.container}>

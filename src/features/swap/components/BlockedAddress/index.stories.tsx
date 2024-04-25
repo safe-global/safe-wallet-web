@@ -3,15 +3,7 @@ import BlockedAddress from './index'
 
 const meta = {
   component: BlockedAddress,
-  parameters: {
-    componentSubtitle: 'Renders a Status label with icon and text for a swap order',
-  },
 
-  decorators: [
-    (Story) => {
-      return <Story />
-    },
-  ],
   tags: ['autodocs'],
 } satisfies Meta<typeof BlockedAddress>
 
