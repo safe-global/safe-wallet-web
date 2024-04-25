@@ -33,7 +33,9 @@ export const BlockedAddress = ({ address }: { address: string }): ReactElement =
         </Stack>
         <Box display="flex" justifyContent="center" pt={3} pb={2}>
           <Link href={{ pathname: AppRoutes.home, query: router.query }}>
-            <Button variant="contained">Got it</Button>
+            <Button variant="contained" size="small" sx={{ px: '16px' }}>
+              Got it
+            </Button>
           </Link>
         </Box>
       </Paper>
