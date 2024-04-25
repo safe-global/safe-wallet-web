@@ -17,6 +17,10 @@ import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch } from '@/store'
 
 import css from './styles.module.css'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import useWallet from '@/hooks/wallets/useWallet'
+import blockedAddressList from '@/features/swap/components/BlockedAddress/blockedAddressList.json'
+import BlockedAddress from './components/BlockedAddress'
 
 const supportedChains = [1, 100, 11155111]
 
@@ -47,6 +51,9 @@ const SwapWidget = ({ sell }: Params) => {
   const { palette } = useTheme()
   const darkMode = useDarkMode()
   const dispatch = useAppDispatch()
+
+  const { safeAddress } = useSafeInfo()
+  const wallet = useWallet()
 
   const [toasts, setToasts] = useState<String[]>([])
 
@@ -192,6 +199,13 @@ const SwapWidget = ({ sell }: Params) => {
 
   if (!params) {
     return null
+  }
+
+  if (blockedAddressList.includes(safeAddress)) {
+    return <BlockedAddress address={safeAddress} />
+  }
+  if (wallet?.address && blockedAddressList.includes(wallet?.address)) {
+    return <BlockedAddress address={wallet.address} />
   }
 
   if (!isSupportedChainForSwap(Number(chainId))) {
