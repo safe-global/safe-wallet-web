@@ -3,6 +3,8 @@ import SwapOrderConfirmationView from './index'
 import { Paper } from '@mui/material'
 import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import { orderTokenBuilder, swapOrderConfirmationViewBuilder } from '@/features/swap/helpers/swapOrderBuilder'
+import { faker } from '@faker-js/faker'
+import { StoreDecorator } from '@/stories/storeDecorator'
 
 const Order = swapOrderConfirmationViewBuilder()
   .with({ kind: 'sell' })
@@ -11,7 +13,6 @@ const Order = swapOrderConfirmationViewBuilder()
   .with({ sellToken: { ...orderTokenBuilder().build(), decimals: 6 } })
   .with({ validUntil: new Date().getTime() / 1000 + 28 * 60 })
   .with({ status: 'open' as OrderStatuses })
-  .build()
 
 const meta = {
   component: SwapOrderConfirmationView,
@@ -19,9 +20,11 @@ const meta = {
   decorators: [
     (Story) => {
       return (
-        <Paper sx={{ padding: 2 }}>
-          <Story />
-        </Paper>
+        <StoreDecorator initialState={{}}>
+          <Paper sx={{ padding: 2 }}>
+            <Story />
+          </Paper>
+        </StoreDecorator>
       )
     },
   ],
@@ -33,12 +36,26 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    order: Order,
+    order: Order.build(),
+    safeAddress: '',
   },
   parameters: {
     design: {
       type: 'figma',
       url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5256-18562&mode=design&t=FlMhDhzNxpNKWuc1-4',
+    },
+  },
+}
+
+export const CustomRecipient: Story = {
+  args: {
+    order: Order.with({ receiver: faker.finance.ethereumAddress() }).build(),
+    safeAddress: faker.finance.ethereumAddress(),
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5752-17758&mode=design&t=0Hnp94dhQMroAAnr-4',
     },
   },
 }

@@ -10,11 +10,7 @@ import {
   Typography,
 } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type {
-  BaselineConfirmationView,
-  CowSwapConfirmationView,
-  DecodedDataResponse,
-} from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
@@ -28,7 +24,6 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import accordionCss from '@/styles/accordion.module.css'
-import { SwapOrderConfirmationView } from '@/features/swap/components/SwapOrderConfirmationView'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -37,20 +32,6 @@ type DecodedTxProps = {
   decodedData?: DecodedDataResponse
   decodedDataError?: Error
   decodedDataLoading?: boolean
-}
-
-const isSwapOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | CowSwapConfirmationView,
-): decodedData is CowSwapConfirmationView => {
-  if (!decodedData) {
-    return false
-  }
-
-  if ('type' in decodedData) {
-    return decodedData.type === 'COW_SWAP_ORDER'
-  }
-
-  return false
 }
 
 const DecodedTx = ({
@@ -78,11 +59,8 @@ const DecodedTx = ({
 
   if (!decodedData) return null
 
-  const swapOrder = isSwapOrder(decodedData)
-
   return (
     <div>
-      {swapOrder && <SwapOrderConfirmationView order={decodedData} />}
       {isMultisend && showMultisend && (
         <Box my={2}>
           <Multisend

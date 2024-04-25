@@ -1,48 +1,36 @@
 import OrderId from '@/features/swap/components/OrderId'
-import StatusLabel from '@/features/swap/components/StatusLabel'
-import { capitalize } from '@/hooks/useMnemonicName'
 import { formatDateTime, formatTimeInWords } from '@/utils/date'
 import type { ReactElement } from 'react'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
 import { compareAsc } from 'date-fns'
-import { Typography } from '@mui/material'
+import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
-import { getExecutionPrice, getLimitPrice, getSurplusPrice } from '@/features/swap/helpers/utils'
+import { getExecutionPrice, getLimitPrice, getSlippageInPercent, getSurplusPrice } from '@/features/swap/helpers/utils'
 import type { CowSwapConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
+import AlertIcon from '@/public/images/common/alert.svg'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 type SwapOrderProps = {
   order: CowSwapConfirmationView
+  safeAddress: string
 }
 
-const Order = ({ order }: SwapOrderProps) => {
-  const {
-    uid,
-    kind,
-    validUntil,
-    status,
-    sellToken,
-    buyToken,
-    sellAmount,
-    buyAmount,
-    executedSellAmount,
-    executedBuyAmount,
-    explorerUrl,
-  } = order
+const Order = ({ order, safeAddress }: SwapOrderProps) => {
+  const { uid, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
   const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
   const surplusPrice = getSurplusPrice(order)
   const expires = new Date(validUntil * 1000)
   const now = new Date()
 
-  const orderKindLabel = capitalize(kind)
-  const isSellOrder = kind === 'sell'
+  const slippage = getSlippageInPercent(order)
 
   return (
     <DataTable
-      header={`${orderKindLabel} order`}
+      header="Order Details"
       rows={[
         <div key="amount">
           <SwapTokens
@@ -95,21 +83,40 @@ const Order = ({ order }: SwapOrderProps) => {
         ) : (
           <></>
         ),
+        <DataRow key="Slippage" title="Slippage">
+          {slippage}%
+        </DataRow>,
         <DataRow key="Order ID" title="Order ID">
           <OrderId orderId={uid} href={explorerUrl} />
         </DataRow>,
-        <DataRow key="Status" title="Status">
-          <StatusLabel status={status} />
-        </DataRow>,
+        receiver && safeAddress !== receiver ? (
+          <>
+            <DataRow key="recipient-address" title="Recipient">
+              <EthHashInfo address={receiver} hasExplorer={true} avatarSize={24} />
+            </DataRow>
+            <div key="recipient">
+              <Alert severity="warning" icon={AlertIcon}>
+                <Typography variant="body2">
+                  <Typography component="span" sx={{ fontWeight: 'bold' }}>
+                    Order recipient address differs from order owner.
+                  </Typography>{' '}
+                  Double check the address to prevent fund loss.
+                </Typography>
+              </Alert>
+            </div>
+          </>
+        ) : (
+          <></>
+        ),
       ]}
     />
   )
 }
 
-export const SwapOrderConfirmationView = ({ order }: SwapOrderProps): ReactElement | null => {
+export const SwapOrderConfirmationView = ({ order, safeAddress }: SwapOrderProps): ReactElement | null => {
   if (!order) return null
 
-  return <Order order={order} />
+  return <Order order={order} safeAddress={safeAddress} />
 }
 
 export default SwapOrderConfirmationView

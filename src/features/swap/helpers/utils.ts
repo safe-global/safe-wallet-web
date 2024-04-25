@@ -1,5 +1,6 @@
 import type { SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
+import type { AnyAppDataDocVersion, latest } from '@cowprotocol/app-data'
 
 type Quantity = {
   amount: string | number | bigint
@@ -10,11 +11,9 @@ function asDecimal(amount: number | bigint, decimals: number): number {
   return Number(formatUnits(amount, decimals))
 }
 
-type SwapOrderProps = Pick<
-  SwapOrder,
-  'executedBuyAmount' | 'executedSellAmount' | 'buyToken' | 'sellToken' | 'sellAmount' | 'buyAmount' | 'kind'
->
-export const getExecutionPrice = (order: SwapOrderProps): number => {
+export const getExecutionPrice = (
+  order: Pick<SwapOrder, 'executedSellAmount' | 'executedBuyAmount' | 'buyToken' | 'sellToken'>,
+): number => {
   const { executedSellAmount, executedBuyAmount, buyToken, sellToken } = order
 
   const ratio = calculateRatio(
@@ -28,7 +27,9 @@ export const getExecutionPrice = (order: SwapOrderProps): number => {
   return ratio
 }
 
-export const getLimitPrice = (order: SwapOrderProps): number => {
+export const getLimitPrice = (
+  order: Pick<SwapOrder, 'sellAmount' | 'buyAmount' | 'buyAmount' | 'buyToken' | 'sellToken'>,
+): number => {
   const { sellAmount, buyAmount, buyToken, sellToken } = order
 
   const ratio = calculateRatio(
@@ -46,7 +47,7 @@ const calculateRatio = (a: Quantity, b: Quantity) => {
   return asDecimal(BigInt(a.amount), a.decimals) / asDecimal(BigInt(b.amount), b.decimals)
 }
 
-export const getSurplusPrice = (order: SwapOrderProps): number => {
+export const getSurplusPrice = (order: Pick<SwapOrder, 'executedBuyAmount' | 'buyAmount' | 'buyToken'>): number => {
   const { executedBuyAmount, buyAmount, buyToken } = order
 
   const surplus =
@@ -55,7 +56,9 @@ export const getSurplusPrice = (order: SwapOrderProps): number => {
   return surplus
 }
 
-export const getFilledPercentage = (order: SwapOrderProps): string => {
+export const getFilledPercentage = (
+  order: Pick<SwapOrder, 'executedBuyAmount' | 'kind' | 'buyAmount' | 'executedSellAmount' | 'sellAmount'>,
+): string => {
   let executed: number
   let total: number
 
@@ -72,7 +75,9 @@ export const getFilledPercentage = (order: SwapOrderProps): string => {
   return ((executed / total) * 100).toFixed(0)
 }
 
-export const getFilledAmount = (order: SwapOrderProps): string => {
+export const getFilledAmount = (
+  order: Pick<SwapOrder, 'kind' | 'executedBuyAmount' | 'executedSellAmount' | 'buyToken' | 'sellToken'>,
+): string => {
   if (order.kind === 'buy') {
     return formatUnits(order.executedBuyAmount, order.buyToken.decimals)
   } else if (order.kind === 'sell') {
@@ -80,4 +85,11 @@ export const getFilledAmount = (order: SwapOrderProps): string => {
   } else {
     return '0'
   }
+}
+
+export const getSlippageInPercent = (order: Pick<SwapOrder, 'fullAppData'>): string => {
+  const fullAppData = order.fullAppData as AnyAppDataDocVersion
+  const slippageBips = (fullAppData.metadata.quote as latest.Quote).slippageBips || 0
+
+  return (Number(slippageBips) / 100).toFixed(2)
 }
