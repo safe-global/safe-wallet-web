@@ -26,17 +26,6 @@ import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
-import type { SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
-import {
-  type BaselineConfirmationView,
-  type CowSwapConfirmationView,
-  type DecodedDataResponse,
-  TransactionInfoType,
-} from '@safe-global/safe-gateway-typescript-sdk'
-import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
-import useSafeAddress from '@/hooks/useSafeAddress'
-import { isExpiredSwap } from '@/utils/transaction-guards'
-import { Alert, Typography } from '@mui/material'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -65,20 +54,6 @@ const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean,
   }
 }
 
-const isSwapOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | CowSwapConfirmationView | undefined,
-): decodedData is CowSwapConfirmationView => {
-  if (!decodedData) {
-    return false
-  }
-
-  if ('type' in decodedData) {
-    return decodedData.type === 'COW_SWAP_ORDER'
-  }
-
-  return false
-}
-
 export const SignOrExecuteForm = ({
   chainId,
   safeTx,
@@ -97,7 +72,6 @@ export const SignOrExecuteForm = ({
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
-  const safeAddress = useSafeAddress()
 
   const { safe } = useSafeInfo()
   const isCounterfactualSafe = !safe.deployed
@@ -116,67 +90,9 @@ export const SignOrExecuteForm = ({
     [chainId, isCreation, onSubmit],
   )
 
-  const swapOrder = isSwapOrder(decodedData)
-
-  const swapExpired =
-    swapOrder &&
-    isExpiredSwap({
-      type: TransactionInfoType.SWAP_ORDER,
-      status: decodedData.status,
-    } as SwapOrder)
-
-  let ExecuteBlock = (
-    <TxCard>
-      <ConfirmationTitle
-        variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
-        isCreation={isCreation}
-      />
-
-      {safeTxError && (
-        <ErrorMessage error={safeTxError}>
-          This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
-        </ErrorMessage>
-      )}
-
-      {canExecute && !props.onlyExecute && !isCounterfactualSafe && <ExecuteCheckbox onChange={setShouldExecute} />}
-
-      <WrongChainWarning />
-
-      <UnknownContractError />
-
-      <RiskConfirmationError />
-
-      {isCounterfactualSafe ? (
-        <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
-      ) : willExecute ? (
-        <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
-      ) : (
-        <SignForm
-          {...props}
-          safeTx={safeTx}
-          isBatchable={isBatchable}
-          isCreation={isCreation}
-          onSubmit={onFormSubmit}
-        />
-      )}
-    </TxCard>
-  )
-
-  if (swapOrder && swapExpired) {
-    ExecuteBlock = (
-      <TxCard>
-        <Alert severity="error">
-          <Typography variant="body1">This swap order has expired and can no longer be executed.</Typography>
-        </Alert>
-      </TxCard>
-    )
-  }
-
   return (
     <>
       <TxCard>
-        {swapOrder && <SwapOrderConfirmationView order={decodedData} safeAddress={safeAddress} />}
-
         {props.children}
 
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
@@ -201,7 +117,40 @@ export const SignOrExecuteForm = ({
         </TxCard>
       )}
 
-      {ExecuteBlock}
+      <TxCard>
+        <ConfirmationTitle
+          variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
+          isCreation={isCreation}
+        />
+
+        {safeTxError && (
+          <ErrorMessage error={safeTxError}>
+            This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
+          </ErrorMessage>
+        )}
+
+        {canExecute && !props.onlyExecute && !isCounterfactualSafe && <ExecuteCheckbox onChange={setShouldExecute} />}
+
+        <WrongChainWarning />
+
+        <UnknownContractError />
+
+        <RiskConfirmationError />
+
+        {isCounterfactualSafe ? (
+          <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
+        ) : willExecute ? (
+          <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
+        ) : (
+          <SignForm
+            {...props}
+            safeTx={safeTx}
+            isBatchable={isBatchable}
+            isCreation={isCreation}
+            onSubmit={onFormSubmit}
+          />
+        )}
+      </TxCard>
     </>
   )
 }

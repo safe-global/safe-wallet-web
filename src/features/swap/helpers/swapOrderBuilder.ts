@@ -64,6 +64,7 @@ export function swapOrderBuilder(): IBuilder<SwapOrder> {
 
 // create a builder for SwapOrderConfirmationView
 export function swapOrderConfirmationViewBuilder(): IBuilder<CowSwapConfirmationView> {
+  const ownerAndReceiver = faker.finance.ethereumAddress()
   return Builder.new<CowSwapConfirmationView>().with({
     type: 'COW_SWAP_ORDER',
     uid: faker.string.uuid(),
@@ -77,6 +78,8 @@ export function swapOrderConfirmationViewBuilder(): IBuilder<CowSwapConfirmation
     buyAmount: faker.string.numeric(),
     executedSellAmount: faker.string.numeric(),
     executedBuyAmount: faker.string.numeric(),
+    receiver: ownerAndReceiver,
+    owner: ownerAndReceiver,
     explorerUrl:
       'https://explorer.cow.fi/orders/0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
     fullAppData: appDataBuilder().build(),

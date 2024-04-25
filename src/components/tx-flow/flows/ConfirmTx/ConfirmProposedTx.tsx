@@ -4,10 +4,17 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useChainId } from '@/hooks/useChainId'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { isExecutable, isMultisigExecutionInfo, isSignableBy } from '@/utils/transaction-guards'
+import {
+  isExecutable,
+  isMultisigExecutionInfo,
+  isSignableBy,
+  isSwapConfirmationViewOrder,
+} from '@/utils/transaction-guards'
 import { Typography } from '@mui/material'
 import { createExistingTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
+import useDecodeTx from '@/hooks/useDecodeTx'
+import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -21,7 +28,9 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
   const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
-  const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
+  const { safeTx, setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
+  const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
+  const swapOrder = isSwapConfirmationViewOrder(decodedData)
 
   const txId = txSummary.id
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
@@ -41,6 +50,7 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
   return (
     <SignOrExecuteForm txId={txId} isExecutable={canExecute} onlyExecute={!canSign}>
       <Typography mb={2}>{text}</Typography>
+      {swapOrder && safeTx && <SwapOrderConfirmationView order={decodedData} settlementContract={safeTx.data.to} />}
     </SignOrExecuteForm>
   )
 }

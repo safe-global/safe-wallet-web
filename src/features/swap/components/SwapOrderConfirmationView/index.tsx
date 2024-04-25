@@ -12,14 +12,18 @@ import type { CowSwapConfirmationView } from '@safe-global/safe-gateway-typescri
 import SwapTokens from '@/features/swap/components/SwapTokens'
 import AlertIcon from '@/public/images/common/alert.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import CowLogo from '@/public/images/swaps/cow-logo.png'
 
 type SwapOrderProps = {
   order: CowSwapConfirmationView
-  safeAddress: string
+  settlementContract: string
 }
 
-const Order = ({ order, safeAddress }: SwapOrderProps) => {
-  const { uid, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
+export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrderProps): ReactElement | null => {
+  if (!order) return null
+
+  const { uid, owner, kind, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } =
+    order
   const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
   const surplusPrice = getSurplusPrice(order)
@@ -27,6 +31,7 @@ const Order = ({ order, safeAddress }: SwapOrderProps) => {
   const now = new Date()
 
   const slippage = getSlippageInPercent(order)
+  const isSellOrder = kind === 'sell'
 
   return (
     <DataTable
@@ -36,13 +41,13 @@ const Order = ({ order, safeAddress }: SwapOrderProps) => {
           <SwapTokens
             first={{
               value: formatVisualAmount(sellAmount, sellToken.decimals),
-              label: 'Sell',
+              label: isSellOrder ? 'Sell' : 'For at most',
               logoUri: sellToken.logoUri as string,
               tokenSymbol: sellToken.symbol,
             }}
             second={{
               value: formatVisualAmount(buyAmount, buyToken.decimals),
-              label: 'Buy',
+              label: isSellOrder ? 'For at least' : 'Buy exactly',
               logoUri: buyToken.logoUri as string,
               tokenSymbol: buyToken.symbol,
             }}
@@ -89,7 +94,18 @@ const Order = ({ order, safeAddress }: SwapOrderProps) => {
         <DataRow key="Order ID" title="Order ID">
           <OrderId orderId={uid} href={explorerUrl} />
         </DataRow>,
-        receiver && safeAddress !== receiver ? (
+        <DataRow key="Interact with" title="Interact with">
+          <EthHashInfo
+            address={settlementContract}
+            name="Cow Protocol"
+            customAvatar={CowLogo.src}
+            avatarSize={24}
+            shortAddress={false}
+            hasExplorer
+            onlyName
+          />
+        </DataRow>,
+        receiver && owner !== receiver ? (
           <>
             <DataRow key="recipient-address" title="Recipient">
               <EthHashInfo address={receiver} hasExplorer={true} avatarSize={24} />
@@ -111,12 +127,6 @@ const Order = ({ order, safeAddress }: SwapOrderProps) => {
       ]}
     />
   )
-}
-
-export const SwapOrderConfirmationView = ({ order, safeAddress }: SwapOrderProps): ReactElement | null => {
-  if (!order) return null
-
-  return <Order order={order} safeAddress={safeAddress} />
 }
 
 export default SwapOrderConfirmationView

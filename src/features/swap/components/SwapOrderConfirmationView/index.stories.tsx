@@ -37,7 +37,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     order: Order.build(),
-    safeAddress: '',
+    settlementContract: faker.finance.ethereumAddress(),
   },
   parameters: {
     design: {
@@ -50,7 +50,7 @@ export const Default: Story = {
 export const CustomRecipient: Story = {
   args: {
     order: Order.with({ receiver: faker.finance.ethereumAddress() }).build(),
-    safeAddress: faker.finance.ethereumAddress(),
+    settlementContract: faker.finance.ethereumAddress(),
   },
   parameters: {
     design: {
