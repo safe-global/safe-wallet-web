@@ -1,3 +1,4 @@
+import { AppRoutes } from '@/config/routes'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getExplorerLink } from './gateway'
 
@@ -21,6 +22,12 @@ export enum FEATURES {
   COUNTERFACTUAL = 'COUNTERFACTUAL',
   DELETE_TX = 'DELETE_TX',
   SPEED_UP_TX = 'SPEED_UP_TX',
+  NATIVE_SWAPS = 'NATIVE_SWAPS',
+}
+
+export const FeatureRoutes = {
+  [AppRoutes.apps.index]: FEATURES.SAFE_APPS,
+  [AppRoutes.swap]: FEATURES.NATIVE_SWAPS,
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {
