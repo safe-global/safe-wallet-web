@@ -1,12 +1,11 @@
 import NumberField from '@/components/common/NumberField'
-import TokenIcon from '@/components/common/TokenIcon'
-import { shortenAddress } from '@/utils/formatters'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
-import { Autocomplete, Box, type MenuItemProps, Typography, MenuItem } from '@mui/material'
+import { Autocomplete, type MenuItemProps, MenuItem } from '@mui/material'
 import { useController, useFormContext } from 'react-hook-form'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
 import css from './styles.module.css'
 import { PSEUDO_APPROVAL_VALUES } from './utils/approvals'
+import { approvalMethodDescription } from './ApprovalItem'
 
 const ApprovalOption = ({ menuItemProps, value }: { menuItemProps: MenuItemProps; value: string }) => {
   return (
@@ -16,10 +15,9 @@ const ApprovalOption = ({ menuItemProps, value }: { menuItemProps: MenuItemProps
   )
 }
 
-export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInfo }) => {
+export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: ApprovalInfo; readOnly: boolean }) => {
   const { control } = useFormContext()
   const selectValues = Object.values(PSEUDO_APPROVAL_VALUES)
-
   const {
     field: { ref, onBlur, onChange, value },
     fieldState,
@@ -38,7 +36,8 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
     },
   })
 
-  const label = fieldState.error?.message || 'Token'
+  const helperText = fieldState.error?.message ?? fieldState.isDirty ? 'Save to apply changes' : ''
+  const label = approvalMethodDescription[tx.method]
   const options = selectValues
 
   return (
@@ -53,7 +52,8 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
         onChange(value)
       }}
       disableClearable
-      selectOnFocus
+      selectOnFocus={!readOnly}
+      readOnly={readOnly}
       componentsProps={{
         paper: {
           elevation: 2,
@@ -66,6 +66,14 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
             label={label}
             name={name}
             fullWidth
+            helperText={helperText}
+            onFocus={(field) => {
+              if (!readOnly) {
+                field.target.select()
+              }
+            }}
+            margin="dense"
+            variant="filled"
             error={!!fieldState.error}
             size="small"
             onBlur={onBlur}
@@ -77,13 +85,11 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
                 paddingBottom: '4px',
                 paddingLeft: 1,
                 flexWrap: 'nowrap !important',
+                '&::before': {
+                  border: 'none !important',
+                },
+                border: 'none !important',
               },
-              startAdornment: (
-                <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
-                  <TokenIcon size={32} logoUri={tx.tokenInfo?.logoUri} tokenSymbol={tx.tokenInfo?.symbol} />
-                  <Typography>{tx.tokenInfo?.symbol || shortenAddress(tx.tokenAddress)}</Typography>
-                </Box>
-              ),
             }}
             inputProps={{
               ...params.inputProps,

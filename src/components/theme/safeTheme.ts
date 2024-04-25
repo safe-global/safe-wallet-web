@@ -57,6 +57,12 @@ declare module '@mui/material/Button' {
   }
 }
 
+declare module '@mui/material/IconButton' {
+  export interface IconButtonPropsColorOverrides {
+    border: true
+  }
+}
+
 const createSafeTheme = (mode: PaletteMode): Theme => {
   const isDarkMode = mode === 'dark'
   const colors = isDarkMode ? darkPalette : palette
