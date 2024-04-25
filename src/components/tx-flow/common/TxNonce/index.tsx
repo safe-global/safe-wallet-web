@@ -101,7 +101,7 @@ enum ErrorMessages {
   NONCE_TOO_HIGH = 'Nonce is too high',
   NONCE_TOO_FAR = 'Nonce is much higher than the current nonce',
   NONCE_GT_RECOMMENDED = 'Nonce is higher than the recommended nonce',
-  NONCE_MUST_BE_INTEGER = 'Nonce must be an integer',
+  NONCE_MUST_BE_INTEGER = "Nonce can't contain decimals",
 }
 
 const MAX_NONCE_DIFFERENCE = 100
