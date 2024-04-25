@@ -15,7 +15,7 @@ main {
 }
 
 main.swapWrapper {
-  height: calc(100vh - 48px);
+  height: calc(100vh - 52px);
 }
 
 a {
