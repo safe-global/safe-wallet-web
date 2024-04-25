@@ -1,0 +1,15 @@
+.container {
+  max-width: 500px;
+  margin: auto;
+  /* display: flex;
+  flex-direction: column;
+  align-items: center; */
+}
+
+.iconCircle {
+  color: var(--color-info-main);
+  border-radius: 50%;
+  display: flex;
+  padding: var(--space-1);
+  background: #d7f6ff;
+}
