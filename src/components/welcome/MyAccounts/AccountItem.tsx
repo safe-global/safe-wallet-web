@@ -119,7 +119,12 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
 
       <SafeListContextMenu name={name} address={address} chainId={chainId} />
 
-      <QueueActions queued={safeOverview?.queued || 0} awaitingConfirmation={safeOverview?.awaitingConfirmation || 0} />
+      <QueueActions
+        queued={safeOverview?.queued || 0}
+        awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
+        safeAddress={address}
+        chainShortName={chain?.shortName || ''}
+      />
     </ListItemButton>
   )
 }
