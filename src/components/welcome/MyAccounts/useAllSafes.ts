@@ -13,8 +13,6 @@ export type SafeItem = {
   chainId: string
   address: string
   isWatchlist: boolean
-  threshold?: number
-  owners?: number
 }
 
 export type SafeItems = SafeItem[]
@@ -63,8 +61,6 @@ const useAllSafes = (): SafeItems | undefined => {
           address,
           chainId,
           isWatchlist: !isOwned && !isUndeployed,
-          threshold: allAdded[chainId]?.[address]?.threshold,
-          owners: allAdded[chainId]?.[address]?.owners.length,
         }
       })
     })
