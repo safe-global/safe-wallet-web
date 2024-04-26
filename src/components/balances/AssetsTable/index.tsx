@@ -1,5 +1,8 @@
 import CheckBalance from '@/features/counterfactual/CheckBalance'
+import { useHasFeature } from '@/hooks/useChains'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
+import { FEATURES } from '@/utils/chains'
+import { formatUnits } from 'ethers'
 import { type ReactElement, useMemo, useContext } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -123,7 +126,7 @@ const SendButton = ({
   )
 }
 
-const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: number }): ReactElement => {
+const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: string }): ReactElement => {
   const spendingLimit = useSpendingLimit(tokenInfo)
   const router = useRouter()
 
@@ -167,6 +170,7 @@ const AssetsTable = ({
   const hiddenAssets = useHiddenTokens()
   const { balances, loading } = useBalances()
   const { setTxFlow } = useContext(TxModalContext)
+  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
 
   const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
     setShowHiddenAssets(false),
@@ -258,10 +262,14 @@ const AssetsTable = ({
                 <Box display="flex" flexDirection="row" gap={1} alignItems="center">
                   <>
                     <SendButton tokenInfo={item.tokenInfo} onClick={() => onSendClick(item.tokenInfo.address)} />
-                    <SwapButton
-                      tokenInfo={item.tokenInfo}
-                      amount={Number(item.balance) / 10 ** item.tokenInfo.decimals}
-                    />
+
+                    {isSwapFeatureEnabled && (
+                      <SwapButton
+                        tokenInfo={item.tokenInfo}
+                        amount={formatUnits(item.balance, item.tokenInfo.decimals)}
+                      />
+                    )}
+
                     {showHiddenAssets ? (
                       <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
                     ) : (
