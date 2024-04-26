@@ -41,6 +41,7 @@ export type SignOrExecuteProps = {
   disableSubmit?: boolean
   origin?: string
   isCreation?: boolean
+  showToBlock?: boolean
 }
 
 const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean, isExecuted: boolean) => {
@@ -106,6 +107,7 @@ export const SignOrExecuteForm = ({
           decodedDataError={decodedDataError}
           decodedDataLoading={decodedDataLoading}
           showMultisend={!props.isBatch}
+          showToBlock={props.showToBlock}
         />
 
         {!isCounterfactualSafe && <RedefineBalanceChanges />}
