@@ -1,6 +1,7 @@
+import { useTheme } from '@mui/material/styles'
 import { usePathname, useSearchParams } from 'next/navigation'
 import Link, { type LinkProps } from 'next/link'
-import { Alert, Box, Button, ButtonBase, Typography } from '@mui/material'
+import { Alert, Box, Button, ButtonBase, Typography, useMediaQuery } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { SafeAppsTag } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
@@ -30,7 +31,7 @@ const useBuyCryptoHref = (): LinkProps['href'] | undefined => {
 }
 
 const buttonStyles = {
-  minHeight: '40px',
+  minHeight: '37.5px',
 }
 
 const BuyCryptoOption = ({ name, children }: { name: string; children: ReactNode }) => {
@@ -68,6 +69,9 @@ const _BuyCryptoOptions = ({ rampLink }: { rampLink?: LinkProps['href'] }) => {
 }
 
 const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePath: string }) => {
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
   if (!href) return null
 
   return (
@@ -76,7 +80,7 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
         <Link href={href} passHref>
           <Button
             variant="contained"
-            size="small"
+            size={isSmallScreen ? 'medium' : 'small'}
             sx={buttonStyles}
             startIcon={<AddIcon />}
             className={css.buyCryptoButton}
