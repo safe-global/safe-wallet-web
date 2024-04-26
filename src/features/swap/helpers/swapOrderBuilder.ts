@@ -7,12 +7,14 @@ import type {
   CowSwapConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
-export function appDataBuilder(): IBuilder<Record<string, unknown>> {
+export function appDataBuilder(
+  orderClass: 'limit' | 'market' | 'liquidity' = 'limit',
+): IBuilder<Record<string, unknown>> {
   return Builder.new<Record<string, unknown>>().with({
     appCode: 'Safe Wallet Swaps',
     metadata: {
       orderClass: {
-        orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),
+        orderClass,
       },
       partnerFee: {
         bps: 50,
@@ -29,6 +31,7 @@ export function appDataBuilder(): IBuilder<Record<string, unknown>> {
     version: '1.1.0',
   })
 }
+
 export function orderTokenBuilder(): IBuilder<OrderToken> {
   return Builder.new<OrderToken>().with({
     address: faker.finance.ethereumAddress(),
