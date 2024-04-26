@@ -92,7 +92,7 @@ const DecodedTx = ({
         </Box>
       )}
 
-      <Box my={2}>
+      <Box mt={2}>
         <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
           <AccordionSummary
             data-testid="decoded-tx-summary"
