@@ -61,7 +61,7 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
                 <a onClick={onWcWidgetClick}>
                   <FeaturedAppCard
                     name="WalletConnect"
-                    description="Connect to your Safe using WalletConnect"
+                    description="Connect your Safe to any dApp that supports WalletConnect"
                     iconUrl="/images/common/walletconnect-color.svg"
                   />
                 </a>
