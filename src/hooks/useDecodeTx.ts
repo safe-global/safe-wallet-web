@@ -20,14 +20,16 @@ const useDecodeTx = (
   const encodedData = tx?.data.data
   const isEmptyData = !!encodedData && isEmptyHexData(encodedData)
   const isRejection = isEmptyData && tx?.data.value === '0'
-  const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
 
   const [data, error, loading] = useAsync<
     DecodedDataResponse | BaselineConfirmationView | CowSwapConfirmationView | undefined
   >(() => {
-    if (!encodedData || isEmptyData) return Promise.resolve(nativeTransfer)
+    if (!encodedData || isEmptyData) {
+      const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
+      return Promise.resolve(nativeTransfer)
+    }
     return getConfirmationView(chainId, safeAddress, encodedData, tx.data.to)
-  }, [chainId, encodedData, isEmptyData, tx?.data.to, nativeTransfer, safeAddress])
+  }, [chainId, encodedData, isEmptyData, tx?.data, isRejection, safeAddress])
 
   return [data, error, loading]
 }
