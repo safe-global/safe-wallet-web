@@ -93,3 +93,8 @@ export const getSlippageInPercent = (order: Pick<SwapOrder, 'fullAppData'>): str
 
   return (Number(slippageBips) / 100).toFixed(2)
 }
+
+export const getOrderClass = (order: Pick<SwapOrder, 'fullAppData'>): latest.OrderClass1 => {
+  const fullAppData = order.fullAppData as AnyAppDataDocVersion
+  return (fullAppData.metadata.orderClass as latest.OrderClass).orderClass
+}
