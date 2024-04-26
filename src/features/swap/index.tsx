@@ -204,7 +204,7 @@ const SwapWidget = ({ sell }: Params) => {
   if (isBlockedAddress(safeAddress)) {
     return <BlockedAddress address={safeAddress} />
   }
-  if (wallet?.address && isBlockedAddress(wallet?.address)) {
+  if (wallet?.address && isBlockedAddress(wallet.address)) {
     return <BlockedAddress address={wallet.address} />
   }
 
