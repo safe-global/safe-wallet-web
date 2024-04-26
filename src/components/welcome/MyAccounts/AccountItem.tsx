@@ -74,7 +74,9 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
     >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
         <Link onClick={onLinkClick} href={href} className={css.safeLink}>
-          <SafeIcon address={address} owners={safeOverview?.owners.length} threshold={safeOverview?.threshold} />
+          <Box pr={2.5}>
+            <SafeIcon address={address} owners={safeOverview?.owners.length} threshold={safeOverview?.threshold} />
+          </Box>
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
             {name && (
@@ -106,13 +108,9 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
             )}
           </Typography>
 
-          {safeOverview?.fiatTotal && (
-            <Typography variant="body2" fontWeight="bold">
-              <FiatValue value={safeOverview.fiatTotal} />
-            </Typography>
-          )}
-
-          <Box flex={1} />
+          <Typography variant="body2" fontWeight="bold">
+            {safeOverview?.fiatTotal && <FiatValue value={safeOverview.fiatTotal} />}
+          </Typography>
 
           <ChainIndicator chainId={chainId} responsive />
         </Link>
