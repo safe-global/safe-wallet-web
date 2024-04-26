@@ -14,7 +14,12 @@ function useSafeOverviews(safes: Array<{ address: string; chainId: string }>) {
   return useAsync(async () => {
     const safesStrings = safes.map((safe) => `${safe.chainId}:${safe.address}` as `${number}:0x${string}`)
 
-    return await getSafeOverviews(safesStrings, { trusted: true, exclude_spam: excludeSpam, currency, walletAddress })
+    return await getSafeOverviews(safesStrings, {
+      trusted: true,
+      exclude_spam: excludeSpam,
+      currency,
+      wallet_address: walletAddress,
+    })
   }, [safes, excludeSpam, currency, walletAddress])
 }
 
