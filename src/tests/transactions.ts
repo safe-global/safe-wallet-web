@@ -70,16 +70,18 @@ export const createMockSafeTransaction = ({
   to,
   data,
   operation = OperationType.Call,
+  value,
 }: {
   to: string
   data: string
   operation?: OperationType
+  value?: string
 }): SafeTransaction => {
   return new EthSafeTransaction({
     to,
     data,
     operation,
-    value: '0',
+    value: value || '0',
     baseGas: '0',
     gasPrice: '0',
     gasToken: ZERO_ADDRESS,
