@@ -45,7 +45,7 @@ export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: A
       freeSolo
       fullWidth
       options={options}
-      renderOption={(props, value: string) => <ApprovalOption menuItemProps={props} value={value} />}
+      renderOption={(props, value: string) => <ApprovalOption key={value} menuItemProps={props} value={value} />}
       value={value}
       // On option select or free text entry
       onInputChange={(_, value) => {

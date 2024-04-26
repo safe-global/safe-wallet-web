@@ -1,4 +1,4 @@
-import { Divider, List, ListItem, Stack } from '@mui/material'
+import { Box, Divider, List, ListItem, Stack } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import css from './styles.module.css'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
@@ -30,11 +30,7 @@ export const ApprovalEditorForm = ({
     mode: 'onChange',
   })
 
-  const {
-    formState: { errors, dirtyFields },
-    getValues,
-    reset,
-  } = formMethods
+  const { getValues, reset } = formMethods
 
   const onSave = () => {
     const formData = getValues('approvals')
@@ -48,8 +44,8 @@ export const ApprovalEditorForm = ({
     <FormProvider {...formMethods}>
       <List className={css.approvalsList}>
         {Object.entries(groupedApprovals).map(([spender, approvals], spenderIdx) => (
-          <>
-            <Stack key={spender} gap={2}>
+          <Box key={spender}>
+            <Stack gap={2}>
               <SpenderField address={spender} />
               {approvals.map((tx) => (
                 <ListItem
@@ -63,7 +59,7 @@ export const ApprovalEditorForm = ({
               ))}
             </Stack>
             {spenderIdx !== Object.keys(groupedApprovals).length - 1 && <Divider />}
-          </>
+          </Box>
         ))}
       </List>
     </FormProvider>

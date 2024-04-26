@@ -5,6 +5,8 @@ import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import * as approvalInfos from '@/components/tx/ApprovalEditor/hooks/useApprovalInfos'
 import { createMockSafeTransaction } from '@/tests/transactions'
+import { faker } from '@faker-js/faker'
+import { shortenAddress } from '@/utils/formatters'
 
 describe('ApprovalEditor', () => {
   beforeEach(() => {
@@ -18,7 +20,11 @@ describe('ApprovalEditor', () => {
   })
 
   it('returns null if there are no approvals', () => {
-    const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
+    const mockSafeTx = createMockSafeTransaction({
+      to: faker.finance.ethereumAddress(),
+      data: '0x',
+      operation: OperationType.DelegateCall,
+    })
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[], undefined, false])
     const result = render(<ApprovalEditor safeTransaction={mockSafeTx} />)
 
@@ -29,7 +35,11 @@ describe('ApprovalEditor', () => {
     jest
       .spyOn(approvalInfos, 'useApprovalInfos')
       .mockReturnValue([undefined, new Error('Error parsing approvals'), false])
-    const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
+    const mockSafeTx = createMockSafeTransaction({
+      to: faker.finance.ethereumAddress(),
+      data: '0x',
+      operation: OperationType.DelegateCall,
+    })
 
     const result = render(<ApprovalEditor safeTransaction={mockSafeTx} />)
 
@@ -46,18 +56,21 @@ describe('ApprovalEditor', () => {
   })
 
   it('renders a read-only view if the transaction contains signatures', async () => {
+    const tokenAddress = faker.finance.ethereumAddress()
+    const spenderAddress = faker.finance.ethereumAddress()
     const mockApprovalInfo = {
-      tokenInfo: { symbol: 'TST', decimals: 18, address: '0x3', type: TokenType.ERC20 },
-      tokenAddress: '0x1',
-      spender: '0x2',
+      tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },
+      tokenAddress,
+      spender: spenderAddress,
       amount: '4200000',
       amountFormatted: '420.0',
       method: 'approve',
+      transactionIndex: 0,
     } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
     const mockSafeTx = safeTxBuilder()
       .with({
-        signatures: new Map().set('0x1', safeSignatureBuilder().build()),
+        signatures: new Map().set(faker.finance.ethereumAddress(), safeSignatureBuilder().build()),
       })
       .build()
 
@@ -66,22 +79,29 @@ describe('ApprovalEditor', () => {
     const amountInput = result.container.querySelector('input[name="approvals.0"]') as HTMLInputElement
 
     expect(amountInput).not.toBeInTheDocument()
-    expect(result.getByText('TST'))
-    expect(result.getByText('420'))
-    expect(result.getByText('0x2'))
+    expect(result.getByText('TST', { exact: false }))
+    expect(result.getByText('420', { exact: false }))
+    expect(result.getByText(shortenAddress(spenderAddress)))
   })
 
   it('renders a form if there are no signatures', async () => {
+    const tokenAddress = faker.finance.ethereumAddress()
+    const spenderAddress = faker.finance.ethereumAddress()
     const mockApprovalInfo = {
-      tokenInfo: { symbol: 'TST', decimals: 18, address: '0x3', type: TokenType.ERC20 },
-      tokenAddress: '0x1',
-      spender: '0x2',
+      tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },
+      tokenAddress,
+      spender: spenderAddress,
       amount: '4200000',
       amountFormatted: '420.0',
       method: 'approve',
+      transactionIndex: 0,
     } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
-    const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
+    const mockSafeTx = createMockSafeTransaction({
+      to: tokenAddress,
+      data: '0x',
+      operation: OperationType.DelegateCall,
+    })
 
     const result = render(<ApprovalEditor safeTransaction={mockSafeTx} />)
 
@@ -90,21 +110,28 @@ describe('ApprovalEditor', () => {
     expect(amountInput1).toBeInTheDocument
 
     expect(amountInput1).toHaveValue('420.0')
-    expect(result.getByText('TST'))
-    expect(result.getByText('0x2'))
+    expect(result.getByText('TST', { exact: false }))
+    expect(result.getByText(shortenAddress(spenderAddress)))
   })
 
   it('renders a form if there is an update callback', async () => {
+    const tokenAddress = faker.finance.ethereumAddress()
+    const spenderAddress = faker.finance.ethereumAddress()
     const mockApprovalInfo = {
-      tokenInfo: { symbol: 'TST', decimals: 18, address: '0x3', type: TokenType.ERC20 },
-      tokenAddress: '0x1',
-      spender: '0x2',
+      tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress, type: TokenType.ERC20 },
+      tokenAddress,
+      spender: spenderAddress,
       amount: '4200000',
       amountFormatted: '420.0',
       method: 'approve',
+      transactionIndex: 0,
     } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
-    const mockSafeTx = createMockSafeTransaction({ to: '0x1', data: '0x', operation: OperationType.DelegateCall })
+    const mockSafeTx = createMockSafeTransaction({
+      to: tokenAddress,
+      data: '0x',
+      operation: OperationType.DelegateCall,
+    })
 
     const result = render(<ApprovalEditor safeTransaction={mockSafeTx} />)
 

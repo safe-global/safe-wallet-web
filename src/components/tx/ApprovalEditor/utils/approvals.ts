@@ -81,20 +81,22 @@ export const extractTxs: (txs: BaseTransaction[] | (DecodedDataResponse & { to: 
 }
 
 export const updateApprovalTxs = (
-  approvals: string[],
+  approvalFormValues: string[],
   approvalInfos: ApprovalInfo[] | undefined,
   txs: BaseTransaction[],
 ) => {
-  let approvalID = 0
-  const updatedTxs = txs.map((tx) => {
+  const updatedTxs = txs.map((tx, txIndex) => {
+    const approvalIndex = approvalInfos?.findIndex((approval) => approval.transactionIndex === txIndex)
+    if (approvalIndex === undefined) {
+      return tx
+    }
     if (tx.data.startsWith(APPROVAL_SIGNATURE_HASH)) {
-      const newApproval = approvals[approvalID]
-      const approvalInfo = approvalInfos?.[approvalID]
+      const newApproval = approvalFormValues[approvalIndex]
+      const approvalInfo = approvalInfos?.[approvalIndex]
       if (!approvalInfo || !approvalInfo.tokenInfo) {
         // Without decimals and spender we cannot create a new tx
         return tx
       }
-      approvalID++
       const decimals = approvalInfo.tokenInfo.decimals
       const newAmountWei = parseApprovalAmount(newApproval, decimals)
       return {

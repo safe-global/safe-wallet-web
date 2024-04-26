@@ -21,7 +21,7 @@ const EditableApprovalItem = ({
   onSave: () => void
   name: string
 }) => {
-  const { formState, setFocus, trigger } = useFormContext()
+  const { formState, setFocus } = useFormContext()
 
   const { errors, dirtyFields } = formState
 
@@ -50,11 +50,11 @@ const EditableApprovalItem = ({
       <ApprovalValueField name={name} tx={approval} readOnly={readOnly} />
       <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
         {readOnly ? (
-          <IconButton color="border" size="small" onClick={handleEditMode} title="Save">
+          <IconButton color="border" size="small" onClick={handleEditMode} title="Edit">
             <SvgIcon width="16px" height="16px" component={EditOutlined} inheritViewBox />
           </IconButton>
         ) : (
-          <Button variant="text" size="small" onClick={handleSave} disabled={!!fieldErrors || !isDirty}>
+          <Button title="Save" variant="text" size="small" onClick={handleSave} disabled={!!fieldErrors || !isDirty}>
             Save
           </Button>
         )}
