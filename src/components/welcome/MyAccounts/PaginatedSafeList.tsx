@@ -56,12 +56,7 @@ const AllSafeListPages = ({ safes, onLinkClick }: SafeListPageProps) => {
   }, [safes])
 
   useEffect(() => {
-    setPages((prev) => {
-      if (prev.length === 0 && safes.length > 0) {
-        return [safes.slice(0, PAGE_SIZE)]
-      }
-      return prev
-    })
+    setPages([safes.slice(0, PAGE_SIZE)])
   }, [safes])
 
   return (

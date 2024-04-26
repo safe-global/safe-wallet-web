@@ -23,6 +23,7 @@ import { useRouter } from 'next/router'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
 import FiatValue from '@/components/common/FiatValue'
+import QueueActions from './QueueActions'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -117,6 +118,8 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
       </Track>
 
       <SafeListContextMenu name={name} address={address} chainId={chainId} />
+
+      <QueueActions queued={safeOverview?.queued || 0} awaitingConfirmation={safeOverview?.awaitingConfirmation || 0} />
     </ListItemButton>
   )
 }
