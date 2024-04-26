@@ -3,7 +3,9 @@ import BlockedAddress from './index'
 
 const meta = {
   component: BlockedAddress,
-
+  parameters: {
+    componentSubtitle: 'Renders an information block intended for users whose address is blocked by OFAC',
+  },
   tags: ['autodocs'],
 } satisfies Meta<typeof BlockedAddress>
 

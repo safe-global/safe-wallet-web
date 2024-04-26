@@ -19,8 +19,8 @@ import { useAppDispatch } from '@/store'
 import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
-import blockedAddressList from '@/features/swap/components/BlockedAddress/blockedAddressList.json'
-import BlockedAddress from './components/BlockedAddress'
+import BlockedAddress from '@/components/common/BlockedAddress'
+import { isBlockedAddress } from '@/services/ofac'
 
 const supportedChains = [1, 100, 11155111]
 
@@ -201,10 +201,10 @@ const SwapWidget = ({ sell }: Params) => {
     return null
   }
 
-  if (blockedAddressList.includes(safeAddress)) {
+  if (isBlockedAddress(safeAddress)) {
     return <BlockedAddress address={safeAddress} />
   }
-  if (wallet?.address && blockedAddressList.includes(wallet?.address)) {
+  if (wallet?.address && isBlockedAddress(wallet?.address)) {
     return <BlockedAddress address={wallet.address} />
   }
 
