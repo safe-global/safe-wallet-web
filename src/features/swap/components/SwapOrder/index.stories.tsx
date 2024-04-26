@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { SellOrder as SellOrderComponent } from './index'
 import { Paper } from '@mui/material'
-import type { OrderStatuses, SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
-import { orderTokenBuilder, swapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
+import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
+import { appDataBuilder, orderTokenBuilder, swapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
 
-const FulfilledSwapOrder: SwapOrder = swapOrderBuilder()
+const FulfilledSwapOrder = swapOrderBuilder()
   .with({
     uid: '0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
   })
@@ -34,10 +34,14 @@ const FulfilledSwapOrder: SwapOrder = swapOrderBuilder()
     explorerUrl:
       'https://explorer.cow.fi/orders/0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
   })
-  .build()
+  .with({
+    fullAppData: appDataBuilder('market').build(),
+  })
+
+console.log(FulfilledSwapOrder)
 
 const NonFulfilledSwapOrder = {
-  ...FulfilledSwapOrder,
+  ...FulfilledSwapOrder.build(),
   status: 'open' as OrderStatuses,
   expiresTimestamp: new Date().getTime() / 1000 + 28 * 60,
   executedSellAmount: '0',
@@ -65,9 +69,20 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Executed: Story = {
+export const ExecutedMarket: Story = {
   args: {
-    order: FulfilledSwapOrder,
+    order: FulfilledSwapOrder.build(),
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5813-37759&mode=design&t=cJDGDQGZFqccSTaB-4',
+    },
+  },
+}
+export const ExecutedLimit: Story = {
+  args: {
+    order: FulfilledSwapOrder.with({ fullAppData: appDataBuilder('limit').build() }).build(),
   },
   parameters: {
     design: {
@@ -77,10 +92,11 @@ export const Executed: Story = {
   },
 }
 
-export const Pending: Story = {
+export const PendingMarket: Story = {
   args: {
     order: {
       ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('market').build(),
       status: 'presignaturePending' as OrderStatuses,
       validUntil: new Date().getTime() / 1000 + 28 * 60,
     },
@@ -93,7 +109,24 @@ export const Pending: Story = {
   },
 }
 
-export const Open: Story = {
+export const PendingLimit: Story = {
+  args: {
+    order: {
+      ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('limit').build(),
+      status: 'presignaturePending' as OrderStatuses,
+      validUntil: new Date().getTime() / 1000 + 28 * 60,
+    },
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5974-14391&mode=design&t=cJDGDQGZFqccSTaB-4',
+    },
+  },
+}
+
+export const OpenMarket: Story = {
   args: {
     order: {
       ...NonFulfilledSwapOrder,
@@ -106,11 +139,25 @@ export const Open: Story = {
     },
   },
 }
-
-export const Cancelled: Story = {
+export const OpenLimit: Story = {
   args: {
     order: {
       ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('limit').build(),
+    },
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5813-37808&mode=design&t=cJDGDQGZFqccSTaB-4',
+    },
+  },
+}
+export const CancelledMarket: Story = {
+  args: {
+    order: {
+      ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('market').build(),
       status: 'cancelled' as OrderStatuses,
       validUntil: new Date().getTime() / 1000 - 28 * 60,
     },
@@ -123,10 +170,45 @@ export const Cancelled: Story = {
   },
 }
 
-export const Expired: Story = {
+export const CancelledLimit: Story = {
   args: {
     order: {
       ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('limit').build(),
+      status: 'cancelled' as OrderStatuses,
+      validUntil: new Date().getTime() / 1000 - 28 * 60,
+    },
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5813-37924&mode=design&t=cJDGDQGZFqccSTaB-4',
+    },
+  },
+}
+
+export const ExpiredSwap: Story = {
+  args: {
+    order: {
+      ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('market').build(),
+      status: 'expired' as OrderStatuses,
+      validUntil: new Date().getTime() / 1000 - 28 * 60,
+    },
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5813-37987&mode=design&t=cJDGDQGZFqccSTaB-4',
+    },
+  },
+}
+
+export const ExpiredLimit: Story = {
+  args: {
+    order: {
+      ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('limit').build(),
       status: 'expired' as OrderStatuses,
       validUntil: new Date().getTime() / 1000 - 28 * 60,
     },
