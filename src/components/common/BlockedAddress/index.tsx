@@ -16,7 +16,13 @@ export const BlockedAddress = ({ address }: { address: string }): ReactElement =
   return (
     <div className={css.container}>
       <Paper sx={{ maxWidth: '500px' }}>
-        <Stack padding="var(--space-3)" gap={2} display="flex" alignItems="center" borderBottom="1px solid #DCDEE0">
+        <Stack
+          padding="var(--space-3)"
+          gap={2}
+          display="flex"
+          alignItems="center"
+          sx={({ palette }) => ({ borderBottom: `1px solid ${palette.border.light}` })}
+        >
           <Typography color="var(--color-text-Secondary, #A1A3A7)">{displayAddress}</Typography>
 
           <Box className={css.iconCircle}>
