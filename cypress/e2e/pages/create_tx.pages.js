@@ -85,10 +85,12 @@ export function verifyWarningModalVisible() {
 export function clickOnCopyBtn(index) {
   cy.get(copyIcon).parent().eq(index).trigger('click')
 }
-//
+
 export function verifyCopyIconWorks(index, data) {
+  cy.wait(1000)
   cy.window().focus()
   cy.get(copyIcon)
+    .should('be.visible')
     .parent()
     .eq(index)
     .trigger('click')
