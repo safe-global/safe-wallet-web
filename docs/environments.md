@@ -5,7 +5,7 @@ We have several environments where the app can be deployed:
 |Env|URL|Purpose|How it's deployed|Backend env|
 |---|---|---|---|---|
 |local|http://localhost:3000/app|local development|`yarn start`|staging|
-|PRs   |`https://<PR_NAME>--walletweb.review-wallet-web.5afe.dev/`|peer review & feature QA|for all PRs on push|staging|
+|PRs   |`https://<PR_NAME>--walletweb.review.5afe.dev/`|peer review & feature QA|for all PRs on push|staging|
 |dev  |https://safe-wallet-web.dev.5afe.dev/|preview of all WIP features|on push to the `dev` branch|staging|
 |staging|https://safe-wallet-web.staging.5afe.dev/|preview of features before a release|on push to `main`|**production** (for testing)|
 |production|https://app.safe.global/|live app|deployed by DevOps (see the [Release Procedure](release-procedure.md))|**production**|
