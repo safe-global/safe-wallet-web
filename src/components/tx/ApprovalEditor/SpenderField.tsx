@@ -3,8 +3,8 @@ import { Stack, Typography } from '@mui/material'
 
 import css from './styles.module.css'
 import useAsync from '@/hooks/useAsync'
-import { getContract } from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
+import { getContract } from '@safe-global/safe-gateway-typescript-sdk'
 export const SpenderField = ({ address }: { address: string }) => {
   const chainId = useChainId()
   const [spendingContract] = useAsync(() => getContract(chainId, address), [chainId, address])

@@ -6,10 +6,10 @@ import TokenIcon from '@/components/common/TokenIcon'
 import { PSEUDO_APPROVAL_VALUES } from './utils/approvals'
 import { formatAmountPrecise } from '@/utils/formatNumber'
 
-export const approvalMethodDescription: Record<Approval['method'], string> = {
-  approve: 'Set allowance to',
-  increaseAllowance: 'Increase allowance by',
-  Permit2: 'Give permission to spend',
+export const approvalMethodDescription: Record<Approval['method'], (symbol: string) => string> = {
+  approve: (symbol: string) => `Set ${symbol} allowance to`,
+  increaseAllowance: (symbol: string) => `Increase ${symbol} allowance by`,
+  Permit2: (symbol: string) => `Give permission to spend ${symbol}`,
 }
 
 const ApprovalItem = ({
@@ -24,15 +24,13 @@ const ApprovalItem = ({
 }) => {
   return (
     <Stack direction="row" alignItems="center" gap={2} className={css.approvalField}>
-      <TokenIcon logoUri={tokenInfo?.logoUri} tokenSymbol={tokenInfo?.symbol} />
+      <TokenIcon size={32} logoUri={tokenInfo?.logoUri} tokenSymbol={tokenInfo?.symbol} />
       <Box>
         <Typography variant="body2" color="text.secondary">
-          {approvalMethodDescription[method]}
+          {approvalMethodDescription[method](tokenInfo.symbol ?? '')}
         </Typography>
         {amount === PSEUDO_APPROVAL_VALUES.UNLIMITED ? (
-          <Typography>
-            {PSEUDO_APPROVAL_VALUES.UNLIMITED} {tokenInfo.symbol && `of ${tokenInfo.symbol}`}
-          </Typography>
+          <Typography>{PSEUDO_APPROVAL_VALUES.UNLIMITED}</Typography>
         ) : (
           <Typography data-testid="token-amount">
             {formatAmountPrecise(amount, tokenInfo.decimals)} {tokenInfo.symbol && `of ${tokenInfo.symbol}`}

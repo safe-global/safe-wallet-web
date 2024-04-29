@@ -37,7 +37,7 @@ export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: A
   })
 
   const helperText = fieldState.error?.message ?? fieldState.isDirty ? 'Save to apply changes' : ''
-  const label = approvalMethodDescription[tx.method]
+  const label = `${approvalMethodDescription[tx.method](tx.tokenInfo?.symbol ?? '')}`
   const options = selectValues
 
   return (
@@ -73,7 +73,7 @@ export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: A
               }
             }}
             margin="dense"
-            variant="filled"
+            variant="standard"
             error={!!fieldState.error}
             size="small"
             onBlur={onBlur}
@@ -81,9 +81,6 @@ export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: A
             InputProps={{
               ...params.InputProps,
               sx: {
-                paddingTop: '4px',
-                paddingBottom: '4px',
-                paddingLeft: 1,
                 flexWrap: 'nowrap !important',
                 '&::before': {
                   border: 'none !important',

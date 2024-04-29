@@ -90,7 +90,7 @@ export const updateApprovalTxs = (
     if (approvalIndex === undefined) {
       return tx
     }
-    if (tx.data.startsWith(APPROVAL_SIGNATURE_HASH)) {
+    if (tx.data.startsWith(APPROVAL_SIGNATURE_HASH) || tx.data.startsWith(INCREASE_ALLOWANCE_SIGNATURE_HASH)) {
       const newApproval = approvalFormValues[approvalIndex]
       const approvalInfo = approvalInfos?.[approvalIndex]
       if (!approvalInfo || !approvalInfo.tokenInfo) {
@@ -99,10 +99,18 @@ export const updateApprovalTxs = (
       }
       const decimals = approvalInfo.tokenInfo.decimals
       const newAmountWei = parseApprovalAmount(newApproval, decimals)
-      return {
-        to: approvalInfo.tokenAddress,
-        value: '0',
-        data: ERC20_INTERFACE.encodeFunctionData(APPROVE_METHOD, [approvalInfo.spender, newAmountWei]),
+      if (tx.data.startsWith(APPROVAL_SIGNATURE_HASH)) {
+        return {
+          to: approvalInfo.tokenAddress,
+          value: '0',
+          data: ERC20_INTERFACE.encodeFunctionData('approve', [approvalInfo.spender, newAmountWei]),
+        }
+      } else {
+        return {
+          to: approvalInfo.tokenAddress,
+          value: '0',
+          data: ERC20_INTERFACE.encodeFunctionData('increaseAllowance', [approvalInfo.spender, newAmountWei]),
+        }
       }
     }
     return tx

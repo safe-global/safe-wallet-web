@@ -15,9 +15,7 @@ const Title = () => {
   return (
     <div>
       <Typography fontWeight={700}>Allow access to tokens?</Typography>
-      <Typography variant="body2">
-        It will give access to third parties to use and spend the set amount of your tokens.
-      </Typography>
+      <Typography variant="body2">This allows the spender to spend the specified amount of your tokens.</Typography>
     </div>
   )
 }

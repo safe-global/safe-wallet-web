@@ -57,8 +57,8 @@ export const ApprovalEditorForm = ({
                   <EditableApprovalItem approval={tx} name={`approvals.${fieldIndex++}`} onSave={onSave} />
                 </ListItem>
               ))}
+              {spenderIdx !== Object.keys(groupedApprovals).length - 1 && <Divider />}
             </Stack>
-            {spenderIdx !== Object.keys(groupedApprovals).length - 1 && <Divider />}
           </Box>
         ))}
       </List>

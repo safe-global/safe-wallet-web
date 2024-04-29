@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Stack, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, IconButton, Stack, SvgIcon } from '@mui/material'
 import css from '@/components/tx/ApprovalEditor/styles.module.css'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
 
@@ -9,7 +9,6 @@ import { useFormContext } from 'react-hook-form'
 import { get } from 'lodash'
 import { EditOutlined } from '@mui/icons-material'
 import TokenIcon from '@/components/common/TokenIcon'
-import { shortenAddress } from '@/utils/formatters'
 import { useState } from 'react'
 
 const EditableApprovalItem = ({
@@ -45,7 +44,6 @@ const EditableApprovalItem = ({
     <Stack direction="row" alignItems="center" gap={2} className={css.approvalField}>
       <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
         <TokenIcon size={32} logoUri={approval.tokenInfo?.logoUri} tokenSymbol={approval.tokenInfo?.symbol} />
-        <Typography>{approval.tokenInfo?.symbol || shortenAddress(approval.tokenAddress)}</Typography>
       </Box>
       <ApprovalValueField name={name} tx={approval} readOnly={readOnly} />
       <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
