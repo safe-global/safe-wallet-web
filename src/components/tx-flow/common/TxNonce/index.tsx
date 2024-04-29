@@ -101,6 +101,7 @@ enum ErrorMessages {
   NONCE_TOO_HIGH = 'Nonce is too high',
   NONCE_TOO_FAR = 'Nonce is much higher than the current nonce',
   NONCE_GT_RECOMMENDED = 'Nonce is higher than the recommended nonce',
+  NONCE_MUST_BE_INTEGER = "Nonce can't contain decimals",
 }
 
 const MAX_NONCE_DIFFERENCE = 100
@@ -166,6 +167,10 @@ const TxNonceForm = ({ nonce, recommendedNonce }: { nonce: string; recommendedNo
 
           if (newNonce >= Number.MAX_SAFE_INTEGER) {
             return ErrorMessages.NONCE_TOO_HIGH
+          }
+
+          if (!Number.isInteger(newNonce)) {
+            return ErrorMessages.NONCE_MUST_BE_INTEGER
           }
 
           // Update context with valid nonce
