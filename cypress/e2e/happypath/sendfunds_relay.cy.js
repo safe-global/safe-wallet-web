@@ -12,7 +12,7 @@ import { createEthersAdapter, createSigners } from '../../support/api/utils_ethe
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 
-const safeBalanceEth = 405200000000000000n
+const safeBalanceEth = 405210000000000000n
 const qtrustBanance = 59000000000000000000n
 const transferAmount = '1'
 

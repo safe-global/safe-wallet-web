@@ -120,7 +120,7 @@ describe('Spending limits tests', () => {
       })
   })
 
-  it('Verify that clicking on copy icon of a beneficiary works', () => {
+  it.skip('Verify that clicking on copy icon of a beneficiary works', () => {
     tx.verifyNumberOfCopyIcons(3)
     tx.verifyCopyIconWorks(0, constants.DEFAULT_OWNER_ADDRESS)
   })

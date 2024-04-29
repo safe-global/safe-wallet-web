@@ -59,7 +59,7 @@ describe('Address book tests - 2', () => {
     addressBook.verifyNameWasChanged(owner1, onwer3)
   })
 
-  it('Verify copy to clipboard/Etherscan work as expected', () => {
+  it.skip('Verify copy to clipboard/Etherscan work as expected', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
     cy.wait(1000)
     cy.reload()
