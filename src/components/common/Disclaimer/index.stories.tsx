@@ -5,7 +5,7 @@ import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
 const meta = {
   component: Disclaimer,
   parameters: {
-    componentSubtitle: 'Renders an information block intended for users whose address is blocked by OFAC',
+    componentSubtitle: 'Renders a Block for displaying information to the user, with a button to accept.',
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Disclaimer>
@@ -17,7 +17,6 @@ export const BlockedAddress: Story = {
   args: {
     subtitle: '0xD3a484faEa53313eF85b5916C9302a3E304ae622',
     title: 'Blocked Address',
-    buttonText: 'continue',
     content:
       'This signer address is blocked by the Safe interface, due to being associated with the blocked activities by the U.S. Department of Treasury in the Specially Designated Nationals (SDN) list.',
     onAccept: () => {},
@@ -34,7 +33,7 @@ export const LegalDisclaimer: Story = {
   args: {
     title: 'Legal Disclaimer',
     content: <LegalDisclaimerContent withTitle={false} />,
-    buttonText: 'continue',
+    buttonText: 'Continue',
     onAccept: () => {},
   },
 }
