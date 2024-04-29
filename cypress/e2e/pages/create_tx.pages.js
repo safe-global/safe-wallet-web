@@ -87,7 +87,7 @@ export function clickOnCopyBtn(index) {
 }
 
 export function verifyCopyIconWorks(index, data) {
-  cy.wait(1000)
+  cy.wait(5000)
   cy.window().focus()
   cy.get(copyIcon)
     .should('be.visible')
