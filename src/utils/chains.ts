@@ -32,6 +32,7 @@ export const FeatureRoutes = {
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {
+  if (feature === FEATURES.NATIVE_SWAPS) return true
   return (chain.features as string[]).includes(feature)
 }
 
