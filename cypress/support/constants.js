@@ -198,6 +198,7 @@ export const currencies = {
 
 export const appNames = {
   walletConnect: 'walletconnect',
+  txbuilder: 'transaction builder',
   customContract: 'compose custom contract',
   noResults: 'atextwithoutresults',
 }

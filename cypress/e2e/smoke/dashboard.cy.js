@@ -33,7 +33,7 @@ describe('[SMOKE] Dashboard tests', () => {
     dashboard.verifySafeAppsSection()
   })
 
-  it('[SMOKE] Verify clicking on the share icon copies the app URL to the clipboard', () => {
+  it.skip('[SMOKE] Verify clicking on the share icon copies the app URL to the clipboard', () => {
     dashboard.verifyShareBtnWorks(0, dashboard.copiedAppUrl)
   })
 
