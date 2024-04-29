@@ -62,7 +62,7 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
                   <FeaturedAppCard
                     name="WalletConnect"
                     description="Connect your Safe to any dApp that supports WalletConnect"
-                    iconUrl="/images/common/walletconnect-color.svg"
+                    iconUrl="/images/common/walletconnect.svg"
                   />
                 </a>
               </Grid>
