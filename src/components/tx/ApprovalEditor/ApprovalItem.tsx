@@ -32,9 +32,7 @@ const ApprovalItem = ({
         {amount === PSEUDO_APPROVAL_VALUES.UNLIMITED ? (
           <Typography>{PSEUDO_APPROVAL_VALUES.UNLIMITED}</Typography>
         ) : (
-          <Typography data-testid="token-amount">
-            {formatAmountPrecise(amount, tokenInfo.decimals)} {tokenInfo.symbol && `of ${tokenInfo.symbol}`}
-          </Typography>
+          <Typography data-testid="token-amount">{formatAmountPrecise(amount, tokenInfo.decimals)}</Typography>
         )}
       </Box>
     </Stack>
