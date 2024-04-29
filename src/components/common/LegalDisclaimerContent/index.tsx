@@ -4,18 +4,17 @@ import { Typography } from '@mui/material'
 
 import css from './styles.module.css'
 
-const LegalDisclaimer = (): JSX.Element => (
+const LegalDisclaimerContent = ({ withTitle = true }: { withTitle?: boolean }): JSX.Element => (
   <div className={css.disclaimerContainer}>
-    <Typography variant="body2" color="text.secondary" mx={8}>
-      Before starting to use Safe dApps...
-    </Typography>
-    <Typography variant="h3" fontWeight={700} my={3}>
-      Disclaimer
-    </Typography>
+    {withTitle && (
+      <Typography variant="h3" fontWeight={700} my={3}>
+        Disclaimer
+      </Typography>
+    )}
     <div className={css.disclaimerInner}>
       <Typography mb={4}>
-        You are now accessing third-party apps, which we do not own, control, maintain or audit. We are not liable for
-        any loss you may suffer in connection with interacting with the apps, which is at your own risk.
+        You are now accessing a third-party app, which we do not own, control, maintain or audit. We are not liable for
+        any loss you may suffer in connection with interacting with the app, which is at your own risk.
       </Typography>
 
       <Typography mb={4}>
@@ -33,4 +32,4 @@ const LegalDisclaimer = (): JSX.Element => (
   </div>
 )
 
-export default LegalDisclaimer
+export default LegalDisclaimerContent

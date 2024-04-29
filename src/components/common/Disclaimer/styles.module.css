@@ -1,0 +1,14 @@
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.iconCircle {
+  color: var(--color-info-main);
+  border-radius: 50%;
+  display: flex;
+  padding: var(--space-1);
+  background: #d7f6ff;
+}
