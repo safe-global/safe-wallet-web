@@ -87,7 +87,7 @@ export function verifyQRModalDisplayed() {
 }
 
 export function verifyCopyAddressBtn(data) {
-  cy.wait(1000)
+  cy.window().focus()
   cy.get(sidebarContainer)
     .should('be.visible')
     .within(() => {
