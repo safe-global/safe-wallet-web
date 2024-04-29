@@ -35,7 +35,7 @@ const onWcWidgetClick = (e: SyntheticEvent) => {
 
 export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): ReactElement | null => {
   const txBuilder = useTxBuilderApp()
-  const enableWc = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
+  const isWcEnabled = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
 
   return (
     <Grid item xs={12} md style={{ height: '100%' }}>
@@ -56,9 +56,9 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
                 </NextLink>
               </Grid>
             )}
-            {enableWc && (
+            {isWcEnabled && (
               <Grid item xs={12} md={stackedLayout ? 12 : 6}>
-                <a onClick={onWcWidgetClick}>
+                <a onClick={onWcWidgetClick} href="#">
                   <FeaturedAppCard
                     name="WalletConnect"
                     description="Connect your Safe to any dApp that supports WalletConnect"
