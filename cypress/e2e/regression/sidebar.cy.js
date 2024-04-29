@@ -6,6 +6,7 @@ import * as navigation from '../pages/navigation.page'
 describe('Sidebar tests', () => {
   beforeEach(() => {
     cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_13)
+    cy.window().focus()
     cy.clearLocalStorage()
     main.acceptCookies()
   })

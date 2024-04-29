@@ -15,6 +15,7 @@ describe('Tx history tests 1', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_8)
+    cy.window().focus()
     main.acceptCookies()
   })
 

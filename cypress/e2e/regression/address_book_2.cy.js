@@ -58,11 +58,12 @@ describe('Address book tests - 2', () => {
     cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_8)
     addressBook.verifyNameWasChanged(owner1, onwer3)
   })
-
+  //
   it('Verify copy to clipboard/Etherscan work as expected', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
     cy.wait(1000)
     cy.reload()
+    cy.window().focus()
     createtx.verifyCopyIconWorks(0, constants.RECIPIENT_ADDRESS)
     createtx.verifyNumberOfExternalLinks(1)
   })
