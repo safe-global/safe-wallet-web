@@ -161,7 +161,11 @@ const BlindSigningWarning = ({
 
   return (
     <ErrorMessage level={isBlindSigningEnabled ? 'warning' : 'error'}>
-      This request involves blind signing, which can lead to unpredictable outcomes. <br />
+      This request involves{' '}
+      <Link component={NextLink} href={AppRoutes.settings.securityLogin}>
+        blind signing
+      </Link>
+      , which can lead to unpredictable outcomes.
       <br />
       {isBlindSigningEnabled ? (
         'Proceed with caution.'
