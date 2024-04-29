@@ -21,6 +21,9 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import BlockedAddress from '@/components/common/BlockedAddress'
 import { isBlockedAddress } from '@/services/ofac'
+import useSwapConsent from './useSwapConsent'
+import Disclaimer from '@/components/common/Disclaimer'
+import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
 
 const supportedChains = [1, 100, 11155111]
 
@@ -54,6 +57,7 @@ const SwapWidget = ({ sell }: Params) => {
 
   const { safeAddress } = useSafeInfo()
   const wallet = useWallet()
+  const { isConsentAccepted, onAccept } = useSwapConsent()
 
   const [toasts, setToasts] = useState<String[]>([])
 
@@ -206,6 +210,17 @@ const SwapWidget = ({ sell }: Params) => {
   }
   if (wallet?.address && isBlockedAddress(wallet.address)) {
     return <BlockedAddress address={wallet.address} />
+  }
+
+  if (!isConsentAccepted) {
+    return (
+      <Disclaimer
+        title="Legal Disclaimer"
+        content={<LegalDisclaimerContent withTitle={false} />}
+        onAccept={onAccept}
+        buttonText="Continue"
+      />
+    )
   }
 
   if (!isSupportedChainForSwap(Number(chainId))) {
