@@ -41,6 +41,7 @@ export type SettingsState = {
   env: EnvState
   signing: {
     onChainSigning: boolean
+    blindSigning: boolean
   }
   transactionExecution: boolean
 }
@@ -68,6 +69,7 @@ export const initialState: SettingsState = {
   },
   signing: {
     onChainSigning: false,
+    blindSigning: false,
   },
   transactionExecution: true,
 }
@@ -115,6 +117,9 @@ export const settingsSlice = createSlice({
     setOnChainSigning: (state, { payload }: PayloadAction<boolean>) => {
       state.signing.onChainSigning = payload
     },
+    setBlindSigning: (state, { payload }: PayloadAction<boolean>) => {
+      state.signing.blindSigning = payload
+    },
     setSettings: (_, { payload }: PayloadAction<SettingsState>) => {
       // We must return as we are overwriting the entire state
       // Preserve default nested settings if importing without
@@ -135,6 +140,7 @@ export const {
   setTenderly,
   setOnChainSigning,
   setTransactionExecution,
+  setBlindSigning,
 } = settingsSlice.actions
 
 export const selectSettings = (state: RootState): SettingsState => state[settingsSlice.name]
@@ -163,3 +169,4 @@ export const isEnvInitialState = createSelector([selectSettings, (_, chainId) =>
 })
 
 export const selectOnChainSigning = createSelector(selectSettings, (settings) => settings.signing.onChainSigning)
+export const selectBlindSigning = createSelector(selectSettings, (settings) => settings.signing.blindSigning)
