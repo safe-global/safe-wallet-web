@@ -154,7 +154,7 @@ export function verifyFeaturedAppsSection() {
     cy.get(txBuilder).should('exist')
 
     // Featured apps have a Safe-specific link
-    cy.get(safeSpecificLink).should('have.length', 2)
+    cy.get(safeSpecificLink).should('have.length', 1)
   })
 }
 

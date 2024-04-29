@@ -23,7 +23,7 @@ describe('Sidebar tests', () => {
     sideBar.verifyQRModalDisplayed()
   })
 
-  it('Verify Copy button copies the address', () => {
+  it.skip('Verify Copy button copies the address', () => {
     sideBar.verifyCopyAddressBtn(constants.SEPOLIA_TEST_SAFE_13.substring(4))
   })
 

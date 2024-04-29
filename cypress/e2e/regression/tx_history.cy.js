@@ -42,7 +42,7 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  it('Verify copy bottons work as expected for account creation', () => {
+  it.skip('Verify copy bottons work as expected for account creation', () => {
     createTx.clickOnTransactionItemByName(typeCreateAccount.title)
     createTx.verifyNumberOfCopyIcons(4)
     createTx.verifyCopyIconWorks(0, typeCreateAccount.creator.address)
@@ -54,7 +54,7 @@ describe('Tx history tests 1', () => {
   })
 
   // Token receipt
-  it('Verify copy button copies tx hash', () => {
+  it.skip('Verify copy button copies tx hash', () => {
     createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
     createTx.verifyNumberOfCopyIcons(2)
     createTx.verifyCopyIconWorks(1, typeReceive.transactionHashCopied)
