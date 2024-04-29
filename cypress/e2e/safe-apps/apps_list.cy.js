@@ -17,8 +17,8 @@ describe('Safe Apps list tests', () => {
   it('Verify app list can be filtered by app name', () => {
     // Wait for /safe-apps response
     cy.intercept('GET', constants.appsEndpoint).then(() => {
-      safeapps.typeAppName(constants.appNames.walletConnect)
-      safeapps.verifyLinkName(safeapps.linkNames.wcLogo)
+      safeapps.typeAppName(constants.appNames.txbuilder)
+      safeapps.verifyLinkName(safeapps.linkNames.txBuilderLogo)
     })
   })
 

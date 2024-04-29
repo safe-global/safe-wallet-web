@@ -95,6 +95,7 @@ export function verifyCopyIconWorks(index, data) {
     .then(() =>
       cy.window().then((win) => {
         win.navigator.clipboard.readText().then((text) => {
+          cy.wait(1000)
           expect(text).to.contain(data)
         })
       }),
