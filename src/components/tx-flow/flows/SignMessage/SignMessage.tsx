@@ -9,6 +9,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Link,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -44,10 +45,14 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
 import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
-import { isEIP712TypedData } from '@/utils/safe-messages'
+import { isBlindSigningPayload, isEIP712TypedData } from '@/utils/safe-messages'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { ErrorBoundary } from '@sentry/react'
 import { isWalletRejection } from '@/utils/wallets'
+import { useAppSelector } from '@/store'
+import { selectBlindSigning } from '@/store/settingsSlice'
+import NextLink from 'next/link'
+import { AppRoutes } from '@/config/routes'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -143,6 +148,40 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   )
 }
 
+const BlindSigningWarning = ({
+  isBlindSigningEnabled,
+  isBlindSigningPayload,
+}: {
+  isBlindSigningEnabled: boolean
+  isBlindSigningPayload: boolean
+}) => {
+  if (!isBlindSigningPayload) {
+    return null
+  }
+
+  return (
+    <ErrorMessage level={isBlindSigningEnabled ? 'warning' : 'error'}>
+      This request involves{' '}
+      <Link component={NextLink} href={AppRoutes.settings.securityLogin}>
+        blind signing
+      </Link>
+      , which can lead to unpredictable outcomes.
+      <br />
+      {isBlindSigningEnabled ? (
+        'Proceed with caution.'
+      ) : (
+        <>
+          If you wish to proceed, you must first{' '}
+          <Link component={NextLink} href={AppRoutes.settings.securityLogin}>
+            enable blind signing
+          </Link>
+          .
+        </>
+      )}
+    </ErrorMessage>
+  )
+}
+
 const SuccessCard = ({ safeMessage, onContinue }: { safeMessage: SafeMessage; onContinue: () => void }) => {
   return (
     <TxCard>
@@ -191,7 +230,10 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const decodedMessageAsString = isPlainTextMessage ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
   const hasSigned = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
   const isFullySigned = !!safeMessage?.preparedSignature
-  const isDisabled = !isOwner || hasSigned || !safe.deployed
+  const isEip712 = isEIP712TypedData(decodedMessage)
+  const isBlindSigningRequest = isBlindSigningPayload(decodedMessage)
+  const isBlindSigningEnabled = useAppSelector(selectBlindSigning)
+  const isDisabled = !isOwner || hasSigned || !safe.deployed || (!isBlindSigningEnabled && isBlindSigningRequest)
 
   const { onSign, submitError } = useSyncSafeMessageSigner(
     safeMessage,
@@ -239,11 +281,16 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
         <CardContent>
           <DialogHeader threshold={safe.threshold} />
 
-          {isEIP712TypedData(decodedMessage) && (
+          {isEip712 && (
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <ApprovalEditor safeMessage={decodedMessage} />
             </ErrorBoundary>
           )}
+
+          <BlindSigningWarning
+            isBlindSigningEnabled={isBlindSigningEnabled}
+            isBlindSigningPayload={isBlindSigningRequest}
+          />
 
           <Typography fontWeight={700} mt={2} mb={1}>
             Message: <CopyButton text={decodedMessageAsString} />
