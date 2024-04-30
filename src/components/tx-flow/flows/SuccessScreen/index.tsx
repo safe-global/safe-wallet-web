@@ -15,8 +15,11 @@ import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/step
 import { ProcessingStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/ProcessingStatus'
 import { IndexingStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/IndexingStatus'
 import { DefaultStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/DefaultStatus'
+import useDecodeTx from '@/hooks/useDecodeTx'
+import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-const SuccessScreen = ({ txId }: { txId: string }) => {
+const SuccessScreen = ({ txId, safeTx }: { txId: string; safeTx?: SafeTransaction }) => {
   const [localTxHash, setLocalTxHash] = useState<string>()
   const [error, setError] = useState<Error>()
   const { setTxFlow } = useContext(TxModalContext)
@@ -26,6 +29,8 @@ const SuccessScreen = ({ txId }: { txId: string }) => {
   const { status } = pendingTx || {}
   const txHash = pendingTx && 'txHash' in pendingTx ? pendingTx.txHash : undefined
   const txLink = chain && getTxLink(txId, chain, safeAddress)
+  const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
+  const isSwapOrder = isSwapConfirmationViewOrder(decodedData)
 
   useEffect(() => {
     if (!txHash) return
@@ -92,15 +97,22 @@ const SuccessScreen = ({ txId }: { txId: string }) => {
       <div className={classnames(css.row, css.buttons)}>
         {txLink && (
           <Link {...txLink} passHref target="_blank" rel="noreferrer" legacyBehavior>
-            <Button data-testid="view-transaction-btn" variant="outlined" size="small" onClick={onClose}>
+            <Button
+              data-testid="view-transaction-btn"
+              variant={isSwapOrder ? 'contained' : 'outlined'}
+              size="small"
+              onClick={onClose}
+            >
               View transaction
             </Button>
           </Link>
         )}
 
-        <Button data-testid="finish-transaction-btn" variant="contained" size="small" onClick={onClose}>
-          Finish
-        </Button>
+        {!isSwapOrder && (
+          <Button data-testid="finish-transaction-btn" variant="contained" size="small" onClick={onClose}>
+            Finish
+          </Button>
+        )}
       </div>
     </Container>
   )
