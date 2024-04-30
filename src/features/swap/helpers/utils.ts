@@ -7,6 +7,11 @@ type Quantity = {
   decimals: number
 }
 
+enum OrderKind {
+  SELL = 'sell',
+  BUY = 'buy',
+}
+
 function asDecimal(amount: number | bigint, decimals: number): number {
   return Number(formatUnits(amount, decimals))
 }
@@ -47,13 +52,20 @@ const calculateRatio = (a: Quantity, b: Quantity) => {
   return asDecimal(BigInt(a.amount), a.decimals) / asDecimal(BigInt(b.amount), b.decimals)
 }
 
-export const getSurplusPrice = (order: Pick<SwapOrder, 'executedBuyAmount' | 'buyAmount' | 'buyToken'>): number => {
-  const { executedBuyAmount, buyAmount, buyToken } = order
-
-  const surplus =
-    asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - asDecimal(BigInt(buyAmount), buyToken.decimals)
-
-  return surplus
+export const getSurplusPrice = (
+  order: Pick<
+    SwapOrder,
+    'executedBuyAmount' | 'buyAmount' | 'buyToken' | 'executedSellAmount' | 'sellAmount' | 'sellToken' | 'kind'
+  >,
+): number => {
+  const { kind, executedSellAmount, sellAmount, sellToken, executedBuyAmount, buyAmount, buyToken } = order
+  if (kind === 'sell') {
+    return asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - asDecimal(BigInt(buyAmount), buyToken.decimals)
+  } else if (kind === 'buy') {
+    return asDecimal(BigInt(sellAmount), sellToken.decimals) - asDecimal(BigInt(executedSellAmount), sellToken.decimals)
+  } else {
+    return 0
+  }
 }
 
 export const getFilledPercentage = (
