@@ -59,9 +59,9 @@ export const getSurplusPrice = (
   >,
 ): number => {
   const { kind, executedSellAmount, sellAmount, sellToken, executedBuyAmount, buyAmount, buyToken } = order
-  if (kind === 'sell') {
+  if (kind === OrderKind.SELL) {
     return asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - asDecimal(BigInt(buyAmount), buyToken.decimals)
-  } else if (kind === 'buy') {
+  } else if (kind === OrderKind.BUY) {
     return asDecimal(BigInt(sellAmount), sellToken.decimals) - asDecimal(BigInt(executedSellAmount), sellToken.decimals)
   } else {
     return 0
@@ -74,10 +74,10 @@ export const getFilledPercentage = (
   let executed: number
   let total: number
 
-  if (order.kind === 'buy') {
+  if (order.kind === OrderKind.BUY) {
     executed = Number(order.executedBuyAmount)
     total = Number(order.buyAmount)
-  } else if (order.kind === 'sell') {
+  } else if (order.kind === OrderKind.SELL) {
     executed = Number(order.executedSellAmount)
     total = Number(order.sellAmount)
   } else {
@@ -90,9 +90,9 @@ export const getFilledPercentage = (
 export const getFilledAmount = (
   order: Pick<SwapOrder, 'kind' | 'executedBuyAmount' | 'executedSellAmount' | 'buyToken' | 'sellToken'>,
 ): string => {
-  if (order.kind === 'buy') {
+  if (order.kind === OrderKind.BUY) {
     return formatUnits(order.executedBuyAmount, order.buyToken.decimals)
-  } else if (order.kind === 'sell') {
+  } else if (order.kind === OrderKind.SELL) {
     return formatUnits(order.executedSellAmount, order.sellToken.decimals)
   } else {
     return '0'
