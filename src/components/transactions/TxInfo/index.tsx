@@ -23,6 +23,8 @@ import {
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
+import TokenIcon from '@/components/common/TokenIcon'
+import { Box, Typography } from '@mui/material'
 
 export const TransferTx = ({
   info,
@@ -91,9 +93,19 @@ const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
 
 const SwapTx = ({ info }: { info: SwapOrder }): ReactElement => {
   return (
-    <>
-      Swap {info.sellToken.symbol} to {info.buyToken.symbol}
-    </>
+    <Box display="flex">
+      <Typography display="flex" alignItems="center" fontWeight="bold">
+        Swap{' '}
+        <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
+          <TokenIcon logoUri={info.sellToken.logoUri || undefined} tokenSymbol={info.sellToken.symbol} rounded={true} />
+        </Box>
+        {info.sellToken.symbol} to
+        <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
+          <TokenIcon logoUri={info.buyToken.logoUri || undefined} tokenSymbol={info.buyToken.symbol} rounded={true} />
+        </Box>{' '}
+        {info.buyToken.symbol}
+      </Typography>
+    </Box>
   )
 }
 const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
