@@ -4,6 +4,12 @@ import { JsonRpcProvider, BrowserProvider, type Eip1193Provider, type Provider }
 import ExternalStore from '@/services/ExternalStore'
 import { EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
+/**
+ * Infura and other RPC providers limit the max amount included in a batch RPC call.
+ * Ethers uses 100 by default which is too high for i.e. Infura.
+ */
+const BATCH_MAX_COUNT = 10
+
 // RPC helpers
 const formatRpcServiceUrl = ({ authentication, value }: RpcUri, token: string): string => {
   const needsToken = authentication === RPC_AUTHENTICATION.API_KEY_PATH
@@ -25,6 +31,7 @@ export const createWeb3ReadOnly = (chain: ChainInfo, customRpc?: string): JsonRp
   if (!url) return
   return new JsonRpcProvider(url, undefined, {
     staticNetwork: true,
+    batchMaxCount: BATCH_MAX_COUNT,
   })
 }
 
@@ -37,6 +44,7 @@ export const createSafeAppsWeb3Provider = (chain: ChainInfo, customRpc?: string)
   if (!url) return
   return new JsonRpcProvider(url, undefined, {
     staticNetwork: true,
+    batchMaxCount: BATCH_MAX_COUNT,
   })
 }
 
