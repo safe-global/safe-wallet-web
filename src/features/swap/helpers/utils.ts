@@ -59,10 +59,10 @@ export const getSurplusPrice = (
   >,
 ): number => {
   const { kind, executedSellAmount, sellAmount, sellToken, executedBuyAmount, buyAmount, buyToken } = order
-  if (kind === OrderKind.SELL) {
-    return asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - asDecimal(BigInt(buyAmount), buyToken.decimals)
-  } else if (kind === OrderKind.BUY) {
+  if (kind === OrderKind.BUY) {
     return asDecimal(BigInt(sellAmount), sellToken.decimals) - asDecimal(BigInt(executedSellAmount), sellToken.decimals)
+  } else if (kind === OrderKind.SELL) {
+    return asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - asDecimal(BigInt(buyAmount), buyToken.decimals)
   } else {
     return 0
   }
