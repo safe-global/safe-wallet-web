@@ -53,6 +53,7 @@ import { useAppSelector } from '@/store'
 import { selectBlindSigning } from '@/store/settingsSlice'
 import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -155,6 +156,9 @@ const BlindSigningWarning = ({
   isBlindSigningEnabled: boolean
   isBlindSigningPayload: boolean
 }) => {
+  const router = useRouter()
+  const query = router.query.safe ? { safe: router.query.safe } : undefined
+
   if (!isBlindSigningPayload) {
     return null
   }
@@ -162,7 +166,7 @@ const BlindSigningWarning = ({
   return (
     <ErrorMessage level={isBlindSigningEnabled ? 'warning' : 'error'}>
       This request involves{' '}
-      <Link component={NextLink} href={AppRoutes.settings.securityLogin}>
+      <Link component={NextLink} href={{ pathname: AppRoutes.settings.securityLogin, query }}>
         blind signing
       </Link>
       , which can lead to unpredictable outcomes.
@@ -172,7 +176,7 @@ const BlindSigningWarning = ({
       ) : (
         <>
           If you wish to proceed, you must first{' '}
-          <Link component={NextLink} href={AppRoutes.settings.securityLogin}>
+          <Link component={NextLink} href={{ pathname: AppRoutes.settings.securityLogin, query }}>
             enable blind signing
           </Link>
           .
