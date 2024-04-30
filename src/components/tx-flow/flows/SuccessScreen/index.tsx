@@ -95,6 +95,12 @@ const SuccessScreen = ({ txId, safeTx }: { txId: string; safeTx?: SafeTransactio
       <Divider />
 
       <div className={classnames(css.row, css.buttons)}>
+        {isSwapOrder && (
+          <Button data-testid="finish-transaction-btn" variant="outlined" size="small" onClick={onClose}>
+            Back to Swap
+          </Button>
+        )}
+
         {txLink && (
           <Link {...txLink} passHref target="_blank" rel="noreferrer" legacyBehavior>
             <Button
