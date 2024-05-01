@@ -53,7 +53,7 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
 
   const onSwap = () => {
     trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'swap' })
-    router.push({ pathname: AppRoutes.apps.index, query: { ...router.query, categories: 'Aggregator' } })
+    router.push({ pathname: AppRoutes.swap, query: { ...router.query } })
   }
 
   const onCustomTransaction = () => {
