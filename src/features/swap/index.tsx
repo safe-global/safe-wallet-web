@@ -15,7 +15,7 @@ import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 import { showNotification } from '@/store/notificationsSlice'
-import { useAppDispatch } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -25,6 +25,7 @@ import { isBlockedAddress } from '@/services/ofac'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
+import { selectSwapParams, setSwapParams } from './store/swapParamsSlice'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -34,6 +35,9 @@ type Params = {
     amount: string
   }
 }
+
+const appCode = 'Safe Wallet Swaps'
+let hasInitializedFromStore = false
 
 const appData: SafeAppData = {
   id: 1,
@@ -53,10 +57,14 @@ const SwapWidget = ({ sell }: Params) => {
   const darkMode = useDarkMode()
   const dispatch = useAppDispatch()
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+  const swapParams = useAppSelector(selectSwapParams)
+  const { buyToken, sellToken } = swapParams
 
   const { safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
+
+  const [params, setParams] = useState<CowSwapWidgetParams | null>(null)
 
   const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
@@ -120,13 +128,20 @@ const SwapWidget = ({ sell }: Params) => {
           }
         },
       },
+      {
+        event: CowEvents.ON_CHANGE_TRADE_PARAMS,
+        handler: (newTradeParams) => {
+          const { buyToken, sellToken } = newTradeParams
+          console.info('🔄 New trade parameters (tradeParams):', event)
+          dispatch(setSwapParams({ buyToken, sellToken }))
+        },
+      },
     ]
   }, [dispatch])
 
-  const [params, setParams] = useState<CowSwapWidgetParams | null>(null)
   useEffect(() => {
     setParams({
-      appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
+      appCode, // Name of your app (max 50 characters)
       width: '100%', // Width in pixels (or 100% to use all available space)
       height: '860px',
       // provider: safeAppWeb3Provider, // Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com
@@ -147,13 +162,8 @@ const SwapWidget = ({ sell }: Params) => {
       //   'https://tokens.coingecko.com/uniswap/all.json',
       // ],
       tradeType: TradeType.SWAP, // TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED
-      sell: sell
-        ? sell
-        : {
-            // Sell token. Optionally add amount for sell orders
-            asset: '',
-            amount: '0',
-          },
+      sell: { asset: sellToken },
+      buy: { asset: buyToken, amount: '0.1' },
       images: {
         emptyOrders: darkMode
           ? BASE_URL + '/images/common/swap-empty-dark.svg'
@@ -178,7 +188,7 @@ const SwapWidget = ({ sell }: Params) => {
         recipient: '0x0B00b3227A5F3df3484f03990A87e02EbaD2F888',
       },
     })
-  }, [sell, chainId, palette, darkMode])
+  }, [sell, chainId, palette, darkMode, sellToken, buyToken])
 
   const chain = useCurrentChain()
 
