@@ -16,6 +16,10 @@ function asDecimal(amount: number | bigint, decimals: number): number {
   return Number(formatUnits(amount, decimals))
 }
 
+function calculateDifference(amountA: string, amountB: string, decimals: number): number {
+  return asDecimal(BigInt(amountA), decimals) - asDecimal(BigInt(amountB), decimals)
+}
+
 export const getExecutionPrice = (
   order: Pick<SwapOrder, 'executedSellAmount' | 'executedBuyAmount' | 'buyToken' | 'sellToken'>,
 ): number => {
@@ -60,9 +64,9 @@ export const getSurplusPrice = (
 ): number => {
   const { kind, executedSellAmount, sellAmount, sellToken, executedBuyAmount, buyAmount, buyToken } = order
   if (kind === OrderKind.BUY) {
-    return asDecimal(BigInt(sellAmount), sellToken.decimals) - asDecimal(BigInt(executedSellAmount), sellToken.decimals)
+    return calculateDifference(sellAmount, executedSellAmount, sellToken.decimals)
   } else if (kind === OrderKind.SELL) {
-    return asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - asDecimal(BigInt(buyAmount), buyToken.decimals)
+    return calculateDifference(executedBuyAmount, buyAmount, buyToken.decimals)
   } else {
     return 0
   }
