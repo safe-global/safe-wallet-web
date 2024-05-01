@@ -163,7 +163,7 @@ const SwapWidget = ({ sell }: Params) => {
       // ],
       tradeType: TradeType.SWAP, // TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED
       sell: { asset: sellToken },
-      buy: { asset: buyToken, amount: '0.1' },
+      buy: { asset: buyToken },
       images: {
         emptyOrders: darkMode
           ? BASE_URL + '/images/common/swap-empty-dark.svg'
