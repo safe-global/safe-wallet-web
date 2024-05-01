@@ -36,9 +36,6 @@ type Params = {
   }
 }
 
-const appCode = 'Safe Wallet Swaps'
-let hasInitializedFromStore = false
-
 const appData: SafeAppData = {
   id: 1,
   url: 'https://app.safe.global',
@@ -141,7 +138,7 @@ const SwapWidget = ({ sell }: Params) => {
 
   useEffect(() => {
     setParams({
-      appCode, // Name of your app (max 50 characters)
+      appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
       width: '100%', // Width in pixels (or 100% to use all available space)
       height: '860px',
       // provider: safeAppWeb3Provider, // Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com
