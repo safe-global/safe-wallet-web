@@ -16,6 +16,8 @@ import { Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
 import { getExecutionPrice, getLimitPrice, getOrderClass, getSurplusPrice } from '@/features/swap/helpers/utils'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -23,7 +25,8 @@ type SwapOrderProps = {
 }
 
 export const SellOrder = ({ order }: { order: SwapOrderType }) => {
-  const { uid, kind, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl } = order
+  const { safeAddress } = useSafeInfo()
+  const { uid, kind, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
   const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
@@ -104,6 +107,13 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
         <DataRow key="Status" title="Status">
           <StatusLabel status={status} />
         </DataRow>,
+        receiver && receiver !== safeAddress ? (
+          <DataRow key="Recipient" title="Recipient">
+            <EthHashInfo address={receiver} showAvatar={false} />
+          </DataRow>
+        ) : (
+          <></>
+        ),
       ]}
     />
   )
