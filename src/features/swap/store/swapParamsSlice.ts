@@ -4,12 +4,11 @@ import { createSlice } from '@reduxjs/toolkit'
 export type SwapState = {
   buyToken: string
   sellToken: string
-  // orderKind: string
 }
 
 const initialState: SwapState = {
-  buyToken: 'DAI',
-  sellToken: 'USDC',
+  sellToken: 'WETH',
+  buyToken: '',
 }
 
 export const swapParamsSlice = createSlice({
