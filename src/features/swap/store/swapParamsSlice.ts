@@ -1,25 +1,24 @@
 import type { RootState } from '@/store'
+import { TradeType } from '@cowprotocol/widget-react'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
 export type SwapState = {
-  buyToken: string
-  sellToken: string
+  tradeType: TradeType
 }
 
 const initialState: SwapState = {
-  sellToken: 'WETH',
-  buyToken: '',
+  tradeType: TradeType.SWAP,
 }
 
 export const swapParamsSlice = createSlice({
   name: 'swapParams',
   initialState,
   reducers: {
-    setSwapParams: (state, action) => {
-      const { buyToken, sellToken } = action.payload
+    setSwapParams: (_, action: PayloadAction<SwapState>) => {
+      const { tradeType } = action.payload
       return {
-        buyToken: buyToken?.symbol ? buyToken?.symbol : state.buyToken,
-        sellToken: sellToken?.symbol ? sellToken?.symbol : state.sellToken,
+        tradeType,
       }
     },
   },

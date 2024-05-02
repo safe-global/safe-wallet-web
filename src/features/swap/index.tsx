@@ -55,7 +55,7 @@ const SwapWidget = ({ sell }: Params) => {
   const dispatch = useAppDispatch()
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
   const swapParams = useAppSelector(selectSwapParams)
-  const { buyToken, sellToken } = swapParams
+  const { tradeType } = swapParams
 
   const { safeAddress } = useSafeInfo()
   const wallet = useWallet()
@@ -128,9 +128,8 @@ const SwapWidget = ({ sell }: Params) => {
       {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
         handler: (newTradeParams) => {
-          const { buyToken, sellToken } = newTradeParams
-          console.info('🔄 New trade parameters (tradeParams):', event)
-          dispatch(setSwapParams({ buyToken, sellToken }))
+          const { orderType: tradeType } = newTradeParams
+          dispatch(setSwapParams({ tradeType }))
         },
       },
     ]
@@ -158,9 +157,14 @@ const SwapWidget = ({ sell }: Params) => {
       //   'https://files.cow.fi/tokens/CowSwap.json',
       //   'https://tokens.coingecko.com/uniswap/all.json',
       // ],
-      tradeType: TradeType.SWAP, // TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED
-      sell: { asset: sellToken },
-      buy: { asset: buyToken },
+      tradeType, // TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED
+      sell: sell
+        ? sell
+        : {
+            // Sell token. Optionally add amount for sell orders
+            asset: '',
+            amount: '0',
+          },
       images: {
         emptyOrders: darkMode
           ? BASE_URL + '/images/common/swap-empty-dark.svg'
@@ -185,7 +189,7 @@ const SwapWidget = ({ sell }: Params) => {
         recipient: '0x0B00b3227A5F3df3484f03990A87e02EbaD2F888',
       },
     })
-  }, [sell, chainId, palette, darkMode, sellToken, buyToken])
+  }, [sell, chainId, palette, darkMode, tradeType])
 
   const chain = useCurrentChain()
 
