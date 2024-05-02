@@ -35,6 +35,7 @@ const rootReducer = combineReducers({
   [slices.pendingSafeMessagesSlice.name]: slices.pendingSafeMessagesSlice.reducer,
   [slices.batchSlice.name]: slices.batchSlice.reducer,
   [slices.undeployedSafesSlice.name]: slices.undeployedSafesSlice.reducer,
+  [slices.swapParamsSlice.name]: slices.swapParamsSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -48,6 +49,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   slices.pendingSafeMessagesSlice.name,
   slices.batchSlice.name,
   slices.undeployedSafesSlice.name,
+  slices.swapParamsSlice.name,
 ]
 
 export const getPersistedState = () => {
