@@ -57,7 +57,7 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   const onSwap = () => {
     trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'swap' })
     if (isSwapFeatureEnabled) {
-      router.push({ pathname: AppRoutes.swap, query: { ...router.query } })
+      router.push({ pathname: AppRoutes.swap, query: router.query })
     } else {
       router.push({ pathname: AppRoutes.apps.index, query: { ...router.query, categories: 'Aggregator' } })
     }
