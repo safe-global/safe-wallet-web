@@ -15,7 +15,7 @@ import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 import { showNotification } from '@/store/notificationsSlice'
-import { useAppDispatch } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 
 import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -25,6 +25,7 @@ import { isBlockedAddress } from '@/services/ofac'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
+import { selectSwapParams, setSwapParams } from './store/swapParamsSlice'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -53,6 +54,8 @@ const SwapWidget = ({ sell }: Params) => {
   const darkMode = useDarkMode()
   const dispatch = useAppDispatch()
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+  const swapParams = useAppSelector(selectSwapParams)
+  const { tradeType } = swapParams
 
   const { safeAddress } = useSafeInfo()
   const wallet = useWallet()
@@ -120,6 +123,13 @@ const SwapWidget = ({ sell }: Params) => {
           }
         },
       },
+      {
+        event: CowEvents.ON_CHANGE_TRADE_PARAMS,
+        handler: (newTradeParams) => {
+          const { orderType: tradeType } = newTradeParams
+          dispatch(setSwapParams({ tradeType }))
+        },
+      },
     ]
   }, [dispatch])
 
@@ -146,11 +156,10 @@ const SwapWidget = ({ sell }: Params) => {
       //   'https://files.cow.fi/tokens/CowSwap.json',
       //   'https://tokens.coingecko.com/uniswap/all.json',
       // ],
-      tradeType: TradeType.SWAP, // TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED
+      tradeType, // TradeType.SWAP or TradeType.LIMIT
       sell: sell
         ? sell
         : {
-            // Sell token. Optionally add amount for sell orders
             asset: '',
             amount: '0',
           },
@@ -174,7 +183,7 @@ const SwapWidget = ({ sell }: Params) => {
         alert: palette.warning.main,
       },
     })
-  }, [sell, chainId, palette, darkMode])
+  }, [sell, chainId, palette, darkMode, tradeType])
 
   const chain = useCurrentChain()
 
