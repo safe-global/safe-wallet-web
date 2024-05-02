@@ -48,8 +48,8 @@ const EditableApprovalItem = ({
       <ApprovalValueField name={name} tx={approval} readOnly={readOnly} />
       <Track {...MODALS_EVENTS.EDIT_APPROVALS}>
         {readOnly ? (
-          <IconButton color="border" size="small" onClick={handleEditMode} title="Edit">
-            <SvgIcon width="16px" height="16px" component={EditOutlined} inheritViewBox />
+          <IconButton color="border" onClick={handleEditMode} title="Edit">
+            <SvgIcon fontSize="small" component={EditOutlined} inheritViewBox />
           </IconButton>
         ) : (
           <Button title="Save" variant="text" size="small" onClick={handleSave} disabled={!!fieldErrors || !isDirty}>

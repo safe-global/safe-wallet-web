@@ -85,6 +85,9 @@ export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: A
                 '&::before': {
                   border: 'none !important',
                 },
+                '&::after': {
+                  display: readOnly ? 'none' : undefined,
+                },
                 border: 'none !important',
               },
             }}
@@ -95,6 +98,9 @@ export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: A
             InputLabelProps={{
               ...params.InputLabelProps,
               shrink: true,
+              sx: {
+                color: (theme) => (readOnly ? `${theme.palette.text.secondary} !important` : undefined),
+              },
             }}
           />
         )
