@@ -173,10 +173,6 @@ const SwapWidget = ({ sell }: Params) => {
         warning: palette.warning.main,
         alert: palette.warning.main,
       },
-      partnerFee: {
-        bps: 50,
-        recipient: '0x0B00b3227A5F3df3484f03990A87e02EbaD2F888',
-      },
     })
   }, [sell, chainId, palette, darkMode])
 
