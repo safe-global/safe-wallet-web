@@ -3,14 +3,21 @@ import * as main from '../pages/main.page'
 import * as sideBar from '../pages/sidebar.pages'
 import * as ls from '../../support/localstorage_data.js'
 import * as assets from '../pages/assets.pages.js'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const newSafeName = 'Added safe 3'
 const addedSafe900 = 'Added safe 900'
 const staticSafe200 = 'Added safe 200'
 
 describe('Sidebar added sidebar tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_13)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     cy.wait(2000)
     cy.clearLocalStorage()
     main.acceptCookies()

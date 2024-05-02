@@ -1,55 +1,58 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
-let $dapps = []
+let $dapps,
+  staticSafes = []
 const app1 = 'https://app1.com'
 const app3 = 'https://app3.com'
 
 describe('Permissions settings tests', () => {
   before(() => {
-    cy.clearLocalStorage()
-    cy.on('window:before:load', (window) => {
-      window.localStorage.setItem(
-        constants.BROWSER_PERMISSIONS_KEY,
-        JSON.stringify({
-          app1: [
-            { feature: 'camera', status: 'granted' },
-            { feature: 'fullscreen', status: 'granted' },
-            { feature: 'geolocation', status: 'granted' },
-          ],
-          app2: [{ feature: 'microphone', status: 'granted' }],
-          app3: [{ feature: 'camera', status: 'denied' }],
-        }),
-      )
-      window.localStorage.setItem(
-        constants.SAFE_PERMISSIONS_KEY,
-        JSON.stringify({
-          app2: [
-            {
-              invoker: app1,
-              parentCapability: 'requestAddressBook',
-              date: 1666103778276,
-              caveats: [],
-            },
-          ],
-          app4: [
-            {
-              invoker: app3,
-              parentCapability: 'requestAddressBook',
-              date: 1666103787026,
-              caveats: [],
-            },
-          ],
-        }),
-      )
+    getSafes(CATEGORIES.static).then((statics) => {
+      staticSafes = statics
+      cy.clearLocalStorage()
+      cy.on('window:before:load', (window) => {
+        window.localStorage.setItem(
+          constants.BROWSER_PERMISSIONS_KEY,
+          JSON.stringify({
+            app1: [
+              { feature: 'camera', status: 'granted' },
+              { feature: 'fullscreen', status: 'granted' },
+              { feature: 'geolocation', status: 'granted' },
+            ],
+            app2: [{ feature: 'microphone', status: 'granted' }],
+            app3: [{ feature: 'camera', status: 'denied' }],
+          }),
+        )
+        window.localStorage.setItem(
+          constants.SAFE_PERMISSIONS_KEY,
+          JSON.stringify({
+            app2: [
+              {
+                invoker: app1,
+                parentCapability: 'requestAddressBook',
+                date: 1666103778276,
+                caveats: [],
+              },
+            ],
+            app4: [
+              {
+                invoker: app3,
+                parentCapability: 'requestAddressBook',
+                date: 1666103787026,
+                caveats: [],
+              },
+            ],
+          }),
+        )
+      })
+      cy.visit(`${constants.appSettingsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_2}`, {
+        failOnStatusCode: false,
+      })
+      main.acceptCookies()
     })
-
-    cy.visit(`${constants.appSettingsUrl}?safe=${constants.SEPOLIA_TEST_SAFE_5}`, {
-      failOnStatusCode: false,
-    })
-
-    main.acceptCookies()
   })
 
   it('Verify for each stored app the permissions configuration is shown', () => {

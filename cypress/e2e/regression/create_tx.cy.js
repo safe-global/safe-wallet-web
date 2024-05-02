@@ -1,6 +1,9 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const sendValue = 0.00002
 
@@ -12,9 +15,13 @@ function happyPathToStepTwo() {
 }
 
 describe('Create transactions tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_7)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
     main.acceptCookies()
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()

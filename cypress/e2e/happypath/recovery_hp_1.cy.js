@@ -3,10 +3,17 @@ import * as main from '../pages/main.page'
 import * as owner from '../pages/owners.pages'
 import * as recovery from '../pages/recovery.pages'
 import * as tx from '../pages/transactions.page'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
+let recoverySafes = []
+//
 describe('Recovery happy path tests 1', () => {
+  before(async () => {
+    recoverySafes = await getSafes(CATEGORIES.recovery)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.securityUrl + constants.SEPOLIA_TEST_SAFE_23_RECOVERY_1)
+    cy.visit(constants.securityUrl + recoverySafes.SEP_RECOVERY_SAFE_1)
     cy.clearLocalStorage()
     main.acceptCookies()
   })
