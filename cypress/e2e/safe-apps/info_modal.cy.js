@@ -1,11 +1,18 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 describe('Info modal tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(`${constants.appsUrl}?safe=${constants.SEPOLIA_TEST_SAFE_5}`, {
+    cy.visit(`${constants.appsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_2}`, {
       failOnStatusCode: false,
     })
     main.acceptCookies()

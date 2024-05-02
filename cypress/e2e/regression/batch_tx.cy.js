@@ -2,15 +2,22 @@ import * as batch from '../pages/batches.pages'
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../../e2e/pages/owners.pages.js'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 const currentNonce = 3
 const funds_first_tx = '0.001'
 const funds_second_tx = '0.002'
 
+let staticSafes = []
+
 describe('Batch transaction tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
     owner.waitForConnectionStatus()
     main.acceptCookies()
   })

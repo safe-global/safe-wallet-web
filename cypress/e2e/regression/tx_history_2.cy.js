@@ -2,6 +2,9 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const typeOnchainRejection = data.type.onchainRejection
 const typeBatch = data.type.batchNativeTransfer
@@ -15,9 +18,13 @@ const typeGeneral = data.type.general
 const typeUntrustedToken = data.type.untrustedReceivedToken
 
 describe('Tx history tests 2', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_8)
+    cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     main.acceptCookies()
   })
 

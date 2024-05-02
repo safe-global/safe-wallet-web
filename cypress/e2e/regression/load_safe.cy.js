@@ -3,6 +3,9 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safe from '../pages/load_safe.pages'
 import * as createwallet from '../pages/create_wallet.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const testSafeName = 'Test safe name'
 const testOwnerName = 'Test Owner Name'
@@ -19,6 +22,10 @@ const OWNER_ENS_DEFAULT_NAME = 'test20.eth'
 const OWNER_ADDRESS = constants.EOA
 
 describe('Load Safe tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.loadNewSafeSepoliaUrl)
@@ -27,14 +34,14 @@ describe('Load Safe tests', () => {
   })
 
   it('Verify custom name in the first owner can be set', () => {
-    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
+    safe.inputNameAndAddress(testSafeName, staticSafes.SEP_STATIC_SAFE_4)
     safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
     safe.clickOnNextBtn()
   })
 
   it('Verify Safe and owner names are displayed in the Review step', () => {
-    safe.inputNameAndAddress(testSafeName, constants.SEPOLIA_TEST_SAFE_1)
+    safe.inputNameAndAddress(testSafeName, staticSafes.SEP_STATIC_SAFE_4)
     safe.clickOnNextBtn()
     createwallet.typeOwnerName(testOwnerName, 0)
     safe.clickOnNextBtn()

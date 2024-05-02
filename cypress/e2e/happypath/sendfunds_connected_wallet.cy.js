@@ -11,6 +11,7 @@ import SafeApiKit from '@safe-global/api-kit'
 import { createEthersAdapter, createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 const safeBalanceEth = 305220000000000000n
 const qtrustBanance = 93000000000000000025n
@@ -26,6 +27,7 @@ const unit_eth = 'ether'
 let apiKit, protocolKitOwner1_S3, protocolKitOwner2_S3, outgoingSafeAddress
 
 let safes = []
+let safesData = []
 
 const provider = new ethers.InfuraProvider(netwrok, Cypress.env('INFURA_API_KEY'))
 const privateKeys = [walletCredentials.OWNER_1_PRIVATE_KEY, walletCredentials.OWNER_2_PRIVATE_KEY]
@@ -49,6 +51,7 @@ function visit(url) {
 
 describe('Send funds with connected signer happy path tests', { defaultCommandTimeout: 60000 }, () => {
   before(async () => {
+    safesData = await getSafes(CATEGORIES.funds)
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__cookies, ls.cookies.acceptedCookies)
     main.addToLocalStorage(
       constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
@@ -59,7 +62,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
       txServiceUrl: constants.stagingTxServiceUrl,
     })
 
-    outgoingSafeAddress = constants.SEPOLIA_TEST_SAFE_43_SEND_FUNDS_HP13.substring(4)
+    outgoingSafeAddress = safesData.SEP_FUNDS_SAFE_6.substring(4)
 
     const safeConfigurations = [
       { ethAdapter: ethAdapterOwner1, safeAddress: outgoingSafeAddress },
@@ -74,7 +77,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
   it('Verify tx creation and execution of NFT with connected signer', () => {
     cy.wait(2000)
-    const originatingSafe = constants.SEPOLIA_TEST_SAFE_44_SEND_FUNDS_HP14.substring(4)
+    const originatingSafe = safesData.SEP_FUNDS_SAFE_7.substring(4)
 
     function executeTransactionFlow(fromSafe, toSafe) {
       return cy.visit(constants.balanceNftsUrl + fromSafe).then(() => {
@@ -106,7 +109,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
   it('Verify tx creation and execution of native token with connected signer', () => {
     cy.wait(2000)
-    const targetSafe = constants.SEPOLIA_TEST_SAFE_32_SEND_NATIVE_HP1.substring(4)
+    const targetSafe = safesData.SEP_FUNDS_SAFE_12.substring(4)
     function executeTransactionFlow(fromSafe, toSafe, tokenAmount) {
       visit(constants.BALANCE_URL + fromSafe)
       assets.clickOnSendBtn(0)
@@ -158,7 +161,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
   it('Verify tx creation and execution of non-native token with connected signer', () => {
     cy.wait(2000)
-    const originatingSafe = constants.SEPOLIA_TEST_SAFE_28_SEND_FUNDS_HP1.substring(4)
+    const originatingSafe = safesData.SEP_FUNDS_SAFE_11.substring(4)
     const amount = ethers.parseUnits(transferAmount, unit_eth).toString()
 
     function executeTransactionFlow(fromSafe, toSafe) {

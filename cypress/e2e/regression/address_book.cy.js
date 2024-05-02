@@ -6,14 +6,21 @@ import * as addressBook from '../../e2e/pages/address_book.page'
 import * as main from '../../e2e/pages/main.page'
 import * as ls from '../../support/localstorage_data.js'
 import * as sidebar from '../pages/sidebar.pages.js'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
 const importedSafe = 'imported-safe'
 
 describe('Address book tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
+    cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_4)
     cy.clearLocalStorage()
     main.acceptCookies()
   })

@@ -4,8 +4,15 @@ import * as main from '../pages/main.page'
 import * as constants from '../../support/constants'
 import * as ls from '../../support/localstorage_data.js'
 import * as createwallet from '../pages/create_wallet.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 describe('[SMOKE] Import Export Data tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.dataSettingsUrl).then(() => {
@@ -33,7 +40,7 @@ describe('[SMOKE] Import Export Data tests', () => {
       main
         .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.importedSafe)
         .then(() => {
-          cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_3)
+          cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_5)
           file.verifyImportedAddressBookData()
         })
     })
@@ -42,7 +49,7 @@ describe('[SMOKE] Import Export Data tests', () => {
   it('[SMOKE] Verify pinned apps', () => {
     const appNames = ['Transaction Builder']
 
-    cy.visit(constants.appsUrlGeneral + constants.SEPOLIA_TEST_SAFE_3).then(() => {
+    cy.visit(constants.appsUrlGeneral + staticSafes.SEP_STATIC_SAFE_5).then(() => {
       main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set1).then(() => {
         main
           .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.importedSafe)
@@ -63,7 +70,7 @@ describe('[SMOKE] Import Export Data tests', () => {
     const unchecked = [file.copyAddressStr]
     const checked = [file.darkModeStr]
 
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3).then(() => {
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_5).then(() => {
       main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__settings, ls.safeSettings.settings1).then(() => {
         main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__safeApps, ls.pinnedApps.transactionBuilder).then
         main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set1).then(() => {
@@ -81,7 +88,7 @@ describe('[SMOKE] Import Export Data tests', () => {
   })
 
   it('[SMOKE] Verify data for export in Data tab', () => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3).then(() => {
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_5).then(() => {
       main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__settings, ls.safeSettings.settings1).then(() => {
         main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set1).then(() => {
           main

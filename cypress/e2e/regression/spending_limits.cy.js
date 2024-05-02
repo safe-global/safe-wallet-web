@@ -5,14 +5,21 @@ import * as owner from '../pages/owners.pages'
 import * as navigation from '../pages/navigation.page'
 import * as tx from '../pages/create_tx.pages'
 import * as ls from '../../support/localstorage_data.js'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const tokenAmount = 0.1
 const newTokenAmount = 0.001
 const spendingLimitBalance = '(0.17 ETH)'
 
 describe('Spending limits tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.securityUrl + constants.SEPOLIA_TEST_SAFE_12)
+    cy.visit(constants.securityUrl + staticSafes.SEP_STATIC_SAFE_8)
     cy.clearLocalStorage()
     main.acceptCookies()
     owner.waitForConnectionStatus()
@@ -22,12 +29,12 @@ describe('Spending limits tests', () => {
   it('Verify that the Review step shows beneficiary, amount allowed, reset time', () => {
     //Assume that default reset time is set to One time
     spendinglimit.clickOnNewSpendingLimitBtn()
-    spendinglimit.enterBeneficiaryAddress(constants.SEPOLIA_TEST_SAFE_7)
+    spendinglimit.enterBeneficiaryAddress(staticSafes.SEP_STATIC_SAFE_6)
     spendinglimit.enterSpendingLimitAmount(0.1)
     spendinglimit.clickOnNextBtn()
     spendinglimit.checkReviewData(
       tokenAmount,
-      constants.SEPOLIA_TEST_SAFE_7,
+      staticSafes.SEP_STATIC_SAFE_6,
       spendinglimit.timePeriodOptions.oneTime.split(' ').join('-'),
     )
   })

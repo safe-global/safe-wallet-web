@@ -1,6 +1,9 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const sendValue = 0.00002
 const currentNonce = 2
@@ -13,9 +16,13 @@ function happyPathToStepTwo() {
 }
 
 describe('[SMOKE] Create transactions tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_16_CREATE_TX)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_12)
     main.acceptCookies()
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
@@ -28,7 +35,7 @@ describe('[SMOKE] Create transactions tests', () => {
 
   it('[SMOKE] Verify address input resolves a valid ENS name', () => {
     createtx.typeRecipientAddress(constants.ENS_TEST_SEPOLIA)
-    createtx.verifyENSResolves(constants.SEPOLIA_TEST_SAFE_7)
+    createtx.verifyENSResolves(staticSafes.SEP_STATIC_SAFE_6)
   })
 
   it('[SMOKE] Verify error message for invalid amount input', () => {
