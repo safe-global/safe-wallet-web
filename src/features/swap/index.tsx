@@ -61,7 +61,7 @@ const SwapWidget = ({ sell }: Params) => {
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
 
-  const [params, setParams] = useState<CowSwapWidgetParams | null>(null)
+  const [toasts, setToasts] = useState<String[]>([])
 
   const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
@@ -135,6 +135,7 @@ const SwapWidget = ({ sell }: Params) => {
     ]
   }, [dispatch])
 
+  const [params, setParams] = useState<CowSwapWidgetParams | null>(null)
   useEffect(() => {
     setParams({
       appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
