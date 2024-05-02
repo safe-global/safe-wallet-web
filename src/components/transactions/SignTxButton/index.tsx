@@ -1,3 +1,4 @@
+import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import type { SyntheticEvent } from 'react'
 import { useContext, type ReactElement } from 'react'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
@@ -23,7 +24,8 @@ const SignTxButton = ({
   const wallet = useWallet()
   const isSignable = isSignableBy(txSummary, wallet?.address || '')
   const safeSDK = useSafeSDK()
-  const isDisabled = !isSignable || !safeSDK
+  const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
+  const isDisabled = !isSignable || !safeSDK || expiredSwap
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()

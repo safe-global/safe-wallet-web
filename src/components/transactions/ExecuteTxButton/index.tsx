@@ -1,3 +1,4 @@
+import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import useIsPending from '@/hooks/useIsPending'
 import type { SyntheticEvent } from 'react'
 import { type ReactElement, useContext } from 'react'
@@ -5,7 +6,7 @@ import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sd
 import { Button, Tooltip } from '@mui/material'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isExpiredSwap, isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import Track from '@/components/common/Track'
 import { TX_LIST_EVENTS } from '@/services/analytics/events/txList'
 import { ReplaceTxHoverContext } from '../GroupedTxListItems/ReplaceTxHoverProvider'
@@ -28,7 +29,7 @@ const ExecuteTxButton = ({
   const { setSelectedTxId } = useContext(ReplaceTxHoverContext)
   const safeSDK = useSafeSDK()
 
-  const expiredSwap = isExpiredSwap(txSummary.txInfo)
+  const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
 
   const isNext = txNonce !== undefined && txNonce === safe.nonce
   const isDisabled = !isNext || !safeSDK || expiredSwap || isPending
