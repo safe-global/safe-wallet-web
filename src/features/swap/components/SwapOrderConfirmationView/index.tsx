@@ -23,8 +23,21 @@ type SwapOrderProps = {
 export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrderProps): ReactElement | null => {
   if (!order) return null
 
-  const { uid, owner, kind, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } =
-    order
+  const {
+    uid,
+    owner,
+    kind,
+    validUntil,
+    status,
+    sellToken,
+    buyToken,
+    sellAmount,
+    buyAmount,
+    explorerUrl,
+    receiver,
+    orderClass,
+  } = order
+
   const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
   const surplusPrice = getSurplusPrice(order)
@@ -90,9 +103,13 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
           ) : (
             <></>
           ),
-          <DataRow key="Slippage" title="Slippage">
-            {slippage}%
-          </DataRow>,
+          orderClass !== 'limit' ? (
+            <DataRow key="Slippage" title="Slippage">
+              {slippage}%
+            </DataRow>
+          ) : (
+            <></>
+          ),
           <DataRow key="Order ID" title="Order ID">
             <OrderId orderId={uid} href={explorerUrl} />
           </DataRow>,
