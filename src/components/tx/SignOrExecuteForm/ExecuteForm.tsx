@@ -112,7 +112,7 @@ export const ExecuteForm = ({
 
     // On success
     onSubmit?.(executedTxId, true)
-    setTxFlow(<SuccessScreenFlow txId={executedTxId} />, undefined, false)
+    setTxFlow(<SuccessScreenFlow txId={executedTxId} safeTx={safeTx} />, undefined, false)
   }
 
   const walletCanPay = useWalletCanPay({
