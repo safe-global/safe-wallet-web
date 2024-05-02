@@ -29,7 +29,7 @@ const SuccessScreen = ({ txId, safeTx }: { txId: string; safeTx?: SafeTransactio
   const { status } = pendingTx || {}
   const txHash = pendingTx && 'txHash' in pendingTx ? pendingTx.txHash : undefined
   const txLink = chain && getTxLink(txId, chain, safeAddress)
-  const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
+  const [decodedData] = useDecodeTx(safeTx)
   const isSwapOrder = isSwapConfirmationViewOrder(decodedData)
 
   useEffect(() => {
