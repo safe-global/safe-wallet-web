@@ -158,11 +158,10 @@ const SwapWidget = ({ sell }: Params) => {
       //   'https://files.cow.fi/tokens/CowSwap.json',
       //   'https://tokens.coingecko.com/uniswap/all.json',
       // ],
-      tradeType, // TradeType.SWAP, TradeType.LIMIT or TradeType.ADVANCED
+      tradeType, // TradeType.SWAP or TradeType.LIMIT
       sell: sell
         ? sell
         : {
-            // Sell token. Optionally add amount for sell orders
             asset: '',
             amount: '0',
           },
