@@ -61,8 +61,6 @@ const SwapWidget = ({ sell }: Params) => {
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
 
-  const [toasts, setToasts] = useState<String[]>([])
-
   const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
     return [
