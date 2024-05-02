@@ -1,3 +1,4 @@
+import { FEATURES } from '@/utils/chains'
 import { type CowSwapWidgetParams, TradeType, CowSwapWidget } from '@cowprotocol/widget-react'
 import { CowEvents, type CowEventListeners } from '@cowprotocol/events'
 import { useState, useEffect, type MutableRefObject, useMemo } from 'react'
@@ -10,7 +11,7 @@ import {
   type SafeAppData,
   SafeAppFeatures,
 } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
-import { useCurrentChain } from '@/hooks/useChains'
+import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 import { showNotification } from '@/store/notificationsSlice'
@@ -25,11 +26,8 @@ import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
 
-const supportedChains = [1, 100, 11155111]
-
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
-const isSupportedChainForSwap = (chainId: number) => supportedChains.includes(chainId)
 type Params = {
   sell?: {
     asset: string
@@ -54,12 +52,11 @@ const SwapWidget = ({ sell }: Params) => {
   const { palette } = useTheme()
   const darkMode = useDarkMode()
   const dispatch = useAppDispatch()
+  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
 
   const { safeAddress } = useSafeInfo()
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
-
-  const [toasts, setToasts] = useState<String[]>([])
 
   const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
@@ -68,9 +65,8 @@ const SwapWidget = ({ sell }: Params) => {
         event: CowEvents.ON_TOAST_MESSAGE,
         handler: (event) => {
           console.info('🍞 New toast message:', event)
-          const { message, messageType, data } = event
+          const { messageType } = event
           switch (messageType) {
-            // @ts-ignore
             case 'ORDER_CREATED':
               dispatch(
                 showNotification({
@@ -81,7 +77,6 @@ const SwapWidget = ({ sell }: Params) => {
                 }),
               )
               break
-            // @ts-ignore
             case 'ORDER_PRESIGNED':
               dispatch(
                 showNotification({
@@ -92,7 +87,6 @@ const SwapWidget = ({ sell }: Params) => {
                 }),
               )
               break
-            // @ts-ignore
             case 'ORDER_FULFILLED':
               dispatch(
                 showNotification({
@@ -103,7 +97,6 @@ const SwapWidget = ({ sell }: Params) => {
                 }),
               )
               break
-            // @ts-ignore
             case 'ORDER_EXPIRED':
               dispatch(
                 showNotification({
@@ -114,7 +107,6 @@ const SwapWidget = ({ sell }: Params) => {
                 }),
               )
               break
-            // @ts-ignore
             case 'ORDER_CANCELLED':
               dispatch(
                 showNotification({
@@ -223,7 +215,7 @@ const SwapWidget = ({ sell }: Params) => {
     )
   }
 
-  if (!isSupportedChainForSwap(Number(chainId))) {
+  if (!isSwapFeatureEnabled) {
     return (
       <Container>
         <Grid container justifyContent="center">
@@ -232,8 +224,6 @@ const SwapWidget = ({ sell }: Params) => {
       </Container>
     )
   }
-
-  console.log('params', params, listeners)
 
   return (
     <Box className={css.swapWidget} id="swapWidget">
