@@ -1,7 +1,11 @@
 import type { RootState } from '@/store'
-import { TradeType } from '@cowprotocol/widget-react'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
+
+enum TradeType {
+  SWAP = 'swap',
+  LIMIT = 'limit',
+}
 
 export type SwapState = {
   tradeType: TradeType
@@ -15,12 +19,7 @@ export const swapParamsSlice = createSlice({
   name: 'swapParams',
   initialState,
   reducers: {
-    setSwapParams: (_, action: PayloadAction<SwapState>) => {
-      const { tradeType } = action.payload
-      return {
-        tradeType,
-      }
-    },
+    setSwapParams: (_, action: PayloadAction<SwapState>) => action.payload,
   },
 })
 
