@@ -7,6 +7,15 @@ type Quantity = {
   decimals: number
 }
 
+enum OrderKind {
+  SELL = 'sell',
+  BUY = 'buy',
+}
+
+function calculateDifference(amountA: string, amountB: string, decimals: number): number {
+  return asDecimal(BigInt(amountA), decimals) - asDecimal(BigInt(amountB), decimals)
+}
+
 function asDecimal(amount: number | bigint, decimals: number): number {
   return Number(formatUnits(amount, decimals))
 }
@@ -47,13 +56,20 @@ const calculateRatio = (a: Quantity, b: Quantity) => {
   return asDecimal(BigInt(a.amount), a.decimals) / asDecimal(BigInt(b.amount), b.decimals)
 }
 
-export const getSurplusPrice = (order: Pick<SwapOrder, 'executedBuyAmount' | 'buyAmount' | 'buyToken'>): number => {
-  const { executedBuyAmount, buyAmount, buyToken } = order
-
-  const surplus =
-    asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - asDecimal(BigInt(buyAmount), buyToken.decimals)
-
-  return surplus
+export const getSurplusPrice = (
+  order: Pick<
+    SwapOrder,
+    'executedBuyAmount' | 'buyAmount' | 'buyToken' | 'executedSellAmount' | 'sellAmount' | 'sellToken' | 'kind'
+  >,
+): number => {
+  const { kind, executedSellAmount, sellAmount, sellToken, executedBuyAmount, buyAmount, buyToken } = order
+  if (kind === OrderKind.BUY) {
+    return calculateDifference(sellAmount, executedSellAmount, sellToken.decimals)
+  } else if (kind === OrderKind.SELL) {
+    return calculateDifference(executedBuyAmount, buyAmount, buyToken.decimals)
+  } else {
+    return 0
+  }
 }
 
 export const getFilledPercentage = (
@@ -62,10 +78,10 @@ export const getFilledPercentage = (
   let executed: number
   let total: number
 
-  if (order.kind === 'buy') {
+  if (order.kind === OrderKind.BUY) {
     executed = Number(order.executedBuyAmount)
     total = Number(order.buyAmount)
-  } else if (order.kind === 'sell') {
+  } else if (order.kind === OrderKind.SELL) {
     executed = Number(order.executedSellAmount)
     total = Number(order.sellAmount)
   } else {
@@ -78,9 +94,9 @@ export const getFilledPercentage = (
 export const getFilledAmount = (
   order: Pick<SwapOrder, 'kind' | 'executedBuyAmount' | 'executedSellAmount' | 'buyToken' | 'sellToken'>,
 ): string => {
-  if (order.kind === 'buy') {
+  if (order.kind === OrderKind.BUY) {
     return formatUnits(order.executedBuyAmount, order.buyToken.decimals)
-  } else if (order.kind === 'sell') {
+  } else if (order.kind === OrderKind.SELL) {
     return formatUnits(order.executedSellAmount, order.sellToken.decimals)
   } else {
     return '0'
