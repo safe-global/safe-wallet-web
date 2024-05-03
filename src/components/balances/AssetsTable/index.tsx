@@ -133,7 +133,7 @@ const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: strin
   return (
     <CheckWallet allowSpendingLimit={!!spendingLimit}>
       {(isOk) => (
-        <Track {...SWAP_EVENTS.SWAP_ASSETS}>
+        <Track {...SWAP_EVENTS.SWAP_ASSETS} label={tokenInfo.address}>
           <Button
             variant="outlined"
             color="primary"
