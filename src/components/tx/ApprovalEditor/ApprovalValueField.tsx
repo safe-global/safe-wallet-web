@@ -36,7 +36,8 @@ export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: A
     },
   })
 
-  const helperText = fieldState.error?.message ?? fieldState.isDirty ? 'Save to apply changes' : ''
+  const helperText = fieldState.error?.message ?? (fieldState.isDirty ? 'Save to apply changes' : '')
+
   const label = `${approvalMethodDescription[tx.method](tx.tokenInfo?.symbol ?? '')}`
   const options = selectValues
 
