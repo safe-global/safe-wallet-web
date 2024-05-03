@@ -7,7 +7,13 @@ import { compareAsc } from 'date-fns'
 import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
-import { getExecutionPrice, getLimitPrice, getSlippageInPercent, getSurplusPrice } from '@/features/swap/helpers/utils'
+import {
+  getExecutionPrice,
+  getLimitPrice,
+  getOrderClass,
+  getSlippageInPercent,
+  getSurplusPrice,
+} from '@/features/swap/helpers/utils'
 import type { CowSwapConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
 import AlertIcon from '@/public/images/common/alert.svg'
@@ -25,9 +31,11 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
 
   const { uid, owner, kind, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } =
     order
+
   const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
   const surplusPrice = getSurplusPrice(order)
+  const orderClass = getOrderClass(order)
   const expires = new Date(validUntil * 1000)
   const now = new Date()
 
@@ -90,9 +98,13 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
           ) : (
             <></>
           ),
-          <DataRow key="Slippage" title="Slippage">
-            {slippage}%
-          </DataRow>,
+          orderClass !== 'limit' ? (
+            <DataRow key="Slippage" title="Slippage">
+              {slippage}%
+            </DataRow>
+          ) : (
+            <></>
+          ),
           <DataRow key="Order ID" title="Order ID">
             <OrderId orderId={uid} href={explorerUrl} />
           </DataRow>,
