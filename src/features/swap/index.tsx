@@ -1,3 +1,4 @@
+import { capitalize } from '@/hooks/useMnemonicName'
 import { FEATURES } from '@/utils/chains'
 import { type CowSwapWidgetParams, TradeType, CowSwapWidget } from '@cowprotocol/widget-react'
 import { CowEvents, type CowEventListeners } from '@cowprotocol/events'
@@ -36,18 +37,6 @@ type Params = {
   }
 }
 
-const appData: SafeAppData = {
-  id: 1,
-  url: 'https://app.safe.global',
-  name: 'Safe Swap',
-  iconUrl: 'https://app.safe.global/icon.png',
-  description: 'Safe Apps',
-  chainIds: ['1', '100'],
-  accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
-  tags: ['safe-apps'],
-  features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
-  socialProfiles: [],
-}
 const SwapWidget = ({ sell }: Params) => {
   const chainId = useChainId()
   const { palette } = useTheme()
@@ -60,6 +49,22 @@ const SwapWidget = ({ sell }: Params) => {
   const { safeAddress, safeLoading } = useSafeInfo()
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
+
+  const appData: SafeAppData = useMemo(
+    () => ({
+      id: 1,
+      url: 'https://app.safe.global',
+      name: `${capitalize(tradeType.toLowerCase())} order`,
+      iconUrl: darkMode ? './images/common/safe-swap-dark.svg' : './images/common/safe-swap.svg',
+      description: 'Safe Apps',
+      chainIds: ['1', '100'],
+      accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
+      tags: ['safe-apps'],
+      features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
+      socialProfiles: [],
+    }),
+    [darkMode, tradeType],
+  )
 
   const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {

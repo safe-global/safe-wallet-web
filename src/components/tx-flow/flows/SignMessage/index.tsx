@@ -11,8 +11,8 @@ export const AppTitle = ({ name, logoUri }: { name?: string | null; logoUri?: st
   const appLogo = logoUri || APP_LOGO_FALLBACK_IMAGE
   return (
     <Box display="flex" alignItems="center">
-      <SafeAppIconCard src={appLogo} alt={name || 'The icon of the application'} width={24} height={24} />
-      <Typography variant="h4" pl={1}>
+      <SafeAppIconCard src={appLogo} alt={name || 'The icon of the application'} width={32} height={32} />
+      <Typography variant="h4" pl={2} fontWeight="bold">
         {appName}
       </Typography>
     </Box>
