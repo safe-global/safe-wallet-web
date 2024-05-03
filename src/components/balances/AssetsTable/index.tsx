@@ -29,7 +29,7 @@ import AddFundsCTA from '@/components/common/AddFunds'
 import { SWAP_EVENTS } from '@/services/analytics/events/swaps'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
-import SwapIcon from '@/public/images/sidebar/swap.svg'
+import SwapIcon from '@/public/images/common/swap.svg'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
