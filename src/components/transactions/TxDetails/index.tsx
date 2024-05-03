@@ -1,4 +1,5 @@
 import { POLLING_INTERVAL } from '@/config/constants'
+import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import useIntervalCounter from '@/hooks/useIntervalCounter'
 import React, { type ReactElement } from 'react'
 import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
@@ -12,7 +13,6 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import {
   isAwaitingExecution,
-  isExpiredSwap,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
@@ -67,7 +67,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     safeTxHash = txDetails.detailedExecutionInfo.safeTxHash
   }
 
-  const expiredSwap = isExpiredSwap(txSummary.txInfo)
+  const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
 
   return (
     <>

@@ -15,6 +15,9 @@ const useInterval = (callback: () => void, time: number) => {
   useEffect(() => {
     const interval = setInterval(() => callbackRef.current?.(), time)
 
+    // Call the function once initially
+    callbackRef.current?.()
+
     return () => clearInterval(interval)
   }, [time])
 }
