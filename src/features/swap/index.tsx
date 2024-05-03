@@ -194,7 +194,7 @@ const SwapWidget = ({ sell }: Params) => {
     if (iframeElement) {
       iframeRef.current = iframeElement as HTMLIFrameElement
     }
-  }, [params])
+  }, [params, isConsentAccepted])
 
   useCustomAppCommunicator(iframeRef, appData, chain)
 
