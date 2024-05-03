@@ -141,5 +141,38 @@ describe('Swap helpers', () => {
 
       expect(result).toEqual('0')
     })
+
+    // eslint-disable-next-line no-only-tests/no-only-tests
+    it('returns the surplus amount for buy orders', () => {
+      const mockOrder = {
+        executedSellAmount: '10000000000000000000', //10
+        executedBuyAmount: '50',
+        buyToken: { decimals: 8 },
+        sellToken: { decimals: 18 },
+        sellAmount: '15000000000000000000', //15
+        buyAmount: '5000000000',
+        kind: 'buy',
+      } as unknown as SwapOrder
+
+      const result = getSurplusPrice(mockOrder)
+
+      expect(result).toEqual(5)
+    })
+
+    it('returns the surplus amount for sell orders', () => {
+      const mockOrder = {
+        executedSellAmount: '100000000000000000000',
+        executedBuyAmount: '10000000000', //100
+        buyToken: { decimals: 8 },
+        sellToken: { decimals: 18 },
+        sellAmount: '100000000000000000000',
+        buyAmount: '5000000000', //50
+        kind: 'sell',
+      } as unknown as SwapOrder
+
+      const result = getSurplusPrice(mockOrder)
+
+      expect(result).toEqual(50)
+    })
   })
 })
