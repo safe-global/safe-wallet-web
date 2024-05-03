@@ -19,7 +19,7 @@ export const BlockedAddress = ({ address }: { address?: string }): ReactElement 
     <Disclaimer
       title="Blocked Address"
       subtitle={displayAddress}
-      content="This signer address is blocked by the Safe interface, due to being associated with the blocked activities by 
+      content="This address is blocked by the Safe interface, due to being associated with the blocked activities by
       the U.S. Department of Treasury in the Specially Designated Nationals (SDN) list."
       onAccept={handleAccept}
     />
