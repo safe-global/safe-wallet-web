@@ -66,7 +66,7 @@
     "@tkey-mpc/common-types": "^8.2.2",
     "@truffle/hdwallet-provider": "^2.1.4",
     "@walletconnect/utils": "^2.11.3",
-    "@walletconnect/web3wallet": "^1.10.3",
+    "@walletconnect/web3wallet": "^1.11.2",
     "@web3-onboard/coinbase": "^2.2.6",
     "@web3-onboard/core": "^2.21.4",
     "@web3-onboard/injected-wallets": "^2.10.14",
