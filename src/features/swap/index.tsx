@@ -57,7 +57,7 @@ const SwapWidget = ({ sell }: Params) => {
   const swapParams = useAppSelector(selectSwapParams)
   const { tradeType } = swapParams
 
-  const { safeAddress } = useSafeInfo()
+  const { safeAddress, safeLoading } = useSafeInfo()
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
 
@@ -194,7 +194,7 @@ const SwapWidget = ({ sell }: Params) => {
     if (iframeElement) {
       iframeRef.current = iframeElement as HTMLIFrameElement
     }
-  }, [params])
+  }, [params, isConsentAccepted, safeLoading])
 
   useCustomAppCommunicator(iframeRef, appData, chain)
 
