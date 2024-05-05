@@ -22,7 +22,7 @@ describe('[SMOKE] Create transactions tests', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_12)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_10)
     main.acceptCookies()
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()

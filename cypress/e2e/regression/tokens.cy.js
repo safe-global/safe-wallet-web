@@ -183,7 +183,7 @@ describe('Tokens tests', () => {
   })
 
   it('Verify that when connected user is not owner, Send button is disabled', () => {
-    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_11)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_3)
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     assets.showSendBtn(0)
     assets.VerifySendButtonIsDisabled()

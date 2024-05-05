@@ -479,6 +479,22 @@ export const addedSafes = {
       },
     },
     11155111: {
+      '0x027bBe128174F0e5e5d22ECe9623698E01cd3970': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+          {
+            value: '0x96D4c6fFC338912322813a77655fCC926b9A5aC5',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 1,
+        ethBalance: '0',
+      },
       '0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7': {
         owners: [
           {

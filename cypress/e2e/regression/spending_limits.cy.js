@@ -99,31 +99,33 @@ describe('Spending limits tests', () => {
   })
 
   it('Verify that when multiple assets are available, they are displayed in token dropdown', () => {
-    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__settings, ls.safeSettings.slimitSettings).then(() => {
-      main
-        .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__settings, ls.safeSettings.slimitSettings)
-        .then(() => {
-          cy.reload()
-          navigation.clickOnNewTxBtn()
-          tx.clickOnSendTokensBtn()
-          spendinglimit.clickOnTokenDropdown()
-          spendinglimit.verifyMandatoryTokensExist()
-        })
-    })
+    cy.wrap(null)
+      .then(() => main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__settings, ls.safeSettings.slimitSettings))
+      .then(() =>
+        main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__settings, ls.safeSettings.slimitSettings),
+      )
+      .then(() => {
+        cy.reload()
+        navigation.clickOnNewTxBtn()
+        tx.clickOnSendTokensBtn()
+        spendinglimit.clickOnTokenDropdown()
+        spendinglimit.verifyMandatoryTokensExist()
+      })
   })
 
   it('Verify that beneficiary can be retried from address book', () => {
-    main
-      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress2)
+    cy.wrap(null)
+      .then(() =>
+        main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress2),
+      )
+      .then(() =>
+        main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress2),
+      )
       .then(() => {
-        main
-          .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress2)
-          .then(() => {
-            cy.reload()
-            spendinglimit.clickOnNewSpendingLimitBtn()
-            spendinglimit.enterBeneficiaryAddress(constants.DEFAULT_OWNER_ADDRESS.substring(30))
-            spendinglimit.selectRecipient(constants.DEFAULT_OWNER_ADDRESS)
-          })
+        cy.reload()
+        spendinglimit.clickOnNewSpendingLimitBtn()
+        spendinglimit.enterBeneficiaryAddress(constants.DEFAULT_OWNER_ADDRESS.substring(30))
+        spendinglimit.selectRecipient(constants.DEFAULT_OWNER_ADDRESS)
       })
   })
 
