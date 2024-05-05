@@ -6,7 +6,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 let staticSafes = []
 
 const sendValue = 0.00002
-const currentNonce = 2
+const currentNonce = 3
 
 function happyPathToStepTwo() {
   createtx.typeRecipientAddress(constants.EOA)
