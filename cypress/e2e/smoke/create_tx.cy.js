@@ -6,7 +6,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 let staticSafes = []
 
 const sendValue = 0.00002
-const currentNonce = 2
+const currentNonce = 3
 
 function happyPathToStepTwo() {
   createtx.typeRecipientAddress(constants.EOA)
@@ -22,7 +22,7 @@ describe('[SMOKE] Create transactions tests', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_12)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_10)
     main.acceptCookies()
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()

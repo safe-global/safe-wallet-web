@@ -20,7 +20,7 @@ describe('[SMOKE] Import Export Data tests 2', () => {
   })
 
   beforeEach(() => {
-    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_16)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_13)
     cy.clearLocalStorage()
     main.acceptCookies()
   })
@@ -37,9 +37,9 @@ describe('[SMOKE] Import Export Data tests 2', () => {
     file.verifyImportMessages()
     file.verifyImportBtnStatus(constants.enabledStates.enabled)
     file.clickOnImportBtn()
-    cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_16)
+    cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_13)
     file.verifyImportedAddressBookData()
-    cy.visit(constants.appsUrlGeneral + staticSafes.SEP_STATIC_SAFE_16)
+    cy.visit(constants.appsUrlGeneral + staticSafes.SEP_STATIC_SAFE_13)
     file.verifyPinnedApps(appNames)
   })
 
@@ -52,7 +52,7 @@ describe('[SMOKE] Import Export Data tests 2', () => {
   })
 
   it('[SMOKE] Verify the Import section is on the Global settings', () => {
-    cy.visit(constants.dataSettingsUrl + staticSafes.SEP_STATIC_SAFE_16)
+    cy.visit(constants.dataSettingsUrl + staticSafes.SEP_STATIC_SAFE_13)
     file.verifyImportSectionVisible()
     file.verifyValidImportInputExists()
   })
@@ -70,7 +70,7 @@ describe('[SMOKE] Import Export Data tests 2', () => {
   })
 
   it('[SMOKE] Verify that the Export section is present in the safe settings', () => {
-    cy.visit(constants.dataSettingsUrl + staticSafes.SEP_STATIC_SAFE_16)
+    cy.visit(constants.dataSettingsUrl + staticSafes.SEP_STATIC_SAFE_13)
     file.verifyExportFileSectionIsVisible()
   })
 })

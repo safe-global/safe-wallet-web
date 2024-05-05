@@ -33,11 +33,13 @@ describe('Load Safe tests 2', () => {
   })
 
   it('Verify names in address book are filled by default from address book', () => {
-    main
-      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName)
+    cy.wrap(null)
+      .then(() =>
+        main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName),
+      )
       .then(() => {
         cy.reload()
-        safe.inputAddress(staticSafes.SEP_STATIC_SAFE_15)
+        safe.inputAddress(staticSafes.SEP_STATIC_SAFE_13)
         safe.clickOnNextBtn()
         safe.verifyOwnerNames(ownerNames)
         safe.verifyOnwerInputIsNotEmpty(0)
@@ -45,28 +47,30 @@ describe('Load Safe tests 2', () => {
   })
 
   it('Verify Safe address checksum', () => {
-    safe.verifyAddressCheckSum(staticSafes.SEP_STATIC_SAFE_15)
-    safe.verifyAddressInputValue(staticSafes.SEP_STATIC_SAFE_15)
-    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_15.split(':')[1].toLowerCase())
-    safe.verifyAddressInputValue(staticSafes.SEP_STATIC_SAFE_15)
+    safe.verifyAddressCheckSum(staticSafes.SEP_STATIC_SAFE_13)
+    safe.verifyAddressInputValue(staticSafes.SEP_STATIC_SAFE_13)
+    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_13.split(':')[1].toLowerCase())
+    safe.verifyAddressInputValue(staticSafes.SEP_STATIC_SAFE_13)
   })
 
   it('Verify owner name cannot be longer than 50 characters', () => {
-    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_15)
+    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_13)
     safe.clickOnNextBtn()
     safe.inputOwnerName(0, main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
 
   it('Verify names with primary ENS name are filled by default', () => {
-    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_15)
+    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_13)
     safe.clickOnNextBtn()
     safe.verifyOnwerNameENS(1, constants.ENS_TEST_SEPOLIA_VALID)
   })
 
   it('Verify correct owner names are displayed for certain networks', () => {
-    main
-      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName)
+    cy.wrap(null)
+      .then(() =>
+        main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName),
+      )
       .then(() => {
         cy.reload()
         safe.clickNetworkSelector(constants.networks.sepolia)
@@ -77,7 +81,7 @@ describe('Load Safe tests 2', () => {
         safe.clickOnBackBtn()
         safe.clickNetworkSelector(constants.networks.ethereum)
         safe.selectSepolia()
-        safe.inputAddress(staticSafes.SEP_STATIC_SAFE_15)
+        safe.inputAddress(staticSafes.SEP_STATIC_SAFE_13)
         safe.clickOnNextBtn()
         safe.verifyOwnerNames(ownerSepolia)
       })
@@ -89,17 +93,19 @@ describe('Load Safe tests 2', () => {
   })
 
   it('Verify a valid address can be entered', () => {
-    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_15)
+    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_13)
     safe.verifyAddresFormatIsValid()
   })
 
   it('Verify that safes already added to the watchlist cannot be added again', () => {
-    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set1).then(() => {
-      cy.reload()
-      safe.inputAddress(staticSafes.SEP_STATIC_SAFE_5)
-      owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.safeAlreadyAdded)
-      safe.verifyNextButtonStatus(constants.enabledStates.disabled)
-    })
+    cy.wrap(null)
+      .then(() => main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set1))
+      .then(() => {
+        cy.reload()
+        safe.inputAddress(staticSafes.SEP_STATIC_SAFE_13)
+        owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.safeAlreadyAdded)
+        safe.verifyNextButtonStatus(constants.enabledStates.disabled)
+      })
   })
 
   it('Verify that the wrong prefix is not allowed', () => {

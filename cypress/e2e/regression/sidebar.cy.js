@@ -43,7 +43,7 @@ describe('Sidebar tests', () => {
   })
 
   it('Verify New transaction button enabled for beneficiaries who are non-owners', () => {
-    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_10)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_11)
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
 
