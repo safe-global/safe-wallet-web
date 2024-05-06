@@ -1,3 +1,4 @@
+import { getOrderClass } from '@/features/swap/helpers/utils'
 import { useMemo } from 'react'
 import {
   type AddressEx,
@@ -36,7 +37,6 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
   const toAddress = getTxTo(tx)
   const addressBookName = toAddress?.value ? addressBook[toAddress.value] : undefined
 
-  console.log('tx.txInfo.type:', tx.txInfo.type, TransactionInfoType.SWAP_ORDER)
   switch (tx.txInfo.type) {
     case TransactionInfoType.CREATION: {
       return {
@@ -63,9 +63,11 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       }
     }
     case TransactionInfoType.SWAP_ORDER: {
+      const orderClass = getOrderClass(tx.txInfo)
+
       return {
         icon: '/images/transactions/cow-logo.png',
-        text: 'Swap order',
+        text: orderClass === 'limit' ? 'Limit order' : 'Swap order',
       }
     }
     case TransactionInfoType.CUSTOM: {
