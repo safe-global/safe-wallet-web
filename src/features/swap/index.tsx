@@ -14,7 +14,6 @@ import {
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
-import { showNotification } from '@/store/notificationsSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
 
 import css from './styles.module.css'
@@ -26,6 +25,7 @@ import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
 import { selectSwapParams, setSwapParams } from './store/swapParamsSlice'
+import { setSwapOrder } from '@/store/swapOrderSlice'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -61,7 +61,6 @@ const SwapWidget = ({ sell }: Params) => {
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
 
-  const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
     return [
       {
@@ -69,54 +68,45 @@ const SwapWidget = ({ sell }: Params) => {
         handler: (event) => {
           console.info('🍞 New toast message:', event)
           const { messageType } = event
+
           switch (messageType) {
             case 'ORDER_CREATED':
               dispatch(
-                showNotification({
-                  title: 'Swap transaction created',
-                  message: 'Waiting for confirmation from signers of your Safe',
-                  groupKey,
-                  variant: 'info',
+                setSwapOrder({
+                  orderUid: event.data.orderUid,
+                  status: 'created',
                 }),
               )
               break
             case 'ORDER_PRESIGNED':
               dispatch(
-                showNotification({
-                  title: 'Swap transaction confirmed',
-                  message: 'Waiting for swap execution by the CoW Protocol',
-                  groupKey,
-                  variant: 'info',
+                setSwapOrder({
+                  orderUid: event.data.orderUid,
+                  status: 'open',
                 }),
               )
               break
             case 'ORDER_FULFILLED':
               dispatch(
-                showNotification({
-                  title: 'Swap executed',
-                  message: 'Your swap has been successful',
-                  groupKey,
-                  variant: 'info',
+                setSwapOrder({
+                  orderUid: event.data.orderUid,
+                  status: 'fulfilled',
                 }),
               )
               break
             case 'ORDER_EXPIRED':
               dispatch(
-                showNotification({
-                  title: 'Swap expired',
-                  message: 'Your swap has reached the expiry time and has become invalid',
-                  groupKey,
-                  variant: 'warning',
+                setSwapOrder({
+                  orderUid: event.data.orderUid,
+                  status: 'expired',
                 }),
               )
               break
             case 'ORDER_CANCELLED':
               dispatch(
-                showNotification({
-                  title: 'Swap cancelled',
-                  message: 'Your swap has been cancelled',
-                  groupKey,
-                  variant: 'warning',
+                setSwapOrder({
+                  orderUid: event.data.orderUid,
+                  status: 'cancelled',
                 }),
               )
               break
