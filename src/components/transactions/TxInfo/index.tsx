@@ -97,11 +97,11 @@ const SwapTx = ({ info }: { info: SwapOrder }): ReactElement => {
       <Typography display="flex" alignItems="center" fontWeight="bold">
         Swap{' '}
         <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
-          <TokenIcon logoUri={info.sellToken.logoUri || undefined} tokenSymbol={info.sellToken.symbol} rounded={true} />
+          <TokenIcon logoUri={info.sellToken.logoUri || undefined} tokenSymbol={info.sellToken.symbol} />
         </Box>
         {info.sellToken.symbol} to
         <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
-          <TokenIcon logoUri={info.buyToken.logoUri || undefined} tokenSymbol={info.buyToken.symbol} rounded={true} />
+          <TokenIcon logoUri={info.buyToken.logoUri || undefined} tokenSymbol={info.buyToken.symbol} />
         </Box>{' '}
         {info.buyToken.symbol}
       </Typography>
