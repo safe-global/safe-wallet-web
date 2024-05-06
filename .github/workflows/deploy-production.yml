@@ -6,6 +6,9 @@ on:
 
 jobs:
   release:
+    permissions:
+      id-token: write
+
     runs-on: ubuntu-latest
     name: Deploy release
     env:
@@ -48,8 +51,6 @@ jobs:
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
-        permissions:
-          id-token: write
         with:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
