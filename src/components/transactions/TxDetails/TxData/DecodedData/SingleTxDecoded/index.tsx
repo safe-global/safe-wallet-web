@@ -13,7 +13,7 @@ import accordionCss from '@/styles/accordion.module.css'
 import CodeIcon from '@mui/icons-material/Code'
 import { DelegateCallWarning } from '@/components/transactions/Warning'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction
@@ -74,7 +74,7 @@ export const SingleTxDecoded = ({
         {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
         {!isSpendingLimitMethod && (
           <InfoDetails title={title}>
-            <EthHashInfo
+            <NamedAddressInfo
               address={tx.to}
               name={name}
               customAvatar={avatarUrl}

@@ -18,8 +18,8 @@ import type { CowSwapConfirmationView } from '@safe-global/safe-gateway-typescri
 import SwapTokens from '@/features/swap/components/SwapTokens'
 import AlertIcon from '@/public/images/common/alert.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import CowLogo from '@/public/images/swaps/cow-logo.png'
 import css from './styles.module.css'
+import NamedAddress from '@/components/common/NamedAddressInfo'
 
 type SwapOrderProps = {
   order: CowSwapConfirmationView
@@ -109,15 +109,7 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
             <OrderId orderId={uid} href={explorerUrl} />
           </DataRow>,
           <DataRow key="Interact with" title="Interact with">
-            <EthHashInfo
-              address={settlementContract}
-              name="Cow Protocol"
-              customAvatar={CowLogo.src}
-              avatarSize={24}
-              shortAddress={false}
-              hasExplorer
-              onlyName
-            />
+            <NamedAddress address={settlementContract} onlyName hasExplorer shortAddress={false} avatarSize={24} />
           </DataRow>,
           receiver && owner !== receiver ? (
             <>
