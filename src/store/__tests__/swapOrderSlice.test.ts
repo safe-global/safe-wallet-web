@@ -422,7 +422,7 @@ describe('swapOrderSlice', () => {
       })
 
       expect(showNotificationSpy).not.toHaveBeenCalled()
-      expect(mockDispatch).not.toHaveBeenCalledWith(deleteSwapOrder('order1'))
+      expect(mockDispatch).toHaveBeenCalledWith(deleteSwapOrder('order1'))
     })
 
     it('should dispatch a notification if the swapOrder status is expired and old status is not undefined', () => {
@@ -489,7 +489,7 @@ describe('swapOrderSlice', () => {
       })
 
       expect(showNotificationSpy).not.toHaveBeenCalled()
-      expect(mockDispatch).not.toHaveBeenCalledWith(deleteSwapOrder('order1'))
+      expect(mockDispatch).toHaveBeenCalledWith(deleteSwapOrder('order1'))
     })
 
     it('should dispatch a notification if the swapOrder status is cancelled and old status is not undefined', () => {
