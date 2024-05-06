@@ -24,7 +24,7 @@ import { isBlockedAddress } from '@/services/ofac'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
-import { selectSwapParams, setSwapParams } from './store/swapParamsSlice'
+import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
@@ -36,18 +36,12 @@ type Params = {
   }
 }
 
-const appData: SafeAppData = {
-  id: 1,
-  url: 'https://app.safe.global',
-  name: 'Safe Swap',
-  iconUrl: 'https://app.safe.global/icon.png',
-  description: 'Safe Apps',
-  chainIds: ['1', '100'],
-  accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
-  tags: ['safe-apps'],
-  features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
-  socialProfiles: [],
+export const SWAP_TITLE = 'Safe Swap'
+
+export const getSwapTitle = (tradeType: SwapState['tradeType']) => {
+  return tradeType === 'limit' ? 'Limit order' : 'Swap order'
 }
+
 const SwapWidget = ({ sell }: Params) => {
   const chainId = useChainId()
   const { palette } = useTheme()
@@ -61,6 +55,23 @@ const SwapWidget = ({ sell }: Params) => {
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
 
+  const appData: SafeAppData = useMemo(
+    () => ({
+      id: 1,
+      url: 'https://app.safe.global',
+      name: SWAP_TITLE,
+      iconUrl: darkMode ? './images/common/safe-swap-dark.svg' : './images/common/safe-swap.svg',
+      description: 'Safe Apps',
+      chainIds: ['1', '100'],
+      accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
+      tags: ['safe-apps'],
+      features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
+      socialProfiles: [],
+    }),
+    [darkMode],
+  )
+
+  const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
     return [
       {
