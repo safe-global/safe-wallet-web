@@ -13,7 +13,7 @@ import accordionCss from '@/styles/accordion.module.css'
 import CodeIcon from '@mui/icons-material/Code'
 import { DelegateCallWarning } from '@/components/transactions/Warning'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
-import NamedAddressInfo from '@/components/common/NamedAddress'
+import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction

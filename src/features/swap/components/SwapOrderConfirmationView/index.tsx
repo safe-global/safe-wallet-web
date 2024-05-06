@@ -19,7 +19,7 @@ import SwapTokens from '@/features/swap/components/SwapTokens'
 import AlertIcon from '@/public/images/common/alert.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
-import NamedAddress from '@/components/common/NamedAddress'
+import NamedAddress from '@/components/common/NamedAddressInfo'
 
 type SwapOrderProps = {
   order: CowSwapConfirmationView

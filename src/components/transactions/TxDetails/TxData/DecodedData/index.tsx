@@ -4,7 +4,7 @@ import { isCustomTxInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
-import NamedAddressInfo from '@/components/common/NamedAddress'
+import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 
 interface Props {
   txData: TransactionDetails['txData']
