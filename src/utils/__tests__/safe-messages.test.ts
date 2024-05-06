@@ -1,9 +1,10 @@
 import { zeroPadValue } from 'ethers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { generateSafeMessageTypedData, isOffchainEIP1271Supported } from '../safe-messages'
+import { generateSafeMessageTypedData, isBlindSigningPayload, isOffchainEIP1271Supported } from '../safe-messages'
 import { toBeHex } from 'ethers'
 import { FEATURES } from '../chains'
+import { faker } from '@faker-js/faker'
 
 const MOCK_ADDRESS = zeroPadValue('0x0123', 20)
 
@@ -350,6 +351,95 @@ describe('safe-messages', () => {
           } as any,
         ),
       ).toBeTruthy()
+    })
+  })
+
+  describe('isBlindSigningPayload', () => {
+    it('should detect blind signing requests', () => {
+      expect(isBlindSigningPayload(`0x${faker.number.hex()}`)).toBeTruthy()
+      expect(isBlindSigningPayload(`0x${faker.number.hex()}`)).toBeTruthy()
+      expect(isBlindSigningPayload(`0x${faker.number.hex()}`)).toBeTruthy()
+      expect(isBlindSigningPayload(`0x${faker.number.hex()}`)).toBeTruthy()
+      expect(isBlindSigningPayload(`0x${faker.number.hex()}`)).toBeTruthy()
+    })
+
+    it('should not flag EIP 712 messages', () => {
+      const message = {
+        domain: {
+          chainId: 1,
+          name: 'Ether Mail',
+          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          version: '1',
+        },
+        message: {
+          contents: 'Hello, Bob!',
+          from: {
+            name: 'Cow',
+            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+          },
+          to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+          },
+        },
+        primaryType: 'Mail',
+        types: {
+          EIP712Domain: [
+            {
+              name: 'name',
+              type: 'string',
+            },
+            {
+              name: 'version',
+              type: 'string',
+            },
+            {
+              name: 'chainId',
+              type: 'uint256',
+            },
+            {
+              name: 'verifyingContract',
+              type: 'address',
+            },
+          ],
+          Mail: [
+            {
+              name: 'from',
+              type: 'Person',
+            },
+            {
+              name: 'to',
+              type: 'Person',
+            },
+            {
+              name: 'contents',
+              type: 'string',
+            },
+          ],
+          Person: [
+            {
+              name: 'name',
+              type: 'string',
+            },
+            {
+              name: 'wallet',
+              type: 'address',
+            },
+          ],
+        },
+      }
+      expect(isBlindSigningPayload(message)).toBeFalsy()
+    })
+
+    it('should not flag legit message requests', () => {
+      expect(
+        isBlindSigningPayload(
+          'localhost wants you to sign in with your Ethereum account: 0x6Ee9894c677EFa1c56392e5E7533DE76004C8D94\n\nThis is a test statement.\n\nURI: https://localhost/login\nVersion: 1\nChain ID: 1\nNonce: oNCEHm5jzQU2WvuBB\nIssued At: 2022-01-28T23:28:16.013Z',
+        ),
+      ).toBeFalsy()
+
+      expect(isBlindSigningPayload('I hereby confirm order 0x123456ABC')).toBeFalsy()
+      expect(isBlindSigningPayload('0x432165 should be invalidated')).toBeFalsy()
     })
   })
 })

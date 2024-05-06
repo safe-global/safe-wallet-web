@@ -3,10 +3,17 @@ import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
 import * as createwallet from '../pages/create_wallet.pages'
 import * as createTx from '../pages/create_tx.pages.js'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 describe('Remove Owners tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_3)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_13)
     main.waitForHistoryCallToComplete()
     cy.clearLocalStorage()
     main.acceptCookies()
@@ -19,7 +26,7 @@ describe('Remove Owners tests', () => {
   })
 
   it('Verify Tooltip displays correct message for Non-Owner', () => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_4)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_1)
     main.waitForHistoryCallToComplete()
     owner.waitForConnectionStatus()
     owner.verifyRemoveBtnIsDisabled()

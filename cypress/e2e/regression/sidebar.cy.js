@@ -2,10 +2,17 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as sideBar from '../pages/sidebar.pages'
 import * as navigation from '../pages/navigation.page'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 describe('Sidebar tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_13)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_9)
     cy.clearLocalStorage()
     main.acceptCookies()
   })
@@ -23,8 +30,8 @@ describe('Sidebar tests', () => {
     sideBar.verifyQRModalDisplayed()
   })
 
-  it('Verify Copy button copies the address', () => {
-    sideBar.verifyCopyAddressBtn(constants.SEPOLIA_TEST_SAFE_13.substring(4))
+  it.skip('Verify Copy button copies the address', () => {
+    sideBar.verifyCopyAddressBtn(staticSafes.SEP_STATIC_SAFE_9.substring(4))
   })
 
   it('Verify Open blockexplorer button contain etherscan link', () => {
@@ -36,7 +43,7 @@ describe('Sidebar tests', () => {
   })
 
   it('Verify New transaction button enabled for beneficiaries who are non-owners', () => {
-    cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_14)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_11)
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
 

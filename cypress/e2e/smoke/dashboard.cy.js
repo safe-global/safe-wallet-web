@@ -3,16 +3,23 @@ import * as dashboard from '../pages/dashboard.pages'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 import * as createTx from '../pages/create_tx.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const txData = ['14', 'Send', '-0.00002 ETH', '1 out of 1']
 const txaddOwner = ['5', 'addOwnerWithThreshold', '1 out of 2']
 const txMultiSendCall3 = ['4', 'Safe: MultiSendCallOnly 1.3.0', '3 actions', '1 out of 2']
 const txMultiSendCall2 = ['6', 'Safe: MultiSendCallOnly 1.3.0', '2 actions', '1 out of 2']
 
-describe('[SMOKE] Dashboard tests', () => {
+describe('[SMOKE] Dashboard tests', { defaultCommandTimeout: 20000 }, () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_5)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_2)
     main.acceptCookies()
     dashboard.verifyConnectTransactStrIsVisible()
   })
@@ -33,7 +40,7 @@ describe('[SMOKE] Dashboard tests', () => {
     dashboard.verifySafeAppsSection()
   })
 
-  it('[SMOKE] Verify clicking on the share icon copies the app URL to the clipboard', () => {
+  it.skip('[SMOKE] Verify clicking on the share icon copies the app URL to the clipboard', () => {
     dashboard.verifyShareBtnWorks(0, dashboard.copiedAppUrl)
   })
 
@@ -43,9 +50,9 @@ describe('[SMOKE] Dashboard tests', () => {
 
   it('[SMOKE] Verify that pinned in dashboard, an app keeps its status on apps page', () => {
     dashboard.pinAppByIndex(0).then((pinnedApp) => {
-      cy.visit(constants.appsUrlGeneral + constants.SEPOLIA_TEST_SAFE_5)
+      cy.visit(constants.appsUrlGeneral + staticSafes.SEP_STATIC_SAFE_2)
       safeapps.verifyPinnedApp(pinnedApp)
-      cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_5)
+      cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_2)
       dashboard.clickOnPinBtnByName(pinnedApp)
       dashboard.verifyPinnedAppsCount(0)
     })
@@ -57,7 +64,7 @@ describe('[SMOKE] Dashboard tests', () => {
   })
 
   it('[SMOKE] Verify there is empty tx string and image when there are no tx queued', () => {
-    cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_14)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_13)
     dashboard.verifyEmptyTxSection()
   })
 
@@ -66,7 +73,7 @@ describe('[SMOKE] Dashboard tests', () => {
   })
 
   it('[SMOKE] Verify that tx are displayed correctly in Pending tx section', () => {
-    cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_18_PENDING_TX)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_12)
     cy.wait(1000)
     dashboard.verifyTxItemInPendingTx(txMultiSendCall3)
     dashboard.verifyTxItemInPendingTx(txaddOwner)

@@ -1,9 +1,10 @@
-import * as constants from '../../support/constants'
-import * as main from './main.page'
-import * as modal from '../pages/modals.page'
-import * as navigation from './navigation.page'
-import { safeHeaderInfo } from './import_export.pages'
-import * as file from '../pages/import_export.pages'
+import * as constants from '../../support/constants.js'
+import * as main from './main.page.js'
+import * as modal from './modals.page.js'
+import * as navigation from './navigation.page.js'
+import { safeHeaderInfo } from './import_export.pages.js'
+import * as file from './import_export.pages.js'
+import safes from '../../fixtures/safes/static.json'
 
 export const chainLogo = '[data-testid="chain-logo"]'
 const safeIcon = '[data-testid="safe-icon"]'
@@ -36,7 +37,7 @@ export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
 export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
-export const testSafeHeaderDetails = ['2/2', constants.SEPOLIA_TEST_SAFE_13_SHORT]
+export const testSafeHeaderDetails = ['2/2', safes.SEP_STATIC_SAFE_9_SHORT]
 const receiveAssetsStr = 'Receive assets'
 
 export function getImportBtn() {

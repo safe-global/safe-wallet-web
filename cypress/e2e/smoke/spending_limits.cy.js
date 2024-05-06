@@ -2,10 +2,17 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as spendinglimit from '../pages/spending_limits.pages'
 import * as owner from '../pages/owners.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 describe('[SMOKE] Spending limits tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.securityUrl + constants.SEPOLIA_TEST_SAFE_12)
+    cy.visit(constants.securityUrl + staticSafes.SEP_STATIC_SAFE_8)
     cy.clearLocalStorage()
     main.acceptCookies()
     owner.waitForConnectionStatus()
@@ -15,11 +22,11 @@ describe('[SMOKE] Spending limits tests', () => {
 
   it('Verify A valid ENS name is resolved successfully', () => {
     spendinglimit.enterBeneficiaryAddress(constants.ENS_TEST_SEPOLIA)
-    spendinglimit.checkBeneficiaryENS(constants.SEPOLIA_TEST_SAFE_7)
+    spendinglimit.checkBeneficiaryENS(staticSafes.SEP_STATIC_SAFE_6)
   })
 
   it('Verify writing a valid address shows no errors', () => {
-    spendinglimit.enterBeneficiaryAddress(constants.SEPOLIA_TEST_SAFE_7)
+    spendinglimit.enterBeneficiaryAddress(staticSafes.SEP_STATIC_SAFE_6)
     spendinglimit.verifyValidAddressShowsNoErrors()
   })
 

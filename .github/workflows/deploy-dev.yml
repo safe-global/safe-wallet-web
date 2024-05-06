@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      id-token: write
 
     name: Deploy to dev/staging
 
@@ -45,11 +46,10 @@ jobs:
       - uses: ./.github/workflows/build-storybook
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       # Staging
       - name: Deploy to the staging S3
@@ -93,10 +93,10 @@ jobs:
             ✅  Deploy successful!
 
             **Website:**
-            https://${{ steps.extract_branch.outputs.branch }}--walletweb.review-wallet-web.5afe.dev/home?safe=eth:0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6
+            https://${{ steps.extract_branch.outputs.branch }}--walletweb.review.5afe.dev/home?safe=eth:0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6
 
             **Storybook:**
-            https://${{ steps.extract_branch.outputs.branch }}--walletweb.review-wallet-web.5afe.dev/storybook/
+            https://${{ steps.extract_branch.outputs.branch }}--walletweb.review.5afe.dev/storybook/
           message-failure: |
             ## Branch preview
             ❌  Deploy failed!

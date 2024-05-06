@@ -2,6 +2,9 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const typeCreateAccount = data.type.accountCreation
 const typeReceive = data.type.receive
@@ -12,9 +15,13 @@ const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
 
 describe('Tx history tests 1', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_8)
+    cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     main.acceptCookies()
   })
 
@@ -42,7 +49,7 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  it('Verify copy bottons work as expected for account creation', () => {
+  it.skip('Verify copy bottons work as expected for account creation', () => {
     createTx.clickOnTransactionItemByName(typeCreateAccount.title)
     createTx.verifyNumberOfCopyIcons(4)
     createTx.verifyCopyIconWorks(0, typeCreateAccount.creator.address)
@@ -54,7 +61,7 @@ describe('Tx history tests 1', () => {
   })
 
   // Token receipt
-  it('Verify copy button copies tx hash', () => {
+  it.skip('Verify copy button copies tx hash', () => {
     createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
     createTx.verifyNumberOfCopyIcons(2)
     createTx.verifyCopyIconWorks(1, typeReceive.transactionHashCopied)

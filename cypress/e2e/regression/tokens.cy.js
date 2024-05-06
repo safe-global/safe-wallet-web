@@ -2,16 +2,22 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as assets from '../pages/assets.pages'
 import * as owner from '../pages/owners.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
 
+let staticSafes = []
+
 describe('Tokens tests', () => {
   const fiatRegex = assets.fiatRegex
 
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
   beforeEach(() => {
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_5)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
     cy.clearLocalStorage()
     main.acceptCookies()
   })
@@ -177,7 +183,7 @@ describe('Tokens tests', () => {
   })
 
   it('Verify that when connected user is not owner, Send button is disabled', () => {
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_15_TOKEN)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_3)
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     assets.showSendBtn(0)
     assets.VerifySendButtonIsDisabled()

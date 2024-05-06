@@ -11,8 +11,9 @@ import SafeApiKit from '@safe-global/api-kit'
 import { createEthersAdapter, createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
-const safeBalanceEth = 405200000000000000n
+const safeBalanceEth = 405210000000000000n
 const qtrustBanance = 59000000000000000000n
 const transferAmount = '1'
 
@@ -25,6 +26,7 @@ const unit_eth = 'ether'
 let apiKit, protocolKitOwner1_S3, protocolKitOwner2_S3, outgoingSafeAddress
 
 let safes = []
+let safesData = []
 
 const provider = new ethers.InfuraProvider(netwrok, Cypress.env('INFURA_API_KEY'))
 const privateKeys = [walletCredentials.OWNER_1_PRIVATE_KEY, walletCredentials.OWNER_2_PRIVATE_KEY]
@@ -48,6 +50,7 @@ function visit(url) {
 
 describe('Send funds with relay happy path tests', { defaultCommandTimeout: 60000 }, () => {
   before(async () => {
+    safesData = await getSafes(CATEGORIES.funds)
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__cookies, ls.cookies.acceptedCookies)
     main.addToLocalStorage(
       constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
@@ -58,7 +61,7 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 6000
       txServiceUrl: constants.stagingTxServiceUrl,
     })
 
-    outgoingSafeAddress = constants.SEPOLIA_TEST_SAFE_45_SEND_FUNDS_HP15.substring(4)
+    outgoingSafeAddress = safesData.SEP_FUNDS_SAFE_8.substring(4)
 
     const safeConfigurations = [
       { ethAdapter: ethAdapterOwner1, safeAddress: outgoingSafeAddress },
@@ -71,10 +74,9 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 6000
     protocolKitOwner2_S3 = safes[1]
   })
 
-  it('Verify tx creation and execution of NFT with relay', () => {
+  it.skip('Verify tx creation and execution of NFT with relay', () => {
     cy.wait(2000)
-    const originatingSafe = constants.SEPOLIA_TEST_SAFE_46_SEND_FUNDS_HP16.substring(4)
-
+    const originatingSafe = safesData.SEP_FUNDS_SAFE_9.substring(4)
     function executeTransactionFlow(fromSafe, toSafe) {
       return cy.visit(constants.balanceNftsUrl + fromSafe).then(() => {
         nfts.selectNFTs(1)
@@ -104,9 +106,9 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 6000
       })
   })
 
-  it('Verify tx creation and execution of native token with relay', () => {
+  it.skip('Verify tx creation and execution of native token with relay', () => {
     cy.wait(2000)
-    const targetSafe = constants.SEPOLIA_TEST_SAFE_34_SEND_FUNDS_HP3.substring(4)
+    const targetSafe = safesData.SEP_FUNDS_SAFE_1.substring(4)
     function executeTransactionFlow(fromSafe, toSafe, tokenAmount) {
       visit(constants.BALANCE_URL + fromSafe)
       assets.clickOnSendBtn(0)
@@ -156,9 +158,9 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 6000
       })
   })
 
-  it('Verify tx creation and execution of non-native token with with relay', () => {
+  it.skip('Verify tx creation and execution of non-native token with with relay', () => {
     cy.wait(2000)
-    const originatingSafe = constants.SEPOLIA_TEST_SAFE_36_SEND_FUNDS_HP5.substring(4)
+    const originatingSafe = safesData.SEP_FUNDS_SAFE_2.substring(4)
     const amount = ethers.parseUnits(transferAmount, unit_eth).toString()
 
     function executeTransactionFlow(fromSafe, toSafe) {

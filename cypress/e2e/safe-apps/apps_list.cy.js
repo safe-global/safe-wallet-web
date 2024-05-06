@@ -1,14 +1,21 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 const myCustomAppTitle = 'Cypress Test App'
 const myCustomAppDescrAdded = 'Cypress Test App Description'
 
+let staticSafes = []
+
 describe('Safe Apps list tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(`${constants.appsUrl}?safe=${constants.SEPOLIA_TEST_SAFE_4}`, {
+    cy.visit(`${constants.appsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_1}`, {
       failOnStatusCode: false,
     })
     main.acceptCookies()
@@ -17,8 +24,8 @@ describe('Safe Apps list tests', () => {
   it('Verify app list can be filtered by app name', () => {
     // Wait for /safe-apps response
     cy.intercept('GET', constants.appsEndpoint).then(() => {
-      safeapps.typeAppName(constants.appNames.walletConnect)
-      safeapps.verifyLinkName(safeapps.linkNames.wcLogo)
+      safeapps.typeAppName(constants.appNames.txbuilder)
+      safeapps.verifyLinkName(safeapps.linkNames.txBuilderLogo)
     })
   })
 

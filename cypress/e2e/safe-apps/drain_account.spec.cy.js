@@ -3,14 +3,22 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 import * as navigation from '../pages/navigation.page'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let safeAppSafes = []
+let iframeSelector
 
 describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
-  const appUrl = constants.drainAccount_url
-  const iframeSelector = `iframe[id="iframe-${appUrl}"]`
-  const visitUrl = `/apps/open?safe=${constants.SEPOLIA_TEST_SAFE_9}&appUrl=${encodeURIComponent(appUrl)}`
+  before(async () => {
+    safeAppSafes = await getSafes(CATEGORIES.safeapps)
+  })
 
   beforeEach(() => {
-    cy.intercept(`**//v1/chains/11155111/safes/${constants.SEPOLIA_TEST_SAFE_9.substring(4)}/balances/**`, {
+    const appUrl = constants.drainAccount_url
+    iframeSelector = `iframe[id="iframe-${appUrl}"]`
+    const visitUrl = `/apps/open?safe=${safeAppSafes.SEP_SAFEAPP_SAFE_1}&appUrl=${encodeURIComponent(appUrl)}`
+
+    cy.intercept(`**//v1/chains/11155111/safes/${safeAppSafes.SEP_SAFEAPP_SAFE_1.substring(4)}/balances/**`, {
       fixture: 'balances.json',
     })
 
@@ -22,7 +30,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
 
   it('Verify drain can be created', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.recipientStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
     cy.findByRole('button', { name: safeapps.testTransfer1 })
@@ -34,7 +42,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
       getBody().findByLabelText(safeapps.selectAllRowsChbxStr).click()
       getBody().findAllByLabelText(safeapps.selectRowChbxStr).eq(1).click()
       getBody().findAllByLabelText(safeapps.selectRowChbxStr).eq(2).click()
-      getBody().findByLabelText(safeapps.recipientStr).clear().type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.recipientStr).clear().type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findAllByText(safeapps.transfer2AssetsStr).click()
     })
     cy.findByRole('button', { name: safeapps.testTransfer2 })
@@ -53,7 +61,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
 
   it('Verify when cancelling a drain, previous data is preserved', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.recipientStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
     navigation.clickOnModalCloseBtn()
@@ -71,7 +79,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
 
   it('Verify a drain cannot be created with invalid recipient selected', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.recipientStr).type(constants.SEPOLIA_TEST_SAFE_10.substring(1))
+      getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2.substring(1))
       getBody().findAllByText(safeapps.transferEverythingStr).click()
       getBody().findByText(safeapps.validRecipientAddressStr)
     })
@@ -80,7 +88,7 @@ describe('Drain Account tests', { defaultCommandTimeout: 12000 }, () => {
   it('Verify a drain cannot be created when no assets are selected', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.selectAllRowsChbxStr).click()
-      getBody().findByLabelText(safeapps.recipientStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findAllByText(safeapps.noTokensSelectedStr).should('be.visible')
     })
   })

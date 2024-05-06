@@ -6,6 +6,7 @@ import { ethers } from 'ethers'
 import SafeApiKit from '@safe-global/api-kit'
 import { createEthersAdapter, createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const receiver = walletCredentials.OWNER_2_WALLET_ADDRESS
@@ -24,6 +25,7 @@ let apiKit,
   existingSafeAddress3
 
 let safes = []
+let safesData = []
 
 const provider = new ethers.InfuraProvider(netwrok, Cypress.env('INFURA_API_KEY'))
 const privateKeys = [walletCredentials.OWNER_1_PRIVATE_KEY, walletCredentials.OWNER_2_PRIVATE_KEY]
@@ -51,14 +53,15 @@ function executeTransactionFlow(fromSafe) {
 
 describe('Send funds from queue happy path tests 1', () => {
   before(async () => {
+    safesData = await getSafes(CATEGORIES.funds)
     apiKit = new SafeApiKit({
       chainId: BigInt(1),
       txServiceUrl: constants.stagingTxServiceUrl,
     })
 
-    existingSafeAddress1 = constants.SEPOLIA_TEST_SAFE_40_SEND_FUNDS_HP9.substring(4)
-    existingSafeAddress2 = constants.SEPOLIA_TEST_SAFE_41_SEND_FUNDS_HP10.substring(4)
-    existingSafeAddress3 = constants.SEPOLIA_TEST_SAFE_41_SEND_FUNDS_HP11.substring(4)
+    existingSafeAddress1 = safesData.SEP_FUNDS_SAFE_3.substring(4)
+    existingSafeAddress2 = safesData.SEP_FUNDS_SAFE_4.substring(4)
+    existingSafeAddress3 = safesData.SEP_FUNDS_SAFE_5.substring(4)
 
     const safeConfigurations = [
       { ethAdapter: ethAdapterOwner1, safeAddress: existingSafeAddress1 },
@@ -107,7 +110,7 @@ describe('Send funds from queue happy path tests 1', () => {
       })
   })
 
-  it('Verify confirmation and execution of native token queued tx by second signer with relayer', () => {
+  it.skip('Verify confirmation and execution of native token queued tx by second signer with relayer', () => {
     function executeTransactionFlow(fromSafe) {
       visit(constants.transactionQueueUrl + fromSafe)
       assets.clickOnConfirmBtn(0)

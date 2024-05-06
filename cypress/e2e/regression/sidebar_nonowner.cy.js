@@ -3,13 +3,20 @@ import * as main from '../pages/main.page.js'
 import * as sideBar from '../pages/sidebar.pages.js'
 import * as navigation from '../pages/navigation.page.js'
 import * as ls from '../../support/localstorage_data.js'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const addedOwner = 'Added owner'
 const addedNonowner = 'Added non-owner'
 
 describe('Sidebar non-owner tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_17_SIDEBAR_NONOWNER)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_11)
     cy.wait(2000)
     cy.clearLocalStorage()
     main.acceptCookies()

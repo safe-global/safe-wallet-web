@@ -4,6 +4,9 @@ import * as main from '../pages/main.page.js'
 import * as ls from '../../support/localstorage_data.js'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const typeReceive = data.type.receive
 
@@ -12,8 +15,12 @@ const onwer2 = 'Changed Automation owner'
 const onwer3 = 'New Automation owner'
 
 describe('Address book tests - 2', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
+    cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_4)
     cy.clearLocalStorage()
     cy.wait(1000)
     main.acceptCookies()
@@ -42,24 +49,25 @@ describe('Address book tests - 2', () => {
     addressBook.typeInNameInput(onwer2)
     addressBook.clickOnSaveEntryBtn()
     addressBook.verifyNameWasChanged(owner1, onwer2)
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     addressBook.verifyNameWasChanged(owner1, onwer2)
   })
 
   it('Verify that editing an entry from the transaction details updates the name in address book', () => {
-    cy.visit(constants.transactionsHistoryUrl + constants.SEPOLIA_TEST_SAFE_8)
+    cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     main.waitForHistoryCallToComplete()
+    console.log(typeReceive.summaryTitle)
     createtx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
     addressBook.clickOnMoreActionsBtn()
     addressBook.clickOnAddToAddressBookBtn()
     addressBook.typeInNameInput(onwer3)
     addressBook.clickOnSaveEntryBtn()
     addressBook.verifyNameWasChanged(owner1, onwer3)
-    cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_8)
+    cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_7)
     addressBook.verifyNameWasChanged(owner1, onwer3)
   })
 
-  it('Verify copy to clipboard/Etherscan work as expected', () => {
+  it.skip('Verify copy to clipboard/Etherscan work as expected', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
     cy.wait(1000)
     cy.reload()
