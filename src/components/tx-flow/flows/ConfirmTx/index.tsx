@@ -4,7 +4,7 @@ import TxLayout from '@/components/tx-flow/common/TxLayout'
 import ConfirmProposedTx from './ConfirmProposedTx'
 import { useTransactionType } from '@/hooks/useTransactionType'
 import TxInfo from '@/components/transactions/TxInfo'
-import SwapIcon from '@/public/images/sidebar/swap.svg'
+import SwapIcon from '@/public/images/common/swap.svg'
 
 const ConfirmTxFlow = ({ txSummary }: { txSummary: TransactionSummary }) => {
   const { text } = useTransactionType(txSummary)
