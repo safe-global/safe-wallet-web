@@ -42,9 +42,9 @@ const statusMap: Record<OrderStatuses, StatusProps> = {
   },
   cancelled: {
     label: 'Cancelled',
-    color: 'error.dark',
+    color: 'error.main',
     backgroundColor: 'error.background',
-    iconColor: 'error.dark',
+    iconColor: 'error.main',
     icon: BlockIcon,
   },
   expired: {

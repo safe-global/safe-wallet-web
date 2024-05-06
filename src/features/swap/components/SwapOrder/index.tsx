@@ -71,7 +71,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
         ),
         status === 'fulfilled' ? (
           <DataRow key="Surplus" title="Surplus">
-            {formatAmount(surplusPrice)} {buyToken.symbol}
+            {formatAmount(surplusPrice)} {isSellOrder ? buyToken.symbol : sellToken.symbol}
           </DataRow>
         ) : (
           <></>
