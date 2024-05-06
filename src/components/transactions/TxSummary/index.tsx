@@ -84,7 +84,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      {expiredSwap && (
+      {isQueue && expiredSwap && (
         <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
           <StatusLabel status="expired" />
         </Box>
