@@ -1,4 +1,3 @@
-import { capitalize } from '@/hooks/useMnemonicName'
 import { FEATURES } from '@/utils/chains'
 import { type CowSwapWidgetParams, TradeType, CowSwapWidget } from '@cowprotocol/widget-react'
 import { CowEvents, type CowEventListeners } from '@cowprotocol/events'
@@ -26,7 +25,7 @@ import { isBlockedAddress } from '@/services/ofac'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
-import { selectSwapParams, setSwapParams } from './store/swapParamsSlice'
+import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -35,6 +34,12 @@ type Params = {
     asset: string
     amount: string
   }
+}
+
+export const SWAP_TITLE = 'Safe Swap'
+
+export const getSwapTitle = (tradeType: SwapState['tradeType']) => {
+  return tradeType === 'limit' ? 'Limit order' : 'Swap order'
 }
 
 const SwapWidget = ({ sell }: Params) => {
@@ -54,7 +59,7 @@ const SwapWidget = ({ sell }: Params) => {
     () => ({
       id: 1,
       url: 'https://app.safe.global',
-      name: `${capitalize(tradeType.toLowerCase())} order`,
+      name: SWAP_TITLE,
       iconUrl: darkMode ? './images/common/safe-swap-dark.svg' : './images/common/safe-swap.svg',
       description: 'Safe Apps',
       chainIds: ['1', '100'],
@@ -132,7 +137,7 @@ const SwapWidget = ({ sell }: Params) => {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
         handler: (newTradeParams) => {
           const { orderType: tradeType } = newTradeParams
-          dispatch(setSwapParams({ tradeType }))
+          dispatch(setSwapParams({ tradeType: tradeType.toLowerCase() }))
         },
       },
     ]
