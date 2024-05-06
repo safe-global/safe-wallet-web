@@ -10,16 +10,16 @@ const CACHE_KEY = 'ownedSafesCache_'
 const useAllOwnedSafes = (address: string): AsyncResult<AllOwnedSafes> => {
   const [cache, setCache] = useLocalStorage<AllOwnedSafes>(CACHE_KEY + address)
 
-  const [data, error, isLoading] = useAsync<AllOwnedSafes>(() => {
-    if (!address) return
+  const [data, error, isLoading] = useAsync<AllOwnedSafes>(async () => {
+    if (!address) return {}
     return getAllOwnedSafes(address)
   }, [address])
 
   useEffect(() => {
-    if (data != null) setCache(data)
+    if (data != undefined) setCache(data)
   }, [data, setCache])
 
-  return [data ?? cache, error, isLoading]
+  return [cache, error, isLoading]
 }
 
 export default useAllOwnedSafes
