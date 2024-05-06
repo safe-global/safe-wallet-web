@@ -19,8 +19,7 @@ export const BlockedAddress = ({ address }: { address?: string }): ReactElement 
     <Disclaimer
       title="Blocked Address"
       subtitle={displayAddress}
-      content="This address is blocked by the Safe interface, due to being associated with the blocked activities by
-      the U.S. Department of Treasury in the Specially Designated Nationals (SDN) list."
+      content="The above address is part of the OFAC SDN list and the embedded swaps feature with CoW Swap is unavailable for sanctioned addresses."
       onAccept={handleAccept}
     />
   )
