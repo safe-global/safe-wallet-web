@@ -20,7 +20,11 @@ export const swapParamsSlice = createSlice({
   name: 'swapParams',
   initialState,
   reducers: {
-    setSwapParams: (_, action: PayloadAction<SwapState>) => action.payload,
+    setSwapParams: (_, action: PayloadAction<SwapState>) => {
+      return {
+        tradeType: action.payload.tradeType.toLowerCase() as TradeType,
+      }
+    },
   },
 })
 

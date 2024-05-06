@@ -68,7 +68,7 @@ const SwapWidget = ({ sell }: Params) => {
       features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
       socialProfiles: [],
     }),
-    [darkMode, tradeType],
+    [darkMode],
   )
 
   const groupKey = 'swap-order-status'
@@ -137,7 +137,7 @@ const SwapWidget = ({ sell }: Params) => {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
         handler: (newTradeParams) => {
           const { orderType: tradeType } = newTradeParams
-          dispatch(setSwapParams({ tradeType: tradeType.toLowerCase() }))
+          dispatch(setSwapParams({ tradeType }))
         },
       },
     ]
