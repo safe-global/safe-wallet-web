@@ -2,9 +2,9 @@ import type { ReactElement } from 'react'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
-import EthHashInfo from '@/components/common/EthHashInfo'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
+import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 
 interface Props {
   txData: TransactionDetails['txData']
@@ -29,7 +29,7 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
   return (
     <>
       <InfoDetails title="Interact with:">
-        <EthHashInfo
+        <NamedAddressInfo
           address={txData.to.value}
           name={isCustomTxInfo(txInfo) ? txInfo.to.name : undefined}
           customAvatar={isCustomTxInfo(txInfo) ? txInfo.to.logoUri : undefined}
