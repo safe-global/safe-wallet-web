@@ -20,10 +20,10 @@ import css from './styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import BlockedAddress from '@/components/common/BlockedAddress'
-import { isBlockedAddress } from '@/services/ofac'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
+import { isBlockedAddress } from '@/services/ofac'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
 
@@ -50,10 +50,19 @@ const SwapWidget = ({ sell }: Params) => {
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
   const swapParams = useAppSelector(selectSwapParams)
   const { tradeType } = swapParams
-
   const { safeAddress, safeLoading } = useSafeInfo()
+  const [blockedAddress, setBlockedAddress] = useState('')
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
+
+  useEffect(() => {
+    if (isBlockedAddress(safeAddress)) {
+      setBlockedAddress(safeAddress)
+    }
+    if (wallet?.address && isBlockedAddress(wallet.address)) {
+      setBlockedAddress(wallet.address)
+    }
+  }, [safeAddress, wallet?.address])
 
   const appData: SafeAppData = useMemo(
     () => ({
@@ -127,8 +136,12 @@ const SwapWidget = ({ sell }: Params) => {
       {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
         handler: (newTradeParams) => {
-          const { orderType: tradeType } = newTradeParams
+          const { orderType: tradeType, recipient } = newTradeParams
           dispatch(setSwapParams({ tradeType }))
+
+          if (recipient && isBlockedAddress(recipient)) {
+            setBlockedAddress(recipient)
+          }
         },
       },
     ]
@@ -203,11 +216,8 @@ const SwapWidget = ({ sell }: Params) => {
     return null
   }
 
-  if (isBlockedAddress(safeAddress)) {
-    return <BlockedAddress address={safeAddress} />
-  }
-  if (wallet?.address && isBlockedAddress(wallet.address)) {
-    return <BlockedAddress address={wallet.address} />
+  if (blockedAddress) {
+    return <BlockedAddress address={blockedAddress} />
   }
 
   if (!isConsentAccepted) {
