@@ -1,4 +1,5 @@
 // Unit tests for the SafeWalletProvider class
+import { faker } from '@faker-js/faker'
 import { SafeWalletProvider } from '.'
 
 const safe = {
@@ -495,7 +496,7 @@ describe('SafeWalletProvider', () => {
   })
 
   describe('EIP-5792', () => {
-    describe('wallet_sendFunctionCallBundle', () => {
+    describe('wallet_sendCalls', () => {
       it('should send a bundle', async () => {
         const sdk = {
           send: jest.fn(),
@@ -505,15 +506,16 @@ describe('SafeWalletProvider', () => {
         const params = [
           {
             chainId: 1,
-            from: '0x1234',
+            version: '1.0',
+            from: faker.finance.ethereumAddress(),
             calls: [
-              { gas: 1000, data: '0x123', to: '0x123', value: '0x123' },
-              { gas: 1000, data: '0x456', to: '0x789', value: '0x1' },
+              { gas: 1000, data: '0x123', to: faker.finance.ethereumAddress(), value: '0x123' },
+              { gas: 1000, data: '0x456', to: faker.finance.ethereumAddress(), value: '0x1' },
             ],
           },
         ]
 
-        await safeWalletProvider.request(1, { method: 'wallet_sendFunctionCallBundle', params } as any, appInfo)
+        await safeWalletProvider.request(1, { method: 'wallet_sendCalls', params } as any, appInfo)
 
         expect(sdk.send).toHaveBeenCalledWith(
           {
@@ -531,7 +533,7 @@ describe('SafeWalletProvider', () => {
       })
     })
 
-    describe('wallet_getBundleStatus', () => {
+    describe('wallet_getCallsStatus', () => {
       it('should look up a tx by txHash', async () => {
         const sdk = {
           getBySafeTxHash: jest.fn().mockResolvedValue({
@@ -549,7 +551,7 @@ describe('SafeWalletProvider', () => {
 
         const params = ['0x123']
 
-        await safeWalletProvider.request(1, { method: 'wallet_getBundleStatus', params } as any, appInfo)
+        await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
 
         expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
         expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
@@ -571,14 +573,14 @@ describe('SafeWalletProvider', () => {
 
         const params = ['0x123']
 
-        await safeWalletProvider.request(1, { method: 'wallet_getBundleStatus', params } as any, appInfo)
+        await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
 
         expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
         expect(sdk.proxy).not.toHaveBeenCalled()
       })
     })
 
-    describe('wallet_showBundleStatus', () => {
+    describe('wallet_showCallsStatus', () => {
       it('should return the bundle status', async () => {
         const sdk = {
           showTxStatus: jest.fn(),
@@ -587,7 +589,7 @@ describe('SafeWalletProvider', () => {
 
         const params = ['0x123']
 
-        await safeWalletProvider.request(1, { method: 'wallet_showBundleStatus', params } as any, appInfo)
+        await safeWalletProvider.request(1, { method: 'wallet_showCallsStatus', params } as any, appInfo)
 
         expect(sdk.showTxStatus).toHaveBeenCalledWith(params[0])
       })
