@@ -7,13 +7,7 @@ import { compareAsc } from 'date-fns'
 import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
-import {
-  getExecutionPrice,
-  getLimitPrice,
-  getOrderClass,
-  getSlippageInPercent,
-  getSurplusPrice,
-} from '@/features/swap/helpers/utils'
+import { getLimitPrice, getOrderClass, getSlippageInPercent } from '@/features/swap/helpers/utils'
 import type { CowSwapConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
 import AlertIcon from '@/public/images/common/alert.svg'
@@ -29,12 +23,9 @@ type SwapOrderProps = {
 export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrderProps): ReactElement | null => {
   if (!order) return null
 
-  const { uid, owner, kind, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } =
-    order
+  const { uid, owner, kind, validUntil, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
-  const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
-  const surplusPrice = getSurplusPrice(order)
   const orderClass = getOrderClass(order)
   const expires = new Date(validUntil * 1000)
   const now = new Date()
@@ -64,39 +55,23 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
             />
           </div>,
 
-          status === 'fulfilled' ? (
-            <DataRow key="Execution price" title="Execution price">
-              1 {buyToken.symbol} = {formatAmount(executionPrice)} {sellToken.symbol}
+          <DataRow key="Limit price" title="Limit price">
+            1 {buyToken.symbol} = {formatAmount(limitPrice)} {sellToken.symbol}
+          </DataRow>,
+
+          compareAsc(now, expires) !== 1 ? (
+            <DataRow key="Expiry" title="Expiry">
+              <Typography>
+                <Typography fontWeight={700} component="span">
+                  {formatTimeInWords(validUntil * 1000)}
+                </Typography>{' '}
+                ({formatDateTime(validUntil * 1000)})
+              </Typography>
             </DataRow>
           ) : (
-            <DataRow key="Limit price" title="Limit price">
-              1 {buyToken.symbol} = {formatAmount(limitPrice)} {sellToken.symbol}
+            <DataRow key="Expiry" title="Expiry">
+              {formatDateTime(validUntil * 1000)}
             </DataRow>
-          ),
-          status === 'fulfilled' ? (
-            <DataRow key="Surplus" title="Surplus">
-              {formatAmount(surplusPrice)} {buyToken.symbol}
-            </DataRow>
-          ) : (
-            <></>
-          ),
-          status !== 'fulfilled' ? (
-            compareAsc(now, expires) !== 1 ? (
-              <DataRow key="Expiry" title="Expiry">
-                <Typography>
-                  <Typography fontWeight={700} component="span">
-                    {formatTimeInWords(validUntil * 1000)}
-                  </Typography>{' '}
-                  ({formatDateTime(validUntil * 1000)})
-                </Typography>
-              </DataRow>
-            ) : (
-              <DataRow key="Expiry" title="Expiry">
-                {formatDateTime(validUntil * 1000)}
-              </DataRow>
-            )
-          ) : (
-            <></>
           ),
           orderClass !== 'limit' ? (
             <DataRow key="Slippage" title="Slippage">
