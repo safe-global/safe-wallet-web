@@ -110,10 +110,6 @@ export const isSwapConfirmationViewOrder = (
   return false
 }
 
-export const isExpiredSwap = (value: TransactionInfo) => {
-  return isSwapTxInfo(value) && value.status === 'expired'
-}
-
 export const isCancelledSwap = (value: TransactionInfo) => {
   return isSwapTxInfo(value) && value.status === 'cancelled'
 }
