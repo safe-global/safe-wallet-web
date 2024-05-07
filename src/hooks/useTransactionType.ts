@@ -66,7 +66,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       const orderClass = getOrderClass(tx.txInfo)
 
       return {
-        icon: '/images/transactions/cow-logo.png',
+        icon: '/images/common/swap.svg',
         text: orderClass === 'limit' ? 'Limit order' : 'Swap order',
       }
     }
