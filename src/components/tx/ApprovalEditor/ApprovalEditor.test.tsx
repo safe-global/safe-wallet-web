@@ -6,7 +6,6 @@ import { OperationType } from '@safe-global/safe-core-sdk-types'
 import * as approvalInfos from '@/components/tx/ApprovalEditor/hooks/useApprovalInfos'
 import { createMockSafeTransaction } from '@/tests/transactions'
 import { faker } from '@faker-js/faker'
-import { shortenAddress } from '@/utils/formatters'
 import { encodeMultiSendData } from '@safe-global/protocol-kit'
 import { ERC20__factory, Multi_send__factory } from '@/types/contracts'
 import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
@@ -100,7 +99,7 @@ describe('ApprovalEditor', () => {
     expect(amountInput).not.toBeInTheDocument()
     expect(result.getByText('TST', { exact: false }))
     expect(result.getByText('420', { exact: false }))
-    expect(result.getByText(shortenAddress(spenderAddress)))
+    expect(result.getByText(spenderAddress))
   })
 
   it('renders a form if there are no signatures', async () => {
@@ -130,7 +129,7 @@ describe('ApprovalEditor', () => {
 
     expect(amountInput1).toHaveValue('420.0')
     expect(result.getByText('TST', { exact: false }))
-    expect(result.getByText(shortenAddress(spenderAddress)))
+    expect(result.getByText(spenderAddress))
   })
 
   it('should modify approvals on save', async () => {
