@@ -78,19 +78,19 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      {(!isQueue || isPending) && (
-        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
-          <TxStatusLabel tx={tx} />
-        </Box>
-      )}
-
-      {isQueue && expiredSwap && (
+      {isQueue && expiredSwap ? (
         <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
           <StatusLabel status="expired" />
         </Box>
+      ) : !isQueue || isPending ? (
+        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
+          <TxStatusLabel tx={tx} />
+        </Box>
+      ) : (
+        ''
       )}
 
-      {isQueue && (
+      {isQueue && !expiredSwap && (
         <Box gridArea="actions">
           <QueueActions tx={tx} />
         </Box>
