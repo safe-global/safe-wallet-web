@@ -5,9 +5,11 @@ import CheckIcon from '@/public/images/common/circle-check.svg'
 import ClockIcon from '@/public/images/common/clock.svg'
 import BlockIcon from '@/public/images/common/block.svg'
 import SignatureIcon from '@/public/images/common/document_signature.svg'
+import CircleIcon from '@/public/images/common/circle.svg'
 
+type CustomOrderStatuses = OrderStatuses | 'partiallyFilled'
 type Props = {
-  status: OrderStatuses
+  status: CustomOrderStatuses
 }
 
 type StatusProps = {
@@ -18,7 +20,7 @@ type StatusProps = {
   icon: any
 }
 
-const statusMap: Record<OrderStatuses, StatusProps> = {
+const statusMap: Record<CustomOrderStatuses, StatusProps> = {
   presignaturePending: {
     label: 'Execution needed',
     color: 'warning.main',
@@ -53,6 +55,13 @@ const statusMap: Record<OrderStatuses, StatusProps> = {
     backgroundColor: 'background.main',
     iconColor: 'border.main',
     icon: ClockIcon,
+  },
+  partiallyFilled: {
+    label: 'Partially filled',
+    color: 'warning.main',
+    backgroundColor: 'warning.background',
+    iconColor: 'warning.main',
+    icon: CircleIcon,
   },
 }
 export const StatusLabel = (props: Props): ReactElement => {

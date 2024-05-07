@@ -1,4 +1,10 @@
-import { getExecutionPrice, getFilledPercentage, getLimitPrice, getSurplusPrice } from '../utils'
+import {
+  getExecutionPrice,
+  getFilledPercentage,
+  getLimitPrice,
+  getSurplusPrice,
+  isOrderPartiallyFilled,
+} from '../utils'
 import { type SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('Swap helpers', () => {
@@ -173,6 +179,64 @@ describe('Swap helpers', () => {
       const result = getSurplusPrice(mockOrder)
 
       expect(result).toEqual(50)
+    })
+  })
+
+  describe('isOrderPartiallyFilled', () => {
+    it('returns true if a buy order is partially filled', () => {
+      const mockOrder = {
+        executedBuyAmount: '0',
+        buyAmount: '100000000000000000000', // 100 tokens
+        executedSellAmount: '50000000000000000000', // 50 tokens
+        sellAmount: '100000000000000000000', // 100 tokens
+        kind: 'buy',
+      } as unknown as SwapOrder
+
+      const result = isOrderPartiallyFilled(mockOrder)
+
+      expect(result).toBe(true)
+    })
+
+    it('returns false if a buy order is fully filled', () => {
+      const mockOrder = {
+        executedBuyAmount: '0',
+        buyAmount: '100000000000000000000', // 100 tokens
+        executedSellAmount: '100000000000000000000', // 100 tokens
+        sellAmount: '100000000000000000000', // 100 tokens
+        kind: 'buy',
+      } as unknown as SwapOrder
+
+      const result = isOrderPartiallyFilled(mockOrder)
+
+      expect(result).toBe(false)
+    })
+
+    it('returns true if a sell order is partially filled', () => {
+      const mockOrder = {
+        sellAmount: '100000000000000000000',
+        executedSellAmount: '0',
+        executedBuyAmount: '50000000000000000000', // 50 tokens
+        buyAmount: '100000000000000000000', // 100 tokens
+        kind: 'sell',
+      } as unknown as SwapOrder
+
+      const result = isOrderPartiallyFilled(mockOrder)
+
+      expect(result).toBe(true)
+    })
+
+    it('returns false if a sell order is fully filled', () => {
+      const mockOrder = {
+        sellAmount: '100000000000000000000',
+        executedSellAmount: '0',
+        executedBuyAmount: '100000000000000000000', // 100 tokens
+        buyAmount: '100000000000000000000', // 100 tokens
+        kind: 'sell',
+      } as unknown as SwapOrder
+
+      const result = isOrderPartiallyFilled(mockOrder)
+
+      expect(result).toBe(false)
     })
   })
 })
