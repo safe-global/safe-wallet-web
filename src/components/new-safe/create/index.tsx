@@ -9,7 +9,6 @@ import SetNameStep from '@/components/new-safe/create/steps/SetNameStep'
 import OwnerPolicyStep from '@/components/new-safe/create/steps/OwnerPolicyStep'
 import ReviewStep from '@/components/new-safe/create/steps/ReviewStep'
 import { CreateSafeStatus } from '@/components/new-safe/create/steps/StatusStep'
-import useAddressBook from '@/hooks/useAddressBook'
 import { CardStepper } from '@/components/new-safe/CardStepper'
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
@@ -100,12 +99,6 @@ const staticHints: Record<
 const CreateSafe = () => {
   const router = useRouter()
   const wallet = useWallet()
-  const addressBook = useAddressBook()
-  const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
-  const defaultOwner: NamedAddress = {
-    name: defaultOwnerAddressBookName || wallet?.ens || '',
-    address: wallet?.address || '',
-  }
 
   const [safeName, setSafeName] = useState('')
   const [dynamicHint, setDynamicHint] = useState<CreateSafeInfoItem>()
@@ -166,7 +159,7 @@ const CreateSafe = () => {
 
   const initialData: NewSafeFormData = {
     name: isSocialLogin ? mnemonicSafeName : '',
-    owners: [defaultOwner],
+    owners: [],
     threshold: 1,
     saltNonce: Date.now(),
   }
