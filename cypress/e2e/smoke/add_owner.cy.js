@@ -2,10 +2,17 @@ import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
 import * as navigation from '../pages/navigation.page'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 describe('[SMOKE] Add Owners tests', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_1)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     cy.clearLocalStorage()
     main.waitForHistoryCallToComplete()
     main.acceptCookies()
@@ -17,7 +24,7 @@ describe('[SMOKE] Add Owners tests', () => {
   })
 
   it('[SMOKE] Verify “Add new owner” button tooltip displays correct message for Non-Owner', () => {
-    cy.visit(constants.setupUrl + constants.SEPOLIA_TEST_SAFE_2)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_3)
     main.waitForHistoryCallToComplete()
     owner.verifyAddOwnerBtnIsDisabled()
   })
@@ -32,7 +39,7 @@ describe('[SMOKE] Add Owners tests', () => {
     owner.typeOwnerAddress(constants.addresBookContacts.user1.address.toUpperCase())
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidChecksum)
 
-    owner.typeOwnerAddress(constants.SEPOLIA_TEST_SAFE_1)
+    owner.typeOwnerAddress(staticSafes.SEP_STATIC_SAFE_4)
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.ownSafe)
 
     owner.typeOwnerAddress(constants.addresBookContacts.user1.address.replace('F', 'f'))
@@ -56,7 +63,7 @@ describe('[SMOKE] Add Owners tests', () => {
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()
     owner.clickOnBackBtn()
-    owner.typeOwnerAddress(constants.SEPOLIA_TEST_SAFE_2)
+    owner.typeOwnerAddress(staticSafes.SEP_STATIC_SAFE_3)
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()
   })

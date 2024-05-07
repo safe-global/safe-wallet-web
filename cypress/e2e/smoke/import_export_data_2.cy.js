@@ -3,6 +3,9 @@ import * as file from '../pages/import_export.pages.js'
 import * as main from '../pages/main.page.js'
 import * as constants from '../../support/constants.js'
 import * as sidebar from '../pages/sidebar.pages.js'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 const validJsonPath = 'cypress/fixtures/data_import.json'
 const invalidJsonPath = 'cypress/fixtures/address_book_test.csv'
@@ -12,8 +15,12 @@ const invalidJsonPath_3 = 'cypress/fixtures/test-empty-batch.json'
 const appNames = ['Transaction Builder']
 
 describe('[SMOKE] Import Export Data tests 2', () => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_22_IMPORT)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_13)
     cy.clearLocalStorage()
     main.acceptCookies()
   })
@@ -30,9 +37,9 @@ describe('[SMOKE] Import Export Data tests 2', () => {
     file.verifyImportMessages()
     file.verifyImportBtnStatus(constants.enabledStates.enabled)
     file.clickOnImportBtn()
-    cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_22_IMPORT)
+    cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_13)
     file.verifyImportedAddressBookData()
-    cy.visit(constants.appsUrlGeneral + constants.SEPOLIA_TEST_SAFE_22_IMPORT)
+    cy.visit(constants.appsUrlGeneral + staticSafes.SEP_STATIC_SAFE_13)
     file.verifyPinnedApps(appNames)
   })
 
@@ -45,7 +52,7 @@ describe('[SMOKE] Import Export Data tests 2', () => {
   })
 
   it('[SMOKE] Verify the Import section is on the Global settings', () => {
-    cy.visit(constants.dataSettingsUrl + constants.SEPOLIA_TEST_SAFE_22_IMPORT)
+    cy.visit(constants.dataSettingsUrl + staticSafes.SEP_STATIC_SAFE_13)
     file.verifyImportSectionVisible()
     file.verifyValidImportInputExists()
   })
@@ -63,7 +70,7 @@ describe('[SMOKE] Import Export Data tests 2', () => {
   })
 
   it('[SMOKE] Verify that the Export section is present in the safe settings', () => {
-    cy.visit(constants.dataSettingsUrl + constants.SEPOLIA_TEST_SAFE_22_IMPORT)
+    cy.visit(constants.dataSettingsUrl + staticSafes.SEP_STATIC_SAFE_13)
     file.verifyExportFileSectionIsVisible()
   })
 })

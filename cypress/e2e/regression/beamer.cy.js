@@ -1,11 +1,15 @@
 import * as constants from '../../support/constants'
 import * as addressbook from '../pages/address_book.page'
 import * as main from '../../e2e/pages/main.page'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let staticSafes = []
 
 describe('Beamer tests', () => {
-  before(() => {
+  before(async () => {
+    staticSafes = await getSafes(CATEGORIES.static)
     cy.clearLocalStorage()
-    cy.visit(constants.addressBookUrl + constants.SEPOLIA_TEST_SAFE_1)
+    cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_4)
     main.acceptCookies()
   })
 

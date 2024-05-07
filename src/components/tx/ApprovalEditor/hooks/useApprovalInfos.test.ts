@@ -4,14 +4,18 @@ import { type ApprovalInfo, useApprovalInfos } from '@/components/tx/ApprovalEdi
 import { waitFor } from '@testing-library/react'
 import { createMockSafeTransaction } from '@/tests/transactions'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { ERC20__factory } from '@/types/contracts'
+import { ERC20__factory, Multi_send__factory } from '@/types/contracts'
 import * as balances from '@/hooks/useBalances'
 import { type EIP712TypedData, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import * as getTokenInfo from '@/utils/tokens'
 import { faker } from '@faker-js/faker'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
+import { encodeMultiSendData } from '@safe-global/protocol-kit'
+import { checksumAddress } from '@/utils/addresses'
 
 const ERC20_INTERFACE = ERC20__factory.createInterface()
+
+const MULTISEND_INTERFACE = Multi_send__factory.createInterface()
 
 const UNLIMITED_APPROVAL = 115792089237316195423570985008687907853269984665640564039457584007913129639935n
 
@@ -49,11 +53,9 @@ describe('useApprovalInfos', () => {
   })
 
   it('returns an ApprovalInfo if the transaction contains an approval', async () => {
-    const testInterface = new Interface(['function approve(address, uint256)'])
-
     const mockSafeTx = createMockSafeTransaction({
       to: zeroPadValue('0x0123', 20),
-      data: testInterface.encodeFunctionData('approve', [zeroPadValue('0x02', 20), '123']),
+      data: ERC20_INTERFACE.encodeFunctionData('approve', [zeroPadValue('0x02', 20), '123']),
       operation: OperationType.Call,
     })
 
@@ -66,6 +68,7 @@ describe('useApprovalInfos', () => {
       tokenAddress: '0x0000000000000000000000000000000000000123',
       tokenInfo: undefined,
       method: 'approve',
+      transactionIndex: 0,
     }
 
     await waitFor(() => {
@@ -91,10 +94,143 @@ describe('useApprovalInfos', () => {
       tokenAddress: '0x0000000000000000000000000000000000000123',
       tokenInfo: undefined,
       method: 'increaseAllowance',
+      transactionIndex: 0,
     }
 
     await waitFor(() => {
       expect(result.current).toEqual([[mockApproval], undefined, false])
+    })
+  })
+
+  it('returns multiple ApprovalInfos if the transaction is a multiSend containing an approve and increaseAllowance call', async () => {
+    const testInterface = new Interface(['function increaseAllowance(address, uint256)'])
+
+    const mockMultiSendAddress = checksumAddress(faker.finance.ethereumAddress())
+    const mockTokenAddress1 = checksumAddress(faker.finance.ethereumAddress())
+    const mockTokenAddress2 = checksumAddress(faker.finance.ethereumAddress())
+    const mockSpender = checksumAddress(faker.finance.ethereumAddress())
+
+    const multiSendData = encodeMultiSendData([
+      {
+        to: mockTokenAddress1,
+        data: testInterface.encodeFunctionData('increaseAllowance', [mockSpender, '123']),
+        value: '0',
+        operation: OperationType.Call,
+      },
+      {
+        to: mockTokenAddress2,
+        data: ERC20_INTERFACE.encodeFunctionData('approve', [mockSpender, '456']),
+        value: '0',
+        operation: OperationType.Call,
+      },
+    ])
+
+    const mockSafeTx = createMockSafeTransaction({
+      to: mockMultiSendAddress,
+      data: MULTISEND_INTERFACE.encodeFunctionData('multiSend', [multiSendData]),
+      operation: OperationType.DelegateCall,
+    })
+
+    const { result } = renderHook(() => useApprovalInfos({ safeTransaction: mockSafeTx }))
+
+    const expectedApprovals: ApprovalInfo[] = [
+      {
+        amount: BigInt('123'),
+        amountFormatted: '0.000000000000000123',
+        spender: mockSpender,
+        tokenAddress: mockTokenAddress1,
+        tokenInfo: undefined,
+        method: 'increaseAllowance',
+        transactionIndex: 0,
+      },
+      {
+        amount: BigInt('456'),
+        amountFormatted: '0.000000000000000456',
+        spender: mockSpender,
+        tokenAddress: mockTokenAddress2,
+        tokenInfo: undefined,
+        method: 'approve',
+        transactionIndex: 1,
+      },
+    ]
+
+    await waitFor(() => {
+      expect(result.current).toEqual([expectedApprovals, undefined, false])
+    })
+  })
+
+  it('returns multiple ApprovalInfos if the transaction is a multiSend containing 2 approvals and other transaction inbetween', async () => {
+    const testInterface = new Interface(['function increaseAllowance(address, uint256)'])
+
+    const mockMultiSendAddress = checksumAddress(faker.finance.ethereumAddress())
+    const mockTokenAddress1 = checksumAddress(faker.finance.ethereumAddress())
+    const mockTokenAddress2 = checksumAddress(faker.finance.ethereumAddress())
+    const mockSpender = checksumAddress(faker.finance.ethereumAddress())
+
+    const multiSendData = encodeMultiSendData([
+      {
+        to: mockTokenAddress1,
+        data: ERC20_INTERFACE.encodeFunctionData('transfer', [mockSpender, '1']),
+        value: '0',
+        operation: OperationType.Call,
+      },
+      {
+        to: mockTokenAddress1,
+        data: testInterface.encodeFunctionData('increaseAllowance', [mockSpender, '123']),
+        value: '0',
+        operation: OperationType.Call,
+      },
+      {
+        to: mockTokenAddress1,
+        data: ERC20_INTERFACE.encodeFunctionData('transferFrom', [faker.finance.ethereumAddress(), mockSpender, '1']),
+        value: '0',
+        operation: OperationType.Call,
+      },
+      {
+        to: mockTokenAddress2,
+        data: ERC20_INTERFACE.encodeFunctionData('approve', [mockSpender, '456']),
+        value: '0',
+        operation: OperationType.Call,
+      },
+      {
+        to: mockTokenAddress2,
+        data: ERC20_INTERFACE.encodeFunctionData('transfer', [mockSpender, '5']),
+        value: '0',
+        operation: OperationType.Call,
+      },
+    ])
+
+    const mockSafeTx = createMockSafeTransaction({
+      to: mockMultiSendAddress,
+      data: MULTISEND_INTERFACE.encodeFunctionData('multiSend', [multiSendData]),
+      operation: OperationType.DelegateCall,
+    })
+
+    const { result } = renderHook(() => useApprovalInfos({ safeTransaction: mockSafeTx }))
+
+    const expectedApprovals: ApprovalInfo[] = [
+      {
+        amount: BigInt('123'),
+        amountFormatted: '0.000000000000000123',
+        spender: mockSpender,
+        tokenAddress: mockTokenAddress1,
+        tokenInfo: undefined,
+        method: 'increaseAllowance',
+        transactionIndex: 1,
+      },
+      {
+        amount: BigInt('456'),
+        amountFormatted: '0.000000000000000456',
+        spender: mockSpender,
+        tokenAddress: mockTokenAddress2,
+        tokenInfo: undefined,
+        method: 'approve',
+        transactionIndex: 3,
+      },
+    ]
+
+    await waitFor(() => {
+      expect(result.current).toEqual([expectedApprovals, undefined, false])
     })
   })
 
@@ -175,6 +311,7 @@ describe('useApprovalInfos', () => {
       tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'.toLowerCase(),
       tokenInfo: undefined,
       method: 'Permit2',
+      transactionIndex: 0,
     }
 
     await waitFor(() => {
@@ -271,6 +408,7 @@ describe('useApprovalInfos', () => {
         tokenAddress: token1.toLowerCase(),
         tokenInfo: undefined,
         method: 'Permit2',
+        transactionIndex: 0,
       },
       {
         amount: BigInt(getTokenInfo.UNLIMITED_PERMIT2_AMOUNT),
@@ -279,6 +417,7 @@ describe('useApprovalInfos', () => {
         tokenAddress: token2.toLowerCase(),
         tokenInfo: undefined,
         method: 'Permit2',
+        transactionIndex: 1,
       },
     ]
 
@@ -322,6 +461,7 @@ describe('useApprovalInfos', () => {
       tokenAddress: '0x0000000000000000000000000000000000000123',
       tokenInfo: mockBalanceItem.tokenInfo,
       method: 'approve',
+      transactionIndex: 0,
     }
 
     await waitFor(() => {
@@ -356,6 +496,7 @@ describe('useApprovalInfos', () => {
       tokenAddress: '0x0000000000000000000000000000000000000123',
       tokenInfo: mockTokenInfo,
       method: 'approve',
+      transactionIndex: 0,
     }
 
     await waitFor(() => {
@@ -382,6 +523,7 @@ describe('useApprovalInfos', () => {
       tokenAddress: '0x0000000000000000000000000000000000000123',
       tokenInfo: undefined,
       method: 'approve',
+      transactionIndex: 0,
     }
 
     await waitFor(() => {

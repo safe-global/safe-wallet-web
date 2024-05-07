@@ -2,10 +2,17 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as ownerP from '../pages/owners.pages'
 import * as recovery from '../pages/recovery.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let recoverySafes = []
 
 describe('Recovery happy path tests 2', () => {
+  before(async () => {
+    recoverySafes = await getSafes(CATEGORIES.recovery)
+  })
+
   beforeEach(() => {
-    cy.visit(constants.homeUrl + constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2)
+    cy.visit(constants.homeUrl + recoverySafes.SEP_RECOVERY_SAFE_2)
     cy.clearLocalStorage()
     main.acceptCookies()
   })
@@ -16,7 +23,7 @@ describe('Recovery happy path tests 2', () => {
       recovery.clickOnRecoveryExecuteBtn()
       return false
     })
-    main.fetchSafeData(constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2.substring(4)).then((response) => {
+    main.fetchSafeData(recoverySafes.SEP_RECOVERY_SAFE_2.substring(4)).then((response) => {
       expect(response.status).to.eq(200)
       console.log(response.body)
       expect(response.body).to.have.property('owners')
@@ -42,7 +49,7 @@ describe('Recovery happy path tests 2', () => {
       recovery.verifyTxNotInQueue()
       cy.wait(2000)
 
-      main.fetchSafeData(constants.SEPOLIA_TEST_SAFE_24_RECOVERY_2.substring(4)).then((response) => {
+      main.fetchSafeData(recoverySafes.SEP_RECOVERY_SAFE_2.substring(4)).then((response) => {
         const owners = response.body.owners
         expect(owners).to.include(owner)
       })

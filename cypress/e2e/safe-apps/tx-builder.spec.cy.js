@@ -4,12 +4,21 @@ import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 import * as navigation from '../pages/navigation.page'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+
+let safeAppSafes = []
+let iframeSelector
 
 describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
-  const appUrl = constants.TX_Builder_url
-  const iframeSelector = `iframe[id="iframe-${appUrl}"]`
-  const visitUrl = `/apps/open?safe=${constants.SEPOLIA_TEST_SAFE_9}&appUrl=${encodeURIComponent(appUrl)}`
+  before(async () => {
+    safeAppSafes = await getSafes(CATEGORIES.safeapps)
+  })
+
   beforeEach(() => {
+    const appUrl = constants.TX_Builder_url
+    iframeSelector = `iframe[id="iframe-${appUrl}"]`
+    const visitUrl = `/apps/open?safe=${safeAppSafes.SEP_SAFEAPP_SAFE_1}&appUrl=${encodeURIComponent(appUrl)}`
+
     cy.clearLocalStorage()
     cy.visit(visitUrl)
     main.acceptCookies()
@@ -21,7 +30,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SAFE_APP_ADDRESS)
       getBody().find(safeapps.contractMethodIndex).parent().click()
       getBody().findByRole('option', { name: safeapps.testAddressValue2 }).click()
-      getBody().findByLabelText(safeapps.newAddressValueStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.newAddressValueStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.addTransactionStr).click()
       getBody().findAllByText(constants.SEPOLIA_CONTRACT_SHORT).should('have.length', 1)
       getBody().findByText(safeapps.testAddressValueStr).should('exist')
@@ -90,7 +99,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
   it('Verify a batch can be created from an ABI', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterABIStr).type(safeapps.abi)
-      getBody().findByLabelText(safeapps.toAddressStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.toAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByLabelText(safeapps.tokenAmount).type('0')
       getBody().findByText(safeapps.addTransactionStr).click()
 
@@ -136,7 +145,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SAFE_APP_ADDRESS)
       getBody().find(safeapps.contractMethodIndex).parent().click()
       getBody().findByRole('option', { name: safeapps.testAddressValue2 }).click()
-      getBody().findByLabelText(safeapps.newAddressValueStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.newAddressValueStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.addTransactionStr).click()
       getBody().findByText(safeapps.createBatchStr).click()
       getBody().findByRole('button', { name: safeapps.cancelBtnStr }).click()
@@ -151,7 +160,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SAFE_APP_ADDRESS)
       getBody().find(safeapps.contractMethodIndex).parent().click()
       getBody().findByRole('option', { name: safeapps.testAddressValue2 }).click()
-      getBody().findByLabelText(safeapps.newAddressValueStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.newAddressValueStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.addTransactionStr).click()
       getBody().findByText(safeapps.createBatchStr).click()
       getBody().findByRole('button', { name: safeapps.cancelBtnStr }).click()
@@ -166,14 +175,14 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SAFE_APP_ADDRESS)
       getBody().find(safeapps.contractMethodIndex).parent().click()
       getBody().findByRole('option', { name: safeapps.testAddressValue2 }).click()
-      getBody().findByLabelText(safeapps.newAddressValueStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.newAddressValueStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.addTransactionStr).click()
       getBody().findByText(safeapps.createBatchStr).click()
       getBody().findByText(safeapps.backToTransactionStr).click()
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SAFE_APP_ADDRESS)
       getBody().find(safeapps.contractMethodIndex).parent().click()
       getBody().findByRole('option', { name: safeapps.testAddressValue2 }).click()
-      getBody().findByLabelText(safeapps.newAddressValueStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.newAddressValueStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.addTransactionStr).click()
       getBody().findByText(safeapps.createBatchStr).click()
       getBody().findByText(safeapps.sendBatchStr).click()
@@ -189,7 +198,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
 
   it('Verify a batch cannot be created with invalid address', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SEPOLIA_TEST_SAFE_10.substring(5))
+      getBody().findByLabelText(safeapps.enterAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2.substring(5))
       getBody()
         .findAllByText(safeapps.addressNotValidStr)
         .should('have.css', 'color', 'rgb(244, 67, 54)')
@@ -199,7 +208,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
 
   it.skip('Verify a batch cannot be created without asset amount', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.enterAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.keepProxiABIStr).click()
       getBody().findByText(safeapps.addTransactionStr).click()
       getBody().findAllByText(safeapps.requiredStr).should('have.css', 'color', 'rgb(244, 67, 54)')
@@ -269,7 +278,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
 
   it.skip('Verify a valid batch as successful can be simulated', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.enterAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.keepProxiABIStr).click()
       getBody().findByLabelText(safeapps.tokenAmount).type('0')
       getBody().findByText(safeapps.addTransactionStr).click()
@@ -282,7 +291,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
 
   it.skip('Verify an invalid batch as failed can be simulated', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SEPOLIA_TEST_SAFE_10)
+      getBody().findByLabelText(safeapps.enterAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.keepProxiABIStr).click()
       getBody().findByLabelText(safeapps.tokenAmount).type('100')
       getBody().findByText(safeapps.addTransactionStr).click()

@@ -1,5 +1,6 @@
-import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
+import * as constants from '../../support/constants.js'
+import * as main from './main.page.js'
+import staticSafes from '../../fixtures/safes/static.json'
 
 export const addressBookRecipient = '[data-testid="address-book-recipient"]'
 const beameriFrameContainer = '#beamerOverlay .iframeCointaner'
@@ -119,7 +120,7 @@ export function addEntryByENS(name, ens) {
   typeInName(name)
   typeInAddress(ens)
   clickOnSaveEntryBtn()
-  verifyNewEntryAdded(name, constants.SEPOLIA_TEST_SAFE_7)
+  verifyNewEntryAdded(name, staticSafes.SEP_STATIC_SAFE_6)
 }
 
 export function verifyModalSummaryMessage(entryCount, chainCount) {

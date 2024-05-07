@@ -3,16 +3,31 @@ import * as main from '../pages/main.page'
 import * as nfts from '../pages/nfts.pages'
 import * as navigation from '../pages/navigation.page'
 import * as createTx from '../pages/create_tx.pages'
+import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 const singleNFT = ['safeTransferFrom']
 const multipleNFT = ['multiSend']
 const multipleNFTAction = 'safeTransferFrom'
 const NFTSentName = 'GTT #22'
 
+let nftsSafes,
+  staticSafes = []
+
 describe('NFTs tests', () => {
+  before(() => {
+    getSafes(CATEGORIES.nfts)
+      .then((nfts) => {
+        nftsSafes = nfts
+        return getSafes(CATEGORIES.static)
+      })
+      .then((statics) => {
+        staticSafes = statics
+      })
+  })
+
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.balanceNftsUrl + constants.SEPOLIA_TEST_SAFE_5)
+    cy.visit(constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
     main.acceptCookies()
     nfts.waitForNftItems(2)
   })
@@ -24,7 +39,7 @@ describe('NFTs tests', () => {
     nfts.deselectNFTs([2], 3)
     nfts.sendNFT()
     nfts.verifyNFTModalData()
-    nfts.typeRecipientAddress(constants.SEPOLIA_TEST_SAFE_4)
+    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
     nfts.clikOnNextBtn()
     nfts.verifyReviewModalData(2)
   })
@@ -33,7 +48,7 @@ describe('NFTs tests', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(1)
     nfts.sendNFT()
-    nfts.typeRecipientAddress(constants.SEPOLIA_TEST_SAFE_4)
+    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
     nfts.clikOnNextBtn()
     nfts.verifyTxDetails(singleNFT)
     nfts.verifyCountOfActions(0)
@@ -43,7 +58,7 @@ describe('NFTs tests', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(2)
     nfts.sendNFT()
-    nfts.typeRecipientAddress(constants.SEPOLIA_TEST_SAFE_4)
+    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
     nfts.clikOnNextBtn()
     nfts.verifyTxDetails(multipleNFT)
     nfts.verifyCountOfActions(2)
@@ -52,7 +67,7 @@ describe('NFTs tests', () => {
   })
 
   it('Verify Send button is disabled for non-owner', () => {
-    cy.visit(constants.balanceNftsUrl + constants.SEPOLIA_TEST_SAFE_19_NONOWNER_NFT)
+    cy.visit(constants.balanceNftsUrl + nftsSafes.SEP_NFT_SAFE_2)
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(1)
     nfts.verifySendNFTBtnDisabled()
@@ -66,11 +81,11 @@ describe('NFTs tests', () => {
   })
 
   it('Verify Send NFT transaction has been created', () => {
-    cy.visit(constants.balanceNftsUrl + constants.SEPOLIA_TEST_SAFE_27_SEND_NFT)
+    cy.visit(constants.balanceNftsUrl + nftsSafes.SEP_NFT_SAFE_1)
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(1)
     nfts.sendNFT()
-    nfts.typeRecipientAddress(constants.SEPOLIA_TEST_SAFE_4)
+    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
     createTx.changeNonce(2)
     nfts.clikOnNextBtn()
     createTx.clickOnSignTransactionBtn()
