@@ -70,7 +70,7 @@ describe('SafeWalletProvider', () => {
       expect(result).toEqual({
         id: 1,
         jsonrpc: '2.0',
-        result: ['0x123'],
+        result: [safe.safeAddress],
       })
     })
   })
@@ -137,7 +137,7 @@ describe('SafeWalletProvider', () => {
 
       const result = await safeWalletProvider.request(
         1,
-        { method: 'personal_sign', params: ['message', '0x123'] } as any,
+        { method: 'personal_sign', params: ['message', safe.safeAddress] } as any,
         {} as any,
       )
 
@@ -158,7 +158,7 @@ describe('SafeWalletProvider', () => {
 
       const result = await safeWalletProvider.request(
         1,
-        { method: 'eth_sign', params: ['0x123', '0x123'] } as any,
+        { method: 'eth_sign', params: [safe.safeAddress, '0x345'] } as any,
         {} as any,
       )
 
@@ -215,7 +215,7 @@ describe('SafeWalletProvider', () => {
 
       const result = await safeWalletProvider.request(
         1,
-        { method: 'personal_sign', params: ['0x123', '0x123'] } as any,
+        { method: 'eth_sign', params: [safe.safeAddress, '0x123'] } as any,
         {} as any,
       )
 
@@ -239,7 +239,7 @@ describe('SafeWalletProvider', () => {
           {
             method,
             params: [
-              '0x123',
+              safe.safeAddress,
               {
                 domain: {
                   chainId: 1,
@@ -291,7 +291,7 @@ describe('SafeWalletProvider', () => {
           {
             method,
             params: [
-              '0x123',
+              safe.safeAddress,
               {
                 domain: {
                   chainId: 1,
@@ -321,16 +321,23 @@ describe('SafeWalletProvider', () => {
       const sdk = {
         send: jest.fn().mockResolvedValue({ safeTxHash: '0x456' }),
       }
+      const toAddress = faker.finance.ethereumAddress()
       const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
       const result = await safeWalletProvider.request(
         1,
-        { method: 'eth_sendTransaction', params: [{ from: '0x123', to: '0x123', value: '0x123', gas: 1000 }] } as any,
+        {
+          method: 'eth_sendTransaction',
+          params: [{ from: safe.safeAddress, to: toAddress, value: '0x01', gas: 1000 }],
+        } as any,
         appInfo,
       )
 
       expect(sdk.send).toHaveBeenCalledWith(
-        { txs: [{ from: '0x123', to: '0x123', value: '0x123', gas: 1000, data: '0x' }], params: { safeTxGas: 1000 } },
+        {
+          txs: [{ from: safe.safeAddress, to: toAddress, value: '0x01', gas: 1000, data: '0x' }],
+          params: { safeTxGas: 1000 },
+        },
         appInfo,
       )
 
@@ -427,10 +434,15 @@ describe('SafeWalletProvider', () => {
       }
       const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
+      const toAddress = faker.finance.ethereumAddress()
+
       // Send the transaction
       await safeWalletProvider.request(
         1,
-        { method: 'eth_sendTransaction', params: [{ from: '0x123', to: '0x123', value: '0x123', gas: 1000 }] } as any,
+        {
+          method: 'eth_sendTransaction',
+          params: [{ from: safe.safeAddress, to: toAddress, value: '0x01', gas: 1000 }],
+        } as any,
         appInfo,
       )
 
@@ -446,15 +458,15 @@ describe('SafeWalletProvider', () => {
         result: {
           blockHash: null,
           blockNumber: null,
-          from: '0x123',
+          from: safe.safeAddress,
           gas: 0,
           gasPrice: '0x00',
           hash: '0x777',
           input: '0x',
           nonce: 0,
-          to: '0x123',
+          to: toAddress,
           transactionIndex: null,
-          value: '0x123',
+          value: '0x01',
         },
       })
     })
