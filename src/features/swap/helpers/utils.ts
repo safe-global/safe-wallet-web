@@ -126,8 +126,8 @@ export const isOrderPartiallyFilled = (
   const sellAmount = BigInt(order.sellAmount)
 
   if (order.kind === OrderKind.BUY) {
-    return executedSellAmount !== 0n && executedSellAmount < sellAmount
+    return executedBuyAmount !== 0n && executedBuyAmount < buyAmount
   }
 
-  return BigInt(executedBuyAmount) !== 0n && executedBuyAmount < buyAmount
+  return BigInt(executedSellAmount) !== 0n && executedSellAmount < sellAmount
 }

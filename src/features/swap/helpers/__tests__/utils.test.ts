@@ -185,7 +185,7 @@ describe('Swap helpers', () => {
   describe('isOrderPartiallyFilled', () => {
     it('returns true if a buy order is partially filled', () => {
       const mockOrder = {
-        executedBuyAmount: '0',
+        executedBuyAmount: '10',
         buyAmount: '100000000000000000000', // 100 tokens
         executedSellAmount: '50000000000000000000', // 50 tokens
         sellAmount: '100000000000000000000', // 100 tokens
@@ -214,7 +214,7 @@ describe('Swap helpers', () => {
     it('returns true if a sell order is partially filled', () => {
       const mockOrder = {
         sellAmount: '100000000000000000000',
-        executedSellAmount: '0',
+        executedSellAmount: '10',
         executedBuyAmount: '50000000000000000000', // 50 tokens
         buyAmount: '100000000000000000000', // 100 tokens
         kind: 'sell',
