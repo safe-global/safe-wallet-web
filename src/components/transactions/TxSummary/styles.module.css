@@ -1,12 +1,12 @@
 .gridContainer {
-  --grid-nonce: minmax(50px, 0.25fr);
+  --grid-nonce: minmax(45px, 0.25fr);
   --grid-type: minmax(150px, 3fr);
-  --grid-info: minmax(150px, 3fr);
+  --grid-info: minmax(190px, 3fr);
   --grid-date: minmax(200px, 3fr);
-  --grid-confirmations: minmax(130px, 1fr);
+  --grid-confirmations: minmax(120px, 1fr);
 
   --grid-actions: minmax(120px, 1fr);
-  --grid-status: minmax(120px, 1fr);
+  --grid-status: minmax(100px, 1fr);
 
   width: 100%;
   display: grid;
@@ -46,7 +46,7 @@
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 1460px) {
+@media (max-width: 1350px) {
   .gridContainer {
     gap: var(--space-1);
     display: flex;
