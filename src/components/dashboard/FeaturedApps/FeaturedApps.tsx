@@ -1,32 +1,27 @@
 import type { ReactElement, SyntheticEvent } from 'react'
 import { Box, Grid, Typography, Link } from '@mui/material'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { Card, WidgetBody, WidgetContainer } from '../styled'
-import { useRouter } from 'next/router'
 import NextLink from 'next/link'
-import { AppRoutes } from '@/config/routes'
-import { SafeAppsTag } from '@/config/constants'
-import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
-import { isWalletConnectSafeApp } from '@/utils/gateway'
 import { openWalletConnect } from '@/features/walletconnect/components'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 
-const FeaturedAppCard = ({ app }: { app: SafeAppData }) => (
+const FeaturedAppCard = ({ name, description, iconUrl }: { name: string; description: string; iconUrl: string }) => (
   <Card>
     <Grid container alignItems="center" spacing={3}>
       <Grid item xs={12} md={3}>
-        <SafeAppIconCard src={app.iconUrl} alt={app.name} width={64} height={64} />
+        <SafeAppIconCard src={iconUrl} alt={name} width={64} height={64} />
       </Grid>
 
       <Grid item xs={12} md={9}>
         <Box mb={1.01}>
-          <Typography fontSize="lg">{app.description}</Typography>
+          <Typography fontSize="lg">{description}</Typography>
         </Box>
 
         <Link color="primary.main" fontWeight="bold" component="span">
-          Use {app.name}
+          Use {name}
         </Link>
       </Grid>
     </Grid>
@@ -39,11 +34,8 @@ const onWcWidgetClick = (e: SyntheticEvent) => {
 }
 
 export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): ReactElement | null => {
-  const router = useRouter()
-  const [featuredApps, _, remoteSafeAppsLoading] = useRemoteSafeApps(SafeAppsTag.DASHBOARD_FEATURED)
-  const enableWc = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
-
-  if (!featuredApps?.length && !remoteSafeAppsLoading) return null
+  const txBuilder = useTxBuilderApp()
+  const isWcEnabled = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
 
   return (
     <Grid item xs={12} md style={{ height: '100%' }}>
@@ -53,17 +45,28 @@ export const FeaturedApps = ({ stackedLayout }: { stackedLayout: boolean }): Rea
         </Typography>
         <WidgetBody>
           <Grid container spacing={3} height={1}>
-            {featuredApps?.map((app) => (
-              <Grid item xs={12} md={stackedLayout ? 12 : 6} key={app.id}>
-                <NextLink
-                  passHref
-                  href={{ pathname: AppRoutes.apps.open, query: { ...router.query, appUrl: app.url } }}
-                  onClick={enableWc && isWalletConnectSafeApp(app.url) ? onWcWidgetClick : undefined}
-                >
-                  <FeaturedAppCard app={app} />
+            {txBuilder?.app && (
+              <Grid item xs={12} md={stackedLayout ? 12 : 6}>
+                <NextLink passHref href={txBuilder?.link}>
+                  <FeaturedAppCard
+                    name={txBuilder.app.name}
+                    description={txBuilder.app.description}
+                    iconUrl={txBuilder.app.iconUrl}
+                  />
                 </NextLink>
               </Grid>
-            ))}
+            )}
+            {isWcEnabled && (
+              <Grid item xs={12} md={stackedLayout ? 12 : 6}>
+                <a onClick={onWcWidgetClick} href="#">
+                  <FeaturedAppCard
+                    name="WalletConnect"
+                    description="Connect your Safe to any dApp that supports WalletConnect"
+                    iconUrl="/images/common/walletconnect.svg"
+                  />
+                </a>
+              </Grid>
+            )}
           </Grid>
         </WidgetBody>
       </WidgetContainer>
