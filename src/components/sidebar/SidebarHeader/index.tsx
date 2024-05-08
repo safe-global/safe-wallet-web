@@ -30,6 +30,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import ExplorerButton from '@/components/common/ExplorerButton'
 import CopyTooltip from '@/components/common/CopyTooltip'
 import FiatValue from '@/components/common/FiatValue'
+import { useAddressResolver } from '@/hooks/useAddressResolver'
 
 const SafeHeader = (): ReactElement => {
   const { balances } = useVisibleBalances()
@@ -38,6 +39,7 @@ const SafeHeader = (): ReactElement => {
   const { threshold, owners } = safe
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
+  const { ens } = useAddressResolver(safeAddress)
 
   const addressCopyText = settings.shortName.copy && chain ? `${chain.shortName}:${safeAddress}` : safeAddress
 
@@ -57,7 +59,7 @@ const SafeHeader = (): ReactElement => {
 
           <div className={css.address}>
             {safeAddress ? (
-              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
+              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} name={ens} />
             ) : (
               <Typography variant="body2">
                 <Skeleton variant="text" width={86} />
