@@ -1,12 +1,12 @@
 .gridContainer {
-  --grid-nonce: minmax(50px, 0.25fr);
+  --grid-nonce: minmax(45px, 0.25fr);
   --grid-type: minmax(150px, 3fr);
-  --grid-info: minmax(150px, 3fr);
+  --grid-info: minmax(190px, 3fr);
   --grid-date: minmax(200px, 3fr);
-  --grid-confirmations: minmax(130px, 1fr);
+  --grid-confirmations: minmax(120px, 1fr);
 
-  --grid-actions: minmax(120px, 1fr);
   --grid-status: minmax(120px, 1fr);
+  --grid-actions: minmax(100px, 1fr);
 
   width: 100%;
   display: grid;
@@ -15,8 +15,7 @@
   white-space: nowrap;
   grid-template-columns:
     var(--grid-nonce) var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations)
-    var(--grid-actions)
-    var(--grid-status);
+    var(--grid-status) var(--grid-actions);
   grid-template-areas: 'nonce type info date confirmations  status actions';
 }
 
@@ -30,7 +29,9 @@
 }
 
 .gridContainer.grouped {
-  grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(--grid-status);
+  grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(--grid-status) var(
+      --grid-actions
+    );
   grid-template-areas: 'type info date confirmations status actions';
 }
 
@@ -46,7 +47,7 @@
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 1460px) {
+@media (max-width: 1350px) {
   .gridContainer {
     gap: var(--space-1);
     display: flex;
