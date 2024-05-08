@@ -197,7 +197,7 @@ describe('Swap helpers', () => {
       expect(result).toBe(true)
     })
 
-    it('returns false if a buy order is fully filled', () => {
+    it('returns false if a buy order is not fully filled or fully filled', () => {
       const mockOrder = {
         executedBuyAmount: '0',
         buyAmount: '100000000000000000000', // 100 tokens
@@ -209,6 +209,12 @@ describe('Swap helpers', () => {
       const result = isOrderPartiallyFilled(mockOrder)
 
       expect(result).toBe(false)
+
+      const result1 = isOrderPartiallyFilled({
+        ...mockOrder,
+        executedBuyAmount: '100000000000000000000', // 100 tokens
+      })
+      expect(result1).toBe(false)
     })
 
     it('returns true if a sell order is partially filled', () => {
@@ -225,7 +231,7 @@ describe('Swap helpers', () => {
       expect(result).toBe(true)
     })
 
-    it('returns false if a sell order is fully filled', () => {
+    it('returns false if a sell order is not fully filled or fully filled', () => {
       const mockOrder = {
         sellAmount: '100000000000000000000',
         executedSellAmount: '0',
@@ -237,6 +243,13 @@ describe('Swap helpers', () => {
       const result = isOrderPartiallyFilled(mockOrder)
 
       expect(result).toBe(false)
+
+      const result1 = isOrderPartiallyFilled({
+        ...mockOrder,
+        executedSellAmount: '100000000000000000000', // 100 tokens
+      })
+
+      expect(result1).toBe(false)
     })
   })
 })
