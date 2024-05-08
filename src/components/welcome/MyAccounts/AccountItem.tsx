@@ -12,7 +12,6 @@ import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import css from './styles.module.css'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import { shortenAddress } from '@/utils/formatters'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -24,6 +23,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
 import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
+import { useAddressResolver } from '@/hooks/useAddressResolver'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -32,7 +32,7 @@ type AccountItemProps = {
 }
 
 const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) => {
-  const { chainId, address } = safeItem
+  const { chainId, address } = safeItem || {}
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
   const safeAddress = useSafeAddress()
@@ -41,8 +41,9 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
-
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
+  const { name, ens } = useAddressResolver(address, chainId)
+  const safeName = name ?? ens
 
   /**
    * Navigate to the dashboard when selecting a safe on the welcome page,
@@ -63,8 +64,6 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
     return chain ? getHref(chain, address) : ''
   }, [chain, getHref, address])
 
-  const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
-
   const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
   return (
@@ -80,9 +79,9 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
           </Box>
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
-            {name && (
+            {safeName && (
               <Typography variant="subtitle2" component="p" fontWeight="bold">
-                {name}
+                {safeName}
               </Typography>
             )}
             {chain?.shortName}:

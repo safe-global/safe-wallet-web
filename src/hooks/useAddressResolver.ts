@@ -1,33 +1,36 @@
-import useAddressBook from '@/hooks/useAddressBook'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { lookupAddress } from '@/services/ens'
-import { FEATURES } from '@/utils/chains'
+import { FEATURES, hasFeature } from '@/utils/chains'
 import { useMemo } from 'react'
 import useAsync from '@/hooks/useAsync'
 import useDebounce from './useDebounce'
-import { useHasFeature } from './useChains'
+import { useChain } from './useChains'
+import useChainId from './useChainId'
+import useAllAddressBooks from '@/hooks/useAllAddressBooks'
 
-export const useAddressResolver = (address: string) => {
-  const addressBook = useAddressBook()
+export const useAddressResolver = (address?: string, chainId?: string) => {
   const ethersProvider = useWeb3ReadOnly()
   const debouncedValue = useDebounce(address, 200)
-  const addressBookName = addressBook[address]
-  const isDomainLookupEnabled = useHasFeature(FEATURES.DOMAIN_LOOKUP)
-  const shouldResolve = !addressBookName && isDomainLookupEnabled && !!ethersProvider && !!debouncedValue
+  const currentChainId = useChainId()
+  const chain = useChain(chainId ?? currentChainId)
+  const isDomainLookupEnabled = chain && hasFeature(chain, FEATURES.DOMAIN_LOOKUP)
+  const addressBook = useAllAddressBooks()[chainId ?? currentChainId] || {}
+  const shouldResolve = isDomainLookupEnabled && !!ethersProvider && !!address && !addressBook[address]
 
   const [ens, _, isResolving] = useAsync<string | undefined>(() => {
     if (!shouldResolve) return
-    return lookupAddress(ethersProvider, debouncedValue)
+    return lookupAddress(ethersProvider, debouncedValue || '')
   }, [ethersProvider, debouncedValue, shouldResolve])
 
   const resolving = shouldResolve && isResolving
+  const name = addressBook[address || '']
 
   return useMemo(
     () => ({
+      name,
       ens,
-      name: addressBookName,
       resolving,
     }),
-    [ens, addressBookName, resolving],
+    [name, ens, resolving],
   )
 }
