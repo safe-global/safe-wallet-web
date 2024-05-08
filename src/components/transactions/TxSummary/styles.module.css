@@ -1,9 +1,9 @@
 .gridContainer {
   --grid-nonce: minmax(50px, 0.25fr);
   --grid-type: minmax(150px, 3fr);
-  --grid-info: minmax(250px, 3fr);
+  --grid-info: minmax(150px, 3fr);
   --grid-date: minmax(200px, 3fr);
-  --grid-confirmations: minmax(150px, 1fr);
+  --grid-confirmations: minmax(130px, 1fr);
 
   --grid-actions: minmax(120px, 1fr);
   --grid-status: minmax(120px, 1fr);

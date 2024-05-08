@@ -95,8 +95,7 @@ const SwapTx = ({ info }: { info: SwapOrder }): ReactElement => {
   return (
     <Box display="flex">
       <Typography display="flex" alignItems="center" fontWeight="bold">
-        Swap{' '}
-        <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
+        <Box style={{ paddingRight: 5, display: 'inline-block' }}>
           <TokenIcon logoUri={info.sellToken.logoUri || undefined} tokenSymbol={info.sellToken.symbol} />
         </Box>
         <Typography sx={{ maxWidth: '60px' }} noWrap>
