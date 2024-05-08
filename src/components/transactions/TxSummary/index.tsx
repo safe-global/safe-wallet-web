@@ -91,7 +91,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       {isQueue && !expiredSwap && (
-        <Box gridArea="actions">
+        <Box gridArea="actions" className={css.actions}>
           <QueueActions tx={tx} />
         </Box>
       )}
