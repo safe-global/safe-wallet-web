@@ -1,3 +1,4 @@
+import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
 import { didRevert } from '@/utils/ethers-utils'
@@ -290,7 +291,9 @@ export const dispatchBatchExecution = async (
       signerNonce = await getUserNonce(signerAddress)
     }
     const provider = createWeb3(wallet.provider)
-    result = await multiSendContract.contract.connect(await provider.getSigner()).multiSend(multiSendTxData, overrides)
+    const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(provider, (await provider.getSigner()).address)
+
+    result = await multiSendContract.contract.connect(uncheckedJsonRpcSigner).multiSend(multiSendTxData, overrides)
 
     txIds.forEach((txId) => {
       txDispatch(TxEvent.EXECUTING, { txId, groupKey })
