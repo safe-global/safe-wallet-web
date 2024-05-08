@@ -140,7 +140,6 @@ const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: strin
             size="small"
             startIcon={<SwapIcon />}
             onClick={() => {
-              console.log('tokenInfo', tokenInfo)
               router.push({
                 pathname: AppRoutes.swap,
                 query: {
