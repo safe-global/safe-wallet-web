@@ -5,7 +5,7 @@ import CheckIcon from '@/public/images/common/circle-check.svg'
 import ClockIcon from '@/public/images/common/clock.svg'
 import BlockIcon from '@/public/images/common/block.svg'
 import SignatureIcon from '@/public/images/common/document_signature.svg'
-import CircleIcon from '@/public/images/common/circle.svg'
+import CircleIPartialFillcon from '@/public/images/common/circle-partial-fill.svg'
 
 type CustomOrderStatuses = OrderStatuses | 'partiallyFilled'
 type Props = {
@@ -58,10 +58,10 @@ const statusMap: Record<CustomOrderStatuses, StatusProps> = {
   },
   partiallyFilled: {
     label: 'Partially filled',
-    color: 'warning.main',
-    backgroundColor: 'warning.background',
-    iconColor: 'warning.main',
-    icon: CircleIcon,
+    color: 'success.dark',
+    backgroundColor: 'secondary.background',
+    iconColor: 'success.dark',
+    icon: CircleIPartialFillcon,
   },
 }
 export const StatusLabel = (props: Props): ReactElement => {
