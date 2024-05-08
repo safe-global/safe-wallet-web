@@ -116,3 +116,18 @@ export const getOrderClass = (order: Pick<SwapOrder, 'fullAppData'>): latest.Ord
 
   return orderClass || 'market'
 }
+
+export const isOrderPartiallyFilled = (
+  order: Pick<SwapOrder, 'executedBuyAmount' | 'executedSellAmount' | 'sellAmount' | 'buyAmount' | 'kind'>,
+): boolean => {
+  const executedBuyAmount = BigInt(order.executedBuyAmount)
+  const buyAmount = BigInt(order.buyAmount)
+  const executedSellAmount = BigInt(order.executedSellAmount)
+  const sellAmount = BigInt(order.sellAmount)
+
+  if (order.kind === OrderKind.BUY) {
+    return executedBuyAmount !== 0n && executedBuyAmount < buyAmount
+  }
+
+  return BigInt(executedSellAmount) !== 0n && executedSellAmount < sellAmount
+}

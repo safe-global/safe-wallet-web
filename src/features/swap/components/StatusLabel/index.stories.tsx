@@ -82,3 +82,15 @@ export const Expired: Story = {
     },
   },
 }
+
+export const PartiallyFilled: Story = {
+  args: {
+    status: 'partiallyFilled',
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5813-38019&mode=design&t=fZkl3tqjIWoYsB9C-4',
+    },
+  },
+}

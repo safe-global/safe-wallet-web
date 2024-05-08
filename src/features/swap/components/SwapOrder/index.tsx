@@ -15,7 +15,13 @@ import css from './styles.module.css'
 import { Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
-import { getExecutionPrice, getLimitPrice, getOrderClass, getSurplusPrice } from '@/features/swap/helpers/utils'
+import {
+  getExecutionPrice,
+  getLimitPrice,
+  getOrderClass,
+  getSurplusPrice,
+  isOrderPartiallyFilled,
+} from '@/features/swap/helpers/utils'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
@@ -37,6 +43,8 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
 
   const orderKindLabel = capitalize(kind)
   const isSellOrder = kind === 'sell'
+
+  const isPartiallyFilled = isOrderPartiallyFilled(order)
 
   return (
     <DataTable
@@ -105,7 +113,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
           <OrderId orderId={uid} href={explorerUrl} />
         </DataRow>,
         <DataRow key="Status" title="Status">
-          <StatusLabel status={status} />
+          <StatusLabel status={isPartiallyFilled ? 'partiallyFilled' : status} />
         </DataRow>,
         receiver && receiver !== safeAddress ? (
           <DataRow key="Recipient" title="Recipient">

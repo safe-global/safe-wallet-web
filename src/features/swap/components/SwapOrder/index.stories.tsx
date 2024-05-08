@@ -3,6 +3,7 @@ import { SellOrder as SellOrderComponent } from './index'
 import { Paper } from '@mui/material'
 import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import { appDataBuilder, orderTokenBuilder, swapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
+import { StoreDecorator } from '@/stories/storeDecorator'
 
 const FulfilledSwapOrder = swapOrderBuilder()
   .with({
@@ -56,9 +57,11 @@ const meta = {
   decorators: [
     (Story) => {
       return (
-        <Paper sx={{ padding: 2 }}>
-          <Story />
-        </Paper>
+        <StoreDecorator initialState={{}}>
+          <Paper sx={{ padding: 2 }}>
+            <Story />
+          </Paper>
+        </StoreDecorator>
       )
     },
   ],
@@ -211,6 +214,44 @@ export const ExpiredLimit: Story = {
       fullAppData: appDataBuilder('limit').build(),
       status: 'expired' as OrderStatuses,
       validUntil: new Date().getTime() / 1000 - 28 * 60,
+    },
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5813-37987&mode=design&t=cJDGDQGZFqccSTaB-4',
+    },
+  },
+}
+
+export const LimitOpenPartiallyFilled: Story = {
+  args: {
+    order: {
+      ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('limit').build(),
+      status: 'open' as OrderStatuses,
+      validUntil: new Date().getTime() / 1000 + 28 * 60,
+      executedSellAmount: '1000000000000000',
+      executedBuyAmount: '3388586928324',
+    },
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/VyA38zUPbJ2zflzCIYR6Nu/Swap?type=design&node-id=5813-37987&mode=design&t=cJDGDQGZFqccSTaB-4',
+    },
+  },
+}
+
+export const LimitExpiredPartiallyFilled: Story = {
+  args: {
+    order: {
+      ...NonFulfilledSwapOrder,
+      fullAppData: appDataBuilder('limit').build(),
+      status: 'expired' as OrderStatuses,
+      validUntil: new Date().getTime() / 1000 - 28 * 60,
+      executedSellAmount: '1000000000000000',
+      executedBuyAmount: '3388586928324',
     },
   },
   parameters: {
