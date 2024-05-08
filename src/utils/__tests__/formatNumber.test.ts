@@ -181,6 +181,15 @@ describe('formatNumber', () => {
       expect(formatCurrency(amount3, 'BHD')).toBe('1.778 BHD')
     })
 
+    it('should drop decimals for values above 1k', () => {
+      // It should stop
+      expect(formatCurrency(999.99, 'USD')).toBe('999.99 USD')
+      expect(formatCurrency(1000.1, 'USD')).toBe('1,000 USD')
+      expect(formatCurrency(1000.99, 'USD')).toBe('1,001 USD')
+      expect(formatCurrency(32500.5, 'EUR')).toBe('32,501 EUR')
+      expect(formatCurrency(314285500.1, 'JPY')).toBe('314.286M JPY')
+    })
+
     it('should use M symbol for numbers between 100,000,000 and 999,999,500', () => {
       const amount1 = 100_000_100
 

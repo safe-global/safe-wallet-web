@@ -4,10 +4,7 @@ import QrCodeButton from '@/components/sidebar/QrCodeButton'
 import { TxModalContext } from '@/components/tx-flow'
 import { NewTxFlow } from '@/components/tx-flow/flows'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { useAppSelector } from '@/store'
-import { selectCurrency } from '@/store/settingsSlice'
-import { formatCurrency } from '@/utils/formatNumber'
-import { useContext, useMemo, type ReactElement } from 'react'
+import { useContext, type ReactElement } from 'react'
 import { Button, Grid, Skeleton, Typography } from '@mui/material'
 import { WidgetBody, WidgetContainer } from '../styled'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -15,6 +12,7 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
 import BuyCryptoButton from '@/components/common/BuyCryptoButton'
+import FiatValue from '@/components/common/FiatValue'
 
 const SkeletonOverview = (
   <>
@@ -35,15 +33,9 @@ const SkeletonOverview = (
 )
 
 const Overview = (): ReactElement => {
-  const currency = useAppSelector(selectCurrency)
   const { safe, safeLoading, safeLoaded } = useSafeInfo()
   const { balances, loading: balancesLoading } = useVisibleBalances()
   const { setTxFlow } = useContext(TxModalContext)
-
-  const fiatTotal = useMemo(
-    () => (balances.fiatTotal ? formatCurrency(balances.fiatTotal, currency) : ''),
-    [currency, balances.fiatTotal],
-  )
 
   const isInitialState = !safeLoaded && !safeLoading
   const isLoading = safeLoading || balancesLoading || isInitialState
@@ -67,7 +59,7 @@ const Overview = (): ReactElement => {
                 </Typography>
                 <Typography component="div" variant="h1" fontSize={44} lineHeight="40px">
                   {safe.deployed ? (
-                    fiatTotal
+                    <FiatValue value={balances.fiatTotal} />
                   ) : (
                     <TokenAmount
                       value={balances.items[0].balance}

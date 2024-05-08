@@ -12,7 +12,7 @@ import { POLLING_INTERVAL } from '@/config/constants'
 import useIntervalCounter from '../useIntervalCounter'
 import useSafeInfo from '../useSafeInfo'
 
-const useTokenListSetting = (): boolean | undefined => {
+export const useTokenListSetting = (): boolean | undefined => {
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
 
