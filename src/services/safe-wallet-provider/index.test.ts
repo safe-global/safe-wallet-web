@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { SafeWalletProvider } from '.'
 
 const safe = {
-  safeAddress: '0x123',
+  safeAddress: faker.finance.ethereumAddress(),
   chainId: 1,
 }
 
@@ -592,6 +592,48 @@ describe('SafeWalletProvider', () => {
         await safeWalletProvider.request(1, { method: 'wallet_showCallsStatus', params } as any, appInfo)
 
         expect(sdk.showTxStatus).toHaveBeenCalledWith(params[0])
+      })
+    })
+
+    describe('wallet_getCapabilities', () => {
+      it('should return atomic batch for the current chain', async () => {
+        const sdk = {
+          showTxStatus: jest.fn(),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = [safe.safeAddress]
+
+        const result = await safeWalletProvider.request(1, { method: 'wallet_getCapabilities', params } as any, appInfo)
+
+        expect(result).toEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: {
+            ['0x1']: {
+              atomicBatch: {
+                supported: true,
+              },
+            },
+          },
+        })
+      })
+
+      it('should return an empty object if the safe address does not match', async () => {
+        const sdk = {
+          showTxStatus: jest.fn(),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = [faker.finance.ethereumAddress()]
+
+        const result = await safeWalletProvider.request(1, { method: 'wallet_getCapabilities', params } as any, appInfo)
+
+        expect(result).toEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: {},
+        })
       })
     })
   })
