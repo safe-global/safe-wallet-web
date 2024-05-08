@@ -105,12 +105,14 @@ export const getFilledAmount = (
 
 export const getSlippageInPercent = (order: Pick<SwapOrder, 'fullAppData'>): string => {
   const fullAppData = order.fullAppData as AnyAppDataDocVersion
-  const slippageBips = (fullAppData.metadata.quote as latest.Quote).slippageBips || 0
+  const slippageBips = (fullAppData?.metadata?.quote as latest.Quote)?.slippageBips || 0
 
   return (Number(slippageBips) / 100).toFixed(2)
 }
 
 export const getOrderClass = (order: Pick<SwapOrder, 'fullAppData'>): latest.OrderClass1 => {
   const fullAppData = order.fullAppData as AnyAppDataDocVersion
-  return (fullAppData.metadata.orderClass as latest.OrderClass).orderClass
+  const orderClass = (fullAppData?.metadata?.orderClass as latest.OrderClass)?.orderClass
+
+  return orderClass || 'market'
 }
