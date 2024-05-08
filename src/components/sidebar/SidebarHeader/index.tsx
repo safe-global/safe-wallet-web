@@ -31,6 +31,7 @@ import EnvHintButton from '@/components/settings/EnvironmentVariables/EnvHintBut
 import useSafeAddress from '@/hooks/useSafeAddress'
 import ExplorerButton from '@/components/common/ExplorerButton'
 import CopyTooltip from '@/components/common/CopyTooltip'
+import { useAddressResolver } from '@/hooks/useAddressResolver'
 
 const SafeHeader = (): ReactElement => {
   const currency = useAppSelector(selectCurrency)
@@ -40,6 +41,7 @@ const SafeHeader = (): ReactElement => {
   const { threshold, owners } = safe
   const chain = useCurrentChain()
   const settings = useAppSelector(selectSettings)
+  const { ens } = useAddressResolver(safeAddress)
 
   const fiatTotal = useMemo(
     () => (balances.fiatTotal ? formatCurrency(balances.fiatTotal, currency) : ''),
@@ -64,7 +66,7 @@ const SafeHeader = (): ReactElement => {
 
           <div className={css.address}>
             {safeAddress ? (
-              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} />
+              <EthHashInfo address={safeAddress} shortAddress showAvatar={false} name={ens} />
             ) : (
               <Typography variant="body2">
                 <Skeleton variant="text" width={86} />
