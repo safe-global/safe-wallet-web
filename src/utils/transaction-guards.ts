@@ -99,11 +99,7 @@ export const isSwapTxInfo = (value: TransactionInfo): value is SwapOrder => {
 export const isSwapConfirmationViewOrder = (
   decodedData: DecodedDataResponse | BaselineConfirmationView | CowSwapConfirmationView | undefined,
 ): decodedData is CowSwapConfirmationView => {
-  if (!decodedData) {
-    return false
-  }
-
-  if ('type' in decodedData) {
+  if (decodedData && 'type' in decodedData) {
     return decodedData.type === 'COW_SWAP_ORDER'
   }
 
