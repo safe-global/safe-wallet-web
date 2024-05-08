@@ -3,7 +3,7 @@
   --grid-type: minmax(150px, 3fr);
   --grid-info: minmax(150px, 3fr);
   --grid-date: minmax(200px, 3fr);
-  --grid-confirmations: minmax(150px, 1fr);
+  --grid-confirmations: minmax(130px, 1fr);
 
   --grid-actions: minmax(120px, 1fr);
   --grid-status: minmax(120px, 1fr);
@@ -46,7 +46,7 @@
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1460px) {
   .gridContainer {
     gap: var(--space-1);
     display: flex;
