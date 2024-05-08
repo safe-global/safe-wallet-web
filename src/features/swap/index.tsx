@@ -3,7 +3,6 @@ import { type CowSwapWidgetParams, TradeType, CowSwapWidget } from '@cowprotocol
 import { CowEvents, type CowEventListeners } from '@cowprotocol/events'
 import { useState, useEffect, type MutableRefObject, useMemo } from 'react'
 import { Container, Grid, useTheme } from '@mui/material'
-import useChainId from '@/hooks/useChainId'
 import { useRef } from 'react'
 import { Box } from '@mui/material'
 import {
@@ -43,7 +42,6 @@ export const getSwapTitle = (tradeType: SwapState['tradeType']) => {
 }
 
 const SwapWidget = ({ sell }: Params) => {
-  const chainId = useChainId()
   const { palette } = useTheme()
   const darkMode = useDarkMode()
   const dispatch = useAppDispatch()
@@ -80,7 +78,6 @@ const SwapWidget = ({ sell }: Params) => {
     [darkMode],
   )
 
-  const groupKey = 'swap-order-status'
   const listeners = useMemo<CowEventListeners>(() => {
     return [
       {
@@ -153,8 +150,6 @@ const SwapWidget = ({ sell }: Params) => {
       appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
       width: '100%', // Width in pixels (or 100% to use all available space)
       height: '860px',
-      // provider: safeAppWeb3Provider, // Ethereum EIP-1193 provider. For a quick test, you can pass `window.ethereum`, but consider using something like https://web3modal.com
-      chainId, // 1 (Mainnet), 5 (Goerli), 100 (Gnosis)
       standaloneMode: false,
       disableToastMessages: true,
       disablePostedOrderConfirmationModal: true,
@@ -197,7 +192,7 @@ const SwapWidget = ({ sell }: Params) => {
         alert: palette.warning.main,
       },
     })
-  }, [sell, chainId, palette, darkMode, tradeType])
+  }, [sell, palette, darkMode, tradeType])
 
   const chain = useCurrentChain()
 
