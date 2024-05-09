@@ -1,7 +1,6 @@
 import { type ReactElement } from 'react'
 import ImageFallback from '../ImageFallback'
 import css from './styles.module.css'
-import classNames from 'classnames'
 
 const FALLBACK_ICON = '/images/common/token-placeholder.svg'
 
@@ -10,13 +9,11 @@ const TokenIcon = ({
   tokenSymbol,
   size = 26,
   fallbackSrc,
-  rounded,
 }: {
   logoUri?: string
   tokenSymbol?: string
   size?: number
   fallbackSrc?: string
-  rounded?: boolean
 }): ReactElement => {
   return (
     <ImageFallback
@@ -24,7 +21,7 @@ const TokenIcon = ({
       alt={tokenSymbol}
       fallbackSrc={fallbackSrc || FALLBACK_ICON}
       height={size}
-      className={classNames(css.image, { [css.rounded]: rounded })}
+      className={css.image}
     />
   )
 }
