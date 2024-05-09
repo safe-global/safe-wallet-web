@@ -17,7 +17,7 @@ export const BlockedAddress = ({ address }: { address?: string }): ReactElement 
 
   return (
     <Disclaimer
-      title="Blocked Address"
+      title="Blocked address"
       subtitle={displayAddress}
       content="The above address is part of the OFAC SDN list and the embedded swaps feature with CoW Swap is unavailable for sanctioned addresses."
       onAccept={handleAccept}

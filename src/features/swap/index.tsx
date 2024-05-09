@@ -83,7 +83,7 @@ const SwapWidget = ({ sell }: Params) => {
       {
         event: CowEvents.ON_TOAST_MESSAGE,
         handler: (event) => {
-          console.info('🍞 New toast message:', event)
+          console.info('[Swaps] message:', event)
           const { messageType } = event
 
           switch (messageType) {

@@ -13,13 +13,13 @@ const INTERVAL_IN_MS = 10_000
 const useIsExpiredSwap = (txInfo: TransactionInfo) => {
   const [isExpired, setIsExpired] = useState<boolean>(false)
 
-  const isExpiredSwap = () => {
+  const setIsExpiredSwap = () => {
     if (!isSwapTxInfo(txInfo)) return
 
     setIsExpired(Date.now() > txInfo.validUntil * 1000)
   }
 
-  useInterval(isExpiredSwap, INTERVAL_IN_MS)
+  useInterval(setIsExpiredSwap, INTERVAL_IN_MS)
 
   return isExpired
 }
