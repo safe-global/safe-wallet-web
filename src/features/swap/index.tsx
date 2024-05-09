@@ -213,7 +213,7 @@ const SwapWidget = ({ sell }: Params) => {
     return (
       <Disclaimer
         title="Legal Disclaimer"
-        content={<LegalDisclaimerContent withTitle={false} />}
+        content={<LegalDisclaimerContent withTitle={false} isSafeApps={false} />}
         onAccept={onAccept}
         buttonText="Continue"
       />

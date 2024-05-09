@@ -163,7 +163,6 @@ const TxDetails = ({
 
   const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
     async () => {
-     
       if (txDetails && swapPollCount <= 0) {
         return txDetails
       }

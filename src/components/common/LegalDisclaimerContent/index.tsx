@@ -4,7 +4,13 @@ import { Typography } from '@mui/material'
 
 import css from './styles.module.css'
 
-const LegalDisclaimerContent = ({ withTitle = true }: { withTitle?: boolean }): JSX.Element => (
+const LegalDisclaimerContent = ({
+  withTitle = true,
+  isSafeApps = true,
+}: {
+  withTitle?: boolean
+  isSafeApps?: boolean
+}): JSX.Element => (
   <div className={css.disclaimerContainer}>
     {withTitle && (
       <Typography variant="h3" fontWeight={700} my={3}>
@@ -13,12 +19,14 @@ const LegalDisclaimerContent = ({ withTitle = true }: { withTitle?: boolean }): 
     )}
     <div className={css.disclaimerInner}>
       <Typography mb={4}>
-        You are now accessing a third-party app, which we do not own, control, maintain or audit. We are not liable for
-        any loss you may suffer in connection with interacting with the app, which is at your own risk.
+        You are now accessing {isSafeApps ? 'third-party apps' : 'a third-party app'}, which we do not own, control,
+        maintain or audit. We are not liable for any loss you may suffer in connection with interacting with the{' '}
+        {isSafeApps ? 'apps' : 'app'}, which is at your own risk.
       </Typography>
 
       <Typography mb={4}>
-        You must read our Terms, which contain more detailed provisions binding on you relating to the apps.
+        You must read our Terms, which contain more detailed provisions binding on you relating to the{' '}
+        {isSafeApps ? 'apps' : 'app'}.
       </Typography>
 
       <Typography>
