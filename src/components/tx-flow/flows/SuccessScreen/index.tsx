@@ -97,7 +97,7 @@ const SuccessScreen = ({ txId, safeTx }: { txId: string; safeTx?: SafeTransactio
       <div className={classnames(css.row, css.buttons)}>
         {isSwapOrder && (
           <Button data-testid="finish-transaction-btn" variant="outlined" size="small" onClick={onClose}>
-            Back to Swap
+            Back to swaps
           </Button>
         )}
 
