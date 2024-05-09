@@ -163,11 +163,11 @@ const TxDetails = ({
 
   const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
     async () => {
-      if (swapPollCount > 0) {
-        return getTransactionDetails(chainId, txSummary.id)
+     
+      if (txDetails && swapPollCount <= 0) {
+        return txDetails
       }
-
-      return txDetails || getTransactionDetails(chainId, txSummary.id)
+      return getTransactionDetails(chainId, txSummary.id)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [txDetails, chainId, txSummary.id, safe.txQueuedTag, swapPollCount],
