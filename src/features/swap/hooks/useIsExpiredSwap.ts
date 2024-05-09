@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { TransactionInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import useInterval from '@/hooks/useInterval'
 import { isSwapTxInfo } from '@/utils/transaction-guards'
+import useIntervalCounter from '@/hooks/useIntervalCounter'
 
 const INTERVAL_IN_MS = 10_000
 
@@ -12,14 +12,13 @@ const INTERVAL_IN_MS = 10_000
  */
 const useIsExpiredSwap = (txInfo: TransactionInfo) => {
   const [isExpired, setIsExpired] = useState<boolean>(false)
+  const [counter] = useIntervalCounter(INTERVAL_IN_MS)
 
-  const setIsExpiredSwap = () => {
+  useEffect(() => {
     if (!isSwapTxInfo(txInfo)) return
 
     setIsExpired(Date.now() > txInfo.validUntil * 1000)
-  }
-
-  useInterval(setIsExpiredSwap, INTERVAL_IN_MS)
+  }, [counter, txInfo])
 
   return isExpired
 }
