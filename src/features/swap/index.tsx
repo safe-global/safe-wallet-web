@@ -160,11 +160,6 @@ const SwapWidget = ({ sell }: Params) => {
         orderExecuted: null,
         postOrder: null,
       },
-      // tokenLists: [
-      //   // All default enabled token lists. Also see https://tokenlists.org
-      //   'https://files.cow.fi/tokens/CowSwap.json',
-      //   'https://tokens.coingecko.com/uniswap/all.json',
-      // ],
       tradeType, // TradeType.SWAP or TradeType.LIMIT
       sell: sell
         ? sell
@@ -178,7 +173,6 @@ const SwapWidget = ({ sell }: Params) => {
           : BASE_URL + '/images/common/swap-empty-light.svg',
       },
       enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
-      // env: 'dev',
       theme: {
         baseTheme: darkMode ? 'dark' : 'light',
         primary: palette.primary.main,
