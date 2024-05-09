@@ -26,7 +26,7 @@ export const Disclaimer = ({
           alignItems="center"
           sx={({ palette }) => ({ borderBottom: `1px solid ${palette.border.light}` })}
         >
-          {subtitle && <Typography color="var(--color-text-Secondary, #A1A3A7)">{subtitle}</Typography>}
+          {subtitle && <Typography color="var(--color-text-secondary)">{subtitle}</Typography>}
 
           <Box className={css.iconCircle}>
             <SvgIcon component={InfoIcon} inheritViewBox fontSize="medium" />
