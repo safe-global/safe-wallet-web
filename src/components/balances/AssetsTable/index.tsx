@@ -26,10 +26,7 @@ import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
 import { TokenTransferFlow } from '@/components/tx-flow/flows'
 import AddFundsCTA from '@/components/common/AddFunds'
-import { SWAP_EVENTS } from '@/services/analytics/events/swaps'
-import { useRouter } from 'next/router'
-import { AppRoutes } from '@/config/routes'
-import SwapIcon from '@/public/images/common/swap.svg'
+import SwapButton from '@/features/swap/components/SwapButton'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -119,39 +116,6 @@ const SendButton = ({
             sx={{ height: '37.5px' }}
           >
             Send
-          </Button>
-        </Track>
-      )}
-    </CheckWallet>
-  )
-}
-
-const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: string }): ReactElement => {
-  const spendingLimit = useSpendingLimit(tokenInfo)
-  const router = useRouter()
-
-  return (
-    <CheckWallet allowSpendingLimit={!!spendingLimit}>
-      {(isOk) => (
-        <Track {...SWAP_EVENTS.SWAP_ASSETS} label={tokenInfo.address}>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="small"
-            startIcon={<SwapIcon />}
-            onClick={() => {
-              router.push({
-                pathname: AppRoutes.swap,
-                query: {
-                  ...router.query,
-                  token: tokenInfo.symbol,
-                  amount,
-                },
-              })
-            }}
-            disabled={!isOk}
-          >
-            Swap
           </Button>
         </Track>
       )}
