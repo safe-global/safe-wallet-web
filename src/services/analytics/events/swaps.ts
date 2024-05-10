@@ -10,3 +10,7 @@ export const SWAP_EVENTS = {
     category: SWAP_CATEGORY,
   },
 }
+
+export const SWAP_LABELS = {
+  dashboard: 'dashboard',
+}
