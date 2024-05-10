@@ -1,3 +1,4 @@
+import { SWAP_TITLE } from '@/features/swap'
 import { useContext, useEffect, useMemo } from 'react'
 import type { ReactElement } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -64,7 +65,7 @@ const ReviewSafeAppsTx = ({
   const error = !isTxValid(txs)
 
   return (
-    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin} showToBlock>
+    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin} showToBlock isBatchable={app?.name !== SWAP_TITLE}>
       {error ? (
         <ErrorMessage error={safeTxError}>
           This Safe App initiated a transaction which cannot be processed. Please get in touch with the developer of
