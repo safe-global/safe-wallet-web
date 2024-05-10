@@ -23,7 +23,7 @@ import { PendingTxType, type PendingProcessingTx } from '@/store/pendingTxsSlice
 import useAsync from '@/hooks/useAsync'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
-import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
+import { getTransactionTrackingParams } from '@/services/analytics/tx-tracking'
 import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 
@@ -97,8 +97,8 @@ export const SpeedUpModal = ({
           chainInfo.chainId,
           safeAddress,
         )
-        const txType = await getTransactionTrackingType(chainInfo.chainId, txId)
-        trackEvent({ ...TX_EVENTS.SPEED_UP, label: txType })
+        const trackingParams = await getTransactionTrackingParams(chainInfo.chainId, txId)
+        trackEvent({ ...TX_EVENTS.SPEED_UP, label: trackingParams.type })
       } else {
         await dispatchCustomTxSpeedUp(
           txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
