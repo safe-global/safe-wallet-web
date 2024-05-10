@@ -1,6 +1,7 @@
 // Unit tests for the SafeWalletProvider class
 import { faker } from '@faker-js/faker'
 import { SafeWalletProvider } from '.'
+import { ERC20__factory } from '@/types/contracts'
 
 const safe = {
   safeAddress: faker.finance.ethereumAddress(),
@@ -521,8 +522,8 @@ describe('SafeWalletProvider', () => {
             version: '1.0',
             from: faker.finance.ethereumAddress(),
             calls: [
-              { gas: 1000, data: '0x123', to: faker.finance.ethereumAddress(), value: '0x123' },
-              { gas: 1000, data: '0x456', to: faker.finance.ethereumAddress(), value: '0x1' },
+              { data: '0x123', to: faker.finance.ethereumAddress(), value: '0x123' },
+              { data: '0x456', to: faker.finance.ethereumAddress(), value: '0x1' },
             ],
           },
         ]
@@ -532,6 +533,76 @@ describe('SafeWalletProvider', () => {
         expect(sdk.send).toHaveBeenCalledWith(
           {
             txs: params[0].calls,
+            params: { safeTxGas: 0 },
+          },
+          {
+            description: 'test',
+            iconUrl: 'test',
+            id: 1,
+            name: 'test',
+            url: 'test',
+          },
+        )
+      })
+
+      it('test contract deployment calls and calls without data / value', async () => {
+        const fakeCreateCallLib = faker.finance.ethereumAddress()
+        const sdk = {
+          send: jest.fn(),
+          getCreateCallTransaction: jest.fn().mockImplementation((data: string) => {
+            return {
+              to: fakeCreateCallLib,
+              data,
+              value: '0',
+            }
+          }),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+        const transferReceiver = faker.finance.ethereumAddress()
+        const erc20Address = faker.finance.ethereumAddress()
+        const erc20TransferData = ERC20__factory.createInterface().encodeFunctionData('transfer', [
+          transferReceiver,
+          '100',
+        ])
+        const nativeTransferTo = faker.finance.ethereumAddress()
+
+        const params = [
+          {
+            chainId: 1,
+            version: '1.0',
+            from: safe.safeAddress,
+            calls: [
+              { data: '0x1234' },
+              { data: '0x', to: nativeTransferTo, value: '0x1' },
+              {
+                to: erc20Address,
+                data: erc20TransferData,
+              },
+            ],
+          },
+        ]
+
+        await safeWalletProvider.request(1, { method: 'wallet_sendCalls', params } as any, appInfo)
+
+        expect(sdk.send).toHaveBeenCalledWith(
+          {
+            txs: [
+              {
+                to: fakeCreateCallLib,
+                data: '0x1234',
+                value: '0',
+              },
+              {
+                to: nativeTransferTo,
+                data: '0x',
+                value: '0x1',
+              },
+              {
+                to: erc20Address,
+                data: erc20TransferData,
+                value: '0',
+              },
+            ],
             params: { safeTxGas: 0 },
           },
           {

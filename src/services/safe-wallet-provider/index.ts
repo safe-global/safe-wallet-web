@@ -34,6 +34,11 @@ export type WalletSDK = {
   switchChain: (chainId: string, appInfo: AppInfo) => Promise<null>
   setSafeSettings: (safeSettings: SafeSettings) => SafeSettings
   proxy: (method: string, params: unknown[]) => Promise<unknown>
+  getCreateCallTransaction: (data: string) => {
+    to: string
+    data: string
+    value: '0'
+  }
 }
 
 interface RpcRequest {
@@ -325,13 +330,32 @@ export class SafeWalletProvider {
     bundle: {
       chainId: string
       from: string
-      calls: Array<{ data: string; to?: string; value?: string }>
+      calls: Array<{ data?: string; to?: string; value?: string }>
     },
     appInfo: AppInfo,
   ): Promise<string> {
+    const txs = bundle.calls.map((call) => {
+      if (!call.to && !call.value && !call.data) {
+        throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'Invalid call parameters.')
+      }
+      if (!call.to && !call.value && call.data) {
+        // If only data is provided the call is a contract deployment
+        // We have to use the CreateCall lib
+        return this.sdk.getCreateCallTransaction(call.data)
+      }
+      if (!call.to) {
+        // For all non-contract deployments we need a to address
+        throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'Invalid call parameters.')
+      }
+      return {
+        to: call.to,
+        data: call.data ?? '0x',
+        value: call.value ?? '0',
+      }
+    })
     const { safeTxHash } = await this.sdk.send(
       {
-        txs: bundle.calls,
+        txs,
         params: { safeTxGas: 0 },
       },
       appInfo,
