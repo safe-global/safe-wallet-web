@@ -20,6 +20,7 @@ import { useRouter } from 'next/router'
 import { type ReactElement, useContext } from 'react'
 import { WidgetBody, WidgetContainer } from '../styled'
 import { useTheme } from '@mui/material/styles'
+import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 
 const SkeletonOverview = (
   <>
@@ -127,17 +128,19 @@ const Overview = (): ReactElement => {
 
                   {isSwapFeatureEnabled && (
                     <Grid item xs={buttonWidth} sm="auto">
-                      <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
-                        <Button
-                          size={isSmallScreen ? 'medium' : 'small'}
-                          variant="outlined"
-                          color="primary"
-                          startIcon={<SwapIcon />}
-                          fullWidth
-                        >
-                          Swap
-                        </Button>
-                      </Link>
+                      <Track {...SWAP_EVENTS.SWAP_ASSETS} label={SWAP_LABELS.dashboard}>
+                        <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
+                          <Button
+                            size={isSmallScreen ? 'medium' : 'small'}
+                            variant="outlined"
+                            color="primary"
+                            startIcon={<SwapIcon />}
+                            fullWidth
+                          >
+                            Swap
+                          </Button>
+                        </Link>
+                      </Track>
                     </Grid>
                   )}
                 </Grid>
