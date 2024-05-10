@@ -189,7 +189,7 @@ const SwapWidget = ({ sell }: Params) => {
         alert: palette.warning.main,
       },
     })
-  }, [sell, palette, darkMode, tradeType])
+  }, [sell, palette, darkMode, tradeType, chainId])
 
   const chain = useCurrentChain()
 
