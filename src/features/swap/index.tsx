@@ -25,6 +25,7 @@ import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
 import { isBlockedAddress } from '@/services/ofac'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
+import useChainId from '@/hooks/useChainId'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -44,6 +45,7 @@ export const getSwapTitle = (tradeType: SwapState['tradeType']) => {
 const SwapWidget = ({ sell }: Params) => {
   const { palette } = useTheme()
   const darkMode = useDarkMode()
+  const chainId = useChainId()
   const dispatch = useAppDispatch()
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
   const swapParams = useAppSelector(selectSwapParams)
@@ -150,6 +152,7 @@ const SwapWidget = ({ sell }: Params) => {
       appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
       width: '100%', // Width in pixels (or 100% to use all available space)
       height: '860px',
+      chainId,
       standaloneMode: false,
       disableToastMessages: true,
       disablePostedOrderConfirmationModal: true,
