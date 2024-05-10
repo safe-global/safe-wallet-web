@@ -1,7 +1,10 @@
+import { POLLING_INTERVAL } from '@/config/constants'
+import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
+import useIntervalCounter from '@/hooks/useIntervalCounter'
 import React, { type ReactElement } from 'react'
 import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
-import { Box, CircularProgress } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
@@ -14,6 +17,8 @@ import {
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
+  isOpenSwap,
+  isSwapTxInfo,
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -32,6 +37,7 @@ import useIsPending from '@/hooks/useIsPending'
 import { isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { SwapOrder } from '@/features/swap/components/SwapOrder'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -61,10 +67,20 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     safeTxHash = txDetails.detailedExecutionInfo.safeTxHash
   }
 
+  const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
+
   return (
     <>
       {/* /Details */}
       <div className={`${css.details} ${isUnsigned ? css.noSigners : ''}`}>
+        {isSwapTxInfo(txDetails.txInfo) && (
+          <div className={css.swapOrder}>
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
+            </ErrorBoundary>
+          </div>
+        )}
+
         <div className={css.shareLink}>
           <TxShareLink id={txSummary.id} />
         </div>
@@ -100,7 +116,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <Summary txDetails={txDetails} />
         </div>
 
-        {isMultiSendTxInfo(txDetails.txInfo) && (
+        {(isMultiSendTxInfo(txDetails.txInfo) || isSwapTxInfo(txDetails.txInfo)) && (
           <div className={css.multiSend}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <Multisend txData={txDetails.txData} />
@@ -120,6 +136,12 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
               <RejectTxButton txSummary={txSummary} safeTxHash={safeTxHash} proposer={proposer} />
             </Box>
           )}
+
+          {isQueue && expiredSwap && (
+            <Typography color="text.secondary" mt={2}>
+              This order has expired. Reject this transaction and try again.
+            </Typography>
+          )}
         </div>
       )}
     </>
@@ -136,12 +158,18 @@ const TxDetails = ({
   const chainId = useChainId()
   const { safe } = useSafeInfo()
 
+  const [pollCount] = useIntervalCounter(POLLING_INTERVAL)
+  const swapPollCount = isOpenSwap(txSummary.txInfo) ? pollCount : 0
+
   const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
     async () => {
-      return txDetails || getTransactionDetails(chainId, txSummary.id)
+      if (txDetails && swapPollCount <= 0) {
+        return txDetails
+      }
+      return getTransactionDetails(chainId, txSummary.id)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [txDetails, chainId, txSummary.id, safe.txQueuedTag],
+    [txDetails, chainId, txSummary.id, safe.txQueuedTag, swapPollCount],
     false,
   )
 

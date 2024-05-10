@@ -1,0 +1,5 @@
+.swapWidget,
+.swapWidget > div,
+.swapWidget > div > iframe {
+  height: 100% !important;
+}

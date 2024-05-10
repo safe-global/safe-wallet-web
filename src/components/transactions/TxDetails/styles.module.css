@@ -26,11 +26,13 @@
 .txData,
 .txSummary,
 .advancedDetails,
-.txModule {
-  padding: 20px 24px;
+.txModule,
+.swapOrder {
+  padding: var(--space-2);
 }
 
-.txData {
+.txData,
+.swapOrder {
   border-bottom: 1px solid var(--color-border-light);
 }
 
@@ -52,7 +54,8 @@
   padding: 0 var(--space-1);
 }
 
-.multiSend {
+.multiSend,
+.swapOrder {
   border-top: 1px solid var(--color-border-light);
 }
 
@@ -63,6 +66,14 @@
   justify-content: center;
   gap: var(--space-1);
   margin-top: var(--space-2);
+}
+
+.buttons > * {
+  flex: 1;
+}
+
+.buttons button {
+  width: 100%;
 }
 
 @media (max-width: 599.95px) {

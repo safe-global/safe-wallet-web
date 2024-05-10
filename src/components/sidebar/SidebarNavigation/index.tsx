@@ -1,7 +1,7 @@
 import React, { useMemo, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import ListItem from '@mui/material/ListItem'
-import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
   SidebarList,
@@ -14,23 +14,30 @@ import { type NavItem, navItems } from './config'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
 import { useQueuedTxsLength } from '@/hooks/useTxQueue'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
+import { useCurrentChain } from '@/hooks/useChains'
+import { FeatureRoutes, hasFeature } from '@/utils/chains'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
 }
 
+const isRouteEnabled = (route: string, chain?: ChainInfo) => {
+  if (!chain) return false
+
+  const featureRoute = FeatureRoutes[route]
+  return !featureRoute || hasFeature(chain, featureRoute)
+}
+
 const Navigation = (): ReactElement => {
+  const chain = useCurrentChain()
   const router = useRouter()
   const { safe } = useSafeInfo()
   const currentSubdirectory = getSubdirectory(router.pathname)
   const queueSize = useQueuedTxsLength()
-  const isSafeAppsEnabled = useHasFeature(FEATURES.SAFE_APPS)
 
   const enabledNavItems = useMemo(() => {
-    return isSafeAppsEnabled ? navItems : navItems.filter((item) => item.href !== AppRoutes.apps.index)
-  }, [isSafeAppsEnabled])
+    return navItems.filter((item) => isRouteEnabled(item.href, chain))
+  }, [chain])
 
   const getBadge = (item: NavItem) => {
     // Indicate whether the current Safe needs an upgrade

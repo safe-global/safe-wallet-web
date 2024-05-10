@@ -24,6 +24,10 @@ import type {
   TransactionSummary,
   Transfer,
   TransferInfo,
+  SwapOrder,
+  DecodedDataResponse,
+  BaselineConfirmationView,
+  CowSwapConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -86,6 +90,28 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
     value.methodName === 'multiSend' &&
     typeof value.actionCount === 'number'
   )
+}
+
+export const isSwapTxInfo = (value: TransactionInfo): value is SwapOrder => {
+  return value.type === TransactionInfoType.SWAP_ORDER
+}
+
+export const isSwapConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | CowSwapConfirmationView | undefined,
+): decodedData is CowSwapConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData.type === 'COW_SWAP_ORDER'
+  }
+
+  return false
+}
+
+export const isCancelledSwap = (value: TransactionInfo) => {
+  return isSwapTxInfo(value) && value.status === 'cancelled'
+}
+
+export const isOpenSwap = (value: TransactionInfo) => {
+  return isSwapTxInfo(value) && value.status === 'open'
 }
 
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
