@@ -11,6 +11,9 @@ import useSafeWalletProvider, { _useTxFlowApi } from './useSafeWalletProvider'
 import { SafeWalletProvider } from '.'
 import { makeStore } from '@/store'
 import * as messages from '@/utils/safe-messages'
+import { faker } from '@faker-js/faker'
+import { Interface } from 'ethers'
+import { getCreateCallDeployment } from '@safe-global/safe-deployments'
 
 const appInfo = {
   id: 1,
@@ -45,6 +48,7 @@ describe('useSafeWalletProvider', () => {
                 value: '0x1234567890000000000000000000000000000000',
               },
               deployed: true,
+              version: '1.3.0',
             } as unknown as ExtendedSafeInfo,
           },
         },
@@ -64,6 +68,7 @@ describe('useSafeWalletProvider', () => {
       expect(result.current?.getBySafeTxHash).toBeDefined()
       expect(result.current?.switchChain).toBeDefined()
       expect(result.current?.proxy).toBeDefined()
+      expect(result.current?.getCreateCallTransaction).toBeDefined()
     })
 
     it('should open signing window for off-chain messages', () => {
@@ -352,6 +357,36 @@ describe('useSafeWalletProvider', () => {
         safe: '0x1234567890000000000000000000000000000000',
         id: '0x123',
       },
+    })
+  })
+
+  it('should create CreateCall lib transactions', () => {
+    const createCallDeployment = getCreateCallDeployment({ version: '1.3.0', network: '1' })
+    const createCallInterface = new Interface(['function performCreate(uint256,bytes)'])
+    const safeAddress = faker.finance.ethereumAddress()
+    const { result } = renderHook(() => _useTxFlowApi('1', safeAddress), {
+      initialReduxState: {
+        safeInfo: {
+          loading: false,
+          error: undefined,
+          data: {
+            chainId: '1',
+            address: {
+              value: safeAddress,
+            },
+            deployed: true,
+            version: '1.3.0',
+          } as unknown as ExtendedSafeInfo,
+        },
+      },
+    })
+
+    const tx = result.current?.getCreateCallTransaction('0x1234')
+
+    expect(tx).toEqual({
+      to: createCallDeployment?.networkAddresses['1'],
+      value: '0',
+      data: createCallInterface.encodeFunctionData('performCreate', [0, '0x1234']),
     })
   })
 })
