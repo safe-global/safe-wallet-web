@@ -33,7 +33,7 @@ export const useShowUnsignedQueue = (): boolean => {
 }
 
 // Remove conflict headers where there is only one tx in the conflict group.
-const filterUnecessaryConflictHeaders = (list: TransactionListItem[]) => {
+const filterConflictHeaders = (list: TransactionListItem[]) => {
   const conflictHeaders = list.filter((item) => isConflictHeaderListItem(item))
 
   const headersToRemove = []
@@ -88,7 +88,7 @@ export const usePendingTxsQueue = (): {
       }
     }
 
-    const filteredResults = filterUnecessaryConflictHeaders(results)
+    const filteredResults = filterConflictHeaders(results)
 
     return filteredResults.length ? { results: filteredResults } : undefined
   }, [untrustedQueue, pendingIds])
