@@ -192,7 +192,7 @@ const SwapWidget = ({ sell }: Params) => {
       content: {
         feeLabel: 'No fee for one month',
         feeTooltipMarkdown:
-          'The transaction fee incurred here will contribute to a license fee that supports the Safe Ecosystem Foundation (SEF). SEF does not operate this service.',
+          'Any future transaction fee incurred by Cow Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or Cow Swap.',
       },
     })
   }, [sell, palette, darkMode, tradeType, chainId])
