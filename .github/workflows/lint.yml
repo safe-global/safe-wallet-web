@@ -1,4 +1,4 @@
-name: 'Lint'
+name: Lint
 on: [pull_request]
 
 concurrency:
@@ -9,7 +9,7 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: ./.github/workflows/yarn
 
