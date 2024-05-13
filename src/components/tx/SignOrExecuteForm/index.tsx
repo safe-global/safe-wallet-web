@@ -22,7 +22,7 @@ import useDecodeTx from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
 import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
-import { getTransactionTrackingParams } from '@/services/analytics/tx-tracking'
+import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
@@ -46,13 +46,12 @@ export type SignOrExecuteProps = {
 
 const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean, isExecuted: boolean) => {
   const event = isCreation ? TX_EVENTS.CREATE : isExecuted ? TX_EVENTS.EXECUTE : TX_EVENTS.CONFIRM
-  const txParams = await getTransactionTrackingParams(chainId, txId)
-  const { type, ...rest } = txParams
-  trackEvent({ ...event, label: txParams.type, ...rest })
+  const txType = await getTransactionTrackingType(chainId, txId)
+  trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
   if (isCreation && isExecuted) {
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: txParams.type, ...rest })
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: txType })
   }
 }
 

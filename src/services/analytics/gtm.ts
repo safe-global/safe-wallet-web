@@ -16,7 +16,7 @@ import {
   GOOGLE_TAG_MANAGER_AUTH_LATEST,
   GOOGLE_TAG_MANAGER_DEVELOPMENT_AUTH,
 } from '@/config/constants'
-import type { AnalyticsEvent, EventLabel, SafeAppSDKEvent, GADimensions } from './types'
+import type { AnalyticsEvent, EventLabel, SafeAppSDKEvent } from './types'
 import { EventType, DeviceType } from './types'
 import { SAFE_APPS_SDK_CATEGORY } from './events'
 import { getAbTest } from '../tracking/abTesting'
@@ -107,33 +107,26 @@ type SafeAppGtmEvent = ActionGtmEvent & {
 
 const gtmSend = TagManager.dataLayer
 
-export const gtmTrack = (eventData: AnalyticsEvent & Partial<GADimensions>): void => {
-  const { event, category, action, chainId, label, ...rest } = eventData
-
-  const gtmEvent: ActionGtmEvent & Partial<GADimensions> = {
+export const gtmTrack = (eventData: AnalyticsEvent): void => {
+  const gtmEvent: ActionGtmEvent = {
     ...commonEventParams,
-    event: event || EventType.CLICK,
-    eventCategory: category,
-    eventAction: action,
-    chainId: chainId || commonEventParams.chainId,
-    ...rest,
+    event: eventData.event || EventType.CLICK,
+    eventCategory: eventData.category,
+    eventAction: eventData.action,
+    chainId: eventData.chainId || commonEventParams.chainId,
   }
 
-  if (event) {
-    gtmEvent.eventType = event
+  if (eventData.event) {
+    gtmEvent.eventType = eventData.event
   } else {
     gtmEvent.eventType = undefined
   }
 
-  if (label !== undefined) {
-    gtmEvent.eventLabel = label
+  if (eventData.label !== undefined) {
+    gtmEvent.eventLabel = eventData.label
   } else {
     // Otherwise, whatever was in the datalayer before will be reused
     gtmEvent.eventLabel = undefined
-  }
-
-  if (rest.transaction_id === undefined) {
-    gtmEvent.transaction_id = undefined
   }
 
   const abTest = getAbTest()

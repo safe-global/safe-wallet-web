@@ -6,12 +6,12 @@ import { TX_TYPES } from '../events/transactions'
 
 const getMockTxType = (txDetails: unknown) => {
   jest.spyOn(txDetailsModule, 'getTxDetails').mockImplementation(() => Promise.resolve(txDetails as TransactionDetails))
-  return getTransactionTrackingType(txDetails as TransactionDetails)
+  return getTransactionTrackingType('1', '0x123')
 }
 
 describe('getTransactionTrackingType', () => {
   it('should return transfer_token for native token transfers', async () => {
-    const txType = getMockTxType({
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.TRANSFER,
         transferInfo: {
@@ -24,7 +24,7 @@ describe('getTransactionTrackingType', () => {
   })
 
   it('should return transfer_token for ERC20 token transfers', async () => {
-    const txType = getMockTxType({
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.TRANSFER,
         transferInfo: {
@@ -37,7 +37,7 @@ describe('getTransactionTrackingType', () => {
   })
 
   it('should return transfer_nft for ERC721 token transfers', async () => {
-    const txType = getMockTxType({
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.TRANSFER,
         transferInfo: {
@@ -50,7 +50,7 @@ describe('getTransactionTrackingType', () => {
   })
 
   it('should return owner_add for add owner settings changes', async () => {
-    const txType = getMockTxType({
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.SETTINGS_CHANGE,
         settingsInfo: {
@@ -63,7 +63,7 @@ describe('getTransactionTrackingType', () => {
   })
 
   it('should return owner_remove for remove owner settings changes', async () => {
-    const txType = getMockTxType({
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.SETTINGS_CHANGE,
         settingsInfo: {
@@ -75,8 +75,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.owner_remove)
   })
 
-  it('should return owner_swap for swap owner settings changes', () => {
-    const txType = getMockTxType({
+  it('should return owner_swap for swap owner settings changes', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.SETTINGS_CHANGE,
         settingsInfo: {
@@ -88,8 +88,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.owner_swap)
   })
 
-  it('should return owner_threshold_change for change threshold settings changes', () => {
-    const txType = getMockTxType({
+  it('should return owner_threshold_change for change threshold settings changes', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.SETTINGS_CHANGE,
         settingsInfo: {
@@ -101,8 +101,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.owner_threshold_change)
   })
 
-  it('should return module_remove for disable module settings changes', () => {
-    const txType = getMockTxType({
+  it('should return module_remove for disable module settings changes', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.SETTINGS_CHANGE,
         settingsInfo: {
@@ -114,8 +114,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.module_remove)
   })
 
-  it('should return guard_remove for delete guard settings changes', () => {
-    const txType = getMockTxType({
+  it('should return guard_remove for delete guard settings changes', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.SETTINGS_CHANGE,
         settingsInfo: {
@@ -127,8 +127,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.guard_remove)
   })
 
-  it('should return rejection for rejection transactions', () => {
-    const txType = getMockTxType({
+  it('should return rejection for rejection transactions', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.CUSTOM,
         isCancellation: true,
@@ -138,8 +138,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.rejection)
   })
 
-  it('should return walletconnect for walletconnect transactions', () => {
-    const txType = getMockTxType({
+  it('should return walletconnect for walletconnect transactions', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.CUSTOM,
       },
@@ -151,8 +151,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.walletconnect)
   })
 
-  it('should return safeapps for safeapps transactions', () => {
-    const txType = getMockTxType({
+  it('should return safeapps for safeapps transactions', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.CUSTOM,
       },
@@ -164,8 +164,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual('https://gnosis-safe.io/app')
   })
 
-  it('should return batch for multisend transactions', () => {
-    const txType = getMockTxType({
+  it('should return batch for multisend transactions', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.CUSTOM,
         methodName: 'multiSend',
@@ -176,8 +176,8 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.batch)
   })
 
-  it('should return custom for unknown transactions', () => {
-    const txType = getMockTxType({
+  it('should return custom for unknown transactions', async () => {
+    const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.CUSTOM,
       },
