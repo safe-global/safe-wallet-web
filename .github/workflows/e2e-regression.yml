@@ -24,5 +24,5 @@ jobs:
       - uses: ./.github/workflows/cypress
         with:
           secrets: ${{ toJSON(secrets) }}
-          spec: cypress/e2e/**/*.cy.js
+          spec: cypress/e2e/**/*.cym.js
           group: 'Regression tests'
