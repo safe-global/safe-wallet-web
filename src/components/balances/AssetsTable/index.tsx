@@ -27,6 +27,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { TokenTransferFlow } from '@/components/tx-flow/flows'
 import AddFundsCTA from '@/components/common/AddFunds'
 import SwapButton from '@/features/swap/components/SwapButton'
+import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -133,7 +134,8 @@ const AssetsTable = ({
   const hiddenAssets = useHiddenTokens()
   const { balances, loading } = useBalances()
   const { setTxFlow } = useContext(TxModalContext)
-  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+  const isCounterfactualSafe = useIsCounterfactualSafe()
+  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS) && !isCounterfactualSafe
 
   const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
     setShowHiddenAssets(false),

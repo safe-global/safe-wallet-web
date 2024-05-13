@@ -18,6 +18,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { FeatureRoutes, hasFeature } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
+import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
@@ -36,10 +37,17 @@ const Navigation = (): ReactElement => {
   const { safe } = useSafeInfo()
   const currentSubdirectory = getSubdirectory(router.pathname)
   const queueSize = useQueuedTxsLength()
-
+  const isCounterFactualSafe = useIsCounterfactualSafe()
   const enabledNavItems = useMemo(() => {
-    return navItems.filter((item) => isRouteEnabled(item.href, chain))
-  }, [chain])
+    return navItems.filter((item) => {
+      const enabled = isRouteEnabled(item.href, chain)
+
+      if (item.href === AppRoutes.swap && isCounterFactualSafe) {
+        return false
+      }
+      return enabled
+    })
+  }, [chain, isCounterFactualSafe])
 
   const getBadge = (item: NavItem) => {
     // Indicate whether the current Safe needs an upgrade
