@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants'
-import * as modal from '../pages/modals.page'
 
 const searchAppInput = 'input[id="search-by-name"]'
 const appUrlInput = 'input[name="appUrl"]'
@@ -10,7 +9,6 @@ export const downloadBatchBtn = 'button[title="Download batch"]'
 export const deleteBatchBtn = 'button[title="Delete Batch"]'
 const appModal = '[data-testid="app-info-modal"]'
 export const safeAppsList = '[data-testid="apps-list"]'
-const onchainMsgInput = 'input[placeholder*="Message"]'
 
 const addBtnStr = /add/i
 const noAppsStr = /no Safe Apps found/i
@@ -91,8 +89,6 @@ export const transferStr = 'Transfer'
 export const successStr = 'Success'
 export const failedStr = 'Failed'
 
-export const dummyTxStr = 'Trigger dummy tx (safe.txs.send)'
-export const signOnchainMsgStr = 'Sign message (on-chain)'
 export const pinWalletConnectStr = /pin walletconnect/i
 export const transactionBuilderStr = 'Transaction Builder'
 export const testAddressValueStr = 'testAddressValue'
@@ -130,30 +126,6 @@ export const permissionCheckboxNames = {
   fullscreen: 'Fullscreen',
 }
 
-export function enterOnchainMessage(msg) {
-  cy.get(onchainMsgInput).type(msg)
-}
-
-export function verifyPopupWindowTitle(title) {
-  cy.get(modal.modalTitle).should('contain', title)
-}
-
-export function verifyMessagePresent(msg) {
-  cy.get('textarea').should('contain', msg)
-}
-
-export function verifySafeAppInPopupWindow(safeApp) {
-  cy.contains(safeApp)
-}
-
-export function triggetOffChainTx() {
-  cy.contains(dummyTxStr).click()
-}
-
-export function triggetOnChainTx() {
-  cy.contains(signOnchainMsgStr).click()
-}
-
 export function verifyWarningDefaultAppMsgIsDisplayed() {
   cy.get('p').contains(warningDefaultAppStr).should('be.visible')
   cy.wait(1000)
@@ -173,7 +145,6 @@ export function verifyLinkName(name) {
 
 export function clickOnApp(app) {
   cy.contains(app).click()
-  cy.wait(2000)
 }
 
 export function verifyNoAppsTextPresent() {

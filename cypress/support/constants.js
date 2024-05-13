@@ -43,7 +43,6 @@ export const drainAccount_url = 'https://safe-apps.dev.5afe.dev/drain-safe'
 export const testAppUrl = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
 export const appsUrlGeneral = '/apps?=safe='
-export const appsCustomUrl = 'apps/custom?safe='
 export const BALANCE_URL = '/balances?safe='
 export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
@@ -231,9 +230,6 @@ export const localStorageKeys = {
   SAFE_v2__safeApps: 'SAFE_v2__safeApps',
   SAFE_v2__cookies: 'SAFE_v2__cookies',
   SAFE_v2__tokenlist_onboarding: 'SAFE_v2__tokenlist_onboarding',
-  SAFE_v2__customSafeApps_11155111: 'SAFE_v2__customSafeApps-11155111',
-  SAFE_v2__SafeApps__browserPermissions: 'SAFE_v2__SafeApps__browserPermissions',
-  SAFE_v2__SafeApps__infoModal: 'SAFE_v2__SafeApps__infoModal',
 }
 
 export const connectWalletNames = {

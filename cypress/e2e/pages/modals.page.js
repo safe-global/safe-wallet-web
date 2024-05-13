@@ -5,8 +5,6 @@ export const modalTitiles = {
   editEntry: 'Edit entry',
   deleteEntry: 'Delete entry',
   dataImport: 'Data import',
-  confirmTx: 'Confirm transaction',
-  confirmMsg: 'Confirm message',
 }
 
 export function verifyModalTitle(title) {
