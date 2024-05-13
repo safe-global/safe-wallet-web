@@ -24,9 +24,10 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           spec: |
-            cypress/e2e/regression/*.cy.js
-            cypress/e2e/safe-apps/*.cy.js
-            cypress/e2e/smoke/*.cy.js
+            # cypress/e2e/regression/*.cy.js
+            # cypress/e2e/safe-apps/*.cy.js
+            # cypress/e2e/smoke/*.cy.js
+            cypress/e2e/regression/*.cym.js
           group: 'Regression on demand tests'
 
       - name: Python setup

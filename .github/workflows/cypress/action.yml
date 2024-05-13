@@ -27,6 +27,13 @@ runs:
   using: 'composite'
   steps:
     - uses: ./.github/workflows/yarn
+    - name: Start Test App
+      shell: bash
+      run: |
+        cd safe-apps-sdk/packages/safe-apps-test-app
+        yarn start:test-app &
+      env:
+        port: 8081
 
     - name: Install Latest stable Chrome Version
       shell: bash
