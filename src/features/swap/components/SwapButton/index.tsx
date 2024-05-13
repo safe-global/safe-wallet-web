@@ -2,7 +2,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
 import { AppRoutes } from '@/config/routes'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
-import { SWAP_EVENTS } from '@/services/analytics/events/swaps'
+import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { Button } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useRouter } from 'next/router'
@@ -16,7 +16,7 @@ const SwapButton = ({ tokenInfo, amount }: { tokenInfo: TokenInfo; amount: strin
   return (
     <CheckWallet allowSpendingLimit={!!spendingLimit}>
       {(isOk) => (
-        <Track {...SWAP_EVENTS.SWAP_ASSETS} label={tokenInfo.address}>
+        <Track {...SWAP_EVENTS.OPEN_SWAPS} label={SWAP_LABELS.asset}>
           <Button
             variant="outlined"
             color="primary"

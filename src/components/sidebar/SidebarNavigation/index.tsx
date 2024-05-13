@@ -16,6 +16,8 @@ import { AppRoutes } from '@/config/routes'
 import { useQueuedTxsLength } from '@/hooks/useTxQueue'
 import { useCurrentChain } from '@/hooks/useChains'
 import { FeatureRoutes, hasFeature } from '@/utils/chains'
+import { trackEvent } from '@/services/analytics'
+import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
@@ -61,13 +63,24 @@ const Navigation = (): ReactElement => {
     return href
   }
 
+  const handleNavigationClick = (href: string) => {
+    if (href === AppRoutes.swap) {
+      trackEvent({ ...SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar })
+    }
+  }
+
   return (
     <SidebarList>
       {enabledNavItems.map((item) => {
         const isSelected = currentSubdirectory === getSubdirectory(item.href)
 
         return (
-          <ListItem key={item.href} disablePadding selected={isSelected}>
+          <ListItem
+            key={item.href}
+            disablePadding
+            selected={isSelected}
+            onClick={() => handleNavigationClick(item.href)}
+          >
             <SidebarListItemButton
               selected={isSelected}
               href={{ pathname: getRoute(item.href), query: { safe: router.query.safe } }}

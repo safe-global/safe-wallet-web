@@ -128,7 +128,7 @@ const Overview = (): ReactElement => {
 
                   {isSwapFeatureEnabled && (
                     <Grid item xs={buttonWidth} sm="auto">
-                      <Track {...SWAP_EVENTS.SWAP_ASSETS} label={SWAP_LABELS.dashboard}>
+                      <Track {...SWAP_EVENTS.OPEN_SWAPS} label={SWAP_LABELS.dashboard}>
                         <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
                           <Button
                             size={isSmallScreen ? 'medium' : 'small'}
