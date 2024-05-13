@@ -1,5 +1,6 @@
 import { FEATURES } from '@/utils/chains'
-import { type CowSwapWidgetParams, TradeType, CowSwapWidget } from '@cowprotocol/widget-react'
+import { CowSwapWidget } from '@cowprotocol/widget-react'
+import { type CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 import { CowEvents, type CowEventListeners } from '@cowprotocol/events'
 import { useState, useEffect, type MutableRefObject, useMemo } from 'react'
 import { Container, Grid, useTheme } from '@mui/material'
@@ -187,6 +188,11 @@ const SwapWidget = ({ sell }: Params) => {
         success: palette.success.main,
         warning: palette.warning.main,
         alert: palette.warning.main,
+      },
+      content: {
+        feeLabel: 'No fee for one month',
+        feeTooltipMarkdown:
+          'The transaction fee incurred here will contribute to a license fee that supports the Safe Ecosystem Foundation (SEF). SEF does not operate this service.',
       },
     })
   }, [sell, palette, darkMode, tradeType, chainId])
