@@ -25,11 +25,6 @@ export type AnalyticsEvent = {
   chainId?: string
 }
 
-// https://support.google.com/analytics/answer/9143382
-export type GADimensions = {
-  transaction_id: string
-}
-
 export type SafeAppSDKEvent = {
   method: string
   ethMethod: string

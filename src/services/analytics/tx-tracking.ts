@@ -1,5 +1,4 @@
 import { TX_TYPES } from '@/services/analytics/events/transactions'
-import type { GADimensions } from '@/services/analytics/types'
 import { getTxDetails } from '@/services/transactions'
 import { isWalletConnectSafeApp } from '@/utils/gateway'
 import { SettingsInfoType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -13,30 +12,15 @@ import {
   isSwapTxInfo,
 } from '@/utils/transaction-guards'
 
-type TrackingParams = {
-  type: string
-} & Partial<GADimensions>
-
-export const getTransactionTrackingParams = async (chainId: string, txId: string): Promise<TrackingParams> => {
+export const getTransactionTrackingType = async (chainId: string, txId: string): Promise<string> => {
   let details: TransactionDetails
 
   try {
     details = await getTxDetails(chainId, txId)
   } catch {
-    return {
-      type: TX_TYPES.custom,
-    }
+    return TX_TYPES.custom
   }
 
-  const type = getTransactionTrackingType(details)
-
-  return {
-    type,
-    transaction_id: isSwapTxInfo(details.txInfo) ? details.txInfo.uid : undefined,
-  }
-}
-
-export const getTransactionTrackingType = (details: TransactionDetails): string => {
   const { txInfo } = details
 
   if (isTransferTxInfo(txInfo)) {
