@@ -25,6 +25,10 @@ const useTxQueue = (
   // The latest page of the queue is always in the store
   const queueState = useAppSelector(selectTxQueue)
 
+  if (page || queueState.data) {
+    console.log('dd ')
+  }
+
   // Return the new page or the stored page
   return pageUrl
     ? {

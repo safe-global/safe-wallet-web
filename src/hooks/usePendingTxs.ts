@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   type TransactionListPage,
   type TransactionSummary,
@@ -29,6 +30,25 @@ export const useShowUnsignedQueue = (): boolean => {
   const { safe } = useSafeInfo()
   const hasPending = useHasPendingTxs()
   return safe.threshold === 1 && hasPending
+}
+
+// Remove conflict headers where there is only one tx in the conflict group.
+const filterUnecessaryConflictHeaders = (list: TransactionListItem[]) => {
+  const conflictHeaders = list.filter((item) => isConflictHeaderListItem(item))
+
+  const headersToRemove = []
+  conflictHeaders.forEach((conflictHeader) => {
+    const headerIndex = list.indexOf(conflictHeader)
+    const nextGroupIndex = list.findIndex((item) => {
+      const index = list.indexOf(item)
+      return index > headerIndex && !isTransactionListItem(item)
+    })
+    const conflictGroup = list.slice(headerIndex + 1, nextGroupIndex)
+    if (conflictGroup.length <= 1) {
+      headersToRemove.push(conflictHeader)
+    }
+  })
+  return list.filter((item) => !conflictHeaders.includes(item))
 }
 
 export const usePendingTxsQueue = (): {
@@ -68,14 +88,9 @@ export const usePendingTxsQueue = (): {
       }
     }
 
-    if (results[1] && isConflictHeaderListItem(results[1])) {
-      // Check if we both conflicting txs are still pending
-      if (results.filter((item) => isTransactionListItem(item)).length <= 1) {
-        results.splice(1, 1)
-      }
-    }
+    const filteredResults = filterUnecessaryConflictHeaders(results)
 
-    return results.length ? { results } : undefined
+    return filteredResults.length ? { results: filteredResults } : undefined
   }, [untrustedQueue, pendingIds])
 
   return useMemo(
