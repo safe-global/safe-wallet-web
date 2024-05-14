@@ -1,8 +1,6 @@
 name: Release
 
 on:
-  pull_request:
-
   release:
     types: [published]
 
@@ -14,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy release
     env:
-      ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.number }}
+      ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -40,7 +38,7 @@ jobs:
       # Script to upload release files
       - name: 'Upload release build files for production'
         env:
-          BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.number }}
+          BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
           CHECKSUM_FILE: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
         run: bash ./scripts/github/s3_upload.sh
 
@@ -49,7 +47,7 @@ jobs:
         env:
           PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
           PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
-          VERSION_TAG: ${{ github.event.number }}
+          VERSION_TAG: ${{ github.event.release.tag_name }}
 
       # Update the GitHub release with a checksummed archive
       - name: Upload archive
