@@ -57,19 +57,25 @@ describe('[SMOKE] Create transactions tests', () => {
     createtx.verifyTooltipMessage(constants.nonceTooltipMsg.muchHigherThanRecommended)
   })
 
-  it.skip('[SMOKE] Verify advance parameters gas limit input', () => {
+  it('[SMOKE] Verify advance parameters gas limit input', () => {
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
+    createtx.clickOnNewtransactionBtn()
+    createtx.clickOnSendTokensBtn()
     happyPathToStepTwo()
-    createtx.changeNonce(currentNonce)
+    createtx.changeNonce('1')
     createtx.selectCurrentWallet()
     createtx.openExecutionParamsModal()
     createtx.verifyAndSubmitExecutionParams()
   })
 
-  it.skip('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
+  it('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
+    createtx.clickOnNewtransactionBtn()
+    createtx.clickOnSendTokensBtn()
     happyPathToStepTwo()
     createtx.verifySubmitBtnIsEnabled()
     createtx.verifyNativeTokenTransfer()
-    createtx.changeNonce(currentNonce)
+    createtx.changeNonce('1')
     createtx.verifyConfirmTransactionData()
     createtx.verifyRelayerAttemptsAvailable()
     createtx.selectCurrentWallet()

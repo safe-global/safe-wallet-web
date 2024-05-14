@@ -14,7 +14,7 @@ import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 const safeBalanceEth = 305220000000000000n
-const qtrustBanance = 93000000000000000025n
+const qtrustBanance = 95000000000000000025n
 const transferAmount = '1'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
