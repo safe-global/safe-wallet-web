@@ -1,8 +1,9 @@
+import { getOrderClass } from '@/features/swap/helpers/utils'
 import { useMemo } from 'react'
 import {
+  type AddressEx,
   SettingsInfoType,
   TransactionInfoType,
-  type AddressEx,
   type TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -59,6 +60,14 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       return {
         icon: '/images/transactions/settings.svg',
         text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method,
+      }
+    }
+    case TransactionInfoType.SWAP_ORDER: {
+      const orderClass = getOrderClass(tx.txInfo)
+
+      return {
+        icon: '/images/common/swap.svg',
+        text: orderClass === 'limit' ? 'Limit order' : 'Swap order',
       }
     }
     case TransactionInfoType.CUSTOM: {

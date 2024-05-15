@@ -57,12 +57,16 @@ const extractTxInfo = (
         } else {
           return txDetails.txData?.value ?? '0'
         }
+      case 'SwapOrder':
+        return txDetails.txData?.value ?? '0'
       case 'Custom':
         return txDetails.txInfo.value
       case 'Creation':
       case 'SettingsChange':
-      default:
         return '0'
+      default: {
+        throw new Error(`Unknown transaction type: ${txDetails.txInfo.type}`)
+      }
     }
   })()
 
@@ -74,12 +78,21 @@ const extractTxInfo = (
         } else {
           return txDetails.txInfo.transferInfo.tokenAddress
         }
+      case 'SwapOrder':
+        const swapOrderTo = txDetails.txData?.to.value
+        // TODO: Remove assertion after type is corrected
+        if (!swapOrderTo) {
+          throw new Error('SwapOrder tx data does not have a `to` field')
+        }
+        return swapOrderTo
       case 'Custom':
         return txDetails.txInfo.to.value
       case 'Creation':
       case 'SettingsChange':
-      default:
         return safeAddress
+      default: {
+        throw new Error(`Unknown transaction type: ${txDetails.txInfo.type}`)
+      }
     }
   })()
 

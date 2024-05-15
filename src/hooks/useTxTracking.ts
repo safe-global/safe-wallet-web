@@ -22,6 +22,7 @@ export const useTxTracking = (): void => {
         const id = txId || txHash
 
         let origin = ''
+
         if (id) {
           try {
             const txDetails = await getTxDetails(chainId, id)

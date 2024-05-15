@@ -6,6 +6,7 @@ import type {
   TransactionInfo,
   MultiSend,
   SettingsChange,
+  SwapOrder,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
@@ -17,10 +18,13 @@ import {
   isMultiSendTxInfo,
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
+  isSwapTxInfo,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
+import TokenIcon from '@/components/common/TokenIcon'
+import { Box, Typography } from '@mui/material'
 
 export const TransferTx = ({
   info,
@@ -87,6 +91,27 @@ const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   )
 }
 
+const SwapTx = ({ info }: { info: SwapOrder }): ReactElement => {
+  return (
+    <Box display="flex">
+      <Typography display="flex" alignItems="center" fontWeight="bold">
+        <Box style={{ paddingRight: 5, display: 'inline-block' }}>
+          <TokenIcon logoUri={info.sellToken.logoUri || undefined} tokenSymbol={info.sellToken.symbol} />
+        </Box>
+        <Typography sx={{ maxWidth: '60px' }} noWrap>
+          {info.sellToken.symbol}&nbsp;
+        </Typography>
+        to
+        <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
+          <TokenIcon logoUri={info.buyToken.logoUri || undefined} tokenSymbol={info.buyToken.symbol} />
+        </Box>{' '}
+        <Typography sx={{ maxWidth: '60px' }} noWrap>
+          {info.buyToken.symbol}
+        </Typography>
+      </Typography>
+    </Box>
+  )
+}
 const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   if (
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
@@ -117,6 +142,10 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
 
   if (isCreationTxInfo(info)) {
     return <CreationTx info={info} />
+  }
+
+  if (isSwapTxInfo(info)) {
+    return <SwapTx info={info} />
   }
 
   return <></>

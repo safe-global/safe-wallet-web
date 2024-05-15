@@ -11,7 +11,13 @@ import merge from 'lodash/merge'
 import { IS_PRODUCTION } from '@/config/constants'
 import { getPreloadedState, persistState } from './persistStore'
 import { broadcastState, listenToBroadcast } from './broadcast'
-import { safeMessagesListener, txHistoryListener, txQueueListener } from './slices'
+import {
+  safeMessagesListener,
+  swapOrderListener,
+  swapOrderStatusListener,
+  txHistoryListener,
+  txQueueListener,
+} from './slices'
 import * as slices from './slices'
 import * as hydrate from './useHydrateStore'
 
@@ -22,6 +28,7 @@ const rootReducer = combineReducers({
   [slices.sessionSlice.name]: slices.sessionSlice.reducer,
   [slices.txHistorySlice.name]: slices.txHistorySlice.reducer,
   [slices.txQueueSlice.name]: slices.txQueueSlice.reducer,
+  [slices.swapOrderSlice.name]: slices.swapOrderSlice.reducer,
   [slices.addressBookSlice.name]: slices.addressBookSlice.reducer,
   [slices.notificationsSlice.name]: slices.notificationsSlice.reducer,
   [slices.pendingTxsSlice.name]: slices.pendingTxsSlice.reducer,
@@ -35,6 +42,7 @@ const rootReducer = combineReducers({
   [slices.pendingSafeMessagesSlice.name]: slices.pendingSafeMessagesSlice.reducer,
   [slices.batchSlice.name]: slices.batchSlice.reducer,
   [slices.undeployedSafesSlice.name]: slices.undeployedSafesSlice.reducer,
+  [slices.swapParamsSlice.name]: slices.swapParamsSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -48,6 +56,8 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   slices.pendingSafeMessagesSlice.name,
   slices.batchSlice.name,
   slices.undeployedSafesSlice.name,
+  slices.swapParamsSlice.name,
+  slices.swapOrderSlice.name,
 ]
 
 export const getPersistedState = () => {
@@ -61,7 +71,7 @@ const middleware = [
   broadcastState(persistedSlices),
   listenerMiddlewareInstance.middleware,
 ]
-const listeners = [safeMessagesListener, txHistoryListener, txQueueListener]
+const listeners = [safeMessagesListener, txHistoryListener, txQueueListener, swapOrderListener, swapOrderStatusListener]
 
 export const _hydrationReducer: typeof rootReducer = (state, action) => {
   if (action.type === hydrate.HYDRATE_ACTION) {

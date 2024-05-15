@@ -52,17 +52,19 @@ export const OwnerRow = ({
     [getValues],
   )
 
-  const { ens, name, resolving } = useAddressResolver(owner.address)
+  const { name, ens, resolving } = useAddressResolver(owner.address)
+
+  useEffect(() => {
+    if (name && !getValues(`${fieldName}.name`)) {
+      setValue(`${fieldName}.name`, name)
+    }
+  }, [setValue, getValues, name, fieldName])
 
   useEffect(() => {
     if (ens) {
       setValue(`${fieldName}.ens`, ens)
     }
-
-    if (name && !getValues(`${fieldName}.name`)) {
-      setValue(`${fieldName}.name`, name)
-    }
-  }, [ens, setValue, getValues, name, fieldName])
+  }, [ens, setValue, fieldName])
 
   const walletIsOwner = owner.address === wallet?.address
 

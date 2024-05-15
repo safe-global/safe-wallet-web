@@ -34,6 +34,10 @@ export const SAFE_APPS_EVENTS = {
     ...SAFE_APPS_EVENT_DATA,
     action: 'Add custom Safe App',
   },
+  OPEN_TRANSACTION_MODAL: {
+    ...SAFE_APPS_EVENT_DATA,
+    action: 'Open Transaction modal',
+  },
   PROPOSE_TRANSACTION: {
     ...SAFE_APPS_EVENT_DATA,
     action: 'Propose Transaction',

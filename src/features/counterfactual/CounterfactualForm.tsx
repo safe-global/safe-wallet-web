@@ -38,6 +38,7 @@ export const CounterfactualForm = ({
   isOwner,
   isExecutionLoop,
   txSecurity,
+  onSubmit,
 }: SignOrExecuteProps & {
   isOwner: ReturnType<typeof useIsSafeOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
@@ -65,6 +66,7 @@ export const CounterfactualForm = ({
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+    onSubmit?.(Math.random().toString())
 
     if (needsRiskConfirmation && !isRiskConfirmed) {
       setIsRiskIgnored(true)

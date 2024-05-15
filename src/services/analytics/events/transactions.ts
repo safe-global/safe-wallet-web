@@ -21,6 +21,7 @@ export enum TX_TYPES {
   typed_message = 'typed_message',
   walletconnect = 'walletconnect',
   custom = 'custom',
+  native_swap = 'native_swap',
 
   // Counterfactual
   activate_without_tx = 'activate_without_tx',

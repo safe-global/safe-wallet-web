@@ -14,6 +14,10 @@ main {
   width: 100%;
 }
 
+main.swapWrapper {
+  height: calc(100vh - 52px);
+}
+
 a {
   color: inherit;
   text-decoration: none;

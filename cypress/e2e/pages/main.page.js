@@ -294,3 +294,13 @@ export function formatAddressInCaps(address) {
 export function getElementText(element) {
   return cy.get(element).invoke('text')
 }
+
+export function verifyTextVisibility(stringsArray) {
+  stringsArray.forEach((string) => {
+    cy.contains(string).should('be.visible')
+  })
+}
+
+export function getIframeBody(iframe) {
+  return cy.get(iframe).its('0.contentDocument.body').should('not.be.empty').then(cy.wrap)
+}

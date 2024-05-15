@@ -1,20 +1,26 @@
+import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 import TokenAmount from '@/components/common/TokenAmount'
 import Track from '@/components/common/Track'
 import QrCodeButton from '@/components/sidebar/QrCodeButton'
 import { TxModalContext } from '@/components/tx-flow'
 import { NewTxFlow } from '@/components/tx-flow/flows'
+import { useHasFeature } from '@/hooks/useChains'
+import SwapIcon from '@/public/images/common/swap.svg'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { useAppSelector } from '@/store'
-import { selectCurrency } from '@/store/settingsSlice'
-import { formatCurrency } from '@/utils/formatNumber'
-import { useContext, useMemo, type ReactElement } from 'react'
-import { Button, Grid, Skeleton, Typography } from '@mui/material'
-import { WidgetBody, WidgetContainer } from '../styled'
+import Link from 'next/link'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import ArrowIconSE from '@/public/images/common/arrow-se.svg'
-import BuyCryptoButton from '@/components/common/BuyCryptoButton'
+import FiatValue from '@/components/common/FiatValue'
+import { AppRoutes } from '@/config/routes'
+import { FEATURES } from '@/utils/chains'
+import { Button, Grid, Skeleton, Typography, useMediaQuery } from '@mui/material'
+import { useRouter } from 'next/router'
+import { type ReactElement, useContext } from 'react'
+import { WidgetBody, WidgetContainer } from '../styled'
+import { useTheme } from '@mui/material/styles'
+import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 
 const SkeletonOverview = (
   <>
@@ -35,15 +41,13 @@ const SkeletonOverview = (
 )
 
 const Overview = (): ReactElement => {
-  const currency = useAppSelector(selectCurrency)
   const { safe, safeLoading, safeLoaded } = useSafeInfo()
   const { balances, loading: balancesLoading } = useVisibleBalances()
   const { setTxFlow } = useContext(TxModalContext)
-
-  const fiatTotal = useMemo(
-    () => (balances.fiatTotal ? formatCurrency(balances.fiatTotal, currency) : ''),
-    [currency, balances.fiatTotal],
-  )
+  const router = useRouter()
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
 
   const isInitialState = !safeLoaded && !safeLoading
   const isLoading = safeLoading || balancesLoading || isInitialState
@@ -52,6 +56,8 @@ const Overview = (): ReactElement => {
     setTxFlow(<NewTxFlow />, undefined, false)
     trackEvent(OVERVIEW_EVENTS.NEW_TRANSACTION)
   }
+
+  const buttonWidth = isSwapFeatureEnabled ? 4 : 6
 
   return (
     <WidgetContainer>
@@ -67,7 +73,7 @@ const Overview = (): ReactElement => {
                 </Typography>
                 <Typography component="div" variant="h1" fontSize={44} lineHeight="40px">
                   {safe.deployed ? (
-                    fiatTotal
+                    <FiatValue value={balances.fiatTotal} />
                   ) : (
                     <TokenAmount
                       value={balances.items[0].balance}
@@ -92,10 +98,10 @@ const Overview = (): ReactElement => {
                     <BuyCryptoButton />
                   </Grid>
 
-                  <Grid item xs={6} sm="auto">
+                  <Grid item xs={buttonWidth} sm="auto">
                     <Button
                       onClick={handleOnSend}
-                      size="small"
+                      size={isSmallScreen ? 'medium' : 'small'}
                       variant="outlined"
                       color="primary"
                       startIcon={<ArrowIconNW />}
@@ -104,15 +110,39 @@ const Overview = (): ReactElement => {
                       Send
                     </Button>
                   </Grid>
-                  <Grid item xs={6} sm="auto">
+                  <Grid item xs={buttonWidth} sm="auto">
                     <Track {...OVERVIEW_EVENTS.SHOW_QR} label="dashboard">
                       <QrCodeButton>
-                        <Button size="small" variant="outlined" color="primary" startIcon={<ArrowIconSE />} fullWidth>
+                        <Button
+                          size={isSmallScreen ? 'medium' : 'small'}
+                          variant="outlined"
+                          color="primary"
+                          startIcon={<ArrowIconSE />}
+                          fullWidth
+                        >
                           Receive
                         </Button>
                       </QrCodeButton>
                     </Track>
                   </Grid>
+
+                  {isSwapFeatureEnabled && (
+                    <Grid item xs={buttonWidth} sm="auto">
+                      <Track {...SWAP_EVENTS.OPEN_SWAPS} label={SWAP_LABELS.dashboard}>
+                        <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
+                          <Button
+                            size={isSmallScreen ? 'medium' : 'small'}
+                            variant="outlined"
+                            color="primary"
+                            startIcon={<SwapIcon />}
+                            fullWidth
+                          >
+                            Swap
+                          </Button>
+                        </Link>
+                      </Track>
+                    </Grid>
+                  )}
                 </Grid>
               )}
             </Grid>

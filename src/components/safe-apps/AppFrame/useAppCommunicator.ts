@@ -85,7 +85,7 @@ const useAppCommunicator = (
   useEffect(() => {
     let communicatorInstance: AppCommunicator
 
-    const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement>, app?: SafeAppData) => {
+    const initCommunicator = (iframeRef: MutableRefObject<HTMLIFrameElement | null>, app?: SafeAppData) => {
       communicatorInstance = new AppCommunicator(iframeRef, {
         onMessage: (msg) => {
           if (!msg.data) return
@@ -111,7 +111,7 @@ const useAppCommunicator = (
     }
 
     if (app) {
-      initCommunicator(iframeRef as MutableRefObject<HTMLIFrameElement>, app)
+      initCommunicator(iframeRef, app)
     }
 
     return () => {

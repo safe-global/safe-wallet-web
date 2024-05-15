@@ -33,17 +33,18 @@ describe('[SMOKE] Address book tests', () => {
   })
 
   it('[SMOKE] Verify entry can be deleted', () => {
-    main
-      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+    cy.wrap(null)
+      .then(() =>
+        main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1),
+      )
+      .then(() =>
+        main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1),
+      )
       .then(() => {
-        main
-          .isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
-          .then(() => {
-            cy.reload()
-            addressBook.clickDeleteEntryButton()
-            addressBook.clickDeleteEntryModalDeleteButton()
-            addressBook.verifyEditedNameNotExists(EDITED_NAME)
-          })
+        cy.reload()
+        addressBook.clickDeleteEntryButton()
+        addressBook.clickDeleteEntryModalDeleteButton()
+        addressBook.verifyEditedNameNotExists(EDITED_NAME)
       })
   })
 

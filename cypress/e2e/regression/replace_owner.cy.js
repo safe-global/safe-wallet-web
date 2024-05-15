@@ -79,7 +79,7 @@ describe('Replace Owners tests', () => {
   })
 
   it("Verify 'Replace' tx is created", () => {
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_17)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     cy.wait(1000)

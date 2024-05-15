@@ -2,7 +2,7 @@
   "name": "safe-wallet-web",
   "homepage": "https://github.com/safe-global/safe-wallet-web",
   "license": "GPL-3.0",
-  "version": "1.35.0",
+  "version": "1.36.3",
   "type": "module",
   "scripts": {
     "dev": "next dev",
@@ -45,6 +45,7 @@
     "@gnosis.pm/zodiac/**/ethers": "^6.11.1"
   },
   "dependencies": {
+    "@cowprotocol/widget-react": "^0.9.1",
     "@ducanh2912/next-pwa": "^9.7.1",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.0",
@@ -56,10 +57,10 @@
     "@mui/x-date-pickers": "^5.0.20",
     "@reduxjs/toolkit": "^1.9.5",
     "@safe-global/api-kit": "^2.3.0",
-    "@safe-global/protocol-kit": "^3.0.2",
+    "@safe-global/protocol-kit": "^3.1.0",
     "@safe-global/safe-apps-sdk": "^9.0.0-next.1",
-    "@safe-global/safe-deployments": "^1.34.0",
-    "@safe-global/safe-gateway-typescript-sdk": "3.19.0",
+    "@safe-global/safe-deployments": "^1.35.0",
+    "@safe-global/safe-gateway-typescript-sdk": "3.21.1",
     "@safe-global/safe-modules-deployments": "^1.2.0",
     "@sentry/react": "^7.91.0",
     "@spindl-xyz/attribution-lite": "^1.4.0",
@@ -101,6 +102,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.3.1",
+    "@cowprotocol/app-data": "^2.1.0",
     "@faker-js/faker": "^8.1.0",
     "@next/bundle-analyzer": "^13.5.6",
     "@openzeppelin/contracts": "^4.9.2",

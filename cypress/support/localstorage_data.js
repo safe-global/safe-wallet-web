@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const batchData = {
   entry0: {
     11155111: {
@@ -479,6 +480,22 @@ export const addedSafes = {
       },
     },
     11155111: {
+      '0x027bBe128174F0e5e5d22ECe9623698E01cd3970': {
+        owners: [
+          {
+            value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+            name: null,
+            logoUri: null,
+          },
+          {
+            value: '0x96D4c6fFC338912322813a77655fCC926b9A5aC5',
+            name: null,
+            logoUri: null,
+          },
+        ],
+        threshold: 1,
+        ethBalance: '0',
+      },
       '0x6E834E9D04ad6b26e1525dE1a37BFd9b215f40B7': {
         owners: [
           {
@@ -614,6 +631,26 @@ export const addedSafes = {
 export const pinnedApps = {
   transactionBuilder: { 11155111: { pinned: [24], opened: [] } },
 }
+
+export const customApps = (url) => ({
+  safeTestApp: [{ url: url }],
+  grantedPermissions: {
+    [url]: [
+      { feature: 'camera', status: 'granted' },
+      { feature: 'microphone', status: 'granted' },
+    ],
+  },
+})
+
+export const appPermissions = (url) => ({
+  grantedPermissions: {
+    [url]: [
+      { feature: 'camera', status: 'granted' },
+      { feature: 'microphone', status: 'granted' },
+    ],
+  },
+  infoModalAccepted: { 11155111: { consentsAccepted: true, warningCheckedCustomApps: [] } },
+})
 
 export const cookies = {
   acceptedCookies: { necessary: true, updates: true, analytics: true },

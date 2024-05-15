@@ -204,7 +204,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       },
 
       async proxy(method, params) {
-        return web3ReadOnly?.send(method, params)
+        return web3ReadOnly?.send(method, params ?? [])
       },
 
       getCreateCallTransaction(data) {

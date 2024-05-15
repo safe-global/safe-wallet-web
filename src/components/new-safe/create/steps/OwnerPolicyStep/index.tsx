@@ -1,4 +1,6 @@
 import CounterfactualHint from '@/features/counterfactual/CounterfactualHint'
+import useAddressBook from '@/hooks/useAddressBook'
+import useWallet from '@/hooks/wallets/useWallet'
 import { Button, SvgIcon, MenuItem, Tooltip, Typography, Divider, Box, Grid, TextField } from '@mui/material'
 import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import type { ReactElement } from 'react'
@@ -37,12 +39,19 @@ const OwnerPolicyStep = ({
 }: StepRenderProps<NewSafeFormData> & {
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }): ReactElement => {
+  const wallet = useWallet()
+  const addressBook = useAddressBook()
+  const defaultOwnerAddressBookName = wallet?.address ? addressBook[wallet.address] : undefined
+  const defaultOwner: NamedAddress = {
+    name: defaultOwnerAddressBookName || wallet?.ens || '',
+    address: wallet?.address || '',
+  }
   useSyncSafeCreationStep(setStep)
 
   const formMethods = useForm<OwnerPolicyStepForm>({
     mode: 'onChange',
     defaultValues: {
-      [OwnerPolicyStepFields.owners]: data.owners,
+      [OwnerPolicyStepFields.owners]: data.owners.length > 0 ? data.owners : [defaultOwner],
       [OwnerPolicyStepFields.threshold]: data.threshold,
     },
   })

@@ -9,15 +9,18 @@ import {
   isTransferTxInfo,
   isCustomTxInfo,
   isCancellationTxInfo,
+  isSwapTxInfo,
 } from '@/utils/transaction-guards'
 
 export const getTransactionTrackingType = async (chainId: string, txId: string): Promise<string> => {
   let details: TransactionDetails
+
   try {
     details = await getTxDetails(chainId, txId)
   } catch {
     return TX_TYPES.custom
   }
+
   const { txInfo } = details
 
   if (isTransferTxInfo(txInfo)) {
@@ -25,6 +28,10 @@ export const getTransactionTrackingType = async (chainId: string, txId: string):
       return TX_TYPES.transfer_nft
     }
     return TX_TYPES.transfer_token
+  }
+
+  if (isSwapTxInfo(txInfo)) {
+    return TX_TYPES.native_swap
   }
 
   if (isSettingsChangeTxInfo(txInfo)) {

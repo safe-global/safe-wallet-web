@@ -1,3 +1,9 @@
+.container {
+  background-color: var(--color-warning-background);
+  border-radius: 4px;
+  padding: var(--space-2);
+}
+
 .warningAccordion {
   border: 1px var(--color-warning-main) solid !important;
   margin-bottom: var(--space-2) !important;
@@ -15,6 +21,13 @@
   width: 100%;
 }
 
+.approvalField {
+  background-color: var(--color-background-paper);
+  border-radius: 6px;
+  padding: 12px 16px;
+  width: 100%;
+}
+
 .alert :global .MuiAlert-message {
   width: 100%;
 }
@@ -24,32 +37,7 @@
 }
 
 .approvalAmount {
-  text-align: right !important;
   padding-left: var(--space-1);
-}
-
-.iconButton {
-  border-radius: 4px;
-  padding: 6px;
-  width: 52px;
-  height: 52px;
-  background-color: var(--color-primary-main);
-}
-
-.iconButton:hover {
-  background-color: var(--color-primary-dark);
-}
-
-.iconButton svg {
-  color: var(--color-background-paper);
-}
-
-.iconButton:disabled {
-  background-color: var(--color-text-disabled);
-}
-
-.iconButton:disabled svg {
-  color: var(--color-border-dark);
 }
 
 .approvalsList {

@@ -1,3 +1,5 @@
+import StatusLabel from '@/features/swap/components/StatusLabel'
+import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import { Box } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
@@ -31,6 +33,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
   const isTrusted = !hasDefaultTokenlist || isTrustedTx(tx)
   const isPending = useIsPending(tx.id)
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
+  const expiredSwap = useIsExpiredSwap(tx.txInfo)
 
   return (
     <Box
@@ -75,14 +78,20 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      {(!isQueue || isPending) && (
+      {isQueue && expiredSwap ? (
+        <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
+          <StatusLabel status="expired" />
+        </Box>
+      ) : !isQueue || isPending ? (
         <Box gridArea="status" justifyContent="flex-end" display="flex" className={css.status}>
           <TxStatusLabel tx={tx} />
         </Box>
+      ) : (
+        ''
       )}
 
-      {isQueue && (
-        <Box gridArea="actions">
+      {isQueue && !expiredSwap && (
+        <Box gridArea="actions" className={css.actions}>
           <QueueActions tx={tx} />
         </Box>
       )}

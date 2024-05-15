@@ -37,23 +37,26 @@ describe('[SMOKE] Batch transaction tests', () => {
   })
 
   it('[SMOKE] Verify the batch can be confirmed and related transactions exist in the form', () => {
-    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0).then(() => {
-      main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0).then(() => {
+    cy.wrap(null)
+      .then(() => main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0))
+      .then(() => main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0))
+      .then(() => {
         cy.reload()
         batch.clickOnBatchCounter()
         batch.clickOnConfirmBatchBtn()
         batch.verifyBatchTransactionsCount(2)
         batch.clickOnBatchCounter()
         cy.contains(funds_first_tx).parents('ul').as('TransactionList')
-        cy.get('@TransactionList').find('li').eq(0).find('span').eq(0).contains(funds_first_tx)
-        cy.get('@TransactionList').find('li').eq(1).find('span').eq(0).contains(funds_first_tx)
+        cy.get('@TransactionList').find('li').eq(0).contains(funds_first_tx)
+        cy.get('@TransactionList').find('li').eq(1).contains(funds_first_tx)
       })
-    })
   })
 
   it('[SMOKE] Verify a transaction can be removed from the batch', () => {
-    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0).then(() => {
-      main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0).then(() => {
+    cy.wrap(null)
+      .then(() => main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0))
+      .then(() => main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0))
+      .then(() => {
         cy.reload()
         batch.clickOnBatchCounter()
         cy.contains(batch.batchedTransactionsStr).should('be.visible').parents('aside').find('ul > li').as('BatchList')
@@ -61,6 +64,5 @@ describe('[SMOKE] Batch transaction tests', () => {
         cy.get('@BatchList').should('have.length', 1)
         cy.get('@BatchList').contains(funds_second_tx).should('not.exist')
       })
-    })
   })
 })

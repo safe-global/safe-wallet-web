@@ -64,7 +64,7 @@ describe('[SMOKE] Dashboard tests', { defaultCommandTimeout: 20000 }, () => {
   })
 
   it('[SMOKE] Verify there is empty tx string and image when there are no tx queued', () => {
-    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_10)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_13)
     dashboard.verifyEmptyTxSection()
   })
 
@@ -73,7 +73,7 @@ describe('[SMOKE] Dashboard tests', { defaultCommandTimeout: 20000 }, () => {
   })
 
   it('[SMOKE] Verify that tx are displayed correctly in Pending tx section', () => {
-    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_14)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_12)
     cy.wait(1000)
     dashboard.verifyTxItemInPendingTx(txMultiSendCall3)
     dashboard.verifyTxItemInPendingTx(txaddOwner)

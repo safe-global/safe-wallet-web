@@ -1,7 +1,13 @@
 import type { ReactElement, ReactNode } from 'react'
 import { Typography, Chip } from '@mui/material'
 
-const TxStatusChip = ({ children, color }: { children: ReactNode; color?: string }): ReactElement => {
+const TxStatusChip = ({
+  children,
+  color,
+}: {
+  children: ReactNode
+  color?: 'primary' | 'secondary' | 'info' | 'warning' | 'success' | 'error'
+}): ReactElement => {
   return (
     <Chip
       size="small"

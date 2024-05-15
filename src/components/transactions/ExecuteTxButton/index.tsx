@@ -1,3 +1,5 @@
+import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
+import useIsPending from '@/hooks/useIsPending'
 import type { SyntheticEvent } from 'react'
 import { type ReactElement, useContext } from 'react'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
@@ -23,11 +25,14 @@ const ExecuteTxButton = ({
   const { setTxFlow } = useContext(TxModalContext)
   const { safe } = useSafeInfo()
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
+  const isPending = useIsPending(txSummary.id)
   const { setSelectedTxId } = useContext(ReplaceTxHoverContext)
   const safeSDK = useSafeSDK()
 
+  const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
+
   const isNext = txNonce !== undefined && txNonce === safe.nonce
-  const isDisabled = !isNext || !safeSDK
+  const isDisabled = !isNext || !safeSDK || expiredSwap || isPending
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()

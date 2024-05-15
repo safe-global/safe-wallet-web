@@ -1,12 +1,11 @@
 import NumberField from '@/components/common/NumberField'
-import TokenIcon from '@/components/common/TokenIcon'
-import { shortenAddress } from '@/utils/formatters'
 import { validateAmount, validateDecimalLength } from '@/utils/validation'
-import { Autocomplete, Box, type MenuItemProps, Typography, MenuItem } from '@mui/material'
+import { Autocomplete, type MenuItemProps, MenuItem } from '@mui/material'
 import { useController, useFormContext } from 'react-hook-form'
 import type { ApprovalInfo } from './hooks/useApprovalInfos'
 import css from './styles.module.css'
 import { PSEUDO_APPROVAL_VALUES } from './utils/approvals'
+import { approvalMethodDescription } from './ApprovalItem'
 
 const ApprovalOption = ({ menuItemProps, value }: { menuItemProps: MenuItemProps; value: string }) => {
   return (
@@ -16,10 +15,9 @@ const ApprovalOption = ({ menuItemProps, value }: { menuItemProps: MenuItemProps
   )
 }
 
-export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInfo }) => {
+export const ApprovalValueField = ({ name, tx, readOnly }: { name: string; tx: ApprovalInfo; readOnly: boolean }) => {
   const { control } = useFormContext()
   const selectValues = Object.values(PSEUDO_APPROVAL_VALUES)
-
   const {
     field: { ref, onBlur, onChange, value },
     fieldState,
@@ -38,7 +36,9 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
     },
   })
 
-  const label = fieldState.error?.message || 'Token'
+  const helperText = fieldState.error?.message ?? (fieldState.isDirty ? 'Save to apply changes' : '')
+
+  const label = `${approvalMethodDescription[tx.method](tx.tokenInfo?.symbol ?? '')}`
   const options = selectValues
 
   return (
@@ -46,14 +46,15 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
       freeSolo
       fullWidth
       options={options}
-      renderOption={(props, value: string) => <ApprovalOption menuItemProps={props} value={value} />}
+      renderOption={(props, value: string) => <ApprovalOption key={value} menuItemProps={props} value={value} />}
       value={value}
       // On option select or free text entry
       onInputChange={(_, value) => {
         onChange(value)
       }}
       disableClearable
-      selectOnFocus
+      selectOnFocus={!readOnly}
+      readOnly={readOnly}
       componentsProps={{
         paper: {
           elevation: 2,
@@ -66,6 +67,14 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
             label={label}
             name={name}
             fullWidth
+            helperText={helperText}
+            onFocus={(field) => {
+              if (!readOnly) {
+                field.target.select()
+              }
+            }}
+            margin="dense"
+            variant="standard"
             error={!!fieldState.error}
             size="small"
             onBlur={onBlur}
@@ -73,17 +82,15 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
             InputProps={{
               ...params.InputProps,
               sx: {
-                paddingTop: '4px',
-                paddingBottom: '4px',
-                paddingLeft: 1,
                 flexWrap: 'nowrap !important',
+                '&::before': {
+                  border: 'none !important',
+                },
+                '&::after': {
+                  display: readOnly ? 'none' : undefined,
+                },
+                border: 'none !important',
               },
-              startAdornment: (
-                <Box display="flex" flexDirection="row" alignItems="center" gap="4px">
-                  <TokenIcon size={32} logoUri={tx.tokenInfo?.logoUri} tokenSymbol={tx.tokenInfo?.symbol} />
-                  <Typography>{tx.tokenInfo?.symbol || shortenAddress(tx.tokenAddress)}</Typography>
-                </Box>
-              ),
             }}
             inputProps={{
               ...params.inputProps,
@@ -92,6 +99,9 @@ export const ApprovalValueField = ({ name, tx }: { name: string; tx: ApprovalInf
             InputLabelProps={{
               ...params.InputLabelProps,
               shrink: true,
+              sx: {
+                color: (theme) => (readOnly ? `${theme.palette.text.secondary} !important` : undefined),
+              },
             }}
           />
         )

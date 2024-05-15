@@ -16,6 +16,8 @@ export type ApprovalInfo = {
   amount: any
   amountFormatted: string
   method: Approval['method']
+  /** Index of approval transaction within (batch) transaction */
+  transactionIndex: number
 }
 
 const ApprovalModuleInstance = new ApprovalModule()
