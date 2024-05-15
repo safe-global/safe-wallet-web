@@ -40,32 +40,26 @@ export const filterUntrustedQueue = (
   untrustedQueue: TransactionListPage,
   pendingIds: Array<TransactionSummary['id']>,
 ) => {
-  // Only keep labels and pending transactions
-  const results = untrustedQueue.results.filter(
-    (item) => !isTransactionListItem(item) || pendingIds.includes(item.transaction.id),
-  )
+  // Only keep labels and pending unsigned transactions
+  const results = untrustedQueue.results
+    .filter((item) => !isTransactionListItem(item) || pendingIds.includes(item.transaction.id))
+    .filter((item) => !isConflictHeaderListItem(item))
+    .filter(
+      (item) =>
+        !isTransactionListItem(item) ||
+        (isTransactionListItem(item) &&
+          isMultisigExecutionInfo(item.transaction.executionInfo) &&
+          item.transaction.executionInfo.confirmationsSubmitted === 0),
+    )
 
   // Adjust the first label ("Next" -> "Pending")
   if (results[0] && isLabelListItem(results[0])) {
     results[0].label = 'Pending' as LabelValue
   }
 
-  // Filter out signed transactions
-  const filteredResults = results
-    // Only one transaction per nonce can be pending at the same time so no need for conflict headers
-    .filter((item) => !isConflictHeaderListItem(item))
-    .filter((item) => {
-      return (
-        !isTransactionListItem(item) ||
-        (isTransactionListItem(item) &&
-          isMultisigExecutionInfo(item.transaction.executionInfo) &&
-          item.transaction.executionInfo.confirmationsSubmitted === 0)
-      )
-    })
+  const transactions = results.filter((item) => isTransactionListItem(item))
 
-  const transactions = filteredResults.filter((item) => isTransactionListItem(item))
-
-  return transactions.length ? { results: filteredResults } : undefined
+  return transactions.length ? { results } : undefined
 }
 
 export const usePendingTxsQueue = (): {
