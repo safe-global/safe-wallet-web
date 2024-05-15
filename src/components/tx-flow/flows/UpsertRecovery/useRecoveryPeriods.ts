@@ -26,6 +26,10 @@ const DefaultRecoveryDelayPeriods: Periods = [
     label: '56 days',
     value: `${DAY_IN_SECONDS * 56}`,
   },
+  {
+    label: 'Custom period',
+    value: '0',
+  },
 ]
 
 const DefaultRecoveryExpirationPeriods: Periods = [

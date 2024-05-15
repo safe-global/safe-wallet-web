@@ -18,7 +18,7 @@ import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { isSmartContractWallet } from '@/utils/wallets'
 import { UpsertRecoveryFlowFields } from '.'
 import { TOOLTIP_TITLES } from '../../common/constants'
-import { useRecoveryPeriods } from './useRecoveryPeriods'
+import { DAY_IN_SECONDS, useRecoveryPeriods } from './useRecoveryPeriods'
 import type { UpsertRecoveryFlowProps } from '.'
 
 enum AddressType {
@@ -59,8 +59,10 @@ export function UpsertRecoveryFlowReview({
 
   const periods = useRecoveryPeriods()
   const recoverer = params[UpsertRecoveryFlowFields.recoverer]
-  const delay = periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.delay])!.label
-  const expiry = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.label
+  const delay =
+    periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.delay])?.label ||
+    `${Number(params[UpsertRecoveryFlowFields.delay]) / DAY_IN_SECONDS} days`
+  const expiry = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])?.label
 
   useEffect(() => {
     if (!web3ReadOnly) {
