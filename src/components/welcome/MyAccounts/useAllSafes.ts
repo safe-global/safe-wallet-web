@@ -7,6 +7,7 @@ import useAllOwnedSafes from './useAllOwnedSafes'
 import useChains from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectUndeployedSafes } from '@/store/slices'
+import { sameAddress } from '@/utils/addresses'
 export type SafeItem = {
   chainId: string
   address: string
@@ -35,12 +36,15 @@ export const useHasSafes = () => {
 
 const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
-  const [allOwned] = useAllOwnedSafes(walletAddress)
+  const [allOwned, , allOwnedLoading] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
   const { configs } = useChains()
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
   return useMemo<SafeItems | undefined>(() => {
+    if (allOwned === undefined || allOwnedLoading) {
+      return undefined
+    }
     const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned || {})))
 
     return chains.flatMap((chainId) => {
@@ -51,8 +55,10 @@ const useAllSafes = (): SafeItems | undefined => {
       const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
 
       return uniqueAddresses.map((address) => {
+        const owners = allAdded?.[chainId]?.[address]?.owners
+        const isOwner = owners?.some(({ value }) => sameAddress(walletAddress, value))
         const isUndeployed = undeployedOnChain.includes(address)
-        const isOwned = (ownedOnChain || []).includes(address)
+        const isOwned = (ownedOnChain || []).includes(address) || isOwner
         return {
           address,
           chainId,
@@ -60,7 +66,7 @@ const useAllSafes = (): SafeItems | undefined => {
         }
       })
     })
-  }, [allAdded, allOwned, configs, undeployedSafes])
+  }, [allAdded, allOwned, allOwnedLoading, configs, undeployedSafes, walletAddress])
 }
 
 export default useAllSafes
