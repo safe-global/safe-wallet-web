@@ -49,8 +49,6 @@ const WcInput = ({ uri }: { uri: string }) => {
       } catch (e) {
         setError(asError(e))
       }
-
-      setIsLoading(undefined)
     },
     [setIsLoading, walletConnect],
   )
