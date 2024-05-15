@@ -4237,37 +4237,23 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.7.2.tgz#2d4260033e199b3032a08b41348ac10de21c47e9"
   integrity sha512-RbhOOTCNoCrbfkRyoXODZp75MlpiHMgbE5MEBZAnnnLyQNgrigEj4p0lzsMDyc1zVsJDLrivB58tgg3emX0eEA==
 
-"@safe-global/api-kit@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/api-kit/-/api-kit-2.3.0.tgz#fc7e741a25cb5983ce7e7ccf0f2fd2ef64bbe704"
-  integrity sha512-Mh9HH9+TK4dz5tiuPLn/GK42cOf1lKGvcmH/JQK8b7gD+YJugnXdrsirs3XahvwdG0rG7xfL9tf4mcW7zWzuXQ==
+"@safe-global/api-kit@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/api-kit/-/api-kit-2.3.2.tgz#37cab964faf79f98eb5f1a86004a56c0fb0eef21"
+  integrity sha512-pnbP23t3XQOWZv5Y35CoDpBAajSeB0ZY9ahajruNYt6pyPYxleQVuRueCQ+FDZHNDGS0SK7dlUYyUScs/GsTZQ==
   dependencies:
-    "@safe-global/protocol-kit" "^3.0.2"
-    "@safe-global/safe-core-sdk-types" "^4.0.2"
+    "@safe-global/protocol-kit" "^3.1.1"
+    "@safe-global/safe-core-sdk-types" "^4.1.1"
     ethers "^6.7.1"
     node-fetch "^2.7.0"
 
-"@safe-global/protocol-kit@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-3.0.2.tgz#cfa4c5e890c101aa89e11768d07b2bc5455f72fb"
-  integrity sha512-Jxvvfu4yqEdWeOuY3VWOOs/q5f27om3tctL2guOCDbAuSx3Vd1peaKRwLiREkvrrqKEW0tfmzUSsqtmlJExfBw==
+"@safe-global/protocol-kit@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-3.1.1.tgz#eec3cee3432cd1ad8b159e1911527d93ecc502f9"
+  integrity sha512-ai/N1DI6U53CsC46Do8eOyb6IkgVhjoQFhbFIh5rFSAKiuw3B0hTF7nrVRb0jw4NFlNHCcWDAER/uNH0Qy2Pkg==
   dependencies:
     "@noble/hashes" "^1.3.3"
-    "@safe-global/safe-deployments" "^1.34.0"
-    ethereumjs-util "^7.1.5"
-    ethers "^6.7.1"
-    semver "^7.5.4"
-    web3 "^1.10.3"
-    web3-core "^1.10.3"
-    web3-utils "^1.10.3"
-
-"@safe-global/protocol-kit@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-3.1.0.tgz#429f3f11b3b2c60ed31568f853393155f316316b"
-  integrity sha512-PUZgTohIoQ1KN7RYE2IcQL8lj/LAb4WRgkDwB+1Vv7AoOLTI1U0Whajfe6Ur9w35BrQwr/x2HAoQvVSzH4FZ3Q==
-  dependencies:
-    "@noble/hashes" "^1.3.3"
-    "@safe-global/safe-deployments" "^1.35.0"
+    "@safe-global/safe-deployments" "^1.36.0"
     ethereumjs-util "^7.1.5"
     ethers "^6.7.1"
     semver "^7.5.4"
@@ -4283,27 +4269,20 @@
     "@safe-global/safe-gateway-typescript-sdk" "^3.5.3"
     viem "^1.6.0"
 
-"@safe-global/safe-core-sdk-types@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-4.0.2.tgz#70a99d8d61b83db458124c263391d86e5d6d5057"
-  integrity sha512-3I60xV/BLPiBtc3nGp2itgiDL+YbMI9OwaANvnJL2AwSS1kc2kH3/SsCwAW3s4Usr3b0lE08aO7I9ropyxFHhA==
+"@safe-global/safe-core-sdk-types@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-4.1.1.tgz#b75e15a2e6fa50f131629ca6f6f3a98fd6037d30"
+  integrity sha512-5NIWG7OjV+C5iquux0yPcu8SHUzg1qJXJ/jAQcPwXGTC7ZVsFawnR43/l2Vg9zEwf0RF0xTm3W8DXkaBYORiEQ==
   dependencies:
-    "@safe-global/safe-deployments" "^1.34.0"
+    "@safe-global/safe-deployments" "^1.36.0"
     ethers "^6.7.1"
     web3-core "^1.10.3"
     web3-utils "^1.10.3"
 
-"@safe-global/safe-deployments@^1.34.0":
-  version "1.34.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.34.0.tgz#5eef33012a4af55c4440036b1c0cfdb2245c6e49"
-  integrity sha512-J55iHhB1tiNoPeVQ5s943zrfeKRYPqBtnz/EM7d878WzUmmDlTGKHN98qPYKBxkRKP1UjEWuQDrZxy80lx1rJw==
-  dependencies:
-    semver "^7.3.7"
-
-"@safe-global/safe-deployments@^1.35.0":
-  version "1.35.0"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.35.0.tgz#6930a86a006526a9791ebd2a11cf8f5d8358563b"
-  integrity sha512-Of8WQEcvL5Fm+xxnCDjah6Hkw+sNdzcApQnzr+OsPBxYtZL0RRtbmesypj36oOD8BQmyrH54V8DVN+pYjrfJ9g==
+"@safe-global/safe-deployments@^1.36.0":
+  version "1.36.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.36.0.tgz#7e5cd470cc1042182d47f65b59831a64ed8feff1"
+  integrity sha512-9MbDJveRR64AbmzjIpuUqmDBDtOZpXpvkyhTUs+5UOPT3WgSO375/ZTO7hZpywP7+EmxnjkGc9EoxjGcC4TAyw==
   dependencies:
     semver "^7.6.0"
 
