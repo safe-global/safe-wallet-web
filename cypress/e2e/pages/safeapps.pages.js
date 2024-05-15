@@ -89,6 +89,8 @@ export const transferStr = 'Transfer'
 export const successStr = 'Success'
 export const failedStr = 'Failed'
 
+export const dummyTxStr = 'Trigger dummy tx (safe.txs.send)'
+export const signOnchainMsgStr = 'Sign message (on-chain)'
 export const pinWalletConnectStr = /pin walletconnect/i
 export const transactionBuilderStr = 'Transaction Builder'
 export const testAddressValueStr = 'testAddressValue'
@@ -126,6 +128,14 @@ export const permissionCheckboxNames = {
   fullscreen: 'Fullscreen',
 }
 
+export function triggetOffChainTx() {
+  cy.contains(dummyTxStr).click()
+}
+
+export function triggetOnChainTx() {
+  cy.contains(signOnchainMsgStr).click()
+}
+
 export function verifyWarningDefaultAppMsgIsDisplayed() {
   cy.get('p').contains(warningDefaultAppStr).should('be.visible')
   cy.wait(1000)
@@ -145,6 +155,7 @@ export function verifyLinkName(name) {
 
 export function clickOnApp(app) {
   cy.contains(app).click()
+  cy.wait(2000)
 }
 
 export function verifyNoAppsTextPresent() {

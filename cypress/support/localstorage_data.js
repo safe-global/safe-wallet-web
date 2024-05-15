@@ -631,6 +631,26 @@ export const pinnedApps = {
   transactionBuilder: { 11155111: { pinned: [24], opened: [] } },
 }
 
+export const customApps = (url) => ({
+  safeTestApp: [{ url: url }],
+  grantedPermissions: {
+    [url]: [
+      { feature: 'camera', status: 'granted' },
+      { feature: 'microphone', status: 'granted' },
+    ],
+  },
+})
+
+export const appPermissions = (url) => ({
+  grantedPermissions: {
+    [url]: [
+      { feature: 'camera', status: 'granted' },
+      { feature: 'microphone', status: 'granted' },
+    ],
+  },
+  infoModalAccepted: { 11155111: { consentsAccepted: true, warningCheckedCustomApps: [] } },
+})
+
 export const cookies = {
   acceptedCookies: { necessary: true, updates: true, analytics: true },
   acceptedTokenListOnboarding: true,
