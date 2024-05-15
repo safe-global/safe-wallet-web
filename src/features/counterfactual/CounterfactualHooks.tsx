@@ -10,7 +10,7 @@ function CounterfactualHooks() {
   return (
     <>
       <CounterfactualSuccessScreen />
-      {isCounterfactualSafe && <LazyCounterfactual />}
+      <LazyCounterfactual />
     </>
   )
 }

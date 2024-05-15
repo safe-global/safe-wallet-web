@@ -83,14 +83,19 @@ const ActivateAccountFlow = () => {
   const { owners, threshold } = undeployedSafe.props.safeAccountConfig
   const { saltNonce, safeVersion } = undeployedSafe.props.safeDeploymentConfig || {}
 
-  const onSubmit = (txHash?: string) => {
+  const onSubmit = async (txHash?: string) => {
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_without_tx })
     trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_without_tx })
     trackEvent(WALLET_EVENTS.ONCHAIN_INTERACTION)
 
     if (txHash) {
-      safeCreationDispatch(SafeCreationEvent.PROCESSING, { groupKey: CF_TX_GROUP_KEY, txHash })
+      safeCreationDispatch(SafeCreationEvent.PROCESSING, {
+        groupKey: CF_TX_GROUP_KEY,
+        txHash,
+        safeAddress,
+      })
     }
+
     setTxFlow(undefined)
   }
 
@@ -105,7 +110,7 @@ const ActivateAccountFlow = () => {
     try {
       if (willRelay) {
         const taskId = await relaySafeCreation(chain, owners, threshold, Number(saltNonce!), safeVersion)
-        safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId })
+        safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
 
         onSubmit()
       } else {

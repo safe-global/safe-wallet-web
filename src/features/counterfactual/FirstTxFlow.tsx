@@ -1,6 +1,9 @@
 import { AppRoutes } from '@/config/routes'
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { useAppSelector } from '@/store'
 import dynamic from 'next/dynamic'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useRouter } from 'next/router'
@@ -30,6 +33,10 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   const [recovery] = useRecovery()
   const isCounterfactualSafe = useIsCounterfactualSafe()
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS) && !isCounterfactualSafe
+  const { safe, safeAddress } = useSafeInfo()
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, safeAddress))
+
+  const isButtonDisabled = !!undeployedSafe && undeployedSafe.props.safeAccountConfig.threshold > 1
 
   const handleClick = (onClick: () => void) => {
     onClose()
@@ -77,14 +84,17 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   return (
     <ModalDialog open={open} dialogTitle="Create new transaction" hideChainIndicator onClose={onClose}>
       <Grid container justifyContent="center" flexDirection="column" p={3} spacing={2}>
-        <Grid item>
-          <ChoiceButton
-            title="Activate Safe now"
-            description="Pay a one-time network fee to deploy your safe onchain"
-            icon={SafeLogo}
-            onClick={() => handleClick(onActivateSafe)}
-          />
-        </Grid>
+        {undeployedSafe && (
+          <Grid item>
+            <ChoiceButton
+              title="Activate Safe now"
+              description="Pay a one-time network fee to deploy your safe onchain"
+              icon={SafeLogo}
+              onClick={() => handleClick(onActivateSafe)}
+              disabled={false}
+            />
+          </Grid>
+        )}
 
         <Grid item>
           <ChoiceButton
@@ -92,6 +102,7 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
             description="Improve the security of your Safe Account"
             icon={SaveAddressIcon}
             onClick={() => handleClick(onAddSigner)}
+            disabled={isButtonDisabled}
           />
         </Grid>
 
@@ -102,6 +113,7 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
               description="Ensure you never lose access to your funds"
               icon={RecoveryPlus}
               onClick={() => handleClick(onRecovery)}
+              disabled={isButtonDisabled}
             />
           </Grid>
         )}
@@ -112,6 +124,7 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
             description="Explore Safe Apps and trade any token"
             icon={SwapIcon}
             onClick={() => handleClick(onSwap)}
+            disabled={isButtonDisabled}
           />
         </Grid>
 
@@ -122,6 +135,7 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
               description="Compose custom contract interactions"
               icon={HandymanOutlinedIcon}
               onClick={() => handleClick(onCustomTransaction)}
+              disabled={isButtonDisabled}
             />
           </Grid>
         )}

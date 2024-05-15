@@ -15,6 +15,7 @@
 
 .dialog :global .MuiDialogTitle-root {
   border-bottom: 2px solid var(--color-border-light);
+  font-weight: bold;
 }
 
 @media (min-width: 600px) {

@@ -8,7 +8,6 @@ import type { TxStepperProps } from '@/components/new-safe/CardStepper/useCardSt
 import SetNameStep from '@/components/new-safe/create/steps/SetNameStep'
 import OwnerPolicyStep from '@/components/new-safe/create/steps/OwnerPolicyStep'
 import ReviewStep from '@/components/new-safe/create/steps/ReviewStep'
-import { CreateSafeStatus } from '@/components/new-safe/create/steps/StatusStep'
 import { CardStepper } from '@/components/new-safe/CardStepper'
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
@@ -132,19 +131,6 @@ const CreateSafe = () => {
         "You're about to create a new Safe Account and will have to confirm the transaction with your connected wallet.",
       render: (data, onSubmit, onBack, setStep) => (
         <ReviewStep data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
-      ),
-    },
-    {
-      title: '',
-      subtitle: '',
-      render: (data, onSubmit, onBack, setStep, setProgressColor) => (
-        <CreateSafeStatus
-          data={data}
-          onSubmit={onSubmit}
-          onBack={onBack}
-          setStep={setStep}
-          setProgressColor={setProgressColor}
-        />
       ),
     },
   ]

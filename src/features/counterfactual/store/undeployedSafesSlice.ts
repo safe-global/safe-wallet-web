@@ -13,6 +13,8 @@ type UndeployedSafeStatus = {
   txHash?: string
   taskId?: string
   startBlock?: number
+  signerAddress?: string
+  signerNonce?: number | null
 }
 
 export type UndeployedSafe = {

@@ -143,6 +143,15 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
           sizeLarge: { fontSize: '16px' },
         },
       },
+      MuiButtonBase: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            '&.Mui-disabled': {
+              color: theme.palette.text.secondary,
+            },
+          }),
+        },
+      },
       MuiAccordion: {
         variants: [
           {

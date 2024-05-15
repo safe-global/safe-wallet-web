@@ -27,7 +27,7 @@ import {
   TokenType,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { OnboardAPI } from '@web3-onboard/core'
-import type { BrowserProvider, ContractTransactionResponse, Provider } from 'ethers'
+import type { BrowserProvider, ContractTransactionResponse, JsonRpcProvider, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
@@ -72,11 +72,15 @@ export const dispatchTxExecutionAndDeploySafe = async (
     // @ts-ignore TODO: Check why TransactionResponse type doesn't work
     result = await signer.sendTransaction({ ...deploymentTx, gasLimit: gas })
   } catch (error) {
-    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error) })
+    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error), safeAddress: '' })
     throw error
   }
 
-  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
+  safeCreationDispatch(SafeCreationEvent.PROCESSING, {
+    ...eventParams,
+    txHash: result!.hash,
+    safeAddress: '',
+  })
 
   return result!.hash
 }
@@ -204,18 +208,20 @@ async function retryGetTransaction(provider: Provider, txHash: string, maxAttemp
 
 // TODO: Reuse this for safe creation flow instead of checkSafeCreationTx
 export const checkSafeActivation = async (
-  provider: Provider,
+  provider: JsonRpcProvider,
   txHash: string,
   safeAddress: string,
   startBlock?: number,
 ) => {
-  const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
-
   try {
     const txResponse = await retryGetTransaction(provider, txHash)
 
+    console.log(txResponse)
+
     const replaceableTx = startBlock ? txResponse.replaceableTransaction(startBlock) : txResponse
-    const receipt = await replaceableTx?.wait(1, TIMEOUT_TIME)
+    const receipt = await replaceableTx?.wait(1)
+
+    console.log('Replaced tx', receipt)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {
@@ -226,6 +232,7 @@ export const checkSafeActivation = async (
       safeCreationDispatch(SafeCreationEvent.REVERTED, {
         groupKey: CF_TX_GROUP_KEY,
         error: new Error('Transaction reverted'),
+        safeAddress,
       })
     }
 
@@ -247,6 +254,7 @@ export const checkSafeActivation = async (
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: _err,
+      safeAddress,
     })
   }
 }
@@ -278,6 +286,7 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => 
         safeCreationDispatch(SafeCreationEvent.FAILED, {
           groupKey: CF_TX_GROUP_KEY,
           error: new Error('Transaction failed'),
+          safeAddress,
         })
         break
       default:
@@ -293,6 +302,7 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => 
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: new Error('Transaction failed'),
+      safeAddress,
     })
 
     clearInterval(intervalId)

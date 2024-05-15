@@ -13,10 +13,12 @@ export interface SafeCreationEvents {
   [SafeCreationEvent.PROCESSING]: {
     groupKey: string
     txHash: string
+    safeAddress: string
   }
   [SafeCreationEvent.RELAYING]: {
     groupKey: string
     taskId: string
+    safeAddress: string
   }
   [SafeCreationEvent.SUCCESS]: {
     groupKey: string
@@ -28,10 +30,12 @@ export interface SafeCreationEvents {
   }
   [SafeCreationEvent.FAILED]: {
     groupKey: string
+    safeAddress: string
     error: Error
   }
   [SafeCreationEvent.REVERTED]: {
     groupKey: string
+    safeAddress: string
     error: Error
   }
 }
