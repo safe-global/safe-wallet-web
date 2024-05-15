@@ -48,6 +48,7 @@ const WcInput = ({ uri }: { uri: string }) => {
         await walletConnect.connect(val)
       } catch (e) {
         setError(asError(e))
+        setIsLoading(undefined)
       }
     },
     [setIsLoading, walletConnect],
