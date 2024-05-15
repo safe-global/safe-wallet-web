@@ -1,3 +1,4 @@
+/* eslint-disable */
 export const batchData = {
   entry0: {
     11155111: {
