@@ -8,8 +8,6 @@ import * as wallet from '@/hooks/wallets/useWallet'
 import * as walletHooks from '@/utils/wallets'
 import * as pending from '@/hooks/usePendingTxs'
 import * as txSender from '@/services/tx/tx-sender/dispatch'
-import * as onboardHooks from '@/hooks/wallets/useOnboard'
-import { type OnboardAPI } from '@web3-onboard/core'
 import { useAlreadySigned, useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
 
 describe('SignOrExecute hooks', () => {
@@ -17,23 +15,6 @@ describe('SignOrExecute hooks', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    // Onboard
-    jest.spyOn(onboardHooks, 'default').mockReturnValue({
-      setChain: jest.fn(),
-      state: {
-        get: () => ({
-          wallets: [
-            {
-              label: 'MetaMask',
-              accounts: [{ address: '0x1234567890000000000000000000000000000000' }],
-              connected: true,
-              chains: [{ id: '1' }],
-            },
-          ],
-        }),
-      },
-    } as unknown as OnboardAPI)
 
     // Wallet
     jest.spyOn(wallet, 'default').mockReturnValue({

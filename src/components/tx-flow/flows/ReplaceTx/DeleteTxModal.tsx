@@ -1,3 +1,5 @@
+import { createWeb3 } from '@/hooks/wallets/web3'
+import { useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useState } from 'react'
 import {
   Dialog,
@@ -14,7 +16,6 @@ import {
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import madProps from '@/utils/mad-props'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { deleteTx } from '@/utils/gateway'
@@ -32,21 +33,21 @@ type DeleteTxModalProps = {
   safeTxHash: string
   onClose: () => void
   onSuccess: () => void
-  onboard: ReturnType<typeof useOnboard>
   chainId: ReturnType<typeof useChainId>
   safeAddress: ReturnType<typeof useSafeAddress>
 }
 
-const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, chainId }: DeleteTxModalProps) => {
+const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, safeAddress, chainId }: DeleteTxModalProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { walletProvider } = useWeb3ModalProvider()
 
   const onConfirm = async () => {
     setError(undefined)
     setIsLoading(true)
     trackEvent(REJECT_TX_EVENTS.DELETE_CONFIRM)
 
-    if (!onboard || !safeAddress || !chainId || !safeTxHash) {
+    if (!walletProvider || !safeAddress || !chainId || !safeTxHash) {
       setIsLoading(false)
       setError(new Error('Please connect your wallet first'))
       trackEvent(REJECT_TX_EVENTS.DELETE_FAIL)
@@ -54,7 +55,8 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, 
     }
 
     try {
-      const signer = await getAssertedChainSigner(onboard, chainId)
+      const browserProvider = createWeb3(walletProvider)
+      const signer = await getAssertedChainSigner(browserProvider)
 
       await deleteTx({
         safeTxHash,
@@ -145,7 +147,6 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, onboard, safeAddress, 
 }
 
 const DeleteTxModal = madProps(_DeleteTxModal, {
-  onboard: useOnboard,
   chainId: useChainId,
   safeAddress: useSafeAddress,
 })

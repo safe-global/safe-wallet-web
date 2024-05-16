@@ -4,7 +4,6 @@ import { Tooltip } from '@mui/material'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
-import useConnectWallet from '../ConnectWallet/useConnectWallet'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement

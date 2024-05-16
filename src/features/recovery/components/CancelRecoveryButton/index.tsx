@@ -11,8 +11,6 @@ import { TxModalContext } from '@/components/tx-flow'
 import { CancelRecoveryFlow } from '@/components/tx-flow/flows'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { dispatchRecoverySkipExpired } from '@/features/recovery/services/recovery-sender'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { trackError, Errors } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
 import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
@@ -36,6 +34,8 @@ export function CancelRecoveryButton({
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
     e.preventDefault()
+
+    if (!walletProvider || !wallet) return
 
     trackEvent(RECOVERY_EVENTS.CANCEL_RECOVERY)
     if (isOwner) {

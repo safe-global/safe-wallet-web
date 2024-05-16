@@ -147,6 +147,7 @@ export const SpeedUpModal = ({
     gasLimit,
     handleClose,
     walletProvider,
+    switchNetwork,
     pendingTx,
     safeAddress,
     signerNonce,

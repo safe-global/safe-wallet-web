@@ -11,7 +11,6 @@ import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useAsyncHook from '@/hooks/useAsync'
 import * as useChainsHook from '@/hooks/useChains'
 import * as sender from '@/services/safe-messages/safeMsgSender'
-import * as onboard from '@/hooks/wallets/useOnboard'
 import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { EIP1193Provider, WalletState, AppState, OnboardAPI } from '@web3-onboard/core'
@@ -219,7 +218,6 @@ describe('SignMessage', () => {
 
   it('proposes a message if not already proposed', async () => {
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
 
     jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
 
@@ -273,7 +271,6 @@ describe('SignMessage', () => {
   })
 
   it('confirms the message if already proposed', async () => {
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useWalletHook, 'default').mockImplementation(
       () =>
@@ -390,7 +387,6 @@ describe('SignMessage', () => {
   })
 
   it('displays an error if connected to the wrong chain', () => {
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => true)
     jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue(chainBuilder().build())
@@ -411,7 +407,6 @@ describe('SignMessage', () => {
   })
 
   it('displays an error if not an owner', () => {
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useWalletHook, 'default').mockImplementation(
       () =>
         ({
@@ -438,7 +433,6 @@ describe('SignMessage', () => {
   })
 
   it('displays a success message if the message has already been signed', async () => {
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useWalletHook, 'default').mockImplementation(
       () =>
@@ -497,7 +491,6 @@ describe('SignMessage', () => {
   })
 
   it('displays an error if the message could not be proposed', async () => {
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useWalletHook, 'default').mockImplementation(
       () =>
         ({
@@ -551,7 +544,6 @@ describe('SignMessage', () => {
   })
 
   it('displays an error if the message could not be confirmed', async () => {
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
 
     const msgs: {

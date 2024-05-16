@@ -1,5 +1,4 @@
 import { Button } from '@mui/material'
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import { useWeb3Modal } from '@web3modal/scaffold-react'
 
 const ConnectWalletButton = ({

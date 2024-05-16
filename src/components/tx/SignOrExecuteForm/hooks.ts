@@ -131,7 +131,7 @@ export const useTxActions = (): TxActions => {
     }
 
     return { addToBatch, signTx, executeTx }
-  }, [safe, wallet, addTxToBatch, walletProvider])
+  }, [safe, wallet, addTxToBatch, walletProvider, switchNetwork])
 }
 
 export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {

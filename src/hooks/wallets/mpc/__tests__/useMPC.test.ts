@@ -6,7 +6,7 @@ import { type ChainInfo, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-ty
 import { toBeHex } from 'ethers'
 import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
 import { type Web3AuthMPCCoreKit, COREKIT_STATUS } from '@web3auth/mpc-core-kit'
-import { type EIP1193Provider, type OnboardAPI } from '@web3-onboard/core'
+import { type EIP1193Provider } from '@web3-onboard/core'
 
 jest.mock('@web3auth/mpc-core-kit', () => ({
   ...jest.requireActual('@web3auth/mpc-core-kit'),
@@ -63,15 +63,6 @@ class EventEmittingMockProvider {
 }
 
 describe('initMPC', () => {
-  const mockOnboard = {
-    state: {
-      get: () => ({
-        wallets: [],
-        walletModules: [],
-      }),
-    },
-  } as unknown as OnboardAPI
-
   const mockChain = {
     chainId: '5',
     chainName: 'Goerli',
@@ -106,7 +97,7 @@ describe('initMPC', () => {
       return new MockMPCCoreKit(COREKIT_STATUS.INITIALIZED, null)
     })
 
-    await initMPC(mockChain, mockOnboard)
+    await initMPC(mockChain)
 
     await waitFor(() => {
       expect(_getMPCCoreKitInstance()).toBeDefined()
@@ -125,7 +116,7 @@ describe('initMPC', () => {
       return new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, mockProvider as unknown as MPCProvider)
     })
 
-    await initMPC(mockChain, mockOnboard)
+    await initMPC(mockChain)
 
     await waitFor(() => {
       expect(connectWalletSpy).toBeCalled()
@@ -161,7 +152,7 @@ describe('initMPC', () => {
       return new MockMPCCoreKit(COREKIT_STATUS.LOGGED_IN, mockProvider as unknown as MPCProvider)
     })
 
-    await initMPC(mockChain, mockOnboard)
+    await initMPC(mockChain)
 
     await waitFor(() => {
       expect(mockChainChangedListener).toHaveBeenCalledWith('0x5')

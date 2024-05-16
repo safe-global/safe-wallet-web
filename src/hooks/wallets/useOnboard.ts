@@ -1,12 +1,10 @@
 import { WEB3MODAL_PROJECT_ID } from '@/config/constants'
 import { type WalletState, type OnboardAPI } from '@web3-onboard/core'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Eip1193Provider } from 'ethers'
 import { getAddress } from 'ethers'
 import ExternalStore from '@/services/ExternalStore'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
-import { type EnvState } from '@/store/settingsSlice'
 import { formatAmount } from '@/utils/formatNumber'
 import { isWalletConnect } from '@/utils/wallets'
 
@@ -102,7 +100,7 @@ export const connectWallet = async (
   let wallets: WalletState[] | undefined
 
   try {
-    wallets = await onboard.connectWallet(options)
+    await onboard.connectWallet()
   } catch (e) {
     logError(Errors._302, e)
     isConnecting = false

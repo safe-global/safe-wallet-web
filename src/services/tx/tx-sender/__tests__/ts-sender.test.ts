@@ -33,7 +33,7 @@ const setupFetchStub = (data: any) => (_url: string) => {
     ok: true,
   })
 }
-import type { OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
+import type { WalletState, AppState } from '@web3-onboard/core'
 import { toBeHex } from 'ethers'
 import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 import { createMockSafeTransaction } from '@/tests/transactions'
@@ -67,7 +67,7 @@ jest.mock('../../proposeTransaction', () => ({
   default: jest.fn(() => Promise.resolve({ txId: '123' })),
 }))
 
-const mockOnboardState = {
+const MockEip1193ProviderState = {
   chains: [],
   walletModules: [],
   wallets: [
@@ -89,24 +89,6 @@ const mockOnboardState = {
     enabled: true,
   },
 } as unknown as AppState
-
-const mockOnboard = {
-  connectWallet: jest.fn(),
-  disconnectWallet: jest.fn(),
-  setChain: jest.fn(),
-  state: {
-    select: (key: keyof AppState) => ({
-      subscribe: (next: any) => {
-        next(mockOnboardState[key])
-
-        return {
-          unsubscribe: jest.fn(),
-        }
-      },
-    }),
-    get: () => mockOnboardState,
-  },
-} as unknown as OnboardAPI
 
 // Mock Safe SDK
 const mockSafeSDK = {
@@ -323,7 +305,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', MockEip1193Provider, '5')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalled()
 
@@ -344,7 +326,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.0.0', mockOnboard, '5', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.0.0', MockEip1193Provider, '5')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -365,7 +347,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, null, mockOnboard, '5', '0x345')
+      const signedTx = await dispatchTxSigning(tx, null, MockEip1193Provider, '5')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -388,7 +370,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      const signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
+      const signedTx = await dispatchTxSigning(tx, '1.3.0', MockEip1193Provider, '5')
 
       expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -414,7 +396,7 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
+        signedTx = await dispatchTxSigning(tx, '1.3.0', MockEip1193Provider, '5')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -448,7 +430,7 @@ describe('txSender', () => {
       let signedTx
 
       try {
-        signedTx = await dispatchTxSigning(tx, '1.3.0', mockOnboard, '5', '0x345')
+        signedTx = await dispatchTxSigning(tx, '1.3.0', MockEip1193Provider, '5')
       } catch (error) {
         expect(mockSafeSDK.createTransaction).toHaveBeenCalledTimes(1)
 
@@ -484,7 +466,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, mockOnboard, '5', safeAddress)
+      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, '5', safeAddress)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -512,7 +494,9 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(safeTx, {}, txId, mockOnboard, '5', safeAddress)).rejects.toThrow('error')
+      await expect(dispatchTxExecution(safeTx, {}, txId, MockEip1193Provider, '5', safeAddress)).rejects.toThrow(
+        'error',
+      )
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error') })
@@ -531,7 +515,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, mockOnboard, '5', '0x123')
+      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, '5', '0x123')
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })

@@ -1,7 +1,6 @@
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { proposeSafeMessage, confirmSafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo, SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import type { OnboardAPI } from '@web3-onboard/core'
 import type { Eip1193Provider } from 'ethers'
 
 import { safeMsgDispatch, SafeMsgEvent } from './safeMsgEvents'

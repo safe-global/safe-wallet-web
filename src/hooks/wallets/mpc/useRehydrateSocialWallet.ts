@@ -49,6 +49,8 @@ const useRehydrateSocialWallet = () => {
       const socialWalletService = await initSocialWallet(mpcCoreKit)
 
       const onConnect = async () => {
+        if (!onboard) return
+
         const wallets = await connectWallet(onboard, {
           autoSelect: {
             label: ONBOARD_MPC_MODULE_LABEL,

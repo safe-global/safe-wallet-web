@@ -2,7 +2,7 @@
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { OnboardAPI } from '@web3-onboard/core'
-import { Eip1193Provider } from 'ethers'
+import type { Eip1193Provider } from 'ethers'
 
 export function invariant<T extends unknown>(condition: T, error: string): asserts condition {
   if (condition) {
