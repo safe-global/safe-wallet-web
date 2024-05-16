@@ -99,7 +99,7 @@ const fetchSafeAppFromManifest = async (
   const iconUrl = getAppLogoUrl(normalizedAppUrl, appManifest)
 
   return {
-    id: Math.round(Math.random() * Math.pow(10, 18)),
+    id: Math.round(1e9 + Math.random() * 1e18),
     url: normalizedAppUrl,
     name: appManifest.name,
     description: appManifest.description,
