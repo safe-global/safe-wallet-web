@@ -5,6 +5,7 @@ import { selectSwapParams } from '@/features/swap/store/swapParamsSlice'
 import { useAppSelector } from '@/store'
 import { Box, Typography } from '@mui/material'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
+import { ErrorBoundary } from '@sentry/react'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message'
@@ -36,7 +37,9 @@ const SignMessageFlow = ({ ...props }: ProposeProps | ConfirmProps) => {
       hideNonce
       isMessage
     >
-      <SignMessage {...props} />
+      <ErrorBoundary fallback={<div>Error signing message</div>}>
+        <SignMessage {...props} />
+      </ErrorBoundary>
     </TxLayout>
   )
 }
