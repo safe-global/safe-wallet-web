@@ -62,9 +62,7 @@ export function UpsertRecoveryFlowReview({
   const isCustomDelay = !Number(delay)
 
   const expiryLabel = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.label
-  const delayLabel = isCustomDelay
-    ? `${Number(params[UpsertRecoveryFlowFields.customDelay])} days`
-    : periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.delay])?.label
+  const delayLabel = isCustomDelay ? `${customDelay} days` : periods.delay.find(({ value }) => value === delay)?.label
 
   const recoverySettings = {
     recoverer,

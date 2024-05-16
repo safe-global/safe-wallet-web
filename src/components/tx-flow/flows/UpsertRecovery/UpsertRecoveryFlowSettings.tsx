@@ -22,7 +22,7 @@ import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
-import { useRecoveryPeriods } from './useRecoveryPeriods'
+import { DAY_IN_SECONDS, useRecoveryPeriods } from './useRecoveryPeriods'
 import { UpsertRecoveryFlowFields, type UpsertRecoveryFlowProps } from '.'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { sameAddress } from '@/utils/addresses'
@@ -59,9 +59,13 @@ export function UpsertRecoveryFlowSettings({
   })
 
   const recoverer = formMethods.watch(UpsertRecoveryFlowFields.recoverer)
-  const delay = formMethods.watch(UpsertRecoveryFlowFields.delay)
   const expiry = formMethods.watch(UpsertRecoveryFlowFields.expiry)
+  const selectedDelay = formMethods.watch(UpsertRecoveryFlowFields.selectedDelay)
+  const customDelay = formMethods.watch(UpsertRecoveryFlowFields.customDelay)
   const customDelayState = formMethods.getFieldState(UpsertRecoveryFlowFields.customDelay)
+
+  const isCustomDelay = !Number(selectedDelay)
+  const delay = isCustomDelay ? customDelay : selectedDelay
 
   // RHF's dirty check is tempermental with our address input dropdown
   const isDirty = delayModifier
@@ -77,10 +81,11 @@ export function UpsertRecoveryFlowSettings({
       return 'The Safe Account cannot be a Recoverer of itself'
     }
   }
+
   const validateCustomDelay = (delay: string) => {
     if (!delay) return ''
     if (delay === '0' || !Number.isInteger(Number(delay))) {
-      return 'Invalid number of days'
+      return 'Invalid number'
     }
   }
 
@@ -91,10 +96,24 @@ export function UpsertRecoveryFlowSettings({
 
   const isDisabled = !understandsRisk || !isDirty || !!customDelayState.error
 
+  const handleSubmit = (formData: UpsertRecoveryFlowProps) => {
+    const { expiry, delay, customDelay, selectedDelay, recoverer } = formData
+
+    // const combinedDelay = Number(delay) ? delay : `${Number(customDelay) * DAY_IN_SECONDS}`
+    // onSubmit({ expiry, delay: combinedDelay, customDelay, recoverer })
+    onSubmit({
+      expiry,
+      delay: !Number(selectedDelay) ? `${Number(customDelay) * DAY_IN_SECONDS}` : selectedDelay,
+      customDelay,
+      selectedDelay,
+      recoverer,
+    })
+  }
+
   return (
     <>
       <FormProvider {...formMethods}>
-        <form onSubmit={formMethods.handleSubmit(onSubmit)} className={commonCss.form}>
+        <form onSubmit={formMethods.handleSubmit(handleSubmit)} className={commonCss.form}>
           <TxCard>
             <Alert severity="warning" sx={{ border: 'unset' }}>
               Your Recoverer will be able to reset your Account setup. Only select an address that you trust.{' '}
@@ -147,7 +166,7 @@ export function UpsertRecoveryFlowSettings({
             <Box display="flex" flex="1" gap={2}>
               <Controller
                 control={formMethods.control}
-                name={UpsertRecoveryFlowFields.delay}
+                name={UpsertRecoveryFlowFields.selectedDelay}
                 render={({ field: { ref, ...field } }) => (
                   <TextField
                     data-testid="recovery-delay-select"
@@ -166,7 +185,7 @@ export function UpsertRecoveryFlowSettings({
                 )}
               />
               <Box display="flex" flex="1" gap={2} sx={{ maxWidth: '180px', minWidth: '140px' }}>
-                {!Number(delay) && (
+                {isCustomDelay && (
                   <>
                     <Controller
                       control={formMethods.control}

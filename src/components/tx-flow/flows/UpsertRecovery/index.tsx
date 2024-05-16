@@ -16,6 +16,7 @@ export enum UpsertRecoveryFlowFields {
   recoverer = 'recoverer',
   delay = 'delay',
   customDelay = 'customDelay',
+  selectedDelay = 'selectedDelay',
   expiry = 'expiry',
 }
 
@@ -23,6 +24,7 @@ export type UpsertRecoveryFlowProps = {
   [UpsertRecoveryFlowFields.recoverer]: string
   [UpsertRecoveryFlowFields.delay]: string
   [UpsertRecoveryFlowFields.customDelay]: string
+  [UpsertRecoveryFlowFields.selectedDelay]: string
   [UpsertRecoveryFlowFields.expiry]: string
 }
 
@@ -31,6 +33,7 @@ function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[n
     {
       [UpsertRecoveryFlowFields.recoverer]: delayModifier?.recoverers?.[0] ?? '',
       [UpsertRecoveryFlowFields.delay]: delayModifier?.delay?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
+      [UpsertRecoveryFlowFields.selectedDelay]: delayModifier?.delay?.toString() ?? `${DAY_IN_SECONDS * 28}`,
       [UpsertRecoveryFlowFields.customDelay]: '',
       [UpsertRecoveryFlowFields.expiry]: delayModifier?.expiry?.toString() ?? '0',
     },
