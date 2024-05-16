@@ -37,7 +37,7 @@ const getAddressType = async (address: string, chainId: string) => {
   return AddressType.Other
 }
 
-const onSubmit = async (isEdit: boolean, params: UpsertRecoveryFlowProps, chainId: string) => {
+const onSubmit = async (isEdit: boolean, params: Omit<UpsertRecoveryFlowProps, 'customDelay'>, chainId: string) => {
   const addressType = await getAddressType(params.recoverer, chainId)
   const creationEvent = isEdit ? RECOVERY_EVENTS.SUBMIT_RECOVERY_EDIT : RECOVERY_EVENTS.SUBMIT_RECOVERY_CREATE
   const settings = `delay_${params.delay},expiry_${params.expiry},type_${addressType}`
@@ -56,13 +56,21 @@ export function UpsertRecoveryFlowReview({
   const web3ReadOnly = useWeb3ReadOnly()
   const { safe, safeAddress } = useSafeInfo()
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
-
   const periods = useRecoveryPeriods()
-  const recoverer = params[UpsertRecoveryFlowFields.recoverer]
-  const delay =
-    periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.delay])?.label ||
-    `${Number(params[UpsertRecoveryFlowFields.delay]) / DAY_IN_SECONDS} days`
-  const expiry = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])?.label
+
+  const { recoverer, expiry, delay, customDelay } = params
+  const isCustomDelay = !Number(delay)
+
+  const expiryLabel = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.label
+  const delayLabel = isCustomDelay
+    ? `${Number(params[UpsertRecoveryFlowFields.customDelay])} days`
+    : periods.delay.find(({ value }) => value === params[UpsertRecoveryFlowFields.delay])?.label
+
+  const recoverySettings = {
+    recoverer,
+    expiry,
+    delay: isCustomDelay ? `${Number(customDelay) * DAY_IN_SECONDS}` : delay,
+  }
 
   useEffect(() => {
     if (!web3ReadOnly) {
@@ -92,7 +100,7 @@ export function UpsertRecoveryFlowReview({
   const isEdit = !!moduleAddress
 
   return (
-    <SignOrExecuteForm onSubmit={() => onSubmit(isEdit, params, safe.chainId)}>
+    <SignOrExecuteForm onSubmit={() => onSubmit(isEdit, recoverySettings, safe.chainId)}>
       <Typography>
         This transaction will {moduleAddress ? 'update' : 'enable'} the Account recovery feature once executed.
       </Typography>
@@ -119,10 +127,10 @@ export function UpsertRecoveryFlowReview({
           </>
         }
       >
-        {delay}
+        {delayLabel}
       </TxDataRow>
 
-      {expiry !== '0' && (
+      {expiryLabel !== '0' && (
         <TxDataRow
           title={
             <>
@@ -141,7 +149,7 @@ export function UpsertRecoveryFlowReview({
             </>
           }
         >
-          {expiry}
+          {expiryLabel}
         </TxDataRow>
       )}
     </SignOrExecuteForm>

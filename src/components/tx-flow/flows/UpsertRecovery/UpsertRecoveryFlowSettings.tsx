@@ -23,8 +23,8 @@ import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
-import { DAY_IN_SECONDS, useRecoveryPeriods } from './useRecoveryPeriods'
-import type { UpsertRecoveryFlowProps } from '.'
+import { useRecoveryPeriods } from './useRecoveryPeriods'
+import { UpsertRecoveryFlowFields, type UpsertRecoveryFlowProps } from '.'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -40,42 +40,29 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 import NumberField from '@/components/common/NumberField'
 
-enum UpsertRecoveryFlowSettingsFields {
-  recoverer = 'recoverer',
-  delay = 'delay',
-  customDelay = 'customDelay',
-  expiry = 'expiry',
-}
-
-type UpsertRecoveryFlowSettingsProps = {
-  [UpsertRecoveryFlowSettingsFields.recoverer]: string
-  [UpsertRecoveryFlowSettingsFields.delay]: string
-  [UpsertRecoveryFlowSettingsFields.customDelay]: string
-  [UpsertRecoveryFlowSettingsFields.expiry]: string
-}
 export function UpsertRecoveryFlowSettings({
   params,
   delayModifier,
   onSubmit,
 }: {
-  params: UpsertRecoveryFlowSettingsProps
+  params: UpsertRecoveryFlowProps
   delayModifier?: RecoveryStateItem
   onSubmit: (formData: UpsertRecoveryFlowProps) => void
 }): ReactElement {
   const { safeAddress } = useSafeInfo()
-  const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowSettingsFields.expiry] !== '0')
+  const [showAdvanced, setShowAdvanced] = useState(params[UpsertRecoveryFlowFields.expiry] !== '0')
   const [understandsRisk, setUnderstandsRisk] = useState(false)
   const periods = useRecoveryPeriods()
 
-  const formMethods = useForm<UpsertRecoveryFlowSettingsProps>({
+  const formMethods = useForm<UpsertRecoveryFlowProps>({
     defaultValues: params,
     mode: 'onChange',
   })
 
-  const recoverer = formMethods.watch(UpsertRecoveryFlowSettingsFields.recoverer)
-  const delay = formMethods.watch(UpsertRecoveryFlowSettingsFields.delay)
-  // const customDelay = formMethods.watch(UpsertRecoveryFlowSettingsFields.customDelay)
-  const expiry = formMethods.watch(UpsertRecoveryFlowSettingsFields.expiry)
+  const recoverer = formMethods.watch(UpsertRecoveryFlowFields.recoverer)
+  const delay = formMethods.watch(UpsertRecoveryFlowFields.delay)
+  const expiry = formMethods.watch(UpsertRecoveryFlowFields.expiry)
+  const customDelayState = formMethods.getFieldState(UpsertRecoveryFlowFields.customDelay)
 
   // RHF's dirty check is tempermental with our address input dropdown
   const isDirty = delayModifier
@@ -91,27 +78,24 @@ export function UpsertRecoveryFlowSettings({
       return 'The Safe Account cannot be a Recoverer of itself'
     }
   }
+  const validateCustomDelay = (delay: string) => {
+    if (!delay) return ''
+    if (delay === '0' || !Number.isInteger(Number(delay))) {
+      return 'Invalid number of days'
+    }
+  }
 
   const onShowAdvanced = () => {
     setShowAdvanced((prev) => !prev)
     trackEvent(RECOVERY_EVENTS.SHOW_ADVANCED)
   }
 
-  const isDisabled = !understandsRisk || !isDirty
-
-  const handleSubmit = (values: UpsertRecoveryFlowSettingsProps) => {
-    const { recoverer, delay, customDelay, expiry } = values
-    const combinedDelay = Number(delay) > 0 ? delay : `${Number(customDelay) * DAY_IN_SECONDS}`
-    const toSubmit = { delay: combinedDelay, recoverer, expiry }
-    console.log()
-    // onSubmit({ delay: combinedDelay, recoverer, expiry })
-    onSubmit(toSubmit)
-  }
+  const isDisabled = !understandsRisk || !isDirty || !!customDelayState.error
 
   return (
     <>
       <FormProvider {...formMethods}>
-        <form onSubmit={formMethods.handleSubmit(handleSubmit)} className={commonCss.form}>
+        <form onSubmit={formMethods.handleSubmit(onSubmit)} className={commonCss.form}>
           <TxCard>
             <Alert severity="warning" sx={{ border: 'unset' }}>
               Your Recoverer will be able to reset your Account setup. Only select an address that you trust.{' '}
@@ -134,7 +118,7 @@ export function UpsertRecoveryFlowSettings({
             <div>
               <AddressBookInput
                 label="Recoverer address or ENS"
-                name={UpsertRecoveryFlowSettingsFields.recoverer}
+                name={UpsertRecoveryFlowFields.recoverer}
                 required
                 fullWidth
                 validate={validateRecoverer}
@@ -164,14 +148,13 @@ export function UpsertRecoveryFlowSettings({
             <Box display="flex" gap={2}>
               <Controller
                 control={formMethods.control}
-                name={UpsertRecoveryFlowSettingsFields.delay}
+                name={UpsertRecoveryFlowFields.delay}
                 // styles={{ width: '50% !important' }}
                 render={({ field: { ref, ...field } }) => (
                   <SelectField
                     data-testid="recovery-delay-select"
                     // label="Recovery delay"
-                    // fullWidth
-
+                    fullWidth
                     inputRef={ref}
                     {...field}
                   >
@@ -187,8 +170,19 @@ export function UpsertRecoveryFlowSettings({
                 <Box display="flex" gap={2}>
                   <Controller
                     control={formMethods.control}
-                    name={UpsertRecoveryFlowSettingsFields.customDelay}
-                    render={({ field: { ref, ...field } }) => <NumberField inputRef={ref} {...field} required />}
+                    name={UpsertRecoveryFlowFields.customDelay}
+                    rules={{ validate: validateCustomDelay }}
+                    render={({ field: { ref, ...field }, fieldState }) => (
+                      <NumberField
+                        label={fieldState.error?.message}
+                        error={!!fieldState.error}
+                        inputRef={ref}
+                        {...field}
+                        required
+                        placeholder="E.g. 100"
+                        fullWidth
+                      />
+                    )}
                   />
                   <Typography align="center" m="auto">
                     days.
@@ -223,7 +217,7 @@ export function UpsertRecoveryFlowSettings({
 
               <Controller
                 control={formMethods.control}
-                name={UpsertRecoveryFlowSettingsFields.expiry}
+                name={UpsertRecoveryFlowFields.expiry}
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field: { ref, ...field } }) => (
@@ -264,22 +258,23 @@ export function UpsertRecoveryFlowSettings({
 function SelectField(props: TextFieldProps) {
   return (
     <TextField
+      fullWidth
       {...props}
       select
-      // sx={{
-      //   '& .MuiSelect-select': {
-      //     textAlign: 'right',
-      //     fontWeight: 700,
-      //     fontSize: '14px',
-      //   },
-      // }}
-      // InputLabelProps={{
-      //   shrink: false,
-      //   sx: {
-      //     color: 'text.primary',
-      //     fontSize: '14px',
-      //   },
-      // }}
+      sx={{
+        '& .MuiSelect-select': {
+          textAlign: 'right',
+          fontWeight: 700,
+          fontSize: '14px',
+        },
+      }}
+      InputLabelProps={{
+        shrink: false,
+        sx: {
+          color: 'text.primary',
+          fontSize: '14px',
+        },
+      }}
     />
   )
 }

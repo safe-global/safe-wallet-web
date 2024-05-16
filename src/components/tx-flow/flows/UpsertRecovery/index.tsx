@@ -15,12 +15,14 @@ const Subtitles = ['How does recovery work?', 'Set up recovery settings', 'Set u
 export enum UpsertRecoveryFlowFields {
   recoverer = 'recoverer',
   delay = 'delay',
+  customDelay = 'customDelay',
   expiry = 'expiry',
 }
 
 export type UpsertRecoveryFlowProps = {
   [UpsertRecoveryFlowFields.recoverer]: string
   [UpsertRecoveryFlowFields.delay]: string
+  [UpsertRecoveryFlowFields.customDelay]: string
   [UpsertRecoveryFlowFields.expiry]: string
 }
 
@@ -29,6 +31,7 @@ function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[n
     {
       [UpsertRecoveryFlowFields.recoverer]: delayModifier?.recoverers?.[0] ?? '',
       [UpsertRecoveryFlowFields.delay]: delayModifier?.delay?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
+      [UpsertRecoveryFlowFields.customDelay]: '',
       [UpsertRecoveryFlowFields.expiry]: delayModifier?.expiry?.toString() ?? '0',
     },
     SETUP_RECOVERY_CATEGORY,
