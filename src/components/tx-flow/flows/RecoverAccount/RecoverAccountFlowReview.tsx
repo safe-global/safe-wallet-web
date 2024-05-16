@@ -1,6 +1,7 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { CardActions, Button, Typography, Divider, Box, CircularProgress } from '@mui/material'
+import { useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 
@@ -22,7 +23,6 @@ import { RecoverAccountFlowFields } from '.'
 import { OwnerList } from '../../common/OwnerList'
 import { selectDelayModifierByRecoverer } from '@/features/recovery/services/selectors'
 import useWallet from '@/hooks/wallets/useWallet'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '../..'
 import { asError } from '@/services/exceptions/utils'
 import { trackError, Errors } from '@/services/exceptions'
@@ -47,7 +47,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
   const { safe } = useSafeInfo()
   const wallet = useWallet()
-  const onboard = useOnboard()
+  const { walletProvider } = useWeb3ModalProvider()
   const [data] = useRecovery()
   const recovery = data && selectDelayModifierByRecoverer(data, wallet?.address ?? '')
   const [, executionValidationError] = useIsValidRecoveryExecTransactionFromModule(recovery?.address, safeTx)
@@ -70,7 +70,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
   // On modal submit
   const onSubmit = async () => {
-    if (!recovery || !onboard || !safeTx) {
+    if (!recovery || !walletProvider || !wallet || !safeTx) {
       return
     }
 
@@ -80,8 +80,8 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
     try {
       await dispatchRecoveryProposal({
-        onboard,
-        safe,
+        provider: walletProvider,
+        wallet,
         safeTx,
         delayModifierAddress: recovery.address,
       })

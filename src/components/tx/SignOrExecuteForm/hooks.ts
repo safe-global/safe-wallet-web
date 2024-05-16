@@ -1,10 +1,10 @@
-import { assertTx, assertWallet, assertOnboard } from '@/utils/helpers'
+import { assertTx, assertWallet, assertProvider } from '@/utils/helpers'
+import { useSwitchNetwork, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { isSmartContractWallet } from '@/utils/wallets'
 import {
   dispatchOnChainSigning,
@@ -33,7 +33,8 @@ type TxActions = {
 
 export const useTxActions = (): TxActions => {
   const { safe } = useSafeInfo()
-  const onboard = useOnboard()
+  const { walletProvider } = useWeb3ModalProvider()
+  const { switchNetwork } = useSwitchNetwork()
   const wallet = useWallet()
   const [addTxToBatch] = useUpdateBatch()
 
@@ -64,19 +65,19 @@ export const useTxActions = (): TxActions => {
     const signRelayedTx = async (safeTx: SafeTransaction, txId?: string): Promise<SafeTransaction> => {
       assertTx(safeTx)
       assertWallet(wallet)
-      assertOnboard(onboard)
+      assertProvider(walletProvider)
 
       // Smart contracts cannot sign transactions off-chain
       if (await isSmartContractWallet(wallet.chainId, wallet.address)) {
         throw new Error('Cannot relay an unsigned transaction from a smart contract wallet')
       }
-      return await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
+      return await dispatchTxSigning(safeTx, version, walletProvider, txId)
     }
 
     const signTx: TxActions['signTx'] = async (safeTx, txId, origin) => {
       assertTx(safeTx)
       assertWallet(wallet)
-      assertOnboard(onboard)
+      assertProvider(walletProvider)
 
       // Smart contract wallets must sign via an on-chain tx
       if (await isSmartContractWallet(wallet.chainId, wallet.address)) {
@@ -84,12 +85,12 @@ export const useTxActions = (): TxActions => {
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed
         const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin)).txId
-        await dispatchOnChainSigning(safeTx, id, onboard, chainId)
+        await dispatchOnChainSigning(safeTx, id, walletProvider, chainId)
         return id
       }
 
       // Otherwise, sign off-chain
-      const signedTx = await dispatchTxSigning(safeTx, version, onboard, chainId, txId)
+      const signedTx = await dispatchTxSigning(safeTx, version, walletProvider, txId)
       const tx = await proposeTx(wallet.address, signedTx, txId, origin)
       return tx.txId
     }
@@ -97,7 +98,7 @@ export const useTxActions = (): TxActions => {
     const executeTx: TxActions['executeTx'] = async (txOptions, safeTx, txId, origin, isRelayed) => {
       assertTx(safeTx)
       assertWallet(wallet)
-      assertOnboard(onboard)
+      assertProvider(walletProvider)
 
       let tx: TransactionDetails | undefined
       // Relayed transactions must be fully signed, so request a final signature if needed
@@ -122,14 +123,15 @@ export const useTxActions = (): TxActions => {
       if (isRelayed) {
         await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit)
       } else {
-        await dispatchTxExecution(safeTx, txOptions, txId, onboard, chainId, safeAddress)
+        await switchNetwork(Number(chainId))
+        await dispatchTxExecution(safeTx, txOptions, txId, walletProvider, wallet.address, safeAddress)
       }
 
       return txId
     }
 
     return { addToBatch, signTx, executeTx }
-  }, [safe, wallet, addTxToBatch, onboard])
+  }, [safe, wallet, addTxToBatch, walletProvider])
 }
 
 export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {

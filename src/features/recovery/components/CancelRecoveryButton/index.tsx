@@ -1,6 +1,8 @@
+import useWallet from '@/hooks/wallets/useWallet'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { Button } from '@mui/material'
+import { useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
@@ -28,8 +30,8 @@ export function CancelRecoveryButton({
   const isOwner = useIsSafeOwner()
   const { isExpired, isPending } = useRecoveryTxState(recovery)
   const { setTxFlow } = useContext(TxModalContext)
-  const onboard = useOnboard()
-  const { safe } = useSafeInfo()
+  const { walletProvider } = useWeb3ModalProvider()
+  const wallet = useWallet()
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -38,11 +40,11 @@ export function CancelRecoveryButton({
     trackEvent(RECOVERY_EVENTS.CANCEL_RECOVERY)
     if (isOwner) {
       setTxFlow(<CancelRecoveryFlow recovery={recovery} />)
-    } else if (onboard) {
+    } else {
       try {
         await dispatchRecoverySkipExpired({
-          onboard,
-          chainId: safe.chainId,
+          provider: walletProvider,
+          wallet,
           delayModifierAddress: recovery.address,
           recoveryTxHash: recovery.args.txHash,
         })

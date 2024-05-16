@@ -1,11 +1,11 @@
+import useWallet from '@/hooks/wallets/useWallet'
 import { Button, Tooltip } from '@mui/material'
+import { useWeb3ModalProvider } from '@web3modal/ethers/dist/types/exports/react'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
 import CheckWallet from '@/components/common/CheckWallet'
 import { dispatchRecoveryExecution } from '@/features/recovery/services/recovery-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
 import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
@@ -21,21 +21,21 @@ export function ExecuteRecoveryButton({
 }): ReactElement {
   const { setSubmitError } = useContext(RecoveryListItemContext)
   const { isExecutable, isNext, isPending } = useRecoveryTxState(recovery)
-  const onboard = useOnboard()
-  const { safe } = useSafeInfo()
+  const { walletProvider } = useWeb3ModalProvider()
+  const wallet = useWallet()
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
     e.preventDefault()
 
-    if (!onboard) {
+    if (!walletProvider || !wallet) {
       return
     }
 
     try {
       await dispatchRecoveryExecution({
-        onboard,
-        chainId: safe.chainId,
+        provider: walletProvider,
+        wallet,
         args: recovery.args,
         delayModifierAddress: recovery.address,
       })

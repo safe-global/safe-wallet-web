@@ -1,3 +1,4 @@
+import { useWeb3ModalProvider } from '@web3modal/ethers/react'
 import type { ReactElement } from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { useMemo } from 'react'
@@ -19,7 +20,6 @@ import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import { getDecodedMessage } from '@/components/safe-apps/utils'
 import { createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { type SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
@@ -40,7 +40,7 @@ export type SignMessageOnChainProps = {
 const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnChainProps): ReactElement => {
   const chainId = useChainId()
   const { safe } = useSafeInfo()
-  const onboard = useOnboard()
+  const { walletProvider } = useWeb3ModalProvider()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   useHighlightHiddenTab()
 
@@ -108,10 +108,10 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   ])
 
   const handleSubmit = async () => {
-    if (!safeTx || !onboard) return
+    if (!safeTx || !walletProvider) return
 
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
+      await dispatchSafeAppsTx(safeTx, requestId, walletProvider)
     } catch (error) {
       setSafeTxError(asError(error))
     }

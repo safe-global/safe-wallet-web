@@ -17,7 +17,7 @@ import { IS_PRODUCTION, GATEWAY_URL_STAGING, GATEWAY_URL_PRODUCTION } from '@/co
 import { makeStore, useHydrateStore } from '@/store'
 import PageLayout from '@/components/common/PageLayout'
 import useLoadableStores from '@/hooks/useLoadableStores'
-import { useInitOnboard } from '@/hooks/wallets/useOnboard'
+import { Web3Modal } from '@/hooks/wallets/useOnboard'
 import { useInitWeb3 } from '@/hooks/wallets/useInitWeb3'
 import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
 import useTxNotifications from '@/hooks/useTxNotifications'
@@ -57,7 +57,6 @@ const InitApp = (): null => {
   useNotificationTracking()
   useInitSession()
   useLoadableStores()
-  useInitOnboard()
   useInitWeb3()
   useInitSafeCoreSDK()
   useTxNotifications()
@@ -86,7 +85,9 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
         <ThemeProvider theme={safeTheme}>
           <SentryErrorBoundary showDialog fallback={ErrorBoundary}>
             <WalletProvider>
-              <TxModalProvider>{children}</TxModalProvider>
+              <Web3Modal>
+                <TxModalProvider>{children}</TxModalProvider>
+              </Web3Modal>
             </WalletProvider>
           </SentryErrorBoundary>
         </ThemeProvider>

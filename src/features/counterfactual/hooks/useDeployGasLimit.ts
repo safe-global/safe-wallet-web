@@ -1,6 +1,5 @@
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { estimateSafeDeploymentGas, estimateTxBaseGas } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
@@ -12,6 +11,7 @@ import {
 } from '@safe-global/protocol-kit/dist/src/contracts/safeDeploymentContracts'
 
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { useWeb3ModalProvider } from '@web3modal/ethers/react'
 
 type DeployGasLimitProps = {
   safeTxGas: bigint
@@ -20,12 +20,13 @@ type DeployGasLimitProps = {
 }
 
 const useDeployGasLimit = (safeTx?: SafeTransaction) => {
-  const onboard = useOnboard()
+  const { walletProvider } = useWeb3ModalProvider()
   const chainId = useChainId()
 
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<DeployGasLimitProps | undefined>(async () => {
-    if (!onboard) return
-    const sdk = await getSafeSDKWithSigner(onboard, chainId)
+    if (!walletProvider) return
+
+    const sdk = await getSafeSDKWithSigner(walletProvider)
 
     const [baseGas, batchTxGas, safeDeploymentGas] = await Promise.all([
       safeTx ? estimateTxBaseGas(sdk, safeTx) : '0',
@@ -37,7 +38,7 @@ const useDeployGasLimit = (safeTx?: SafeTransaction) => {
     const safeTxGas = totalGas - BigInt(safeDeploymentGas)
 
     return { safeTxGas, safeDeploymentGas, totalGas }
-  }, [onboard, chainId, safeTx])
+  }, [walletProvider, chainId, safeTx])
 
   return { gasLimit, gasLimitError, gasLimitLoading }
 }

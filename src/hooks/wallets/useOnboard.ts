@@ -1,19 +1,14 @@
-import { useEffect } from 'react'
+import { WEB3MODAL_PROJECT_ID } from '@/config/constants'
 import { type WalletState, type OnboardAPI } from '@web3-onboard/core'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Eip1193Provider } from 'ethers'
 import { getAddress } from 'ethers'
-import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ExternalStore from '@/services/ExternalStore'
 import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
-import { useAppSelector } from '@/store'
-import { type EnvState, selectRpc } from '@/store/settingsSlice'
-import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
+import { type EnvState } from '@/store/settingsSlice'
 import { formatAmount } from '@/utils/formatNumber'
-import { localItem } from '@/services/local-storage/local'
-import { isWalletConnect, isWalletUnlocked } from '@/utils/wallets'
+import { isWalletConnect } from '@/utils/wallets'
 
 export type ConnectedWallet = {
   label: string
@@ -25,18 +20,7 @@ export type ConnectedWallet = {
   balance?: string
 }
 
-const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
-
-export const initOnboard = async (
-  chainConfigs: ChainInfo[],
-  currentChain: ChainInfo,
-  rpcConfig: EnvState['rpc'] | undefined,
-) => {
-  const { createOnboard } = await import('@/services/onboard')
-  if (!getStore()) {
-    setStore(createOnboard(chainConfigs, currentChain, rpcConfig))
-  }
-}
+const { getStore, setStore, useStore } = new ExternalStore<Web3ModalAPI>()
 
 // Get the most recently connected wallet address
 export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | null => {
@@ -106,7 +90,7 @@ let isConnecting = false
 
 // Wrapper that tracks/sets the last used wallet
 export const connectWallet = async (
-  onboard: OnboardAPI,
+  onboard: Web3ModalAPI,
   options?: Parameters<OnboardAPI['connectWallet']>[0],
 ): Promise<WalletState[] | undefined> => {
   if (isConnecting) {
@@ -131,99 +115,68 @@ export const connectWallet = async (
   return wallets
 }
 
-export const switchWallet = async (onboard: OnboardAPI) => {
-  const oldWalletLabel = getConnectedWallet(onboard.state.get().wallets)?.label
-  const newWallets = await connectWallet(onboard)
-  const newWalletLabel = newWallets ? getConnectedWallet(newWallets)?.label : undefined
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 
-  // If the wallet actually changed we disconnect the old connected wallet.
-  if (!newWalletLabel || oldWalletLabel !== ONBOARD_MPC_MODULE_LABEL) {
-    return
-  }
+// 1. Get projectId at https://cloud.walletconnect.com
+const projectId = WEB3MODAL_PROJECT_ID
 
-  if (newWalletLabel !== oldWalletLabel) {
-    await onboard.disconnectWallet({ label: oldWalletLabel })
-  }
+// 2. Set chains
+const mainnet = {
+  chainId: 1,
+  name: 'Ethereum',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://cloudflare-eth.com',
 }
 
-const lastWalletStorage = localItem<string>('lastWallet')
-
-const connectLastWallet = async (onboard: OnboardAPI) => {
-  const lastWalletLabel = lastWalletStorage.get()
-  if (lastWalletLabel) {
-    const isUnlocked = await isWalletUnlocked(lastWalletLabel)
-
-    if (isUnlocked === true || isUnlocked === undefined) {
-      connectWallet(onboard, {
-        autoSelect: { label: lastWalletLabel, disableModals: isUnlocked || false },
-      })
-    }
-  }
+const sepolia = {
+  chainId: 11155111,
+  name: 'Sepolia',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://cloudflare-eth.com',
 }
 
-const saveLastWallet = (walletLabel: string) => {
-  lastWalletStorage.set(walletLabel)
+// 3. Create a metadata object
+const metadata = {
+  name: 'My Website',
+  description: 'My Website description',
+  url: 'https://mywebsite.com', // origin must match your domain & subdomain
+  icons: ['https://avatars.mywebsite.com/'],
+}
+// 4. Create Ethers config
+const ethersConfig = defaultConfig({
+  /*Required*/
+  metadata,
+
+  /*Optional*/
+  enableEIP6963: true, // true by default
+  enableInjected: true, // true by default
+  enableCoinbase: true, // true by default
+  rpcUrl: '...', // used for the Coinbase SDK
+  defaultChainId: 1, // used for the Coinbase SDK
+})
+
+// 5. Create a Web3Modal instance
+createWeb3Modal({
+  ethersConfig,
+  chains: [mainnet, sepolia],
+  projectId,
+  enableAnalytics: true, // Optional - defaults to your Cloud configuration
+  enableOnramp: true, // Optional - false as default
+})
+
+export function Web3Modal({ children }: { children: any }) {
+  return children
 }
 
-// Disable/enable wallets according to chain
-export const useInitOnboard = () => {
-  const { configs } = useChains()
-  const chain = useCurrentChain()
-  const onboard = useStore()
-  const customRpc = useAppSelector(selectRpc)
-
-  useEffect(() => {
-    if (configs.length > 0 && chain) {
-      void initOnboard(configs, chain, customRpc)
-    }
-  }, [configs, chain, customRpc])
-
-  // Disable unsupported wallets on the current chain
-  useEffect(() => {
-    if (!onboard || !chain) return
-
-    const enableWallets = async () => {
-      const { getSupportedWallets } = await import('@/hooks/wallets/wallets')
-      const supportedWallets = getSupportedWallets(chain)
-      onboard.state.actions.setWalletModules(supportedWallets)
-    }
-
-    enableWallets().then(() => {
-      // e2e wallet
-      if (typeof window !== 'undefined' && window.Cypress) {
-        connectWallet(onboard, {
-          autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
-        })
-      }
-
-      // Reconnect last wallet
-      connectLastWallet(onboard)
-    })
-  }, [chain, onboard])
-
-  // Track connected wallet
-  useEffect(() => {
-    let lastConnectedWallet = ''
-    if (!onboard) return
-
-    const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
-      const newWallet = getConnectedWallet(wallets)
-      if (newWallet) {
-        if (newWallet.label !== lastConnectedWallet) {
-          lastConnectedWallet = newWallet.label
-          saveLastWallet(lastConnectedWallet)
-          trackWalletType(newWallet)
-        }
-      } else if (lastConnectedWallet) {
-        lastConnectedWallet = ''
-        saveLastWallet(lastConnectedWallet)
-      }
-    })
-
-    return () => {
-      walletSubscription.unsubscribe()
-    }
-  }, [onboard])
+export type Web3ModalAPI = {
+  disconnectWallet: () => Promise<void>
+  connectWallet: () => Promise<void>
+  switchNetwork: (chainId: number) => Promise<void>
+  isConnected: boolean
+  address: `0x${string}` | undefined
+  chainId: number | undefined
 }
 
 export default useStore

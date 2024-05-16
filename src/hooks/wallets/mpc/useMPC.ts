@@ -12,7 +12,7 @@ import { getRpcServiceUrl } from '../web3'
 
 const { getStore, setStore, useStore } = new ExternalStore<Web3AuthMPCCoreKit>()
 
-export const initMPC = async (chain: ChainInfo, onboard: OnboardAPI) => {
+export const initMPC = async (chain: ChainInfo) => {
   const chainConfig = {
     chainId: `0x${Number(chain.chainId).toString(16)}`,
     chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -55,24 +55,14 @@ export const initMPC = async (chain: ChainInfo, onboard: OnboardAPI) => {
         return web3AuthCoreKit
       }
 
-      const connectedWallet = getConnectedWallet(onboard.state.get().wallets)
-      if (!connectedWallet) {
-        connectWallet(onboard, {
-          autoSelect: {
-            label: ONBOARD_MPC_MODULE_LABEL,
-            disableModals: true,
-          },
-        }).catch((reason) => console.error('Error connecting to MPC module:', reason))
-      } else {
-        const newProvider = web3AuthCoreKit.provider
+      const newProvider = web3AuthCoreKit.provider
 
-        // To propagate the changedChain we disconnect and connect
-        if (previousChainChangedListeners.length > 0 && newProvider) {
-          previousChainChangedListeners.forEach((previousListener) =>
-            newProvider.addListener('chainChanged', (...args: []) => previousListener(...args)),
-          )
-          newProvider.emit('chainChanged', `0x${Number(chainConfig.chainId).toString(16)}`)
-        }
+      // To propagate the changedChain we disconnect and connect
+      if (previousChainChangedListeners.length > 0 && newProvider) {
+        previousChainChangedListeners.forEach((previousListener) =>
+          newProvider.addListener('chainChanged', (...args: []) => previousListener(...args)),
+        )
+        newProvider.emit('chainChanged', `0x${Number(chainConfig.chainId).toString(16)}`)
       }
 
       return web3AuthCoreKit

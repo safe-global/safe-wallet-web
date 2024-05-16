@@ -5,11 +5,11 @@ import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
 import RocketSpeedup from '@/public/images/common/ic-rocket-speedup.svg'
 import DialogActions from '@mui/material/DialogActions'
 import useWallet from '@/hooks/wallets/useWallet'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useAppDispatch } from '@/store'
 import { createExistingTx, dispatchCustomTxSpeedUp, dispatchSafeTxSpeedUp } from '@/services/tx/tx-sender'
 import { showNotification } from '@/store/notificationsSlice'
+import { useSwitchNetwork, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useCallback, useState } from 'react'
 import GasParams from '@/components/tx/GasParams'
 import { asError } from '@/services/exceptions/utils'
@@ -52,13 +52,15 @@ export const SpeedUpModal = ({
   const isEIP1559 = useHasFeature(FEATURES.EIP1559)
 
   const wallet = useWallet()
-  const onboard = useOnboard()
+  const { walletProvider } = useWeb3ModalProvider()
   const chainInfo = useCurrentChain()
   const safeAddress = useSafeAddress()
   const hasActions = signerAddress && signerAddress === wallet?.address
   const dispatch = useAppDispatch()
+  const { switchNetwork } = useSwitchNetwork()
 
-  const isDisabled = waitingForConfirmation || !wallet || !speedUpFee || !onboard
+  const isDisabled = waitingForConfirmation || !wallet || !speedUpFee || !walletProvider
+
   const [safeTx] = useAsync(async () => {
     if (!chainInfo?.chainId || !safeAddress) {
       return null
@@ -74,7 +76,7 @@ export const SpeedUpModal = ({
   }
 
   const onSubmit = useCallback(async () => {
-    if (!wallet || !speedUpFee || !onboard || !chainInfo || !safeTx) {
+    if (!wallet || !speedUpFee || !walletProvider || !chainInfo || !safeTx) {
       return null
     }
 
@@ -89,14 +91,19 @@ export const SpeedUpModal = ({
 
     try {
       setWaitingForConfirmation(true)
+
+      await switchNetwork(Number(chainInfo.chainId))
+
       if (pendingTx.txType === PendingTxType.SAFE_TX) {
         await dispatchSafeTxSpeedUp(
           txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
           txId,
-          onboard,
+          walletProvider,
           chainInfo.chainId,
+          wallet,
           safeAddress,
         )
+
         const txType = await getTransactionTrackingType(chainInfo.chainId, txId)
         trackEvent({ ...TX_EVENTS.SPEED_UP, label: txType })
       } else {
@@ -105,8 +112,8 @@ export const SpeedUpModal = ({
           txId,
           pendingTx.to,
           pendingTx.data,
-          onboard,
-          chainInfo?.chainId,
+          walletProvider,
+          wallet,
           safeAddress,
         )
         // Currently all custom txs are batch executes
@@ -139,7 +146,7 @@ export const SpeedUpModal = ({
     dispatch,
     gasLimit,
     handleClose,
-    onboard,
+    walletProvider,
     pendingTx,
     safeAddress,
     signerNonce,

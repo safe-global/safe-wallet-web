@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useWeb3Modal } from '@web3modal/scaffold-react'
 import { useContext, useEffect } from 'react'
 import { SafeMessageListItemType, SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
@@ -103,18 +104,16 @@ const DialogHeader = ({ threshold }: { threshold: number }) => (
 
 const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submitError: Error | undefined }) => {
   const wallet = useWallet()
-  const onboard = useOnboard()
 
-  const errorMessage =
-    !wallet || !onboard
-      ? 'No wallet is connected.'
-      : !isOwner
-      ? "You are currently not a signer of this Safe Account and won't be able to confirm this message."
-      : submitError && isWalletRejection(submitError)
-      ? 'User rejected signing.'
-      : submitError
-      ? 'Error confirming the message. Please try again.'
-      : null
+  const errorMessage = !wallet
+    ? 'No wallet is connected.'
+    : !isOwner
+    ? "You are currently not a signer of this Safe Account and won't be able to confirm this message."
+    : submitError && isWalletRejection(submitError)
+    ? 'User rejected signing.'
+    : submitError
+    ? 'Error confirming the message. Please try again.'
+    : null
 
   if (errorMessage) {
     return <ErrorMessage>{errorMessage}</ErrorMessage>
@@ -123,13 +122,8 @@ const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submit
 }
 
 const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
-  const onboard = useOnboard()
+  const { open } = useWeb3Modal()
 
-  const handleSwitchWallet = () => {
-    if (onboard) {
-      switchWallet(onboard)
-    }
-  }
   if (!hasSigned) {
     return null
   }
@@ -140,7 +134,7 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
           Your connected wallet has already signed this message.
         </Grid>
         <Grid item xs={4}>
-          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+          <Button variant="contained" size="small" onClick={() => open()} fullWidth>
             Switch wallet
           </Button>
         </Grid>

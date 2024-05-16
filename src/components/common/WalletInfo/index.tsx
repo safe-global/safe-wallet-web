@@ -1,6 +1,7 @@
 import WalletBalance from '@/components/common/WalletBalance'
 import { WalletIdenticon } from '@/components/common/WalletOverview'
 import { Box, Button, Typography } from '@mui/material'
+import { useDisconnect } from '@web3modal/ethers/react'
 import css from './styles.module.css'
 import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 import Link from 'next/link'
@@ -26,7 +27,6 @@ type WalletInfoProps = {
   currentChainId: ReturnType<typeof useChainId>
   socialWalletService: ReturnType<typeof useSocialWallet>
   router: ReturnType<typeof useRouter>
-  onboard: ReturnType<typeof useOnboard>
   addressBook: ReturnType<typeof useAddressBook>
   handleClose: () => void
 }
@@ -37,26 +37,17 @@ export const WalletInfo = ({
   currentChainId,
   socialWalletService,
   router,
-  onboard,
   addressBook,
   handleClose,
 }: WalletInfoProps) => {
   const chainInfo = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const prefix = chainInfo?.shortName
-
-  const handleSwitchWallet = () => {
-    if (onboard) {
-      handleClose()
-      switchWallet(onboard)
-    }
-  }
+  const { disconnect } = useDisconnect()
 
   const resetAccount = () => socialWalletService?.__deleteAccount()
 
   const handleDisconnect = () => {
-    onboard?.disconnectWallet({
-      label: wallet.label,
-    })
+    disconnect()
 
     handleClose()
   }
@@ -134,10 +125,6 @@ export const WalletInfo = ({
       <Box display="flex" flexDirection="column" gap={2} width={1}>
         <ChainSwitcher fullWidth />
 
-        <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
-          Switch wallet
-        </Button>
-
         <Button
           onClick={handleDisconnect}
           variant="danger"
@@ -162,7 +149,6 @@ export const WalletInfo = ({
 export default madProps(WalletInfo, {
   socialWalletService: useSocialWallet,
   router: useRouter,
-  onboard: useOnboard,
   addressBook: useAddressBook,
   currentChainId: useChainId,
 })

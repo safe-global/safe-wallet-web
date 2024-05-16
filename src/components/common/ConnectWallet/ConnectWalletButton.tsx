@@ -1,5 +1,6 @@
 import { Button } from '@mui/material'
 import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
+import { useWeb3Modal } from '@web3modal/scaffold-react'
 
 const ConnectWalletButton = ({
   onConnect,
@@ -12,11 +13,11 @@ const ConnectWalletButton = ({
   small?: boolean
   text?: string
 }): React.ReactElement => {
-  const connectWallet = useConnectWallet()
+  const { open } = useWeb3Modal()
 
   const handleConnect = () => {
     onConnect?.()
-    connectWallet()
+    open()
   }
 
   return (

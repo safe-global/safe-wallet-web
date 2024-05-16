@@ -8,9 +8,9 @@ import {
   type EIP712TypedData,
   type SafeMessage,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useEffect, useCallback, useState } from 'react'
 import useSafeInfo from '../useSafeInfo'
-import useOnboard from '../wallets/useOnboard'
 
 const HIDE_DELAY = 3000
 
@@ -37,7 +37,7 @@ const useSyncSafeMessageSigner = (
   onClose: () => void,
 ) => {
   const [submitError, setSubmitError] = useState<Error | undefined>()
-  const onboard = useOnboard()
+  const { walletProvider } = useWeb3ModalProvider()
   const { safe } = useSafeInfo()
 
   // If the message gets updated in the messageSlice we dispatch it if the signature is complete
@@ -51,16 +51,14 @@ const useSyncSafeMessageSigner = (
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
-    if (!onboard) {
-      return
-    }
+    if (!walletProvider) return
 
     setSubmitError(undefined)
 
     try {
       // When collecting the first signature
       if (!message) {
-        await dispatchSafeMsgProposal({ onboard, safe, message: decodedMessage, safeAppId })
+        await dispatchSafeMsgProposal({ provider: walletProvider, safe, message: decodedMessage, safeAppId })
 
         // Fetch updated message
         const updatedMsg = await fetchSafeMessage(safeMessageHash, safe.chainId)
@@ -71,7 +69,7 @@ const useSyncSafeMessageSigner = (
         }
         return updatedMsg
       } else {
-        await dispatchSafeMsgConfirmation({ onboard, safe, message: decodedMessage })
+        await dispatchSafeMsgConfirmation({ provider: walletProvider, safe, message: decodedMessage })
 
         // No requestID => we are in the confirm message dialog and do not need to leave the window open
         if (!requestId) {
@@ -86,7 +84,7 @@ const useSyncSafeMessageSigner = (
     } catch (e) {
       setSubmitError(asError(e))
     }
-  }, [onboard, requestId, message, safe, decodedMessage, safeAppId, safeMessageHash, onClose])
+  }, [walletProvider, message, safe, decodedMessage, safeAppId, safeMessageHash, onClose, requestId])
 
   return { submitError, onSign }
 }

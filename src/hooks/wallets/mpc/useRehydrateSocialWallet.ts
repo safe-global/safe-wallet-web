@@ -37,12 +37,12 @@ const useRehydrateSocialWallet = () => {
   )
 
   useEffect(() => {
-    if (!chain || !onboard) return
+    if (!chain) return
 
     const rehydrate = async () => {
       const { initMPC } = await import('./useMPC')
       const { initSocialWallet } = await import('./useSocialWallet')
-      const mpcCoreKit = await initMPC(chain, onboard)
+      const mpcCoreKit = await initMPC(chain)
 
       if (!mpcCoreKit) return
 
