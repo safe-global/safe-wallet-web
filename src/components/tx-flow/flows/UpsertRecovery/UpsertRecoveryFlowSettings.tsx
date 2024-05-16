@@ -19,7 +19,6 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
 import { useState } from 'react'
-import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
@@ -145,50 +144,49 @@ export function UpsertRecoveryFlowSettings({
                 You can cancel any recovery proposal when it is not needed or wanted during this period.
               </Typography>
             </div>
-            <Box display="flex" gap={2}>
+            <Box display="flex" flex="1" gap={2}>
               <Controller
                 control={formMethods.control}
                 name={UpsertRecoveryFlowFields.delay}
-                // styles={{ width: '50% !important' }}
                 render={({ field: { ref, ...field } }) => (
-                  <SelectField
+                  <TextField
                     data-testid="recovery-delay-select"
-                    // label="Recovery delay"
                     fullWidth
                     inputRef={ref}
                     {...field}
+                    select
+                    sx={{ width: '50%', maxWidth: '240px' }}
                   >
                     {periods.delay.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
                       </MenuItem>
                     ))}
-                  </SelectField>
+                  </TextField>
                 )}
               />
-              {!Number(delay) && (
-                <Box display="flex" gap={2}>
-                  <Controller
-                    control={formMethods.control}
-                    name={UpsertRecoveryFlowFields.customDelay}
-                    rules={{ validate: validateCustomDelay }}
-                    render={({ field: { ref, ...field }, fieldState }) => (
-                      <NumberField
-                        label={fieldState.error?.message}
-                        error={!!fieldState.error}
-                        inputRef={ref}
-                        {...field}
-                        required
-                        placeholder="E.g. 100"
-                        fullWidth
-                      />
-                    )}
-                  />
-                  <Typography align="center" m="auto">
-                    days.
-                  </Typography>
-                </Box>
-              )}
+              <Box display="flex" flex="1" gap={2} sx={{ maxWidth: '180px', minWidth: '140px' }}>
+                {!Number(delay) && (
+                  <>
+                    <Controller
+                      control={formMethods.control}
+                      name={UpsertRecoveryFlowFields.customDelay}
+                      rules={{ validate: validateCustomDelay }}
+                      render={({ field: { ref, ...field }, fieldState }) => (
+                        <NumberField
+                          label={fieldState.error?.message}
+                          error={!!fieldState.error}
+                          inputRef={ref}
+                          {...field}
+                          required
+                          placeholder="E.g. 100"
+                        />
+                      )}
+                    />
+                    <Typography my="auto">days.</Typography>
+                  </>
+                )}
+              </Box>
             </Box>
             <Typography variant="body2" onClick={onShowAdvanced} role="button" className={css.advanced}>
               Advanced {showAdvanced ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -221,13 +219,13 @@ export function UpsertRecoveryFlowSettings({
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field: { ref, ...field } }) => (
-                  <SelectField inputRef={ref} {...field}>
+                  <TextField inputRef={ref} {...field} fullWidth select sx={{ width: '50%', maxWidth: '240px' }}>
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
                       </MenuItem>
                     ))}
-                  </SelectField>
+                  </TextField>
                 )}
               />
             </Collapse>
@@ -252,29 +250,5 @@ export function UpsertRecoveryFlowSettings({
         </form>
       </FormProvider>
     </>
-  )
-}
-
-function SelectField(props: TextFieldProps) {
-  return (
-    <TextField
-      fullWidth
-      {...props}
-      select
-      sx={{
-        '& .MuiSelect-select': {
-          textAlign: 'right',
-          fontWeight: 700,
-          fontSize: '14px',
-        },
-      }}
-      InputLabelProps={{
-        shrink: false,
-        sx: {
-          color: 'text.primary',
-          fontSize: '14px',
-        },
-      }}
-    />
   )
 }
