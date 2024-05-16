@@ -14,7 +14,7 @@ import useSafeInfo from '../useSafeInfo'
 
 const HIDE_DELAY = 3000
 
-const fetchSafeMessage = async (safeMessageHash: string, chainId: string) => {
+export const fetchSafeMessage = async (safeMessageHash: string, chainId: string) => {
   let message: SafeMessage | undefined
   try {
     // fetchedMessage does not have a type because it is explicitly a message

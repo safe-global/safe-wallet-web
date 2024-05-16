@@ -1,6 +1,6 @@
 import useWallet from '@/hooks/wallets/useWallet'
 import { Button, Tooltip } from '@mui/material'
-import { useWeb3ModalProvider } from '@web3modal/ethers/dist/types/exports/react'
+import { useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
