@@ -9,8 +9,6 @@ import { fetchSafeMessage } from './useSyncSafeMessageSigner'
 const useSafeMessage = (safeMessageHash: string) => {
   const [safeMessage, setSafeMessage] = useState<SafeMessage | undefined>()
 
-  safeMessage?.type
-
   const { safe } = useSafeInfo()
 
   const messages = useSafeMessages()
