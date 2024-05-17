@@ -53,11 +53,13 @@ const WcInput = ({ uri }: { uri: string }) => {
         setIsLoading(undefined)
       }
       setTimeout(() => {
-        setIsLoading(undefined)
-        setError(new Error('Connection timed out'))
+        if (isLoading && isLoading !== WCLoadingState.APPROVE) {
+          setIsLoading(undefined)
+          setError(new Error('Connection timed out'))
+        }
       }, PROPOSAL_TIMEOUT)
     },
-    [setError, setIsLoading, walletConnect],
+    [isLoading, setError, setIsLoading, walletConnect],
   )
 
   // Insert a pre-filled uri
