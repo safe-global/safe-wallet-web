@@ -43,18 +43,19 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
       setIsLoading(WCLoadingState.APPROVE)
 
       try {
-        await walletConnect.approveSession(sessionProposal, chainId, safeAddress)
+        throw 'Failed connection'
+        // await walletConnect.approveSession(sessionProposal, chainId, safeAddress)
 
-        // Auto approve future sessions for non-malicious dApps
-        if (
-          sessionProposal.verifyContext.verified.validation !== 'INVALID' &&
-          !sessionProposal.verifyContext.verified.isScam
-        ) {
-          setAutoApprove((prev) => ({
-            ...prev,
-            [chainId]: { ...prev?.[chainId], [sessionProposal.verifyContext.verified.origin]: true },
-          }))
-        }
+        // // Auto approve future sessions for non-malicious dApps
+        // if (
+        //   sessionProposal.verifyContext.verified.validation !== 'INVALID' &&
+        //   !sessionProposal.verifyContext.verified.isScam
+        // ) {
+        //   setAutoApprove((prev) => ({
+        //     ...prev,
+        //     [chainId]: { ...prev?.[chainId], [sessionProposal.verifyContext.verified.origin]: true },
+        //   }))
+        // }
 
         setOpen(false)
       } catch (e) {
