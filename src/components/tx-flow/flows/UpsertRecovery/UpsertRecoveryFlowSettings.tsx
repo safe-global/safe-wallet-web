@@ -22,7 +22,7 @@ import { useState } from 'react'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
-import { DAY_IN_SECONDS, useRecoveryPeriods } from './useRecoveryPeriods'
+import { useRecoveryPeriods } from './useRecoveryPeriods'
 import { UpsertRecoveryFlowFields, type UpsertRecoveryFlowProps } from '.'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { sameAddress } from '@/utils/addresses'
@@ -38,6 +38,7 @@ import type { RecoveryStateItem } from '@/features/recovery/services/recovery-st
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
 import NumberField from '@/components/common/NumberField'
+import { getDelay, isCustomDelaySelected } from './utils'
 
 export function UpsertRecoveryFlowSettings({
   params,
@@ -64,8 +65,7 @@ export function UpsertRecoveryFlowSettings({
   const customDelay = formMethods.watch(UpsertRecoveryFlowFields.customDelay)
   const customDelayState = formMethods.getFieldState(UpsertRecoveryFlowFields.customDelay)
 
-  const isCustomDelay = !Number(selectedDelay)
-  const delay = isCustomDelay ? customDelay : selectedDelay
+  const delay = getDelay(customDelay, selectedDelay)
 
   // RHF's dirty check is tempermental with our address input dropdown
   const isDirty = delayModifier
@@ -97,13 +97,10 @@ export function UpsertRecoveryFlowSettings({
   const isDisabled = !understandsRisk || !isDirty || !!customDelayState.error
 
   const handleSubmit = (formData: UpsertRecoveryFlowProps) => {
-    const { expiry, delay, customDelay, selectedDelay, recoverer } = formData
-
-    // const combinedDelay = Number(delay) ? delay : `${Number(customDelay) * DAY_IN_SECONDS}`
-    // onSubmit({ expiry, delay: combinedDelay, customDelay, recoverer })
+    const { expiry, customDelay, selectedDelay, recoverer } = formData
     onSubmit({
       expiry,
-      delay: !Number(selectedDelay) ? `${Number(customDelay) * DAY_IN_SECONDS}` : selectedDelay,
+      delay: getDelay(customDelay, selectedDelay),
       customDelay,
       selectedDelay,
       recoverer,
@@ -185,7 +182,7 @@ export function UpsertRecoveryFlowSettings({
                 )}
               />
               <Box display="flex" flex="1" gap={2} sx={{ maxWidth: '180px', minWidth: '140px' }}>
-                {isCustomDelay && (
+                {isCustomDelaySelected(selectedDelay) && (
                   <>
                     <Controller
                       control={formMethods.control}
