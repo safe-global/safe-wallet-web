@@ -39,6 +39,7 @@ describe('Messages popup window tests', () => {
     )
     cy.reload()
     apps.clickOnApp(safeApp)
+    apps.clickOnOpenSafeAppBtn()
     main.getIframeBody(iframeSelector).within(() => {
       apps.triggetOffChainTx()
     })
@@ -61,6 +62,7 @@ describe('Messages popup window tests', () => {
     )
     cy.reload()
     apps.clickOnApp(safeApp)
+    apps.clickOnOpenSafeAppBtn()
     main.getIframeBody(iframeSelector).within(() => {
       messages.enterOnchainMessage(onchainMessage)
       apps.triggetOnChainTx()

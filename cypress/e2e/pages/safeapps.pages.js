@@ -157,8 +157,6 @@ export function verifyLinkName(name) {
 export function clickOnApp(app) {
   cy.contains(app).click()
   cy.wait(2000)
-  cy.get(openSafeAppBtn).click()
-  cy.wait(2000)
 }
 
 export function verifyNoAppsTextPresent() {
@@ -219,8 +217,11 @@ export function verifyAppDescription(descr) {
 }
 
 export function clickOnOpenSafeAppBtn() {
-  cy.findByRole('link', { name: openSafeAppBtnStr }).click()
-  cy.wait(500)
+  cy.get(openSafeAppBtn).click()
+  cy.wait(2000)
+}
+
+export function verifyDisclaimerIsDisplayed() {
   verifyDisclaimerIsVisible()
   cy.wait(500)
 }
