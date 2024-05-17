@@ -96,15 +96,8 @@ export function UpsertRecoveryFlowSettings({
 
   const isDisabled = !understandsRisk || !isDirty || !!customDelayState.error
 
-  const handleSubmit = (formData: UpsertRecoveryFlowProps) => {
-    const { expiry, customDelay, selectedDelay, recoverer } = formData
-    onSubmit({
-      expiry,
-      delay,
-      customDelay,
-      selectedDelay,
-      recoverer,
-    })
+  const handleSubmit = () => {
+    onSubmit({ expiry, delay, customDelay, selectedDelay, recoverer })
   }
 
   return (
@@ -171,7 +164,7 @@ export function UpsertRecoveryFlowSettings({
                     inputRef={ref}
                     {...field}
                     select
-                    sx={{ width: '50%', maxWidth: '240px' }}
+                    sx={{ width: '55%', maxWidth: '240px' }}
                   >
                     {periods.delay.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
@@ -235,7 +228,7 @@ export function UpsertRecoveryFlowSettings({
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field: { ref, ...field } }) => (
-                  <TextField inputRef={ref} {...field} fullWidth select sx={{ width: '50%', maxWidth: '240px' }}>
+                  <TextField inputRef={ref} {...field} fullWidth select sx={{ width: '55%', maxWidth: '240px' }}>
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
