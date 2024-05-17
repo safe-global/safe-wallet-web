@@ -32,8 +32,8 @@ function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[n
   const { data, step, nextStep, prevStep } = useTxStepper<UpsertRecoveryFlowProps>(
     {
       [UpsertRecoveryFlowFields.recoverer]: delayModifier?.recoverers?.[0] ?? '',
-      [UpsertRecoveryFlowFields.delay]: delayModifier?.delay?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
-      [UpsertRecoveryFlowFields.selectedDelay]: delayModifier?.delay?.toString() ?? `${DAY_IN_SECONDS * 28}`,
+      [UpsertRecoveryFlowFields.delay]: '',
+      [UpsertRecoveryFlowFields.selectedDelay]: delayModifier?.delay?.toString() ?? `${DAY_IN_SECONDS * 28}`, // 28 days in seconds
       [UpsertRecoveryFlowFields.customDelay]: '',
       [UpsertRecoveryFlowFields.expiry]: delayModifier?.expiry?.toString() ?? '0',
     },

@@ -1,8 +1,7 @@
 import { DAY_IN_SECONDS } from './useRecoveryPeriods'
 
 export const isCustomDelaySelected = (selectedDelay: string) => {
-  const f = !Number(selectedDelay)
-  return f
+  return !Number(selectedDelay)
 }
 
 export const getDelay = (customDelay: string, selectedDelay: string) => {

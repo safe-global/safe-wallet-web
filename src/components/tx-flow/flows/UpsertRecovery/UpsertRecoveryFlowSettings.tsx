@@ -153,7 +153,7 @@ export function UpsertRecoveryFlowSettings({
                 You can cancel any recovery proposal when it is not needed or wanted during this period.
               </Typography>
             </div>
-            <Box display="flex" flex="1" gap={2}>
+            <Box display="flex" gap={2}>
               <Controller
                 control={formMethods.control}
                 name={UpsertRecoveryFlowFields.selectedDelay}
