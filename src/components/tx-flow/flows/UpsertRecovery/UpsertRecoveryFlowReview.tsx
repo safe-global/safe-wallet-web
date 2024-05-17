@@ -18,8 +18,9 @@ import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import { isSmartContractWallet } from '@/utils/wallets'
 import { UpsertRecoveryFlowFields } from '.'
 import { TOOLTIP_TITLES } from '../../common/constants'
-import { DAY_IN_SECONDS, useRecoveryPeriods } from './useRecoveryPeriods'
+import { useRecoveryPeriods } from './useRecoveryPeriods'
 import type { UpsertRecoveryFlowProps } from '.'
+import { isCustomDelaySelected } from './utils'
 
 enum AddressType {
   EOA = 'EOA',
@@ -37,7 +38,11 @@ const getAddressType = async (address: string, chainId: string) => {
   return AddressType.Other
 }
 
-const onSubmit = async (isEdit: boolean, params: Omit<UpsertRecoveryFlowProps, 'customDelay'>, chainId: string) => {
+const onSubmit = async (
+  isEdit: boolean,
+  params: Omit<UpsertRecoveryFlowProps, 'customDelay' | 'selectedDelay'>,
+  chainId: string,
+) => {
   const addressType = await getAddressType(params.recoverer, chainId)
   const creationEvent = isEdit ? RECOVERY_EVENTS.SUBMIT_RECOVERY_EDIT : RECOVERY_EVENTS.SUBMIT_RECOVERY_CREATE
   const settings = `delay_${params.delay},expiry_${params.expiry},type_${addressType}`
@@ -58,17 +63,13 @@ export function UpsertRecoveryFlowReview({
   const { setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)
   const periods = useRecoveryPeriods()
 
-  const { recoverer, expiry, delay, customDelay } = params
-  const isCustomDelay = !Number(delay)
+  const { recoverer, expiry, delay, customDelay, selectedDelay } = params
+  const isCustomDelay = isCustomDelaySelected(selectedDelay)
 
   const expiryLabel = periods.expiration.find(({ value }) => value === params[UpsertRecoveryFlowFields.expiry])!.label
-  const delayLabel = isCustomDelay ? `${customDelay} days` : periods.delay.find(({ value }) => value === delay)?.label
-
-  const recoverySettings = {
-    recoverer,
-    expiry,
-    delay: isCustomDelay ? `${Number(customDelay) * DAY_IN_SECONDS}` : delay,
-  }
+  const delayLabel = isCustomDelay
+    ? `${customDelay} days`
+    : periods.delay.find(({ value }) => value === selectedDelay)?.label
 
   useEffect(() => {
     if (!web3ReadOnly) {
@@ -98,7 +99,7 @@ export function UpsertRecoveryFlowReview({
   const isEdit = !!moduleAddress
 
   return (
-    <SignOrExecuteForm onSubmit={() => onSubmit(isEdit, recoverySettings, safe.chainId)}>
+    <SignOrExecuteForm onSubmit={() => onSubmit(isEdit, { recoverer, expiry, delay }, safe.chainId)}>
       <Typography>
         This transaction will {moduleAddress ? 'update' : 'enable'} the Account recovery feature once executed.
       </Typography>

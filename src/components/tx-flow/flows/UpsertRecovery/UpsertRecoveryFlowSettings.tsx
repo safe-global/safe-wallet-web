@@ -100,7 +100,7 @@ export function UpsertRecoveryFlowSettings({
     const { expiry, customDelay, selectedDelay, recoverer } = formData
     onSubmit({
       expiry,
-      delay: getDelay(customDelay, selectedDelay),
+      delay,
       customDelay,
       selectedDelay,
       recoverer,
