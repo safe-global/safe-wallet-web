@@ -84,7 +84,7 @@ const ActivityRewardsSection = () => {
             </Typography>
             <Box className={css.links} gap={2}>
               <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
-                <Button variant="contained">{'Get Safe{Pass}'}</Button>
+                <Button variant="contained">{'Open Safe{Pass}'}</Button>
               </NextLink>
               <NextLink href="https://safe.global/pass" target="_blank" passHref rel="noreferrer" onClick={onClick}>
                 <Button variant="outlined">Learn more</Button>
@@ -97,7 +97,7 @@ const ActivityRewardsSection = () => {
             </Typography>
             <div className={css.steps}>
               <Step title="Lock SAFE to boost your points!" active={true} />
-              <Step title="Get activity points" active={false} />
+              <Step title="Get activity points" active={true} />
               <Step title="Receive rewards" active={false} />
             </div>
           </Grid>
