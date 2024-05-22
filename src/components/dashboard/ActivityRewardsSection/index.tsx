@@ -96,8 +96,8 @@ const ActivityRewardsSection = () => {
               How it works
             </Typography>
             <div className={css.steps}>
-              <Step title="Lock SAFE to boost your points!" active={true} />
-              <Step title="Get activity points" active={true} />
+              <Step title="Lock SAFE to boost your points!" active />
+              <Step title="Get activity points" active />
               <Step title="Receive rewards" active={false} />
             </div>
           </Grid>
