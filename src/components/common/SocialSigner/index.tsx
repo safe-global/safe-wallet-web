@@ -134,7 +134,7 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
       </Box>
 
       <Alert severity="warning" sx={{ mt: 1, width: '100%' }}>
-        From <b>01.05.2024</b> we will no longer support account creation and login with Google.
+        We're discontinuing support for Google login. Please export your credentials till <b>01.07.2024</b>.
       </Alert>
     </>
   )
