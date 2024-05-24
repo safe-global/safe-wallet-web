@@ -59,7 +59,7 @@ jobs:
           repo-token: ${{ github.token }}
 
       - name: Upload checksum
-        uses: actions/upload-release-asset@v1
+        uses: Shopify/upload-to-release@v2.0.0
         with:
           path: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
           name: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
