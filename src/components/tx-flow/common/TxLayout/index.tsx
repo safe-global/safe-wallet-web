@@ -1,6 +1,7 @@
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ComponentType, type ReactElement, type ReactNode, useContext, useEffect, useState } from 'react'
 import { Box, Container, Grid, Typography, Button, Paper, SvgIcon, IconButton, useMediaQuery } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useTheme } from '@mui/material/styles'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
@@ -82,7 +83,6 @@ const TxLayout = ({
 
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isDesktop = useMediaQuery(theme.breakpoints.down('lg'))
 
   const steps = Array.isArray(children) ? children : [children]
   const progress = Math.round(((step + 1) / steps.length) * 100)
@@ -146,9 +146,10 @@ const TxLayout = ({
                     {onBack && step > 0 && (
                       <Button
                         data-testid="modal-back-btn"
-                        variant={isDesktop ? 'text' : 'contained'}
+                        variant="outlined"
                         onClick={onBack}
                         className={css.backButton}
+                        startIcon={<ArrowBackIcon fontSize="small" />}
                       >
                         Back
                       </Button>
