@@ -5,7 +5,7 @@ import useWalletConnectSessions from '@/features/walletconnect/hooks/useWalletCo
 import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
 import useWcUri from '../../hooks/useWcUri'
 import WcHeaderWidget from '../WcHeaderWidget'
-import WcSessionManager from '../WcSessionMananger'
+import WcSessionManager from '../WcSessionManager'
 import { WalletConnectProvider } from '../WalletConnectProvider'
 
 const WalletConnectWidget = () => {

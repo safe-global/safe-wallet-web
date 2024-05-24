@@ -8,7 +8,12 @@ import {
 import { useAppSelector } from '@/store'
 import { selectPendingTxIdsBySafe } from '@/store/pendingTxsSlice'
 import useAsync from './useAsync'
-import { isConflictHeaderListItem, isLabelListItem, isTransactionListItem } from '@/utils/transaction-guards'
+import {
+  isConflictHeaderListItem,
+  isLabelListItem,
+  isMultisigExecutionInfo,
+  isTransactionListItem,
+} from '@/utils/transaction-guards'
 import useSafeInfo from './useSafeInfo'
 
 const usePendingTxIds = (): Array<TransactionSummary['id']> => {
@@ -29,6 +34,32 @@ export const useShowUnsignedQueue = (): boolean => {
   const { safe } = useSafeInfo()
   const hasPending = useHasPendingTxs()
   return safe.threshold === 1 && hasPending
+}
+
+export const filterUntrustedQueue = (
+  untrustedQueue: TransactionListPage,
+  pendingIds: Array<TransactionSummary['id']>,
+) => {
+  // Only keep labels and pending unsigned transactions
+  const results = untrustedQueue.results
+    .filter((item) => !isTransactionListItem(item) || pendingIds.includes(item.transaction.id))
+    .filter((item) => !isConflictHeaderListItem(item))
+    .filter(
+      (item) =>
+        !isTransactionListItem(item) ||
+        (isTransactionListItem(item) &&
+          isMultisigExecutionInfo(item.transaction.executionInfo) &&
+          item.transaction.executionInfo.confirmationsSubmitted === 0),
+    )
+
+  // Adjust the first label ("Next" -> "Pending")
+  if (results[0] && isLabelListItem(results[0])) {
+    results[0].label = 'Pending' as LabelValue
+  }
+
+  const transactions = results.filter((item) => isTransactionListItem(item))
+
+  return transactions.length ? { results } : undefined
 }
 
 export const usePendingTxsQueue = (): {
@@ -53,29 +84,7 @@ export const usePendingTxsQueue = (): {
   const pendingTxPage = useMemo(() => {
     if (!untrustedQueue || !pendingIds.length) return
 
-    // Find the pending txs in the "untrusted" queue by id
-    // Keep labels too
-    const results = untrustedQueue.results.filter(
-      (item) => !isTransactionListItem(item) || pendingIds.includes(item.transaction.id),
-    )
-
-    // Adjust the first label ("Next" -> "Pending")
-    if (results[0] && isLabelListItem(results[0])) {
-      results[0].label = 'Pending' as LabelValue
-
-      if (results.filter((item) => isTransactionListItem(item)).length === 0) {
-        results.splice(0, 1)
-      }
-    }
-
-    if (results[1] && isConflictHeaderListItem(results[1])) {
-      // Check if we both conflicting txs are still pending
-      if (results.filter((item) => isTransactionListItem(item)).length <= 1) {
-        results.splice(1, 1)
-      }
-    }
-
-    return results.length ? { results } : undefined
+    return filterUntrustedQueue(untrustedQueue, pendingIds)
   }, [untrustedQueue, pendingIds])
 
   return useMemo(

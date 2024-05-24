@@ -21,6 +21,7 @@ describe('Info modal tests', () => {
   it('Verify the disclaimer is displayed when a Safe App is opened', () => {
     safeapps.clickOnApp(safeapps.transactionBuilderStr)
     safeapps.clickOnOpenSafeAppBtn()
+    safeapps.verifyDisclaimerIsDisplayed()
   })
 
   // Skip tests due to changed logic

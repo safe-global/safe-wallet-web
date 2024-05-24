@@ -9,6 +9,7 @@ export const downloadBatchBtn = 'button[title="Download batch"]'
 export const deleteBatchBtn = 'button[title="Delete Batch"]'
 const appModal = '[data-testid="app-info-modal"]'
 export const safeAppsList = '[data-testid="apps-list"]'
+const openSafeAppBtn = '[data-testid="open-safe-app-btn"]'
 
 const addBtnStr = /add/i
 const noAppsStr = /no Safe Apps found/i
@@ -216,8 +217,11 @@ export function verifyAppDescription(descr) {
 }
 
 export function clickOnOpenSafeAppBtn() {
-  cy.findByRole('link', { name: openSafeAppBtnStr }).click()
-  cy.wait(500)
+  cy.get(openSafeAppBtn).click()
+  cy.wait(2000)
+}
+
+export function verifyDisclaimerIsDisplayed() {
   verifyDisclaimerIsVisible()
   cy.wait(500)
 }
