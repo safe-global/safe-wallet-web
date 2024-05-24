@@ -16,7 +16,7 @@ const InfoBox = ({
   className?: string
 }): ReactElement => {
   return (
-    <div className={classNames(css.container, className)}>
+    <div data-testid="message-infobox" className={classNames(css.container, className)}>
       <div className={css.message}>
         <SvgIcon component={InfoIcon} color="info" inheritViewBox fontSize="medium" />
         <div>
