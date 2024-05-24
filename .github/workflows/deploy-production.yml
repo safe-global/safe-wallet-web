@@ -51,7 +51,7 @@ jobs:
 
       # Update the GitHub release with a checksummed archive
       - name: Upload archive
-      - uses: Shopify/upload-to-release@v1
+      - uses: Shopify/upload-to-release@v2.0.0
         with:
           path: ${{ env.ARCHIVE_NAME }}.tar.gz
           name: ${{ env.ARCHIVE_NAME }}.tar.gz
