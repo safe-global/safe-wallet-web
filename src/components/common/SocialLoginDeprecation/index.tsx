@@ -24,7 +24,7 @@ const SocialLoginDeprecation = () => {
 
   return (
     <Alert severity="warning" sx={{ mx: 3, mt: 3 }}>
-      The Social Login wallet is deprecated and will be removed on <b>01.05.2024</b>.
+      The Social Login wallet is deprecated and will be removed on <b>01.07.2024</b>.
       <br />
       Please{' '}
       <Link href={ownersPage}>
