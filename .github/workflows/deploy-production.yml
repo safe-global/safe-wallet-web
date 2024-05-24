@@ -51,21 +51,17 @@ jobs:
 
       # Update the GitHub release with a checksummed archive
       - name: Upload archive
-        uses: actions/upload-release-asset@v1
+      - uses: Shopify/upload-to-release@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ARCHIVE_NAME }}.tar.gz
-          asset_name: ${{ env.ARCHIVE_NAME }}.tar.gz
-          asset_content_type: application/gzip
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          path: ${{ env.ARCHIVE_NAME }}.tar.gz
+          name: ${{ env.ARCHIVE_NAME }}.tar.gz
+          content-type: application/gzip
+          repo-token: ${{ github.token }}
 
       - name: Upload checksum
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-          asset_name: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-          asset_content_type: text/plain
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          path: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
+          name: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
+          content-type: text/plain
+          repo-token: ${{ github.token }}
