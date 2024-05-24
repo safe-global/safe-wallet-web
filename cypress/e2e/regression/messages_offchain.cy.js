@@ -3,8 +3,12 @@ import * as main from '../pages/main.page.js'
 import * as createTx from '../pages/create_tx.pages.js'
 import * as msg_data from '../../fixtures/txmessages_data.json'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as modal from '../pages/modals.page'
+import * as messages from '../pages/messages.pages.js'
+import * as msg_confirmation_modal from '../pages/modals/message_confirmation.pages.js'
 
 let staticSafes = []
+const offchainMessage = 'Test message 2 off-chain'
 
 const typeMessagesGeneral = msg_data.type.general
 const typeMessagesOffchain = msg_data.type.offChain
@@ -46,7 +50,7 @@ describe('Offchain Messages tests', () => {
     )
   })
 
-  it('Verify exapanded details for simple off-chain message', () => {
+  it('Verify exapanded details for EIP 191 off-chain message', () => {
     createTx.clickOnTransactionItemByIndex(2)
     cy.contains(typeMessagesOffchain.message2).should('be.visible')
   })
@@ -70,5 +74,15 @@ describe('Offchain Messages tests', () => {
       })
 
     main.verifyTextVisibility(values)
+  })
+
+  it('Verify confirmation window is displayed for unsigned message', () => {
+    messages.clickOnMessageSignBtn(2)
+    msg_confirmation_modal.verifyConfirmationWindowTitle(modal.modalTitiles.confirmMsg)
+    msg_confirmation_modal.verifyMessagePresent(offchainMessage)
+    msg_confirmation_modal.clickOnMessageDetails()
+    msg_confirmation_modal.verifyOffchainMessageHash(0)
+    msg_confirmation_modal.verifyOffchainMessageHash(1)
+    msg_confirmation_modal.checkMessageInfobox()
   })
 })

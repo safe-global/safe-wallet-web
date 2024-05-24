@@ -31,7 +31,7 @@ const spamTokenWarningIcon = '[data-testid="warning"]'
 const untrustedTokenWarningModal = '[data-testid="untrusted-token-warning"]'
 const sendTokensBtn = '[data-testid="send-tokens-btn"]'
 export const replacementNewSigner = '[data-testid="new-owner"]'
-const messageItem = '[data-testid="message-item"]'
+export const messageItem = '[data-testid="message-item"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'

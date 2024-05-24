@@ -8,7 +8,6 @@ import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
 import * as useIsSafeOwnerHook from '@/hooks/useIsSafeOwner'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
-import * as useAsyncHook from '@/hooks/useAsync'
 import * as useChainsHook from '@/hooks/useChains'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
@@ -220,8 +219,7 @@ describe('SignMessage', () => {
   it('proposes a message if not already proposed', async () => {
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
-
-    jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
+    ;(getSafeMessage as jest.Mock).mockRejectedValue(new Error('SafeMessage not found'))
 
     const { getByText, baseElement } = render(
       <SignMessage
@@ -520,8 +518,7 @@ describe('SignMessage', () => {
     mockUseSafeMessages.mockReturnValue(msgs)
 
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
-
-    jest.spyOn(useAsyncHook, 'default').mockReturnValue([undefined, new Error('SafeMessage not found'), false])
+    ;(getSafeMessage as jest.Mock).mockRejectedValue(new Error('SafeMessage not found'))
 
     const proposalSpy = jest
       .spyOn(sender, 'dispatchSafeMsgProposal')
@@ -553,6 +550,119 @@ describe('SignMessage', () => {
   it('displays an error if the message could not be confirmed', async () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
+    jest.spyOn(useWalletHook, 'default').mockImplementation(
+      () =>
+        ({
+          address: zeroPadValue('0x03', 20),
+        } as ConnectedWallet),
+    )
+
+    const messageText = 'Hello world!'
+    const messageHash = generateSafeMessageHash(
+      {
+        version: '1.3.0',
+        address: {
+          value: zeroPadValue('0x01', 20),
+        },
+        chainId: '5',
+      } as SafeInfo,
+      messageText,
+    )
+    const msg = {
+      type: SafeMessageListItemType.MESSAGE,
+      messageHash,
+      confirmations: [
+        {
+          owner: {
+            value: zeroPadValue('0x02', 20),
+          },
+        },
+      ],
+      confirmationsRequired: 2,
+      confirmationsSubmitted: 1,
+    } as unknown as SafeMessage
+    ;(getSafeMessage as jest.Mock).mockResolvedValue(msg)
+
+    const msgs: {
+      page?: SafeMessageListPage
+      error?: string
+      loading: boolean
+    } = {
+      page: {
+        results: [msg],
+      },
+      error: undefined,
+      loading: false,
+    }
+
+    mockUseSafeMessages.mockReturnValue(msgs)
+
+    const { getByText } = render(
+      <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />,
+    )
+
+    await act(async () => {
+      Promise.resolve()
+    })
+
+    const confirmationSpy = jest
+      .spyOn(sender, 'dispatchSafeMsgConfirmation')
+      .mockImplementation(() => Promise.reject(new Error('Error confirming')))
+
+    const button = getByText('Sign')
+
+    expect(button).toBeEnabled()
+
+    await act(() => {
+      fireEvent.click(button)
+    })
+
+    await waitFor(() => {
+      expect(confirmationSpy).toHaveBeenCalled()
+      expect(getByText('Error confirming the message. Please try again.')).toBeInTheDocument()
+    })
+  })
+
+  it('shows all signatures and success message if message has already been signed', async () => {
+    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
+    jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
+    jest.spyOn(useWalletHook, 'default').mockImplementation(
+      () =>
+        ({
+          address: zeroPadValue('0x03', 20),
+        } as ConnectedWallet),
+    )
+
+    const messageText = 'Hello world!'
+    const messageHash = generateSafeMessageHash(
+      {
+        version: '1.3.0',
+        address: {
+          value: zeroPadValue('0x01', 20),
+        },
+        chainId: '5',
+      } as SafeInfo,
+      messageText,
+    )
+    const msg = {
+      type: SafeMessageListItemType.MESSAGE,
+      messageHash,
+      confirmations: [
+        {
+          owner: {
+            value: zeroPadValue('0x02', 20),
+          },
+        },
+        {
+          owner: {
+            value: zeroPadValue('0x03', 20),
+          },
+        },
+      ],
+      confirmationsRequired: 2,
+      confirmationsSubmitted: 2,
+      preparedSignature: '0x678',
+    } as unknown as SafeMessage
 
     const msgs: {
       page?: SafeMessageListPage
@@ -567,39 +677,14 @@ describe('SignMessage', () => {
     }
 
     mockUseSafeMessages.mockReturnValue(msgs)
-
-    jest
-      .spyOn(useAsyncHook, 'default')
-      .mockReturnValue([
-        { confirmations: [] as SafeMessage['confirmations'] } as SafeMessage,
-        new Error('SafeMessage not found'),
-        false,
-      ])
-
-    const confirmationSpy = jest
-      .spyOn(sender, 'dispatchSafeMsgProposal')
-      .mockImplementation(() => Promise.reject(new Error('Test error')))
+    ;(getSafeMessage as jest.Mock).mockResolvedValue(msg)
 
     const { getByText } = render(
-      <SignMessage
-        logoUri="www.fake.com/test.png"
-        name="Test App"
-        message="Hello world!"
-        requestId="123"
-        safeAppId={25}
-      />,
+      <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />,
     )
 
-    const button = getByText('Sign')
-
-    await act(() => {
-      fireEvent.click(button)
-    })
-
-    expect(confirmationSpy).toHaveBeenCalled()
-
     await waitFor(() => {
-      expect(getByText('Error confirming the message. Please try again.')).toBeInTheDocument()
+      expect(getByText('Message successfully signed')).toBeInTheDocument()
     })
   })
 })

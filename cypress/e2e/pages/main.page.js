@@ -300,3 +300,7 @@ export function verifyTextVisibility(stringsArray) {
     cy.contains(string).should('be.visible')
   })
 }
+
+export function getIframeBody(iframe) {
+  return cy.get(iframe).its('0.contentDocument.body').should('not.be.empty').then(cy.wrap)
+}
