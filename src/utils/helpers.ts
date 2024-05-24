@@ -2,6 +2,7 @@
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { OnboardAPI } from '@web3-onboard/core'
+import type { Eip1193Provider } from 'ethers'
 
 export function invariant<T extends unknown>(condition: T, error: string): asserts condition {
   if (condition) {
@@ -21,4 +22,8 @@ export function assertWallet(wallet: ConnectedWallet | null): asserts wallet {
 
 export function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard {
   return invariant(onboard, 'Onboard not connected')
+}
+
+export function assertProvider(provider: Eip1193Provider | undefined): asserts provider {
+  return invariant(provider, 'Provider not found')
 }
