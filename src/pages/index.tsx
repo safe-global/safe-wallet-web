@@ -1,31 +1,32 @@
-import { useEffect } from 'react'
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { AppRoutes } from '@/config/routes'
-import { isEmpty } from 'lodash'
-import local from '@/services/local-storage/local'
-import { addedSafesSlice, type AddedSafesState } from '@/store/addedSafesSlice'
+import Head from 'next/head'
 
-const IndexPage: NextPage = () => {
-  const router = useRouter()
-  const { chain } = router.query
+import SecurityLogin from '@/components/settings/SecurityLogin'
+import SocialSigner from '@/components/common/SocialSigner'
+import { Alert, Box } from '@mui/material'
 
-  useEffect(() => {
-    if (!router.isReady || router.pathname !== AppRoutes.index) {
-      return
-    }
-    // TODO: Replace with useLocalStorage. For now read directly from localstorage so we have value on first render
-    const addedSafes = local.getItem<AddedSafesState>(addedSafesSlice.name)
-    const hasAddedSafes = addedSafes !== null && !isEmpty(addedSafes)
-    const pathname = hasAddedSafes ? AppRoutes.welcome.accounts : AppRoutes.welcome.index
+const SecurityLoginPage: NextPage = () => {
+  return (
+    <>
+      <Head>
+        <title>{'Safe{Wallet} – Settings – Security & Login'}</title>
+      </Head>
 
-    router.replace({
-      pathname,
-      query: chain ? { chain } : undefined,
-    })
-  }, [router, chain])
+      <main>
+        <Box width="80%" margin="0 auto 50px">
+          <Alert severity="warning" sx={{ mt: 1, width: '100%' }}>
+            We&apos;ve discontinued support for Google login. Please export your private key and import it into your
+            wallet.
+          </Alert>
+        </Box>
 
-  return <></>
+        <Box width={300} margin="30px auto">
+          <SocialSigner />
+        </Box>
+        <SecurityLogin />
+      </main>
+    </>
+  )
 }
 
-export default IndexPage
+export default SecurityLoginPage

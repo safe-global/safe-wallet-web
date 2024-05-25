@@ -27,12 +27,8 @@ type HeaderProps = {
   onBatchToggle?: Dispatch<SetStateAction<boolean>>
 }
 
-function getLogoLink(router: ReturnType<typeof useRouter>): Url {
-  return router.pathname === AppRoutes.home || !router.query.safe
-    ? router.pathname === AppRoutes.welcome.accounts
-      ? AppRoutes.welcome.index
-      : AppRoutes.welcome.accounts
-    : { pathname: AppRoutes.home, query: { safe: router.query.safe } }
+function getLogoLink(_router: ReturnType<typeof useRouter>): Url {
+  return AppRoutes.index
 }
 
 const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {

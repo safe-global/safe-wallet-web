@@ -1,6 +1,6 @@
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 import { type ISocialWalletService } from '@/services/mpc/interfaces'
-import { Alert, Box, Button, LinearProgress, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, LinearProgress, SvgIcon, Typography } from '@mui/material'
 import { COREKIT_STATUS } from '@web3auth/mpc-core-kit'
 import { useState } from 'react'
 import GoogleLogo from '@/public/images/welcome/logo-google.svg'
@@ -132,10 +132,6 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
         )}
         {loginError && <ErrorMessage className={css.loginError}>{loginError}</ErrorMessage>}
       </Box>
-
-      <Alert severity="warning" sx={{ mt: 1, width: '100%' }}>
-        We&apos;re discontinuing support for Google login. Please export your credentials till <b>01.07.2024</b>.
-      </Alert>
     </>
   )
 }

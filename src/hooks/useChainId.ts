@@ -1,6 +1,5 @@
 import { useParams } from 'next/navigation'
 import { parse, type ParsedUrlQuery } from 'querystring'
-import { IS_PRODUCTION } from '@/config/constants'
 import chains from '@/config/chains'
 import { useAppSelector } from '@/store'
 import { selectSession } from '@/store/sessionSlice'
@@ -8,7 +7,7 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 import useWallet from './wallets/useWallet'
 import useChains from './useChains'
 
-const defaultChainId = IS_PRODUCTION ? chains.eth : chains.sep
+const defaultChainId = '100'
 
 // Use the location object directly because Next.js's router.query is available only on mount
 const getLocationQuery = (): ParsedUrlQuery => {

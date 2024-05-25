@@ -1,7 +1,7 @@
 import chains from './chains'
 
-export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === 'true'
-export const IS_DEV = process.env.NODE_ENV === 'development'
+export const IS_PRODUCTION = true // process.env.NEXT_PUBLIC_IS_PRODUCTION === 'true'
+export const IS_DEV = false // process.env.NODE_ENV === 'development'
 
 export const GATEWAY_URL_PRODUCTION =
   process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.safe.global'
