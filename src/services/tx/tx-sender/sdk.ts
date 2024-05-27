@@ -93,7 +93,6 @@ export const switchWalletChain = async (onboard: OnboardAPI, chainId: string): P
 
 export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): Promise<ConnectedWallet> => {
   const wallet = getConnectedWallet(onboard.state.get().wallets)
-  console.log(wallet)
 
   if (!wallet) {
     throw new Error('No wallet connected.')
