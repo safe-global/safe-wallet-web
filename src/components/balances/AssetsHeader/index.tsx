@@ -9,7 +9,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 
 const AssetsHeader = ({ children }: { children?: ReactNode }): ReactElement => {
-  const isNftsEnabled = useHasFeature(FEATURES.EIP1271)
+  const isNftsEnabled = useHasFeature(FEATURES.ERC721)
   const navItems = isNftsEnabled ? balancesNavItems : [balancesNavItems[0]]
 
   return (
