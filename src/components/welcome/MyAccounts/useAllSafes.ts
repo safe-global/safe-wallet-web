@@ -42,7 +42,7 @@ const useAllSafes = (): SafeItems | undefined => {
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
   return useMemo<SafeItems | undefined>(() => {
-    if (allOwned === undefined || allOwnedLoading) {
+    if (walletAddress && (allOwned === undefined || allOwnedLoading)) {
       return undefined
     }
     const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned || {})))
