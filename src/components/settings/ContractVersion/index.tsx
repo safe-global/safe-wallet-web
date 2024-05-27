@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react'
-import { Box, SvgIcon, Typography, Alert, AlertTitle, Skeleton, Button } from '@mui/material'
+import { SvgIcon, Typography, Alert, AlertTitle, Skeleton, Button } from '@mui/material'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { sameAddress } from '@/utils/addresses'
