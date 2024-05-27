@@ -5,15 +5,20 @@ import PageHeader from '@/components/common/PageHeader'
 import { balancesNavItems } from '@/components/sidebar/SidebarNavigation/config'
 
 import css from '@/components/common/PageHeader/styles.module.css'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const AssetsHeader = ({ children }: { children?: ReactNode }): ReactElement => {
+  const isNftsEnabled = useHasFeature(FEATURES.EIP1271)
+  const navItems = isNftsEnabled ? balancesNavItems : [balancesNavItems[0]]
+
   return (
     <PageHeader
       title="Assets"
       action={
         <div className={css.pageHeader}>
           <div className={css.navWrapper}>
-            <NavTabs tabs={balancesNavItems} />
+            <NavTabs tabs={navItems} />
           </div>
           {children && <div className={css.actionsWrapper}>{children}</div>}
         </div>

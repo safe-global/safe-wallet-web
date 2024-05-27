@@ -25,6 +25,8 @@ import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import SvgIcon from '@mui/icons-material/ExpandLess'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const NOTIFICATION_CENTER_LIMIT = 4
 
@@ -33,7 +35,7 @@ const NotificationCenter = (): ReactElement => {
   const [showAll, setShowAll] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = Boolean(anchorEl)
-
+  const hasPushNotifications = useHasFeature(FEATURES.PUSH_NOTIFICATIONS)
   const dispatch = useAppDispatch()
 
   const notifications = useAppSelector(selectNotifications)
@@ -144,9 +146,11 @@ const NotificationCenter = (): ReactElement => {
               </MuiLink>
             )}
           </div>
+
           <div>
             <NotificationCenterList notifications={notificationsToShow} handleClose={handleClose} />
           </div>
+
           <div className={css.popoverFooter}>
             {canExpand && (
               <>
@@ -166,18 +170,21 @@ const NotificationCenter = (): ReactElement => {
                 </Typography>
               </>
             )}
-            <Link
-              href={{
-                pathname: AppRoutes.settings.notifications,
-                query: router.query,
-              }}
-              passHref
-              legacyBehavior
-            >
-              <MuiLink className={css.settingsLink} variant="body2" onClick={onSettingsClick}>
-                <SvgIcon component={SettingsIcon} inheritViewBox fontSize="small" /> Push notifications settings
-              </MuiLink>
-            </Link>
+
+            {hasPushNotifications && (
+              <Link
+                href={{
+                  pathname: AppRoutes.settings.notifications,
+                  query: router.query,
+                }}
+                passHref
+                legacyBehavior
+              >
+                <MuiLink className={css.settingsLink} variant="body2" onClick={onSettingsClick}>
+                  <SvgIcon component={SettingsIcon} inheritViewBox fontSize="small" /> Push notifications settings
+                </MuiLink>
+              </Link>
+            )}
           </div>
         </Paper>
       </Popover>
