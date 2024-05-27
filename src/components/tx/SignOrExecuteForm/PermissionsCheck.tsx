@@ -31,9 +31,16 @@ const PermissionsCheck: React.FC<{}> = ({}) => {
   const [isRejectedByUser, setIsRejectedByUser] = useState<boolean>(false)
 
   const roles = useRoles(safeTx?.data)
+  const allowingRole = roles.find((role) => role.status === Status.Ok)
+
+  // If a user has multiple roles, we should prioritize the one that allows the transaction's to address (and function selector)
+  const mostLikelyRole =
+    allowingRole ||
+    roles.find((role) => role.status !== Status.TargetAddressNotAllowed && role.status !== Status.FunctionNotAllowed) ||
+    roles.find((role) => role.status !== Status.TargetAddressNotAllowed) ||
+    roles[0]
 
   const isPending = false
-  const isDisabled = isPending
 
   const handleExecute = async () => {
     setIsRejectedByUser(false)
@@ -45,11 +52,34 @@ const PermissionsCheck: React.FC<{}> = ({}) => {
     trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
   }
 
+  // Only render the card if the connected wallet is a member of any role
+  if (roles.length === 0) {
+    return null
+  }
+
   return (
     <TxCard>
       <Typography variant="h5">Execute through role</Typography>
 
-      <Typography>As a member of the Swapper role you can execute this transaction immediately.</Typography>
+      {allowingRole && (
+        <Typography>
+          As a member of the {allowingRole.roleKey} role you can execute this transaction immediately.
+        </Typography>
+      )}
+
+      {!allowingRole && (
+        <>
+          <Typography>
+            You are a member of the {mostLikelyRole.roleKey} role but it does not allow this transaction.
+          </Typography>
+
+          {mostLikelyRole.status && (
+            <ErrorMessage>
+              The role permissions check fails with the following status: <code>{Status[mostLikelyRole.status]}</code>
+            </ErrorMessage>
+          )}
+        </>
+      )}
 
       {safeTxError && (
         <ErrorMessage error={safeTxError}>
@@ -73,7 +103,7 @@ const PermissionsCheck: React.FC<{}> = ({}) => {
                 data-testid="execute-through-role-btn"
                 variant="contained"
                 onClick={handleExecute}
-                disabled={!isOk || isDisabled}
+                disabled={!isOk || !allowingRole || isPending}
                 sx={{ minWidth: '209px' }}
               >
                 {isPending ? <CircularProgress size={20} /> : 'Execute through role'}
