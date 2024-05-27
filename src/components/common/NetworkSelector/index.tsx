@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
-import { ListSubheader, MenuItem, Select, Skeleton } from '@mui/material'
+import { MenuItem, Select, Skeleton } from '@mui/material'
 import partition from 'lodash/partition'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
@@ -27,7 +27,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
   const chainId = useChainId()
   const router = useRouter()
 
-  const [testNets, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
+  const [, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
 
   const getNetworkLink = useCallback(
     (shortName: string) => {
@@ -114,10 +114,6 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
       }}
     >
       {prodNets.map((chain) => renderMenuItem(chain.chainId, chain))}
-
-      <ListSubheader className={css.listSubHeader}>Testnets</ListSubheader>
-
-      {testNets.map((chain) => renderMenuItem(chain.chainId, chain))}
     </Select>
   ) : (
     <Skeleton width={94} height={31} sx={{ mx: 2 }} />

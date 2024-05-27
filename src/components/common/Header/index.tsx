@@ -9,7 +9,6 @@ import css from './styles.module.css'
 import ConnectWallet from '@/components/common/ConnectWallet'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import SafeTokenWidget, { getSafeTokenAddress } from '@/components/common/SafeTokenWidget'
-import NotificationCenter from '@/components/notification-center/NotificationCenter'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/images/logo.svg'
@@ -74,10 +73,6 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
           <SafeTokenWidget />
         </div>
       )}
-
-      <div className={css.element}>
-        <NotificationCenter />
-      </div>
 
       {safeAddress && (
         <div className={classnames(css.element, css.hideMobile)}>
