@@ -28,7 +28,7 @@ const SocialSignerExport = () => {
           </Button>
         </Track>
 
-        {!socialWalletService && <Typography>Please login with your Google account first.</Typography>}
+        {!socialWalletService && <Typography>Please log in with your Google account first.</Typography>}
       </Box>
 
       <ExportMPCAccountModal onClose={() => setIsModalOpen(false)} open={isModalOpen} />
