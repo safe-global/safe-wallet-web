@@ -52,4 +52,9 @@ export const TX_EVENTS = {
     action: 'Speed up transaction',
     category: TX_CATEGORY,
   },
+  EXECUTE_THROUGH_ROLE: {
+    event: EventType.TX_EXECUTED_THROUGH_ROLE,
+    action: 'Execute transaction through role',
+    category: TX_CATEGORY,
+  },
 }
