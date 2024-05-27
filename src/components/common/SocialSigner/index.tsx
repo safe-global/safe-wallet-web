@@ -125,7 +125,7 @@ export const SocialSigner = ({ socialWalletService, wallet, onLogin, onRequirePa
                 }}
               />
               <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-                <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Continue with Google
+                <SvgIcon component={GoogleLogo} inheritViewBox fontSize="medium" /> Login with Google
               </Box>
             </Button>
           </Track>

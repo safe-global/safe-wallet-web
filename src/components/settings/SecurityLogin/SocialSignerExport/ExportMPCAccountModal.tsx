@@ -79,7 +79,11 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box display="flex" flexDirection="column" gap={2} alignItems="flex-start" sx={{ width: '100%' }}>
-            <Typography>For security reasons you have to enter your password to reveal your account key.</Typography>
+            <Typography>
+              {' '}
+              Never disclose your keys or seed phrase to anyone. If someone gains access to them, they will have access
+              to your account.
+            </Typography>
 
             {exportedKey ? (
               <Box display="flex" flexDirection="row" alignItems="center" gap={1} width="100%">
@@ -103,21 +107,8 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
                   {...register(ExportFieldNames.pk)}
                 />
               </Box>
-            ) : (
-              <>
-                <TextField
-                  placeholder="Password"
-                  label="Password"
-                  type="password"
-                  fullWidth
-                  error={!!formState.errors[ExportFieldNames.password]}
-                  helperText={formState.errors[ExportFieldNames.password]?.message}
-                  {...register(ExportFieldNames.password, {
-                    required: true,
-                  })}
-                />
-              </>
-            )}
+            ) : null}
+
             {error && <ErrorMessage className={css.modalError}>{error}</ErrorMessage>}
 
             <Box
