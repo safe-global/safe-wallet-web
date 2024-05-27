@@ -175,16 +175,12 @@ class SocialWalletService implements ISocialWalletService {
     return this.mpcCoreKit.status === COREKIT_STATUS.LOGGED_IN
   }
 
-  async exportSignerKey(password: string): Promise<string> {
+  async exportSignerKey(): Promise<string> {
     try {
-      if (this.securityQuestionRecovery.isEnabled()) {
-        // Only export PK if recovery works
-        await this.securityQuestionRecovery.recoverWithPassword(password)
-      }
       const exportedPK = await this.mpcCoreKit?._UNSAFE_exportTssKey()
       return exportedPK
     } catch (err) {
-      throw new Error('Error exporting account. Make sure the password is correct.')
+      throw new Error('Error exporting account. ' + (err as Error).message)
     }
   }
 

@@ -27,7 +27,7 @@ export interface ISocialWalletService {
    *
    * @param password recovery password
    */
-  exportSignerKey(password: string): Promise<string>
+  exportSignerKey(): Promise<string>
 
   /**
    * Returns true if MFA is enabled

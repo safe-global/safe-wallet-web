@@ -14,12 +14,10 @@ import { asError } from '@/services/exceptions/utils'
 import useSocialWallet from '@/hooks/wallets/mpc/useSocialWallet'
 
 enum ExportFieldNames {
-  password = 'password',
   pk = 'pk',
 }
 
 type ExportFormData = {
-  [ExportFieldNames.password]: string
   [ExportFieldNames.pk]: string | undefined
 }
 
@@ -30,21 +28,18 @@ const ExportMPCAccountModal = ({ onClose, open }: { onClose: () => void; open: b
   const [showPassword, setShowPassword] = useState(false)
   const formMethods = useForm<ExportFormData>({
     mode: 'all',
-    defaultValues: {
-      [ExportFieldNames.password]: '',
-    },
   })
   const { register, formState, handleSubmit, setValue, watch, reset } = formMethods
 
   const exportedKey = watch(ExportFieldNames.pk)
 
-  const onSubmit = async (data: ExportFormData) => {
+  const onSubmit = async () => {
     if (!socialWalletService) {
       return
     }
     try {
       setError(undefined)
-      const pk = await socialWalletService.exportSignerKey(data[ExportFieldNames.password])
+      const pk = await socialWalletService.exportSignerKey()
       trackEvent(MPC_WALLET_EVENTS.EXPORT_PK_SUCCESS)
       setValue(ExportFieldNames.pk, pk)
     } catch (err) {
