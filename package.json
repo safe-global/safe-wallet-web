@@ -75,7 +75,6 @@
     "@web3-onboard/trezor": "^2.4.2",
     "@web3-onboard/walletconnect": "^2.5.4",
     "blo": "^1.1.1",
-    "bn.js": "^5.2.1",
     "classnames": "^2.3.1",
     "date-fns": "^2.30.0",
     "ethers": "^6.11.1",
