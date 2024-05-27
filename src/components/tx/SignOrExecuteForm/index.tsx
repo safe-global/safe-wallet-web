@@ -120,7 +120,7 @@ export const SignOrExecuteForm = ({
         </TxCard>
       )}
 
-      {!isCounterfactualSafe && <PermissionsCheck />}
+      {!isCounterfactualSafe && isCreation && <PermissionsCheck />}
 
       <TxCard>
         <ConfirmationTitle
