@@ -1,14 +1,13 @@
 import { TxModalContext } from '@/components/tx-flow'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
-import useChainId from '@/hooks/useChainId'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import madProps from '@/utils/mad-props'
+import { useWeb3ModalProvider } from '@web3modal/ethers/react'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
 import classNames from 'classnames'
@@ -46,9 +45,8 @@ export const CounterfactualForm = ({
   safeTx?: SafeTransaction
 }): ReactElement => {
   const wallet = useWallet()
-  const onboard = useOnboard()
+  const { walletProvider } = useWeb3ModalProvider()
   const chain = useCurrentChain()
-  const chainId = useChainId()
 
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -81,7 +79,7 @@ export const CounterfactualForm = ({
     try {
       trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
 
-      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
+      await deploySafeAndExecuteTx(txOptions, wallet, safeTx, walletProvider)
 
       trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_with_tx })
       trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_with_tx })

@@ -1,22 +1,25 @@
+import { useSwitchNetwork } from '@web3modal/ethers/react'
 import type { ReactElement } from 'react'
 import { useCallback } from 'react'
 import { Box, Button } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import css from './styles.module.css'
-import { switchWalletChain } from '@/services/tx/tx-sender/sdk'
 
 const ChainSwitcher = ({ fullWidth }: { fullWidth?: boolean }): ReactElement | null => {
   const chain = useCurrentChain()
-  const onboard = useOnboard()
   const isWrongChain = useIsWrongChain()
+  const { switchNetwork } = useSwitchNetwork()
 
   const handleChainSwitch = useCallback(async () => {
-    if (!onboard || !chain) return
+    if (!chain) return
 
-    await switchWalletChain(onboard, chain.chainId)
-  }, [chain, onboard])
+    try {
+      await switchNetwork(Number(chain.chainId))
+    } catch (e) {
+      console.log(e)
+    }
+  }, [chain, switchNetwork])
 
   if (!isWrongChain) return null
 

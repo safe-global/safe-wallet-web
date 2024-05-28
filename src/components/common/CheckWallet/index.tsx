@@ -1,9 +1,9 @@
+import { useWeb3Modal } from '@web3modal/scaffold-react'
 import { type ReactElement } from 'react'
 import { Tooltip } from '@mui/material'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
-import useConnectWallet from '../ConnectWallet/useConnectWallet'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
@@ -21,7 +21,7 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }:
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
-  const connectWallet = useConnectWallet()
+  const { open } = useWeb3Modal()
 
   const message =
     wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit))
@@ -36,7 +36,7 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }:
 
   return (
     <Tooltip title={message}>
-      <span onClick={wallet ? undefined : connectWallet}>{children(false)}</span>
+      <span onClick={wallet ? undefined : () => open()}>{children(false)}</span>
     </Tooltip>
   )
 }

@@ -1,5 +1,4 @@
 import { act, render, waitFor } from '@/tests/test-utils'
-import * as useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import WalletLogin from '../WalletLogin'
 import { toBeHex } from 'ethers'
@@ -20,7 +19,6 @@ describe('WalletLogin', () => {
       label: 'MetaMask',
       provider: {} as unknown as EIP1193Provider,
     })
-    jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn())
 
     const result = render(<WalletLogin onLogin={mockOnLogin} />)
 
@@ -41,7 +39,6 @@ describe('WalletLogin', () => {
     const mockOnLogin = jest.fn()
     const walletAddress = toBeHex('0x1', 20)
     const mockUseWallet = jest.spyOn(useWallet, 'default').mockReturnValue(null)
-    jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn().mockReturnValue([{}]))
 
     const result = render(<WalletLogin onLogin={mockOnLogin} />)
 
@@ -72,8 +69,6 @@ describe('WalletLogin', () => {
   it('should invoke the callback if user actively connects', async () => {
     const mockOnLogin = jest.fn()
     jest.spyOn(useWallet, 'default').mockReturnValue(null)
-
-    jest.spyOn(useConnectWallet, 'default').mockReturnValue(jest.fn().mockReturnValue([]))
 
     const result = render(<WalletLogin onLogin={mockOnLogin} />)
 

@@ -1,3 +1,4 @@
+import { MockEip1193Provider } from '@/tests/mocks/providers'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import type { JsonRpcSigner } from 'ethers'
 import { zeroPadBytes } from 'ethers'
@@ -7,58 +8,12 @@ import * as utils from '@/utils/safe-messages'
 import * as events from '@/services/safe-messages/safeMsgEvents'
 import * as sdk from '@/services/tx/tx-sender/sdk'
 import { zeroPadValue } from 'ethers'
-import type { EIP1193Provider, OnboardAPI, WalletState, AppState } from '@web3-onboard/core'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   proposeSafeMessage: jest.fn(),
   confirmSafeMessage: jest.fn(),
 }))
-
-let mockProvider = {
-  request: jest.fn,
-} as unknown as EIP1193Provider
-
-const mockOnboardState = {
-  chains: [],
-  walletModules: [],
-  wallets: [
-    {
-      label: 'Wallet 1',
-      icon: '',
-      provider: mockProvider,
-      chains: [{ id: '0x5' }],
-      accounts: [
-        {
-          address: '0x1234567890123456789012345678901234567890',
-          ens: null,
-          balance: null,
-        },
-      ],
-    },
-  ] as WalletState[],
-  accountCenter: {
-    enabled: true,
-  },
-} as unknown as AppState
-
-const mockOnboard = {
-  connectWallet: jest.fn(),
-  disconnectWallet: jest.fn(),
-  setChain: jest.fn(),
-  state: {
-    select: (key: keyof AppState) => ({
-      subscribe: (next: any) => {
-        next(mockOnboardState[key])
-
-        return {
-          unsubscribe: jest.fn(),
-        }
-      },
-    }),
-    get: () => mockOnboardState,
-  },
-} as unknown as OnboardAPI
 
 const mockValidSignature = `${zeroPadBytes('0x0456', 64)}1c`
 const mockSignatureWithInvalidV = `${zeroPadBytes('0x0456', 64)}01`
@@ -90,7 +45,7 @@ describe('safeMsgSender', () => {
       const message = 'Hello world'
       const safeAppId = 1
 
-      await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
+      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, safeAppId })
 
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
         message,
@@ -135,7 +90,7 @@ describe('safeMsgSender', () => {
       }
       const safeAppId = 1
 
-      await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
+      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, safeAppId })
 
       // Normalize message manually
       message.types['EIP712Domain'] = [
@@ -172,7 +127,7 @@ describe('safeMsgSender', () => {
       const message = 'Hello world'
       const safeAppId = 1
 
-      await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
+      await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, safeAppId })
 
       expect(proposeSafeMessageSpy).toHaveBeenCalledWith('5', zeroPadValue('0x0789', 20), {
         message,
@@ -203,7 +158,7 @@ describe('safeMsgSender', () => {
       const safeAppId = 1
 
       try {
-        await dispatchSafeMsgProposal({ onboard: mockOnboard, safe, message, safeAppId })
+        await dispatchSafeMsgProposal({ provider: MockEip1193Provider, safe, message, safeAppId })
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 
@@ -237,7 +192,7 @@ describe('safeMsgSender', () => {
       } as unknown as gateway.SafeInfo
       const message = 'Hello world'
 
-      await dispatchSafeMsgConfirmation({ onboard: mockOnboard, safe, message })
+      await dispatchSafeMsgConfirmation({ provider: MockEip1193Provider, safe, message })
 
       expect(confirmSafeMessageSpy).toHaveBeenCalledWith('5', '0x0123', {
         signature: mockValidSignature,
@@ -264,7 +219,7 @@ describe('safeMsgSender', () => {
       const message = 'Hello world'
 
       try {
-        await dispatchSafeMsgConfirmation({ onboard: mockOnboard, safe, message })
+        await dispatchSafeMsgConfirmation({ provider: MockEip1193Provider, safe, message })
       } catch (e) {
         expect((e as Error).message).toBe('Example error')
 

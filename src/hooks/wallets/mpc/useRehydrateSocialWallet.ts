@@ -37,18 +37,20 @@ const useRehydrateSocialWallet = () => {
   )
 
   useEffect(() => {
-    if (!chain || !onboard) return
+    if (!chain) return
 
     const rehydrate = async () => {
       const { initMPC } = await import('./useMPC')
       const { initSocialWallet } = await import('./useSocialWallet')
-      const mpcCoreKit = await initMPC(chain, onboard)
+      const mpcCoreKit = await initMPC(chain)
 
       if (!mpcCoreKit) return
 
       const socialWalletService = await initSocialWallet(mpcCoreKit)
 
       const onConnect = async () => {
+        if (!onboard) return
+
         const wallets = await connectWallet(onboard, {
           autoSelect: {
             label: ONBOARD_MPC_MODULE_LABEL,

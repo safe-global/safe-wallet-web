@@ -1,16 +1,16 @@
-import useConnectWallet from '@/components/common/ConnectWallet/useConnectWallet'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { Box, Button, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import WalletIcon from '@/components/common/WalletIcon'
+import { useWeb3Modal } from '@web3modal/scaffold-react'
 
 const WalletLogin = ({ onLogin }: { onLogin: () => void }) => {
   const wallet = useWallet()
-  const connectWallet = useConnectWallet()
+  const { open } = useWeb3Modal()
 
   const onConnectWallet = () => {
-    connectWallet()
+    open()
     onLogin()
   }
 

@@ -8,7 +8,6 @@ import type Safe from '@safe-global/protocol-kit'
 
 import { renderHook } from '@/tests/test-utils'
 import { waitFor } from '@testing-library/react'
-import type { OnboardAPI } from '@web3-onboard/core'
 import { faker } from '@faker-js/faker'
 import type { CompatibilityFallbackHandlerContract, SimulateTxAccessorContract } from '@safe-global/safe-core-sdk-types'
 
@@ -22,8 +21,6 @@ describe('useDeployGasLimit hook', () => {
 
   it('returns safe deployment gas estimation', async () => {
     const mockGas = '100'
-    const mockOnboard = {} as OnboardAPI
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(sdk, 'getSafeSDKWithSigner').mockImplementation(jest.fn())
     const mockEstimateSafeDeploymentGas = jest
       .spyOn(protocolKit, 'estimateSafeDeploymentGas')
@@ -38,8 +35,6 @@ describe('useDeployGasLimit hook', () => {
   })
 
   it('does not estimate safeTxGas if there is no safeTx and returns 0 for them instead', async () => {
-    const mockOnboard = {} as OnboardAPI
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(sdk, 'getSafeSDKWithSigner').mockImplementation(jest.fn())
     jest.spyOn(protocolKit, 'estimateSafeDeploymentGas').mockReturnValue(Promise.resolve('100'))
 
@@ -56,8 +51,6 @@ describe('useDeployGasLimit hook', () => {
   })
 
   it('returns the totalFee', async () => {
-    const mockOnboard = {} as OnboardAPI
-    jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(sdk, 'getSafeSDKWithSigner').mockResolvedValue({
       getContractManager: () =>
         ({

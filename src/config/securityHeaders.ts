@@ -21,7 +21,7 @@ export const ContentSecurityPolicy = `
  style-src 'self' 'unsafe-inline' https://*.getbeamer.com https://*.googleapis.com;
  font-src 'self' data:;
  worker-src 'self' blob:;
- img-src * data:;
+ img-src * data: blob:;
 `
   .replace(/\s{2,}/g, ' ')
   .trim()

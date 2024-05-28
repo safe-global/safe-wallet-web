@@ -1,3 +1,4 @@
+import useWallet from '@/hooks/wallets/useWallet'
 import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
@@ -6,6 +7,7 @@ import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeC
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
+import { useSwitchNetwork, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { useState, useMemo, useContext } from 'react'
 import type { SyntheticEvent } from 'react'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
@@ -15,7 +17,6 @@ import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import { TxSimulation } from '@/components/tx/security/tenderly'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
@@ -59,7 +60,9 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   // Chain has relaying feature and available relays
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
-  const onboard = useOnboard()
+  const { walletProvider } = useWeb3ModalProvider()
+  const { switchNetwork } = useSwitchNetwork()
+  const wallet = useWallet()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -87,7 +90,16 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!userNonce || !onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
+    if (
+      !userNonce ||
+      !walletProvider ||
+      !wallet ||
+      !multiSendTxData ||
+      !multiSendContract ||
+      !txsWithDetails ||
+      !gasPrice
+    )
+      return
 
     const overrides: Overrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
@@ -95,12 +107,14 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
     overrides.nonce = userNonce
 
+    await switchNetwork(Number(safe.chainId))
+
     await dispatchBatchExecution(
       txsWithDetails,
       multiSendContract,
       multiSendTxData,
-      onboard,
-      safe.chainId,
+      walletProvider,
+      wallet,
       safe.address.value,
       overrides as Overrides & { nonce: number },
     )

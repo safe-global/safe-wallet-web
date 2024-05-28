@@ -1,3 +1,4 @@
+import { useWeb3Modal } from '@web3modal/scaffold-react'
 import { useEffect } from 'react'
 import { Box, CircularProgress, Paper } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
@@ -10,7 +11,6 @@ import { AppActions } from '@/components/safe-apps/SafeAppLandingPage/AppActions
 import useWallet from '@/hooks/wallets/useWallet'
 import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_DEMO_SAFE_MAINNET } from '@/config/constants'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import { Errors, logError } from '@/services/exceptions'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -25,7 +25,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   const [backendApp, , backendAppLoading] = useSafeAppFromBackend(appUrl, chain.chainId)
   const { safeApp, isLoading } = useSafeAppFromManifest(appUrl, chain.chainId, backendApp)
   const wallet = useWallet()
-  const onboard = useOnboard()
+  const { open } = useWeb3Modal()
   // show demo if the app was shared for mainnet or we can find the mainnet chain id on the backend
   const showDemo = chain.chainId === CHAIN_ID_WITH_A_DEMO || !!backendApp?.chainIds.includes(CHAIN_ID_WITH_A_DEMO)
 
@@ -38,11 +38,9 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
   }, [isLoading, backendApp, safeApp, backendAppLoading, chain])
 
   const handleConnectWallet = async () => {
-    if (!onboard) return
-
     trackEvent(OVERVIEW_EVENTS.OPEN_ONBOARD)
 
-    onboard.connectWallet().catch((e) => logError(Errors._302, e))
+    open().catch((e) => logError(Errors._302, e))
   }
 
   const handleDemoClick = () => {
