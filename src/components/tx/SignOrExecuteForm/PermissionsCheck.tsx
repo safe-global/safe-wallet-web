@@ -59,7 +59,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback }> = ({ onSubmit })
   const { safe } = useSafeInfo()
 
   const { safeTx, safeTxError } = useContext(SafeTxContext)
-  const [isPending, setIsPending] = useState<boolean>(true)
+  const [isPending, setIsPending] = useState<boolean>(false)
   const [isRejectedByUser, setIsRejectedByUser] = useState<boolean>(false)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
@@ -126,13 +126,15 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback }> = ({ onSubmit })
       txHash,
     })
 
-    onSubmit?.(moduleTxId, true)
+    const txId = `module_${safe.address.value}_${moduleTxId}`
+
+    onSubmit?.(txId, true)
 
     // Track tx event
-    const txType = await getTransactionTrackingType(chainId, moduleTxId)
+    const txType = await getTransactionTrackingType(chainId, txId)
     trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
 
-    setTxFlow(<SuccessScreenFlow txId={moduleTxId} />, undefined, false)
+    setTxFlow(<SuccessScreenFlow txId={txId} />, undefined, false)
   }
 
   // Only render the card if the connected wallet is a member of any role
@@ -445,7 +447,7 @@ const useGasLimit = (
   return { gasLimit, gasLimitError, gasLimitLoading }
 }
 
-export const pollModuleTransactionId = async (props: {
+const pollModuleTransactionId = async (props: {
   transactionService: string
   safeAddress: string
   txHash: string
