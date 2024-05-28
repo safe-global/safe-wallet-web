@@ -38,11 +38,9 @@ export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => 
  */
 export const groupBulkTxs = (list: GroupedTxs, txHashes: Record<string, string> | undefined): GroupedTxs => {
   if (!txHashes) return list
-  // ): Promise<Array<txWithDetails | txWithDetails[]>> => {
 
   return list
     .reduce<GroupedTxs>((resultItems, item) => {
-      // Leave conflict groups and non transaction types as is
       if (Array.isArray(item) || !isTransactionListItem(item)) {
         return resultItems.concat([item])
       }
@@ -51,7 +49,6 @@ export const groupBulkTxs = (list: GroupedTxs, txHashes: Record<string, string> 
 
       const prevItem = resultItems[resultItems.length - 1]
       if (!Array.isArray(prevItem)) return resultItems.concat([[item]])
-
       const prevTxId = prevItem[0].transaction.id
       const prevTxHash = txHashes[prevTxId]
 
@@ -63,41 +60,6 @@ export const groupBulkTxs = (list: GroupedTxs, txHashes: Record<string, string> 
       return resultItems.concat([[item]])
     }, [])
     .map((item) => (Array.isArray(item) && item.length === 1 ? item[0] : item))
-  // return list.entries().map((listItem) => {
-  //   if (!isTransactionListItem(listItem)) return listItem
-
-  //   const txId = listItem.transaction.id
-  //   const txHash = txHashes[txId]
-  // })
-
-  // const transactions = list.filter(isTransactionListItem)
-  // return null
-  // return transactions
-  //   .reduce<Array<txWithDetails | txWithDetails[]>>((resultItems, item) => {
-  //     const { listItem, transactionDetails } = item
-  //     const isConflictGroup = Array.isArray(item)
-  //     const transactionHash = isConflictGroup ? item[0].transactionDetails.txHash : transactionDetails?.txHash
-  //     if (!transactionHash) {
-  //       resultItems[listItem.] = item
-  //       return resultItems
-  //     }
-
-  //     if (isConflictGroup) {
-  //       resultItems[transactionHash] = item
-  //       return resultItems
-  //     }
-
-  //     const executionGroup = resultItems.find(
-  //       (group) => Array.isArray(group) && group.length > 0 && group[0].transactionDetails?.txHash === transactionHash,
-  //     )
-  //     if (Array.isArray(executionGroup)) {
-  //       executionGroup.push(item)
-  //       return resultItems
-  //     }
-
-  //     return resultItems.concat([[item]])
-  //   }, {})
-  //   .map((item) => (Array.isArray(item) && item.length === 1 ? item[0] : item))
 }
 
 export function _getRecoveryCancellations(moduleAddress: string, transactions: Array<Transaction>) {
