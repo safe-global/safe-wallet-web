@@ -27,8 +27,14 @@ import { isBlockedAddress } from '@/services/ofac'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
 import useChainId from '@/hooks/useChainId'
+import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
+import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
+import { id } from 'ethers'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
+
+const PRE_SIGN_SIGHASH = id('setPreSignature(bytes,bool)').slice(0, 10)
+const WRAP_SIGHASH = id('deposit()').slice(0, 10)
 
 type Params = {
   sell?: {
@@ -39,8 +45,19 @@ type Params = {
 
 export const SWAP_TITLE = 'Safe Swap'
 
-export const getSwapTitle = (tradeType: SwapState['tradeType']) => {
-  return tradeType === 'limit' ? 'Limit order' : 'Swap order'
+export const getSwapTitle = (tradeType: SwapState['tradeType'], txs: BaseTransaction[] | undefined) => {
+  const hashToLabel = {
+    [PRE_SIGN_SIGHASH]: tradeType === 'limit' ? 'Limit order' : 'Swap order',
+    [APPROVAL_SIGNATURE_HASH]: 'Approve',
+    [WRAP_SIGHASH]: 'Wrap',
+  }
+
+  const swapTitle = txs
+    ?.map((tx) => hashToLabel[tx.data.slice(0, 10)])
+    .filter(Boolean)
+    .join(' and ')
+
+  return swapTitle
 }
 
 const SwapWidget = ({ sell }: Params) => {
