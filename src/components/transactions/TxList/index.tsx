@@ -1,5 +1,5 @@
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
-import BulkTxListGroup from '@/components/transactions/GroupedTxListItems/BulkTxListGroup'
+import BulkTxListGroup from '@/components/transactions//BulkTxListGroup'
 import { groupBulkTxs, groupConflictingTxs } from '@/utils/tx-list'
 import { Box } from '@mui/material'
 import type { Transaction, TransactionDetails, TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -61,7 +61,7 @@ const TxList = ({ items }: TxListProps): ReactElement => {
 
     const bulkTransactionHash = txHashes && getBulkGroupTxHash(item, txHashes)
     if (bulkTransactionHash) {
-      return <BulkTxListGroup key={index} groupedListItems={item} txHash={bulkTransactionHash} />
+      return <BulkTxListGroup key={index} groupedListItems={item} transactionHash={bulkTransactionHash} />
     }
 
     return <GroupedTxListItems key={index} groupedListItems={item} />
