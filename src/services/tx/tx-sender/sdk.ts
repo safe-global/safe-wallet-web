@@ -1,7 +1,7 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
 import { EthersAdapter, SigningMethod } from '@safe-global/protocol-kit'
-import type { JsonRpcSigner } from 'ethers'
+import type { Eip1193Provider, JsonRpcSigner } from 'ethers'
 import { ethers } from 'ethers'
 import { isWalletRejection, isHardwareWallet, isWalletConnect } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -118,6 +118,11 @@ export const getAssertedChainSigner = async (
   const wallet = await assertWalletChain(onboard, chainId)
   const provider = createWeb3(wallet.provider)
   return provider.getSigner()
+}
+
+export const getUncheckedSigner = async (provider: Eip1193Provider) => {
+  const browserProvider = createWeb3(provider)
+  return new UncheckedJsonRpcSigner(browserProvider, (await browserProvider.getSigner()).address)
 }
 
 /**

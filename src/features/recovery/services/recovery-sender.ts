@@ -5,13 +5,11 @@ import type { OnboardAPI } from '@web3-onboard/core'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { TransactionResponse } from 'ethers'
 
-import { createWeb3 } from '@/hooks/wallets/web3'
 import { didReprice, didRevert } from '@/utils/ethers-utils'
 import { recoveryDispatch, RecoveryEvent, RecoveryTxType } from './recoveryEvents'
 import { asError } from '@/services/exceptions/utils'
-import { assertWalletChain } from '../../../services/tx/tx-sender/sdk'
+import { assertWalletChain, getUncheckedSigner } from '../../../services/tx/tx-sender/sdk'
 import { isSmartContractWallet } from '@/utils/wallets'
-import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 
 async function getDelayModifierContract({
   onboard,
@@ -25,14 +23,9 @@ async function getDelayModifierContract({
   // Switch signer to chain of Safe
   const wallet = await assertWalletChain(onboard, chainId)
 
-  const provider = createWeb3(wallet.provider)
   const isSmartContract = await isSmartContractWallet(wallet.chainId, wallet.address)
 
-  const originalSigner = await provider.getSigner()
-  // Use unchecked signer for smart contract wallets as transactions do not necessarily immediately execute
-  const signer = isSmartContract
-    ? new UncheckedJsonRpcSigner(provider, await originalSigner.getAddress())
-    : originalSigner
+  const signer = await getUncheckedSigner(wallet.provider)
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, signer).connect(signer)
 
   return {
