@@ -5,6 +5,7 @@ import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import BatchIcon from '@/public/images/common/batch.svg'
 import css from './styles.module.css'
+import { generateDataRowValue } from '../TxDetails/Summary/TxDataRow'
 
 const GroupedTxListItems = ({
   groupedListItems,
@@ -18,11 +19,15 @@ const GroupedTxListItems = ({
   return (
     <Paper className={css.container}>
       <Grid container>
-        <Grid item xs={0.7} display="flex" alignItems="center">
+        <Grid item xs={0.5} display="flex" alignItems="center">
           <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
         </Grid>
-        <Grid item xs={11}>
-          <Box className={css.disclaimerContainer}>{transactionHash}</Box>
+        <Grid item xs={4}>
+          Transactions executed in bulk
+        </Grid>
+
+        <Grid item xs={6}>
+          {generateDataRowValue(transactionHash, 'hash', true)}
         </Grid>
 
         <Box className={css.txItems}>
@@ -31,12 +36,12 @@ const GroupedTxListItems = ({
               ? tx.transaction.executionInfo.nonce
               : ''
             return (
-              <Box display="flex" alignItems="center" key={tx.transaction.id}>
-                <Grid item xs={0.7}>
+              <Box display="flex" key={tx.transaction.id}>
+                <Grid item xs={0.5} pt={2}>
                   <Typography className={css.nonce}>{nonce}</Typography>
                 </Grid>
 
-                <Grid item xs={11}>
+                <Grid item xs={11.5}>
                   <ExpandableTransactionItem item={tx} isGrouped />
                 </Grid>
               </Box>
@@ -47,17 +52,5 @@ const GroupedTxListItems = ({
     </Paper>
   )
 }
-
-// const GroupedTxListItems = ({
-//   groupedListItems,
-//   transactionHash,
-// }: {
-//   groupedListItems: Transaction[]
-//   transactionHash: string
-// }): ReactElement | null => {
-//   if (groupedListItems.length === 0) return null
-
-//   return <TxGroup groupedListItems={groupedListItems} />
-// }
 
 export default GroupedTxListItems
