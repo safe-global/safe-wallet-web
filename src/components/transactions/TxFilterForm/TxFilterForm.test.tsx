@@ -90,11 +90,7 @@ describe('TxFilterForm Component Tests', () => {
 
     const token = '694urt5'
 
-    const tokenInput =
-      screen.getByTestId('token-input').querySelector('input') ??
-      (() => {
-        throw new Error('Input element not found')
-      })()
+    const tokenInput = screen.getByTestId('token-input').querySelector('input') as HTMLInputElement
 
     expect(tokenInput).toBeInTheDocument()
 
@@ -109,11 +105,7 @@ describe('TxFilterForm Component Tests', () => {
     renderComponent()
 
     const errorMsgZero = 'The value must be greater than 0'
-    const amountInput =
-      screen.getByTestId('amount-input').querySelector('input') ??
-      (() => {
-        throw new Error('Input element not found')
-      })()
+    const amountInput = screen.getByTestId('amount-input').querySelector('input') as HTMLInputElement
 
     expect(amountInput).toBeInTheDocument()
 
@@ -127,11 +119,7 @@ describe('TxFilterForm Component Tests', () => {
   it('Verify that entering negative numbers and a non-numeric value in the amount filter is not allowed', async () => {
     renderComponent()
 
-    const amountInput =
-      screen.getByTestId('amount-input').querySelector('input') ??
-      (() => {
-        throw new Error('Input element not found')
-      })()
+    const amountInput = screen.getByTestId('amount-input').querySelector('input') as HTMLInputElement
 
     expect(amountInput).toBeInTheDocument()
 
@@ -151,11 +139,7 @@ describe('TxFilterForm Component Tests', () => {
     const outgoingRadio = screen.getByLabelText('Outgoing')
     fireEvent.click(outgoingRadio)
 
-    const nonceInput =
-      screen.getByTestId('nonce-input').querySelector('input') ??
-      (() => {
-        throw new Error('Input element not found')
-      })()
+    const nonceInput = screen.getByTestId('nonce-input').querySelector('input') as HTMLInputElement
 
     expect(nonceInput).toBeInTheDocument()
 
@@ -175,11 +159,7 @@ describe('TxFilterForm Component Tests', () => {
     const outgoingRadio = screen.getByLabelText('Module-based')
     fireEvent.click(outgoingRadio)
 
-    const addressInput =
-      screen.getByTestId('address-item').querySelector('input') ??
-      (() => {
-        throw new Error('Input element not found')
-      })()
+    const addressInput = screen.getByTestId('address-item').querySelector('input') as HTMLInputElement
 
     expect(addressInput).toBeInTheDocument()
 
