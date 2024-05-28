@@ -19,6 +19,7 @@ import { FeatureRoutes, hasFeature } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
+import Chip from '@mui/material/Chip'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
@@ -29,6 +30,19 @@ const isRouteEnabled = (route: string, chain?: ChainInfo) => {
 
   const featureRoute = FeatureRoutes[route]
   return !featureRoute || hasFeature(chain, featureRoute)
+}
+
+const NavItemLabel = ({ item }: { item: NavItem }) => {
+  const queueSize = useQueuedTxsLength()
+
+  if (item.href === AppRoutes.transactions.history) {
+    return <SidebarListItemCounter count={queueSize} />
+  }
+
+  if (item.href === AppRoutes.swap) {
+    return <Chip label="New" color="success" sx={{ ml: 1 }} />
+  }
+  return null
 }
 
 const Navigation = (): ReactElement => {
@@ -53,13 +67,6 @@ const Navigation = (): ReactElement => {
     // Indicate whether the current Safe needs an upgrade
     if (item.href === AppRoutes.settings.setup) {
       return safe.implementationVersionState === ImplementationVersionState.OUTDATED
-    }
-  }
-
-  const getCounter = (item: NavItem) => {
-    // Indicate qeueued txs
-    if (item.href === AppRoutes.transactions.history) {
-      return queueSize
     }
   }
 
@@ -98,7 +105,7 @@ const Navigation = (): ReactElement => {
               <SidebarListItemText data-testid="sidebar-list-item" bold>
                 {item.label}
 
-                <SidebarListItemCounter count={getCounter(item)} />
+                <NavItemLabel item={item} />
               </SidebarListItemText>
             </SidebarListItemButton>
           </ListItem>
