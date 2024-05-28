@@ -286,6 +286,7 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
         styleOverrides: {
           colorSuccess: ({ theme }) => ({
             backgroundColor: theme.palette.secondary.light,
+            height: '24px',
           }),
         },
       },
