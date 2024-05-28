@@ -1,7 +1,8 @@
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
+import BulkTxListGroup from '@/components/transactions/GroupedTxListItems/BulkTxListGroup'
 import { groupBulkTxs, groupConflictingTxs } from '@/utils/tx-list'
 import { Box } from '@mui/material'
-import type { TransactionDetails, TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import type { Transaction, TransactionDetails, TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement, ReactNode } from 'react'
 import { useMemo } from 'react'
 import TxListItem from '../TxListItem'
@@ -10,9 +11,25 @@ import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { isTransactionListItem } from '@/utils/transaction-guards'
 import { getTxDetailsWithBackoff } from '@/utils/transactions'
+import { uniq } from 'lodash'
 
 type TxListProps = {
   items: TransactionListPage['results']
+}
+
+// const isConflictGroup = (group: Transaction[]) => {
+//   const nonceList = group
+//     .map((item) => item.transaction.executionInfo)
+//     .filter(isMultisigExecutionInfo)
+//     .map((info) => info.nonce)
+//   return uniq(nonceList).length === 1
+// }
+const getBulkGroupTxHash = (group: Transaction[], txHashes: Record<string, string>) => {
+  const hashList = group.map((item) => {
+    const txId = item.transaction.id
+    return txHashes[txId]
+  })
+  return uniq(hashList).length === 1 ? hashList[0] : undefined
 }
 
 export const TxListGrid = ({ children }: { children: ReactNode }): ReactElement => {
@@ -38,11 +55,16 @@ const TxList = ({ items }: TxListProps): ReactElement => {
   const groupedByBulks = useMemo(() => groupBulkTxs(groupedByConflicts, txHashes), [groupedByConflicts, txHashes])
 
   const transactions = groupedByBulks.map((item, index) => {
-    if (Array.isArray(item)) {
-      return <GroupedTxListItems key={index} groupedListItems={item} />
+    if (!Array.isArray(item)) {
+      return <TxListItem key={index} item={item} />
     }
 
-    return <TxListItem key={index} item={item} />
+    const bulkTransactionHash = txHashes && getBulkGroupTxHash(item, txHashes)
+    if (bulkTransactionHash) {
+      return <BulkTxListGroup key={index} groupedListItems={item} txHash={bulkTransactionHash} />
+    }
+
+    return <GroupedTxListItems key={index} groupedListItems={item} />
   })
 
   return <TxListGrid>{transactions}</TxListGrid>
