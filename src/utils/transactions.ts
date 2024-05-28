@@ -34,6 +34,7 @@ import { toBeHex, AbiCoder } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
+import { backOff } from 'exponential-backoff'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -142,6 +143,17 @@ export const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
   return Promise.all(
     txs.map(async (tx) => {
       return await getTransactionDetails(chainId, tx.transaction.id)
+    }),
+  )
+}
+
+export const getTxDetailsWithBackoff = (txs: Transaction[], chainId: string) => {
+  return Promise.all(
+    txs.map(async (tx) => {
+      // return await getTransactionDetails(chainId, tx.transaction.id)
+      return await backOff(() => getTransactionDetails(chainId, tx.transaction.id), {
+        numOfAttempts: 19,
+      })
     }),
   )
 }
