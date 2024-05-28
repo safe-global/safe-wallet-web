@@ -8,10 +8,12 @@ import {
   ExecutionOptions,
   Status,
 } from 'zodiac-roles-deployments'
-import { type MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { OperationType, type MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { decodeBytes32String, type JsonRpcProvider } from 'ethers'
+import { KnownContracts, getModuleInstance } from '@gnosis.pm/zodiac'
 
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { Box, Button, CardActions, CircularProgress, Divider, Typography } from '@mui/material'
+import { Box, Button, CardActions, Chip, CircularProgress, Divider, Typography } from '@mui/material'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import CheckWallet from '@/components/common/CheckWallet'
 import TxCard from '@/components/tx-flow/common/TxCard'
@@ -24,6 +26,16 @@ import useAsync from '@/hooks/useAsync'
 import WalletRejectionError from './WalletRejectionError'
 import ErrorMessage from '../ErrorMessage'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+
+const Role = ({ children }: { children: string }) => {
+  let humanReadableRoleKey = children
+  try {
+    humanReadableRoleKey = decodeBytes32String(children)
+  } catch (e) {}
+
+  return <Chip label={humanReadableRoleKey} />
+}
 
 const PermissionsCheck: React.FC<{}> = ({}) => {
   const chainId = useChainId()
@@ -63,19 +75,21 @@ const PermissionsCheck: React.FC<{}> = ({}) => {
 
       {allowingRole && (
         <Typography>
-          As a member of the {allowingRole.roleKey} role you can execute this transaction immediately.
+          As a member of the <Role>{allowingRole.roleKey}</Role> role you can execute this transaction immediately.
         </Typography>
       )}
 
       {!allowingRole && (
         <>
           <Typography>
-            You are a member of the {mostLikelyRole.roleKey} role but it does not allow this transaction.
+            You are a member of the <Role>{mostLikelyRole.roleKey}</Role> role but it does not allow this transaction.
           </Typography>
 
           {mostLikelyRole.status && (
             <ErrorMessage>
-              The role permissions check fails with the following status: <code>{Status[mostLikelyRole.status]}</code>
+              The permissions check fails with the following status:
+              <br />
+              <code>{Status[mostLikelyRole.status]}</code>
             </ErrorMessage>
           )}
         </>
@@ -169,7 +183,7 @@ const useRoles = (metaTx?: MetaTransactionData) => {
       for (const rolesMod of rolesMods) {
         for (const role of rolesMod.roles) {
           if (role.members.includes(walletAddress)) {
-            potentialRoles.push({
+            result.push({
               modAddress: rolesMod.address,
               roleKey: role.key,
               status: metaTx ? checkTransaction(role, metaTx) : null,
@@ -181,10 +195,25 @@ const useRoles = (metaTx?: MetaTransactionData) => {
 
     return result
   }, [rolesMods, walletAddress, metaTx])
+  const web3ReadOnly = useWeb3ReadOnly()
 
-  // TODO if the static check is inconclusive (status: null), evaluate the condition through a test call
+  // if the static check is inconclusive (status: null), evaluate the condition through a test call
+  const [dynamicallyCheckedPotentialRoles] = useAsync(
+    () =>
+      Promise.all(
+        potentialRoles.map(async (entry) => {
+          console.log('dynamic check', entry.status, metaTx, walletAddress)
+          if (entry.status === null && metaTx && walletAddress && web3ReadOnly) {
+            entry.status = await checkCondition(entry.modAddress, entry.roleKey, metaTx, walletAddress, web3ReadOnly)
+          }
+          return entry
+        }),
+      ),
+    [potentialRoles, metaTx, walletAddress, web3ReadOnly],
+  )
 
-  return potentialRoles
+  // Return the statically checked roles while the dynamic checks are still pending
+  return dynamicallyCheckedPotentialRoles || potentialRoles
 }
 
 /**
@@ -214,8 +243,8 @@ const checkTransaction = (role: RoleSummary, metaTx: MetaTransactionData): Statu
 }
 
 const checkExecutionOptions = (execOptions: ExecutionOptions, metaTx: MetaTransactionData): Status => {
-  const isSend = BigInt(metaTx.value || '0') === BigInt(0)
-  const isDelegateCall = metaTx.operation === 1
+  const isSend = BigInt(metaTx.value || '0') > 0n
+  const isDelegateCall = metaTx.operation === OperationType.DelegateCall
 
   if (isSend && execOptions !== ExecutionOptions.Send && execOptions !== ExecutionOptions.Both) {
     return Status.SendNotAllowed
@@ -225,4 +254,37 @@ const checkExecutionOptions = (execOptions: ExecutionOptions, metaTx: MetaTransa
   }
 
   return Status.Ok
+}
+
+const checkCondition = async (
+  modAddress: `0x${string}`,
+  roleKey: `0x${string}`,
+  metaTx: MetaTransactionData,
+  from: `0x${string}`,
+  provider: JsonRpcProvider,
+) => {
+  const rolesModifier = getModuleInstance(KnownContracts.ROLES_V2, modAddress, provider)
+  try {
+    await rolesModifier.execTransactionWithRole.estimateGas(
+      metaTx.to,
+      BigInt(metaTx.value),
+      metaTx.data,
+      metaTx.operation || 0,
+      roleKey,
+      false,
+      { from },
+    )
+
+    return Status.Ok
+  } catch (e: any) {
+    const error = rolesModifier.interface.getError(e.data.slice(0, 10))
+    if (error === null || error.name !== 'ConditionViolation') {
+      console.error('Unexpected error in condition check', error, e.data, e)
+      return null
+    }
+
+    // status is a BigInt
+    const { status } = rolesModifier.interface.decodeErrorResult(error, e.data)
+    return Number(status) as Status
+  }
 }
