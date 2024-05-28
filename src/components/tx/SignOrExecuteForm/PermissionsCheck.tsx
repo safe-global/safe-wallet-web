@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import {
   type ChainId,
   chains,
@@ -8,12 +8,13 @@ import {
   ExecutionOptions,
   Status,
 } from 'zodiac-roles-deployments'
-import { OperationType, type MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { OperationType, type Transaction, type MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { decodeBytes32String, type JsonRpcProvider } from 'ethers'
 import { KnownContracts, getModuleInstance } from '@gnosis.pm/zodiac'
+import { Box, Button, CardActions, Chip, CircularProgress, Divider, Typography } from '@mui/material'
+import { backOff } from 'exponential-backoff'
 
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { Box, Button, CardActions, Chip, CircularProgress, Divider, Typography } from '@mui/material'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import CheckWallet from '@/components/common/CheckWallet'
 import TxCard from '@/components/tx-flow/common/TxCard'
@@ -27,6 +28,19 @@ import WalletRejectionError from './WalletRejectionError'
 import ErrorMessage from '../ErrorMessage'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { type SubmitCallback } from '.'
+import { getTxOptions } from '@/utils/transactions'
+import { isWalletRejection } from '@/utils/wallets'
+import { Errors, logError, trackError } from '@/services/exceptions'
+import { asError } from '@/services/exceptions/utils'
+import { SuccessScreenFlow } from '@/components/tx-flow/flows'
+import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
+import { useCurrentChain } from '@/hooks/useChains'
+import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import { assertOnboard, assertWallet } from '@/utils/helpers'
+import { trimTrailingSlash } from '@/utils/url'
+import { TxModalContext } from '@/components/tx-flow'
 
 const Role = ({ children }: { children: string }) => {
   let humanReadableRoleKey = children
@@ -37,10 +51,19 @@ const Role = ({ children }: { children: string }) => {
   return <Chip label={humanReadableRoleKey} />
 }
 
-const PermissionsCheck: React.FC<{}> = ({}) => {
+const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback }> = ({ onSubmit }) => {
   const chainId = useChainId()
+  const currentChain = useCurrentChain()
+  const onboard = useOnboard()
+  const wallet = useWallet()
+  const { safe } = useSafeInfo()
+
   const { safeTx, safeTxError } = useContext(SafeTxContext)
+  const [isPending, setIsPending] = useState<boolean>(true)
   const [isRejectedByUser, setIsRejectedByUser] = useState<boolean>(false)
+  const [submitError, setSubmitError] = useState<Error | undefined>()
+
+  const { setTxFlow } = useContext(TxModalContext)
 
   const roles = useRoles(safeTx?.data)
   const allowingRole = roles.find((role) => role.status === Status.Ok)
@@ -52,16 +75,64 @@ const PermissionsCheck: React.FC<{}> = ({}) => {
     roles.find((role) => role.status !== Status.TargetAddressNotAllowed) ||
     roles[0]
 
-  const isPending = false
+  // Wrap call routing it through the Roles mod with the allowing role
+  const txThroughRole = useExecuteThroughRole({
+    modAddress: allowingRole?.modAddress,
+    roleKey: allowingRole?.roleKey,
+    metaTx: safeTx?.data,
+  })
+  // Estimate gas limit
+  const { gasLimit, gasLimitError } = useGasLimit(txThroughRole)
+  const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
 
   const handleExecute = async () => {
+    assertWallet(wallet)
+    assertOnboard(onboard)
+
+    setIsRejectedByUser(false)
+    setIsPending(true)
+    setSubmitError(undefined)
     setIsRejectedByUser(false)
 
-    const txId = 'TODO'
+    if (!txThroughRole) {
+      throw new Error('Execution through role is not possible')
+    }
+
+    const txOptions = getTxOptions(advancedParams, currentChain)
+
+    let txHash: string
+    try {
+      txHash = await dispatchModuleTxExecution({ ...txThroughRole, ...txOptions }, onboard, chainId, safe.address.value)
+    } catch (_err) {
+      const err = asError(_err)
+      if (isWalletRejection(err)) {
+        setIsRejectedByUser(true)
+      } else {
+        trackError(Errors._815, err)
+        setSubmitError(err)
+      }
+      setIsPending(false)
+      return
+    }
+
+    // On success, wait for module tx to be indexed
+    const transactionService = currentChain?.transactionService
+    if (!transactionService) {
+      throw new Error('Transaction service not found')
+    }
+    const moduleTxId = await pollModuleTransactionId({
+      transactionService,
+      safeAddress: safe.address.value,
+      txHash,
+    })
+
+    onSubmit?.(moduleTxId, true)
 
     // Track tx event
-    const txType = await getTransactionTrackingType(chainId, txId)
+    const txType = await getTransactionTrackingType(chainId, moduleTxId)
     trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
+
+    setTxFlow(<SuccessScreenFlow txId={moduleTxId} />, undefined, false)
   }
 
   // Only render the card if the connected wallet is a member of any role
@@ -74,9 +145,18 @@ const PermissionsCheck: React.FC<{}> = ({}) => {
       <Typography variant="h5">Execute through role</Typography>
 
       {allowingRole && (
-        <Typography>
-          As a member of the <Role>{allowingRole.roleKey}</Role> role you can execute this transaction immediately.
-        </Typography>
+        <>
+          <Typography>
+            As a member of the <Role>{allowingRole.roleKey}</Role> role you can execute this transaction immediately.
+          </Typography>
+          <AdvancedParams
+            willExecute
+            params={advancedParams}
+            recommendedGasLimit={gasLimit}
+            onFormSubmit={setAdvancedParams}
+            gasLimitError={gasLimitError}
+          />
+        </>
       )}
 
       {!allowingRole && (
@@ -99,6 +179,12 @@ const PermissionsCheck: React.FC<{}> = ({}) => {
         <ErrorMessage error={safeTxError}>
           This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
         </ErrorMessage>
+      )}
+
+      {submitError && (
+        <Box mt={1}>
+          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+        </Box>
       )}
 
       {isRejectedByUser && (
@@ -202,7 +288,6 @@ const useRoles = (metaTx?: MetaTransactionData) => {
     () =>
       Promise.all(
         potentialRoles.map(async (entry) => {
-          console.log('dynamic check', entry.status, metaTx, walletAddress)
           if (entry.status === null && metaTx && walletAddress && web3ReadOnly) {
             entry.status = await checkCondition(entry.modAddress, entry.roleKey, metaTx, walletAddress, web3ReadOnly)
           }
@@ -256,6 +341,53 @@ const checkExecutionOptions = (execOptions: ExecutionOptions, metaTx: MetaTransa
   return Status.Ok
 }
 
+const useExecuteThroughRole = ({
+  modAddress,
+  roleKey,
+  metaTx,
+}: {
+  modAddress?: `0x${string}`
+  roleKey?: `0x${string}`
+  metaTx?: MetaTransactionData
+}) => {
+  const web3ReadOnly = useWeb3ReadOnly()
+  const wallet = useWallet()
+  const walletAddress = wallet?.address.toLowerCase() as undefined | `0x${string}`
+
+  return useMemo(
+    () =>
+      modAddress && roleKey && metaTx && walletAddress && web3ReadOnly
+        ? encodeExecuteThroughRole(modAddress, roleKey, metaTx, walletAddress, web3ReadOnly)
+        : undefined,
+    [modAddress, roleKey, metaTx, walletAddress, web3ReadOnly],
+  )
+}
+
+const encodeExecuteThroughRole = (
+  modAddress: `0x${string}`,
+  roleKey: `0x${string}`,
+  metaTx: MetaTransactionData,
+  from: `0x${string}`,
+  provider: JsonRpcProvider,
+): Transaction => {
+  const rolesModifier = getModuleInstance(KnownContracts.ROLES_V2, modAddress, provider)
+  const data = rolesModifier.interface.encodeFunctionData('execTransactionWithRole', [
+    metaTx.to,
+    BigInt(metaTx.value),
+    metaTx.data,
+    metaTx.operation || 0,
+    roleKey,
+    true,
+  ])
+
+  return {
+    to: modAddress,
+    data,
+    value: '0',
+    from,
+  }
+}
+
 const checkCondition = async (
   modAddress: `0x${string}`,
   roleKey: `0x${string}`,
@@ -283,8 +415,74 @@ const checkCondition = async (
       return null
     }
 
-    // status is a BigInt
+    // status is a BigInt, convert it to enum
     const { status } = rolesModifier.interface.decodeErrorResult(error, e.data)
     return Number(status) as Status
   }
+}
+
+const useGasLimit = (
+  tx?: Transaction,
+): {
+  gasLimit?: bigint
+  gasLimitError?: Error
+  gasLimitLoading: boolean
+} => {
+  const web3ReadOnly = useWeb3ReadOnly()
+
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint | undefined>(async () => {
+    if (!web3ReadOnly || !tx) return
+
+    return web3ReadOnly.estimateGas(tx)
+  }, [web3ReadOnly, tx])
+
+  useEffect(() => {
+    if (gasLimitError) {
+      logError(Errors._612, gasLimitError.message)
+    }
+  }, [gasLimitError])
+
+  return { gasLimit, gasLimitError, gasLimitLoading }
+}
+
+export const pollModuleTransactionId = async (props: {
+  transactionService: string
+  safeAddress: string
+  txHash: string
+}): Promise<string> => {
+  // exponential delay between attempts for around 4 min
+  return backOff(() => fetchModuleTransactionId(props), {
+    startingDelay: 750,
+    maxDelay: 20000,
+    numOfAttempts: 19,
+    retry: (e: any) => {
+      console.info('waiting for transaction-service to index the module transaction', e)
+      return true
+    },
+  })
+}
+
+const fetchModuleTransactionId = async ({
+  transactionService,
+  safeAddress,
+  txHash,
+}: {
+  transactionService: string
+  safeAddress: string
+  txHash: string
+}) => {
+  const url = `${trimTrailingSlash(
+    transactionService,
+  )}/api/v1/safes/${safeAddress}/module-transactions/?transaction_hash=${txHash}`
+  const { results } = await fetch(url).then((res) => {
+    if (res.ok && res.status === 200) {
+      return res.json() as Promise<any>
+    } else {
+      throw new Error('Error fetching Safe module transactions')
+    }
+  })
+
+  if (results.length === 0) throw new Error('module transaction not found')
+
+  return results[0].moduleTransactionId as string
 }
