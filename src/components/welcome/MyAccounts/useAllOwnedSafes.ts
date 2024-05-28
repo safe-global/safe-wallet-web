@@ -7,17 +7,32 @@ import { useEffect } from 'react'
 
 const CACHE_KEY = 'ownedSafesCache_'
 
+type OwnedSafesPerAddress = {
+  address: string | undefined
+  ownedSafes: AllOwnedSafes
+}
+
 const useAllOwnedSafes = (address: string): AsyncResult<AllOwnedSafes> => {
   const [cache, setCache] = useLocalStorage<AllOwnedSafes>(CACHE_KEY + address)
 
-  const [data, error, isLoading] = useAsync<AllOwnedSafes>(async () => {
-    if (!address) return {}
-    return getAllOwnedSafes(address)
+  const [data, error, isLoading] = useAsync<OwnedSafesPerAddress>(async () => {
+    if (!address)
+      return {
+        ownedSafes: {},
+        address: undefined,
+      }
+    const ownedSafes = await getAllOwnedSafes(address)
+    return {
+      ownedSafes,
+      address,
+    }
   }, [address])
 
   useEffect(() => {
-    if (data != undefined) setCache(data)
-  }, [data, setCache])
+    if (data?.ownedSafes != undefined && data.address === address) {
+      setCache(data.ownedSafes)
+    }
+  }, [address, cache, data, setCache])
 
   return [cache, error, isLoading]
 }
