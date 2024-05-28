@@ -33,13 +33,13 @@ describe('SettingsHeader', () => {
       expect(result.getByText('Notifications')).toBeInTheDocument()
     })
 
-    it('displays Security & Login if connected wallet is a social signer', () => {
+    it('displays Security tab if connected wallet is a social signer', () => {
       const mockWallet = connectedWalletBuilder().with({ label: ONBOARD_MPC_MODULE_LABEL }).build()
       jest.spyOn(wallet, 'default').mockReturnValue(mockWallet)
 
       const result = render(<SettingsHeader />)
 
-      expect(result.getByText('Security & Login')).toBeInTheDocument()
+      expect(result.getByText('Security')).toBeInTheDocument()
     })
   })
 
@@ -66,13 +66,13 @@ describe('SettingsHeader', () => {
       expect(result.getByText('Notifications')).toBeInTheDocument()
     })
 
-    it('displays Security & Login if connected wallet is a social signer', () => {
+    it('displays Security if connected wallet is a social signer', () => {
       const mockWallet = connectedWalletBuilder().with({ label: ONBOARD_MPC_MODULE_LABEL }).build()
       jest.spyOn(wallet, 'default').mockReturnValue(mockWallet)
 
       const result = render(<SettingsHeader />)
 
-      expect(result.getByText('Security & Login')).toBeInTheDocument()
+      expect(result.getByText('Security')).toBeInTheDocument()
     })
   })
 })

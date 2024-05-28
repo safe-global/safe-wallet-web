@@ -71,7 +71,7 @@ export const WalletInfo = ({
             <SocialLoginInfo wallet={wallet} chainInfo={chainInfo} size={36} />
 
             {socialWalletService && !socialWalletService.isMFAEnabled() && (
-              <Link href={{ pathname: AppRoutes.settings.securityLogin, query: router.query }} passHref>
+              <Link href={{ pathname: AppRoutes.settings.security, query: router.query }} passHref>
                 <Button
                   fullWidth
                   variant="contained"

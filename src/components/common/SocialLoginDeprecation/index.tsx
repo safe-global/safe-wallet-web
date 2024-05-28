@@ -18,7 +18,7 @@ const SocialLoginDeprecation = () => {
   }
 
   const settingsPage = {
-    pathname: AppRoutes.settings.securityLogin,
+    pathname: AppRoutes.settings.security,
     query: router.query,
   }
 
