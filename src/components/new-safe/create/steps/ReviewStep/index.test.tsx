@@ -7,7 +7,6 @@ import { render } from '@/tests/test-utils'
 import ReviewStep, { NetworkFee } from '@/components/new-safe/create/steps/ReviewStep/index'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import * as socialLogin from '@/services/mpc/SocialLoginModule'
 import { act, fireEvent } from '@testing-library/react'
 
 const mockChainInfo = {
@@ -20,28 +19,12 @@ const mockChainInfo = {
 } as ChainInfo
 
 describe('NetworkFee', () => {
-  it('should display the total fee if not social login', () => {
+  it('should display the total fee', () => {
     jest.spyOn(useWallet, 'default').mockReturnValue({ label: 'MetaMask' } as unknown as ConnectedWallet)
     const mockTotalFee = '0.0123'
     const result = render(<NetworkFee totalFee={mockTotalFee} chain={mockChainInfo} willRelay={true} />)
 
     expect(result.getByText(`≈ ${mockTotalFee} ${mockChainInfo.nativeCurrency.symbol}`)).toBeInTheDocument()
-  })
-
-  it('displays a sponsored by message for social login', () => {
-    jest.spyOn(useWallet, 'default').mockReturnValue({ label: 'Social Login' } as unknown as ConnectedWallet)
-    const result = render(<NetworkFee totalFee="0" chain={mockChainInfo} willRelay={true} />)
-
-    expect(result.getByText(/Your account is sponsored by Gnosis/)).toBeInTheDocument()
-  })
-
-  it('displays an error message for social login if there are no relays left', () => {
-    jest.spyOn(useWallet, 'default').mockReturnValue({ label: 'Social Login' } as unknown as ConnectedWallet)
-    const result = render(<NetworkFee totalFee="0" chain={mockChainInfo} willRelay={false} />)
-
-    expect(
-      result.getByText(/You have used up your 5 free transactions per hour. Please try again later/),
-    ).toBeInTheDocument()
   })
 })
 
@@ -129,7 +112,6 @@ describe('ReviewStep', () => {
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
     jest.spyOn(relay, 'hasRemainingRelays').mockReturnValue(true)
-    jest.spyOn(socialLogin, 'isSocialLoginWallet').mockReturnValue(false)
 
     const { getByText } = render(
       <ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />,

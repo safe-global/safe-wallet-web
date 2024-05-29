@@ -5,7 +5,6 @@ import { getExplorerLink } from './gateway'
 export enum FEATURES {
   ERC721 = 'ERC721',
   SAFE_APPS = 'SAFE_APPS',
-  CONTRACT_INTERACTION = 'CONTRACT_INTERACTION',
   DOMAIN_LOOKUP = 'DOMAIN_LOOKUP',
   SPENDING_LIMIT = 'SPENDING_LIMIT',
   EIP1559 = 'EIP1559',
@@ -18,7 +17,6 @@ export enum FEATURES {
   PUSH_NOTIFICATIONS = 'PUSH_NOTIFICATIONS',
   NATIVE_WALLETCONNECT = 'NATIVE_WALLETCONNECT',
   RECOVERY = 'RECOVERY',
-  SOCIAL_LOGIN = 'SOCIAL_LOGIN',
   COUNTERFACTUAL = 'COUNTERFACTUAL',
   DELETE_TX = 'DELETE_TX',
   SPEED_UP_TX = 'SPEED_UP_TX',
@@ -29,6 +27,8 @@ export enum FEATURES {
 export const FeatureRoutes = {
   [AppRoutes.apps.index]: FEATURES.SAFE_APPS,
   [AppRoutes.swap]: FEATURES.NATIVE_SWAPS,
+  [AppRoutes.balances.nfts]: FEATURES.ERC721,
+  [AppRoutes.settings.notifications]: FEATURES.PUSH_NOTIFICATIONS,
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {
@@ -42,4 +42,10 @@ export const getBlockExplorerLink = (
   if (chain.blockExplorerUriTemplate) {
     return getExplorerLink(address, chain.blockExplorerUriTemplate)
   }
+}
+
+export const isRouteEnabled = (route: string, chain?: ChainInfo) => {
+  if (!chain) return false
+  const featureRoute = FeatureRoutes[route]
+  return !featureRoute || hasFeature(chain, featureRoute)
 }

@@ -38,10 +38,12 @@ export const OVERVIEW_EVENTS = {
   TOTAL_SAFES_OWNED: {
     action: 'Total Safes owned',
     category: OVERVIEW_CATEGORY,
+    event: EventType.META,
   },
   TOTAL_SAFES_WATCHLIST: {
     action: 'Total Safes watchlist',
     category: OVERVIEW_CATEGORY,
+    event: EventType.META,
   },
   SIDEBAR: {
     action: 'Sidebar',
