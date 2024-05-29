@@ -29,7 +29,7 @@ import { hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
 
 const useActivateAccount = () => {
