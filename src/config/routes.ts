@@ -28,7 +28,7 @@ export const AppRoutes = {
   },
   settings: {
     setup: '/settings/setup',
-    securityLogin: '/settings/security-login',
+    security: '/settings/security',
     notifications: '/settings/notifications',
     modules: '/settings/modules',
     index: '/settings',

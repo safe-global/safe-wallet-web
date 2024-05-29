@@ -16,11 +16,6 @@ export const BATCH_EVENTS = {
     action: 'Tx added to batch',
     category,
   },
-  // On reorder of batch items
-  BATCH_REORDER: {
-    action: 'Batch reorder',
-    category,
-  },
   // When batch item details are expanded
   BATCH_EXPAND_TX: {
     action: 'Expand batched tx',
