@@ -1,9 +1,8 @@
 import { useCallback, useContext } from 'react'
-import { SendNFTsButton, SendTokensButton, TxBuilderButton } from '@/components/tx-flow/common/TxButton'
-import { Container, Grid, Paper, SvgIcon, Typography } from '@mui/material'
+import { MakeASwapButton, SendTokensButton, TxBuilderButton } from '@/components/tx-flow/common/TxButton'
+import { Container, Grid, Paper, Typography } from '@mui/material'
 import { TxModalContext } from '../../'
 import TokenTransferFlow from '../TokenTransfer'
-import AssetsIcon from '@/public/images/sidebar/assets.svg'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
 import { ProgressBar } from '@/components/common/ProgressBar'
 import ChainIndicator from '@/components/common/ChainIndicator'
@@ -44,19 +43,16 @@ const NewTxFlow = () => {
 
             <Grid item xs={12} md={5} className={css.pane} gap={2}>
               <Typography variant="h4" className={css.type}>
-                <SvgIcon component={AssetsIcon} inheritViewBox color="secondary" />
-                Assets
+                Manage assets
               </Typography>
 
               <SendTokensButton onClick={onTokensClick} />
-
-              <SendNFTsButton />
+              <MakeASwapButton />
 
               {txBuilder?.app && (
                 <>
                   <Typography variant="h4" className={css.type} mt={3}>
-                    <img src={txBuilder.app.iconUrl} height={24} width="auto" alt={txBuilder.app.name} /> Contract
-                    interaction
+                    Interact with contracts
                   </Typography>
 
                   <TxBuilderButton />
