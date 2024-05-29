@@ -11,7 +11,7 @@ import * as onboardHooks from '@/hooks/wallets/useOnboard'
 import * as txSender from '@/services/tx/tx-sender/dispatch'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { type OnboardAPI } from '@web3-onboard/core'
-import { AbiCoder, encodeBytes32String } from 'ethers'
+import { AbiCoder, ZeroAddress, encodeBytes32String } from 'ethers'
 import PermissionsCheck, * as permissionsCheckModule from '../PermissionsCheck'
 
 // We assume that CheckWallet always returns true
@@ -41,6 +41,33 @@ jest.mock('@/services/transactions', () => ({
 
 describe('PermissionsCheck', () => {
   let executeSpy: jest.SpyInstance
+  let fetchRolesModMock: jest.SpyInstance
+
+  const mockConnectedWalletAddress = (address: string) => {
+    // Onboard
+    jest.spyOn(onboardHooks, 'default').mockReturnValue({
+      setChain: jest.fn(),
+      state: {
+        get: () => ({
+          wallets: [
+            {
+              label: 'MetaMask',
+              accounts: [{ address }],
+              connected: true,
+              chains: [{ id: '1' }],
+            },
+          ],
+        }),
+      },
+    } as unknown as OnboardAPI)
+
+    // Wallet
+    jest.spyOn(wallet, 'default').mockReturnValue({
+      chainId: '1',
+      label: 'MetaMask',
+      address,
+    } as unknown as ConnectedWallet)
+  }
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -54,35 +81,11 @@ describe('PermissionsCheck', () => {
       safeLoaded: true,
     }))
 
-    // Onboard
-    jest.spyOn(onboardHooks, 'default').mockReturnValue({
-      setChain: jest.fn(),
-      state: {
-        get: () => ({
-          wallets: [
-            {
-              label: 'MetaMask',
-              accounts: [{ address: MEMBER_ADDRESS }],
-              connected: true,
-              chains: [{ id: '1' }],
-            },
-          ],
-        }),
-      },
-    } as unknown as OnboardAPI)
-
-    // Wallet
-    jest.spyOn(wallet, 'default').mockReturnValue({
-      chainId: '1',
-      label: 'MetaMask',
-      address: MEMBER_ADDRESS,
-    } as unknown as ConnectedWallet)
-
     // Roles mod fetching
 
     // Mock the Roles mod fetching function to return the test roles mod
 
-    jest.spyOn(zodiacRoles, 'fetchRolesMod').mockReturnValue(Promise.resolve(TEST_ROLES_MOD as any))
+    fetchRolesModMock = jest.spyOn(zodiacRoles, 'fetchRolesMod').mockReturnValue(Promise.resolve(TEST_ROLES_MOD as any))
 
     // Mock signing and dispatching the module transaction
     executeSpy = jest
@@ -96,7 +99,52 @@ describe('PermissionsCheck', () => {
     jest.spyOn(permissionsCheckModule, 'pollModuleTransactionId').mockReturnValue(Promise.resolve('i1234567890'))
   })
 
+  it('only shows the card when the user is a member of any role', async () => {
+    mockConnectedWalletAddress(SAFE_INFO.owners[0].value) // connect as safe owner (not a role member)
+
+    const safeTx = createMockSafeTransaction({
+      to: ZeroAddress,
+      data: '0xd0e30db0', // deposit()
+      value: AbiCoder.defaultAbiCoder().encode(['uint256'], [123]),
+      operation: OperationType.Call,
+    })
+
+    const { queryByText } = render(<PermissionsCheck safeTx={safeTx} />)
+
+    // wait for the Roles mod to be fetched
+    await waitFor(() => {
+      expect(fetchRolesModMock).toBeCalled()
+    })
+
+    // the card is not shown
+    expect(queryByText('Execute through role')).not.toBeInTheDocument()
+  })
+
+  it('disables the submit button when the call is not allowed and shows the permission check status', async () => {
+    mockConnectedWalletAddress(MEMBER_ADDRESS)
+
+    const safeTx = createMockSafeTransaction({
+      to: ZeroAddress,
+      data: '0xd0e30db0', // deposit()
+      value: AbiCoder.defaultAbiCoder().encode(['uint256'], [123]),
+      operation: OperationType.Call,
+    })
+
+    const { findByText, getByText } = render(<PermissionsCheck safeTx={safeTx} />)
+    expect(await findByText('Execute through role', { selector: 'button' })).toBeDisabled()
+
+    expect(
+      getByText(
+        textContentMatcher('You are a member of the eth_wrapping role but it does not allow this transaction.'),
+      ),
+    ).toBeInTheDocument()
+
+    expect(getByText('TargetAddressNotAllowed')).toBeInTheDocument()
+  })
+
   it('execute the tx when the submit button is clicked', async () => {
+    mockConnectedWalletAddress(MEMBER_ADDRESS)
+
     const safeTx = createMockSafeTransaction({
       to: WETH_ADDRESS,
       data: '0xd0e30db0', // deposit()
@@ -187,4 +235,35 @@ const TEST_ROLES_MOD = {
       ],
     },
   ],
+}
+
+/**
+ * Getting the deepest element that contain string / match regex even when it split between multiple elements
+ *
+ * @example
+ * For:
+ * <div>
+ *   <span>Hello</span><span> World</span>
+ * </div>
+ *
+ * screen.getByText('Hello World') // ❌ Fail
+ * screen.getByText(textContentMatcher('Hello World')) // ✅ pass
+ */
+function textContentMatcher(textMatch: string | RegExp) {
+  const hasText =
+    typeof textMatch === 'string'
+      ? (node: Element) => node.textContent === textMatch
+      : (node: Element) => textMatch.test(node.textContent || '')
+
+  const matcher = (_content: string, node: Element | null) => {
+    if (!node || !hasText(node)) {
+      return false
+    }
+
+    return Array.from(node?.children || []).every((child) => !hasText(child))
+  }
+
+  matcher.toString = () => `textContentMatcher(${textMatch})`
+
+  return matcher
 }
