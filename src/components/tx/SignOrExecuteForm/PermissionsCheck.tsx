@@ -155,7 +155,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
 
       {allowingRole && (
         <>
-          <Typography>
+          <Typography component="div">
             As a member of the <Role>{allowingRole.roleKey}</Role> role you can execute this transaction immediately.
           </Typography>
           <AdvancedParams
@@ -170,7 +170,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
 
       {!allowingRole && (
         <>
-          <Typography>
+          <Typography component="div">
             You are a member of the <Role>{mostLikelyRole.roleKey}</Role> role but it does not allow this transaction.
           </Typography>
 
