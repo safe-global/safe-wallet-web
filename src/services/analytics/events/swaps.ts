@@ -11,4 +11,5 @@ export const SWAP_LABELS = {
   dashboard: 'dashboard',
   sidebar: 'sidebar',
   asset: 'asset',
+  promoWidget: 'promoWidget',
 }

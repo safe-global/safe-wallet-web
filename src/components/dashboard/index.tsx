@@ -16,8 +16,10 @@ import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoveryS
 import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSection'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
+const SwapWidget = dynamic(() => import('@/features/swap/components/SwapWidget'))
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
@@ -39,6 +41,10 @@ const Dashboard = (): ReactElement => {
 
         <Grid item xs={12}>
           <FirstSteps />
+        </Grid>
+
+        <Grid item xs={12}>
+          <SwapWidget />
         </Grid>
 
         {safe.deployed && (
