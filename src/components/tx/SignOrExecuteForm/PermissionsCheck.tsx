@@ -42,8 +42,8 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { assertOnboard, assertWallet } from '@/utils/helpers'
-import { trimTrailingSlash } from '@/utils/url'
 import { TxModalContext } from '@/components/tx-flow'
+import { getModuleTransactionId } from '@/services/transactions'
 
 const Role = ({ children }: { children: string }) => {
   let humanReadableRoleKey = children
@@ -454,13 +454,13 @@ const useGasLimit = (
   return { gasLimit, gasLimitError, gasLimitLoading }
 }
 
-const pollModuleTransactionId = async (props: {
+export const pollModuleTransactionId = async (props: {
   transactionService: string
   safeAddress: string
   txHash: string
 }): Promise<string> => {
   // exponential delay between attempts for around 4 min
-  return backOff(() => fetchModuleTransactionId(props), {
+  return backOff(() => getModuleTransactionId(props), {
     startingDelay: 750,
     maxDelay: 20000,
     numOfAttempts: 19,
@@ -469,29 +469,4 @@ const pollModuleTransactionId = async (props: {
       return true
     },
   })
-}
-
-const fetchModuleTransactionId = async ({
-  transactionService,
-  safeAddress,
-  txHash,
-}: {
-  transactionService: string
-  safeAddress: string
-  txHash: string
-}) => {
-  const url = `${trimTrailingSlash(
-    transactionService,
-  )}/api/v1/safes/${safeAddress}/module-transactions/?transaction_hash=${txHash}`
-  const { results } = await fetch(url).then((res) => {
-    if (res.ok && res.status === 200) {
-      return res.json() as Promise<any>
-    } else {
-      throw new Error('Error fetching Safe module transactions')
-    }
-  })
-
-  if (results.length === 0) throw new Error('module transaction not found')
-
-  return results[0].moduleTransactionId as string
 }
