@@ -35,6 +35,11 @@
   grid-template-areas: 'type info date confirmations status actions';
 }
 
+.gridContainer.isBulkGroup {
+  grid-template-columns: minmax(200px, 3fr) var(--grid-info) var(--grid-date) var(--grid-status);
+  grid-template-areas: 'type info date status';
+}
+
 .gridContainer.untrusted {
   opacity: 0.4;
 }

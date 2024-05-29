@@ -22,11 +22,11 @@ const GroupedTxListItems = ({
         <Grid item xs={0.5} display="flex" alignItems="center">
           <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           Transactions executed in bulk
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={6} ml={5}>
           {generateDataRowValue(transactionHash, 'hash', true)}
         </Grid>
 
@@ -42,7 +42,7 @@ const GroupedTxListItems = ({
                 </Grid>
 
                 <Grid item xs={11.5}>
-                  <ExpandableTransactionItem item={tx} isGrouped />
+                  <ExpandableTransactionItem item={tx} isBulkGroup={true} />
                 </Grid>
               </Box>
             )

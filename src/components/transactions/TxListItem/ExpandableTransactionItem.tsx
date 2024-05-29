@@ -13,12 +13,14 @@ import { trackEvent, TX_LIST_EVENTS } from '@/services/analytics'
 
 type ExpandableTransactionItemProps = {
   isGrouped?: boolean
+  isBulkGroup?: boolean
   item: Transaction
   txDetails?: TransactionDetails
 }
 
 export const ExpandableTransactionItem = ({
   isGrouped = false,
+  isBulkGroup = false,
   item,
   txDetails,
   testId,
@@ -56,7 +58,7 @@ export const ExpandableTransactionItem = ({
           },
         }}
       >
-        <TxSummary item={item} isGrouped={isGrouped} />
+        <TxSummary item={item} isGrouped={isGrouped} isBulkGroup={isBulkGroup} />
       </AccordionSummary>
 
       <AccordionDetails data-testid="accordion-details" sx={{ padding: 0 }}>
