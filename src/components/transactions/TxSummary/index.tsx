@@ -47,12 +47,11 @@ const TxSummary = ({ item, isGrouped, isBulkGroup }: TxSummaryProps): ReactEleme
       })}
       id={tx.id}
     >
-      {(nonce !== undefined && !isGrouped) ||
-        (!isBulkGroup && (
-          <Box gridArea="nonce" data-testid="nonce" className={css.nonce}>
-            {nonce}
-          </Box>
-        ))}
+      {nonce !== undefined && !isGrouped && !isBulkGroup && (
+        <Box gridArea="nonce" data-testid="nonce" className={css.nonce}>
+          {nonce}
+        </Box>
+      )}
 
       {!isTrusted && (
         <Box data-testid="warning" gridArea="nonce">

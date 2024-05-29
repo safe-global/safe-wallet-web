@@ -22,13 +22,3 @@
   border-radius: var(--space-1);
   flex: 1;
 }
-
-/* @media (max-width: 1024px) {
-  .container {
-    gap: var(--space-1);
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'nonce warning warning'
-      'items items items';
-  }
-} */

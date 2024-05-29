@@ -18,15 +18,15 @@ const GroupedTxListItems = ({
 
   return (
     <Paper className={css.container}>
-      <Grid container>
-        <Grid item xs={0.5} display="flex" alignItems="center">
+      <Grid container gap={1}>
+        <Grid item xs={1} sm={0.5} display="flex" alignItems="center">
           <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
         </Grid>
-        <Grid item xs={3}>
-          Transactions executed in bulk
+        <Grid item xs md={6} lg={3} mr={3} alignContent="center">
+          <Typography noWrap>Transactions executed in bulk</Typography>
         </Grid>
 
-        <Grid item xs={6} ml={5}>
+        <Grid item xs>
           {generateDataRowValue(transactionHash, 'hash', true)}
         </Grid>
 
@@ -37,11 +37,11 @@ const GroupedTxListItems = ({
               : ''
             return (
               <Box display="flex" key={tx.transaction.id}>
-                <Grid item xs={0.5} pt={2}>
+                <Grid item xs={1} sm={0.5} mt={2} mr={1}>
                   <Typography className={css.nonce}>{nonce}</Typography>
                 </Grid>
 
-                <Grid item xs={11.5}>
+                <Grid item xs={11} sm={11.5}>
                   <ExpandableTransactionItem item={tx} isBulkGroup={true} />
                 </Grid>
               </Box>
