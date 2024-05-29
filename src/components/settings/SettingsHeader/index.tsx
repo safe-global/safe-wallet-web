@@ -7,11 +7,15 @@ import css from '@/components/common/PageHeader/styles.module.css'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isRouteEnabled } from '@/utils/chains'
+import madProps from '@/utils/mad-props'
 
-const SettingsHeader = (): ReactElement => {
-  const safeAddress = useSafeAddress()
-  const chain = useCurrentChain()
-
+export const SettingsHeader = ({
+  safeAddress,
+  chain,
+}: {
+  safeAddress: ReturnType<typeof useSafeAddress>
+  chain: ReturnType<typeof useCurrentChain>
+}): ReactElement => {
   const navItems = safeAddress
     ? settingsNavItems.filter((route) => isRouteEnabled(route.href, chain))
     : generalSettingsNavItems
@@ -28,4 +32,7 @@ const SettingsHeader = (): ReactElement => {
   )
 }
 
-export default SettingsHeader
+export default madProps(SettingsHeader, {
+  safeAddress: useSafeAddress,
+  chain: useCurrentChain,
+})
