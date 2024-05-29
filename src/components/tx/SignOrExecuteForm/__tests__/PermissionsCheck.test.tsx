@@ -2,18 +2,17 @@ import { createMockSafeTransaction } from '@/tests/transactions'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { type ReactElement } from 'react'
 import * as zodiacRoles from 'zodiac-roles-deployments'
+import { fireEvent, render, waitFor, mockWeb3Provider } from '@/tests/test-utils'
 
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as onboardHooks from '@/hooks/wallets/useOnboard'
 import * as txSender from '@/services/tx/tx-sender/dispatch'
-import { mockWeb3Provider, render } from '@/tests/test-utils'
-import { fireEvent, waitFor } from '@testing-library/react'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { AbiCoder, encodeBytes32String } from 'ethers'
-import PermissionsCheck from '../PermissionsCheck'
+import PermissionsCheck, * as permissionsCheckModule from '../PermissionsCheck'
 
 // We assume that CheckWallet always returns true
 jest.mock('@/components/common/CheckWallet', () => ({
@@ -30,8 +29,14 @@ jest.mock('@/hooks/useChains', () => ({
     chainId: '1',
     chainName: 'Ethereum',
     features: [],
+    transactionService: 'https://tx.service.mock',
   })),
   useHasFeature: jest.fn(() => true), // used to check for EIP1559 support
+}))
+
+// mock getModuleTransactionId
+jest.mock('@/services/transactions', () => ({
+  getModuleTransactionId: jest.fn(() => 'i1234567890'),
 }))
 
 describe('PermissionsCheck', () => {
@@ -87,6 +92,8 @@ describe('PermissionsCheck', () => {
     // Mock return value of useWeb3ReadOnly
     // It's only used for eth_estimateGas requests
     mockWeb3Provider([])
+
+    jest.spyOn(permissionsCheckModule, 'pollModuleTransactionId').mockReturnValue(Promise.resolve('i1234567890'))
   })
 
   it('execute the tx when the submit button is clicked', async () => {
@@ -97,7 +104,9 @@ describe('PermissionsCheck', () => {
       operation: OperationType.Call,
     })
 
-    const { findByText } = render(<PermissionsCheck safeTx={safeTx} />)
+    const onSubmit = jest.fn()
+
+    const { findByText } = render(<PermissionsCheck safeTx={safeTx} onSubmit={onSubmit} />)
 
     fireEvent.click(await findByText('Execute through role', { selector: 'button' }))
 
@@ -113,6 +122,11 @@ describe('PermissionsCheck', () => {
         expect.anything(),
         expect.anything(),
       )
+    })
+
+    // calls provided onSubmit callback
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalled()
     })
   })
 })
