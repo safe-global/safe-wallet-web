@@ -23,7 +23,7 @@ import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { waitForCreateSafeTx } from '@/services/tx/txMonitor'
 import useGasPrice from '@/hooks/useGasPrice'
 import { hasFeature } from '@/utils/chains'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES } from '@/utils/chains'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { usePendingSafe } from './usePendingSafe'
 

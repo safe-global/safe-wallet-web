@@ -4,11 +4,11 @@ import Head from 'next/head'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import SecurityLogin from '@/components/settings/SecurityLogin'
 
-const SecurityLoginPage: NextPage = () => {
+const SecurityPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Security & Login'}</title>
+        <title>{'Safe{Wallet} – Settings – Security'}</title>
       </Head>
 
       <SettingsHeader />
@@ -20,4 +20,4 @@ const SecurityLoginPage: NextPage = () => {
   )
 }
 
-export default SecurityLoginPage
+export default SecurityPage

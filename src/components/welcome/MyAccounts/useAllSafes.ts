@@ -8,7 +8,6 @@ import useChains from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectUndeployedSafes } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
-
 export type SafeItem = {
   chainId: string
   address: string
@@ -37,12 +36,15 @@ export const useHasSafes = () => {
 
 const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
-  const [allOwned] = useAllOwnedSafes(walletAddress)
+  const [allOwned, , allOwnedLoading] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
   const { configs } = useChains()
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
   return useMemo<SafeItems | undefined>(() => {
+    if (walletAddress && (allOwned === undefined || allOwnedLoading)) {
+      return undefined
+    }
     const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned || {})))
 
     return chains.flatMap((chainId) => {
@@ -64,7 +66,7 @@ const useAllSafes = (): SafeItems | undefined => {
         }
       })
     })
-  }, [allAdded, allOwned, configs, undeployedSafes, walletAddress])
+  }, [allAdded, allOwned, allOwnedLoading, configs, undeployedSafes, walletAddress])
 }
 
 export default useAllSafes

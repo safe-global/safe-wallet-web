@@ -11,8 +11,8 @@ import {
   type SafeMessage,
   type EIP712TypedData,
   type ChainInfo,
-  FEATURES,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES } from '@/utils/chains'
 
 import { hasFeature } from './chains'
 import { asError } from '@/services/exceptions/utils'

@@ -90,8 +90,8 @@ export const settingsNavItems = [
     href: AppRoutes.settings.appearance,
   },
   {
-    label: 'Security & Login',
-    href: AppRoutes.settings.securityLogin,
+    label: 'Security',
+    href: AppRoutes.settings.security,
   },
   {
     label: 'Notifications',
@@ -129,8 +129,8 @@ export const generalSettingsNavItems = [
     href: AppRoutes.settings.notifications,
   },
   {
-    label: 'Security & Login',
-    href: AppRoutes.settings.securityLogin,
+    label: 'Security',
+    href: AppRoutes.settings.security,
   },
   {
     label: 'Data',
