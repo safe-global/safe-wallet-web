@@ -19,7 +19,6 @@ import { FeatureRoutes, hasFeature } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
-import Chip from '@mui/material/Chip'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
@@ -32,17 +31,14 @@ const isRouteEnabled = (route: string, chain?: ChainInfo) => {
   return !featureRoute || hasFeature(chain, featureRoute)
 }
 
-const NavItemLabel = ({ item }: { item: NavItem }) => {
+const NavItemTag = ({ item }: { item: NavItem }) => {
   const queueSize = useQueuedTxsLength()
 
   if (item.href === AppRoutes.transactions.history) {
     return <SidebarListItemCounter count={queueSize} />
   }
 
-  if (item.href === AppRoutes.swap) {
-    return <Chip label="New" color="success" sx={{ ml: 1 }} />
-  }
-  return null
+  return item.tag
 }
 
 const Navigation = (): ReactElement => {
@@ -105,7 +101,7 @@ const Navigation = (): ReactElement => {
               <SidebarListItemText data-testid="sidebar-list-item" bold>
                 {item.label}
 
-                <NavItemLabel item={item} />
+                <NavItemTag item={item} />
               </SidebarListItemText>
             </SidebarListItemButton>
           </ListItem>
