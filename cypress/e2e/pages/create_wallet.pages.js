@@ -87,22 +87,6 @@ export function verifySponsorMessageIsPresent() {
   cy.get(networkFeeSection).contains(sponsorStr).should('exist')
 }
 
-export function verifyGoogleConnectBtnIsDisabled() {
-  cy.get(googleConnectBtn).should('be.disabled')
-}
-
-export function verifyGoogleConnectBtnIsEnabled() {
-  cy.get(googleConnectBtn).should('not.be.disabled')
-}
-
-export function verifyGoogleSignin() {
-  return cy.get(googleSignedinBtn).should('exist')
-}
-
-export function verifyGoogleAccountInfoInHeader() {
-  return cy.get(accountInfoHeader).should('exist')
-}
-
 export function verifyPolicy1_1() {
   cy.contains(policy1_2).should('exist')
   // TOD: Need data-cy for containers

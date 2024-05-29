@@ -51,7 +51,6 @@ export const AppRoutes = {
     history: '/transactions/history',
   },
   welcome: {
-    socialLogin: '/welcome/social-login',
     index: '/welcome',
     accounts: '/welcome/accounts',
   },
