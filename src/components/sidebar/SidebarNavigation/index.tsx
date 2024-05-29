@@ -31,16 +31,6 @@ const isRouteEnabled = (route: string, chain?: ChainInfo) => {
   return !featureRoute || hasFeature(chain, featureRoute)
 }
 
-const NavItemTag = ({ item }: { item: NavItem }) => {
-  const queueSize = useQueuedTxsLength()
-
-  if (item.href === AppRoutes.transactions.history) {
-    return <SidebarListItemCounter count={queueSize} />
-  }
-
-  return item.tag
-}
-
 const Navigation = (): ReactElement => {
   const chain = useCurrentChain()
   const router = useRouter()
@@ -85,6 +75,12 @@ const Navigation = (): ReactElement => {
       {enabledNavItems.map((item) => {
         const isSelected = currentSubdirectory === getSubdirectory(item.href)
 
+        let ItemTag = item.tag ? item.tag : null
+
+        if (item.href === AppRoutes.transactions.history) {
+          ItemTag = queueSize ? <SidebarListItemCounter count={queueSize} /> : null
+        }
+
         return (
           <ListItem
             key={item.href}
@@ -101,7 +97,7 @@ const Navigation = (): ReactElement => {
               <SidebarListItemText data-testid="sidebar-list-item" bold>
                 {item.label}
 
-                <NavItemTag item={item} />
+                {ItemTag}
               </SidebarListItemText>
             </SidebarListItemButton>
           </ListItem>
