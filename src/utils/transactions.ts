@@ -150,9 +150,8 @@ export const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
 export const getTxDetailsWithBackoff = (txs: Transaction[], chainId: string) => {
   return Promise.all(
     txs.map(async (tx) => {
-      // return await getTransactionDetails(chainId, tx.transaction.id)
       return await backOff(() => getTransactionDetails(chainId, tx.transaction.id), {
-        numOfAttempts: 19,
+        numOfAttempts: 10,
       })
     }),
   )

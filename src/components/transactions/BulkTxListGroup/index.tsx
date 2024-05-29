@@ -22,7 +22,7 @@ const GroupedTxListItems = ({
         <Grid item xs={1} sm={0.5} display="flex" alignItems="center">
           <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
         </Grid>
-        <Grid item xs md={6} lg={3} mr={3} alignContent="center">
+        <Grid item md={6} lg={3} mr={3} alignContent="center">
           <Typography noWrap>Transactions executed in bulk</Typography>
         </Grid>
 
@@ -37,7 +37,7 @@ const GroupedTxListItems = ({
               : ''
             return (
               <Box display="flex" key={tx.transaction.id}>
-                <Grid item xs={1} sm={0.5} mt={2} mr={1}>
+                <Grid item xs={1} sm={0.5} mt={2}>
                   <Typography className={css.nonce}>{nonce}</Typography>
                 </Grid>
 

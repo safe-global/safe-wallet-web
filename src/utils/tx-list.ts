@@ -7,10 +7,15 @@ import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-st
 
 type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
+export const groupTxs = (list: TransactionListItem[], txHashes: Record<string, string> | undefined) => {
+  const groupedByConflicts = _groupConflictingTxs(list)
+  return _groupBulkTxs(groupedByConflicts, txHashes)
+}
+
 /**
  * Group txs by conflict header
  */
-export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => {
+const _groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => {
   return list
     .reduce<GroupedTxs>((resultItems, item) => {
       if (isConflictHeaderListItem(item)) {
@@ -36,7 +41,7 @@ export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => 
 /**
  * Group txs by tx hash
  */
-export const groupBulkTxs = (list: GroupedTxs, txHashes: Record<string, string> | undefined): GroupedTxs => {
+const _groupBulkTxs = (list: GroupedTxs, txHashes: Record<string, string> | undefined): GroupedTxs => {
   if (!txHashes) return list
 
   return list

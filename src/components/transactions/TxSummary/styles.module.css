@@ -28,7 +28,7 @@
   grid-template-areas: 'nonce type info date status';
 }
 
-.gridContainer.grouped {
+.gridContainer.conflictGroup {
   grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations) var(--grid-status) var(
       --grid-actions
     );
