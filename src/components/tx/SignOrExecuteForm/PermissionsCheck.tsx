@@ -8,20 +8,23 @@ import {
   ExecutionOptions,
   Status,
 } from 'zodiac-roles-deployments'
-import { OperationType, type Transaction, type MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import {
+  OperationType,
+  type Transaction,
+  type MetaTransactionData,
+  type SafeTransaction,
+} from '@safe-global/safe-core-sdk-types'
 import { decodeBytes32String, type JsonRpcProvider } from 'ethers'
 import { KnownContracts, getModuleInstance } from '@gnosis.pm/zodiac'
 import { Box, Button, CardActions, Chip, CircularProgress, Divider, Typography } from '@mui/material'
 import { backOff } from 'exponential-backoff'
 
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import CheckWallet from '@/components/common/CheckWallet'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
-import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useAsync from '@/hooks/useAsync'
 import WalletRejectionError from './WalletRejectionError'
@@ -51,14 +54,18 @@ const Role = ({ children }: { children: string }) => {
   return <Chip label={humanReadableRoleKey} />
 }
 
-const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback }> = ({ onSubmit }) => {
-  const chainId = useChainId()
+const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransaction; safeTxError?: Error }> = ({
+  onSubmit,
+  safeTx,
+  safeTxError,
+}) => {
   const currentChain = useCurrentChain()
   const onboard = useOnboard()
   const wallet = useWallet()
   const { safe } = useSafeInfo()
 
-  const { safeTx, safeTxError } = useContext(SafeTxContext)
+  const chainId = currentChain?.chainId || '1'
+
   const [isPending, setIsPending] = useState<boolean>(false)
   const [isRejectedByUser, setIsRejectedByUser] = useState<boolean>(false)
   const [submitError, setSubmitError] = useState<Error | undefined>()
