@@ -166,7 +166,7 @@ const BlindSigningWarning = ({
   return (
     <ErrorMessage level={isBlindSigningEnabled ? 'warning' : 'error'}>
       This request involves{' '}
-      <Link component={NextLink} href={{ pathname: AppRoutes.settings.securityLogin, query }}>
+      <Link component={NextLink} href={{ pathname: AppRoutes.settings.security, query }}>
         blind signing
       </Link>
       , which can lead to unpredictable outcomes.
@@ -176,7 +176,7 @@ const BlindSigningWarning = ({
       ) : (
         <>
           If you wish to proceed, you must first{' '}
-          <Link component={NextLink} href={{ pathname: AppRoutes.settings.securityLogin, query }}>
+          <Link component={NextLink} href={{ pathname: AppRoutes.settings.security, query }}>
             enable blind signing
           </Link>
           .

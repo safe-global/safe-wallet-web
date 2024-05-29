@@ -45,8 +45,4 @@
     width: 22px;
     height: auto;
   }
-
-  .socialLoginInfo > div > div:last-child {
-    display: none;
-  }
 }
