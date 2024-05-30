@@ -32,7 +32,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const safeId = useChainId() + useSafeAddress()
   const prevSafeId = useRef<string>(safeId ?? '')
   const pathname = usePathname()
-  const prevPathname = useRef<string>(pathname)
+  const prevPathname = useRef<string | null>(pathname)
 
   const handleModalClose = useCallback(() => {
     if (shouldWarn.current && !confirmClose()) {
