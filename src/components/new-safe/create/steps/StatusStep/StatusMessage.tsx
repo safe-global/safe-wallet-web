@@ -48,7 +48,7 @@ const StatusMessage = ({
 }: {
   status: SafeCreationEvent
   isError: boolean
-  pendingSafe: UndeployedSafe
+  pendingSafe: UndeployedSafe | undefined
 }) => {
   const stepInfo = getStep(status)
   const chain = useCurrentChain()
@@ -56,7 +56,7 @@ const StatusMessage = ({
   const isSuccess = status === SafeCreationEvent.SUCCESS
   const spinnerStatus = isSuccess ? SpinnerStatus.SUCCESS : SpinnerStatus.PROCESSING
   const explorerLink =
-    chain && pendingSafe.status.txHash ? getBlockExplorerLink(chain, pendingSafe.status.txHash) : undefined
+    chain && pendingSafe?.status.txHash ? getBlockExplorerLink(chain, pendingSafe.status.txHash) : undefined
 
   return (
     <>

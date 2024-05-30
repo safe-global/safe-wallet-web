@@ -2,14 +2,12 @@ import { useCounter } from '@/components/common/Notifications/useCounter'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import StatusMessage from '@/components/new-safe/create/steps/StatusStep/StatusMessage'
+import useUndeployedSafe from '@/components/new-safe/create/steps/StatusStep/useUndeployedSafe'
 import lightPalette from '@/components/theme/lightPalette'
 import { AppRoutes } from '@/config/routes'
 import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
-import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
-import useChainId from '@/hooks/useChainId'
 import Rocket from '@/public/images/common/rocket.svg'
-import { useAppSelector } from '@/store'
 import { Alert, AlertTitle, Box, Button, Paper, Stack, SvgIcon, Typography } from '@mui/material'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -24,10 +22,7 @@ export const CreateSafeStatus = ({
   setStepData,
 }: StepRenderProps<NewSafeFormData>) => {
   const [status, setStatus] = useState<SafeCreationEvent>(SafeCreationEvent.PROCESSING)
-  const chainId = useChainId()
-  const undeployedSafes = useAppSelector(selectUndeployedSafes)
-  const undeployedSafe = undeployedSafes[chainId] && Object.entries(undeployedSafes[chainId])[0]
-  const [safeAddress, pendingSafe] = undeployedSafe || []
+  const [safeAddress, pendingSafe] = useUndeployedSafe()
 
   const counter = useCounter(pendingSafe?.status.submittedAt)
 
@@ -58,6 +53,8 @@ export const CreateSafeStatus = ({
   }, [isError, setProgressColor])
 
   const tryAgain = () => {
+    if (!pendingSafe) return // Probably should go to /new-safe/create
+
     setProgressColor?.(lightPalette.secondary.main)
     setStep(2)
     setStepData?.({

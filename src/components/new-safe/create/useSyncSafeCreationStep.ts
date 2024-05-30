@@ -1,6 +1,4 @@
-import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
-import useChainId from '@/hooks/useChainId'
-import { useAppSelector } from '@/store'
+import useUndeployedSafe from '@/components/new-safe/create/steps/StatusStep/useUndeployedSafe'
 import { useEffect } from 'react'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create/index'
@@ -10,10 +8,7 @@ import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 
 const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => {
-  const chainId = useChainId()
-  const undeployedSafes = useAppSelector(selectUndeployedSafes)
-  const undeployedSafe = undeployedSafes[chainId] && Object.entries(undeployedSafes[chainId])[0]
-  const [safeAddress, pendingSafe] = undeployedSafe || []
+  const [safeAddress, pendingSafe] = useUndeployedSafe()
 
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
