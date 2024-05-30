@@ -14,6 +14,23 @@ import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 
+// const getSwapAppBanner = () => {
+//   return {
+//     id: 100_000,
+//     url: normalizedAppUrl,
+//     name: appManifest.name,
+//     description: appManifest.description,
+//     accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
+//     tags: [],
+//     features: [],
+//     socialProfiles: [],
+//     developerWebsite: '',
+//     chainIds: [currentChainId],
+//     iconUrl,
+//     safeAppsPermissions: '',
+//   }
+// }
+
 const SafeApps: NextPage = () => {
   const router = useRouter()
   const { remoteSafeApps, remoteSafeAppsLoading, pinnedSafeApps, pinnedSafeAppIds, togglePin } = useSafeApps()
