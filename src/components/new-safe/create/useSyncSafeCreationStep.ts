@@ -20,10 +20,8 @@ const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setS
   const router = useRouter()
 
   useEffect(() => {
-    if (!pendingSafe) return
-
     // Jump to the status screen if there is already a tx submitted
-    if (pendingSafe.status.status !== 'AWAITING_EXECUTION') {
+    if (pendingSafe && pendingSafe.status.status !== 'AWAITING_EXECUTION') {
       setStep(3)
       return
     }
