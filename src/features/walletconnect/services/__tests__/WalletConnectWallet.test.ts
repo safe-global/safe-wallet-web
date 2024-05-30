@@ -272,6 +272,7 @@ describe('WalletConnectWallet', () => {
               publicKey: '123',
               metadata: {} as SignClientTypes.Metadata,
             },
+            pairingTopic: '0x3456',
             requiredNamespaces: {} as ProposalTypes.RequiredNamespaces,
             optionalNamespaces: {} as ProposalTypes.OptionalNamespaces,
             expiryTimestamp: 2,
@@ -306,6 +307,7 @@ describe('WalletConnectWallet', () => {
             id: 1,
             expiry: 1,
             relays: [],
+            pairingTopic: '0x3456',
             proposer: {
               publicKey: '123',
               metadata: {} as SignClientTypes.Metadata,
