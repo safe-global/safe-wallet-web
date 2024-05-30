@@ -96,6 +96,7 @@ export const computeNewSafeAddress = async (
     safeAccountConfig: props.safeAccountConfig,
     safeDeploymentConfig: {
       saltNonce: props.saltNonce,
+      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     },
   })
 }
