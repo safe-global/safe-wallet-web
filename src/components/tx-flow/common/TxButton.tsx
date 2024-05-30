@@ -8,6 +8,8 @@ import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
 import { useContext } from 'react'
 import { TxModalContext } from '..'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const buttonSx = {
   height: '58px',
@@ -27,6 +29,9 @@ export const SendTokensButton = ({ onClick, sx }: { onClick: () => void; sx?: Bu
 export const SendNFTsButton = () => {
   const router = useRouter()
   const { setTxFlow } = useContext(TxModalContext)
+  const isEnabled = useHasFeature(FEATURES.ERC721)
+
+  if (!isEnabled) return null
 
   const isNftPage = router.pathname === AppRoutes.balances.nfts
   const onClick = isNftPage ? () => setTxFlow(undefined) : undefined

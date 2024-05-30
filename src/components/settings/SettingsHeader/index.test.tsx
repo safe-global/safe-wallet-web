@@ -1,12 +1,11 @@
-import SettingsHeader from '@/components/settings/SettingsHeader/index'
+import { SettingsHeader } from '@/components/settings/SettingsHeader/index'
+import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 import * as safeAddress from '@/hooks/useSafeAddress'
-import * as feature from '@/hooks/useChains'
-import * as wallet from '@/hooks/wallets/useWallet'
-import { ONBOARD_MPC_MODULE_LABEL } from '@/services/mpc/SocialLoginModule'
-import { connectedWalletBuilder } from '@/tests/builders/wallet'
 
 import { render } from '@/tests/test-utils'
 import { faker } from '@faker-js/faker'
+import { FEATURES } from '@/utils/chains'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('SettingsHeader', () => {
   beforeEach(() => {
@@ -20,26 +19,23 @@ describe('SettingsHeader', () => {
     })
 
     it('displays safe specific preferences if on a safe', () => {
-      const result = render(<SettingsHeader />)
+      const result = render(<SettingsHeader safeAddress="0x1234" chain={CONFIG_SERVICE_CHAINS[0]} />)
 
       expect(result.getByText('Setup')).toBeInTheDocument()
     })
 
     it('displays Notifications if feature is enabled', () => {
-      jest.spyOn(feature, 'useHasFeature').mockReturnValue(true)
-
-      const result = render(<SettingsHeader />)
+      const result = render(
+        <SettingsHeader
+          safeAddress="0x1234"
+          chain={{
+            ...CONFIG_SERVICE_CHAINS[0],
+            features: [FEATURES.PUSH_NOTIFICATIONS] as unknown as ChainInfo['features'],
+          }}
+        />,
+      )
 
       expect(result.getByText('Notifications')).toBeInTheDocument()
-    })
-
-    it('displays Security & Login if connected wallet is a social signer', () => {
-      const mockWallet = connectedWalletBuilder().with({ label: ONBOARD_MPC_MODULE_LABEL }).build()
-      jest.spyOn(wallet, 'default').mockReturnValue(mockWallet)
-
-      const result = render(<SettingsHeader />)
-
-      expect(result.getByText('Security & Login')).toBeInTheDocument()
     })
   })
 
@@ -50,7 +46,7 @@ describe('SettingsHeader', () => {
     })
 
     it('displays general preferences if no safe is open', () => {
-      const result = render(<SettingsHeader />)
+      const result = render(<SettingsHeader safeAddress="" chain={CONFIG_SERVICE_CHAINS[0]} />)
 
       expect(result.getByText('Cookies')).toBeInTheDocument()
       expect(result.getByText('Appearance')).toBeInTheDocument()
@@ -59,20 +55,17 @@ describe('SettingsHeader', () => {
     })
 
     it('displays Notifications if feature is enabled', () => {
-      jest.spyOn(feature, 'useHasFeature').mockReturnValue(true)
-
-      const result = render(<SettingsHeader />)
+      const result = render(
+        <SettingsHeader
+          safeAddress=""
+          chain={{
+            ...CONFIG_SERVICE_CHAINS[0],
+            features: [FEATURES.PUSH_NOTIFICATIONS] as unknown as ChainInfo['features'],
+          }}
+        />,
+      )
 
       expect(result.getByText('Notifications')).toBeInTheDocument()
-    })
-
-    it('displays Security & Login if connected wallet is a social signer', () => {
-      const mockWallet = connectedWalletBuilder().with({ label: ONBOARD_MPC_MODULE_LABEL }).build()
-      jest.spyOn(wallet, 'default').mockReturnValue(mockWallet)
-
-      const result = render(<SettingsHeader />)
-
-      expect(result.getByText('Security & Login')).toBeInTheDocument()
     })
   })
 })

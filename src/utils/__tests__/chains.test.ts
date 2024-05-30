@@ -4,7 +4,7 @@ import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 describe('chains', () => {
   describe('hasFeature', () => {
     it('returns true for a feature that exists', () => {
-      expect(hasFeature(CONFIG_SERVICE_CHAINS[0], FEATURES.CONTRACT_INTERACTION)).toBe(true)
+      expect(hasFeature(CONFIG_SERVICE_CHAINS[0], FEATURES.ERC721)).toBe(true)
     })
 
     it("returns false for a feature that doesn't exists", () => {
