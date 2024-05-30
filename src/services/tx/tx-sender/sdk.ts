@@ -15,6 +15,7 @@ import { type OnboardAPI } from '@web3-onboard/core'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { asError } from '@/services/exceptions/utils'
 import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
+import get from 'lodash/get'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -36,24 +37,29 @@ async function switchOrAddChain(walletProvider: ConnectedWallet['provider'], cha
       params: [{ chainId: hexChainId }],
     })
   } catch (error) {
-    if ((error as Error & { code: number }).code !== UNKNOWN_CHAIN_ERROR_CODE) {
-      throw error
+    const errorCode = get(error, 'code') as number | undefined
+
+    // Rabby emits the same error code as MM, but it is nested
+    const nestedErrorCode = get(error, 'data.originalError.code') as number | undefined
+
+    if (errorCode === UNKNOWN_CHAIN_ERROR_CODE || nestedErrorCode === UNKNOWN_CHAIN_ERROR_CODE) {
+      const chain = await getChainConfig(chainId)
+
+      return walletProvider.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: hexChainId,
+            chainName: chain.chainName,
+            nativeCurrency: chain.nativeCurrency,
+            rpcUrls: [chain.publicRpcUri.value],
+            blockExplorerUrls: [new URL(chain.blockExplorerUriTemplate.address).origin],
+          },
+        ],
+      })
     }
 
-    const chain = await getChainConfig(chainId)
-
-    return walletProvider.request({
-      method: 'wallet_addEthereumChain',
-      params: [
-        {
-          chainId: hexChainId,
-          chainName: chain.chainName,
-          nativeCurrency: chain.nativeCurrency,
-          rpcUrls: [chain.publicRpcUri.value],
-          blockExplorerUrls: [new URL(chain.blockExplorerUriTemplate.address).origin],
-        },
-      ],
-    })
+    throw error
   }
 }
 
