@@ -7,7 +7,7 @@ import {
 import {
   PendingSafeStatus,
   removeUndeployedSafe,
-  selectUndeployedSafe,
+  selectUndeployedSafes,
   updateUndeployedSafeStatus,
 } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { checkSafeActionViaRelay, checkSafeActivation } from '@/features/counterfactual/utils'
@@ -16,7 +16,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const safeCreationPendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
   [SafeCreationEvent.PROCESSING]: PendingSafeStatus.PROCESSING,
@@ -28,9 +28,7 @@ export const safeCreationPendingStatuses: Partial<Record<SafeCreationEvent, Pend
 }
 
 const usePendingSafeMonitor = (): void => {
-  const chainId = useChainId()
-  const { safeAddress } = useSafeInfo()
-  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, safeAddress))
+  const undeployedSafesByChain = useAppSelector(selectUndeployedSafes)
   const provider = useWeb3ReadOnly()
   const dispatch = useAppDispatch()
 
@@ -39,43 +37,49 @@ const usePendingSafeMonitor = (): void => {
 
   // Monitor pending safe creation mining/validating progress
   useEffect(() => {
-    if (undeployedSafe?.status.status === PendingSafeStatus.AWAITING_EXECUTION) {
-      monitoredSafes.current[safeAddress] = false
-    }
+    Object.entries(undeployedSafesByChain).forEach(([chainId, undeployedSafes]) => {
+      Object.entries(undeployedSafes).forEach(([safeAddress, undeployedSafe]) => {
+        if (undeployedSafe?.status.status === PendingSafeStatus.AWAITING_EXECUTION) {
+          monitoredSafes.current[safeAddress] = false
+        }
 
-    if (!provider || !undeployedSafe || undeployedSafe.status.status === PendingSafeStatus.AWAITING_EXECUTION) {
-      return
-    }
+        if (!provider || !undeployedSafe || undeployedSafe.status.status === PendingSafeStatus.AWAITING_EXECUTION) {
+          return
+        }
 
-    const monitorPendingSafe = async () => {
-      const {
-        status: { status, txHash, taskId, startBlock },
-      } = undeployedSafe
+        const monitorPendingSafe = async () => {
+          const {
+            status: { status, txHash, taskId, startBlock },
+          } = undeployedSafe
 
-      const isProcessing = status === PendingSafeStatus.PROCESSING && txHash !== undefined
-      const isRelaying = status === PendingSafeStatus.RELAYING && taskId !== undefined
-      const isMonitored = monitoredSafes.current[safeAddress]
+          const isProcessing = status === PendingSafeStatus.PROCESSING && txHash !== undefined
+          const isRelaying = status === PendingSafeStatus.RELAYING && taskId !== undefined
+          const isMonitored = monitoredSafes.current[safeAddress]
 
-      if ((!isProcessing && !isRelaying) || isMonitored) return
+          if ((!isProcessing && !isRelaying) || isMonitored) return
 
-      monitoredSafes.current[safeAddress] = true
+          monitoredSafes.current[safeAddress] = true
 
-      if (isProcessing) {
-        checkSafeActivation(provider, txHash, safeAddress, startBlock)
-      }
+          if (isProcessing) {
+            checkSafeActivation(provider, txHash, safeAddress, startBlock)
+          }
 
-      if (isRelaying) {
-        checkSafeActionViaRelay(taskId, safeAddress)
-      }
-    }
+          if (isRelaying) {
+            checkSafeActionViaRelay(taskId, safeAddress)
+          }
+        }
 
-    monitorPendingSafe()
-  }, [dispatch, provider, safeAddress, undeployedSafe])
+        monitorPendingSafe()
+      })
+    })
+  }, [dispatch, provider, undeployedSafesByChain])
 }
 
 const usePendingSafeStatus = (): void => {
+  const [safeAddress, setSafeAddress] = useState<string>('')
   const dispatch = useAppDispatch()
-  const { safe, safeAddress } = useSafeInfo()
+  const { safe } = useSafeInfo()
+  const chainId = useChainId()
   const provider = useWeb3ReadOnly()
 
   usePendingSafeMonitor()
@@ -103,24 +107,29 @@ const usePendingSafeStatus = (): void => {
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
+        setSafeAddress(detail.safeAddress)
+
         if (event === SafeCreationEvent.SUCCESS) {
           // TODO: Possible to add a label with_tx, without_tx?
           trackEvent(CREATE_SAFE_EVENTS.ACTIVATED_SAFE)
-          pollSafeInfo(safe.chainId, safeAddress).finally(() => {
-            safeCreationDispatch(SafeCreationEvent.INDEXED, { groupKey: detail.groupKey, safeAddress })
+          pollSafeInfo(chainId, detail.safeAddress).finally(() => {
+            safeCreationDispatch(SafeCreationEvent.INDEXED, {
+              groupKey: detail.groupKey,
+              safeAddress: detail.safeAddress,
+            })
           })
           return
         }
 
         if (event === SafeCreationEvent.INDEXED) {
-          dispatch(removeUndeployedSafe({ chainId: safe.chainId, address: safeAddress }))
+          dispatch(removeUndeployedSafe({ chainId, address: detail.safeAddress }))
         }
 
         if (status === null) {
           dispatch(
             updateUndeployedSafeStatus({
-              chainId: safe.chainId,
-              address: safeAddress,
+              chainId,
+              address: detail.safeAddress,
               status: { status: PendingSafeStatus.AWAITING_EXECUTION },
             }),
           )
@@ -129,13 +138,14 @@ const usePendingSafeStatus = (): void => {
 
         dispatch(
           updateUndeployedSafeStatus({
-            chainId: safe.chainId,
-            address: safeAddress,
+            chainId,
+            address: detail.safeAddress,
             status: {
               status,
               txHash: 'txHash' in detail ? detail.txHash : undefined,
               taskId: 'taskId' in detail ? detail.taskId : undefined,
               startBlock: await provider?.getBlockNumber(),
+              submittedAt: Date.now(),
             },
           }),
         )
@@ -145,7 +155,7 @@ const usePendingSafeStatus = (): void => {
     return () => {
       unsubFns.forEach((unsub) => unsub())
     }
-  }, [safe.chainId, dispatch, safeAddress, provider])
+  }, [chainId, dispatch, provider])
 }
 
 export default usePendingSafeStatus

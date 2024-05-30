@@ -1,75 +1,51 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Box, Button, Divider, Paper, Tooltip, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
-
-import Track from '@/components/common/Track'
-import { CREATE_SAFE_EVENTS } from '@/services/analytics/events/createLoadSafe'
-import StatusMessage from '@/components/new-safe/create/steps/StatusStep/StatusMessage'
-import useWallet from '@/hooks/wallets/useWallet'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import type { NewSafeFormData } from '@/components/new-safe/create'
+import { useCounter } from '@/components/common/Notifications/useCounter'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
-import useSafeCreationEffects from '@/components/new-safe/create/steps/StatusStep/useSafeCreationEffects'
-import { SafeCreationStatus, useSafeCreation } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
-import StatusStepper from '@/components/new-safe/create/steps/StatusStep/StatusStepper'
-import { OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { getRedirect } from '@/components/new-safe/create/logic'
-import layoutCss from '@/components/new-safe/create/styles.module.css'
-import { AppRoutes } from '@/config/routes'
+import type { NewSafeFormData } from '@/components/new-safe/create'
+import StatusMessage from '@/components/new-safe/create/steps/StatusStep/StatusMessage'
 import lightPalette from '@/components/theme/lightPalette'
-import { useCurrentChain } from '@/hooks/useChains'
-import { usePendingSafe } from './usePendingSafe'
+import { AppRoutes } from '@/config/routes'
+import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
+import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
+import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
+import useChainId from '@/hooks/useChainId'
+import Rocket from '@/public/images/common/rocket.svg'
+import { useAppSelector } from '@/store'
+import { Alert, AlertTitle, Box, Button, Paper, Stack, SvgIcon, Typography } from '@mui/material'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import useSyncSafeCreationStep from '../../useSyncSafeCreationStep'
 
-export const getInitialCreationStatus = (willRelay: boolean): SafeCreationStatus =>
-  willRelay ? SafeCreationStatus.PROCESSING : SafeCreationStatus.AWAITING
+const SPEED_UP_THRESHOLD_IN_SECONDS = 15
 
-export const CreateSafeStatus = ({ data, setProgressColor, setStep }: StepRenderProps<NewSafeFormData>) => {
-  const router = useRouter()
-  const chainInfo = useCurrentChain()
-  const chainPrefix = chainInfo?.shortName || ''
-  const wallet = useWallet()
-  const isWrongChain = useIsWrongChain()
-  const isConnected = wallet && !isWrongChain
-  const [pendingSafe, setPendingSafe] = usePendingSafe()
+export const CreateSafeStatus = ({
+  data,
+  setProgressColor,
+  setStep,
+  setStepData,
+}: StepRenderProps<NewSafeFormData>) => {
+  const [status, setStatus] = useState<SafeCreationEvent>(SafeCreationEvent.PROCESSING)
+  const chainId = useChainId()
+  const undeployedSafes = useAppSelector(selectUndeployedSafes)
+  const undeployedSafe = undeployedSafes[chainId] && Object.entries(undeployedSafes[chainId])[0]
+  const [safeAddress, pendingSafe] = undeployedSafe || []
+
+  const counter = useCounter(pendingSafe?.status.submittedAt)
+
+  const isError = status === SafeCreationEvent.FAILED
+
   useSyncSafeCreationStep(setStep)
 
-  // The willRelay flag can come from the previous step or from local storage
-  const willRelay = !!(data.willRelay || pendingSafe?.willRelay)
-  const initialStatus = getInitialCreationStatus(willRelay)
-  const [status, setStatus] = useState<SafeCreationStatus>(initialStatus)
+  useEffect(() => {
+    const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
+      safeCreationSubscribe(event as SafeCreationEvent, async () => {
+        setStatus(event as SafeCreationEvent)
+      }),
+    )
 
-  const { handleCreateSafe } = useSafeCreation(status, setStatus, willRelay)
-
-  useSafeCreationEffects({
-    status,
-    setStatus,
-  })
-
-  const onClose = useCallback(() => {
-    setPendingSafe(undefined)
-
-    router.push(AppRoutes.welcome.index)
-  }, [router, setPendingSafe])
-
-  const handleRetry = useCallback(() => {
-    setStatus(initialStatus)
-    void handleCreateSafe()
-  }, [handleCreateSafe, initialStatus])
-
-  const onFinish = useCallback(() => {
-    trackEvent(CREATE_SAFE_EVENTS.GET_STARTED)
-
-    const { safeAddress } = pendingSafe || {}
-
-    if (safeAddress) {
-      setPendingSafe(undefined)
-      router.push(getRedirect(chainPrefix, safeAddress, router.query?.safeViewRedirectURL))
+    return () => {
+      unsubFns.forEach((unsub) => unsub())
     }
-  }, [chainPrefix, pendingSafe, router, setPendingSafe])
-
-  const displaySafeLink = status >= SafeCreationStatus.INDEXED
-  const isError = status >= SafeCreationStatus.WALLET_REJECTED && status <= SafeCreationStatus.TIMEOUT
+  }, [])
 
   useEffect(() => {
     if (!setProgressColor) return
@@ -81,63 +57,49 @@ export const CreateSafeStatus = ({ data, setProgressColor, setStep }: StepRender
     }
   }, [isError, setProgressColor])
 
+  const tryAgain = () => {
+    setProgressColor?.(lightPalette.secondary.main)
+    setStep(2)
+    setStepData?.({
+      owners: pendingSafe.props.safeAccountConfig.owners.map((owner) => ({ name: '', address: owner })),
+      name: '',
+      threshold: pendingSafe.props.safeAccountConfig.threshold,
+      saltNonce: Number(pendingSafe.props.safeDeploymentConfig?.saltNonce),
+      safeAddress,
+    })
+  }
+
   return (
     <Paper
       sx={{
         textAlign: 'center',
       }}
     >
-      <Box className={layoutCss.row}>
-        <StatusMessage status={status} isError={isError} />
+      <Box p={{ xs: 2, sm: 8 }}>
+        <StatusMessage status={status} isError={isError} pendingSafe={pendingSafe} />
+
+        {counter && counter > SPEED_UP_THRESHOLD_IN_SECONDS && (
+          <Alert severity="warning" icon={<SvgIcon component={Rocket} />} sx={{ mt: 5 }}>
+            <AlertTitle>
+              <Typography variant="body2" textAlign="left" fontWeight="bold">
+                Transaction is taking too long
+              </Typography>
+            </AlertTitle>
+            Try to speed it up with better gas parameters in your wallet.
+          </Alert>
+        )}
+
+        {isError && (
+          <Stack direction="row" justifyContent="center" gap={2}>
+            <Link href={AppRoutes.welcome.index} passHref>
+              <Button variant="outlined">Go to homepage</Button>
+            </Link>
+            <Button variant="contained" onClick={tryAgain}>
+              Try again
+            </Button>
+          </Stack>
+        )}
       </Box>
-
-      {!isError && pendingSafe && (
-        <>
-          <Divider />
-          <Box className={layoutCss.row}>
-            <StatusStepper status={status} />
-          </Box>
-        </>
-      )}
-
-      {displaySafeLink && (
-        <>
-          <Divider />
-          <Box className={layoutCss.row}>
-            <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={OPEN_SAFE_LABELS.after_create}>
-              <Button data-testid="start-using-safe-btn" variant="contained" onClick={onFinish}>
-                Start using {'Safe{Wallet}'}
-              </Button>
-            </Track>
-          </Box>
-        </>
-      )}
-
-      {isError && (
-        <>
-          <Divider />
-          <Box className={layoutCss.row}>
-            <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
-              <Track {...CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE}>
-                <Button onClick={onClose} variant="outlined">
-                  Cancel
-                </Button>
-              </Track>
-              <Track {...CREATE_SAFE_EVENTS.RETRY_CREATE_SAFE}>
-                <Tooltip
-                  title={!isConnected ? 'Please make sure your wallet is connected on the correct network.' : ''}
-                >
-                  <Typography display="flex" height={1}>
-                    <Button onClick={handleRetry} variant="contained" disabled={!isConnected}>
-                      Retry
-                    </Button>
-                  </Typography>
-                </Tooltip>
-              </Track>
-            </Box>
-          </Box>
-        </>
-      )}
     </Paper>
   )
 }

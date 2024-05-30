@@ -72,11 +72,12 @@ export const dispatchTxExecutionAndDeploySafe = async (
     // @ts-ignore TODO: Check why TransactionResponse type doesn't work
     result = await signer.sendTransaction({ ...deploymentTx, gasLimit: gas })
   } catch (error) {
-    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error) })
+    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error), safeAddress: '' })
     throw error
   }
 
-  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
+  // TODO: Probably need to pass the actual safe address
+  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash, safeAddress: '' })
 
   return result!.hash
 }
@@ -202,20 +203,17 @@ async function retryGetTransaction(provider: Provider, txHash: string, maxAttemp
   throw new Error('Transaction not found')
 }
 
-// TODO: Reuse this for safe creation flow instead of checkSafeCreationTx
 export const checkSafeActivation = async (
   provider: Provider,
   txHash: string,
   safeAddress: string,
   startBlock?: number,
 ) => {
-  const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
-
   try {
     const txResponse = await retryGetTransaction(provider, txHash)
 
     const replaceableTx = startBlock ? txResponse.replaceableTransaction(startBlock) : txResponse
-    const receipt = await replaceableTx?.wait(1, TIMEOUT_TIME)
+    const receipt = await replaceableTx?.wait(1)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {
@@ -226,6 +224,7 @@ export const checkSafeActivation = async (
       safeCreationDispatch(SafeCreationEvent.REVERTED, {
         groupKey: CF_TX_GROUP_KEY,
         error: new Error('Transaction reverted'),
+        safeAddress,
       })
     }
 
@@ -247,11 +246,11 @@ export const checkSafeActivation = async (
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: _err,
+      safeAddress,
     })
   }
 }
 
-// TODO: Reuse this for safe creation flow instead of waitForCreateSafeTx
 export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => {
   const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
@@ -278,6 +277,7 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => 
         safeCreationDispatch(SafeCreationEvent.FAILED, {
           groupKey: CF_TX_GROUP_KEY,
           error: new Error('Transaction failed'),
+          safeAddress,
         })
         break
       default:
@@ -293,6 +293,7 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => 
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: new Error('Transaction failed'),
+      safeAddress,
     })
 
     clearInterval(intervalId)

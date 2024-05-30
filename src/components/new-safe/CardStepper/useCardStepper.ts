@@ -8,6 +8,7 @@ export type StepRenderProps<TData> = {
   onBack: (data?: Partial<TData>) => void
   setStep: (step: number) => void
   setProgressColor?: Dispatch<SetStateAction<string>>
+  setStepData?: Dispatch<SetStateAction<TData>>
 }
 
 type Step<TData> = {
@@ -19,6 +20,7 @@ type Step<TData> = {
     onBack: StepRenderProps<TData>['onBack'],
     setStep: StepRenderProps<TData>['setStep'],
     setProgressColor: StepRenderProps<TData>['setProgressColor'],
+    setStepData: StepRenderProps<TData>['setStepData'],
   ) => ReactElement
 }
 
@@ -84,5 +86,6 @@ export const useCardStepper = <TData>({
     activeStep,
     stepData,
     firstStep,
+    setStepData,
   }
 }
