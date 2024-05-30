@@ -10,6 +10,8 @@ import { getClipboard, isClipboardSupported } from '@/utils/clipboard'
 import { Button, CircularProgress, InputAdornment, TextField } from '@mui/material'
 import { useCallback, useContext, useEffect, useState } from 'react'
 
+const PROPOSAL_TIMEOUT = 30_000
+
 const useTrackErrors = (error?: Error) => {
   const debouncedErrorMessage = useDebounce(error?.message, 1000)
 
@@ -22,10 +24,10 @@ const useTrackErrors = (error?: Error) => {
 }
 
 const WcInput = ({ uri }: { uri: string }) => {
-  const { walletConnect, isLoading, setIsLoading } = useContext(WalletConnectContext)
+  const { walletConnect, isLoading, setIsLoading, setError } = useContext(WalletConnectContext)
   const [value, setValue] = useState('')
-  const [error, setError] = useState<Error>()
-  useTrackErrors(error)
+  const [inputError, setInputError] = useState<Error>()
+  useTrackErrors(inputError)
 
   const onInput = useCallback(
     async (val: string) => {
@@ -34,11 +36,11 @@ const WcInput = ({ uri }: { uri: string }) => {
       setValue(val)
 
       if (val && !isPairingUri(val)) {
-        setError(new Error('Invalid pairing code'))
+        setInputError(new Error('Invalid pairing code'))
         return
       }
 
-      setError(undefined)
+      setInputError(undefined)
 
       if (!val) return
 
@@ -47,12 +49,17 @@ const WcInput = ({ uri }: { uri: string }) => {
       try {
         await walletConnect.connect(val)
       } catch (e) {
-        setError(asError(e))
+        setInputError(asError(e))
+        setIsLoading(undefined)
       }
-
-      setIsLoading(undefined)
+      setTimeout(() => {
+        if (isLoading && isLoading !== WCLoadingState.APPROVE) {
+          setIsLoading(undefined)
+          setError(new Error('Connection timed out'))
+        }
+      }, PROPOSAL_TIMEOUT)
     },
-    [setIsLoading, walletConnect],
+    [isLoading, setError, setIsLoading, walletConnect],
   )
 
   // Insert a pre-filled uri
@@ -77,8 +84,8 @@ const WcInput = ({ uri }: { uri: string }) => {
       autoComplete="off"
       autoFocus
       disabled={!!isLoading}
-      error={!!error}
-      label={error ? error.message : 'Pairing code'}
+      error={!!inputError}
+      label={inputError ? inputError.message : 'Pairing code'}
       placeholder="wc:"
       spellCheck={false}
       InputProps={{

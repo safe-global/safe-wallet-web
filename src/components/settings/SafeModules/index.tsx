@@ -65,7 +65,7 @@ const SafeModules = () => {
       <Grid container direction="row" justifyContent="space-between" spacing={3}>
         <Grid item lg={4} xs={12}>
           <Typography variant="h4" fontWeight={700}>
-            Safe Account modules
+            Safe modules
           </Typography>
         </Grid>
 

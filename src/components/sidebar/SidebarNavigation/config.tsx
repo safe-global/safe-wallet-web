@@ -9,11 +9,13 @@ import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import SwapIcon from '@/public/images/common/swap.svg'
 import { SvgIcon } from '@mui/material'
+import Chip from '@mui/material/Chip'
 
 export type NavItem = {
   label: string
   icon?: ReactElement
   href: string
+  tag?: ReactElement
 }
 
 export const navItems: NavItem[] = [
@@ -31,6 +33,7 @@ export const navItems: NavItem[] = [
     label: 'Swap',
     icon: <SvgIcon component={SwapIcon} inheritViewBox />,
     href: AppRoutes.swap,
+    tag: <Chip label="New" color="success" sx={{ ml: 1 }} />,
   },
   {
     label: 'Transactions',
@@ -90,8 +93,8 @@ export const settingsNavItems = [
     href: AppRoutes.settings.appearance,
   },
   {
-    label: 'Security & Login',
-    href: AppRoutes.settings.securityLogin,
+    label: 'Security',
+    href: AppRoutes.settings.security,
   },
   {
     label: 'Notifications',
@@ -129,8 +132,8 @@ export const generalSettingsNavItems = [
     href: AppRoutes.settings.notifications,
   },
   {
-    label: 'Security & Login',
-    href: AppRoutes.settings.securityLogin,
+    label: 'Security',
+    href: AppRoutes.settings.security,
   },
   {
     label: 'Data',

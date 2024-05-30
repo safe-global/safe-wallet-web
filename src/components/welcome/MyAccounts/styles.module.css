@@ -64,10 +64,18 @@
       'a c d';
   }
 
-  .safeLink :nth-child(1) { grid-area: a; }
-  .safeLink :nth-child(2) { grid-area: b; }
-  .safeLink :nth-child(3) { grid-area: c; }
-  .safeLink :nth-child(4) { grid-area: d; }
+  .safeLink :nth-child(1) {
+    grid-area: a;
+  }
+  .safeLink :nth-child(2) {
+    grid-area: b;
+  }
+  .safeLink :nth-child(3) {
+    grid-area: c;
+  }
+  .safeLink :nth-child(4) {
+    grid-area: d;
+  }
 }
 
 .safeAddress {

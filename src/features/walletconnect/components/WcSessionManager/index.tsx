@@ -97,8 +97,9 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
       }
 
       setProposal(proposalData)
+      setIsLoading(undefined)
     })
-  }, [walletConnect, setError, autoApprove, onApprove, chainId])
+  }, [autoApprove, chainId, onApprove, setError, setIsLoading, walletConnect])
 
   // Track errors
   useEffect(() => {
