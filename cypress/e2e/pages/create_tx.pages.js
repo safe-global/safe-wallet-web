@@ -96,9 +96,9 @@ export function fillFilterForm({ address, startDate, endDate, amount, token, non
     address: { selector: addressItem, findInput: true },
     startDate: { selector: filterStartDateInput, findInput: true },
     endDate: { selector: filterEndDateInput, findInput: true },
-    amount: { selector: filterAmountInput, findInput: false },
-    token: { selector: filterTokenInput, findInput: false },
-    nonce: { selector: filterNonceInput, findInput: false },
+    amount: { selector: filterAmountInput, findInput: true },
+    token: { selector: filterTokenInput, findInput: true },
+    nonce: { selector: filterNonceInput, findInput: true },
     recipient: { selector: addressItem, findInput: true },
   }
 

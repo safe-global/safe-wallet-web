@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { stagingCGWUrlv1 } from '../constants'
 function buildQueryUrl({ chainId, safeAddress, transactionType, ...params }) {
   const baseUrlMap = {

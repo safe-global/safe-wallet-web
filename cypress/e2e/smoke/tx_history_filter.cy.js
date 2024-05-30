@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import { buildQueryUrl } from '../../support/utils/txquery.js'
 import * as constants from '../../support/constants.js'

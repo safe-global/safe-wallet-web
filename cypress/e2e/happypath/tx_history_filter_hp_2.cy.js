@@ -17,12 +17,12 @@ describe('Tx history happy path tests 2', () => {
   })
 
   it('Verify a user can filter outgoing transactions by module', () => {
-    const module = 'sep:0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134'
+    const moduleAddress = 'sep:0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134'
     const uiDate = 'Jan 30, 2024 - 10:53:48 AM'
 
     createTx.clickOnFilterBtn()
     createTx.setTxType(createTx.filterTypes.module)
-    createTx.fillFilterForm({ address: module })
+    createTx.fillFilterForm({ address: moduleAddress })
     createTx.clickOnApplyBtn()
     createTx.verifyNumberOfTransactions(1)
     createTx.checkTxItemDate(0, uiDate)
