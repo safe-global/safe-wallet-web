@@ -8,14 +8,14 @@ import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-st
 type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
 export const groupTxs = (list: TransactionListItem[], txHashes: Record<string, string> | undefined) => {
-  const groupedByConflicts = _groupConflictingTxs(list)
+  const groupedByConflicts = groupConflictingTxs(list)
   return _groupBulkTxs(groupedByConflicts, txHashes)
 }
 
 /**
  * Group txs by conflict header
  */
-const _groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => {
+export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => {
   return list
     .reduce<GroupedTxs>((resultItems, item) => {
       if (isConflictHeaderListItem(item)) {

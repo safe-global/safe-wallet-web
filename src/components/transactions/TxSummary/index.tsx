@@ -41,8 +41,8 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
       data-testid="transaction-item"
       className={classNames(css.gridContainer, {
         [css.history]: !isQueue,
-        [css.grouped]: isConflictGroup,
-        [css.isBulkGroup]: isBulkGroup,
+        [css.conflictGroup]: isConflictGroup,
+        [css.bulkGroup]: isBulkGroup,
         [css.untrusted]: !isTrusted,
       })}
       id={tx.id}
