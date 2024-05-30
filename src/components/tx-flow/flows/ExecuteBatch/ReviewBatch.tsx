@@ -141,7 +141,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       return
     }
 
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.batch })
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.bulk_execute })
   }
 
   const submitDisabled = loading || !isSubmittable || !gasPrice
