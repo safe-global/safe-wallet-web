@@ -123,8 +123,6 @@ export const pollSafeInfo = async (chainId: string, safeAddress: string): Promis
   })
 }
 
-export const CREATION_MODAL_QUERY_PARM = 'showCreationModal'
-
 export const getRedirect = (
   chainPrefix: string,
   safeAddress: string,
@@ -138,7 +136,7 @@ export const getRedirect = (
 
   // Go to the dashboard if no specific redirect is provided
   if (!redirectUrl) {
-    return { pathname: AppRoutes.home, query: { safe: address, [CREATION_MODAL_QUERY_PARM]: true } }
+    return { pathname: AppRoutes.home, query: { safe: address } }
   }
 
   // Otherwise, redirect to the provided URL (e.g. from a Safe App)

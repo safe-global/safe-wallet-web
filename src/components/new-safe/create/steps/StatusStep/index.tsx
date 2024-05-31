@@ -1,15 +1,18 @@
 import { useCounter } from '@/components/common/Notifications/useCounter'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
+import { getRedirect } from '@/components/new-safe/create/logic'
 import StatusMessage from '@/components/new-safe/create/steps/StatusStep/StatusMessage'
 import useUndeployedSafe from '@/components/new-safe/create/steps/StatusStep/useUndeployedSafe'
 import lightPalette from '@/components/theme/lightPalette'
 import { AppRoutes } from '@/config/routes'
 import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
+import { useCurrentChain } from '@/hooks/useChains'
 import Rocket from '@/public/images/common/rocket.svg'
 import { Alert, AlertTitle, Box, Button, Paper, Stack, SvgIcon, Typography } from '@mui/material'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useSyncSafeCreationStep from '../../useSyncSafeCreationStep'
 
@@ -23,6 +26,8 @@ export const CreateSafeStatus = ({
 }: StepRenderProps<NewSafeFormData>) => {
   const [status, setStatus] = useState<SafeCreationEvent>(SafeCreationEvent.PROCESSING)
   const [safeAddress, pendingSafe] = useUndeployedSafe()
+  const router = useRouter()
+  const chain = useCurrentChain()
 
   const counter = useCounter(pendingSafe?.status.submittedAt)
 
@@ -41,6 +46,14 @@ export const CreateSafeStatus = ({
       unsubFns.forEach((unsub) => unsub())
     }
   }, [])
+
+  useEffect(() => {
+    if (!chain || !safeAddress) return
+
+    if (status === SafeCreationEvent.SUCCESS) {
+      router.push(getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL))
+    }
+  }, [chain, router, safeAddress, status])
 
   useEffect(() => {
     if (!setProgressColor) return

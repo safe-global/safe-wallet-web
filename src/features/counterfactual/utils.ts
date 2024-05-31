@@ -1,5 +1,4 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
 import { LATEST_SAFE_VERSION, POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
@@ -175,7 +174,7 @@ export const createCounterfactualSafe = (
   )
   return router.push({
     pathname: AppRoutes.home,
-    query: { safe: `${chain.shortName}:${safeAddress}`, [CREATION_MODAL_QUERY_PARM]: true },
+    query: { safe: `${chain.shortName}:${safeAddress}` },
   })
 }
 
