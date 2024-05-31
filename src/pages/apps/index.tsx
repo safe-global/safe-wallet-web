@@ -15,7 +15,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
-import { useNativeSwapsAppCard } from '@/components/safe-apps/NativeFeatureCard/useNativeSwapsAppCard'
+import { useNativeSwapsAppCard } from '@/components/safe-apps/hooks/useNativeSwapsAppCard'
 
 const getSwapAppBanner = (): SafeAppData => {
   return {

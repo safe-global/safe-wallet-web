@@ -11,7 +11,7 @@ import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import NativeFeatureCard from '../NativeFeatureCard'
-import { useNativeSwapsAppCard } from '../NativeFeatureCard/useNativeSwapsAppCard'
+import { useNativeSwapsAppCard } from '../hooks/useNativeSwapsAppCard'
 import { useRouter } from 'next/router'
 
 type SafeAppListProps = {

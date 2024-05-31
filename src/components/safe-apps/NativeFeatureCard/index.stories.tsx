@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import NativeFeatureCard from './index'
 import { Box } from '@mui/material'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
+import { AppRoutes } from '@/config/routes'
 
 const meta = {
   component: NativeFeatureCard,
@@ -28,7 +29,7 @@ export const Default: Story = {
   args: {
     details: {
       id: 100_000,
-      url: '',
+      url: AppRoutes.swap,
       name: 'Native swaps are here!',
       description: 'Experience seamless trading with better decoding and security in native swaps.',
       accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
