@@ -1,3 +1,4 @@
+import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { PendingSafeStatus } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { renderHook } from '@/tests/test-utils'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
@@ -43,7 +44,9 @@ describe('useSyncSafeCreationStep', () => {
     renderHook(() => useSyncSafeCreationStep(mockSetStep), {
       initialReduxState: {
         undeployedSafes: {
-          '11155111': { '0x123': { status: { status: PendingSafeStatus.PROCESSING }, props: {} as any } },
+          '11155111': {
+            '0x123': { status: { status: PendingSafeStatus.PROCESSING, type: PayMethod.PayNow }, props: {} as any },
+          },
         },
       },
     })

@@ -66,7 +66,10 @@ export const CreateSafeStatus = ({
   }, [isError, setProgressColor])
 
   const tryAgain = () => {
-    if (!pendingSafe) return // Probably should go to /new-safe/create
+    if (!pendingSafe) {
+      setStep(0)
+      return
+    }
 
     setProgressColor?.(lightPalette.secondary.main)
     setStep(2)
@@ -88,14 +91,16 @@ export const CreateSafeStatus = ({
       <Box p={{ xs: 2, sm: 8 }}>
         <StatusMessage status={status} isError={isError} pendingSafe={pendingSafe} />
 
-        {counter && counter > SPEED_UP_THRESHOLD_IN_SECONDS && (
+        {counter && counter > SPEED_UP_THRESHOLD_IN_SECONDS && !isError && (
           <Alert severity="warning" icon={<SvgIcon component={Rocket} />} sx={{ mt: 5 }}>
             <AlertTitle>
               <Typography variant="body2" textAlign="left" fontWeight="bold">
                 Transaction is taking too long
               </Typography>
             </AlertTitle>
-            Try to speed it up with better gas parameters in your wallet.
+            <Typography variant="body2" textAlign="left">
+              Try to speed it up with better gas parameters in your wallet.
+            </Typography>
           </Alert>
         )}
 

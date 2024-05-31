@@ -200,6 +200,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const undeployedSafe = {
         chainId: chain.chainId,
         address: safeAddress,
+        type: PayMethod.PayNow,
         safeProps: {
           safeAccountConfig: props.safeAccountConfig,
           safeDeploymentConfig: {

@@ -1,6 +1,7 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { LATEST_SAFE_VERSION, POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
+import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -147,6 +148,7 @@ export const createCounterfactualSafe = (
   const undeployedSafe = {
     chainId: chain.chainId,
     address: safeAddress,
+    type: PayMethod.PayLater,
     safeProps: {
       safeAccountConfig: props.safeAccountConfig,
       safeDeploymentConfig: {
