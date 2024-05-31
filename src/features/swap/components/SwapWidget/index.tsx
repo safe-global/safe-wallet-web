@@ -12,10 +12,6 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import Track from '@/components/common/Track'
 
-const buttonSx = {
-  height: '36px',
-}
-
 const SWAP_PROMO_WIDGET_IS_HIDDEN = 'SWAP_PROMO_WIDGET_IS_HIDDEN'
 
 function SwapWidget(): ReactElement | null {
@@ -24,8 +20,6 @@ function SwapWidget(): ReactElement | null {
   const onClick = useCallback(() => {
     setIsHidden(true)
   }, [setIsHidden])
-
-  console.log('is hidden', setIsHidden)
 
   const router = useRouter()
 
