@@ -13,25 +13,7 @@ import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
-import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { useNativeSwapsAppCard } from '@/components/safe-apps/hooks/useNativeSwapsAppCard'
-
-const getSwapAppBanner = (): SafeAppData => {
-  return {
-    id: 100_000,
-    url: '',
-    name: 'Native swaps are here!',
-    description: 'Experience seamless trading with better decoding and security in native swaps.',
-    accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
-    tags: ['DeFi'],
-    features: [],
-    socialProfiles: [],
-    developerWebsite: '',
-    chainIds: ['11155111'],
-    iconUrl: '@/public/images/common/swap.svg',
-  }
-}
 
 const SafeApps: NextPage = () => {
   const router = useRouter()
