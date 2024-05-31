@@ -1,3 +1,4 @@
+import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
 import { useEffect, useState } from 'react'
@@ -6,11 +7,15 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 
 const CounterfactualSuccessScreen = () => {
   const [open, setOpen] = useState<boolean>(false)
+  const [safeAddress, setSafeAddress] = useState<string>()
 
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
-      safeCreationSubscribe(event as SafeCreationEvent, async () => {
-        if (event === SafeCreationEvent.INDEXED) setOpen(true)
+      safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
+        if (event === SafeCreationEvent.INDEXED) {
+          setSafeAddress(detail.safeAddress)
+          setOpen(true)
+        }
       }),
     )
 
@@ -42,6 +47,7 @@ const CounterfactualSuccessScreen = () => {
         >
           <CheckRoundedIcon sx={{ width: 50, height: 50 }} color="success" />
         </Box>
+
         <Box textAlign="center">
           <Typography variant="h3" fontWeight="bold" mb={1}>
             Account is activated!
@@ -51,6 +57,13 @@ const CounterfactualSuccessScreen = () => {
             setup and security.
           </Typography>
         </Box>
+
+        {safeAddress && (
+          <Box p={2} bgcolor="background.main" borderRadius={1}>
+            <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton />
+          </Box>
+        )}
+
         <Button variant="contained" onClick={() => setOpen(false)}>
           Continue
         </Button>
