@@ -17,6 +17,7 @@ import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoveryS
 import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSection'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import css from './styles.module.css'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 const SwapWidget = dynamic(() => import('@/features/swap/components/SwapWidget'))
@@ -39,11 +40,11 @@ const Dashboard = (): ReactElement => {
           <Overview />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} className={css.hideIfEmpty}>
           <FirstSteps />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} className={css.hideIfEmpty}>
           <SwapWidget />
         </Grid>
 
