@@ -49,13 +49,6 @@ const Navigation = (): ReactElement => {
     }
   }
 
-  const getCounter = (item: NavItem) => {
-    // Indicate qeueued txs
-    if (item.href === AppRoutes.transactions.history) {
-      return queueSize
-    }
-  }
-
   // Route Transactions to Queue if there are queued txs, otherwise to History
   const getRoute = (href: string) => {
     if (href === AppRoutes.transactions.history && queueSize) {
@@ -75,6 +68,12 @@ const Navigation = (): ReactElement => {
       {enabledNavItems.map((item) => {
         const isSelected = currentSubdirectory === getSubdirectory(item.href)
 
+        let ItemTag = item.tag ? item.tag : null
+
+        if (item.href === AppRoutes.transactions.history) {
+          ItemTag = queueSize ? <SidebarListItemCounter count={queueSize} /> : null
+        }
+
         return (
           <ListItem
             key={item.href}
@@ -91,7 +90,7 @@ const Navigation = (): ReactElement => {
               <SidebarListItemText data-testid="sidebar-list-item" bold>
                 {item.label}
 
-                <SidebarListItemCounter count={getCounter(item)} />
+                {ItemTag}
               </SidebarListItemText>
             </SidebarListItemButton>
           </ListItem>
