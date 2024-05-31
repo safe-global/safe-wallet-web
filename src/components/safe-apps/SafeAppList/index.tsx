@@ -10,6 +10,10 @@ import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
+import NativeFeatureCard from '../NativeFeatureCard'
+import { useNativeSwapsAppCard } from '../NativeFeatureCard/useNativeSwapsAppCard'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -34,6 +38,8 @@ const SafeAppList = ({
 }: SafeAppListProps) => {
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
+  const { isVisible, setIsVisible } = useNativeSwapsAppCard()
+  const router = useRouter()
 
   const showZeroResultsPlaceholder = query && safeAppsList.length === 0
 
@@ -47,6 +53,13 @@ const SafeAppList = ({
     },
     [openPreviewDrawer, openedSafeAppIds],
   )
+
+  const handleNativeAppClick = useCallback(() => {
+    router.push({
+      pathname: AppRoutes.swap,
+      query: router.query,
+    })
+  }, [router])
 
   return (
     <>
@@ -70,18 +83,30 @@ const SafeAppList = ({
           ))}
 
         {/* Flat list filtered by search query */}
-        {safeAppsList.map((safeApp) => (
-          <li key={safeApp.id}>
-            <SafeAppCard
-              safeApp={safeApp}
-              isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-              onBookmarkSafeApp={onBookmarkSafeApp}
-              removeCustomApp={removeCustomApp}
-              onClickSafeApp={handleSafeAppClick(safeApp)}
-              openPreviewDrawer={openPreviewDrawer}
-            />
-          </li>
-        ))}
+        {safeAppsList.map((safeApp) => {
+          const isNativeFeatureCard = !safeApp.url
+          if (isNativeFeatureCard && !isVisible) return null
+          return !isNativeFeatureCard ? (
+            <li key={safeApp.id}>
+              <SafeAppCard
+                safeApp={safeApp}
+                isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
+                onBookmarkSafeApp={onBookmarkSafeApp}
+                removeCustomApp={removeCustomApp}
+                onClickSafeApp={handleSafeAppClick(safeApp)}
+                openPreviewDrawer={openPreviewDrawer}
+              />
+            </li>
+          ) : isVisible ? (
+            <li key={safeApp.id}>
+              <NativeFeatureCard
+                details={safeApp}
+                onClick={() => handleNativeAppClick()}
+                onDismiss={() => setIsVisible(false)}
+              />
+            </li>
+          ) : null
+        })}
       </ul>
 
       {/* Zero results placeholder */}

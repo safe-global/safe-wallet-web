@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import NativeFeatureCard from './index'
 import { Box } from '@mui/material'
+import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 
 const meta = {
   component: NativeFeatureCard,
@@ -25,8 +26,18 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    // orderId:
-    //   '0x1282e32a3a69aeb5a65fcdec0ae40fe16b398d54609bc9a3c8be3eb57d1a0fd07a9af6ef9197041a5841e84cb27873bebd3486e2661510ab',
-    // href: 'https://explorer.cow.fi/orders/0x1282e32a3a69aeb5a65fcdec0ae40fe16b398d54609bc9a3c8be3eb57d1a0fd07a9af6ef9197041a5841e84cb27873bebd3486e2661510ab',
+    details: {
+      id: 100_000,
+      url: '',
+      name: 'Native swaps are here!',
+      description: 'Experience seamless trading with better decoding and security in native swaps.',
+      accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
+      tags: ['DeFi'],
+      features: [],
+      socialProfiles: [],
+      developerWebsite: '',
+      chainIds: ['11155111'],
+      iconUrl: '@/public/images/common/swap.svg',
+    },
   },
 }

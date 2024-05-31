@@ -1,47 +1,52 @@
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import SwapIcon from '@/public/images/common/swap.svg'
 
 import css from './styles.module.css'
-import { Button, Paper, Stack, SvgIcon } from '@mui/material'
+import { Button, Paper, Stack } from '@mui/material'
+import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import SafeAppIconCard from '../SafeAppIconCard'
 
-const SafeAppCardGridView = () => (
-  <Paper className={css.safeAppContainer}>
-    {/* Safe App Header */}
-    <CardHeader
-      className={css.safeAppHeader}
-      avatar={
-        <div className={css.safeAppIconContainer}>
-          {/* Safe App Icon */}
-          <SvgIcon component={SwapIcon} inheritViewBox />
-        </div>
-      }
-    />
+type NativeFeatureCardProps = {
+  details: SafeAppData
+  onClick: () => void
+  onDismiss: () => void
+}
 
-    <CardContent className={css.safeAppContent}>
-      {/* Safe App Title */}
-      <Typography className={css.safeAppTitle} gutterBottom variant="h5">
-        Native swaps are here!
-      </Typography>
+const NativeFeatureCard = ({ details, onClick, onDismiss }: NativeFeatureCardProps) => {
+  return (
+    <Paper className={css.safeAppContainer}>
+      {/* Safe App Header */}
+      <CardHeader
+        className={css.safeAppHeader}
+        avatar={
+          <div className={css.safeAppIconContainer}>
+            {/* <SvgIcon component={SwapIcon} inheritViewBox /> */}
+            <SafeAppIconCard src={details.iconUrl} alt={details.name} width={24} height={24} />
+          </div>
+        }
+      />
 
-      {/* Safe App Description */}
-      <Typography className={css.safeAppDescription} variant="body2" color="text.secondary">
-        Experience seamless trading with better decoding and security in native swaps.
-      </Typography>
+      <CardContent className={css.safeAppContent}>
+        <Typography className={css.safeAppTitle} gutterBottom variant="h5">
+          {details.name}
+        </Typography>
 
-      <Stack direction="row" gap={2} className={css.buttons}>
-        <Button size="small" variant="contained" sx={{ px: '16px' }}>
-          Try now
-        </Button>
-        <Button size="small" variant="text" sx={{ px: '16px' }}>
-          Don&apos;t show
-        </Button>
-      </Stack>
+        <Typography className={css.safeAppDescription} variant="body2" color="text.secondary">
+          {details.description}
+        </Typography>
 
-      {/* <SafeAppTags tags={safeApp.tags} /> */}
-    </CardContent>
-  </Paper>
-)
+        <Stack direction="row" gap={2} className={css.buttons}>
+          <Button onClick={onClick} size="small" variant="contained" sx={{ px: '16px' }}>
+            Try now
+          </Button>
+          <Button onClick={onDismiss} size="small" variant="text" sx={{ px: '16px' }}>
+            Don&apos;t show
+          </Button>
+        </Stack>
+      </CardContent>
+    </Paper>
+  )
+}
 
-export default SafeAppCardGridView
+export default NativeFeatureCard
