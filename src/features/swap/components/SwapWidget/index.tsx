@@ -44,7 +44,7 @@ function SwapWidget(): ReactElement | null {
                   <Typography variant="h4" className={css.title}>
                     Introducing native swaps
                   </Typography>
-                  <Chip sx={{ ml: 1 }} />
+                  <Chip />
                 </Box>
 
                 <Box>
@@ -59,13 +59,13 @@ function SwapWidget(): ReactElement | null {
                         passHref
                         legacyBehavior
                       >
-                        <Button variant="contained" sx={buttonSx}>
+                        <Button variant="contained" size="small">
                           Try it now
                         </Button>
                       </Link>
                     </Track>
-                    <Button variant="text" sx={buttonSx} onClick={onClick}>
-                      Don{`'`}t show again
+                    <Button variant="text" size="small" onClick={onClick}>
+                      Don&apos;t show again
                     </Button>
                   </Box>
                 </Box>

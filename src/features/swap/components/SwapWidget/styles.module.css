@@ -4,13 +4,12 @@
 }
 
 .card {
-
   height: inherit;
+  border: none;
 }
 
 .grid {
   display: flex;
-  align-items: center;
   height: inherit;
   gap: var(--space-3);
 }
@@ -25,11 +24,12 @@
 .title {
   font-weight: 700;
   display: inline;
+  margin-right: var(--space-1);
 }
 
 .imageContainer {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: flex-end;
 }
 
 .buttonContainer {
@@ -37,5 +37,21 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: var(--space-3);
+  gap: var(--space-2);
+}
+
+@media (max-width: 599.95px) {
+  .imageContainer {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .buttonContainer {
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  .wrapper {
+    padding: var(--space-3);
+  }
 }
