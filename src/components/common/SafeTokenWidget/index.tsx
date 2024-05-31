@@ -54,7 +54,7 @@ const SafeTokenWidget = () => {
 
   const url = {
     pathname: AppRoutes.apps.open,
-    query: { safe: query.get('safe'), appUrl: GOVERNANCE_APP_URL },
+    query: { safe: query?.get('safe'), appUrl: GOVERNANCE_APP_URL },
   }
 
   const canRedeemSep5 = canRedeemSep5Airdrop(allocationData)

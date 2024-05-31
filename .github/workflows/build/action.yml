@@ -16,7 +16,19 @@ inputs:
 
 runs:
   using: 'composite'
+
   steps:
+    - name: Set environment variables
+      shell: bash
+      run: |
+        if [ "${{ inputs.prod }}" = "true" ]; then
+          echo "NEXT_PUBLIC_INFURA_TOKEN=${{ fromJSON(inputs.secrets).NEXT_PUBLIC_INFURA_TOKEN }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN=${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN }}" >> $GITHUB_ENV
+        else
+          echo "NEXT_PUBLIC_INFURA_TOKEN=${{ fromJSON(inputs.secrets).NEXT_PUBLIC_INFURA_TOKEN_DEVSTAGING }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN=${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN_DEVSTAGING }}" >> $GITHUB_ENV
+        fi
+
     - name: Build
       shell: bash
       run: yarn build
@@ -31,8 +43,6 @@ runs:
         NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID }}
         NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LATEST_AUTH }}
         NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_GOOGLE_TAG_MANAGER_LIVE_AUTH }}
-        NEXT_PUBLIC_INFURA_TOKEN: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_INFURA_TOKEN }}
-        NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SAFE_APPS_INFURA_TOKEN }}
         NEXT_PUBLIC_SENTRY_DSN: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_SENTRY_DSN }}
         NEXT_PUBLIC_TENDERLY_ORG_NAME: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_ORG_NAME }}
         NEXT_PUBLIC_TENDERLY_PROJECT_NAME: ${{ fromJSON(inputs.secrets).NEXT_PUBLIC_TENDERLY_PROJECT_NAME }}
