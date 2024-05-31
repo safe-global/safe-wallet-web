@@ -151,12 +151,13 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
 
   return (
     <TxCard>
-      <Typography variant="h5">Execute through role</Typography>
+      <Typography variant="h5">Execute without confirmations</Typography>
 
       {allowingRole && (
         <>
           <Typography component="div">
-            As a member of the <Role>{allowingRole.roleKey}</Role> role you can execute this transaction immediately.
+            As a member of the <Role>{allowingRole.roleKey}</Role> you can execute this transaction immediately without
+            confirmations from other owners.
           </Typography>
           <AdvancedParams
             willExecute
@@ -176,7 +177,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
 
           {mostLikelyRole.status && (
             <ErrorMessage>
-              The permissions check fails with the following status:
+              The permission check fails with the following status:
               <br />
               <code>{Status[mostLikelyRole.status]}</code>
             </ErrorMessage>
@@ -215,7 +216,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
                 disabled={!isOk || !allowingRole || isPending}
                 sx={{ minWidth: '209px' }}
               >
-                {isPending ? <CircularProgress size={20} /> : 'Execute through role'}
+                {isPending ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}
           </CheckWallet>
@@ -311,7 +312,7 @@ const useRoles = (metaTx?: MetaTransactionData) => {
 }
 
 /**
- * Returns the status of the permissions check, `null` if it depends on the condition evaluation.
+ * Returns the status of the permission check, `null` if it depends on the condition evaluation.
  */
 const checkTransaction = (role: RoleSummary, metaTx: MetaTransactionData): Status | null => {
   const target = role.targets.find((t) => t.address === metaTx.to.toLowerCase())

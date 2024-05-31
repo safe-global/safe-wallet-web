@@ -117,7 +117,7 @@ describe('PermissionsCheck', () => {
     })
 
     // the card is not shown
-    expect(queryByText('Execute through role')).not.toBeInTheDocument()
+    expect(queryByText('Execute without confirmations')).not.toBeInTheDocument()
   })
 
   it('disables the submit button when the call is not allowed and shows the permission check status', async () => {
@@ -131,7 +131,7 @@ describe('PermissionsCheck', () => {
     })
 
     const { findByText, getByText } = render(<PermissionsCheck safeTx={safeTx} />)
-    expect(await findByText('Execute through role', { selector: 'button' })).toBeDisabled()
+    expect(await findByText('Execute')).toBeDisabled()
 
     expect(
       getByText(
@@ -156,7 +156,7 @@ describe('PermissionsCheck', () => {
 
     const { findByText } = render(<PermissionsCheck safeTx={safeTx} onSubmit={onSubmit} />)
 
-    fireEvent.click(await findByText('Execute through role', { selector: 'button' }))
+    fireEvent.click(await findByText('Execute'))
 
     await waitFor(() => {
       expect(executeSpy).toHaveBeenCalledWith(
