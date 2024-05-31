@@ -37,7 +37,9 @@ export const Default: Story = {
       socialProfiles: [],
       developerWebsite: '',
       chainIds: ['11155111'],
-      iconUrl: '@/public/images/common/swap.svg',
+      iconUrl: '/images/common/swap.svg',
     },
+    onClick: () => {},
+    onDismiss: () => {},
   },
 }

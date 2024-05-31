@@ -1,3 +1,4 @@
+import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
@@ -11,7 +12,7 @@ export function useNativeSwapsAppCard() {
 
   const swapsCard: SafeAppData = {
     id: 100_000,
-    url: '',
+    url: AppRoutes.swap,
     name: 'Native swaps are here!',
     description: 'Experience seamless trading with better decoding and security in native swaps.',
     accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
@@ -21,6 +22,7 @@ export function useNativeSwapsAppCard() {
     developerWebsite: '',
     chainIds: [chainId],
     iconUrl: '/images/common/swap.svg',
+    isNativeFeature: true,
   }
 
   return {

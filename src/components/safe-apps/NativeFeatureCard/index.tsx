@@ -1,11 +1,10 @@
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-
-import css from './styles.module.css'
 import { Button, Paper, Stack } from '@mui/material'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import SafeAppIconCard from '../SafeAppIconCard'
+import css from './styles.module.css'
 
 type NativeFeatureCardProps = {
   details: SafeAppData
@@ -21,7 +20,6 @@ const NativeFeatureCard = ({ details, onClick, onDismiss }: NativeFeatureCardPro
         className={css.safeAppHeader}
         avatar={
           <div className={css.safeAppIconContainer}>
-            {/* <SvgIcon component={SwapIcon} inheritViewBox /> */}
             <SafeAppIconCard src={details.iconUrl} alt={details.name} width={24} height={24} />
           </div>
         }

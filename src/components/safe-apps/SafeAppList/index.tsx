@@ -12,7 +12,6 @@ import { Skeleton } from '@mui/material'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import NativeFeatureCard from '../NativeFeatureCard'
 import { useNativeSwapsAppCard } from '../NativeFeatureCard/useNativeSwapsAppCard'
-import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 
 type SafeAppListProps = {
@@ -54,12 +53,15 @@ const SafeAppList = ({
     [openPreviewDrawer, openedSafeAppIds],
   )
 
-  const handleNativeAppClick = useCallback(() => {
-    router.push({
-      pathname: AppRoutes.swap,
-      query: router.query,
-    })
-  }, [router])
+  const handleNativeAppClick = useCallback(
+    (route: string) => {
+      router.push({
+        pathname: route,
+        query: router.query,
+      })
+    },
+    [router],
+  )
 
   return (
     <>
@@ -84,9 +86,7 @@ const SafeAppList = ({
 
         {/* Flat list filtered by search query */}
         {safeAppsList.map((safeApp) => {
-          const isNativeFeatureCard = !safeApp.url
-          if (isNativeFeatureCard && !isVisible) return null
-          return !isNativeFeatureCard ? (
+          return !safeApp.isNativeFeature ? (
             <li key={safeApp.id}>
               <SafeAppCard
                 safeApp={safeApp}
@@ -101,7 +101,7 @@ const SafeAppList = ({
             <li key={safeApp.id}>
               <NativeFeatureCard
                 details={safeApp}
-                onClick={() => handleNativeAppClick()}
+                onClick={() => handleNativeAppClick(safeApp.url)}
                 onDismiss={() => setIsVisible(false)}
               />
             </li>
