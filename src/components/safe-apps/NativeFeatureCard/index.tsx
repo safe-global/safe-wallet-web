@@ -14,23 +14,22 @@ type NativeFeatureCardProps = {
 
 const NativeFeatureCard = ({ details, onClick, onDismiss }: NativeFeatureCardProps) => {
   return (
-    <Paper className={css.safeAppContainer}>
-      {/* Safe App Header */}
+    <Paper className={css.container}>
       <CardHeader
-        className={css.safeAppHeader}
+        className={css.header}
         avatar={
-          <div className={css.safeAppIconContainer}>
+          <div className={css.iconContainer}>
             <SafeAppIconCard src={details.iconUrl} alt={details.name} width={24} height={24} />
           </div>
         }
       />
 
-      <CardContent className={css.safeAppContent}>
-        <Typography className={css.safeAppTitle} gutterBottom variant="h5">
+      <CardContent className={css.content}>
+        <Typography className={css.title} variant="h5">
           {details.name}
         </Typography>
 
-        <Typography className={css.safeAppDescription} variant="body2" color="text.secondary">
+        <Typography className={css.description} variant="body2" color="text.secondary">
           {details.description}
         </Typography>
 
