@@ -57,7 +57,7 @@ export const CreateSafeStatus = ({
       dispatch(updateAddressBook(chain.chainId, safeAddress, data.name, data.owners, data.threshold))
       router.push(getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL))
     }
-  }, [chain, data.name, data.owners, data.threshold, router, safeAddress, status])
+  }, [dispatch, chain, data.name, data.owners, data.threshold, router, safeAddress, status])
 
   useEffect(() => {
     if (!setProgressColor) return
