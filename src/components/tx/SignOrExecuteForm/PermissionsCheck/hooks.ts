@@ -1,4 +1,10 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import useAsync from '@/hooks/useAsync'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { Errors, logError } from '@/services/exceptions'
+import { getModuleTransactionId } from '@/services/transactions'
+import { backOff } from 'exponential-backoff'
+import { useEffect, useMemo } from 'react'
 import {
   type ChainId,
   chains,
@@ -8,232 +14,17 @@ import {
   ExecutionOptions,
   Status,
 } from 'zodiac-roles-deployments'
-import {
-  OperationType,
-  type Transaction,
-  type MetaTransactionData,
-  type SafeTransaction,
-} from '@safe-global/safe-core-sdk-types'
-import { decodeBytes32String, type JsonRpcProvider } from 'ethers'
+import { OperationType, type Transaction, type MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import { type JsonRpcProvider } from 'ethers'
 import { KnownContracts, getModuleInstance } from '@gnosis.pm/zodiac'
-import { Box, Button, CardActions, Chip, CircularProgress, Divider, Typography } from '@mui/material'
-import { backOff } from 'exponential-backoff'
-
-import commonCss from '@/components/tx-flow/common/styles.module.css'
-import CheckWallet from '@/components/common/CheckWallet'
-import TxCard from '@/components/tx-flow/common/TxCard'
-import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
-import { TX_EVENTS } from '@/services/analytics/events/transactions'
-import { trackEvent } from '@/services/analytics'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import useAsync from '@/hooks/useAsync'
-import WalletRejectionError from './WalletRejectionError'
-import ErrorMessage from '../ErrorMessage'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { type SubmitCallback } from '.'
-import { getTxOptions } from '@/utils/transactions'
-import { isWalletRejection } from '@/utils/wallets'
-import { Errors, logError, trackError } from '@/services/exceptions'
-import { asError } from '@/services/exceptions/utils'
-import { SuccessScreenFlow } from '@/components/tx-flow/flows'
-import AdvancedParams, { useAdvancedParams } from '../AdvancedParams'
-import { useCurrentChain } from '@/hooks/useChains'
-import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import { assertOnboard, assertWallet } from '@/utils/helpers'
-import { TxModalContext } from '@/components/tx-flow'
-import { getModuleTransactionId } from '@/services/transactions'
-
-const Role = ({ children }: { children: string }) => {
-  let humanReadableRoleKey = children
-  try {
-    humanReadableRoleKey = decodeBytes32String(children)
-  } catch (e) {}
-
-  return <Chip label={humanReadableRoleKey} />
-}
-
-const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransaction; safeTxError?: Error }> = ({
-  onSubmit,
-  safeTx,
-  safeTxError,
-}) => {
-  const currentChain = useCurrentChain()
-  const onboard = useOnboard()
-  const wallet = useWallet()
-  const { safe } = useSafeInfo()
-
-  const chainId = currentChain?.chainId || '1'
-
-  const [isPending, setIsPending] = useState<boolean>(false)
-  const [isRejectedByUser, setIsRejectedByUser] = useState<boolean>(false)
-  const [submitError, setSubmitError] = useState<Error | undefined>()
-
-  const { setTxFlow } = useContext(TxModalContext)
-
-  const roles = useRoles(safeTx?.data)
-  const allowingRole = roles.find((role) => role.status === Status.Ok)
-
-  // If a user has multiple roles, we should prioritize the one that allows the transaction's to address (and function selector)
-  const mostLikelyRole =
-    allowingRole ||
-    roles.find((role) => role.status !== Status.TargetAddressNotAllowed && role.status !== Status.FunctionNotAllowed) ||
-    roles.find((role) => role.status !== Status.TargetAddressNotAllowed) ||
-    roles[0]
-
-  // Wrap call routing it through the Roles mod with the allowing role
-  const txThroughRole = useExecuteThroughRole({
-    modAddress: allowingRole?.modAddress,
-    roleKey: allowingRole?.roleKey,
-    metaTx: safeTx?.data,
-  })
-  // Estimate gas limit
-  const { gasLimit, gasLimitError } = useGasLimit(txThroughRole)
-  const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
-
-  const handleExecute = async () => {
-    assertWallet(wallet)
-    assertOnboard(onboard)
-
-    setIsRejectedByUser(false)
-    setIsPending(true)
-    setSubmitError(undefined)
-    setIsRejectedByUser(false)
-
-    if (!txThroughRole) {
-      throw new Error('Execution through role is not possible')
-    }
-
-    const txOptions = getTxOptions(advancedParams, currentChain)
-
-    let txHash: string
-    try {
-      txHash = await dispatchModuleTxExecution({ ...txThroughRole, ...txOptions }, onboard, chainId, safe.address.value)
-    } catch (_err) {
-      const err = asError(_err)
-      if (isWalletRejection(err)) {
-        setIsRejectedByUser(true)
-      } else {
-        trackError(Errors._815, err)
-        setSubmitError(err)
-      }
-      setIsPending(false)
-      return
-    }
-
-    // On success, wait for module tx to be indexed
-    const transactionService = currentChain?.transactionService
-    if (!transactionService) {
-      throw new Error('Transaction service not found')
-    }
-    const moduleTxId = await pollModuleTransactionId({
-      transactionService,
-      safeAddress: safe.address.value,
-      txHash,
-    })
-
-    const txId = `module_${safe.address.value}_${moduleTxId}`
-
-    onSubmit?.(txId, true)
-
-    // Track tx event
-    const txType = await getTransactionTrackingType(chainId, txId)
-    trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
-
-    setTxFlow(<SuccessScreenFlow txId={txId} />, undefined, false)
-  }
-
-  // Only render the card if the connected wallet is a member of any role
-  if (roles.length === 0) {
-    return null
-  }
-
-  return (
-    <TxCard>
-      <Typography variant="h5">Execute without confirmations</Typography>
-
-      {allowingRole && (
-        <>
-          <Typography component="div">
-            As a member of the <Role>{allowingRole.roleKey}</Role> you can execute this transaction immediately without
-            confirmations from other owners.
-          </Typography>
-          <AdvancedParams
-            willExecute
-            params={advancedParams}
-            recommendedGasLimit={gasLimit}
-            onFormSubmit={setAdvancedParams}
-            gasLimitError={gasLimitError}
-          />
-        </>
-      )}
-
-      {!allowingRole && (
-        <>
-          <Typography component="div">
-            You are a member of the <Role>{mostLikelyRole.roleKey}</Role> role but it does not allow this transaction.
-          </Typography>
-
-          {mostLikelyRole.status && (
-            <ErrorMessage>
-              The permission check fails with the following status:
-              <br />
-              <code>{Status[mostLikelyRole.status]}</code>
-            </ErrorMessage>
-          )}
-        </>
-      )}
-
-      {safeTxError && (
-        <ErrorMessage error={safeTxError}>
-          This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
-        </ErrorMessage>
-      )}
-
-      {submitError && (
-        <Box mt={1}>
-          <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
-        </Box>
-      )}
-
-      {isRejectedByUser && (
-        <Box mt={1}>
-          <WalletRejectionError />
-        </Box>
-      )}
-
-      <div>
-        <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
-
-        <CardActions>
-          <CheckWallet allowNonOwner>
-            {(isOk) => (
-              <Button
-                data-testid="execute-through-role-btn"
-                variant="contained"
-                onClick={handleExecute}
-                disabled={!isOk || !allowingRole || isPending}
-                sx={{ minWidth: '209px' }}
-              >
-                {isPending ? <CircularProgress size={20} /> : 'Execute'}
-              </Button>
-            )}
-          </CheckWallet>
-        </CardActions>
-      </div>
-    </TxCard>
-  )
-}
-
-export default PermissionsCheck
 
 const ROLES_V2_SUPPORTED_CHAINS = Object.keys(chains)
 
 /**
  * Returns all Zodiac Roles Modifiers v2 instances that are enabled and correctly configured on this Safe
  */
-const useRolesMods = () => {
+export const useRolesMods = () => {
   const { safe } = useSafeInfo()
 
   const [data] = useAsync(async () => {
@@ -262,7 +53,7 @@ const useRolesMods = () => {
  * Returns a list of roles mod address + role key assigned to the connected wallet.
  * For each role, checks if the role allows the given meta transaction and returns the status.
  */
-const useRoles = (metaTx?: MetaTransactionData) => {
+export const useRoles = (metaTx?: MetaTransactionData) => {
   const rolesMods = useRolesMods()
   const wallet = useWallet()
   const walletAddress = wallet?.address.toLowerCase() as undefined | `0x${string}`
@@ -351,7 +142,7 @@ const checkExecutionOptions = (execOptions: ExecutionOptions, metaTx: MetaTransa
   return Status.Ok
 }
 
-const useExecuteThroughRole = ({
+export const useExecuteThroughRole = ({
   modAddress,
   roleKey,
   metaTx,
@@ -431,7 +222,7 @@ const checkCondition = async (
   }
 }
 
-const useGasLimit = (
+export const useGasLimit = (
   tx?: Transaction,
 ): {
   gasLimit?: bigint

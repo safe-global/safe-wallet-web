@@ -12,7 +12,8 @@ import * as txSender from '@/services/tx/tx-sender/dispatch'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { AbiCoder, ZeroAddress, encodeBytes32String } from 'ethers'
-import PermissionsCheck, * as permissionsCheckModule from '../PermissionsCheck'
+import PermissionsCheck from '..'
+import * as hooksModule from '../hooks'
 
 // We assume that CheckWallet always returns true
 jest.mock('@/components/common/CheckWallet', () => ({
@@ -96,7 +97,7 @@ describe('PermissionsCheck', () => {
     // It's only used for eth_estimateGas requests
     mockWeb3Provider([])
 
-    jest.spyOn(permissionsCheckModule, 'pollModuleTransactionId').mockReturnValue(Promise.resolve('i1234567890'))
+    jest.spyOn(hooksModule, 'pollModuleTransactionId').mockReturnValue(Promise.resolve('i1234567890'))
   })
 
   it('only shows the card when the user is a member of any role', async () => {
