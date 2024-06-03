@@ -1,3 +1,5 @@
+import useWallet from '@/hooks/wallets/useWallet'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import type { ReactElement } from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { useMemo } from 'react'
@@ -41,6 +43,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const chainId = useChainId()
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
+  const wallet = useWallet()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   useHighlightHiddenTab()
 
@@ -108,10 +111,11 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   ])
 
   const handleSubmit = async () => {
-    if (!safeTx || !onboard) return
+    if (!safeTx || !onboard || !wallet) return
 
     try {
-      await dispatchSafeAppsTx(safeTx, requestId, onboard, safe.chainId)
+      await assertWalletChain(onboard, safe.chainId)
+      await dispatchSafeAppsTx(safeTx, requestId, wallet.provider)
     } catch (error) {
       setSafeTxError(asError(error))
     }

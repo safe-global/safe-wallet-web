@@ -1,3 +1,5 @@
+import useWallet from '@/hooks/wallets/useWallet'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import type { ReactElement, SyntheticEvent } from 'react'
 import { useContext, useMemo, useState } from 'react'
 import { type BigNumberish, type BytesLike, parseUnits } from 'ethers'
@@ -51,6 +53,7 @@ const ReviewSpendingLimitTx = ({
   const { setTxFlow } = useContext(TxModalContext)
   const currentChain = useCurrentChain()
   const onboard = useOnboard()
+  const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
@@ -83,7 +86,7 @@ const ReviewSpendingLimitTx = ({
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
-    if (!onboard) return
+    if (!onboard || !wallet) return
 
     trackEvent(MODALS_EVENTS.USE_SPENDING_LIMIT)
 
@@ -94,7 +97,8 @@ const ReviewSpendingLimitTx = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await dispatchSpendingLimitTxExecution(txParams, txOptions, onboard, safe.chainId, safeAddress)
+      await assertWalletChain(onboard, safe.chainId)
+      await dispatchSpendingLimitTxExecution(txParams, txOptions, wallet.provider, safe.chainId, safeAddress)
       onSubmit('', true)
       setTxFlow(undefined)
     } catch (_err) {
