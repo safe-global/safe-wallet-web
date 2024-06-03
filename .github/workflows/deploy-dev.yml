@@ -41,7 +41,7 @@ jobs:
       - uses: ./.github/workflows/build
         with:
           secrets: ${{ toJSON(secrets) }}
-          prod: ${{ github.base_ref == 'main' }} # PRs to main are Release Candidates and must be tested with prod settings
+          if: startsWith(github.ref, 'refs/heads/main')
 
       - uses: ./.github/workflows/build-storybook
 
