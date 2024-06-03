@@ -13,6 +13,7 @@ import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import NativeFeatureCard from '../NativeFeatureCard'
 import { useNativeSwapsAppCard } from '../hooks/useNativeSwapsAppCard'
 import { useRouter } from 'next/router'
+import { NATIVE_SWAPS_APP_ID } from '@/features/swap/config/constants'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -86,7 +87,7 @@ const SafeAppList = ({
 
         {/* Flat list filtered by search query */}
         {safeAppsList.map((safeApp) => {
-          return !safeApp.isNativeFeature ? (
+          return safeApp.id !== NATIVE_SWAPS_APP_ID ? (
             <li key={safeApp.id}>
               <SafeAppCard
                 safeApp={safeApp}

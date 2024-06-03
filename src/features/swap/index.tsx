@@ -27,6 +27,7 @@ import { isBlockedAddress } from '@/services/ofac'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
 import useChainId from '@/hooks/useChainId'
+import { NATIVE_SWAPS_APP_ID } from '@/features/swap/config/constants'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -67,7 +68,7 @@ const SwapWidget = ({ sell }: Params) => {
 
   const appData: SafeAppData = useMemo(
     () => ({
-      id: 1,
+      id: NATIVE_SWAPS_APP_ID,
       url: 'https://app.safe.global',
       name: SWAP_TITLE,
       iconUrl: darkMode ? './images/common/safe-swap-dark.svg' : './images/common/safe-swap.svg',
