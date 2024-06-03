@@ -22,12 +22,12 @@ const SafeApps: NextPage = () => {
   const allApps = [swapsCardDetails, ...remoteSafeApps]
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(allApps)
-  const isFiltered = filteredApps.length !== remoteSafeApps.length
+  const isFiltered = filteredApps.length !== allApps.length
   const isSafeAppsEnabled = useHasFeature(FEATURES.SAFE_APPS)
 
   const nonPinnedApps = useMemo(
-    () => remoteSafeApps.filter((app) => !pinnedSafeAppIds.has(app.id)),
-    [remoteSafeApps, pinnedSafeAppIds],
+    () => allApps.filter((app) => !pinnedSafeAppIds.has(app.id)),
+    [allApps, pinnedSafeAppIds],
   )
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,7 +60,7 @@ const SafeApps: NextPage = () => {
           onChangeFilterCategory={setSelectedCategories}
           onChangeOptimizedWithBatch={setOptimizedWithBatchFilter}
           selectedCategories={selectedCategories}
-          safeAppsList={remoteSafeApps}
+          safeAppsList={allApps}
         />
 
         {/* Pinned apps */}
