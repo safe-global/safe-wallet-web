@@ -66,7 +66,7 @@ function SwapWidget(): ReactElement | null {
               </Box>
             </Grid>
             <Grid item className={css.imageContainer}>
-              <img src="/images/common/ic-swaps-min.png" alt="Swap" width={400} />
+              <img src="/images/common/ic-swaps.svg" alt="Swap" width={400} />
             </Grid>
           </Grid>
         </Card>
