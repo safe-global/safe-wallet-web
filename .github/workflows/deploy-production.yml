@@ -2,7 +2,7 @@ name: Release
 
 on:
   release:
-    types: [released]
+    types: [published]
 
 jobs:
   release:
@@ -52,20 +52,3 @@ jobs:
           PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
           PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
           VERSION_TAG: ${{ github.event.release.tag_name }}
-
-      # Update the GitHub release with a checksummed archive
-      - name: Upload archive
-        uses: Shopify/upload-to-release@v2.0.0
-        with:
-          path: ${{ env.ARCHIVE_NAME }}.tar.gz
-          name: ${{ env.ARCHIVE_NAME }}.tar.gz
-          content-type: application/gzip
-          repo-token: ${{ github.token }}
-
-      - name: Upload checksum
-        uses: Shopify/upload-to-release@v2.0.0
-        with:
-          path: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-          name: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-          content-type: text/plain
-          repo-token: ${{ github.token }}
