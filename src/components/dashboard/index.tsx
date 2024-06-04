@@ -16,6 +16,7 @@ import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoveryS
 import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSection'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import AssetsWidget from './Assets'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
 
@@ -44,6 +45,10 @@ const Dashboard = (): ReactElement => {
         {safe.deployed && (
           <>
             <ActivityRewardsSection />
+
+            <Grid item xs={12} lg={6}>
+              <AssetsWidget />
+            </Grid>
 
             <Grid item xs={12} lg={6}>
               <PendingTxsList />
