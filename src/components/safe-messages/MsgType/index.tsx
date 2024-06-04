@@ -1,8 +1,7 @@
-import { Box } from '@mui/material'
+import { Box, SvgIcon } from '@mui/material'
 import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-
+import RequiredIcon from '@/public/images/messages/required.svg'
 import ImageFallback from '@/components/common/ImageFallback'
-
 import txTypeCss from '@/components/transactions/TxType/styles.module.css'
 import { isEIP712TypedData } from '@/utils/safe-messages'
 
@@ -27,13 +26,17 @@ const getMessageName = (msg: SafeMessage) => {
 const MsgType = ({ msg }: { msg: SafeMessage }) => {
   return (
     <Box className={txTypeCss.txType}>
-      <ImageFallback
-        src={msg.logoUri || FALLBACK_LOGO_URI}
-        fallbackSrc={FALLBACK_LOGO_URI}
-        alt="Message type"
-        width={16}
-        height={16}
-      />
+      {msg.logoUri ? (
+        <ImageFallback
+          src={msg.logoUri || FALLBACK_LOGO_URI}
+          fallbackSrc={FALLBACK_LOGO_URI}
+          alt="Message type"
+          width={16}
+          height={16}
+        />
+      ) : (
+        <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="small" />
+      )}
       {getMessageName(msg)}
     </Box>
   )

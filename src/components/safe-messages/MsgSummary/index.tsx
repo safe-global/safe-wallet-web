@@ -35,7 +35,7 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
   }
 
   return (
-    <Box className={css.gridContainer}>
+    <Box className={[css.gridContainer, css.message].join(' ')}>
       <Box gridArea="type">
         <MsgType msg={msg} />
       </Box>
