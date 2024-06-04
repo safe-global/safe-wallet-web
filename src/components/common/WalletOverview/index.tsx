@@ -11,8 +11,6 @@ import { selectChainById } from '@/store/chainsSlice'
 import WalletBalance from '@/components/common/WalletBalance'
 
 import css from './styles.module.css'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import SocialLoginInfo from '@/components/common/SocialLoginInfo'
 
 export const WalletIdenticon = ({ wallet, size = 32 }: { wallet: ConnectedWallet; size?: number }) => {
   return (
@@ -38,22 +36,6 @@ const WalletOverview = ({
 }): ReactElement => {
   const walletChain = useAppSelector((state) => selectChainById(state, wallet.chainId))
   const prefix = walletChain?.shortName
-
-  const isSocialLogin = isSocialLoginWallet(wallet.label)
-
-  if (isSocialLogin) {
-    return (
-      <div className={css.socialLoginInfo}>
-        <SocialLoginInfo
-          wallet={wallet}
-          chainInfo={walletChain}
-          hideActions={true}
-          balance={balance}
-          showBalance={showBalance}
-        />
-      </div>
-    )
-  }
 
   return (
     <Box className={css.container}>

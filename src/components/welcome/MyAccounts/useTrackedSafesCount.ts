@@ -22,11 +22,11 @@ const useTrackSafesCount = (
   }, [wallet?.address])
 
   useEffect(() => {
-    if (!isOwnedSafesTracked && ownedSafes && ownedSafes.length > 0 && isLoginPage) {
+    if (wallet && !isOwnedSafesTracked && ownedSafes && ownedSafes.length > 0 && isLoginPage) {
       trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_OWNED, label: ownedSafes.length })
       isOwnedSafesTracked = true
     }
-  }, [isLoginPage, ownedSafes])
+  }, [isLoginPage, ownedSafes, wallet])
 
   useEffect(() => {
     if (watchlistSafes && isLoginPage && watchlistSafes.length > 0 && !isWatchlistTracked) {

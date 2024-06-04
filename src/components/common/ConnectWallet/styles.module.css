@@ -80,10 +80,6 @@
 }
 
 @media (max-width: 599.95px) {
-  .socialLoginInfo > div > div {
-    display: none;
-  }
-
   .notConnected {
     display: none;
   }

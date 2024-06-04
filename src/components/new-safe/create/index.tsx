@@ -18,8 +18,6 @@ import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
-import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 
 export type NewSafeFormData = {
   name: string
@@ -151,14 +149,9 @@ const CreateSafe = () => {
 
   const staticHint = useMemo(() => staticHints[activeStep], [activeStep])
 
-  const mnemonicSafeName = useMnemonicSafeName()
-
-  // Jump to review screen when using social login
-  const isSocialLogin = isSocialLoginWallet(wallet?.label)
-  const initialStep = isSocialLogin ? 2 : 0
-
+  const initialStep = 0
   const initialData: NewSafeFormData = {
-    name: isSocialLogin ? mnemonicSafeName : '',
+    name: '',
     owners: [],
     threshold: 1,
     saltNonce: Date.now(),

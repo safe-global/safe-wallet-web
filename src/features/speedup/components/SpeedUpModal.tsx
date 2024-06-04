@@ -1,5 +1,6 @@
 import useGasPrice from '@/hooks/useGasPrice'
 import ModalDialog from '@/components/common/ModalDialog'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import DialogContent from '@mui/material/DialogContent'
 import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
 import RocketSpeedup from '@/public/images/common/ic-rocket-speedup.svg'
@@ -89,12 +90,15 @@ export const SpeedUpModal = ({
 
     try {
       setWaitingForConfirmation(true)
+      await assertWalletChain(onboard, chainInfo.chainId)
+
       if (pendingTx.txType === PendingTxType.SAFE_TX) {
         await dispatchSafeTxSpeedUp(
           txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
           txId,
-          onboard,
+          wallet.provider,
           chainInfo.chainId,
+          wallet.address,
           safeAddress,
         )
         const txType = await getTransactionTrackingType(chainInfo.chainId, txId)
@@ -105,8 +109,8 @@ export const SpeedUpModal = ({
           txId,
           pendingTx.to,
           pendingTx.data,
-          onboard,
-          chainInfo?.chainId,
+          wallet.provider,
+          wallet.address,
           safeAddress,
         )
         // Currently all custom txs are batch executes

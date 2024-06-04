@@ -43,7 +43,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
     ],
     disabledWallets: ['lattice'],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.EIP1559,
       FEATURES.ERC721,
@@ -94,7 +93,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.EIP1559,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
@@ -150,7 +148,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.EIP1559,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
@@ -203,7 +200,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
       FEATURES.SAFE_TX_GAS_OPTIONAL,
@@ -253,7 +249,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
@@ -301,13 +296,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trust',
       'walletLink',
     ],
-    features: [
-      FEATURES.CONTRACT_INTERACTION,
-      FEATURES.ERC721,
-      FEATURES.SAFE_APPS,
-      FEATURES.SAFE_TX_GAS_OPTIONAL,
-      FEATURES.TX_SIMULATION,
-    ],
+    features: [FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL, FEATURES.TX_SIMULATION],
   },
   {
     transactionService: 'https://safe-transaction.aurora.gnosis.io',
@@ -398,7 +387,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trust',
     ],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.EIP1559,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
@@ -447,13 +435,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'trust',
       'walletLink',
     ],
-    features: [
-      FEATURES.CONTRACT_INTERACTION,
-      FEATURES.ERC721,
-      FEATURES.SAFE_APPS,
-      FEATURES.SAFE_TX_GAS_OPTIONAL,
-      FEATURES.TX_SIMULATION,
-    ],
+    features: [FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL, FEATURES.TX_SIMULATION],
   },
   {
     transactionService: 'https://safe-transaction.goerli.gnosis.io/',
@@ -496,7 +478,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.EIP1559,
       FEATURES.ERC721,
@@ -537,7 +518,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
     gasPrice: [{ type: GAS_PRICE_TYPE.FIXED, weiValue: '24000000000' }],
     disabledWallets: ['fortmatic', 'lattice', 'tally'],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.EIP1559,
       FEATURES.ERC721,
@@ -589,7 +569,6 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [
-      FEATURES.CONTRACT_INTERACTION,
       FEATURES.DOMAIN_LOOKUP,
       FEATURES.ERC721,
       FEATURES.SAFE_APPS,
