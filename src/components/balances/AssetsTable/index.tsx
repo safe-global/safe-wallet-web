@@ -27,6 +27,7 @@ import { TokenTransferFlow } from '@/components/tx-flow/flows'
 import AddFundsCTA from '@/components/common/AddFunds'
 import SwapButton from '@/features/swap/components/SwapButton'
 import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
+import { SWAP_LABELS } from '@/services/analytics/events/swaps'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -227,7 +228,9 @@ const AssetsTable = ({
                   <>
                     <SendButton tokenInfo={item.tokenInfo} onClick={() => onSendClick(item.tokenInfo.address)} />
 
-                    {isSwapFeatureEnabled && <SwapButton tokenInfo={item.tokenInfo} amount="0" />}
+                    {isSwapFeatureEnabled && (
+                      <SwapButton tokenInfo={item.tokenInfo} amount="0" trackingLabel={SWAP_LABELS.asset} />
+                    )}
 
                     {showHiddenAssets ? (
                       <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />

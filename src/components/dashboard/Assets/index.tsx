@@ -12,6 +12,7 @@ import css from '../PendingTxs/styles.module.css'
 import { useRouter } from 'next/router'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { SWAP_LABELS } from '@/services/analytics/events/swaps'
 
 const MAX_ASSETS = 5
 
@@ -41,7 +42,7 @@ const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][numbe
 
     {showSwap && (
       <Box my={-0.7}>
-        <SwapButton tokenInfo={item.tokenInfo} amount="0" />
+        <SwapButton tokenInfo={item.tokenInfo} amount="0" trackingLabel={SWAP_LABELS.dashboard_assets} />
       </Box>
     )}
   </Box>
