@@ -1,5 +1,7 @@
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as onboard from '@/hooks/wallets/useOnboard'
+import * as useWallet from '@/hooks/wallets/useWallet'
 import * as sdk from '@/services/tx/tx-sender/sdk'
 import { safeTxBuilder } from '@/tests/builders/safeTx'
 import * as protocolKit from '@safe-global/protocol-kit'
@@ -13,8 +15,22 @@ import { faker } from '@faker-js/faker'
 import type { CompatibilityFallbackHandlerContract, SimulateTxAccessorContract } from '@safe-global/safe-core-sdk-types'
 
 describe('useDeployGasLimit hook', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+
+    jest.spyOn(useWallet, 'default').mockReturnValue({} as ConnectedWallet)
+    jest.spyOn(sdk, 'assertWalletChain').mockImplementation(jest.fn())
+  })
+
   it('returns undefined in onboard is not initialized', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(undefined)
+    const { result } = renderHook(() => useDeployGasLimit())
+
+    expect(result.current.gasLimit).toBeUndefined()
+  })
+
+  it('returns undefined in there is no wallet connected', () => {
+    jest.spyOn(useWallet, 'default').mockReturnValue(null)
     const { result } = renderHook(() => useDeployGasLimit())
 
     expect(result.current.gasLimit).toBeUndefined()

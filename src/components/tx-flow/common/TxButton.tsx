@@ -10,6 +10,8 @@ import { useContext } from 'react'
 import { TxModalContext } from '..'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import SwapIcon from '@/public/images/common/swap.svg'
+import AssetsIcon from '@/public/images/sidebar/assets.svg'
 
 const buttonSx = {
   height: '58px',
@@ -19,7 +21,14 @@ const buttonSx = {
 export const SendTokensButton = ({ onClick, sx }: { onClick: () => void; sx?: ButtonProps['sx'] }) => {
   return (
     <Track {...MODALS_EVENTS.SEND_FUNDS}>
-      <Button data-testid="send-tokens-btn" onClick={onClick} variant="contained" sx={sx ?? buttonSx} fullWidth>
+      <Button
+        data-testid="send-tokens-btn"
+        onClick={onClick}
+        variant="contained"
+        sx={sx ?? buttonSx}
+        fullWidth
+        startIcon={<AssetsIcon width={20} />}
+      >
         Send tokens
       </Button>
     </Track>
@@ -60,8 +69,35 @@ export const TxBuilderButton = () => {
   return (
     <Track {...MODALS_EVENTS.CONTRACT_INTERACTION}>
       <Link href={txBuilder.link} passHref style={{ width: '100%' }}>
-        <Button variant="outlined" sx={buttonSx} fullWidth onClick={onClick}>
+        <Button
+          variant="outlined"
+          sx={buttonSx}
+          fullWidth
+          onClick={onClick}
+          startIcon={<img src={txBuilder.app.iconUrl} height={24} width="auto" alt={txBuilder.app.name} />}
+        >
           Transaction Builder
+        </Button>
+      </Link>
+    </Track>
+  )
+}
+
+export const MakeASwapButton = () => {
+  const router = useRouter()
+  const { setTxFlow } = useContext(TxModalContext)
+  const isEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+
+  if (!isEnabled) return null
+
+  const isSwapPage = router.pathname === AppRoutes.swap
+  const onClick = isSwapPage ? () => setTxFlow(undefined) : undefined
+
+  return (
+    <Track {...MODALS_EVENTS.SWAP}>
+      <Link href={{ pathname: AppRoutes.swap, query: { safe: router.query.safe } }} passHref legacyBehavior>
+        <Button variant="contained" sx={buttonSx} fullWidth onClick={onClick} startIcon={<SwapIcon width={20} />}>
+          Swap tokens
         </Button>
       </Link>
     </Track>
