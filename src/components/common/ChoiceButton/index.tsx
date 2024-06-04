@@ -21,7 +21,7 @@ const ChoiceButton = ({
   chip?: string
 }) => {
   return (
-    <ButtonBase className={css.txButton} onClick={onClick} disabled={disabled}>
+    <ButtonBase data-testid="choice-btn" className={css.txButton} onClick={onClick} disabled={disabled}>
       <Box
         className={css.iconBg}
         sx={{ backgroundColor: iconColor ? `var(--color-${iconColor}-background) !important` : '' }}
