@@ -21,7 +21,7 @@ const useOnrampAppUrl = (): string | undefined => {
 
 const useBuyCryptoHref = (): LinkProps['href'] | undefined => {
   const query = useSearchParams()
-  const safe = query.get('safe')
+  const safe = query?.get('safe')
   const appUrl = useOnrampAppUrl()
 
   return useMemo(() => {

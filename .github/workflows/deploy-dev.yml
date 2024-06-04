@@ -41,7 +41,7 @@ jobs:
       - uses: ./.github/workflows/build
         with:
           secrets: ${{ toJSON(secrets) }}
-          prod: ${{ github.ref == 'refs/heads/main' }}
+          if: startsWith(github.ref, 'refs/heads/main')
 
       - uses: ./.github/workflows/build-storybook
 
@@ -53,14 +53,14 @@ jobs:
 
       # Staging
       - name: Deploy to the staging S3
-        if: github.ref == 'refs/heads/main'
+        if: startsWith(github.ref, 'refs/heads/main')
         env:
           BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current
         run: bash ./scripts/github/s3_upload.sh
 
       # Dev
       - name: Deploy to the dev S3
-        if: github.ref == 'refs/heads/dev'
+        if: startsWith(github.ref, 'refs/heads/dev')
         env:
           BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
         run: bash ./scripts/github/s3_upload.sh

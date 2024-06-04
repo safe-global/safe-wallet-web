@@ -63,6 +63,10 @@ export const MODALS_EVENTS = {
     category: MODALS_CATEGORY,
     event: EventType.CLICK,
   },
+  SWAP: {
+    action: 'Swap',
+    category: MODALS_CATEGORY,
+  },
 }
 
 export enum MODAL_NAVIGATION {

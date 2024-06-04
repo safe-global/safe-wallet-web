@@ -22,6 +22,7 @@ export enum TX_TYPES {
   walletconnect = 'walletconnect',
   custom = 'custom',
   native_swap = 'native_swap',
+  bulk_execute = 'bulk_execute',
 
   // Counterfactual
   activate_without_tx = 'activate_without_tx',

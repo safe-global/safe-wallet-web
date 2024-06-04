@@ -2,7 +2,6 @@ import CheckBalance from '@/features/counterfactual/CheckBalance'
 import { useHasFeature } from '@/hooks/useChains'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import { FEATURES } from '@/utils/chains'
-import { formatUnits } from 'ethers'
 import { type ReactElement, useMemo, useContext } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -228,12 +227,7 @@ const AssetsTable = ({
                   <>
                     <SendButton tokenInfo={item.tokenInfo} onClick={() => onSendClick(item.tokenInfo.address)} />
 
-                    {isSwapFeatureEnabled && (
-                      <SwapButton
-                        tokenInfo={item.tokenInfo}
-                        amount={formatUnits(item.balance, item.tokenInfo.decimals)}
-                      />
-                    )}
+                    {isSwapFeatureEnabled && <SwapButton tokenInfo={item.tokenInfo} amount="0" />}
 
                     {showHiddenAssets ? (
                       <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
