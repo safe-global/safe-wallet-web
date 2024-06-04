@@ -62,7 +62,8 @@ export const getPermissionsUrl = '/get-permissions'
 export const appSettingsUrl = '/settings/safe-apps'
 export const setupUrl = '/settings/setup?safe='
 export const dataSettingsUrl = '/settings/data?safe='
-export const securityUrl = '/settings/setup?safe='
+export const securityUrl = '/settings/security?safe='
+export const notificationsUrl = '/settings/notifications?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
@@ -235,6 +236,7 @@ export const localStorageKeys = {
   SAFE_v2__customSafeApps_11155111: 'SAFE_v2__customSafeApps-11155111',
   SAFE_v2__SafeApps__browserPermissions: 'SAFE_v2__SafeApps__browserPermissions',
   SAFE_v2__SafeApps__infoModal: 'SAFE_v2__SafeApps__infoModal',
+  SAFE_v2__undeployedSafes: 'SAFE_v2__undeployedSafes',
 }
 
 export const connectWalletNames = {

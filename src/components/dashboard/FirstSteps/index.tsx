@@ -137,6 +137,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
               {(isOk) => (
                 <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
                   <Button
+                    data-testid="add-funds-btn"
                     onClick={toggleDialog}
                     variant="contained"
                     size="small"
@@ -157,7 +158,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
           >
             <Box px={4} pb={5} pt={4}>
               <Grid container spacing={2} alignItems="center" justifyContent="center" mb={4}>
-                <Grid item textAlign="center">
+                <Grid data-testid="qr-code" item textAlign="center">
                   <Box p={1} border={1} borderRadius="6px" borderColor="border.light" display="inline-flex">
                     <QRCode value={qrCode} size={132} />
                   </Box>
@@ -165,6 +166,7 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                     <FormControlLabel
                       control={
                         <Switch
+                          data-testid="qr-code-switch"
                           checked={settings.shortName.qr}
                           onChange={(e) => dispatch(setQrShortName(e.target.checked))}
                         />
@@ -183,7 +185,14 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                     account.
                   </Typography>
 
-                  <Box bgcolor="background.main" p={2} borderRadius="6px" alignSelf="flex-start" fontSize="14px">
+                  <Box
+                    data-testid="address-info"
+                    bgcolor="background.main"
+                    p={2}
+                    borderRadius="6px"
+                    alignSelf="flex-start"
+                    fontSize="14px"
+                  >
                     <EthHashInfo
                       address={safeAddress}
                       showName={false}
@@ -234,6 +243,7 @@ const FirstTransactionWidget = ({ completed }: { completed: boolean }) => {
             {(isOk) => (
               <Track {...OVERVIEW_EVENTS.NEW_TRANSACTION} label="onboarding">
                 <Button
+                  data-testid="create-tx-btn"
                   onClick={() => setOpen(true)}
                   variant="outlined"
                   size="small"
