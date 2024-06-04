@@ -19,7 +19,7 @@ const SafeApps: NextPage = () => {
   const router = useRouter()
   const { swapsCardDetails } = useNativeSwapsAppCard()
   const { remoteSafeApps, remoteSafeAppsLoading, pinnedSafeApps, pinnedSafeAppIds, togglePin } = useSafeApps()
-  const allApps = [swapsCardDetails, ...remoteSafeApps]
+  const allApps = useMemo(() => [swapsCardDetails, ...remoteSafeApps], [remoteSafeApps, swapsCardDetails])
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(allApps)
   const isFiltered = filteredApps.length !== allApps.length
