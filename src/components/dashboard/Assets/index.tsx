@@ -40,7 +40,7 @@ const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][numbe
     </Box>
 
     {showSwap && (
-      <Box my={-0.5}>
+      <Box my={-0.7}>
         <SwapButton tokenInfo={item.tokenInfo} amount="0" />
       </Box>
     )}
