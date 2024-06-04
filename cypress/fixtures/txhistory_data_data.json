@@ -130,7 +130,7 @@
       }
     },
     "deleteSpendingLimit": {
-      "title": "Contract interaction",
+      "title": "disableModule",
       "summaryTxInfo": "deleteAllowance",
       "summaryTime": "11:08 AM",
       "description": "Delete spending limit",
