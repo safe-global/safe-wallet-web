@@ -26,7 +26,9 @@ const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
   const [overviews] = useSafeOverviews(safes)
 
   const findOverview = (item: SafeItem) => {
-    return overviews?.find((overview) => sameAddress(overview.address.value, item.address))
+    return overviews?.find(
+      (overview) => item.chainId === overview.chainId && sameAddress(overview.address.value, item.address),
+    )
   }
 
   return (

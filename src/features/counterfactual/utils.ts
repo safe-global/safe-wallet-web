@@ -8,14 +8,14 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import ExternalStore from '@/services/ExternalStore'
-import { assertWalletChain, getUncheckedSafeSDK, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
+import { getUncheckedSafeSDK, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
 import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
-import { assertOnboard, assertTx, assertWallet } from '@/utils/helpers'
+import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
@@ -23,11 +23,9 @@ import {
   type ChainInfo,
   ImplementationVersionState,
   type SafeBalanceResponse,
-  type SafeInfo,
   TokenType,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import type { OnboardAPI } from '@web3-onboard/core'
-import type { BrowserProvider, ContractTransactionResponse, Provider } from 'ethers'
+import type { BrowserProvider, ContractTransactionResponse, Eip1193Provider, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
@@ -50,19 +48,17 @@ export const CF_TX_GROUP_KEY = 'cf-tx'
 export const dispatchTxExecutionAndDeploySafe = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
-  onboard: OnboardAPI,
-  chainId: SafeInfo['chainId'],
+  provider: Eip1193Provider,
 ) => {
-  const sdkUnchecked = await getUncheckedSafeSDK(onboard, chainId)
+  const sdkUnchecked = await getUncheckedSafeSDK(provider)
   const eventParams = { groupKey: CF_TX_GROUP_KEY }
 
   let result: ContractTransactionResponse | undefined
   try {
     const signedTx = await tryOffChainTxSigning(safeTx, await sdkUnchecked.getContractVersion(), sdkUnchecked)
 
-    const wallet = await assertWalletChain(onboard, chainId)
-    const provider = createWeb3(wallet.provider)
-    const signer = await provider.getSigner()
+    const browserProvider = createWeb3(provider)
+    const signer = await browserProvider.getSigner()
 
     const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
 
@@ -84,16 +80,15 @@ export const dispatchTxExecutionAndDeploySafe = async (
 
 export const deploySafeAndExecuteTx = async (
   txOptions: TransactionOptions,
-  chainId: string,
   wallet: ConnectedWallet | null,
   safeTx?: SafeTransaction,
-  onboard?: OnboardAPI,
+  provider?: Eip1193Provider,
 ) => {
   assertTx(safeTx)
   assertWallet(wallet)
-  assertOnboard(onboard)
+  assertProvider(provider)
 
-  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, onboard, chainId)
+  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, provider)
 }
 
 export const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint>(0n)

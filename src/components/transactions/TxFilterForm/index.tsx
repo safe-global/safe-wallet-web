@@ -146,7 +146,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                 <Grid container item spacing={2} xs={12}>
                   {!isModuleFilter && (
                     <>
-                      <Grid item xs={12} md={6}>
+                      <Grid data-testid="start-date" item xs={12} md={6}>
                         <DatePickerInput
                           name={TxFilterFormFieldNames.DATE_FROM}
                           label="From"
@@ -159,7 +159,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid data-testid="end-date" item xs={12} md={6}>
                         <DatePickerInput
                           name={TxFilterFormFieldNames.DATE_TO}
                           label="To"

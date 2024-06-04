@@ -1,7 +1,7 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
 import { EthersAdapter, SigningMethod } from '@safe-global/protocol-kit'
-import type { JsonRpcSigner } from 'ethers'
+import type { Eip1193Provider, JsonRpcSigner } from 'ethers'
 import { ethers } from 'ethers'
 import { isWalletRejection, isHardwareWallet, isWalletConnect } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -117,13 +117,9 @@ export const assertWalletChain = async (onboard: OnboardAPI, chainId: string): P
   return newWallet
 }
 
-export const getAssertedChainSigner = async (
-  onboard: OnboardAPI,
-  chainId: SafeInfo['chainId'],
-): Promise<JsonRpcSigner> => {
-  const wallet = await assertWalletChain(onboard, chainId)
-  const provider = createWeb3(wallet.provider)
-  return provider.getSigner()
+export const getAssertedChainSigner = async (provider: Eip1193Provider): Promise<JsonRpcSigner> => {
+  const browserProvider = createWeb3(provider)
+  return browserProvider.getSigner()
 }
 
 /**
@@ -132,8 +128,9 @@ export const getAssertedChainSigner = async (
  * most of the values of transactionResponse which is needed when
  * dealing with smart-contract wallet owners
  */
-export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  const signer = await getAssertedChainSigner(onboard, chainId)
+export const getUncheckedSafeSDK = async (provider: Eip1193Provider): Promise<Safe> => {
+  const browserProvider = createWeb3(provider)
+  const signer = await browserProvider.getSigner()
   const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(signer.provider, await signer.getAddress())
   const sdk = getAndValidateSafeSDK()
 
@@ -145,8 +142,9 @@ export const getUncheckedSafeSDK = async (onboard: OnboardAPI, chainId: SafeInfo
   return sdk.connect({ ethAdapter })
 }
 
-export const getSafeSDKWithSigner = async (onboard: OnboardAPI, chainId: SafeInfo['chainId']): Promise<Safe> => {
-  const signer = await getAssertedChainSigner(onboard, chainId)
+export const getSafeSDKWithSigner = async (provider: Eip1193Provider): Promise<Safe> => {
+  const browserProvider = createWeb3(provider)
+  const signer = await browserProvider.getSigner()
   const sdk = getAndValidateSafeSDK()
 
   const ethAdapter = new EthersAdapter({
