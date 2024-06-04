@@ -4,7 +4,6 @@ import type { SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-s
 import useBalances from '@/hooks/useBalances'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount from '@/components/common/TokenAmount'
-import TokenIcon from '@/components/common/TokenIcon'
 import SwapButton from '@/features/swap/components/SwapButton'
 import { AppRoutes } from '@/config/routes'
 import { WidgetContainer, WidgetBody, ViewAllLink } from '../styled'
@@ -19,7 +18,7 @@ const MAX_ASSETS = 5
 const AssetsDummy = () => (
   <Box className={css.container}>
     <Skeleton variant="circular" width={26} height={26} />
-    {Array.from({ length: 3 }).map((_, index) => (
+    {Array.from({ length: 2 }).map((_, index) => (
       <Skeleton variant="text" sx={{ flex: 1 }} key={index} />
     ))}
     <Skeleton variant="text" width={88} />
@@ -28,15 +27,16 @@ const AssetsDummy = () => (
 
 const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][number]; showSwap: boolean }) => (
   <Box className={css.container} key={item.tokenInfo.address}>
-    <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
-
-    <Typography flex={1}>{item.tokenInfo.name}</Typography>
-
     <Box flex={1}>
-      <TokenAmount value={item.balance} decimals={item.tokenInfo.decimals} tokenSymbol={item.tokenInfo.symbol} />
+      <TokenAmount
+        value={item.balance}
+        decimals={item.tokenInfo.decimals}
+        tokenSymbol={item.tokenInfo.symbol}
+        logoUri={item.tokenInfo.logoUri}
+      />
     </Box>
 
-    <Box flex={1}>
+    <Box flex={1} display={['none', 'block']}>
       <FiatValue value={item.fiatBalance} />
     </Box>
 
