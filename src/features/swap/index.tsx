@@ -35,6 +35,7 @@ const BASE_URL = typeof window !== 'undefined' && window.location.origin ? windo
 
 const PRE_SIGN_SIGHASH = id('setPreSignature(bytes,bool)').slice(0, 10)
 const WRAP_SIGHASH = id('deposit()').slice(0, 10)
+const UNWRAP_SIGHASH = id('withdraw(uint256)').slice(0, 10)
 
 type Params = {
   sell?: {
@@ -50,6 +51,7 @@ export const getSwapTitle = (tradeType: SwapState['tradeType'], txs: BaseTransac
     [PRE_SIGN_SIGHASH]: tradeType === 'limit' ? 'Limit order' : 'Swap order',
     [APPROVAL_SIGNATURE_HASH]: 'Approve',
     [WRAP_SIGHASH]: 'Wrap',
+    [UNWRAP_SIGHASH]: 'Unwrap',
   }
 
   const swapTitle = txs
