@@ -2,7 +2,7 @@ import CheckBalance from '@/features/counterfactual/CheckBalance'
 import { useHasFeature } from '@/hooks/useChains'
 import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import { FEATURES } from '@/utils/chains'
-import { type ReactElement, useMemo, useContext } from 'react'
+import { type ReactElement, useContext } from 'react'
 import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
@@ -18,8 +18,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import { VisibilityOutlined } from '@mui/icons-material'
 import TokenMenu from '../TokenMenu'
 import useBalances from '@/hooks/useBalances'
-import useHiddenTokens from '@/hooks/useHiddenTokens'
-import { useHideAssets } from './useHideAssets'
+import { useHideAssets, useVisibleAssets } from './useHideAssets'
 import CheckWallet from '@/components/common/CheckWallet'
 import useSpendingLimit from '@/hooks/useSpendingLimit'
 import { TxModalContext } from '@/components/tx-flow'
@@ -131,7 +130,6 @@ const AssetsTable = ({
   showHiddenAssets: boolean
   setShowHiddenAssets: (hidden: boolean) => void
 }): ReactElement => {
-  const hiddenAssets = useHiddenTokens()
   const { balances, loading } = useBalances()
   const { setTxFlow } = useContext(TxModalContext)
   const isCounterfactualSafe = useIsCounterfactualSafe()
@@ -141,13 +139,8 @@ const AssetsTable = ({
     setShowHiddenAssets(false),
   )
 
-  const visibleAssets = useMemo(
-    () =>
-      showHiddenAssets
-        ? balances.items
-        : balances.items?.filter((item) => !hiddenAssets.includes(item.tokenInfo.address)),
-    [hiddenAssets, balances.items, showHiddenAssets],
-  )
+  const visible = useVisibleAssets()
+  const visibleAssets = showHiddenAssets ? balances.items : visible
 
   const hasNoAssets = !loading && balances.items.length === 1 && balances.items[0].balance === '0'
 

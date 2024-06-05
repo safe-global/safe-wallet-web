@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Box, Skeleton, Typography } from '@mui/material'
+import { Box, Skeleton, Typography, Paper } from '@mui/material'
 import type { SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import useBalances from '@/hooks/useBalances'
 import FiatValue from '@/components/common/FiatValue'
@@ -12,6 +12,8 @@ import { useRouter } from 'next/router'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import { SWAP_LABELS } from '@/services/analytics/events/swaps'
+import { useVisibleAssets } from '@/components/balances/AssetsTable/useHideAssets'
+import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 
 const MAX_ASSETS = 5
 
@@ -23,6 +25,22 @@ const AssetsDummy = () => (
     ))}
     <Skeleton variant="text" width={88} />
   </Box>
+)
+
+const NoAssets = () => (
+  <Paper elevation={0} sx={{ p: 5 }}>
+    <Typography variant="h3" fontWeight="bold" mb={1}>
+      Add funds to get started
+    </Typography>
+
+    <Typography>
+      Add funds directly from your bank account or copy your address to send tokens from a different account.
+    </Typography>
+
+    <Box display="flex" mt={2}>
+      <BuyCryptoButton />
+    </Box>
+  </Paper>
 )
 
 const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][number]; showSwap: boolean }) => (
@@ -60,15 +78,17 @@ const AssetList = ({ items }: { items: SafeBalanceResponse['items'] }) => {
   )
 }
 
+const isNonZeroBalance = (item: SafeBalanceResponse['items'][number]) => item.balance !== '0'
+
 const AssetsWidget = () => {
   const router = useRouter()
   const { safe } = router.query
-  const { balances, loading } = useBalances()
+  const { loading } = useBalances()
+  const visibleAssets = useVisibleAssets()
 
   const items = useMemo(() => {
-    const nonZero = balances.items.filter((item) => item.balance !== '0')
-    return (nonZero.length ? nonZero : balances.items).slice(0, MAX_ASSETS)
-  }, [balances])
+    return visibleAssets.filter(isNonZeroBalance).slice(0, MAX_ASSETS)
+  }, [visibleAssets])
 
   const viewAllUrl = useMemo(
     () => ({
@@ -85,10 +105,12 @@ const AssetsWidget = () => {
           Top assets
         </Typography>
 
-        <ViewAllLink url={viewAllUrl} text={loading ? 'View all' : `View all (${balances.items.length})`} />
+        {items.length > 0 && <ViewAllLink url={viewAllUrl} text={`View all (${visibleAssets.length})`} />}
       </div>
 
-      <WidgetBody>{loading ? <AssetsDummy /> : <AssetList items={items} />}</WidgetBody>
+      <WidgetBody>
+        {loading ? <AssetsDummy /> : items.length > 0 ? <AssetList items={items} /> : <NoAssets />}
+      </WidgetBody>
     </WidgetContainer>
   )
 }
