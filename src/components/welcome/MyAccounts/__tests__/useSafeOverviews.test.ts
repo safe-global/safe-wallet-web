@@ -15,21 +15,30 @@ jest
 
 describe('useSafeOverviews', () => {
   it('should filter out undefined addresses', async () => {
-    const mockResponse = [
-      {
-        address: { value: '0x1234' },
-        chainId: '1',
-        awaitingConfirmation: 1,
-        fiatTotal: '1000',
-        owners: [{ value: '0x1234' }],
-        queued: 10,
-        threshold: 2,
-      },
-    ]
-    const spy = jest.spyOn(sdk, 'getSafeOverviews').mockResolvedValue(mockResponse)
+    const spy = jest.spyOn(sdk, 'getSafeOverviews').mockResolvedValue([])
     const safes = [
       { address: '0x1234', chainId: '1' },
       { address: undefined as unknown as string, chainId: '2' },
+      { address: '0x5678', chainId: '3' },
+    ]
+
+    renderHook(() => useSafeOverviews(safes))
+
+    await act(() => Promise.resolve())
+
+    expect(spy).toHaveBeenCalledWith(['1:0x1234', '3:0x5678'], {
+      currency: 'USD',
+      exclude_spam: false,
+      trusted: true,
+      wallet_address: '0x1234',
+    })
+  })
+
+  it('should filter out undefined chain ids', async () => {
+    const spy = jest.spyOn(sdk, 'getSafeOverviews').mockResolvedValue([])
+    const safes = [
+      { address: '0x1234', chainId: '1' },
+      { address: '0x5678', chainId: undefined as unknown as string },
       { address: '0x5678', chainId: '3' },
     ]
 
