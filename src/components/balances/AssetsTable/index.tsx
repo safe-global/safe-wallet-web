@@ -1,9 +1,8 @@
 import CheckBalance from '@/features/counterfactual/CheckBalance'
 import { useHasFeature } from '@/hooks/useChains'
-import ArrowIconNW from '@/public/images/common/arrow-top-right.svg'
 import { FEATURES } from '@/utils/chains'
-import { type ReactElement, useMemo, useContext } from 'react'
-import { Button, Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
+import { type ReactElement } from 'react'
+import { Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
@@ -18,15 +17,12 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import { VisibilityOutlined } from '@mui/icons-material'
 import TokenMenu from '../TokenMenu'
 import useBalances from '@/hooks/useBalances'
-import useHiddenTokens from '@/hooks/useHiddenTokens'
-import { useHideAssets } from './useHideAssets'
-import CheckWallet from '@/components/common/CheckWallet'
-import useSpendingLimit from '@/hooks/useSpendingLimit'
-import { TxModalContext } from '@/components/tx-flow'
-import { TokenTransferFlow } from '@/components/tx-flow/flows'
+import { useHideAssets, useVisibleAssets } from './useHideAssets'
 import AddFundsCTA from '@/components/common/AddFunds'
 import SwapButton from '@/features/swap/components/SwapButton'
 import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
+import { SWAP_LABELS } from '@/services/analytics/events/swaps'
+import SendButton from './SendButton'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -93,36 +89,6 @@ const headCells = [
   },
 ]
 
-const SendButton = ({
-  tokenInfo,
-  onClick,
-}: {
-  tokenInfo: TokenInfo
-  onClick: (tokenAddress: string) => void
-}): ReactElement => {
-  const spendingLimit = useSpendingLimit(tokenInfo)
-
-  return (
-    <CheckWallet allowSpendingLimit={!!spendingLimit}>
-      {(isOk) => (
-        <Track {...ASSETS_EVENTS.SEND}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            startIcon={<ArrowIconNW />}
-            onClick={() => onClick(tokenInfo.address)}
-            disabled={!isOk}
-            sx={{ height: '37.5px' }}
-          >
-            Send
-          </Button>
-        </Track>
-      )}
-    </CheckWallet>
-  )
-}
-
 const AssetsTable = ({
   showHiddenAssets,
   setShowHiddenAssets,
@@ -130,9 +96,7 @@ const AssetsTable = ({
   showHiddenAssets: boolean
   setShowHiddenAssets: (hidden: boolean) => void
 }): ReactElement => {
-  const hiddenAssets = useHiddenTokens()
   const { balances, loading } = useBalances()
-  const { setTxFlow } = useContext(TxModalContext)
   const isCounterfactualSafe = useIsCounterfactualSafe()
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS) && !isCounterfactualSafe
 
@@ -140,21 +104,12 @@ const AssetsTable = ({
     setShowHiddenAssets(false),
   )
 
-  const visibleAssets = useMemo(
-    () =>
-      showHiddenAssets
-        ? balances.items
-        : balances.items?.filter((item) => !hiddenAssets.includes(item.tokenInfo.address)),
-    [hiddenAssets, balances.items, showHiddenAssets],
-  )
+  const visible = useVisibleAssets()
+  const visibleAssets = showHiddenAssets ? balances.items : visible
 
   const hasNoAssets = !loading && balances.items.length === 1 && balances.items[0].balance === '0'
 
   const selectedAssetCount = visibleAssets?.filter((item) => isAssetSelected(item.tokenInfo.address)).length || 0
-
-  const onSendClick = (tokenAddress: string) => {
-    setTxFlow(<TokenTransferFlow tokenAddress={tokenAddress} />)
-  }
 
   const rows = loading
     ? skeletonRows
@@ -225,9 +180,11 @@ const AssetsTable = ({
               content: (
                 <Box display="flex" flexDirection="row" gap={1} alignItems="center">
                   <>
-                    <SendButton tokenInfo={item.tokenInfo} onClick={() => onSendClick(item.tokenInfo.address)} />
+                    <SendButton tokenInfo={item.tokenInfo} />
 
-                    {isSwapFeatureEnabled && <SwapButton tokenInfo={item.tokenInfo} amount="0" />}
+                    {isSwapFeatureEnabled && (
+                      <SwapButton tokenInfo={item.tokenInfo} amount="0" trackingLabel={SWAP_LABELS.asset} />
+                    )}
 
                     {showHiddenAssets ? (
                       <Checkbox size="small" checked={isSelected} onClick={() => toggleAsset(item.tokenInfo.address)} />
