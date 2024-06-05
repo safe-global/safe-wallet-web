@@ -211,3 +211,10 @@ Cypress.Commands.add('enter', (selector, opts) => {
     return () => cy.wrap($body, { log: false })
   })
 })
+
+Cypress.Commands.add('setupInterceptors', () => {
+  cy.intercept({ url: '**/*' }, (req) => {
+    req.headers['Origin'] = 'http://localhost:8080'
+    req.continue()
+  })
+})

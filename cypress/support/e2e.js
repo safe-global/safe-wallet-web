@@ -38,3 +38,7 @@ before(() => {
     }
   })
 })
+
+beforeEach(() => {
+  cy.setupInterceptors()
+})
