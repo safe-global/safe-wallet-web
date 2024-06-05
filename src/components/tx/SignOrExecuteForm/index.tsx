@@ -121,7 +121,9 @@ export const SignOrExecuteForm = ({
       )}
 
       {!isCounterfactualSafe && safeTx && isCreation && (
-        <PermissionsCheck onSubmit={onSubmit} safeTx={safeTx} safeTxError={safeTxError} />
+        <ErrorBoundary>
+          <PermissionsCheck onSubmit={onSubmit} safeTx={safeTx} safeTxError={safeTxError} />
+        </ErrorBoundary>
       )}
 
       <TxCard>
