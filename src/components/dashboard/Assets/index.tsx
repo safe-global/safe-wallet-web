@@ -14,6 +14,7 @@ import { FEATURES } from '@/utils/chains'
 import { SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { useVisibleAssets } from '@/components/balances/AssetsTable/useHideAssets'
 import BuyCryptoButton from '@/components/common/BuyCryptoButton'
+import SendButton from '@/components/balances/AssetsTable/SendButton'
 
 const MAX_ASSETS = 5
 
@@ -58,11 +59,13 @@ const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][numbe
       <FiatValue value={item.fiatBalance} />
     </Box>
 
-    {showSwap && (
-      <Box my={-0.7}>
+    <Box my={-0.7}>
+      {showSwap ? (
         <SwapButton tokenInfo={item.tokenInfo} amount="0" trackingLabel={SWAP_LABELS.dashboard_assets} />
-      </Box>
-    )}
+      ) : (
+        <SendButton tokenInfo={item.tokenInfo} isOutlined />
+      )}
+    </Box>
   </Box>
 )
 
