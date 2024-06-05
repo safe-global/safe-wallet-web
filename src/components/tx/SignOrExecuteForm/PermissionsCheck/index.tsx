@@ -106,7 +106,10 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
       return
     }
 
-    // On success, wait for module tx to be indexed
+    // On success, forward to the success screen, initially without a txId
+    setTxFlow(<SuccessScreenFlow txHash={txHash} />, undefined, false)
+
+    // Wait for module tx to be indexed
     const transactionService = currentChain?.transactionService
     if (!transactionService) {
       throw new Error('Transaction service not found')
@@ -125,6 +128,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
     const txType = await getTransactionTrackingType(chainId, txId)
     trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
 
+    // Update the success screen so it shows a link to the transaction
     setTxFlow(<SuccessScreenFlow txId={txId} />, undefined, false)
   }
 
