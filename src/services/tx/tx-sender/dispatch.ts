@@ -325,7 +325,7 @@ export const dispatchBatchExecution = async (
  */
 export const dispatchModuleTxExecution = async (
   tx: Transaction,
-  onboard: OnboardAPI,
+  provider: Eip1193Provider,
   chainId: SafeInfo['chainId'],
   safeAddress: string,
 ): Promise<string> => {
@@ -333,9 +333,8 @@ export const dispatchModuleTxExecution = async (
 
   let result: TransactionResponse | undefined
   try {
-    const wallet = await assertWalletChain(onboard, chainId)
-    const provider = createWeb3(wallet.provider)
-    const signer = await provider.getSigner()
+    const browserProvider = createWeb3(provider)
+    const signer = await browserProvider.getSigner()
 
     txDispatch(TxEvent.EXECUTING, { groupKey: id })
     result = await signer.sendTransaction(tx)

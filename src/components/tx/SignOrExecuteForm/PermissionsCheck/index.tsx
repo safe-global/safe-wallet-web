@@ -28,6 +28,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import { assertOnboard, assertWallet } from '@/utils/helpers'
 import { TxModalContext } from '@/components/tx-flow'
 import { pollModuleTransactionId, useExecuteThroughRole, useRoles, useGasLimit } from './hooks'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 
 const Role = ({ children }: { children: string }) => {
   let humanReadableRoleKey = children
@@ -80,6 +81,8 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
     assertWallet(wallet)
     assertOnboard(onboard)
 
+    await assertWalletChain(onboard, chainId)
+
     setIsRejectedByUser(false)
     setIsPending(true)
     setSubmitError(undefined)
@@ -93,7 +96,12 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
 
     let txHash: string
     try {
-      txHash = await dispatchModuleTxExecution({ ...txThroughRole, ...txOptions }, onboard, chainId, safe.address.value)
+      txHash = await dispatchModuleTxExecution(
+        { ...txThroughRole, ...txOptions },
+        wallet.provider,
+        chainId,
+        safe.address.value,
+      )
     } catch (_err) {
       const err = asError(_err)
       if (isWalletRejection(err)) {
