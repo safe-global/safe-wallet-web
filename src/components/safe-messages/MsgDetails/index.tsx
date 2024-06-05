@@ -1,11 +1,9 @@
+import { useMemo, type ReactElement } from 'react'
 import { Accordion, AccordionSummary, Typography, AccordionDetails, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CodeIcon from '@mui/icons-material/Code'
 import classNames from 'classnames'
-import { SafeMessageStatus } from '@safe-global/safe-gateway-typescript-sdk'
-import { useMemo } from 'react'
-import type { SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
-import type { ReactElement } from 'react'
+import { SafeMessageStatus, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { formatDateTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -14,13 +12,14 @@ import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDet
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import useWallet from '@/hooks/wallets/useWallet'
 import SignMsgButton from '@/components/safe-messages/SignMsgButton'
-import { generateSafeMessageMessage } from '@/utils/safe-messages'
+import { generateSafeMessageMessage, isEIP712TypedData } from '@/utils/safe-messages'
 
 import txDetailsCss from '@/components/transactions/TxDetails/styles.module.css'
 import singleTxDecodedCss from '@/components/transactions/TxDetails/TxData/DecodedData/SingleTxDecoded/styles.module.css'
 import infoDetailsCss from '@/components/transactions/InfoDetails/styles.module.css'
 import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
+import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 
 const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const wallet = useWallet()
@@ -28,6 +27,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const safeMessage = useMemo(() => {
     return generateSafeMessageMessage(msg.message)
   }, [msg.message])
+  const verifyingContract = isEIP712TypedData(msg.message) ? msg.message.domain.verifyingContract : undefined
 
   return (
     <div className={txDetailsCss.container}>
@@ -44,6 +44,15 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
             />
           </InfoDetails>
         </div>
+
+        {verifyingContract && (
+          <div className={txDetailsCss.txData}>
+            <InfoDetails title="Verifying contract:">
+              <NamedAddressInfo address={verifyingContract} shortAddress={false} showCopyButton hasExplorer />
+            </InfoDetails>
+          </div>
+        )}
+
         <div className={txDetailsCss.txData}>
           <InfoDetails
             title={

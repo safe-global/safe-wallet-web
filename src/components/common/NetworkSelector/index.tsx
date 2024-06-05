@@ -15,6 +15,7 @@ import { type ReactElement, useMemo } from 'react'
 import { useCallback } from 'react'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const isDarkMode = useDarkMode()
@@ -22,6 +23,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
+  const isWalletConnected = !!useWallet()
 
   const [testNets, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
 
@@ -30,7 +32,11 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
       const shouldKeepPath = !router.query.safe
 
       const route = {
-        pathname: shouldKeepPath ? router.pathname : AppRoutes.index,
+        pathname: shouldKeepPath
+          ? router.pathname
+          : isWalletConnected
+          ? AppRoutes.welcome.accounts
+          : AppRoutes.welcome.index,
         query: {
           chain: shortName,
         } as {
@@ -45,7 +51,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
 
       return route
     },
-    [router],
+    [router, isWalletConnected],
   )
 
   const onChange = (event: SelectChangeEvent) => {

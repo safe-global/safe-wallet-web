@@ -656,3 +656,21 @@ export const cookies = {
   acceptedCookies: { necessary: true, updates: true, analytics: true },
   acceptedTokenListOnboarding: true,
 }
+
+export const undeployedSafe = {
+  safe1: {
+    11155111: {
+      '0xe41D568F5040FD9adeE8B64200c6B7C363C68c41': {
+        props: {
+          safeAccountConfig: {
+            threshold: 1,
+            owners: ['0xC16Db0251654C0a72E91B190d81eAD367d2C6fED'],
+            fallbackHandler: '0x017062a1dE2FE6b99BE3d9d37841FeD19F573804',
+          },
+          safeDeploymentConfig: { saltNonce: '20', safeVersion: '1.3.0' },
+        },
+        status: { status: 'AWAITING_EXECUTION' },
+      },
+    },
+  },
+}
