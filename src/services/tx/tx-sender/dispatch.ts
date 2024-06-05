@@ -326,7 +326,6 @@ export const dispatchBatchExecution = async (
 export const dispatchModuleTxExecution = async (
   tx: Transaction,
   provider: Eip1193Provider,
-  chainId: SafeInfo['chainId'],
   safeAddress: string,
 ): Promise<string> => {
   const id = JSON.stringify(tx)

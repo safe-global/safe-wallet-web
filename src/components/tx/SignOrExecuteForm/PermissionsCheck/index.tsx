@@ -96,12 +96,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
 
     let txHash: string
     try {
-      txHash = await dispatchModuleTxExecution(
-        { ...txThroughRole, ...txOptions },
-        wallet.provider,
-        chainId,
-        safe.address.value,
-      )
+      txHash = await dispatchModuleTxExecution({ ...txThroughRole, ...txOptions }, wallet.provider, safe.address.value)
     } catch (_err) {
       const err = asError(_err)
       if (isWalletRejection(err)) {
