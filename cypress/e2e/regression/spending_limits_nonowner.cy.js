@@ -12,7 +12,7 @@ describe('Spending limits non-owner tests', () => {
   })
 
   beforeEach(() => {
-    cy.visit(constants.securityUrl + staticSafes.SEP_STATIC_SAFE_3)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_3)
     cy.clearLocalStorage()
     main.acceptCookies()
     owner.waitForConnectionStatus()

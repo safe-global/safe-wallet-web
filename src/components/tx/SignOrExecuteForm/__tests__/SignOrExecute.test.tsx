@@ -102,4 +102,14 @@ describe('SignOrExecute', () => {
 
     expect(getByText("You're about to execute this transaction.")).toBeInTheDocument()
   })
+
+  it('should not display safeTxError message for valid transactions', () => {
+    const { queryByText } = render(
+      <SignOrExecuteForm safeTx={safeTxBuilder().build()} onSubmit={jest.fn()} safeTxError={undefined} chainId="1" />,
+    )
+
+    expect(
+      queryByText('This transaction will most likely fail. To save gas costs, avoid confirming the transaction.'),
+    ).not.toBeInTheDocument()
+  })
 })
