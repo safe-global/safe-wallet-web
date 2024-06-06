@@ -2,7 +2,7 @@
   position: relative;
   border: none;
   margin: 0;
-  padding: 40px;
+  padding: var(--space-4);
 }
 
 .loadErrorCard {
