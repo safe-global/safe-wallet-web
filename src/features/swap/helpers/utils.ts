@@ -71,15 +71,15 @@ export const getSurplusPrice = (
 
 export const getPartiallyFilledSurplus = (order: SwapOrder): number => {
   if (order.kind === OrderKind.BUY) {
-    return _getPartiallyFilledBuySurplus(order)
+    return getPartiallyFilledBuySurplus(order)
   } else if (order.kind === OrderKind.SELL) {
-    return _getPartiallyFilledSellSurplus(order)
+    return getPartiallyFilledSellSurplus(order)
   } else {
     return 0
   }
 }
 
-const _getPartiallyFilledBuySurplus = (
+const getPartiallyFilledBuySurplus = (
   order: Pick<
     SwapOrder,
     'executedBuyAmount' | 'buyAmount' | 'buyToken' | 'executedSellAmount' | 'sellAmount' | 'sellToken' | 'kind'
@@ -95,7 +95,7 @@ const _getPartiallyFilledBuySurplus = (
   return maximumSellAmount - asDecimal(BigInt(executedSellAmount), sellToken.decimals)
 }
 
-const _getPartiallyFilledSellSurplus = (
+const getPartiallyFilledSellSurplus = (
   order: Pick<
     SwapOrder,
     'executedBuyAmount' | 'buyAmount' | 'buyToken' | 'executedSellAmount' | 'sellAmount' | 'sellToken' | 'kind'
