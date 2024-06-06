@@ -92,7 +92,9 @@ const DecodedTx = ({
           }}
         />
       )}
-      {!isSwapOrder && tx && showToBlock && <SendToBlock address={tx.data.to} title="Interact with" />}
+      {!isSwapOrder && tx && showToBlock && (
+        <SendToBlock address={tx.data.to} title="Interact with" name={addressInfoIndex?.[tx.data.to]?.name} />
+      )}
 
       {isSwapOrder && tx && <SwapOrderConfirmationView order={decodedData} settlementContract={tx.data.to} />}
 
