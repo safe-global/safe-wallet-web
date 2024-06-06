@@ -7,10 +7,10 @@ export const SWAP_EVENTS = {
   },
 }
 
-export const SWAP_LABELS = {
-  dashboard: 'dashboard',
-  sidebar: 'sidebar',
-  asset: 'asset',
-  dashboard_assets: 'dashboard_assets',
-  promoWidget: 'promoWidget',
+export enum SWAP_LABELS {
+  dashboard = 'dashboard',
+  sidebar = 'sidebar',
+  asset = 'asset',
+  dashboard_assets = 'dashboard_assets',
+  promoWidget = 'promoWidget',
 }
