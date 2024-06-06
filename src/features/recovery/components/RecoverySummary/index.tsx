@@ -30,7 +30,7 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
         <DateTime value={Number(item.timestamp)} />
       </Box>
 
-      <Box gridArea="status">
+      <Box gridArea="actions" mr={2} display="flex" justifyContent="center">
         {!isExecutable || isPending ? (
           <RecoveryStatus recovery={item} />
         ) : (
