@@ -86,6 +86,8 @@ export const SidebarListItemCounter = ({ count }: { count?: string }): ReactElem
           backgroundColor: 'warning.light',
           transform: 'none',
           fontWeight: 'bold',
+          padding: '0 var(--space-1)',
+          fontSize: '11px',
         },
         ml: 3,
       }}
