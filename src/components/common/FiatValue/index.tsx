@@ -4,12 +4,12 @@ import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
 import { formatCurrency } from '@/utils/formatNumber'
 
-const FiatValue = ({ value }: { value: string | number }): ReactElement => {
+const FiatValue = ({ value, maxLength }: { value: string | number; maxLength?: number }): ReactElement => {
   const currency = useAppSelector(selectCurrency)
 
   const fiat = useMemo(() => {
-    return formatCurrency(value, currency)
-  }, [value, currency])
+    return formatCurrency(value, currency, maxLength)
+  }, [value, currency, maxLength])
 
   return <span suppressHydrationWarning>{fiat}</span>
 }

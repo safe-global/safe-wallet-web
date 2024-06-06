@@ -55,7 +55,7 @@ const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][numbe
       />
     </Box>
 
-    <Box flex={1} display={['none', 'block']}>
+    <Box flex={1} display={['none', 'block']} textAlign="right" pr={4}>
       <FiatValue value={item.fiatBalance} />
     </Box>
 
