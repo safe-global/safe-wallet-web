@@ -52,6 +52,46 @@ describe('fetch remaining relays hooks', () => {
 
       expect(mockFetch).toHaveBeenCalledTimes(2)
     })
+
+    it('should not do a network request if only swaps are supported but the tx is not a swap', () => {
+      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(
+        chainBuilder()
+          // @ts-expect-error - using local FEATURES enum
+          .with({ features: [FEATURES.RELAY_NATIVE_SWAPS] })
+          .build(),
+      )
+
+      const mockFetch = jest.spyOn(gateway, 'getRelayCount')
+
+      renderHook(() => useRelaysBySafe(JSON.stringify({ url: 'https://some.url', name: 'Some app' })))
+      expect(mockFetch).toHaveBeenCalledTimes(0)
+    })
+
+    it('should do a network request if only swaps are supported and the tx is a swap', async () => {
+      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(
+        chainBuilder()
+          // @ts-expect-error - using local FEATURES enum
+          .with({ features: [FEATURES.RELAY_NATIVE_SWAPS] })
+          .build(),
+      )
+
+      const mockFetch = jest.spyOn(gateway, 'getRelayCount').mockResolvedValue({
+        limit: 5,
+        remaining: 3,
+      })
+
+      const { result } = renderHook(() =>
+        useRelaysBySafe(JSON.stringify({ url: 'https://some.url', name: 'Safe Swap' })),
+      )
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(result.current[0]).toEqual({
+          limit: 5,
+          remaining: 3,
+        })
+      })
+    })
   })
 
   describe('useLeastRemainingRelays hook', () => {
