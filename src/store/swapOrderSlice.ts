@@ -84,7 +84,7 @@ export const swapOrderStatusListener = (listenerMiddleware: typeof listenerMiddl
       }
       const safeInfo = selectSafeInfo(listenerApi.getState())
 
-      let link = null
+      let link = undefined
       if (swapOrder.txId && safeInfo.data?.chainId && safeInfo.data?.address) {
         const chainInfo = selectChainById(listenerApi.getState(), safeInfo.data?.chainId)
         if (chainInfo !== undefined) {
@@ -103,7 +103,7 @@ export const swapOrderStatusListener = (listenerMiddleware: typeof listenerMiddl
                   : 'Waiting for confirmation from signers of your Safe',
               groupKey,
               variant: 'info',
-              link: link ? link : undefined,
+              link,
             }),
           )
 
@@ -115,7 +115,7 @@ export const swapOrderStatusListener = (listenerMiddleware: typeof listenerMiddl
               message: 'Waiting for confirmation from signers of your Safe',
               groupKey,
               variant: 'info',
-              link: link ? link : undefined,
+              link,
             }),
           )
           break
@@ -126,7 +126,7 @@ export const swapOrderStatusListener = (listenerMiddleware: typeof listenerMiddl
               message: 'Waiting for order execution by the CoW Protocol',
               groupKey,
               variant: 'info',
-              link: link ? link : undefined,
+              link,
             }),
           )
           break
@@ -141,7 +141,7 @@ export const swapOrderStatusListener = (listenerMiddleware: typeof listenerMiddl
               message: 'Your order has been successful',
               groupKey,
               variant: 'success',
-              link: link ? link : undefined,
+              link,
             }),
           )
           break
@@ -156,7 +156,7 @@ export const swapOrderStatusListener = (listenerMiddleware: typeof listenerMiddl
               message: 'Your order has reached the expiry time and has become invalid',
               groupKey,
               variant: 'warning',
-              link: link ? link : undefined,
+              link,
             }),
           )
           break
@@ -171,7 +171,7 @@ export const swapOrderStatusListener = (listenerMiddleware: typeof listenerMiddl
               message: 'Your order has been cancelled',
               groupKey,
               variant: 'warning',
-              link: link ? link : undefined,
+              link,
             }),
           )
           break
