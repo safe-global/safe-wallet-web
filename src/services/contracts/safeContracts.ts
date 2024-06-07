@@ -71,9 +71,11 @@ export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersio
 
 export const getReadOnlyMultiSendCallOnlyContract = async (chainId: string) => {
   const ethAdapter = createReadOnlyEthersAdapter()
+  const singletonDeployment = getMultiSendCallOnlyDeployment({ network: chainId })
+  if (!singletonDeployment) throw new Error('No deployment found for MultiSendCallOnly')
   return ethAdapter.getMultiSendCallOnlyContract({
     singletonDeployment: getMultiSendCallOnlyDeployment({ network: chainId }),
-    safeVersion: '1.4.1', // we generally use the latest multisend version (there is no dependency on the Safe version)
+    safeVersion: singletonDeployment.version as SafeVersion,
   })
 }
 
