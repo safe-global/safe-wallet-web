@@ -13,6 +13,7 @@ export enum EventType {
   TX_CREATED = 'tx_created',
   TX_CONFIRMED = 'tx_confirmed',
   TX_EXECUTED = 'tx_executed',
+  TX_EXECUTED_THROUGH_ROLE = 'tx_executed_through_role',
 }
 
 export type EventLabel = string | number | boolean | null

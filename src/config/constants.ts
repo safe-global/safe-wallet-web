@@ -65,15 +65,6 @@ export enum SafeAppsTag {
   ONRAMP = 'onramp',
 }
 
-export const WC_APP_PROD = {
-  id: 111,
-  url: 'https://apps-portal.safe.global/wallet-connect',
-}
-export const WC_APP_DEV = {
-  id: 25,
-  url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
-}
-
 // Help Center
 export const HELP_CENTER_URL = 'https://help.safe.global'
 export const HelpCenterArticle = {

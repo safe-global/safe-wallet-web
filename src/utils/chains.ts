@@ -22,6 +22,7 @@ export enum FEATURES {
   SPEED_UP_TX = 'SPEED_UP_TX',
   SAP_BANNER = 'SAP_BANNER',
   NATIVE_SWAPS = 'NATIVE_SWAPS',
+  RELAY_NATIVE_SWAPS = 'RELAY_NATIVE_SWAPS',
 }
 
 export const FeatureRoutes = {

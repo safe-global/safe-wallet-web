@@ -4,6 +4,7 @@ import type { ReactElement } from 'react'
 import dynamic from 'next/dynamic'
 import { Grid } from '@mui/material'
 import PendingTxsList from '@/components/dashboard/PendingTxs/PendingTxsList'
+import AssetsWidget from '@/components/dashboard/Assets'
 import Overview from '@/components/dashboard/Overview/Overview'
 import { FeaturedApps } from '@/components/dashboard/FeaturedApps/FeaturedApps'
 import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
@@ -17,7 +18,6 @@ import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSectio
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
-const RecoveryWidget = dynamic(() => import('@/features/recovery/components/RecoveryWidget'))
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
@@ -46,14 +46,12 @@ const Dashboard = (): ReactElement => {
             <ActivityRewardsSection />
 
             <Grid item xs={12} lg={6}>
-              <PendingTxsList />
+              <AssetsWidget />
             </Grid>
 
-            {showRecoveryWidget ? (
-              <Grid item xs={12} lg={6}>
-                <RecoveryWidget />
-              </Grid>
-            ) : null}
+            <Grid item xs={12} lg={6}>
+              <PendingTxsList />
+            </Grid>
 
             {showSafeApps && (
               <Grid item xs={12} lg={showRecoveryWidget ? 12 : 6}>

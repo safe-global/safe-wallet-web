@@ -7,7 +7,7 @@ import { render } from '@/tests/test-utils'
 import ReviewStep, { NetworkFee } from '@/components/new-safe/create/steps/ReviewStep/index'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { act, fireEvent } from '@testing-library/react'
+import { act, fireEvent, screen } from '@testing-library/react'
 
 const mockChainInfo = {
   chainId: '100',
@@ -47,6 +47,21 @@ describe('ReviewStep', () => {
     )
 
     expect(getByText('Pay now')).toBeInTheDocument()
+  })
+
+  it('should display a pay later option as selected by default for counterfactual safe setups', () => {
+    const mockData: NewSafeFormData = {
+      name: 'Test',
+      threshold: 1,
+      owners: [{ name: '', address: '0x1' }],
+      saltNonce: 0,
+    }
+    jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
+
+    render(<ReviewStep data={mockData} onSubmit={jest.fn()} onBack={jest.fn()} setStep={jest.fn()} />)
+
+    const payLaterOption = screen.getByRole('radio', { name: /Pay later/i })
+    expect(payLaterOption).toBeChecked()
   })
 
   it('should not display the network fee for counterfactual safes', () => {

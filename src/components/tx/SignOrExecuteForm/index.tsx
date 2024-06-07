@@ -26,6 +26,7 @@ import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
+import PermissionsCheck from './PermissionsCheck'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -117,6 +118,12 @@ export const SignOrExecuteForm = ({
         <TxCard>
           <TxChecks />
         </TxCard>
+      )}
+
+      {!isCounterfactualSafe && safeTx && isCreation && (
+        <ErrorBoundary>
+          <PermissionsCheck onSubmit={onSubmit} safeTx={safeTx} safeTxError={safeTxError} />
+        </ErrorBoundary>
       )}
 
       <TxCard>

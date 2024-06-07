@@ -16,7 +16,7 @@ const AddFundsCTA = () => {
   const qrCode = `${qrPrefix}${safeAddress}`
 
   return (
-    <Paper>
+    <Paper data-testid="add-funds-section">
       <Grid container gap={3} alignItems="center" justifyContent="center" p={4}>
         <Grid item>
           <div>

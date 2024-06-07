@@ -16,7 +16,12 @@ const CheckBalance = () => {
   const blockExplorerLink = chain ? getBlockExplorerLink(chain, safeAddress) : undefined
 
   return (
-    <Alert icon={false} severity="info" sx={{ display: 'flex', maxWidth: '600px', mt: 3, px: 3, py: 2, mx: 'auto' }}>
+    <Alert
+      data-testid="no-tokens-alert"
+      icon={false}
+      severity="info"
+      sx={{ display: 'flex', maxWidth: '600px', mt: 3, px: 3, py: 2, mx: 'auto' }}
+    >
       <Typography fontWeight="bold" mb={1}>
         Don&apos;t see your tokens?
       </Typography>

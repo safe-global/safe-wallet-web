@@ -16,7 +16,7 @@
   grid-template-columns:
     var(--grid-nonce) var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-confirmations)
     var(--grid-status) var(--grid-actions);
-  grid-template-areas: 'nonce type info date confirmations  status actions';
+  grid-template-areas: 'nonce type info date confirmations status actions';
 }
 
 .gridContainer > * {
@@ -43,6 +43,11 @@
 .gridContainer.bulkGroup.untrusted {
   grid-template-columns: var(--grid-nonce) minmax(200px, 2.4fr) var(--grid-info) var(--grid-date) var(--grid-status);
   grid-template-areas: 'nonce type info date status';
+}
+
+.gridContainer.message {
+  grid-template-columns: var(--grid-type) var(--grid-info) var(--grid-date) var(--grid-status) var(--grid-confirmations);
+  grid-template-areas: 'type info date status confirmations';
 }
 
 .gridContainer.untrusted {
