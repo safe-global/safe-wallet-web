@@ -7,9 +7,9 @@ import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-st
 
 type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
-export const groupTxs = (list: TransactionListItem[], txHashes: Record<string, string> | undefined) => {
+export const groupTxs = (list: TransactionListItem[]) => {
   const groupedByConflicts = groupConflictingTxs(list)
-  return _groupBulkTxs(groupedByConflicts, txHashes)
+  return _groupBulkTxs(groupedByConflicts)
 }
 
 /**
@@ -41,21 +41,17 @@ export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => 
 /**
  * Group txs by tx hash
  */
-const _groupBulkTxs = (list: GroupedTxs, txHashes: Record<string, string> | undefined): GroupedTxs => {
-  if (!txHashes) return list
-
+const _groupBulkTxs = (list: GroupedTxs): GroupedTxs => {
   return list
     .reduce<GroupedTxs>((resultItems, item) => {
       if (Array.isArray(item) || !isTransactionListItem(item)) {
         return resultItems.concat([item])
       }
-      const currentTxId = item.transaction.id
-      const currentTxHash = txHashes[currentTxId]
+      const currentTxHash = item.transaction.txHash
 
       const prevItem = resultItems[resultItems.length - 1]
       if (!Array.isArray(prevItem)) return resultItems.concat([[item]])
-      const prevTxId = prevItem[0].transaction.id
-      const prevTxHash = txHashes[prevTxId]
+      const prevTxHash = prevItem[0].transaction.txHash
 
       if (currentTxHash === prevTxHash) {
         prevItem.push(item)
