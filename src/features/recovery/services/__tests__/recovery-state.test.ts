@@ -72,9 +72,7 @@ describe('recovery-state', () => {
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
           const safeInterface = new Interface(safeAbi)
 
-          const multiSendAbi =
-            getMultiSendCallOnlyDeployment({ network: chainId, version }) ??
-            getMultiSendCallOnlyDeployment({ network: chainId, version: '1.3.0' })
+          const multiSendAbi = getMultiSendCallOnlyDeployment({ network: chainId })
           const multiSendInterface = new Interface(multiSendAbi!.abi)
 
           const multiSendData = encodeMultiSendData([
@@ -109,9 +107,7 @@ describe('recovery-state', () => {
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
           const safeInterface = new Interface(safeAbi)
 
-          const multiSendDeployment =
-            getMultiSendCallOnlyDeployment({ network: chainId, version }) ??
-            getMultiSendCallOnlyDeployment({ network: chainId, version: '1.3.0' })
+          const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId })
           const multiSendInterface = new Interface(multiSendDeployment!.abi)
 
           const multiSendData = encodeMultiSendData([
@@ -146,7 +142,7 @@ describe('recovery-state', () => {
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
           const safeInterface = new Interface(safeAbi)
 
-          const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId, version })!
+          const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId })!
           const multiSendInterface = new Interface(multiSendDeployment.abi)
 
           const multiSendData = encodeMultiSendData([
@@ -181,7 +177,7 @@ describe('recovery-state', () => {
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
           const safeInterface = new Interface(safeAbi)
 
-          const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId, version: '1.3.0' })!
+          const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId })!
           const multiSendInterface = new Interface(multiSendDeployment.abi)
 
           const multiSendData = encodeMultiSendData([

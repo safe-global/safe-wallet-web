@@ -232,45 +232,6 @@ describe('deployments', () => {
     })
   })
 
-  describe('getMultiSendCallOnlyContractDeployment', () => {
-    it('should return the versioned deployment for supported version/chain', () => {
-      const expected = safeDeployments.getMultiSendCallOnlyDeployment({
-        version: '1.3.0', // First available version
-        network: '1',
-      })
-
-      expect(expected).toBeDefined()
-      const deployment = deployments.getMultiSendCallOnlyContractDeployment('1', '1.3.0')
-      expect(deployment).toStrictEqual(expected)
-    })
-
-    it('should return undefined for supported version/unsupported chain', () => {
-      const deployment = deployments.getMultiSendCallOnlyContractDeployment('69420', '1.3.0')
-      expect(deployment).toBe(undefined)
-    })
-
-    it('should return undefined for unsupported version/chain', () => {
-      const deployment = deployments.getMultiSendCallOnlyContractDeployment('69420', '1.2.3')
-      expect(deployment).toBe(undefined)
-    })
-
-    it('should return the latest deployment for no version/supported chain', () => {
-      const expected = safeDeployments.getMultiSendCallOnlyDeployment({
-        version: LATEST_SAFE_VERSION,
-        network: '1',
-      })
-
-      expect(expected).toBeDefined()
-      const deployment = deployments.getMultiSendCallOnlyContractDeployment('1', null)
-      expect(deployment).toStrictEqual(expected)
-    })
-
-    it('should return undefined for no version/unsupported chain', () => {
-      const deployment = deployments.getMultiSendCallOnlyContractDeployment('69420', null)
-      expect(deployment).toBe(undefined)
-    })
-  })
-
   describe('getFallbackHandlerContractDeployment', () => {
     it('should return the versioned deployment for supported version/chain', () => {
       const expected = safeDeployments.getFallbackHandlerDeployment({
