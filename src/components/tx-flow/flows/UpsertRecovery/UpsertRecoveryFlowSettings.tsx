@@ -150,7 +150,8 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
 
               <Typography variant="body2">
-                You can cancel any recovery proposal when it is not needed or wanted during this period.
+                The recovery proposal will be available for execution after this period of time. You can cancel any
+                recovery proposal when it is not needed or wanted during this period.
               </Typography>
             </div>
             <Box display="flex" gap={2}>
