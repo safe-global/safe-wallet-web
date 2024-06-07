@@ -69,18 +69,6 @@ export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersio
 
 // MultiSend
 
-export const getMultiSendCallOnlyContract = async (
-  chainId: string,
-  safeVersion: SafeInfo['version'],
-  provider: BrowserProvider,
-) => {
-  const ethAdapter = await createEthersAdapter(provider)
-  return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyDeployment({ network: chainId }),
-    ..._getValidatedGetContractProps(safeVersion),
-  })
-}
-
 export const getReadOnlyMultiSendCallOnlyContract = async (chainId: string, safeVersion: SafeInfo['version']) => {
   const ethAdapter = createReadOnlyEthersAdapter()
   return ethAdapter.getMultiSendCallOnlyContract({
