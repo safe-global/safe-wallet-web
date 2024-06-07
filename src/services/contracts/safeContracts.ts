@@ -69,11 +69,11 @@ export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersio
 
 // MultiSend
 
-export const getReadOnlyMultiSendCallOnlyContract = async (chainId: string, safeVersion: SafeInfo['version']) => {
+export const getReadOnlyMultiSendCallOnlyContract = async (chainId: string) => {
   const ethAdapter = createReadOnlyEthersAdapter()
   return ethAdapter.getMultiSendCallOnlyContract({
     singletonDeployment: getMultiSendCallOnlyDeployment({ network: chainId }),
-    ..._getValidatedGetContractProps(safeVersion),
+    safeVersion: '1.4.1', // we generally use the latest multisend version (there is no dependency on the Safe version)
   })
 }
 
