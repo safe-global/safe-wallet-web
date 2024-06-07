@@ -55,6 +55,14 @@ const SwapWidget = ({ sell }: Params) => {
   const [blockedAddress, setBlockedAddress] = useState('')
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
+  // useRefs as they don't trigger re-renders
+  const tradeTypeRef = useRef<TradeType>(tradeType)
+  const sellTokenRef = useRef<Params['sell']>(
+    sell || {
+      asset: '',
+      amount: '0',
+    },
+  )
 
   useEffect(() => {
     if (isBlockedAddress(safeAddress)) {
@@ -136,9 +144,14 @@ const SwapWidget = ({ sell }: Params) => {
       {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
         handler: (newTradeParams) => {
-          const { orderType: tradeType, recipient } = newTradeParams
+          const { orderType: tradeType, recipient, sellToken, sellTokenAmount } = newTradeParams
           dispatch(setSwapParams({ tradeType }))
 
+          tradeTypeRef.current = tradeType
+          sellTokenRef.current = {
+            asset: sellToken?.symbol || '',
+            amount: sellTokenAmount?.units || '0',
+          }
           if (recipient && isBlockedAddress(recipient)) {
             setBlockedAddress(recipient)
           }
@@ -164,13 +177,8 @@ const SwapWidget = ({ sell }: Params) => {
         orderExecuted: null,
         postOrder: null,
       },
-      tradeType, // TradeType.SWAP or TradeType.LIMIT
-      sell: sell
-        ? sell
-        : {
-            asset: '',
-            amount: '0',
-          },
+      tradeType: tradeTypeRef.current,
+      sell: sellTokenRef.current,
       images: {
         emptyOrders: darkMode
           ? BASE_URL + '/images/common/swap-empty-dark.svg'
@@ -192,10 +200,10 @@ const SwapWidget = ({ sell }: Params) => {
       content: {
         feeLabel: 'No fee for one month',
         feeTooltipMarkdown:
-          'Any future transaction fee incurred by Cow Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or Cow Swap.',
+          'Any future transaction fee incurred by CoW Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or CoW Swap.',
       },
     })
-  }, [sell, palette, darkMode, tradeType, chainId])
+  }, [sell, palette, darkMode, chainId])
 
   const chain = useCurrentChain()
 

@@ -10,9 +10,12 @@ jobs:
       id-token: write
 
     runs-on: ubuntu-latest
+
     name: Deploy release
+
     env:
       ARCHIVE_NAME: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -36,36 +39,16 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Script to upload release files
-      - name: 'Upload release build files for production'
+      - name: Upload release build files for production
         env:
           BUCKET: s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }}
           CHECKSUM_FILE: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
         run: bash ./scripts/github/s3_upload.sh
 
       # Script to prepare production deployments
-      - run: bash ./scripts/github/prepare_production_deployment.sh
+      - name: Prepare deployment
+        run: bash ./scripts/github/prepare_production_deployment.sh
         env:
           PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
           PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
           VERSION_TAG: ${{ github.event.release.tag_name }}
-
-      # Update the GitHub release with a checksummed archive
-      - name: Upload archive
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ARCHIVE_NAME }}.tar.gz
-          asset_name: ${{ env.ARCHIVE_NAME }}.tar.gz
-          asset_content_type: application/gzip
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Upload checksum
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-          asset_name: ${{ env.ARCHIVE_NAME }}-sha256-checksum.txt
-          asset_content_type: text/plain
-        env:
-          GITHUB_TOKEN: ${{ github.token }}

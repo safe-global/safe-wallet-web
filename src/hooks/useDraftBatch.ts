@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import useChainId from './useChainId'
 import useSafeAddress from './useSafeAddress'
 import type { DraftBatchItem } from '@/store/batchSlice'
-import { selectBatchBySafe, addTx, removeTx, setBatch } from '@/store/batchSlice'
+import { selectBatchBySafe, addTx, removeTx } from '@/store/batchSlice'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
@@ -43,22 +43,7 @@ export const useUpdateBatch = () => {
     [dispatch, chainId, safeAddress],
   )
 
-  const onSet = useCallback(
-    (items: DraftBatchItem[]) => {
-      dispatch(
-        setBatch({
-          chainId,
-          safeAddress,
-          items,
-        }),
-      )
-
-      trackEvent({ ...BATCH_EVENTS.BATCH_REORDER })
-    },
-    [dispatch, chainId, safeAddress],
-  )
-
-  return [onAdd, onDelete, onSet] as const
+  return [onAdd, onDelete] as const
 }
 
 export const useDraftBatch = (): DraftBatchItem[] => {

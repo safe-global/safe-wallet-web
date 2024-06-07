@@ -1,6 +1,8 @@
+import useWallet from '@/hooks/wallets/useWallet'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES } from '@/utils/chains'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -60,6 +62,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const canRelay = hasRemainingRelays(relays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
+  const wallet = useWallet()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
@@ -87,7 +90,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [txsWithDetails, multiSendTxs])
 
   const onExecute = async () => {
-    if (!userNonce || !onboard || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice) return
+    if (!userNonce || !onboard || !wallet || !multiSendTxData || !multiSendContract || !txsWithDetails || !gasPrice)
+      return
 
     const overrides: Overrides = isEIP1559
       ? { maxFeePerGas: maxFeePerGas?.toString(), maxPriorityFeePerGas: maxPriorityFeePerGas?.toString() }
@@ -95,12 +99,14 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
     overrides.nonce = userNonce
 
+    await assertWalletChain(onboard, safe.chainId)
+
     await dispatchBatchExecution(
       txsWithDetails,
       multiSendContract,
       multiSendTxData,
-      onboard,
-      safe.chainId,
+      wallet.provider,
+      wallet.address,
       safe.address.value,
       overrides as Overrides & { nonce: number },
     )
@@ -141,7 +147,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       return
     }
 
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.batch })
+    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.bulk_execute })
   }
 
   const submitDisabled = loading || !isSubmittable || !gasPrice

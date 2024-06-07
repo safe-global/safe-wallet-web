@@ -16,16 +16,14 @@ import { useCallback } from 'react'
 import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
-import { isSocialWalletEnabled } from '@/hooks/wallets/wallets'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
-  const wallet = useWallet()
   const isDarkMode = useDarkMode()
   const theme = useTheme()
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
+  const isWalletConnected = !!useWallet()
 
   const [testNets, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
 
@@ -34,7 +32,11 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
       const shouldKeepPath = !router.query.safe
 
       const route = {
-        pathname: shouldKeepPath ? router.pathname : AppRoutes.index,
+        pathname: shouldKeepPath
+          ? router.pathname
+          : isWalletConnected
+          ? AppRoutes.welcome.accounts
+          : AppRoutes.welcome.index,
         query: {
           chain: shortName,
         } as {
@@ -49,7 +51,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
 
       return route
     },
-    [router],
+    [router, isWalletConnected],
   )
 
   const onChange = (event: SelectChangeEvent) => {
@@ -64,24 +66,17 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
     }
   }
 
-  const isSocialLogin = isSocialLoginWallet(wallet?.label)
-
   const renderMenuItem = useCallback(
     (value: string, chain: ChainInfo) => {
       return (
-        <MenuItem
-          key={value}
-          value={value}
-          className={css.menuItem}
-          disabled={isSocialLogin && !isSocialWalletEnabled(chain)}
-        >
+        <MenuItem key={value} value={value} className={css.menuItem}>
           <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
             <ChainIndicator chainId={chain.chainId} inline />
           </Link>
         </MenuItem>
       )
     },
-    [getNetworkLink, isSocialLogin, props.onChainSelect],
+    [getNetworkLink, props.onChainSelect],
   )
 
   return configs.length ? (

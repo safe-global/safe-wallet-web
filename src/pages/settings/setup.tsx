@@ -8,6 +8,7 @@ import { RequiredConfirmation } from '@/components/settings/RequiredConfirmation
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import DelegatesList from '@/components/settings/DelegatesList'
+import SpendingLimits from '@/components/settings/SpendingLimits'
 
 const Setup: NextPage = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -57,11 +58,13 @@ const Setup: NextPage = () => {
           </Grid>
         </Paper>
 
-        <Paper sx={{ p: 4 }}>
+        <Paper sx={{ p: 4, mb: 2 }}>
           <OwnerList />
 
           <RequiredConfirmation threshold={threshold} owners={ownerLength} />
         </Paper>
+
+        <SpendingLimits />
 
         <DelegatesList />
       </main>

@@ -6,7 +6,6 @@ import { type DraftBatchItem } from '@/store/batchSlice'
 import TxType from '@/components/transactions/TxType'
 import TxInfo from '@/components/transactions/TxInfo'
 import DeleteIcon from '@/public/images/common/delete.svg'
-import DragIcon from '@/public/images/common/drag.svg'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
@@ -17,19 +16,9 @@ type BatchTxItemProps = DraftBatchItem & {
   id: string
   count: number
   onDelete?: (id: string) => void
-  draggable?: boolean
-  dragging?: boolean
 }
 
-const BatchTxItem = ({
-  id,
-  count,
-  timestamp,
-  txDetails,
-  onDelete,
-  dragging = false,
-  draggable = false,
-}: BatchTxItemProps) => {
+const BatchTxItem = ({ id, count, timestamp, txDetails, onDelete }: BatchTxItemProps) => {
   const txSummary = useMemo(
     () => ({
       timestamp,
@@ -61,18 +50,8 @@ const BatchTxItem = ({
       <div className={css.number}>{count}</div>
 
       <Accordion elevation={0} sx={{ flex: 1 }} onChange={handleExpand}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} disabled={dragging} className={css.accordion}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} className={css.accordion}>
           <Box flex={1} display="flex" alignItems="center" gap={2} py={0.4} width="100%">
-            {draggable && (
-              <SvgIcon
-                component={DragIcon}
-                inheritViewBox
-                fontSize="small"
-                className={css.dragHandle}
-                onClick={(e: MouseEvent) => e.stopPropagation()}
-              />
-            )}
-
             <TxType tx={txSummary} />
 
             <Box flex={1}>

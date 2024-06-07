@@ -138,14 +138,12 @@ describe('getTransactionTrackingType', () => {
     expect(txType).toEqual(TX_TYPES.rejection)
   })
 
-  it('should return walletconnect for walletconnect transactions', async () => {
+  it('should return walletconnect for transactions w/o safeAppInfo', async () => {
     const txType = await getMockTxType({
       txInfo: {
         type: TransactionInfoType.CUSTOM,
       },
-      safeAppInfo: {
-        url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
-      },
+      safeAppInfo: null,
     } as unknown)
 
     expect(txType).toEqual(TX_TYPES.walletconnect)
@@ -174,15 +172,5 @@ describe('getTransactionTrackingType', () => {
     } as unknown)
 
     expect(txType).toEqual(TX_TYPES.batch)
-  })
-
-  it('should return custom for unknown transactions', async () => {
-    const txType = await getMockTxType({
-      txInfo: {
-        type: TransactionInfoType.CUSTOM,
-      },
-    } as unknown)
-
-    expect(txType).toEqual(TX_TYPES.custom)
   })
 })

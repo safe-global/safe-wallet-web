@@ -22,6 +22,7 @@ export enum TX_TYPES {
   walletconnect = 'walletconnect',
   custom = 'custom',
   native_swap = 'native_swap',
+  bulk_execute = 'bulk_execute',
 
   // Counterfactual
   activate_without_tx = 'activate_without_tx',
@@ -50,6 +51,11 @@ export const TX_EVENTS = {
   SPEED_UP: {
     event: EventType.TX_EXECUTED,
     action: 'Speed up transaction',
+    category: TX_CATEGORY,
+  },
+  EXECUTE_THROUGH_ROLE: {
+    event: EventType.TX_EXECUTED_THROUGH_ROLE,
+    action: 'Execute transaction through role',
     category: TX_CATEGORY,
   },
 }

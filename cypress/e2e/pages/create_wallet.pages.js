@@ -29,6 +29,16 @@ const cancelBtn = '[data-testid="cancel-btn"]'
 const dialogConfirmBtn = '[data-testid="dialog-confirm-btn"]'
 const safeActivationSection = '[data-testid="activation-section"]'
 const addressAutocompleteOptions = '[data-testid="address-item"]'
+export const qrCode = '[data-testid="qr-code"]'
+export const addressInfo = '[data-testid="address-info"]'
+const choiceBtn = '[data-testid="choice-btn"]'
+const addFundsBtn = '[data-testid="add-funds-btn"]'
+const createTxBtn = '[data-testid="create-tx-btn"]'
+const qrCodeSwitch = '[data-testid="qr-code-switch"]'
+export const activateAccountBtn = '[data-testid="activate-account-btn"]'
+const notificationsSwitch = '[data-testid="notifications-switch"]'
+export const addFundsSection = '[data-testid="add-funds-section"]'
+export const noTokensAlert = '[data-testid="no-tokens-alert"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -38,11 +48,52 @@ const policy1_2 = '1/1 policy'
 export const walletName = 'test1-sepolia-safe'
 export const defaultSepoliaPlaceholder = 'Sepolia Safe'
 const welcomeToSafeStr = 'Welcome to Safe'
+const initialSteps = '0 of 2 steps completed'
+export const addSignerStr = 'Add signer'
+export const accountRecoveryStr = 'Account recovery'
+export const sendTokensStr = 'Send tokens'
+
+export function checkNotificationsSwitchIs(status) {
+  cy.get(notificationsSwitch).find('input').should(`be.${status}`)
+}
+
+export function clickOnActivateAccountBtn() {
+  cy.get(activateAccountBtn).click()
+}
+
+export function clickOnQRCodeSwitch() {
+  cy.get(qrCodeSwitch).click()
+}
+
+export function checkQRCodeSwitchStatus(state) {
+  cy.get(qrCodeSwitch).find('input').should(state)
+}
+
+export function checkInitialStepsDisplayed() {
+  cy.contains(initialSteps).should('be.visible')
+}
+
+export function clickOnAddFundsBtn() {
+  cy.get(addFundsBtn).click()
+}
+
+export function clickOnCreateTxBtn() {
+  cy.get(createTxBtn).click()
+  main.verifyElementsCount(choiceBtn, 6)
+}
+
+export function checkAllTxTypesOrder(expectedOrder) {
+  main.checkTextOrder(choiceBtn, expectedOrder)
+}
+
+export function clickOnTxType(tx) {
+  cy.get(choiceBtn).contains(tx).click()
+}
 
 export function verifyNewSafeDialogModal() {
   main.verifyElementsIsVisible([dialogConfirmBtn])
 }
-//
+
 export function verifyCFSafeCreated() {
   main.verifyElementsIsVisible([sidebar.pendingActivationIcon, safeActivationSection])
 }
@@ -85,22 +136,6 @@ export function verifySponsorMessageIsPresent() {
   main.verifyElementsExist([sponsorIcon, networkFeeSection])
   // Goerli is generated
   cy.get(networkFeeSection).contains(sponsorStr).should('exist')
-}
-
-export function verifyGoogleConnectBtnIsDisabled() {
-  cy.get(googleConnectBtn).should('be.disabled')
-}
-
-export function verifyGoogleConnectBtnIsEnabled() {
-  cy.get(googleConnectBtn).should('not.be.disabled')
-}
-
-export function verifyGoogleSignin() {
-  return cy.get(googleSignedinBtn).should('exist')
-}
-
-export function verifyGoogleAccountInfoInHeader() {
-  return cy.get(accountInfoHeader).should('exist')
 }
 
 export function verifyPolicy1_1() {

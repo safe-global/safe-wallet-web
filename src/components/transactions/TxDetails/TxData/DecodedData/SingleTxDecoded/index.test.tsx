@@ -28,7 +28,7 @@ describe('SingleTxDecoded', () => {
       />,
     )
 
-    expect(result.queryByText('native transfer')).not.toBeNull()
+    expect(result.queryByText('Native transfer')).not.toBeNull()
   })
 
   it('should show unknown contract interactions', () => {
@@ -52,7 +52,7 @@ describe('SingleTxDecoded', () => {
       />,
     )
 
-    expect(result.queryByText('Unknown contract interaction')).not.toBeNull()
+    expect(result.queryByText('Contract interaction')).not.toBeNull()
   })
 
   it('should show decoded data ', () => {

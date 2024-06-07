@@ -11,7 +11,7 @@ enum ErrorCodes {
   _101 = '101: Failed to resolve the address',
   _103 = '103: Error creating a SafeTransaction',
   _104 = '104: Invalid chain short name in the URL',
-  _105 = '105: Error initializing the Safe Core SDK',
+  _105 = '105: Error connecting to the blockchain',
   _106 = '106: Failed to get connected wallet',
 
   _302 = '302: Error connecting to the wallet',
@@ -66,6 +66,7 @@ enum ErrorCodes {
   _812 = '812: Failed to recover',
   _813 = '813: Failed to cancel recovery',
   _814 = '814: Failed to speed up transaction',
+  _815 = '815: Error executing a transaction through a role',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',
