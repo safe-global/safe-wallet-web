@@ -34,5 +34,5 @@ export default defineConfig({
     pageLoadTimeout: 60000,
   },
 
-  chromeWebSecurity: false,
+  chromeWebSecurity: true,
 })
