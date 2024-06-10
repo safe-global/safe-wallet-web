@@ -6,7 +6,6 @@ import css from './styles.module.css'
 import { useAppSelector } from '@/store'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { getTxLink } from '@/hooks/useTxNotifications'
 import { useCurrentChain } from '@/hooks/useChains'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -18,6 +17,7 @@ import { DefaultStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses
 import useDecodeTx from '@/hooks/useDecodeTx'
 import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { getTxLink } from '@/utils/tx-link'
 
 interface Props {
   /** The ID assigned to the transaction in the client-gateway */
