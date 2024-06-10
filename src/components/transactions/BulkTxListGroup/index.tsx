@@ -28,7 +28,7 @@ const GroupedTxListItems = ({
       <Box gridArea="info">
         <Typography noWrap>Transactions executed in bulk</Typography>
       </Box>
-      <Box className={css.action}>{groupedListItems.length} Transactions</Box>
+      <Box className={css.action}>{groupedListItems.length} transactions</Box>
       <Box className={css.hash}>
         <ExplorerButton href={explorerLink} isCompact={false} />
       </Box>
