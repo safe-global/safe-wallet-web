@@ -84,20 +84,18 @@ const SafeAppList = ({
         )}
 
         {/* Flat list filtered by search query */}
-        {safeAppsList.map((safeApp) => {
-          return (
-            <li key={safeApp.id}>
-              <SafeAppCard
-                safeApp={safeApp}
-                isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-                onBookmarkSafeApp={onBookmarkSafeApp}
-                removeCustomApp={removeCustomApp}
-                onClickSafeApp={handleSafeAppClick(safeApp)}
-                openPreviewDrawer={openPreviewDrawer}
-              />
-            </li>
-          )
-        })}
+        {safeAppsList.map((safeApp) => (
+          <li key={safeApp.id}>
+            <SafeAppCard
+              safeApp={safeApp}
+              isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
+              onBookmarkSafeApp={onBookmarkSafeApp}
+              removeCustomApp={removeCustomApp}
+              onClickSafeApp={handleSafeAppClick(safeApp)}
+              openPreviewDrawer={openPreviewDrawer}
+            />
+          </li>
+        ))}
       </ul>
 
       {/* Zero results placeholder */}
