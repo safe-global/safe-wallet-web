@@ -72,7 +72,7 @@
       "transactionHash": "0xa5dd...b064",
       "safeTxHash": "0x4dd0...b2b8",
       "nativeTransfer": {
-        "title": "Native transfer",
+        "title": "native transfer",
         "description": "Interact with (and send < 0.00001 ETH to)"
       }
     },
