@@ -9,9 +9,17 @@ import Track from '@/components/common/Track'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
-const NativeSwapsCard = ({ onDismiss }: { onDismiss: () => void }) => {
+const SWAPS_APP_CARD_STORAGE_KEY = 'showSwapsAppCard'
+
+const NativeSwapsCard = () => {
   const router = useRouter()
+  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+  const [isSwapsCardVisible = true, setIsSwapsCardVisible] = useLocalStorage<boolean>(SWAPS_APP_CARD_STORAGE_KEY)
+  if (!isSwapFeatureEnabled || !isSwapsCardVisible) return null
 
   return (
     <Paper className={css.container}>
@@ -41,7 +49,7 @@ const NativeSwapsCard = ({ onDismiss }: { onDismiss: () => void }) => {
               </Button>
             </Link>
           </Track>
-          <Button onClick={onDismiss} size="small" variant="text" sx={{ px: '16px' }}>
+          <Button onClick={() => setIsSwapsCardVisible(false)} size="small" variant="text" sx={{ px: '16px' }}>
             Don&apos;t show
           </Button>
         </Stack>

@@ -1,19 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import NativeSwapsCard from './index'
 import { Box } from '@mui/material'
+import { StoreDecorator } from '@/stories/storeDecorator'
 
 const meta = {
   component: NativeSwapsCard,
   parameters: {
-    componentSubtitle: 'Renders an order id with an external link and a copy button',
+    componentSubtitle: 'Renders a promo card for native swaps',
   },
 
   decorators: [
     (Story) => {
       return (
-        <Box sx={{ maxWidth: '500px' }}>
-          <Story />
-        </Box>
+        <StoreDecorator initialState={{ chains: { data: [{ chainId: '11155111', features: ['NATIVE_SWAPS'] }] } }}>
+          <Box sx={{ maxWidth: '500px' }}>
+            <Story />
+          </Box>
+        </StoreDecorator>
       )
     },
   ],
@@ -24,5 +27,6 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: { onDismiss: () => {} },
+  args: {},
+  // args: { onDismiss: () => {} },
 }

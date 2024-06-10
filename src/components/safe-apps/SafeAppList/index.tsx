@@ -11,9 +11,6 @@ import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import NativeSwapsCard from '@/components/safe-apps/NativeSwapsCard'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -26,8 +23,6 @@ type SafeAppListProps = {
   query?: string
   isFiltered?: boolean
 }
-
-const SWAPS_APP_CARD_STORAGE_KEY = 'showSwapsAppCard'
 
 const SafeAppList = ({
   safeAppsList,
@@ -42,8 +37,6 @@ const SafeAppList = ({
 }: SafeAppListProps) => {
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
-  let [isSwapsCardVisible = true, setIsSwapsCardVisible] = useLocalStorage<boolean>(SWAPS_APP_CARD_STORAGE_KEY)
-  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
 
   const showZeroResultsPlaceholder = query && safeAppsList.length === 0
 
@@ -79,9 +72,7 @@ const SafeAppList = ({
             </li>
           ))}
 
-        {!isFiltered && isSwapsCardVisible && isSwapFeatureEnabled && (
-          <NativeSwapsCard onDismiss={() => setIsSwapsCardVisible(false)} />
-        )}
+        {!isFiltered && <NativeSwapsCard />}
 
         {/* Flat list filtered by search query */}
         {safeAppsList.map((safeApp) => (
