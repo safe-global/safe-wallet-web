@@ -1,7 +1,30 @@
 .container {
   position: relative;
   padding: var(--space-2);
+  border: 1px solid var(--color-warning-light);
+  display: grid;
   align-items: center;
+  grid-template-columns: minmax(50px, 0.25fr) minmax(240px, 2fr) minmax(150px, 4fr) minmax(170px, 1fr);
+  grid-template-areas:
+    'icon info action hash'
+    'nonce items items items';
+}
+
+.action {
+  margin-left: var(--space-2);
+  grid-area: action;
+}
+
+.hash {
+  grid-area: hash;
+  display: grid;
+  justify-content: flex-end;
+}
+
+.nonce {
+  position: absolute;
+  left: -24px;
+  top: var(--space-1);
 }
 
 .txItems {
@@ -9,16 +32,29 @@
   flex-direction: column;
   gap: var(--space-1);
   margin-top: var(--space-2);
-  width: 100%;
 }
 
-.container :global(.MuiAccordion-root) {
+.txItems :global(.MuiAccordion-root) {
   border-color: var(--color-border-light);
 }
 
-.disclaimerContainer {
-  background-color: var(--color-warning-background);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--space-1);
-  flex: 1;
+@media (max-width: 699px) {
+  .container {
+    grid-template-columns: minmax(30px, 0.25fr) minmax(230px, 3fr);
+    grid-template-areas:
+      'icon info '
+      'nonce action'
+      'nonce hash '
+      'nonce items';
+  }
+
+  .action {
+    margin: 0;
+  }
+  .hash {
+    justify-content: flex-start;
+  }
+  .nonce {
+    left: -16px;
+  }
 }

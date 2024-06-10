@@ -1,5 +1,4 @@
 import GroupedTxListItems from '@/components/transactions/GroupedTxListItems'
-import BulkTxListGroup from '@/components/transactions//BulkTxListGroup'
 import { groupTxs } from '@/utils/tx-list'
 import { Box } from '@mui/material'
 import type { Transaction, TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
@@ -8,6 +7,7 @@ import { useMemo } from 'react'
 import TxListItem from '../TxListItem'
 import css from './styles.module.css'
 import { uniq } from 'lodash'
+import BulkTxListGroup from '@/components/transactions/BulkTxListGroup'
 
 type TxListProps = {
   items: TransactionListPage['results']

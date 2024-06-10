@@ -1,11 +1,13 @@
 import type { ReactElement } from 'react'
-import { Box, Grid, Paper, SvgIcon, Typography } from '@mui/material'
+import { Box, Paper, SvgIcon, Typography } from '@mui/material'
 import type { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import BatchIcon from '@/public/images/common/batch.svg'
 import css from './styles.module.css'
-import { generateDataRowValue } from '../TxDetails/Summary/TxDataRow'
+import ExplorerButton from '@/components/common/ExplorerButton'
+import { getBlockExplorerLink } from '@/utils/chains'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const GroupedTxListItems = ({
   groupedListItems,
@@ -14,41 +16,36 @@ const GroupedTxListItems = ({
   groupedListItems: Transaction[]
   transactionHash: string
 }): ReactElement | null => {
+  const chain = useCurrentChain()
+  const explorerLink = chain && getBlockExplorerLink(chain, transactionHash)?.href
   if (groupedListItems.length === 0) return null
 
   return (
     <Paper className={css.container}>
-      <Grid container gap={1}>
-        <Grid item xs={1} sm={0.5} display="flex" alignItems="center">
-          <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
-        </Grid>
-        <Grid item md={6} lg={3} mr={3} alignContent="center">
-          <Typography noWrap>Transactions executed in bulk</Typography>
-        </Grid>
+      <Box gridArea="icon">
+        <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
+      </Box>
+      <Box gridArea="info">
+        <Typography noWrap>Transactions executed in bulk</Typography>
+      </Box>
+      <Box className={css.action}>{groupedListItems.length} Transactions</Box>
+      <Box className={css.hash}>
+        <ExplorerButton href={explorerLink} isCompact={false} />
+      </Box>
 
-        <Grid item xs>
-          {generateDataRowValue(transactionHash, 'hash', true)}
-        </Grid>
-
-        <Box className={css.txItems}>
-          {groupedListItems.map((tx) => {
-            const nonce = isMultisigExecutionInfo(tx.transaction.executionInfo)
-              ? tx.transaction.executionInfo.nonce
-              : ''
-            return (
-              <Box display="flex" key={tx.transaction.id}>
-                <Grid item xs={1} sm={0.5} mt={2}>
-                  <Typography className={css.nonce}>{nonce}</Typography>
-                </Grid>
-
-                <Grid item xs={11} sm={11.5}>
-                  <ExpandableTransactionItem item={tx} isBulkGroup={true} />
-                </Grid>
+      <Box gridArea="items" className={css.txItems}>
+        {groupedListItems.map((tx) => {
+          const nonce = isMultisigExecutionInfo(tx.transaction.executionInfo) ? tx.transaction.executionInfo.nonce : ''
+          return (
+            <Box position="relative" key={tx.transaction.id}>
+              <Box className={css.nonce}>
+                <Typography className={css.nonce}>{nonce}</Typography>
               </Box>
-            )
-          })}
-        </Box>
-      </Grid>
+              <ExpandableTransactionItem item={tx} isBulkGroup={true} />
+            </Box>
+          )
+        })}
+      </Box>
     </Paper>
   )
 }
