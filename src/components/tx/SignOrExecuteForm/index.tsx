@@ -27,6 +27,8 @@ import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import PermissionsCheck from './PermissionsCheck'
+import { useIsGnosisPayOwner } from '@/features/gnosispay/hooks/useIsGnosisPayOwner'
+import GnosisPayExecutionForm from '@/features/gnosispay/GnosisPayExecutionForm'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -77,6 +79,8 @@ export const SignOrExecuteForm = ({
 
   const { safe } = useSafeInfo()
   const isCounterfactualSafe = !safe.deployed
+
+  const [isGnosisPayOwner, , isGnosisPayOwnerLoading] = useIsGnosisPayOwner()
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
@@ -146,7 +150,9 @@ export const SignOrExecuteForm = ({
 
         <RiskConfirmationError />
 
-        {isCounterfactualSafe ? (
+        {isGnosisPayOwner ? (
+          <GnosisPayExecutionForm {...props} safeTx={safeTx} onSubmit={onFormSubmit} />
+        ) : isCounterfactualSafe ? (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
         ) : willExecute ? (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />

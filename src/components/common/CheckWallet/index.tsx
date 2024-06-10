@@ -4,11 +4,13 @@ import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBen
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
+import { useIsGnosisPayOwner } from '@/features/gnosispay/hooks/useIsGnosisPayOwner'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
   allowSpendingLimit?: boolean
   allowNonOwner?: boolean
+  allowGnosisPayOwner?: boolean
   noTooltip?: boolean
 }
 
@@ -17,14 +19,25 @@ enum Message {
   NotSafeOwner = 'Your connected wallet is not a signer of this Safe Account',
 }
 
-const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }: CheckWalletProps): ReactElement => {
+const CheckWallet = ({
+  children,
+  allowSpendingLimit,
+  allowNonOwner,
+  noTooltip,
+  allowGnosisPayOwner,
+}: CheckWalletProps): ReactElement => {
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
+  const [isGnosisPayOwner] = useIsGnosisPayOwner()
   const connectWallet = useConnectWallet()
 
   const message =
-    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit))
+    wallet &&
+    (isSafeOwner ||
+      allowNonOwner ||
+      (isSpendingLimit && allowSpendingLimit) ||
+      (allowGnosisPayOwner && Boolean(isGnosisPayOwner)))
       ? ''
       : !wallet
       ? Message.WalletNotConnected

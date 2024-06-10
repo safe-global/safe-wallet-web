@@ -11,7 +11,7 @@ import { asError } from '@/services/exceptions/utils'
 import { isSmartContractWallet } from '@/utils/wallets'
 import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 
-async function getDelayModifierContract({
+export async function getDelayModifierContract({
   provider,
   chainId,
   delayModifierAddress,

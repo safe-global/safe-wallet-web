@@ -1,4 +1,4 @@
-import type { JsonRpcProvider } from 'ethers'
+import type { AbstractProvider } from 'ethers'
 import { Contract } from 'ethers'
 
 // zodiac-safe-app used as reference for proxy detection
@@ -23,7 +23,7 @@ export function isGnosisProxy(bytecode: string): boolean {
   )
 }
 
-export async function getGnosisProxyMasterCopy(address: string, provider: JsonRpcProvider): Promise<string> {
+export async function getGnosisProxyMasterCopy(address: string, provider: AbstractProvider): Promise<string> {
   const gnosisProxyAbi = ['function masterCopy() external view returns (address)']
   const gnosisProxyContract = new Contract(address, gnosisProxyAbi, provider)
 
