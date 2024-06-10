@@ -1,1 +1,0 @@
-export const NATIVE_SWAPS_APP_ID = 100_000
