@@ -6,7 +6,7 @@ import type { ReactElement, ReactNode } from 'react'
 import { useMemo } from 'react'
 import TxListItem from '../TxListItem'
 import css from './styles.module.css'
-import { uniq } from 'lodash'
+import uniq from 'lodash/uniq'
 import BulkTxListGroup from '@/components/transactions/BulkTxListGroup'
 
 type TxListProps = {
