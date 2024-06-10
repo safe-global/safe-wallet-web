@@ -24,7 +24,7 @@ const SafeApps: NextPage = () => {
 
   const nonPinnedApps = useMemo(
     () => remoteSafeApps.filter((app) => !pinnedSafeAppIds.has(app.id)),
-    [pinnedSafeAppIds, remoteSafeApps],
+    [remoteSafeApps, pinnedSafeAppIds],
   )
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
