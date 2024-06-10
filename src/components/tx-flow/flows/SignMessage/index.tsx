@@ -6,17 +6,26 @@ import { useAppSelector } from '@/store'
 import { Box, Typography } from '@mui/material'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
 import { ErrorBoundary } from '@sentry/react'
+import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 
 const APP_LOGO_FALLBACK_IMAGE = '/images/apps/apps-icon.svg'
 const APP_NAME_FALLBACK = 'Sign message'
 
-export const AppTitle = ({ name, logoUri }: { name?: string | null; logoUri?: string | null }) => {
+export const AppTitle = ({
+  name,
+  logoUri,
+  txs,
+}: {
+  name?: string | null
+  logoUri?: string | null
+  txs?: BaseTransaction[]
+}) => {
   const swapParams = useAppSelector(selectSwapParams)
 
   const appName = name || APP_NAME_FALLBACK
   const appLogo = logoUri || APP_LOGO_FALLBACK_IMAGE
 
-  const title = name === SWAP_TITLE ? getSwapTitle(swapParams.tradeType) : appName
+  const title = name === SWAP_TITLE ? getSwapTitle(swapParams.tradeType, txs) : appName
 
   return (
     <Box display="flex" alignItems="center">

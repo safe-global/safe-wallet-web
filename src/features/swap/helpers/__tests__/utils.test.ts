@@ -2,6 +2,7 @@ import {
   getExecutionPrice,
   getFilledPercentage,
   getLimitPrice,
+  getPartiallyFilledSurplus,
   getSurplusPrice,
   isOrderPartiallyFilled,
 } from '../utils'
@@ -250,6 +251,67 @@ describe('Swap helpers', () => {
       })
 
       expect(result1).toBe(false)
+    })
+  })
+  describe('getPartiallyFilledSurplusPrice', () => {
+    it('returns 0 for partially filled sell order with no surplus', () => {
+      const mockOrder = {
+        sellAmount: '100000000000000000000', // 100 tokens
+        executedSellAmount: '50000000000000000000', // 50 tokens
+        executedBuyAmount: '50000000000000000000', // 50 tokens
+        buyAmount: '100000000000000000000', // 100 tokens
+        kind: 'sell',
+        buyToken: { decimals: 18 },
+        sellToken: { decimals: 18 },
+      } as unknown as SwapOrder
+
+      const result = getPartiallyFilledSurplus(mockOrder)
+
+      expect(result).toEqual(0)
+    })
+    it('returns 0 for partially filled buy order with no surplus', () => {
+      const mockOrder = {
+        sellAmount: '100000000000000000000', // 100 tokens
+        executedSellAmount: '50000000000000000000', // 50 tokens
+        executedBuyAmount: '50000000000000000000', // 50 tokens
+        buyAmount: '100000000000000000000', // 100 tokens
+        kind: 'buy',
+        buyToken: { decimals: 18 },
+        sellToken: { decimals: 18 },
+      } as unknown as SwapOrder
+
+      const result = getPartiallyFilledSurplus(mockOrder)
+
+      expect(result).toEqual(0)
+    })
+    it('returns surplus for partially filled sell orders', () => {
+      const mockOrder = {
+        sellAmount: '100000000000000000000', // 100 tokens
+        executedSellAmount: '50000000000000000000', // 50 tokens
+        executedBuyAmount: '55000000000000000000', // 55 tokens
+        buyAmount: '100000000000000000000', // 100 tokens
+        kind: 'sell',
+        buyToken: { decimals: 18 },
+        sellToken: { decimals: 18 },
+      } as unknown as SwapOrder
+
+      const result = getPartiallyFilledSurplus(mockOrder)
+      expect(result).toEqual(5)
+    })
+    it('returns surplus for partially filled buy orders', () => {
+      const mockOrder = {
+        sellAmount: '100000000000000000000', // 100 tokens
+        executedSellAmount: '45000000000000000000', // 50 tokens
+        executedBuyAmount: '50000000000000000000', // 55 tokens
+        buyAmount: '100000000000000000000', // 100 tokens
+        kind: 'buy',
+        buyToken: { decimals: 18 },
+        sellToken: { decimals: 18 },
+      } as unknown as SwapOrder
+
+      const result = getPartiallyFilledSurplus(mockOrder)
+
+      expect(result).toEqual(5)
     })
   })
 })

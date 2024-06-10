@@ -28,8 +28,15 @@ import { selectSwapParams, setSwapParams, type SwapState } from './store/swapPar
 import { setSwapOrder } from '@/store/swapOrderSlice'
 import useChainId from '@/hooks/useChainId'
 import { NATIVE_SWAPS_APP_ID } from '@/features/swap/config/constants'
+import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
+import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
+import { id } from 'ethers'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
+
+const PRE_SIGN_SIGHASH = id('setPreSignature(bytes,bool)').slice(0, 10)
+const WRAP_SIGHASH = id('deposit()').slice(0, 10)
+const UNWRAP_SIGHASH = id('withdraw(uint256)').slice(0, 10)
 
 type Params = {
   sell?: {
@@ -40,8 +47,20 @@ type Params = {
 
 export const SWAP_TITLE = 'Safe Swap'
 
-export const getSwapTitle = (tradeType: SwapState['tradeType']) => {
-  return tradeType === 'limit' ? 'Limit order' : 'Swap order'
+export const getSwapTitle = (tradeType: SwapState['tradeType'], txs: BaseTransaction[] | undefined) => {
+  const hashToLabel = {
+    [PRE_SIGN_SIGHASH]: tradeType === 'limit' ? 'Limit order' : 'Swap order',
+    [APPROVAL_SIGNATURE_HASH]: 'Approve',
+    [WRAP_SIGHASH]: 'Wrap',
+    [UNWRAP_SIGHASH]: 'Unwrap',
+  }
+
+  const swapTitle = txs
+    ?.map((tx) => hashToLabel[tx.data.slice(0, 10)])
+    .filter(Boolean)
+    .join(' and ')
+
+  return swapTitle
 }
 
 const SwapWidget = ({ sell }: Params) => {
@@ -201,7 +220,7 @@ const SwapWidget = ({ sell }: Params) => {
       content: {
         feeLabel: 'No fee for one month',
         feeTooltipMarkdown:
-          'Any future transaction fee incurred by Cow Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or Cow Swap.',
+          'Any future transaction fee incurred by CoW Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or CoW Swap.',
       },
     })
   }, [sell, palette, darkMode, chainId])

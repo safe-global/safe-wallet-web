@@ -130,11 +130,11 @@
       }
     },
     "deleteSpendingLimit": {
-      "title": "Contract interaction",
+      "title": "AllowanceModule",
       "summaryTxInfo": "deleteAllowance",
       "summaryTime": "11:08 AM",
       "description": "Delete spending limit",
-      "altImage": "Contract interaction",
+      "altImage": "AllowanceModule",
       "beneficiary": "Beneficiary",
       "beneficiaryAddress": "sep:0xC16Db0251654C0a72E91B190d81eAD367d2C6fED",
       "transactionHash": "0xd6e8...de8b",

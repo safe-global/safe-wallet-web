@@ -1,5 +1,10 @@
 import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
+import type {
+  SafeTransaction,
+  Transaction,
+  TransactionOptions,
+  TransactionResult,
+} from '@safe-global/safe-core-sdk-types'
 import { didRevert } from '@/utils/ethers-utils'
 import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
 import { type SpendingLimitTxParams } from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
@@ -313,6 +318,54 @@ export const dispatchBatchExecution = async (
   }
 
   return result!.hash
+}
+
+/**
+ * Execute a module transaction
+ */
+export const dispatchModuleTxExecution = async (
+  tx: Transaction,
+  provider: Eip1193Provider,
+  safeAddress: string,
+): Promise<string> => {
+  const id = JSON.stringify(tx)
+
+  let result: TransactionResponse | undefined
+  try {
+    const browserProvider = createWeb3(provider)
+    const signer = await browserProvider.getSigner()
+
+    txDispatch(TxEvent.EXECUTING, { groupKey: id })
+    result = await signer.sendTransaction(tx)
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+    throw error
+  }
+
+  txDispatch(TxEvent.PROCESSING_MODULE, {
+    groupKey: id,
+    txHash: result.hash,
+  })
+
+  result
+    ?.wait()
+    .then((receipt) => {
+      if (receipt === null) {
+        txDispatch(TxEvent.FAILED, { groupKey: id, error: new Error('No transaction receipt found') })
+      } else if (didRevert(receipt)) {
+        txDispatch(TxEvent.REVERTED, {
+          groupKey: id,
+          error: new Error('Transaction reverted by EVM'),
+        })
+      } else {
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress, txHash: result?.hash })
+      }
+    })
+    .catch((error) => {
+      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+    })
+
+  return result?.hash
 }
 
 export const dispatchSpendingLimitTxExecution = async (

@@ -52,7 +52,7 @@ describe('SingleTxDecoded', () => {
       />,
     )
 
-    expect(result.queryByText('Unknown contract interaction')).not.toBeNull()
+    expect(result.queryByText('contract interaction')).not.toBeNull()
   })
 
   it('should show decoded data ', () => {
