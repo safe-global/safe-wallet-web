@@ -10,10 +10,10 @@ import useSafeAppPreviewDrawer from '@/hooks/safe-apps/useSafeAppPreviewDrawer'
 import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
-import NativeFeatureCard from '../NativeFeatureCard'
-import { useNativeSwapsAppCard } from '../hooks/useNativeSwapsAppCard'
-import { useRouter } from 'next/router'
-import { NATIVE_SWAPS_APP_ID } from '@/features/swap/config/constants'
+import NativeSwapsCard from '@/components/safe-apps/NativeSwapsCard'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
@@ -24,8 +24,10 @@ type SafeAppListProps = {
   removeCustomApp?: (safeApp: SafeAppData) => void
   title: string
   query?: string
-  nativeFeatureCard?: SafeAppData
+  isFiltered?: boolean
 }
+
+const SWAPS_APP_CARD_STORAGE_KEY = 'showSwapsAppCard'
 
 const SafeAppList = ({
   safeAppsList,
@@ -36,12 +38,12 @@ const SafeAppList = ({
   removeCustomApp,
   title,
   query,
-  nativeFeatureCard,
+  isFiltered = false,
 }: SafeAppListProps) => {
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
-  const { isVisible, setIsVisible } = useNativeSwapsAppCard()
-  const router = useRouter()
+  let [isSwapsCardVisible = true, setIsSwapsCardVisible] = useLocalStorage<boolean>(SWAPS_APP_CARD_STORAGE_KEY)
+  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
 
   const showZeroResultsPlaceholder = query && safeAppsList.length === 0
 
@@ -54,16 +56,6 @@ const SafeAppList = ({
       return () => openPreviewDrawer(safeApp)
     },
     [openPreviewDrawer, openedSafeAppIds],
-  )
-
-  const handleNativeAppClick = useCallback(
-    (route: string) => {
-      router.push({
-        pathname: route,
-        query: router.query,
-      })
-    },
-    [router],
   )
 
   return (
@@ -87,17 +79,12 @@ const SafeAppList = ({
             </li>
           ))}
 
-        {nativeFeatureCard && isVisible && (
-          <NativeFeatureCard
-            details={nativeFeatureCard}
-            onClick={() => handleNativeAppClick(nativeFeatureCard.url)}
-            onDismiss={() => setIsVisible(false)}
-          />
+        {!isFiltered && isSwapsCardVisible && isSwapFeatureEnabled && (
+          <NativeSwapsCard onDismiss={() => setIsSwapsCardVisible(false)} />
         )}
 
         {/* Flat list filtered by search query */}
         {safeAppsList.map((safeApp) => {
-          if (safeApp.id === NATIVE_SWAPS_APP_ID) return null
           return (
             <li key={safeApp.id}>
               <SafeAppCard

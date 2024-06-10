@@ -13,11 +13,9 @@ import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { useNativeSwapsAppCard } from '@/components/safe-apps/hooks/useNativeSwapsAppCard'
 
 const SafeApps: NextPage = () => {
   const router = useRouter()
-  const { swapsCardDetails } = useNativeSwapsAppCard()
   const { remoteSafeApps, remoteSafeAppsLoading, pinnedSafeApps, pinnedSafeAppIds, togglePin } = useSafeApps()
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(remoteSafeApps)
@@ -75,7 +73,7 @@ const SafeApps: NextPage = () => {
         {/* All apps */}
         <SafeAppList
           title="All apps"
-          nativeFeatureCard={!isFiltered ? swapsCardDetails : undefined}
+          isFiltered={isFiltered}
           safeAppsList={isFiltered ? filteredApps : nonPinnedApps}
           safeAppsListLoading={remoteSafeAppsLoading}
           bookmarkedSafeAppsId={pinnedSafeAppIds}

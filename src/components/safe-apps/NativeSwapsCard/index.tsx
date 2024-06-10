@@ -2,41 +2,45 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { Button, Paper, Stack } from '@mui/material'
-import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import SafeAppIconCard from '../SafeAppIconCard'
 import css from './styles.module.css'
+import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
+import Track from '@/components/common/Track'
+import Link from 'next/link'
+import { AppRoutes } from '@/config/routes'
+import { useRouter } from 'next/router'
 
-type NativeFeatureCardProps = {
-  details: SafeAppData
-  onClick: () => void
-  onDismiss: () => void
-}
+const NativeSwapsCard = ({ onDismiss }: { onDismiss: () => void }) => {
+  const router = useRouter()
 
-const NativeFeatureCard = ({ details, onClick, onDismiss }: NativeFeatureCardProps) => {
   return (
     <Paper className={css.container}>
       <CardHeader
         className={css.header}
         avatar={
           <div className={css.iconContainer}>
-            <SafeAppIconCard src={details.iconUrl} alt={details.name} width={24} height={24} />
+            <SafeAppIconCard src="/images/common/swap.svg" alt="Swap Icon" width={24} height={24} />
           </div>
         }
       />
 
       <CardContent className={css.content}>
         <Typography className={css.title} variant="h5">
-          {details.name}
+          Native swaps are here!
         </Typography>
 
         <Typography className={css.description} variant="body2" color="text.secondary">
-          {details.description}
+          Experience seamless trading with better decoding and security in native swaps.
         </Typography>
 
         <Stack direction="row" gap={2} className={css.buttons}>
-          <Button onClick={onClick} size="small" variant="contained" sx={{ px: '16px' }}>
-            Try now
-          </Button>
+          <Track {...SWAP_EVENTS.OPEN_SWAPS} label={SWAP_LABELS.safeAppsPromoWidget}>
+            <Link href={{ pathname: AppRoutes.swap, query: { safe: router.query.safe } }} passHref legacyBehavior>
+              <Button variant="contained" size="small">
+                Try now
+              </Button>
+            </Link>
+          </Track>
           <Button onClick={onDismiss} size="small" variant="text" sx={{ px: '16px' }}>
             Don&apos;t show
           </Button>
@@ -46,4 +50,4 @@ const NativeFeatureCard = ({ details, onClick, onDismiss }: NativeFeatureCardPro
   )
 }
 
-export default NativeFeatureCard
+export default NativeSwapsCard
