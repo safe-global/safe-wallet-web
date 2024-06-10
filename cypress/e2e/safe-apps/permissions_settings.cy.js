@@ -48,7 +48,7 @@ describe('Permissions settings tests', () => {
           }),
         )
       })
-      cy.visit(`${constants.appSettingsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_2}`, {
+      cy.visitWithRetry(`${constants.appSettingsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_2}`, {
         failOnStatusCode: false,
       })
       main.acceptCookies()

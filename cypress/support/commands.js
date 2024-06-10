@@ -218,3 +218,19 @@ Cypress.Commands.add('setupInterceptors', () => {
     req.continue()
   })
 })
+
+Cypress.Commands.add('visitWithRetry', (url, options = {}, retries = 3) => {
+  const visit = () =>
+    cy.visit(url, options).then(
+      () => cy.log('Visit successful'),
+      (error) => {
+        if (retries > 0) {
+          cy.log(`Visit failed, retrying... (${retries} retries left)`)
+          return cy.visitWithRetry(url, options, retries - 1)
+        } else {
+          throw error
+        }
+      },
+    )
+  return visit()
+})
