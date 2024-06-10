@@ -95,7 +95,7 @@ const SwapWidget = ({ sell }: Params) => {
 
   const appData: SafeAppData = useMemo(
     () => ({
-      id: NATIVE_SWAPS_APP_ID,
+      id: 1,
       url: 'https://app.safe.global',
       name: SWAP_TITLE,
       iconUrl: darkMode ? './images/common/safe-swap-dark.svg' : './images/common/safe-swap.svg',
