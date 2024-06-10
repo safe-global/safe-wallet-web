@@ -24,6 +24,7 @@ type SafeAppListProps = {
   removeCustomApp?: (safeApp: SafeAppData) => void
   title: string
   query?: string
+  nativeFeatureCard?: SafeAppData
 }
 
 const SafeAppList = ({
@@ -35,6 +36,7 @@ const SafeAppList = ({
   removeCustomApp,
   title,
   query,
+  nativeFeatureCard,
 }: SafeAppListProps) => {
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
@@ -63,8 +65,6 @@ const SafeAppList = ({
     },
     [router],
   )
-
-  const nativeFeatureCard = safeAppsList.find((item) => item.id === NATIVE_SWAPS_APP_ID)
 
   return (
     <>
