@@ -64,6 +64,8 @@ const SafeAppList = ({
     [router],
   )
 
+  const nativeFeatureCard = safeAppsList.find((item) => item.id === NATIVE_SWAPS_APP_ID)
+
   return (
     <>
       {/* Safe Apps List Header */}
@@ -85,9 +87,18 @@ const SafeAppList = ({
             </li>
           ))}
 
+        {nativeFeatureCard && isVisible && (
+          <NativeFeatureCard
+            details={nativeFeatureCard}
+            onClick={() => handleNativeAppClick(nativeFeatureCard.url)}
+            onDismiss={() => setIsVisible(false)}
+          />
+        )}
+
         {/* Flat list filtered by search query */}
         {safeAppsList.map((safeApp) => {
-          return safeApp.id !== NATIVE_SWAPS_APP_ID ? (
+          if (safeApp.id === NATIVE_SWAPS_APP_ID) return null
+          return (
             <li key={safeApp.id}>
               <SafeAppCard
                 safeApp={safeApp}
@@ -98,15 +109,7 @@ const SafeAppList = ({
                 openPreviewDrawer={openPreviewDrawer}
               />
             </li>
-          ) : isVisible ? (
-            <li key={safeApp.id}>
-              <NativeFeatureCard
-                details={safeApp}
-                onClick={() => handleNativeAppClick(safeApp.url)}
-                onDismiss={() => setIsVisible(false)}
-              />
-            </li>
-          ) : null
+          )
         })}
       </ul>
 
