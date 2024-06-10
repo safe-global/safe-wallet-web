@@ -12,4 +12,5 @@ export enum SWAP_LABELS {
   sidebar = 'sidebar',
   asset = 'asset',
   dashboard_assets = 'dashboard_assets',
+  promoWidget = 'promoWidget',
 }
