@@ -9,7 +9,7 @@ type GroupedTxs = Array<TransactionListItem | Transaction[]>
 
 export const groupTxs = (list: TransactionListItem[]) => {
   const groupedByConflicts = groupConflictingTxs(list)
-  return _groupBulkTxs(groupedByConflicts)
+  return groupBulkTxs(groupedByConflicts)
 }
 
 /**
@@ -41,7 +41,7 @@ export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => 
 /**
  * Group txs by tx hash
  */
-const _groupBulkTxs = (list: GroupedTxs): GroupedTxs => {
+const groupBulkTxs = (list: GroupedTxs): GroupedTxs => {
   return list
     .reduce<GroupedTxs>((resultItems, item) => {
       if (Array.isArray(item) || !isTransactionListItem(item)) {
@@ -53,7 +53,7 @@ const _groupBulkTxs = (list: GroupedTxs): GroupedTxs => {
       if (!Array.isArray(prevItem)) return resultItems.concat([[item]])
       const prevTxHash = prevItem[0].transaction.txHash
 
-      if (currentTxHash === prevTxHash) {
+      if (currentTxHash && currentTxHash === prevTxHash) {
         prevItem.push(item)
         return resultItems
       }
