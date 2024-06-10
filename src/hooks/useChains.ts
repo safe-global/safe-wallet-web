@@ -27,9 +27,7 @@ export const useChain = (chainId: string): ChainInfo | undefined => {
 
 export const useCurrentChain = (): ChainInfo | undefined => {
   const chainId = useChainId()
-  const chainInfo = useAppSelector((state) => {
-    return selectChainById(state, chainId)
-  }, isEqual)
+  const chainInfo = useAppSelector((state) => selectChainById(state, chainId), isEqual)
   return chainInfo
 }
 
