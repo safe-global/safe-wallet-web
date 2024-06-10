@@ -19,7 +19,7 @@ import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import type { AppDispatch, AppThunk } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
-import { SafeFactory } from '@safe-global/protocol-kit'
+import { predictSafeAddress, SafeFactory } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
@@ -86,9 +86,19 @@ export const createNewSafe = async (
 export const computeNewSafeAddress = async (
   ethersProvider: BrowserProvider,
   props: DeploySafeProps,
+  chainId: string,
 ): Promise<string> => {
-  const safeFactory = await getSafeFactory(ethersProvider)
-  return safeFactory.predictSafeAddress(props.safeAccountConfig, props.saltNonce)
+  const ethAdapter = await createEthersAdapter(ethersProvider)
+
+  return predictSafeAddress({
+    ethAdapter,
+    chainId: BigInt(chainId),
+    safeAccountConfig: props.safeAccountConfig,
+    safeDeploymentConfig: {
+      saltNonce: props.saltNonce,
+      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+    },
+  })
 }
 
 /**
