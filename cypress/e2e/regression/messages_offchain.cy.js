@@ -25,29 +25,29 @@ describe('Offchain Messages tests', () => {
   })
 
   it('Verify summary for off-chain unsigned messages', () => {
-    createTx.verifySummaryByIndex(
-      0,
-      [typeMessagesGeneral.sign, typeMessagesGeneral.oneOftwo, typeMessagesOffchain.walletConnect],
-      typeMessagesOffchain.altTmage,
-    )
-    createTx.verifySummaryByIndex(
-      2,
-      [typeMessagesGeneral.sign, typeMessagesGeneral.oneOftwo, typeMessagesOffchain.walletConnect],
-      typeMessagesOffchain.altTmage,
-    )
+    createTx.verifySummaryByIndex(0, [
+      typeMessagesGeneral.sign,
+      typeMessagesGeneral.oneOftwo,
+      typeMessagesOffchain.testMessage1,
+    ])
+    createTx.verifySummaryByIndex(2, [
+      typeMessagesGeneral.sign,
+      typeMessagesGeneral.oneOftwo,
+      typeMessagesOffchain.testMessage2,
+    ])
   })
 
   it('Verify summary for off-chain signed messages', () => {
-    createTx.verifySummaryByIndex(
-      1,
-      [typeMessagesGeneral.confirmed, typeMessagesGeneral.twoOftwo, typeMessagesOffchain.walletConnect],
-      typeMessagesOffchain.altTmage,
-    )
-    createTx.verifySummaryByIndex(
-      3,
-      [typeMessagesGeneral.confirmed, typeMessagesGeneral.twoOftwo, typeMessagesOffchain.walletConnect],
-      typeMessagesOffchain.altTmage,
-    )
+    createTx.verifySummaryByIndex(1, [
+      typeMessagesGeneral.confirmed,
+      typeMessagesGeneral.twoOftwo,
+      typeMessagesOffchain.name,
+    ])
+    createTx.verifySummaryByIndex(3, [
+      typeMessagesGeneral.confirmed,
+      typeMessagesGeneral.twoOftwo,
+      typeMessagesOffchain.testMessage3,
+    ])
   })
 
   it('Verify exapanded details for EIP 191 off-chain message', () => {
