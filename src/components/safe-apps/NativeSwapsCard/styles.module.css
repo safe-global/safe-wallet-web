@@ -46,4 +46,5 @@
 
 .buttons {
   padding-top: var(--space-2);
+  white-space: nowrap;
 }

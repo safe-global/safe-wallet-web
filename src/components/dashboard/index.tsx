@@ -44,13 +44,11 @@ const Dashboard = (): ReactElement => {
           <FirstSteps />
         </Grid>
 
-        <Grid item xs={12} className={css.hideIfEmpty}>
-          <SwapWidget />
-        </Grid>
-
         {safe.deployed && (
           <>
-            <ActivityRewardsSection />
+            <Grid item xs={12} className={css.hideIfEmpty}>
+              <SwapWidget />
+            </Grid>
 
             <Grid item xs={12} lg={6}>
               <AssetsWidget />
@@ -58,6 +56,10 @@ const Dashboard = (): ReactElement => {
 
             <Grid item xs={12} lg={6}>
               <PendingTxsList />
+            </Grid>
+
+            <Grid item xs={12} className={css.hideIfEmpty}>
+              <ActivityRewardsSection />
             </Grid>
 
             {showSafeApps && (
