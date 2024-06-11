@@ -8,6 +8,9 @@
     },
     "offChain": {
       "walletConnect": "WalletConnect",
+      "testMessage1": "Test message 1 on-ch…",
+      "testMessage2": "Test message 2 off-c…",
+      "testMessage3": "Test message 1 off-c…",
       "altTmage": "Message type",
       "sign": "Sign",
       "oneOftwo": "1 out of 2",

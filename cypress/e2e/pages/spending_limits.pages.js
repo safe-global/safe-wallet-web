@@ -20,7 +20,8 @@ const reviewSpendingLimit = '[data-testid="spending-limit-label"]'
 const deleteBtn = '[data-testid="delete-btn"]'
 const resetTimeInfo = '[data-testid="reset-time"]'
 const spentAmountInfo = '[data-testid="spent-amount"]'
-const spendingLimitTxOption = '[data-testid="spending-limit-tx"]'
+export const spendingLimitTxOption = '[data-testid="spending-limit-tx"]'
+export const standardTx = '[data-testid="standard-tx"]'
 const tokenBalance = '[data-testid="token-balance"]'
 const tokenItem = '[data-testid="token-item"]'
 const maxBtn = '[data-testid="max-btn"]'
@@ -121,8 +122,8 @@ export function selectSpendingLimitOption() {
   main.checkRadioButtonState(input, constants.checkboxStates.checked)
 }
 
-export function verifySpendingOptionExists() {
-  cy.get(spendingLimitTxOption).should('exist').and('be.visible')
+export function verifyTxOptionExist(options) {
+  main.verifyElementsIsVisible(options)
 }
 
 export function verifySpendingOptionShowsBalance(balance) {
