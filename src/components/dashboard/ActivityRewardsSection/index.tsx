@@ -51,7 +51,7 @@ const ActivityRewardsSection = () => {
   }
 
   return (
-    <Grid item xs={12}>
+    <>
       <Card className={css.widgetWrapper}>
         <SvgIcon
           component={Asterix}
@@ -103,7 +103,7 @@ const ActivityRewardsSection = () => {
           </Grid>
         </Grid>
       </Card>
-    </Grid>
+    </>
   )
 }
 

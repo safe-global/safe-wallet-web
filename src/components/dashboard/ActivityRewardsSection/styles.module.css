@@ -67,7 +67,7 @@
 
 .links {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   margin-top: var(--space-3);
   text-wrap: nowrap;

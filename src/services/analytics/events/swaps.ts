@@ -13,4 +13,5 @@ export enum SWAP_LABELS {
   asset = 'asset',
   dashboard_assets = 'dashboard_assets',
   promoWidget = 'promoWidget',
+  safeAppsPromoWidget = 'safeAppsPromoWidget',
 }

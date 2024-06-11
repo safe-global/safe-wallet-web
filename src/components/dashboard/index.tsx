@@ -18,9 +18,9 @@ import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSectio
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import css from './styles.module.css'
+import SwapWidget from '@/features/swap/components/SwapWidget'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
-const SwapWidget = dynamic(() => import('@/features/swap/components/SwapWidget'))
 
 const Dashboard = (): ReactElement => {
   const router = useRouter()
@@ -44,13 +44,17 @@ const Dashboard = (): ReactElement => {
           <FirstSteps />
         </Grid>
 
-        <Grid item xs={12} className={css.hideIfEmpty}>
-          <SwapWidget />
-        </Grid>
-
         {safe.deployed && (
           <>
-            <ActivityRewardsSection />
+            <Grid item xs={12} xl={6} className={css.hideIfEmpty}>
+              <SwapWidget />
+            </Grid>
+
+            <Grid item xs className={css.hideIfEmpty}>
+              <ActivityRewardsSection />
+            </Grid>
+
+            <Grid item xs={12} />
 
             <Grid item xs={12} lg={6}>
               <AssetsWidget />
