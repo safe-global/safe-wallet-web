@@ -18,6 +18,8 @@ import { OperationType, type Transaction, type MetaTransactionData } from '@safe
 import { type JsonRpcProvider } from 'ethers'
 import { KnownContracts, getModuleInstance } from '@gnosis.pm/zodiac'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 const ROLES_V2_SUPPORTED_CHAINS = Object.keys(chains)
 
@@ -26,9 +28,10 @@ const ROLES_V2_SUPPORTED_CHAINS = Object.keys(chains)
  */
 export const useRolesMods = () => {
   const { safe } = useSafeInfo()
+  const isFeatureEnabled = useHasFeature(FEATURES.ZODIAC_ROLES)
 
   const [data] = useAsync(async () => {
-    if (!ROLES_V2_SUPPORTED_CHAINS.includes(safe.chainId)) return []
+    if (!ROLES_V2_SUPPORTED_CHAINS.includes(safe.chainId) || !isFeatureEnabled) return []
 
     const safeModules = safe.modules || []
     const rolesMods = await Promise.all(
@@ -44,7 +47,7 @@ export const useRolesMods = () => {
         mod.avatar === safe.address.value.toLowerCase() &&
         mod.roles.length > 0,
     )
-  }, [safe])
+  }, [safe, isFeatureEnabled])
 
   return data
 }
