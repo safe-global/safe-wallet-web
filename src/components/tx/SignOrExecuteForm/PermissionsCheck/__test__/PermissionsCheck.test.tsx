@@ -39,9 +39,7 @@ const mockChain = chainBuilder()
 jest.mock('@/hooks/useChains', () => ({
   __esModule: true,
   ...jest.requireActual('@/hooks/useChains'),
-  useCurrentChain: jest.fn(() => {
-    return mockChain
-  }),
+  useCurrentChain: jest.fn(() => mockChain),
   useHasFeature: jest.fn(),
 }))
 
