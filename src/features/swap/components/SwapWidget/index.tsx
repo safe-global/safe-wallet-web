@@ -14,10 +14,10 @@ import Track from '@/components/common/Track'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 
-const SWAP_PROMO_WIDGET_IS_HIDDEN = 'SWAP_PROMO_WIDGET_IS_HIDDEN'
+const SWAPS_PROMO_WIDGET_IS_HIDDEN = 'swapsPromoWidgetIsHidden'
 
 function SwapWidget(): ReactElement | null {
-  const [isHidden = false, setIsHidden] = useLocalStorage<boolean>(SWAP_PROMO_WIDGET_IS_HIDDEN)
+  const [isHidden = false, setIsHidden] = useLocalStorage<boolean>(SWAPS_PROMO_WIDGET_IS_HIDDEN)
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
 
   const onClick = useCallback(() => {
@@ -36,7 +36,7 @@ function SwapWidget(): ReactElement | null {
         <Card className={css.card}>
           <Grid container className={css.grid}>
             <Grid item xs>
-              <Box className={css.wrapper}>
+              <Box className={css.wrapper} height="100%">
                 <Box>
                   <Typography variant="h4" className={css.title}>
                     Introducing native swaps
@@ -44,11 +44,14 @@ function SwapWidget(): ReactElement | null {
                   <Chip />
                 </Box>
 
-                <Box>
+                <Box display="flex" flexDirection="column" height="100%">
                   <Typography mt={1}>
                     Experience our native swaps, powered by CoW Protocol! Trade seamlessly and efficiently with decoded
                     transactions that are easy to understand.
                   </Typography>
+
+                  <Box flex={1} />
+
                   <Box className={css.buttonContainer} mt={3}>
                     <Track {...SWAP_EVENTS.OPEN_SWAPS} label={SWAP_LABELS.promoWidget}>
                       <Link
@@ -56,20 +59,19 @@ function SwapWidget(): ReactElement | null {
                         passHref
                         legacyBehavior
                       >
-                        <Button variant="contained" size="small">
-                          Try it now
-                        </Button>
+                        <Button variant="contained">Try it now</Button>
                       </Link>
                     </Track>
-                    <Button variant="text" size="small" onClick={onClick}>
+                    <Button variant="text" onClick={onClick}>
                       Don&apos;t show again
                     </Button>
                   </Box>
                 </Box>
               </Box>
             </Grid>
-            <Grid item className={css.imageContainer}>
-              <img src="/images/common/ic-swaps.svg" alt="Swap" width={400} />
+
+            <Grid item xs={6} className={css.imageContainer}>
+              <img src="/images/common/ic-swaps.svg" alt="Swap" />
             </Grid>
           </Grid>
         </Card>

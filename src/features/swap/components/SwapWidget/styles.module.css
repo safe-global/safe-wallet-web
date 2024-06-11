@@ -10,6 +10,7 @@
 
 .grid {
   display: flex;
+  flex-wrap: nowrap;
   height: inherit;
   gap: var(--space-3);
 }
@@ -27,31 +28,39 @@
   margin-right: var(--space-1);
 }
 
-.imageContainer {
-  display: flex;
-  align-items: flex-end;
-}
-
 .buttonContainer {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
   gap: var(--space-2);
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+}
+
+.imageContainer {
+  position: relative;
+  z-index: 1;
+}
+
+.imageContainer img {
+  display: block;
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 500px;
 }
 
 @media (max-width: 599.95px) {
-  .imageContainer {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .buttonContainer {
-    gap: 0;
-    justify-content: space-between;
-  }
-
   .wrapper {
     padding: var(--space-3);
+  }
+}
+
+@media (max-width: 970px) {
+  .imageContainer {
+    display: none;
   }
 }
