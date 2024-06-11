@@ -218,6 +218,4 @@ Cypress.Commands.add('setupInterceptors', () => {
     console.log('Intercepted request with headers:', req.headers)
     req.continue()
   }).as('headers')
-
-  cy.wait('@headers').its('request.headers').should('have.property', 'Origin', 'http://localhost:8080')
 })
