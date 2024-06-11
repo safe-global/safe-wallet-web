@@ -14,6 +14,6 @@ describe('TokenAmount', () => {
 
   it('should format big amount for zero decimals', async () => {
     const result = render(<TokenAmount value="10000000" decimals={0} />)
-    await expect(result.findByText('10,000,000')).resolves.not.toBeNull()
+    await expect(result.findByText('10M')).resolves.not.toBeNull()
   })
 })

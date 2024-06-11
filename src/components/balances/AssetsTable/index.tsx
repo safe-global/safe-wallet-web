@@ -80,6 +80,7 @@ const headCells = [
     id: 'value',
     label: 'Value',
     width: '20%',
+    align: 'right',
   },
   {
     id: 'actions',
@@ -151,8 +152,9 @@ const AssetsTable = ({
               rawValue: rawFiatValue,
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
-                <>
+                <Typography textAlign="right">
                   <FiatValue value={item.fiatBalance} />
+
                   {rawFiatValue === 0 && (
                     <Tooltip
                       title="Provided values are indicative and we are unable to accommodate pricing requests for individual assets"
@@ -170,7 +172,7 @@ const AssetsTable = ({
                       </span>
                     </Tooltip>
                   )}
-                </>
+                </Typography>
               ),
             },
             actions: {

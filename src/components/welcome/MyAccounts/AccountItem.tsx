@@ -109,7 +109,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
             )}
           </Typography>
 
-          <Typography variant="body2" fontWeight="bold">
+          <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
             {safeOverview?.fiatTotal && <FiatValue value={safeOverview.fiatTotal} />}
           </Typography>
 
