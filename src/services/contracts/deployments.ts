@@ -2,7 +2,6 @@ import semverSatisfies from 'semver/functions/satisfies'
 import {
   getSafeSingletonDeployment,
   getSafeL2SingletonDeployment,
-  getMultiSendCallOnlyDeployment,
   getFallbackHandlerDeployment,
   getProxyFactoryDeployment,
   getSignMessageLibDeployment,
@@ -63,10 +62,6 @@ export const getSafeContractDeployment = (
   const getDeployment = _isL2(chain, safeVersion) ? getSafeL2SingletonDeployment : getSafeSingletonDeployment
 
   return _tryDeploymentVersions(getDeployment, chain.chainId, safeVersion)
-}
-
-export const getMultiSendCallOnlyContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
-  return _tryDeploymentVersions(getMultiSendCallOnlyDeployment, chainId, safeVersion)
 }
 
 export const getFallbackHandlerContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
