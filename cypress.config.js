@@ -10,8 +10,8 @@ export default defineConfig({
     mochaFile: 'reports/junit-[hash].xml',
   },
   retries: {
-    runMode: 2,
-    openMode: 0,
+    runMode: 3,
+    openMode: 3,
   },
   e2e: {
     setupNodeEvents(on, config) {

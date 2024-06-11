@@ -213,8 +213,9 @@ Cypress.Commands.add('enter', (selector, opts) => {
 })
 
 Cypress.Commands.add('setupInterceptors', () => {
-  cy.intercept({ url: '**/*' }, (req) => {
+  cy.intercept('*', (req) => {
     req.headers['Origin'] = 'http://localhost:8080'
+    console.log('Intercepted request with headers:', req.headers)
     req.continue()
-  })
+  }).as('headers')
 })
