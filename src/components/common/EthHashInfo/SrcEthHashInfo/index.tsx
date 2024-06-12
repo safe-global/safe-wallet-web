@@ -84,8 +84,10 @@ const SrcEthHashInfo = ({
 
       <Box overflow="hidden" className={onlyName ? css.inline : undefined}>
         {name && (
-          <Box textOverflow="ellipsis" overflow="hidden" title={name} display="flex" alignItems="center" gap={0.5}>
-            {name}
+          <Box title={name} display="flex" alignItems="center" gap={0.5}>
+            <Box overflow="hidden" textOverflow="ellipsis">
+              {name}
+            </Box>
 
             {isAddressBookName && (
               <Tooltip title="From your address book" placement="top">
