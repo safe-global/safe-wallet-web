@@ -410,7 +410,6 @@ describe('WalletConnectProvider', () => {
         1,
         { method: 'fake', params: [] },
         {
-          id: -1,
           name: 'name',
           description: 'description',
           url: 'https://apps-portal.safe.global/wallet-connect',

@@ -15,7 +15,7 @@ type SafeSettings = {
 type GetCapabilitiesResult = Record<`0x${string}`, Record<string, any>>
 
 export type AppInfo = {
-  id: number
+  id?: number
   name: string
   description: string
   url: string

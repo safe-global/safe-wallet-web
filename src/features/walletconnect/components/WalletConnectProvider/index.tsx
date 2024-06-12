@@ -88,7 +88,6 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
         // Get response from Safe Wallet Provider
         return safeWalletProvider.request(event.id, event.params.request, {
-          id: -1,
           url: session.peer.metadata.url,
           name: getPeerName(session.peer) || 'WalletConnect',
           description: session.peer.metadata.description,
