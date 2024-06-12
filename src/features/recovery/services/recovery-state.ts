@@ -9,6 +9,7 @@ import { trimTrailingSlash } from '@/utils/url'
 import { sameAddress } from '@/utils/addresses'
 import { isMultiSendCalldata } from '@/utils/transaction-calldata'
 import { decodeMultiSendTxs } from '@/utils/transactions'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 export const MAX_RECOVERER_PAGE_SIZE = 100
 
@@ -52,7 +53,15 @@ export function _isMaliciousRecovery({
     return !sameAddress(transaction.to, safeAddress)
   }
 
-  const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId })
+  const multiSendDeployment =
+    getMultiSendCallOnlyDeployment({
+      network: chainId,
+      version: version ?? LATEST_SAFE_VERSION,
+    }) ??
+    getMultiSendCallOnlyDeployment({
+      network: chainId,
+      version: LATEST_SAFE_VERSION,
+    })
 
   if (!multiSendDeployment) {
     return true
