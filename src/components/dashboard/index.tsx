@@ -27,6 +27,7 @@ const Dashboard = (): ReactElement => {
   const { safe } = useSafeInfo()
   const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
   const showSafeApps = useHasFeature(FEATURES.SAFE_APPS)
+  const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
   const supportsRecovery = useIsRecoverySupported()
   const [recovery] = useRecovery()
   const showRecoveryWidget = supportsRecovery && !recovery
@@ -46,7 +47,7 @@ const Dashboard = (): ReactElement => {
 
         {safe.deployed && (
           <>
-            <Grid item xs={12} xl={6} className={css.hideIfEmpty}>
+            <Grid item xs={12} xl={isSAPBannerEnabled ? 6 : 12} className={css.hideIfEmpty}>
               <SwapWidget />
             </Grid>
 
