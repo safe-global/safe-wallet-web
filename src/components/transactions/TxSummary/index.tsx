@@ -93,7 +93,7 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
       )}
 
       {isQueue && !expiredSwap && (
-        <Box gridArea="actions" className={css.actions}>
+        <Box gridArea="actions">
           <QueueActions tx={tx} />
         </Box>
       )}

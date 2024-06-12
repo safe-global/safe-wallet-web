@@ -14,6 +14,9 @@ import { type OnboardAPI } from '@web3-onboard/core'
 import { AbiCoder, ZeroAddress, encodeBytes32String } from 'ethers'
 import PermissionsCheck from '..'
 import * as hooksModule from '../hooks'
+import { FEATURES } from '@/utils/chains'
+import { chainBuilder } from '@/tests/builders/chains'
+import { useHasFeature } from '@/hooks/useChains'
 
 // We assume that CheckWallet always returns true
 jest.mock('@/components/common/CheckWallet', () => ({
@@ -23,16 +26,25 @@ jest.mock('@/components/common/CheckWallet', () => ({
   },
 }))
 
-// mock useCurrentChain & useHasFeature
+const mockChain = chainBuilder()
+  // @ts-expect-error - we are using a local FEATURES enum
+  .with({ features: [FEATURES.ZODIAC_ROLES, FEATURES.EIP1559] })
+  .with({ chainId: '1' })
+  .with({ shortName: 'eth' })
+  .with({ chainName: 'Ethereum' })
+  .with({ transactionService: 'https://tx.service.mock' })
+  .build()
+
+// mock useCurrentChain
 jest.mock('@/hooks/useChains', () => ({
-  useCurrentChain: jest.fn(() => ({
-    shortName: 'eth',
-    chainId: '1',
-    chainName: 'Ethereum',
-    features: [],
-    transactionService: 'https://tx.service.mock',
-  })),
-  useHasFeature: jest.fn(() => true), // used to check for EIP1559 support
+  __esModule: true,
+  ...jest.requireActual('@/hooks/useChains'),
+  useCurrentChain: jest.fn(() => mockChain),
+  useHasFeature: jest.fn(),
+}))
+
+jest.mock('@/hooks/useChainId', () => ({
+  useChainId: jest.fn().mockReturnValue(() => '1'),
 }))
 
 // mock getModuleTransactionId
@@ -72,15 +84,15 @@ describe('PermissionsCheck', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    // Safe info
-    jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
-      safe: SAFE_INFO,
-      safeAddress: SAFE_INFO.address.value,
-      safeError: undefined,
-      safeLoading: false,
-      safeLoaded: true,
-    }))
+    ;(useHasFeature as jest.Mock).mockImplementation((feature) => mockChain.features.includes(feature)),
+      // Safe info
+      jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
+        safe: SAFE_INFO,
+        safeAddress: SAFE_INFO.address.value,
+        safeError: undefined,
+        safeLoading: false,
+        safeLoaded: true,
+      }))
 
     // Roles mod fetching
 
@@ -98,6 +110,25 @@ describe('PermissionsCheck', () => {
     mockWeb3Provider([])
 
     jest.spyOn(hooksModule, 'pollModuleTransactionId').mockReturnValue(Promise.resolve('i1234567890'))
+  })
+
+  it('only fetch roles and show the card if the feature is enabled', async () => {
+    ;(useHasFeature as jest.Mock).mockImplementation((feature) => feature !== FEATURES.ZODIAC_ROLES)
+    mockConnectedWalletAddress(SAFE_INFO.owners[0].value) // connect as safe owner (not a role member)
+
+    const safeTx = createMockSafeTransaction({
+      to: ZeroAddress,
+      data: '0xd0e30db0', // deposit()
+      value: AbiCoder.defaultAbiCoder().encode(['uint256'], [123]),
+      operation: OperationType.Call,
+    })
+
+    const { queryByText } = render(<PermissionsCheck safeTx={safeTx} />)
+
+    // the card is not shown
+    expect(queryByText('Execute without confirmations')).not.toBeInTheDocument()
+
+    expect(fetchRolesModMock).not.toHaveBeenCalled()
   })
 
   it('only shows the card when the user is a member of any role', async () => {

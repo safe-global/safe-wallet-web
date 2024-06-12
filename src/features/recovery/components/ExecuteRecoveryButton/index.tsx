@@ -74,6 +74,7 @@ export function ExecuteRecoveryButton({
                 onClick={onClick}
                 variant="contained"
                 disabled={isDisabled}
+                sx={{ minWidth: '106.5px', py: compact ? 0.8 : undefined }}
                 size={compact ? 'small' : 'stretched'}
               >
                 Execute

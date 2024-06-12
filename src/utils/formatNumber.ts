@@ -1,107 +1,28 @@
-import memoize from 'lodash/memoize'
-
-// These follow the guideline of "How to format amounts"
-// https://github.com/5afe/safe/wiki/How-to-format-amounts
-
-const LOWER_LIMIT = 0.00001
-const COMPACT_LIMIT = 99_999_999.5
-const UPPER_LIMIT = 999 * 10 ** 12
-const NO_DECIMALS_LIMIT = 1000
-
-/**
- * Formatter that restricts the upper and lower limit of numbers that can be formatted
- * @param number Number to format
- * @param formatter Function to format number
- * @param minimum Minimum number to format
- */
-const format = (number: string | number, formatter: (float: number) => string, minimum = LOWER_LIMIT) => {
-  const float = Number(number)
-
-  if (float === 0) {
-    return formatter(float)
-  }
-
-  if (Math.abs(float) < minimum) {
-    return `< ${formatter(minimum * Math.sign(float))}`
-  }
-
-  if (float < UPPER_LIMIT) {
-    return formatter(float)
-  }
-
-  return `> ${formatter(UPPER_LIMIT)}`
-}
-
-// Universal amount formatting options
-
-const getNumberFormatNotation = (number: string | number): Intl.NumberFormatOptions['notation'] => {
-  return Number(number) >= COMPACT_LIMIT ? 'compact' : undefined
-}
-
-const getNumberFormatSignDisplay = (number: string | number): Intl.NumberFormatOptions['signDisplay'] => {
-  const shouldDisplaySign = typeof number === 'string' ? number.trim().startsWith('+') : Number(number) < 0
-  return shouldDisplaySign ? 'exceptZero' : undefined
-}
-
-// Amount formatting options
-
-const getAmountFormatterMaxFractionDigits = (
-  number: string | number,
-): Intl.NumberFormatOptions['maximumFractionDigits'] => {
-  const float = Number(number)
-
-  if (float < 1_000) {
-    return 5
-  }
-
-  if (float < 10_000) {
-    return 4
-  }
-
-  if (float < 100_000) {
-    return 3
-  }
-
-  if (float < 1_000_000) {
-    return 2
-  }
-
-  if (float < 10_000_000) {
-    return 1
-  }
-
-  if (float < COMPACT_LIMIT) {
-    return 0
-  }
-
-  // Represents numbers like 767.343M
-  if (float < UPPER_LIMIT) {
-    return 3
-  }
-
-  return 0
-}
-
-const getAmountFormatterOptions = (number: string | number): Intl.NumberFormatOptions => {
-  return {
-    maximumFractionDigits: getAmountFormatterMaxFractionDigits(number),
-    notation: getNumberFormatNotation(number),
-    signDisplay: getNumberFormatSignDisplay(number),
-  }
-}
+const locale = typeof navigator !== 'undefined' ? navigator.language : undefined
 
 /**
  * Intl.NumberFormat number formatter that adheres to our style guide
  * @param number Number to format
  */
-export const formatAmount = (number: string | number, precision?: number): string => {
-  const options = getAmountFormatterOptions(number)
-  if (precision !== undefined) {
-    options.maximumFractionDigits = precision
-  }
-  const formatter = new Intl.NumberFormat(undefined, options)
+export const formatAmount = (number: string | number, precision = 5, maxLength = 6): string => {
+  const float = Number(number)
+  if (float === 0) return '0'
+  if (float === Math.round(float)) precision = 0
+  if (Math.abs(float) < 0.00001) return '< 0.00001'
 
-  return format(number, formatter.format)
+  const fullNum = new Intl.NumberFormat(locale, {
+    style: 'decimal',
+    maximumFractionDigits: precision,
+  }).format(Number(number))
+
+  // +3 for the decimal point and the two decimal places
+  if (fullNum.length <= maxLength + 3) return fullNum
+
+  return new Intl.NumberFormat(locale, {
+    style: 'decimal',
+    notation: 'compact',
+    maximumFractionDigits: 2,
+  }).format(float)
 }
 
 /**
@@ -110,58 +31,10 @@ export const formatAmount = (number: string | number, precision?: number): strin
  * @param precision Fraction digits to show
  */
 export const formatAmountPrecise = (number: string | number, precision: number): string => {
-  const float = Number(number)
-
-  const formatter = new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat(locale, {
+    style: 'decimal',
     maximumFractionDigits: precision,
-  })
-
-  return formatter.format(float)
-}
-
-// Fiat formatting
-
-const getMinimumCurrencyDenominator = memoize((currency: string): number => {
-  const BASE_VALUE = 1
-
-  const formatter = new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-  })
-
-  const fraction = formatter.formatToParts(BASE_VALUE).find(({ type }) => type === 'fraction')
-
-  // Currencies may not have decimals, i.e. JPY
-  return fraction ? Number(`0.${'1'.padStart(fraction.value.length, '0')}`) : 1
-})
-
-const getCurrencyFormatterMaxFractionDigits = (
-  number: string | number,
-  currency: string,
-): Intl.NumberFormatOptions['maximumFractionDigits'] => {
-  const float = Number(number)
-
-  if (float < NO_DECIMALS_LIMIT) {
-    const [, decimals] = getMinimumCurrencyDenominator(currency).toString().split('.')
-    return decimals?.length ?? 0
-  }
-
-  if (float >= COMPACT_LIMIT) {
-    return 3
-  }
-
-  return 0
-}
-
-const getCurrencyFormatterOptions = (number: string | number, currency: string): Intl.NumberFormatOptions => {
-  return {
-    maximumFractionDigits: getCurrencyFormatterMaxFractionDigits(number, currency),
-    notation: getNumberFormatNotation(number),
-    signDisplay: getNumberFormatSignDisplay(number),
-    style: 'currency',
-    currency,
-    currencyDisplay: 'code',
-  }
+  }).format(Number(number))
 }
 
 /**
@@ -169,42 +42,26 @@ const getCurrencyFormatterOptions = (number: string | number, currency: string):
  * @param number Number to format
  * @param currency ISO 4217 currency code
  */
-export const formatCurrency = (number: string | number, currency: string): string => {
-  // Note: we will be able to achieve the following once the `roundingMode` option is supported
-  // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#parameters
+export const formatCurrency = (number: string | number, currency: string, maxLength = 6): string => {
+  let float = Number(number)
 
-  const minimum = getMinimumCurrencyDenominator(currency)
+  let result = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    currencyDisplay: 'narrowSymbol',
+    maximumFractionDigits: Math.abs(float) >= 1 || float === 0 ? 0 : 2,
+  }).format(Number(number))
 
-  const currencyFormatter = (float: number): string => {
-    const options = getCurrencyFormatterOptions(number, currency)
-    const formatter = new Intl.NumberFormat(undefined, options)
-
-    const parts = formatter.formatToParts(float) // Returns an array of objects with `type` and `value` properties
-
-    const fraction = parts.find(({ type }) => type === 'fraction')
-
-    const amount = parts
-      .filter(({ type }) => type !== 'currency' && type !== 'literal') // Remove currency code and whitespace
-      .map((part) => {
-        if (float >= 0) {
-          return part
-        }
-
-        if (fraction && part.type === 'fraction') {
-          return { ...part, value: '1'.padStart(fraction.value.length, '0') }
-        }
-
-        if (!fraction && part.type === 'integer') {
-          return { ...part, value: minimum.toString() }
-        }
-
-        return part
-      })
-      .reduce((acc, { value }) => acc + value, '')
-      .trim()
-
-    return `${amount} ${currency.toUpperCase()}`
+  // +1 for the currency symbol
+  if (result.length > maxLength + 1) {
+    result = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      currencyDisplay: 'narrowSymbol',
+      notation: 'compact',
+      maximumFractionDigits: 2,
+    }).format(Number(number))
   }
 
-  return format(number, currencyFormatter, minimum)
+  return result.replace(/^(\D+)/, '$1 ')
 }

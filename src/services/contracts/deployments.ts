@@ -2,10 +2,10 @@ import semverSatisfies from 'semver/functions/satisfies'
 import {
   getSafeSingletonDeployment,
   getSafeL2SingletonDeployment,
-  getMultiSendCallOnlyDeployment,
   getFallbackHandlerDeployment,
   getProxyFactoryDeployment,
   getSignMessageLibDeployment,
+  getCreateCallDeployment,
 } from '@safe-global/safe-deployments'
 import type { SingletonDeployment, DeploymentFilter } from '@safe-global/safe-deployments'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -64,10 +64,6 @@ export const getSafeContractDeployment = (
   return _tryDeploymentVersions(getDeployment, chain.chainId, safeVersion)
 }
 
-export const getMultiSendCallOnlyContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
-  return _tryDeploymentVersions(getMultiSendCallOnlyDeployment, chainId, safeVersion)
-}
-
 export const getFallbackHandlerContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
   return _tryDeploymentVersions(getFallbackHandlerDeployment, chainId, safeVersion)
 }
@@ -78,4 +74,8 @@ export const getProxyFactoryContractDeployment = (chainId: string, safeVersion: 
 
 export const getSignMessageLibContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
   return _tryDeploymentVersions(getSignMessageLibDeployment, chainId, safeVersion)
+}
+
+export const getCreateCallContractDeployment = (chainId: string, safeVersion: SafeInfo['version']) => {
+  return _tryDeploymentVersions(getCreateCallDeployment, chainId, safeVersion)
 }
