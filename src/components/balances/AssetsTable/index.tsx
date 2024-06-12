@@ -4,7 +4,7 @@ import { FEATURES } from '@/utils/chains'
 import { type ReactElement } from 'react'
 import { Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import { TokenType, getBalances } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import FiatValue from '@/components/common/FiatValue'
 import TokenAmount from '@/components/common/TokenAmount'
@@ -23,6 +23,12 @@ import SwapButton from '@/features/swap/components/SwapButton'
 import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
 import { SWAP_LABELS } from '@/services/analytics/events/swaps'
 import SendButton from './SendButton'
+import useAsync from '@/hooks/useAsync'
+import { useAppSelector } from '@/store'
+import { selectCurrency } from '@/store/settingsSlice'
+import { selectUndeployedSafe } from '@/store/slices'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import useChainId from '@/hooks/useChainId'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -101,6 +107,16 @@ const AssetsTable = ({
   const isCounterfactualSafe = useIsCounterfactualSafe()
   const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS) && !isCounterfactualSafe
 
+  const chainId = useChainId()
+  const address = useSafeAddress()
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
+  const currency = useAppSelector(selectCurrency)
+
+  const [undeployedSafeBalances] = useAsync(() => {
+    if (!undeployedSafe) return
+    return getBalances(chainId, address, currency)
+  }, [address, chainId, currency, undeployedSafe])
+
   const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
     setShowHiddenAssets(false),
   )
@@ -115,9 +131,13 @@ const AssetsTable = ({
   const rows = loading
     ? skeletonRows
     : (visibleAssets || []).map((item) => {
-        const rawFiatValue = parseFloat(item.fiatBalance)
         const isNative = isNativeToken(item.tokenInfo)
         const isSelected = isAssetSelected(item.tokenInfo.address)
+        const undeployedSafeBalance = undeployedSafeBalances?.items.find(
+          (token) => token.tokenInfo.symbol === item.tokenInfo.symbol,
+        )
+        const fiatBalance = isCounterfactualSafe ? undeployedSafeBalance?.fiatBalance : item.fiatBalance
+        const rawFiatValue = parseFloat(fiatBalance)
 
         return {
           key: item.tokenInfo.address,
@@ -153,7 +173,7 @@ const AssetsTable = ({
               collapsed: item.tokenInfo.address === hidingAsset,
               content: (
                 <Typography textAlign="right">
-                  <FiatValue value={item.fiatBalance} />
+                  <FiatValue value={rawFiatValue} />
 
                   {rawFiatValue === 0 && (
                     <Tooltip
