@@ -11,7 +11,7 @@ export default defineConfig({
   },
   retries: {
     runMode: 3,
-    openMode: 3,
+    openMode: 0,
   },
   e2e: {
     setupNodeEvents(on, config) {
