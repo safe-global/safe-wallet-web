@@ -137,11 +137,6 @@ export const tokenAbbreviation = {
   tpcc: 'tpcc',
 }
 
-export const currencies = {
-  cad: 'CAD',
-  aud: 'AUD',
-}
-
 export const appNames = {
   walletConnect: 'walletconnect',
   txbuilder: 'transaction builder',
