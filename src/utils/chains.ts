@@ -23,6 +23,7 @@ export enum FEATURES {
   SAP_BANNER = 'SAP_BANNER',
   NATIVE_SWAPS = 'NATIVE_SWAPS',
   RELAY_NATIVE_SWAPS = 'RELAY_NATIVE_SWAPS',
+  ZODIAC_ROLES = 'ZODIAC_ROLES',
 }
 
 export const FeatureRoutes = {
