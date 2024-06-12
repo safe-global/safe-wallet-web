@@ -1,5 +1,6 @@
 import {
   getFallbackHandlerContractDeployment,
+  getMultiSendCallOnlyContractDeployment,
   getProxyFactoryContractDeployment,
   getSafeContractDeployment,
   getSignMessageLibContractDeployment,
@@ -11,9 +12,9 @@ import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-t
 import { assertValidSafeVersion, createEthersAdapter, createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
 import type { BrowserProvider } from 'ethers'
 import type { EthersAdapter, SafeContractEthers, SignMessageLibEthersContract } from '@safe-global/protocol-kit'
+import semver from 'semver'
 
 import type CompatibilityFallbackHandlerEthersContract from '@safe-global/protocol-kit/dist/src/adapters/ethers/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
-import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
 
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
 // @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
@@ -69,13 +70,37 @@ export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersio
 
 // MultiSend
 
-export const getReadOnlyMultiSendCallOnlyContract = async (chainId: string) => {
-  const ethAdapter = createReadOnlyEthersAdapter()
-  const singletonDeployment = getMultiSendCallOnlyDeployment({ network: chainId })
-  if (!singletonDeployment) throw new Error('No deployment found for MultiSendCallOnly')
+export const _getMinimumMultiSendCallOnlyVersion = (safeVersion: SafeInfo['version']) => {
+  const INITIAL_CALL_ONLY_VERSION = '1.3.0'
+
+  if (!safeVersion) {
+    return INITIAL_CALL_ONLY_VERSION
+  }
+
+  return semver.gte(safeVersion, INITIAL_CALL_ONLY_VERSION) ? safeVersion : INITIAL_CALL_ONLY_VERSION
+}
+
+export const getMultiSendCallOnlyContract = async (
+  chainId: string,
+  safeVersion: SafeInfo['version'],
+  provider: BrowserProvider,
+) => {
+  const ethAdapter = await createEthersAdapter(provider)
+  const multiSendVersion = _getMinimumMultiSendCallOnlyVersion(safeVersion)
+
   return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyDeployment({ network: chainId }),
-    safeVersion: singletonDeployment.version as SafeVersion,
+    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId, multiSendVersion),
+    ..._getValidatedGetContractProps(safeVersion),
+  })
+}
+
+export const getReadOnlyMultiSendCallOnlyContract = async (chainId: string, safeVersion: SafeInfo['version']) => {
+  const ethAdapter = createReadOnlyEthersAdapter()
+  const multiSendVersion = _getMinimumMultiSendCallOnlyVersion(safeVersion)
+
+  return ethAdapter.getMultiSendCallOnlyContract({
+    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId, multiSendVersion),
+    ..._getValidatedGetContractProps(safeVersion),
   })
 }
 

@@ -34,6 +34,7 @@ describe('DelegateCallModule', () => {
 
     const multiSend = getMultiSendCallOnlyDeployment({
       network: CHAIN_ID,
+      version: SAFE_VERSION,
     })!.defaultAddress
 
     const recipient1 = toBeHex('0x2', 20)

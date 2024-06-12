@@ -1,10 +1,10 @@
 import { OperationType } from '@safe-global/safe-core-sdk-types'
+import { getMultiSendCallOnlyContractDeployment } from '@/services/contracts/deployments'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { SecuritySeverity } from '../types'
 import type { SecurityModule, SecurityResponse } from '../types'
-import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
 
 type DelegateCallModuleRequest = {
   chainId: string
@@ -28,7 +28,7 @@ export class DelegateCallModule implements SecurityModule<DelegateCallModuleRequ
     }
 
     // We need not check for nested delegate calls as we only use MultiSendCallOnly in the UI
-    const multiSendDeployment = getMultiSendCallOnlyDeployment({ network: chainId })
+    const multiSendDeployment = getMultiSendCallOnlyContractDeployment(chainId, safeVersion)
 
     return multiSendDeployment?.networkAddresses[chainId] !== safeTransaction.data.to
   }

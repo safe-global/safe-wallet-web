@@ -19,8 +19,8 @@ const SIGNATURE_LENGTH = 65 * 2
 const getPreValidatedSignature = (addr: string): string => generatePreValidatedSignature(addr).data
 
 describe('simulation utils', () => {
-  const safeContractInterface = new Interface(getSafeSingletonDeployment()?.abi || [])
-  const multiSendContractInterface = new Interface(getMultiSendCallOnlyDeployment()?.abi || [])
+  const safeContractInterface = new Interface(getSafeSingletonDeployment({ version: '1.3.0' })?.abi || [])
+  const multiSendContractInterface = new Interface(getMultiSendCallOnlyDeployment({ version: '1.3.0' })?.abi || [])
   const mockSafeAddress = zeroPadValue('0x0123', 20)
   const mockMultisendAddress = zeroPadValue('0x1234', 20)
 

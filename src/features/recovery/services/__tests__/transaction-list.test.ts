@@ -124,6 +124,7 @@ describe('getRecoveredSafeInfo', () => {
 
     const multiSendDeployment = getMultiSendCallOnlyDeployment({
       network: safe.chainId,
+      version: safe.version ?? undefined,
     })
     const multiSendAddress = multiSendDeployment!.networkAddresses[safe.chainId]
     const multiSendInterface = new Interface(multiSendDeployment!.abi)

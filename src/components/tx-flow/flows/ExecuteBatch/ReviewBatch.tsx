@@ -70,9 +70,9 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   }, [params.txs, chain?.chainId])
 
   const [multiSendContract] = useAsync(async () => {
-    if (!chain?.chainId) return
-    return await getReadOnlyMultiSendCallOnlyContract(chain.chainId)
-  }, [chain?.chainId])
+    if (!chain?.chainId || !safe.version) return
+    return await getReadOnlyMultiSendCallOnlyContract(chain.chainId, safe.version)
+  }, [chain?.chainId, safe.version])
 
   const [multisendContractAddress = ''] = useAsync(async () => {
     if (!multiSendContract) return ''
