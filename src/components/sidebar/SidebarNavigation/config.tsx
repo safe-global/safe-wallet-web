@@ -33,7 +33,7 @@ export const navItems: NavItem[] = [
     label: 'Swap',
     icon: <SvgIcon component={SwapIcon} inheritViewBox />,
     href: AppRoutes.swap,
-    tag: <Chip />,
+    tag: <Chip component="span" />,
   },
   {
     label: 'Transactions',
