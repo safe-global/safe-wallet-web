@@ -38,7 +38,8 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
     () => {
       if (!chainId || !safeAddress || isTrustedTokenList === undefined) return
 
-      if (!safe.deployed) {
+      const isCFBalancesEnabledOnChain = true
+      if (!safe.deployed && !isCFBalancesEnabledOnChain) {
         return getCounterfactualBalance(safeAddress, web3, chain)
       }
 
