@@ -38,35 +38,50 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
         const wallet = new Wallet(privateKey, provider)
 
         return {
-          provider: createEIP1193Provider(provider, {
-            eth_chainId: async () => chainId,
-
-            // @ts-ignore
-            eth_getCode: async ({ params }) => provider.getCode(params[0], params[1]),
-
-            eth_accounts: async () => [wallet.address],
-            eth_requestAccounts: async () => [wallet.address],
-
-            eth_call: async ({ params }: { params: any }) => wallet.call(params[0]),
-
-            eth_sendTransaction: async ({ params }) => {
-              const tx = await wallet.sendTransaction(params[0] as any)
-              return tx.hash // return transaction hash
+          provider: createEIP1193Provider(
+            {
+              ...wallet.provider,
+              on: (event: string, listener: (...args: any[]) => void) => {
+                if (event === 'accountsChanged') {
+                } else if (event === 'chainChanged') {
+                } else {
+                  provider.on(event, listener)
+                }
+              },
+              disconnect: () => {
+                pkPopupStore.setStore({
+                  isOpen: false,
+                  privateKey: '',
+                })
+              },
             },
+            {
+              eth_chainId: async () => chainId,
 
-            personal_sign: async ({ params }) => {
-              const signedMessage = wallet.signingKey.sign(params[0])
-              return signedMessage.serialized
-            },
+              // @ts-ignore
+              eth_getCode: async ({ params }) => provider.getCode(params[0], params[1]),
 
-            eth_signTypedData: async ({ params }) => {
-              const signedMessage = await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
-              return signedMessage
+              eth_accounts: async () => [wallet.address],
+              eth_requestAccounts: async () => [wallet.address],
+
+              eth_call: async ({ params }: { params: any }) => wallet.call(params[0]),
+
+              eth_sendTransaction: async ({ params }) => {
+                const tx = await wallet.sendTransaction(params[0] as any)
+                return tx.hash // return transaction hash
+              },
+
+              personal_sign: async ({ params }) => {
+                const signedMessage = wallet.signingKey.sign(params[0])
+                return signedMessage.serialized
+              },
+
+              eth_signTypedData: async ({ params }) => {
+                const signedMessage = await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
+                return signedMessage
+              },
             },
-          }),
-          disconnect: () => {
-            pkPopupStore.setStore({ isOpen: false, privateKey: '' })
-          },
+          ),
         }
       },
       platforms: ['desktop'],
