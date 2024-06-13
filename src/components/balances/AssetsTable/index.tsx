@@ -115,7 +115,7 @@ const AssetsTable = ({
   const [undeployedSafeBalances] = useAsync(() => {
     if (!undeployedSafe) return
     return getBalances(chainId, address, currency)
-  }, [address, chainId, currency, undeployedSafe])
+  }, [undeployedSafe, chainId, address, currency])
 
   const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
     setShowHiddenAssets(false),
@@ -136,7 +136,7 @@ const AssetsTable = ({
         const undeployedSafeBalance = undeployedSafeBalances?.items.find(
           (token) => token.tokenInfo.symbol === item.tokenInfo.symbol,
         )
-        const fiatBalance = isCounterfactualSafe ? undeployedSafeBalance?.fiatBalance : item.fiatBalance
+        const fiatBalance = isCounterfactualSafe ? undeployedSafeBalance?.fiatBalance || '0' : item.fiatBalance
         const rawFiatValue = parseFloat(fiatBalance)
 
         return {
