@@ -19,7 +19,7 @@ describe('Spending limits tests', () => {
   })
 
   beforeEach(() => {
-    cy.visit(constants.securityUrl + staticSafes.SEP_STATIC_SAFE_8)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_8)
     cy.clearLocalStorage()
     main.acceptCookies()
     owner.waitForConnectionStatus()
@@ -46,13 +46,19 @@ describe('Spending limits tests', () => {
   it('Verify Spending limit option is available when selecting the corresponding token', () => {
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
-    spendinglimit.verifySpendingOptionExists()
+    spendinglimit.verifyTxOptionExist([spendinglimit.spendingLimitTxOption])
   })
 
   it('Verify spending limit option shows available amount', () => {
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
     spendinglimit.verifySpendingOptionShowsBalance([spendingLimitBalance])
+  })
+
+  it('Verify when owner is a delegate, standard tx and spending limit tx are present', () => {
+    navigation.clickOnNewTxBtn()
+    tx.clickOnSendTokensBtn()
+    spendinglimit.verifyTxOptionExist([spendinglimit.spendingLimitTxOption, spendinglimit.standardTx])
   })
 
   it('Verify when spending limit is selected the nonce field is removed', () => {

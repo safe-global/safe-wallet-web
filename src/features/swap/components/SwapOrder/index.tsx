@@ -19,6 +19,7 @@ import {
   getExecutionPrice,
   getLimitPrice,
   getOrderClass,
+  getPartiallyFilledSurplus,
   getSurplusPrice,
   isOrderPartiallyFilled,
 } from '@/features/swap/helpers/utils'
@@ -34,17 +35,16 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
   const { safeAddress } = useSafeInfo()
   const { uid, kind, validUntil, status, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
+  const isPartiallyFilled = isOrderPartiallyFilled(order)
   const executionPrice = getExecutionPrice(order)
   const limitPrice = getLimitPrice(order)
-  const surplusPrice = getSurplusPrice(order)
+  const surplusPrice = isPartiallyFilled ? getPartiallyFilledSurplus(order) : getSurplusPrice(order)
   const expires = new Date(validUntil * 1000)
   const now = new Date()
   const orderClass = getOrderClass(order)
 
   const orderKindLabel = capitalize(kind)
   const isSellOrder = kind === 'sell'
-
-  const isPartiallyFilled = isOrderPartiallyFilled(order)
 
   return (
     <DataTable
@@ -77,7 +77,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
             1 {buyToken.symbol} = {formatAmount(limitPrice)} {sellToken.symbol}
           </DataRow>
         ),
-        status === 'fulfilled' ? (
+        status === 'fulfilled' || isPartiallyFilled ? (
           <DataRow key="Surplus" title="Surplus">
             {formatAmount(surplusPrice)} {isSellOrder ? buyToken.symbol : sellToken.symbol}
           </DataRow>

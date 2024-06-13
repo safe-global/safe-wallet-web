@@ -1,7 +1,8 @@
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
+import useWallet from '@/hooks/wallets/useWallet'
+import { assertWalletChain, getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { estimateSafeDeploymentGas, estimateTxBaseGas } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
 
@@ -21,11 +22,14 @@ type DeployGasLimitProps = {
 
 const useDeployGasLimit = (safeTx?: SafeTransaction) => {
   const onboard = useOnboard()
+  const wallet = useWallet()
   const chainId = useChainId()
 
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<DeployGasLimitProps | undefined>(async () => {
-    if (!onboard) return
-    const sdk = await getSafeSDKWithSigner(onboard, chainId)
+    if (!wallet || !onboard) return
+
+    await assertWalletChain(onboard, chainId)
+    const sdk = await getSafeSDKWithSigner(wallet.provider)
 
     const [baseGas, batchTxGas, safeDeploymentGas] = await Promise.all([
       safeTx ? estimateTxBaseGas(sdk, safeTx) : '0',
@@ -37,7 +41,7 @@ const useDeployGasLimit = (safeTx?: SafeTransaction) => {
     const safeTxGas = totalGas - BigInt(safeDeploymentGas)
 
     return { safeTxGas, safeDeploymentGas, totalGas }
-  }, [onboard, chainId, safeTx])
+  }, [onboard, wallet, chainId, safeTx])
 
   return { gasLimit, gasLimitError, gasLimitLoading }
 }

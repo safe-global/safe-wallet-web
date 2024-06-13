@@ -24,7 +24,13 @@ const ActivateAccountButton = () => {
   return (
     <Tooltip title={isProcessing ? 'The safe activation is already in process' : undefined}>
       <span>
-        <Button variant="contained" size="small" onClick={activateAccount} disabled={isProcessing}>
+        <Button
+          data-testid="activate-account-btn"
+          variant="contained"
+          size="small"
+          onClick={activateAccount}
+          disabled={isProcessing}
+        >
           {isProcessing ? (
             <>
               <Typography variant="body2" component="span" mr={1}>

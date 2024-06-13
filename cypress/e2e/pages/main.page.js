@@ -273,7 +273,7 @@ export function addToLocalStorage(key, jsonValue) {
 export function checkTextOrder(selector, expectedTextArray) {
   cy.get(selector).each((element, index) => {
     const text = Cypress.$(element).text().trim()
-    expect(text).to.eq(expectedTextArray[index])
+    expect(text).to.include(expectedTextArray[index])
   })
 }
 

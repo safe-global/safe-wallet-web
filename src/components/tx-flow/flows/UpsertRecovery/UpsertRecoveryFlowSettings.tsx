@@ -13,17 +13,17 @@ import {
   FormControlLabel,
   Tooltip,
   Alert,
+  Box,
 } from '@mui/material'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
 import { useState } from 'react'
-import type { TextFieldProps } from '@mui/material'
 import type { ReactElement } from 'react'
 
 import TxCard from '../../common/TxCard'
-import { UpsertRecoveryFlowFields } from '.'
 import { useRecoveryPeriods } from './useRecoveryPeriods'
+import { UpsertRecoveryFlowFields, type UpsertRecoveryFlowProps } from '.'
 import AddressBookInput from '@/components/common/AddressBookInput'
 import { sameAddress } from '@/utils/addresses'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -33,11 +33,12 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle, HelperCenterArticleTitles } from '@/config/constants'
 import { TOOLTIP_TITLES } from '../../common/constants'
 import Track from '@/components/common/Track'
-import type { UpsertRecoveryFlowProps } from '.'
 import type { RecoveryStateItem } from '@/features/recovery/services/recovery-state'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import css from './styles.module.css'
+import NumberField from '@/components/common/NumberField'
+import { getDelay, isCustomDelaySelected } from './utils'
 
 export function UpsertRecoveryFlowSettings({
   params,
@@ -59,8 +60,12 @@ export function UpsertRecoveryFlowSettings({
   })
 
   const recoverer = formMethods.watch(UpsertRecoveryFlowFields.recoverer)
-  const delay = formMethods.watch(UpsertRecoveryFlowFields.delay)
   const expiry = formMethods.watch(UpsertRecoveryFlowFields.expiry)
+  const selectedDelay = formMethods.watch(UpsertRecoveryFlowFields.selectedDelay)
+  const customDelay = formMethods.watch(UpsertRecoveryFlowFields.customDelay)
+  const customDelayState = formMethods.getFieldState(UpsertRecoveryFlowFields.customDelay)
+
+  const delay = getDelay(customDelay, selectedDelay)
 
   // RHF's dirty check is tempermental with our address input dropdown
   const isDirty = delayModifier
@@ -77,17 +82,28 @@ export function UpsertRecoveryFlowSettings({
     }
   }
 
+  const validateCustomDelay = (delay: string) => {
+    if (!delay) return ''
+    if (delay === '0' || !Number.isInteger(Number(delay))) {
+      return 'Invalid number'
+    }
+  }
+
   const onShowAdvanced = () => {
     setShowAdvanced((prev) => !prev)
     trackEvent(RECOVERY_EVENTS.SHOW_ADVANCED)
   }
 
-  const isDisabled = !understandsRisk || !isDirty
+  const isDisabled = !understandsRisk || !isDirty || !!customDelayState.error
+
+  const handleSubmit = () => {
+    onSubmit({ expiry, delay, customDelay, selectedDelay, recoverer })
+  }
 
   return (
     <>
       <FormProvider {...formMethods}>
-        <form onSubmit={formMethods.handleSubmit(onSubmit)} className={commonCss.form}>
+        <form onSubmit={formMethods.handleSubmit(handleSubmit)} className={commonCss.form}>
           <TxCard>
             <Alert severity="warning" sx={{ border: 'unset' }}>
               Your Recoverer will be able to reset your Account setup. Only select an address that you trust.{' '}
@@ -97,7 +113,6 @@ export function UpsertRecoveryFlowSettings({
                 </ExternalLink>
               </Track>
             </Alert>
-
             <div>
               <Typography variant="h5" gutterBottom>
                 Trusted Recoverer
@@ -108,7 +123,6 @@ export function UpsertRecoveryFlowSettings({
                 can initiate the recovery process in the future.
               </Typography>
             </div>
-
             <div>
               <AddressBookInput
                 label="Recoverer address or ENS"
@@ -136,34 +150,57 @@ export function UpsertRecoveryFlowSettings({
               </Typography>
 
               <Typography variant="body2">
-                You can cancel any recovery proposal when it is not needed or wanted during this period.
+                The recovery proposal will be available for execution after this period of time. You can cancel any
+                recovery proposal when it is not needed or wanted during this period.
               </Typography>
             </div>
-
-            <Controller
-              control={formMethods.control}
-              name={UpsertRecoveryFlowFields.delay}
-              render={({ field: { ref, ...field } }) => (
-                <SelectField
-                  data-testid="recovery-delay-select"
-                  label="Recovery delay"
-                  fullWidth
-                  inputRef={ref}
-                  {...field}
-                >
-                  {periods.delay.map(({ label, value }, index) => (
-                    <MenuItem key={index} value={value}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </SelectField>
-              )}
-            />
-
+            <Box display="flex" gap={2}>
+              <Controller
+                control={formMethods.control}
+                name={UpsertRecoveryFlowFields.selectedDelay}
+                render={({ field: { ref, ...field } }) => (
+                  <TextField
+                    data-testid="recovery-delay-select"
+                    fullWidth
+                    inputRef={ref}
+                    {...field}
+                    select
+                    sx={{ width: '55%', maxWidth: '240px' }}
+                  >
+                    {periods.delay.map(({ label, value }, index) => (
+                      <MenuItem key={index} value={value}>
+                        {label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+              <Box display="flex" flex="1" gap={2} sx={{ maxWidth: '180px', minWidth: '140px' }}>
+                {isCustomDelaySelected(selectedDelay) && (
+                  <>
+                    <Controller
+                      control={formMethods.control}
+                      name={UpsertRecoveryFlowFields.customDelay}
+                      rules={{ validate: validateCustomDelay }}
+                      render={({ field: { ref, ...field }, fieldState }) => (
+                        <NumberField
+                          label={fieldState.error?.message}
+                          error={!!fieldState.error}
+                          inputRef={ref}
+                          {...field}
+                          required
+                          placeholder="E.g. 100"
+                        />
+                      )}
+                    />
+                    <Typography my="auto">days.</Typography>
+                  </>
+                )}
+              </Box>
+            </Box>
             <Typography variant="body2" onClick={onShowAdvanced} role="button" className={css.advanced}>
               Advanced {showAdvanced ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </Typography>
-
             <Collapse in={showAdvanced}>
               <div>
                 <Typography variant="h5" gutterBottom>
@@ -192,13 +229,13 @@ export function UpsertRecoveryFlowSettings({
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field: { ref, ...field } }) => (
-                  <SelectField label="Proposal expiry" fullWidth inputRef={ref} {...field}>
+                  <TextField inputRef={ref} {...field} fullWidth select sx={{ width: '55%', maxWidth: '240px' }}>
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
                       </MenuItem>
                     ))}
-                  </SelectField>
+                  </TextField>
                 )}
               />
             </Collapse>
@@ -223,28 +260,5 @@ export function UpsertRecoveryFlowSettings({
         </form>
       </FormProvider>
     </>
-  )
-}
-
-function SelectField(props: TextFieldProps) {
-  return (
-    <TextField
-      {...props}
-      select
-      sx={{
-        '& .MuiSelect-select': {
-          textAlign: 'right',
-          fontWeight: 700,
-          fontSize: '14px',
-        },
-      }}
-      InputLabelProps={{
-        shrink: false,
-        sx: {
-          color: 'text.primary',
-          fontSize: '14px',
-        },
-      }}
-    />
   )
 }

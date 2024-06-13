@@ -3,7 +3,7 @@ import { Web3Wallet } from '@walletconnect/web3wallet'
 import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
-import type { SessionTypes } from '@walletconnect/types'
+import type { ProposalTypes, SessionTypes } from '@walletconnect/types'
 import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 import uniq from 'lodash/uniq'
 
@@ -107,7 +107,12 @@ class WalletConnectWallet {
     })
   }
 
-  public async approveSession(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
+  public async approveSession(
+    proposal: Web3WalletTypes.SessionProposal,
+    currentChainId: string,
+    safeAddress: string,
+    sessionProperties?: ProposalTypes.SessionProperties,
+  ) {
     assertWeb3Wallet(this.web3Wallet)
 
     const namespaces = this.getNamespaces(proposal, currentChainId, safeAddress)
@@ -116,6 +121,7 @@ class WalletConnectWallet {
     const session = await this.web3Wallet.approveSession({
       id: proposal.id,
       namespaces,
+      sessionProperties,
     })
 
     await this.chainChanged(session.topic, currentChainId)

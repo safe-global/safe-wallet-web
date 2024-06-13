@@ -6,7 +6,6 @@ import css from './styles.module.css'
 import { useAppSelector } from '@/store'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { getTxLink } from '@/hooks/useTxNotifications'
 import { useCurrentChain } from '@/hooks/useChains'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -18,25 +17,35 @@ import { DefaultStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses
 import useDecodeTx from '@/hooks/useDecodeTx'
 import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { getTxLink } from '@/utils/tx-link'
 
-const SuccessScreen = ({ txId, safeTx }: { txId: string; safeTx?: SafeTransaction }) => {
-  const [localTxHash, setLocalTxHash] = useState<string>()
+interface Props {
+  /** The ID assigned to the transaction in the client-gateway */
+  txId?: string
+  /** For module transaction, pass the transaction hash while the `txId` is not yet available */
+  txHash?: string
+  /** The multisig transaction object */
+  safeTx?: SafeTransaction
+}
+
+const SuccessScreen = ({ txId, txHash, safeTx }: Props) => {
+  const [localTxHash, setLocalTxHash] = useState<string | undefined>(txHash)
   const [error, setError] = useState<Error>()
   const { setTxFlow } = useContext(TxModalContext)
   const chain = useCurrentChain()
-  const pendingTx = useAppSelector((state) => selectPendingTxById(state, txId))
+  const pendingTx = useAppSelector((state) => (txId ? selectPendingTxById(state, txId) : undefined))
   const { safeAddress } = useSafeInfo()
-  const { status } = pendingTx || {}
-  const txHash = pendingTx && 'txHash' in pendingTx ? pendingTx.txHash : undefined
-  const txLink = chain && getTxLink(txId, chain, safeAddress)
+  const status = !txId && txHash ? PendingStatus.INDEXING : pendingTx?.status
+  const pendingTxHash = pendingTx && 'txHash' in pendingTx ? pendingTx.txHash : undefined
+  const txLink = chain && txId && getTxLink(txId, chain, safeAddress)
   const [decodedData] = useDecodeTx(safeTx)
   const isSwapOrder = isSwapConfirmationViewOrder(decodedData)
 
   useEffect(() => {
-    if (!txHash) return
+    if (!pendingTxHash) return
 
-    setLocalTxHash(txHash)
-  }, [txHash])
+    setLocalTxHash(pendingTxHash)
+  }, [pendingTxHash])
 
   useEffect(() => {
     const unsubFns: Array<() => void> = ([TxEvent.FAILED, TxEvent.REVERTED] as const).map((event) =>
@@ -59,7 +68,8 @@ const SuccessScreen = ({ txId, safeTx }: { txId: string; safeTx?: SafeTransactio
   switch (status) {
     case PendingStatus.PROCESSING:
     case PendingStatus.RELAYING:
-      StatusComponent = <ProcessingStatus txId={txId} pendingTx={pendingTx} />
+      // status can only have these values if txId & pendingTx are defined
+      StatusComponent = <ProcessingStatus txId={txId!} pendingTx={pendingTx!} />
       break
     case PendingStatus.INDEXING:
       StatusComponent = <IndexingStatus />

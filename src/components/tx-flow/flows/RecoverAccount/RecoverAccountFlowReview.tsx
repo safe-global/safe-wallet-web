@@ -1,5 +1,6 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { CardActions, Button, Typography, Divider, Box, CircularProgress } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
@@ -70,7 +71,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
   // On modal submit
   const onSubmit = async () => {
-    if (!recovery || !onboard || !safeTx) {
+    if (!recovery || !onboard || !wallet || !safeTx) {
       return
     }
 
@@ -79,11 +80,14 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
     setIsRejectedByUser(false)
 
     try {
+      await assertWalletChain(onboard, safe.chainId)
+
       await dispatchRecoveryProposal({
-        onboard,
+        provider: wallet.provider,
         safe,
         safeTx,
         delayModifierAddress: recovery.address,
+        signerAddress: wallet.address,
       })
       trackEvent({ ...RECOVERY_EVENTS.SUBMIT_RECOVERY_ATTEMPT })
     } catch (_err) {

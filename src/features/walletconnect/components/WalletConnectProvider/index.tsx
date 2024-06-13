@@ -5,7 +5,7 @@ import { formatJsonRpcError } from '@walletconnect/jsonrpc-utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
 import { asError } from '@/services/exceptions/utils'
-import { IS_PRODUCTION, WC_APP_DEV, WC_APP_PROD } from '@/config/constants'
+import { IS_PRODUCTION } from '@/config/constants'
 import { getPeerName, stripEip155Prefix } from '@/features/walletconnect/services/utils'
 import { trackRequest } from '@/features/walletconnect//services/tracking'
 import { wcPopupStore } from '@/features/walletconnect/components'
@@ -22,8 +22,6 @@ export enum WCLoadingState {
   CONNECT = 'Connect',
   DISCONNECT = 'Disconnect',
 }
-
-const WalletConnectSafeApp = IS_PRODUCTION ? WC_APP_PROD : WC_APP_DEV
 
 const walletConnectSingleton = new WalletConnectWallet()
 
@@ -90,9 +88,8 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
         // Get response from Safe Wallet Provider
         return safeWalletProvider.request(event.id, event.params.request, {
-          id: WalletConnectSafeApp.id,
-          url: WalletConnectSafeApp.url,
-          name: getPeerName(session.peer) || 'Unknown dApp',
+          url: session.peer.metadata.url,
+          name: getPeerName(session.peer) || 'WalletConnect',
           description: session.peer.metadata.description,
           iconUrl: session.peer.metadata.icons[0],
         })

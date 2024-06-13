@@ -12,7 +12,7 @@ describe('[SMOKE] Spending limits tests', () => {
   })
 
   beforeEach(() => {
-    cy.visit(constants.securityUrl + staticSafes.SEP_STATIC_SAFE_8)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_8)
     cy.clearLocalStorage()
     main.acceptCookies()
     owner.waitForConnectionStatus()

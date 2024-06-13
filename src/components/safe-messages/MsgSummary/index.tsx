@@ -11,6 +11,7 @@ import TxConfirmations from '@/components/transactions/TxConfirmations'
 
 import css from '@/components/transactions/TxSummary/styles.module.css'
 import useIsSafeMessagePending from '@/hooks/messages/useIsSafeMessagePending'
+import { isEIP712TypedData } from '@/utils/safe-messages'
 
 const getStatusColor = (value: SafeMessageStatus, palette: Palette): string => {
   switch (value) {
@@ -28,14 +29,18 @@ const MsgSummary = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const txStatusLabel = useSafeMessageStatus(msg)
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
   const isPending = useIsSafeMessagePending(msg.messageHash)
+  let type = ''
+  if (isEIP712TypedData(msg.message)) {
+    type = (msg.message as unknown as { primaryType: string }).primaryType
+  }
 
   return (
-    <Box className={css.gridContainer}>
+    <Box className={[css.gridContainer, css.message].join(' ')}>
       <Box gridArea="type">
         <MsgType msg={msg} />
       </Box>
 
-      <Box gridArea="info">Off-chain signature</Box>
+      <Box gridArea="info">{type || 'Signature'}</Box>
 
       <Box gridArea="date" className={css.date}>
         <DateTime value={msg.modifiedTimestamp} />

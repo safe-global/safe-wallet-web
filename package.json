@@ -2,7 +2,7 @@
   "name": "safe-wallet-web",
   "homepage": "https://github.com/safe-global/safe-wallet-web",
   "license": "GPL-3.0",
-  "version": "1.37.0",
+  "version": "1.38.0",
   "type": "module",
   "scripts": {
     "dev": "next dev",
@@ -37,8 +37,6 @@
     "node": ">=16"
   },
   "resolutions": {
-    "@walletconnect/core": "^2.11.2",
-    "@walletconnect/ethereum-provider": "^2.11.2",
     "@safe-global/safe-core-sdk-types/**/ethers": "^6.11.1",
     "@safe-global/protocol-kit/**/ethers": "^6.11.1",
     "@safe-global/api-kit/**/ethers": "^6.11.1",
@@ -65,8 +63,8 @@
     "@sentry/react": "^7.91.0",
     "@spindl-xyz/attribution-lite": "^1.4.0",
     "@truffle/hdwallet-provider": "^2.1.4",
-    "@walletconnect/utils": "^2.11.3",
-    "@walletconnect/web3wallet": "^1.10.3",
+    "@walletconnect/utils": "^2.13.1",
+    "@walletconnect/web3wallet": "^1.12.1",
     "@web3-onboard/coinbase": "^2.2.6",
     "@web3-onboard/core": "^2.21.4",
     "@web3-onboard/injected-wallets": "^2.10.14",
@@ -94,7 +92,8 @@
     "react-hook-form": "7.41.1",
     "react-papaparse": "^4.0.2",
     "react-redux": "^8.0.5",
-    "semver": "^7.5.2"
+    "semver": "^7.5.2",
+    "zodiac-roles-deployments": "^2.2.2"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.3.1",
@@ -130,7 +129,7 @@
     "@types/react-gtm-module": "^2.0.3",
     "@types/semver": "^7.3.10",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
-    "@walletconnect/types": "^2.11.3",
+    "@walletconnect/types": "^2.13.1",
     "cross-env": "^7.0.3",
     "cypress": "^12.15.0",
     "cypress-file-upload": "^5.0.8",

@@ -1,9 +1,9 @@
+import { useCallback, useMemo, useState } from 'react'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
 import useHiddenTokens from '@/hooks/useHiddenTokens'
 import { useAppDispatch } from '@/store'
 import { setHiddenTokensForChain } from '@/store/settingsSlice'
-import { useCallback, useState } from 'react'
 
 // This is the default for MUI Collapse
 export const COLLAPSE_TIMEOUT_MS = 300
@@ -90,4 +90,13 @@ export const useHideAssets = (closeDialog: () => void) => {
     deselectAll,
     hidingAsset,
   }
+}
+
+export const useVisibleAssets = () => {
+  const hiddenAssets = useHiddenTokens()
+  const { balances } = useBalances()
+  return useMemo(
+    () => balances.items?.filter((item) => !hiddenAssets.includes(item.tokenInfo.address)),
+    [hiddenAssets, balances.items],
+  )
 }

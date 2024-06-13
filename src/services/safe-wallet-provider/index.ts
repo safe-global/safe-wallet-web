@@ -12,8 +12,10 @@ type SafeSettings = {
   offChainSigning?: boolean
 }
 
+type GetCapabilitiesResult = Record<`0x${string}`, Record<string, any>>
+
 export type AppInfo = {
-  id: number
+  id?: number
   name: string
   description: string
   url: string
@@ -32,6 +34,11 @@ export type WalletSDK = {
   switchChain: (chainId: string, appInfo: AppInfo) => Promise<null>
   setSafeSettings: (safeSettings: SafeSettings) => SafeSettings
   proxy: (method: string, params?: Array<any> | Record<string, any>) => Promise<unknown>
+  getCreateCallTransaction: (data: string) => {
+    to: string
+    data: string
+    value: '0'
+  }
 }
 
 interface RpcRequest {
@@ -128,26 +135,32 @@ export class SafeWalletProvider {
 
       // EIP-5792
       // @see https://eips.ethereum.org/EIPS/eip-5792
-      case 'wallet_sendFunctionCallBundle': {
-        return this.wallet_sendFunctionCallBundle(
+      case 'wallet_sendCalls': {
+        return this.wallet_sendCalls(
           ...(params as [
             {
+              version: string
               chainId: string
               from: string
-              calls: Array<{ gas: string; data: string; to?: string; value?: string }>
+              calls: Array<{ data: string; to?: string; value?: string }>
+              capabilities?: Record<string, any> | undefined
             },
           ]),
           appInfo,
         )
       }
 
-      case 'wallet_getBundleStatus': {
-        return this.wallet_getBundleStatus(...(params as [string]))
+      case 'wallet_getCallsStatus': {
+        return this.wallet_getCallsStatus(...(params as [string]))
       }
 
-      case 'wallet_showBundleStatus': {
-        this.wallet_showBundleStatus(...(params as [string]))
+      case 'wallet_showCallsStatus': {
+        this.wallet_showCallsStatus(...(params as [string]))
         return null
+      }
+
+      case 'wallet_getCapabilities': {
+        return this.wallet_getCapabilities(...(params as [string]))
       }
 
       // Safe proprietary methods
@@ -314,17 +327,36 @@ export class SafeWalletProvider {
 
   // EIP-5792
   // @see https://eips.ethereum.org/EIPS/eip-5792
-  async wallet_sendFunctionCallBundle(
+  async wallet_sendCalls(
     bundle: {
       chainId: string
       from: string
-      calls: Array<{ gas: string; data: string; to?: string; value?: string }>
+      calls: Array<{ data?: string; to?: string; value?: string }>
     },
     appInfo: AppInfo,
   ): Promise<string> {
+    const txs = bundle.calls.map((call) => {
+      if (!call.to && !call.value && !call.data) {
+        throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'Invalid call parameters.')
+      }
+      if (!call.to && !call.value && call.data) {
+        // If only data is provided the call is a contract deployment
+        // We have to use the CreateCall lib
+        return this.sdk.getCreateCallTransaction(call.data)
+      }
+      if (!call.to) {
+        // For all non-contract deployments we need a to address
+        throw new RpcError(RpcErrorCode.INVALID_PARAMS, 'Invalid call parameters.')
+      }
+      return {
+        to: call.to,
+        data: call.data ?? '0x',
+        value: call.value ?? '0',
+      }
+    })
     const { safeTxHash } = await this.sdk.send(
       {
-        txs: bundle.calls,
+        txs,
         params: { safeTxGas: 0 },
       },
       appInfo,
@@ -332,7 +364,7 @@ export class SafeWalletProvider {
 
     return safeTxHash
   }
-  async wallet_getBundleStatus(safeTxHash: string): Promise<{
+  async wallet_getCallsStatus(safeTxHash: string): Promise<{
     calls: Array<{
       status: BundleStatus
       receipt: {
@@ -381,9 +413,22 @@ export class SafeWalletProvider {
       calls: calls.map(() => callStatus),
     }
   }
-  async wallet_showBundleStatus(txHash: string): Promise<null> {
+  async wallet_showCallsStatus(txHash: string): Promise<null> {
     this.sdk.showTxStatus(txHash)
     return null
+  }
+
+  async wallet_getCapabilities(walletAddress: string): Promise<GetCapabilitiesResult> {
+    if (walletAddress === this.safe.safeAddress) {
+      return {
+        [`0x${this.safe.chainId.toString(16)}`]: {
+          atomicBatch: {
+            supported: true,
+          },
+        },
+      }
+    }
+    return {}
   }
 
   // Safe proprietary methods

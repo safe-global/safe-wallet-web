@@ -93,10 +93,10 @@ describe('Tokens tests', () => {
   it('Verify the default Fiat currency and the effects after changing it', () => {
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     assets.verifyFirstRowDoesNotContainCurrency(assets.currencyEUR, FIAT_AMOUNT_COLUMN)
-    assets.verifyFirstRowContainsCurrency(assets.currencyUSD, FIAT_AMOUNT_COLUMN)
+    assets.verifyFirstRowContainsCurrency(assets.currency$, FIAT_AMOUNT_COLUMN)
     assets.clickOnCurrencyDropdown()
-    assets.selectCurrency(assets.currencyEUR)
-    assets.verifyFirstRowDoesNotContainCurrency(assets.currencyUSD, FIAT_AMOUNT_COLUMN)
+    assets.selectCurrency(assets.currencyOptionEUR)
+    assets.verifyFirstRowDoesNotContainCurrency(assets.currency$, FIAT_AMOUNT_COLUMN)
     assets.verifyFirstRowContainsCurrency(assets.currencyEUR, FIAT_AMOUNT_COLUMN)
   })
 

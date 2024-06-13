@@ -27,8 +27,15 @@ import { isBlockedAddress } from '@/services/ofac'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
 import useChainId from '@/hooks/useChainId'
+import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
+import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
+import { id } from 'ethers'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
+
+const PRE_SIGN_SIGHASH = id('setPreSignature(bytes,bool)').slice(0, 10)
+const WRAP_SIGHASH = id('deposit()').slice(0, 10)
+const UNWRAP_SIGHASH = id('withdraw(uint256)').slice(0, 10)
 
 type Params = {
   sell?: {
@@ -39,8 +46,20 @@ type Params = {
 
 export const SWAP_TITLE = 'Safe Swap'
 
-export const getSwapTitle = (tradeType: SwapState['tradeType']) => {
-  return tradeType === 'limit' ? 'Limit order' : 'Swap order'
+export const getSwapTitle = (tradeType: SwapState['tradeType'], txs: BaseTransaction[] | undefined) => {
+  const hashToLabel = {
+    [PRE_SIGN_SIGHASH]: tradeType === 'limit' ? 'Limit order' : 'Swap order',
+    [APPROVAL_SIGNATURE_HASH]: 'Approve',
+    [WRAP_SIGHASH]: 'Wrap',
+    [UNWRAP_SIGHASH]: 'Unwrap',
+  }
+
+  const swapTitle = txs
+    ?.map((tx) => hashToLabel[tx.data.slice(0, 10)])
+    .filter(Boolean)
+    .join(' and ')
+
+  return swapTitle
 }
 
 const SwapWidget = ({ sell }: Params) => {
@@ -55,6 +74,14 @@ const SwapWidget = ({ sell }: Params) => {
   const [blockedAddress, setBlockedAddress] = useState('')
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
+  // useRefs as they don't trigger re-renders
+  const tradeTypeRef = useRef<TradeType>(tradeType)
+  const sellTokenRef = useRef<Params['sell']>(
+    sell || {
+      asset: '',
+      amount: '0',
+    },
+  )
 
   useEffect(() => {
     if (isBlockedAddress(safeAddress)) {
@@ -136,9 +163,14 @@ const SwapWidget = ({ sell }: Params) => {
       {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
         handler: (newTradeParams) => {
-          const { orderType: tradeType, recipient } = newTradeParams
+          const { orderType: tradeType, recipient, sellToken, sellTokenAmount } = newTradeParams
           dispatch(setSwapParams({ tradeType }))
 
+          tradeTypeRef.current = tradeType
+          sellTokenRef.current = {
+            asset: sellToken?.symbol || '',
+            amount: sellTokenAmount?.units || '0',
+          }
           if (recipient && isBlockedAddress(recipient)) {
             setBlockedAddress(recipient)
           }
@@ -164,13 +196,8 @@ const SwapWidget = ({ sell }: Params) => {
         orderExecuted: null,
         postOrder: null,
       },
-      tradeType, // TradeType.SWAP or TradeType.LIMIT
-      sell: sell
-        ? sell
-        : {
-            asset: '',
-            amount: '0',
-          },
+      tradeType: tradeTypeRef.current,
+      sell: sellTokenRef.current,
       images: {
         emptyOrders: darkMode
           ? BASE_URL + '/images/common/swap-empty-dark.svg'
@@ -192,10 +219,10 @@ const SwapWidget = ({ sell }: Params) => {
       content: {
         feeLabel: 'No fee for one month',
         feeTooltipMarkdown:
-          'Any future transaction fee incurred by Cow Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or Cow Swap.',
+          'Any future transaction fee incurred by CoW Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or CoW Swap.',
       },
     })
-  }, [sell, palette, darkMode, tradeType, chainId])
+  }, [sell, palette, darkMode, chainId])
 
   const chain = useCurrentChain()
 
