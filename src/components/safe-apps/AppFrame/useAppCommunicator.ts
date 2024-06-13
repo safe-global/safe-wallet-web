@@ -15,13 +15,13 @@ import type {
   GetTxBySafeTxHashParams,
   RequestId,
   RPCPayload,
-  SafeInfo,
   SendTransactionRequestParams,
   SendTransactionsParams,
   SignMessageParams,
   SignTypedMessageParams,
   ChainInfo,
   SafeBalances,
+  SafeInfoExtended,
 } from '@safe-global/safe-apps-sdk'
 import { Methods, RPC_CALLS } from '@safe-global/safe-apps-sdk'
 import type { Permission, PermissionRequest } from '@safe-global/safe-apps-sdk/dist/types/types/permissions'
@@ -56,7 +56,7 @@ export type UseAppCommunicatorHandlers = {
   onGetTxBySafeTxHash: (transactionId: string) => Promise<TransactionDetails>
   onGetEnvironmentInfo: () => EnvironmentInfo
   onGetSafeBalances: (currency: string) => Promise<SafeBalances>
-  onGetSafeInfo: () => SafeInfo
+  onGetSafeInfo: () => SafeInfoExtended
   onGetChainInfo: () => ChainInfo | undefined
   onGetPermissions: (origin: string) => Permission[]
   onSetPermissions: (permissionsRequest?: SafePermissionsRequest) => void
