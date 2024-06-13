@@ -46,7 +46,7 @@ const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }
   [WALLET_KEYS.LEDGER]: () => ledgerModule() as WalletInit,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }) as WalletInit,
   [WALLET_KEYS.KEYSTONE]: () => keystoneModule() as WalletInit,
-  [WALLET_KEYS.PK]: (chain) => pkModule(chain.rpcUri) as WalletInit,
+  [WALLET_KEYS.PK]: (chain) => pkModule(chain.chainId, chain.rpcUri) as WalletInit,
 }
 
 export const getAllWallets = (chain: ChainInfo): WalletInits => {
