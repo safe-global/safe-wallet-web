@@ -1,7 +1,17 @@
 import { TxModalContext } from '@/components/tx-flow'
 import madProps from '@/utils/mad-props'
-import React, { type ReactElement, type SyntheticEvent, useContext, useState, useCallback } from 'react'
-import { CircularProgress, Box, Button, CardActions, Divider, Alert, Typography, SvgIcon } from '@mui/material'
+import React, { type ReactElement, type SyntheticEvent, useContext, useState, useCallback, useMemo } from 'react'
+import {
+  CircularProgress,
+  Box,
+  Button,
+  CardActions,
+  Divider,
+  Alert,
+  Typography,
+  SvgIcon,
+  AlertTitle,
+} from '@mui/material'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { trackError, Errors } from '@/services/exceptions'
@@ -20,6 +30,8 @@ import { useGnosisPayDelayModifier } from './hooks/useGnosisPayDelayModifier'
 import { didRevert } from '@/utils/ethers-utils'
 import GnosisPayIcon from '@/public/images/common/gnosis-pay.svg'
 import CooldownButton from '@/components/common/CooldownButton'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { getGnosisPayTxWarnings } from './utils/getGnosisPayTxWarnings'
 
 enum ExecutionState {
   QUEUEING,
@@ -34,11 +46,13 @@ export const GnosisPayExecutionForm = ({
   isExecutionLoop,
   txSecurity,
   onSubmit,
+  safeInfo,
 }: SignOrExecuteProps & {
   isGnosisPayOwner: ReturnType<typeof useIsGnosisPayOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
+  safeInfo: ReturnType<typeof useSafeInfo>
 }): ReactElement => {
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -54,6 +68,8 @@ export const GnosisPayExecutionForm = ({
   const { setTxFlow } = useContext(TxModalContext)
 
   const [delayModifier] = useGnosisPayDelayModifier()
+
+  const txWarnings = useMemo(() => getGnosisPayTxWarnings(safeTx, safeInfo.safe), [safeInfo.safe, safeTx])
 
   const enqueueTx = useCallback(() => {
     if (!delayModifier || !safeTx) {
@@ -169,6 +185,17 @@ export const GnosisPayExecutionForm = ({
           </Typography>
         </Alert>
 
+        {txWarnings.length > 0 && (
+          <Alert severity="warning" sx={{ mb: 2, border: 0, position: 'relative' }}>
+            <AlertTitle>Potential problems</AlertTitle>
+            <ul>
+              {txWarnings.map((txWarning, idx) => (
+                <li key={idx}>{txWarning}</li>
+              ))}
+            </ul>
+          </Alert>
+        )}
+
         {/* Error messages */}
         {cannotPropose ? (
           <NonOwnerError />
@@ -236,4 +263,5 @@ export default madProps(GnosisPayExecutionForm, {
   isGnosisPayOwner: useIsGnosisPayOwner,
   isExecutionLoop: useIsExecutionLoop,
   txSecurity: useTxSecurityContext,
+  safeInfo: useSafeInfo,
 })
