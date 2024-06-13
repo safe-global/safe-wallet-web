@@ -3,8 +3,9 @@ import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type WalletInit, createEIP1193Provider } from '@web3-onboard/common'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
 import pkPopupStore from './pk-popup-store'
+import { numberToHex } from '@/utils/hex'
 
-export const PRIVATE_KEY_MODULE_LABEL = 'Private Key'
+export const PRIVATE_KEY_MODULE_LABEL = 'Private key'
 
 async function getPrivateKey() {
   const savedKey = pkPopupStore.getStore()?.privateKey
@@ -23,7 +24,13 @@ async function getPrivateKey() {
   })
 }
 
+let currentChainId = ''
+let currentRpcUri = ''
+
 const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri']): WalletInit => {
+  currentChainId = chainId
+  currentRpcUri = getRpcServiceUrl(rpcUri)
+
   return () => {
     return {
       label: PRIVATE_KEY_MODULE_LABEL,
@@ -34,20 +41,41 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
           throw new Error('You rejected the connection')
         }
 
-        const provider = new JsonRpcProvider(getRpcServiceUrl(rpcUri))
-        const wallet = new Wallet(privateKey, provider)
+        let provider: JsonRpcProvider
+        let wallet: Wallet
+        let lastChainId = ''
+        const chainChangedListeners = new Set<(chainId: string) => void>()
+
+        const updateProvider = () => {
+          console.log('[Private key signer] Updating provider to chainId', currentChainId, currentRpcUri)
+          provider?.destroy()
+          provider = new JsonRpcProvider(currentRpcUri, Number(currentChainId), { staticNetwork: true })
+          wallet = new Wallet(privateKey, provider)
+          lastChainId = currentChainId
+          chainChangedListeners.forEach((listener) => listener(numberToHex(Number(currentChainId))))
+        }
+
+        updateProvider()
 
         return {
           provider: createEIP1193Provider(
             {
-              ...wallet.provider,
               on: (event: string, listener: (...args: any[]) => void) => {
                 if (event === 'accountsChanged') {
                 } else if (event === 'chainChanged') {
+                  chainChangedListeners.add(listener)
                 } else {
                   provider.on(event, listener)
                 }
               },
+
+              request: async (request: { method: string; params: any[] }) => {
+                if (currentChainId !== lastChainId) {
+                  updateProvider()
+                }
+                return provider.send(request.method, request.params)
+              },
+
               disconnect: () => {
                 pkPopupStore.setStore({
                   isOpen: false,
@@ -56,7 +84,7 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
               },
             },
             {
-              eth_chainId: async () => chainId,
+              eth_chainId: async () => currentChainId,
 
               // @ts-ignore
               eth_getCode: async ({ params }) => provider.getCode(params[0], params[1]),
@@ -79,6 +107,12 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
               eth_signTypedData: async ({ params }) => {
                 const signedMessage = await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
                 return signedMessage
+              },
+
+              // @ts-ignore
+              wallet_switchEthereumChain: async ({ params }) => {
+                console.log('[Private key signer] Switching chain', params)
+                updateProvider()
               },
             },
           ),
