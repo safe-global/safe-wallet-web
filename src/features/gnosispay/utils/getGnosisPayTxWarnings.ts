@@ -33,7 +33,7 @@ import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
  * @param safeTx
  */
 
-const EURE_TOKEN_ADDRESS = '0xcB444e90D8198415266c6a2724b7900fb12FC56E'
+export const EURE_TOKEN_ADDRESS = '0xcB444e90D8198415266c6a2724b7900fb12FC56E'
 
 const SAFE_INTERFACE = Gnosis_safe__factory.createInterface()
 const ERC20_INTERFACE = ERC20__factory.createInterface()

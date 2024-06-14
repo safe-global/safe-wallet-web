@@ -187,7 +187,9 @@ export const GnosisPayExecutionForm = ({
 
         {txWarnings.length > 0 && (
           <Alert severity="warning" sx={{ mb: 2, border: 0, position: 'relative' }}>
-            <AlertTitle>Potential problems</AlertTitle>
+            <AlertTitle>
+              <b>Potential problems</b>
+            </AlertTitle>
             <ul>
               {txWarnings.map((txWarning, idx) => (
                 <li key={idx}>{txWarning}</li>
