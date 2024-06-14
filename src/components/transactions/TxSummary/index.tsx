@@ -1,6 +1,6 @@
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
-import { Box } from '@mui/material'
+import { Box, SvgIcon } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -18,6 +18,7 @@ import TxConfirmations from '../TxConfirmations'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import TxStatusLabel from '@/components/transactions/TxStatusLabel'
+import WarningIcon from '@/public/images/notifications/warning.svg'
 
 type TxSummaryProps = {
   isGrouped?: boolean
@@ -54,7 +55,9 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
 
       {isImitationTransaction ? (
         <Box data-testid="warning" gridArea="nonce">
-          <UntrustedTxWarning />
+          <Box lineHeight="16px" sx={{ opacity: 1 }}>
+            <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
+          </Box>
         </Box>
       ) : !isTrusted ? (
         <Box data-testid="warning" gridArea="nonce">

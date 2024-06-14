@@ -29,7 +29,7 @@ const TransferTxInfoSummary = ({ txInfo, txStatus, trusted, isImitation }: Trans
         </b>
         {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
       </Typography>
-      {!trusted && <UntrustedTxWarning />}
+      {!trusted && !isImitation && <UntrustedTxWarning />}
     </Box>
   )
 }
