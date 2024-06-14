@@ -22,3 +22,31 @@ export const ImitationTransactionWarning = (): ReactElement => {
     </Alert>
   )
 }
+
+export const MaliciousAddressWarning = (): ReactElement => {
+  return (
+    <Alert
+      className={css.alert}
+      severity="error"
+      // variant="outlined"
+      sx={{ border: 'none' }}
+      icon={<SvgIcon component={InfoOutlinedIcon} inheritViewBox color="error" />}
+    >
+      <b>Poisoned address detected. </b> This address was used in a potentially fraudulent transaction. Please, check
+      and confirm this address before interacting with it.{' '}
+    </Alert>
+  )
+}
+
+// const isPoisonedAddress = (outgoingTransactions: Transaction[] | undefined, address: string) => {
+//   if (!outgoingTransactions) return
+//   const imitationTransactions = outgoingTransactions.filter(({ transaction }) => {
+//     return (
+//       isTransferTxInfo(transaction.txInfo) &&
+//       sameAddress(transaction.txInfo.recipient.value, address) &&
+//       isImitation(transaction)
+//     )
+//   })
+
+//   return imitationTransactions.length > 0
+// }

@@ -14,18 +14,20 @@ const SendToBlock = ({
   avatarSize?: number
 }) => {
   return (
-    <FieldsGrid title={title}>
-      <Typography variant="body2" component="div">
-        <EthHashInfo
-          address={address}
-          name={name}
-          shortAddress={false}
-          hasExplorer
-          showCopyButton
-          avatarSize={avatarSize}
-        />
-      </Typography>
-    </FieldsGrid>
+    <>
+      <FieldsGrid title={title}>
+        <Typography variant="body2" component="div">
+          <EthHashInfo
+            address={address}
+            name={name}
+            shortAddress={false}
+            hasExplorer
+            showCopyButton
+            avatarSize={avatarSize}
+          />
+        </Typography>
+      </FieldsGrid>
+    </>
   )
 }
 
