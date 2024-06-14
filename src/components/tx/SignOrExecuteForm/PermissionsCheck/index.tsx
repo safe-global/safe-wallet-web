@@ -27,7 +27,7 @@ import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { assertOnboard, assertWallet } from '@/utils/helpers'
 import { TxModalContext } from '@/components/tx-flow'
-import { pollModuleTransactionId, useExecuteThroughRole, useRoles, useGasLimit } from './hooks'
+import { pollModuleTransactionId, useExecuteThroughRole, useRoles, useGasLimit, useMetaTransactions } from './hooks'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 
 const Role = ({ children }: { children: string }) => {
@@ -57,7 +57,8 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
 
   const { setTxFlow } = useContext(TxModalContext)
 
-  const roles = useRoles(safeTx?.data)
+  const metaTransactions = useMetaTransactions(safeTx)
+  const roles = useRoles(metaTransactions)
   const allowingRole = roles.find((role) => role.status === Status.Ok)
 
   // If a user has multiple roles, we should prioritize the one that allows the transaction's to address (and function selector)
@@ -71,8 +72,9 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
   const txThroughRole = useExecuteThroughRole({
     modAddress: allowingRole?.modAddress,
     roleKey: allowingRole?.roleKey,
-    metaTx: safeTx?.data,
+    metaTransactions,
   })
+
   // Estimate gas limit
   const { gasLimit, gasLimitError } = useGasLimit(txThroughRole)
   const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
