@@ -1,4 +1,4 @@
-import { CYPRESS_MNEMONIC, TREZOR_APP_URL, TREZOR_EMAIL, WC_PROJECT_ID } from '@/config/constants'
+import { CYPRESS_MNEMONIC, IS_PRODUCTION, TREZOR_APP_URL, TREZOR_EMAIL, WC_PROJECT_ID } from '@/config/constants'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { InitOptions } from '@web3-onboard/core'
 import coinbaseModule from '@web3-onboard/coinbase'
@@ -39,14 +39,18 @@ const walletConnectV2 = (chain: ChainInfo) => {
   })
 }
 
-const WALLET_MODULES: { [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit } = {
+const WALLET_MODULES: Partial<{ [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }> = {
   [WALLET_KEYS.INJECTED]: () => injectedWalletModule() as WalletInit,
   [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain) as WalletInit,
   [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }) as WalletInit,
   [WALLET_KEYS.LEDGER]: () => ledgerModule() as WalletInit,
   [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }) as WalletInit,
   [WALLET_KEYS.KEYSTONE]: () => keystoneModule() as WalletInit,
-  [WALLET_KEYS.PK]: (chain) => pkModule(chain.chainId, chain.rpcUri) as WalletInit,
+}
+
+// Testing wallet module
+if (!IS_PRODUCTION) {
+  WALLET_MODULES[WALLET_KEYS.PK] = (chain) => pkModule(chain.chainId, chain.rpcUri) as WalletInit
 }
 
 export const getAllWallets = (chain: ChainInfo): WalletInits => {
@@ -65,7 +69,7 @@ export const getSupportedWallets = (chain: ChainInfo): WalletInits => {
   const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
 
   if (enabledWallets.length === 0) {
-    return [WALLET_MODULES.INJECTED(chain)]
+    return [injectedWalletModule()]
   }
 
   return enabledWallets.map(([, module]) => module(chain))
