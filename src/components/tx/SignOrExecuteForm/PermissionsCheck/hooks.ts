@@ -14,14 +14,52 @@ import {
   ExecutionOptions,
   Status,
 } from 'zodiac-roles-deployments'
-import { OperationType, type Transaction, type MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import {
+  OperationType,
+  type Transaction,
+  type MetaTransactionData,
+  type SafeTransaction,
+} from '@safe-global/safe-core-sdk-types'
 import { type JsonRpcProvider } from 'ethers'
 import { KnownContracts, getModuleInstance } from '@gnosis.pm/zodiac'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { decodeMultiSendTxs } from '@/utils/transactions'
+import { encodeMultiSendData } from '@safe-global/protocol-kit'
+import { Multi_send__factory } from '@/types/contracts'
 
 const ROLES_V2_SUPPORTED_CHAINS = Object.keys(chains)
+const multiSendInterface = Multi_send__factory.createInterface()
+
+/**
+ * Turns a Safe Transaction into a set of meta transactions, unbundling multisend calls
+ */
+export const useMetaTransactions = (safeTx?: SafeTransaction): MetaTransactionData[] => {
+  const safeTxData = safeTx?.data
+  return useMemo(() => {
+    if (!safeTxData) return []
+
+    const metaTx: MetaTransactionData = {
+      to: safeTxData.to,
+      value: safeTxData.value,
+      data: safeTxData.data,
+      operation: safeTxData.operation,
+    }
+
+    if (metaTx.operation === OperationType.DelegateCall) {
+      // try decoding as multisend
+      try {
+        const baseTransactions = decodeMultiSendTxs(metaTx.data)
+        if (baseTransactions.length > 0) {
+          return baseTransactions.map((tx) => ({ ...tx, operation: OperationType.Call }))
+        }
+      } catch (e) {}
+    }
+
+    return [metaTx]
+  }, [safeTxData])
+}
 
 /**
  * Returns all Zodiac Roles Modifiers v2 instances that are enabled and correctly configured on this Safe
@@ -56,7 +94,7 @@ export const useRolesMods = () => {
  * Returns a list of roles mod address + role key assigned to the connected wallet.
  * For each role, checks if the role allows the given meta transaction and returns the status.
  */
-export const useRoles = (metaTx?: MetaTransactionData) => {
+export const useRoles = (metaTransactions: MetaTransactionData[]) => {
   const rolesMods = useRolesMods()
   const wallet = useWallet()
   const walletAddress = wallet?.address.toLowerCase() as undefined | `0x${string}`
@@ -73,10 +111,14 @@ export const useRoles = (metaTx?: MetaTransactionData) => {
       for (const rolesMod of rolesMods) {
         for (const role of rolesMod.roles) {
           if (role.members.includes(walletAddress)) {
+            const statuses = metaTransactions.map((metaTx) => checkPermissions(role, metaTx))
             result.push({
               modAddress: rolesMod.address,
               roleKey: role.key,
-              status: metaTx ? checkTransaction(role, metaTx) : null,
+              status:
+                statuses.find((status) => status !== Status.Ok && status !== null) ||
+                statuses.find((status) => status !== Status.Ok) ||
+                Status.Ok,
             })
           }
         }
@@ -84,7 +126,7 @@ export const useRoles = (metaTx?: MetaTransactionData) => {
     }
 
     return result
-  }, [rolesMods, walletAddress, metaTx])
+  }, [rolesMods, walletAddress, metaTransactions])
   const web3ReadOnly = useWeb3ReadOnly()
 
   // if the static check is inconclusive (status: null), evaluate the condition through a test call
@@ -92,13 +134,19 @@ export const useRoles = (metaTx?: MetaTransactionData) => {
     () =>
       Promise.all(
         potentialRoles.map(async (entry) => {
-          if (entry.status === null && metaTx && walletAddress && web3ReadOnly) {
-            entry.status = await checkCondition(entry.modAddress, entry.roleKey, metaTx, walletAddress, web3ReadOnly)
+          if (entry.status === null && walletAddress && web3ReadOnly) {
+            entry.status = await checkCondition(
+              entry.modAddress,
+              entry.roleKey,
+              metaTransactions,
+              walletAddress,
+              web3ReadOnly,
+            )
           }
           return entry
         }),
       ),
-    [potentialRoles, metaTx, walletAddress, web3ReadOnly],
+    [potentialRoles, metaTransactions, walletAddress, web3ReadOnly],
   )
 
   // Return the statically checked roles while the dynamic checks are still pending
@@ -108,7 +156,7 @@ export const useRoles = (metaTx?: MetaTransactionData) => {
 /**
  * Returns the status of the permission check, `null` if it depends on the condition evaluation.
  */
-const checkTransaction = (role: RoleSummary, metaTx: MetaTransactionData): Status | null => {
+const checkPermissions = (role: RoleSummary, metaTx: MetaTransactionData): Status | null => {
   const target = role.targets.find((t) => t.address === metaTx.to.toLowerCase())
   if (!target) return Status.TargetAddressNotAllowed
 
@@ -148,11 +196,11 @@ const checkExecutionOptions = (execOptions: ExecutionOptions, metaTx: MetaTransa
 export const useExecuteThroughRole = ({
   modAddress,
   roleKey,
-  metaTx,
+  metaTransactions,
 }: {
   modAddress?: `0x${string}`
   roleKey?: `0x${string}`
-  metaTx?: MetaTransactionData
+  metaTransactions: MetaTransactionData[]
 }) => {
   const web3ReadOnly = useWeb3ReadOnly()
   const wallet = useWallet()
@@ -160,26 +208,50 @@ export const useExecuteThroughRole = ({
 
   return useMemo(
     () =>
-      modAddress && roleKey && metaTx && walletAddress && web3ReadOnly
-        ? encodeExecuteThroughRole(modAddress, roleKey, metaTx, walletAddress, web3ReadOnly)
+      modAddress && roleKey && walletAddress && web3ReadOnly
+        ? encodeExecuteThroughRole(modAddress, roleKey, metaTransactions, walletAddress, web3ReadOnly)
         : undefined,
-    [modAddress, roleKey, metaTx, walletAddress, web3ReadOnly],
+    [modAddress, roleKey, metaTransactions, walletAddress, web3ReadOnly],
   )
+}
+
+// These are the multisend addresses that are used as default in the setup of the Roles Modifier.
+// Using them consistently for batch calls made through roles will ensure that the Roles Modifier can handle them.
+const MULTISEND_141 = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526'
+const MULTISEND_CALL_ONLY_141 = '0x9641d764fc13c8B624c04430C7356C1C7C8102e2'
+
+const encodeMetaTransactions = (metaTransactions: MetaTransactionData[]): MetaTransactionData => {
+  if (metaTransactions.length === 0) {
+    throw new Error('No meta transactions to encode')
+  }
+  if (metaTransactions.length === 1) {
+    return metaTransactions[0]
+  } else {
+    return {
+      to: metaTransactions.some((metaTx) => metaTx.operation === OperationType.DelegateCall)
+        ? MULTISEND_141
+        : MULTISEND_CALL_ONLY_141,
+      value: '0',
+      data: multiSendInterface.encodeFunctionData('multiSend', [encodeMultiSendData(metaTransactions)]),
+      operation: OperationType.DelegateCall,
+    }
+  }
 }
 
 const encodeExecuteThroughRole = (
   modAddress: `0x${string}`,
   roleKey: `0x${string}`,
-  metaTx: MetaTransactionData,
+  metaTransactions: MetaTransactionData[],
   from: `0x${string}`,
   provider: JsonRpcProvider,
 ): Transaction => {
   const rolesModifier = getModuleInstance(KnownContracts.ROLES_V2, modAddress, provider)
+  const combinedMetaTx = encodeMetaTransactions(metaTransactions)
   const data = rolesModifier.interface.encodeFunctionData('execTransactionWithRole', [
-    metaTx.to,
-    BigInt(metaTx.value),
-    metaTx.data,
-    metaTx.operation || 0,
+    combinedMetaTx.to,
+    BigInt(combinedMetaTx.value),
+    combinedMetaTx.data,
+    combinedMetaTx.operation || 0,
     roleKey,
     true,
   ])
@@ -195,17 +267,18 @@ const encodeExecuteThroughRole = (
 const checkCondition = async (
   modAddress: `0x${string}`,
   roleKey: `0x${string}`,
-  metaTx: MetaTransactionData,
+  metaTransactions: MetaTransactionData[],
   from: `0x${string}`,
   provider: JsonRpcProvider,
 ) => {
   const rolesModifier = getModuleInstance(KnownContracts.ROLES_V2, modAddress, provider)
+  const combinedMetaTx = encodeMetaTransactions(metaTransactions)
   try {
     await rolesModifier.execTransactionWithRole.estimateGas(
-      metaTx.to,
-      BigInt(metaTx.value),
-      metaTx.data,
-      metaTx.operation || 0,
+      combinedMetaTx.to,
+      BigInt(combinedMetaTx.value),
+      combinedMetaTx.data,
+      combinedMetaTx.operation || 0,
       roleKey,
       false,
       { from },
