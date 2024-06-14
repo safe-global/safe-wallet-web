@@ -62,7 +62,6 @@
     "@safe-global/safe-modules-deployments": "^1.2.0",
     "@sentry/react": "^7.91.0",
     "@spindl-xyz/attribution-lite": "^1.4.0",
-    "@truffle/hdwallet-provider": "^2.1.4",
     "@walletconnect/utils": "^2.13.1",
     "@walletconnect/web3wallet": "^1.12.1",
     "@web3-onboard/coinbase": "^2.2.6",

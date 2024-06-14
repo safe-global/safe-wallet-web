@@ -42,6 +42,7 @@ import { useNotificationTracking } from '@/components/settings/PushNotifications
 import Recovery from '@/features/recovery/components/Recovery'
 import WalletProvider from '@/components/common/WalletProvider'
 import CounterfactualHooks from '@/features/counterfactual/CounterfactualHooks'
+import PkModulePopup from '@/services/private-key-module/PkModulePopup'
 
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
@@ -128,6 +129,8 @@ const WebCoreApp = ({
           <Recovery />
 
           <CounterfactualHooks />
+
+          <PkModulePopup />
         </AppProviders>
       </CacheProvider>
     </Provider>

@@ -1,33 +1,56 @@
-import { type HDNodeWallet, JsonRpcProvider, Wallet } from 'ethers'
+import { JsonRpcProvider, Wallet } from 'ethers'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type WalletInit, createEIP1193Provider } from '@web3-onboard/common'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
+import pkPopupStore from './pk-popup-store'
 import { numberToHex } from '@/utils/hex'
-import { CYPRESS_MNEMONIC } from '@/config/constants'
 
-export const E2E_WALLET_NAME = 'E2E Wallet'
+export const PRIVATE_KEY_MODULE_LABEL = 'Private key'
+
+async function getPrivateKey() {
+  const savedKey = pkPopupStore.getStore()?.privateKey
+  if (savedKey) return savedKey
+
+  pkPopupStore.setStore({
+    isOpen: true,
+    privateKey: '',
+  })
+
+  return new Promise<string>((resolve) => {
+    const unsubscribe = pkPopupStore.subscribe(() => {
+      unsubscribe()
+      resolve(pkPopupStore.getStore()?.privateKey ?? '')
+    })
+  })
+}
 
 let currentChainId = ''
 let currentRpcUri = ''
 
-const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri']): WalletInit => {
+const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri']): WalletInit => {
   currentChainId = chainId
   currentRpcUri = getRpcServiceUrl(rpcUri)
 
   return () => {
     return {
-      label: E2E_WALLET_NAME,
-      getIcon: async () => '<svg />',
+      label: PRIVATE_KEY_MODULE_LABEL,
+      getIcon: async () => (await import('./icon')).default,
       getInterface: async () => {
+        const privateKey = await getPrivateKey()
+        if (!privateKey) {
+          throw new Error('You rejected the connection')
+        }
+
         let provider: JsonRpcProvider
-        let wallet: HDNodeWallet
+        let wallet: Wallet
         let lastChainId = ''
         const chainChangedListeners = new Set<(chainId: string) => void>()
 
         const updateProvider = () => {
+          console.log('[Private key signer] Updating provider to chainId', currentChainId, currentRpcUri)
           provider?.destroy()
           provider = new JsonRpcProvider(currentRpcUri, Number(currentChainId), { staticNetwork: true })
-          wallet = Wallet.fromPhrase(CYPRESS_MNEMONIC, provider)
+          wallet = new Wallet(privateKey, provider)
           lastChainId = currentChainId
           chainChangedListeners.forEach((listener) => listener(numberToHex(Number(currentChainId))))
         }
@@ -54,7 +77,12 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
                 return provider.send(request.method, request.params)
               },
 
-              disconnect: () => {},
+              disconnect: () => {
+                pkPopupStore.setStore({
+                  isOpen: false,
+                  privateKey: '',
+                })
+              },
             },
             {
               eth_chainId: async () => currentChainId,
@@ -83,6 +111,7 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
 
               // @ts-ignore
               wallet_switchEthereumChain: async ({ params }) => {
+                console.log('[Private key signer] Switching chain', params)
                 updateProvider()
               },
             },
@@ -94,4 +123,4 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
   }
 }
 
-export default E2EWalletMoule
+export default PrivateKeyModule
