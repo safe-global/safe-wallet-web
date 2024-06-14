@@ -62,6 +62,7 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
             {
               on: (event: string, listener: (...args: any[]) => void) => {
                 if (event === 'accountsChanged') {
+                  return
                 } else if (event === 'chainChanged') {
                   chainChangedListeners.add(listener)
                 } else {
@@ -105,8 +106,7 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
               },
 
               eth_signTypedData: async ({ params }) => {
-                const signedMessage = await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
-                return signedMessage
+                return await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
               },
 
               // @ts-ignore

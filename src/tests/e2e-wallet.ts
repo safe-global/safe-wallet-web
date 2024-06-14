@@ -1,30 +1,92 @@
+import { type HDNodeWallet, JsonRpcProvider, Wallet } from 'ethers'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { WalletInit } from '@web3-onboard/common'
-
-import { CYPRESS_MNEMONIC } from '@/config/constants'
+import { type WalletInit, createEIP1193Provider } from '@web3-onboard/common'
 import { getRpcServiceUrl } from '@/hooks/wallets/web3'
+import { numberToHex } from '@/utils/hex'
+import { CYPRESS_MNEMONIC } from '@/config/constants'
 
 export const E2E_WALLET_NAME = 'E2E Wallet'
 
-const e2eWalletModule = (rpcUri: ChainInfo['rpcUri']): WalletInit => {
+let currentChainId = ''
+let currentRpcUri = ''
+
+const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri']): WalletInit => {
+  currentChainId = chainId
+  currentRpcUri = getRpcServiceUrl(rpcUri)
+
   return () => {
     return {
       label: E2E_WALLET_NAME,
       getIcon: async () => '<svg />',
       getInterface: async () => {
-        const { createEIP1193Provider } = await import('@web3-onboard/common')
+        let provider: JsonRpcProvider
+        let wallet: HDNodeWallet
+        let lastChainId = ''
+        const chainChangedListeners = new Set<(chainId: string) => void>()
 
-        const { default: HDWalletProvider } = await import('@truffle/hdwallet-provider')
+        const updateProvider = () => {
+          provider?.destroy()
+          provider = new JsonRpcProvider(currentRpcUri, Number(currentChainId), { staticNetwork: true })
+          wallet = Wallet.fromPhrase(CYPRESS_MNEMONIC, provider)
+          lastChainId = currentChainId
+          chainChangedListeners.forEach((listener) => listener(numberToHex(Number(currentChainId))))
+        }
 
-        const provider = new HDWalletProvider({
-          mnemonic: CYPRESS_MNEMONIC,
-          providerOrUrl: getRpcServiceUrl(rpcUri),
-        })
+        updateProvider()
 
         return {
-          provider: createEIP1193Provider(provider.engine, {
-            eth_requestAccounts: async () => provider.getAddresses(),
-          }),
+          provider: createEIP1193Provider(
+            {
+              on: (event: string, listener: (...args: any[]) => void) => {
+                if (event === 'accountsChanged') {
+                  return
+                } else if (event === 'chainChanged') {
+                  chainChangedListeners.add(listener)
+                } else {
+                  provider.on(event, listener)
+                }
+              },
+
+              request: async (request: { method: string; params: any[] }) => {
+                if (currentChainId !== lastChainId) {
+                  updateProvider()
+                }
+                return provider.send(request.method, request.params)
+              },
+
+              disconnect: () => {},
+            },
+            {
+              eth_chainId: async () => currentChainId,
+
+              // @ts-ignore
+              eth_getCode: async ({ params }) => provider.getCode(params[0], params[1]),
+
+              eth_accounts: async () => [wallet.address],
+              eth_requestAccounts: async () => [wallet.address],
+
+              eth_call: async ({ params }: { params: any }) => wallet.call(params[0]),
+
+              eth_sendTransaction: async ({ params }) => {
+                const tx = await wallet.sendTransaction(params[0] as any)
+                return tx.hash // return transaction hash
+              },
+
+              personal_sign: async ({ params }) => {
+                const signedMessage = wallet.signingKey.sign(params[0])
+                return signedMessage.serialized
+              },
+
+              eth_signTypedData: async ({ params }) => {
+                return await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
+              },
+
+              // @ts-ignore
+              wallet_switchEthereumChain: async ({ params }) => {
+                updateProvider()
+              },
+            },
+          ),
         }
       },
       platforms: ['desktop'],
@@ -32,4 +94,4 @@ const e2eWalletModule = (rpcUri: ChainInfo['rpcUri']): WalletInit => {
   }
 }
 
-export default e2eWalletModule
+export default E2EWalletMoule
