@@ -39,10 +39,9 @@ const FungibleBalanceChange = ({
         {formatVisualAmount(change.amount.value, change.decimals)}
       </Typography>
       <TokenIcon size={16} logoUri={logoUri} tokenSymbol={change.symbol} />
-      <Typography variant="body2" fontWeight={700} display="inline" ml={0.5}>
+      <Typography variant="body2" fontWeight={700} display="inline" ml={0.5} mr="auto">
         {change.symbol}
       </Typography>
-      <span style={{ margin: 'auto' }} />
       <Chip className={css.categoryChip} label={change.type} />
     </>
   )
