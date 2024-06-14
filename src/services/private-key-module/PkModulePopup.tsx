@@ -29,7 +29,15 @@ const PkModulePopup = () => {
         </Typography>
 
         <form onSubmit={onSubmit} action="#" method="post">
-          <TextField type="password" label="Private key" fullWidth required name="private-key" sx={{ mb: 3 }} />
+          <TextField
+            type="password"
+            label="Private key"
+            fullWidth
+            required
+            name="private-key"
+            sx={{ mb: 3 }}
+            data-testid="private-key-input"
+          />
 
           <Button variant="contained" color="primary" fullWidth type="submit">
             Connect
