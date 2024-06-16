@@ -79,7 +79,7 @@ const MessageHashField = ({ label, hashValue }: { label: string; hashValue: stri
     <Typography variant="body2" fontWeight={700} mt={2}>
       {label}:
     </Typography>
-    <Typography variant="body2" component="div">
+    <Typography data-testid="message-hash" variant="body2" component="div">
       <EthHashInfo address={hashValue} showAvatar={false} shortAddress={false} showCopyButton />
     </Typography>
   </>
@@ -166,7 +166,7 @@ const BlindSigningWarning = ({
   return (
     <ErrorMessage level={isBlindSigningEnabled ? 'warning' : 'error'}>
       This request involves{' '}
-      <Link component={NextLink} href={{ pathname: AppRoutes.settings.securityLogin, query }}>
+      <Link component={NextLink} href={{ pathname: AppRoutes.settings.security, query }}>
         blind signing
       </Link>
       , which can lead to unpredictable outcomes.
@@ -176,7 +176,7 @@ const BlindSigningWarning = ({
       ) : (
         <>
           If you wish to proceed, you must first{' '}
-          <Link component={NextLink} href={{ pathname: AppRoutes.settings.securityLogin, query }}>
+          <Link component={NextLink} href={{ pathname: AppRoutes.settings.security, query }}>
             enable blind signing
           </Link>
           .
@@ -302,7 +302,9 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           <DecodedMsg message={decodedMessage} isInModal />
 
           <Accordion sx={{ my: 2, '&.Mui-expanded': { mt: 2 } }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>SafeMessage details</AccordionSummary>
+            <AccordionSummary data-testid="message-details" expandIcon={<ExpandMoreIcon />}>
+              SafeMessage details
+            </AccordionSummary>
             <AccordionDetails>
               <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
               <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />

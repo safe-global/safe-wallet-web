@@ -38,15 +38,18 @@ export const goerlySafeName = /g(ö|oe)rli-safe/
 export const sepoliaSafeName = 'sepolia-safe'
 export const goerliToken = /G(ö|oe)rli Ether/
 
+export const safeTestAppurl = 'https://safe-apps-test-app.pages.dev'
 export const TX_Builder_url = 'https://safe-apps.dev.5afe.dev/tx-builder'
 export const drainAccount_url = 'https://safe-apps.dev.5afe.dev/drain-safe'
 export const testAppUrl = 'https://safe-test-app.com'
 export const addressBookUrl = '/address-book?safe='
 export const appsUrlGeneral = '/apps?=safe='
+export const appsCustomUrl = 'apps/custom?safe='
 export const BALANCE_URL = '/balances?safe='
 export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
 export const transactionsHistoryUrl = '/transactions/history?safe='
+export const transactionsMessagesUrl = '/transactions/messages?safe='
 export const openAppsUrl = '/apps/open?safe='
 export const homeUrl = '/home?safe='
 export const welcomeUrl = '/welcome'
@@ -59,7 +62,8 @@ export const getPermissionsUrl = '/get-permissions'
 export const appSettingsUrl = '/settings/safe-apps'
 export const setupUrl = '/settings/setup?safe='
 export const dataSettingsUrl = '/settings/data?safe='
-export const securityUrl = '/settings/security-login?safe='
+export const securityUrl = '/settings/security?safe='
+export const notificationsUrl = '/settings/notifications?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
 export const validAppUrl = 'https://my-valid-custom-app.com'
@@ -131,11 +135,6 @@ export const tokenAbbreviation = {
   gtt: 'GTT',
   qtrust: 'QTRUST',
   tpcc: 'tpcc',
-}
-
-export const currencies = {
-  cad: 'CAD',
-  aud: 'AUD',
 }
 
 export const appNames = {
@@ -229,6 +228,10 @@ export const localStorageKeys = {
   SAFE_v2__safeApps: 'SAFE_v2__safeApps',
   SAFE_v2__cookies: 'SAFE_v2__cookies',
   SAFE_v2__tokenlist_onboarding: 'SAFE_v2__tokenlist_onboarding',
+  SAFE_v2__customSafeApps_11155111: 'SAFE_v2__customSafeApps-11155111',
+  SAFE_v2__SafeApps__browserPermissions: 'SAFE_v2__SafeApps__browserPermissions',
+  SAFE_v2__SafeApps__infoModal: 'SAFE_v2__SafeApps__infoModal',
+  SAFE_v2__undeployedSafes: 'SAFE_v2__undeployedSafes',
 }
 
 export const connectWalletNames = {

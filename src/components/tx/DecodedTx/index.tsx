@@ -1,3 +1,7 @@
+import SendToBlock from '@/components/tx/SendToBlock'
+import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
+import { useCurrentChain } from '@/hooks/useChains'
+import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
 import {
   Accordion,
@@ -5,13 +9,19 @@ import {
   AccordionSummary,
   Box,
   Skeleton,
+  Stack,
   SvgIcon,
   Tooltip,
   Typography,
 } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { getTransactionDetails, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  getTransactionDetails,
+  type TransactionDetails,
+  Operation,
+  TokenType,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
@@ -24,6 +34,9 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import accordionCss from '@/styles/accordion.module.css'
+import { formatVisualAmount } from '@/utils/formatters'
+import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -32,6 +45,7 @@ type DecodedTxProps = {
   decodedData?: DecodedDataResponse
   decodedDataError?: Error
   decodedDataLoading?: boolean
+  showToBlock?: boolean
 }
 
 const DecodedTx = ({
@@ -41,8 +55,11 @@ const DecodedTx = ({
   decodedData,
   decodedDataError,
   decodedDataLoading = false,
+  showToBlock = false,
 }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
+  const chain = useCurrentChain()
+  const isSwapOrder = isSwapConfirmationViewOrder(decodedData)
 
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
 
@@ -59,10 +76,30 @@ const DecodedTx = ({
 
   if (!decodedData) return null
 
+  const amount = tx?.data.value ? formatVisualAmount(tx.data.value, chain?.nativeCurrency.decimals) : '0'
+
   return (
-    <div>
+    <Stack spacing={2}>
+      {!isSwapOrder && tx && showToBlock && amount !== '0' && (
+        <SendAmountBlock
+          amount={amount}
+          tokenInfo={{
+            type: TokenType.NATIVE_TOKEN,
+            address: ZERO_ADDRESS,
+            decimals: chain?.nativeCurrency.decimals ?? 18,
+            symbol: chain?.nativeCurrency.symbol ?? 'ETH',
+            logoUri: chain?.nativeCurrency.logoUri,
+          }}
+        />
+      )}
+      {!isSwapOrder && tx && showToBlock && (
+        <SendToBlock address={tx.data.to} title="Interact with" name={addressInfoIndex?.[tx.data.to]?.name} />
+      )}
+
+      {isSwapOrder && tx && <SwapOrderConfirmationView order={decodedData} settlementContract={tx.data.to} />}
+
       {isMultisend && showMultisend && (
-        <Box my={2}>
+        <Box>
           <Multisend
             txData={{
               dataDecoded: decodedData,
@@ -77,68 +114,74 @@ const DecodedTx = ({
         </Box>
       )}
 
-      <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-        <AccordionSummary
-          data-testid="decoded-tx-summary"
-          expandIcon={<ExpandMoreIcon />}
-          className={accordionCss.accordion}
-        >
-          <span style={{ flex: 1 }}>Transaction details</span>
+      <Box>
+        <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
+          <AccordionSummary
+            data-testid="decoded-tx-summary"
+            expandIcon={<ExpandMoreIcon />}
+            className={accordionCss.accordion}
+          >
+            <span style={{ flex: 1 }}>Transaction details</span>
 
-          {decodedData ? decodedData.method : tx?.data.operation === OperationType.DelegateCall ? 'Delegate call' : ''}
-        </AccordionSummary>
+            {decodedData
+              ? decodedData.method
+              : tx?.data.operation === OperationType.DelegateCall
+              ? 'Delegate call'
+              : ''}
+          </AccordionSummary>
 
-        <AccordionDetails data-testid="decoded-tx-details">
-          {decodedData ? (
-            <MethodDetails data={decodedData} addressInfoIndex={addressInfoIndex} />
-          ) : decodedDataError ? (
-            <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
-          ) : (
-            decodedDataLoading && <Skeleton />
-          )}
-
-          <Box mt={2}>
-            <Typography variant="overline" fontWeight="bold" color="border.main" display="flex" alignItems="center">
-              Advanced details
-              <Tooltip
-                title={
-                  <>
-                    We recommend not changing the default values unless necessary.{' '}
-                    <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS} title="Learn more about advanced details">
-                      Learn more about advanced details
-                    </ExternalLink>
-                    .
-                  </>
-                }
-                arrow
-                placement="top"
-              >
-                <span>
-                  <SvgIcon
-                    component={InfoIcon}
-                    inheritViewBox
-                    color="border"
-                    fontSize="small"
-                    sx={{
-                      verticalAlign: 'middle',
-                      ml: 0.5,
-                    }}
-                  />
-                </span>
-              </Tooltip>
-            </Typography>
-
-            {txDetails ? <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />}
-
-            {txDetailsLoading && <Skeleton />}
-
-            {txDetailsError && (
-              <ErrorMessage error={txDetailsError}>Failed loading all transaction details</ErrorMessage>
+          <AccordionDetails data-testid="decoded-tx-details">
+            {decodedData ? (
+              <MethodDetails data={decodedData} addressInfoIndex={addressInfoIndex} />
+            ) : decodedDataError ? (
+              <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
+            ) : (
+              decodedDataLoading && <Skeleton />
             )}
-          </Box>
-        </AccordionDetails>
-      </Accordion>
-    </div>
+
+            <Box mt={2}>
+              <Typography variant="overline" fontWeight="bold" color="border.main" display="flex" alignItems="center">
+                Advanced details
+                <Tooltip
+                  title={
+                    <>
+                      We recommend not changing the default values unless necessary.{' '}
+                      <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS} title="Learn more about advanced details">
+                        Learn more about advanced details
+                      </ExternalLink>
+                      .
+                    </>
+                  }
+                  arrow
+                  placement="top"
+                >
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      color="border"
+                      fontSize="small"
+                      sx={{
+                        verticalAlign: 'middle',
+                        ml: 0.5,
+                      }}
+                    />
+                  </span>
+                </Tooltip>
+              </Typography>
+
+              {txDetails ? <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />}
+
+              {txDetailsLoading && <Skeleton />}
+
+              {txDetailsError && (
+                <ErrorMessage error={txDetailsError}>Failed loading all transaction details</ErrorMessage>
+              )}
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+    </Stack>
   )
 }
 

@@ -24,13 +24,12 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { asError } from '@/services/exceptions/utils'
-import { isSocialLoginWallet } from '@/services/mpc/SocialLoginModule'
 import { useAppSelector } from '@/store'
 import { hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
-import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
 
 const useActivateAccount = () => {
@@ -129,7 +128,6 @@ const ActivateAccountFlow = () => {
   }
 
   const submitDisabled = !isSubmittable
-  const isSocialLogin = isSocialLoginWallet(wallet?.label)
 
   return (
     <TxLayout title="Activate account" hideNonce>
@@ -145,7 +143,7 @@ const ActivateAccountFlow = () => {
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
         <Box display="flex" flexDirection="column" gap={3}>
-          {canRelay && !isSocialLogin && (
+          {canRelay && (
             <Grid container spacing={3}>
               <ReviewRow
                 name="Execution method"
@@ -167,7 +165,7 @@ const ActivateAccountFlow = () => {
                 <>
                   <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
 
-                  {!willRelay && !isSocialLogin && (
+                  {!willRelay && (
                     <Typography variant="body2" color="text.secondary" mt={1}>
                       You will have to confirm a transaction with your connected wallet.
                     </Typography>
@@ -195,7 +193,13 @@ const ActivateAccountFlow = () => {
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
         <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
-          <Button onClick={createSafe} variant="contained" size="stretched" disabled={submitDisabled}>
+          <Button
+            data-testid="activate-account-btn"
+            onClick={createSafe}
+            variant="contained"
+            size="stretched"
+            disabled={submitDisabled}
+          >
             {!isSubmittable ? <CircularProgress size={20} /> : 'Activate'}
           </Button>
         </Box>

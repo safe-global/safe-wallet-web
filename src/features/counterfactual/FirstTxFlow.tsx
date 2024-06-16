@@ -18,6 +18,9 @@ import RecoveryPlus from '@/public/images/common/recovery-plus.svg'
 import SwapIcon from '@/public/images/common/swap.svg'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
+import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
 
 const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const txBuilder = useTxBuilderApp()
@@ -25,6 +28,8 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   const { setTxFlow } = useContext(TxModalContext)
   const supportsRecovery = useIsRecoverySupported()
   const [recovery] = useRecovery()
+  const isCounterfactualSafe = useIsCounterfactualSafe()
+  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS) && !isCounterfactualSafe
 
   const handleClick = (onClick: () => void) => {
     onClose()
@@ -53,7 +58,11 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
 
   const onSwap = () => {
     trackEvent({ ...OVERVIEW_EVENTS.CHOOSE_TRANSACTION_TYPE, label: 'swap' })
-    router.push({ pathname: AppRoutes.apps.index, query: { ...router.query, categories: 'Aggregator' } })
+    router.push(
+      isSwapFeatureEnabled
+        ? { pathname: AppRoutes.swap, query: router.query }
+        : { pathname: AppRoutes.apps.index, query: { ...router.query, categories: 'Aggregator' } },
+    )
   }
 
   const onCustomTransaction = () => {

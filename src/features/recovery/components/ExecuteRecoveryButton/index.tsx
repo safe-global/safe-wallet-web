@@ -1,3 +1,5 @@
+import useWallet from '@/hooks/wallets/useWallet'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { Button, Tooltip } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
@@ -22,22 +24,26 @@ export function ExecuteRecoveryButton({
   const { setSubmitError } = useContext(RecoveryListItemContext)
   const { isExecutable, isNext, isPending } = useRecoveryTxState(recovery)
   const onboard = useOnboard()
+  const wallet = useWallet()
   const { safe } = useSafeInfo()
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
     e.preventDefault()
 
-    if (!onboard) {
+    if (!onboard || !wallet) {
       return
     }
 
     try {
+      await assertWalletChain(onboard, safe.chainId)
+
       await dispatchRecoveryExecution({
-        onboard,
+        provider: wallet.provider,
         chainId: safe.chainId,
         args: recovery.args,
         delayModifierAddress: recovery.address,
+        signerAddress: wallet.address,
       })
     } catch (_err) {
       const err = asError(_err)
@@ -68,6 +74,7 @@ export function ExecuteRecoveryButton({
                 onClick={onClick}
                 variant="contained"
                 disabled={isDisabled}
+                sx={{ minWidth: '106.5px', py: compact ? 0.8 : undefined }}
                 size={compact ? 'small' : 'stretched'}
               >
                 Execute

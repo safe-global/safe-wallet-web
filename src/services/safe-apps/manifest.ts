@@ -99,7 +99,8 @@ const fetchSafeAppFromManifest = async (
   const iconUrl = getAppLogoUrl(normalizedAppUrl, appManifest)
 
   return {
-    id: Math.random(),
+    // Must satisfy https://docs.djangoproject.com/en/5.0/ref/models/fields/#positiveintegerfield
+    id: Math.round(Math.random() * 1e9 + 1e6),
     url: normalizedAppUrl,
     name: appManifest.name,
     description: appManifest.description,

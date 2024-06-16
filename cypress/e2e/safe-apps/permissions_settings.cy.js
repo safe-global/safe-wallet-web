@@ -1,6 +1,6 @@
-import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
-import * as safeapps from '../pages/safeapps.pages'
+import * as constants from '../../support/constants.js'
+import * as main from '../pages/main.page.js'
+import * as safeapps from '../pages/safeapps.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 let $dapps,
@@ -8,7 +8,8 @@ let $dapps,
 const app1 = 'https://app1.com'
 const app3 = 'https://app3.com'
 
-describe('Permissions settings tests', () => {
+// TODO: Skip until connection error is resolved
+describe.skip('Permissions settings tests', () => {
   before(() => {
     getSafes(CATEGORIES.static).then((statics) => {
       staticSafes = statics

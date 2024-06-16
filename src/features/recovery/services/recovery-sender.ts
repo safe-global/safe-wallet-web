@@ -1,31 +1,29 @@
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { OnboardAPI } from '@web3-onboard/core'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
-import type { TransactionResponse } from 'ethers'
+import type { Eip1193Provider, TransactionResponse } from 'ethers'
 
 import { didReprice, didRevert } from '@/utils/ethers-utils'
 import { recoveryDispatch, RecoveryEvent, RecoveryTxType } from './recoveryEvents'
 import { asError } from '@/services/exceptions/utils'
-import { assertWalletChain, getUncheckedSigner } from '../../../services/tx/tx-sender/sdk'
+import { getUncheckedSigner } from '../../../services/tx/tx-sender/sdk'
 import { isSmartContractWallet } from '@/utils/wallets'
 
 async function getDelayModifierContract({
-  onboard,
+  provider,
   chainId,
   delayModifierAddress,
+  signerAddress,
 }: {
-  onboard: OnboardAPI
+  provider: Eip1193Provider
   chainId: string
   delayModifierAddress: string
+  signerAddress: string
 }) {
-  // Switch signer to chain of Safe
-  const wallet = await assertWalletChain(onboard, chainId)
+  const isSmartContract = await isSmartContractWallet(chainId, signerAddress)
 
-  const isSmartContract = await isSmartContractWallet(wallet.chainId, wallet.address)
-
-  const signer = await getUncheckedSigner(wallet.provider)
+  const signer = await getUncheckedSigner(provider)
   const delayModifier = getModuleInstance(KnownContracts.DELAY, delayModifierAddress, signer).connect(signer)
 
   return {
@@ -73,20 +71,23 @@ function waitForRecoveryTx({
 }
 
 export async function dispatchRecoveryProposal({
-  onboard,
+  provider,
   safe,
   safeTx,
   delayModifierAddress,
+  signerAddress,
 }: {
-  onboard: OnboardAPI
+  provider: Eip1193Provider
   safe: SafeInfo
   safeTx: SafeTransaction
   delayModifierAddress: string
+  signerAddress: string
 }) {
   const { delayModifier, isUnchecked } = await getDelayModifierContract({
-    onboard,
+    provider,
     chainId: safe.chainId,
     delayModifierAddress,
+    signerAddress,
   })
 
   const txType = RecoveryTxType.PROPOSAL
@@ -136,20 +137,23 @@ export async function dispatchRecoveryProposal({
 }
 
 export async function dispatchRecoveryExecution({
-  onboard,
+  provider,
   chainId,
   args,
   delayModifierAddress,
+  signerAddress,
 }: {
-  onboard: OnboardAPI
+  provider: Eip1193Provider
   chainId: string
   args: TransactionAddedEvent.Log['args']
   delayModifierAddress: string
+  signerAddress: string
 }) {
   const { delayModifier, isUnchecked } = await getDelayModifierContract({
-    onboard,
+    provider,
     chainId,
     delayModifierAddress,
+    signerAddress,
   })
 
   const txType = RecoveryTxType.EXECUTION
@@ -185,20 +189,23 @@ export async function dispatchRecoveryExecution({
 }
 
 export async function dispatchRecoverySkipExpired({
-  onboard,
+  provider,
   chainId,
   delayModifierAddress,
   recoveryTxHash,
+  signerAddress,
 }: {
-  onboard: OnboardAPI
+  provider: Eip1193Provider
   chainId: string
   delayModifierAddress: string
   recoveryTxHash: string
+  signerAddress: string
 }) {
   const { delayModifier, isUnchecked } = await getDelayModifierContract({
-    onboard,
+    provider,
     chainId,
     delayModifierAddress,
+    signerAddress,
   })
 
   const txType = RecoveryTxType.SKIP_EXPIRED

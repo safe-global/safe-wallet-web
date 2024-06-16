@@ -1,3 +1,4 @@
+import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import useIsPending from '@/hooks/useIsPending'
 import type { SyntheticEvent } from 'react'
 import { type ReactElement, useContext } from 'react'
@@ -28,8 +29,10 @@ const ExecuteTxButton = ({
   const { setSelectedTxId } = useContext(ReplaceTxHoverContext)
   const safeSDK = useSafeSDK()
 
+  const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
+
   const isNext = txNonce !== undefined && txNonce === safe.nonce
-  const isDisabled = !isNext || !safeSDK || isPending
+  const isDisabled = !isNext || !safeSDK || expiredSwap || isPending
 
   const onClick = (e: SyntheticEvent) => {
     e.stopPropagation()

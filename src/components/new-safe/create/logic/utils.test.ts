@@ -30,8 +30,13 @@ describe('getAvailableSaltNonce', () => {
   it('should return initial nonce if no contract is deployed to the computed address', async () => {
     jest.spyOn(web3Utils, 'isSmartContract').mockReturnValue(Promise.resolve(false))
     const initialNonce = faker.string.numeric()
+    const mockChainId = faker.string.numeric()
 
-    const result = await getAvailableSaltNonce(mockProvider, { ...mockDeployProps, saltNonce: initialNonce })
+    const result = await getAvailableSaltNonce(
+      mockProvider,
+      { ...mockDeployProps, saltNonce: initialNonce },
+      mockChainId,
+    )
 
     expect(result).toEqual(initialNonce)
   })
@@ -39,8 +44,13 @@ describe('getAvailableSaltNonce', () => {
   it('should return an increased nonce if a contract is deployed to the computed address', async () => {
     jest.spyOn(web3Utils, 'isSmartContract').mockReturnValueOnce(Promise.resolve(true))
     const initialNonce = faker.string.numeric()
+    const mockChainId = faker.string.numeric()
 
-    const result = await getAvailableSaltNonce(mockProvider, { ...mockDeployProps, saltNonce: initialNonce })
+    const result = await getAvailableSaltNonce(
+      mockProvider,
+      { ...mockDeployProps, saltNonce: initialNonce },
+      mockChainId,
+    )
 
     jest.spyOn(web3Utils, 'isSmartContract').mockReturnValueOnce(Promise.resolve(false))
 

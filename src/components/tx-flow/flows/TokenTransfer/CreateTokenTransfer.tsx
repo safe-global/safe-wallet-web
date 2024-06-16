@@ -1,16 +1,11 @@
 import { useTokenAmount, useVisibleTokens } from '@/components/tx-flow/flows/TokenTransfer/utils'
-import madProps from '@/utils/mad-props'
 import { type ReactElement, useContext, useEffect } from 'react'
 import { type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { useSafeTokenAddress } from '@/components/common/SafeTokenWidget'
-import useIsSafeTokenPaused from '@/hooks/useIsSafeTokenPaused'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import { FormProvider, useForm } from 'react-hook-form'
-import { sameAddress } from '@/utils/addresses'
-import { Box, Button, CardActions, Divider, FormControl, Grid, SvgIcon, Typography } from '@mui/material'
+import { Button, CardActions, Divider, FormControl, Grid, Typography } from '@mui/material'
 import TokenIcon from '@/components/common/TokenIcon'
 import AddressBookInput from '@/components/common/AddressBookInput'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import SpendingLimitRow from '@/components/tx-flow/flows/TokenTransfer/SpendingLimitRow'
 import { TokenTransferFields, type TokenTransferParams, TokenTransferType } from '.'
 import TxCard from '../../common/TxCard'
@@ -38,14 +33,10 @@ export const AutocompleteItem = (item: { tokenInfo: TokenInfo; balance: string }
 export const CreateTokenTransfer = ({
   params,
   onSubmit,
-  isSafeTokenPaused,
-  safeTokenAddress,
   txNonce,
 }: {
   params: TokenTransferParams
   onSubmit: (data: TokenTransferParams) => void
-  isSafeTokenPaused: ReturnType<typeof useIsSafeTokenPaused>
-  safeTokenAddress?: ReturnType<typeof useSafeTokenAddress>
   txNonce?: number
 }): ReactElement => {
   const disableSpendingLimit = txNonce !== undefined
@@ -92,8 +83,6 @@ export const CreateTokenTransfer = ({
 
   const maxAmount = isSpendingLimitType && totalAmount > spendingLimitAmount ? spendingLimitAmount : totalAmount
 
-  const isSafeTokenSelected = sameAddress(safeTokenAddress, tokenAddress)
-  const isDisabled = isSafeTokenSelected && isSafeTokenPaused
   const isAddressValid = !!recipient && !errors[TokenTransferFields.recipient]
 
   useEffect(() => {
@@ -110,15 +99,6 @@ export const CreateTokenTransfer = ({
 
           <TokenAmountInput balances={balancesItems} selectedToken={selectedToken} maxAmount={maxAmount} />
 
-          {isDisabled && (
-            <Box display="flex" alignItems="center" mt={-2} mb={3}>
-              <SvgIcon component={InfoIcon} color="error" fontSize="small" />
-              <Typography variant="body2" color="error" ml={0.5}>
-                $SAFE is currently non-transferable.
-              </Typography>
-            </Box>
-          )}
-
           {!disableSpendingLimit && spendingLimitAmount > 0n && (
             <FormControl fullWidth sx={{ mt: 3 }}>
               <SpendingLimitRow availableAmount={spendingLimitAmount} selectedToken={selectedToken?.tokenInfo} />
@@ -128,7 +108,7 @@ export const CreateTokenTransfer = ({
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions>
-            <Button variant="contained" type="submit" disabled={isDisabled}>
+            <Button variant="contained" type="submit">
               Next
             </Button>
           </CardActions>
@@ -138,7 +118,4 @@ export const CreateTokenTransfer = ({
   )
 }
 
-export default madProps(CreateTokenTransfer, {
-  safeTokenAddress: useSafeTokenAddress,
-  isSafeTokenPaused: useIsSafeTokenPaused,
-})
+export default CreateTokenTransfer

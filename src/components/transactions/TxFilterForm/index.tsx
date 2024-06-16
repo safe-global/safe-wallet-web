@@ -120,7 +120,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
     <Paper elevation={0} variant="outlined" className={css.filterWrapper}>
       <FormProvider {...formMethods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container>
+          <Grid data-testid="filter-modal" container>
             <Grid item xs={12} md={3} sx={{ p: 4 }}>
               <FormControl>
                 <FormLabel sx={{ mb: 2, color: ({ palette }) => palette.primary.light }}>Transaction type</FormLabel>
@@ -146,7 +146,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                 <Grid container item spacing={2} xs={12}>
                   {!isModuleFilter && (
                     <>
-                      <Grid item xs={12} md={6}>
+                      <Grid data-testid="start-date" item xs={12} md={6}>
                         <DatePickerInput
                           name={TxFilterFormFieldNames.DATE_FROM}
                           label="From"
@@ -159,7 +159,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid data-testid="end-date" item xs={12} md={6}>
                         <DatePickerInput
                           name={TxFilterFormFieldNames.DATE_TO}
                           label="To"
@@ -185,6 +185,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                           render={({ field, fieldState }) => (
                             <NumberField
+                              data-testid="amount-input"
                               className={inputCss.input}
                               label={
                                 fieldState.error?.message ||
@@ -203,6 +204,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                   {isIncomingFilter && (
                     <Grid item xs={12} md={6}>
                       <AddressBookInput
+                        data-testid="token-input"
                         label="Token"
                         name={TxFilterFormFieldNames.TOKEN_ADDRESS}
                         required={false}
@@ -234,6 +236,7 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
                           }}
                           render={({ field, fieldState }) => (
                             <NumberField
+                              data-testid="nonce-input"
                               className={inputCss.input}
                               label={fieldState.error?.message || 'Nonce'}
                               error={!!fieldState.error}
@@ -260,10 +263,10 @@ const TxFilterForm = ({ toggleFilter }: { toggleFilter: () => void }): ReactElem
               </FormControl>
 
               <Grid item container md={6} sx={{ gap: 2, mt: 3 }}>
-                <Button variant="contained" onClick={clearFilter} disabled={!canClear}>
+                <Button data-testid="clear-btn" variant="contained" onClick={clearFilter} disabled={!canClear}>
                   Clear
                 </Button>
-                <Button type="submit" variant="contained" color="primary" disabled={!isValid}>
+                <Button data-testid="apply-btn" type="submit" variant="contained" color="primary" disabled={!isValid}>
                   Apply
                 </Button>
               </Grid>

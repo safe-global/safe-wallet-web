@@ -35,6 +35,7 @@
   padding-top: 0;
   padding-bottom: 0;
   padding-left: 0;
+  flex-wrap: wrap;
 }
 
 .currentListItem {
@@ -49,16 +50,37 @@
 }
 
 .safeLink {
-  display: flex;
-  align-items: center;
+  display: grid;
   padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
+  grid-template-columns: auto 3fr 2fr auto;
+  align-items: center;
+}
+
+@media (max-width: 599.95px) {
+  .safeLink {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'a b d'
+      'a c d';
+  }
+
+  .safeLink :nth-child(1) {
+    grid-area: a;
+  }
+  .safeLink :nth-child(2) {
+    grid-area: b;
+  }
+  .safeLink :nth-child(3) {
+    grid-area: c;
+  }
+  .safeLink :nth-child(4) {
+    grid-area: d;
+  }
 }
 
 .safeAddress {
   white-space: nowrap;
-  padding-left: var(--space-2);
   overflow: hidden;
-  margin-right: 10px;
   text-overflow: ellipsis;
 }
 

@@ -6,7 +6,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 let staticSafes = []
 
 const sendValue = 0.00002
-const currentNonce = 3
+const currentNonce = 5
 
 function happyPathToStepTwo() {
   createtx.typeRecipientAddress(constants.EOA)
@@ -58,18 +58,24 @@ describe('[SMOKE] Create transactions tests', () => {
   })
 
   it('[SMOKE] Verify advance parameters gas limit input', () => {
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
+    createtx.clickOnNewtransactionBtn()
+    createtx.clickOnSendTokensBtn()
     happyPathToStepTwo()
-    createtx.changeNonce(currentNonce)
+    createtx.changeNonce('1')
     createtx.selectCurrentWallet()
     createtx.openExecutionParamsModal()
     createtx.verifyAndSubmitExecutionParams()
   })
 
   it('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
+    createtx.clickOnNewtransactionBtn()
+    createtx.clickOnSendTokensBtn()
     happyPathToStepTwo()
     createtx.verifySubmitBtnIsEnabled()
     createtx.verifyNativeTokenTransfer()
-    createtx.changeNonce(currentNonce)
+    createtx.changeNonce('1')
     createtx.verifyConfirmTransactionData()
     createtx.verifyRelayerAttemptsAvailable()
     createtx.selectCurrentWallet()

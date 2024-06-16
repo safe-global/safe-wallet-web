@@ -3,7 +3,7 @@ import { Web3Wallet } from '@walletconnect/web3wallet'
 import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import type Web3WalletType from '@walletconnect/web3wallet'
 import type { Web3WalletTypes } from '@walletconnect/web3wallet'
-import type { SessionTypes } from '@walletconnect/types'
+import type { ProposalTypes, SessionTypes } from '@walletconnect/types'
 import { type JsonRpcResponse } from '@walletconnect/jsonrpc-utils'
 import uniq from 'lodash/uniq'
 
@@ -82,15 +82,10 @@ class WalletConnectWallet {
   }
 
   private getNamespaces(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
-    // Most dApps require mainnet, but we aren't always on mainnet
-    // As workaround, we pretend include all required and optional chains with the Safe chainId
+    // As workaround, we pretend to support all the required chains plus the current Safe's chain
     const requiredChains = proposal.params.requiredNamespaces[EIP155]?.chains || []
-    const optionalChains = proposal.params.optionalNamespaces[EIP155]?.chains || []
 
-    const supportedChainIds = [currentChainId].concat(
-      requiredChains.map(stripEip155Prefix),
-      optionalChains.map(stripEip155Prefix),
-    )
+    const supportedChainIds = [currentChainId].concat(requiredChains.map(stripEip155Prefix))
 
     const eip155ChainIds = supportedChainIds.map(getEip155ChainId)
     const eip155Accounts = eip155ChainIds.map((eip155ChainId) => `${eip155ChainId}:${safeAddress}`)
@@ -112,7 +107,12 @@ class WalletConnectWallet {
     })
   }
 
-  public async approveSession(proposal: Web3WalletTypes.SessionProposal, currentChainId: string, safeAddress: string) {
+  public async approveSession(
+    proposal: Web3WalletTypes.SessionProposal,
+    currentChainId: string,
+    safeAddress: string,
+    sessionProperties?: ProposalTypes.SessionProperties,
+  ) {
     assertWeb3Wallet(this.web3Wallet)
 
     const namespaces = this.getNamespaces(proposal, currentChainId, safeAddress)
@@ -121,6 +121,7 @@ class WalletConnectWallet {
     const session = await this.web3Wallet.approveSession({
       id: proposal.id,
       namespaces,
+      sessionProperties,
     })
 
     await this.chainChanged(session.topic, currentChainId)

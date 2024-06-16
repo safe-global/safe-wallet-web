@@ -65,7 +65,7 @@ export const getLegacyChainName = (chainName: string, chainId: string): string =
 
 export const getEmptySafeApp = (url = '', appData?: SafeAppData): SafeAppDataWithPermissions => {
   return {
-    id: Math.random(),
+    id: Math.round(Math.random() * 1e9 + 1e6),
     url,
     name: 'unknown',
     iconUrl: '/images/apps/apps-icon.svg',

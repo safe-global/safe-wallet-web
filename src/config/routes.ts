@@ -2,6 +2,7 @@ export const AppRoutes = {
   '404': '/404',
   wc: '/wc',
   terms: '/terms',
+  swap: '/swap',
   privacy: '/privacy',
   licenses: '/licenses',
   index: '/',
@@ -27,7 +28,7 @@ export const AppRoutes = {
   },
   settings: {
     setup: '/settings/setup',
-    securityLogin: '/settings/security-login',
+    security: '/settings/security',
     notifications: '/settings/notifications',
     modules: '/settings/modules',
     index: '/settings',
@@ -50,7 +51,6 @@ export const AppRoutes = {
     history: '/transactions/history',
   },
   welcome: {
-    socialLogin: '/welcome/social-login',
     index: '/welcome',
     accounts: '/welcome/accounts',
   },

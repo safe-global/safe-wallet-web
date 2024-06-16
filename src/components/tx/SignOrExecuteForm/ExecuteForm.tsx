@@ -41,13 +41,11 @@ export const ExecuteForm = ({
   isCreation,
   isOwner,
   isExecutionLoop,
-  relays,
   txActions,
   txSecurity,
 }: SignOrExecuteProps & {
   isOwner: ReturnType<typeof useIsSafeOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
-  relays: ReturnType<typeof useRelaysBySafe>
   txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
@@ -68,7 +66,7 @@ export const ExecuteForm = ({
 
   // SC wallets can relay fully signed transactions
   const [walletCanRelay] = useWalletCanRelay(safeTx)
-
+  const relays = useRelaysBySafe(origin)
   // The transaction can/will be relayed
   const canRelay = walletCanRelay && hasRemainingRelays(relays[0])
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
@@ -112,7 +110,7 @@ export const ExecuteForm = ({
 
     // On success
     onSubmit?.(executedTxId, true)
-    setTxFlow(<SuccessScreenFlow txId={executedTxId} />, undefined, false)
+    setTxFlow(<SuccessScreenFlow txId={executedTxId} safeTx={safeTx} />, undefined, false)
   }
 
   const walletCanPay = useWalletCanPay({
@@ -214,7 +212,6 @@ const useTxSecurityContext = () => useContext(TxSecurityContext)
 export default madProps(ExecuteForm, {
   isOwner: useIsSafeOwner,
   isExecutionLoop: useIsExecutionLoop,
-  relays: useRelaysBySafe,
   txActions: useTxActions,
   txSecurity: useTxSecurityContext,
 })

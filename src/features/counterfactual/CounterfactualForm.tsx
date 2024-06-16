@@ -8,6 +8,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
@@ -38,6 +39,7 @@ export const CounterfactualForm = ({
   isOwner,
   isExecutionLoop,
   txSecurity,
+  onSubmit,
 }: SignOrExecuteProps & {
   isOwner: ReturnType<typeof useIsSafeOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
@@ -65,6 +67,7 @@ export const CounterfactualForm = ({
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+    onSubmit?.(Math.random().toString())
 
     if (needsRiskConfirmation && !isRiskConfirmed) {
       setIsRiskIgnored(true)
@@ -79,7 +82,8 @@ export const CounterfactualForm = ({
     try {
       trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
 
-      await deploySafeAndExecuteTx(txOptions, chainId, wallet, safeTx, onboard)
+      onboard && (await assertWalletChain(onboard, chainId))
+      await deploySafeAndExecuteTx(txOptions, wallet, safeTx, wallet?.provider)
 
       trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_with_tx })
       trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_with_tx })

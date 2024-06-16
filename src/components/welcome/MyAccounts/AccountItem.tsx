@@ -1,8 +1,8 @@
 import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
-import { ListItemButton, Box, Typography, Chip } from '@mui/material'
+import { ListItemButton, Box, Typography, Chip, Skeleton } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
@@ -21,16 +21,18 @@ import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import type { SafeItem } from './useAllSafes'
+import FiatValue from '@/components/common/FiatValue'
+import QueueActions from './QueueActions'
 
 type AccountItemProps = {
-  chainId: string
-  address: string
-  threshold?: number
-  owners?: number
+  safeItem: SafeItem
+  safeOverview?: SafeOverview
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) => {
+  const { chainId, address } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
   const safeAddress = useSafeAddress()
@@ -73,7 +75,9 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
     >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
         <Link onClick={onLinkClick} href={href} className={css.safeLink}>
-          <SafeIcon address={address} {...rest} />
+          <Box pr={2.5}>
+            <SafeIcon address={address} owners={safeOverview?.owners.length} threshold={safeOverview?.threshold} />
+          </Box>
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
             {name && (
@@ -105,13 +109,22 @@ const AccountItem = ({ onLinkClick, chainId, address, ...rest }: AccountItemProp
             )}
           </Typography>
 
-          <Box flex={1} />
+          <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
+            {safeOverview ? <FiatValue value={safeOverview.fiatTotal} /> : <Skeleton variant="text" />}
+          </Typography>
 
           <ChainIndicator chainId={chainId} responsive />
         </Link>
       </Track>
 
       <SafeListContextMenu name={name} address={address} chainId={chainId} />
+
+      <QueueActions
+        queued={safeOverview?.queued || 0}
+        awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
+        safeAddress={address}
+        chainShortName={chain?.shortName || ''}
+      />
     </ListItemButton>
   )
 }

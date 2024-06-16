@@ -21,9 +21,10 @@ export const SAFE_COMPATIBLE_METHODS = [
   'eth_getLogs',
   'eth_gasPrice',
   'wallet_switchEthereumChain',
-  'wallet_sendFunctionCallBundle',
-  'wallet_getBundleStatus',
-  'wallet_showBundleStatus',
+  'wallet_sendCalls',
+  'wallet_getCallsStatus',
+  'wallet_showCallsStatus',
+  'wallet_getCapabilities',
   'safe_setSettings',
 ]
 
@@ -46,7 +47,6 @@ export const BlockedBridges = [
   'zksync-era.l2scan.co',
   'www.portalbridge.com',
   'wallet.polygon.technology',
-  'app.rhino.fi',
 
   // Unsupported chain bridges
   'bridge.zora.energy',
@@ -67,6 +67,7 @@ export const WarnedBridges = [
   'core.app',
   'across.to', // doesn't send their URL in the session proposal
   'app.allbridge.io',
+  'app.rhino.fi',
   'bridge.arbitrum.io',
   'bridge.base.org',
   'bridge.linea.build',

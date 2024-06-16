@@ -2,7 +2,7 @@
   position: relative;
   border: none;
   margin: 0;
-  padding: 40px;
+  padding: var(--space-4);
 }
 
 .loadErrorCard {
@@ -67,7 +67,7 @@
 
 .links {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   margin-top: var(--space-3);
   text-wrap: nowrap;

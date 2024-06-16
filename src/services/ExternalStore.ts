@@ -23,7 +23,7 @@ class ExternalStore<T extends unknown> {
     }
   }
 
-  private readonly subscribe = (listener: Listener): (() => void) => {
+  public readonly subscribe = (listener: Listener): (() => void) => {
     this.listeners.add(listener)
     return () => {
       this.listeners.delete(listener)

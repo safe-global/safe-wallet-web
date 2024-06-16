@@ -3,20 +3,37 @@ import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import type { SafeItems } from './useAllSafes'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 
-let isTracked = false
+let isOwnedSafesTracked = false
+let isWatchlistTracked = false
 
-const useTrackSafesCount = (ownedSafes: SafeItems | undefined, watchlistSafes: SafeItems | undefined) => {
+const useTrackSafesCount = (
+  ownedSafes: SafeItems | undefined,
+  watchlistSafes: SafeItems | undefined,
+  wallet: ConnectedWallet | null,
+) => {
   const router = useRouter()
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
 
+  // Reset tracking for new wallet
   useEffect(() => {
-    if (watchlistSafes && ownedSafes && isLoginPage && !isTracked) {
+    isOwnedSafesTracked = false
+  }, [wallet?.address])
+
+  useEffect(() => {
+    if (wallet && !isOwnedSafesTracked && ownedSafes && ownedSafes.length > 0 && isLoginPage) {
       trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_OWNED, label: ownedSafes.length })
-      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_WATCHLIST, label: watchlistSafes.length })
-      isTracked = true
+      isOwnedSafesTracked = true
     }
-  }, [isLoginPage, ownedSafes, watchlistSafes])
+  }, [isLoginPage, ownedSafes, wallet])
+
+  useEffect(() => {
+    if (watchlistSafes && isLoginPage && watchlistSafes.length > 0 && !isWatchlistTracked) {
+      trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_WATCHLIST, label: watchlistSafes.length })
+      isWatchlistTracked = true
+    }
+  }, [isLoginPage, watchlistSafes])
 }
 
 export default useTrackSafesCount
