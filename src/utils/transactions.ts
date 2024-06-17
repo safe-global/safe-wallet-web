@@ -86,7 +86,9 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       txInfo: txDetails.txInfo,
       executionInfo,
       safeAppInfo: txDetails?.safeAppInfo,
+      txHash: null,
     },
+
     conflictType: ConflictType.NONE,
   }
 }
