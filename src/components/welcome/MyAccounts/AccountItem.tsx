@@ -66,8 +66,8 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
 
   const [undeployedSafeBalances] = useAsync(() => {
     if (!undeployedSafe || !hasCFBalances) return
-    return getBalances(chainId, safeAddress, currency)
-  }, [chainId, currency, hasCFBalances, safeAddress, undeployedSafe])
+    return getBalances(chainId, safeItem.address, currency)
+  }, [chainId, currency, hasCFBalances, safeItem.address, undeployedSafe])
 
   const href = useMemo(() => {
     return chain ? getHref(chain, address) : ''
