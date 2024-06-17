@@ -1,20 +1,20 @@
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { SafeProvider } from '@safe-global/protocol-kit'
 import {
-  getFallbackHandlerContractDeployment,
-  getMultiSendCallOnlyContractDeployment,
-  getProxyFactoryContractDeployment,
-  getSafeContractDeployment,
-  getSignMessageLibContractDeployment,
-} from './deployments'
+  getCompatibilityFallbackHandlerContractInstance,
+  getMultiSendCallOnlyContractInstance,
+  getSafeContractInstance,
+  getSafeProxyFactoryContractInstance,
+  getSignMessageLibContractInstance,
+} from '@safe-global/protocol-kit/dist/src/contracts/contractInstances'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
+import type SafeBaseContract from '@safe-global/protocol-kit/dist/src/contracts/Safe/SafeBaseContract'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { GetContractProps, SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { assertValidSafeVersion, createEthersAdapter, createReadOnlyEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
-import type { BrowserProvider } from 'ethers'
-import type { EthersAdapter, SafeContractEthers, SignMessageLibEthersContract } from '@safe-global/protocol-kit'
+import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import type { Eip1193Provider } from 'ethers'
 import semver from 'semver'
-
-import type CompatibilityFallbackHandlerEthersContract from '@safe-global/protocol-kit/dist/src/adapters/ethers/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
 // @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
@@ -23,9 +23,11 @@ export const isValidMasterCopy = (implementationVersionState: SafeInfo['implemen
   return implementationVersionState !== ImplementationVersionState.UNKNOWN
 }
 
-export const _getValidatedGetContractProps = (
-  safeVersion: SafeInfo['version'],
-): Pick<GetContractProps, 'safeVersion'> => {
+type ContractProps = {
+  safeVersion: SafeVersion
+}
+
+export const _getValidatedGetContractProps = (safeVersion: SafeInfo['version']): ContractProps => {
   assertValidSafeVersion(safeVersion)
 
   // SDK request here: https://github.com/safe-global/safe-core-sdk/issues/261
@@ -39,33 +41,40 @@ export const _getValidatedGetContractProps = (
 
 // GnosisSafe
 
-const getGnosisSafeContractEthers = async (safe: SafeInfo, ethAdapter: EthersAdapter): Promise<SafeContractEthers> => {
-  return ethAdapter.getSafeContract({
-    customContractAddress: safe.address.value,
-    ..._getValidatedGetContractProps(safe.version),
-  })
+const getGnosisSafeContractEthers = async (safe: SafeInfo, safeProvider: SafeProvider) => {
+  return getSafeContractInstance(
+    _getValidatedGetContractProps(safe.version).safeVersion,
+    safeProvider,
+    safe.address.value,
+  )
 }
 
-export const getReadOnlyCurrentGnosisSafeContract = async (safe: SafeInfo): Promise<SafeContractEthers> => {
-  const ethAdapter = createReadOnlyEthersAdapter()
-  return getGnosisSafeContractEthers(safe, ethAdapter)
+export const getReadOnlyCurrentGnosisSafeContract = async (safe: SafeInfo): Promise<SafeBaseContract<any>> => {
+  const provider = getWeb3ReadOnly()
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
+
+  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+
+  return getGnosisSafeContractEthers(safe, safeProvider)
 }
 
-export const getCurrentGnosisSafeContract = async (
-  safe: SafeInfo,
-  provider: BrowserProvider,
-): Promise<SafeContractEthers> => {
-  const ethAdapter = await createEthersAdapter(provider)
-  return getGnosisSafeContractEthers(safe, ethAdapter)
+export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: Eip1193Provider) => {
+  const safeProvider = new SafeProvider({ provider })
+
+  return getGnosisSafeContractEthers(safe, safeProvider)
 }
 
-export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersion: string = LATEST_SAFE_VERSION) => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+export const getReadOnlyGnosisSafeContract = async (safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION) => {
+  const provider = getWeb3ReadOnly()
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
 
-  return ethAdapter.getSafeContract({
-    singletonDeployment: getSafeContractDeployment(chain, safeVersion),
-    ..._getValidatedGetContractProps(safeVersion),
-  })
+  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+
+  return getSafeContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
 }
 
 // MultiSend
@@ -80,65 +89,58 @@ export const _getMinimumMultiSendCallOnlyVersion = (safeVersion: SafeInfo['versi
   return semver.gte(safeVersion, INITIAL_CALL_ONLY_VERSION) ? safeVersion : INITIAL_CALL_ONLY_VERSION
 }
 
-export const getMultiSendCallOnlyContract = async (
-  chainId: string,
-  safeVersion: SafeInfo['version'],
-  provider: BrowserProvider,
-) => {
-  const ethAdapter = await createEthersAdapter(provider)
-  const multiSendVersion = _getMinimumMultiSendCallOnlyVersion(safeVersion)
+export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo['version']) => {
+  const provider = getWeb3ReadOnly()
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
 
-  return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId, multiSendVersion),
-    ..._getValidatedGetContractProps(safeVersion),
-  })
-}
+  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
 
-export const getReadOnlyMultiSendCallOnlyContract = async (chainId: string, safeVersion: SafeInfo['version']) => {
-  const ethAdapter = createReadOnlyEthersAdapter()
-  const multiSendVersion = _getMinimumMultiSendCallOnlyVersion(safeVersion)
-
-  return ethAdapter.getMultiSendCallOnlyContract({
-    singletonDeployment: getMultiSendCallOnlyContractDeployment(chainId, multiSendVersion),
-    ..._getValidatedGetContractProps(safeVersion),
-  })
+  return getMultiSendCallOnlyContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
 }
 
 // GnosisSafeProxyFactory
 
-export const getReadOnlyProxyFactoryContract = (chainId: string, safeVersion: SafeInfo['version']) => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+export const getReadOnlyProxyFactoryContract = (safeVersion: SafeInfo['version']) => {
+  const provider = getWeb3ReadOnly()
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
 
-  return ethAdapter.getSafeProxyFactoryContract({
-    singletonDeployment: getProxyFactoryContractDeployment(chainId, safeVersion),
-    ..._getValidatedGetContractProps(safeVersion),
-  })
+  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+
+  return getSafeProxyFactoryContractInstance(
+    _getValidatedGetContractProps(safeVersion).safeVersion,
+    safeProvider,
+    provider,
+  )
 }
 
 // Fallback handler
 
-export const getReadOnlyFallbackHandlerContract = async (
-  chainId: string,
-  safeVersion: SafeInfo['version'],
-): Promise<CompatibilityFallbackHandlerEthersContract> => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+export const getReadOnlyFallbackHandlerContract = async (safeVersion: SafeInfo['version']) => {
+  const provider = getWeb3ReadOnly()
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
 
-  return ethAdapter.getCompatibilityFallbackHandlerContract({
-    singletonDeployment: getFallbackHandlerContractDeployment(chainId, safeVersion),
-    ..._getValidatedGetContractProps(safeVersion),
-  })
+  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+
+  return getCompatibilityFallbackHandlerContractInstance(
+    _getValidatedGetContractProps(safeVersion).safeVersion,
+    safeProvider,
+  )
 }
 
 // Sign messages deployment
 
-export const getReadOnlySignMessageLibContract = async (
-  chainId: string,
-  safeVersion: SafeInfo['version'],
-): Promise<SignMessageLibEthersContract> => {
-  const ethAdapter = createReadOnlyEthersAdapter()
+export const getReadOnlySignMessageLibContract = async (safeVersion: SafeInfo['version']) => {
+  const provider = getWeb3ReadOnly()
+  if (!provider) {
+    throw new Error('Provider not found')
+  }
+  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
 
-  return ethAdapter.getSignMessageLibContract({
-    singletonDeployment: getSignMessageLibContractDeployment(chainId, safeVersion),
-    ..._getValidatedGetContractProps(safeVersion),
-  })
+  return getSignMessageLibContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
 }

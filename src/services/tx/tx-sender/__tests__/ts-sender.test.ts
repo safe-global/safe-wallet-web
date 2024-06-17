@@ -1,5 +1,6 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
+import type MultiSendCallOnlyContract_v1_3_0 from '@safe-global/protocol-kit/dist/src/contracts/MultiSend/v1.3.0/MultiSendCallOnlyContract_v1_3_0'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import extractTxInfo from '../../extractTxInfo'
@@ -23,7 +24,6 @@ import {
 } from 'ethers'
 import * as safeContracts from '@/services/contracts/safeContracts'
 
-import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
 import * as web3 from '@/hooks/wallets/web3'
 
 const setupFetchStub = (data: any) => (_url: string) => {
@@ -534,7 +534,7 @@ describe('txSender', () => {
           },
         } as any,
         getAddress: async () => mockMultisendAddress,
-      } as MultiSendCallOnlyEthersContract
+      } as MultiSendCallOnlyContract_v1_3_0
 
       jest
         .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')

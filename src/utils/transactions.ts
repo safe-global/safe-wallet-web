@@ -106,7 +106,7 @@ export const getMultiSendTxs = async (
   safeAddress: string,
   safeVersion: string,
 ): Promise<MetaTransactionData[]> => {
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(safeVersion)
 
   return txs
     .map((tx) => {

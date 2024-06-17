@@ -69,8 +69,9 @@ const useIsValidExecution = (
     }
 
     try {
+      // TODO: Check if this still works without the monkey patch
       const provider = getPatchedSignerProvider(wallet, safe.chainId, readOnlyProvider)
-      const safeContract = await getCurrentGnosisSafeContract(safe, provider)
+      const safeContract = await getCurrentGnosisSafeContract(safe, wallet.provider)
 
       /**
        * We need to call the contract directly instead of using `sdk.isValidTransaction`

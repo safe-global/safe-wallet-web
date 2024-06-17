@@ -7,20 +7,6 @@ import ReviewSignMessageOnChain from '@/components/tx-flow/flows/SignMessageOnCh
 import { JsonRpcProvider, zeroPadValue } from 'ethers'
 import { act } from '@testing-library/react'
 
-jest.mock('@safe-global/protocol-kit', () => {
-  const originalModule = jest.requireActual('@safe-global/protocol-kit')
-
-  // Mock class
-  class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(1)))
-  }
-
-  return {
-    ...originalModule,
-    EthersAdapter: MockEthersAdapter,
-  }
-})
-
 describe('ReviewSignMessageOnChain', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', async () => {
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new JsonRpcProvider())

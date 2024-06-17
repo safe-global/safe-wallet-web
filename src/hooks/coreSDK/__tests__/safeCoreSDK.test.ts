@@ -1,5 +1,5 @@
-import { toBeHex } from 'ethers'
-import { BrowserProvider, id, AbiCoder, type Eip1193Provider } from 'ethers'
+import { JsonRpcProvider, toBeHex } from 'ethers'
+import { id, AbiCoder, type Eip1193Provider } from 'ethers'
 import Safe from '@safe-global/protocol-kit'
 import {
   getProxyFactoryContract,
@@ -21,21 +21,6 @@ jest.mock('@/types/contracts', () => {
   return {
     __esModule: true,
     ...jest.requireActual('@/types/contracts'),
-  }
-})
-
-jest.mock('@safe-global/protocol-kit', () => {
-  const originalModule = jest.requireActual('@safe-global/protocol-kit')
-
-  // Mock class
-  class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(1)))
-  }
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    EthersAdapter: MockEthersAdapter,
   }
 })
 
@@ -118,7 +103,7 @@ describe('safeCoreSDK', () => {
         }),
       }
 
-      return new BrowserProvider(mockProvider)
+      return new JsonRpcProvider()
     }
 
     describe('Supported contracts', () => {

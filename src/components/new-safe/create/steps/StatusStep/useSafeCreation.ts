@@ -110,7 +110,7 @@ export const useSafeCreation = (
             }
           : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit.toString() }
 
-        await createNewSafe(provider, {
+        await createNewSafe(wallet.provider, {
           ...safeDeployProps,
           options,
         })

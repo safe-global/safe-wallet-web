@@ -12,7 +12,6 @@ import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { chainBuilder } from '@/tests/builders/chains'
 import { waitFor } from '@testing-library/react'
 import type Safe from '@safe-global/protocol-kit'
-import type CompatibilityFallbackHandlerEthersContract from '@safe-global/protocol-kit/dist/src/adapters/ethers/contracts/CompatibilityFallbackHandler/CompatibilityFallbackHandlerEthersContract'
 import { FEATURES } from '@safe-global/safe-gateway-typescript-sdk'
 import * as gasPrice from '@/hooks/useGasPrice'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
@@ -25,20 +24,6 @@ const mockSafeInfo = {
   value: BigInt(0),
   startBlock: 1,
 }
-
-jest.mock('@safe-global/protocol-kit', () => {
-  const originalModule = jest.requireActual('@safe-global/protocol-kit')
-
-  // Mock class
-  class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
-  }
-
-  return {
-    ...originalModule,
-    EthersAdapter: MockEthersAdapter,
-  }
-})
 
 describe('useSafeCreation', () => {
   const mockPendingSafe = {
@@ -70,7 +55,7 @@ describe('useSafeCreation', () => {
     jest.spyOn(logic, 'estimateSafeCreationGas').mockReturnValue(Promise.resolve(BigInt(200000)))
     jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
       getAddress: () => zeroPadValue('0x0123', 20),
-    } as unknown as CompatibilityFallbackHandlerEthersContract)
+    } as unknown as any)
     jest
       .spyOn(gasPrice, 'default')
       .mockReturnValue([{ maxFeePerGas: BigInt(123), maxPriorityFeePerGas: undefined }, undefined, false])

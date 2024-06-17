@@ -1,3 +1,5 @@
+import type MultiSendCallOnlyContract_v1_3_0 from '@safe-global/protocol-kit/dist/src/contracts/MultiSend/v1.3.0/MultiSendCallOnlyContract_v1_3_0'
+import type MultiSendCallOnlyContract_v1_4_1 from '@safe-global/protocol-kit/dist/src/contracts/MultiSend/v1.4.1/MultiSendCallOnlyContract_v1_4_1'
 import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type {
   SafeTransaction,
@@ -6,7 +8,6 @@ import type {
   TransactionResult,
 } from '@safe-global/safe-core-sdk-types'
 import { didRevert } from '@/utils/ethers-utils'
-import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
 import { type SpendingLimitTxParams } from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
 import { getSpendingLimitContract } from '@/services/contracts/spendingLimitContracts'
 import type { ContractTransactionResponse, Eip1193Provider, Overrides, TransactionResponse } from 'ethers'
@@ -268,7 +269,7 @@ export const dispatchTxExecution = async (
 
 export const dispatchBatchExecution = async (
   txs: TransactionDetails[],
-  multiSendContract: MultiSendCallOnlyEthersContract,
+  multiSendContract: MultiSendCallOnlyContract_v1_4_1 | MultiSendCallOnlyContract_v1_3_0,
   multiSendTxData: string,
   provider: Eip1193Provider,
   signerAddress: string,
@@ -277,7 +278,7 @@ export const dispatchBatchExecution = async (
 ) => {
   const groupKey = multiSendTxData
 
-  let result: ContractTransactionResponse | undefined
+  let result: ContractTransactionResponse
   const txIds = txs.map((tx) => tx.txId)
   let signerNonce = overrides.nonce
   let txData = multiSendContract.encode('multiSend', [multiSendTxData])
@@ -287,6 +288,7 @@ export const dispatchBatchExecution = async (
       signerNonce = await getUserNonce(signerAddress)
     }
     const signer = await getUncheckedSigner(provider)
+    // @ts-ignore
     result = await multiSendContract.contract.connect(signer).multiSend(multiSendTxData, overrides)
 
     txIds.forEach((txId) => {
@@ -303,7 +305,7 @@ export const dispatchBatchExecution = async (
   txIds.forEach((txId) => {
     txDispatch(TxEvent.PROCESSING, {
       txId,
-      txHash: result!.hash,
+      txHash: result.hash,
       groupKey,
       signerNonce,
       signerAddress,
@@ -487,7 +489,7 @@ export const dispatchTxRelay = async (
 
 export const dispatchBatchExecutionRelay = async (
   txs: TransactionDetails[],
-  multiSendContract: MultiSendCallOnlyEthersContract,
+  multiSendContract: MultiSendCallOnlyContract_v1_4_1 | MultiSendCallOnlyContract_v1_3_0,
   multiSendTxData: string,
   chainId: string,
   safeAddress: string,

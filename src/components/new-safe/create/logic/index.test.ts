@@ -43,20 +43,6 @@ const mockPendingTx = {
   value: BigInt(0),
 }
 
-jest.mock('@safe-global/protocol-kit', () => {
-  const originalModule = jest.requireActual('@safe-global/protocol-kit')
-
-  // Mock class
-  class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
-  }
-
-  return {
-    ...originalModule,
-    EthersAdapter: MockEthersAdapter,
-  }
-})
-
 describe('checkSafeCreationTx', () => {
   let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
 
@@ -249,9 +235,9 @@ describe('createNewSafeViaRelayer', () => {
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract('5', LATEST_SAFE_VERSION)).getAddress()
-    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract('5', LATEST_SAFE_VERSION)
-    const safeContractAddress = await (await getReadOnlyGnosisSafeContract(mockChainInfo)).getAddress()
+    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)).getAddress()
+    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
+    const safeContractAddress = await (await getReadOnlyGnosisSafeContract(LATEST_SAFE_VERSION)).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
       [owner1, owner2],

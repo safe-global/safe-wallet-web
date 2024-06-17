@@ -9,7 +9,6 @@ import type { Eip1193Provider } from 'ethers'
 import { JsonRpcProvider, BrowserProvider } from 'ethers'
 import * as contracts from '@/services/contracts/safeContracts'
 
-import type { SafeContractEthers } from '@safe-global/protocol-kit'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 const createSafeTx = (data = '0x'): SafeTransaction => {
@@ -69,7 +68,7 @@ describe('useIsValidExecution', () => {
             },
           },
         },
-      } as unknown as SafeContractEthers),
+      } as any),
     )
 
     const mockTx = createSafeTx()

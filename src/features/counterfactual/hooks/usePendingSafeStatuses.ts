@@ -13,9 +13,10 @@ import {
 import { checkSafeActionViaRelay, checkSafeActivation } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
+import { isSmartContract } from '@/utils/wallets'
 import { useEffect, useRef } from 'react'
 
 export const safeCreationPendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
@@ -89,7 +90,7 @@ const usePendingSafeStatus = (): void => {
       const { chainId } = await provider.getNetwork()
       if (chainId !== BigInt(safe.chainId)) return
 
-      const isContractDeployed = await isSmartContract(provider, safeAddress)
+      const isContractDeployed = await isSmartContract(safeAddress)
 
       if (isContractDeployed) {
         dispatch(removeUndeployedSafe({ chainId: safe.chainId, address: safeAddress }))
