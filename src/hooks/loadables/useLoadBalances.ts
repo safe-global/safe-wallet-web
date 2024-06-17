@@ -31,7 +31,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const { safe, safeAddress } = useSafeInfo()
   const web3 = useWeb3()
   const chain = useCurrentChain()
-  const chainHasCFBalancesProvider = useHasBalancesProvider()
+  const chainHasCFBalancesProvider = useHasBalancesProvider(chain)
   const chainId = safe.chainId
 
   // Re-fetch assets when the entire SafeInfo updates

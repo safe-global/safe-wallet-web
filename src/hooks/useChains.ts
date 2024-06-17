@@ -48,11 +48,10 @@ export const useHasFeature = (feature: FEATURES): boolean => {
  *
  * @returns `true`, if the feature is enabled on the current chain. Otherwise `false`
  */
-export const useHasBalancesProvider = (): boolean => {
-  const currentChain = useCurrentChain()
+export const useHasBalancesProvider = (chain: ChainInfo | undefined): boolean => {
+  // TODO: remove the cast
   return (
-    !!currentChain &&
-    (currentChain as ChainInfo & { balancesProvider: { chainName: string | null; enabled: boolean } }).balancesProvider
-      .enabled
+    !!chain &&
+    (chain as ChainInfo & { balancesProvider: { chainName: string | null; enabled: boolean } }).balancesProvider.enabled
   )
 }

@@ -26,6 +26,8 @@ import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import useAsync from '@/hooks/useAsync'
 import { selectCurrency } from '@/store/settingsSlice'
+import { useTokenListSetting } from '@/hooks/loadables/useLoadBalances'
+import { useHasBalancesProvider } from '@/hooks/useChains'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -40,10 +42,12 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
   const router = useRouter()
+  const currency = useAppSelector(selectCurrency)
+  const isTrustedTokenList = useTokenListSetting()
+  const hasCFBalances = useHasBalancesProvider(chain)
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
-  const currency = useAppSelector(selectCurrency)
 
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
@@ -63,9 +67,11 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   )
 
   const [undeployedSafeBalances] = useAsync(() => {
-    if (!undeployedSafe) return
-    return getBalances(chainId, safeAddress, currency)
-  }, [chainId, currency, safeAddress, undeployedSafe])
+    if (!undeployedSafe || !hasCFBalances) return
+    return getBalances(chainId, safeAddress, currency, {
+      trusted: isTrustedTokenList,
+    })
+  }, [chainId, currency, hasCFBalances, isTrustedTokenList, safeAddress, undeployedSafe])
 
   const href = useMemo(() => {
     return chain ? getHref(chain, address) : ''
@@ -118,7 +124,11 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
           </Typography>
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
-            {fiatTotal ? <FiatValue value={fiatTotal} /> : <Skeleton variant="text" />}
+            {fiatTotal ? (
+              <FiatValue value={fiatTotal} />
+            ) : !undeployedSafe || hasCFBalances ? (
+              <Skeleton variant="text" />
+            ) : null}
           </Typography>
 
           <ChainIndicator chainId={chainId} responsive />
