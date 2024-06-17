@@ -8,8 +8,6 @@ import { Box, Typography } from '@mui/material'
 import FailedIcon from '@/public/images/common/tx-failed.svg'
 
 const getStep = (status: SafeCreationEvent) => {
-  const ERROR_TEXT = 'Please cancel the process or retry the transaction.'
-
   switch (status) {
     case SafeCreationEvent.PROCESSING:
     case SafeCreationEvent.RELAYING:
@@ -25,8 +23,8 @@ const getStep = (status: SafeCreationEvent) => {
       }
     case SafeCreationEvent.REVERTED:
       return {
-        description: 'Transaction was reverted.',
-        instruction: ERROR_TEXT,
+        description: "Your account couldn't be created",
+        instruction: 'The creation transaction reverted. You can retry or create an account from scratch.',
       }
     case SafeCreationEvent.SUCCESS:
       return {

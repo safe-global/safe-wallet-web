@@ -239,6 +239,15 @@ export const checkSafeActivation = async (
       return
     }
 
+    if (didRevert(_err.receipt)) {
+      safeCreationDispatch(SafeCreationEvent.REVERTED, {
+        groupKey: CF_TX_GROUP_KEY,
+        error: new Error('Transaction reverted'),
+        safeAddress,
+      })
+      return
+    }
+
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: _err,

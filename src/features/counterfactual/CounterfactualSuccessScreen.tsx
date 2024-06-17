@@ -59,8 +59,8 @@ const CounterfactualSuccessScreen = () => {
         </Box>
 
         {safeAddress && (
-          <Box p={2} bgcolor="background.main" borderRadius={1}>
-            <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton />
+          <Box p={2} bgcolor="background.main" borderRadius={1} fontSize={14}>
+            <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton avatarSize={32} />
           </Box>
         )}
 

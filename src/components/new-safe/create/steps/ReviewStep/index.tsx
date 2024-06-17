@@ -29,9 +29,11 @@ import { useWeb3 } from '@/hooks/wallets/web3'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { gtmSetSafeAddress } from '@/services/analytics/gtm'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
+import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch } from '@/store'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
+import { isWalletRejection } from '@/utils/wallets'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import { type DeploySafeProps } from '@safe-global/protocol-kit'
@@ -249,7 +251,11 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         })
       }
     } catch (_err) {
-      setSubmitError('Error creating the Safe Account. Please try again later.')
+      const error = asError(_err)
+      const submitError = isWalletRejection(error)
+        ? 'User rejected signing.'
+        : 'Error creating the Safe Account. Please try again later.'
+      setSubmitError(submitError)
     }
 
     setIsCreating(false)

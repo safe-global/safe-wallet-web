@@ -34,7 +34,7 @@ export const CreateSafeStatus = ({
 
   const counter = useCounter(pendingSafe?.status.submittedAt)
 
-  const isError = status === SafeCreationEvent.FAILED
+  const isError = status === SafeCreationEvent.FAILED || status === SafeCreationEvent.REVERTED
 
   useSyncSafeCreationStep(setStep)
 
