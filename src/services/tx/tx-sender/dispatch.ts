@@ -15,7 +15,13 @@ import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
-import { getAndValidateSafeSDK, getSafeSDKWithSigner, getUncheckedSafeSDK, tryOffChainTxSigning } from './sdk'
+import {
+  getAndValidateSafeSDK,
+  getSafeSDKWithSigner,
+  getUncheckedSafeSDK,
+  tryOffChainTxSigning,
+  getUncheckedSigner,
+} from './sdk'
 import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import chains from '@/config/chains'
@@ -182,12 +188,11 @@ export const dispatchCustomTxSpeedUp = async (
 ) => {
   const eventParams = { txId }
   const signerNonce = txOptions.nonce
-  const browserProvider = createWeb3(provider)
-  const signer = await browserProvider.getSigner()
 
   // Execute the tx
   let result: TransactionResponse | undefined
   try {
+    const signer = await getUncheckedSigner(provider)
     result = await signer.sendTransaction({ to, data, ...txOptions })
     txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
@@ -281,10 +286,8 @@ export const dispatchBatchExecution = async (
     if (signerNonce === undefined || signerNonce === null) {
       signerNonce = await getUserNonce(signerAddress)
     }
-    const browserProvider = createWeb3(provider)
-    result = await multiSendContract.contract
-      .connect(await browserProvider.getSigner())
-      .multiSend(multiSendTxData, overrides)
+    const signer = await getUncheckedSigner(provider)
+    result = await multiSendContract.contract.connect(signer).multiSend(multiSendTxData, overrides)
 
     txIds.forEach((txId) => {
       txDispatch(TxEvent.EXECUTING, { txId, groupKey })
@@ -379,8 +382,8 @@ export const dispatchSpendingLimitTxExecution = async (
 
   let result: ContractTransactionResponse | undefined
   try {
-    const browserProvider = createWeb3(provider)
-    const contract = getSpendingLimitContract(chainId, await browserProvider.getSigner())
+    const signer = await getUncheckedSigner(provider)
+    const contract = getSpendingLimitContract(chainId, signer)
 
     result = await contract.executeAllowanceTransfer(
       txParams.safeAddress,

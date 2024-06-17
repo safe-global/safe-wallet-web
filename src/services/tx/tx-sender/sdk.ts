@@ -122,6 +122,11 @@ export const getAssertedChainSigner = async (provider: Eip1193Provider): Promise
   return browserProvider.getSigner()
 }
 
+export const getUncheckedSigner = async (provider: Eip1193Provider) => {
+  const browserProvider = createWeb3(provider)
+  return new UncheckedJsonRpcSigner(browserProvider, (await browserProvider.getSigner()).address)
+}
+
 /**
  * https://docs.ethers.io/v5/api/providers/jsonrpc-provider/#UncheckedJsonRpcSigner
  * This resolves the promise sooner when executing a tx and mocks
