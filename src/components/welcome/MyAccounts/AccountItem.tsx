@@ -42,7 +42,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const currChainId = useChainId()
   const router = useRouter()
   const currency = useAppSelector(selectCurrency)
-  const hasCFBalances = useHasBalancesProvider(chain)
+  const chainHasCFBalancesProvider = useHasBalancesProvider(chain)
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
@@ -65,9 +65,9 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   )
 
   const [undeployedSafeBalances] = useAsync(() => {
-    if (!undeployedSafe || !hasCFBalances) return
+    if (!undeployedSafe || !chainHasCFBalancesProvider) return
     return getBalances(chainId, safeItem.address, currency)
-  }, [chainId, currency, hasCFBalances, safeItem.address, undeployedSafe])
+  }, [chainId, currency, chainHasCFBalancesProvider, safeItem.address, undeployedSafe])
 
   const href = useMemo(() => {
     return chain ? getHref(chain, address) : ''
@@ -122,7 +122,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
             {fiatTotal ? (
               <FiatValue value={fiatTotal} />
-            ) : !undeployedSafe || hasCFBalances ? (
+            ) : !undeployedSafe || chainHasCFBalancesProvider ? (
               <Skeleton variant="text" />
             ) : null}
           </Typography>
