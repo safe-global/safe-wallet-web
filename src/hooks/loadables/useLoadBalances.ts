@@ -6,7 +6,7 @@ import { useAppSelector } from '@/store'
 import useAsync, { type AsyncResult } from '../useAsync'
 import { Errors, logError } from '@/services/exceptions'
 import { selectCurrency, selectSettings, TOKEN_LISTS } from '@/store/settingsSlice'
-import { useCurrentChain } from '../useChains'
+import { useCurrentChain, useHasBalancesProvider } from '../useChains'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
 import useIntervalCounter from '../useIntervalCounter'
@@ -31,6 +31,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const { safe, safeAddress } = useSafeInfo()
   const web3 = useWeb3()
   const chain = useCurrentChain()
+  const chainHasCFBalancesProvider = useHasBalancesProvider()
   const chainId = safe.chainId
 
   // Re-fetch assets when the entire SafeInfo updates
@@ -38,8 +39,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
     () => {
       if (!chainId || !safeAddress || isTrustedTokenList === undefined) return
 
-      const isCFBalancesEnabledOnChain = true
-      if (!safe.deployed && !isCFBalancesEnabledOnChain) {
+      if (!safe.deployed && !chainHasCFBalancesProvider) {
         return getCounterfactualBalance(safeAddress, web3, chain)
       }
 

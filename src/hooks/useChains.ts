@@ -41,3 +41,18 @@ export const useHasFeature = (feature: FEATURES): boolean => {
   const currentChain = useCurrentChain()
   return !!currentChain && hasFeature(currentChain, feature)
 }
+
+/**
+ * Checks if the balances provider (Zerion) is available on the current chain.
+ * Currently used for getting ERC20 balances for undeployed safes.
+ *
+ * @returns `true`, if the feature is enabled on the current chain. Otherwise `false`
+ */
+export const useHasBalancesProvider = (): boolean => {
+  const currentChain = useCurrentChain()
+  return (
+    !!currentChain &&
+    (currentChain as ChainInfo & { balancesProvider: { chainName: string | null; enabled: boolean } }).balancesProvider
+      .enabled
+  )
+}
