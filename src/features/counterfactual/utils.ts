@@ -130,6 +130,16 @@ export const getCounterfactualBalance = async (
   }
 }
 
+/**
+ * Checks if the balances provider (Zerion) is available on the current chain.
+ * Used for getting ERC20 balances for counterfactual safes.
+ *
+ * @returns `true`, if the feature is enabled on the current chain. Otherwise `false`
+ */
+export const useHasBalancesProvider = (chain: ChainInfo | undefined): boolean => {
+  return !!chain && chain.balancesProvider.enabled
+}
+
 export const createCounterfactualSafe = (
   chain: ChainInfo,
   safeAddress: string,

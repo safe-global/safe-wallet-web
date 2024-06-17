@@ -26,8 +26,7 @@ import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import useAsync from '@/hooks/useAsync'
 import { selectCurrency } from '@/store/settingsSlice'
-import { useTokenListSetting } from '@/hooks/loadables/useLoadBalances'
-import { useHasBalancesProvider } from '@/hooks/useChains'
+import { useHasBalancesProvider } from '@/features/counterfactual/utils'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -43,7 +42,6 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const currChainId = useChainId()
   const router = useRouter()
   const currency = useAppSelector(selectCurrency)
-  const isTrustedTokenList = useTokenListSetting()
   const hasCFBalances = useHasBalancesProvider(chain)
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
@@ -68,10 +66,8 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
 
   const [undeployedSafeBalances] = useAsync(() => {
     if (!undeployedSafe || !hasCFBalances) return
-    return getBalances(chainId, safeAddress, currency, {
-      trusted: isTrustedTokenList,
-    })
-  }, [chainId, currency, hasCFBalances, isTrustedTokenList, safeAddress, undeployedSafe])
+    return getBalances(chainId, safeAddress, currency)
+  }, [chainId, currency, hasCFBalances, safeAddress, undeployedSafe])
 
   const href = useMemo(() => {
     return chain ? getHref(chain, address) : ''
