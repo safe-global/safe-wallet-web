@@ -138,6 +138,7 @@ export const PushNotifications = (): ReactElement => {
                     <CheckWallet allowNonOwner>
                       {(isOk) => (
                         <FormControlLabel
+                          data-testid="notifications-switch"
                           control={<Switch checked={!!preferences} onChange={handleOnChange} />}
                           label={preferences ? 'On' : 'Off'}
                           disabled={!isOk || isRegistering || !safe.deployed}

@@ -30,13 +30,15 @@ export function RecoverySummary({ item }: { item: RecoveryQueueItem }): ReactEle
         <DateTime value={Number(item.timestamp)} />
       </Box>
 
-      <Box gridArea="status">
-        {!isExecutable || isPending ? (
+      {!isExecutable || isPending ? (
+        <Box gridArea="status">
           <RecoveryStatus recovery={item} />
-        ) : (
-          !isMalicious && wallet && <ExecuteRecoveryButton recovery={item} compact />
-        )}
-      </Box>
+        </Box>
+      ) : (
+        <Box gridArea="actions" mr={2} display="flex" justifyContent="center">
+          {!isMalicious && wallet && <ExecuteRecoveryButton recovery={item} compact />}
+        </Box>
+      )}
     </Box>
   )
 }

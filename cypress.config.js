@@ -10,7 +10,7 @@ export default defineConfig({
     mochaFile: 'reports/junit-[hash].xml',
   },
   retries: {
-    runMode: 2,
+    runMode: 3,
     openMode: 0,
   },
   e2e: {

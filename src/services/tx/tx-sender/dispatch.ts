@@ -1,5 +1,10 @@
 import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeTransaction, TransactionOptions, TransactionResult } from '@safe-global/safe-core-sdk-types'
+import type {
+  SafeTransaction,
+  Transaction,
+  TransactionOptions,
+  TransactionResult,
+} from '@safe-global/safe-core-sdk-types'
 import { didRevert } from '@/utils/ethers-utils'
 import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
 import { type SpendingLimitTxParams } from '@/components/tx-flow/flows/TokenTransfer/ReviewSpendingLimitTx'
@@ -10,7 +15,13 @@ import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
 import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
-import { getAndValidateSafeSDK, getSafeSDKWithSigner, getUncheckedSafeSDK, tryOffChainTxSigning } from './sdk'
+import {
+  getAndValidateSafeSDK,
+  getSafeSDKWithSigner,
+  getUncheckedSafeSDK,
+  tryOffChainTxSigning,
+  getUncheckedSigner,
+} from './sdk'
 import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import chains from '@/config/chains'
@@ -177,12 +188,11 @@ export const dispatchCustomTxSpeedUp = async (
 ) => {
   const eventParams = { txId }
   const signerNonce = txOptions.nonce
-  const browserProvider = createWeb3(provider)
-  const signer = await browserProvider.getSigner()
 
   // Execute the tx
   let result: TransactionResponse | undefined
   try {
+    const signer = await getUncheckedSigner(provider)
     result = await signer.sendTransaction({ to, data, ...txOptions })
     txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
@@ -276,10 +286,8 @@ export const dispatchBatchExecution = async (
     if (signerNonce === undefined || signerNonce === null) {
       signerNonce = await getUserNonce(signerAddress)
     }
-    const browserProvider = createWeb3(provider)
-    result = await multiSendContract.contract
-      .connect(await browserProvider.getSigner())
-      .multiSend(multiSendTxData, overrides)
+    const signer = await getUncheckedSigner(provider)
+    result = await multiSendContract.contract.connect(signer).multiSend(multiSendTxData, overrides)
 
     txIds.forEach((txId) => {
       txDispatch(TxEvent.EXECUTING, { txId, groupKey })
@@ -315,6 +323,54 @@ export const dispatchBatchExecution = async (
   return result!.hash
 }
 
+/**
+ * Execute a module transaction
+ */
+export const dispatchModuleTxExecution = async (
+  tx: Transaction,
+  provider: Eip1193Provider,
+  safeAddress: string,
+): Promise<string> => {
+  const id = JSON.stringify(tx)
+
+  let result: TransactionResponse | undefined
+  try {
+    const browserProvider = createWeb3(provider)
+    const signer = await browserProvider.getSigner()
+
+    txDispatch(TxEvent.EXECUTING, { groupKey: id })
+    result = await signer.sendTransaction(tx)
+  } catch (error) {
+    txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+    throw error
+  }
+
+  txDispatch(TxEvent.PROCESSING_MODULE, {
+    groupKey: id,
+    txHash: result.hash,
+  })
+
+  result
+    ?.wait()
+    .then((receipt) => {
+      if (receipt === null) {
+        txDispatch(TxEvent.FAILED, { groupKey: id, error: new Error('No transaction receipt found') })
+      } else if (didRevert(receipt)) {
+        txDispatch(TxEvent.REVERTED, {
+          groupKey: id,
+          error: new Error('Transaction reverted by EVM'),
+        })
+      } else {
+        txDispatch(TxEvent.PROCESSED, { groupKey: id, safeAddress, txHash: result?.hash })
+      }
+    })
+    .catch((error) => {
+      txDispatch(TxEvent.FAILED, { groupKey: id, error: asError(error) })
+    })
+
+  return result?.hash
+}
+
 export const dispatchSpendingLimitTxExecution = async (
   txParams: SpendingLimitTxParams,
   txOptions: TransactionOptions,
@@ -326,8 +382,8 @@ export const dispatchSpendingLimitTxExecution = async (
 
   let result: ContractTransactionResponse | undefined
   try {
-    const browserProvider = createWeb3(provider)
-    const contract = getSpendingLimitContract(chainId, await browserProvider.getSigner())
+    const signer = await getUncheckedSigner(provider)
+    const contract = getSpendingLimitContract(chainId, signer)
 
     result = await contract.executeAllowanceTransfer(
       txParams.safeAddress,

@@ -45,8 +45,8 @@ describe('Sidebar added sidebar tests', () => {
   })
 
   it('Verify Fiat currency changes when edited in the assets tab', () => {
-    assets.changeCurrency(constants.currencies.cad)
-    sideBar.checkCurrencyInHeader(constants.currencies.cad)
+    assets.changeCurrency(assets.currencyCAD)
+    sideBar.checkCurrencyInHeader(assets.currency$)
   })
 
   // Waiting for endpoint from CGW

@@ -5,7 +5,7 @@ export const DAY_IN_SECONDS = 60 * 60 * 24
 
 type Periods = Array<{ label: string; value: string | number }>
 
-const DefaultRecoveryDelayPeriods: Periods = [
+const ExpirationPeriods: Periods = [
   {
     label: '2 days',
     value: `${DAY_IN_SECONDS * 2}`,
@@ -28,15 +28,7 @@ const DefaultRecoveryDelayPeriods: Periods = [
   },
 ]
 
-const DefaultRecoveryExpirationPeriods: Periods = [
-  {
-    label: 'Never',
-    value: '0',
-  },
-  ...DefaultRecoveryDelayPeriods,
-]
-
-const TestRecoveryDelayPeriods: Periods = [
+const TestPeriods: Periods = [
   {
     label: '1 minute',
     value: '60',
@@ -49,7 +41,31 @@ const TestRecoveryDelayPeriods: Periods = [
     label: '1 hour',
     value: `${60 * 60}`,
   },
-  ...DefaultRecoveryDelayPeriods,
+]
+
+const DefaultRecoveryDelayPeriods: Periods = [
+  {
+    label: 'Custom period',
+    value: '0',
+  },
+  ...ExpirationPeriods,
+]
+
+const DefaultRecoveryExpirationPeriods: Periods = [
+  {
+    label: 'Never',
+    value: '0',
+  },
+  ...ExpirationPeriods,
+]
+
+const TestRecoveryDelayPeriods: Periods = [
+  {
+    label: 'Custom period',
+    value: '0',
+  },
+  ...TestPeriods,
+  ...ExpirationPeriods,
 ]
 
 const TestRecoveryExpirationPeriods: Periods = [
@@ -57,7 +73,8 @@ const TestRecoveryExpirationPeriods: Periods = [
     label: 'Never',
     value: '0',
   },
-  ...TestRecoveryDelayPeriods,
+  ...TestPeriods,
+  ...ExpirationPeriods,
 ]
 
 export function useRecoveryPeriods(): { delay: Periods; expiration: Periods } {

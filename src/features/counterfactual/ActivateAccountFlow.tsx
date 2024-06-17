@@ -193,7 +193,13 @@ const ActivateAccountFlow = () => {
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
         <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
-          <Button onClick={createSafe} variant="contained" size="stretched" disabled={submitDisabled}>
+          <Button
+            data-testid="activate-account-btn"
+            onClick={createSafe}
+            variant="contained"
+            size="stretched"
+            disabled={submitDisabled}
+          >
             {!isSubmittable ? <CircularProgress size={20} /> : 'Activate'}
           </Button>
         </Box>

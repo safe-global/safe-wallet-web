@@ -16,12 +16,14 @@ type SafeParams = {
 // EIP155 address format
 const makeSafeId = ({ chainId, address }: SafeParams) => `${chainId}:${address}` as `${number}:0x${string}`
 
+const validateSafeParams = ({ chainId, address }: SafeParams) => chainId != null && address != null
+
 function useSafeOverviews(safes: Array<SafeParams>): AsyncResult<SafeOverview[]> {
   const excludeSpam = useTokenListSetting() || false
   const currency = useAppSelector(selectCurrency)
   const wallet = useWallet()
   const walletAddress = wallet?.address
-  const safesIds = useMemo(() => safes.map(makeSafeId), [safes])
+  const safesIds = useMemo(() => safes.filter(validateSafeParams).map(makeSafeId), [safes])
 
   const [data, error, isLoading] = useAsync(async () => {
     return await getSafeOverviews(safesIds, {

@@ -2,7 +2,7 @@ import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { ChainInfo, SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
-import { ListItemButton, Box, Typography, Chip } from '@mui/material'
+import { ListItemButton, Box, Typography, Chip, Skeleton } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
@@ -109,8 +109,8 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
             )}
           </Typography>
 
-          <Typography variant="body2" fontWeight="bold">
-            {safeOverview?.fiatTotal && <FiatValue value={safeOverview.fiatTotal} />}
+          <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
+            {safeOverview ? <FiatValue value={safeOverview.fiatTotal} /> : <Skeleton variant="text" />}
           </Typography>
 
           <ChainIndicator chainId={chainId} responsive />

@@ -5,7 +5,7 @@ import StatusStep from '@/components/new-safe/create/steps/StatusStep/StatusStep
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { PendingStatus } from '@/store/pendingTxsSlice'
 
-const StatusStepper = ({ status, txHash }: { status: PendingStatus; txHash?: string }) => {
+const StatusStepper = ({ status, txHash }: { status?: PendingStatus; txHash?: string }) => {
   const { safeAddress } = useSafeInfo()
 
   const isProcessing = status === PendingStatus.PROCESSING || status === PendingStatus.INDEXING || status === undefined

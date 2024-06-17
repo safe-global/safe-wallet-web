@@ -25,7 +25,6 @@ jest.mock('@/hooks/useSafeInfo')
 jest.mock('@/hooks/wallets/web3')
 jest.mock('@/hooks/useChains')
 jest.mock('@/hooks/useTxHistory')
-jest.mock('@/hooks/useChains')
 
 const mockUseSafeInfo = useSafeInfo as jest.MockedFunction<typeof useSafeInfo>
 const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb3ReadOnly>

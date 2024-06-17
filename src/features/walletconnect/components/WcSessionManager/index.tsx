@@ -43,7 +43,17 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
       setIsLoading(WCLoadingState.APPROVE)
 
       try {
-        await walletConnect.approveSession(sessionProposal, chainId, safeAddress)
+        await walletConnect.approveSession(sessionProposal, chainId, safeAddress, {
+          capabilities: JSON.stringify({
+            [safeAddress]: {
+              [`0x${Number(chainId).toString(16)}`]: {
+                atomicBatch: {
+                  supported: true,
+                },
+              },
+            },
+          }),
+        })
 
         // Auto approve future sessions for non-malicious dApps
         if (

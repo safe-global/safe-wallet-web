@@ -37,16 +37,13 @@ export const getExecutionPrice = (
 }
 
 export const getLimitPrice = (
-  order: Pick<SwapOrder, 'sellAmount' | 'buyAmount' | 'buyAmount' | 'buyToken' | 'sellToken'>,
+  order: Pick<SwapOrder, 'sellAmount' | 'buyAmount' | 'buyToken' | 'sellToken'>,
 ): number => {
   const { sellAmount, buyAmount, buyToken, sellToken } = order
 
   const ratio = calculateRatio(
     { amount: sellAmount, decimals: sellToken.decimals },
-    {
-      amount: buyAmount,
-      decimals: buyToken.decimals,
-    },
+    { amount: buyAmount, decimals: buyToken.decimals },
   )
 
   return ratio
@@ -70,6 +67,49 @@ export const getSurplusPrice = (
   } else {
     return 0
   }
+}
+
+export const getPartiallyFilledSurplus = (order: SwapOrder): number => {
+  if (order.kind === OrderKind.BUY) {
+    return getPartiallyFilledBuySurplus(order)
+  } else if (order.kind === OrderKind.SELL) {
+    return getPartiallyFilledSellSurplus(order)
+  } else {
+    return 0
+  }
+}
+
+const getPartiallyFilledBuySurplus = (
+  order: Pick<
+    SwapOrder,
+    'executedBuyAmount' | 'buyAmount' | 'buyToken' | 'executedSellAmount' | 'sellAmount' | 'sellToken' | 'kind'
+  >,
+): number => {
+  const { executedSellAmount, sellAmount, sellToken, executedBuyAmount, buyAmount, buyToken } = order
+
+  const limitPrice = calculateRatio(
+    { amount: sellAmount, decimals: sellToken.decimals },
+    { amount: buyAmount, decimals: buyToken.decimals },
+  )
+  const maximumSellAmount = asDecimal(BigInt(executedBuyAmount), buyToken.decimals) * limitPrice
+  return maximumSellAmount - asDecimal(BigInt(executedSellAmount), sellToken.decimals)
+}
+
+const getPartiallyFilledSellSurplus = (
+  order: Pick<
+    SwapOrder,
+    'executedBuyAmount' | 'buyAmount' | 'buyToken' | 'executedSellAmount' | 'sellAmount' | 'sellToken' | 'kind'
+  >,
+): number => {
+  const { executedSellAmount, sellAmount, sellToken, executedBuyAmount, buyAmount, buyToken } = order
+
+  const limitPrice = calculateRatio(
+    { amount: buyAmount, decimals: buyToken.decimals },
+    { amount: sellAmount, decimals: sellToken.decimals },
+  )
+
+  const minimumBuyAmount = asDecimal(BigInt(executedSellAmount), sellToken.decimals) * limitPrice
+  return asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - minimumBuyAmount
 }
 
 export const getFilledPercentage = (

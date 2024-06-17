@@ -9,7 +9,7 @@ import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import SwapIcon from '@/public/images/common/swap.svg'
 import { SvgIcon } from '@mui/material'
-import Chip from '@mui/material/Chip'
+import { Chip } from '@/components/common/Chip'
 
 export type NavItem = {
   label: string
@@ -33,7 +33,7 @@ export const navItems: NavItem[] = [
     label: 'Swap',
     icon: <SvgIcon component={SwapIcon} inheritViewBox />,
     href: AppRoutes.swap,
-    tag: <Chip label="New" color="success" sx={{ ml: 1 }} />,
+    tag: <Chip component="span" />,
   },
   {
     label: 'Transactions',

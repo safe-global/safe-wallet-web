@@ -13,7 +13,7 @@ const offchainMessage = 'Test message 2 off-chain'
 const typeMessagesGeneral = msg_data.type.general
 const typeMessagesOffchain = msg_data.type.offChain
 
-describe('Offchain Messages tests', () => {
+describe('[SMOKE] Offchain Messages tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -24,38 +24,38 @@ describe('Offchain Messages tests', () => {
     main.acceptCookies()
   })
 
-  it('Verify summary for off-chain unsigned messages', () => {
-    createTx.verifySummaryByIndex(
-      0,
-      [typeMessagesGeneral.sign, typeMessagesGeneral.oneOftwo, typeMessagesOffchain.walletConnect],
-      typeMessagesOffchain.altTmage,
-    )
-    createTx.verifySummaryByIndex(
-      2,
-      [typeMessagesGeneral.sign, typeMessagesGeneral.oneOftwo, typeMessagesOffchain.walletConnect],
-      typeMessagesOffchain.altTmage,
-    )
+  it('[SMOKE] Verify summary for off-chain unsigned messages', () => {
+    createTx.verifySummaryByIndex(0, [
+      typeMessagesGeneral.sign,
+      typeMessagesGeneral.oneOftwo,
+      typeMessagesOffchain.testMessage1,
+    ])
+    createTx.verifySummaryByIndex(2, [
+      typeMessagesGeneral.sign,
+      typeMessagesGeneral.oneOftwo,
+      typeMessagesOffchain.testMessage2,
+    ])
   })
 
-  it('Verify summary for off-chain signed messages', () => {
-    createTx.verifySummaryByIndex(
-      1,
-      [typeMessagesGeneral.confirmed, typeMessagesGeneral.twoOftwo, typeMessagesOffchain.walletConnect],
-      typeMessagesOffchain.altTmage,
-    )
-    createTx.verifySummaryByIndex(
-      3,
-      [typeMessagesGeneral.confirmed, typeMessagesGeneral.twoOftwo, typeMessagesOffchain.walletConnect],
-      typeMessagesOffchain.altTmage,
-    )
+  it('[SMOKE] Verify summary for off-chain signed messages', () => {
+    createTx.verifySummaryByIndex(1, [
+      typeMessagesGeneral.confirmed,
+      typeMessagesGeneral.twoOftwo,
+      typeMessagesOffchain.name,
+    ])
+    createTx.verifySummaryByIndex(3, [
+      typeMessagesGeneral.confirmed,
+      typeMessagesGeneral.twoOftwo,
+      typeMessagesOffchain.testMessage3,
+    ])
   })
 
-  it('Verify exapanded details for EIP 191 off-chain message', () => {
+  it('[SMOKE] Verify exapanded details for EIP 191 off-chain message', () => {
     createTx.clickOnTransactionItemByIndex(2)
     cy.contains(typeMessagesOffchain.message2).should('be.visible')
   })
 
-  it('Verify exapanded details for EIP 712 off-chain message', () => {
+  it('[SMOKE] Verify exapanded details for EIP 712 off-chain message', () => {
     const jsonString = createTx.messageNestedStr
     const values = [
       typeMessagesOffchain.name,
@@ -76,7 +76,7 @@ describe('Offchain Messages tests', () => {
     main.verifyTextVisibility(values)
   })
 
-  it('Verify confirmation window is displayed for unsigned message', () => {
+  it('[SMOKE] Verify confirmation window is displayed for unsigned message', () => {
     messages.clickOnMessageSignBtn(2)
     msg_confirmation_modal.verifyConfirmationWindowTitle(modal.modalTitiles.confirmMsg)
     msg_confirmation_modal.verifyMessagePresent(offchainMessage)

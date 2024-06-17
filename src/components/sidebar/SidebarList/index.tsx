@@ -64,10 +64,34 @@ export const SidebarListItemText = ({
   bold = false,
   ...rest
 }: ListItemTextProps & { bold?: boolean }): ReactElement => (
-  <ListItemText primaryTypographyProps={{ variant: 'body2', fontWeight: bold ? 700 : undefined }} {...rest}>
+  <ListItemText
+    primaryTypographyProps={{
+      variant: 'body2',
+      fontWeight: bold ? 700 : undefined,
+      display: 'flex',
+      justifyContent: 'space-between',
+    }}
+    {...rest}
+  >
     {children}
   </ListItemText>
 )
 
 export const SidebarListItemCounter = ({ count }: { count?: string }): ReactElement | null =>
-  count ? <Badge color="warning" variant="standard" badgeContent={count} sx={{ ml: 3 }} /> : null
+  count ? (
+    <Badge
+      sx={{
+        '& .MuiBadge-badge': {
+          color: 'static.main',
+          backgroundColor: 'warning.light',
+          transform: 'none',
+          fontWeight: 'bold',
+          padding: '0 var(--space-1)',
+          fontSize: '11px',
+        },
+        ml: 3,
+      }}
+      variant="standard"
+      badgeContent={count}
+    />
+  ) : null

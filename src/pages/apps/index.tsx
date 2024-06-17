@@ -73,6 +73,7 @@ const SafeApps: NextPage = () => {
         {/* All apps */}
         <SafeAppList
           title="All apps"
+          isFiltered={isFiltered}
           safeAppsList={isFiltered ? filteredApps : nonPinnedApps}
           safeAppsListLoading={remoteSafeAppsLoading}
           bookmarkedSafeAppsId={pinnedSafeAppIds}
