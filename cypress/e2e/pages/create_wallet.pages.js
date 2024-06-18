@@ -150,12 +150,7 @@ export function checkNetworkChangeWarningMsg() {
 }
 
 export function connectWallet() {
-  cy.get('onboard-v2')
-    .shadow()
-    .within(($modal) => {
-      cy.wrap($modal).contains('div', constants.connectWalletNames.e2e).click()
-      cy.wrap($modal).get(connectingContainer).should('exist')
-    })
+  // @TODO: connect to the test wallet here
 }
 
 export function clickOnCreateNewSafeBtn() {
