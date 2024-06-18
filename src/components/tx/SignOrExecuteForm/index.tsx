@@ -80,7 +80,7 @@ export const SignOrExecuteForm = ({
   const { safe } = useSafeInfo()
   const isCounterfactualSafe = !safe.deployed
 
-  const [isGnosisPayOwner, , isGnosisPayOwnerLoading] = useIsGnosisPayOwner()
+  const [isGnosisPayOwner] = useIsGnosisPayOwner()
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
@@ -142,7 +142,9 @@ export const SignOrExecuteForm = ({
           </ErrorMessage>
         )}
 
-        {canExecute && !props.onlyExecute && !isCounterfactualSafe && <ExecuteCheckbox onChange={setShouldExecute} />}
+        {canExecute && !props.onlyExecute && !isCounterfactualSafe && !isGnosisPayOwner && (
+          <ExecuteCheckbox onChange={setShouldExecute} />
+        )}
 
         <WrongChainWarning />
 

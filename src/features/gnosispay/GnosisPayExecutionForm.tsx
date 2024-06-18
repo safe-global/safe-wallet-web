@@ -1,6 +1,6 @@
 import { TxModalContext } from '@/components/tx-flow'
 import madProps from '@/utils/mad-props'
-import React, { type ReactElement, type SyntheticEvent, useContext, useState, useCallback, useMemo } from 'react'
+import React, { type ReactElement, type SyntheticEvent, useContext, useState, useMemo } from 'react'
 import {
   CircularProgress,
   Box,
@@ -15,7 +15,6 @@ import {
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { trackError, Errors } from '@/services/exceptions'
-import { useCurrentChain } from '@/hooks/useChains'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsExecutionLoop } from '@/components/tx/SignOrExecuteForm/hooks'
 import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm'
@@ -29,15 +28,12 @@ import { useIsGnosisPayOwner } from '@/features/gnosispay/hooks/useIsGnosisPayOw
 import { useGnosisPayDelayModifier } from './hooks/useGnosisPayDelayModifier'
 import { didRevert } from '@/utils/ethers-utils'
 import GnosisPayIcon from '@/public/images/common/gnosis-pay.svg'
-import CooldownButton from '@/components/common/CooldownButton'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { getGnosisPayTxWarnings } from './utils/getGnosisPayTxWarnings'
-
-enum ExecutionState {
-  QUEUEING,
-  AWAITING_DELAY,
-  EXECUTABLE,
-}
+import useAsync from '@/hooks/useAsync'
+import { useAppDispatch } from '@/store'
+import { type GnosisPayTxItem, enqueueTransaction, removeFirst } from '@/store/gnosisPayTxsSlice'
+import { useGnosisPayActions } from './hooks/useGnosisPayActions'
 
 export const GnosisPayExecutionForm = ({
   safeTx,
@@ -47,61 +43,52 @@ export const GnosisPayExecutionForm = ({
   txSecurity,
   onSubmit,
   safeInfo,
+  queuedGnosisPayTx,
 }: SignOrExecuteProps & {
   isGnosisPayOwner: ReturnType<typeof useIsGnosisPayOwner>
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
   safeInfo: ReturnType<typeof useSafeInfo>
+  queuedGnosisPayTx?: GnosisPayTxItem
 }): ReactElement => {
+  const dispatch = useAppDispatch()
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
-  // Stage in which we are
-  const [executionState, setExecutionState] = useState<ExecutionState>(ExecutionState.QUEUEING)
-  const [executableAt, setExecutableAt] = useState(0)
-
   // Hooks
-  const currentChain = useCurrentChain()
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
   const { setTxFlow } = useContext(TxModalContext)
-
   const [delayModifier] = useGnosisPayDelayModifier()
+
+  const { enqueueTx, executeTx } = useGnosisPayActions(
+    delayModifier?.delayModifier,
+    safeTx?.data ?? queuedGnosisPayTx?.safeTxData,
+  )
+
+  const [delayModifierNonces] = useAsync(async () => {
+    if (!delayModifier?.delayModifier) {
+      return
+    }
+    const queueNonce = await delayModifier.delayModifier.queueNonce()
+    const txNonce = await delayModifier.delayModifier.txNonce()
+    return { queueNonce, txNonce }
+  }, [delayModifier])
 
   const txWarnings = useMemo(() => getGnosisPayTxWarnings(safeTx, safeInfo.safe), [safeInfo.safe, safeTx])
 
-  const enqueueTx = useCallback(() => {
-    if (!delayModifier || !safeTx) {
-      return undefined
-    }
-
-    return delayModifier.delayModifier.execTransactionFromModule(
-      safeTx.data.to,
-      safeTx.data.value,
-      safeTx.data.data,
-      safeTx.data.operation,
-    )
-  }, [delayModifier, safeTx])
-
-  const delayRemainingSeconds = executableAt === 0 ? undefined : Math.floor((executableAt - Date.now()) / 1000)
-
-  const executeTx = useCallback(() => {
-    if (!delayModifier || !safeTx) {
-      return undefined
-    }
-
-    return delayModifier.delayModifier.executeNextTx(
-      safeTx.data.to,
-      safeTx.data.value,
-      safeTx.data.data,
-      safeTx.data.operation,
-    )
-  }, [delayModifier, safeTx])
+  const isNotNextInQueue =
+    delayModifierNonces && queuedGnosisPayTx && queuedGnosisPayTx.queueNonce > delayModifierNonces.txNonce
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+
+    if (!delayModifierNonces || (!safeTx && !queuedGnosisPayTx)) {
+      return
+    }
+
     onSubmit?.(Math.random().toString())
 
     if (needsRiskConfirmation && !isRiskConfirmed) {
@@ -114,38 +101,41 @@ export const GnosisPayExecutionForm = ({
 
     try {
       // depending on the mode we dispatch something
-      switch (executionState) {
-        case ExecutionState.QUEUEING:
-          const queueResult = await enqueueTx()
-          queueResult?.wait().then((receipt) => {
-            if (receipt === null) {
-              throw new Error('No transaction receipt found')
-            } else if (didRevert(receipt)) {
-              throw new Error('Transaction reverted by EVM')
-            } else {
-              // Success, we update some data
-              setExecutionState(ExecutionState.AWAITING_DELAY)
-              setExecutableAt(Date.now() + 1000 * 60 * 3)
-              setTimeout(() => setExecutionState(ExecutionState.EXECUTABLE), 1000 * 60 * 3)
-            }
-          })
-          break
-        case ExecutionState.EXECUTABLE:
-        case ExecutionState.AWAITING_DELAY:
-          const executeResult = await executeTx()
-          executeResult?.wait().then((receipt) => {
-            if (receipt === null) {
-              throw new Error('No transaction receipt found')
-            } else if (didRevert(receipt)) {
-              throw new Error('Transaction reverted by EVM')
-            } else {
-              // We close the modal
-              setTxFlow(undefined)
-            }
-          })
-          break
-        default:
-        // Do nothing
+      if (!queuedGnosisPayTx && safeTx) {
+        const queueResult = await enqueueTx()
+        queueResult?.wait().then((receipt) => {
+          if (receipt === null) {
+            throw new Error('No transaction receipt found')
+          } else if (didRevert(receipt)) {
+            throw new Error('Transaction reverted by EVM')
+          } else {
+            // Success, we update some data
+            dispatch(
+              enqueueTransaction({
+                executableAt: Date.now() + 1000 * 60 * 3,
+                expiresAt: Date.now() + 1000 * 60 * 30,
+                queueNonce: Number(delayModifierNonces.queueNonce),
+                safeAddress: safeInfo.safeAddress,
+                safeTxData: safeTx.data,
+              }),
+            )
+            // We close the modal
+            setTxFlow(undefined)
+          }
+        })
+      } else if (queuedGnosisPayTx) {
+        const executeResult = await executeTx()
+        executeResult?.wait().then((receipt) => {
+          if (receipt === null) {
+            throw new Error('No transaction receipt found')
+          } else if (didRevert(receipt)) {
+            throw new Error('Transaction reverted by EVM')
+          } else {
+            // We remove it from the queue and close the modal
+            dispatch(removeFirst({ safeAddress: safeInfo.safeAddress }))
+            setTxFlow(undefined)
+          }
+        })
       }
     } catch (_err) {
       const err = asError(_err)
@@ -158,7 +148,7 @@ export const GnosisPayExecutionForm = ({
 
   const cannotPropose = !isGnosisPayOwner
   const submitDisabled =
-    !safeTx ||
+    (!safeTx && !queuedGnosisPayTx) ||
     !isSubmittable ||
     disableSubmit ||
     isExecutionLoop ||
@@ -175,14 +165,21 @@ export const GnosisPayExecutionForm = ({
             fontSize="large"
             sx={{ position: 'absolute', top: '16px', left: '16px', width: '225px', height: '25px' }}
           />
-          <Typography pt={4}>
-            This is an activated Gnosis Pay Safe. Transaction executions have a delay of 3 minutes and require two
-            transactions: <br />
-            <ul>
-              <li>Announce / Queue a new transaction</li>
-              <li>Execute the transaction after waiting for 3 minutes</li>
-            </ul>
-          </Typography>
+          {queuedGnosisPayTx ? (
+            <Typography pt={4}>
+              This is an activated Gnosis Pay Safe. You are about to execute the next transaction is the Delay queue of
+              the Safe.
+            </Typography>
+          ) : (
+            <Typography pt={4}>
+              This is an activated Gnosis Pay Safe. Transaction executions have a delay of 3 minutes and require two
+              transactions: <br />
+              <ul>
+                <li>Announce / Queue a new transaction</li>
+                <li>Execute the transaction after waiting for 3 minutes</li>
+              </ul>
+            </Typography>
+          )}
         </Alert>
 
         {txWarnings.length > 0 && (
@@ -195,6 +192,16 @@ export const GnosisPayExecutionForm = ({
                 <li key={idx}>{txWarning}</li>
               ))}
             </ul>
+          </Alert>
+        )}
+
+        {isNotNextInQueue && (
+          <Alert severity="warning" sx={{ mb: 2, border: 0, position: 'relative' }} icon={false}>
+            <AlertTitle>
+              <b>Unknown queued transaction</b>
+            </AlertTitle>
+            There are one or more transactions in front of this one in the Delay queue. You have to skip or execute that
+            one first.
           </Alert>
         )}
 
@@ -220,38 +227,11 @@ export const GnosisPayExecutionForm = ({
         <CardActions>
           {/* Submit button */}
           <CheckWallet allowGnosisPayOwner>
-            {(isOk) =>
-              executionState === ExecutionState.AWAITING_DELAY && delayRemainingSeconds ? (
-                <CooldownButton
-                  variant="contained"
-                  cooldown={delayRemainingSeconds}
-                  startDisabled
-                  type="submit"
-                  sx={{ minWidth: '112px' }}
-                >
-                  Execute
-                </CooldownButton>
-              ) : (
-                <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
-                  {!isSubmittable ? (
-                    delayRemainingSeconds ? (
-                      <Box display="flex" flexDirection="row" gap={1} alignItems="center">
-                        <CircularProgress
-                          size={20}
-                          variant="determinate"
-                          value={delayRemainingSeconds / (1000 * 60 * 3)}
-                        />
-                        <Typography>in {delayRemainingSeconds}s</Typography>
-                      </Box>
-                    ) : (
-                      <CircularProgress size={20} />
-                    )
-                  ) : (
-                    'Execute'
-                  )}
-                </Button>
-              )
-            }
+            {(isOk) => (
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
+              </Button>
+            )}
           </CheckWallet>
         </CardActions>
       </form>
