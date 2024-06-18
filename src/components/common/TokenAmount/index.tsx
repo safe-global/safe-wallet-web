@@ -12,6 +12,7 @@ const TokenAmount = ({
   tokenSymbol,
   direction,
   fallbackSrc,
+  maxLength,
 }: {
   value: string
   decimals?: number
@@ -19,9 +20,10 @@ const TokenAmount = ({
   tokenSymbol?: string
   direction?: TransferDirection
   fallbackSrc?: string
+  maxLength?: number
 }): ReactElement => {
   const sign = direction === TransferDirection.OUTGOING ? '-' : ''
-  const amount = decimals !== undefined ? formatVisualAmount(value, decimals) : value
+  const amount = decimals !== undefined ? formatVisualAmount(value, decimals, undefined, maxLength) : value
 
   return (
     <span className={classNames(css.container, { [css.verticalAlign]: logoUri })}>

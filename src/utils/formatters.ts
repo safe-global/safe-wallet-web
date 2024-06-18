@@ -37,8 +37,9 @@ export const formatVisualAmount = (
   value: BigNumberish,
   decimals: number | string = GWEI,
   precision?: number,
+  maxLength?: number,
 ): string => {
-  return formatAmount(safeFormatUnits(value, decimals), precision)
+  return formatAmount(safeFormatUnits(value, decimals), precision, maxLength)
 }
 
 export const safeParseUnits = (value: string, decimals: number | string = GWEI): bigint | undefined => {
