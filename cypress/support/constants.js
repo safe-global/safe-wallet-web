@@ -38,10 +38,12 @@ export const goerlySafeName = /g(ö|oe)rli-safe/
 export const sepoliaSafeName = 'sepolia-safe'
 export const goerliToken = /G(ö|oe)rli Ether/
 
+export const swapWidget = 'https://swap.cow.fi/#/11155111/widget/swap/'
 export const safeTestAppurl = 'https://safe-apps-test-app.pages.dev'
 export const TX_Builder_url = 'https://safe-apps.dev.5afe.dev/tx-builder'
 export const drainAccount_url = 'https://safe-apps.dev.5afe.dev/drain-safe'
 export const testAppUrl = 'https://safe-test-app.com'
+export const swapUrl = '/swap?safe='
 export const addressBookUrl = '/address-book?safe='
 export const appsUrlGeneral = '/apps?=safe='
 export const appsCustomUrl = 'apps/custom?safe='
@@ -50,6 +52,7 @@ export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
 export const transactionsHistoryUrl = '/transactions/history?safe='
 export const transactionsMessagesUrl = '/transactions/messages?safe='
+export const transactionUrl = '/transactions/tx?safe='
 export const openAppsUrl = '/apps/open?safe='
 export const homeUrl = '/home?safe='
 export const welcomeUrl = '/welcome'
@@ -72,6 +75,7 @@ export const stagingTxServiceUrl = 'https://safe-transaction-sepolia.staging.5af
 export const stagingTxServiceSafesUrl = '/safes/'
 export const stagingTxServiceBalancesUrl = '/balances/'
 
+export const stagingCGWUrl = 'https://safe-client.staging.5afe.dev/'
 export const stagingCGWUrlv1 = 'https://safe-client.staging.5afe.dev/v1'
 export const stagingCGWUrlv2 = 'https://safe-client.staging.5afe.dev/v2'
 export const stagingCGWChains = '/chains/'
@@ -135,6 +139,7 @@ export const tokenAbbreviation = {
   gtt: 'GTT',
   qtrust: 'QTRUST',
   tpcc: 'tpcc',
+  cow: 'COW',
 }
 
 export const appNames = {
