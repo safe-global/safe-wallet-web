@@ -130,7 +130,12 @@ const usePendingSafeStatus = (): void => {
             updateUndeployedSafeStatus({
               chainId,
               address: detail.safeAddress,
-              status: { status: PendingSafeStatus.AWAITING_EXECUTION },
+              status: {
+                status: PendingSafeStatus.AWAITING_EXECUTION,
+                startBlock: undefined,
+                txHash: undefined,
+                submittedAt: undefined,
+              },
             }),
           )
           return
