@@ -1,6 +1,7 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
+import { useCurrentChain } from '@/hooks/useChains'
 import { useEffect, useState } from 'react'
 import { Box, Button, Dialog, DialogContent, Typography } from '@mui/material'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
@@ -8,6 +9,7 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 const CounterfactualSuccessScreen = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [safeAddress, setSafeAddress] = useState<string>()
+  const chain = useCurrentChain()
 
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
@@ -50,12 +52,10 @@ const CounterfactualSuccessScreen = () => {
 
         <Box textAlign="center">
           <Typography variant="h3" fontWeight="bold" mb={1}>
-            Account is activated!
+            Your account is all set!
           </Typography>
-          <Typography>
-            Your Safe Account was successfully deployed on chain. You can continue making improvements to your account
-            setup and security.
-          </Typography>
+          <Typography>Start your journey to the smart account security now.</Typography>
+          <Typography>Use your address to receive funds {chain?.chainName && `on ${chain.chainName}`}.</Typography>
         </Box>
 
         {safeAddress && (
@@ -65,7 +65,7 @@ const CounterfactualSuccessScreen = () => {
         )}
 
         <Button variant="contained" onClick={() => setOpen(false)}>
-          Continue
+          Let&apos;s go
         </Button>
       </DialogContent>
     </Dialog>
