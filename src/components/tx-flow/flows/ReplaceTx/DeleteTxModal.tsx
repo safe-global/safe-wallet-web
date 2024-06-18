@@ -130,6 +130,7 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, wallet, safeAddress, c
         </Button>
 
         <Button
+          data-testid="delete-tx-btn"
           size="small"
           variant="contained"
           color="primary"

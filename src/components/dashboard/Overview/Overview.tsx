@@ -131,6 +131,7 @@ const Overview = (): ReactElement => {
                       <Track {...SWAP_EVENTS.OPEN_SWAPS} label={SWAP_LABELS.dashboard}>
                         <Link href={{ pathname: AppRoutes.swap, query: router.query }} passHref type="button">
                           <Button
+                            data-testid="overview-swap-btn"
                             size={isSmallScreen ? 'medium' : 'small'}
                             variant="outlined"
                             color="primary"

@@ -36,7 +36,13 @@ const RejectTxButton = ({
     <CheckWallet>
       {(isOk) => (
         <Track {...TX_LIST_EVENTS.REJECT}>
-          <Button onClick={openReplacementModal} variant="danger" disabled={!isOk || isDisabled} size="stretched">
+          <Button
+            data-testid="reject-btn"
+            onClick={openReplacementModal}
+            variant="danger"
+            disabled={!isOk || isDisabled}
+            size="stretched"
+          >
             Reject
           </Button>
         </Track>
