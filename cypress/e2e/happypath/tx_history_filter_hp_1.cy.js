@@ -35,7 +35,7 @@ describe('Tx history happy path tests 1', () => {
       // date and amount
       createTx.clickOnFilterBtn()
       createTx.setTxType(createTx.filterTypes.incoming)
-      // createTx.fillFilterForm({ endDate: endDate, amount: amount })
+      createTx.fillFilterForm({ endDate: endDate, amount: amount })
       // createTx.clickOnApplyBtn()
       // createTx.verifyNumberOfTransactions(2)
       // createTx.checkTxItemDate(0, uiDate)
