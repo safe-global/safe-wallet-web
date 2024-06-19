@@ -1,6 +1,6 @@
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
-import { Box, SvgIcon } from '@mui/material'
+import { Box } from '@mui/material'
 import type { ReactElement } from 'react'
 import { type Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -11,14 +11,13 @@ import { isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import TxType from '@/components/transactions/TxType'
 import classNames from 'classnames'
 import { isImitation, isTrustedTx } from '@/utils/transactions'
-import UntrustedTxWarning from '../UntrustedTxWarning'
+import MaliciousTxWarning from '../UntrustedTxWarning'
 import QueueActions from './QueueActions'
 import useIsPending from '@/hooks/useIsPending'
 import TxConfirmations from '../TxConfirmations'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import TxStatusLabel from '@/components/transactions/TxStatusLabel'
-import WarningIcon from '@/public/images/notifications/warning.svg'
 
 type TxSummaryProps = {
   isGrouped?: boolean
@@ -53,17 +52,11 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
         </Box>
       )}
 
-      {isImitationTransaction ? (
+      {(isImitationTransaction || !isTrusted) && (
         <Box data-testid="warning" gridArea="nonce">
-          <Box lineHeight="16px" sx={{ opacity: 1 }}>
-            <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
-          </Box>
+          <MaliciousTxWarning withTooltip={!isImitationTransaction} />
         </Box>
-      ) : !isTrusted ? (
-        <Box data-testid="warning" gridArea="nonce">
-          <UntrustedTxWarning />
-        </Box>
-      ) : null}
+      )}
 
       <Box gridArea="type" data-testid="tx-type">
         <TxType tx={tx} />
@@ -99,7 +92,7 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       )}
 
       {isQueue && !expiredSwap && (
-        <Box gridArea="actions" className={css.actions}>
+        <Box gridArea="actions">
           <QueueActions tx={tx} />
         </Box>
       )}

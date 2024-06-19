@@ -7,7 +7,7 @@ import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
-import UntrustedTxWarning from '@/components/transactions/UntrustedTxWarning'
+import MaliciousTxWarning from '@/components/transactions/UntrustedTxWarning'
 import { ImitationTransactionWarning } from '@/components/transactions/ImitationTransactionWarning'
 
 type TransferTxInfoProps = {
@@ -29,7 +29,7 @@ const TransferTxInfoSummary = ({ txInfo, txStatus, trusted, imitation }: Transfe
         </b>
         {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
       </Typography>
-      {!trusted && !imitation && <UntrustedTxWarning />}
+      {!trusted && !imitation && <MaliciousTxWarning />}
     </Box>
   )
 }

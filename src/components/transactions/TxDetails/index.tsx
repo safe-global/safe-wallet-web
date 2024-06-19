@@ -58,9 +58,6 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
     txDetails.detailedExecutionInfo.trusted === false
 
-  const hasExecutionInfo =
-    txDetails.detailedExecutionInfo && isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
-
   // If we have no token list we always trust the transfer
   const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
   const isImitationTransaction = isImitation(txSummary)

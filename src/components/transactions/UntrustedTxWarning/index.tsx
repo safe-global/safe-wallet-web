@@ -1,19 +1,22 @@
 import { Tooltip, SvgIcon, Box } from '@mui/material'
-import WarningIcon from '@/public/images/notifications/warning.svg'
+import Warning from '@/public/images/notifications/warning.svg'
 
-const UntrustedTxWarning = () => {
+const WarningIcon = () => {
   return (
-    <Tooltip title="This token is unfamiliar and may pose risks when interacting with it or involved addresses">
-      <Box
-        lineHeight="16px"
-        sx={{
-          opacity: 1,
-        }}
-      >
-        <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
-      </Box>
-    </Tooltip>
+    <Box lineHeight="16px">
+      <SvgIcon component={Warning} fontSize="small" inheritViewBox color="warning" />
+    </Box>
   )
 }
 
-export default UntrustedTxWarning
+const MaliciousTxWarning = ({ withTooltip = true }: { withTooltip?: boolean }) => {
+  return withTooltip ? (
+    <Tooltip title="This token is unfamiliar and may pose risks when interacting with it or involved addresses">
+      <WarningIcon />
+    </Tooltip>
+  ) : (
+    <WarningIcon />
+  )
+}
+
+export default MaliciousTxWarning
