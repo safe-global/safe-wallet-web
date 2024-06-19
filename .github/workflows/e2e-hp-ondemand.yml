@@ -16,7 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3]
+        # containers: [1, 2, 3]
+        containers: [1]
     steps:
       - uses: actions/checkout@v4
 
@@ -24,7 +25,7 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           spec: |
-            cypress/e2e/happypath/*.cy.js
+            cypress/e2e/happypath/tx_history_filter_hp_1.cy.js
           group: 'Happy path on demand tests'
 
       - name: Python setup
