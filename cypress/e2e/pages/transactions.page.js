@@ -12,6 +12,10 @@ export function selectExecuteNow() {
   cy.get(executeNowOption).click()
 }
 
+export function selectExecuteLater() {
+  cy.get(executeLaterOption).click()
+}
+
 export function selectConnectedWalletOption() {
   cy.get(connectedWalletExecutionMethod).click()
 }
