@@ -128,7 +128,7 @@ export function changeCurrency(currency) {
 }
 
 export function clickOnSendBtn(index) {
-  cy.wait(2000)
+  cy.wait(4000)
   cy.get(addressbook.tableRow)
     .eq(index)
     .within(() => {

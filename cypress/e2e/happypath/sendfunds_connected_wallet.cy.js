@@ -4,6 +4,7 @@ import * as assets from '../pages/assets.pages'
 import * as loadsafe from '../pages/load_safe.pages'
 import * as navigation from '../pages/navigation.page'
 import * as tx from '../pages/transactions.page'
+import * as createTx from '../pages/create_tx.pages.js'
 import * as nfts from '../pages/nfts.pages'
 import * as ls from '../../support/localstorage_data.js'
 import { ethers } from 'ethers'
@@ -13,7 +14,7 @@ import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
-const safeBalanceEth = 305240000000000000n
+const safeBalanceEth = 505320000000000000n
 const qtrustBanance = 99000000000000000025n
 const transferAmount = '1'
 

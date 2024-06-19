@@ -120,7 +120,13 @@ export function fillFilterForm({ address, startDate, endDate, amount, token, non
     if (value !== undefined) {
       const { selector, findInput } = inputMap[key]
       const element = findInput ? cy.get(selector).find('input') : cy.get(selector)
-      element.should('be.enabled').clear().type(value, { force: true })
+      element
+        .should(($el) => {
+          expect($el.attr('class')).not.to.include('readOnly')
+        })
+        .then(($el) => {
+          cy.wrap($el).clear().type(value, { force: true })
+        })
     }
   })
 }
