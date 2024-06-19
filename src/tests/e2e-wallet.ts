@@ -54,7 +54,7 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
                 return provider.send(request.method, request.params)
               },
 
-              disconnect: () => {},
+              disconnect: () => { },
             },
             {
               eth_chainId: async () => currentChainId,
@@ -78,7 +78,13 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
               },
 
               eth_signTypedData: async ({ params }) => {
-                return await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
+                const [, json] = params
+                const typedData = JSON.parse(json)
+                return await wallet.signTypedData(
+                  typedData.domain,
+                  { [typedData.primaryType]: typedData.types[typedData.primaryType] },
+                  typedData.message,
+                )
               },
 
               // @ts-ignore
