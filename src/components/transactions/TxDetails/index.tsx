@@ -86,11 +86,9 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           </div>
         )}
 
-        {!isImitationTransaction && (
-          <div className={css.shareLink}>
-            <TxShareLink id={txSummary.id} />
-          </div>
-        )}
+        <div className={css.shareLink}>
+          <TxShareLink id={txSummary.id} />
+        </div>
 
         <div className={css.txData}>
           <ErrorBoundary fallback={<div>Error parsing data</div>}>

@@ -11,18 +11,14 @@
   position: relative;
 }
 
-.details.noSigners {
-  width: 100%;
-}
-
-.txSigners.noSigners {
-  display: none;
-}
-
 .shareLink {
   position: absolute;
   right: 16px;
   top: 16px;
+}
+
+.details .noSigners {
+  width: 100%;
 }
 
 .loading,
