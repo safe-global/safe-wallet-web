@@ -29,7 +29,7 @@ export const getRpcServiceUrl = (rpcUri: RpcUri): string => {
 export const createWeb3ReadOnly = (chain: ChainInfo, customRpc?: string): JsonRpcProvider | undefined => {
   const url = customRpc || getRpcServiceUrl(chain.rpcUri)
   if (!url) return
-  return new JsonRpcProvider(url, undefined, {
+  return new JsonRpcProvider(url, Number(chain.chainId), {
     staticNetwork: true,
     batchMaxCount: BATCH_MAX_COUNT,
   })

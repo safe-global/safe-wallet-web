@@ -1,0 +1,27 @@
+{
+  "type": {
+    "queue": {
+      "contractName": "GPv2Settlement",
+      "action": "setPreSignature",
+      "oneOfOne": "1 out of 1"
+    },
+    "history": {
+      "buyOrder": "Buy order",
+      "buy": "Buy",
+      "oneGNO": "1 GNO",
+      "forAtMost": "For at most",
+      "cow": "COW",
+      "expired": "Expired",
+      "actionApprove": "CoW Protocol Token: approve",
+      "actionPreSignature": "GPv2Settlement: setPreSignature",
+      "sellOrder": "Sell order",
+
+      "sell": "Sell",
+      "oneCOW": "1 COW",
+      "forAtLeast": "for at least",
+      "dai": "DAI",
+      "filled": "Filled",
+      "partiallyFilled": "Partially filled"
+    }
+  }
+}
