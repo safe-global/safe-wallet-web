@@ -14,7 +14,7 @@ import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 const safeBalanceEth = 405210000000000000n
-const qtrustBanance = 59000000000000000000n
+const qtrustBanance = 60000000000000000000n
 const transferAmount = '1'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -48,7 +48,8 @@ function visit(url) {
   cy.visit(url)
 }
 
-describe('Send funds with relay happy path tests', { defaultCommandTimeout: 60000 }, () => {
+// TODO: Relay only allows 5 txs per hour.
+describe('Send funds with relay happy path tests', { defaultCommandTimeout: 300000 }, () => {
   before(async () => {
     safesData = await getSafes(CATEGORIES.funds)
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__cookies, ls.cookies.acceptedCookies)
@@ -74,7 +75,7 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 6000
     protocolKitOwner2_S3 = safes[1]
   })
 
-  it.skip('Verify tx creation and execution of NFT with relay', () => {
+  it('Verify tx creation and execution of NFT with relay', { defaultCommandTimeout: 300000 }, () => {
     cy.wait(2000)
     const originatingSafe = safesData.SEP_FUNDS_SAFE_9.substring(4)
     function executeTransactionFlow(fromSafe, toSafe) {
@@ -106,7 +107,7 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 6000
       })
   })
 
-  it.skip('Verify tx creation and execution of native token with relay', () => {
+  it('Verify tx creation and execution of native token with relay', { defaultCommandTimeout: 300000 }, () => {
     cy.wait(2000)
     const targetSafe = safesData.SEP_FUNDS_SAFE_1.substring(4)
     function executeTransactionFlow(fromSafe, toSafe, tokenAmount) {
@@ -158,38 +159,43 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 6000
       })
   })
 
-  it.skip('Verify tx creation and execution of non-native token with with relay', () => {
-    cy.wait(2000)
-    const originatingSafe = safesData.SEP_FUNDS_SAFE_2.substring(4)
-    const amount = ethers.parseUnits(transferAmount, unit_eth).toString()
+  // TODO: Too many requests error occurs. Skip until resolved.
+  it.skip(
+    'Verify tx creation and execution of non-native token with with relay',
+    { defaultCommandTimeout: 300000 },
+    () => {
+      cy.wait(2000)
+      const originatingSafe = safesData.SEP_FUNDS_SAFE_2.substring(4)
+      const amount = ethers.parseUnits(transferAmount, unit_eth).toString()
 
-    function executeTransactionFlow(fromSafe, toSafe) {
-      visit(constants.BALANCE_URL + fromSafe)
-      assets.selectTokenList(assets.tokenListOptions.allTokens)
-      assets.clickOnSendBtn(1)
+      function executeTransactionFlow(fromSafe, toSafe) {
+        visit(constants.BALANCE_URL + fromSafe)
+        assets.selectTokenList(assets.tokenListOptions.allTokens)
+        assets.clickOnSendBtn(1)
 
-      loadsafe.inputOwnerAddress(0, toSafe)
-      assets.enterAmount(1)
-      navigation.clickOnNewTxBtnS()
-      tx.executeFlow_2()
-      cy.wait(5000)
-    }
+        loadsafe.inputOwnerAddress(0, toSafe)
+        assets.enterAmount(1)
+        navigation.clickOnNewTxBtnS()
+        tx.executeFlow_2()
+        cy.wait(5000)
+      }
 
-    cy.wrap(null)
-      .then(() => {
-        return main.fetchCurrentNonce(network_pref + originatingSafe)
-      })
-      .then(async (currentNonce) => {
-        executeTransactionFlow(originatingSafe, walletAddress.toString(), transferAmount)
-
-        const contractWithWallet = tokenContract.connect(signers[0])
-        const tx = await contractWithWallet.transfer(originatingSafe, amount, {
-          gasLimit: 200000,
+      cy.wrap(null)
+        .then(() => {
+          return main.fetchCurrentNonce(network_pref + originatingSafe)
         })
+        .then(async (currentNonce) => {
+          executeTransactionFlow(originatingSafe, walletAddress.toString(), transferAmount)
 
-        await tx.wait()
-        main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
-        main.checkTokenBalance(network_pref + originatingSafe, constants.tokenAbbreviation.qtrust, qtrustBanance)
-      })
-  })
+          const contractWithWallet = tokenContract.connect(signers[0])
+          const tx = await contractWithWallet.transfer(originatingSafe, amount, {
+            gasLimit: 200000,
+          })
+
+          await tx.wait()
+          main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
+          main.checkTokenBalance(network_pref + originatingSafe, constants.tokenAbbreviation.qtrust, qtrustBanance)
+        })
+    },
+  )
 })
