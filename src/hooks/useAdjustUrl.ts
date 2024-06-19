@@ -6,6 +6,8 @@ const SAFE_ROUTES = [
   AppRoutes.balances.index,
   AppRoutes.balances.nfts,
   AppRoutes.home,
+  AppRoutes.settings.modules,
+  AppRoutes.settings.setup,
   AppRoutes.swap,
   AppRoutes.transactions.index,
   AppRoutes.transactions.history,
