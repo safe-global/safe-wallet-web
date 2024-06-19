@@ -54,7 +54,7 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
                 return provider.send(request.method, request.params)
               },
 
-              disconnect: () => { },
+              disconnect: () => {},
             },
             {
               eth_chainId: async () => currentChainId,
