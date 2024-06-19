@@ -14,7 +14,7 @@ type TransferTxInfoProps = {
   txStatus: TransactionStatus
 }
 
-const TransferTxInfoSummary = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { trusted: boolean }) => {
+const TransferTxInfoMain = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { trusted: boolean }) => {
   const { direction } = txInfo
 
   return (
@@ -22,7 +22,7 @@ const TransferTxInfoSummary = ({ txInfo, txStatus, trusted }: TransferTxInfoProp
       <Typography>
         {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}
         <b>
-          <TransferTx info={txInfo} withLogo={false} omitSign maxAmountLength={30} />
+          <TransferTx info={txInfo} withLogo={false} omitSign preciseAmount />
         </b>
         {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
       </Typography>
@@ -36,7 +36,7 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted }: TransferTxInfoProps & { t
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
-      <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} trusted={trusted} />
+      <TransferTxInfoMain txInfo={txInfo} txStatus={txStatus} trusted={trusted} />
 
       <Box display="flex" alignItems="center" width="100%">
         <EthHashInfo

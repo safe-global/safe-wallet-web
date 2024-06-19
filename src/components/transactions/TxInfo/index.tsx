@@ -30,12 +30,12 @@ export const TransferTx = ({
   info,
   omitSign = false,
   withLogo = true,
-  maxAmountLength,
+  preciseAmount = false,
 }: {
   info: Transfer
   omitSign?: boolean
   withLogo?: boolean
-  maxAmountLength?: number
+  preciseAmount?: boolean
 }): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
@@ -50,7 +50,7 @@ export const TransferTx = ({
         decimals={nativeCurrency?.decimals}
         tokenSymbol={nativeCurrency?.symbol}
         logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
-        maxLength={maxAmountLength}
+        preciseAmount={preciseAmount}
       />
     )
   }
@@ -61,7 +61,7 @@ export const TransferTx = ({
         {...transfer}
         direction={direction}
         logoUri={withLogo ? transfer?.logoUri : undefined}
-        maxLength={maxAmountLength}
+        preciseAmount={preciseAmount}
       />
     )
   }
