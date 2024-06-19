@@ -111,6 +111,7 @@ export function clickOnClearBtn() {
 
 export function fillFilterForm({ address, startDate, endDate, amount, token, nonce, recipient } = {}) {
   checkApplyBtnEnabled()
+  cy.wait(4000)
   const inputMap = {
     address: { selector: addressItem, findInput: true },
     startDate: { selector: filterStartDateInput, findInput: true },
