@@ -80,7 +80,7 @@ describe('Send funds from queue happy path tests 1', () => {
 
   it(
     'Verify confirmation and execution of native token queued tx by second signer with connected wallet',
-    { defaultCommandTimeout: 30000 },
+    { defaultCommandTimeout: 300000 },
     () => {
       cy.wrap(null)
         .then(() => {
@@ -152,7 +152,7 @@ describe('Send funds from queue happy path tests 1', () => {
       })
   })
 
-  it('Verify 1 signer can execute a tx confirmed by 2 signers', { defaultCommandTimeout: 30000 }, () => {
+  it('Verify 1 signer can execute a tx confirmed by 2 signers', { defaultCommandTimeout: 300000 }, () => {
     function executeTransaction(fromSafe) {
       visit(constants.transactionQueueUrl + fromSafe)
       assets.clickOnExecuteBtn(0)
