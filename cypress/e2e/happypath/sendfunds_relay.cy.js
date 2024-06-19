@@ -13,7 +13,7 @@ import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
-const safeBalanceEth = 405210000000000000n
+const safeBalanceEth = 405240000000000000n
 const qtrustBanance = 60000000000000000000n
 const transferAmount = '1'
 
