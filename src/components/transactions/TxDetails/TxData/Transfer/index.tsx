@@ -39,8 +39,6 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted, isImitation }: TransferTxIn
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
-      {isImitation && <ImitationTransactionWarning />}
-
       <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} trusted={trusted} isImitation={isImitation} />
 
       <Box display="flex" alignItems="center" width="100%">
@@ -56,6 +54,7 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted, isImitation }: TransferTxIn
           <TransferActions address={address.value} txInfo={txInfo} trusted={trusted} />
         </EthHashInfo>
       </Box>
+      {isImitation && <ImitationTransactionWarning />}
     </Box>
   )
 }
