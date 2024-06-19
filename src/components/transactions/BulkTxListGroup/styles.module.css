@@ -12,6 +12,7 @@
 .action {
   margin-left: var(--space-2);
   grid-area: action;
+  color: var(--color-text-secondary);
 }
 
 .hash {
