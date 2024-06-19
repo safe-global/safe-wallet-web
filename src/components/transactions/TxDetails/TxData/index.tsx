@@ -24,17 +24,17 @@ import { MultiSendTxInfo } from '@/components/transactions/TxDetails/TxData/Mult
 const TxData = ({
   txDetails,
   trusted,
-  isImitation,
+  imitation,
 }: {
   txDetails: TransactionDetails
   trusted: boolean
-  isImitation: boolean
+  imitation: boolean
 }): ReactElement => {
   const chainId = useChainId()
   const txInfo = txDetails.txInfo
 
   if (isTransferTxInfo(txInfo)) {
-    return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} isImitation={isImitation} />
+    return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} imitation={imitation} />
   }
 
   if (isSettingsChangeTxInfo(txInfo)) {

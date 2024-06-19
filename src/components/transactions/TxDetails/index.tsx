@@ -38,7 +38,6 @@ import { isImitation, isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import { SwapOrder } from '@/features/swap/components/SwapOrder'
-import classnames from 'classnames'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -77,7 +76,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   return (
     <>
       {/* /Details */}
-      <div className={classnames(css.details, { [css.noSigners]: isUnsigned || !hasExecutionInfo })}>
+      <div className={css.details}>
         {isSwapTxInfo(txDetails.txInfo) && (
           <div className={css.swapOrder}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
@@ -92,7 +91,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
         <div className={css.txData}>
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
-            <TxData txDetails={txDetails} trusted={isTrustedTransfer} isImitation={isImitationTransaction} />
+            <TxData txDetails={txDetails} trusted={isTrustedTransfer} imitation={isImitationTransaction} />
           </ErrorBoundary>
         </div>
 
@@ -132,7 +131,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
       {/* Signers */}
       {!isUnsigned && (
-        <div className={classnames(css.txSigners, { [css.noSigners]: !isQueue && !hasExecutionInfo })}>
+        <div className={css.txSigners}>
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
 
           {isQueue && (
