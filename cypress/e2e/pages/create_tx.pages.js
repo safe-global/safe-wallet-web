@@ -34,7 +34,7 @@ const sendTokensBtn = '[data-testid="send-tokens-btn"]'
 export const replacementNewSigner = '[data-testid="new-owner"]'
 export const messageItem = '[data-testid="message-item"]'
 const filterStartDateInput = '[data-testid="start-date"]'
-const filterEndDateInput = '[data-testid="date-picker-execution_date__lte"]'
+const filterEndDateInput = '[data-testid="end-date"]'
 const filterAmountInput = '[data-testid="amount-input"]'
 const filterTokenInput = '[data-testid="token-input"]'
 const filterNonceInput = '[data-testid="nonce-input"]'
@@ -111,10 +111,11 @@ export function clickOnClearBtn() {
 
 export function fillFilterForm({ address, startDate, endDate, amount, token, nonce, recipient } = {}) {
   checkApplyBtnEnabled()
+  cy.wait(2000)
   const inputMap = {
     address: { selector: addressItem, findInput: true },
     startDate: { selector: filterStartDateInput, findInput: true },
-    endDate: { selector: filterEndDateInput, findInput: false },
+    endDate: { selector: filterEndDateInput, findInput: true },
     amount: { selector: filterAmountInput, findInput: true },
     token: { selector: filterTokenInput, findInput: true },
     nonce: { selector: filterNonceInput, findInput: true },
@@ -126,8 +127,7 @@ export function fillFilterForm({ address, startDate, endDate, amount, token, non
       const { selector, findInput } = inputMap[key]
       const element = findInput ? cy.get(selector).find('input') : cy.get(selector)
       element.then(($el) => {
-        // cy.wrap($el).invoke('removeAttr', 'readonly').clear().type(value, { force: true })
-        cy.wrap($el).clear().type(value, { force: true })
+        cy.wrap($el).invoke('removeAttr', 'readonly').clear().type(value, { force: true })
       })
     }
   })

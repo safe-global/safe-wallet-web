@@ -54,13 +54,7 @@ const DatePickerInput = ({
             {...field}
             disableFuture={disableFuture}
             renderInput={({ label, error: _, ...params }) => (
-              <TextField
-                label={fieldState.error?.message || label}
-                {...params}
-                fullWidth
-                error={!!fieldState.error}
-                inputProps={{ ...params.inputProps, 'data-testid': `date-picker-${name}` }}
-              />
+              <TextField label={fieldState.error?.message || label} {...params} fullWidth error={!!fieldState.error} />
             )}
             PaperProps={{
               elevation: 2,
