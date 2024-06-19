@@ -23,7 +23,7 @@ describe('Tx history happy path tests 1', () => {
 
   it(
     'Verify a user can filter incoming transactions by dates, amount and token address',
-    { defaultCommandTimeout: 300000 },
+    { defaultCommandTimeout: 60000 },
     () => {
       const uiDate = 'Dec 1, 2023'
       const uiDate2 = 'Dec 1, 2023 - 8:05:00 AM'
@@ -79,7 +79,7 @@ describe('Tx history happy path tests 1', () => {
 
   it(
     'Verify a user can filter outgoing transactions by dates, nonce, amount and recipient',
-    { defaultCommandTimeout: 300000 },
+    { defaultCommandTimeout: 60000 },
     () => {
       const uiDate = 'Nov 30, 2023 - 11:06:00 AM'
       const uiDate2 = 'Dec 1, 2023 - 7:54:36 AM'
