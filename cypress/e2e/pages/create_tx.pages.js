@@ -126,7 +126,8 @@ export function fillFilterForm({ address, startDate, endDate, amount, token, non
       const { selector, findInput } = inputMap[key]
       const element = findInput ? cy.get(selector).find('input') : cy.get(selector)
       element.then(($el) => {
-        cy.wrap($el).invoke('removeAttr', 'readonly').clear().type(value, { force: true })
+        // cy.wrap($el).invoke('removeAttr', 'readonly').clear().type(value, { force: true })
+        cy.wrap($el).clear().type(value, { force: true })
       })
     }
   })
