@@ -76,9 +76,9 @@ const Overview = (): ReactElement => {
                     <FiatValue value={balances.fiatTotal} maxLength={20} />
                   ) : (
                     <TokenAmount
-                      value={balances.items[0].balance}
-                      decimals={balances.items[0].tokenInfo.decimals}
-                      tokenSymbol={balances.items[0].tokenInfo.symbol}
+                      value={balances.items[0]?.balance || '0'}
+                      decimals={balances.items[0]?.tokenInfo.decimals}
+                      tokenSymbol={balances.items[0]?.tokenInfo.symbol}
                     />
                   )}
                 </Typography>

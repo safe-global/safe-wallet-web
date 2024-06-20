@@ -51,6 +51,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.xdai.gnosis.io',
@@ -100,6 +104,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.polygon.gnosis.io',
@@ -155,6 +163,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.bsc.gnosis.io',
@@ -206,6 +218,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.ewc.gnosis.io',
@@ -255,6 +271,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SAFE_TX_GAS_OPTIONAL,
       FEATURES.SPENDING_LIMIT,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.arbitrum.gnosis.io',
@@ -297,6 +317,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL, FEATURES.TX_SIMULATION],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.aurora.gnosis.io',
@@ -340,6 +364,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [FEATURES.CONTRACT_INTERACTION, FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.avalanche.gnosis.io',
@@ -394,6 +422,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.optimism.gnosis.io',
@@ -436,6 +468,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       'walletLink',
     ],
     features: [FEATURES.ERC721, FEATURES.SAFE_APPS, FEATURES.SAFE_TX_GAS_OPTIONAL, FEATURES.TX_SIMULATION],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.goerli.gnosis.io/',
@@ -486,6 +522,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.rinkeby.gnosis.io',
@@ -526,6 +566,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SPENDING_LIMIT,
       FEATURES.TX_SIMULATION,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
   {
     transactionService: 'https://safe-transaction.volta.gnosis.io',
@@ -575,6 +619,10 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
       FEATURES.SAFE_TX_GAS_OPTIONAL,
       FEATURES.SPENDING_LIMIT,
     ],
+    balancesProvider: {
+      chainName: null,
+      enabled: false,
+    },
   },
 ]
 

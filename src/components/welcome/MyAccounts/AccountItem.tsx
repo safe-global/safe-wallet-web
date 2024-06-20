@@ -1,6 +1,6 @@
 import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import type { ChainInfo, SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
+import { getBalances, type ChainInfo, type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo } from 'react'
 import { ListItemButton, Box, Typography, Chip, Skeleton } from '@mui/material'
 import Link from 'next/link'
@@ -24,6 +24,9 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
 import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
+import useAsync from '@/hooks/useAsync'
+import { selectCurrency } from '@/store/settingsSlice'
+import { hasBalancesProvider } from '@/features/counterfactual/utils'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -38,6 +41,8 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const safeAddress = useSafeAddress()
   const currChainId = useChainId()
   const router = useRouter()
+  const currency = useAppSelector(selectCurrency)
+  const chainHasCFBalancesProvider = hasBalancesProvider(chain)
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
@@ -59,13 +64,18 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
     [isWelcomePage, isSingleTxPage, router.pathname, router.query],
   )
 
+  const [undeployedSafeBalances] = useAsync(() => {
+    if (!undeployedSafe || !chainHasCFBalancesProvider) return
+    return getBalances(chainId, safeItem.address, currency)
+  }, [chainId, currency, chainHasCFBalancesProvider, safeItem.address, undeployedSafe])
+
   const href = useMemo(() => {
     return chain ? getHref(chain, address) : ''
   }, [chain, getHref, address])
 
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
-
   const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
+  const fiatTotal = safeOverview?.fiatTotal || undeployedSafeBalances?.fiatTotal
 
   return (
     <ListItemButton
@@ -110,7 +120,11 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
           </Typography>
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
-            {safeOverview ? <FiatValue value={safeOverview.fiatTotal} /> : <Skeleton variant="text" />}
+            {fiatTotal ? (
+              <FiatValue value={fiatTotal} />
+            ) : !undeployedSafe || chainHasCFBalancesProvider ? (
+              <Skeleton variant="text" />
+            ) : null}
           </Typography>
 
           <ChainIndicator chainId={chainId} responsive />

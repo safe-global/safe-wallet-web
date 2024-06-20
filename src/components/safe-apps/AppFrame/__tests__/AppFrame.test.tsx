@@ -61,6 +61,7 @@ describe('AppFrame', () => {
                       },
                     ],
                   },
+                  txHash: null,
                 },
                 conflictType: ConflictType.NONE,
               },

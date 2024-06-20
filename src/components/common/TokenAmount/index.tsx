@@ -4,6 +4,7 @@ import css from './styles.module.css'
 import { formatVisualAmount } from '@/utils/formatters'
 import TokenIcon from '../TokenIcon'
 import classNames from 'classnames'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const TokenAmount = ({
   value,
@@ -20,6 +21,8 @@ const TokenAmount = ({
   direction?: TransferDirection
   fallbackSrc?: string
 }): ReactElement => {
+  const chain = useCurrentChain()
+  const defaultTokenSymbol = chain?.nativeCurrency.name.toUpperCase()
   const sign = direction === TransferDirection.OUTGOING ? '-' : ''
   const amount = decimals !== undefined ? formatVisualAmount(value, decimals) : value
 
@@ -28,7 +31,7 @@ const TokenAmount = ({
       {logoUri && <TokenIcon logoUri={logoUri} tokenSymbol={tokenSymbol} fallbackSrc={fallbackSrc} />}
       <b>
         {sign}
-        {amount} {tokenSymbol}
+        {amount} {tokenSymbol || defaultTokenSymbol}
       </b>
     </span>
   )
