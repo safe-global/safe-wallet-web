@@ -1,21 +1,17 @@
 import { Tooltip, SvgIcon, Box } from '@mui/material'
-import Warning from '@/public/images/notifications/warning.svg'
-
-const WarningIcon = () => {
-  return (
-    <Box lineHeight="16px">
-      <SvgIcon component={Warning} fontSize="small" inheritViewBox color="warning" />
-    </Box>
-  )
-}
+import WarningIcon from '@/public/images/notifications/warning.svg'
 
 const MaliciousTxWarning = ({ withTooltip = true }: { withTooltip?: boolean }) => {
   return withTooltip ? (
     <Tooltip title="This token is unfamiliar and may pose risks when interacting with it or involved addresses">
-      <WarningIcon />
+      <Box lineHeight="16px" sx={{ opacity: 1 }}>
+        <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
+      </Box>
     </Tooltip>
   ) : (
-    <WarningIcon />
+    <Box lineHeight="16px" sx={{ opacity: 1 }}>
+      <SvgIcon component={WarningIcon} fontSize="small" inheritViewBox color="warning" />
+    </Box>
   )
 }
 
