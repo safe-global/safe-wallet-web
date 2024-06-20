@@ -32,7 +32,6 @@ const EditableApprovalItem = ({
   const handleSave = () => {
     onSave()
     setReadOnly(true)
-    MODALS_EVENTS.EDIT_APPROVALS
   }
 
   const handleEditMode = () => {
