@@ -1,4 +1,4 @@
-import { getCounterfactualBalance, useHasBalancesProvider } from '@/features/counterfactual/utils'
+import { getCounterfactualBalance, hasBalancesProvider } from '@/features/counterfactual/utils'
 import { useWeb3 } from '@/hooks/wallets/web3'
 import { useEffect, useMemo } from 'react'
 import { getBalances, type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
@@ -31,7 +31,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const { safe, safeAddress } = useSafeInfo()
   const web3 = useWeb3()
   const chain = useCurrentChain()
-  const chainHasCFBalancesProvider = useHasBalancesProvider(chain)
+  const chainHasCFBalancesProvider = hasBalancesProvider(chain)
   const chainId = safe.chainId
 
   // Re-fetch assets when the entire SafeInfo updates

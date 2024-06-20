@@ -26,7 +26,7 @@ import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import useAsync from '@/hooks/useAsync'
 import { selectCurrency } from '@/store/settingsSlice'
-import { useHasBalancesProvider } from '@/features/counterfactual/utils'
+import { hasBalancesProvider } from '@/features/counterfactual/utils'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -42,7 +42,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const currChainId = useChainId()
   const router = useRouter()
   const currency = useAppSelector(selectCurrency)
-  const chainHasCFBalancesProvider = useHasBalancesProvider(chain)
+  const chainHasCFBalancesProvider = hasBalancesProvider(chain)
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const isSingleTxPage = router.pathname === AppRoutes.transactions.tx

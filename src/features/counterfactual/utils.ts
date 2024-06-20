@@ -136,9 +136,7 @@ export const getCounterfactualBalance = async (
  *
  * @returns `true`, if the feature is enabled on the current chain. Otherwise `false`
  */
-export const useHasBalancesProvider = (chain: ChainInfo | undefined): boolean => {
-  return !!chain && chain.balancesProvider.enabled
-}
+export const hasBalancesProvider = (chain: ChainInfo | undefined): boolean => !!chain?.balancesProvider?.enabled
 
 export const createCounterfactualSafe = (
   chain: ChainInfo,
