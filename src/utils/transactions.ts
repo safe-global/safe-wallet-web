@@ -31,7 +31,6 @@ import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
 import { Multi_send__factory } from '@/types/contracts'
 import { toBeHex, AbiCoder } from 'ethers'
-import type { Erc20Transfer } from '@safe-global/safe-apps-sdk'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
@@ -300,11 +299,6 @@ export const isTrustedTx = (tx: TransactionSummary) => {
   )
 }
 
-// todo: remove cast
 export const isImitation = ({ txInfo }: TransactionSummary): boolean => {
-  return (
-    isTransferTxInfo(txInfo) &&
-    isERC20Transfer(txInfo.transferInfo) &&
-    Boolean((txInfo.transferInfo as Erc20Transfer & { imitation: boolean }).imitation)
-  )
+  return isTransferTxInfo(txInfo) && isERC20Transfer(txInfo.transferInfo) && Boolean(txInfo.transferInfo.imitation)
 }

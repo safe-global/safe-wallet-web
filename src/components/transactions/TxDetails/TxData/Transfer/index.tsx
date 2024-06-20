@@ -7,7 +7,7 @@ import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 import TransferActions from '@/components/transactions/TxDetails/TxData/Transfer/TransferActions'
-import MaliciousTxWarning from '@/components/transactions/UntrustedTxWarning'
+import MaliciousTxWarning from '@/components/transactions/MaliciousTxWarning'
 import { ImitationTransactionWarning } from '@/components/transactions/ImitationTransactionWarning'
 
 type TransferTxInfoProps = {
