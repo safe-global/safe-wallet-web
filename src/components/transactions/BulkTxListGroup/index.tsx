@@ -26,7 +26,7 @@ const GroupedTxListItems = ({
         <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
       </Box>
       <Box gridArea="info">
-        <Typography noWrap>Transactions executed in bulk</Typography>
+        <Typography noWrap>Bulk transactions</Typography>
       </Box>
       <Box className={css.action}>{groupedListItems.length} transactions</Box>
       <Box className={css.hash}>
