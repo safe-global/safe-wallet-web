@@ -97,10 +97,6 @@ export const SignOrExecuteForm = ({
       <TxCard>
         {props.children}
 
-        <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor safeTransaction={safeTx} />
-        </ErrorBoundary>
-
         <DecodedTx
           tx={safeTx}
           txId={props.txId}
@@ -109,7 +105,11 @@ export const SignOrExecuteForm = ({
           decodedDataLoading={decodedDataLoading}
           showMultisend={!props.isBatch}
           showToBlock={props.showToBlock}
-        />
+        >
+          <ErrorBoundary fallback={<div>Error parsing data</div>}>
+            <ApprovalEditor safeTransaction={safeTx} />
+          </ErrorBoundary>
+        </DecodedTx>
 
         {!isCounterfactualSafe && <RedefineBalanceChanges />}
       </TxCard>

@@ -36,7 +36,7 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
   return (
     <div className={css.tableWrapper}>
       <DataTable
-        header="Order Details"
+        header="Order details"
         rows={[
           <div key="amount">
             <SwapTokens

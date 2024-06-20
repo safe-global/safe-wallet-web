@@ -46,6 +46,7 @@ type DecodedTxProps = {
   decodedDataError?: Error
   decodedDataLoading?: boolean
   showToBlock?: boolean
+  children?: ReactElement
 }
 
 const DecodedTx = ({
@@ -56,6 +57,7 @@ const DecodedTx = ({
   decodedDataError,
   decodedDataLoading = false,
   showToBlock = false,
+  children,
 }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
   const chain = useCurrentChain()
@@ -74,7 +76,7 @@ const DecodedTx = ({
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
 
-  if (!decodedData) return null
+  if (!decodedData) return children ?? null
 
   const amount = tx?.data.value ? formatVisualAmount(tx.data.value, chain?.nativeCurrency.decimals) : '0'
 
@@ -97,6 +99,8 @@ const DecodedTx = ({
       )}
 
       {isSwapOrder && tx && <SwapOrderConfirmationView order={decodedData} settlementContract={tx.data.to} />}
+
+      {children}
 
       {isMultisend && showMultisend && (
         <Box>
