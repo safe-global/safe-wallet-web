@@ -44,6 +44,7 @@ export const defaultTx: TransactionSummary = {
     confirmationsRequired: 2,
     confirmationsSubmitted: 2,
   },
+  txHash: null,
 }
 
 export const getMockTx = ({ nonce }: { nonce?: number }): Transaction => {

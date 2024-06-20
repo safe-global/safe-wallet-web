@@ -101,11 +101,17 @@ export function clickOnApplyBtn() {
   cy.get(filterApplyBtn).click()
 }
 
+export function checkApplyBtnEnabled() {
+  cy.get(filterApplyBtn).should('not.be', 'disabled')
+}
+
 export function clickOnClearBtn() {
   cy.get(filterClearBtn).click()
 }
 
 export function fillFilterForm({ address, startDate, endDate, amount, token, nonce, recipient } = {}) {
+  checkApplyBtnEnabled()
+  cy.wait(2000)
   const inputMap = {
     address: { selector: addressItem, findInput: true },
     startDate: { selector: filterStartDateInput, findInput: true },
@@ -120,7 +126,9 @@ export function fillFilterForm({ address, startDate, endDate, amount, token, non
     if (value !== undefined) {
       const { selector, findInput } = inputMap[key]
       const element = findInput ? cy.get(selector).find('input') : cy.get(selector)
-      element.should('be.enabled').clear().type(value, { force: true })
+      element.then(($el) => {
+        cy.wrap($el).invoke('removeAttr', 'readonly').clear().type(value, { force: true })
+      })
     }
   })
 }

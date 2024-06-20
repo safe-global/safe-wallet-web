@@ -26,6 +26,7 @@ const BatchTxItem = ({ id, count, timestamp, txDetails, onDelete }: BatchTxItemP
       txInfo: txDetails.txInfo,
       txStatus: txDetails.txStatus,
       safeAppInfo: txDetails.safeAppInfo,
+      txHash: txDetails.txHash || null,
     }),
     [timestamp, txDetails],
   )
