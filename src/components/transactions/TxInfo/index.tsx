@@ -94,7 +94,7 @@ const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
 const SwapTx = ({ info }: { info: SwapOrder }): ReactElement => {
   return (
     <Box display="flex">
-      <Typography display="flex" alignItems="center" fontWeight="bold">
+      <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
         <Box style={{ paddingRight: 5, display: 'inline-block' }}>
           <TokenIcon logoUri={info.sellToken.logoUri || undefined} tokenSymbol={info.sellToken.symbol} />
         </Box>
