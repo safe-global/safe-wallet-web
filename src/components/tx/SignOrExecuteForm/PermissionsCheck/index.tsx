@@ -68,9 +68,11 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
     roles.find((role) => role.status !== Status.TargetAddressNotAllowed) ||
     roles[0]
 
+  const multiSendImpossible = metaTransactions.length > 1 && allowingRole && !allowingRole.multiSend
+
   // Wrap call routing it through the Roles mod with the allowing role
   const txThroughRole = useExecuteThroughRole({
-    role: allowingRole,
+    role: multiSendImpossible ? undefined : allowingRole,
     metaTransactions,
   })
 
@@ -145,7 +147,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
     <TxCard>
       <Typography variant="h5">Execute without confirmations</Typography>
 
-      {allowingRole && (
+      {allowingRole && !multiSendImpossible && (
         <>
           <Typography component="div">
             As a member of the <Role>{allowingRole.roleKey}</Role> you can execute this transaction immediately without
@@ -159,6 +161,13 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
             gasLimitError={gasLimitError}
           />
         </>
+      )}
+      {allowingRole && multiSendImpossible && (
+        <Typography component="div">
+          As a member of the <Role>{allowingRole.roleKey}</Role> you have permission to submit the above calls as
+          individual transactions. However, the current Roles configuration does not allow executing multiple
+          transactions in batch.
+        </Typography>
       )}
 
       {!allowingRole && (
@@ -205,7 +214,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
                 data-testid="execute-through-role-btn"
                 variant="contained"
                 onClick={handleExecute}
-                disabled={!isOk || !allowingRole || isPending}
+                disabled={!isOk || !allowingRole || multiSendImpossible || isPending}
                 sx={{ minWidth: '209px' }}
               >
                 {isPending ? <CircularProgress size={20} /> : 'Execute'}
