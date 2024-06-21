@@ -27,7 +27,7 @@ import type {
   SwapOrder,
   DecodedDataResponse,
   BaselineConfirmationView,
-  CowSwapConfirmationView,
+  CowSwapConfirmationView, TwapOrder, Order,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -92,8 +92,16 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
   )
 }
 
+export const isCoWOrderTxInfo = (value: TransactionInfo): value is Order => {
+  return isSwapTxInfo(value) || isTwapTxInfo(value)
+}
+
 export const isSwapTxInfo = (value: TransactionInfo): value is SwapOrder => {
   return value.type === TransactionInfoType.SWAP_ORDER
+}
+
+export const isTwapTxInfo = (value: TransactionInfo): value is TwapOrder => {
+  return value.type === TransactionInfoType.TWAP_ORDER
 }
 
 export const isSwapConfirmationViewOrder = (

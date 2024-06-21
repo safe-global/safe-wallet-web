@@ -12,13 +12,13 @@ import TxData from '@/components/transactions/TxDetails/TxData'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import {
-  isAwaitingExecution,
+  isAwaitingExecution, isCoWOrderTxInfo,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
   isOpenSwap,
-  isSwapTxInfo,
+  isSwapTxInfo, isTwapTxInfo,
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -73,7 +73,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     <>
       {/* /Details */}
       <div className={`${css.details} ${isUnsigned ? css.noSigners : ''}`}>
-        {isSwapTxInfo(txDetails.txInfo) && (
+        {isCoWOrderTxInfo(txDetails.txInfo) && (
           <div className={css.swapOrder}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
@@ -116,7 +116,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <Summary txDetails={txDetails} />
         </div>
 
-        {(isMultiSendTxInfo(txDetails.txInfo) || isSwapTxInfo(txDetails.txInfo)) && (
+        {(isMultiSendTxInfo(txDetails.txInfo) || isCoWOrderTxInfo(txDetails.txInfo)) && (
           <div className={css.multiSend}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <Multisend txData={txDetails.txData} />

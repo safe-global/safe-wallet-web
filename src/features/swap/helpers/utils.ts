@@ -1,4 +1,4 @@
-import type { SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
+import type { Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
 import type { AnyAppDataDocVersion, latest } from '@cowprotocol/app-data'
 

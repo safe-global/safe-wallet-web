@@ -1,11 +1,10 @@
 import { FEATURES } from '@/utils/chains'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 import { type CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
-import { CowEvents, type CowEventListeners } from '@cowprotocol/events'
-import { useState, useEffect, type MutableRefObject, useMemo } from 'react'
-import { Container, Grid, useTheme } from '@mui/material'
-import { useRef } from 'react'
-import { Box } from '@mui/material'
+import type { OnTradeParamsPayload } from '@cowprotocol/events'
+import { type CowEventListeners, CowEvents } from '@cowprotocol/events'
+import { type MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
+import { Box, Container, Grid, useTheme } from '@mui/material'
 import {
   SafeAppAccessPolicyTypes,
   type SafeAppData,
@@ -75,7 +74,7 @@ const SwapWidget = ({ sell }: Params) => {
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
   // useRefs as they don't trigger re-renders
-  const tradeTypeRef = useRef<TradeType>(tradeType)
+  const tradeTypeRef = useRef<TradeType>(tradeType === 'twap' ? TradeType.ADVANCED : TradeType.SWAP)
   const sellTokenRef = useRef<Params['sell']>(
     sell || {
       asset: '',
@@ -162,7 +161,7 @@ const SwapWidget = ({ sell }: Params) => {
       },
       {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
-        handler: (newTradeParams) => {
+        handler: (newTradeParams: OnTradeParamsPayload) => {
           const { orderType: tradeType, recipient, sellToken, sellTokenAmount } = newTradeParams
           dispatch(setSwapParams({ tradeType }))
 
@@ -203,7 +202,7 @@ const SwapWidget = ({ sell }: Params) => {
           ? BASE_URL + '/images/common/swap-empty-dark.svg'
           : BASE_URL + '/images/common/swap-empty-light.svg',
       },
-      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
+      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED],
       theme: {
         baseTheme: darkMode ? 'dark' : 'light',
         primary: palette.primary.main,

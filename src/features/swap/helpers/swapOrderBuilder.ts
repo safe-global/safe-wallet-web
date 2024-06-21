@@ -1,14 +1,17 @@
 import { Builder, type IBuilder } from '@/tests/Builder'
 import { faker } from '@faker-js/faker'
-import type {
-  SwapOrder,
-  OrderToken,
-  TransactionInfoType,
+import {
   CowSwapConfirmationView,
+  DurationType,
+  OrderToken,
+  StartTimeValue,
+  SwapOrder,
+  TransactionInfoType,
+  TwapOrder,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
 export function appDataBuilder(
-  orderClass: 'limit' | 'market' | 'liquidity' = 'limit',
+  orderClass: 'limit' | 'market' | 'twap' | 'liquidity' = 'limit',
 ): IBuilder<Record<string, unknown>> {
   return Builder.new<Record<string, unknown>>().with({
     appCode: 'Safe Wallet Swaps',
@@ -62,6 +65,39 @@ export function swapOrderBuilder(): IBuilder<SwapOrder> {
       'https://explorer.cow.fi/orders/0x03a5d561ad2452d719a0d075573f4bed68217c696b52f151122c30e3e4426f1b05e6b5eb1d0e6aabab082057d5bb91f2ee6d11be66223d88',
     executedSurplusFee: faker.string.numeric(),
     fullAppData: appDataBuilder().build(),
+  })
+}
+
+export function twapOrderBuilder(): IBuilder<TwapOrder> {
+  return Builder.new<TwapOrder>().with({
+    type: 'TwapOrder' as TransactionInfoType.TWAP_ORDER,
+    status: faker.helpers.arrayElement(['presignaturePending', 'open', 'cancelled', 'fulfilled', 'expired']),
+    kind: faker.helpers.arrayElement(['buy', 'sell']),
+    orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),
+    validUntil: faker.date.future().getTime(),
+    sellAmount: faker.string.numeric(),
+    buyAmount: faker.string.numeric(),
+    executedSellAmount: faker.string.numeric(),
+    executedBuyAmount: faker.string.numeric(),
+    sellToken: orderTokenBuilder().build(),
+    buyToken: orderTokenBuilder().build(),
+    executedSurplusFee: faker.string.numeric(),
+    fullAppData: appDataBuilder().build(),
+    numberOfParts: faker.number.int({ min: 1, max: 10 }),
+    /** @description The amount of sellToken to sell in each part */
+    partSellAmount: faker.string.numeric(),
+    /** @description The amount of buyToken that must be bought in each part */
+    minPartLimit: faker.string.numeric(),
+    /** @description The duration of the TWAP interval */
+    timeBetweenParts: faker.string.numeric(),
+    /** @description Whether the TWAP is valid for the entire interval or not */
+    durationOfPart: {
+      durationType: DurationType.Auto,
+    },
+    /** @description The start time of the TWAP */
+    startTime: {
+      startType: StartTimeValue.AtMiningTime,
+    },
   })
 }
 

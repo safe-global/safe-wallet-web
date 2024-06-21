@@ -39,8 +39,6 @@ const FulfilledSwapOrder = swapOrderBuilder()
     fullAppData: appDataBuilder('market').build(),
   })
 
-console.log(FulfilledSwapOrder)
-
 const NonFulfilledSwapOrder = {
   ...FulfilledSwapOrder.build(),
   status: 'open' as OrderStatuses,

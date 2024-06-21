@@ -6,11 +6,12 @@ import type {
   TransactionInfo,
   MultiSend,
   SettingsChange,
-  SwapOrder,
+  Order,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import {
+  isCoWOrderTxInfo,
   isCreationTxInfo,
   isCustomTxInfo,
   isERC20Transfer,
@@ -18,13 +19,13 @@ import {
   isMultiSendTxInfo,
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
-  isSwapTxInfo,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
-import { ellipsis, shortenAddress } from '@/utils/formatters'
+import { ellipsis, formatVisualAmount, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 import TokenIcon from '@/components/common/TokenIcon'
 import { Box, Typography } from '@mui/material'
+import { capitalize } from '@/hooks/useMnemonicName'
 
 export const TransferTx = ({
   info,
@@ -91,23 +92,45 @@ const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   )
 }
 
-const SwapTx = ({ info }: { info: SwapOrder }): ReactElement => {
+const SwapTx = ({ info }: { info: Order }): ReactElement => {
+  const { kind, sellToken, sellAmount, buyToken } = info
+  const orderKindLabel = capitalize(kind)
+  const isSellOrder = kind === 'sell'
+
+  let from = (
+    <>
+      <Box style={{ paddingRight: 5, display: 'inline-block' }}>
+        <TokenIcon logoUri={sellToken.logoUri || undefined} tokenSymbol={sellToken.symbol} />
+      </Box>
+      <Typography component="span" fontWeight="bold">
+        {formatVisualAmount(sellAmount, sellToken.decimals)} {sellToken.symbol} {" "}
+      </Typography>
+    </>
+  )
+
+  let to = (
+    <>
+      <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
+        <TokenIcon logoUri={buyToken.logoUri || undefined} tokenSymbol={buyToken.symbol} />
+      </Box>{' '}
+      <Typography component="span" fontWeight="bold">
+        {buyToken.symbol}
+      </Typography>
+    </>
+  )
+  if (!isSellOrder) {
+    // switch them around for buy order
+    ;[from, to] = [to, from]
+  }
+
   return (
     <Box display="flex">
       <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
-        <Box style={{ paddingRight: 5, display: 'inline-block' }}>
-          <TokenIcon logoUri={info.sellToken.logoUri || undefined} tokenSymbol={info.sellToken.symbol} />
-        </Box>
-        <Typography sx={{ maxWidth: '60px' }} noWrap>
-          {info.sellToken.symbol}&nbsp;
+        {from}
+        <Typography component="span" ml={0.5}>
+          to
         </Typography>
-        to
-        <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
-          <TokenIcon logoUri={info.buyToken.logoUri || undefined} tokenSymbol={info.buyToken.symbol} />
-        </Box>{' '}
-        <Typography sx={{ maxWidth: '60px' }} noWrap>
-          {info.buyToken.symbol}
-        </Typography>
+        {to}
       </Typography>
     </Box>
   )
@@ -144,7 +167,7 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
     return <CreationTx info={info} />
   }
 
-  if (isSwapTxInfo(info)) {
+  if (isCoWOrderTxInfo(info)) {
     return <SwapTx info={info} />
   }
 
