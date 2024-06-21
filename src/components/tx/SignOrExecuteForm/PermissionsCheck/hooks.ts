@@ -92,13 +92,23 @@ export const useRolesMods = () => {
 
 const KNOWN_MULTISEND_ADDRESSES = [
   '0x38869bf66a61cf6bdb996a6ae40d5853fd43b526', // MultiSend 1.4.1
-  '0x9641d764fc13c8b624c04430c7356c1c7c8102e2', // MultiSend 1.4.1 (call only)
   '0xa238cbeb142c10ef7ad8442c6d1f9e89e07e7761', // MultiSend 1.3.0
-  '0x998739bfdaadde7c933b942a68053933098f9eda', // MultiSend 1.3.0
-  '0x40a2accbd92bca938b02010e17a5b8929b49130d', // MultiSend 1.3.0 (call only)
-  '0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b', // MultiSend 1.3.0 (call only)
+  '0x998739bfdaadde7c933b942a68053933098f9eda', // MultiSend 1.3.0 alternative
   '0x8d29be29923b68abfdd21e541b9374737b49cdad', // MultiSend 1.1.1
 ]
+const KNOWN_MULTISEND_CALL_ONLY_ADDRESSES = [
+  '0x9641d764fc13c8b624c04430c7356c1c7c8102e2', // MultiSendCallOnly 1.4.1
+  '0x40a2accbd92bca938b02010e17a5b8929b49130d', // MultiSendCallOnly 1.3.0
+  '0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b', // MultiSendCallOnly 1.3.0 alternative
+]
+
+interface Role {
+  modAddress: `0x${string}`
+  roleKey: `0x${string}`
+  multiSend?: `0x${string}`
+  multiSendCallOnly?: `0x${string}`
+  status: Status | null
+}
 
 /**
  * Returns a list of roles mod address + role key assigned to the connected wallet.
@@ -111,27 +121,27 @@ export const useRoles = (metaTransactions: MetaTransactionData[]) => {
 
   // find all roles assigned to the connected wallet, statically check if they allow the given meta transaction
   const potentialRoles = useMemo(() => {
-    const result: {
-      modAddress: `0x${string}`
-      roleKey: `0x${string}`
-      status: Status | null
-      multiSend?: `0x${string}`
-    }[] = []
+    const result: Role[] = []
 
     if (walletAddress && rolesMods) {
       for (const rolesMod of rolesMods) {
         const multiSend = rolesMod.multiSendAddresses.find((addr) => KNOWN_MULTISEND_ADDRESSES.includes(addr))
+        const multiSendCallOnly = rolesMod.multiSendAddresses.find((addr) =>
+          KNOWN_MULTISEND_CALL_ONLY_ADDRESSES.includes(addr),
+        )
+
         for (const role of rolesMod.roles) {
           if (role.members.includes(walletAddress)) {
             const statuses = metaTransactions.map((metaTx) => checkPermissions(role, metaTx))
             result.push({
               modAddress: rolesMod.address,
               roleKey: role.key,
+              multiSend,
+              multiSendCallOnly,
               status:
                 statuses.find((status) => status !== Status.Ok && status !== null) ||
                 statuses.find((status) => status !== Status.Ok) ||
                 Status.Ok,
-              multiSend,
             })
           }
         }
@@ -146,17 +156,11 @@ export const useRoles = (metaTransactions: MetaTransactionData[]) => {
   const [dynamicallyCheckedPotentialRoles] = useAsync(
     () =>
       Promise.all(
-        potentialRoles.map(async (entry) => {
-          if (entry.status === null && walletAddress && web3ReadOnly) {
-            entry.status = await checkCondition(
-              entry.modAddress,
-              entry.roleKey,
-              metaTransactions,
-              walletAddress,
-              web3ReadOnly,
-            )
+        potentialRoles.map(async (role: Role) => {
+          if (role.status === null && walletAddress && web3ReadOnly) {
+            role.status = await checkCondition(role, metaTransactions, walletAddress, web3ReadOnly)
           }
-          return entry
+          return role
         }),
       ),
     [potentialRoles, metaTransactions, walletAddress, web3ReadOnly],
@@ -207,12 +211,10 @@ const checkExecutionOptions = (execOptions: ExecutionOptions, metaTx: MetaTransa
 }
 
 export const useExecuteThroughRole = ({
-  modAddress,
-  roleKey,
+  role,
   metaTransactions,
 }: {
-  modAddress?: `0x${string}`
-  roleKey?: `0x${string}`
+  role?: Role
   metaTransactions: MetaTransactionData[]
 }) => {
   const web3ReadOnly = useWeb3ReadOnly()
@@ -221,29 +223,30 @@ export const useExecuteThroughRole = ({
 
   return useMemo(
     () =>
-      modAddress && roleKey && walletAddress && web3ReadOnly
-        ? encodeExecuteThroughRole(modAddress, roleKey, metaTransactions, walletAddress, web3ReadOnly)
+      role && walletAddress && web3ReadOnly
+        ? encodeExecuteThroughRole(role, metaTransactions, walletAddress, web3ReadOnly)
         : undefined,
-    [modAddress, roleKey, metaTransactions, walletAddress, web3ReadOnly],
+    [role, metaTransactions, walletAddress, web3ReadOnly],
   )
 }
 
-// These are the multisend addresses that are used as default in the setup of the Roles Modifier.
-// Using them consistently for batch calls made through roles will ensure that the Roles Modifier can handle them.
-const MULTISEND_141 = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526'
-const MULTISEND_CALL_ONLY_141 = '0x9641d764fc13c8B624c04430C7356C1C7C8102e2'
-
-const encodeMetaTransactions = (metaTransactions: MetaTransactionData[]): MetaTransactionData => {
+const encodeMetaTransactions = (role: Role, metaTransactions: MetaTransactionData[]): MetaTransactionData => {
   if (metaTransactions.length === 0) {
     throw new Error('No meta transactions to encode')
   }
   if (metaTransactions.length === 1) {
     return metaTransactions[0]
   } else {
+    const to = metaTransactions.some((metaTx) => metaTx.operation === OperationType.DelegateCall)
+      ? role.multiSend
+      : role.multiSendCallOnly || role.multiSend
+
+    if (!to) {
+      throw new Error('Roles mod is not configured with a multiSend address')
+    }
+
     return {
-      to: metaTransactions.some((metaTx) => metaTx.operation === OperationType.DelegateCall)
-        ? MULTISEND_141
-        : MULTISEND_CALL_ONLY_141,
+      to,
       value: '0',
       data: multiSendInterface.encodeFunctionData('multiSend', [encodeMultiSendData(metaTransactions)]),
       operation: OperationType.DelegateCall,
@@ -252,25 +255,25 @@ const encodeMetaTransactions = (metaTransactions: MetaTransactionData[]): MetaTr
 }
 
 const encodeExecuteThroughRole = (
-  modAddress: `0x${string}`,
-  roleKey: `0x${string}`,
+  role: Role,
   metaTransactions: MetaTransactionData[],
   from: `0x${string}`,
   provider: JsonRpcProvider,
 ): Transaction => {
-  const rolesModifier = getModuleInstance(KnownContracts.ROLES_V2, modAddress, provider)
-  const combinedMetaTx = encodeMetaTransactions(metaTransactions)
+  const combinedMetaTx = encodeMetaTransactions(role, metaTransactions)
+
+  const rolesModifier = getModuleInstance(KnownContracts.ROLES_V2, role.modAddress, provider)
   const data = rolesModifier.interface.encodeFunctionData('execTransactionWithRole', [
     combinedMetaTx.to,
     BigInt(combinedMetaTx.value),
     combinedMetaTx.data,
     combinedMetaTx.operation || 0,
-    roleKey,
+    role.roleKey,
     true,
   ])
 
   return {
-    to: modAddress,
+    to: role.modAddress,
     data,
     value: '0',
     from,
@@ -278,21 +281,21 @@ const encodeExecuteThroughRole = (
 }
 
 const checkCondition = async (
-  modAddress: `0x${string}`,
-  roleKey: `0x${string}`,
+  role: Role,
   metaTransactions: MetaTransactionData[],
   from: `0x${string}`,
   provider: JsonRpcProvider,
 ) => {
-  const rolesModifier = getModuleInstance(KnownContracts.ROLES_V2, modAddress, provider)
-  const combinedMetaTx = encodeMetaTransactions(metaTransactions)
+  const combinedMetaTx = encodeMetaTransactions(role, metaTransactions)
+
+  const rolesModifier = getModuleInstance(KnownContracts.ROLES_V2, role.modAddress, provider)
   try {
     await rolesModifier.execTransactionWithRole.estimateGas(
       combinedMetaTx.to,
       BigInt(combinedMetaTx.value),
       combinedMetaTx.data,
       combinedMetaTx.operation || 0,
-      roleKey,
+      role.roleKey,
       false,
       { from },
     )

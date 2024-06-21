@@ -61,7 +61,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
   const roles = useRoles(metaTransactions)
   const allowingRole = roles.find((role) => role.status === Status.Ok)
 
-  // If a user has multiple roles, we should prioritize the one that allows the transaction's to address (and function selector)
+  // If a user has multiple roles, we should prioritize the one that allows the transaction's `to` address (and function selector)
   const mostLikelyRole =
     allowingRole ||
     roles.find((role) => role.status !== Status.TargetAddressNotAllowed && role.status !== Status.FunctionNotAllowed) ||
@@ -70,8 +70,7 @@ const PermissionsCheck: React.FC<{ onSubmit?: SubmitCallback; safeTx: SafeTransa
 
   // Wrap call routing it through the Roles mod with the allowing role
   const txThroughRole = useExecuteThroughRole({
-    modAddress: allowingRole?.modAddress,
-    roleKey: allowingRole?.roleKey,
+    role: allowingRole,
     metaTransactions,
   })
 
