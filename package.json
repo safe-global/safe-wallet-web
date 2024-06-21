@@ -58,11 +58,7 @@
     "@safe-global/protocol-kit": "^3.1.1",
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@safe-global/safe-deployments": "^1.36.0",
-<<<<<<< Updated upstream
-    "@safe-global/safe-gateway-typescript-sdk": "3.21.2",
-=======
     "@safe-global/safe-gateway-typescript-sdk": "3.21.3",
->>>>>>> Stashed changes
     "@safe-global/safe-modules-deployments": "^1.2.0",
     "@sentry/react": "^7.91.0",
     "@spindl-xyz/attribution-lite": "^1.4.0",
