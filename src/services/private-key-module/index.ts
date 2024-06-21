@@ -106,7 +106,13 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
               },
 
               eth_signTypedData: async ({ params }) => {
-                return await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
+                const [, json] = params
+                const typedData = JSON.parse(json)
+                return await wallet.signTypedData(
+                  typedData.domain,
+                  { [typedData.primaryType]: typedData.types[typedData.primaryType] },
+                  typedData.message,
+                )
               },
 
               // @ts-ignore
