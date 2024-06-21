@@ -106,7 +106,6 @@ interface Role {
   modAddress: `0x${string}`
   roleKey: `0x${string}`
   multiSend?: `0x${string}`
-  multiSendCallOnly?: `0x${string}`
   status: Status | null
 }
 
@@ -136,8 +135,9 @@ export const useRoles = (metaTransactions: MetaTransactionData[]) => {
             result.push({
               modAddress: rolesMod.address,
               roleKey: role.key,
-              multiSend,
-              multiSendCallOnly,
+              multiSend: metaTransactions.some((metaTx) => metaTx.operation === OperationType.DelegateCall)
+                ? multiSend
+                : multiSendCallOnly,
               status:
                 statuses.find((status) => status !== Status.Ok && status !== null) ||
                 statuses.find((status) => status !== Status.Ok) ||
@@ -237,13 +237,7 @@ const encodeMetaTransactions = (role: Role, metaTransactions: MetaTransactionDat
   if (metaTransactions.length === 1) {
     return metaTransactions[0]
   } else {
-    const to = metaTransactions.some((metaTx) => metaTx.operation === OperationType.DelegateCall)
-      ? role.multiSend
-      : role.multiSendCallOnly || role.multiSend
-
-    if (!to) {
-      throw new Error('Roles mod is not configured with a multiSend address')
-    }
+    const to = role.multiSend || KNOWN_MULTISEND_ADDRESSES[0]
 
     return {
       to,
