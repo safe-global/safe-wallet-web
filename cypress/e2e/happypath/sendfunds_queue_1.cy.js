@@ -4,7 +4,7 @@ import * as assets from '../pages/assets.pages'
 import * as tx from '../pages/transactions.page'
 import { ethers } from 'ethers'
 import SafeApiKit from '@safe-global/api-kit'
-import { createEthersAdapter, createSigners } from '../../support/api/utils_ether'
+import { createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
@@ -35,9 +35,6 @@ const signers = createSigners(privateKeys, provider)
 const owner1Signer = signers[0]
 const owner2Signer = signers[1]
 
-const ethAdapterOwner1 = createEthersAdapter(owner1Signer)
-const ethAdapterOwner2 = createEthersAdapter(owner2Signer)
-
 function visit(url) {
   cy.visit(url)
   cy.clearLocalStorage()
@@ -64,10 +61,10 @@ describe('Send funds from queue happy path tests 1', () => {
     existingSafeAddress3 = safesData.SEP_FUNDS_SAFE_5.substring(4)
 
     const safeConfigurations = [
-      { ethAdapter: ethAdapterOwner1, safeAddress: existingSafeAddress1 },
-      { ethAdapter: ethAdapterOwner1, safeAddress: existingSafeAddress2 },
-      { ethAdapter: ethAdapterOwner1, safeAddress: existingSafeAddress3 },
-      { ethAdapter: ethAdapterOwner2, safeAddress: existingSafeAddress3 },
+      { signer: privateKeys[0], safeAddress: existingSafeAddress1, provider },
+      { signer: privateKeys[0], safeAddress: existingSafeAddress2, provider },
+      { signer: privateKeys[0], safeAddress: existingSafeAddress3, provider },
+      { signer: privateKeys[1], safeAddress: existingSafeAddress3, provider },
     ]
 
     safes = await createSafes(safeConfigurations)

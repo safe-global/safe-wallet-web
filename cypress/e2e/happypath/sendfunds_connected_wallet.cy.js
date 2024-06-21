@@ -8,7 +8,7 @@ import * as nfts from '../pages/nfts.pages'
 import * as ls from '../../support/localstorage_data.js'
 import { ethers } from 'ethers'
 import SafeApiKit from '@safe-global/api-kit'
-import { createEthersAdapter, createSigners } from '../../support/api/utils_ether'
+import { createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
@@ -40,10 +40,6 @@ const tokenContract = new ethers.Contract(contractAddress, abi_qtrust, provider)
 const nftContract = new ethers.Contract(nftContractAddress, abi_nft_pc2, provider)
 
 const owner1Signer = signers[0]
-const owner2Signer = signers[1]
-
-const ethAdapterOwner1 = createEthersAdapter(owner1Signer)
-const ethAdapterOwner2 = createEthersAdapter(owner2Signer)
 
 function visit(url) {
   cy.visit(url)
@@ -65,8 +61,8 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
     outgoingSafeAddress = safesData.SEP_FUNDS_SAFE_6.substring(4)
 
     const safeConfigurations = [
-      { ethAdapter: ethAdapterOwner1, safeAddress: outgoingSafeAddress },
-      { ethAdapter: ethAdapterOwner2, safeAddress: outgoingSafeAddress },
+      { signer: walletCredentials.OWNER_1_PRIVATE_KEY, safeAddress: outgoingSafeAddress, provider },
+      { signer: walletCredentials.OWNER_2_PRIVATE_KEY, safeAddress: outgoingSafeAddress, provider },
     ]
 
     safes = await createSafes(safeConfigurations)

@@ -134,29 +134,15 @@ export const getUncheckedSigner = async (provider: Eip1193Provider) => {
  */
 export const getUncheckedSafeSDK = async (provider: Eip1193Provider): Promise<Safe> => {
   const sdk = getAndValidateSafeSDK()
-  /*
   const browserProvider = createWeb3(provider)
   const signer = await browserProvider.getSigner()
   const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(signer.provider, await signer.getAddress())
 
-  const ethAdapter = new EthersAdapter({
-    ethers,
-    signerOrProvider: uncheckedJsonRpcSigner,
-  })
-*/
-
-  return sdk.connect({ provider })
+  return sdk.connect({ provider, signer: uncheckedJsonRpcSigner.address })
 }
 
 export const getSafeSDKWithSigner = async (provider: Eip1193Provider): Promise<Safe> => {
   const sdk = getAndValidateSafeSDK()
-  /*  const browserProvider = createWeb3(provider)
-  const signer = await browserProvider.getSigner()
-
-  const ethAdapter = new EthersAdapter({
-    ethers,
-    signerOrProvider: signer,
-  })*/
 
   return sdk.connect({ provider })
 }
