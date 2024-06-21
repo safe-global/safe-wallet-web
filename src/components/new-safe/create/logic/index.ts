@@ -106,7 +106,7 @@ export const encodeSafeCreationTx = async ({
   saltNonce,
   chain,
 }: SafeCreationProps & { chain: ChainInfo }) => {
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(LATEST_SAFE_VERSION)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
   const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)
   const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
 
@@ -312,7 +312,7 @@ export const relaySafeCreation = async (
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()
   const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(safeVersion)
   const fallbackHandlerAddress = await readOnlyFallbackHandlerContract.getAddress()
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(safeVersion)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
   const safeContractAddress = await readOnlySafeContract.getAddress()
 
   const callData = {

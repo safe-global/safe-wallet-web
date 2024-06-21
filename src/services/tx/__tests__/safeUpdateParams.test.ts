@@ -1,4 +1,6 @@
+import * as safeSDK from '@/hooks/coreSDK/safeCoreSDK'
 import { sameAddress } from '@/utils/addresses'
+import type Safe from '@safe-global/protocol-kit'
 import {
   getFallbackHandlerDeployment,
   getSafeL2SingletonDeployment,
@@ -13,10 +15,27 @@ import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 
+const getMockSDKForChain = (chainId: number) => {
+  return {
+    isModuleEnabled: jest.fn(() => false),
+    createEnableModuleTx: jest.fn(),
+    createTransaction: jest.fn(() => 'asd'),
+    getSafeProvider: () => {
+      return {
+        getExternalProvider: jest.fn(),
+        getExternalSigner: jest.fn(),
+        getChainId: jest.fn().mockReturnValue(BigInt(chainId)),
+      }
+    },
+  } as unknown as Safe
+}
+
 describe('safeUpgradeParams', () => {
   jest
     .spyOn(web3, 'getWeb3ReadOnly')
     .mockImplementation(() => new BrowserProvider(MockEip1193Provider) as unknown as JsonRpcProvider)
+
+  jest.spyOn(safeSDK, 'getSafeSDK').mockImplementation(() => getMockSDKForChain(1))
 
   it('Should add empty setFallbackHandler transaction data for older Safes', async () => {
     const mockSafe = {
@@ -78,6 +97,8 @@ describe('safeUpgradeParams', () => {
   })
 
   it('Should upgrade L2 safe to L2 1.3.0', async () => {
+    jest.spyOn(safeSDK, 'getSafeSDK').mockImplementation(() => getMockSDKForChain(100))
+
     const mockSafe = {
       address: {
         value: MOCK_SAFE_ADDRESS,

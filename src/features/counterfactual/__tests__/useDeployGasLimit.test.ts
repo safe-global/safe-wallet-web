@@ -78,15 +78,18 @@ describe('useDeployGasLimit hook', () => {
     const mockOnboard = {} as OnboardAPI
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(sdk, 'getSafeSDKWithSigner').mockResolvedValue({
+      getThreshold: jest.fn(),
+      getNonce: jest.fn(),
+      getSafeProvider: () => ({
+        estimateGas: () => Promise.resolve('420000'),
+        getSignerAddress: () => Promise.resolve(faker.finance.ethereumAddress()),
+      }),
+      getChainId: jest.fn(),
       getContractManager: () =>
         ({
           contractNetworks: {},
         } as any),
       getContractVersion: () => Promise.resolve('1.3.0'),
-      getEthAdapter: () => ({
-        estimateGas: () => Promise.resolve('420000'),
-        getSignerAddress: () => Promise.resolve(faker.finance.ethereumAddress()),
-      }),
       createSafeDeploymentTransaction: () =>
         Promise.resolve({
           to: faker.finance.ethereumAddress(),

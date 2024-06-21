@@ -1,4 +1,4 @@
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { _isL2 } from '@/services/contracts/deployments'
 import { SafeProvider } from '@safe-global/protocol-kit'
 import {
   getCompatibilityFallbackHandlerContractInstance,
@@ -9,10 +9,10 @@ import {
 } from '@safe-global/protocol-kit/dist/src/contracts/contractInstances'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import type SafeBaseContract from '@safe-global/protocol-kit/dist/src/contracts/Safe/SafeBaseContract'
-import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import { assertValidSafeVersion, getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type { Eip1193Provider } from 'ethers'
 import semver from 'semver'
 
@@ -50,12 +50,12 @@ const getGnosisSafeContractEthers = async (safe: SafeInfo, safeProvider: SafePro
 }
 
 export const getReadOnlyCurrentGnosisSafeContract = async (safe: SafeInfo): Promise<SafeBaseContract<any>> => {
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw new Error('Provider not found')
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not found.')
   }
 
-  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+  const safeProvider = safeSDK.getSafeProvider()
 
   return getGnosisSafeContractEthers(safe, safeProvider)
 }
@@ -66,15 +66,26 @@ export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: Eip
   return getGnosisSafeContractEthers(safe, safeProvider)
 }
 
-export const getReadOnlyGnosisSafeContract = async (safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION) => {
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw new Error('Provider not found')
+export const getReadOnlyGnosisSafeContract = async (
+  chain: ChainInfo,
+  safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
+) => {
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not found.')
   }
 
-  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+  const safeProvider = safeSDK.getSafeProvider()
 
-  return getSafeContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
+  const isL1SafeSingleton = !_isL2(chain, _getValidatedGetContractProps(safeVersion).safeVersion)
+
+  return getSafeContractInstance(
+    _getValidatedGetContractProps(safeVersion).safeVersion,
+    safeProvider,
+    undefined,
+    undefined,
+    isL1SafeSingleton,
+  )
 }
 
 // MultiSend
@@ -90,12 +101,12 @@ export const _getMinimumMultiSendCallOnlyVersion = (safeVersion: SafeInfo['versi
 }
 
 export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo['version']) => {
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw new Error('Provider not found')
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not found.')
   }
 
-  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+  const safeProvider = safeSDK.getSafeProvider()
 
   return getMultiSendCallOnlyContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
 }
@@ -103,29 +114,29 @@ export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo
 // GnosisSafeProxyFactory
 
 export const getReadOnlyProxyFactoryContract = (safeVersion: SafeInfo['version']) => {
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw new Error('Provider not found')
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not found.')
   }
 
-  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+  const safeProvider = safeSDK.getSafeProvider()
 
   return getSafeProxyFactoryContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
     safeProvider,
-    provider,
+    safeProvider.getExternalProvider(),
   )
 }
 
 // Fallback handler
 
 export const getReadOnlyFallbackHandlerContract = async (safeVersion: SafeInfo['version']) => {
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw new Error('Provider not found')
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not found.')
   }
 
-  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+  const safeProvider = safeSDK.getSafeProvider()
 
   return getCompatibilityFallbackHandlerContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
@@ -136,11 +147,12 @@ export const getReadOnlyFallbackHandlerContract = async (safeVersion: SafeInfo['
 // Sign messages deployment
 
 export const getReadOnlySignMessageLibContract = async (safeVersion: SafeInfo['version']) => {
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw new Error('Provider not found')
+  const safeSDK = getSafeSDK()
+  if (!safeSDK) {
+    throw new Error('Safe SDK not found.')
   }
-  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+
+  const safeProvider = safeSDK.getSafeProvider()
 
   return getSignMessageLibContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
 }

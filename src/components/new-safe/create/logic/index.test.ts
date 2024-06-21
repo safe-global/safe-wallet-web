@@ -1,6 +1,8 @@
+import type Safe from '@safe-global/protocol-kit'
 import { JsonRpcProvider, type TransactionResponse } from 'ethers'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
+import * as safeSDK from '@/hooks/coreSDK/safeCoreSDK'
 import type { TransactionReceipt } from 'ethers'
 import {
   checkSafeCreationTx,
@@ -225,6 +227,19 @@ describe('createNewSafeViaRelayer', () => {
     l2: false,
   } as ChainInfo
 
+  const mockSDK = {
+    isModuleEnabled: jest.fn(() => false),
+    createEnableModuleTx: jest.fn(),
+    createTransaction: jest.fn(() => 'asd'),
+    getSafeProvider: () => {
+      return {
+        getExternalProvider: jest.fn(),
+        getExternalSigner: jest.fn(),
+        getChainId: jest.fn().mockReturnValue(BigInt(1)),
+      }
+    },
+  } as unknown as Safe
+
   beforeAll(() => {
     jest.resetAllMocks()
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => provider)
@@ -232,12 +247,15 @@ describe('createNewSafeViaRelayer', () => {
 
   it('returns taskId if create Safe successfully relayed', async () => {
     jest.spyOn(gateway, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
+    jest.spyOn(safeSDK, 'getSafeSDK').mockImplementation(() => mockSDK)
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
     const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)).getAddress()
     const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
-    const safeContractAddress = await (await getReadOnlyGnosisSafeContract(LATEST_SAFE_VERSION)).getAddress()
+    const safeContractAddress = await (
+      await getReadOnlyGnosisSafeContract(mockChainInfo, LATEST_SAFE_VERSION)
+    ).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
       [owner1, owner2],
