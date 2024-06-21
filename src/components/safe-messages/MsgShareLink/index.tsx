@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
-import { IconButton, Link, SvgIcon } from '@mui/material'
+import { Box, IconButton, Link, SvgIcon, Typography } from '@mui/material'
 import ShareIcon from '@/public/images/common/share.svg'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
@@ -20,7 +20,7 @@ const useOrigin = () => {
   return origin
 }
 
-const MsgShareLink = ({ safeMessageHash }: { safeMessageHash: string }): ReactElement => {
+const MsgShareLink = ({ safeMessageHash, linkText }: { safeMessageHash: string; linkText?: string }): ReactElement => {
   const router = useRouter()
   const { safe = '' } = router.query
   const href = `${AppRoutes.transactions.msg}?safe=${safe}&messageHash=${safeMessageHash}`
@@ -29,9 +29,20 @@ const MsgShareLink = ({ safeMessageHash }: { safeMessageHash: string }): ReactEl
   return (
     <Track {...MESSAGE_EVENTS.COPY_DEEPLINK}>
       <CopyTooltip text={txUrl} initialToolTipText="Copy the message URL">
-        <IconButton data-testid="share-btn" component={Link} aria-label="Share">
-          <SvgIcon component={ShareIcon} inheritViewBox fontSize="small" color="border" />
-        </IconButton>
+        {linkText ? (
+          <Link component="button" data-testid="share-btn" aria-label="Share">
+            <Box display="inline-flex" alignItems="center" alignContent="center" mx="4px">
+              <SvgIcon component={ShareIcon} inheritViewBox fontSize="small" color="border" />
+              <Typography display="inline" mx="4px" sx={{ textDecoration: 'underline' }}>
+                {linkText}
+              </Typography>
+            </Box>
+          </Link>
+        ) : (
+          <IconButton data-testid="share-btn" component={Link} aria-label="Share">
+            <SvgIcon component={ShareIcon} inheritViewBox fontSize="small" color="border" />
+          </IconButton>
+        )}
       </CopyTooltip>
     </Track>
   )
