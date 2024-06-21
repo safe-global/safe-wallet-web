@@ -4156,10 +4156,17 @@
   dependencies:
     semver "^7.6.0"
 
+<<<<<<< Updated upstream
 "@safe-global/safe-gateway-typescript-sdk@3.21.2":
   version "3.21.2"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.21.2.tgz#2123a7429c2d9713365f51c359bfc055d4c8e913"
   integrity sha512-N9Y2CKPBVbc8FbOKzqepy8TJUY2VILX7bmxV4ruByLJvR9PBnGvGfnOhw975cDn6PmSziXL0RaUWHpSW23rsng==
+=======
+"@safe-global/safe-gateway-typescript-sdk@3.21.3":
+  version "3.21.3"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.21.3.tgz#8088826c34946e34ac1c79556a8e71e3876de0db"
+  integrity sha512-6w0WkSgD0X7s7yhtCNxvCVP5uhDRGoeBWflkRaklntY2/oNiSqPgna3cKhXV+itDLiCBTUpDfytzcF0MbkcM2w==
+>>>>>>> Stashed changes
 
 "@safe-global/safe-gateway-typescript-sdk@^3.5.3":
   version "3.21.2"
