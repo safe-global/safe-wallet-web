@@ -370,7 +370,7 @@ const SafePrivacyPolicy = () => (
       </ol>
     </p>
     <p>
-      4.2.2 For general operational analysis of the Safe [Wallet] interface, monitoring transaction origins and
+      4.2.2 For general operational analysis of the {'Safe{Wallet}'} interface, monitoring transaction origins and
       measuring transaction failure rates to ensure improved service performance and reliability, we process information
       which constitutes the transaction service database, such as:
     </p>
