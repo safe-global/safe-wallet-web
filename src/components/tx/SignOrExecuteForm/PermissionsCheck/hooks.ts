@@ -90,6 +90,16 @@ export const useRolesMods = () => {
   return data
 }
 
+const KNOWN_MULTISEND_ADDRESSES = [
+  '0x38869bf66a61cf6bdb996a6ae40d5853fd43b526', // MultiSend 1.4.1
+  '0x9641d764fc13c8b624c04430c7356c1c7c8102e2', // MultiSend 1.4.1 (call only)
+  '0xa238cbeb142c10ef7ad8442c6d1f9e89e07e7761', // MultiSend 1.3.0
+  '0x998739bfdaadde7c933b942a68053933098f9eda', // MultiSend 1.3.0
+  '0x40a2accbd92bca938b02010e17a5b8929b49130d', // MultiSend 1.3.0 (call only)
+  '0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b', // MultiSend 1.3.0 (call only)
+  '0x8d29be29923b68abfdd21e541b9374737b49cdad', // MultiSend 1.1.1
+]
+
 /**
  * Returns a list of roles mod address + role key assigned to the connected wallet.
  * For each role, checks if the role allows the given meta transaction and returns the status.
@@ -105,10 +115,12 @@ export const useRoles = (metaTransactions: MetaTransactionData[]) => {
       modAddress: `0x${string}`
       roleKey: `0x${string}`
       status: Status | null
+      multiSend?: `0x${string}`
     }[] = []
 
     if (walletAddress && rolesMods) {
       for (const rolesMod of rolesMods) {
+        const multiSend = rolesMod.multiSendAddresses.find((addr) => KNOWN_MULTISEND_ADDRESSES.includes(addr))
         for (const role of rolesMod.roles) {
           if (role.members.includes(walletAddress)) {
             const statuses = metaTransactions.map((metaTx) => checkPermissions(role, metaTx))
@@ -119,6 +131,7 @@ export const useRoles = (metaTransactions: MetaTransactionData[]) => {
                 statuses.find((status) => status !== Status.Ok && status !== null) ||
                 statuses.find((status) => status !== Status.Ok) ||
                 Status.Ok,
+              multiSend,
             })
           }
         }
