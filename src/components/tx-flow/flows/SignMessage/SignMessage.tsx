@@ -86,7 +86,15 @@ const MessageHashField = ({ label, hashValue }: { label: string; hashValue: stri
   </>
 )
 
-const DialogHeader = ({ threshold, safeMessageHash }: { threshold: number; safeMessageHash: string }) => (
+const DialogHeader = ({
+  threshold,
+  safeMessageHash,
+  hasSigned,
+}: {
+  threshold: number
+  safeMessageHash: string
+  hasSigned: boolean
+}) => (
   <>
     <Box textAlign="center" mb={2}>
       <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="large" />
@@ -97,7 +105,7 @@ const DialogHeader = ({ threshold, safeMessageHash }: { threshold: number; safeM
     {threshold > 1 && (
       <Typography variant="body1" textAlign="center" mb={2}>
         To sign this message, collect signatures from <b>{threshold} signers</b> of your Safe Account.
-        <MsgShareLink safeMessageHash={safeMessageHash} linkText="Share link" />
+        {hasSigned && <MsgShareLink safeMessageHash={safeMessageHash} linkText="Share link" />}
       </Typography>
     )}
   </>
@@ -285,7 +293,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     <>
       <TxCard>
         <CardContent>
-          <DialogHeader threshold={safe.threshold} safeMessageHash={safeMessageHash} />
+          <DialogHeader threshold={safe.threshold} safeMessageHash={safeMessageHash} hasSigned />
 
           {isEip712 && (
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
