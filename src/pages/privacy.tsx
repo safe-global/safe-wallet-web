@@ -49,7 +49,7 @@ const SafePrivacyPolicy = () => (
     `}</style>
 
     <h1>Privacy Policy</h1>
-    <p>Last updated: January 2024.</p>
+    <p>Last updated: June 2024.</p>
     <p>
       Your privacy is important to us. It is our policy to respect your privacy and comply with any applicable law and
       regulation regarding any personal information we may collect about you, including across our website,{' '}
@@ -338,7 +338,7 @@ const SafePrivacyPolicy = () => (
       SECTION 2, THIS DATA WILL BECOME PUBLIC AND IT WILL NOT LIKELY BE POSSIBLE TO DELETE OR CHANGE THE DATA AT ANY
       GIVEN TIME.
     </p>
-    <h4>4.2. Tracking</h4>
+    <h4>4.2. Tracking & Analysis</h4>
     <p>4.2.1 We will process the following personal data to analyze your behavior:</p>
     <ol>
       <li>IP address (will not be stored for EU users), </li>
@@ -370,7 +370,24 @@ const SafePrivacyPolicy = () => (
       </ol>
     </p>
     <p>
-      4.2.2 We conduct technical monitoring of your activity on the platform in order to ensure availability, integrity
+      4.2.2 For general operational analysis of the {'Safe{Wallet}'} interface, monitoring transaction origins and
+      measuring transaction failure rates to ensure improved service performance and reliability, we process information
+      which constitutes the transaction service database, such as:
+    </p>
+    <ol>
+      <li>signatures</li>
+      <li>signature_type</li>
+      <li>ethereum_tx_id</li>
+      <li>message_hash</li>
+      <li>safe_app_id</li>
+      <li>safe_message_id</li>
+    </ol>
+    <p>
+      We conduct this analysis in our legitimate interest to continuously improve our product and service and ensure
+      increased service performance and reliability.
+    </p>
+    <p>
+      4.2.3 We conduct technical monitoring of your activity on the platform in order to ensure availability, integrity
       and robustness of the service. For this purpose we process your:
     </p>
     <ol>
@@ -383,7 +400,7 @@ const SafePrivacyPolicy = () => (
       The lawful basis for this processing is our legitimate interest (GDPR Art.6.1f) in ensuring the correctness of the
       service.
     </p>
-    <p>4.2.3. Anonymized tracking</p>
+    <p>4.2.4 Anonymized tracking</p>
     <p>
       We will anonymize the following personal data to gather anonymous user statistics on your browsing behavior on our
       website:
@@ -689,15 +706,7 @@ const SafePrivacyPolicy = () => (
         </a>
       </li>
     </ul>
-    <h4>5.13. Web3Auth</h4>
-    <p>
-      We use{' '}
-      <a href="https://web3auth.io/" target="_blank" rel="noreferrer">
-        Web3Auth
-      </a>{' '}
-      to create a signer wallet/an owner account by using the user&apos;s Gmail account or Apple ID information.
-    </p>
-    <h4>5.14. MoonPay</h4>
+    <h4>5.13. MoonPay</h4>
     <p>
       We use{' '}
       <a href="https://www.moonpay.com/" target="_blank" rel="noreferrer">
@@ -706,7 +715,7 @@ const SafePrivacyPolicy = () => (
       to offer on-ramp and off-ramp services. For that purpose personal data is required for KYC/AML or other financial
       regulatory requirements. This data is encrypted by MoonPay.
     </p>
-    <h4>5.15. Spindl</h4>
+    <h4>5.14. Spindl</h4>
     <p>
       We use{' '}
       <a href="https://www.spindl.xyz" target="_blank" rel="noreferrer">

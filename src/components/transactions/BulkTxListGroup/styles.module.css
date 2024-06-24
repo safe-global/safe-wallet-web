@@ -1,0 +1,60 @@
+.container {
+  position: relative;
+  padding: var(--space-2);
+  display: grid;
+  align-items: center;
+  grid-template-columns: minmax(50px, 0.25fr) minmax(240px, 2fr) minmax(150px, 4fr) minmax(170px, 1fr);
+  grid-template-areas:
+    'icon info action hash'
+    'nonce items items items';
+}
+
+.action {
+  margin-left: var(--space-2);
+  grid-area: action;
+  color: var(--color-text-secondary);
+}
+
+.hash {
+  grid-area: hash;
+  display: grid;
+  justify-content: flex-end;
+}
+
+.nonce {
+  position: absolute;
+  left: -24px;
+  top: var(--space-1);
+}
+
+.txItems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.txItems :global(.MuiAccordion-root) {
+  border-color: var(--color-border-light);
+}
+
+@media (max-width: 699px) {
+  .container {
+    grid-template-columns: minmax(30px, 0.25fr) minmax(230px, 3fr);
+    grid-template-areas:
+      'icon info '
+      'nonce action'
+      'nonce hash '
+      'nonce items';
+  }
+
+  .action {
+    margin: 0;
+  }
+  .hash {
+    justify-content: flex-start;
+  }
+  .nonce {
+    left: -16px;
+  }
+}
