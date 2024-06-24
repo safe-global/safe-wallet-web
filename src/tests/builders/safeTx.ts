@@ -27,20 +27,24 @@ export const createSafeTx = (data = '0x'): SafeTransaction => {
   } as SafeTransaction
 }
 
+export function safeTxDataBuilder(): IBuilder<SafeTransaction['data']> {
+  return Builder.new<SafeTransaction['data']>().with({
+    to: faker.finance.ethereumAddress(),
+    value: '0x0',
+    data: faker.string.hexadecimal({ length: faker.number.int({ max: 500 }) }),
+    operation: 0,
+    nonce: faker.number.int(),
+    safeTxGas: faker.number.toString(),
+    gasPrice: faker.number.toString(),
+    gasToken: ZERO_ADDRESS,
+    baseGas: faker.number.toString(),
+    refundReceiver: faker.finance.ethereumAddress(),
+  })
+}
+
 export function safeTxBuilder(): IBuilder<SafeTransaction> {
   return Builder.new<SafeTransaction>().with({
-    data: {
-      to: faker.finance.ethereumAddress(),
-      value: '0x0',
-      data: faker.string.hexadecimal({ length: faker.number.int({ max: 500 }) }),
-      operation: 0,
-      nonce: faker.number.int(),
-      safeTxGas: faker.number.toString(),
-      gasPrice: faker.number.toString(),
-      gasToken: ZERO_ADDRESS,
-      baseGas: faker.number.toString(),
-      refundReceiver: faker.finance.ethereumAddress(),
-    },
+    data: safeTxDataBuilder().build(),
     signatures: new Map([]),
     addSignature: function (sig: SafeSignature): void {
       this.signatures!.set(sig.signer, sig)

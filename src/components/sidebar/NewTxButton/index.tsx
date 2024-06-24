@@ -15,7 +15,7 @@ const NewTxButton = (): ReactElement => {
   }
 
   return (
-    <CheckWallet allowSpendingLimit noTooltip>
+    <CheckWallet allowSpendingLimit allowGnosisPayOwner noTooltip>
       {(isOk) =>
         isOk ? (
           <Button

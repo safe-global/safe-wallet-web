@@ -43,6 +43,7 @@ const rootReducer = combineReducers({
   [slices.batchSlice.name]: slices.batchSlice.reducer,
   [slices.undeployedSafesSlice.name]: slices.undeployedSafesSlice.reducer,
   [slices.swapParamsSlice.name]: slices.swapParamsSlice.reducer,
+  [slices.gnosisPayTxsSlice.name]: slices.gnosisPayTxsSlice.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -58,6 +59,7 @@ const persistedSlices: (keyof PreloadedState<RootState>)[] = [
   slices.undeployedSafesSlice.name,
   slices.swapParamsSlice.name,
   slices.swapOrderSlice.name,
+  slices.gnosisPayTxsSlice.name,
 ]
 
 export const getPersistedState = () => {

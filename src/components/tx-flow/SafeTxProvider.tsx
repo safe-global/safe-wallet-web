@@ -8,7 +8,7 @@ import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const SafeTxContext = createContext<{
   safeTx?: SafeTransaction
-  setSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>>
+  setSafeTx: (tx: SafeTransaction | undefined) => void
 
   safeMessage?: EIP712TypedData
   setSafeMessage: Dispatch<SetStateAction<EIP712TypedData | undefined>>
