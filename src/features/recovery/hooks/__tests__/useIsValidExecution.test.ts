@@ -1,3 +1,4 @@
+import type { SafeContractImplementationType } from '@safe-global/protocol-kit'
 import type { SafeTransaction, SafeSignature } from '@safe-global/safe-core-sdk-types'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { act, renderHook } from '@/tests/test-utils'
@@ -68,7 +69,7 @@ describe('useIsValidExecution', () => {
             },
           },
         },
-      } as any),
+      } as unknown as SafeContractImplementationType),
     )
 
     const mockTx = createSafeTx()

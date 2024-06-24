@@ -7,6 +7,7 @@ import * as logic from '@/components/new-safe/create/logic'
 import * as contracts from '@/services/contracts/safeContracts'
 import * as txMonitor from '@/services/tx/txMonitor'
 import * as usePendingSafe from '@/components/new-safe/create/steps/StatusStep/usePendingSafe'
+import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
 import { BrowserProvider, zeroPadValue, type JsonRpcProvider } from 'ethers'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { chainBuilder } from '@/tests/builders/chains'
@@ -55,7 +56,7 @@ describe('useSafeCreation', () => {
     jest.spyOn(logic, 'estimateSafeCreationGas').mockReturnValue(Promise.resolve(BigInt(200000)))
     jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
       getAddress: () => zeroPadValue('0x0123', 20),
-    } as unknown as any)
+    } as unknown as CompatibilityFallbackHandlerContractImplementationType)
     jest
       .spyOn(gasPrice, 'default')
       .mockReturnValue([{ maxFeePerGas: BigInt(123), maxPriorityFeePerGas: undefined }, undefined, false])

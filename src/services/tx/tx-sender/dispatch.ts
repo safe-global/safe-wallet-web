@@ -1,5 +1,4 @@
-import type MultiSendCallOnlyContract_v1_3_0 from '@safe-global/protocol-kit/dist/src/contracts/MultiSend/v1.3.0/MultiSendCallOnlyContract_v1_3_0'
-import type MultiSendCallOnlyContract_v1_4_1 from '@safe-global/protocol-kit/dist/src/contracts/MultiSend/v1.4.1/MultiSendCallOnlyContract_v1_4_1'
+import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
 import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type {
   SafeTransaction,
@@ -269,7 +268,7 @@ export const dispatchTxExecution = async (
 
 export const dispatchBatchExecution = async (
   txs: TransactionDetails[],
-  multiSendContract: MultiSendCallOnlyContract_v1_4_1 | MultiSendCallOnlyContract_v1_3_0,
+  multiSendContract: MultiSendCallOnlyContractImplementationType,
   multiSendTxData: string,
   provider: Eip1193Provider,
   signerAddress: string,
@@ -489,7 +488,7 @@ export const dispatchTxRelay = async (
 
 export const dispatchBatchExecutionRelay = async (
   txs: TransactionDetails[],
-  multiSendContract: MultiSendCallOnlyContract_v1_4_1 | MultiSendCallOnlyContract_v1_3_0,
+  multiSendContract: MultiSendCallOnlyContractImplementationType,
   multiSendTxData: string,
   chainId: string,
   safeAddress: string,

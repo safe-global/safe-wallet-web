@@ -1,6 +1,6 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
-import type MultiSendCallOnlyContract_v1_3_0 from '@safe-global/protocol-kit/dist/src/contracts/MultiSend/v1.3.0/MultiSendCallOnlyContract_v1_3_0'
+import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import extractTxInfo from '../../extractTxInfo'
@@ -534,7 +534,7 @@ describe('txSender', () => {
           },
         } as any,
         getAddress: async () => mockMultisendAddress,
-      } as MultiSendCallOnlyContract_v1_3_0
+      } as MultiSendCallOnlyContractImplementationType
 
       jest
         .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')

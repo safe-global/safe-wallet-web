@@ -14,7 +14,6 @@ import { type ChainInfo, ImplementationVersionState } from '@safe-global/safe-ga
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { assertValidSafeVersion, getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import type { Eip1193Provider } from 'ethers'
 import semver from 'semver'
 
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
@@ -42,7 +41,7 @@ export const _getValidatedGetContractProps = (safeVersion: SafeInfo['version']):
 
 // GnosisSafe
 
-const getGnosisSafeContractEthers = async (safe: SafeInfo, safeProvider: SafeProvider) => {
+const getGnosisSafeContract = async (safe: SafeInfo, safeProvider: SafeProvider) => {
   return getSafeContractInstance(
     _getValidatedGetContractProps(safe.version).safeVersion,
     safeProvider,
@@ -58,13 +57,13 @@ export const getReadOnlyCurrentGnosisSafeContract = async (safe: SafeInfo): Prom
 
   const safeProvider = safeSDK.getSafeProvider()
 
-  return getGnosisSafeContractEthers(safe, safeProvider)
+  return getGnosisSafeContract(safe, safeProvider)
 }
 
-export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: Eip1193Provider) => {
+export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: string) => {
   const safeProvider = new SafeProvider({ provider })
 
-  return getGnosisSafeContractEthers(safe, safeProvider)
+  return getGnosisSafeContract(safe, safeProvider)
 }
 
 export const getReadOnlyGnosisSafeContract = async (
