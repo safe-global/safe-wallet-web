@@ -1,6 +1,6 @@
 import OrderId from '@/features/swap/components/OrderId'
 import { formatDateTime, formatTimeInWords } from '@/utils/date'
-import type { ReactElement } from 'react'
+import { Fragment, type ReactElement } from 'react'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
 import { compareAsc } from 'date-fns'
@@ -20,9 +20,7 @@ type SwapOrderProps = {
   settlementContract: string
 }
 
-export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrderProps): ReactElement | null => {
-  if (!order) return null
-
+export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrderProps): ReactElement => {
   const { uid, owner, kind, validUntil, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
   const limitPrice = getLimitPrice(order)
@@ -78,7 +76,7 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
               {slippage}%
             </DataRow>
           ) : (
-            <></>
+            <Fragment key="none" />
           ),
           <DataRow key="Order ID" title="Order ID">
             <OrderId orderId={uid} href={explorerUrl} />
