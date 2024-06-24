@@ -11,6 +11,8 @@ import {
   AccordionDetails,
   Link,
 } from '@mui/material'
+import ShareIcon from '@/public/images/common/share.svg'
+
 import { useTheme } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useContext, useEffect } from 'react'
@@ -145,14 +147,26 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   }
   return (
     <SuccessMessage>
-      <Grid container direction="row" justifyContent="space-between">
-        <Grid item xs={7}>
+      <Grid container direction="row" justifyContent="space-between" gap={2}>
+        <Grid item xs={12}>
           Your connected wallet has already signed this message.
         </Grid>
-        <Grid item xs={4}>
-          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
-            Switch wallet
-          </Button>
+        <Grid item xs={12}>
+          <Box display="flex">
+            <Button
+              variant="outlined"
+              size="small"
+              sx={{ mr: 1 }}
+              onClick={handleSwitchWallet}
+              fullWidth
+              startIcon={<SvgIcon component={ShareIcon} inheritViewBox fontSize="small" color="border" />}
+            >
+              Share Link
+            </Button>
+            <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+              Switch wallet
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </SuccessMessage>
@@ -293,7 +307,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     <>
       <TxCard>
         <CardContent>
-          <DialogHeader threshold={safe.threshold} safeMessageHash={safeMessageHash} hasSigned />
+          <DialogHeader threshold={safe.threshold} safeMessageHash={safeMessageHash} hasSigned={hasSigned} />
 
           {isEip712 && (
             <ErrorBoundary fallback={<div>Error parsing data</div>}>

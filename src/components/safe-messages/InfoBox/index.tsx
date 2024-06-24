@@ -23,7 +23,9 @@ const InfoBox = ({
           <Typography variant="subtitle1" fontWeight="bold">
             {title}
           </Typography>
-          <Typography variant="body2">{message}</Typography>
+          <Typography variant="body2" display="inline">
+            {message}{' '}
+          </Typography>
         </div>
       </div>
       <Divider className={css.divider} />
