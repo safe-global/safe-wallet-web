@@ -17,7 +17,7 @@ import AdvancedParams, { useAdvancedParams } from '../../AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
 import { isWalletRejection } from '@/utils/wallets'
 
-import css from './styles.module.css'
+import css from '../styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '../../security/shared/TxSecurityContext'
 
@@ -179,11 +179,11 @@ export const ExecuteThroughRoleForm = ({
         )}
 
         {!permissionsError && multiSendImpossible && (
-          <Typography component="div">
-            As a member of the <Role>{role.roleKey}</Role> you have permission to submit the above calls as individual
-            transactions. However, the current Roles configuration does not allow executing multiple transactions in
-            batch.
-          </Typography>
+          <ErrorMessage level="info">
+            As a member of the <Role>{role.roleKey}</Role> role you have permission to submit the above calls as
+            individual transactions. However, the current configuration of the Zodiac Roles module does not allow
+            executing multiple transactions in batch.
+          </ErrorMessage>
         )}
 
         {permissionsError && (
