@@ -1,6 +1,6 @@
 import type { BigNumberish } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers'
-import { formatAmount } from './formatNumber'
+import { formatAmount, formatAmountPrecise } from './formatNumber'
 
 const GWEI = 'gwei'
 
@@ -38,7 +38,8 @@ export const formatVisualAmount = (
   decimals: number | string = GWEI,
   precision?: number,
 ): string => {
-  return formatAmount(safeFormatUnits(value, decimals), precision)
+  const amount = safeFormatUnits(value, decimals)
+  return precision ? formatAmountPrecise(amount, precision) : formatAmount(amount)
 }
 
 export const safeParseUnits = (value: string, decimals: number | string = GWEI): bigint | undefined => {
