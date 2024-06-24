@@ -43,7 +43,6 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
 
         let provider: JsonRpcProvider
         let wallet: Wallet
-        let lastChainId = ''
         const chainChangedListeners = new Set<(chainId: string) => void>()
 
         const updateProvider = () => {
@@ -51,8 +50,10 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
           provider?.destroy()
           provider = new JsonRpcProvider(currentRpcUri, Number(currentChainId), { staticNetwork: true })
           wallet = new Wallet(privateKey, provider)
-          lastChainId = currentChainId
-          chainChangedListeners.forEach((listener) => listener(numberToHex(Number(currentChainId))))
+
+          setTimeout(() => {
+            chainChangedListeners.forEach((listener) => listener(numberToHex(Number(currentChainId))))
+          }, 100)
         }
 
         updateProvider()
@@ -71,9 +72,6 @@ const PrivateKeyModule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcU
               },
 
               request: async (request: { method: string; params: any[] }) => {
-                if (currentChainId !== lastChainId) {
-                  updateProvider()
-                }
                 return provider.send(request.method, request.params)
               },
 
