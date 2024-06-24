@@ -92,7 +92,7 @@
     "react-papaparse": "^4.0.2",
     "react-redux": "^8.0.5",
     "semver": "^7.5.2",
-    "zodiac-roles-deployments": "^2.2.4"
+    "zodiac-roles-deployments": "^2.2.5"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.3.1",
