@@ -103,7 +103,7 @@ const SwapTx = ({ info }: { info: Order }): ReactElement => {
         <TokenIcon logoUri={sellToken.logoUri || undefined} tokenSymbol={sellToken.symbol} />
       </Box>
       <Typography component="span" fontWeight="bold">
-        {formatVisualAmount(sellAmount, sellToken.decimals)} {sellToken.symbol} {" "}
+        {formatVisualAmount(sellAmount, sellToken.decimals)} {sellToken.symbol}{' '}
       </Typography>
     </>
   )

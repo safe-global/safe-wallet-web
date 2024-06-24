@@ -1,13 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { TwapOrder as TwapOrderComponent } from './index'
 import { Paper } from '@mui/material'
-import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
-import {
-  appDataBuilder,
-  orderTokenBuilder,
-  swapOrderBuilder,
-  twapOrderBuilder,
-} from '@/features/swap/helpers/swapOrderBuilder'
+import { appDataBuilder, orderTokenBuilder, twapOrderBuilder } from '@/features/swap/helpers/swapOrderBuilder'
 import { StoreDecorator } from '@/stories/storeDecorator'
 
 const FullfilledTwapOrder = twapOrderBuilder()
@@ -41,7 +35,6 @@ const FullfilledTwapOrder = twapOrderBuilder()
   .with({
     fullAppData: appDataBuilder('twap').build(),
   })
-
 
 const meta = {
   component: TwapOrderComponent,

@@ -27,7 +27,9 @@ import type {
   SwapOrder,
   DecodedDataResponse,
   BaselineConfirmationView,
-  CowSwapConfirmationView, TwapOrder, Order,
+  CowSwapConfirmationView,
+  TwapOrder,
+  Order,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {

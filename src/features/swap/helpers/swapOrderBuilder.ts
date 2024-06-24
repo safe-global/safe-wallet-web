@@ -1,14 +1,13 @@
 import { Builder, type IBuilder } from '@/tests/Builder'
 import { faker } from '@faker-js/faker'
-import {
+import type {
   CowSwapConfirmationView,
-  DurationType,
   OrderToken,
-  StartTimeValue,
   SwapOrder,
   TransactionInfoType,
   TwapOrder,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { DurationType, StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
 
 export function appDataBuilder(
   orderClass: 'limit' | 'market' | 'twap' | 'liquidity' = 'limit',

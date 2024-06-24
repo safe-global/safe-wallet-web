@@ -6,9 +6,9 @@ import { capitalize } from '@/hooks/useMnemonicName'
 import { formatDateTime, formatTimeInWords } from '@/utils/date'
 import Stack from '@mui/material/Stack'
 import type { ReactElement } from 'react'
+import type { TwapOrder as SwapTwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   type SwapOrder as SwapOrderType,
-  TwapOrder as SwapTwapOrder,
   type Order,
   type TransactionData,
   TransactionInfoType,

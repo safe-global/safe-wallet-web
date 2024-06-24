@@ -12,13 +12,13 @@ import TxData from '@/components/transactions/TxDetails/TxData'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import {
-  isAwaitingExecution, isCoWOrderTxInfo,
+  isAwaitingExecution,
+  isCoWOrderTxInfo,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
   isOpenSwap,
-  isSwapTxInfo, isTwapTxInfo,
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
