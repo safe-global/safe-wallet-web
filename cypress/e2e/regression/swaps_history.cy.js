@@ -22,7 +22,8 @@ describe('[SMOKE] Swaps history tests', () => {
     main.acceptCookies()
   })
 
-  it('Verify operation names are correct for buying and selling of tokens', { defaultCommandTimeout: 30000 }, () => {
+  it('Verify sawp buying operation with approve and swap', { defaultCommandTimeout: 30000 }, () => {
+    // approve, preSignature actions
     create_tx.clickOnTransactionItemByName('8:05 AM')
     create_tx.verifyExpandedDetails([
       swapsHistory.buyOrder,
@@ -34,8 +35,9 @@ describe('[SMOKE] Swaps history tests', () => {
       swapsHistory.actionApprove,
       swapsHistory.actionPreSignature,
     ])
-    cy.reload()
+  })
 
+  it('Verify swap selling operation with one action', { defaultCommandTimeout: 30000 }, () => {
     create_tx.clickOnTransactionItemByName('14')
     create_tx.verifyExpandedDetails([
       swapsHistory.sellOrder,
