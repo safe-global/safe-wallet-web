@@ -41,7 +41,7 @@ const Role = ({ children }: { children: string }) => {
     humanReadableRoleKey = decodeBytes32String(children)
   } catch (e) {}
 
-  return <Chip label={humanReadableRoleKey} />
+  return <span className={css.roleChip}>{humanReadableRoleKey}</span>
 }
 
 export const ExecuteThroughRoleForm = ({
@@ -160,43 +160,47 @@ export const ExecuteThroughRoleForm = ({
 
   return (
     <>
+      <Divider className={commonCss.nestedDivider} sx={{ pt: 1 }} />
+
       <form onSubmit={handleSubmit}>
-        <div className={css.params}>
-          <AdvancedParams
-            willExecute
-            params={advancedParams}
-            recommendedGasLimit={gasLimit}
-            onFormSubmit={setAdvancedParams}
-            gasLimitError={gasLimitError}
-          />
-        </div>
+        {!permissionsError && (
+          <>
+            <Typography sx={{ mb: 2 }}>
+              Your <Role>{role.roleKey}</Role> role allows you to execute this transaction without the confirmations of
+              other owners.
+            </Typography>
 
-        {!permissionsError && !multiSendImpossible && (
-          <Typography component="div">
-            As a member of the <Role>{role.roleKey}</Role> you can execute this transaction immediately without
-            confirmations from other owners.
-          </Typography>
-        )}
-
-        {!permissionsError && multiSendImpossible && (
-          <ErrorMessage level="info">
-            As a member of the <Role>{role.roleKey}</Role> role you have permission to submit the above calls as
-            individual transactions. However, the current configuration of the Zodiac Roles module does not allow
-            executing multiple transactions in batch.
-          </ErrorMessage>
+            <div className={css.params}>
+              <AdvancedParams
+                willExecute
+                params={advancedParams}
+                recommendedGasLimit={gasLimit}
+                onFormSubmit={setAdvancedParams}
+                gasLimitError={gasLimitError}
+              />
+            </div>
+          </>
         )}
 
         {permissionsError && (
           <>
-            <Typography component="div">
+            <Typography sx={{ mb: 2 }}>
               You are a member of the <Role>{role.roleKey}</Role> role but it does not allow this transaction.
             </Typography>
+
             <ErrorMessage>
               The permission check fails with the following status:
               <br />
               <code>{permissionsError}</code>
             </ErrorMessage>
           </>
+        )}
+
+        {multiSendImpossible && (
+          <ErrorMessage>
+            The current configuration of the Zodiac Roles module does not allow executing multiple transactions in
+            batch.
+          </ErrorMessage>
         )}
 
         {!walletCanPay ? (
