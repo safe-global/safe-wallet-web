@@ -17,7 +17,7 @@ type TransferTxInfoProps = {
   imitation: boolean
 }
 
-const TransferTxInfoSummary = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfoProps) => {
+const TransferTxInfoMain = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfoProps) => {
   const { direction } = txInfo
 
   return (
@@ -25,7 +25,7 @@ const TransferTxInfoSummary = ({ txInfo, txStatus, trusted, imitation }: Transfe
       <Typography>
         {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}
         <b>
-          <TransferTx info={txInfo} withLogo={false} omitSign />
+          <TransferTx info={txInfo} withLogo={false} omitSign preciseAmount />
         </b>
         {direction === TransferDirection.INCOMING ? ' from:' : ' to:'}
       </Typography>
@@ -34,12 +34,12 @@ const TransferTxInfoSummary = ({ txInfo, txStatus, trusted, imitation }: Transfe
   )
 }
 
-const TransferTxInfo = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfoProps & { trusted: boolean }) => {
+const TransferTxInfo = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfoProps) => {
   const address = txInfo.direction.toUpperCase() === TransferDirection.INCOMING ? txInfo.sender : txInfo.recipient
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
-      <TransferTxInfoSummary txInfo={txInfo} txStatus={txStatus} trusted={trusted} imitation={imitation} />
+      <TransferTxInfoMain txInfo={txInfo} txStatus={txStatus} trusted={trusted} imitation={imitation} />
 
       <Box display="flex" alignItems="center" width="100%">
         <EthHashInfo

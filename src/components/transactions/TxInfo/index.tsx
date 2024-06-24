@@ -30,10 +30,12 @@ export const TransferTx = ({
   info,
   omitSign = false,
   withLogo = true,
+  preciseAmount = false,
 }: {
   info: Transfer
   omitSign?: boolean
   withLogo?: boolean
+  preciseAmount?: boolean
 }): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
@@ -48,12 +50,20 @@ export const TransferTx = ({
         decimals={nativeCurrency?.decimals}
         tokenSymbol={nativeCurrency?.symbol}
         logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
+        preciseAmount={preciseAmount}
       />
     )
   }
 
   if (isERC20Transfer(transfer)) {
-    return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : undefined} />
+    return (
+      <TokenAmount
+        {...transfer}
+        direction={direction}
+        logoUri={withLogo ? transfer?.logoUri : undefined}
+        preciseAmount={preciseAmount}
+      />
+    )
   }
 
   if (isERC721Transfer(transfer)) {
