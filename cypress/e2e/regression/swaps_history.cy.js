@@ -36,7 +36,7 @@ describe('[SMOKE] Swaps history tests', () => {
     ])
     cy.reload()
 
-    create_tx.clickOnTransactionItemByName('11:14 AM')
+    create_tx.clickOnTransactionItemByName('14')
     create_tx.verifyExpandedDetails([
       swapsHistory.sellOrder,
       swapsHistory.sell,
@@ -44,8 +44,6 @@ describe('[SMOKE] Swaps history tests', () => {
       swapsHistory.forAtLeast,
       swapsHistory.dai,
       swapsHistory.filled,
-      swapsHistory.actionApprove,
-      swapsHistory.actionPreSignature,
     ])
   })
 

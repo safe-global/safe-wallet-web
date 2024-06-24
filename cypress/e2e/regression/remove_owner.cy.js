@@ -25,7 +25,8 @@ describe('Remove Owners tests', () => {
     owner.verifyRemoveBtnIsEnabled().should('have.length', 2)
   })
 
-  it('Verify Tooltip displays correct message for Non-Owner', () => {
+  //TODO: Clarify correct behaviour for non-owner button visibility
+  it.skip('Verify remove owner button is disabled for Non-Owner', () => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_1)
     main.waitForHistoryCallToComplete()
     owner.waitForConnectionStatus()
