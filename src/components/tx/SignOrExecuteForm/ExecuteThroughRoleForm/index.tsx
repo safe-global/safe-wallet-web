@@ -1,0 +1,277 @@
+import useWalletCanPay from '@/hooks/useWalletCanPay'
+import madProps from '@/utils/mad-props'
+import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
+import { CircularProgress, Box, Button, CardActions, Divider, Chip, Typography } from '@mui/material'
+
+import ErrorMessage from '@/components/tx/ErrorMessage'
+import { trackError, Errors } from '@/services/exceptions'
+import { useCurrentChain } from '@/hooks/useChains'
+import { getTxOptions } from '@/utils/transactions'
+import CheckWallet from '@/components/common/CheckWallet'
+
+import type { SignOrExecuteProps } from '..'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { TxModalContext } from '@/components/tx-flow'
+import { SuccessScreenFlow } from '@/components/tx-flow/flows'
+import AdvancedParams, { useAdvancedParams } from '../../AdvancedParams'
+import { asError } from '@/services/exceptions/utils'
+import { isWalletRejection } from '@/utils/wallets'
+
+import css from './styles.module.css'
+import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { TxSecurityContext } from '../../security/shared/TxSecurityContext'
+
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
+import { pollModuleTransactionId, useExecuteThroughRole, useGasLimit, useMetaTransactions, type Role } from './hooks'
+import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { decodeBytes32String } from 'ethers'
+import useOnboard from '@/hooks/wallets/useOnboard'
+import useWallet from '@/hooks/wallets/useWallet'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { assertOnboard, assertWallet } from '@/utils/helpers'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
+import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
+import { Status } from 'zodiac-roles-deployments'
+
+const Role = ({ children }: { children: string }) => {
+  let humanReadableRoleKey = children
+  try {
+    humanReadableRoleKey = decodeBytes32String(children)
+  } catch (e) {}
+
+  return <Chip label={humanReadableRoleKey} />
+}
+
+export const ExecuteThroughRoleForm = ({
+  safeTx,
+  role,
+  onSubmit,
+  disableSubmit = false,
+  txSecurity,
+}: SignOrExecuteProps & {
+  safeTx?: SafeTransaction
+  safeTxError?: Error
+  role: Role
+  txSecurity: ReturnType<typeof useTxSecurityContext>
+}): ReactElement => {
+  const currentChain = useCurrentChain()
+  const onboard = useOnboard()
+  const wallet = useWallet()
+  const { safe } = useSafeInfo()
+
+  const chainId = currentChain?.chainId || '1'
+
+  const [isPending, setIsPending] = useState<boolean>(false)
+  const [isRejectedByUser, setIsRejectedByUser] = useState<boolean>(false)
+  const [submitError, setSubmitError] = useState<Error | undefined>()
+
+  const { setTxFlow } = useContext(TxModalContext)
+  const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
+
+  const permissionsError = role.status !== null ? PermissionsErrorMessage[role.status] : null
+  const metaTransactions = useMetaTransactions(safeTx)
+  const multiSendImpossible = metaTransactions.length > 1 && role.multiSend
+
+  // Wrap call, routing it through the Roles mod with the allowing role
+  const txThroughRole = useExecuteThroughRole({
+    role: role.status === Status.Ok && !multiSendImpossible ? role : undefined,
+    metaTransactions,
+  })
+
+  // Estimate gas limit
+  const { gasLimit, gasLimitError } = useGasLimit(txThroughRole)
+  const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
+
+  // On form submit
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault()
+
+    if (needsRiskConfirmation && !isRiskConfirmed) {
+      setIsRiskIgnored(true)
+      return
+    }
+
+    assertWallet(wallet)
+    assertOnboard(onboard)
+
+    await assertWalletChain(onboard, chainId)
+
+    setIsRejectedByUser(false)
+    setIsPending(true)
+    setSubmitError(undefined)
+    setIsRejectedByUser(false)
+
+    if (!txThroughRole) {
+      throw new Error('Execution through role is not possible')
+    }
+
+    const txOptions = getTxOptions(advancedParams, currentChain)
+
+    let txHash: string
+    try {
+      txHash = await dispatchModuleTxExecution({ ...txThroughRole, ...txOptions }, wallet.provider, safe.address.value)
+    } catch (_err) {
+      const err = asError(_err)
+      if (isWalletRejection(err)) {
+        setIsRejectedByUser(true)
+      } else {
+        trackError(Errors._815, err)
+        setSubmitError(err)
+      }
+      setIsPending(false)
+      return
+    }
+
+    // On success, forward to the success screen, initially without a txId
+    setTxFlow(<SuccessScreenFlow txHash={txHash} />, undefined, false)
+
+    // Wait for module tx to be indexed
+    const transactionService = currentChain?.transactionService
+    if (!transactionService) {
+      throw new Error('Transaction service not found')
+    }
+    const moduleTxId = await pollModuleTransactionId({
+      transactionService,
+      safeAddress: safe.address.value,
+      txHash,
+    })
+
+    const txId = `module_${safe.address.value}_${moduleTxId}`
+
+    onSubmit?.(txId, true)
+
+    // Track tx event
+    const txType = await getTransactionTrackingType(chainId, txId)
+    trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
+
+    // Update the success screen so it shows a link to the transaction
+    setTxFlow(<SuccessScreenFlow txId={txId} />, undefined, false)
+  }
+
+  const walletCanPay = useWalletCanPay({
+    gasLimit,
+    maxFeePerGas: advancedParams.maxFeePerGas,
+    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
+  })
+
+  const submitDisabled = !txThroughRole || isPending || disableSubmit || (needsRiskConfirmation && !isRiskConfirmed)
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className={css.params}>
+          <AdvancedParams
+            willExecute
+            params={advancedParams}
+            recommendedGasLimit={gasLimit}
+            onFormSubmit={setAdvancedParams}
+            gasLimitError={gasLimitError}
+          />
+        </div>
+
+        {!permissionsError && !multiSendImpossible && (
+          <Typography component="div">
+            As a member of the <Role>{role.roleKey}</Role> you can execute this transaction immediately without
+            confirmations from other owners.
+          </Typography>
+        )}
+
+        {!permissionsError && multiSendImpossible && (
+          <Typography component="div">
+            As a member of the <Role>{role.roleKey}</Role> you have permission to submit the above calls as individual
+            transactions. However, the current Roles configuration does not allow executing multiple transactions in
+            batch.
+          </Typography>
+        )}
+
+        {permissionsError && (
+          <>
+            <Typography component="div">
+              You are a member of the <Role>{role.roleKey}</Role> role but it does not allow this transaction.
+            </Typography>
+            <ErrorMessage>
+              The permission check fails with the following status:
+              <br />
+              <code>{permissionsError}</code>
+            </ErrorMessage>
+          </>
+        )}
+
+        {!walletCanPay ? (
+          <ErrorMessage level="info">
+            Your connected wallet doesn&apos;t have enough funds to execute this transaction.
+          </ErrorMessage>
+        ) : (
+          gasLimitError && (
+            <ErrorMessage error={gasLimitError}>
+              This transaction will most likely fail. To save gas costs, avoid creating this transaction.
+            </ErrorMessage>
+          )
+        )}
+
+        {submitError && (
+          <Box mt={1}>
+            <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
+          </Box>
+        )}
+
+        {isRejectedByUser && (
+          <Box mt={1}>
+            <WalletRejectionError />
+          </Box>
+        )}
+
+        <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
+
+        <CardActions>
+          {/* Submit button, also available to non-owner role members */}
+          <CheckWallet allowNonOwner>
+            {(isOk) => (
+              <Button
+                data-testid="execute-form-btn"
+                variant="contained"
+                type="submit"
+                disabled={!isOk || submitDisabled}
+                sx={{ minWidth: '112px' }}
+              >
+                {isPending ? <CircularProgress size={20} /> : 'Execute'}
+              </Button>
+            )}
+          </CheckWallet>
+        </CardActions>
+      </form>
+    </>
+  )
+}
+
+const useTxSecurityContext = () => useContext(TxSecurityContext)
+
+export default madProps(ExecuteThroughRoleForm, {
+  txSecurity: useTxSecurityContext,
+})
+
+const PermissionsErrorMessage: Record<Status, string | null> = {
+  [Status.Ok]: null,
+
+  [Status.DelegateCallNotAllowed]: 'Role is not allowed to delegate call to target address',
+  [Status.TargetAddressNotAllowed]: 'Role is not allowed to call target address',
+  [Status.FunctionNotAllowed]: 'Role is not allowed to call this function on the target address',
+  [Status.SendNotAllowed]: 'Role is not allowed to send to target address',
+  [Status.OrViolation]: 'None of the Or branch conditions are met',
+  [Status.NorViolation]: 'At least one Nor branch condition is met',
+  [Status.ParameterNotAllowed]: 'Parameter value is not allowed',
+  [Status.ParameterLessThanAllowed]: 'Parameter value is less than allowed',
+  [Status.ParameterGreaterThanAllowed]: 'Parameter value is greater than allowed',
+  [Status.ParameterNotAMatch]: 'Parameter value does not match',
+  [Status.NotEveryArrayElementPasses]: 'Not every array element meets the criteria',
+  [Status.NoArrayElementPasses]: 'None of the array elements meet the criteria',
+  [Status.ParameterNotSubsetOfAllowed]: 'Parameter value is not a subset of allowed values',
+  [Status.BitmaskOverflow]: 'Bitmask exceeded value length',
+  [Status.BitmaskNotAllowed]: 'Bitmask does not allow the value',
+  [Status.CustomConditionViolation]: 'Custom condition is not met',
+  [Status.AllowanceExceeded]: 'Allowance is exceeded',
+  [Status.CallAllowanceExceeded]: 'Call allowance is exceeded',
+  [Status.EtherAllowanceExceeded]: 'Ether allowance is exceeded',
+}

@@ -102,7 +102,7 @@ const KNOWN_MULTISEND_CALL_ONLY_ADDRESSES = [
   '0xa1dabef33b3b82c7814b6d82a79e50f4ac44102b', // MultiSendCallOnly 1.3.0 alternative
 ]
 
-interface Role {
+export interface Role {
   modAddress: `0x${string}`
   roleKey: `0x${string}`
   multiSend?: `0x${string}`
@@ -113,7 +113,8 @@ interface Role {
  * Returns a list of roles mod address + role key assigned to the connected wallet.
  * For each role, checks if the role allows the given meta transaction and returns the status.
  */
-export const useRoles = (metaTransactions: MetaTransactionData[]) => {
+export const useRoles = (safeTx?: SafeTransaction) => {
+  const metaTransactions = useMetaTransactions(safeTx)
   const rolesMods = useRolesMods()
   const wallet = useWallet()
   const walletAddress = wallet?.address.toLowerCase() as undefined | `0x${string}`
@@ -169,6 +170,14 @@ export const useRoles = (metaTransactions: MetaTransactionData[]) => {
   // Return the statically checked roles while the dynamic checks are still pending
   return dynamicallyCheckedPotentialRoles || potentialRoles
 }
+
+export const findAllowingRole = (roles: Role[]): Role | undefined => roles.find((role) => role.status === Status.Ok)
+
+export const findMostLikelyRole = (roles: Role[]): Role | undefined =>
+  findAllowingRole(roles) ||
+  roles.find((role) => role.status !== Status.TargetAddressNotAllowed && role.status !== Status.FunctionNotAllowed) ||
+  roles.find((role) => role.status !== Status.TargetAddressNotAllowed) ||
+  roles[0]
 
 /**
  * Returns the status of the permission check, `null` if it depends on the condition evaluation.

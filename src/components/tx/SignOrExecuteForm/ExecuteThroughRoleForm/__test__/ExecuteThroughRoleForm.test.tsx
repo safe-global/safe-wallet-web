@@ -12,7 +12,7 @@ import * as txSender from '@/services/tx/tx-sender/dispatch'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { AbiCoder, ZeroAddress, encodeBytes32String } from 'ethers'
-import PermissionsCheck from '..'
+import ExecuteThroughRoleForm from '..'
 import * as hooksModule from '../hooks'
 import { FEATURES } from '@/utils/chains'
 import { chainBuilder } from '@/tests/builders/chains'
@@ -52,7 +52,7 @@ jest.mock('@/services/transactions', () => ({
   getModuleTransactionId: jest.fn(() => 'i1234567890'),
 }))
 
-describe('PermissionsCheck', () => {
+describe('ExecuteThroughRoleForm', () => {
   let executeSpy: jest.SpyInstance
   let fetchRolesModMock: jest.SpyInstance
 
@@ -123,7 +123,7 @@ describe('PermissionsCheck', () => {
       operation: OperationType.Call,
     })
 
-    const { queryByText } = render(<PermissionsCheck safeTx={safeTx} />)
+    const { queryByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} />)
 
     // the card is not shown
     expect(queryByText('Execute without confirmations')).not.toBeInTheDocument()
@@ -141,7 +141,7 @@ describe('PermissionsCheck', () => {
       operation: OperationType.Call,
     })
 
-    const { queryByText } = render(<PermissionsCheck safeTx={safeTx} />)
+    const { queryByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} />)
 
     // wait for the Roles mod to be fetched
     await waitFor(() => {
@@ -162,7 +162,7 @@ describe('PermissionsCheck', () => {
       operation: OperationType.Call,
     })
 
-    const { findByText, getByText } = render(<PermissionsCheck safeTx={safeTx} />)
+    const { findByText, getByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} />)
     expect(await findByText('Execute')).toBeDisabled()
 
     expect(
@@ -186,7 +186,7 @@ describe('PermissionsCheck', () => {
 
     const onSubmit = jest.fn()
 
-    const { findByText } = render(<PermissionsCheck safeTx={safeTx} onSubmit={onSubmit} />)
+    const { findByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} onSubmit={onSubmit} />)
 
     fireEvent.click(await findByText('Execute'))
 
