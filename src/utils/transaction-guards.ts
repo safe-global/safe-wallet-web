@@ -27,9 +27,11 @@ import type {
   SwapOrder,
   DecodedDataResponse,
   BaselineConfirmationView,
-  CowSwapConfirmationView,
+  CowConfirmationView,
   TwapOrder,
   Order,
+  SwapConfirmationView,
+  TwapConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -106,9 +108,25 @@ export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder =>
   return value.type === TransactionInfoType.TWAP_ORDER
 }
 
+export const isCoWConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | CowConfirmationView | undefined,
+): decodedData is CowConfirmationView => {
+  return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
+}
+
+export const isTwapConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | CowConfirmationView | undefined,
+): decodedData is TwapConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData.type === 'COW_SWAP_TWAP_ORDER'
+  }
+
+  return false
+}
+
 export const isSwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | CowSwapConfirmationView | undefined,
-): decodedData is CowSwapConfirmationView => {
+  decodedData: DecodedDataResponse | BaselineConfirmationView | CowConfirmationView | undefined,
+): decodedData is SwapConfirmationView => {
   if (decodedData && 'type' in decodedData) {
     return decodedData.type === 'COW_SWAP_ORDER'
   }

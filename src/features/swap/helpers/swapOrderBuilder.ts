@@ -1,12 +1,13 @@
 import { Builder, type IBuilder } from '@/tests/Builder'
 import { faker } from '@faker-js/faker'
 import type {
-  CowSwapConfirmationView,
+  CowConfirmationView,
   OrderToken,
   SwapOrder,
   TransactionInfoType,
   TwapOrder,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { DurationType, StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
 
 export function appDataBuilder(
@@ -82,13 +83,13 @@ export function twapOrderBuilder(): IBuilder<TwapOrder> {
     buyToken: orderTokenBuilder().build(),
     executedSurplusFee: faker.string.numeric(),
     fullAppData: appDataBuilder().build(),
-    numberOfParts: faker.number.int({ min: 1, max: 10 }),
+    numberOfParts: faker.number.int({ min: 1, max: 10 }).toString(),
     /** @description The amount of sellToken to sell in each part */
     partSellAmount: faker.string.numeric(),
     /** @description The amount of buyToken that must be bought in each part */
     minPartLimit: faker.string.numeric(),
     /** @description The duration of the TWAP interval */
-    timeBetweenParts: faker.string.numeric(),
+    timeBetweenParts: faker.number.int({ min: 1, max: 10000000 }),
     /** @description Whether the TWAP is valid for the entire interval or not */
     durationOfPart: {
       durationType: DurationType.Auto,
@@ -101,10 +102,10 @@ export function twapOrderBuilder(): IBuilder<TwapOrder> {
 }
 
 // create a builder for SwapOrderConfirmationView
-export function swapOrderConfirmationViewBuilder(): IBuilder<CowSwapConfirmationView> {
+export function swapOrderConfirmationViewBuilder(): IBuilder<CowConfirmationView> {
   const ownerAndReceiver = faker.finance.ethereumAddress()
-  return Builder.new<CowSwapConfirmationView>().with({
-    type: 'COW_SWAP_ORDER',
+  return Builder.new<CowConfirmationView>().with({
+    type: ConfirmationViewTypes.COW_SWAP_ORDER,
     uid: faker.string.uuid(),
     kind: faker.helpers.arrayElement(['buy', 'sell']),
     orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),

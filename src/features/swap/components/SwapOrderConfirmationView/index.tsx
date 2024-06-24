@@ -1,5 +1,5 @@
 import OrderId from '@/features/swap/components/OrderId'
-import { formatDateTime, formatTimeInWords } from '@/utils/date'
+import { formatDateTime, formatTimeInWords, getPeriod } from '@/utils/date'
 import { Fragment, type ReactElement } from 'react'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
@@ -8,21 +8,27 @@ import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
 import { getLimitPrice, getOrderClass, getSlippageInPercent } from '@/features/swap/helpers/utils'
-import type { CowSwapConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import type { CowConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import { StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
+import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
 import AlertIcon from '@/public/images/common/alert.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import css from './styles.module.css'
 import NamedAddress from '@/components/common/NamedAddressInfo'
+import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDuration'
+import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
+import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
 
 type SwapOrderProps = {
-  order: CowSwapConfirmationView
+  order: CowConfirmationView
   settlementContract: string
 }
 
 export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrderProps): ReactElement => {
-  const { uid, owner, kind, validUntil, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
+  const { owner, kind, validUntil, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
+  const isTwapOrder = order.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
   const limitPrice = getLimitPrice(order)
   const orderClass = getOrderClass(order)
   const expires = new Date(validUntil * 1000)
@@ -78,9 +84,13 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
           ) : (
             <Fragment key="none" />
           ),
-          <DataRow key="Order ID" title="Order ID">
-            <OrderId orderId={uid} href={explorerUrl} />
-          </DataRow>,
+          !isTwapOrder ? (
+            <DataRow key="Order ID" title="Order ID">
+              <OrderId orderId={order.uid} href={explorerUrl} />
+            </DataRow>
+          ) : (
+            <></>
+          ),
           <DataRow key="Interact with" title="Interact with">
             <NamedAddress address={settlementContract} onlyName hasExplorer shortAddress={false} avatarSize={24} />
           </DataRow>,
@@ -105,6 +115,30 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
           ),
         ]}
       />
+
+      {isTwapOrder && (
+        <div className={css.partsBlock}>
+          <DataTable
+            rows={[
+              <Typography key="title" variant="body1" className={css.partsBlockTitle}>
+                <strong>
+                  Order will be split in{' '}
+                  <span className={css.numberOfPartsLabel}>${order.numberOfParts} equal parts</span>
+                </strong>
+              </Typography>,
+              <PartSellAmount order={order} addonText="per part" key="sell_part" />,
+              <PartBuyAmount order={order} addonText="per part" key="buy_part" />,
+              <DataRow title="Start time" key="Start time">
+                {order.startTime.startType === StartTimeValue.AtMiningTime ? 'At mining time' : 'At block number'}
+              </DataRow>,
+              <PartDuration order={order} key="part_duration" />,
+              <DataRow title="Total duration" key="total_duration">
+                {getPeriod(+order.timeBetweenParts * +order.numberOfParts)}
+              </DataRow>,
+            ]}
+          />
+        </div>
+      )}
     </div>
   )
 }

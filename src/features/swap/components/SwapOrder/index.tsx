@@ -32,6 +32,9 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isSwapOrderTxInfo, isTwapOrderTxInfo } from '@/utils/transaction-guards'
 import { EmptyRow } from '@/components/common/Table/EmptyRow'
+import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDuration'
+import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
+import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -205,17 +208,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
 }
 
 export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
-  const {
-    kind,
-    validUntil,
-    status,
-    sellToken,
-    buyToken,
-    numberOfParts,
-    partSellAmount,
-    minPartLimit,
-    timeBetweenParts,
-  } = order
+  const { kind, validUntil, status, numberOfParts } = order
 
   const isPartiallyFilled = isOrderPartiallyFilled(order)
   const expires = new Date(validUntil * 1000)
@@ -235,20 +228,10 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
         <DataRow title="No of parts" key="n_of_parts">
           {numberOfParts}
         </DataRow>,
-        <DataRow title="Sell amount" key="sell_amount_part">
-          <Typography component="span" fontWeight="bold">
-            {formatVisualAmount(partSellAmount, sellToken.decimals)} {sellToken.symbol}
-          </Typography>
-        </DataRow>,
-        <DataRow title="Buy amount" key="buy_amount_part">
-          <Typography component="span" fontWeight="bold">
-            {formatVisualAmount(minPartLimit, buyToken.decimals)} {buyToken.symbol}
-          </Typography>
-        </DataRow>,
+        <PartSellAmount order={order} key="part_sell_amount" />,
+        <PartBuyAmount order={order} key="part_buy_amount" />,
         <FilledRow order={order} key="filled-row" />,
-        <DataRow title="Part duration" key="part_duration">
-          {+timeBetweenParts / 60} minutes
-        </DataRow>,
+        <PartDuration order={order} key="part_duration" />,
         <EmptyRow key="spacer-1" />,
         status !== 'fulfilled' && compareAsc(now, expires) !== 1 ? (
           <DataRow key="Expiry" title="Expiry">
