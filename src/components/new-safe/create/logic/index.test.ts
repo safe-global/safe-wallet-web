@@ -26,7 +26,7 @@ import {
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 
-const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
+const provider = new JsonRpcProvider('https://rpc.ankr.com/eth', { name: 'rinkeby', chainId: 4 })
 
 const mockTransaction = {
   data: EMPTY_DATA,
