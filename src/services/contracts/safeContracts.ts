@@ -1,3 +1,4 @@
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { _isL2 } from '@/services/contracts/deployments'
 import { SafeProvider } from '@safe-global/protocol-kit'
 import {
@@ -131,12 +132,14 @@ export const getReadOnlyProxyFactoryContract = (safeVersion: SafeInfo['version']
 // Fallback handler
 
 export const getReadOnlyFallbackHandlerContract = async (safeVersion: SafeInfo['version']) => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not found.')
+  // We can't use getSafeSDK here because this function is needed outside a safe where
+  // the protocol-kit instance doesn't exist
+  const provider = getWeb3ReadOnly()
+  if (!provider) {
+    throw new Error('Provider not found.')
   }
 
-  const safeProvider = safeSDK.getSafeProvider()
+  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
 
   return getCompatibilityFallbackHandlerContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
