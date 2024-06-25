@@ -70,7 +70,7 @@ export const useRolesMods = () => {
 
   const [data] = useAsync(async () => {
     if (!ROLES_V2_SUPPORTED_CHAINS.includes(safe.chainId) || !isFeatureEnabled) return []
-    console.log('okokok')
+
     const safeModules = safe.modules || []
     const rolesMods = await Promise.all(
       safeModules.map((address) =>
@@ -122,7 +122,6 @@ export const useRoles = (safeTx?: SafeTransaction) => {
   // find all roles assigned to the connected wallet, statically check if they allow the given meta transaction
   const potentialRoles = useMemo(() => {
     const result: Role[] = []
-
     if (walletAddress && rolesMods) {
       for (const rolesMod of rolesMods) {
         const multiSend = rolesMod.multiSendAddresses.find((addr) => KNOWN_MULTISEND_ADDRESSES.includes(addr))
@@ -195,6 +194,7 @@ const checkPermissions = (role: RoleSummary, metaTx: MetaTransactionData): Statu
     // check if the function is allowed
     const selector = metaTx.data.slice(0, 10) as `0x${string}`
     const func = target.functions.find((f) => f.selector === selector)
+
     if (func) {
       const execOptionsStatus = checkExecutionOptions(func.executionOptions, metaTx)
       if (execOptionsStatus !== Status.Ok) return execOptionsStatus
