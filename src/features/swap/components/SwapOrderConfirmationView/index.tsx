@@ -123,7 +123,7 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
               <Typography key="title" variant="body1" className={css.partsBlockTitle}>
                 <strong>
                   Order will be split in{' '}
-                  <span className={css.numberOfPartsLabel}>${order.numberOfParts} equal parts</span>
+                  <span className={css.numberOfPartsLabel}>{order.numberOfParts} equal parts</span>
                 </strong>
               </Typography>,
               <PartSellAmount order={order} addonText="per part" key="sell_part" />,
