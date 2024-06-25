@@ -65,6 +65,10 @@
   }
 }
 
+.zodiac {
+  color: var(--color-text-primary);
+}
+
 .roleChip {
   background-color: var(--color-background-main);
   font-size: 12px;

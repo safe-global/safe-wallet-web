@@ -196,6 +196,12 @@ export const ExecuteThroughRoleForm = ({
           </>
         )}
 
+        <Typography variant="caption" display="flex" gap="2px" color="text.secondary" sx={{ mb: 2 }}>
+          Powered by
+          <img src="/images/transactions/zodiac-roles.svg" width={16} height={16} alt="Zodiac Roles" />
+          <span className={css.zodiac}>Zodiac</span>
+        </Typography>
+
         {multiSendImpossible && (
           <ErrorMessage>
             The current configuration of the Zodiac Roles module does not allow executing multiple transactions in
