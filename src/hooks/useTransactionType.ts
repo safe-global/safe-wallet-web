@@ -73,7 +73,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
     case 'TwapOrder': {
       return {
         icon: '/images/common/swap.svg',
-        text: 'Twap order',
+        text: 'TWAP order',
       }
     }
     case TransactionInfoType.CUSTOM: {
