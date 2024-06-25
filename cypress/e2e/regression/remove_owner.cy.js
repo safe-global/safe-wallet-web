@@ -25,11 +25,10 @@ describe('Remove Owners tests', () => {
     owner.verifyRemoveBtnIsEnabled().should('have.length', 2)
   })
 
-  it('Verify Tooltip displays correct message for Non-Owner', () => {
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_1)
+  it('Verify remove button does not exist for Non-Owner when there is only 1 owner in the safe', () => {
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_3)
     main.waitForHistoryCallToComplete()
-    owner.waitForConnectionStatus()
-    owner.verifyRemoveBtnIsDisabled()
+    main.verifyElementsCount(owner.removeOwnerBtn, 0)
   })
 
   it('Verify Tooltip displays correct message for disconnected user', () => {
