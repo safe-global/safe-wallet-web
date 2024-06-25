@@ -114,7 +114,7 @@ const ExpiryRow = ({ order }: { order: Order }) => {
     }
   }
 
-  return <></>
+  return null
 }
 
 const SurplusRow = ({ order }: { order: Order }) => {
@@ -131,7 +131,7 @@ const SurplusRow = ({ order }: { order: Order }) => {
     )
   }
 
-  return <></>
+  return null
 }
 
 const FilledRow = ({ order }: { order: Order }) => {
@@ -144,7 +144,7 @@ const FilledRow = ({ order }: { order: Order }) => {
     )
   }
 
-  return <></>
+  return null
 }
 
 const OrderUidRow = ({ order }: { order: Order }) => {
@@ -156,7 +156,7 @@ const OrderUidRow = ({ order }: { order: Order }) => {
       </DataRow>
     )
   }
-  return <></>
+  return null
 }
 
 const StatusRow = ({ order }: { order: Order }) => {
@@ -181,7 +181,7 @@ const RecipientRow = ({ order }: { order: Order }) => {
     )
   }
 
-  return <></>
+  return null
 }
 
 export const SellOrder = ({ order }: { order: SwapOrderType }) => {
