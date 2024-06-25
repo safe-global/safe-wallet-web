@@ -1,5 +1,4 @@
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
-import SwapTxInfo from '@/features/swap/components/SwapTxInfo'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
@@ -20,6 +19,7 @@ import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
 import { MultiSendTxInfo } from '@/components/transactions/TxDetails/TxData/MultiSendTxInfo'
+import InteractWith from '@/features/swap/components/SwapTxInfo/interactWith'
 
 const TxData = ({ txDetails, trusted }: { txDetails: TransactionDetails; trusted: boolean }): ReactElement => {
   const chainId = useChainId()
@@ -47,7 +47,7 @@ const TxData = ({ txDetails, trusted }: { txDetails: TransactionDetails; trusted
   }
 
   if (isSwapTxInfo(txInfo)) {
-    return <SwapTxInfo txData={txDetails.txData} />
+    return <InteractWith txData={txDetails.txData} />
   }
 
   return <DecodedData txData={txDetails.txData} txInfo={txInfo} />
