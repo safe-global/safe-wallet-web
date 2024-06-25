@@ -39,7 +39,7 @@ const PkModulePopup = () => {
             data-testid="private-key-input"
           />
 
-          <Button variant="contained" color="primary" fullWidth type="submit">
+          <Button data-testid="pk-connect-btn" variant="contained" color="primary" fullWidth type="submit">
             Connect
           </Button>
         </form>

@@ -1,13 +1,15 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as spendinglimit from '../pages/spending_limits.pages'
-import * as owner from '../pages/owners.pages'
 import * as navigation from '../pages/navigation.page'
 import * as tx from '../pages/create_tx.pages'
 import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const tokenAmount = 0.1
 const newTokenAmount = 0.001
@@ -22,12 +24,12 @@ describe('Spending limits tests', () => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_8)
     cy.clearLocalStorage()
     main.acceptCookies()
-    owner.waitForConnectionStatus()
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')
   })
 
   it('Verify that the Review step shows beneficiary, amount allowed, reset time', () => {
     //Assume that default reset time is set to One time
+    wallet.connectSigner(signer)
     spendinglimit.clickOnNewSpendingLimitBtn()
     spendinglimit.enterBeneficiaryAddress(staticSafes.SEP_STATIC_SAFE_6)
     spendinglimit.enterSpendingLimitAmount(0.1)
@@ -44,24 +46,28 @@ describe('Spending limits tests', () => {
   })
 
   it('Verify Spending limit option is available when selecting the corresponding token', () => {
+    wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
     spendinglimit.verifyTxOptionExist([spendinglimit.spendingLimitTxOption])
   })
 
   it('Verify spending limit option shows available amount', () => {
+    wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
     spendinglimit.verifySpendingOptionShowsBalance([spendingLimitBalance])
   })
 
   it('Verify when owner is a delegate, standard tx and spending limit tx are present', () => {
+    wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
     spendinglimit.verifyTxOptionExist([spendinglimit.spendingLimitTxOption, spendinglimit.standardTx])
   })
 
   it('Verify when spending limit is selected the nonce field is removed', () => {
+    wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
     spendinglimit.selectSpendingLimitOption()
@@ -69,6 +75,7 @@ describe('Spending limits tests', () => {
   })
 
   it('Verify "Max" button value set to be no more than the allowed amount', () => {
+    wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
     spendinglimit.clickOnMaxBtn()
@@ -76,12 +83,14 @@ describe('Spending limits tests', () => {
   })
 
   it('Verify selecting a native token from the dropdown in new tx', () => {
+    wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()
     spendinglimit.selectToken(constants.tokenNames.sepoliaEther)
   })
 
   it('Verify that when replacing spending limit for the same owner, previous values are displayed in red', () => {
+    wallet.connectSigner(signer)
     spendinglimit.clickOnNewSpendingLimitBtn()
     spendinglimit.enterBeneficiaryAddress(constants.DEFAULT_OWNER_ADDRESS)
     spendinglimit.enterSpendingLimitAmount(newTokenAmount)
@@ -92,6 +101,7 @@ describe('Spending limits tests', () => {
   })
 
   it('Verify that when editing spending limit for owner who used some of it, relevant actions are displayed', () => {
+    wallet.connectSigner(signer)
     spendinglimit.clickOnNewSpendingLimitBtn()
     spendinglimit.enterBeneficiaryAddress(constants.SPENDING_LIMIT_ADDRESS_2)
     spendinglimit.enterSpendingLimitAmount(newTokenAmount)
@@ -112,6 +122,7 @@ describe('Spending limits tests', () => {
       )
       .then(() => {
         cy.reload()
+        wallet.connectSigner(signer)
         navigation.clickOnNewTxBtn()
         tx.clickOnSendTokensBtn()
         spendinglimit.clickOnTokenDropdown()
@@ -129,6 +140,7 @@ describe('Spending limits tests', () => {
       )
       .then(() => {
         cy.reload()
+        wallet.connectSigner(signer)
         spendinglimit.clickOnNewSpendingLimitBtn()
         spendinglimit.enterBeneficiaryAddress(constants.DEFAULT_OWNER_ADDRESS.substring(30))
         spendinglimit.selectRecipient(constants.DEFAULT_OWNER_ADDRESS)

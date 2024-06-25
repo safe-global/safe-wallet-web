@@ -1,6 +1,6 @@
-import * as constants from '../../support/constants'
-import * as main from '../../e2e/pages/main.page'
-import * as createtx from '../../e2e/pages/create_tx.pages'
+import * as constants from '../../support/constants.js'
+import * as main from '../pages/main.page.js'
+import * as createtx from '../pages/create_tx.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 
@@ -18,7 +18,7 @@ function happyPathToStepTwo() {
   createtx.clickOnNextBtn()
 }
 
-describe('Create transactions tests', () => {
+describe('[SMOKE] Create transactions tests 2', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -32,16 +32,23 @@ describe('Create transactions tests', () => {
     createtx.clickOnSendTokensBtn()
   })
 
-  it('Verify submitting a tx and that clicking on notification shows the transaction in queue', () => {
+  it('[SMOKE] Verify advance parameters gas limit input', () => {
+    happyPathToStepTwo()
+    createtx.changeNonce('1')
+    createtx.selectCurrentWallet()
+    createtx.openExecutionParamsModal()
+    createtx.verifyAndSubmitExecutionParams()
+  })
+
+  it('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
     happyPathToStepTwo()
     createtx.verifySubmitBtnIsEnabled()
-    createtx.changeNonce(14)
-    cy.wait(1000)
-    createtx.clickOnSignTransactionBtn()
-    createtx.waitForProposeRequest()
-    createtx.clickViewTransaction()
-    createtx.verifySingleTxPage()
-    createtx.verifyQueueLabel()
-    createtx.verifyTransactionSummary(sendValue)
+    createtx.verifyNativeTokenTransfer()
+    createtx.changeNonce('1')
+    createtx.verifyConfirmTransactionData()
+    createtx.verifyRelayerAttemptsAvailable()
+    createtx.selectCurrentWallet()
+    createtx.clickOnNoLaterOption()
+    createtx.verifyAddToBatchBtnIsEnabled()
   })
 })

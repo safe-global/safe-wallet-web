@@ -4,6 +4,7 @@ import * as main from '../pages/main.page.js'
 import * as constants from '../../support/constants.js'
 import * as sidebar from '../pages/sidebar.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
 
@@ -13,6 +14,9 @@ const invalidJsonPath_2 = 'cypress/fixtures/balances.json'
 const invalidJsonPath_3 = 'cypress/fixtures/test-empty-batch.json'
 
 const appNames = ['Transaction Builder']
+
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('[SMOKE] Import Export Data tests 2', () => {
   before(async () => {
@@ -26,11 +30,13 @@ describe('[SMOKE] Import Export Data tests 2', () => {
   })
 
   it('[SMOKE] Verify that the Sidebar Import button opens an import modal', () => {
+    wallet.connectSigner(signer)
     sidebar.openSidebar()
     sidebar.clickOnSidebarImportBtn()
   })
 
   it('[SMOKE] Verify that correctly formatted json file can be uploaded and shows data', () => {
+    wallet.connectSigner(signer)
     sidebar.openSidebar()
     sidebar.clickOnSidebarImportBtn()
     file.dragAndDropFile(validJsonPath)
@@ -44,6 +50,7 @@ describe('[SMOKE] Import Export Data tests 2', () => {
   })
 
   it('[SMOKE] Verify that only json files can be imported', () => {
+    wallet.connectSigner(signer)
     sidebar.openSidebar()
     sidebar.clickOnSidebarImportBtn()
     file.dragAndDropFile(invalidJsonPath)
@@ -58,6 +65,7 @@ describe('[SMOKE] Import Export Data tests 2', () => {
   })
 
   it('[SMOKE] Verify that json files with wrong information are rejected', () => {
+    wallet.connectSigner(signer)
     sidebar.openSidebar()
     sidebar.clickOnSidebarImportBtn()
     file.dragAndDropFile(invalidJsonPath_3)

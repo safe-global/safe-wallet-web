@@ -304,8 +304,3 @@ export function verifyTextVisibility(stringsArray) {
 export function getIframeBody(iframe) {
   return cy.get(iframe).its('0.contentDocument.body').should('not.be.empty').then(cy.wrap)
 }
-
-export function connectSigner(signer) {
-  cy.get('button').contains('Connect').click()
-  cy.contains('Private key').click()
-}

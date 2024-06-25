@@ -4,10 +4,13 @@ import * as createwallet from '../pages/create_wallet.pages'
 import * as owner from '../pages/owners.pages'
 import * as ls from '../../support/localstorage_data.js'
 import * as safe from '../pages/load_safe.pages'
+import * as wallet from '../../support/utils/wallet.js'
 
 const ownerSepolia = ['Automation owner Sepolia']
 const ownerName = 'Owner name'
 const owner1 = 'Owner1'
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('Safe creation tests 2', () => {
   beforeEach(() => {
@@ -17,6 +20,7 @@ describe('Safe creation tests 2', () => {
   })
 
   it('Cancel button cancels safe creation', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -27,6 +31,7 @@ describe('Safe creation tests 2', () => {
 
   // Owners and confirmation step
   it('Verify Next button is disabled when address is empty', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -36,11 +41,14 @@ describe('Safe creation tests 2', () => {
   })
 
   it('Verify owner names are autocompleted if they are present in the Address book ', () => {
-    owner.waitForConnectionStatus()
-    main
-      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName)
+    cy.wrap(null)
+      .then(() =>
+        main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName),
+      )
       .then(() => {
         cy.visit(constants.welcomeUrl + '?chain=sep')
+        wallet.connectSigner(signer)
+        owner.waitForConnectionStatus()
         createwallet.clickOnContinueWithWalletBtn()
         createwallet.clickOnCreateNewSafeBtn()
         safe.clickOnNextBtn()
@@ -49,11 +57,14 @@ describe('Safe creation tests 2', () => {
   })
 
   it("Verify names don't autofill if they are added to another chain's Address book", () => {
-    owner.waitForConnectionStatus()
-    main
-      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName[1])
+    cy.wrap(null)
+      .then(() =>
+        main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName[1]),
+      )
       .then(() => {
         cy.visit(constants.welcomeUrl + '?chain=sep')
+        wallet.connectSigner(signer)
+        owner.waitForConnectionStatus()
         createwallet.clickOnContinueWithWalletBtn()
         createwallet.clickOnCreateNewSafeBtn()
         safe.clickOnNextBtn()
@@ -62,6 +73,7 @@ describe('Safe creation tests 2', () => {
   })
 
   it('Verify an valid name for owner can be inputed', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -71,6 +83,7 @@ describe('Safe creation tests 2', () => {
   })
 
   it('Verify Threshold matching required confirmations max with amount of owners', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -80,6 +93,7 @@ describe('Safe creation tests 2', () => {
   })
 
   it('Verify deleting owner rows updates the currenlty set policies value', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -91,6 +105,7 @@ describe('Safe creation tests 2', () => {
   })
 
   it('Verify ENS name in the address and name fields is resolved', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -101,6 +116,7 @@ describe('Safe creation tests 2', () => {
   })
 
   it('Verify deleting owner rows is possible', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -112,11 +128,14 @@ describe('Safe creation tests 2', () => {
   })
 
   it('Verify existing owner in address book will have their names filled when their address is pasted', () => {
-    main
-      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
+    cy.wrap(null)
+      .then(() =>
+        main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1),
+      )
       .then(() => {
-        owner.waitForConnectionStatus()
         cy.visit(constants.welcomeUrl + '?chain=sep')
+        wallet.connectSigner(signer)
+        owner.waitForConnectionStatus()
         createwallet.clickOnContinueWithWalletBtn()
         createwallet.clickOnCreateNewSafeBtn()
         safe.clickOnNextBtn()

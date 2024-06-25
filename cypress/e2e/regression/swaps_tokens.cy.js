@@ -3,8 +3,11 @@ import * as main from '../pages/main.page.js'
 import * as swaps from '../pages/swaps.pages.js'
 import * as assets from '../pages/assets.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 let iframeSelector = `iframe[src*="${constants.swapWidget}"]`
 
@@ -23,11 +26,11 @@ describe('[SMOKE] Swaps token tests', () => {
     'Verify that clicking the swap from assets tab, autofills that token automatically in the form',
     { defaultCommandTimeout: 30000 },
     () => {
+      wallet.connectSigner(signer)
       assets.selectTokenList(assets.tokenListOptions.allTokens)
 
       swaps.clickOnAssetSwapBtn(0)
       swaps.acceptLegalDisclaimer()
-      swaps.waitForOrdersCallToComplete()
       cy.wait(2000)
       main.getIframeBody(iframeSelector).within(() => {
         swaps.verifySelectedInputCurrancy(swaps.swapTokens.eth)
