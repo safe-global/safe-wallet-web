@@ -33,6 +33,7 @@ import type {
   SwapConfirmationView,
   TwapConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConflictType,
@@ -118,7 +119,7 @@ export const isTwapConfirmationViewOrder = (
   decodedData: DecodedDataResponse | BaselineConfirmationView | CowConfirmationView | undefined,
 ): decodedData is TwapConfirmationView => {
   if (decodedData && 'type' in decodedData) {
-    return decodedData.type === 'COW_SWAP_TWAP_ORDER'
+    return decodedData.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
   }
 
   return false
@@ -128,7 +129,7 @@ export const isSwapConfirmationViewOrder = (
   decodedData: DecodedDataResponse | BaselineConfirmationView | CowConfirmationView | undefined,
 ): decodedData is SwapConfirmationView => {
   if (decodedData && 'type' in decodedData) {
-    return decodedData.type === 'COW_SWAP_ORDER'
+    return decodedData.type === ConfirmationViewTypes.COW_SWAP_ORDER
   }
 
   return false
