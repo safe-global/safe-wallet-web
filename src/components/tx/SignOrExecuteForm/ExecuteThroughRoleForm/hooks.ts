@@ -70,7 +70,7 @@ export const useRolesMods = () => {
 
   const [data] = useAsync(async () => {
     if (!ROLES_V2_SUPPORTED_CHAINS.includes(safe.chainId) || !isFeatureEnabled) return []
-
+    console.log('okokok')
     const safeModules = safe.modules || []
     const rolesMods = await Promise.all(
       safeModules.map((address) =>

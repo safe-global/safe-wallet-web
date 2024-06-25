@@ -1,30 +1,19 @@
 import { createMockSafeTransaction } from '@/tests/transactions'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
-import { type ReactElement } from 'react'
 import * as zodiacRoles from 'zodiac-roles-deployments'
-import { fireEvent, render, waitFor, mockWeb3Provider } from '@/tests/test-utils'
+import { waitFor, renderHook } from '@/tests/test-utils'
 
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as wallet from '@/hooks/wallets/useWallet'
 import * as onboardHooks from '@/hooks/wallets/useOnboard'
-import * as txSender from '@/services/tx/tx-sender/dispatch'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { type OnboardAPI } from '@web3-onboard/core'
 import { AbiCoder, ZeroAddress, encodeBytes32String } from 'ethers'
-import ExecuteThroughRoleForm from '..'
-import * as hooksModule from '../hooks'
 import { FEATURES } from '@/utils/chains'
 import { chainBuilder } from '@/tests/builders/chains'
 import { useHasFeature } from '@/hooks/useChains'
-
-// We assume that CheckWallet always returns true
-jest.mock('@/components/common/CheckWallet', () => ({
-  __esModule: true,
-  default({ children }: { children: (ok: boolean) => ReactElement }) {
-    return children(true)
-  },
-}))
+import { useRoles } from '../hooks'
 
 const mockChain = chainBuilder()
   // @ts-expect-error - we are using a local FEATURES enum
@@ -47,13 +36,7 @@ jest.mock('@/hooks/useChainId', () => ({
   useChainId: jest.fn().mockReturnValue(() => '1'),
 }))
 
-// mock getModuleTransactionId
-jest.mock('@/services/transactions', () => ({
-  getModuleTransactionId: jest.fn(() => 'i1234567890'),
-}))
-
-describe('ExecuteThroughRoleForm', () => {
-  let executeSpy: jest.SpyInstance
+describe('useRoles', () => {
   let fetchRolesModMock: jest.SpyInstance
 
   const mockConnectedWalletAddress = (address: string) => {
@@ -99,20 +82,9 @@ describe('ExecuteThroughRoleForm', () => {
     // Mock the Roles mod fetching function to return the test roles mod
 
     fetchRolesModMock = jest.spyOn(zodiacRoles, 'fetchRolesMod').mockReturnValue(Promise.resolve(TEST_ROLES_MOD as any))
-
-    // Mock signing and dispatching the module transaction
-    executeSpy = jest
-      .spyOn(txSender, 'dispatchModuleTxExecution')
-      .mockReturnValue(Promise.resolve('0xabababababababababababababababababababababababababababababababab')) // tx hash
-
-    // Mock return value of useWeb3ReadOnly
-    // It's only used for eth_estimateGas requests
-    mockWeb3Provider([])
-
-    jest.spyOn(hooksModule, 'pollModuleTransactionId').mockReturnValue(Promise.resolve('i1234567890'))
   })
 
-  it('only fetch roles and show the card if the feature is enabled', async () => {
+  it('only fetches and offers roles if the feature is enabled', async () => {
     ;(useHasFeature as jest.Mock).mockImplementation((feature) => feature !== FEATURES.ZODIAC_ROLES)
     mockConnectedWalletAddress(SAFE_INFO.owners[0].value) // connect as safe owner (not a role member)
 
@@ -123,15 +95,15 @@ describe('ExecuteThroughRoleForm', () => {
       operation: OperationType.Call,
     })
 
-    const { queryByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} />)
+    const { result } = renderHook(() => useRoles(safeTx))
 
-    // the card is not shown
-    expect(queryByText('Execute without confirmations')).not.toBeInTheDocument()
-
+    // no roles will be offered
+    expect(result.current).toEqual([])
+    // no fetch has been triggered
     expect(fetchRolesModMock).not.toHaveBeenCalled()
   })
 
-  it('only shows the card when the user is a member of any role', async () => {
+  it('only offers roles if the user is a member of any role', async () => {
     mockConnectedWalletAddress(SAFE_INFO.owners[0].value) // connect as safe owner (not a role member)
 
     const safeTx = createMockSafeTransaction({
@@ -141,7 +113,7 @@ describe('ExecuteThroughRoleForm', () => {
       operation: OperationType.Call,
     })
 
-    const { queryByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} />)
+    const { result } = renderHook(() => useRoles(safeTx))
 
     // wait for the Roles mod to be fetched
     await waitFor(() => {
@@ -149,64 +121,7 @@ describe('ExecuteThroughRoleForm', () => {
     })
 
     // the card is not shown
-    expect(queryByText('Execute without confirmations')).not.toBeInTheDocument()
-  })
-
-  it('disables the submit button when the call is not allowed and shows the permission check status', async () => {
-    mockConnectedWalletAddress(MEMBER_ADDRESS)
-
-    const safeTx = createMockSafeTransaction({
-      to: ZeroAddress,
-      data: '0xd0e30db0', // deposit()
-      value: AbiCoder.defaultAbiCoder().encode(['uint256'], [123]),
-      operation: OperationType.Call,
-    })
-
-    const { findByText, getByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} />)
-    expect(await findByText('Execute')).toBeDisabled()
-
-    expect(
-      getByText(
-        textContentMatcher('You are a member of the eth_wrapping role but it does not allow this transaction.'),
-      ),
-    ).toBeInTheDocument()
-
-    expect(getByText('TargetAddressNotAllowed')).toBeInTheDocument()
-  })
-
-  it('execute the tx when the submit button is clicked', async () => {
-    mockConnectedWalletAddress(MEMBER_ADDRESS)
-
-    const safeTx = createMockSafeTransaction({
-      to: WETH_ADDRESS,
-      data: '0xd0e30db0', // deposit()
-      value: AbiCoder.defaultAbiCoder().encode(['uint256'], [123]),
-      operation: OperationType.Call,
-    })
-
-    const onSubmit = jest.fn()
-
-    const { findByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} onSubmit={onSubmit} />)
-
-    fireEvent.click(await findByText('Execute'))
-
-    await waitFor(() => {
-      expect(executeSpy).toHaveBeenCalledWith(
-        // call to the Roles mod's execTransactionWithRole function
-        expect.objectContaining({
-          to: TEST_ROLES_MOD.address,
-          data: '0xc6fe8747000000000000000000000000fff9976782d46cc05630d1f6ebab18b2324d6b14000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000006574685f7772617070696e67000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004d0e30db000000000000000000000000000000000000000000000000000000000',
-          value: '0',
-        }),
-        undefined,
-        expect.anything(),
-      )
-    })
-
-    // calls provided onSubmit callback
-    await waitFor(() => {
-      expect(onSubmit).toHaveBeenCalled()
-    })
+    expect(result.current).toEqual([])
   })
 })
 
@@ -266,35 +181,4 @@ const TEST_ROLES_MOD = {
       ],
     },
   ],
-}
-
-/**
- * Getting the deepest element that contain string / match regex even when it split between multiple elements
- *
- * @example
- * For:
- * <div>
- *   <span>Hello</span><span> World</span>
- * </div>
- *
- * screen.getByText('Hello World') // ❌ Fail
- * screen.getByText(textContentMatcher('Hello World')) // ✅ pass
- */
-function textContentMatcher(textMatch: string | RegExp) {
-  const hasText =
-    typeof textMatch === 'string'
-      ? (node: Element) => node.textContent === textMatch
-      : (node: Element) => textMatch.test(node.textContent || '')
-
-  const matcher = (_content: string, node: Element | null) => {
-    if (!node || !hasText(node)) {
-      return false
-    }
-
-    return Array.from(node?.children || []).every((child) => !hasText(child))
-  }
-
-  matcher.toString = () => `textContentMatcher(${textMatch})`
-
-  return matcher
 }
