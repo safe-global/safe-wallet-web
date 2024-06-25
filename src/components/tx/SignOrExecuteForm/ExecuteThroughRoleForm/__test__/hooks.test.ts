@@ -1,7 +1,7 @@
 import { createMockSafeTransaction } from '@/tests/transactions'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import * as zodiacRoles from 'zodiac-roles-deployments'
-import { waitFor, renderHook } from '@/tests/test-utils'
+import { waitFor, renderHook, mockWeb3Provider } from '@/tests/test-utils'
 
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
@@ -68,6 +68,7 @@ describe('useRoles', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     ;(useHasFeature as jest.Mock).mockImplementation((feature) => mockChain.features.includes(feature))
+
     // Safe info
     jest.spyOn(useSafeInfoHook, 'default').mockImplementation(() => ({
       safe: SAFE_INFO,
@@ -77,10 +78,9 @@ describe('useRoles', () => {
       safeLoaded: true,
     }))
 
-    // Roles mod fetching
+    mockWeb3Provider([])
 
     // Mock the Roles mod fetching function to return the test roles mod
-
     fetchRolesModMock = jest.spyOn(zodiacRoles, 'fetchRolesMod').mockReturnValue(Promise.resolve(TEST_ROLES_MOD as any))
   })
 
@@ -115,13 +115,56 @@ describe('useRoles', () => {
 
     const { result } = renderHook(() => useRoles(safeTx))
 
-    // wait for the Roles mod to be fetched
+    // wait for the Roles mod to be fetched & and the cache state update to be propagated
     await waitFor(() => {
       expect(fetchRolesModMock).toBeCalled()
     })
+    await new Promise((resolve) => setTimeout(resolve, 25))
 
-    // the card is not shown
+    // no role will be offered
     expect(result.current).toEqual([])
+  })
+
+  it('reports the role status correctly for allowed calls', async () => {
+    mockConnectedWalletAddress(MEMBER_ADDRESS) // connect as a role member
+
+    const safeTxOk = createMockSafeTransaction({
+      to: WETH_ADDRESS,
+      data: '0xd0e30db0', // deposit()
+      value: '0',
+      operation: OperationType.Call,
+    })
+
+    const { result, rerender } = renderHook(() => useRoles(safeTxOk))
+
+    // wait for the Roles mod to be fetched & and the cache state update to be propagated
+    await waitFor(() => {
+      expect(fetchRolesModMock).toBeCalled()
+    })
+    await waitFor(() => expect(result.current).toHaveLength(1))
+
+    expect(result.current[0].status).toBe(zodiacRoles.Status.Ok)
+  })
+
+  it('reports the role status correctly for calls that are not allowed', async () => {
+    mockConnectedWalletAddress(MEMBER_ADDRESS) // connect as a role member
+
+    const safeTxWrongTarget = createMockSafeTransaction({
+      to: ZeroAddress,
+      data: '0xd0e30db0', // deposit()
+      value: '0',
+      operation: OperationType.Call,
+    })
+
+    const { result } = renderHook(() => useRoles(safeTxWrongTarget))
+
+    // wait for the Roles mod to be fetched & and the cache state update to be propagated
+    await waitFor(() => {
+      expect(fetchRolesModMock).toBeCalled()
+    })
+    await waitFor(() => expect(result.current).toHaveLength(1))
+
+    expect(result.current[0].status).toBe(zodiacRoles.Status.TargetAddressNotAllowed)
   })
 })
 
@@ -144,6 +187,7 @@ const TEST_ROLES_MOD = {
   owner: lowercaseSafeAddress,
   avatar: lowercaseSafeAddress,
   target: lowercaseSafeAddress,
+  multiSendAddresses: ['0x9641d764fc13c8b624c04430c7356c1c7c8102e2'],
   roles: [
     {
       key: ROLE_KEY,
