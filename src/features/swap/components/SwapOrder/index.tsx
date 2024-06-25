@@ -30,7 +30,7 @@ import {
 } from '@/features/swap/helpers/utils'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isSwapTxInfo, isTwapTxInfo } from '@/utils/transaction-guards'
+import { isSwapOrderTxInfo, isTwapOrderTxInfo } from '@/utils/transaction-guards'
 import { EmptyRow } from '@/components/common/Table/EmptyRow'
 
 type SwapOrderProps = {
@@ -275,11 +275,11 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
 export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | null => {
   if (!txData || !txInfo) return null
 
-  if (isTwapTxInfo(txInfo)) {
+  if (isTwapOrderTxInfo(txInfo)) {
     return <TwapOrder order={txInfo} />
   }
 
-  if (isSwapTxInfo(txInfo)) {
+  if (isSwapOrderTxInfo(txInfo)) {
     return <SellOrder order={txInfo} />
   }
   return null

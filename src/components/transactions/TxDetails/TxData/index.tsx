@@ -8,7 +8,7 @@ import {
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
   isSupportedSpendingLimitAddress,
-  isSwapTxInfo,
+  isSwapOrderTxInfo,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { SpendingLimits } from '@/components/transactions/TxDetails/TxData/SpendingLimits'
@@ -46,7 +46,7 @@ const TxData = ({ txDetails, trusted }: { txDetails: TransactionDetails; trusted
     return <SpendingLimits txData={txDetails.txData} txInfo={txInfo} type={method} />
   }
 
-  if (isSwapTxInfo(txInfo)) {
+  if (isSwapOrderTxInfo(txInfo)) {
     return <InteractWith txData={txDetails.txData} />
   }
 

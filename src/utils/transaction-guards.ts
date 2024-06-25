@@ -94,15 +94,15 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
   )
 }
 
-export const isCoWOrderTxInfo = (value: TransactionInfo): value is Order => {
-  return isSwapTxInfo(value) || isTwapTxInfo(value)
+export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
+  return isSwapOrderTxInfo(value) || isTwapOrderTxInfo(value)
 }
 
-export const isSwapTxInfo = (value: TransactionInfo): value is SwapOrder => {
+export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
   return value.type === TransactionInfoType.SWAP_ORDER
 }
 
-export const isTwapTxInfo = (value: TransactionInfo): value is TwapOrder => {
+export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder => {
   return value.type === TransactionInfoType.TWAP_ORDER
 }
 
@@ -116,12 +116,12 @@ export const isSwapConfirmationViewOrder = (
   return false
 }
 
-export const isCancelledSwap = (value: TransactionInfo) => {
-  return isSwapTxInfo(value) && value.status === 'cancelled'
+export const isCancelledSwapOrder = (value: TransactionInfo) => {
+  return isSwapOrderTxInfo(value) && value.status === 'cancelled'
 }
 
-export const isOpenSwap = (value: TransactionInfo) => {
-  return isSwapTxInfo(value) && value.status === 'open'
+export const isOpenSwapOrder = (value: TransactionInfo) => {
+  return isSwapOrderTxInfo(value) && value.status === 'open'
 }
 
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {

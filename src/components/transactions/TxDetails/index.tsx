@@ -13,12 +13,12 @@ import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import {
   isAwaitingExecution,
-  isCoWOrderTxInfo,
+  isOrderTxInfo,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
   isMultisigExecutionInfo,
-  isOpenSwap,
+  isOpenSwapOrder,
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
@@ -73,7 +73,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     <>
       {/* /Details */}
       <div className={`${css.details} ${isUnsigned ? css.noSigners : ''}`}>
-        {isCoWOrderTxInfo(txDetails.txInfo) && (
+        {isOrderTxInfo(txDetails.txInfo) && (
           <div className={css.swapOrder}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
@@ -116,7 +116,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <Summary txDetails={txDetails} />
         </div>
 
-        {(isMultiSendTxInfo(txDetails.txInfo) || isCoWOrderTxInfo(txDetails.txInfo)) && (
+        {(isMultiSendTxInfo(txDetails.txInfo) || isOrderTxInfo(txDetails.txInfo)) && (
           <div className={css.multiSend}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <Multisend txData={txDetails.txData} />
@@ -159,7 +159,7 @@ const TxDetails = ({
   const { safe } = useSafeInfo()
 
   const [pollCount] = useIntervalCounter(POLLING_INTERVAL)
-  const swapPollCount = isOpenSwap(txSummary.txInfo) ? pollCount : 0
+  const swapPollCount = isOpenSwapOrder(txSummary.txInfo) ? pollCount : 0
 
   const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
     async () => {

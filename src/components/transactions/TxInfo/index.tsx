@@ -10,7 +10,7 @@ import type {
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import {
-  isCoWOrderTxInfo,
+  isOrderTxInfo,
   isCreationTxInfo,
   isCustomTxInfo,
   isERC20Transfer,
@@ -121,7 +121,7 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
     return <CreationTx info={info} />
   }
 
-  if (isCoWOrderTxInfo(info)) {
+  if (isOrderTxInfo(info)) {
     return <SwapTx info={info} />
   }
 
