@@ -240,7 +240,7 @@ export const ExecuteThroughRoleForm = ({
           <CheckWallet allowNonOwner>
             {(isOk) => (
               <Button
-                data-testid="execute-form-btn"
+                data-testid="execute-through-role-form-btn"
                 variant="contained"
                 type="submit"
                 disabled={!isOk || submitDisabled}
