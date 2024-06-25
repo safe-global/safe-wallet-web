@@ -7,11 +7,13 @@ const useOnceVisible = (element: MutableRefObject<HTMLElement | null>): boolean 
 
   // Create and memoize an instance of IntersectionObserver
   const observer = useMemo(() => {
+    if (typeof IntersectionObserver === 'undefined') return
+
     return new IntersectionObserver((entries) => {
       const intersectingEntry = entries.find((entry) => entry.isIntersecting)
       if (intersectingEntry) {
         setOnceVisible(true)
-        observer.unobserve(intersectingEntry.target)
+        observer?.unobserve(intersectingEntry.target)
       }
     })
   }, [])
@@ -19,7 +21,7 @@ const useOnceVisible = (element: MutableRefObject<HTMLElement | null>): boolean 
   // Disconnect the observer on unmount
   useEffect(() => {
     return () => {
-      observer.disconnect()
+      observer?.disconnect()
     }
   }, [observer])
 
@@ -28,12 +30,12 @@ const useOnceVisible = (element: MutableRefObject<HTMLElement | null>): boolean 
     const target = element.current
 
     if (target) {
-      observer.observe(target)
+      observer?.observe(target)
     }
 
     return () => {
       if (target) {
-        observer.unobserve(target)
+        observer?.unobserve(target)
       }
     }
   }, [observer, element])

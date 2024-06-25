@@ -1,10 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import { Typography, Card, Box, Alert, IconButton, Link, SvgIcon } from '@mui/material'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Typography, Card, Box, Link, SvgIcon } from '@mui/material'
 import { WidgetBody } from '@/components/dashboard/styled'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
 import css from './styles.module.css'
 import { useBrowserPermissions } from '@/hooks/safe-apps/permissions'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
@@ -24,6 +20,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import useAsync from '@/hooks/useAsync'
 import { getOrigin } from '@/components/safe-apps/utils'
+import InfiniteScroll from '@/components/common/InfiniteScroll'
 
 // A fallback component when the Safe App fails to load
 const WidgetLoadErrorFallback = () => (
@@ -85,73 +82,76 @@ const GovernanceSection = () => {
   const { safeLoading } = useSafeInfo()
 
   return (
-    <Accordion className={css.accordion} defaultExpanded>
-      <AccordionSummary
-        expandIcon={
-          <IconButton size="small">
-            <ExpandMoreIcon color="border" />
-          </IconButton>
-        }
-      >
-        <div>
-          <Typography component="h2" variant="subtitle1" fontWeight={700}>
-            Governance
-          </Typography>
-          <Typography variant="body2" mb={2} color="text.secondary">
-            Use your SAFE tokens to vote on important proposals or participate in forum discussions.
-          </Typography>
-        </div>
-      </AccordionSummary>
+    <>
+      {governanceApp || fetchingSafeGovernanceApp ? (
+        <WidgetBody>
+          <Card className={css.widgetWrapper}>
+            {governanceApp && !safeLoading ? (
+              <MiniAppFrame app={governanceApp} title="Safe Governance" />
+            ) : (
+              <Box
+                className={css.widgetWrapper}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                textAlign="center"
+              >
+                <Typography variant="h1" color="text.secondary">
+                  Loading section...
+                </Typography>
+              </Box>
+            )}
+          </Card>
+        </WidgetBody>
+      ) : (
+        <WidgetLoadErrorFallback />
+      )}
+    </>
+  )
+}
 
-      <AccordionDetails sx={({ spacing }) => ({ padding: `0 ${spacing(3)}` })}>
-        {governanceApp || fetchingSafeGovernanceApp ? (
-          <WidgetBody>
-            <Card className={css.widgetWrapper}>
-              {governanceApp && !safeLoading ? (
-                <MiniAppFrame app={governanceApp} title="Safe Governance" />
-              ) : (
-                <Box
-                  className={css.widgetWrapper}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  textAlign="center"
-                >
-                  <Typography variant="h1" color="text.secondary">
-                    Loading section...
-                  </Typography>
-                </Box>
-              )}
-            </Card>
-          </WidgetBody>
-        ) : (
-          <Alert severity="warning" elevation={3}>
-            There was an error fetching the Governance section. Please reload the page.
-          </Alert>
-        )}
-      </AccordionDetails>
-    </Accordion>
+const LazyGovernanceSection = () => {
+  const [isVisible, setIsVisible] = useState(false)
+  const [hasScrolled, setHasScrolled] = useState(false)
+
+  const onVisible = useCallback(() => {
+    setIsVisible(true)
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setHasScrolled(true)
+        window.removeEventListener('scroll', handleScroll)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  return (
+    <>
+      {hasScrolled && <InfiniteScroll onLoadMore={onVisible} />}
+
+      <Typography component="h2" variant="subtitle1" fontWeight={700}>
+        Governance
+      </Typography>
+      <Typography variant="body2" mb={2} color="text.secondary">
+        Use your SAFE tokens to vote on important proposals or participate in forum discussions.
+      </Typography>
+
+      <div className={css.lazyWrapper}>{isVisible && <GovernanceSection />}</div>
+    </>
   )
 }
 
 // Prevent `GovernanceSection` hooks from needlessly being called
 const GovernanceSectionWrapper = () => {
   const chainId = useChainId()
-  const [isLayoutReady, setIsLayoutReady] = useState(false)
-
-  useEffect(() => {
-    setIsLayoutReady(true)
-  }, [])
-
-  if (!isLayoutReady) {
-    return null
-  }
-
   if (!getSafeTokenAddress(chainId)) {
     return null
   }
-
-  return <GovernanceSection />
+  return <LazyGovernanceSection />
 }
 
 export default GovernanceSectionWrapper
