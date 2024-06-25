@@ -2,6 +2,10 @@ import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as createwallet from '../pages/create_wallet.pages'
 import * as owner from '../pages/owners.pages'
+import * as wallet from '../../support/utils/wallet.js'
+
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('[SMOKE] Safe creation tests', () => {
   beforeEach(() => {
@@ -15,8 +19,7 @@ describe('[SMOKE] Safe creation tests', () => {
     createwallet.clickOnCreateNewSafeBtn()
     owner.clickOnWalletExpandMoreIcon()
     owner.clickOnDisconnectBtn()
-    createwallet.clickOnConnectWalletBtn()
-    createwallet.connectWallet()
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
   })
 

@@ -12,12 +12,14 @@ import { createEthersAdapter, createSigners } from '../../support/api/utils_ethe
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
-const safeBalanceEth = 305240000000000000n
+const safeBalanceEth = 505360000000000000n
 const qtrustBanance = 99000000000000000025n
 const transferAmount = '1'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const tokenAmount2 = '0.00001'
 const netwrok = 'sepolia'
@@ -81,6 +83,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
     function executeTransactionFlow(fromSafe, toSafe) {
       return cy.visit(constants.balanceNftsUrl + fromSafe).then(() => {
+        wallet.connectSigner(signer)
         nfts.selectNFTs(1)
         nfts.sendNFT()
         nfts.typeRecipientAddress(toSafe)
@@ -112,6 +115,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
     const targetSafe = safesData.SEP_FUNDS_SAFE_12.substring(4)
     function executeTransactionFlow(fromSafe, toSafe, tokenAmount) {
       visit(constants.BALANCE_URL + fromSafe)
+      wallet.connectSigner(signer)
       assets.clickOnSendBtn(0)
       loadsafe.inputOwnerAddress(0, toSafe)
       assets.checkSelectedToken(constants.tokenAbbreviation.sep)
@@ -166,6 +170,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
     function executeTransactionFlow(fromSafe, toSafe) {
       visit(constants.BALANCE_URL + fromSafe)
+      wallet.connectSigner(signer)
       assets.selectTokenList(assets.tokenListOptions.allTokens)
       assets.clickOnSendBtn(1)
       loadsafe.inputOwnerAddress(0, toSafe)

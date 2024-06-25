@@ -4,14 +4,11 @@ import * as main from '../../e2e/pages/main.page'
 
 const ASSETS_LENGTH = 8
 
-// Skip until connection error is resolved
-describe.skip('Balance pagination tests', () => {
+describe('Balance pagination tests', () => {
   before(() => {
     cy.clearLocalStorage()
-    // Open the Safe used for testing
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_6)
     main.acceptCookies()
-
     assets.selectTokenList(assets.tokenListOptions.allTokens)
   })
 
