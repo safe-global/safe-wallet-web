@@ -14,6 +14,7 @@ describe('[SMOKE] Safe creation tests', () => {
     main.acceptCookies()
   })
   it('[SMOKE] Verify a Wallet can be connected', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -24,6 +25,7 @@ describe('[SMOKE] Safe creation tests', () => {
   })
 
   it('[SMOKE] Verify that a new Wallet has default name related to the selected network', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -31,6 +33,7 @@ describe('[SMOKE] Safe creation tests', () => {
   })
 
   it('[SMOKE] Verify Add and Remove Owner Row works as expected', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
@@ -46,6 +49,7 @@ describe('[SMOKE] Safe creation tests', () => {
   })
 
   it('[SMOKE] Verify Threshold Setup', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
     createwallet.clickOnCreateNewSafeBtn()
