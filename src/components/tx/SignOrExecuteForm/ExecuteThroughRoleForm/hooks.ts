@@ -122,6 +122,8 @@ export const useRoles = (safeTx?: SafeTransaction) => {
   // find all roles assigned to the connected wallet, statically check if they allow the given meta transaction
   const potentialRoles = useMemo(() => {
     const result: Role[] = []
+    if (metaTransactions.length === 0) return result
+
     if (walletAddress && rolesMods) {
       for (const rolesMod of rolesMods) {
         const multiSend = rolesMod.multiSendAddresses.find((addr) => KNOWN_MULTISEND_ADDRESSES.includes(addr))

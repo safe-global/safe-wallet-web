@@ -88,7 +88,9 @@ export const SignOrExecuteForm = ({
   const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
-  const roles = useRoles(!isCounterfactualSafe && isCreation && !isNewExecutableTx ? safeTx : undefined)
+  const roles = useRoles(
+    !isCounterfactualSafe && isCreation && !(isNewExecutableTx && isSafeOwner) ? safeTx : undefined,
+  )
   const allowingRole = findAllowingRole(roles)
   const mostLikelyRole = findMostLikelyRole(roles)
   const canExecuteThroughRole = !!allowingRole || !!mostLikelyRole

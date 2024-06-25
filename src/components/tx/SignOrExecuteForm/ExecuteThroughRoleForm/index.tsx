@@ -183,17 +183,13 @@ export const ExecuteThroughRoleForm = ({
         )}
 
         {permissionsError && (
-          <>
+          <Box mb={2}>
             <Typography sx={{ mb: 2 }}>
               You are a member of the <Role>{role.roleKey}</Role> role but it does not allow this transaction.
             </Typography>
 
-            <ErrorMessage>
-              The permission check fails with the following status:
-              <br />
-              <code>{permissionsError}</code>
-            </ErrorMessage>
-          </>
+            <ErrorMessage>{permissionsError}</ErrorMessage>
+          </Box>
         )}
 
         <Typography variant="caption" display="flex" gap="2px" color="text.secondary" sx={{ mb: 2 }}>
