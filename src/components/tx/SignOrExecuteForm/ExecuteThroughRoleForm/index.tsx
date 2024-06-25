@@ -72,7 +72,7 @@ export const ExecuteThroughRoleForm = ({
 
   const permissionsError = role.status !== null ? PermissionsErrorMessage[role.status] : null
   const metaTransactions = useMetaTransactions(safeTx)
-  const multiSendImpossible = metaTransactions.length > 1 && role.multiSend
+  const multiSendImpossible = metaTransactions.length > 1 && !role.multiSend
 
   // Wrap call, routing it through the Roles mod with the allowing role
   const txThroughRole = useExecuteThroughRole({
@@ -203,21 +203,27 @@ export const ExecuteThroughRoleForm = ({
         </Typography>
 
         {multiSendImpossible && (
-          <ErrorMessage>
-            The current configuration of the Zodiac Roles module does not allow executing multiple transactions in
-            batch.
-          </ErrorMessage>
+          <Box mt={1}>
+            <ErrorMessage>
+              The current configuration of the Zodiac Roles module does not allow executing multiple transactions in
+              batch.
+            </ErrorMessage>
+          </Box>
         )}
 
         {!walletCanPay ? (
-          <ErrorMessage level="info">
-            Your connected wallet doesn&apos;t have enough funds to execute this transaction.
-          </ErrorMessage>
+          <Box mt={1}>
+            <ErrorMessage level="info">
+              Your connected wallet doesn&apos;t have enough funds to execute this transaction.
+            </ErrorMessage>
+          </Box>
         ) : (
           gasLimitError && (
-            <ErrorMessage error={gasLimitError}>
-              This transaction will most likely fail. To save gas costs, avoid creating this transaction.
-            </ErrorMessage>
+            <Box mt={1}>
+              <ErrorMessage error={gasLimitError}>
+                This transaction will most likely fail. To save gas costs, avoid creating this transaction.
+              </ErrorMessage>
+            </Box>
           )
         )}
 
@@ -233,7 +239,9 @@ export const ExecuteThroughRoleForm = ({
           </Box>
         )}
 
-        <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
+        <Box mt={3}>
+          <Divider className={commonCss.nestedDivider} />
+        </Box>
 
         <CardActions>
           {/* Submit button, also available to non-owner role members */}
