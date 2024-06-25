@@ -169,7 +169,12 @@ const ReplaceTxMenu = ({
           </Tooltip>
 
           {canDelete && (
-            <DeleteTxButton safeTxHash={safeTxHash} txNonce={txNonce} onSuccess={() => setTxFlow(undefined)} />
+            <DeleteTxButton
+              data-testid="delete-tx"
+              safeTxHash={safeTxHash}
+              txNonce={txNonce}
+              onSuccess={() => setTxFlow(undefined)}
+            />
           )}
         </Box>
       </TxCard>

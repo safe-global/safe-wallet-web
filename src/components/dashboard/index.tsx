@@ -72,7 +72,7 @@ const Dashboard = (): ReactElement => {
               </Grid>
             )}
 
-            <Grid item xs={12}>
+            <Grid item xs={12} className={css.hideIfEmpty}>
               <GovernanceSection />
             </Grid>
           </>

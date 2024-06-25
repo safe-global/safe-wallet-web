@@ -21,15 +21,16 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
       getInterface: async () => {
         let provider: JsonRpcProvider
         let wallet: HDNodeWallet
-        let lastChainId = ''
         const chainChangedListeners = new Set<(chainId: string) => void>()
 
         const updateProvider = () => {
           provider?.destroy()
           provider = new JsonRpcProvider(currentRpcUri, Number(currentChainId), { staticNetwork: true })
           wallet = Wallet.fromPhrase(CYPRESS_MNEMONIC, provider)
-          lastChainId = currentChainId
-          chainChangedListeners.forEach((listener) => listener(numberToHex(Number(currentChainId))))
+
+          setTimeout(() => {
+            chainChangedListeners.forEach((listener) => listener(numberToHex(Number(currentChainId))))
+          }, 100)
         }
 
         updateProvider()
@@ -48,13 +49,8 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
               },
 
               request: async (request: { method: string; params: any[] }) => {
-                if (currentChainId !== lastChainId) {
-                  updateProvider()
-                }
                 return provider.send(request.method, request.params)
               },
-
-              disconnect: () => {},
             },
             {
               eth_chainId: async () => currentChainId,
@@ -78,7 +74,13 @@ const E2EWalletMoule = (chainId: ChainInfo['chainId'], rpcUri: ChainInfo['rpcUri
               },
 
               eth_signTypedData: async ({ params }) => {
-                return await wallet.signTypedData(params[1].domain, params[1].data, params[1].value)
+                const [, json] = params
+                const typedData = JSON.parse(json)
+                return await wallet.signTypedData(
+                  typedData.domain,
+                  { [typedData.primaryType]: typedData.types[typedData.primaryType] },
+                  typedData.message,
+                )
               },
 
               // @ts-ignore

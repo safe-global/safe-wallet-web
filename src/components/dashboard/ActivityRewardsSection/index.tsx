@@ -66,7 +66,7 @@ const ActivityRewardsSection = () => {
             display: { xs: 'none', sm: 'block' },
           }}
         />
-        <Grid container xs={12} sx={{ gap: { xs: 4, lg: 0 } }}>
+        <Grid container item xs={12} sx={{ gap: { xs: 4, lg: 0 } }}>
           <Grid item xs={12} lg={6} p={0}>
             <SvgIcon
               component={SafePass}
@@ -87,11 +87,11 @@ const ActivityRewardsSection = () => {
                 <Button variant="contained">{'Open Safe{Pass}'}</Button>
               </NextLink>
               <NextLink href="https://safe.global/pass" target="_blank" passHref rel="noreferrer" onClick={onClick}>
-                <Button variant="outlined">Learn more</Button>
+                <Button variant="text">Learn more</Button>
               </NextLink>
             </Box>
           </Grid>
-          <Grid item xs={12} lg={6} p={0}>
+          <Grid item xs={12} lg={6} p={0} zIndex={2}>
             <Typography variant="overline" color="primary.light">
               How it works
             </Typography>

@@ -1,5 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
+import * as wallet from '../pages/create_wallet.pages'
 
 export const delegateCallWarning = '[data-testid="delegate-call-warning"]'
 export const policyChangeWarning = '[data-testid="threshold-warning"]'
@@ -41,6 +42,8 @@ const filterApplyBtn = '[data-testid="apply-btn"]'
 const filterClearBtn = '[data-testid="clear-btn"]'
 const addressItem = '[data-testid="address-item"]'
 const radioSelector = 'div[role="radiogroup"]'
+const rejectTxBtn = '[data-testid="reject-btn"]'
+const deleteTxModalBtn = '[data-testid="delete-tx-btn"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -62,11 +65,22 @@ const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
 export const messageNestedStr = `"nestedString": "Test message 3 off-chain"`
 const noTxFoundStr = (type) => `0 ${type} transactions found`
+const deleteFromQueueStr = 'Delete from the queue'
 
 export const filterTypes = {
   incoming: 'Incoming',
   outgoing: 'Outgoing',
   module: 'Module-based',
+}
+
+function clickOnRejectBtn() {
+  cy.get(rejectTxBtn).click()
+}
+
+export function deleteTx() {
+  clickOnRejectBtn()
+  cy.get(wallet.choiceBtn).contains(deleteFromQueueStr).click()
+  cy.get(deleteTxModalBtn).click()
 }
 
 export function setTxType(type) {
@@ -87,11 +101,17 @@ export function clickOnApplyBtn() {
   cy.get(filterApplyBtn).click()
 }
 
+export function checkApplyBtnEnabled() {
+  cy.get(filterApplyBtn).should('not.be', 'disabled')
+}
+
 export function clickOnClearBtn() {
   cy.get(filterClearBtn).click()
 }
 
 export function fillFilterForm({ address, startDate, endDate, amount, token, nonce, recipient } = {}) {
+  checkApplyBtnEnabled()
+  cy.wait(2000)
   const inputMap = {
     address: { selector: addressItem, findInput: true },
     startDate: { selector: filterStartDateInput, findInput: true },
@@ -106,7 +126,9 @@ export function fillFilterForm({ address, startDate, endDate, amount, token, non
     if (value !== undefined) {
       const { selector, findInput } = inputMap[key]
       const element = findInput ? cy.get(selector).find('input') : cy.get(selector)
-      element.should('be.enabled').clear().type(value, { force: true })
+      element.then(($el) => {
+        cy.wrap($el).invoke('removeAttr', 'readonly').clear().type(value, { force: true })
+      })
     }
   })
 }

@@ -80,22 +80,33 @@ export const useRedefine = (
   const [retryCounter, setRetryCounter] = useState(0)
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 
+  // Memoized JSON data to avoid unnecessary requests
+  const jsonData = useMemo(() => {
+    if (!data) return ''
+    let adjustedData = data
+    if ('data' in data) {
+      // We need to set nonce to 0 to avoid repeated requests with an updated nonce
+      adjustedData = { ...data, data: { ...data.data, nonce: 0 } }
+    }
+    return JSON.stringify(adjustedData)
+  }, [data])
+
   const [redefinePayload, redefineErrors, redefineLoading] = useAsync<SecurityResponse<RedefineModuleResponse>>(
     () => {
-      if (!isFeatureEnabled || !data || !wallet?.address) {
+      if (!isFeatureEnabled || !jsonData || !wallet?.address) {
         return
       }
 
       return RedefineModuleInstance.scanTransaction({
         chainId: Number(safe.chainId),
-        data,
+        data: JSON.parse(jsonData),
         safeAddress,
         walletAddress: wallet.address,
         threshold: safe.threshold,
       })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safe.chainId, safe.threshold, safeAddress, data, wallet?.address, retryCounter, isFeatureEnabled],
+    [safe.chainId, safe.threshold, safeAddress, jsonData, wallet?.address, retryCounter, isFeatureEnabled],
     false,
   )
 
