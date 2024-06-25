@@ -20,11 +20,12 @@ import { FEATURES } from '@/utils/chains'
 import TxStatusLabel from '@/components/transactions/TxStatusLabel'
 
 type TxSummaryProps = {
-  isGrouped?: boolean
+  isConflictGroup?: boolean
+  isBulkGroup?: boolean
   item: Transaction
 }
 
-const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
+const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): ReactElement => {
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
 
   const tx = item.transaction
@@ -40,12 +41,13 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       data-testid="transaction-item"
       className={classNames(css.gridContainer, {
         [css.history]: !isQueue,
-        [css.grouped]: isGrouped,
+        [css.conflictGroup]: isConflictGroup,
+        [css.bulkGroup]: isBulkGroup,
         [css.untrusted]: !isTrusted,
       })}
       id={tx.id}
     >
-      {nonce !== undefined && !isGrouped && (
+      {nonce !== undefined && !isConflictGroup && !isBulkGroup && (
         <Box gridArea="nonce" data-testid="nonce" className={css.nonce}>
           {nonce}
         </Box>

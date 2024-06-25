@@ -17,9 +17,10 @@ import { useRouter } from 'next/router'
 import useTrackSafesCount from './useTrackedSafesCount'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
+const NO_WATCHED_MESSAGE = 'Watch any Safe Account to keep an eye on its activity'
 
 type AccountsListProps = {
-  safes: SafeItems | undefined
+  safes?: SafeItems | undefined
   onLinkClick?: () => void
 }
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
@@ -47,7 +48,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
 
         <PaginatedSafeList
           title="My accounts"
-          safes={ownedSafes || []}
+          safes={ownedSafes}
           onLinkClick={onLinkClick}
           noSafesMessage={
             wallet ? (
@@ -85,7 +86,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               </Link>
             </Track>
           }
-          noSafesMessage={NO_SAFES_MESSAGE}
+          noSafesMessage={NO_WATCHED_MESSAGE}
           onLinkClick={onLinkClick}
         />
 
