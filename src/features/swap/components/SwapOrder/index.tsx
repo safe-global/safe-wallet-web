@@ -15,7 +15,6 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
-import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { compareAsc } from 'date-fns'
 import css from './styles.module.css'
 import { Typography } from '@mui/material'
@@ -31,7 +30,7 @@ import {
 } from '@/features/swap/helpers/utils'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isTwapTxInfo } from '@/utils/transaction-guards'
+import { isSwapTxInfo, isTwapTxInfo } from '@/utils/transaction-guards'
 import { EmptyRow } from '@/components/common/Table/EmptyRow'
 
 type SwapOrderProps = {
@@ -276,20 +275,14 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
 export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | null => {
   if (!txData || !txInfo) return null
 
-  // TODO: figure out why the gateway returns txData.hexData for twaps, but not for swaps
   if (isTwapTxInfo(txInfo)) {
     return <TwapOrder order={txInfo} />
   }
 
-  // ? when can a multiSend call take no parameters?
-  if (!txData.dataDecoded?.parameters) {
-    if (txData.hexData) {
-      return <HexEncodedData title="Data (hex encoded)" hexData={txData.hexData} />
-    }
-    return null
+  if (isSwapTxInfo(txInfo)) {
+    return <SellOrder order={txInfo} />
   }
-
-  return <SellOrder order={txInfo} />
+  return null
 }
 
 export default SwapOrder
