@@ -227,6 +227,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           })
         }
 
+        trackEvent(CREATE_SAFE_EVENTS.SUBMIT_CREATE_SAFE)
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'deployment', category: CREATE_SAFE_CATEGORY })
 
         onSubmit(data)
@@ -256,6 +257,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         ? 'User rejected signing.'
         : 'Error creating the Safe Account. Please try again later.'
       setSubmitError(submitError)
+
+      if (isWalletRejection(error)) {
+        trackEvent(CREATE_SAFE_EVENTS.REJECT_CREATE_SAFE)
+      }
     }
 
     setIsCreating(false)

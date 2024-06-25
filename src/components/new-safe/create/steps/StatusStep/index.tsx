@@ -11,6 +11,7 @@ import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/use
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
 import { useCurrentChain } from '@/hooks/useChains'
 import Rocket from '@/public/images/common/rocket.svg'
+import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch } from '@/store'
 import { Alert, AlertTitle, Box, Button, Paper, Stack, SvgIcon, Typography } from '@mui/material'
 import Link from 'next/link'
@@ -70,6 +71,8 @@ export const CreateSafeStatus = ({
   }, [isError, setProgressColor])
 
   const tryAgain = () => {
+    trackEvent(CREATE_SAFE_EVENTS.RETRY_CREATE_SAFE)
+
     if (!pendingSafe) {
       setStep(0)
       return
@@ -84,6 +87,10 @@ export const CreateSafeStatus = ({
       saltNonce: Number(pendingSafe.props.safeDeploymentConfig?.saltNonce),
       safeAddress,
     })
+  }
+
+  const onCancel = () => {
+    trackEvent(CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE)
   }
 
   return (
@@ -111,7 +118,9 @@ export const CreateSafeStatus = ({
         {isError && (
           <Stack direction="row" justifyContent="center" gap={2}>
             <Link href={AppRoutes.welcome.index} passHref>
-              <Button variant="outlined">Go to homepage</Button>
+              <Button variant="outlined" onClick={onCancel}>
+                Go to homepage
+              </Button>
             </Link>
             <Button variant="contained" onClick={tryAgain}>
               Try again
