@@ -4,7 +4,6 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
-import { SafeCreationStatus } from '@/components/new-safe/create/steps/StatusStep/useSafeCreation'
 import { asError } from '../exceptions/utils'
 import { type JsonRpcProvider, type TransactionReceipt } from 'ethers'
 import { SimpleTxWatcher } from '@/utils/SimpleTxWatcher'
@@ -201,44 +200,6 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: s
         groupKey,
       }),
     )
-
-    clearInterval(intervalId)
-  }, WAIT_FOR_RELAY_TIMEOUT)
-}
-
-export const waitForCreateSafeTx = (taskId: string, setStatus: (value: SafeCreationStatus) => void): void => {
-  let intervalId: NodeJS.Timeout
-  let failAfterTimeoutId: NodeJS.Timeout
-
-  intervalId = setInterval(async () => {
-    const status = await getRelayTxStatus(taskId)
-
-    // 404
-    if (!status) {
-      return
-    }
-
-    switch (status.task.taskState) {
-      case TaskState.ExecSuccess:
-        setStatus(SafeCreationStatus.SUCCESS)
-        break
-      case TaskState.ExecReverted:
-      case TaskState.Blacklisted:
-      case TaskState.Cancelled:
-      case TaskState.NotFound:
-        setStatus(SafeCreationStatus.ERROR)
-        break
-      default:
-        // Don't clear interval as we're still waiting for the tx to be relayed
-        return
-    }
-
-    clearTimeout(failAfterTimeoutId)
-    clearInterval(intervalId)
-  }, POLLING_INTERVAL)
-
-  failAfterTimeoutId = setTimeout(() => {
-    setStatus(SafeCreationStatus.ERROR)
 
     clearInterval(intervalId)
   }, WAIT_FOR_RELAY_TIMEOUT)

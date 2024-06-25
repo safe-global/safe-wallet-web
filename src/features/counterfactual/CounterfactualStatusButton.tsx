@@ -1,4 +1,4 @@
-import { PendingSafeStatus, selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import { useAppSelector } from '@/store'
@@ -27,30 +27,28 @@ export const LoopIcon = (props: SvgIconProps) => {
   )
 }
 
-const processingStates = [PendingSafeStatus.PROCESSING, PendingSafeStatus.RELAYING]
-
 const CounterfactualStatusButton = () => {
   const { safe, safeAddress } = useSafeInfo()
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, safeAddress))
 
   if (safe.deployed) return null
 
-  const processing = undeployedSafe && processingStates.includes(undeployedSafe.status.status)
+  const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
   return (
     <Tooltip
       placement="right"
-      title={processing ? 'Safe Account is being activated' : 'Safe Account is not activated'}
+      title={isActivating ? 'Safe Account is being activated' : 'Safe Account is not activated'}
       arrow
     >
       <IconButton
         data-testid="pending-activation-icon"
-        className={classnames(css.statusButton, { [css.processing]: processing })}
+        className={classnames(css.statusButton, { [css.processing]: isActivating })}
         size="small"
-        color={processing ? 'info' : 'warning'}
+        color={isActivating ? 'info' : 'warning'}
         disableRipple
       >
-        {processing ? <LoopIcon /> : <InfoIcon />}
+        {isActivating ? <LoopIcon /> : <InfoIcon />}
       </IconButton>
     </Tooltip>
   )
