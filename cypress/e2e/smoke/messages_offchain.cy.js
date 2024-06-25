@@ -6,12 +6,16 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as modal from '../pages/modals.page'
 import * as messages from '../pages/messages.pages.js'
 import * as msg_confirmation_modal from '../pages/modals/message_confirmation.pages.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
 const offchainMessage = 'Test message 2 off-chain'
 
 const typeMessagesGeneral = msg_data.type.general
 const typeMessagesOffchain = msg_data.type.offChain
+
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('[SMOKE] Offchain Messages tests', () => {
   before(async () => {
@@ -77,6 +81,7 @@ describe('[SMOKE] Offchain Messages tests', () => {
   })
 
   it('[SMOKE] Verify confirmation window is displayed for unsigned message', () => {
+    wallet.connectSigner(signer)
     messages.clickOnMessageSignBtn(2)
     msg_confirmation_modal.verifyConfirmationWindowTitle(modal.modalTitiles.confirmMsg)
     msg_confirmation_modal.verifyMessagePresent(offchainMessage)

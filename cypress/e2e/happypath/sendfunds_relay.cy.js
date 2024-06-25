@@ -12,12 +12,14 @@ import { createEthersAdapter, createSigners } from '../../support/api/utils_ethe
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 const safeBalanceEth = 405240000000000000n
 const qtrustBanance = 60000000000000000000n
 const transferAmount = '1'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const tokenAmount2 = '0.00001'
 const netwrok = 'sepolia'
@@ -75,11 +77,13 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
     protocolKitOwner2_S3 = safes[1]
   })
 
-  it('Verify tx creation and execution of NFT with relay', { defaultCommandTimeout: 300000 }, () => {
+
+  it('Verify tx creation and execution of NFT with relay', () => {
     cy.wait(2000)
     const originatingSafe = safesData.SEP_FUNDS_SAFE_9.substring(4)
     function executeTransactionFlow(fromSafe, toSafe) {
       return cy.visit(constants.balanceNftsUrl + fromSafe).then(() => {
+        wallet.connectSigner(signer)
         nfts.selectNFTs(1)
         nfts.sendNFT()
         nfts.typeRecipientAddress(toSafe)
@@ -107,11 +111,16 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
       })
   })
 
+<<<<<<< HEAD
   it('Verify tx creation and execution of native token with relay', { defaultCommandTimeout: 300000 }, () => {
+=======
+  it('Verify tx creation and execution of native token with relay', () => {
+>>>>>>> 29fec25b (Tests: Update tests as per new signer (#3867))
     cy.wait(2000)
     const targetSafe = safesData.SEP_FUNDS_SAFE_1.substring(4)
     function executeTransactionFlow(fromSafe, toSafe, tokenAmount) {
       visit(constants.BALANCE_URL + fromSafe)
+      wallet.connectSigner(signer)
       assets.clickOnSendBtn(0)
       loadsafe.inputOwnerAddress(0, toSafe)
       assets.checkSelectedToken(constants.tokenAbbreviation.sep)
@@ -159,19 +168,17 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
       })
   })
 
-  // TODO: Too many requests error occurs. Skip until resolved.
-  it.skip(
-    'Verify tx creation and execution of non-native token with with relay',
-    { defaultCommandTimeout: 300000 },
-    () => {
-      cy.wait(2000)
-      const originatingSafe = safesData.SEP_FUNDS_SAFE_2.substring(4)
-      const amount = ethers.parseUnits(transferAmount, unit_eth).toString()
 
-      function executeTransactionFlow(fromSafe, toSafe) {
-        visit(constants.BALANCE_URL + fromSafe)
-        assets.selectTokenList(assets.tokenListOptions.allTokens)
-        assets.clickOnSendBtn(1)
+  it('Verify tx creation and execution of non-native token with with relay', () => {
+    cy.wait(2000)
+    const originatingSafe = safesData.SEP_FUNDS_SAFE_2.substring(4)
+    const amount = ethers.parseUnits(transferAmount, unit_eth).toString()
+
+    function executeTransactionFlow(fromSafe, toSafe) {
+      visit(constants.BALANCE_URL + fromSafe)
+      wallet.connectSigner(signer)
+      assets.selectTokenList(assets.tokenListOptions.allTokens)
+      assets.clickOnSendBtn(1)
 
         loadsafe.inputOwnerAddress(0, toSafe)
         assets.enterAmount(1)
