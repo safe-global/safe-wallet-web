@@ -27,7 +27,6 @@ describe('[SMOKE] Swaps token tests', () => {
 
       swaps.clickOnAssetSwapBtn(0)
       swaps.acceptLegalDisclaimer()
-      swaps.waitForOrdersCallToComplete()
       cy.wait(2000)
       main.getIframeBody(iframeSelector).within(() => {
         swaps.verifySelectedInputCurrancy(swaps.swapTokens.eth)

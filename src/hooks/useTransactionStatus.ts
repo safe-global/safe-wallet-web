@@ -1,7 +1,7 @@
 import { ReplaceTxHoverContext } from '@/components/transactions/GroupedTxListItems/ReplaceTxHoverProvider'
 import { useAppSelector } from '@/store'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
-import { isCancelledSwap, isSignableBy } from '@/utils/transaction-guards'
+import { isCancelledSwapOrder, isSignableBy } from '@/utils/transaction-guards'
 import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { useContext } from 'react'
@@ -37,7 +37,7 @@ const useTransactionStatus = (txSummary: TransactionSummary): string => {
   const wallet = useWallet()
   const pendingTx = useAppSelector((state) => selectPendingTxById(state, id))
 
-  if (isCancelledSwap(txSummary.txInfo)) {
+  if (isCancelledSwapOrder(txSummary.txInfo)) {
     return STATUS_LABELS['CANCELLED']
   }
 
