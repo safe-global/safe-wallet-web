@@ -8,7 +8,7 @@ import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
 import { getLimitPrice, getOrderClass, getSlippageInPercent } from '@/features/swap/helpers/utils'
-import type { CowConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import type { OrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
 import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
@@ -21,7 +21,7 @@ import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSe
 import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
 
 type SwapOrderProps = {
-  order: CowConfirmationView
+  order: OrderConfirmationView
   settlementContract: string
 }
 
@@ -29,6 +29,7 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
   const { owner, kind, validUntil, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
   const isTwapOrder = order.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
+
   const limitPrice = getLimitPrice(order)
   const orderClass = getOrderClass(order)
   const expires = new Date(validUntil * 1000)
@@ -129,7 +130,7 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
               <PartSellAmount order={order} addonText="per part" key="sell_part" />,
               <PartBuyAmount order={order} addonText="per part" key="buy_part" />,
               <DataRow title="Start time" key="Start time">
-                {order.startTime.startType === StartTimeValue.AtMiningTime ? 'At mining time' : 'At block number'}
+                {order.startTime.startType === StartTimeValue.AT_MINING_TIME ? 'At mining time' : 'At block number'}
               </DataRow>,
               <PartDuration order={order} key="part_duration" />,
               <DataRow title="Total duration" key="total_duration">

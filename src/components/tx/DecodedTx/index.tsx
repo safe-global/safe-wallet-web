@@ -1,7 +1,7 @@
 import SendToBlock from '@/components/tx/SendToBlock'
-import CowOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
+import { SwapOrderConfirmationView } from '@/features/swap/components/SwapOrderConfirmationView'
 import { useCurrentChain } from '@/hooks/useChains'
-import { isCoWConfirmationViewOrder } from '@/utils/transaction-guards'
+import { isConfirmationViewOrder } from '@/utils/transaction-guards'
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
 import {
   Accordion,
@@ -59,7 +59,7 @@ const DecodedTx = ({
 }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
   const chain = useCurrentChain()
-  const isSwapOrder = isCoWConfirmationViewOrder(decodedData)
+  const isSwapOrder = isConfirmationViewOrder(decodedData)
 
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
 
@@ -98,7 +98,7 @@ const DecodedTx = ({
         </>
       )}
 
-      {isSwapOrder && tx && <CowOrderConfirmationView order={decodedData} settlementContract={tx.data.to} />}
+      {isSwapOrder && tx && <SwapOrderConfirmationView order={decodedData} settlementContract={tx.data.to} />}
 
       {isMultisend && showMultisend && (
         <Box>

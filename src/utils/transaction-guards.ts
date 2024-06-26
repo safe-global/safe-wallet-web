@@ -27,11 +27,11 @@ import type {
   SwapOrder,
   DecodedDataResponse,
   BaselineConfirmationView,
-  CowConfirmationView,
+  OrderConfirmationView,
   TwapOrder,
   Order,
-  SwapConfirmationView,
-  TwapConfirmationView,
+  SwapOrderConfirmationView,
+  TwapOrderConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
@@ -109,15 +109,15 @@ export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder =>
   return value.type === TransactionInfoType.TWAP_ORDER
 }
 
-export const isCoWConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | CowConfirmationView | undefined,
-): decodedData is CowConfirmationView => {
+export const isConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is OrderConfirmationView => {
   return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
 }
 
 export const isTwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | CowConfirmationView | undefined,
-): decodedData is TwapConfirmationView => {
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is TwapOrderConfirmationView => {
   if (decodedData && 'type' in decodedData) {
     return decodedData.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
   }
@@ -126,8 +126,8 @@ export const isTwapConfirmationViewOrder = (
 }
 
 export const isSwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | CowConfirmationView | undefined,
-): decodedData is SwapConfirmationView => {
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is SwapOrderConfirmationView => {
   if (decodedData && 'type' in decodedData) {
     return decodedData.type === ConfirmationViewTypes.COW_SWAP_ORDER
   }

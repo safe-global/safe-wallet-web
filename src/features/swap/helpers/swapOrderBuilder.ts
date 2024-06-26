@@ -1,11 +1,11 @@
 import { Builder, type IBuilder } from '@/tests/Builder'
 import { faker } from '@faker-js/faker'
 import type {
-  CowConfirmationView,
   OrderToken,
   SwapOrder,
   TransactionInfoType,
   TwapOrder,
+  SwapOrderConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { DurationType, StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
@@ -92,19 +92,19 @@ export function twapOrderBuilder(): IBuilder<TwapOrder> {
     timeBetweenParts: faker.number.int({ min: 1, max: 10000000 }),
     /** @description Whether the TWAP is valid for the entire interval or not */
     durationOfPart: {
-      durationType: DurationType.Auto,
+      durationType: DurationType.AUTO,
     },
     /** @description The start time of the TWAP */
     startTime: {
-      startType: StartTimeValue.AtMiningTime,
+      startType: StartTimeValue.AT_MINING_TIME,
     },
   })
 }
 
 // create a builder for SwapOrderConfirmationView
-export function swapOrderConfirmationViewBuilder(): IBuilder<CowConfirmationView> {
+export function swapOrderConfirmationViewBuilder(): IBuilder<SwapOrderConfirmationView> {
   const ownerAndReceiver = faker.finance.ethereumAddress()
-  return Builder.new<CowConfirmationView>().with({
+  return Builder.new<SwapOrderConfirmationView>().with({
     type: ConfirmationViewTypes.COW_SWAP_ORDER,
     uid: faker.string.uuid(),
     kind: faker.helpers.arrayElement(['buy', 'sell']),
