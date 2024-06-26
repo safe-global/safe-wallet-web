@@ -11,7 +11,6 @@ import {
   AccordionDetails,
   Link,
 } from '@mui/material'
-
 import { useTheme } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useContext, useEffect } from 'react'
@@ -88,15 +87,7 @@ const MessageHashField = ({ label, hashValue }: { label: string; hashValue: stri
   </>
 )
 
-const DialogHeader = ({
-  threshold,
-  safeMessageHash,
-  hasSigned,
-}: {
-  threshold: number
-  safeMessageHash: string
-  hasSigned: boolean
-}) => (
+const DialogHeader = ({ threshold }: { threshold: number }) => (
   <>
     <Box textAlign="center" mb={2}>
       <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="large" />
@@ -294,7 +285,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
     <>
       <TxCard>
         <CardContent>
-          <DialogHeader threshold={safe.threshold} safeMessageHash={safeMessageHash} hasSigned={hasSigned} />
+          <DialogHeader threshold={safe.threshold} />
 
           {isEip712 && (
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
@@ -355,7 +346,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
                 <>
                   <Typography mb={2}>
                     The owners will receive notification about signing the message and you can also share the link with
-                    them to fasten the process.
+                    them to speed up the process.
                   </Typography>
                   <MsgShareLink safeMessageHash={safeMessageHash} button />
                 </>
