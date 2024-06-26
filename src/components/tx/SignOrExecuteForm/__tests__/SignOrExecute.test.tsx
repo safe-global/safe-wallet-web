@@ -87,7 +87,7 @@ describe('SignOrExecute', () => {
     })
 
     it('should not offer to execute through a role if the transaction can also be directly executed without going through the role', () => {
-      // jest.spyOn(execThroughRoleHooks, 'useRoles').mockReturnValue([TEST_ROLE_OK])
+      jest.spyOn(execThroughRoleHooks, 'useRoles').mockReturnValue([TEST_ROLE_OK])
       jest.spyOn(hooks, 'useValidateNonce').mockReturnValue(true)
 
       const { queryByTestId } = render(
