@@ -130,7 +130,8 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
               <PartSellAmount order={order} addonText="per part" key="sell_part" />,
               <PartBuyAmount order={order} addonText="per part" key="buy_part" />,
               <DataRow title="Start time" key="Start time">
-                {order.startTime.startType === StartTimeValue.AT_MINING_TIME ? 'At mining time' : 'At block number'}
+                {order.startTime.startType === StartTimeValue.AT_MINING_TIME && 'Now'}
+                {order.startTime.startType === StartTimeValue.AT_EPOCH && `At block number: ${order.startTime.epoch}`}
               </DataRow>,
               <PartDuration order={order} key="part_duration" />,
               <DataRow title="Total duration" key="total_duration">
