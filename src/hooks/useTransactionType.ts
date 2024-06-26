@@ -70,6 +70,12 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         text: orderClass === 'limit' ? 'Limit order' : 'Swap order',
       }
     }
+    case 'TwapOrder': {
+      return {
+        icon: '/images/common/swap.svg',
+        text: 'TWAP order',
+      }
+    }
     case TransactionInfoType.CUSTOM: {
       if (isModuleExecutionInfo(tx.executionInfo)) {
         return {
