@@ -92,8 +92,7 @@ export const estimateBatchDeploymentTransaction = async (
   // 2. Add a simulate call to the predicted SafeProxy as second transaction
   const transactionDataToEstimate: string = simulateTxAccessorContract.encode('simulate', [
     safeTransaction.data.to,
-    // @ts-ignore
-    safeTransaction.data.value,
+    BigInt(safeTransaction.data.value),
     safeTransaction.data.data,
     safeTransaction.data.operation,
   ])

@@ -1,6 +1,6 @@
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { _isL2 } from '@/services/contracts/deployments'
-import { SafeProvider } from '@safe-global/protocol-kit'
+import { type GetContractProps, SafeProvider } from '@safe-global/protocol-kit'
 import {
   getCompatibilityFallbackHandlerContractInstance,
   getMultiSendCallOnlyContractInstance,
@@ -23,11 +23,9 @@ export const isValidMasterCopy = (implementationVersionState: SafeInfo['implemen
   return implementationVersionState !== ImplementationVersionState.UNKNOWN
 }
 
-type ContractProps = {
-  safeVersion: SafeVersion
-}
-
-export const _getValidatedGetContractProps = (safeVersion: SafeInfo['version']): ContractProps => {
+export const _getValidatedGetContractProps = (
+  safeVersion: SafeInfo['version'],
+): Pick<GetContractProps, 'safeVersion'> => {
   assertValidSafeVersion(safeVersion)
 
   // SDK request here: https://github.com/safe-global/safe-core-sdk/issues/261
