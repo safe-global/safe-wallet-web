@@ -8,7 +8,6 @@ const SingleMsg = () => {
   const router = useRouter()
   const { messageHash } = router.query
   const safeMessageHash = Array.isArray(messageHash) ? messageHash[0] : messageHash
-  // const { safe, safeAddress } = useSafeInfo()
   const [safeMessage] = useSafeMessage(safeMessageHash)
 
   if (safeMessage) {
