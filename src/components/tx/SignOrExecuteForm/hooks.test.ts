@@ -1,5 +1,5 @@
-import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
-import { renderHook } from '@/tests/test-utils'
+import { extendedSafeInfoBuilder, safeInfoBuilder } from '@/tests/builders/safe'
+import { renderHook, waitFor } from '@/tests/test-utils'
 import { zeroPadValue } from 'ethers'
 import { createSafeTx } from '@/tests/builders/safeTx'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -10,7 +10,16 @@ import * as pending from '@/hooks/usePendingTxs'
 import * as txSender from '@/services/tx/tx-sender/dispatch'
 import * as onboardHooks from '@/hooks/wallets/useOnboard'
 import { type OnboardAPI } from '@web3-onboard/core'
-import { useAlreadySigned, useImmediatelyExecutable, useIsExecutionLoop, useTxActions, useValidateNonce } from './hooks'
+import {
+  useAlreadySigned,
+  useImmediatelyExecutable,
+  useIsExecutionLoop,
+  useRecommendedNonce,
+  useTxActions,
+  useValidateNonce,
+} from './hooks'
+import * as recommendedNonce from '@/services/tx/tx-sender/recommendedNonce'
+import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 describe('SignOrExecute hooks', () => {
   const extendedSafeInfo = extendedSafeInfoBuilder().build()
@@ -566,24 +575,151 @@ describe('SignOrExecute hooks', () => {
       const { result } = renderHook(() => useAlreadySigned(tx))
       expect(result.current).toEqual(true)
     })
-  })
-  it('should return false if wallet has not signed a tx yet', () => {
-    // Wallet
-    jest.spyOn(wallet, 'default').mockReturnValue({
-      chainId: '1',
-      label: 'MetaMask',
-      address: '0x1234567890000000000000000000000000000000',
-    } as unknown as ConnectedWallet)
 
-    const tx = createSafeTx()
-    tx.addSignature({
-      signer: '0x00000000000000000000000000000000000000000',
-      data: '0x0001',
-      staticPart: () => '',
-      dynamicPart: () => '',
-      isContractSignature: false,
+    it('should return false if wallet has not signed a tx yet', () => {
+      // Wallet
+      jest.spyOn(wallet, 'default').mockReturnValue({
+        chainId: '1',
+        label: 'MetaMask',
+        address: '0x1234567890000000000000000000000000000000',
+      } as unknown as ConnectedWallet)
+
+      const tx = createSafeTx()
+      tx.addSignature({
+        signer: '0x00000000000000000000000000000000000000000',
+        data: '0x0001',
+        staticPart: () => '',
+        dynamicPart: () => '',
+        isContractSignature: false,
+      })
+      const { result } = renderHook(() => useAlreadySigned(tx))
+      expect(result.current).toEqual(false)
     })
-    const { result } = renderHook(() => useAlreadySigned(tx))
-    expect(result.current).toEqual(false)
+  })
+
+  describe('useRecommendedNonce', () => {
+    it('should return undefined without safe info', async () => {
+      jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
+        safe: { ...defaultSafeInfo, deployed: false },
+        safeAddress: '',
+        safeLoaded: true,
+        safeLoading: false,
+      })
+
+      const { result } = renderHook(useRecommendedNonce)
+      await waitFor(() => {
+        expect(result.current).toBeUndefined()
+      })
+    })
+    it('should return 0 for counterfactual Safes', async () => {
+      const mockSafeInfo = safeInfoBuilder().build()
+      jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
+        safe: { ...mockSafeInfo, deployed: false },
+        safeAddress: mockSafeInfo.address.value,
+        safeLoaded: true,
+        safeLoading: false,
+      })
+
+      const { result } = renderHook(useRecommendedNonce)
+      await waitFor(() => {
+        expect(result.current).toEqual(0)
+      })
+    })
+
+    it('should update if queueTag changes', async () => {
+      jest.spyOn(recommendedNonce, 'getNonces').mockResolvedValue({
+        currentNonce: 1,
+        recommendedNonce: 1,
+      })
+      const mockSafeInfo = safeInfoBuilder()
+        .with({
+          txQueuedTag: '1',
+        })
+        .build()
+      jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
+        safe: { ...mockSafeInfo, deployed: true },
+        safeAddress: mockSafeInfo.address.value,
+        safeLoaded: true,
+        safeLoading: false,
+      })
+
+      const { result, rerender } = renderHook(useRecommendedNonce)
+      await waitFor(() => {
+        expect(result.current).toEqual(1)
+      })
+
+      jest.spyOn(recommendedNonce, 'getNonces').mockResolvedValue({
+        currentNonce: 1,
+        recommendedNonce: 2,
+      })
+
+      rerender()
+      // The hook does not rerender as the queue tag did not change yet
+      await waitFor(() => {
+        expect(result.current).toEqual(1)
+      })
+
+      jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
+        safe: { ...mockSafeInfo, deployed: true, txQueuedTag: '2' },
+        safeAddress: mockSafeInfo.address.value,
+        safeLoaded: true,
+        safeLoading: false,
+      })
+
+      rerender()
+
+      // Now the queue tag changed from 1 to 2 and the hook should reflect the new recommended Nonce
+      await waitFor(() => {
+        expect(result.current).toEqual(2)
+      })
+    })
+
+    it('should update if historyTag changes', async () => {
+      jest.spyOn(recommendedNonce, 'getNonces').mockResolvedValue({
+        currentNonce: 1,
+        recommendedNonce: 1,
+      })
+      const mockSafeInfo = safeInfoBuilder()
+        .with({
+          txHistoryTag: '1',
+        })
+        .build()
+      jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
+        safe: { ...mockSafeInfo, deployed: true },
+        safeAddress: mockSafeInfo.address.value,
+        safeLoaded: true,
+        safeLoading: false,
+      })
+
+      const { result, rerender } = renderHook(useRecommendedNonce)
+      await waitFor(() => {
+        expect(result.current).toEqual(1)
+      })
+
+      jest.spyOn(recommendedNonce, 'getNonces').mockResolvedValue({
+        currentNonce: 2,
+        recommendedNonce: 2,
+      })
+
+      rerender()
+      // The hook does not rerender as the history tag did not change yet
+      await waitFor(() => {
+        expect(result.current).toEqual(1)
+      })
+
+      jest.spyOn(useSafeInfoHook, 'default').mockReturnValue({
+        safe: { ...mockSafeInfo, deployed: true, txHistoryTag: '2' },
+        safeAddress: mockSafeInfo.address.value,
+        safeLoaded: true,
+        safeLoading: false,
+      })
+
+      rerender()
+
+      // Now the history tag changed from 1 to 2 and the hook should reflect the new recommended Nonce
+      await waitFor(() => {
+        expect(result.current).toEqual(2)
+      })
+    })
   })
 })
