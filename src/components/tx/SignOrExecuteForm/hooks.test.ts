@@ -702,7 +702,7 @@ describe('SignOrExecute hooks', () => {
       })
 
       rerender()
-      // The hook does not rerender as the queue tag did not change yet
+      // The hook does not rerender as the history tag did not change yet
       await waitFor(() => {
         expect(result.current).toEqual(1)
       })
@@ -716,7 +716,7 @@ describe('SignOrExecute hooks', () => {
 
       rerender()
 
-      // Now the queue tag changed from 1 to 2 and the hook should reflect the new recommended Nonce
+      // Now the history tag changed from 1 to 2 and the hook should reflect the new recommended Nonce
       await waitFor(() => {
         expect(result.current).toEqual(2)
       })
