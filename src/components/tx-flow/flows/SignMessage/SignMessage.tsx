@@ -340,19 +340,21 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
               />
             </InfoBox>
 
-            <InfoBox
-              title="Share the link with other owners"
-              message={
-                <>
-                  <Typography mb={2}>
-                    The owners will receive notification about signing the message and you can also share the link with
-                    them to speed up the process.
-                  </Typography>
-                  <MsgShareLink safeMessageHash={safeMessageHash} button />
-                </>
-              }
-              icon={LinkIcon}
-            />
+            {hasSigned && (
+              <InfoBox
+                title="Share the link with other owners"
+                message={
+                  <>
+                    <Typography mb={2}>
+                      The owners will receive notification about signing the message and you can also share the link
+                      with them to speed up the process.
+                    </Typography>
+                    <MsgShareLink safeMessageHash={safeMessageHash} button />
+                  </>
+                }
+                icon={LinkIcon}
+              />
+            )}
 
             <WrongChainWarning />
 
