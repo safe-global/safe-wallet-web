@@ -18,6 +18,8 @@ import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { type Safe4337Pack } from '@safe-global/relay-kit'
+import type EthSafeOperation from '@safe-global/relay-kit/dist/src/packs/safe-4337/SafeOperation'
 import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import {
   type ChainInfo,
@@ -27,6 +29,7 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BrowserProvider, ContractTransactionResponse, Eip1193Provider, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
+import { Safe4337Service } from './hooks/use4337Service'
 
 export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
   return {
@@ -90,6 +93,31 @@ export const deploySafeAndExecuteTx = async (
   return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, provider)
 }
 
+export const signAndExecuteUserOperation = async (userOperation?: EthSafeOperation, safe4337Pack?: Safe4337Pack) => {
+  if (!safe4337Pack || !userOperation) {
+    throw new Error('Could not execute UserOperation')
+  }
+
+  const signedUserOp = await safe4337Pack.signSafeOperation(userOperation)
+
+  return safe4337Pack.executeTransaction({
+    executable: signedUserOp,
+  })
+}
+
+export const signAndProposeUserOperation = async (
+  userOperation?: EthSafeOperation,
+  safe4337Pack?: Safe4337Pack,
+  safe4337Service?: Safe4337Service,
+) => {
+  if (!safe4337Pack || !userOperation || !safe4337Service) {
+    throw new Error('Could not execute UserOperation')
+  }
+
+  const signedUserOp = await safe4337Pack.signSafeOperation(userOperation)
+  return safe4337Service.proposeUserOperation(signedUserOp)
+}
+
 export const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint>(0n)
 
 export const getCounterfactualBalance = async (
@@ -149,6 +177,7 @@ export const createCounterfactualSafe = (
         safeVersion: LATEST_SAFE_VERSION as SafeVersion,
       },
     },
+    is4337: true,
   }
 
   dispatch(addUndeployedSafe(undeployedSafe))

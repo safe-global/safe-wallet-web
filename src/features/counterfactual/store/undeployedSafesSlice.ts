@@ -18,6 +18,7 @@ type UndeployedSafeStatus = {
 export type UndeployedSafe = {
   status: UndeployedSafeStatus
   props: PredictedSafeProps
+  is4337?: boolean
 }
 
 type UndeployedSafesSlice = { [address: string]: UndeployedSafe }
@@ -32,9 +33,9 @@ export const undeployedSafesSlice = createSlice({
   reducers: {
     addUndeployedSafe: (
       state,
-      action: PayloadAction<{ chainId: string; address: string; safeProps: PredictedSafeProps }>,
+      action: PayloadAction<{ chainId: string; address: string; safeProps: PredictedSafeProps; is4337?: boolean }>,
     ) => {
-      const { chainId, address, safeProps } = action.payload
+      const { chainId, address, safeProps, is4337 } = action.payload
 
       if (!state[chainId]) {
         state[chainId] = {}
@@ -45,6 +46,7 @@ export const undeployedSafesSlice = createSlice({
         status: {
           status: PendingSafeStatus.AWAITING_EXECUTION,
         },
+        is4337,
       }
     },
 

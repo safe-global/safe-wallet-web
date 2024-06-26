@@ -149,8 +149,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const totalFee = getTotalFeeFormatted(maxFeePerGas, gasLimit, chain)
 
-  // Only 1 out of 1 safe setups are supported for now
-  const isCounterfactual = data.threshold === 1 && data.owners.length === 1 && isCounterfactualEnabled
+  const isCounterfactual = isCounterfactualEnabled
 
   const handleBack = () => {
     onBack(data)
@@ -160,6 +159,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     if (!wallet || !wallet.provider || !chain) return
 
     setIsCreating(true)
+
+    debugger
 
     try {
       const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
@@ -172,10 +173,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         },
       }
 
-      const saltNonce = await getAvailableSaltNonce(wallet.provider, { ...props, saltNonce: '0' }, chain.chainId)
-      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain.chainId)
+      const is4337 = isCounterfactual && payMethod === PayMethod.PayLater
 
-      if (isCounterfactual && payMethod === PayMethod.PayLater) {
+      const saltNonce = await getAvailableSaltNonce(wallet.provider, { ...props, saltNonce: '0' }, chain, is4337)
+      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain, is4337)
+
+      if (is4337) {
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })

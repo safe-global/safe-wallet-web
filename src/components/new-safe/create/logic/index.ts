@@ -25,9 +25,10 @@ import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 import { backOff } from 'exponential-backoff'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { LATEST_SAFE_VERSION, PIMLICO_API_KEY } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { formatError } from '@/utils/formatters'
+import { Safe4337Pack } from '@safe-global/relay-kit'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -81,13 +82,30 @@ export const createNewSafe = async (
 export const computeNewSafeAddress = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
-  chainId: string,
+  chainInfo: ChainInfo,
+  is4337: boolean,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
 
+  if (is4337) {
+    const safe4337Pack = await Safe4337Pack.init({
+      provider,
+      rpcUrl: chainInfo.publicRpcUri.value,
+      bundlerUrl: `https://api.pimlico.io/v1/sepolia/rpc?apikey=${PIMLICO_API_KEY}`,
+      options: {
+        owners: props.safeAccountConfig.owners,
+        threshold: props.safeAccountConfig.threshold,
+        safeVersion: LATEST_SAFE_VERSION,
+        saltNonce: props.saltNonce,
+      },
+    })
+
+    return safe4337Pack.protocolKit.getAddress()
+  }
+
   return predictSafeAddress({
     safeProvider,
-    chainId: BigInt(chainId),
+    chainId: BigInt(chainInfo.chainId),
     safeAccountConfig: props.safeAccountConfig,
     safeDeploymentConfig: {
       saltNonce: props.saltNonce,

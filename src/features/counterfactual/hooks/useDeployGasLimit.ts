@@ -13,34 +13,53 @@ import {
 } from '@safe-global/protocol-kit/dist/src/contracts/safeDeploymentContracts'
 
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-
-type DeployGasLimitProps = {
-  safeTxGas: bigint
-  safeDeploymentGas: string
-  totalGas: bigint
-}
+import { useCurrentChain } from '@/hooks/useChains'
+import { Safe4337Pack } from '@safe-global/relay-kit'
+import { PIMLICO_API_KEY } from '@/config/constants'
+import { useAppSelector } from '@/store'
+import { selectUndeployedSafe } from '../store/undeployedSafesSlice'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import type EthSafeOperation from '@safe-global/relay-kit/dist/src/packs/safe-4337/SafeOperation'
 
 const useDeployGasLimit = (safeTx?: SafeTransaction) => {
   const onboard = useOnboard()
   const wallet = useWallet()
+  const chainInfo = useCurrentChain()
   const chainId = useChainId()
+  const safeAddress = useSafeAddress()
 
-  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<DeployGasLimitProps | undefined>(async () => {
-    if (!wallet || !onboard) return
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, safeAddress))
 
-    await assertWalletChain(onboard, chainId)
-    const sdk = await getSafeSDKWithSigner(wallet.provider)
+  const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<EthSafeOperation | undefined>(async () => {
+    if (!wallet || !onboard || !chainInfo || !undeployedSafe || !safeTx) return
 
-    const [baseGas, batchTxGas, safeDeploymentGas] = await Promise.all([
-      safeTx ? estimateTxBaseGas(sdk, safeTx) : '0',
-      safeTx ? estimateBatchDeploymentTransaction(safeTx, sdk, chainId) : '0',
-      estimateSafeDeploymentGas(sdk),
-    ])
+    const safe4337Pack = await Safe4337Pack.init({
+      provider: wallet.provider,
+      rpcUrl: chainInfo.publicRpcUri.value,
+      bundlerUrl: `https://api.pimlico.io/v1/sepolia/rpc?apikey=${PIMLICO_API_KEY}`,
+      options: {
+        owners: undeployedSafe.props.safeAccountConfig.owners,
+        threshold: undeployedSafe.props.safeAccountConfig.threshold,
+        safeVersion: undeployedSafe.props.safeDeploymentConfig?.safeVersion,
+        saltNonce: undeployedSafe.props.safeDeploymentConfig?.saltNonce,
+      },
+    })
 
-    const totalGas = safeTx ? BigInt(baseGas) + BigInt(batchTxGas) : BigInt(safeDeploymentGas)
-    const safeTxGas = totalGas - BigInt(safeDeploymentGas)
+    // create user operation
+    const safeOperation = await safe4337Pack.createTransaction({
+      transactions: [
+        {
+          data: safeTx.data.data,
+          to: safeTx.data.to,
+          value: safeTx.data.value,
+          operation: safeTx.data.operation,
+        },
+      ],
+    })
 
-    return { safeTxGas, safeDeploymentGas, totalGas }
+    return safe4337Pack.getEstimateFee({
+      safeOperation,
+    })
   }, [onboard, wallet, chainId, safeTx])
 
   return { gasLimit, gasLimitError, gasLimitLoading }

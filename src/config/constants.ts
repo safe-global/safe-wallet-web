@@ -1,3 +1,4 @@
+import { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import chains from './chains'
 
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === 'true'
@@ -11,7 +12,7 @@ export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING |
 export const POLLING_INTERVAL = 15_000
 export const BASE_TX_GAS = 21_000
 export const LS_NAMESPACE = 'SAFE_v2__'
-export const LATEST_SAFE_VERSION = process.env.NEXT_PUBLIC_SAFE_VERSION || '1.3.0'
+export const LATEST_SAFE_VERSION: SafeVersion = (process.env.NEXT_PUBLIC_SAFE_VERSION as SafeVersion) || '1.4.1'
 
 // Access keys
 export const INFURA_TOKEN = process.env.NEXT_PUBLIC_INFURA_TOKEN || ''
@@ -104,3 +105,5 @@ export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST === 'tr
 export const REDEFINE_SIMULATION_URL = 'https://dashboard.redefine.net/reports/'
 export const REDEFINE_API = process.env.NEXT_PUBLIC_REDEFINE_API
 export const REDEFINE_ARTICLE = 'https://safe.mirror.xyz/rInLWZwD_sf7enjoFerj6FIzCYmVMGrrV8Nhg4THdwI'
+
+export const PIMLICO_API_KEY = process.env.NEXT_PUBLIC_PIMLICO_API_KEY

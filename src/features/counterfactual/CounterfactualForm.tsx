@@ -1,41 +1,37 @@
 import { TxModalContext } from '@/components/tx-flow'
-import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
-import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
+import { signAndExecuteUserOperation, signAndProposeUserOperation } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
-import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import useWallet from '@/hooks/wallets/useWallet'
 import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import madProps from '@/utils/mad-props'
 import React, { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { CircularProgress, Box, Button, CardActions, Divider, Alert } from '@mui/material'
-import classNames from 'classnames'
 
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { trackError, Errors } from '@/services/exceptions'
 import { useCurrentChain } from '@/hooks/useChains'
-import { getTxOptions } from '@/utils/transactions'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsExecutionLoop } from '@/components/tx/SignOrExecuteForm/hooks'
 import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
 
-import css from '@/components/tx/SignOrExecuteForm/styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import NonOwnerError from '@/components/tx/SignOrExecuteForm/NonOwnerError'
+import useEstimatedUserOperation from './hooks/useEstimatedUserOperation'
+import { useSafe4337Pack } from './hooks/useSafe4337Pack'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { use4337Service } from './hooks/use4337Service'
 
 export const CounterfactualForm = ({
   safeTx,
   disableSubmit = false,
   onlyExecute,
-  isCreation,
   isOwner,
   isExecutionLoop,
   txSecurity,
@@ -46,23 +42,23 @@ export const CounterfactualForm = ({
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
 }): ReactElement => {
-  const wallet = useWallet()
   const onboard = useOnboard()
   const chain = useCurrentChain()
   const chainId = useChainId()
+  const { safe } = useSafeInfo()
 
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<Error | undefined>()
 
   // Hooks
-  const currentChain = useCurrentChain()
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
   const { setTxFlow } = useContext(TxModalContext)
 
   // Estimate gas limit
-  const { gasLimit, gasLimitError } = useDeployGasLimit(safeTx)
-  const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit?.totalGas)
+  const [userOperation, userOperationError] = useEstimatedUserOperation(safeTx)
+  const [safe4337Pack] = useSafe4337Pack()
+  const safe4337Service = use4337Service()
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -77,13 +73,18 @@ export const CounterfactualForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
 
-    const txOptions = getTxOptions(advancedParams, currentChain)
-
     try {
       trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
 
       onboard && (await assertWalletChain(onboard, chainId))
-      await deploySafeAndExecuteTx(txOptions, wallet, safeTx, wallet?.provider)
+
+      if (safe.threshold === 1) {
+        // We sign and execute
+        await signAndExecuteUserOperation(userOperation, safe4337Pack)
+      } else {
+        // We sign and propose
+        await signAndProposeUserOperation(userOperation, safe4337Pack, safe4337Service)
+      }
 
       trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_with_tx })
       trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_with_tx })
@@ -99,15 +100,10 @@ export const CounterfactualForm = ({
     setTxFlow(undefined)
   }
 
-  const walletCanPay = useWalletCanPay({
-    gasLimit: gasLimit?.totalGas,
-    maxFeePerGas: advancedParams.maxFeePerGas,
-    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
-  })
-
   const cannotPropose = !isOwner && !onlyExecute
   const submitDisabled =
-    !safeTx ||
+    !userOperation ||
+    !safe4337Pack ||
     !isSubmittable ||
     disableSubmit ||
     isExecutionLoop ||
@@ -118,36 +114,24 @@ export const CounterfactualForm = ({
     <>
       <form onSubmit={handleSubmit}>
         <Alert severity="info" sx={{ mb: 2, border: 0 }}>
-          Executing this transaction will activate your account.
+          Signing and submitting this user operation will activate your account.
           <br />
           <ul style={{ margin: 0, padding: '4px 16px 0' }}>
             <li>
-              Base fee: &asymp;{' '}
+              Estimated User operation fee: &asymp;{' '}
               <strong>
-                {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeTxGas || '0'), chain)}{' '}
+                {getTotalFeeFormatted(
+                  BigInt(userOperation?.data.maxFeePerGas ?? '0'),
+                  BigInt(userOperation?.data.callGasLimit || '0') +
+                    BigInt(userOperation?.data.verificationGasLimit || '0'),
+                  chain,
+                )}{' '}
                 {chain?.nativeCurrency.symbol}
               </strong>
-            </li>
-            <li>
-              One-time activation fee: &asymp;{' '}
-              <strong>
-                {getTotalFeeFormatted(advancedParams.maxFeePerGas, BigInt(gasLimit?.safeDeploymentGas || '0'), chain)}{' '}
-                {chain?.nativeCurrency.symbol}
-              </strong>
+              This fee will be paid from this Safe&apros;s balance
             </li>
           </ul>
         </Alert>
-
-        <div className={classNames(css.params)}>
-          <AdvancedParams
-            willExecute
-            params={advancedParams}
-            recommendedGasLimit={gasLimit?.totalGas}
-            onFormSubmit={setAdvancedParams}
-            gasLimitError={gasLimitError}
-            willRelay={false}
-          />
-        </div>
 
         {/* Error messages */}
         {cannotPropose ? (
@@ -156,15 +140,8 @@ export const CounterfactualForm = ({
           <ErrorMessage>
             Cannot execute a transaction from the Safe Account itself, please connect a different account.
           </ErrorMessage>
-        ) : !walletCanPay ? (
-          <ErrorMessage>Your connected wallet doesn&apos;t have enough funds to execute this transaction.</ErrorMessage>
         ) : (
-          gasLimitError && (
-            <ErrorMessage error={gasLimitError}>
-              This transaction will most likely fail.
-              {` To save gas costs, ${isCreation ? 'avoid creating' : 'reject'} this transaction.`}
-            </ErrorMessage>
-          )
+          userOperationError && <ErrorMessage error={userOperationError}>Could not create UserOperation</ErrorMessage>
         )}
 
         {submitError && (
