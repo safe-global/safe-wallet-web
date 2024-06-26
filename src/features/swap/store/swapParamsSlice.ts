@@ -6,6 +6,7 @@ import { createSlice } from '@reduxjs/toolkit'
 enum TradeType {
   SWAP = 'swap',
   LIMIT = 'limit',
+  TWAP = 'twap',
 }
 
 export type SwapState = {

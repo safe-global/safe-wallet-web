@@ -1,11 +1,11 @@
-import { isCancelledSwap } from '@/utils/transaction-guards'
+import { isCancelledSwapOrder } from '@/utils/transaction-guards'
 import { CircularProgress, type Palette, Typography } from '@mui/material'
 import { TransactionStatus, type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsPending from '@/hooks/useIsPending'
 import useTransactionStatus from '@/hooks/useTransactionStatus'
 
 const getStatusColor = (tx: TransactionSummary, palette: Palette) => {
-  if (isCancelledSwap(tx.txInfo)) {
+  if (isCancelledSwapOrder(tx.txInfo)) {
     return palette.error.main
   }
 

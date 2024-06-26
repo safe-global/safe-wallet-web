@@ -86,7 +86,7 @@ const ActivateAccountFlow = () => {
     trackEvent(WALLET_EVENTS.ONCHAIN_INTERACTION)
 
     if (txHash) {
-      safeCreationDispatch(SafeCreationEvent.PROCESSING, { groupKey: CF_TX_GROUP_KEY, txHash })
+      safeCreationDispatch(SafeCreationEvent.PROCESSING, { groupKey: CF_TX_GROUP_KEY, txHash, safeAddress })
     }
     setTxFlow(undefined)
   }
@@ -102,7 +102,7 @@ const ActivateAccountFlow = () => {
     try {
       if (willRelay) {
         const taskId = await relaySafeCreation(chain, owners, threshold, Number(saltNonce!), safeVersion)
-        safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId })
+        safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
 
         onSubmit()
       } else {

@@ -5,7 +5,7 @@ import * as navigation from '../pages/navigation.page'
 import * as addressBook from '../pages/address_book.page'
 
 const tooltipLabel = (label) => `span[aria-label="${label}"]`
-const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
+export const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
 const replaceOwnerBtn = 'span[data-track="settings: Replace owner"] > span > button'
 const tooltip = 'div[role="tooltip"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'

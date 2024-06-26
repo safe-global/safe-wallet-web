@@ -46,7 +46,6 @@ export const ApprovalEditorForm = ({
         {Object.entries(groupedApprovals).map(([spender, approvals], spenderIdx) => (
           <Box key={spender}>
             <Stack gap={2}>
-              <SpenderField address={spender} />
               {approvals.map((tx) => (
                 <ListItem
                   key={tx.tokenAddress + tx.spender}
@@ -57,6 +56,8 @@ export const ApprovalEditorForm = ({
                   <EditableApprovalItem approval={tx} name={`approvals.${fieldIndex++}`} onSave={onSave} />
                 </ListItem>
               ))}
+              <SpenderField address={spender} />
+
               {spenderIdx !== Object.keys(groupedApprovals).length - 1 && <Divider />}
             </Stack>
           </Box>

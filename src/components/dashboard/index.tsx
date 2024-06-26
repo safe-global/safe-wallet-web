@@ -9,9 +9,6 @@ import Overview from '@/components/dashboard/Overview/Overview'
 import { FeaturedApps } from '@/components/dashboard/FeaturedApps/FeaturedApps'
 import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
 import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
-import CreationDialog from '@/components/dashboard/CreationDialog'
-import { useRouter } from 'next/router'
-import { CREATION_MODAL_QUERY_PARM } from '../new-safe/create/logic'
 import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSection'
@@ -23,9 +20,7 @@ import SwapWidget from '@/features/swap/components/SwapWidget'
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
 const Dashboard = (): ReactElement => {
-  const router = useRouter()
   const { safe } = useSafeInfo()
-  const { [CREATION_MODAL_QUERY_PARM]: showCreationModal = '' } = router.query
   const showSafeApps = useHasFeature(FEATURES.SAFE_APPS)
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
   const supportsRecovery = useIsRecoverySupported()
@@ -77,14 +72,12 @@ const Dashboard = (): ReactElement => {
               </Grid>
             )}
 
-            <Grid item xs={12}>
+            <Grid item xs={12} className={css.hideIfEmpty}>
               <GovernanceSection />
             </Grid>
           </>
         )}
       </Grid>
-
-      {showCreationModal ? <CreationDialog /> : null}
     </>
   )
 }

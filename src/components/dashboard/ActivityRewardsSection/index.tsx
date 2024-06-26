@@ -66,7 +66,7 @@ const ActivityRewardsSection = () => {
             display: { xs: 'none', sm: 'block' },
           }}
         />
-        <Grid container xs={12} sx={{ gap: { xs: 4, lg: 0 } }}>
+        <Grid container item xs={12} sx={{ gap: { xs: 4, lg: 0 } }}>
           <Grid item xs={12} lg={6} p={0}>
             <SvgIcon
               component={SafePass}
