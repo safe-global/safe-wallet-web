@@ -331,7 +331,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
               message={
                 requestId && !hasSignature
                   ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
-                  : 'The signature will be submitted to the App when the message is fully signed.'
+                  : 'The signature will be submitted to the requesting app when the message is fully signed.'
               }
             >
               <MsgSigners
