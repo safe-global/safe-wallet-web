@@ -129,8 +129,10 @@ describe('Safe creation tests', () => {
 
   it('Verify duplicated signer error using the autocomplete feature', () => {
     cy.visit(constants.createNewSafeSepoliaUrl + '?chain=sep')
-    main
-      .addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName)
+    cy.wrap(null)
+      .then(() =>
+        main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName),
+      )
       .then(() => {
         wallet.connectSigner(signer)
         createwallet.clickOnContinueWithWalletBtn()

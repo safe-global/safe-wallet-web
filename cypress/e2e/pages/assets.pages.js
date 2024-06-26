@@ -266,7 +266,7 @@ export function selectTokenList(option) {
   cy.get(tokenListDropdown)
     .click()
     .then(() => {
-      cy.get(option).click()
+      cy.get(option).click({ force: true })
     })
 }
 
