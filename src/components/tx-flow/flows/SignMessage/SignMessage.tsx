@@ -234,12 +234,14 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const [safeMessage, setSafeMessage] = useSafeMessage(safeMessageHash)
   const isPlainTextMessage = typeof decodedMessage === 'string'
   const decodedMessageAsString = isPlainTextMessage ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
-  const hasSigned = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
+  const signedByCurrentSafe = !!safeMessage?.confirmations.some(({ owner }) => owner.value === wallet?.address)
+  const hasSignature = safeMessage?.confirmations && safeMessage.confirmations.length > 0
   const isFullySigned = !!safeMessage?.preparedSignature
   const isEip712 = isEIP712TypedData(decodedMessage)
   const isBlindSigningRequest = isBlindSigningPayload(decodedMessage)
   const isBlindSigningEnabled = useAppSelector(selectBlindSigning)
-  const isDisabled = !isOwner || hasSigned || !safe.deployed || (!isBlindSigningEnabled && isBlindSigningRequest)
+  const isDisabled =
+    !isOwner || signedByCurrentSafe || !safe.deployed || (!isBlindSigningEnabled && isBlindSigningRequest)
 
   const { onSign, submitError } = useSyncSafeMessageSigner(
     safeMessage,
@@ -322,14 +324,14 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
       ) : (
         <>
           <TxCard>
-            <AlreadySignedByOwnerMessage hasSigned={hasSigned} />
+            <AlreadySignedByOwnerMessage hasSigned={signedByCurrentSafe} />
 
             <InfoBox
               title="Collect all the confirmations"
               message={
-                requestId
+                requestId && !hasSignature
                   ? 'Please keep this modal open until all signers confirm this message. Closing the modal will abort the signing request.'
-                  : 'The signature will be submitted to the Safe App when the message is fully signed.'
+                  : 'The signature will be submitted to the App when the message is fully signed.'
               }
             >
               <MsgSigners
@@ -340,14 +342,14 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
               />
             </InfoBox>
 
-            {hasSigned && (
+            {hasSignature && (
               <InfoBox
                 title="Share the link with other owners"
                 message={
                   <>
                     <Typography mb={2}>
-                      The owners will receive notification about signing the message and you can also share the link
-                      with them to speed up the process.
+                      The owners will receive a notification about signing the message. You can also share the link with
+                      them to speed up the process.
                     </Typography>
                     <MsgShareLink safeMessageHash={safeMessageHash} button />
                   </>
