@@ -2,7 +2,7 @@ import type { listenerMiddlewareInstance } from '@/store'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '@/store'
-import { isSwapTxInfo, isTransactionListItem } from '@/utils/transaction-guards'
+import { isSwapOrderTxInfo, isTransactionListItem } from '@/utils/transaction-guards'
 import { txHistorySlice } from '@/store/txHistorySlice'
 import { showNotification } from '@/store/notificationsSlice'
 import { selectSafeInfo } from '@/store/safeInfoSlice'
@@ -197,7 +197,7 @@ export const swapOrderListener = (listenerMiddleware: typeof listenerMiddlewareI
           continue
         }
 
-        if (isSwapTxInfo(result.transaction.txInfo)) {
+        if (isSwapOrderTxInfo(result.transaction.txInfo)) {
           const swapOrder = result.transaction.txInfo
           const oldStatus = selectSwapOrderStatus(listenerApi.getOriginalState(), swapOrder.uid)
 

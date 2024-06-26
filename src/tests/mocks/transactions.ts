@@ -23,6 +23,7 @@ const mockTransferInfo: TransferInfo = {
   tokenAddress: 'string',
   value: 'string',
   trusted: true,
+  imitation: false,
 }
 
 const mockTxInfo: TransactionInfo = {

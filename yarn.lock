@@ -4156,10 +4156,10 @@
   dependencies:
     semver "^7.6.0"
 
-"@safe-global/safe-gateway-typescript-sdk@3.21.2":
-  version "3.21.2"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.21.2.tgz#2123a7429c2d9713365f51c359bfc055d4c8e913"
-  integrity sha512-N9Y2CKPBVbc8FbOKzqepy8TJUY2VILX7bmxV4ruByLJvR9PBnGvGfnOhw975cDn6PmSziXL0RaUWHpSW23rsng==
+"@safe-global/safe-gateway-typescript-sdk@^3.21.5":
+  version "3.21.5"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.21.5.tgz#8fc96719a9ac81d1070ad61987c7b49c5324a83e"
+  integrity sha512-KZOAfHDzXCmxVB7SpG6OnRUZontIatwe312NrG7XekmdldCxU78HHecb/tflRZTwJUZhD/USGGZezE7pqjESqQ==
 
 "@safe-global/safe-gateway-typescript-sdk@^3.5.3":
   version "3.21.2"
