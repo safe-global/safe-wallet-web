@@ -1,4 +1,6 @@
+import * as contracts from '@/services/contracts/safeContracts'
 import type Safe from '@safe-global/protocol-kit'
+import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
 import { JsonRpcProvider, type TransactionResponse } from 'ethers'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
@@ -26,7 +28,7 @@ import {
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 
-const provider = new JsonRpcProvider('https://rpc.ankr.com/eth', { name: 'rinkeby', chainId: 4 })
+const provider = new JsonRpcProvider(undefined, { name: 'sepolia', chainId: 11155111 })
 
 const mockTransaction = {
   data: EMPTY_DATA,
@@ -248,6 +250,10 @@ describe('createNewSafeViaRelayer', () => {
   it('returns taskId if create Safe successfully relayed', async () => {
     jest.spyOn(gateway, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
     jest.spyOn(safeSDK, 'getSafeSDK').mockImplementation(() => mockSDK)
+
+    jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
+      getAddress: () => '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+    } as unknown as CompatibilityFallbackHandlerContractImplementationType)
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1

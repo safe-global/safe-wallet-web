@@ -1,6 +1,8 @@
 import * as safeSDK from '@/hooks/coreSDK/safeCoreSDK'
+import * as contracts from '@/services/contracts/safeContracts'
 import { sameAddress } from '@/utils/addresses'
 import type Safe from '@safe-global/protocol-kit'
+import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
 import {
   getFallbackHandlerDeployment,
   getSafeL2SingletonDeployment,
@@ -32,7 +34,11 @@ const getMockSDKForChain = (chainId: number) => {
 describe('safeUpgradeParams', () => {
   jest
     .spyOn(web3, 'getWeb3ReadOnly')
-    .mockImplementation(() => new JsonRpcProvider('https://rpc.ankr.com/eth', { name: 'sepolia', chainId: 11155111 }))
+    .mockImplementation(() => new JsonRpcProvider(undefined, { name: 'sepolia', chainId: 11155111 }))
+
+  jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
+    getAddress: () => '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  } as unknown as CompatibilityFallbackHandlerContractImplementationType)
 
   jest.spyOn(safeSDK, 'getSafeSDK').mockImplementation(() => getMockSDKForChain(1))
 
@@ -70,7 +76,8 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.1.1',
     } as SafeInfo
-    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo)
+
+    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '11155111', l2: false } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
