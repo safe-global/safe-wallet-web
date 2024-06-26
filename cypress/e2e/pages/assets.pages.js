@@ -264,7 +264,7 @@ export function verifyTokenIsPresent(token) {
 
 export function selectTokenList(option) {
   cy.get(tokenListDropdown)
-    .click()
+    .click({ force: true })
     .then(() => {
       cy.get(option).click({ force: true })
     })
