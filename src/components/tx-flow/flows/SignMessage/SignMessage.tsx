@@ -11,7 +11,6 @@ import {
   AccordionDetails,
   Link,
 } from '@mui/material'
-import ShareIcon from '@/public/images/common/share.svg'
 
 import { useTheme } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -57,6 +56,7 @@ import NextLink from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import MsgShareLink from '@/components/safe-messages/MsgShareLink'
+import LinkIcon from '@/public/images/messages/link.svg'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -107,7 +107,6 @@ const DialogHeader = ({
     {threshold > 1 && (
       <Typography variant="body1" textAlign="center" mb={2}>
         To sign this message, collect signatures from <b>{threshold} signers</b> of your Safe Account.
-        {hasSigned && <MsgShareLink safeMessageHash={safeMessageHash} linkText="Share link" />}
       </Typography>
     )}
   </>
@@ -147,26 +146,14 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   }
   return (
     <SuccessMessage>
-      <Grid container direction="row" justifyContent="space-between" gap={2}>
-        <Grid item xs={12}>
+      <Grid container direction="row" justifyContent="space-between">
+        <Grid item xs={7}>
           Your connected wallet has already signed this message.
         </Grid>
-        <Grid item xs={12}>
-          <Box display="flex">
-            <Button
-              variant="outlined"
-              size="small"
-              sx={{ mr: 1 }}
-              onClick={handleSwitchWallet}
-              fullWidth
-              startIcon={<SvgIcon component={ShareIcon} inheritViewBox fontSize="small" color="border" />}
-            >
-              Share Link
-            </Button>
-            <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
-              Switch wallet
-            </Button>
-          </Box>
+        <Grid item xs={4}>
+          <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>
+            Switch wallet
+          </Button>
         </Grid>
       </Grid>
     </SuccessMessage>
@@ -361,6 +348,20 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
                 backgroundColor={palette.info.background}
               />
             </InfoBox>
+
+            <InfoBox
+              title="Share the link with other owners"
+              message={
+                <>
+                  <Typography mb={2}>
+                    The owners will receive notification about signing the message and you can also share the link with
+                    them to fasten the process.
+                  </Typography>
+                  <MsgShareLink safeMessageHash={safeMessageHash} button />
+                </>
+              }
+              icon={LinkIcon}
+            />
 
             <WrongChainWarning />
 

@@ -30,7 +30,7 @@ const SingleMsg = () => {
   if (message) {
     return (
       <TxListGrid>
-        <ExpandableMsgItem msg={message} />
+        <ExpandableMsgItem msg={message} expanded />
       </TxListGrid>
     )
   }
