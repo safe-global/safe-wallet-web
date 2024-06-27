@@ -11,7 +11,6 @@ import {
   type SwapOrder as SwapOrderType,
   type Order,
   type TransactionData,
-  TransactionInfoType,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
@@ -30,7 +29,7 @@ import {
 } from '@/features/swap/helpers/utils'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isSwapOrderTxInfo, isTwapOrderTxInfo } from '@/utils/transaction-guards'
+import { isSwapOrderTxInfo, isSwapTransferOrderTxInfo, isTwapOrderTxInfo } from '@/utils/transaction-guards'
 import { EmptyRow } from '@/components/common/Table/EmptyRow'
 import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDuration'
 import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
@@ -43,7 +42,6 @@ type SwapOrderProps = {
 
 const AmountRow = ({ order }: { order: Order }) => {
   const { sellToken, buyToken, sellAmount, buyAmount, kind } = order
-  const orderKindLabel = capitalize(kind)
   const isSellOrder = kind === 'sell'
   return (
     <DataRow key="Amount" title="Amount">
@@ -150,7 +148,7 @@ const FilledRow = ({ order }: { order: Order }) => {
 }
 
 const OrderUidRow = ({ order }: { order: Order }) => {
-  if (order.type === TransactionInfoType.SWAP_ORDER) {
+  if (isSwapOrderTxInfo(order) || isSwapTransferOrderTxInfo(order)) {
     const { uid, explorerUrl } = order
     return (
       <DataRow key="Order ID" title="Order ID">
@@ -256,13 +254,13 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
 }
 
 export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | null => {
-  if (!txData || !txInfo) return null
+  if (!txInfo) return null
 
   if (isTwapOrderTxInfo(txInfo)) {
     return <TwapOrder order={txInfo} />
   }
 
-  if (isSwapOrderTxInfo(txInfo)) {
+  if (isSwapOrderTxInfo(txInfo) || isSwapTransferOrderTxInfo(txInfo)) {
     return <SellOrder order={txInfo} />
   }
   return null
