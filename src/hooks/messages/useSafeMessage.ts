@@ -17,7 +17,7 @@ const useSafeMessage = (safeMessageHash: string | undefined) => {
     ?.filter(isSafeMessageListItem)
     .find((msg) => msg.messageHash === safeMessageHash)
 
-  const [updatedMessage] = useAsync(async () => {
+  const [updatedMessage, messageError] = useAsync(async () => {
     if (!safeMessageHash) return
     return fetchSafeMessage(safeMessageHash, safe.chainId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -27,7 +27,7 @@ const useSafeMessage = (safeMessageHash: string | undefined) => {
     setSafeMessage(updatedMessage ?? ongoingMessage)
   }, [ongoingMessage, updatedMessage])
 
-  return [safeMessage, setSafeMessage] as const
+  return [safeMessage, setSafeMessage, messageError] as const
 }
 
 export default useSafeMessage
