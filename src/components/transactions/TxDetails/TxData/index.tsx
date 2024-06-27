@@ -21,12 +21,20 @@ import useChainId from '@/hooks/useChainId'
 import { MultiSendTxInfo } from '@/components/transactions/TxDetails/TxData/MultiSendTxInfo'
 import InteractWith from '@/features/swap/components/SwapTxInfo/interactWith'
 
-const TxData = ({ txDetails, trusted }: { txDetails: TransactionDetails; trusted: boolean }): ReactElement => {
+const TxData = ({
+  txDetails,
+  trusted,
+  imitation,
+}: {
+  txDetails: TransactionDetails
+  trusted: boolean
+  imitation: boolean
+}): ReactElement => {
   const chainId = useChainId()
   const txInfo = txDetails.txInfo
 
   if (isTransferTxInfo(txInfo)) {
-    return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} />
+    return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} imitation={imitation} />
   }
 
   if (isSettingsChangeTxInfo(txInfo)) {

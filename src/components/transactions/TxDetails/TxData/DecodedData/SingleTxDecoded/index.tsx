@@ -7,7 +7,7 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import { useCurrentChain } from '@/hooks/useChains'
-import { formatVisualAmount } from '@/utils/formatters'
+import { safeFormatUnits } from '@/utils/formatters'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
@@ -43,8 +43,8 @@ export const SingleTxDecoded = ({
   const chain = useCurrentChain()
   const isNativeTransfer = tx.value !== '0' && (!tx.data || isEmptyHexData(tx.data))
   const method = tx.dataDecoded?.method || (isNativeTransfer ? 'native transfer' : 'contract interaction')
-  const { decimals, symbol } = chain?.nativeCurrency || {}
-  const amount = tx.value ? formatVisualAmount(tx.value, decimals) : 0
+  const { decimals } = chain?.nativeCurrency || {}
+  const amount = tx.value ? safeFormatUnits(tx.value, decimals) : 0
 
   let details
   if (tx.dataDecoded) {
@@ -56,7 +56,6 @@ export const SingleTxDecoded = ({
 
   const addressInfo = txData.addressInfoIndex?.[tx.to]
   const name = addressInfo?.name
-  const avatarUrl = addressInfo?.logoUri
   const isDelegateCall = tx.operation === Operation.DELEGATE && showDelegateCallWarning
   const isSpendingLimitMethod = isSetAllowance(tx.dataDecoded?.method) || isDeleteAllowance(tx.dataDecoded?.method)
 

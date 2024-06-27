@@ -50,7 +50,7 @@
   grid-template-areas: 'type info date status confirmations';
 }
 
-.gridContainer.untrusted {
+.gridContainer.untrusted :not(:first-child):is(div) {
   opacity: 0.4;
 }
 

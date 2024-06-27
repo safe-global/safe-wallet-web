@@ -34,7 +34,7 @@ import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsPending from '@/hooks/useIsPending'
-import { isTrustedTx } from '@/utils/transactions'
+import { isImitation, isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import { SwapOrder } from '@/features/swap/components/SwapOrder'
@@ -60,6 +60,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
   // If we have no token list we always trust the transfer
   const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
+  const isImitationTransaction = isImitation(txSummary)
 
   let proposer, safeTxHash
   if (isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)) {
@@ -87,7 +88,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
         <div className={css.txData}>
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
-            <TxData txDetails={txDetails} trusted={isTrustedTransfer} />
+            <TxData txDetails={txDetails} trusted={isTrustedTransfer} imitation={isImitationTransaction} />
           </ErrorBoundary>
         </div>
 
