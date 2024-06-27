@@ -1,5 +1,4 @@
 import SendToBlock from '@/components/tx/SendToBlock'
-import { SwapOrderConfirmationView } from '@/features/swap/components/SwapOrderConfirmationView'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isConfirmationViewOrder } from '@/utils/transaction-guards'
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
@@ -97,8 +96,6 @@ const DecodedTx = ({
           <SendToBlock address={tx.data.to} title="Interact with" name={addressInfoIndex?.[tx.data.to]?.name} />
         </>
       )}
-
-      {isSwapOrder && tx && <SwapOrderConfirmationView order={decodedData} settlementContract={tx.data.to} />}
 
       {isMultisend && showMultisend && (
         <Box>
