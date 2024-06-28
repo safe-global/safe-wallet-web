@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import SwapOrderConfirmationView from './index'
+import CowOrderConfirmationView from './index'
 import { Paper } from '@mui/material'
 import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import { orderTokenBuilder, swapOrderConfirmationViewBuilder } from '@/features/swap/helpers/swapOrderBuilder'
@@ -15,7 +15,7 @@ const Order = swapOrderConfirmationViewBuilder()
   .with({ status: 'open' as OrderStatuses })
 
 const meta = {
-  component: SwapOrderConfirmationView,
+  component: CowOrderConfirmationView,
 
   decorators: [
     (Story) => {
@@ -29,7 +29,7 @@ const meta = {
     },
   ],
   tags: ['autodocs'],
-} satisfies Meta<typeof SwapOrderConfirmationView>
+} satisfies Meta<typeof CowOrderConfirmationView>
 
 export default meta
 type Story = StoryObj<typeof meta>
