@@ -128,9 +128,9 @@ const SwapWidget = ({ sell }: Params) => {
       recipient: SWAP_FEE_RECIPIENT,
     },
     content: {
-      feeLabel: 'No fee for one month',
+      feeLabel: 'Widget Fee',
       feeTooltipMarkdown:
-        'Any future transaction fee incurred by CoW Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or CoW Swap.',
+        'The [tiered widget fee](https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps) incurred here and charged by CoW DAO for the operation of the CoW Swap Widget is automatically calculated into this quote. It will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor Safe (Wallet) operate the CoW Swap Widget and/or CoW Swap.',
     },
   })
 
