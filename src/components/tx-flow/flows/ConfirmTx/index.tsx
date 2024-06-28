@@ -13,12 +13,7 @@ const ConfirmTxFlow = ({ txSummary }: { txSummary: TransactionSummary }) => {
   return (
     <TxLayout
       title="Confirm transaction"
-      subtitle={
-        <>
-          {text}&nbsp;
-          {!isSwapOrder && <TxInfo info={txSummary.txInfo} withLogo={false} omitSign />}
-        </>
-      }
+      subtitle={<>{text}&nbsp;</>}
       icon={isSwapOrder && SwapIcon}
       step={0}
       txSummary={txSummary}

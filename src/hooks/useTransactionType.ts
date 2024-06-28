@@ -70,7 +70,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         text: orderClass === 'limit' ? 'Limit order' : 'Swap order',
       }
     }
-    case 'TwapOrder': {
+    case TransactionInfoType.TWAP_ORDER: {
       return {
         icon: '/images/common/swap.svg',
         text: 'TWAP order',
