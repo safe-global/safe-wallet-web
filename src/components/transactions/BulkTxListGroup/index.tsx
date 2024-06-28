@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { Box, Paper, SvgIcon, Typography } from '@mui/material'
-import type { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
+import type { Order, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { isMultisigExecutionInfo, isSwapTransferOrderTxInfo } from '@/utils/transaction-guards'
 import ExpandableTransactionItem from '@/components/transactions/TxListItem/ExpandableTransactionItem'
 import BatchIcon from '@/public/images/common/batch.svg'
@@ -8,6 +8,19 @@ import css from './styles.module.css'
 import ExplorerButton from '@/components/common/ExplorerButton'
 import { getBlockExplorerLink } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
+import { getOrderClass } from '@/features/swap/helpers/utils'
+
+const orderClassTitles: Record<string, string> = {
+  limit: 'Limit order settlement',
+  twap: 'TWAP order settlement',
+  liquidity: 'Liquidity order settlement',
+  market: 'Swap order settlement',
+}
+
+const getSettlementOrderTitle = (order: Order): string => {
+  const orderClass = getOrderClass(order)
+  return orderClassTitles[orderClass] || orderClassTitles['market']
+}
 
 const GroupedTxListItems = ({
   groupedListItems,
@@ -19,16 +32,18 @@ const GroupedTxListItems = ({
   const chain = useCurrentChain()
   const explorerLink = chain && getBlockExplorerLink(chain, transactionHash)?.href
   if (groupedListItems.length === 0) return null
-
+  let title = 'Bulk transactions'
   const isSwapTransfer = isSwapTransferOrderTxInfo(groupedListItems[0].transaction.txInfo)
-
+  if (isSwapTransfer) {
+    title = getSettlementOrderTitle(groupedListItems[0].transaction.txInfo as Order)
+  }
   return (
     <Paper className={css.container}>
       <Box gridArea="icon">
         <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
       </Box>
       <Box gridArea="info">
-        <Typography noWrap>{isSwapTransfer ? 'Swap order' : 'Bulk transactions'}</Typography>
+        <Typography noWrap>{title}</Typography>
       </Box>
       <Box className={css.action}>{groupedListItems.length} transactions</Box>
       <Box className={css.hash}>
