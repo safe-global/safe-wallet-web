@@ -86,6 +86,7 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
       txInfo: txDetails.txInfo,
       executionInfo,
       safeAppInfo: txDetails?.safeAppInfo,
+      txHash: txDetails?.txHash || null,
     },
     conflictType: ConflictType.NONE,
   }
@@ -296,4 +297,8 @@ export const isTrustedTx = (tx: TransactionSummary) => {
     !isERC20Transfer(tx.txInfo.transferInfo) ||
     Boolean(tx.txInfo.transferInfo.trusted)
   )
+}
+
+export const isImitation = ({ txInfo }: TransactionSummary): boolean => {
+  return isTransferTxInfo(txInfo) && isERC20Transfer(txInfo.transferInfo) && Boolean(txInfo.transferInfo.imitation)
 }

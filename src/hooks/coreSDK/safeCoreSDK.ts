@@ -1,6 +1,7 @@
 import chains from '@/config/chains'
 import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
@@ -30,7 +31,7 @@ export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersio
 }
 
 export const createEthersAdapter = async (provider: BrowserProvider) => {
-  const signer = await provider.getSigner(0)
+  const signer = new UncheckedJsonRpcSigner(provider, (await provider.getSigner()).address)
   return new EthersAdapter({
     ethers,
     signerOrProvider: signer,

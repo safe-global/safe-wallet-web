@@ -22,8 +22,6 @@ describe('[SMOKE] CF Safe creation tests', () => {
     createwallet.clickOnNextBtn()
     createwallet.selectPayLaterOption()
     createwallet.clickOnReviewStepNextBtn()
-    createwallet.verifyNewSafeDialogModal()
-    createwallet.clickOnGotitBtn()
     createwallet.verifyCFSafeCreated()
   })
 })

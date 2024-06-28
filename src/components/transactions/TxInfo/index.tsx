@@ -1,16 +1,16 @@
 import { type ReactElement } from 'react'
 import type {
-  Transfer,
-  Custom,
   Creation,
-  TransactionInfo,
+  Custom,
   MultiSend,
   SettingsChange,
-  SwapOrder,
+  TransactionInfo,
+  Transfer,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 import {
+  isOrderTxInfo,
   isCreationTxInfo,
   isCustomTxInfo,
   isERC20Transfer,
@@ -18,22 +18,22 @@ import {
   isMultiSendTxInfo,
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
-  isSwapTxInfo,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
-import TokenIcon from '@/components/common/TokenIcon'
-import { Box, Typography } from '@mui/material'
+import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
 
 export const TransferTx = ({
   info,
   omitSign = false,
   withLogo = true,
+  preciseAmount = false,
 }: {
   info: Transfer
   omitSign?: boolean
   withLogo?: boolean
+  preciseAmount?: boolean
 }): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
@@ -48,12 +48,20 @@ export const TransferTx = ({
         decimals={nativeCurrency?.decimals}
         tokenSymbol={nativeCurrency?.symbol}
         logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
+        preciseAmount={preciseAmount}
       />
     )
   }
 
   if (isERC20Transfer(transfer)) {
-    return <TokenAmount {...transfer} direction={direction} logoUri={withLogo ? transfer?.logoUri : undefined} />
+    return (
+      <TokenAmount
+        {...transfer}
+        direction={direction}
+        logoUri={withLogo ? transfer?.logoUri : undefined}
+        preciseAmount={preciseAmount}
+      />
+    )
   }
 
   if (isERC721Transfer(transfer)) {
@@ -91,27 +99,6 @@ const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   )
 }
 
-const SwapTx = ({ info }: { info: SwapOrder }): ReactElement => {
-  return (
-    <Box display="flex">
-      <Typography display="flex" alignItems="center" fontWeight="bold">
-        <Box style={{ paddingRight: 5, display: 'inline-block' }}>
-          <TokenIcon logoUri={info.sellToken.logoUri || undefined} tokenSymbol={info.sellToken.symbol} />
-        </Box>
-        <Typography sx={{ maxWidth: '60px' }} noWrap>
-          {info.sellToken.symbol}&nbsp;
-        </Typography>
-        to
-        <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
-          <TokenIcon logoUri={info.buyToken.logoUri || undefined} tokenSymbol={info.buyToken.symbol} />
-        </Box>{' '}
-        <Typography sx={{ maxWidth: '60px' }} noWrap>
-          {info.buyToken.symbol}
-        </Typography>
-      </Typography>
-    </Box>
-  )
-}
 const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   if (
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
@@ -144,7 +131,7 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
     return <CreationTx info={info} />
   }
 
-  if (isSwapTxInfo(info)) {
+  if (isOrderTxInfo(info)) {
     return <SwapTx info={info} />
   }
 

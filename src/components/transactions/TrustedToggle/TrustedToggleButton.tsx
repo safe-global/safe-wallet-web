@@ -1,6 +1,5 @@
 import { type ReactElement } from 'react'
-import { Typography, Button, SvgIcon } from '@mui/material'
-import GhostIcon from '@/public/images/transactions/ghost.svg'
+import { FormControlLabel, Switch } from '@mui/material'
 import { TX_LIST_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
 
@@ -23,22 +22,11 @@ const _TrustedToggleButton = ({
 
   return (
     <Track {...TX_LIST_EVENTS.TOGGLE_UNTRUSTED} label={onlyTrusted ? 'show' : 'hide'}>
-      <Button
-        sx={{
-          gap: 1,
-          height: '38px',
-          minWidth: '186px',
-        }}
-        onClick={onClick}
+      <FormControlLabel
         data-testid="toggle-untrusted"
-        variant="outlined"
-        size="small"
-      >
-        <>
-          <SvgIcon component={GhostIcon} fontSize="small" inheritViewBox />
-          <Typography fontSize="medium">{onlyTrusted ? 'Show' : 'Hide'} unknown</Typography>
-        </>
-      </Button>
+        control={<Switch checked={onlyTrusted} onChange={onClick} />}
+        label={<>Hide suspicious</>}
+      />
     </Track>
   )
 }

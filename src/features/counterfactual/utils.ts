@@ -1,7 +1,7 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import { CREATION_MODAL_QUERY_PARM } from '@/components/new-safe/create/logic'
 import { LATEST_SAFE_VERSION, POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
+import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -68,11 +68,12 @@ export const dispatchTxExecutionAndDeploySafe = async (
     // @ts-ignore TODO: Check why TransactionResponse type doesn't work
     result = await signer.sendTransaction({ ...deploymentTx, gasLimit: gas })
   } catch (error) {
-    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error) })
+    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error), safeAddress: '' })
     throw error
   }
 
-  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash })
+  // TODO: Probably need to pass the actual safe address
+  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash, safeAddress: '' })
 
   return result!.hash
 }
@@ -142,6 +143,7 @@ export const createCounterfactualSafe = (
   const undeployedSafe = {
     chainId: chain.chainId,
     address: safeAddress,
+    type: PayMethod.PayLater,
     safeProps: {
       safeAccountConfig: props.safeAccountConfig,
       safeDeploymentConfig: {
@@ -169,7 +171,7 @@ export const createCounterfactualSafe = (
   )
   return router.push({
     pathname: AppRoutes.home,
-    query: { safe: `${chain.shortName}:${safeAddress}`, [CREATION_MODAL_QUERY_PARM]: true },
+    query: { safe: `${chain.shortName}:${safeAddress}` },
   })
 }
 
@@ -197,20 +199,17 @@ async function retryGetTransaction(provider: Provider, txHash: string, maxAttemp
   throw new Error('Transaction not found')
 }
 
-// TODO: Reuse this for safe creation flow instead of checkSafeCreationTx
 export const checkSafeActivation = async (
   provider: Provider,
   txHash: string,
   safeAddress: string,
   startBlock?: number,
 ) => {
-  const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
-
   try {
     const txResponse = await retryGetTransaction(provider, txHash)
 
     const replaceableTx = startBlock ? txResponse.replaceableTransaction(startBlock) : txResponse
-    const receipt = await replaceableTx?.wait(1, TIMEOUT_TIME)
+    const receipt = await replaceableTx?.wait(1)
 
     /** The receipt should always be non-null as we require 1 confirmation */
     if (receipt === null) {
@@ -221,6 +220,7 @@ export const checkSafeActivation = async (
       safeCreationDispatch(SafeCreationEvent.REVERTED, {
         groupKey: CF_TX_GROUP_KEY,
         error: new Error('Transaction reverted'),
+        safeAddress,
       })
     }
 
@@ -239,14 +239,23 @@ export const checkSafeActivation = async (
       return
     }
 
+    if (didRevert(_err.receipt)) {
+      safeCreationDispatch(SafeCreationEvent.REVERTED, {
+        groupKey: CF_TX_GROUP_KEY,
+        error: new Error('Transaction reverted'),
+        safeAddress,
+      })
+      return
+    }
+
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: _err,
+      safeAddress,
     })
   }
 }
 
-// TODO: Reuse this for safe creation flow instead of waitForCreateSafeTx
 export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => {
   const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
@@ -273,6 +282,7 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => 
         safeCreationDispatch(SafeCreationEvent.FAILED, {
           groupKey: CF_TX_GROUP_KEY,
           error: new Error('Transaction failed'),
+          safeAddress,
         })
         break
       default:
@@ -288,6 +298,7 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => 
     safeCreationDispatch(SafeCreationEvent.FAILED, {
       groupKey: CF_TX_GROUP_KEY,
       error: new Error('Transaction failed'),
+      safeAddress,
     })
 
     clearInterval(intervalId)

@@ -24,7 +24,6 @@ const networkFeeSection = '[data-tetid="network-fee-section"]'
 const nextBtn = '[data-testid="next-btn"]'
 const backBtn = '[data-testid="back-btn"]'
 const cancelBtn = '[data-testid="cancel-btn"]'
-const dialogConfirmBtn = '[data-testid="dialog-confirm-btn"]'
 const safeActivationSection = '[data-testid="activation-section"]'
 const addressAutocompleteOptions = '[data-testid="address-item"]'
 export const qrCode = '[data-testid="qr-code"]'
@@ -89,17 +88,8 @@ export function clickOnTxType(tx) {
   cy.get(choiceBtn).contains(tx).click()
 }
 
-export function verifyNewSafeDialogModal() {
-  main.verifyElementsIsVisible([dialogConfirmBtn])
-}
-
 export function verifyCFSafeCreated() {
   main.verifyElementsIsVisible([sidebar.pendingActivationIcon, safeActivationSection])
-}
-
-export function clickOnGotitBtn() {
-  cy.get(dialogConfirmBtn).click()
-  main.verifyElementsCount(connectedWalletExecMethod, 0)
 }
 
 export function selectPayLaterOption() {

@@ -55,6 +55,15 @@ const SafeApps: NextPage = () => {
   // appUrl is required to be present
   if (!isSafeAppsEnabled || !appUrl || !router.isReady) return null
 
+  // No `safe` query param, redirect to the share route
+  if (router.isReady && !router.query.safe) {
+    router.push({
+      pathname: AppRoutes.share.safeApp,
+      query: { appUrl },
+    })
+    return null
+  }
+
   if (isModalVisible) {
     return (
       <SafeAppsInfoModal

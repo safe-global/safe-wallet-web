@@ -45,7 +45,7 @@ const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): Rea
             key={tx.transaction.id}
             className={replacedTxIds.includes(tx.transaction.id) ? css.willBeReplaced : undefined}
           >
-            <ExpandableTransactionItem item={tx} isGrouped />
+            <ExpandableTransactionItem item={tx} isConflictGroup />
           </div>
         ))}
       </Box>

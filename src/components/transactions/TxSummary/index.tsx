@@ -10,8 +10,8 @@ import TxInfo from '@/components/transactions/TxInfo'
 import { isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import TxType from '@/components/transactions/TxType'
 import classNames from 'classnames'
-import { isTrustedTx } from '@/utils/transactions'
-import UntrustedTxWarning from '../UntrustedTxWarning'
+import { isImitation, isTrustedTx } from '@/utils/transactions'
+import MaliciousTxWarning from '../MaliciousTxWarning'
 import QueueActions from './QueueActions'
 import useIsPending from '@/hooks/useIsPending'
 import TxConfirmations from '../TxConfirmations'
@@ -20,17 +20,19 @@ import { FEATURES } from '@/utils/chains'
 import TxStatusLabel from '@/components/transactions/TxStatusLabel'
 
 type TxSummaryProps = {
-  isGrouped?: boolean
+  isConflictGroup?: boolean
+  isBulkGroup?: boolean
   item: Transaction
 }
 
-const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
+const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): ReactElement => {
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
 
   const tx = item.transaction
   const isQueue = isTxQueued(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const isTrusted = !hasDefaultTokenlist || isTrustedTx(tx)
+  const isImitationTransaction = isImitation(tx)
   const isPending = useIsPending(tx.id)
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
   const expiredSwap = useIsExpiredSwap(tx.txInfo)
@@ -40,20 +42,21 @@ const TxSummary = ({ item, isGrouped }: TxSummaryProps): ReactElement => {
       data-testid="transaction-item"
       className={classNames(css.gridContainer, {
         [css.history]: !isQueue,
-        [css.grouped]: isGrouped,
+        [css.conflictGroup]: isConflictGroup,
+        [css.bulkGroup]: isBulkGroup,
         [css.untrusted]: !isTrusted,
       })}
       id={tx.id}
     >
-      {nonce !== undefined && !isGrouped && (
+      {nonce !== undefined && !isConflictGroup && !isBulkGroup && (
         <Box gridArea="nonce" data-testid="nonce" className={css.nonce}>
           {nonce}
         </Box>
       )}
 
-      {!isTrusted && (
+      {(isImitationTransaction || !isTrusted) && (
         <Box data-testid="warning" gridArea="nonce">
-          <UntrustedTxWarning />
+          <MaliciousTxWarning withTooltip={!isImitationTransaction} />
         </Box>
       )}
 

@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { groupConflictingTxs, groupRecoveryTransactions, _getRecoveryCancellations } from '@/utils/tx-list'
+import { groupTxs, groupRecoveryTransactions, _getRecoveryCancellations } from '@/utils/tx-list'
 
 describe('tx-list', () => {
   describe('groupConflictingTxs', () => {
@@ -25,7 +25,7 @@ describe('tx-list', () => {
         },
       ]
 
-      const result = groupConflictingTxs(list as TransactionListItem[])
+      const result = groupTxs(list as TransactionListItem[])
       expect(result).toEqual([
         [
           {
@@ -67,7 +67,7 @@ describe('tx-list', () => {
         },
       ]
 
-      const result = groupConflictingTxs(list as TransactionListItem[])
+      const result = groupTxs(list as TransactionListItem[])
       expect(result).toEqual([
         [
           {
@@ -90,12 +90,13 @@ describe('tx-list', () => {
       ])
     })
 
-    it('should return non-conflicting transaction lists as is', () => {
+    it('should group transactions with the same txHash (bulk txs)', () => {
       const list = [
         {
           type: 'TRANSACTION',
           transaction: {
             id: 1,
+            txHash: '0x123',
           },
           conflictType: 'None',
         },
@@ -103,12 +104,72 @@ describe('tx-list', () => {
           type: 'TRANSACTION',
           transaction: {
             id: 2,
+            txHash: '0x123',
+          },
+          conflictType: 'None',
+        },
+        {
+          type: 'TRANSACTION',
+          transaction: {
+            id: 3,
+            txHash: '0x456',
           },
           conflictType: 'None',
         },
       ]
 
-      const result = groupConflictingTxs(list as unknown as TransactionListItem[])
+      const result = groupTxs(list as unknown as TransactionListItem[])
+      expect(result).toEqual([
+        [
+          {
+            type: 'TRANSACTION',
+            transaction: {
+              id: 1,
+              txHash: '0x123',
+            },
+            conflictType: 'None',
+          },
+          {
+            type: 'TRANSACTION',
+            transaction: {
+              id: 2,
+              txHash: '0x123',
+            },
+            conflictType: 'None',
+          },
+        ],
+        {
+          type: 'TRANSACTION',
+          transaction: {
+            id: 3,
+            txHash: '0x456',
+          },
+          conflictType: 'None',
+        },
+      ])
+    })
+
+    it('should return non-conflicting, and non bulk transaction lists as is', () => {
+      const list = [
+        {
+          type: 'TRANSACTION',
+          transaction: {
+            id: 1,
+            txHash: '0x123',
+          },
+          conflictType: 'None',
+        },
+        {
+          type: 'TRANSACTION',
+          transaction: {
+            id: 2,
+            txHash: '0x345',
+          },
+          conflictType: 'None',
+        },
+      ]
+
+      const result = groupTxs(list as unknown as TransactionListItem[])
       expect(result).toEqual(list)
     })
   })

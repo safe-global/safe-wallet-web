@@ -15,6 +15,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 
 const safeBalanceEth = 505360000000000000n
+const safeBalanceEth = 505320000000000000n
 const qtrustBanance = 99000000000000000025n
 const transferAmount = '1'
 

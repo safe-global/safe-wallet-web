@@ -1,5 +1,4 @@
 import SendToBlock from '@/components/tx/SendToBlock'
-import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
@@ -80,23 +79,23 @@ const DecodedTx = ({
 
   return (
     <Stack spacing={2}>
-      {!isSwapOrder && tx && showToBlock && amount !== '0' && (
-        <SendAmountBlock
-          amount={amount}
-          tokenInfo={{
-            type: TokenType.NATIVE_TOKEN,
-            address: ZERO_ADDRESS,
-            decimals: chain?.nativeCurrency.decimals ?? 18,
-            symbol: chain?.nativeCurrency.symbol ?? 'ETH',
-            logoUri: chain?.nativeCurrency.logoUri,
-          }}
-        />
-      )}
       {!isSwapOrder && tx && showToBlock && (
-        <SendToBlock address={tx.data.to} title="Interact with" name={addressInfoIndex?.[tx.data.to]?.name} />
+        <>
+          {amount !== '0' && (
+            <SendAmountBlock
+              amount={amount}
+              tokenInfo={{
+                type: TokenType.NATIVE_TOKEN,
+                address: ZERO_ADDRESS,
+                decimals: chain?.nativeCurrency.decimals ?? 18,
+                symbol: chain?.nativeCurrency.symbol ?? 'ETH',
+                logoUri: chain?.nativeCurrency.logoUri,
+              }}
+            />
+          )}
+          <SendToBlock address={tx.data.to} title="Interact with" name={addressInfoIndex?.[tx.data.to]?.name} />
+        </>
       )}
-
-      {isSwapOrder && tx && <SwapOrderConfirmationView order={decodedData} settlementContract={tx.data.to} />}
 
       {isMultisend && showMultisend && (
         <Box>

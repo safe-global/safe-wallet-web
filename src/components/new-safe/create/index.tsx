@@ -135,13 +135,14 @@ const CreateSafe = () => {
     {
       title: '',
       subtitle: '',
-      render: (data, onSubmit, onBack, setStep, setProgressColor) => (
+      render: (data, onSubmit, onBack, setStep, setProgressColor, setStepData) => (
         <CreateSafeStatus
           data={data}
           onSubmit={onSubmit}
           onBack={onBack}
           setStep={setStep}
           setProgressColor={setProgressColor}
+          setStepData={setStepData}
         />
       ),
     },
