@@ -4,8 +4,11 @@ import * as owner from '../pages/owners.pages'
 import * as addressBook from '../pages/address_book.page'
 import * as createTx from '../pages/create_tx.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const ownerName = 'Replacement Signer Name'
 
@@ -22,14 +25,12 @@ describe('Replace Owners tests', () => {
   })
 
   it('Verify Tooltip displays correct message for disconnected user', () => {
-    owner.waitForConnectionStatus()
-    owner.clickOnWalletExpandMoreIcon()
-    owner.clickOnDisconnectBtn()
     owner.verifyReplaceBtnIsDisabled()
   })
 
   // TODO: Check unit tests
   it('Verify max characters in name field', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerName(main.generateRandomString(51))
@@ -45,6 +46,7 @@ describe('Replace Owners tests', () => {
     addressBook.clickOnSaveEntryBtn()
     addressBook.verifyNewEntryAdded(constants.addresBookContacts.user1.name, constants.addresBookContacts.user1.address)
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerAddress(constants.addresBookContacts.user1.address)
@@ -52,6 +54,7 @@ describe('Replace Owners tests', () => {
   })
 
   it('Verify that Name field not mandatory. Verify confirmation for owner replacement is displayed', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
@@ -60,6 +63,7 @@ describe('Replace Owners tests', () => {
   })
 
   it('Verify relevant error messages are displayed in Address input', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     owner.typeOwnerAddress(main.generateRandomString(10))
@@ -80,6 +84,7 @@ describe('Replace Owners tests', () => {
 
   it("Verify 'Replace' tx is created", () => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow()
     cy.wait(1000)

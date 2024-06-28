@@ -1,4 +1,4 @@
-import { CYPRESS_MNEMONIC, IS_PRODUCTION, TREZOR_APP_URL, TREZOR_EMAIL, WC_PROJECT_ID } from '@/config/constants'
+import { IS_PRODUCTION, TREZOR_APP_URL, TREZOR_EMAIL, WC_PROJECT_ID } from '@/config/constants'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { InitOptions } from '@web3-onboard/core'
 import coinbaseModule from '@web3-onboard/coinbase'
@@ -9,7 +9,6 @@ import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
 import pkModule from '@/services/private-key-module'
 
-import e2eWalletModule from '@/tests/e2e-wallet'
 import { CGW_NAMES, WALLET_KEYS } from './consts'
 
 const prefersDarkMode = (): boolean => {
@@ -63,9 +62,6 @@ export const isWalletSupported = (disabledWallets: string[], walletLabel: string
 }
 
 export const getSupportedWallets = (chain: ChainInfo): WalletInits => {
-  if (window.Cypress && CYPRESS_MNEMONIC) {
-    return [e2eWalletModule(chain.chainId, chain.rpcUri) as WalletInit]
-  }
   const enabledWallets = Object.entries(WALLET_MODULES).filter(([key]) => isWalletSupported(chain.disabledWallets, key))
 
   if (enabledWallets.length === 0) {

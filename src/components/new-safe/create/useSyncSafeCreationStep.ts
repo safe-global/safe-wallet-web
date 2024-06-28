@@ -1,21 +1,22 @@
+import useUndeployedSafe from '@/components/new-safe/create/steps/StatusStep/useUndeployedSafe'
 import { useEffect } from 'react'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create/index'
 import useWallet from '@/hooks/wallets/useWallet'
-import { usePendingSafe } from './steps/StatusStep/usePendingSafe'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 
 const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => {
-  const [pendingSafe] = usePendingSafe()
+  const [safeAddress, pendingSafe] = useUndeployedSafe()
+
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
   const router = useRouter()
 
   useEffect(() => {
     // Jump to the status screen if there is already a tx submitted
-    if (pendingSafe) {
+    if (pendingSafe && pendingSafe.status.status !== 'AWAITING_EXECUTION') {
       setStep(3)
       return
     }

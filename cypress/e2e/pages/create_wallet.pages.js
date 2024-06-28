@@ -1,4 +1,3 @@
-import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import { connectedWalletExecMethod } from '../pages/create_tx.pages'
 import * as sidebar from '../pages/sidebar.pages'
@@ -12,8 +11,7 @@ const thresholdInput = 'input[name="threshold"]'
 export const removeOwnerBtn = 'button[aria-label="Remove signer"]'
 const connectingContainer = 'div[class*="connecting-container"]'
 const createNewSafeBtn = '[data-testid="create-safe-btn"]'
-const connectWalletBtn = 'Connect wallet'
-const continueWithWalletBtn = 'Continue with E2E Wallet'
+const continueWithWalletBtn = 'Continue with Private key'
 const googleConnectBtn = '[data-testid="google-connect-btn"]'
 const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
 export const accountInfoHeader = '[data-testid="open-account-center"]'
@@ -26,7 +24,6 @@ const networkFeeSection = '[data-tetid="network-fee-section"]'
 const nextBtn = '[data-testid="next-btn"]'
 const backBtn = '[data-testid="back-btn"]'
 const cancelBtn = '[data-testid="cancel-btn"]'
-const dialogConfirmBtn = '[data-testid="dialog-confirm-btn"]'
 const safeActivationSection = '[data-testid="activation-section"]'
 const addressAutocompleteOptions = '[data-testid="address-item"]'
 export const qrCode = '[data-testid="qr-code"]'
@@ -53,6 +50,7 @@ export const addSignerStr = 'Add signer'
 export const accountRecoveryStr = 'Account recovery'
 export const sendTokensStr = 'Send tokens'
 
+const connectWalletBtn = '[data-testid="connect-wallet-btn"]'
 export function checkNotificationsSwitchIs(status) {
   cy.get(notificationsSwitch).find('input').should(`be.${status}`)
 }
@@ -90,17 +88,8 @@ export function clickOnTxType(tx) {
   cy.get(choiceBtn).contains(tx).click()
 }
 
-export function verifyNewSafeDialogModal() {
-  main.verifyElementsIsVisible([dialogConfirmBtn])
-}
-
 export function verifyCFSafeCreated() {
   main.verifyElementsIsVisible([sidebar.pendingActivationIcon, safeActivationSection])
-}
-
-export function clickOnGotitBtn() {
-  cy.get(dialogConfirmBtn).click()
-  main.verifyElementsCount(connectedWalletExecMethod, 0)
 }
 
 export function selectPayLaterOption() {
@@ -159,15 +148,6 @@ export function checkNetworkChangeWarningMsg() {
   cy.get('div').contains(changeNetworkWarningStr).should('exist')
 }
 
-export function connectWallet() {
-  cy.get('onboard-v2')
-    .shadow()
-    .within(($modal) => {
-      cy.wrap($modal).contains('div', constants.connectWalletNames.e2e).click()
-      cy.wrap($modal).get(connectingContainer).should('exist')
-    })
-}
-
 export function clickOnCreateNewSafeBtn() {
   cy.get(createNewSafeBtn).click().wait(1000)
 }
@@ -178,7 +158,7 @@ export function clickOnContinueWithWalletBtn() {
 
 export function clickOnConnectWalletBtn() {
   cy.get(welcomeLoginScreen).within(() => {
-    cy.get('button').contains(connectWalletBtn).should('be.visible').should('be.enabled').click().wait(1000)
+    cy.get(connectWalletBtn).should('be.visible').should('be.enabled').click().wait(1000)
   })
 }
 
@@ -192,7 +172,7 @@ export function clearWalletName() {
 
 export function selectNetwork(network) {
   cy.wait(1000)
-  cy.get(expandMoreIcon).eq(1).parents('div').eq(1).click()
+  cy.get(expandMoreIcon).parents('div').eq(1).click()
   cy.wait(1000)
   let regex = new RegExp(`^${network}$`)
   cy.get('li').contains(regex).click()

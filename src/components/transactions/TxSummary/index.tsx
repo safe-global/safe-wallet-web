@@ -10,8 +10,8 @@ import TxInfo from '@/components/transactions/TxInfo'
 import { isMultisigExecutionInfo, isTxQueued } from '@/utils/transaction-guards'
 import TxType from '@/components/transactions/TxType'
 import classNames from 'classnames'
-import { isTrustedTx } from '@/utils/transactions'
-import UntrustedTxWarning from '../UntrustedTxWarning'
+import { isImitation, isTrustedTx } from '@/utils/transactions'
+import MaliciousTxWarning from '../MaliciousTxWarning'
 import QueueActions from './QueueActions'
 import useIsPending from '@/hooks/useIsPending'
 import TxConfirmations from '../TxConfirmations'
@@ -32,6 +32,7 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
   const isQueue = isTxQueued(tx.txStatus)
   const nonce = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo.nonce : undefined
   const isTrusted = !hasDefaultTokenlist || isTrustedTx(tx)
+  const isImitationTransaction = isImitation(tx)
   const isPending = useIsPending(tx.id)
   const executionInfo = isMultisigExecutionInfo(tx.executionInfo) ? tx.executionInfo : undefined
   const expiredSwap = useIsExpiredSwap(tx.txInfo)
@@ -53,9 +54,9 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
         </Box>
       )}
 
-      {!isTrusted && (
+      {(isImitationTransaction || !isTrusted) && (
         <Box data-testid="warning" gridArea="nonce">
-          <UntrustedTxWarning />
+          <MaliciousTxWarning withTooltip={!isImitationTransaction} />
         </Box>
       )}
 

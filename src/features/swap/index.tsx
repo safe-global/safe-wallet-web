@@ -1,11 +1,10 @@
 import { FEATURES } from '@/utils/chains'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 import { type CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
-import { CowEvents, type CowEventListeners } from '@cowprotocol/events'
-import { useState, useEffect, type MutableRefObject, useMemo } from 'react'
-import { Container, Grid, useTheme } from '@mui/material'
-import { useRef } from 'react'
-import { Box } from '@mui/material'
+import type { OnTradeParamsPayload } from '@cowprotocol/events'
+import { type CowEventListeners, CowEvents } from '@cowprotocol/events'
+import { type MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
+import { Box, Container, Grid, useTheme } from '@mui/material'
 import {
   SafeAppAccessPolicyTypes,
   type SafeAppData,
@@ -30,12 +29,14 @@ import useChainId from '@/hooks/useChainId'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { id } from 'ethers'
+import { LIMIT_ORDER_TITLE, SWAP_TITLE, SWAP_ORDER_TITLE, TWAP_ORDER_TITLE } from '@/features/swap/constants'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
 const PRE_SIGN_SIGHASH = id('setPreSignature(bytes,bool)').slice(0, 10)
 const WRAP_SIGHASH = id('deposit()').slice(0, 10)
 const UNWRAP_SIGHASH = id('withdraw(uint256)').slice(0, 10)
+const CREATE_WITH_CONTEXT = id('createWithContext((address,bytes32,bytes),address,bytes,bool)').slice(0, 10)
 
 type Params = {
   sell?: {
@@ -44,14 +45,13 @@ type Params = {
   }
 }
 
-export const SWAP_TITLE = 'Safe Swap'
-
 export const getSwapTitle = (tradeType: SwapState['tradeType'], txs: BaseTransaction[] | undefined) => {
   const hashToLabel = {
-    [PRE_SIGN_SIGHASH]: tradeType === 'limit' ? 'Limit order' : 'Swap order',
+    [PRE_SIGN_SIGHASH]: tradeType === 'limit' ? LIMIT_ORDER_TITLE : SWAP_ORDER_TITLE,
     [APPROVAL_SIGNATURE_HASH]: 'Approve',
     [WRAP_SIGHASH]: 'Wrap',
     [UNWRAP_SIGHASH]: 'Unwrap',
+    [CREATE_WITH_CONTEXT]: TWAP_ORDER_TITLE,
   }
 
   const swapTitle = txs
@@ -75,7 +75,7 @@ const SwapWidget = ({ sell }: Params) => {
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
   // useRefs as they don't trigger re-renders
-  const tradeTypeRef = useRef<TradeType>(tradeType)
+  const tradeTypeRef = useRef<TradeType>(tradeType === 'twap' ? TradeType.ADVANCED : TradeType.SWAP)
   const sellTokenRef = useRef<Params['sell']>(
     sell || {
       asset: '',
@@ -162,7 +162,7 @@ const SwapWidget = ({ sell }: Params) => {
       },
       {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
-        handler: (newTradeParams) => {
+        handler: (newTradeParams: OnTradeParamsPayload) => {
           const { orderType: tradeType, recipient, sellToken, sellTokenAmount } = newTradeParams
           dispatch(setSwapParams({ tradeType }))
 
@@ -203,7 +203,7 @@ const SwapWidget = ({ sell }: Params) => {
           ? BASE_URL + '/images/common/swap-empty-dark.svg'
           : BASE_URL + '/images/common/swap-empty-light.svg',
       },
-      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
+      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED],
       theme: {
         baseTheme: darkMode ? 'dark' : 'light',
         primary: palette.primary.main,

@@ -21,6 +21,7 @@ const ConnectWalletButton = ({
 
   return (
     <Button
+      data-testid="connect-wallet-btn"
       onClick={handleConnect}
       variant={contained ? 'contained' : 'text'}
       size={small ? 'small' : 'medium'}

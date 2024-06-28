@@ -17,10 +17,6 @@
   top: 16px;
 }
 
-.details .noSigners {
-  width: 100%;
-}
-
 .loading,
 .error,
 .txData,

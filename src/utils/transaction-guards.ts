@@ -27,8 +27,13 @@ import type {
   SwapOrder,
   DecodedDataResponse,
   BaselineConfirmationView,
-  CowSwapConfirmationView,
+  OrderConfirmationView,
+  TwapOrder,
+  Order,
+  SwapOrderConfirmationView,
+  TwapOrderConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConflictType,
@@ -92,26 +97,50 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
   )
 }
 
-export const isSwapTxInfo = (value: TransactionInfo): value is SwapOrder => {
+export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
+  return isSwapOrderTxInfo(value) || isTwapOrderTxInfo(value)
+}
+
+export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
   return value.type === TransactionInfoType.SWAP_ORDER
 }
 
-export const isSwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | CowSwapConfirmationView | undefined,
-): decodedData is CowSwapConfirmationView => {
+export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder => {
+  return value.type === TransactionInfoType.TWAP_ORDER
+}
+
+export const isConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is OrderConfirmationView => {
+  return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
+}
+
+export const isTwapConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is TwapOrderConfirmationView => {
   if (decodedData && 'type' in decodedData) {
-    return decodedData.type === 'COW_SWAP_ORDER'
+    return decodedData.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
   }
 
   return false
 }
 
-export const isCancelledSwap = (value: TransactionInfo) => {
-  return isSwapTxInfo(value) && value.status === 'cancelled'
+export const isSwapConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is SwapOrderConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData.type === ConfirmationViewTypes.COW_SWAP_ORDER
+  }
+
+  return false
 }
 
-export const isOpenSwap = (value: TransactionInfo) => {
-  return isSwapTxInfo(value) && value.status === 'open'
+export const isCancelledSwapOrder = (value: TransactionInfo) => {
+  return isSwapOrderTxInfo(value) && value.status === 'cancelled'
+}
+
+export const isOpenSwapOrder = (value: TransactionInfo) => {
+  return isSwapOrderTxInfo(value) && value.status === 'open'
 }
 
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {

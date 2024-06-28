@@ -1,14 +1,17 @@
 import { Builder, type IBuilder } from '@/tests/Builder'
 import { faker } from '@faker-js/faker'
 import type {
-  SwapOrder,
   OrderToken,
+  SwapOrder,
   TransactionInfoType,
-  CowSwapConfirmationView,
+  TwapOrder,
+  SwapOrderConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
+import { DurationType, StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
 
 export function appDataBuilder(
-  orderClass: 'limit' | 'market' | 'liquidity' = 'limit',
+  orderClass: 'limit' | 'market' | 'twap' | 'liquidity' = 'limit',
 ): IBuilder<Record<string, unknown>> {
   return Builder.new<Record<string, unknown>>().with({
     appCode: 'Safe Wallet Swaps',
@@ -65,11 +68,44 @@ export function swapOrderBuilder(): IBuilder<SwapOrder> {
   })
 }
 
+export function twapOrderBuilder(): IBuilder<TwapOrder> {
+  return Builder.new<TwapOrder>().with({
+    type: 'TwapOrder' as TransactionInfoType.TWAP_ORDER,
+    status: faker.helpers.arrayElement(['presignaturePending', 'open', 'cancelled', 'fulfilled', 'expired']),
+    kind: faker.helpers.arrayElement(['buy', 'sell']),
+    orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),
+    validUntil: faker.date.future().getTime(),
+    sellAmount: faker.string.numeric(),
+    buyAmount: faker.string.numeric(),
+    executedSellAmount: faker.string.numeric(),
+    executedBuyAmount: faker.string.numeric(),
+    sellToken: orderTokenBuilder().build(),
+    buyToken: orderTokenBuilder().build(),
+    executedSurplusFee: faker.string.numeric(),
+    fullAppData: appDataBuilder().build(),
+    numberOfParts: faker.number.int({ min: 1, max: 10 }).toString(),
+    /** @description The amount of sellToken to sell in each part */
+    partSellAmount: faker.string.numeric(),
+    /** @description The amount of buyToken that must be bought in each part */
+    minPartLimit: faker.string.numeric(),
+    /** @description The duration of the TWAP interval */
+    timeBetweenParts: faker.number.int({ min: 1, max: 10000000 }),
+    /** @description Whether the TWAP is valid for the entire interval or not */
+    durationOfPart: {
+      durationType: DurationType.AUTO,
+    },
+    /** @description The start time of the TWAP */
+    startTime: {
+      startType: StartTimeValue.AT_MINING_TIME,
+    },
+  })
+}
+
 // create a builder for SwapOrderConfirmationView
-export function swapOrderConfirmationViewBuilder(): IBuilder<CowSwapConfirmationView> {
+export function swapOrderConfirmationViewBuilder(): IBuilder<SwapOrderConfirmationView> {
   const ownerAndReceiver = faker.finance.ethereumAddress()
-  return Builder.new<CowSwapConfirmationView>().with({
-    type: 'COW_SWAP_ORDER',
+  return Builder.new<SwapOrderConfirmationView>().with({
+    type: ConfirmationViewTypes.COW_SWAP_ORDER,
     uid: faker.string.uuid(),
     kind: faker.helpers.arrayElement(['buy', 'sell']),
     orderClass: faker.helpers.arrayElement(['limit', 'market', 'liquidity']),

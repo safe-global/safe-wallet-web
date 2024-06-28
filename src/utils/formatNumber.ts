@@ -50,7 +50,7 @@ export const formatCurrency = (number: string | number, currency: string, maxLen
     currency,
     currencyDisplay: 'narrowSymbol',
     maximumFractionDigits: Math.abs(float) >= 1 || float === 0 ? 0 : 2,
-  }).format(Number(number))
+  }).format(float)
 
   // +1 for the currency symbol
   if (result.length > maxLength + 1) {
@@ -60,7 +60,7 @@ export const formatCurrency = (number: string | number, currency: string, maxLen
       currencyDisplay: 'narrowSymbol',
       notation: 'compact',
       maximumFractionDigits: 2,
-    }).format(Number(number))
+    }).format(float)
   }
 
   return result.replace(/^(\D+)/, '$1 ')

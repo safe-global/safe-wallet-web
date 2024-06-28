@@ -1,8 +1,8 @@
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import EthHashInfo from '@/components/common/EthHashInfo'
 import { Box, Typography } from '@mui/material'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
-const SwapTxInfo = ({ txData }: { txData: TransactionDetails['txData'] }) => {
+const InteractWith = ({ txData }: { txData: TransactionDetails['txData'] }) => {
   if (!txData) return null
 
   return (
@@ -20,5 +20,4 @@ const SwapTxInfo = ({ txData }: { txData: TransactionDetails['txData'] }) => {
     </Typography>
   )
 }
-
-export default SwapTxInfo
+export default InteractWith
