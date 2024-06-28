@@ -253,7 +253,7 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
   )
 }
 
-export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | null => {
+export const SwapOrder = ({ txInfo }: SwapOrderProps): ReactElement | null => {
   if (!txInfo) return null
 
   if (isTwapOrderTxInfo(txInfo)) {
