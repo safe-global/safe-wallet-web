@@ -1,6 +1,6 @@
 .gridRow {
   display: grid;
-  grid-template-columns: 35% auto;
+  grid-template-columns: 25% auto;
   gap: var(--space-1);
   justify-content: flex-start;
   max-width: 900px;

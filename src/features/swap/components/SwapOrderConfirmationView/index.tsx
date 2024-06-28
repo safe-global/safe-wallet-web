@@ -43,7 +43,7 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
       <DataTable
         header="Order details"
         rows={[
-          <div key="amount">
+          <div key="amount" className={css.amount}>
             <SwapTokens
               first={{
                 value: formatVisualAmount(sellAmount, sellToken.decimals),
