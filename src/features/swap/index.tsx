@@ -218,7 +218,7 @@ const SwapWidget = ({ sell }: Params) => {
 
           const newFeeBps = calculateFeePercentageInBps(newTradeParams)
 
-          setParams({
+          setParams((params) => ({
             ...params,
             tradeType: tradeType === 'twap' ? TradeType.ADVANCED : TradeType.SWAP,
             partnerFee: {
@@ -231,7 +231,7 @@ const SwapWidget = ({ sell }: Params) => {
             buy: {
               asset: buyToken?.symbol,
             },
-          })
+          }))
 
           if (recipient && isBlockedAddress(recipient)) {
             setBlockedAddress(recipient)
@@ -244,7 +244,7 @@ const SwapWidget = ({ sell }: Params) => {
   }, [dispatch])
 
   useEffect(() => {
-    setParams({
+    setParams((params) => ({
       ...params,
       chainId,
       theme: {
@@ -259,7 +259,7 @@ const SwapWidget = ({ sell }: Params) => {
         warning: palette.warning.main,
         alert: palette.warning.main,
       },
-    })
+    }))
   }, [palette, darkMode, chainId])
 
   const chain = useCurrentChain()
