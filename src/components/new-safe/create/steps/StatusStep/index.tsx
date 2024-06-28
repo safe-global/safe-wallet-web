@@ -18,6 +18,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useSyncSafeCreationStep from '../../useSyncSafeCreationStep'
+import { getTxOptions } from '@/utils/transactions'
+import useGasPrice from '@/hooks/useGasPrice'
+import useGasLimit from '@/hooks/useGasLimit'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { dispatchSafeCreationTxSpeedUp } from '@/services/tx/tx-sender'
+import type { TransactionOptions } from '@safe-global/safe-core-sdk-types'
+import useWallet from '@/hooks/wallets/useWallet'
 
 const SPEED_UP_THRESHOLD_IN_SECONDS = 15
 
@@ -32,6 +39,13 @@ export const CreateSafeStatus = ({
   const router = useRouter()
   const chain = useCurrentChain()
   const dispatch = useAppDispatch()
+
+  //
+  const [speedUpFee] = useGasPrice(true)
+  const { gasLimit } = useGasLimit()
+  const provider = useWeb3ReadOnly()
+  const wallet = useWallet()
+  // const pendingTx = useAppSelector((state) => selectPendingTxById(state, tx.id))
 
   const counter = useCounter(pendingSafe?.status.submittedAt)
 
@@ -93,6 +107,45 @@ export const CreateSafeStatus = ({
     trackEvent(CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE)
   }
 
+  const onSpeedUp = async () => {
+    const txHash = pendingSafe?.status.txHash
+    if (!provider || !txHash || !wallet || !safeAddress) return
+
+    const txId = `creation_${safeAddress}`
+
+    const txOptions = getTxOptions(
+      {
+        ...speedUpFee,
+        gasLimit,
+      },
+      chain,
+    )
+    // txOptions.nonce = Number(pendingSafe.props.safeDeploymentConfig?.saltNonce)
+    txOptions.nonce = 171
+
+    try {
+      const pendingTx = await provider.getTransaction(txHash)
+
+      if (!pendingTx) throw new Error('Transaction not found')
+
+      await dispatchSafeCreationTxSpeedUp(
+        txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
+        pendingTx.to!,
+        pendingTx.data,
+        wallet.provider,
+        wallet.address,
+        safeAddress,
+        txId,
+      )
+    } catch (error) {
+      console.log(error)
+    }
+    // await dispatchSafeCreationTxSpeedUp(txOptions)
+
+    // setOpenSpeedUpModal(true)
+    // trackEvent(MODALS_EVENTS.OPEN_SPEED_UP_MODAL)
+  }
+
   return (
     <Paper
       sx={{
@@ -112,8 +165,13 @@ export const CreateSafeStatus = ({
             <Typography variant="body2" textAlign="left">
               Try to speed it up with better gas parameters in your wallet.
             </Typography>
+            <Button variant="outlined" size="small" sx={{ py: 0.6 }} onClick={onSpeedUp}>
+              Speed up
+            </Button>{' '}
           </Alert>
         )}
+
+        {/* <SpeedUpMonitor></SpeedUpMonitor> */}
 
         {isError && (
           <Stack direction="row" justifyContent="center" gap={2}>

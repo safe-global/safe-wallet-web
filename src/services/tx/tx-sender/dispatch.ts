@@ -219,6 +219,48 @@ export const dispatchCustomTxSpeedUp = async (
 
   return result.hash
 }
+export const dispatchSafeCreationTxSpeedUp = async (
+  txOptions: Omit<TransactionOptions, 'nonce'> & { nonce: number },
+  to: string,
+  data: string,
+  provider: Eip1193Provider,
+  signerAddress: string,
+  safeAddress: string,
+  txId: string,
+) => {
+  const eventParams = { txId }
+  const signerNonce = txOptions.nonce
+
+  // Execute the tx
+  let result: TransactionResponse | undefined
+  try {
+    const signer = await getUncheckedSigner(provider)
+    result = await signer.sendTransaction({ to, data, ...txOptions })
+    txDispatch(TxEvent.EXECUTING, eventParams)
+  } catch (error) {
+    txDispatch(TxEvent.SPEEDUP_FAILED, { ...eventParams, error: asError(error) })
+    throw error
+  }
+
+  txDispatch(TxEvent.PROCESSING, {
+    txHash: result.hash,
+    signerAddress,
+    signerNonce,
+    data,
+    to,
+    groupKey: result?.hash,
+    txType: 'Custom',
+  })
+
+  const readOnlyProvider = getWeb3ReadOnly()
+
+  if (readOnlyProvider) {
+    // don't await as we don't want to block
+    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
+  }
+
+  return result.hash
+}
 
 /**
  * Execute a transaction
