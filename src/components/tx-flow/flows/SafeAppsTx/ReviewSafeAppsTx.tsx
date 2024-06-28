@@ -1,4 +1,3 @@
-import { SWAP_TITLE } from '@/features/swap'
 import useWallet from '@/hooks/wallets/useWallet'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { useContext, useEffect, useMemo } from 'react'
@@ -16,6 +15,7 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { isTxValid } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
+import { SWAP_TITLE } from '@/features/swap/constants'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams

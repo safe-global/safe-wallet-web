@@ -29,6 +29,7 @@ import useChainId from '@/hooks/useChainId'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { id } from 'ethers'
+import { LIMIT_ORDER_TITLE, SWAP_TITLE, SWAP_ORDER_TITLE, TWAP_ORDER_TITLE } from '@/features/swap/constants'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -44,15 +45,13 @@ type Params = {
   }
 }
 
-export const SWAP_TITLE = 'Safe Swap'
-
 export const getSwapTitle = (tradeType: SwapState['tradeType'], txs: BaseTransaction[] | undefined) => {
   const hashToLabel = {
-    [PRE_SIGN_SIGHASH]: tradeType === 'limit' ? 'Limit order' : 'Swap order',
+    [PRE_SIGN_SIGHASH]: tradeType === 'limit' ? LIMIT_ORDER_TITLE : SWAP_ORDER_TITLE,
     [APPROVAL_SIGNATURE_HASH]: 'Approve',
     [WRAP_SIGHASH]: 'Wrap',
     [UNWRAP_SIGHASH]: 'Unwrap',
-    [CREATE_WITH_CONTEXT]: 'Twap order',
+    [CREATE_WITH_CONTEXT]: TWAP_ORDER_TITLE,
   }
 
   const swapTitle = txs
