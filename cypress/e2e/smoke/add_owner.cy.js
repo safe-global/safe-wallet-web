@@ -2,9 +2,12 @@ import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
 import * as navigation from '../pages/navigation.page'
+import * as wallet from '../../support/utils/wallet.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
 let staticSafes = []
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('[SMOKE] Add Owners tests', () => {
   before(async () => {
@@ -19,19 +22,9 @@ describe('[SMOKE] Add Owners tests', () => {
     main.verifyElementsExist([navigation.setupSection])
   })
 
-  it('[SMOKE] Verify the presence of "Add Owner" button', () => {
-    owner.verifyAddOwnerBtnIsEnabled()
-  })
-
-  it('[SMOKE] Verify “Add new owner” button tooltip displays correct message for Non-Owner', () => {
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_3)
-    main.waitForHistoryCallToComplete()
-    owner.verifyAddOwnerBtnIsDisabled()
-  })
-
   // TODO: Check if this test is covered with unit tests
   it('[SMOKE] Verify relevant error messages are displayed in Address input', () => {
-    owner.waitForConnectionStatus()
+    wallet.connectSigner(signer)
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(main.generateRandomString(10))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidFormat)
@@ -49,15 +42,26 @@ describe('[SMOKE] Add Owners tests', () => {
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.alreadyAdded)
   })
 
+  it('[SMOKE] Verify the presence of "Add Owner" button', () => {
+    wallet.connectSigner(signer)
+    owner.verifyAddOwnerBtnIsEnabled()
+  })
+
+  it('[SMOKE] Verify “Add new owner” button is disabled for Non-Owner', () => {
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_3)
+    main.waitForHistoryCallToComplete()
+    owner.verifyAddOwnerBtnIsDisabled()
+  })
+
   it('[SMOKE] Verify default threshold value. Verify correct threshold calculation', () => {
-    owner.waitForConnectionStatus()
+    wallet.connectSigner(signer)
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(constants.DEFAULT_OWNER_ADDRESS)
     owner.verifyThreshold(1, 2)
   })
 
   it('[SMOKE] Verify valid Address validation', () => {
-    owner.waitForConnectionStatus()
+    wallet.connectSigner(signer)
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
     owner.clickOnNextBtn()

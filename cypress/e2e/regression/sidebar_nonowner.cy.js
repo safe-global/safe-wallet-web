@@ -4,8 +4,11 @@ import * as sideBar from '../pages/sidebar.pages.js'
 import * as navigation from '../pages/navigation.page.js'
 import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const addedOwner = 'Added owner'
 const addedNonowner = 'Added non-owner'
@@ -25,6 +28,7 @@ describe('Sidebar non-owner tests', () => {
   })
 
   it('Verify New Transaction button enabled for users with Spending limits allowed', () => {
+    wallet.connectSigner(signer)
     navigation.verifyTxBtnStatus(constants.enabledStates.enabled)
   })
 

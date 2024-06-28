@@ -7,8 +7,11 @@ import * as main from '../../e2e/pages/main.page'
 import * as ls from '../../support/localstorage_data.js'
 import * as sidebar from '../pages/sidebar.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const NAME = 'Owner1'
 const EDITED_NAME = 'Edited Owner1'
@@ -111,6 +114,7 @@ describe('Address book tests', () => {
         addressBook.clickOnImportFileBtn()
         addressBook.importCSVFile(addressBook.addedSafesCSVFile)
         addressBook.clickOnImportBtn()
+        wallet.connectSigner(signer)
         sidebar.openSidebar()
         sidebar.verifyAddedSafesExist([importedSafe])
       })
