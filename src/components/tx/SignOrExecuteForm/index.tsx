@@ -26,9 +26,11 @@ import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
-import PermissionsCheck from './PermissionsCheck'
+import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
+import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
 import { isConfirmationViewOrder } from '@/utils/transaction-guards'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -79,11 +81,23 @@ export const SignOrExecuteForm = ({
   const isSwapOrder = isConfirmationViewOrder(decodedData)
 
   const { safe } = useSafeInfo()
+  const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
+
+  // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
+  const roles = useRoles(
+    !isCounterfactualSafe && isCreation && !(isNewExecutableTx && isSafeOwner) ? safeTx : undefined,
+  )
+  const allowingRole = findAllowingRole(roles)
+  const mostLikelyRole = findMostLikelyRole(roles)
+  const canExecuteThroughRole = !!allowingRole || !!mostLikelyRole
+  const preferThroughRole = canExecuteThroughRole && !isSafeOwner // execute through role if a non-owner role member wallet is connected
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
-  const willExecute = (props.onlyExecute || shouldExecute) && canExecute
+  const willExecute = (props.onlyExecute || shouldExecute) && canExecute && !preferThroughRole
+  const willExecuteThroughRole =
+    (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
 
   const onFormSubmit = useCallback<SubmitCallback>(
     async (txId, isExecuted = false) => {
@@ -129,12 +143,6 @@ export const SignOrExecuteForm = ({
         </TxCard>
       )}
 
-      {!isCounterfactualSafe && safeTx && isCreation && (
-        <ErrorBoundary>
-          <PermissionsCheck onSubmit={onSubmit} safeTx={safeTx} safeTxError={safeTxError} />
-        </ErrorBoundary>
-      )}
-
       <TxCard>
         <ConfirmationTitle
           variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
@@ -147,7 +155,9 @@ export const SignOrExecuteForm = ({
           </ErrorMessage>
         )}
 
-        {canExecute && !props.onlyExecute && !isCounterfactualSafe && <ExecuteCheckbox onChange={setShouldExecute} />}
+        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && (
+          <ExecuteCheckbox onChange={setShouldExecute} />
+        )}
 
         <WrongChainWarning />
 
@@ -155,11 +165,22 @@ export const SignOrExecuteForm = ({
 
         <RiskConfirmationError />
 
-        {isCounterfactualSafe ? (
+        {isCounterfactualSafe && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
-        ) : willExecute ? (
+        )}
+        {!isCounterfactualSafe && willExecute && (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
-        ) : (
+        )}
+        {!isCounterfactualSafe && willExecuteThroughRole && (
+          <ExecuteThroughRoleForm
+            {...props}
+            safeTx={safeTx}
+            safeTxError={safeTxError}
+            onSubmit={onFormSubmit}
+            role={(allowingRole || mostLikelyRole)!}
+          />
+        )}
+        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && (
           <SignForm
             {...props}
             safeTx={safeTx}
