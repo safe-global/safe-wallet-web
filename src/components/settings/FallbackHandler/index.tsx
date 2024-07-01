@@ -65,6 +65,8 @@ export const FallbackHandler = (): ReactElement | null => {
     </>
   ) : undefined
 
+  console.log(safe.fallbackHandler, fallbackHandlerDeployment)
+
   return (
     <Paper sx={{ padding: 4 }}>
       <Grid container direction="row" justifyContent="space-between" spacing={3}>
@@ -84,9 +86,14 @@ export const FallbackHandler = (): ReactElement | null => {
 
             <Alert
               severity={!hasFallbackHandler ? 'warning' : isOfficial || isTWAPFallbackHandler ? 'success' : 'info'}
+              icon={false}
               sx={{ mt: 2 }}
             >
-              {warning && <Typography mb={hasFallbackHandler ? 2 : 0}>{warning}</Typography>}
+              {warning && (
+                <Typography mb={hasFallbackHandler ? 1 : 0} variant="body2">
+                  {warning}
+                </Typography>
+              )}
 
               {safe.fallbackHandler && (
                 <EthHashInfo
