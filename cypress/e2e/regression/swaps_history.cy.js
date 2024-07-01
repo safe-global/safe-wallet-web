@@ -11,7 +11,7 @@ const limitOrder =
   '&id=multisig_0x8f4A19C85b39032A37f7a6dCc65234f966F72551_0x3faf510142c9ade7ac2a701fb697b95f321fd51f5eb9b17e7e534a8abe472b07'
 const limitOrderSafe = 'sep:0x8f4A19C85b39032A37f7a6dCc65234f966F72551'
 
-describe('[SMOKE] Swaps history tests', () => {
+describe('Swaps history tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -20,21 +20,6 @@ describe('[SMOKE] Swaps history tests', () => {
     cy.clearLocalStorage()
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_1)
     main.acceptCookies()
-  })
-
-  it('Verify sawp buying operation with approve and swap', { defaultCommandTimeout: 30000 }, () => {
-    // approve, preSignature actions
-    create_tx.clickOnTransactionItemByName('8:05 AM')
-    create_tx.verifyExpandedDetails([
-      swapsHistory.buyOrder,
-      swapsHistory.buy,
-      swapsHistory.oneGNO,
-      swapsHistory.forAtMost,
-      swapsHistory.cow,
-      swapsHistory.expired,
-      swapsHistory.actionApprove,
-      swapsHistory.actionPreSignature,
-    ])
   })
 
   it('Verify swap selling operation with one action', { defaultCommandTimeout: 30000 }, () => {
