@@ -21,6 +21,7 @@ describe('Swaps tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.swapUrl + staticSafes.SEP_STATIC_SAFE_1)
+    main.waitForHistoryCallToComplete()
     wallet.connectSigner(signer)
     main.acceptCookies()
     iframeSelector = `iframe[src*="${constants.swapWidget}"]`
@@ -70,7 +71,7 @@ describe('Swaps tests', () => {
 
   it(
     'Verify entering a blocked address in the custom recipient input blocks the form',
-    { defaultCommandTimeout: 60000 },
+    { defaultCommandTimeout: 30000 },
     () => {
       let isCustomRecipientFound
       swaps.acceptLegalDisclaimer()
@@ -94,7 +95,7 @@ describe('Swaps tests', () => {
     },
   )
 
-  it('Verify enabling custom recipient adds that field to the form', { defaultCommandTimeout: 60000 }, () => {
+  it('Verify enabling custom recipient adds that field to the form', { defaultCommandTimeout: 30000 }, () => {
     swaps.acceptLegalDisclaimer()
     swaps.waitForOrdersCallToComplete()
     cy.wait(2000)
