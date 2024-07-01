@@ -32,6 +32,7 @@ export default defineConfig({
     hideXHR: true,
     defaultCommandTimeout: 10000,
     pageLoadTimeout: 60000,
+    requestTimeout: 10000,
   },
 
   chromeWebSecurity: false,
