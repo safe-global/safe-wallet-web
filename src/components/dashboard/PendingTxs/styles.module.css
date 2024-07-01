@@ -11,9 +11,18 @@
   min-height: 50px;
 }
 
+.container button {
+  opacity: 0;
+  transition: opacity .1s ease-in;
+}
+
 .container:hover {
   background-color: var(--color-background-light);
   border-color: var(--color-secondary-light);
+}
+
+.container:hover button {
+  opacity: 1;
 }
 
 .list {
