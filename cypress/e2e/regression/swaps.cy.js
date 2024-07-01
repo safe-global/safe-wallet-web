@@ -30,8 +30,7 @@ describe('Swaps tests', () => {
   // TODO: Waiting for signer connection issue be resolved
   it.skip('Verify an order can be created, signed and appear in tx queue', { defaultCommandTimeout: 30000 }, () => {
     swaps.acceptLegalDisclaimer()
-    swaps.waitForOrdersCallToComplete()
-    cy.wait(2000)
+    cy.wait(4000)
     main.getIframeBody(iframeSelector).within(() => {
       swaps.clickOnSettingsBtn()
       swaps.setSlippage('0.30')
@@ -75,8 +74,7 @@ describe('Swaps tests', () => {
     () => {
       let isCustomRecipientFound
       swaps.acceptLegalDisclaimer()
-      swaps.waitForOrdersCallToComplete()
-      cy.wait(2000)
+      cy.wait(4000)
       main
         .getIframeBody(iframeSelector)
         .then(($frame) => {
@@ -97,8 +95,7 @@ describe('Swaps tests', () => {
 
   it('Verify enabling custom recipient adds that field to the form', { defaultCommandTimeout: 30000 }, () => {
     swaps.acceptLegalDisclaimer()
-    swaps.waitForOrdersCallToComplete()
-    cy.wait(2000)
+    cy.wait(4000)
 
     const isCustomRecipientFound = ($frame, customRecipient) => {
       const element = $frame.find(customRecipient)
