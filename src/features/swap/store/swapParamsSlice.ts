@@ -1,13 +1,9 @@
 import type { RootState } from '@/store'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
-
-// Using TradeType from the cow widget library results in lint errors
-enum TradeType {
-  SWAP = 'swap',
-  LIMIT = 'limit',
-  TWAP = 'twap',
-}
+import { TradeType } from '@cowprotocol/widget-lib'
+import type { UiOrderType } from '@cowprotocol/types'
+import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
 
 export type SwapState = {
   tradeType: TradeType
@@ -21,9 +17,14 @@ export const swapParamsSlice = createSlice({
   name: 'swapParams',
   initialState,
   reducers: {
-    setSwapParams: (_, action: PayloadAction<SwapState>) => {
+    setSwapParams: (
+      _,
+      action: PayloadAction<{
+        tradeType: UiOrderType
+      }>,
+    ) => {
       return {
-        tradeType: action.payload.tradeType.toLowerCase() as TradeType,
+        tradeType: UiOrderTypeToOrderType(action.payload.tradeType),
       }
     },
   },

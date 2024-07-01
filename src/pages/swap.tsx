@@ -1,8 +1,9 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import SwapWidget from '@/features/swap'
+import dynamic from 'next/dynamic'
 
+const SwapWidgetNoSSR = dynamic(() => import('@/features/swap'), { ssr: false })
 const Swap: NextPage = () => {
   const router = useRouter()
   const { token, amount } = router.query
@@ -22,7 +23,7 @@ const Swap: NextPage = () => {
       </Head>
 
       <main className="swapWrapper">
-        <SwapWidget sell={sell} />
+        <SwapWidgetNoSSR sell={sell} />
       </main>
     </>
   )

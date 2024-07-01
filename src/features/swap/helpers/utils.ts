@@ -1,6 +1,8 @@
 import type { Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
 import type { AnyAppDataDocVersion, latest } from '@cowprotocol/app-data'
+import { UiOrderType } from '@cowprotocol/types'
+import { TradeType } from '@cowprotocol/widget-lib'
 
 type Quantity = {
   amount: string | number | bigint
@@ -170,4 +172,14 @@ export const isOrderPartiallyFilled = (
   }
 
   return BigInt(executedSellAmount) !== 0n && executedSellAmount < sellAmount
+}
+export const UiOrderTypeToOrderType = (orderType: UiOrderType): TradeType => {
+  switch (orderType) {
+    case UiOrderType.SWAP:
+      return TradeType.SWAP
+    case UiOrderType.LIMIT:
+      return TradeType.LIMIT
+    case UiOrderType.TWAP:
+      return TradeType.ADVANCED
+  }
 }
