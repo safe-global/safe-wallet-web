@@ -20,6 +20,7 @@ import {
   isMultisigExecutionInfo,
   isOpenSwapOrder,
   isTxQueued,
+  isSwapTransferOrderTxInfo,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -89,6 +90,13 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
         <div className={css.txData}>
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
             <TxData txDetails={txDetails} trusted={isTrustedTransfer} imitation={isImitationTransaction} />
+            {isSwapTransferOrderTxInfo(txDetails.txInfo) && (
+              <div className={css.swapOrderTransfer}>
+                <ErrorBoundary fallback={<div>Error parsing data</div>}>
+                  <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
+                </ErrorBoundary>
+              </div>
+            )}
           </ErrorBoundary>
         </div>
 

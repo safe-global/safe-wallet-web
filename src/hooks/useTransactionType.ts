@@ -45,6 +45,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         text: 'Safe Account created',
       }
     }
+    case TransactionInfoType.SWAP_TRANSFER:
     case TransactionInfoType.TRANSFER: {
       const isSendTx = isOutgoingTransfer(tx.txInfo)
 
