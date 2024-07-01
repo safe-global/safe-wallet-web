@@ -37,6 +37,7 @@ import {
   SWAP_FEE_RECIPIENT,
 } from '@/features/swap/constants'
 import { calculateFeePercentageInBps } from '@/features/swap/helpers/fee'
+import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -96,7 +97,7 @@ const SwapWidget = ({ sell }: Params) => {
       orderExecuted: null,
       postOrder: null,
     },
-    tradeType: swapParams.tradeType === 'twap' ? TradeType.ADVANCED : TradeType.SWAP,
+    tradeType: swapParams.tradeType,
     sell: sell || {
       asset: '',
       amount: '0',
@@ -220,7 +221,7 @@ const SwapWidget = ({ sell }: Params) => {
 
           setParams((params) => ({
             ...params,
-            tradeType: tradeType === 'twap' ? TradeType.ADVANCED : TradeType.SWAP,
+            tradeType: UiOrderTypeToOrderType(tradeType),
             partnerFee: {
               recipient: SWAP_FEE_RECIPIENT,
               bps: newFeeBps,
