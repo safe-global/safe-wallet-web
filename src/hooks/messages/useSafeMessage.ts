@@ -6,7 +6,7 @@ import useAsync from '../useAsync'
 import useSafeInfo from '../useSafeInfo'
 import { fetchSafeMessage } from './useSyncSafeMessageSigner'
 
-const useSafeMessage = (safeMessageHash: string) => {
+const useSafeMessage = (safeMessageHash: string | undefined) => {
   const [safeMessage, setSafeMessage] = useState<SafeMessage | undefined>()
 
   const { safe } = useSafeInfo()
@@ -17,7 +17,8 @@ const useSafeMessage = (safeMessageHash: string) => {
     ?.filter(isSafeMessageListItem)
     .find((msg) => msg.messageHash === safeMessageHash)
 
-  const [updatedMessage] = useAsync(async () => {
+  const [updatedMessage, messageError] = useAsync(async () => {
+    if (!safeMessageHash) return
     return fetchSafeMessage(safeMessageHash, safe.chainId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [safeMessageHash, safe.chainId, safe.messagesTag])
@@ -26,7 +27,7 @@ const useSafeMessage = (safeMessageHash: string) => {
     setSafeMessage(updatedMessage ?? ongoingMessage)
   }, [ongoingMessage, updatedMessage])
 
-  return [safeMessage, setSafeMessage] as const
+  return [safeMessage, setSafeMessage, messageError] as const
 }
 
 export default useSafeMessage

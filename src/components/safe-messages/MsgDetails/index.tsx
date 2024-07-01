@@ -20,6 +20,7 @@ import infoDetailsCss from '@/components/transactions/InfoDetails/styles.module.
 import { DecodedMsg } from '../DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
 import NamedAddressInfo from '@/components/common/NamedAddressInfo'
+import MsgShareLink from '../MsgShareLink'
 
 const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const wallet = useWallet()
@@ -32,6 +33,9 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   return (
     <div className={txDetailsCss.container}>
       <div className={txDetailsCss.details}>
+        <div className={txDetailsCss.shareLink}>
+          <MsgShareLink safeMessageHash={msg.messageHash} />
+        </div>
         <div className={txDetailsCss.txData}>
           <InfoDetails title="Created by:">
             <EthHashInfo

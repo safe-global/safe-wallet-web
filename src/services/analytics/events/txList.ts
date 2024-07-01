@@ -67,4 +67,8 @@ export const MESSAGE_EVENTS = {
     action: 'Sign message',
     category: TX_LIST_CATEGORY,
   },
+  COPY_DEEPLINK: {
+    action: 'Copy message deeplink',
+    category: TX_LIST_CATEGORY,
+  },
 }
