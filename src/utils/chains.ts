@@ -24,6 +24,7 @@ export enum FEATURES {
   NATIVE_SWAPS = 'NATIVE_SWAPS',
   RELAY_NATIVE_SWAPS = 'RELAY_NATIVE_SWAPS',
   ZODIAC_ROLES = 'ZODIAC_ROLES',
+  STAKE = 'STAKE',
 }
 
 export const FeatureRoutes = {
@@ -31,6 +32,7 @@ export const FeatureRoutes = {
   [AppRoutes.swap]: FEATURES.NATIVE_SWAPS,
   [AppRoutes.balances.nfts]: FEATURES.ERC721,
   [AppRoutes.settings.notifications]: FEATURES.PUSH_NOTIFICATIONS,
+  [AppRoutes.stake]: FEATURES.STAKE,
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {

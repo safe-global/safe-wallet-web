@@ -1,0 +1,25 @@
+div.widgetRoot {
+  position: relative;
+}
+
+div.widgetRoot div[data-rk='stakekit'] > div[data-select-modal] {
+  position: absolute;
+}
+
+div.widgetRoot div[data-rk='stakekit'] > div[data-rk='widget-container'] {
+  margin-bottom: 0;
+}
+
+div.widgetRoot div[data-rk='stakekit'][role='dialog'] {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  z-index: 2;
+}
+
+main.widgetMain {
+  padding-top: 0;
+}

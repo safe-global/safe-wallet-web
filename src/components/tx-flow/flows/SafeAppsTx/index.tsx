@@ -3,13 +3,14 @@ import TxLayout from '@/components/tx-flow/common/TxLayout'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import ReviewSafeAppsTx from './ReviewSafeAppsTx'
 import { AppTitle } from '@/components/tx-flow/flows/SignMessage'
+import type { OperationType } from '@safe-global/safe-core-sdk-types'
 
 export type SafeAppsTxParams = {
   appId?: string
   app?: Partial<SafeAppData>
   requestId: RequestId
   txs: BaseTransaction[]
-  params?: SendTransactionRequestParams
+  params?: SendTransactionRequestParams & { operation?: OperationType }
 }
 
 const SafeAppsTxFlow = ({
