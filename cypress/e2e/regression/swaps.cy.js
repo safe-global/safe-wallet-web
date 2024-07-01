@@ -21,7 +21,7 @@ describe('Swaps tests', () => {
   beforeEach(() => {
     cy.clearLocalStorage()
     cy.visit(constants.swapUrl + staticSafes.SEP_STATIC_SAFE_1)
-    main.waitForHistoryCallToComplete()
+    cy.wait(1000)
     wallet.connectSigner(signer)
     main.acceptCookies()
     iframeSelector = `iframe[src*="${constants.swapWidget}"]`

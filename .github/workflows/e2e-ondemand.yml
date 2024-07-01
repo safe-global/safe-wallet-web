@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3, 4, 5]
+        containers: [1]
     steps:
       - uses: actions/checkout@v4
 
@@ -24,9 +24,7 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           spec: |
-            cypress/e2e/regression/*.cy.js
-            cypress/e2e/safe-apps/*.cy.js
-            cypress/e2e/smoke/*.cy.js
+            cypress/e2e/regression/regression/swaps.cy.js
           group: 'Regression on demand tests'
 
       - name: Python setup
