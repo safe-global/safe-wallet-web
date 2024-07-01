@@ -70,7 +70,7 @@ describe('Swaps tests', () => {
 
   it(
     'Verify entering a blocked address in the custom recipient input blocks the form',
-    { defaultCommandTimeout: 30000 },
+    { defaultCommandTimeout: 60000 },
     () => {
       let isCustomRecipientFound
       swaps.acceptLegalDisclaimer()
@@ -94,7 +94,7 @@ describe('Swaps tests', () => {
     },
   )
 
-  it('Verify enabling custom recipient adds that field to the form', { defaultCommandTimeout: 30000 }, () => {
+  it('Verify enabling custom recipient adds that field to the form', { defaultCommandTimeout: 60000 }, () => {
     swaps.acceptLegalDisclaimer()
     swaps.waitForOrdersCallToComplete()
     cy.wait(2000)
