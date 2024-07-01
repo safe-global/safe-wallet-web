@@ -1,20 +1,28 @@
 import type { OnTradeParamsPayload } from '@cowprotocol/events'
 import { stableCoinAddresses } from '@/features/swap/helpers/data/stablecoins'
 
+const FEE_PERCENTAGE_BPS = {
+  REGULAR: {
+    TIER_1: 35,
+    TIER_2: 20,
+    TIER_3: 10,
+  },
+  STABLE: {
+    TIER_1: 10,
+    TIER_2: 7,
+    TIER_3: 5,
+  },
+}
+
+const FEE_TIERS = {
+  TIER_1: 100_000, // 0 - 100k
+  TIER_2: 1_000_000, // 100k - 1m
+}
+
 /**
  * Function to calculate the fee % in bps to apply for a trade.
  * The fee % should be applied based on the fiat value of the buy or sell token.
  *
- * The current fee tiers are as follows:
- * === All tokens ===
- * 0 - 100k => 0.35%
- * 100k - 1m => 0.2%
- * 1m => 0.1%
- *
- * === Stable coins (both buy and sell tokens need to be stables)===
- * 0 - 100k => 0.1%
- * >100k - 1m => 0.07%
- * >1m => 0.05
  * @param orderParams
  */
 export const calculateFeePercentageInBps = (orderParams: OnTradeParamsPayload) => {
@@ -24,13 +32,13 @@ export const calculateFeePercentageInBps = (orderParams: OnTradeParamsPayload) =
 
   const fiatAmount = Number(orderKind == 'sell' ? sellTokenFiatAmount : buyTokenFiatAmount) || 0
 
-  if (fiatAmount < 100000) {
-    return isStableCoin ? 10 : 35
+  if (fiatAmount < FEE_TIERS.TIER_1) {
+    return isStableCoin ? FEE_PERCENTAGE_BPS.STABLE.TIER_1 : FEE_PERCENTAGE_BPS.REGULAR.TIER_1
   }
 
-  if (fiatAmount < 1000000) {
-    return isStableCoin ? 7 : 20
+  if (fiatAmount < FEE_TIERS.TIER_2) {
+    return isStableCoin ? FEE_PERCENTAGE_BPS.STABLE.TIER_2 : FEE_PERCENTAGE_BPS.REGULAR.TIER_2
   }
 
-  return isStableCoin ? 5 : 10
+  return isStableCoin ? FEE_PERCENTAGE_BPS.STABLE.TIER_3 : FEE_PERCENTAGE_BPS.REGULAR.TIER_3
 }
