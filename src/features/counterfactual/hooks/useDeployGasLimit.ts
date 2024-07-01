@@ -67,15 +67,15 @@ export const estimateBatchDeploymentTransaction = async (
 ) => {
   const customContracts = sdk.getContractManager().contractNetworks?.[chainId]
   const safeVersion = await sdk.getContractVersion()
-  const ethAdapter = sdk.getEthAdapter()
+  const safeProvider = sdk.getSafeProvider()
   const fallbackHandlerContract = await getCompatibilityFallbackHandlerContract({
-    ethAdapter,
+    safeProvider,
     safeVersion,
     customContracts,
   })
 
   const simulateTxAccessorContract = await getSimulateTxAccessorContract({
-    ethAdapter,
+    safeProvider,
     safeVersion,
     customContracts,
   })
@@ -92,7 +92,7 @@ export const estimateBatchDeploymentTransaction = async (
   // 2. Add a simulate call to the predicted SafeProxy as second transaction
   const transactionDataToEstimate: string = simulateTxAccessorContract.encode('simulate', [
     safeTransaction.data.to,
-    safeTransaction.data.value,
+    BigInt(safeTransaction.data.value),
     safeTransaction.data.data,
     safeTransaction.data.operation,
   ])
@@ -114,10 +114,10 @@ export const estimateBatchDeploymentTransaction = async (
     simulateBatchTransaction,
   ])
 
-  const signerAddress = await ethAdapter.getSignerAddress()
+  const signerAddress = await safeProvider.getSignerAddress()
 
   // estimate the entire batch
-  const safeTxGas = await ethAdapter.estimateGas({
+  const safeTxGas = await safeProvider.estimateGas({
     ...safeDeploymentBatch,
     from: signerAddress || ZERO_ADDRESS, // This address should not really matter
   })

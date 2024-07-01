@@ -6,7 +6,8 @@ import type { MouseEventHandler } from 'react'
 import { useState } from 'react'
 import type { PendingProcessingTx } from '@/store/pendingTxsSlice'
 import useAsync from '@/hooks/useAsync'
-import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { isSmartContract } from '@/utils/wallets'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSpeedableTx } from '@/features/speedup/utils/IsSpeedableTx'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
@@ -30,7 +31,7 @@ export const SpeedUpMonitor = ({ txId, pendingTx, modalTrigger = 'alertBox' }: S
 
   const [smartContract] = useAsync(async () => {
     if (!pendingTx.signerAddress || !web3ReadOnly) return false
-    return isSmartContract(web3ReadOnly, pendingTx.signerAddress)
+    return isSmartContract(pendingTx.signerAddress)
   }, [pendingTx.signerAddress, web3ReadOnly])
 
   if (!isFeatureEnabled || !isSpeedableTx(pendingTx, smartContract, wallet?.address ?? '')) {

@@ -1,36 +1,46 @@
+import * as safeSDK from '@/hooks/coreSDK/safeCoreSDK'
+import * as contracts from '@/services/contracts/safeContracts'
 import { sameAddress } from '@/utils/addresses'
+import type Safe from '@safe-global/protocol-kit'
+import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
 import {
   getFallbackHandlerDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
 } from '@safe-global/safe-deployments'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { Interface, BrowserProvider, type JsonRpcProvider } from 'ethers'
+import { Interface, JsonRpcProvider } from 'ethers'
 import { createUpdateSafeTxs } from '../safeUpdateParams'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as web3 from '@/hooks/wallets/web3'
-import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 
-jest.mock('@safe-global/protocol-kit', () => {
-  const originalModule = jest.requireActual('@safe-global/protocol-kit')
-
-  // Mock class
-  class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
-  }
-
+const getMockSDKForChain = (chainId: number) => {
   return {
-    ...originalModule,
-    EthersAdapter: MockEthersAdapter,
-  }
-})
+    isModuleEnabled: jest.fn(() => false),
+    createEnableModuleTx: jest.fn(),
+    createTransaction: jest.fn(() => 'asd'),
+    getSafeProvider: () => {
+      return {
+        getExternalProvider: jest.fn(),
+        getExternalSigner: jest.fn(),
+        getChainId: jest.fn().mockReturnValue(BigInt(chainId)),
+      }
+    },
+  } as unknown as Safe
+}
 
 describe('safeUpgradeParams', () => {
   jest
     .spyOn(web3, 'getWeb3ReadOnly')
-    .mockImplementation(() => new BrowserProvider(MockEip1193Provider) as unknown as JsonRpcProvider)
+    .mockImplementation(() => new JsonRpcProvider(undefined, { name: 'sepolia', chainId: 11155111 }))
+
+  jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
+    getAddress: () => '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  } as unknown as CompatibilityFallbackHandlerContractImplementationType)
+
+  jest.spyOn(safeSDK, 'getSafeSDK').mockImplementation(() => getMockSDKForChain(1))
 
   it('Should add empty setFallbackHandler transaction data for older Safes', async () => {
     const mockSafe = {
@@ -66,7 +76,8 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.1.1',
     } as SafeInfo
-    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo)
+
+    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '11155111', l2: false } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -92,6 +103,8 @@ describe('safeUpgradeParams', () => {
   })
 
   it('Should upgrade L2 safe to L2 1.3.0', async () => {
+    jest.spyOn(safeSDK, 'getSafeSDK').mockImplementation(() => getMockSDKForChain(100))
+
     const mockSafe = {
       address: {
         value: MOCK_SAFE_ADDRESS,

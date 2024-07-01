@@ -20,7 +20,6 @@ import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { asError } from '@/services/exceptions/utils'
@@ -64,7 +63,6 @@ const ActivateAccountFlow = () => {
   const chain = useCurrentChain()
   const chainId = useChainId()
   const { safeAddress } = useSafeInfo()
-  const provider = useWeb3()
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, safeAddress))
   const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
@@ -94,7 +92,7 @@ const ActivateAccountFlow = () => {
   }
 
   const createSafe = async () => {
-    if (!provider || !chain) return
+    if (!wallet || !chain) return
 
     trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_without_tx })
 
@@ -109,7 +107,7 @@ const ActivateAccountFlow = () => {
         onSubmit()
       } else {
         await createNewSafe(
-          provider,
+          wallet.provider,
           {
             safeAccountConfig: undeployedSafe.props.safeAccountConfig,
             saltNonce,

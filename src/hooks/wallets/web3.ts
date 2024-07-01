@@ -1,8 +1,7 @@
 import { type ChainInfo, RPC_AUTHENTICATION, type RpcUri } from '@safe-global/safe-gateway-typescript-sdk'
 import { INFURA_TOKEN, SAFE_APPS_INFURA_TOKEN } from '@/config/constants'
-import { JsonRpcProvider, BrowserProvider, type Eip1193Provider, type Provider } from 'ethers'
+import { JsonRpcProvider, BrowserProvider, type Eip1193Provider } from 'ethers'
 import ExternalStore from '@/services/ExternalStore'
-import { EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 /**
  * Infura and other RPC providers limit the max amount included in a batch RPC call.
@@ -64,10 +63,4 @@ export const getUserNonce = async (userAddress: string): Promise<number> => {
   } catch (error) {
     return Promise.reject(error)
   }
-}
-
-export const isSmartContract = async (provider: Provider, address: string): Promise<boolean> => {
-  const code = await provider.getCode(address)
-
-  return code !== EMPTY_DATA
 }

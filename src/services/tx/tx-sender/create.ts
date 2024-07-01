@@ -41,7 +41,7 @@ export const createAddOwnerTx = async (
   const safeVersion = await safeSDK.getContractVersion()
 
   const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
-  // @ts-ignore TODO: Fix overload issue
+  // @ts-ignore
   const data = contract.encode('addOwnerWithThreshold', [txParams.ownerAddress, txParams.threshold])
 
   const tx = {

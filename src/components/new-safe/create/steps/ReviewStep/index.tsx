@@ -25,7 +25,6 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { gtmSetSafeAddress } from '@/services/analytics/gtm'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
@@ -54,8 +53,6 @@ export const NetworkFee = ({
   willRelay: boolean
   inline?: boolean
 }) => {
-  const wallet = useWallet()
-
   return (
     <Box className={classnames(css.networkFee, { [css.networkFeeInline]: inline })}>
       <Typography className={classnames({ [css.sponsoredFee]: willRelay })}>
@@ -118,7 +115,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   useSyncSafeCreationStep(setStep)
   const chain = useCurrentChain()
   const wallet = useWallet()
-  const provider = useWeb3()
   const dispatch = useAppDispatch()
   const router = useRouter()
   const [gasPrice] = useGasPrice()
@@ -161,15 +157,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   }
 
   const createSafe = async () => {
-    if (!wallet || !provider || !chain) return
+    if (!wallet || !chain) return
 
     setIsCreating(true)
 
     try {
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
-        chain.chainId,
-        LATEST_SAFE_VERSION,
-      )
+      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
 
       const props: DeploySafeProps = {
         safeAccountConfig: {
@@ -179,8 +172,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         },
       }
 
-      const saltNonce = await getAvailableSaltNonce(provider, { ...props, saltNonce: '0' }, chain.chainId)
-      const safeAddress = await computeNewSafeAddress(provider, { ...props, saltNonce }, chain.chainId)
+      const saltNonce = await getAvailableSaltNonce(wallet.provider, { ...props, saltNonce: '0' }, chain.chainId)
+      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain.chainId)
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
@@ -242,7 +235,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         )
         onSubmitCallback(taskId)
       } else {
-        await createNewSafe(provider, {
+        await createNewSafe(wallet.provider, {
           safeAccountConfig: props.safeAccountConfig,
           saltNonce,
           options,

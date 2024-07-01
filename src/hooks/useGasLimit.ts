@@ -1,3 +1,4 @@
+import { SafeProvider } from '@safe-global/protocol-kit'
 import { useEffect } from 'react'
 import type Safe from '@safe-global/protocol-kit'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
@@ -27,6 +28,7 @@ const getEncodedSafeTx = (
 ): string | undefined => {
   const EXEC_TX_METHOD = 'execTransaction'
 
+  // @ts-ignore union type is too complex
   return safeSDK
     .getContractManager()
     .safeContract?.encode(EXEC_TX_METHOD, [
@@ -87,15 +89,15 @@ const getGasLimitForZkSync = async (
   const fakeEOAFromAddress = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
   const customContracts = safeSDK.getContractManager().contractNetworks?.[safe.chainId]
   const safeVersion = await safeSDK.getContractVersion()
-  const ethAdapter = safeSDK.getEthAdapter()
+  const safeProvider = new SafeProvider({ provider: web3._getConnection().url })
   const fallbackHandlerContract = await getCompatibilityFallbackHandlerContract({
-    ethAdapter,
+    safeProvider,
     safeVersion,
     customContracts,
   })
 
   const simulateTxAccessorContract = await getSimulateTxAccessorContract({
-    ethAdapter,
+    safeProvider,
     safeVersion,
     customContracts,
   })
@@ -103,6 +105,7 @@ const getGasLimitForZkSync = async (
   // 2. Add a simulate call to the predicted SafeProxy as second transaction
   const transactionDataToEstimate: string = simulateTxAccessorContract.encode('simulate', [
     safeTx.data.to,
+    // @ts-ignore
     safeTx.data.value,
     safeTx.data.data,
     safeTx.data.operation,

@@ -2,7 +2,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { JsonRpcProvider } from 'ethers'
 
 import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { isSmartContract } from '@/hooks/wallets/web3'
+import { isSmartContract } from '@/utils/wallets'
 import { sameAddress } from '@/utils/addresses'
 import { getTransactionRecipients } from '@/utils/transaction-calldata'
 import { SecuritySeverity } from '../types'
@@ -68,7 +68,7 @@ export class RecipientAddressModule
       return warnings
     }
 
-    if (await isSmartContract(provider, address)) {
+    if (await isSmartContract(address)) {
       return warnings
     }
 

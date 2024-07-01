@@ -4,7 +4,7 @@ import { toBeHex } from 'ethers'
 import type { JsonRpcProvider } from 'ethers'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import * as web3 from '@/hooks/wallets/web3'
+import * as walletUtils from '@/utils/wallets'
 import { RecipientAddressModule } from '.'
 import {
   createMockSafeTransaction,
@@ -16,7 +16,7 @@ import {
 } from '@/tests/transactions'
 
 describe('RecipientAddressModule', () => {
-  const isSmartContractSpy = jest.spyOn(web3, 'isSmartContract')
+  const isSmartContractSpy = jest.spyOn(walletUtils, 'isSmartContract')
 
   const mockGetBalance = jest.fn()
   const mockProvider = {
