@@ -13,7 +13,7 @@ import useChainId from '@/hooks/useChainId'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createNewSpendingLimitTx } from '@/services/tx/tx-sender'
 import { selectSpendingLimits } from '@/store/spendingLimitsSlice'
-import { formatVisualAmount } from '@/utils/formatters'
+import { formatVisualAmount, safeParseUnits } from '@/utils/formatters'
 import type { NewSpendingLimitFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeTxContext } from '../../SafeTxProvider'
@@ -27,6 +27,11 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const { decimals } = token?.tokenInfo || {}
+
+  const amountInWei = useMemo(
+    () => safeParseUnits(params.amount, token?.tokenInfo.decimals)?.toString() || '0',
+    [params.amount, token?.tokenInfo.decimals],
+  )
 
   const existingSpendingLimit = useMemo(() => {
     return spendingLimits.find(
@@ -76,7 +81,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && (
-        <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} title="Amount">
+        <SendAmountBlock amountInWei={amountInWei} tokenInfo={token.tokenInfo} title="Amount">
           {existingAmount && existingAmount !== params.amount && (
             <>
               <Typography
