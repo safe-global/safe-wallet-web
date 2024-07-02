@@ -21,7 +21,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import BlockedAddress from '@/components/common/BlockedAddress'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
-import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
+import LegalDisclaimerContent from '@/features/swap/components/LegalDisclaimer'
 import { isBlockedAddress } from '@/services/ofac'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
@@ -284,7 +284,7 @@ const SwapWidget = ({ sell }: Params) => {
     return (
       <Disclaimer
         title="Legal Disclaimer"
-        content={<LegalDisclaimerContent withTitle={false} isSafeApps={false} />}
+        content={<LegalDisclaimerContent />}
         onAccept={onAccept}
         buttonText="Continue"
       />

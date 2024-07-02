@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 
-const SWAPS_CONSENT_STORAGE_KEY = 'swapDisclaimerAccepted'
+const SWAPS_CONSENT_STORAGE_KEY = 'swapDisclaimerAcceptedV1'
 
 const useSwapConsent = (): {
   isConsentAccepted: boolean
