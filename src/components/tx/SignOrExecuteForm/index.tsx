@@ -29,6 +29,8 @@ import useChainId from '@/hooks/useChainId'
 import PermissionsCheck from './PermissionsCheck'
 import { isConfirmationViewOrder } from '@/utils/transaction-guards'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
+import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
+import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -80,6 +82,7 @@ export const SignOrExecuteForm = ({
 
   const { safe } = useSafeInfo()
   const isCounterfactualSafe = !safe.deployed
+  const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
   const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
@@ -99,6 +102,8 @@ export const SignOrExecuteForm = ({
     <>
       <TxCard>
         {props.children}
+
+        {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
 
         {isSwapOrder && (
           <ErrorBoundary fallback={<></>}>
