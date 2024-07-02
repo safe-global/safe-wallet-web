@@ -10,6 +10,7 @@ import {
 import { isCancellationTxInfo, isModuleExecutionInfo, isOutgoingTransfer, isTxQueued } from '@/utils/transaction-guards'
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
+import { TWAP_ORDER_TITLE } from '@/features/swap/constants'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -44,6 +45,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         text: 'Safe Account created',
       }
     }
+    case TransactionInfoType.SWAP_TRANSFER:
     case TransactionInfoType.TRANSFER: {
       const isSendTx = isOutgoingTransfer(tx.txInfo)
 
@@ -70,10 +72,10 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         text: orderClass === 'limit' ? 'Limit order' : 'Swap order',
       }
     }
-    case 'TwapOrder': {
+    case TransactionInfoType.TWAP_ORDER: {
       return {
         icon: '/images/common/swap.svg',
-        text: 'TWAP order',
+        text: TWAP_ORDER_TITLE,
       }
     }
     case TransactionInfoType.CUSTOM: {

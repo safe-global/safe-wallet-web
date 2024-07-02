@@ -2,6 +2,7 @@ import 'cypress-file-upload'
 import * as constants from '../../support/constants'
 import * as addressBook from '../../e2e/pages/address_book.page'
 import * as main from '../../e2e/pages/main.page'
+import * as wallet from '../../support/utils/wallet.js'
 import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
@@ -14,6 +15,8 @@ const duplicateEntry = 'test-sepolia-90'
 const owner1 = 'Automation owner'
 
 const recipientData = [owner1, constants.DEFAULT_OWNER_ADDRESS]
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('[SMOKE] Address book tests', () => {
   before(async () => {
@@ -104,6 +107,7 @@ describe('[SMOKE] Address book tests', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress2)
     cy.wait(1000)
     cy.reload()
+    wallet.connectSigner(signer)
     addressBook.clickOnSendBtn()
     addressBook.verifyRecipientData(recipientData)
   })

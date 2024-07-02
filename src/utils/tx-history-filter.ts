@@ -127,6 +127,7 @@ export const fetchFilteredTxHistory = async (
       ...filterData.filter,
       timezone_offset: getTimezoneOffset(),
       trusted: onlyTrusted ?? false,
+      imitation: onlyTrusted ?? false,
       executed: filterData.type === TxFilterType.MULTISIG ? 'true' : undefined,
     }
 

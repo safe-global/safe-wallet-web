@@ -4,9 +4,12 @@ import * as owner from '../pages/owners.pages'
 import * as recovery from '../pages/recovery.pages'
 import * as tx from '../pages/transactions.page'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let recoverySafes = []
-//
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
+
 describe('Recovery happy path tests 1', () => {
   before(async () => {
     recoverySafes = await getSafes(CATEGORIES.recovery)
@@ -20,8 +23,8 @@ describe('Recovery happy path tests 1', () => {
 
   // Check that recovery can be setup and removed
   it('Recovery setup happy path 1', () => {
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    cy.reload()
     recovery.clearRecoverers()
     recovery.clickOnSetupRecoveryBtn()
     recovery.clickOnSetupRecoveryModalBtn()

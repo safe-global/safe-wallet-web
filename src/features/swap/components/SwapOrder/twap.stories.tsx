@@ -27,11 +27,11 @@ const FullfilledTwapOrder = twapOrderBuilder()
         'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0xbe72E441BF55620febc26715db68d3494213D8Cb.png',
     },
   })
-  .with({ numberOfParts: 2 })
+  .with({ numberOfParts: '2' })
 
   .with({ partSellAmount: '5000000000000000' })
   .with({ minPartLimit: '1694293464162241304' })
-  .with({ timeBetweenParts: '1800' })
+  .with({ timeBetweenParts: 1800 })
   .with({
     fullAppData: appDataBuilder('twap').build(),
   })

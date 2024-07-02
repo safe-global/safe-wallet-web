@@ -17,10 +17,6 @@
   top: 16px;
 }
 
-.details .noSigners {
-  width: 100%;
-}
-
 .loading,
 .error,
 .txData,
@@ -31,6 +27,14 @@
   padding: var(--space-2);
 }
 
+.swapOrderTransfer {
+  border-top: 1px solid var(--color-border-light);
+  margin-top: var(--space-2);
+  margin-left: calc(var(--space-2) * -1);
+  margin-right: calc(var(--space-2) * -1);
+  padding: var(--space-2);
+  padding-top: var(--space-3)
+}
 .txData,
 .swapOrder {
   border-bottom: 1px solid var(--color-border-light);

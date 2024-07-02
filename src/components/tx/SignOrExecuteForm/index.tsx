@@ -27,7 +27,7 @@ import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import PermissionsCheck from './PermissionsCheck'
-import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
+import { isConfirmationViewOrder } from '@/utils/transaction-guards'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
@@ -76,7 +76,7 @@ export const SignOrExecuteForm = ({
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
-  const isSwapOrder = isSwapConfirmationViewOrder(decodedData)
+  const isSwapOrder = isConfirmationViewOrder(decodedData)
 
   const { safe } = useSafeInfo()
   const isCounterfactualSafe = !safe.deployed

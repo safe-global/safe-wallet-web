@@ -9,7 +9,6 @@ import { logError, Errors } from '@/services/exceptions'
 import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { type EnvState, selectRpc } from '@/store/settingsSlice'
-import { E2E_WALLET_NAME } from '@/tests/e2e-wallet'
 import { formatAmount } from '@/utils/formatNumber'
 import { localItem } from '@/services/local-storage/local'
 import { isWalletConnect, isWalletUnlocked } from '@/utils/wallets'
@@ -180,7 +179,7 @@ export const useInitOnboard = () => {
       // e2e wallet
       if (typeof window !== 'undefined' && window.Cypress) {
         connectWallet(onboard, {
-          autoSelect: { label: E2E_WALLET_NAME, disableModals: true },
+          autoSelect: { label: 'e2e wallet', disableModals: true },
         })
       }
 
