@@ -17,7 +17,7 @@ export const SurplusFee = ({
     token = buyToken
   }
 
-  if (!executedSurplusFee) {
+  if (executedSurplusFee === null || typeof executedSurplusFee === 'undefined' || executedSurplusFee === '0') {
     return null
   }
 
