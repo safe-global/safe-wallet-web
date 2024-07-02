@@ -1,6 +1,4 @@
 import CheckBalance from '@/features/counterfactual/CheckBalance'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
 import { type ReactElement } from 'react'
 import { Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -23,6 +21,7 @@ import SwapButton from '@/features/swap/components/SwapButton'
 import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
 import { SWAP_LABELS } from '@/services/analytics/events/swaps'
 import SendButton from './SendButton'
+import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -99,7 +98,7 @@ const AssetsTable = ({
 }): ReactElement => {
   const { balances, loading } = useBalances()
   const isCounterfactualSafe = useIsCounterfactualSafe()
-  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS) && !isCounterfactualSafe
+  const isSwapFeatureEnabled = useIsSwapFeatureEnabled() && !isCounterfactualSafe
 
   const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
     setShowHiddenAssets(false),

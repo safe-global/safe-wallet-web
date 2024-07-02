@@ -1,4 +1,3 @@
-import { FEATURES } from '@/utils/chains'
 import { CowSwapWidget } from '@cowprotocol/widget-react'
 import { type CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 import type { OnTradeParamsPayload } from '@cowprotocol/events'
@@ -10,7 +9,7 @@ import {
   type SafeAppData,
   SafeAppFeatures,
 } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
-import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
+import { useCurrentChain } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -30,6 +29,7 @@ import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { id } from 'ethers'
 import { LIMIT_ORDER_TITLE, SWAP_TITLE, SWAP_ORDER_TITLE, TWAP_ORDER_TITLE } from '@/features/swap/constants'
+import useIsSwapFeatureEnabled from './hooks/useIsSwapFeatureEnabled'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -67,7 +67,7 @@ const SwapWidget = ({ sell }: Params) => {
   const darkMode = useDarkMode()
   const chainId = useChainId()
   const dispatch = useAppDispatch()
-  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const swapParams = useAppSelector(selectSwapParams)
   const { tradeType } = swapParams
   const { safeAddress, safeLoading } = useSafeInfo()

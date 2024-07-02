@@ -11,14 +11,13 @@ import { useRouter } from 'next/router'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import Track from '@/components/common/Track'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
+import useIsSwapFeatureEnabled from '../../hooks/useIsSwapFeatureEnabled'
 
 const SWAPS_PROMO_WIDGET_IS_HIDDEN = 'swapsPromoWidgetIsHidden'
 
 function SwapWidget(): ReactElement | null {
   const [isHidden = false, setIsHidden] = useLocalStorage<boolean>(SWAPS_PROMO_WIDGET_IS_HIDDEN)
-  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
 
   const onClick = useCallback(() => {
     setIsHidden(true)
