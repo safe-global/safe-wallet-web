@@ -65,8 +65,6 @@ export const FallbackHandler = (): ReactElement | null => {
     </>
   ) : undefined
 
-  console.log(safe.fallbackHandler, fallbackHandlerDeployment)
-
   return (
     <Paper sx={{ padding: 4 }}>
       <Grid container direction="row" justifyContent="space-between" spacing={3}>
