@@ -121,12 +121,13 @@ export const CreateSafeStatus = ({
       chain,
     )
     // txOptions.nonce = Number(pendingSafe.props.safeDeploymentConfig?.saltNonce)
-    txOptions.nonce = 171
+    // txOptions.nonce = 171
 
     try {
       const pendingTx = await provider.getTransaction(txHash)
 
       if (!pendingTx) throw new Error('Transaction not found')
+      txOptions.nonce = pendingTx.nonce
 
       await dispatchSafeCreationTxSpeedUp(
         txOptions as Omit<TransactionOptions, 'nonce'> & { nonce: number },
