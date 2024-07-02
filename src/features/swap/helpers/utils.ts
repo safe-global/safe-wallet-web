@@ -1,8 +1,8 @@
 import type { Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
 import type { AnyAppDataDocVersion, latest, LatestAppDataDocVersion } from '@cowprotocol/app-data'
-import { UiOrderType } from '@cowprotocol/types'
-import { TradeType } from '@cowprotocol/widget-lib'
+
+import { TradeType, UiOrderType } from '@/features/swap/types'
 
 type Quantity = {
   amount: string | number | bigint

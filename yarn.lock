@@ -1210,11 +1210,6 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/events/-/events-1.3.0.tgz#44c175689d0f9bbd769901e7b0e4ecd33ec55697"
   integrity sha512-gYTbm8stIXJI/a+jWcjAdDtIo5NX2Q88Q90XETJE2MaLIR7LQL0Ao4mW0J9LsYIvE7Zb7QEdduJ56pNXmQh5/g==
 
-"@cowprotocol/types@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/types/-/types-0.1.0.tgz#5ea798fc0981baa17f6467b3c614a5cda810cb0a"
-  integrity sha512-qCnby9Z7nFwCkPFtQT37EQRep5Yjw70L0Lq3OaxGmaLMfI1ZThzOpX48QfYasZypTyNGHHUbvYfwDBjpNA1SHw==
-
 "@cowprotocol/widget-lib@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@cowprotocol/widget-lib/-/widget-lib-0.11.1.tgz#df2906ba33215931582172bfa5b2ab5c512f2d83"

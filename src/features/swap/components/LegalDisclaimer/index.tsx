@@ -25,8 +25,8 @@ const LegalDisclaimerContent = () => (
         contain more detailed provisions binding on you relating to such third party content.
       </Typography>
       <Typography>
-        By clicking &quot;continue&quot; you re-confirm to have read and understood our terms and this message, and agree to
-        them.
+        By clicking &quot;continue&quot; you re-confirm to have read and understood our terms and this message, and
+        agree to them.
       </Typography>
     </div>
   </div>

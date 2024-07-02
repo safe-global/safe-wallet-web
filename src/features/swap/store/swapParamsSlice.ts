@@ -1,9 +1,8 @@
 import type { RootState } from '@/store'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
-import { TradeType } from '@cowprotocol/widget-lib'
-import type { UiOrderType } from '@cowprotocol/types'
 import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
+import { TradeType, type UiOrderType } from '@/features/swap/types'
 
 export type SwapState = {
   tradeType: TradeType
