@@ -4,7 +4,7 @@ import { createContext, type ReactElement, type ReactNode, useEffect, useState }
 export const GeoblockingContext = createContext<boolean | null>(null)
 
 /**
- * Checks if the requesting user is from one of the OFAC sanctioned countries
+ * Endpoint returns a 403 if the requesting user is from one of the OFAC sanctioned countries
  */
 const GeoblockingProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [isBlockedCountry, setIsBlockedCountry] = useState<boolean | null>(null)
