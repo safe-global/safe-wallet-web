@@ -19,6 +19,7 @@ import NamedAddress from '@/components/common/NamedAddressInfo'
 import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDuration'
 import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
 import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
+import { OrderFeeConfirmationView } from '@/features/swap/components/SwapOrderConfirmationView/OrderFeeConfirmationView'
 
 type SwapOrderProps = {
   order: OrderConfirmationView
@@ -92,6 +93,7 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
           ) : (
             <></>
           ),
+          <OrderFeeConfirmationView key="SurplusFee" order={order} hideWhenNonFulfilled={false} />,
           <DataRow key="Interact with" title="Interact with">
             <NamedAddress address={settlementContract} onlyName hasExplorer shortAddress={false} avatarSize={24} />
           </DataRow>,
