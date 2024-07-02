@@ -110,6 +110,7 @@ const NotificationCenter = (): ReactElement => {
       </ButtonBase>
 
       <Popover
+        key={Number(open)}
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
