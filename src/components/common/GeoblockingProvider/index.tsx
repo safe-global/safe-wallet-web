@@ -11,7 +11,7 @@ const GeoblockingProvider = ({ children }: { children: ReactNode }): ReactElemen
 
   useEffect(() => {
     const fetchSwaps = async () => {
-      await fetch(AppRoutes.swap).then((res) => {
+      await fetch(AppRoutes.swap, { method: 'HEAD' }).then((res) => {
         if (res.status === 403) {
           setIsBlockedCountry(true)
         } else {
