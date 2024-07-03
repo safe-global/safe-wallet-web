@@ -292,7 +292,7 @@ describe('SignMessage', () => {
       confirmationsSubmitted: 1,
     } as unknown as SafeMessage
 
-    jest.spyOn(useSafeMessage, 'default').mockReturnValueOnce([msg, jest.fn])
+    jest.spyOn(useSafeMessage, 'default').mockReturnValueOnce([msg, jest.fn, undefined])
 
     const { getByText, rerender } = render(
       <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />,
@@ -330,7 +330,7 @@ describe('SignMessage', () => {
       fireEvent.click(button)
     })
 
-    jest.spyOn(useSafeMessage, 'default').mockReturnValue([newMsg, jest.fn])
+    jest.spyOn(useSafeMessage, 'default').mockReturnValue([newMsg, jest.fn, undefined])
 
     rerender(<SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />)
 
@@ -350,7 +350,7 @@ describe('SignMessage', () => {
   it('displays an error if no wallet is connected', () => {
     jest.spyOn(useWalletHook, 'default').mockReturnValue(null)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => false)
-    jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn()])
+    jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn(), undefined])
 
     const { getByText } = render(
       <SignMessage
@@ -372,7 +372,7 @@ describe('SignMessage', () => {
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => true)
     jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue(chainBuilder().build())
-    jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn()])
+    jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn(), undefined])
 
     const { getByText } = render(
       <SignMessage
@@ -398,7 +398,7 @@ describe('SignMessage', () => {
         } as ConnectedWallet),
     )
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => false)
-    jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn()])
+    jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn(), undefined])
 
     const { getByText } = render(
       <SignMessage
@@ -451,7 +451,7 @@ describe('SignMessage', () => {
       confirmationsSubmitted: 1,
     } as unknown as SafeMessage
 
-    jest.spyOn(useSafeMessage, 'default').mockReturnValue([msg, jest.fn])
+    jest.spyOn(useSafeMessage, 'default').mockReturnValue([msg, jest.fn, undefined])
 
     const { getByText } = render(
       <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />,
@@ -473,7 +473,7 @@ describe('SignMessage', () => {
         } as ConnectedWallet),
     )
 
-    jest.spyOn(useSafeMessage, 'default').mockReturnValue([undefined, jest.fn()])
+    jest.spyOn(useSafeMessage, 'default').mockReturnValue([undefined, jest.fn(), undefined])
 
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     ;(getSafeMessage as jest.Mock).mockRejectedValue(new Error('SafeMessage not found'))
@@ -541,7 +541,7 @@ describe('SignMessage', () => {
     } as unknown as SafeMessage
     ;(getSafeMessage as jest.Mock).mockResolvedValue(msg)
 
-    jest.spyOn(useSafeMessage, 'default').mockReturnValue([msg, jest.fn()])
+    jest.spyOn(useSafeMessage, 'default').mockReturnValue([msg, jest.fn(), undefined])
 
     const { getByText } = render(
       <SignMessage logoUri="www.fake.com/test.png" name="Test App" message={messageText} requestId="123" />,
@@ -610,7 +610,7 @@ describe('SignMessage', () => {
       preparedSignature: '0x678',
     } as unknown as SafeMessage
 
-    jest.spyOn(useSafeMessage, 'default').mockReturnValue([msg, jest.fn()])
+    jest.spyOn(useSafeMessage, 'default').mockReturnValue([msg, jest.fn(), undefined])
     ;(getSafeMessage as jest.Mock).mockResolvedValue(msg)
 
     const { getByText } = render(

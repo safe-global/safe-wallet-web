@@ -9,7 +9,7 @@ const messageInfobox = '[data-testid="message-infobox"]'
 const messageInfoBoxData = [
   'Collect all the confirmations',
   'Confirmations (1 of 2)',
-  'The signature will be submitted to the Safe App when the message is fully signed',
+  'The signature will be submitted to the requesting app when the message is fully signed',
 ]
 
 export function verifyConfirmationWindowTitle(title) {
@@ -36,9 +36,11 @@ export function verifyOffchainMessageHash(index) {
 }
 
 export function checkMessageInfobox() {
-  cy.get(messageInfobox).within(() => {
-    main.verifyTextVisibility(messageInfoBoxData)
-  })
+  cy.get(messageInfobox)
+    .first()
+    .within(() => {
+      main.verifyTextVisibility(messageInfoBoxData)
+    })
 }
 
 export function clickOnMessageDetails() {

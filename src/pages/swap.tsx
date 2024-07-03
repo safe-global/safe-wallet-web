@@ -1,11 +1,12 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import SwapWidget from '@/features/swap'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
 import { useContext } from 'react'
 import { AppRoutes } from '@/config/routes'
+import dynamic from 'next/dynamic'
 
+const SwapWidgetNoSSR = dynamic(() => import('@/features/swap'), { ssr: false })
 const Swap: NextPage = () => {
   const router = useRouter()
   const isBlockedCountry = useContext(GeoblockingContext)
@@ -30,7 +31,7 @@ const Swap: NextPage = () => {
       </Head>
 
       <main className="swapWrapper">
-        <SwapWidget sell={sell} />
+        <SwapWidgetNoSSR sell={sell} />
       </main>
     </>
   )

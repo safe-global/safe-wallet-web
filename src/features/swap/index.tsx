@@ -20,7 +20,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import BlockedAddress from '@/components/common/BlockedAddress'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
-import LegalDisclaimerContent from '@/components/common/LegalDisclaimerContent'
+import LegalDisclaimerContent from '@/features/swap/components/LegalDisclaimer'
 import { isBlockedAddress } from '@/services/ofac'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
@@ -28,8 +28,16 @@ import useChainId from '@/hooks/useChainId'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { id } from 'ethers'
-import { LIMIT_ORDER_TITLE, SWAP_TITLE, SWAP_ORDER_TITLE, TWAP_ORDER_TITLE } from '@/features/swap/constants'
 import useIsSwapFeatureEnabled from './hooks/useIsSwapFeatureEnabled'
+import {
+  LIMIT_ORDER_TITLE,
+  SWAP_TITLE,
+  SWAP_ORDER_TITLE,
+  TWAP_ORDER_TITLE,
+  SWAP_FEE_RECIPIENT,
+} from '@/features/swap/constants'
+import { calculateFeePercentageInBps } from '@/features/swap/helpers/fee'
+import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -69,19 +77,63 @@ const SwapWidget = ({ sell }: Params) => {
   const dispatch = useAppDispatch()
   const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const swapParams = useAppSelector(selectSwapParams)
-  const { tradeType } = swapParams
   const { safeAddress, safeLoading } = useSafeInfo()
   const [blockedAddress, setBlockedAddress] = useState('')
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
-  // useRefs as they don't trigger re-renders
-  const tradeTypeRef = useRef<TradeType>(tradeType === 'twap' ? TradeType.ADVANCED : TradeType.SWAP)
-  const sellTokenRef = useRef<Params['sell']>(
-    sell || {
+
+  const [params, setParams] = useState<CowSwapWidgetParams>({
+    appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
+    width: '100%', // Width in pixels (or 100% to use all available space)
+    height: '860px',
+    chainId,
+    standaloneMode: false,
+    disableToastMessages: true,
+    disablePostedOrderConfirmationModal: true,
+    hideLogo: true,
+    hideNetworkSelector: true,
+    sounds: {
+      orderError: null,
+      orderExecuted: null,
+      postOrder: null,
+    },
+    tradeType: swapParams.tradeType,
+    sell: sell || {
       asset: '',
       amount: '0',
     },
-  )
+    buy: {
+      asset: '',
+      amount: '0',
+    },
+    images: {
+      emptyOrders: darkMode
+        ? BASE_URL + '/images/common/swap-empty-dark.svg'
+        : BASE_URL + '/images/common/swap-empty-light.svg',
+    },
+    enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED],
+    theme: {
+      baseTheme: darkMode ? 'dark' : 'light',
+      primary: palette.primary.main,
+      background: palette.background.main,
+      paper: palette.background.paper,
+      text: palette.text.primary,
+      danger: palette.error.dark,
+      info: palette.info.main,
+      success: palette.success.main,
+      warning: palette.warning.main,
+      alert: palette.warning.main,
+    },
+    partnerFee: {
+      bps: 35,
+      recipient: SWAP_FEE_RECIPIENT,
+    },
+    content: {
+      feeLabel: 'Widget Fee',
+      feeTooltipMarkdown:
+        'The [tiered widget fee](https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps) incurred here and charged by CoW DAO for the operation of the CoW Swap Widget is automatically calculated into this quote. It will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor Safe (Wallet) operate the CoW Swap Widget and/or CoW Swap.',
+    },
+  })
 
   useEffect(() => {
     if (isBlockedAddress(safeAddress)) {
@@ -163,47 +215,39 @@ const SwapWidget = ({ sell }: Params) => {
       {
         event: CowEvents.ON_CHANGE_TRADE_PARAMS,
         handler: (newTradeParams: OnTradeParamsPayload) => {
-          const { orderType: tradeType, recipient, sellToken, sellTokenAmount } = newTradeParams
-          dispatch(setSwapParams({ tradeType }))
+          const { orderType: tradeType, recipient, sellToken, buyToken } = newTradeParams
 
-          tradeTypeRef.current = tradeType
-          sellTokenRef.current = {
-            asset: sellToken?.symbol || '',
-            amount: sellTokenAmount?.units || '0',
-          }
+          const newFeeBps = calculateFeePercentageInBps(newTradeParams)
+
+          setParams((params) => ({
+            ...params,
+            tradeType: UiOrderTypeToOrderType(tradeType),
+            partnerFee: {
+              recipient: SWAP_FEE_RECIPIENT,
+              bps: newFeeBps,
+            },
+            sell: {
+              asset: sellToken?.symbol,
+            },
+            buy: {
+              asset: buyToken?.symbol,
+            },
+          }))
+
           if (recipient && isBlockedAddress(recipient)) {
             setBlockedAddress(recipient)
           }
+
+          dispatch(setSwapParams({ tradeType }))
         },
       },
     ]
   }, [dispatch])
 
-  const [params, setParams] = useState<CowSwapWidgetParams | null>(null)
   useEffect(() => {
-    setParams({
-      appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
-      width: '100%', // Width in pixels (or 100% to use all available space)
-      height: '860px',
+    setParams((params) => ({
+      ...params,
       chainId,
-      standaloneMode: false,
-      disableToastMessages: true,
-      disablePostedOrderConfirmationModal: true,
-      hideLogo: true,
-      hideNetworkSelector: true,
-      sounds: {
-        orderError: null,
-        orderExecuted: null,
-        postOrder: null,
-      },
-      tradeType: tradeTypeRef.current,
-      sell: sellTokenRef.current,
-      images: {
-        emptyOrders: darkMode
-          ? BASE_URL + '/images/common/swap-empty-dark.svg'
-          : BASE_URL + '/images/common/swap-empty-light.svg',
-      },
-      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED],
       theme: {
         baseTheme: darkMode ? 'dark' : 'light',
         primary: palette.primary.main,
@@ -216,13 +260,8 @@ const SwapWidget = ({ sell }: Params) => {
         warning: palette.warning.main,
         alert: palette.warning.main,
       },
-      content: {
-        feeLabel: 'No fee for one month',
-        feeTooltipMarkdown:
-          'Any future transaction fee incurred by CoW Protocol here will contribute to a license fee that supports the Safe Community. Neither Safe Ecosystem Foundation nor Core Contributors GmbH operate the CoW Swap Widget and/or CoW Swap.',
-      },
-    })
-  }, [sell, palette, darkMode, chainId])
+    }))
+  }, [palette, darkMode, chainId])
 
   const chain = useCurrentChain()
 
@@ -237,10 +276,6 @@ const SwapWidget = ({ sell }: Params) => {
 
   useCustomAppCommunicator(iframeRef, appData, chain)
 
-  if (!params) {
-    return null
-  }
-
   if (blockedAddress) {
     return <BlockedAddress address={blockedAddress} />
   }
@@ -249,7 +284,7 @@ const SwapWidget = ({ sell }: Params) => {
     return (
       <Disclaimer
         title="Legal Disclaimer"
-        content={<LegalDisclaimerContent withTitle={false} isSafeApps={false} />}
+        content={<LegalDisclaimerContent />}
         onAccept={onAccept}
         buttonText="Continue"
       />
