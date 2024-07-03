@@ -626,6 +626,21 @@ export const addedSafes = {
       },
     },
   },
+  set4: {
+    11155111: {
+      '0x86Cb401afF6A25A335c440C25954A70b3c232C27': {
+        owners: [
+          {
+            value: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+          },
+          {
+            value: '0x12d0Ad7d21bdbe7E05AB0aDd973C58fB48b52Ae5',
+          },
+        ],
+        threshold: 1,
+      },
+    },
+  },
 }
 
 export const pinnedApps = {
