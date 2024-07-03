@@ -29,7 +29,7 @@ describe('Sidebar tests 3', () => {
     sideBar.verifySafeListIsEmpty()
   })
 
-  it('Verify that users with no accounts see the empty state in "My accounts" block', () => {
+  it('Verify empty state of the Watchlist', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     main.acceptCookies()
     cy.intercept('GET', constants.safeListEndpoint, {})
@@ -71,15 +71,6 @@ describe('Sidebar tests 3', () => {
     wallet.connectSigner(signer)
     sideBar.openSidebar()
     sideBar.verifySafeGiveNameOptionExists(0)
-  })
-
-  it('Verify that users with no accounts see the empty state in "My accounts" block', () => {
-    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
-    cy.intercept('GET', constants.safeListEndpoint, {})
-    wallet.connectSigner(signer)
-    sideBar.openSidebar()
-    sideBar.verifyWatchlistIsEmpty()
   })
 
   it('Verify Import/export buttons are present', () => {
