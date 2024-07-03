@@ -8,8 +8,8 @@ import Stack from '@mui/material/Stack'
 import type { ReactElement } from 'react'
 import type { TwapOrder as SwapTwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import {
-  type SwapOrder as SwapOrderType,
   type Order,
+  type SwapOrder as SwapOrderType,
   type TransactionData,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { DataRow } from '@/components/common/Table/DataRow'
@@ -34,6 +34,7 @@ import { EmptyRow } from '@/components/common/Table/EmptyRow'
 import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDuration'
 import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
 import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
+import { SurplusFee } from '@/features/swap/components/SwapOrder/rows/SurplusFee'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -200,6 +201,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
         <OrderUidRow order={order} key="order-uid-row" />,
         <StatusRow order={order} key="status-row" />,
         <RecipientRow order={order} key="recipient-row" />,
+        <SurplusFee order={order} key="fee-row" />,
       ]}
     />
   )
@@ -222,6 +224,7 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
         <PriceRow order={order} key="price-row" />,
         <SurplusRow order={order} key="surplus-row" />,
         <RecipientRow order={order} key="recipient-row" />,
+        <SurplusFee order={order} key="fee-row" />,
         <EmptyRow key="spacer-0" />,
         <DataRow title="No of parts" key="n_of_parts">
           {numberOfParts}

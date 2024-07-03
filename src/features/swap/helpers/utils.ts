@@ -1,13 +1,15 @@
 import type { Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
-import type { AnyAppDataDocVersion, latest } from '@cowprotocol/app-data'
+import type { AnyAppDataDocVersion, latest, LatestAppDataDocVersion } from '@cowprotocol/app-data'
+
+import { TradeType, UiOrderType } from '@/features/swap/types'
 
 type Quantity = {
   amount: string | number | bigint
   decimals: number
 }
 
-enum OrderKind {
+export enum OrderKind {
   SELL = 'sell',
   BUY = 'buy',
 }
@@ -159,6 +161,13 @@ export const getOrderClass = (order: Pick<SwapOrder, 'fullAppData'>): latest.Ord
   return orderClass || 'market'
 }
 
+export const getOrderFeeBps = (order: Pick<SwapOrder, 'fullAppData'>): number => {
+  const fullAppData = order.fullAppData as unknown as LatestAppDataDocVersion
+  const basisPoints = (fullAppData?.metadata?.partnerFee as latest.PartnerFee)?.bps
+
+  return Number(basisPoints) || 0
+}
+
 export const isOrderPartiallyFilled = (
   order: Pick<SwapOrder, 'executedBuyAmount' | 'executedSellAmount' | 'sellAmount' | 'buyAmount' | 'kind'>,
 ): boolean => {
@@ -172,4 +181,14 @@ export const isOrderPartiallyFilled = (
   }
 
   return BigInt(executedSellAmount) !== 0n && executedSellAmount < sellAmount
+}
+export const UiOrderTypeToOrderType = (orderType: UiOrderType): TradeType => {
+  switch (orderType) {
+    case UiOrderType.SWAP:
+      return TradeType.SWAP
+    case UiOrderType.LIMIT:
+      return TradeType.LIMIT
+    case UiOrderType.TWAP:
+      return TradeType.ADVANCED
+  }
 }

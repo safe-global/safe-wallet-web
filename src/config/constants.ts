@@ -85,6 +85,7 @@ export const HelpCenterArticle = {
   UNEXPECTED_DELEGATE_CALL: `${HELP_CENTER_URL}/en/articles/40794-why-do-i-see-an-unexpected-delegate-call-warning-in-my-transaction`,
   DELEGATES: `${HELP_CENTER_URL}/en/articles/40799-what-is-a-delegate-key`,
   PUSH_NOTIFICATIONS: `${HELP_CENTER_URL}/en/articles/99197-how-to-start-receiving-web-push-notifications-in-the-web-wallet`,
+  SWAP_WIDGET_FEES: `${HELP_CENTER_URL}/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps`,
 } as const
 export const HelperCenterArticleTitles = {
   RECOVERY: 'Learn more about the Account recovery process',
