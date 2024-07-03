@@ -72,7 +72,7 @@ const SafeAppList = ({
             </li>
           ))}
 
-        {!isFiltered && <NativeSwapsCard />}
+        {!isFiltered && !addCustomApp && <NativeSwapsCard />}
 
         {/* Flat list filtered by search query */}
         {safeAppsList.map((safeApp) => (
