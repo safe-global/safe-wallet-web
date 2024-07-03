@@ -1,4 +1,4 @@
-import type { Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse, Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
 import type { AnyAppDataDocVersion, latest, LatestAppDataDocVersion } from '@cowprotocol/app-data'
 
@@ -182,6 +182,7 @@ export const isOrderPartiallyFilled = (
 
   return BigInt(executedSellAmount) !== 0n && executedSellAmount < sellAmount
 }
+
 export const UiOrderTypeToOrderType = (orderType: UiOrderType): TradeType => {
   switch (orderType) {
     case UiOrderType.SWAP:
@@ -191,4 +192,18 @@ export const UiOrderTypeToOrderType = (orderType: UiOrderType): TradeType => {
     case UiOrderType.TWAP:
       return TradeType.ADVANCED
   }
+}
+
+export const isSettingTwapFallbackHandler = (decodedData: DecodedDataResponse | undefined) => {
+  return (
+    decodedData?.parameters?.some((item) =>
+      item.valueDecoded?.some(
+        (decoded) =>
+          decoded.dataDecoded?.method === 'setFallbackHandler' &&
+          decoded.dataDecoded.parameters?.some(
+            (parameter) => parameter.name === 'handler' && parameter.value === TWAP_FALLBACK_HANDLER,
+          ),
+      ),
+    ) || false
+  )
 }
