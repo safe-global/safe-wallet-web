@@ -1,5 +1,6 @@
 export const AppRoutes = {
   '404': '/404',
+  '403': '/403',
   wc: '/wc',
   terms: '/terms',
   swap: '/swap',

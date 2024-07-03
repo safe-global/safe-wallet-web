@@ -9,12 +9,11 @@ import { AppRoutes } from '@/config/routes'
 import { WidgetContainer, WidgetBody, ViewAllLink } from '../styled'
 import css from '../PendingTxs/styles.module.css'
 import { useRouter } from 'next/router'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
 import { SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { useVisibleAssets } from '@/components/balances/AssetsTable/useHideAssets'
 import BuyCryptoButton from '@/components/common/BuyCryptoButton'
 import SendButton from '@/components/balances/AssetsTable/SendButton'
+import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
 
 const MAX_ASSETS = 5
 
@@ -70,7 +69,7 @@ const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][numbe
 )
 
 const AssetList = ({ items }: { items: SafeBalanceResponse['items'] }) => {
-  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
