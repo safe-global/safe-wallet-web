@@ -2,7 +2,6 @@ import * as constants from '../../support/constants.js'
 import * as main from '../pages/main.page.js'
 import * as create_tx from '../pages/create_tx.pages.js'
 
-// Incoming from CowSwap
 export const inputCurrencyInput = '[id="input-currency-input"]'
 export const outputurrencyInput = '[id="output-currency-input"]'
 const tokenList = '[id="tokens-list"]'
@@ -14,9 +13,12 @@ export const dashboardSwapBtn = '[data-testid="overview-swap-btn"]'
 export const customRecipient = 'div[id="recipient"]'
 const recipientToggle = 'button[id="toggle-recipient-mode-button"]'
 const orderTypeMenuItem = 'div[class*="MenuItem"]'
+const explorerBtn = '[data-testid="explorer-btn"]'
 const confirmSwapStr = 'Confirm Swap'
 const swapBtnStr = /Confirm Swap|Swap|Confirm (Approve COW and Swap)|Confirm/
 const orderSubmittedStr = 'Order Submitted'
+const orderIdStr = 'Order ID'
+const cowOrdersUrl = 'https://explorer.cow.fi/orders'
 
 export const blockedAddress = '0x8576acc5c05d6ce88f4e49bf65bdf0c62f91353c'
 export const blockedAddressStr = 'Blocked address'
@@ -228,5 +230,14 @@ export function checkTokenOrder(regexPattern, option) {
       cy.wrap($div).should(($div) => {
         expect(text).to.match(regex)
       })
+    })
+}
+
+export function verifyOrderIDUrl() {
+  cy.get(create_tx.txRowTitle)
+    .contains(orderIdStr)
+    .parent()
+    .within(() => {
+      cy.get(explorerBtn).should('have.attr', 'href').and('include', cowOrdersUrl)
     })
 }

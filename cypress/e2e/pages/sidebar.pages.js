@@ -33,12 +33,25 @@ const queuedTxInfo = '[data-testid="queued-tx-info"]'
 const showMoreBtn = '[data-testid="show-more-btn" ]'
 const importBtn = '[data-testid="import-btn"]'
 export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
+const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
+export const importBtnStr = 'Import'
+export const exportBtnStr = 'Export'
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
 export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
+export const sideBarSafes = {
+  safe1: '0xBb26E3717172d5000F87DeFd391994f789D80aEB',
+  safe2: '0x905934aA8758c06B2422F0C90D97d2fbb6677811',
+  safe1short: '0xBb26...0aEB',
+  safe2short: '0x9059...7811',
+  safe3short: '0x86Cb...2C27',
+}
 export const testSafeHeaderDetails = ['2/2', safes.SEP_STATIC_SAFE_9_SHORT]
 const receiveAssetsStr = 'Receive assets'
+const emptyWatchListStr = 'Watch any Safe Account to keep an eye on its activity'
+const emptySafeListStr = "You don't have any Safe Accounts yet"
+const myAccountsStr = 'My accounts'
 
 export function getImportBtn() {
   return cy.get(importBtn).scrollIntoView().should('be.visible')
@@ -141,6 +154,11 @@ export function verifyAddedSafesExist(safes) {
   main.verifyValuesExist(sideSafeListItem, safes)
 }
 
+export function verifyAddedSafesExistByIndex(index, safe) {
+  cy.get(sideSafeListItem).eq(index).should('contain', safe)
+  cy.get(sideSafeListItem).eq(index).should('contain', 'sep:')
+}
+
 export function verifySafesByNetwork(netwrok, safes) {
   cy.get(sidebarSafeContainer).within(() => {
     cy.get(chainLogo)
@@ -186,7 +204,7 @@ export function renameSafeItem(oldName, newName) {
   clickOnRenameBtn()
   typeSafeName(newName)
 }
-//
+
 export function removeSafeItem(name) {
   clickOnSafeItemOptionsBtn(name)
   clickOnRemoveBtn()
@@ -237,4 +255,21 @@ export function checkCurrencyInHeader(currency) {
 
 export function checkSafeAddressInHeader(address) {
   main.verifyValuesExist(sidebarSafeHeader, address)
+}
+
+export function verifyWatchlistIsEmpty() {
+  main.verifyValuesExist(sidebarSafeContainer, [emptyWatchListStr])
+}
+
+export function verifySafeListIsEmpty() {
+  main.verifyValuesExist(sidebarSafeContainer, [emptySafeListStr])
+}
+
+export function verifySafeGiveNameOptionExists(index) {
+  cy.get(safeItemMenuIcon).eq(index).click()
+  clickOnRenameBtn()
+}
+
+export function checkMyAccountCounter(value) {
+  cy.contains(myAccountsStr).should('contain', value)
 }

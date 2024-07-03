@@ -304,3 +304,7 @@ export function verifyTextVisibility(stringsArray) {
 export function getIframeBody(iframe) {
   return cy.get(iframe).its('0.contentDocument.body').should('not.be.empty').then(cy.wrap)
 }
+
+export const checkButtonByTextExists = (buttonText) => {
+  cy.get('button').contains(buttonText).should('exist')
+}
