@@ -17,7 +17,7 @@ const initialState: CookiesState = {
 }
 
 export const cookiesSlice = createSlice({
-  name: 'cookies',
+  name: 'cookies_v1',
   initialState,
   reducers: {
     saveCookieConsent: (_, { payload }: PayloadAction<CookiesState>) => payload,

@@ -72,8 +72,10 @@ export const CookieBanner = ({
         <Grid container alignItems="center">
           <Grid item xs>
             <Typography variant="body2" mb={2}>
-              By clicking &quot;Accept all&quot; you agree to the use of the tools listed below and their corresponding
-              cookies. <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
+              By browsing this page, you accept our{' '}
+              <ExternalLink href={AppRoutes.terms}>Terms & Conditions</ExternalLink> and the use of necessary cookies.
+              By clicking &quot;Accept all&quot; you additionally agree to the use of Beamer and Analytics cookies as
+              listed below. <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
             </Typography>
 
             <Grid container alignItems="center" gap={4}>
