@@ -49,7 +49,7 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfo
           shortAddress={false}
           hasExplorer
           showCopyButton
-          trusted={trusted}
+          trusted={trusted && !imitation}
         >
           <TransferActions address={address.value} txInfo={txInfo} trusted={trusted} />
         </EthHashInfo>
