@@ -9,7 +9,7 @@ import {
   type SafeAppData,
   SafeAppFeatures,
 } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
-import { useCurrentChain } from '@/hooks/useChains'
+import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -38,6 +38,7 @@ import {
 } from '@/features/swap/constants'
 import { calculateFeePercentageInBps } from '@/features/swap/helpers/fee'
 import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
+import { FEATURES } from '@/utils/chains'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -81,6 +82,7 @@ const SwapWidget = ({ sell }: Params) => {
   const [blockedAddress, setBlockedAddress] = useState('')
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
+  const feeEnabled = useHasFeature(FEATURES.NATIVE_SWAPS_FEE_ENABLED)
 
   const [params, setParams] = useState<CowSwapWidgetParams>({
     appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
@@ -125,7 +127,7 @@ const SwapWidget = ({ sell }: Params) => {
       alert: palette.warning.main,
     },
     partnerFee: {
-      bps: 35,
+      bps: feeEnabled ? 35 : 0,
       recipient: SWAP_FEE_RECIPIENT,
     },
     content: {
@@ -217,7 +219,7 @@ const SwapWidget = ({ sell }: Params) => {
         handler: (newTradeParams: OnTradeParamsPayload) => {
           const { orderType: tradeType, recipient, sellToken, buyToken } = newTradeParams
 
-          const newFeeBps = calculateFeePercentageInBps(newTradeParams)
+          const newFeeBps = feeEnabled ? calculateFeePercentageInBps(newTradeParams) : 0
 
           setParams((params) => ({
             ...params,
@@ -242,7 +244,7 @@ const SwapWidget = ({ sell }: Params) => {
         },
       },
     ]
-  }, [dispatch])
+  }, [dispatch, feeEnabled])
 
   useEffect(() => {
     setParams((params) => ({
