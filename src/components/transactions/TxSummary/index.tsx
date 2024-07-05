@@ -44,7 +44,7 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
         [css.history]: !isQueue,
         [css.conflictGroup]: isConflictGroup,
         [css.bulkGroup]: isBulkGroup,
-        [css.untrusted]: !isTrusted,
+        [css.untrusted]: !isTrusted || isImitationTransaction,
       })}
       id={tx.id}
     >
