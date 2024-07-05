@@ -47,11 +47,17 @@ export const sideBarSafes = {
   safe2short: '0x9059...7811',
   safe3short: '0x86Cb...2C27',
 }
+export const sideBarSafesPendingActions = {
+  safe1: '0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb',
+  safe1short: '0x5912...fFdb',
+}
 export const testSafeHeaderDetails = ['2/2', safes.SEP_STATIC_SAFE_9_SHORT]
 const receiveAssetsStr = 'Receive assets'
 const emptyWatchListStr = 'Watch any Safe Account to keep an eye on its activity'
 const emptySafeListStr = "You don't have any Safe Accounts yet"
 const myAccountsStr = 'My accounts'
+const confirmTxStr = (number) => `${number} to confirm`
+export const confirmGenStr = 'to confirm'
 
 export function getImportBtn() {
   return cy.get(importBtn).scrollIntoView().should('be.visible')
@@ -272,4 +278,18 @@ export function verifySafeGiveNameOptionExists(index) {
 
 export function checkMyAccountCounter(value) {
   cy.contains(myAccountsStr).should('contain', value)
+}
+
+export function checkTxToConfirm(numberOfTx) {
+  const str = confirmTxStr(numberOfTx)
+  main.verifyValuesExist(sideSafeListItem, [str])
+}
+
+export function verifyTxToConfirmDoesNotExist() {
+  main.verifyValuesDoNotExist(sideSafeListItem, [confirmGenStr])
+}
+
+export function checkBalanceExists() {
+  const balance = new RegExp(`\\s*\\d*\\.?\\d*\\s*`, 'i')
+  const element = cy.get(chainLogo).prev().contains(balance)
 }

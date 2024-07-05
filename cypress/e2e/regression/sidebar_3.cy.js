@@ -5,11 +5,14 @@ import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as create_wallet from '../pages/create_wallet.pages.js'
+import * as navigation from '../pages/navigation.page.js'
+import * as owner from '../pages/owners.pages.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 const signer1 = walletCredentials.OWNER_1_PRIVATE_KEY
+const signer2 = walletCredentials.OWNER_3_PRIVATE_KEY
 
 describe('Sidebar tests 3', () => {
   before(async () => {
@@ -113,5 +116,40 @@ describe('Sidebar tests 3', () => {
     wallet.connectSigner(signer1)
     sideBar.openSidebar()
     sideBar.verifyAddedSafesExist([sideBar.sideBarSafes.safe3short])
+  })
+
+  it('Verify pending signature is displayed in sidebar for unsigned tx', () => {
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
+    main.acceptCookies()
+    wallet.connectSigner(signer)
+    cy.intercept('GET', constants.safeListEndpoint, {
+      11155111: [sideBar.sideBarSafesPendingActions.safe1],
+    })
+    sideBar.openSidebar()
+    sideBar.verifyTxToConfirmDoesNotExist()
+
+    cy.get('body').click()
+
+    owner.clickOnWalletExpandMoreIcon()
+    navigation.clickOnDisconnectBtn()
+    cy.intercept('GET', constants.safeListEndpoint, {
+      11155111: [sideBar.sideBarSafesPendingActions.safe1],
+    })
+    wallet.connectSigner(signer2)
+    sideBar.openSidebar()
+    sideBar.verifyAddedSafesExist([sideBar.sideBarSafesPendingActions.safe1short])
+    sideBar.checkTxToConfirm(1)
+  })
+
+  it('Verify balance exists in a tx in sidebar', () => {
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
+    main.acceptCookies()
+    wallet.connectSigner(signer)
+    cy.intercept('GET', constants.safeListEndpoint, {
+      11155111: [sideBar.sideBarSafesPendingActions.safe1],
+    })
+    sideBar.openSidebar()
+    sideBar.verifyTxToConfirmDoesNotExist()
+    sideBar.checkBalanceExists()
   })
 })
