@@ -26,7 +26,7 @@ export const SurplusFee = ({
             title={
               <>
                 The amount of fees paid for this order.
-                {bps > 0 && ` This includes a Widget fee of ${bps / 100} % and network fees.`}
+                {bps > 0 && ` This includes a Widget fee of ${bps / 100}% and network fees.`}
               </>
             }
           />
