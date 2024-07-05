@@ -14,7 +14,7 @@ import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 
-const safeBalanceEth = 405240000000000000n
+const safeBalanceEth = 405250000000000000n
 const qtrustBanance = 60000000000000000000n
 const transferAmount = '1'
 
@@ -97,15 +97,19 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
         return main.fetchCurrentNonce(network_pref + originatingSafe)
       })
       .then(async (currentNonce) => {
-        executeTransactionFlow(originatingSafe, walletAddress.toString(), transferAmount).then(async () => {
-          main.checkTokenBalanceIsNull(network_pref + originatingSafe, constants.tokenAbbreviation.tpcc)
-          const contractWithWallet = nftContract.connect(owner1Signer)
-          const tx = await contractWithWallet.safeTransferFrom(walletAddress.toString(), originatingSafe, 2, {
-            gasLimit: 200000,
+        return main.getRelayRemainingAttempts(originatingSafe).then((remainingAttempts) => {
+          if (remainingAttempts < 1) {
+            throw new Error(main.noRelayAttemptsError)
+          }
+          executeTransactionFlow(originatingSafe, walletAddress.toString(), transferAmount).then(async () => {
+            main.checkTokenBalanceIsNull(network_pref + originatingSafe, constants.tokenAbbreviation.tpcc)
+            const contractWithWallet = nftContract.connect(owner1Signer)
+            const tx = await contractWithWallet.safeTransferFrom(walletAddress.toString(), originatingSafe, 2, {
+              gasLimit: 200000,
+            })
+            await tx.wait()
+            main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
           })
-
-          await tx.wait()
-          main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
         })
       })
   })
@@ -129,37 +133,42 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
         return main.fetchCurrentNonce(network_pref + targetSafe)
       })
       .then(async (currentNonce) => {
-        executeTransactionFlow(targetSafe, walletAddress.toString(), tokenAmount2)
-        const amount = ethers.parseUnits(tokenAmount2, unit_eth).toString()
-        const safeTransactionData = {
-          to: targetSafe,
-          data: '0x',
-          value: amount.toString(),
-        }
+        return main.getRelayRemainingAttempts(targetSafe).then(async (remainingAttempts) => {
+          if (remainingAttempts < 1) {
+            throw new Error(main.noRelayAttemptsError)
+          }
+          executeTransactionFlow(targetSafe, walletAddress.toString(), tokenAmount2)
+          const amount = ethers.parseUnits(tokenAmount2, unit_eth).toString()
+          const safeTransactionData = {
+            to: targetSafe,
+            data: '0x',
+            value: amount.toString(),
+          }
 
-        const safeTransaction = await protocolKitOwner1_S3.createTransaction({ transactions: [safeTransactionData] })
-        const safeTxHash = await protocolKitOwner1_S3.getTransactionHash(safeTransaction)
-        const senderSignature = await protocolKitOwner1_S3.signHash(safeTxHash)
-        const safeAddress = outgoingSafeAddress
+          const safeTransaction = await protocolKitOwner1_S3.createTransaction({ transactions: [safeTransactionData] })
+          const safeTxHash = await protocolKitOwner1_S3.getTransactionHash(safeTransaction)
+          const senderSignature = await protocolKitOwner1_S3.signHash(safeTxHash)
+          const safeAddress = outgoingSafeAddress
 
-        await apiKit.proposeTransaction({
-          safeAddress,
-          safeTransactionData: safeTransaction.data,
-          safeTxHash,
-          senderAddress: await owner1Signer.getAddress(),
-          senderSignature: senderSignature.data,
+          await apiKit.proposeTransaction({
+            safeAddress,
+            safeTransactionData: safeTransaction.data,
+            safeTxHash,
+            senderAddress: await owner1Signer.getAddress(),
+            senderSignature: senderSignature.data,
+          })
+
+          const pendingTransactions = await apiKit.getPendingTransactions(safeAddress)
+          const safeTxHashofExistingTx = pendingTransactions.results[0].safeTxHash
+
+          const signature = await protocolKitOwner2_S3.signHash(safeTxHashofExistingTx)
+          await apiKit.confirmTransaction(safeTxHashofExistingTx, signature.data)
+
+          const safeTx = await apiKit.getTransaction(safeTxHashofExistingTx)
+          await protocolKitOwner2_S3.executeTransaction(safeTx)
+          main.verifyNonceChange(network_pref + targetSafe, currentNonce + 1)
+          main.checkTokenBalance(network_pref + targetSafe, constants.tokenAbbreviation.eth, safeBalanceEth)
         })
-
-        const pendingTransactions = await apiKit.getPendingTransactions(safeAddress)
-        const safeTxHashofExistingTx = pendingTransactions.results[0].safeTxHash
-
-        const signature = await protocolKitOwner2_S3.signHash(safeTxHashofExistingTx)
-        await apiKit.confirmTransaction(safeTxHashofExistingTx, signature.data)
-
-        const safeTx = await apiKit.getTransaction(safeTxHashofExistingTx)
-        await protocolKitOwner2_S3.executeTransaction(safeTx)
-        main.verifyNonceChange(network_pref + targetSafe, currentNonce + 1)
-        main.checkTokenBalance(network_pref + targetSafe, constants.tokenAbbreviation.eth, safeBalanceEth)
       })
   })
 
@@ -186,16 +195,21 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
         return main.fetchCurrentNonce(network_pref + originatingSafe)
       })
       .then(async (currentNonce) => {
-        executeTransactionFlow(originatingSafe, walletAddress.toString(), transferAmount)
+        return main.getRelayRemainingAttempts(originatingSafe).then(async (remainingAttempts) => {
+          if (remainingAttempts < 1) {
+            throw new Error(main.noRelayAttemptsError)
+          }
+          executeTransactionFlow(originatingSafe, walletAddress.toString(), transferAmount)
 
-        const contractWithWallet = tokenContract.connect(signers[0])
-        const tx = await contractWithWallet.transfer(originatingSafe, amount, {
-          gasLimit: 200000,
+          const contractWithWallet = tokenContract.connect(signers[0])
+          const tx = await contractWithWallet.transfer(originatingSafe, amount, {
+            gasLimit: 200000,
+          })
+
+          await tx.wait()
+          main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
+          main.checkTokenBalance(network_pref + originatingSafe, constants.tokenAbbreviation.qtrust, qtrustBanance)
         })
-
-        await tx.wait()
-        main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
-        main.checkTokenBalance(network_pref + originatingSafe, constants.tokenAbbreviation.qtrust, qtrustBanance)
       })
   })
 })
