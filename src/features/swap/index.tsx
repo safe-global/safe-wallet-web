@@ -85,12 +85,14 @@ const SwapWidget = ({ sell }: Params) => {
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
   const feeEnabled = useHasFeature(FEATURES.NATIVE_SWAPS_FEE_ENABLED)
+  const useStagingCowServer = useHasFeature(FEATURES.NATIVE_SWAPS_USE_COW_STAGING_SERVER)
 
   const [params, setParams] = useState<CowSwapWidgetParams>({
     appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
     width: '100%', // Width in pixels (or 100% to use all available space)
     height: '860px',
     chainId,
+    baseUrl: useStagingCowServer ? 'https://staging.swap.cow.fi' : 'https://swap.cow.fi',
     standaloneMode: false,
     disableToastMessages: true,
     disablePostedOrderConfirmationModal: true,
