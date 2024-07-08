@@ -49,6 +49,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
   safeTx: SafeTransaction,
   txOptions: TransactionOptions,
   provider: Eip1193Provider,
+  safeAddress: string,
 ) => {
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
   const eventParams = { groupKey: CF_TX_GROUP_KEY }
@@ -68,12 +69,11 @@ export const dispatchTxExecutionAndDeploySafe = async (
     // @ts-ignore TODO: Check why TransactionResponse type doesn't work
     result = await signer.sendTransaction({ ...deploymentTx, gasLimit: gas })
   } catch (error) {
-    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error), safeAddress: '' })
+    safeCreationDispatch(SafeCreationEvent.FAILED, { ...eventParams, error: asError(error), safeAddress })
     throw error
   }
 
-  // TODO: Probably need to pass the actual safe address
-  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash, safeAddress: '' })
+  safeCreationDispatch(SafeCreationEvent.PROCESSING, { ...eventParams, txHash: result!.hash, safeAddress })
 
   return result!.hash
 }
@@ -81,6 +81,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
 export const deploySafeAndExecuteTx = async (
   txOptions: TransactionOptions,
   wallet: ConnectedWallet | null,
+  safeAddress: string,
   safeTx?: SafeTransaction,
   provider?: Eip1193Provider,
 ) => {
@@ -88,7 +89,7 @@ export const deploySafeAndExecuteTx = async (
   assertWallet(wallet)
   assertProvider(provider)
 
-  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, provider)
+  return dispatchTxExecutionAndDeploySafe(safeTx, txOptions, provider, safeAddress)
 }
 
 export const { getStore: getNativeBalance, setStore: setNativeBalance } = new ExternalStore<bigint>(0n)
