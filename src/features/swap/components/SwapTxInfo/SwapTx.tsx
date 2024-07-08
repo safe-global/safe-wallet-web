@@ -32,9 +32,14 @@ export const SwapTx = ({ info }: { info: Order }): ReactElement => {
 
   if (!isSellOrder) {
     from = (
-      <Box style={{ paddingRight: 5, display: 'inline-block' }}>
-        <TokenIcon logoUri={sellToken.logoUri || undefined} tokenSymbol={sellToken.symbol} />
-      </Box>
+      <>
+        <Box style={{ paddingRight: 5, display: 'inline-block' }}>
+          <TokenIcon logoUri={sellToken.logoUri || undefined} tokenSymbol={sellToken.symbol} />
+        </Box>
+        <Typography component="span" fontWeight="bold">
+          {sellToken.symbol}
+        </Typography>
+      </>
     )
     to = (
       <>
