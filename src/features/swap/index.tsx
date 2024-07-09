@@ -287,14 +287,7 @@ const SwapWidget = ({ sell }: Params) => {
   }
 
   if (!isConsentAccepted) {
-    return (
-      <Disclaimer
-        title="Legal Disclaimer"
-        content={<LegalDisclaimerContent />}
-        onAccept={onAccept}
-        buttonText="Continue"
-      />
-    )
+    return <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
   }
 
   if (!isSwapFeatureEnabled) {
