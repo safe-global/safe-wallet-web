@@ -6,6 +6,11 @@
       "oneOfOne": "1 out of 1",
       "title": "Swap order"
     },
+    "orderDetails": {
+      "expiry2Mins": "in 2 minutes",
+      "interactWith": "GPv2Settlement",
+      "DAIeqCOW": "1 DAI = COW"
+    },
     "history": {
       "buyOrder": "Buy order",
       "buy": "Buy",

@@ -32,7 +32,7 @@ export const OrderFeeConfirmationView = ({
   )
 
   return (
-    <DataRow title={title} key="widget_fee">
+    <DataRow datatestid="widget-fee" title={title} key="widget_fee">
       {Number(bps) / 100} %
     </DataRow>
   )
