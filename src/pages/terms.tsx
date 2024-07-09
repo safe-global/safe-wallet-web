@@ -12,7 +12,7 @@ const SafeTerms = () => (
     <Typography variant="h1" mb={2}>
       Terms and Conditions
     </Typography>
-    <p>Last updated: April 2024.</p>
+    <p>Last updated: July 2024.</p>
 
     <h3>1. What is the scope of the Terms?</h3>
     <ol start={1}>
@@ -342,8 +342,8 @@ const SafeTerms = () => (
     <h3>12. Are we responsible for third-party content and services?</h3>
     <ol>
       <li>
-        You may view, have access to, and use third-party content and services, for example widget integrations within
-        the Safe App (“Third-Party Features”). You view, access or use Third-Party Features at your own election. Your
+        You may view, have access to, and use third-party content and services, for example widget integrations, within
+        the Safe App (“Third-Party Features”). You view, access, or use Third-Party Features at your own election. Your
         reliance on Third-Party Features is subject to separate terms and conditions set forth by the applicable third
         party content and/or service provider (“Third-Party Terms”). Third-Party Terms may, amongst other things,
         <ol type="a">
@@ -488,8 +488,8 @@ const SafeTerms = () => (
     <ol>
       <li>
         If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
-        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
-        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
+        service, network, and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
+        by us), CC shall be liable only in cases of intent, gross negligence, or if CC has fraudulently concealed a
         possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
         the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
         of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
