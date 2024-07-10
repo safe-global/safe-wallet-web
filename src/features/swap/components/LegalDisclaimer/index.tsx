@@ -8,7 +8,7 @@ const LegalDisclaimerContent = () => (
   <div className={css.disclaimerContainer}>
     <div className={css.disclaimerInner}>
       <Typography mb={4} mt={4}>
-        You are now accessing a third party widget!
+        You are now accessing a third party widget.
       </Typography>
 
       <Typography mb={4}>
