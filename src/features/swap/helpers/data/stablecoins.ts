@@ -91,6 +91,11 @@ export const stableCoinAddresses: {
     symbol: 'usdc',
     chains: ['arbitrum-one'],
   },
+  '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': {
+    name: 'USDT',
+    symbol: 'usdt',
+    chains: ['arbitrum-one'],
+  },
   '0x6b175474e89094c44da98b954eedeac495271d0f': {
     name: 'Dai',
     symbol: 'dai',
