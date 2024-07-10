@@ -2,7 +2,7 @@
   "name": "safe-wallet-web",
   "homepage": "https://github.com/safe-global/safe-wallet-web",
   "license": "GPL-3.0",
-  "version": "1.38.1",
+  "version": "1.39.0",
   "type": "module",
   "scripts": {
     "dev": "next dev",
@@ -43,7 +43,7 @@
     "@gnosis.pm/zodiac/**/ethers": "^6.11.1"
   },
   "dependencies": {
-    "@cowprotocol/widget-react": "^0.9.1",
+    "@cowprotocol/widget-react": "^0.9.3",
     "@ducanh2912/next-pwa": "^9.7.1",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.0",

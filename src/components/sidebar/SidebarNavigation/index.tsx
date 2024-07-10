@@ -18,7 +18,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { isRouteEnabled } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
-import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
 
 const getSubdirectory = (pathname: string): string => {
@@ -31,18 +30,17 @@ const Navigation = (): ReactElement => {
   const { safe } = useSafeInfo()
   const currentSubdirectory = getSubdirectory(router.pathname)
   const queueSize = useQueuedTxsLength()
-  const isCounterFactualSafe = useIsCounterfactualSafe()
   const isBlockedCountry = useContext(GeoblockingContext)
   const enabledNavItems = useMemo(() => {
     return navItems.filter((item) => {
       const enabled = isRouteEnabled(item.href, chain)
 
-      if (item.href === AppRoutes.swap && (isCounterFactualSafe || isBlockedCountry)) {
+      if (item.href === AppRoutes.swap && isBlockedCountry) {
         return false
       }
       return enabled
     })
-  }, [chain, isBlockedCountry, isCounterFactualSafe])
+  }, [chain, isBlockedCountry])
 
   const getBadge = (item: NavItem) => {
     // Indicate whether the current Safe needs an upgrade

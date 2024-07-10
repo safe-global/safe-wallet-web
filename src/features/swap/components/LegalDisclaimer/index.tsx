@@ -8,7 +8,7 @@ const LegalDisclaimerContent = () => (
   <div className={css.disclaimerContainer}>
     <div className={css.disclaimerInner}>
       <Typography mb={4} mt={4}>
-        You are now accessing a third party widget!
+        You are now accessing a third party widget.
       </Typography>
 
       <Typography mb={4}>
@@ -25,8 +25,11 @@ const LegalDisclaimerContent = () => (
         contain more detailed provisions binding on you relating to such third party content.
       </Typography>
       <Typography>
-        By clicking &quot;continue&quot; you re-confirm to have read and understood our terms and this message, and
-        agree to them.
+        By clicking &quot;continue&quot; you re-confirm to have read and understood our{' '}
+        <ExternalLink href={AppRoutes.terms} sx={{ textDecoration: 'none' }}>
+          terms
+        </ExternalLink>{' '}
+        and this message, and agree to them.
       </Typography>
     </div>
   </div>

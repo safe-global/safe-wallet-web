@@ -93,8 +93,8 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
           ) : (
             <></>
           ),
-          <OrderFeeConfirmationView key="SurplusFee" order={order} hideWhenNonFulfilled={false} />,
-          <DataRow datatestid="interact-wth" key="Interact with" title="Interact with">
+          <OrderFeeConfirmationView key="SurplusFee" order={order} />,
+          <DataRow datatestid="interact-wth"  key="Interact with" title="Interact with">
             <NamedAddress address={settlementContract} onlyName hasExplorer shortAddress={false} avatarSize={24} />
           </DataRow>,
           receiver && owner !== receiver ? (

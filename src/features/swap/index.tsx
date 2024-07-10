@@ -9,7 +9,7 @@ import {
   type SafeAppData,
   SafeAppFeatures,
 } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
-import { useCurrentChain } from '@/hooks/useChains'
+import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -38,13 +38,15 @@ import {
 } from '@/features/swap/constants'
 import { calculateFeePercentageInBps } from '@/features/swap/helpers/fee'
 import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
+import { FEATURES } from '@/utils/chains'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
 const PRE_SIGN_SIGHASH = id('setPreSignature(bytes,bool)').slice(0, 10)
 const WRAP_SIGHASH = id('deposit()').slice(0, 10)
 const UNWRAP_SIGHASH = id('withdraw(uint256)').slice(0, 10)
-const CREATE_WITH_CONTEXT = id('createWithContext((address,bytes32,bytes),address,bytes,bool)').slice(0, 10)
+const CREATE_WITH_CONTEXT_SIGHASH = id('createWithContext((address,bytes32,bytes),address,bytes,bool)').slice(0, 10)
+const CANCEL_ORDER_SIGHASH = id('invalidateOrder(bytes)').slice(0, 10)
 
 type Params = {
   sell?: {
@@ -59,7 +61,8 @@ export const getSwapTitle = (tradeType: SwapState['tradeType'], txs: BaseTransac
     [APPROVAL_SIGNATURE_HASH]: 'Approve',
     [WRAP_SIGHASH]: 'Wrap',
     [UNWRAP_SIGHASH]: 'Unwrap',
-    [CREATE_WITH_CONTEXT]: TWAP_ORDER_TITLE,
+    [CREATE_WITH_CONTEXT_SIGHASH]: TWAP_ORDER_TITLE,
+    [CANCEL_ORDER_SIGHASH]: 'Cancel Order',
   }
 
   const swapTitle = txs
@@ -81,12 +84,15 @@ const SwapWidget = ({ sell }: Params) => {
   const [blockedAddress, setBlockedAddress] = useState('')
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
+  const feeEnabled = useHasFeature(FEATURES.NATIVE_SWAPS_FEE_ENABLED)
+  const useStagingCowServer = useHasFeature(FEATURES.NATIVE_SWAPS_USE_COW_STAGING_SERVER)
 
   const [params, setParams] = useState<CowSwapWidgetParams>({
     appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
     width: '100%', // Width in pixels (or 100% to use all available space)
     height: '860px',
     chainId,
+    baseUrl: useStagingCowServer ? 'https://staging.swap.cow.fi' : 'https://swap.cow.fi',
     standaloneMode: false,
     disableToastMessages: true,
     disablePostedOrderConfirmationModal: true,
@@ -125,13 +131,13 @@ const SwapWidget = ({ sell }: Params) => {
       alert: palette.warning.main,
     },
     partnerFee: {
-      bps: 35,
+      bps: feeEnabled ? 35 : 0,
       recipient: SWAP_FEE_RECIPIENT,
     },
     content: {
       feeLabel: 'Widget Fee',
       feeTooltipMarkdown:
-        'The [tiered widget fee](https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps) incurred here and charged by CoW DAO for the operation of the CoW Swap Widget is automatically calculated into this quote. It will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor Safe (Wallet) operate the CoW Swap Widget and/or CoW Swap.',
+        'The [tiered widget fee](https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps) incurred here is charged by CoW Protocol for the operation of this widget. The fee is automatically calculated into this quote. Part of the fee will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor Safe{Wallet} operate the CoW Swap Widget and/or CoW Swap',
     },
   })
 
@@ -217,7 +223,7 @@ const SwapWidget = ({ sell }: Params) => {
         handler: (newTradeParams: OnTradeParamsPayload) => {
           const { orderType: tradeType, recipient, sellToken, buyToken } = newTradeParams
 
-          const newFeeBps = calculateFeePercentageInBps(newTradeParams)
+          const newFeeBps = feeEnabled ? calculateFeePercentageInBps(newTradeParams) : 0
 
           setParams((params) => ({
             ...params,
@@ -242,7 +248,7 @@ const SwapWidget = ({ sell }: Params) => {
         },
       },
     ]
-  }, [dispatch])
+  }, [dispatch, feeEnabled])
 
   useEffect(() => {
     setParams((params) => ({
@@ -281,14 +287,7 @@ const SwapWidget = ({ sell }: Params) => {
   }
 
   if (!isConsentAccepted) {
-    return (
-      <Disclaimer
-        title="Legal Disclaimer"
-        content={<LegalDisclaimerContent />}
-        onAccept={onAccept}
-        buttonText="Continue"
-      />
-    )
+    return <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
   }
 
   if (!isSwapFeatureEnabled) {
