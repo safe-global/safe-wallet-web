@@ -132,6 +132,7 @@
     "cross-env": "^7.0.3",
     "cypress": "^12.15.0",
     "cypress-file-upload": "^5.0.8",
+    "cypress-visual-regression": "^5.0.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.1.0",
     "eslint-config-prettier": "^8.5.0",
