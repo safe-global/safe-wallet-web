@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
-import type { CookieType } from './cookiesSlice'
+import type { CookieAndTermType } from './cookiesAndTermsSlice'
 import type { RootState } from '.'
 
 export enum PopupType {
@@ -10,7 +10,7 @@ export enum PopupType {
 type PopupState = {
   [PopupType.COOKIES]: {
     open: boolean
-    warningKey?: CookieType
+    warningKey?: CookieAndTermType
   }
 }
 
@@ -24,7 +24,7 @@ export const popupSlice = createSlice({
   name: 'popups',
   initialState,
   reducers: {
-    openCookieBanner: (state, { payload }: PayloadAction<{ warningKey?: CookieType }>) => {
+    openCookieBanner: (state, { payload }: PayloadAction<{ warningKey?: CookieAndTermType }>) => {
       state[PopupType.COOKIES] = {
         ...payload,
         open: true,

@@ -3,6 +3,7 @@ import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
+import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -50,6 +51,7 @@ export const CounterfactualForm = ({
   const onboard = useOnboard()
   const chain = useCurrentChain()
   const chainId = useChainId()
+  const { safeAddress } = useSafeInfo()
 
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -83,7 +85,7 @@ export const CounterfactualForm = ({
       trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
 
       onboard && (await assertWalletChain(onboard, chainId))
-      await deploySafeAndExecuteTx(txOptions, wallet, safeTx, wallet?.provider)
+      await deploySafeAndExecuteTx(txOptions, wallet, safeAddress, safeTx, wallet?.provider)
 
       trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_with_tx })
       trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.activate_with_tx })
