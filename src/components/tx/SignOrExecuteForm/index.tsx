@@ -93,7 +93,7 @@ export const SignOrExecuteForm = ({
   )
   const allowingRole = findAllowingRole(roles)
   const mostLikelyRole = findMostLikelyRole(roles)
-  const canExecuteThroughRole = !!allowingRole || !!mostLikelyRole
+  const canExecuteThroughRole = !!allowingRole || (!!mostLikelyRole && !isSafeOwner)
   const preferThroughRole = canExecuteThroughRole && !isSafeOwner // execute through role if a non-owner role member wallet is connected
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
