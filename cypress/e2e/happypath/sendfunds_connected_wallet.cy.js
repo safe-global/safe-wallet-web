@@ -47,6 +47,7 @@ const ethAdapterOwner2 = createEthersAdapter(owner2Signer)
 
 function visit(url) {
   cy.visit(url)
+  main.acceptCookies()
 }
 
 describe('Send funds with connected signer happy path tests', { defaultCommandTimeout: 60000 }, () => {
