@@ -274,6 +274,10 @@ export function expandAllActions(actions) {
   main.checkTextsExistWithinElement(accordionDetails, actions)
 }
 
+export function clickOnExpandAllActionsBtn() {
+  cy.get(expandAllBtn).click()
+}
+
 export function collapseAllActions(data) {
   cy.get(collapseAllBtn).click()
   data.forEach((action) => {
