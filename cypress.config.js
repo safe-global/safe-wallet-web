@@ -19,14 +19,21 @@ export default defineConfig({
     screenshotsFolder: './cypress/snapshots/actual',
     setupNodeEvents(on, config) {
       configureVisualRegression(on),
-        on('after:spec', (spec, results) => {
-          if (results && results.video) {
-            const failures = results.tests.some((test) => test.attempts.some((attempt) => attempt.state === 'failed'))
-            if (!failures) {
-              fs.unlinkSync(results.video)
-            }
-          }
+        on('task', {
+          log(message) {
+            console.log(message)
+            return null
+          },
         })
+
+      on('after:spec', (spec, results) => {
+        if (results && results.video) {
+          const failures = results.tests.some((test) => test.attempts.some((attempt) => attempt.state === 'failed'))
+          if (!failures) {
+            fs.unlinkSync(results.video)
+          }
+        }
+      })
     },
     env: {
       ...process.env,
