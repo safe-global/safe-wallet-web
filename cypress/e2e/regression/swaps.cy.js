@@ -88,6 +88,7 @@ describe('Swaps tests', () => {
           }
         })
         .within(() => {
+          swaps.verifySelectedInputCurrancy(swaps.swapTokens.cow)
           swaps.clickOnSettingsBtn()
           swaps.enableCustomRecipient(isCustomRecipientFound(swaps.customRecipient))
           swaps.clickOnSettingsBtn()
@@ -108,6 +109,7 @@ describe('Swaps tests', () => {
 
     main.getIframeBody(iframeSelector).then(($frame) => {
       cy.wrap($frame).within(() => {
+        swaps.verifySelectedInputCurrancy(swaps.swapTokens.cow)
         swaps.clickOnSettingsBtn()
 
         if (isCustomRecipientFound($frame, swaps.customRecipient)) {
@@ -134,6 +136,7 @@ describe('Swaps tests', () => {
     swaps.acceptLegalDisclaimer()
     cy.wait(4000)
     main.getIframeBody(iframeSelector).within(() => {
+      swaps.verifySelectedInputCurrancy(swaps.swapTokens.cow)
       swaps.clickOnSettingsBtn()
       swaps.setSlippage('0.30')
       swaps.setExpiry('2')
@@ -159,17 +162,37 @@ describe('Swaps tests', () => {
       const widgetFee = swaps.getWidgetFee()
       const orderID = swaps.getOrderID()
 
+      const isCustomRecipientFound = ($frame, customRecipient) => {
+        const element = $frame.find(customRecipient)
+        return element.length > 0
+      }
+
       swaps.acceptLegalDisclaimer()
       cy.wait(4000)
-      main.getIframeBody(iframeSelector).within(() => {
-        swaps.setInputValue(4)
-        swaps.checkSwapBtnIsVisible()
-        swaps.enterRecipient(signer2)
-        swaps.clickOnExceeFeeChkbox()
-        swaps.clickOnSwapBtn()
-        swaps.clickOnSwapBtn()
+      main.getIframeBody(iframeSelector).then(($frame) => {
+        cy.wrap($frame).within(() => {
+          swaps.verifySelectedInputCurrancy(swaps.swapTokens.cow)
+          swaps.setInputValue(4)
+          swaps.checkSwapBtnIsVisible()
+          swaps.clickOnSettingsBtn()
+
+          if (isCustomRecipientFound($frame, swaps.customRecipient)) {
+            swaps.disableCustomRecipient(true)
+            cy.wait(1000)
+            swaps.enableCustomRecipient(!isCustomRecipientFound($frame, swaps.customRecipient))
+          } else {
+            swaps.enableCustomRecipient(isCustomRecipientFound($frame, swaps.customRecipient))
+            cy.wait(1000)
+          }
+
+          swaps.clickOnSettingsBtn()
+          swaps.enterRecipient(signer2)
+          swaps.clickOnExceeFeeChkbox()
+          swaps.clickOnSwapBtn()
+          swaps.clickOnSwapBtn()
+        })
+        swaps.verifyRecipientAlertIsDisplayed()
       })
-      swaps.verifyRecipientAlertIsDisplayed()
     },
   )
 })

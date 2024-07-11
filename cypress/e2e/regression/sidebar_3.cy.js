@@ -145,6 +145,9 @@ describe('Sidebar tests 3', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
     main.acceptCookies()
     wallet.connectSigner(signer)
+    owner.clickOnWalletExpandMoreIcon()
+    navigation.clickOnDisconnectBtn()
+    wallet.connectSigner(signer)
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafesPendingActions.safe1],
     })

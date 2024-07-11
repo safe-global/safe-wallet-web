@@ -24,6 +24,13 @@ describe('Tx history tests 2', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
+    cy.intercept(
+      'GET',
+      `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
+        constants.stagingCGWSafes
+      }${staticSafes.SEP_STATIC_SAFE_7.substring(4)}/transactions/history**`,
+      { fixture: 'history.json' },
+    ).as('allTransactions')
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     main.acceptCookies()
   })
