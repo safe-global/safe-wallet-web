@@ -21,8 +21,11 @@ import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+// import SignInButton from '@/services/siwe/signInButton'
 import { useWeb3 } from '@/hooks/wallets/web3'
+import useWallet from '@/hooks/wallets/useWallet'
 import signInWithEthereum from '@/services/siwe'
+import { GATEWAY_URL_STAGING } from '@/config/constants'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -37,17 +40,50 @@ function getLogoLink(router: ReturnType<typeof useRouter>): Url {
     : { pathname: AppRoutes.home, query: { safe: router.query.safe } }
 }
 
+const createUserAccount = async (address: string) => {
+  return await fetch(`${GATEWAY_URL_STAGING}/v1/accounts`, {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ address }),
+  }).then((response) => response.json())
+}
+
+const getUserAccount = async (address: string) => {
+  const url = `${GATEWAY_URL_STAGING}/v1/accounts`
+  if (!address) return
+
+  try {
+    const response = await fetch(`${GATEWAY_URL_STAGING}/v1/accounts/${address}`, { credentials: 'include' })
+    if (response.ok) {
+      return response.json()
+    }
+    if (response.status === 404) {
+      return await createUserAccount(address)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const SignInButton = () => {
   const provider = useWeb3()
+  const { address = '' } = useWallet() || {}
 
   if (!provider) return null
 
   const signIn = async () => {
-    const res = await signInWithEthereum(provider)
-    console.log(res)
+    try {
+      await signInWithEthereum(provider)
+      await getUserAccount(address)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  // return <Button onClick={() => signInWithEthereum(provider)}>Sign in</Button>
   return <Button onClick={signIn}>Sign in</Button>
 }
 
