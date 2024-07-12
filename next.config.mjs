@@ -34,7 +34,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash', 'date-fns', '@sentry/react', '@gnosis.pm/zodiac'],
   },
-  webpack(config) {
+  webpack(config, {dev}) {
     config.module.rules.push({
       test: /\.svg$/i,
       issuer: { and: [/\.(js|ts|md)x?$/] },
@@ -64,6 +64,12 @@ const nextConfig = {
       ...config.resolve.alias,
       'bn.js': path.resolve('./node_modules/bn.js/lib/bn.js'),
       'mainnet.json': path.resolve('./node_modules/@ethereumjs/common/dist.browser/genesisStates/mainnet.json'),
+    }
+
+    if (!dev && config.output.filename.startsWith('static')) {
+      const timestamp = new Date().getTime();
+      config.output.filename = config.output.filename.replace('[name]', `[name]-${timestamp}`);
+      config.output.chunkFilename = config.output.chunkFilename.replace('[name]', `[name]-${timestamp}`);
     }
 
     return config
