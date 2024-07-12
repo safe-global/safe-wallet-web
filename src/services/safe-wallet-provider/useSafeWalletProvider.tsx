@@ -170,7 +170,7 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
           throw new Error(`Chain ${chainId} not supported`)
         }
 
-        if (prompt(`${appInfo.name} wants to switch to ${cfg.shortName}. Do you want to continue?`)) {
+        if (confirm(`${appInfo.name} wants to switch to ${cfg.shortName}. Do you want to continue?`)) {
           router.push({
             pathname: AppRoutes.index,
             query: {
