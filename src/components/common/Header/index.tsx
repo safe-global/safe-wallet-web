@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import type { Url } from 'next/dist/shared/lib/router/router'
-import { IconButton, Paper } from '@mui/material'
+import { Button, IconButton, Paper } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import classnames from 'classnames'
 import css from './styles.module.css'
@@ -21,6 +21,8 @@ import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import signInWithEthereum from '@/services/siwe'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -33,6 +35,20 @@ function getLogoLink(router: ReturnType<typeof useRouter>): Url {
       ? AppRoutes.welcome.index
       : AppRoutes.welcome.accounts
     : { pathname: AppRoutes.home, query: { safe: router.query.safe } }
+}
+
+const SignInButton = () => {
+  const provider = useWeb3()
+
+  if (!provider) return null
+
+  const signIn = async () => {
+    const res = await signInWithEthereum(provider)
+    console.log(res)
+  }
+
+  // return <Button onClick={() => signInWithEthereum(provider)}>Sign in</Button>
+  return <Button onClick={signIn}>Sign in</Button>
 }
 
 const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
@@ -99,6 +115,10 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         <Track label={OVERVIEW_LABELS.top_bar} {...OVERVIEW_EVENTS.OPEN_ONBOARD}>
           <ConnectWallet />
         </Track>
+      </div>
+
+      <div className={classnames(css.element, css.connectWallet)}>
+        <SignInButton />
       </div>
 
       <div className={classnames(css.element, css.networkSelector)}>
