@@ -4156,6 +4156,13 @@
   dependencies:
     semver "^7.6.0"
 
+"@safe-global/safe-deployments@^1.37.1":
+  version "1.37.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.1.tgz#d8293c421b1b7445899aec720061be26bb3c4976"
+  integrity sha512-duCCQghqw9B/MmHPMXlkPpZwyq3T92unWVnwwhiA8alhush2FZ22+x6uF8bQtk/RYJzkpYzV1tPL/VBLt9U9XQ==
+  dependencies:
+    semver "^7.6.2"
+
 "@safe-global/safe-gateway-typescript-sdk@3.21.8":
   version "3.21.8"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.21.8.tgz#f90eb668dd620d0c5578f02f7040169610a0eda1"
@@ -16729,6 +16736,11 @@ semver@^7.3.4, semver@^7.3.5, semver@^7.3.7, semver@^7.3.8, semver@^7.5.2, semve
   integrity sha512-EnwXhrlwXMk9gKu5/flx5sv/an57AkRplG3hTK68W7FRDN+k+OWBj65M7719OkA82XLBxrcX0KSHj+X5COhOVg==
   dependencies:
     lru-cache "^6.0.0"
+
+semver@^7.6.2:
+  version "7.6.2"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.2.tgz#1e3b34759f896e8f14d6134732ce798aeb0c6e13"
+  integrity sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==
 
 send@0.18.0:
   version "0.18.0"
