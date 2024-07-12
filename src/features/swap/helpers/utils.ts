@@ -196,14 +196,16 @@ export const UiOrderTypeToOrderType = (orderType: UiOrderType): TradeType => {
 
 export const isSettingTwapFallbackHandler = (decodedData: DecodedDataResponse | undefined) => {
   return (
-    decodedData?.parameters?.some((item) =>
-      item.valueDecoded?.some(
-        (decoded) =>
-          decoded.dataDecoded?.method === 'setFallbackHandler' &&
-          decoded.dataDecoded.parameters?.some(
-            (parameter) => parameter.name === 'handler' && parameter.value === TWAP_FALLBACK_HANDLER,
-          ),
-      ),
+    decodedData?.parameters?.some(
+      (item) =>
+        Array.isArray(item?.valueDecoded) &&
+        item.valueDecoded.some(
+          (decoded) =>
+            decoded.dataDecoded?.method === 'setFallbackHandler' &&
+            decoded.dataDecoded.parameters?.some(
+              (parameter) => parameter.name === 'handler' && parameter.value === TWAP_FALLBACK_HANDLER,
+            ),
+        ),
     ) || false
   )
 }
