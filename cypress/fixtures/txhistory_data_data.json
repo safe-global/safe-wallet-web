@@ -82,9 +82,9 @@
       "description": "Add signer",
       "altImage": "addOwnerWithThreshold",
       "requiredConfirmationsTitle": "Required confirmations for new transactions",
-      "ownerAddress": "sep:0x01A9F68e339da12565cfBc47fe7D6EdEcB11C46f",
-      "transactionHash": "0x51d5...da62",
-      "safeTxHash": "0xdcc5...e1b2"
+      "ownerAddress": "sep:0x4fe7164d7cA511Ab35520bb14065F1693240dC90",
+      "transactionHash": "0xfcad...ab35",
+      "safeTxHash": "0x8583...3d2d"
     },
     "removeOwner": {
       "title": "removeOwner",

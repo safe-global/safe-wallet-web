@@ -88,7 +88,7 @@ describe('Swaps tests', () => {
           }
         })
         .within(() => {
-          swaps.verifySelectedInputCurrancy(swaps.swapTokens.cow)
+          swaps.selectInputCurrency(swaps.swapTokens.cow)
           swaps.clickOnSettingsBtn()
           swaps.enableCustomRecipient(isCustomRecipientFound(swaps.customRecipient))
           swaps.clickOnSettingsBtn()
@@ -109,7 +109,7 @@ describe('Swaps tests', () => {
 
     main.getIframeBody(iframeSelector).then(($frame) => {
       cy.wrap($frame).within(() => {
-        swaps.verifySelectedInputCurrancy(swaps.swapTokens.cow)
+        swaps.selectInputCurrency(swaps.swapTokens.cow)
         swaps.clickOnSettingsBtn()
 
         if (isCustomRecipientFound($frame, swaps.customRecipient)) {
@@ -136,7 +136,7 @@ describe('Swaps tests', () => {
     swaps.acceptLegalDisclaimer()
     cy.wait(4000)
     main.getIframeBody(iframeSelector).within(() => {
-      swaps.verifySelectedInputCurrancy(swaps.swapTokens.cow)
+      swaps.selectInputCurrency(swaps.swapTokens.cow)
       swaps.clickOnSettingsBtn()
       swaps.setSlippage('0.30')
       swaps.setExpiry('2')
@@ -171,7 +171,7 @@ describe('Swaps tests', () => {
       cy.wait(4000)
       main.getIframeBody(iframeSelector).then(($frame) => {
         cy.wrap($frame).within(() => {
-          swaps.verifySelectedInputCurrancy(swaps.swapTokens.cow)
+          swaps.selectInputCurrency(swaps.swapTokens.cow)
           swaps.setInputValue(4)
           swaps.checkSwapBtnIsVisible()
           swaps.clickOnSettingsBtn()
