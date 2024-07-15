@@ -132,14 +132,7 @@ export const ExecuteThroughRoleForm = ({
     if (!transactionService) {
       throw new Error('Transaction service not found')
     }
-    const moduleTxId = await pollModuleTransactionId({
-      transactionService,
-      safeAddress: safe.address.value,
-      txHash,
-    })
-
-    const txId = `module_${safe.address.value}_${moduleTxId}`
-
+    const txId = await pollModuleTransactionId(chainId, safe.address.value, txHash)
     onSubmit?.(txId, true)
 
     // Track tx event

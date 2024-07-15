@@ -343,13 +343,13 @@ export const useGasLimit = (
   return { gasLimit, gasLimitError, gasLimitLoading }
 }
 
-export const pollModuleTransactionId = async (props: {
-  transactionService: string
-  safeAddress: string
-  txHash: string
-}): Promise<string> => {
+export const pollModuleTransactionId = async (
+  chainId: string,
+  safeAddress: string,
+  txHash: string,
+): Promise<string> => {
   // exponential delay between attempts for around 4 min
-  return backOff(() => getModuleTransactionId(props), {
+  return backOff(() => getModuleTransactionId(chainId, safeAddress, txHash), {
     startingDelay: 750,
     maxDelay: 20000,
     numOfAttempts: 19,
