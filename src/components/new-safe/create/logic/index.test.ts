@@ -1,10 +1,10 @@
 import { JsonRpcProvider } from 'ethers'
 import * as contracts from '@/services/contracts/safeContracts'
-import type Safe from '@safe-global/protocol-kit'
+import type { SafeProvider } from '@safe-global/protocol-kit'
 import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
-import * as safeSDK from '@/hooks/coreSDK/safeCoreSDK'
+import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
 import { relaySafeCreation } from '@/components/new-safe/create/logic/index'
 import { relayTransaction, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
@@ -31,27 +31,20 @@ describe('createNewSafeViaRelayer', () => {
     l2: false,
   } as ChainInfo
 
-  const mockSDK = {
-    isModuleEnabled: jest.fn(() => false),
-    createEnableModuleTx: jest.fn(),
-    createTransaction: jest.fn(() => 'asd'),
-    getSafeProvider: () => {
-      return {
-        getExternalProvider: jest.fn(),
-        getExternalSigner: jest.fn(),
-        getChainId: jest.fn().mockReturnValue(BigInt(1)),
-      }
-    },
-  } as unknown as Safe
-
   beforeAll(() => {
     jest.resetAllMocks()
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => provider)
   })
 
   it('returns taskId if create Safe successfully relayed', async () => {
+    const mockSafeProvider = {
+      getExternalProvider: jest.fn(),
+      getExternalSigner: jest.fn(),
+      getChainId: jest.fn().mockReturnValue(BigInt(1)),
+    } as unknown as SafeProvider
+
     jest.spyOn(gateway, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
-    jest.spyOn(safeSDK, 'getSafeSDK').mockImplementation(() => mockSDK)
+    jest.spyOn(sdkHelpers, 'getSafeProvider').mockImplementation(() => mockSafeProvider)
 
     jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
       getAddress: () => '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',

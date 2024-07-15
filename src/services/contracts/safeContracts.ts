@@ -1,5 +1,5 @@
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { _isL2 } from '@/services/contracts/deployments'
+import { getSafeProvider } from '@/services/tx/tx-sender/sdk'
 import { type GetContractProps, SafeProvider } from '@safe-global/protocol-kit'
 import {
   getCompatibilityFallbackHandlerContractInstance,
@@ -68,12 +68,7 @@ export const getReadOnlyGnosisSafeContract = async (
   chain: ChainInfo,
   safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
 ) => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not found.')
-  }
-
-  const safeProvider = safeSDK.getSafeProvider()
+  const safeProvider = getSafeProvider()
 
   const isL1SafeSingleton = !_isL2(chain, _getValidatedGetContractProps(safeVersion).safeVersion)
 
@@ -111,13 +106,8 @@ export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo
 
 // GnosisSafeProxyFactory
 
-export const getReadOnlyProxyFactoryContract = (safeVersion: SafeInfo['version']) => {
-  const safeSDK = getSafeSDK()
-  if (!safeSDK) {
-    throw new Error('Safe SDK not found.')
-  }
-
-  const safeProvider = safeSDK.getSafeProvider()
+export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['version']) => {
+  const safeProvider = getSafeProvider()
 
   return getSafeProxyFactoryContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
@@ -129,14 +119,7 @@ export const getReadOnlyProxyFactoryContract = (safeVersion: SafeInfo['version']
 // Fallback handler
 
 export const getReadOnlyFallbackHandlerContract = async (safeVersion: SafeInfo['version']) => {
-  // We can't use getSafeSDK here because this function is needed outside a safe where
-  // the protocol-kit instance doesn't exist
-  const provider = getWeb3ReadOnly()
-  if (!provider) {
-    throw new Error('Provider not found.')
-  }
-
-  const safeProvider = new SafeProvider({ provider: provider._getConnection().url })
+  const safeProvider = getSafeProvider()
 
   return getCompatibilityFallbackHandlerContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
