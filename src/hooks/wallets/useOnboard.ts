@@ -181,10 +181,15 @@ export const useInitOnboard = () => {
         connectWallet(onboard, {
           autoSelect: { label: 'e2e wallet', disableModals: true },
         })
+      } else if (typeof window !== undefined && window.top !== window.self) {
+        // Iframe
+        connectWallet(onboard, {
+          autoSelect: { label: 'Safe', disableModals: false },
+        })
+      } else {
+        // Reconnect last wallet
+        connectLastWallet(onboard)
       }
-
-      // Reconnect last wallet
-      connectLastWallet(onboard)
     })
   }, [chain, onboard])
 

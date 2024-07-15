@@ -1,6 +1,7 @@
 .wrapper {
   width: 100%;
   height: calc(100vh - var(--header-height));
+  background: var(--color-secondary-light);
 }
 
 .iframe {
@@ -10,6 +11,12 @@
   overflow: auto;
   box-sizing: border-box;
   border: none;
+}
+
+.nestedSafeIframe {
+  transform: scale(0.95);
+  transform-origin: center;
+  border-radius: 8px;
 }
 
 .loadingContainer {

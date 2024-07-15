@@ -5,6 +5,7 @@ export const enum WALLET_KEYS {
   LEDGER = 'LEDGER',
   TREZOR = 'TREZOR',
   KEYSTONE = 'KEYSTONE',
+  SAFE = 'SAFE',
   PK = 'PK',
 }
 
@@ -16,5 +17,6 @@ export const CGW_NAMES: { [key in WALLET_KEYS]: string | undefined } = {
   [WALLET_KEYS.LEDGER]: 'ledger',
   [WALLET_KEYS.TREZOR]: 'trezor',
   [WALLET_KEYS.KEYSTONE]: 'keystone',
+  [WALLET_KEYS.SAFE]: 'safe',
   [WALLET_KEYS.PK]: 'pk',
 }

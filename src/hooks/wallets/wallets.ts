@@ -7,6 +7,7 @@ import keystoneModule from '@web3-onboard/keystone/dist/index'
 import ledgerModule from '@web3-onboard/ledger/dist/index'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnect from '@web3-onboard/walletconnect'
+import safeModule from '@web3-onboard/gnosis'
 import pkModule from '@/services/private-key-module'
 
 import { CGW_NAMES, WALLET_KEYS } from './consts'
@@ -39,17 +40,23 @@ const walletConnectV2 = (chain: ChainInfo) => {
 }
 
 const WALLET_MODULES: Partial<{ [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }> = {
-  [WALLET_KEYS.INJECTED]: () => injectedWalletModule() as WalletInit,
-  [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain) as WalletInit,
-  [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }) as WalletInit,
-  [WALLET_KEYS.LEDGER]: () => ledgerModule() as WalletInit,
-  [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }) as WalletInit,
-  [WALLET_KEYS.KEYSTONE]: () => keystoneModule() as WalletInit,
+  [WALLET_KEYS.INJECTED]: () => injectedWalletModule(),
+  [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain),
+  [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }),
+  [WALLET_KEYS.LEDGER]: () => ledgerModule(),
+  [WALLET_KEYS.TREZOR]: () => trezorModule({ appUrl: TREZOR_APP_URL, email: TREZOR_EMAIL }),
+  [WALLET_KEYS.KEYSTONE]: () => keystoneModule(),
 }
 
 // Testing wallet module
 if (!IS_PRODUCTION) {
-  WALLET_MODULES[WALLET_KEYS.PK] = (chain) => pkModule(chain.chainId, chain.rpcUri) as WalletInit
+  WALLET_MODULES[WALLET_KEYS.PK] = (chain) => pkModule(chain.chainId, chain.rpcUri)
+}
+
+// Iframe
+if (typeof window !== undefined && window.top !== window.self) {
+  const options = window.location.host === 'localhost:3000' ? { whitelistedDomains: [/localhost:3000/] } : undefined
+  WALLET_MODULES[WALLET_KEYS.SAFE] = () => safeModule(options)
 }
 
 export const getAllWallets = (chain: ChainInfo): WalletInits => {
