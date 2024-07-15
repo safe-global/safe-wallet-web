@@ -1,6 +1,7 @@
 import { IS_PRODUCTION, TREZOR_APP_URL, TREZOR_EMAIL, WC_PROJECT_ID } from '@/config/constants'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { InitOptions } from '@web3-onboard/core'
+import metamaskSDK from '@web3-onboard/metamask'
 import coinbaseModule from '@web3-onboard/coinbase'
 import injectedWalletModule from '@web3-onboard/injected-wallets'
 import keystoneModule from '@web3-onboard/keystone/dist/index'
@@ -38,7 +39,17 @@ const walletConnectV2 = (chain: ChainInfo) => {
   })
 }
 
+const metamaskSDKWallet = metamaskSDK({
+  options: {
+    extensionOnly: true,
+    dappMetadata: {
+      name: 'Safe',
+    },
+  },
+})
+
 const WALLET_MODULES: Partial<{ [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }> = {
+  [WALLET_KEYS.METAMASK]: () => metamaskSDKWallet,
   [WALLET_KEYS.INJECTED]: () => injectedWalletModule() as WalletInit,
   [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain) as WalletInit,
   [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }) as WalletInit,
