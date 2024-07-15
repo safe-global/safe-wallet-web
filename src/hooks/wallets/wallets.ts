@@ -11,6 +11,7 @@ import safeModule from '@web3-onboard/gnosis'
 import pkModule from '@/services/private-key-module'
 
 import { CGW_NAMES, WALLET_KEYS } from './consts'
+import { isIframe } from '@/services/safe-apps/utils'
 
 const prefersDarkMode = (): boolean => {
   return window?.matchMedia('(prefers-color-scheme: dark)')?.matches
@@ -54,7 +55,7 @@ if (!IS_PRODUCTION) {
 }
 
 // Iframe
-if (typeof window !== undefined && window.top !== window.self) {
+if (isIframe()) {
   const options = window.location.host === 'localhost:3000' ? { whitelistedDomains: [/localhost:3000/] } : undefined
   WALLET_MODULES[WALLET_KEYS.SAFE] = () => safeModule(options)
 }

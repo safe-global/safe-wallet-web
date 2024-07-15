@@ -12,6 +12,7 @@ import { type EnvState, selectRpc } from '@/store/settingsSlice'
 import { formatAmount } from '@/utils/formatNumber'
 import { localItem } from '@/services/local-storage/local'
 import { isWalletConnect, isWalletUnlocked } from '@/utils/wallets'
+import { isIframe } from '@/services/safe-apps/utils'
 
 export type ConnectedWallet = {
   label: string
@@ -181,8 +182,8 @@ export const useInitOnboard = () => {
         connectWallet(onboard, {
           autoSelect: { label: 'e2e wallet', disableModals: true },
         })
-      } else if (typeof window !== undefined && window.top !== window.self) {
-        // Iframe
+      } else if (isIframe()) {
+        // Nested Safe in an iframe
         connectWallet(onboard, {
           autoSelect: { label: 'Safe', disableModals: false },
         })
