@@ -101,6 +101,11 @@ export const TWITTER_URL = 'https://twitter.com/safe'
 // Legal
 export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST === 'true'
 
+// Safe Domains
+export const SAFE_DOMAINS = IS_PRODUCTION
+  ? ['app.safe.global']
+  : ['app.safe.global', 'safe-wallet-web.dev.5afe.dev', '--walletweb.review.5afe.dev', 'localhost:3000']
+
 // Risk mitigation (Redefine)
 export const REDEFINE_SIMULATION_URL = 'https://dashboard.redefine.net/reports/'
 export const REDEFINE_API = process.env.NEXT_PUBLIC_REDEFINE_API

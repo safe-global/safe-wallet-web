@@ -67,8 +67,6 @@ const useNestedSafeOwner = () => {
 
     const nestedSafe = infos.find((info) => info.status === 'fulfilled')
 
-    console.log('nestedSafe', nestedSafe)
-
     return nestedSafe?.status === 'fulfilled' ? nestedSafe.value.address.value : null
   }, [safe, safeLoaded])
 

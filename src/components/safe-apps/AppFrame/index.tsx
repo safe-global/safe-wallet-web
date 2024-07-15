@@ -4,6 +4,7 @@ import { type AddressBookItem, Methods } from '@safe-global/safe-apps-sdk'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import { useCallback, useEffect } from 'react'
+import classnames from 'classnames'
 import { CircularProgress, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
@@ -28,6 +29,7 @@ import { PermissionStatus, type SafeAppDataWithPermissions } from '@/components/
 import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
+import { SAFE_DOMAINS } from '@/config/constants'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -116,13 +118,20 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
     return <div />
   }
 
+  const { host } = new URL(appUrl)
+  const isNestedSafe = SAFE_DOMAINS.some((domain) => host.includes(domain))
+
   return (
     <>
       <Head>
         <title>{`Safe Apps - Viewer - ${remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}`}</title>
       </Head>
 
-      <div className={css.wrapper}>
+      <div
+        className={classnames(css.wrapper, {
+          [css.nestedSafe]: isNestedSafe,
+        })}
+      >
         {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
 
         {appIsLoading && (

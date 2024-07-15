@@ -185,7 +185,7 @@ export const useInitOnboard = () => {
       } else if (isIframe()) {
         // Nested Safe in an iframe
         connectWallet(onboard, {
-          autoSelect: { label: 'Safe', disableModals: false },
+          autoSelect: { label: 'Safe', disableModals: true },
         })
       } else {
         // Reconnect last wallet

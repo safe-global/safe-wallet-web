@@ -1,7 +1,6 @@
 .wrapper {
   width: 100%;
   height: calc(100vh - var(--header-height));
-  background: var(--color-secondary-light);
 }
 
 .iframe {
@@ -13,7 +12,11 @@
   border: none;
 }
 
-.nestedSafeIframe {
+.wrapper.nestedSafe {
+  background: var(--color-secondary-light);
+}
+
+.wrapper.nestedSafe .iframe {
   transform: scale(0.95);
   transform-origin: center;
   border-radius: 8px;
