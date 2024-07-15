@@ -39,17 +39,16 @@ const walletConnectV2 = (chain: ChainInfo) => {
   })
 }
 
-const metamaskSDKWallet = metamaskSDK({
-  options: {
-    extensionOnly: true,
-    dappMetadata: {
-      name: 'Safe Wallet',
-    },
-  },
-})
-
 const WALLET_MODULES: Partial<{ [key in WALLET_KEYS]: (chain: ChainInfo) => WalletInit }> = {
-  [WALLET_KEYS.METAMASK]: () => metamaskSDKWallet,
+  [WALLET_KEYS.METAMASK]: () =>
+    metamaskSDK({
+      options: {
+        extensionOnly: true,
+        dappMetadata: {
+          name: 'Safe Wallet',
+        },
+      },
+    }),
   [WALLET_KEYS.INJECTED]: () => injectedWalletModule() as WalletInit,
   [WALLET_KEYS.WALLETCONNECT_V2]: (chain) => walletConnectV2(chain) as WalletInit,
   [WALLET_KEYS.COINBASE]: () => coinbaseModule({ darkMode: prefersDarkMode() }) as WalletInit,
