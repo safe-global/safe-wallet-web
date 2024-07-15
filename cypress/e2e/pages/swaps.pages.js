@@ -3,7 +3,7 @@ import * as main from '../pages/main.page.js'
 import * as create_tx from '../pages/create_tx.pages.js'
 
 export const inputCurrencyInput = '[id="input-currency-input"]'
-export const outputurrencyInput = '[id="output-currency-input"]'
+export const outputCurrencyInput = '[id="output-currency-input"]'
 const tokenList = '[id="tokens-list"]'
 export const swapBtn = '[id="swap-button"]'
 const exceedFeesChkbox = 'input[id="fees-exceed-checkbox"]'
@@ -173,18 +173,39 @@ export function verifySelectedInputCurrancy(option) {
     cy.get('span').contains(option).should('be.visible')
   })
 }
-export function selectInputCurrency(option) {
-  cy.get(inputCurrencyInput).within(() => {
-    cy.get('button').eq(0).trigger('mouseover').trigger('click')
+
+function selectCurrency(inputSelector, option) {
+  cy.get(inputSelector).within(() => {
+    cy.get('button')
+      .eq(0)
+      .find('span')
+      .invoke('text')
+      .then(($value) => {
+        cy.log('*** Currency value ' + $value)
+        if ($value != option) {
+          cy.log('*** Currency value is different from specified')
+          cy.get('button').eq(0).trigger('mouseover').trigger('click')
+          cy.wrap(true).as('isAction')
+        } else {
+          cy.wrap(false).as('isAction')
+        }
+      })
   })
-  cy.get(tokenList).find('span').contains(option).click()
+
+  cy.get('@isAction').then((isAction) => {
+    if (isAction) {
+      cy.log('*** Clicking on token option')
+      cy.get(tokenList).find('span').contains(option).click()
+    }
+  })
+}
+
+export function selectInputCurrency(option) {
+  selectCurrency(inputCurrencyInput, option)
 }
 
 export function selectOutputCurrency(option) {
-  cy.get(outputurrencyInput).within(() => {
-    cy.get('button').trigger('mouseover').trigger('click')
-  })
-  cy.get(tokenList).find('span').contains(option).click()
+  selectCurrency(outputCurrencyInput, option)
 }
 
 export function setInputValue(value) {
@@ -194,7 +215,7 @@ export function setInputValue(value) {
 }
 
 export function setOutputValue(value) {
-  cy.get(outputurrencyInput).within(() => {
+  cy.get(outputCurrencyInput).within(() => {
     cy.get('input').type(value)
   })
 }

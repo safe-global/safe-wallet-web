@@ -335,6 +335,11 @@ export const addressBookData = {
       '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'BB Safe',
     },
   },
+  autofillData: {
+    11155111: {
+      '0x01A9F68e339da12565cfBc47fe7D6EdEcB11C46f': 'David',
+    },
+  },
   sameOwnerName: {
     11155111: {
       '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'Automation owner Sepolia',
