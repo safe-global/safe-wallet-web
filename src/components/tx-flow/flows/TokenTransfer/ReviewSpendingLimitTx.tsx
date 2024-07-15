@@ -28,6 +28,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
+import { safeParseUnits } from '@/utils/formatters'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -58,6 +59,11 @@ const ReviewSpendingLimitTx = ({
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const spendingLimit = useSpendingLimit(token?.tokenInfo)
+
+  const amountInWei = useMemo(
+    () => safeParseUnits(params.amount, token?.tokenInfo.decimals)?.toString() || '0',
+    [params.amount, token?.tokenInfo.decimals],
+  )
 
   const txParams: SpendingLimitTxParams = useMemo(
     () => ({
@@ -127,7 +133,7 @@ const ReviewSpendingLimitTx = ({
           Blockchain Explorer.
         </Typography>
 
-        {token && <SendAmountBlock amount={params.amount} tokenInfo={token.tokenInfo} />}
+        {token && <SendAmountBlock amountInWei={amountInWei} tokenInfo={token.tokenInfo} />}
 
         <SendToBlock address={params.recipient} />
 
