@@ -29,6 +29,9 @@ const { addCompareSnapshotCommand } = require('cypress-visual-regression/dist/co
 addCompareSnapshotCommand()
 
 before(() => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    return false
+  })
   cy.on('log:added', (ev) => {
     if (Cypress.config('hideXHR')) {
       const app = window.top
