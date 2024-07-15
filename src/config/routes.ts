@@ -4,6 +4,7 @@ export const AppRoutes = {
   wc: '/wc',
   terms: '/terms',
   swap: '/swap',
+  earn: '/earn',
   privacy: '/privacy',
   licenses: '/licenses',
   index: '/',
