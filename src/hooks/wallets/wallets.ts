@@ -43,7 +43,7 @@ const metamaskSDKWallet = metamaskSDK({
   options: {
     extensionOnly: true,
     dappMetadata: {
-      name: 'Safe',
+      name: 'Safe Wallet',
     },
   },
 })
