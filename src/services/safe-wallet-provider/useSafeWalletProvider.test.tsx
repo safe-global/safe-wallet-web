@@ -299,8 +299,7 @@ describe('useSafeWalletProvider', () => {
         push: mockPush,
       } as unknown as router.NextRouter)
 
-      // @ts-expect-error - auto accept prompt
-      jest.spyOn(window, 'prompt').mockReturnValue(true)
+      jest.spyOn(window, 'confirm').mockReturnValue(true)
 
       const { result } = renderHook(() => _useTxFlowApi('1', '0x1234567890000000000000000000000000000000'), {
         initialReduxState: {

@@ -9,8 +9,10 @@ type DateTimeProps = {
 }
 
 export const DateTime = ({ value, showDateTime, showTime }: DateTimeProps): ReactElement => {
+  const showTooltip = !showDateTime || showTime
+
   return (
-    <Tooltip title={showDateTime ? '' : formatDateTime(value)} placement="top">
+    <Tooltip title={showTooltip && formatDateTime(value)} placement="top">
       <span>{showTime ? formatTime(value) : showDateTime ? formatDateTime(value) : formatTimeInWords(value)}</span>
     </Tooltip>
   )

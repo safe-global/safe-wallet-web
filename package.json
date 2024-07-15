@@ -2,7 +2,7 @@
   "name": "safe-wallet-web",
   "homepage": "https://github.com/safe-global/safe-wallet-web",
   "license": "GPL-3.0",
-  "version": "1.38.1",
+  "version": "1.39.2",
   "type": "module",
   "scripts": {
     "dev": "next dev",
@@ -43,7 +43,7 @@
     "@gnosis.pm/zodiac/**/ethers": "^6.11.1"
   },
   "dependencies": {
-    "@cowprotocol/widget-react": "^0.9.1",
+    "@cowprotocol/widget-react": "^0.9.3",
     "@ducanh2912/next-pwa": "^9.7.1",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.0",
@@ -57,8 +57,8 @@
     "@safe-global/api-kit": "^2.3.2",
     "@safe-global/protocol-kit": "^4.0.1",
     "@safe-global/safe-apps-sdk": "^9.1.0",
-    "@safe-global/safe-deployments": "^1.36.0",
-    "@safe-global/safe-gateway-typescript-sdk": "^3.21.5",
+    "@safe-global/safe-deployments": "^1.37.1",
+    "@safe-global/safe-gateway-typescript-sdk": "3.21.8",
     "@safe-global/safe-modules-deployments": "^1.2.0",
     "@sentry/react": "^7.91.0",
     "@spindl-xyz/attribution-lite": "^1.4.0",
@@ -132,6 +132,7 @@
     "cross-env": "^7.0.3",
     "cypress": "^12.15.0",
     "cypress-file-upload": "^5.0.8",
+    "cypress-visual-regression": "^5.0.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.1.0",
     "eslint-config-prettier": "^8.5.0",

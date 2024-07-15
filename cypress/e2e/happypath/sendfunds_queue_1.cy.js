@@ -7,9 +7,11 @@ import SafeApiKit from '@safe-global/api-kit'
 import { createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const receiver = walletCredentials.OWNER_2_WALLET_ADDRESS
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const tokenAmount = '0.0001'
 const netwrok = 'sepolia'
@@ -43,6 +45,7 @@ function visit(url) {
 
 function executeTransactionFlow(fromSafe) {
   visit(constants.transactionQueueUrl + fromSafe)
+  wallet.connectSigner(signer)
   assets.clickOnConfirmBtn(0)
   tx.executeFlow_1()
   cy.wait(5000)
@@ -114,6 +117,7 @@ describe('Send funds from queue happy path tests 1', () => {
   it.skip('Verify confirmation and execution of native token queued tx by second signer with relayer', () => {
     function executeTransactionFlow(fromSafe) {
       visit(constants.transactionQueueUrl + fromSafe)
+      wallet.connectSigner(signer)
       assets.clickOnConfirmBtn(0)
       tx.executeFlow_2()
       cy.wait(5000)
@@ -152,6 +156,7 @@ describe('Send funds from queue happy path tests 1', () => {
   it('Verify 1 signer can execute a tx confirmed by 2 signers', { defaultCommandTimeout: 300000 }, () => {
     function executeTransaction(fromSafe) {
       visit(constants.transactionQueueUrl + fromSafe)
+      wallet.connectSigner(signer)
       assets.clickOnExecuteBtn(0)
       tx.executeFlow_3()
       cy.wait(5000)

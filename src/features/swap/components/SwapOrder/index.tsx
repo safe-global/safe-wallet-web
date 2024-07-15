@@ -8,10 +8,9 @@ import Stack from '@mui/material/Stack'
 import type { ReactElement } from 'react'
 import type { TwapOrder as SwapTwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import {
-  type SwapOrder as SwapOrderType,
   type Order,
+  type SwapOrder as SwapOrderType,
   type TransactionData,
-  TransactionInfoType,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { DataTable } from '@/components/common/Table/DataTable'
@@ -30,8 +29,12 @@ import {
 } from '@/features/swap/helpers/utils'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isSwapOrderTxInfo, isTwapOrderTxInfo } from '@/utils/transaction-guards'
+import { isSwapOrderTxInfo, isSwapTransferOrderTxInfo, isTwapOrderTxInfo } from '@/utils/transaction-guards'
 import { EmptyRow } from '@/components/common/Table/EmptyRow'
+import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDuration'
+import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
+import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
+import { SurplusFee } from '@/features/swap/components/SwapOrder/rows/SurplusFee'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -40,7 +43,6 @@ type SwapOrderProps = {
 
 const AmountRow = ({ order }: { order: Order }) => {
   const { sellToken, buyToken, sellAmount, buyAmount, kind } = order
-  const orderKindLabel = capitalize(kind)
   const isSellOrder = kind === 'sell'
   return (
     <DataRow key="Amount" title="Amount">
@@ -147,7 +149,7 @@ const FilledRow = ({ order }: { order: Order }) => {
 }
 
 const OrderUidRow = ({ order }: { order: Order }) => {
-  if (order.type === TransactionInfoType.SWAP_ORDER) {
+  if (isSwapOrderTxInfo(order) || isSwapTransferOrderTxInfo(order)) {
     const { uid, explorerUrl } = order
     return (
       <DataRow key="Order ID" title="Order ID">
@@ -199,23 +201,14 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
         <OrderUidRow order={order} key="order-uid-row" />,
         <StatusRow order={order} key="status-row" />,
         <RecipientRow order={order} key="recipient-row" />,
+        <SurplusFee order={order} key="fee-row" />,
       ]}
     />
   )
 }
 
 export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
-  const {
-    kind,
-    validUntil,
-    status,
-    sellToken,
-    buyToken,
-    numberOfParts,
-    partSellAmount,
-    minPartLimit,
-    timeBetweenParts,
-  } = order
+  const { kind, validUntil, status, numberOfParts } = order
 
   const isPartiallyFilled = isOrderPartiallyFilled(order)
   const expires = new Date(validUntil * 1000)
@@ -231,24 +224,15 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
         <PriceRow order={order} key="price-row" />,
         <SurplusRow order={order} key="surplus-row" />,
         <RecipientRow order={order} key="recipient-row" />,
+        <SurplusFee order={order} key="fee-row" />,
         <EmptyRow key="spacer-0" />,
         <DataRow title="No of parts" key="n_of_parts">
           {numberOfParts}
         </DataRow>,
-        <DataRow title="Sell amount" key="sell_amount_part">
-          <Typography component="span" fontWeight="bold">
-            {formatVisualAmount(partSellAmount, sellToken.decimals)} {sellToken.symbol}
-          </Typography>
-        </DataRow>,
-        <DataRow title="Buy amount" key="buy_amount_part">
-          <Typography component="span" fontWeight="bold">
-            {formatVisualAmount(minPartLimit, buyToken.decimals)} {buyToken.symbol}
-          </Typography>
-        </DataRow>,
+        <PartSellAmount order={order} key="part_sell_amount" />,
+        <PartBuyAmount order={order} key="part_buy_amount" />,
         <FilledRow order={order} key="filled-row" />,
-        <DataRow title="Part duration" key="part_duration">
-          {+timeBetweenParts / 60} minutes
-        </DataRow>,
+        <PartDuration order={order} key="part_duration" />,
         <EmptyRow key="spacer-1" />,
         status !== 'fulfilled' && compareAsc(now, expires) !== 1 ? (
           <DataRow key="Expiry" title="Expiry">
@@ -272,14 +256,14 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
   )
 }
 
-export const SwapOrder = ({ txData, txInfo }: SwapOrderProps): ReactElement | null => {
-  if (!txData || !txInfo) return null
+export const SwapOrder = ({ txInfo }: SwapOrderProps): ReactElement | null => {
+  if (!txInfo) return null
 
   if (isTwapOrderTxInfo(txInfo)) {
     return <TwapOrder order={txInfo} />
   }
 
-  if (isSwapOrderTxInfo(txInfo)) {
+  if (isSwapOrderTxInfo(txInfo) || isSwapTransferOrderTxInfo(txInfo)) {
     return <SellOrder order={txInfo} />
   }
   return null

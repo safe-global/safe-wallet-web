@@ -3,25 +3,56 @@
     "queue": {
       "contractName": "GPv2Settlement",
       "action": "setPreSignature",
-      "oneOfOne": "1 out of 1"
+      "oneOfOne": "1 out of 1",
+      "title": "Swap order"
+    },
+    "orderDetails": {
+      "expiry2Mins": "in 2 minutes",
+      "interactWith": "GPv2Settlement",
+      "DAIeqCOW": "1 DAI = COW"
     },
     "history": {
       "buyOrder": "Buy order",
       "buy": "Buy",
       "oneGNO": "1 GNO",
+      "oneGNOFull": "1 GNO = 8.4747 COW",
       "forAtMost": "For at most",
+      "forAtMostCow": "For at most COW",
       "cow": "COW",
       "expired": "Expired",
+      "cancelled": "Cancelled",
       "actionApprove": "CoW Protocol Token: approve",
       "actionPreSignature": "GPv2Settlement: setPreSignature",
+      "actionApproveEth": "Wrapped Ether: approve",
+      "actionDepositEth": "Wrapped Ether: deposit",
       "sellOrder": "Sell order",
-
+      "actionApproveG": "approve",
+      "actionPreSignatureG": "setPreSignature",
+      "actionDepositG": "deposit",
+      "amount": "Amount",
+      "executionPrice": "Execution price",
+      "limitPrice": "Limit price",
+      "surplus": "Surplus",
+      "expiry": "Expiry",
+      "oderId": "Order ID",
+      "status": "Status",
+      "sellFull": "Sell 1 COW",
       "sell": "Sell",
       "oneCOW": "1 COW",
       "forAtLeast": "for at least",
+      "forAtLeastFullDai": "for at least DAI",
+      "forAtLeastFullUni": "for at least UNI",
+      "forAtLeastFullUSDT": "for at least USDT",
+      "DAIeqCOW": "1 DAI = COW",
+      "UNIeqCOW": "1 UNI = K COW",
+      "DAIeqWETH": "1 DAI = WETH",
+      "USDTeqUSDC": "1 USDT = 0.19342 USDC",
       "dai": "DAI",
       "filled": "Filled",
-      "partiallyFilled": "Partially filled"
+      "partiallyFilled": "Partially filled",
+      "gGpV2": "GPv2Settlement",
+      "safeAppTitile": "CowSwap",
+      "title": "Swap order"
     }
   }
 }

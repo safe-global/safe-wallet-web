@@ -1,5 +1,6 @@
 export const AppRoutes = {
   '404': '/404',
+  '403': '/403',
   wc: '/wc',
   terms: '/terms',
   swap: '/swap',
@@ -45,6 +46,7 @@ export const AppRoutes = {
   },
   transactions: {
     tx: '/transactions/tx',
+    msg: '/transactions/msg',
     queue: '/transactions/queue',
     messages: '/transactions/messages',
     index: '/transactions',

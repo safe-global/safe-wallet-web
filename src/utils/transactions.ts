@@ -299,3 +299,7 @@ export const isTrustedTx = (tx: TransactionSummary) => {
     Boolean(tx.txInfo.transferInfo.trusted)
   )
 }
+
+export const isImitation = ({ txInfo }: TransactionSummary): boolean => {
+  return isTransferTxInfo(txInfo) && isERC20Transfer(txInfo.transferInfo) && Boolean(txInfo.transferInfo.imitation)
+}

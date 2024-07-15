@@ -8,9 +8,15 @@ import MsgSummary from '@/components/safe-messages/MsgSummary'
 
 import txListItemCss from '@/components/transactions/TxListItem/styles.module.css'
 
-const ExpandableMsgItem = ({ msg }: { msg: SafeMessage }): ReactElement => {
+const ExpandableMsgItem = ({ msg, expanded = false }: { msg: SafeMessage; expanded?: boolean }): ReactElement => {
   return (
-    <Accordion disableGutters elevation={0} className={txListItemCss.accordion}>
+    <Accordion
+      defaultExpanded={expanded}
+      disableGutters
+      elevation={0}
+      className={txListItemCss.accordion}
+      sx={{ border: 'none', '&:before': { display: 'none' } }}
+    >
       <AccordionSummary
         data-testid="message-item"
         expandIcon={<ExpandMoreIcon />}

@@ -12,6 +12,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import SwapIcon from '@/public/images/common/swap.svg'
 import AssetsIcon from '@/public/images/sidebar/assets.svg'
+import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
 
 const buttonSx = {
   height: '58px',
@@ -86,9 +87,8 @@ export const TxBuilderButton = () => {
 export const MakeASwapButton = () => {
   const router = useRouter()
   const { setTxFlow } = useContext(TxModalContext)
-  const isEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
-
-  if (!isEnabled) return null
+  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
+  if (!isSwapFeatureEnabled) return null
 
   const isSwapPage = router.pathname === AppRoutes.swap
   const onClick = isSwapPage ? () => setTxFlow(undefined) : undefined

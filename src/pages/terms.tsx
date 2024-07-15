@@ -12,7 +12,7 @@ const SafeTerms = () => (
     <Typography variant="h1" mb={2}>
       Terms and Conditions
     </Typography>
-    <p>Last updated: January 2024.</p>
+    <p>Last updated: July 2024.</p>
 
     <h3>1. What is the scope of the Terms?</h3>
     <ol start={1}>
@@ -161,8 +161,12 @@ const SafeTerms = () => (
       </li>
       <li>
         the responsibility to monitor authorized Transactions or to check the correctness or completeness of
-        Transactions before you are authorizing them.
+        Transactions before you are authorizing them;
       </li>
+      <li>notifications about events occurring in or connection with your Safe Account;</li>
+      <li>recovery of your Safe Account;</li>
+      <li>flagging malicious transactions;</li>
+      <li>issuance of the Safe Token and any related functionalities or reward programs.</li>
     </ol>
 
     <h3>5. What do you need to know about Third-Party Services?</h3>
@@ -268,25 +272,118 @@ const SafeTerms = () => (
       </li>
     </ol>
 
-    <h3>8. Can we terminate or limit your right to use our Services?</h3>
-    <ol start={1}>
+    <h3>8. Are we responsible for recovering your Safe Account?</h3>
+    <ol>
+      <li>We shall not be responsible for recovering your Safe Account.</li>
+      <li>You are solely responsible for securing a back-up of your Safe Account access as you see fit. </li>
       <li>
-        We may terminate the Agreement and refuse access to the Safe&nbsp;Apps at any time giving 30 days&rsquo; prior
-        notice. The right of the parties to terminate the Agreement for cause remains unaffected. In case of our
-        termination of the Agreement, you may no longer access your Safe Account via our Services. However, you may
+        Any recovery feature we provide access to within the Safe App is a mechanism controlled by your Safe Account on
+        the Blockchain, both of which we don&apos;t have any influence over once you have set it up. We will never act
+        as a recoverer ourselves and don&apos;t offer recovery services. The Self Custodial Recovery feature allows you
+        to determine your own recovery setup and nominate anyone including yourself as your recoverer. The recoverer can
+        start the recovery process at any time. Please note that we are not responsible for notifying you of this
+        process (see Section 7 above). Furthermore we reserve the right to cease the access to the Self Custodial
+        Recovery feature via our Safe App taking the user&apos;s reasonable interests into account and providing due
+        notification.
+      </li>
+      <li>The recovery feature is provided free of charge and liability is limited pursuant to Section 17.4 below.</li>
+    </ol>
+
+    <h3>9. Are we responsible for notifying you about events occuring in your Safe Account?</h3>
+    <ol>
+      <li>
+        We shall not be responsible for notifying you of any interactions or events occurring in your Safe Account, be
+        it on the Blockchain, third-party interfaces, within any other infrastructure, or our Services.
+      </li>
+      <li>You are responsible for monitoring Safe Account as you see fit. </li>
+      <li>
+        Any notification service we provide or offer for subscription within the Safe App via e-mail or push
+        notifications or any other means of communication is provided free of charge and liability is limited pursuant
+        to Section 17.4 below. Furthermore we reserve the right to change the notification feature from time to time or
+        cease to provide them without notice.
+      </li>
+    </ol>
+
+    <h3>10. Are we responsible for flagging malicious transactions?</h3>
+    <ol>
+      <li>We shall not be responsible for flagging malicious transactions in our Safe App.</li>
+      <li>
+        You are solely responsible for checking any transaction, address, Token or other item you interact with via your
+        Smart Account in our Safe App.{' '}
+      </li>
+      <li>
+        Any security flagging or warning service we provide or offer for subscription within the Safe App is provided
+        free of charge and liability is limited pursuant to Section 17.4 below. Furthermore we reserve the right to
+        change the feature from time to time or cease to provide them without notice.
+      </li>
+    </ol>
+
+    <h3>
+      11. Are we responsible for the issuance of the Safe Token and any related functionalities or reward programs?
+    </h3>
+    <ol>
+      <li>
+        The Safe Token is issued by the Safe Ecosystem Foundation. We are not the issuer or in any way responsible for
+        the Safe Token. Furthermore, we do not provide any functionalities to the Safe Token or Safe Token reward
+        programs.
+      </li>
+      <li>
+        You are solely responsible for managing your Safe Tokens just like any other Token in your Safe Account and
+        solely responsible for your eligibility for any reward programs.
+      </li>
+      <li>
+        Any interface we provide that allows you to claim or delegate your Safe Tokens or to participate in any third
+        party program related to Safe Tokens is provided free of charge and we exclude any and all liability for the
+        correctness, completeness, speed or timeliness of these services. Furthermore we reserve the right to change the
+        feature from time to time or cease to provide them without notice.
+      </li>
+    </ol>
+
+    <h3>12. Are we responsible for third-party content and services?</h3>
+    <ol>
+      <li>
+        You may view, have access to, and use third-party content and services, for example widget integrations, within
+        the Safe App (“Third-Party Features”). You view, access, or use Third-Party Features at your own election. Your
+        reliance on Third-Party Features is subject to separate terms and conditions set forth by the applicable third
+        party content and/or service provider (“Third-Party Terms”). Third-Party Terms may, amongst other things,
+        <ol type="a">
+          <li>involve separate fees and charges, </li>
+          <li>include disclaimers or risk warnings, </li>
+          <li>apply a different terms and privacy policy. </li>
+        </ol>
+      </li>
+      <li>
+        Third Party Features are provided for your convenience only. We do not verify, curate, or control Third Party
+        Features.{' '}
+      </li>
+      <li>
+        If we offer access to Third-Party Features in the Safe App free of charge by us (Third-Parties may charge
+        separate fees), the liability for providing access to such Third-Party Feature is limited pursuant to Section
+        17.1 below. Furthermore we reserve the right to cease to provide access to those Third-Party Features through
+        the Safe App without notice.
+      </li>
+    </ol>
+
+    <h3>13. Can we terminate or limit your right to use our Services?</h3>
+    <ol>
+      <li>
+        We may cease offering our Services and/or terminate the Agreement and refuse access to the Safe Apps at any
+        time. The right of the parties to terminate the Agreement at any time for cause remains unaffected. In case of
+        our termination of the Agreement, you may no longer access your Safe Account via our Services. However, you may
         continue to access your Safe Account and any Tokens via a third-party wallet provider using your Recovery Phrase
         and Private Keys.
       </li>
       <li>
-        We reserve the right to limit the use of the Safe&nbsp;Apps to a specified number of Users if necessary to
-        protect or ensure the stability and integrity of the Services. We will only be able to limit access to the
-        Services. At no time will we be able to limit or block access to or transfer your funds without your consent.
+        We reserve the right to limit the use of the Safe Apps to a specified number of Users if necessary to protect or
+        ensure the stability and integrity of the Services. We will only be able to limit access to the Services. At no
+        time will we be able to limit or block access to or transfer your funds without your consent.
       </li>
     </ol>
 
-    <h3>9. Can you terminate your Agreement with us?</h3>
+    <h3>14. Can you terminate your Agreement with us?</h3>
     <p>You may terminate the Agreement at any time without notice.</p>
-    <h3>10. What licenses and access do we grant to you?</h3>
+
+    <h3>15. What licenses and access do we grant to you?</h3>
     <ol start={1}>
       <li>
         All intellectual property rights in Safe Accounts and the Services throughout the world belong to us as owner or
@@ -300,7 +397,7 @@ const SafeTerms = () => (
       </li>
     </ol>
 
-    <h3>11. What can you expect from the Services and can we make changes to them?</h3>
+    <h3>16. What can you expect from the Services and can we make changes to them?</h3>
     <ol start={1}>
       <li>
         Without limiting your mandatory warranties, we provide the Services to you &ldquo;as is&rdquo; and &ldquo;as
@@ -327,7 +424,7 @@ const SafeTerms = () => (
       </li>
     </ol>
 
-    <h3>12. What do you agree, warrant and represent?</h3>
+    <h3>17. What do you agree, warrant and represent?</h3>
     <p>By using our Services you hereby agree, represent and warrant that:</p>
     <ol start={1}>
       <li>
@@ -387,49 +484,179 @@ const SafeTerms = () => (
       <li>You are using the Services at your own risk.</li>
     </ol>
 
-    <h3>13. What about our liability to you?</h3>
-    <p>All our liability is excluded, except for the following:</p>
-
+    <h3>18. What about our liability to you?</h3>
     <ol>
       <li>
-        In the event of intent and gross negligence on our part, we are liable for damages – regardless of the legal
-        grounds.
+        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
+        service, network, and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
+        by us), CC shall be liable only in cases of intent, gross negligence, or if CC has fraudulently concealed a
+        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
+        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
+        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
+        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
+        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
+        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
+        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
+        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
+        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
+        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
+        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
+        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
+        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
+        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
+        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
+        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
+        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
+        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
+        economically expected of CC.
       </li>
       <li>
-        In the event of negligence on our part, we are liable for damages resulting from injury to life, body or health.
+        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
+        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
+        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
+        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
+        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
+        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
+        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
+        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
+        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
+        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
+        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
+        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
+        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
+        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
+        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
+        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
+        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
+        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
+        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
+        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
+        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
+        economically expected of CC.
       </li>
       <li>
-        In the event of simple negligence on our part, we are only liable for damages resulting from the breach of an
-        essential contractual duty (e.g. a duty, the performance of which enables the proper execution of the contract
-        in the first place and on the compliance of which the contractual partner regularly relies and may rely),
-        whereby our liability shall be limited to compensation of the foreseeable, typically occurring damage. Liability
-        for the violation of a non-essential contractual duty is excluded.
+        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
+        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
+        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
+        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
+        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
+        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
+        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
+        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
+        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
+        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
+        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
+        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
+        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
+        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
+        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
+        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
+        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
+        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
+        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
+        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
+        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
+        economically expected of CC.
       </li>
       <li>
-        The liability for simple negligence only applies to the extent that we do not offer the Safe App and the
-        Services free of charge (please note, in this context, that any service, network and/or transaction fees may be
-        charged by third parties via the Blockchain and not necessarily by us). Conversely, this means that we are not
-        liable in cases of simple negligence, when you obtain the Safe App or the service from us free of charge.
+        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
+        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
+        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
+        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
+        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
+        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
+        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
+        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
+        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
+        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
+        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
+        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
+        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
+        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
+        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
+        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
+        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
+        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
+        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
+        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
+        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
+        economically expected of CC.
       </li>
       <li>
-        The limitations of liability according to Clauses 13.2 to 13.4. do not apply as far as we have assumed a
-        guarantee or we have fraudulently concealed a defect in the Services. These limitations of liability also do not
-        apply to your claims according to the Product Liability Act (”Produkthaftungsgesetz”) and any applicable data
-        privacy laws.
+        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
+        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
+        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
+        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
+        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
+        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
+        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
+        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
+        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
+        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
+        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
+        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
+        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
+        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
+        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
+        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
+        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
+        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
+        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
+        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
+        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
+        economically expected of CC.
       </li>
       <li>
-        If you suffer damages from the loss of data, we are not liable for this, as far as the damages would have been
-        avoided by your regular and complete backup of all relevant data.
+        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
+        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
+        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
+        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
+        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
+        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
+        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
+        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
+        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
+        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
+        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
+        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
+        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
+        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
+        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
+        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
+        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
+        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
+        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
+        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
+        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
+        economically expected of CC.
       </li>
       <li>
-        In the event of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain
-        that we are not responsible for, we shall be exempt from our obligation to perform. This also applies if we are
-        prevented from performing due to force majeure or other circumstances, the elimination of which is not possible
-        or cannot be economically expected of CC.
+        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
+        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
+        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
+        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
+        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
+        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
+        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
+        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
+        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
+        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
+        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
+        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
+        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
+        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
+        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
+        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
+        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
+        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
+        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
+        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
+        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
+        economically expected of CC.
       </li>
     </ol>
 
-    <h3>14. What about viruses, bugs and security vulnerabilities?</h3>
+    <h3>19. What about viruses, bugs and security vulnerabilities?</h3>
     <ol start={1}>
       <li>We endeavor to provide our Service free from material bugs, security vulnerabilities or viruses.</li>
       <li>
@@ -443,7 +670,7 @@ const SafeTerms = () => (
       </li>
     </ol>
 
-    <h3>15. What if an event outside our control happens that affects our Services?</h3>
+    <h3>20. What if an event outside our control happens that affects our Services?</h3>
     <ol start={1}>
       <li>
         We may update and change our Services from time to time. We may suspend or withdraw or restrict the availability
@@ -485,7 +712,7 @@ const SafeTerms = () => (
       </li>
     </ol>
 
-    <h3>16. Who is responsible for your tax liabilities?</h3>
+    <h3>21. Who is responsible for your tax liabilities?</h3>
     <p>
       You are solely responsible to determine if your use of the Services have tax implications, in particular income
       tax and capital gains tax relating to the purchase or sale of Tokens, for you. By using the Services you agree not
@@ -493,7 +720,7 @@ const SafeTerms = () => (
       action or transaction related thereto.
     </p>
 
-    <h3>17. What if a court disagrees with part of this Agreement?</h3>
+    <h3>22. What if a court disagrees with part of this Agreement?</h3>
     <p>
       Should individual provisions of these Terms be or become invalid or unenforceable in whole or in part, this shall
       not affect the validity of the remaining provisions. The invalid or unenforceable provision shall be replaced by
@@ -502,20 +729,20 @@ const SafeTerms = () => (
       valid provision that comes as close as possible to the economic purpose of the invalid or unenforceable provision.
     </p>
 
-    <h3>18. What if we do not enforce certain rights under this Agreement?</h3>
+    <h3>23. What if we do not enforce certain rights under this Agreement?</h3>
     <p>
       Our failure to exercise or enforce any right or remedy provided under this Agreement or by law shall not
       constitute a waiver of that or any other right or remedy, nor shall it prevent or restrict any further exercise of
       that or any other right or remedy.
     </p>
 
-    <h3>19. Do third parties have rights?</h3>
+    <h3>24. Do third parties have rights?</h3>
     <p>
       Unless it expressly states otherwise, this Agreement does not give rise to any third-party rights, which may be
       enforced against us.
     </p>
 
-    <h3>20. Can this Agreement be assigned?</h3>
+    <h3>25. Can this Agreement be assigned?</h3>
     <ol start={1}>
       <li>
         We are entitled to transfer our rights and obligations under the Agreement in whole or in part to third parties
@@ -526,13 +753,13 @@ const SafeTerms = () => (
       </li>
     </ol>
 
-    <h3>21. Which Clauses of this Agreement survive termination?</h3>
+    <h3>26. Which Clauses of this Agreement survive termination?</h3>
     <p>
       All covenants, agreements, representations and warranties made in this Agreement shall survive your acceptance of
       this Agreement and its termination.
     </p>
 
-    <h3>22. Data Protection</h3>
+    <h3>27. Data Protection</h3>
     <p>
       We inform you about our processing of personal data, including the disclosure to third parties and your rights as
       an affected party, in the{' '}
@@ -542,7 +769,7 @@ const SafeTerms = () => (
       .
     </p>
 
-    <h3>23. Which laws apply to the Agreement?</h3>
+    <h3>28. Which laws apply to the Agreement?</h3>
     <p>
       The Agreement including these Terms shall be governed by German law. The application of the UN Convention on
       Contracts for the International Sale of Goods is excluded. For consumers domiciled in another European country but
@@ -551,7 +778,7 @@ const SafeTerms = () => (
       German law.
     </p>
 
-    <h3>24. How can you get support for Safe Accounts and tell us about any problems?</h3>
+    <h3>29. How can you get support for Safe Accounts and tell us about any problems?</h3>
     <p>
       If you want to learn more about Safe Accounts or the Service or have any problems using them or have any
       complaints please get in touch via any of the following channels:
@@ -583,14 +810,14 @@ const SafeTerms = () => (
       </li>
     </ol>
 
-    <h3>25. Where is the place of legal proceedings?</h3>
+    <h3>30. Where is the place of legal proceedings?</h3>
     <p>
       For users who are merchants within the meaning of the German Commercial Code (Handelsgesetzbuch), a special fund
       (Sonderverm&ouml;gen) under public law or a legal person under public law, Berlin shall be the exclusive place of
       jurisdiction for all disputes arising from the contractual relationship.
     </p>
 
-    <h3>26. Is this all?</h3>
+    <h3>31. Is this all?</h3>
     <p>
       These Terms constitute the entire agreement between you and us in relation to the Agreement&rsquo;s subject
       matter. It replaces and extinguishes any and all prior agreements, draft agreements, arrangements, warranties,

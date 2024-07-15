@@ -3,8 +3,11 @@ import * as main from '../pages/main.page'
 import * as spendinglimit from '../pages/spending_limits.pages'
 import * as owner from '../pages/owners.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
+const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
+const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('[SMOKE] Spending limits tests', () => {
   before(async () => {
@@ -15,6 +18,7 @@ describe('[SMOKE] Spending limits tests', () => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_8)
     cy.clearLocalStorage()
     main.acceptCookies()
+    wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')
     spendinglimit.clickOnNewSpendingLimitBtn()

@@ -33,7 +33,6 @@ export const BROWSER_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__browserPermissi
 export const SAFE_PERMISSIONS_KEY = `${LS_NAMESPACE}SafeApps__safePermissions`
 export const INFO_MODAL_KEY = `${LS_NAMESPACE}SafeApps__infoModal`
 
-export const goerlyE2EWallet = /E2E Wallet @ G(ö|oe)rli/
 export const goerlySafeName = /g(ö|oe)rli-safe/
 export const sepoliaSafeName = 'sepolia-safe'
 export const goerliToken = /G(ö|oe)rli Ether/
@@ -82,6 +81,7 @@ export const stagingCGWChains = '/chains/'
 export const stagingCGWSafes = '/safes/'
 export const stagingCGWNone = '/nonces/'
 export const stagingCGWCollectibles = '/collectibles/'
+export const relayPath = '/relay/'
 export const stagingCGWAllTokensBalances = '/balances/USD?trusted=false&exclude_spam=false'
 
 export const proposeEndpoint = '/**/propose'
@@ -237,8 +237,4 @@ export const localStorageKeys = {
   SAFE_v2__SafeApps__browserPermissions: 'SAFE_v2__SafeApps__browserPermissions',
   SAFE_v2__SafeApps__infoModal: 'SAFE_v2__SafeApps__infoModal',
   SAFE_v2__undeployedSafes: 'SAFE_v2__undeployedSafes',
-}
-
-export const connectWalletNames = {
-  e2e: 'E2E Wallet',
 }

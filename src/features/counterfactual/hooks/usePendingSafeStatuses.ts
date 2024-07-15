@@ -16,7 +16,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { isSmartContract } from '@/utils/wallets'
 
 export const safeCreationPendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
@@ -77,9 +77,8 @@ const usePendingSafeMonitor = (): void => {
 }
 
 const usePendingSafeStatus = (): void => {
-  const [safeAddress, setSafeAddress] = useState<string>('')
   const dispatch = useAppDispatch()
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
 
@@ -108,8 +107,6 @@ const usePendingSafeStatus = (): void => {
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
-        setSafeAddress(detail.safeAddress)
-
         if (event === SafeCreationEvent.SUCCESS) {
           // TODO: Possible to add a label with_tx, without_tx?
           trackEvent(CREATE_SAFE_EVENTS.ACTIVATED_SAFE)

@@ -1,10 +1,12 @@
 import type {
   AddressEx,
+  BaselineConfirmationView,
   Cancellation,
   ConflictHeader,
   Creation,
   Custom,
   DateLabel,
+  DecodedDataResponse,
   DetailedExecutionInfo,
   Erc20Transfer,
   Erc721Transfer,
@@ -16,29 +18,30 @@ import type {
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   NativeCoinTransfer,
+  Order,
+  OrderConfirmationView,
   SafeInfo,
   SettingsChange,
+  SwapOrder,
+  SwapOrderConfirmationView,
   Transaction,
   TransactionInfo,
   TransactionListItem,
   TransactionSummary,
   Transfer,
   TransferInfo,
-  SwapOrder,
-  DecodedDataResponse,
-  BaselineConfirmationView,
-  CowSwapConfirmationView,
   TwapOrder,
-  Order,
+  TwapOrderConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import { TransferDirection } from '@safe-global/safe-gateway-typescript-sdk'
 import {
+  ConfirmationViewTypes,
   ConflictType,
   DetailedExecutionInfoType,
   TransactionInfoType,
   TransactionListItemType,
   TransactionStatus,
   TransactionTokenType,
+  TransferDirection,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import { sameAddress } from '@/utils/addresses'
@@ -75,7 +78,17 @@ export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): va
 
 // TransactionInfo type guards
 export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
-  return value.type === TransactionInfoType.TRANSFER
+  return value.type === TransactionInfoType.TRANSFER || isSwapTransferOrderTxInfo(value)
+}
+
+/**
+ * A fulfillment transaction for swap, limit or twap order is always a SwapOrder
+ * It cannot be a TWAP order
+ *
+ * @param value
+ */
+export const isSwapTransferOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
+  return value.type === TransactionInfoType.SWAP_TRANSFER
 }
 
 export const isSettingsChangeTxInfo = (value: TransactionInfo): value is SettingsChange => {
@@ -106,11 +119,27 @@ export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder =>
   return value.type === TransactionInfoType.TWAP_ORDER
 }
 
-export const isSwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | CowSwapConfirmationView | undefined,
-): decodedData is CowSwapConfirmationView => {
+export const isConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is OrderConfirmationView => {
+  return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
+}
+
+export const isTwapConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is TwapOrderConfirmationView => {
   if (decodedData && 'type' in decodedData) {
-    return decodedData.type === 'COW_SWAP_ORDER'
+    return decodedData.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
+  }
+
+  return false
+}
+
+export const isSwapConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is SwapOrderConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData.type === ConfirmationViewTypes.COW_SWAP_ORDER
   }
 
   return false

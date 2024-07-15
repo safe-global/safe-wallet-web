@@ -10,14 +10,13 @@ import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { useHasFeature } from '@/hooks/useChains'
-import { FEATURES } from '@/utils/chains'
+import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
 
 const SWAPS_APP_CARD_STORAGE_KEY = 'showSwapsAppCard'
 
 const NativeSwapsCard = () => {
   const router = useRouter()
-  const isSwapFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
+  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const [isSwapsCardVisible = true, setIsSwapsCardVisible] = useLocalStorage<boolean>(SWAPS_APP_CARD_STORAGE_KEY)
   if (!isSwapFeatureEnabled || !isSwapsCardVisible) return null
 
