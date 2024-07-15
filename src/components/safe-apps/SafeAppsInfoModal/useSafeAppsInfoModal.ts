@@ -6,7 +6,7 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import type { AllowedFeatures } from '../types'
 import { PermissionStatus } from '../types'
 import { getOrigin } from '../utils'
-import { SAFE_DOMAINS } from '@/config/constants'
+import { isNestedSafe } from '@/services/safe-apps/utils'
 
 const SAFE_APPS_INFO_MODAL = 'SafeApps__infoModal'
 
@@ -75,9 +75,7 @@ const useSafeAppsInfoModal = ({
   const isSafeAppInDefaultList = useMemo(() => {
     if (!url) return false
 
-    const { host } = new URL(url)
-    const isNestedSafe = SAFE_DOMAINS.some((safeDomain) => host.includes(safeDomain))
-    if (isNestedSafe) return true
+    if (isNestedSafe(url)) return true
 
     return !!safeApp
   }, [safeApp, url])

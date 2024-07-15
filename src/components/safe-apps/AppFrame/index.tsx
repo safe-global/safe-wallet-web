@@ -29,7 +29,7 @@ import { PermissionStatus, type SafeAppDataWithPermissions } from '@/components/
 import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
-import { SAFE_DOMAINS } from '@/config/constants'
+import { isNestedSafe } from '@/services/safe-apps/utils'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -118,9 +118,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
     return <div />
   }
 
-  const { host } = new URL(appUrl)
-  const isNestedSafe = SAFE_DOMAINS.some((domain) => host.includes(domain))
-
   return (
     <>
       <Head>
@@ -129,7 +126,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
 
       <div
         className={classnames(css.wrapper, {
-          [css.nestedSafe]: isNestedSafe,
+          [css.nestedSafe]: isNestedSafe(appUrl),
         })}
       >
         {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
