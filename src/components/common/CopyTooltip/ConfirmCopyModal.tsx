@@ -52,6 +52,11 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
             Proceed and copy
           </Button>
         </Track>
+        <Track {...TX_LIST_EVENTS.COPY_WARNING_CLOSE}>
+          <Button size="small" variant="contained" color="primary" onClick={onClose}>
+            Do not copy
+          </Button>
+        </Track>
       </DialogActions>
     </Dialog>
   )
