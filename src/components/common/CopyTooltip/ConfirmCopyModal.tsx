@@ -51,7 +51,7 @@ const ConfirmCopyModal = ({ open, onClose, onCopy, children }: ConfirmCopyModalP
       <DialogActions sx={{ padding: 3 }}>
         <Box className={css.dialogActions} gap={1}>
           <Track {...TX_LIST_EVENTS.COPY_WARNING_PROCEED}>
-            <Button size="small" variant="outlined" color="primary" onClick={onCopy} fullWidth>
+            <Button size="small" variant="text" color="primary" onClick={onCopy} fullWidth>
               Proceed and copy
             </Button>
           </Track>
