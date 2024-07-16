@@ -9,8 +9,6 @@ import { isIframe } from '@/services/safe-apps/utils'
 import useAllSafes from '@/components/welcome/MyAccounts/useAllSafes'
 import { useMemo } from 'react'
 
-const MAX_CHECKED_OWNERS = 3
-
 const Banner = ({ parentSafeLink }: { parentSafeLink: LinkProps['href'] }) => {
   return (
     <WidgetContainer>
@@ -59,7 +57,7 @@ const useNestedSafeOwner = () => {
     if (!safeLoaded || !allOwned || isIframe()) return null
 
     // Find an intersection of owned safes and the owners of the current safe
-    const ownerAddresses = safe?.owners.slice(0, MAX_CHECKED_OWNERS).map((owner) => owner.value)
+    const ownerAddresses = safe?.owners.map((owner) => owner.value)
 
     const match = allOwned.find(
       (ownedSafe) => ownedSafe.chainId === safe.chainId && ownerAddresses?.includes(ownedSafe.address),
