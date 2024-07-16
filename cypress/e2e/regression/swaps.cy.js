@@ -143,7 +143,7 @@ describe('Swaps tests', () => {
       swaps.clickOnSettingsBtn()
       swaps.setInputValue(4)
       swaps.checkSwapBtnIsVisible()
-      swaps.isInputGreaterZero(swaps.outputurrencyInput).then((isGreaterThanZero) => {
+      swaps.isInputGreaterZero(swaps.outputCurrencyInput).then((isGreaterThanZero) => {
         cy.wrap(isGreaterThanZero).should('be.true')
       })
       swaps.clickOnExceeFeeChkbox()
