@@ -1,13 +1,13 @@
 import { Button, Card, Grid, Typography } from '@mui/material'
 import Link, { type LinkProps } from 'next/link'
-import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { WidgetContainer, WidgetBody } from '@/components/dashboard/styled'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useAsync from '@/hooks/useAsync'
 import { AppRoutes } from '@/config/routes'
 import { useCurrentChain } from '@/hooks/useChains'
 import { isIframe } from '@/services/safe-apps/utils'
+import useAllSafes from '@/components/welcome/MyAccounts/useAllSafes'
+import { useMemo } from 'react'
 
 const MAX_CHECKED_OWNERS = 3
 
@@ -53,22 +53,20 @@ const Banner = ({ parentSafeLink }: { parentSafeLink: LinkProps['href'] }) => {
 
 const useNestedSafeOwner = () => {
   const { safe, safeLoaded } = useSafeInfo()
+  const allOwned = useAllSafes()
 
-  const [nestedSafeOwner] = useAsync<string | null>(async () => {
-    if (!safeLoaded) return null
+  const nestedSafeOwner = useMemo(() => {
+    if (!safeLoaded || !allOwned || isIframe()) return null
 
-    if (isIframe()) return null
-
+    // Find an intersection of owned safes and the owners of the current safe
     const ownerAddresses = safe?.owners.slice(0, MAX_CHECKED_OWNERS).map((owner) => owner.value)
 
-    const infos = await Promise.allSettled(
-      ownerAddresses.map((ownerAddress) => getSafeInfo(safe.chainId, ownerAddress)),
+    const match = allOwned.find(
+      (ownedSafe) => ownedSafe.chainId === safe.chainId && ownerAddresses?.includes(ownedSafe.address),
     )
 
-    const nestedSafe = infos.find((info) => info.status === 'fulfilled')
-
-    return nestedSafe?.status === 'fulfilled' ? nestedSafe.value.address.value : null
-  }, [safe, safeLoaded])
+    return match?.address
+  }, [allOwned, safe, safeLoaded])
 
   return nestedSafeOwner
 }
