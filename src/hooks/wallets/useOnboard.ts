@@ -176,13 +176,6 @@ export const useInitOnboard = () => {
     }
 
     enableWallets().then(() => {
-      // e2e wallet
-      if (typeof window !== 'undefined' && window.Cypress) {
-        connectWallet(onboard, {
-          autoSelect: { label: 'e2e wallet', disableModals: true },
-        })
-      }
-
       // Reconnect last wallet
       connectLastWallet(onboard)
     })
