@@ -18,6 +18,17 @@ import { FEATURES } from '@/utils/chains'
 import { chainBuilder } from '@/tests/builders/chains'
 import { useHasFeature } from '@/hooks/useChains'
 
+// Mock fetch
+Object.defineProperty(window, 'fetch', {
+  writable: true,
+  value: jest.fn(() =>
+    Promise.resolve({
+      ok: false,
+      json: () => Promise.resolve({}),
+    }),
+  ),
+})
+
 // We assume that CheckWallet always returns true
 jest.mock('@/components/common/CheckWallet', () => ({
   __esModule: true,
