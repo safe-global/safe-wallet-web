@@ -204,6 +204,7 @@ export const checkSafeActivation = async (
   provider: Provider,
   txHash: string,
   safeAddress: string,
+  type: PayMethod,
   startBlock?: number,
 ) => {
   try {
@@ -228,6 +229,7 @@ export const checkSafeActivation = async (
     safeCreationDispatch(SafeCreationEvent.SUCCESS, {
       groupKey: CF_TX_GROUP_KEY,
       safeAddress,
+      type,
     })
   } catch (err) {
     const _err = err as EthersError
@@ -236,6 +238,7 @@ export const checkSafeActivation = async (
       safeCreationDispatch(SafeCreationEvent.SUCCESS, {
         groupKey: CF_TX_GROUP_KEY,
         safeAddress,
+        type,
       })
       return
     }
@@ -257,7 +260,7 @@ export const checkSafeActivation = async (
   }
 }
 
-export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => {
+export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, type: PayMethod) => {
   const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
   let intervalId: NodeJS.Timeout
@@ -274,6 +277,7 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string) => 
         safeCreationDispatch(SafeCreationEvent.SUCCESS, {
           groupKey: CF_TX_GROUP_KEY,
           safeAddress,
+          type,
         })
         break
       case TaskState.ExecReverted:
