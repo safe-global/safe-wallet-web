@@ -186,6 +186,7 @@ export const useInitOnboard = () => {
         // Reconnect last wallet
         connectLastWallet(onboard)
       }
+    })
   }, [chain, onboard])
 
   // Track connected wallet
