@@ -5,13 +5,12 @@ import { HelpCenterArticle } from '@/config/constants'
 import { HelpIconTooltip } from '@/features/swap/components/HelpIconTooltip'
 import MUILink from '@mui/material/Link'
 
-export const OrderFeeConfirmationView = ({
-  order,
-}: {
-  order: Pick<OrderConfirmationView, 'fullAppData'>
-  hideWhenNonFulfilled?: boolean
-}) => {
+export const OrderFeeConfirmationView = ({ order }: { order: Pick<OrderConfirmationView, 'fullAppData'> }) => {
   const bps = getOrderFeeBps(order)
+
+  if (Number(bps) === 0) {
+    return null
+  }
 
   const title = (
     <>
@@ -19,9 +18,10 @@ export const OrderFeeConfirmationView = ({
       <HelpIconTooltip
         title={
           <>
-            The tiered widget fees incurred here will contribute to a license fee that supports the Safe community.
-            Neither Safe Ecosystem Foundation nor {`Safe{Wallet}`}
-            operate the CoW Swap Widget and/or CoW Swap.{` `}
+            The tiered widget fee incurred here is charged by CoW Protocol for the operation of this widget. The fee is
+            automatically calculated into this quote. Part of the fee will contribute to a license fee that supports the
+            Safe Community. Neither the Safe Ecosystem Foundation nor {`Safe{Wallet}`} operate the CoW Swap Widget
+            and/or CoW Swap.
             <MUILink href={HelpCenterArticle.SWAP_WIDGET_FEES} target="_blank" rel="noopener noreferrer">
               Learn more
             </MUILink>
@@ -32,7 +32,7 @@ export const OrderFeeConfirmationView = ({
   )
 
   return (
-    <DataRow title={title} key="widget_fee">
+    <DataRow datatestid="widget-fee" title={title} key="widget_fee">
       {Number(bps) / 100} %
     </DataRow>
   )

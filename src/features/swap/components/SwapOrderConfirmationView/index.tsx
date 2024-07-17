@@ -61,12 +61,12 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
             />
           </div>,
 
-          <DataRow key="Limit price" title="Limit price">
+          <DataRow datatestid="limit-price" key="Limit price" title="Limit price">
             1 {buyToken.symbol} = {formatAmount(limitPrice)} {sellToken.symbol}
           </DataRow>,
 
           compareAsc(now, expires) !== 1 ? (
-            <DataRow key="Expiry" title="Expiry">
+            <DataRow datatestid="expiry" key="Expiry" title="Expiry">
               <Typography>
                 <Typography fontWeight={700} component="span">
                   {formatTimeInWords(validUntil * 1000)}
@@ -80,30 +80,30 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
             </DataRow>
           ),
           orderClass !== 'limit' ? (
-            <DataRow key="Slippage" title="Slippage">
+            <DataRow datatestid="slippage" key="Slippage" title="Slippage">
               {slippage}%
             </DataRow>
           ) : (
             <Fragment key="none" />
           ),
           !isTwapOrder ? (
-            <DataRow key="Order ID" title="Order ID">
+            <DataRow datatestid="order-id" key="Order ID" title="Order ID">
               <OrderId orderId={order.uid} href={explorerUrl} />
             </DataRow>
           ) : (
             <></>
           ),
-          <OrderFeeConfirmationView key="SurplusFee" order={order} hideWhenNonFulfilled={false} />,
-          <DataRow key="Interact with" title="Interact with">
+          <OrderFeeConfirmationView key="SurplusFee" order={order} />,
+          <DataRow datatestid="interact-wth" key="Interact with" title="Interact with">
             <NamedAddress address={settlementContract} onlyName hasExplorer shortAddress={false} avatarSize={24} />
           </DataRow>,
           receiver && owner !== receiver ? (
             <>
-              <DataRow key="recipient-address" title="Recipient">
+              <DataRow datatestid="recipient" key="recipient-address" title="Recipient">
                 <EthHashInfo address={receiver} hasExplorer={true} avatarSize={24} />
               </DataRow>
               <div key="recipient">
-                <Alert severity="warning" icon={AlertIcon}>
+                <Alert data-testid="recipient-alert" severity="warning" icon={AlertIcon}>
                   <Typography variant="body2">
                     <Typography component="span" sx={{ fontWeight: 'bold' }}>
                       Order recipient address differs from order owner.

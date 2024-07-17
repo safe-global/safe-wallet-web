@@ -18,7 +18,6 @@ import RecoveryPlus from '@/public/images/common/recovery-plus.svg'
 import SwapIcon from '@/public/images/common/swap.svg'
 import SafeLogo from '@/public/images/logo-no-text.svg'
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined'
-import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
 import useIsSwapFeatureEnabled from '../swap/hooks/useIsSwapFeatureEnabled'
 
 const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
@@ -27,8 +26,7 @@ const FirstTxFlow = ({ open, onClose }: { open: boolean; onClose: () => void }) 
   const { setTxFlow } = useContext(TxModalContext)
   const supportsRecovery = useIsRecoverySupported()
   const [recovery] = useRecovery()
-  const isCounterfactualSafe = useIsCounterfactualSafe()
-  const isSwapFeatureEnabled = useIsSwapFeatureEnabled() && !isCounterfactualSafe
+  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
 
   const handleClick = (onClick: () => void) => {
     onClose()

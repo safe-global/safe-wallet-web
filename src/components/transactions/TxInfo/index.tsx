@@ -88,7 +88,7 @@ const CustomTx = ({ info }: { info: Custom }): ReactElement => {
 }
 
 const CreationTx = ({ info }: { info: Creation }): ReactElement => {
-  return <>Safe Account created by {shortenAddress(info.creator.value)}</>
+  return <>Created by {shortenAddress(info.creator.value)}</>
 }
 
 const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {

@@ -1,3 +1,4 @@
+import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import EventBus from '@/services/EventBus'
 
 export enum SafeCreationEvent {
@@ -23,6 +24,7 @@ export interface SafeCreationEvents {
   [SafeCreationEvent.SUCCESS]: {
     groupKey: string
     safeAddress: string
+    type: PayMethod
   }
   [SafeCreationEvent.INDEXED]: {
     groupKey: string

@@ -146,4 +146,10 @@ describe('Swaps history tests 2', () => {
     const eq2 = swaps.createRegex(swapsHistory.oneGNOFull, 'COW')
     swaps.checkTokenOrder(eq2, swapsHistory.limitPrice)
   })
+
+  it('Verify OrderID url on cowswap explorer', { defaultCommandTimeout: 30000 }, () => {
+    cy.visit(constants.transactionUrl + staticSafes.SEP_STATIC_SAFE_1 + swaps.swapTxs.sell1Action)
+    main.acceptCookies()
+    swaps.verifyOrderIDUrl()
+  })
 })

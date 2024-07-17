@@ -1,4 +1,5 @@
 import { pollSafeInfo } from '@/components/new-safe/create/logic'
+import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import {
   safeCreationDispatch,
   SafeCreationEvent,
@@ -16,7 +17,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { isSmartContract, useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 export const safeCreationPendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
   [SafeCreationEvent.PROCESSING]: PendingSafeStatus.PROCESSING,
@@ -49,7 +50,7 @@ const usePendingSafeMonitor = (): void => {
 
         const monitorPendingSafe = async () => {
           const {
-            status: { status, txHash, taskId, startBlock },
+            status: { status, txHash, taskId, startBlock, type },
           } = undeployedSafe
 
           const isProcessing = status === PendingSafeStatus.PROCESSING && txHash !== undefined
@@ -61,11 +62,11 @@ const usePendingSafeMonitor = (): void => {
           monitoredSafes.current[safeAddress] = true
 
           if (isProcessing) {
-            checkSafeActivation(provider, txHash, safeAddress, startBlock)
+            checkSafeActivation(provider, txHash, safeAddress, type, startBlock)
           }
 
           if (isRelaying) {
-            checkSafeActionViaRelay(taskId, safeAddress)
+            checkSafeActionViaRelay(taskId, safeAddress, type)
           }
         }
 
@@ -76,9 +77,8 @@ const usePendingSafeMonitor = (): void => {
 }
 
 const usePendingSafeStatus = (): void => {
-  const [safeAddress, setSafeAddress] = useState<string>('')
   const dispatch = useAppDispatch()
-  const { safe } = useSafeInfo()
+  const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
   const provider = useWeb3ReadOnly()
 
@@ -107,11 +107,15 @@ const usePendingSafeStatus = (): void => {
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
-        setSafeAddress(detail.safeAddress)
-
         if (event === SafeCreationEvent.SUCCESS) {
           // TODO: Possible to add a label with_tx, without_tx?
           trackEvent(CREATE_SAFE_EVENTS.ACTIVATED_SAFE)
+
+          // Not a counterfactual deployment
+          if ('type' in detail && detail.type === PayMethod.PayNow) {
+            trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
+          }
+
           pollSafeInfo(chainId, detail.safeAddress).finally(() => {
             safeCreationDispatch(SafeCreationEvent.INDEXED, {
               groupKey: detail.groupKey,

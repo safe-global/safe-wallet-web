@@ -37,8 +37,7 @@ describe('Sidebar added sidebar tests', () => {
     sideBar.verifySafeNameExists(newSafeName)
   })
 
-  // TODO: Update to remove from watch list
-  it.skip('Verify a safe can be removed', () => {
+  it('Verify a safe can be removed', () => {
     sideBar.openSidebar()
     sideBar.removeSafeItem(addedSafe900)
     sideBar.verifySafeRemoved([addedSafe900])

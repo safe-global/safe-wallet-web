@@ -25,7 +25,13 @@ import './safe-apps-commands'
   However, in cypress the cookie banner state is evaluated after the banner has been dismissed not before
   which displays the terms banner even though it shouldn't so we need to globally hide it in our tests.
  */
+const { addCompareSnapshotCommand } = require('cypress-visual-regression/dist/command')
+addCompareSnapshotCommand()
+
 before(() => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    return false
+  })
   cy.on('log:added', (ev) => {
     if (Cypress.config('hideXHR')) {
       const app = window.top

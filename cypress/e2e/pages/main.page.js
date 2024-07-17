@@ -4,6 +4,7 @@ const acceptSelection = 'Save settings'
 const executeStr = 'Execute'
 const connectedOwnerBlock = '[data-testid="open-account-center"]'
 export const modalDialogCloseBtn = '[data-testid="modal-dialog-close-btn"]'
+export const noRelayAttemptsError = 'Not enough relay attempts remaining'
 
 export function checkElementBackgroundColor(element, color) {
   cy.get(element).should('have.css', 'background-color', color)
@@ -84,6 +85,23 @@ export function fetchCurrentNonce(safeAddress) {
   )
 }
 
+export const getRelayRemainingAttempts = (safeAddress) => {
+  const chain = constants.networkKeys.sepolia
+
+  return cy
+    .request({
+      method: 'GET',
+      url: `${constants.stagingCGWUrlv1}${constants.stagingCGWChains}${chain}${constants.relayPath}${safeAddress}`,
+      headers: {
+        accept: 'application/json',
+      },
+    })
+    .then((response) => {
+      console.log('Remaining relay attempts: ', response.body.remaining)
+      return response.body.remaining
+    })
+}
+
 export function verifyNonceChange(safeAddress, expectedNonce) {
   fetchCurrentNonce(safeAddress).then((newNonce) => {
     expect(newNonce).to.equal(expectedNonce)
@@ -95,6 +113,13 @@ export function checkTokenBalance(safeAddress, tokenSymbol, expectedBalance) {
     const targetToken = response.body.items.find((token) => token.tokenInfo.symbol === tokenSymbol)
     console.log(targetToken)
     expect(targetToken.balance).to.include(expectedBalance)
+  })
+}
+
+export function getTokenBalance(safeAddress, tokenSymbol) {
+  getSafeBalance(safeAddress.substring(4), constants.networkKeys.sepolia).then((response) => {
+    const targetToken = response.body.items.find((token) => token.tokenInfo.symbol === tokenSymbol)
+    console.log('**** TOKEN BALANCE', targetToken.balance)
   })
 }
 
@@ -303,4 +328,8 @@ export function verifyTextVisibility(stringsArray) {
 
 export function getIframeBody(iframe) {
   return cy.get(iframe).its('0.contentDocument.body').should('not.be.empty').then(cy.wrap)
+}
+
+export const checkButtonByTextExists = (buttonText) => {
+  cy.get('button').contains(buttonText).should('exist')
 }

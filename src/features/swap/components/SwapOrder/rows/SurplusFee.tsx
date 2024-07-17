@@ -10,12 +10,8 @@ export const SurplusFee = ({
   order: Pick<Order, 'fullAppData' | 'sellToken' | 'buyToken' | 'status' | 'executedSurplusFee' | 'kind'>
 }) => {
   const bps = getOrderFeeBps(order)
-  const { executedSurplusFee, status, sellToken, buyToken, kind } = order
+  const { executedSurplusFee, sellToken } = order
   let token = sellToken
-
-  if (kind === 'buy') {
-    token = buyToken
-  }
 
   if (executedSurplusFee === null || typeof executedSurplusFee === 'undefined' || executedSurplusFee === '0') {
     return null
@@ -30,7 +26,7 @@ export const SurplusFee = ({
             title={
               <>
                 The amount of fees paid for this order.
-                {bps > 0 && `This includes a Widget fee of ${bps / 100} % and network fees.`}
+                {bps > 0 && ` This includes a Widget fee of ${bps / 100}% and network fees.`}
               </>
             }
           />

@@ -6,12 +6,16 @@ import * as create_tx from '../pages/create_tx.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as owner from '../pages/owners.pages'
 import * as wallet from '../../support/utils/wallet.js'
+import * as swaps_data from '../../fixtures/swaps_data.json'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
+const signer2 = walletCredentials.OWNER_3_WALLET_ADDRESS
 let staticSafes = []
 
 let iframeSelector
+
+const swapOrder = swaps_data.type.orderDetails
 
 describe('Swaps tests', () => {
   before(async () => {
@@ -84,6 +88,7 @@ describe('Swaps tests', () => {
           }
         })
         .within(() => {
+          swaps.selectInputCurrency(swaps.swapTokens.cow)
           swaps.clickOnSettingsBtn()
           swaps.enableCustomRecipient(isCustomRecipientFound(swaps.customRecipient))
           swaps.clickOnSettingsBtn()
@@ -104,6 +109,7 @@ describe('Swaps tests', () => {
 
     main.getIframeBody(iframeSelector).then(($frame) => {
       cy.wrap($frame).within(() => {
+        swaps.selectInputCurrency(swaps.swapTokens.cow)
         swaps.clickOnSettingsBtn()
 
         if (isCustomRecipientFound($frame, swaps.customRecipient)) {
@@ -120,4 +126,73 @@ describe('Swaps tests', () => {
       })
     })
   })
+
+  it('Verify order deails are displayed in swap confirmation', { defaultCommandTimeout: 30000 }, () => {
+    const limitPrice = swaps.createRegex(swapOrder.DAIeqCOW, 'COW')
+    const widgetFee = swaps.getWidgetFee()
+    const orderID = swaps.getOrderID()
+    const slippage = swaps.getWidgetFee()
+
+    swaps.acceptLegalDisclaimer()
+    cy.wait(4000)
+    main.getIframeBody(iframeSelector).within(() => {
+      swaps.selectInputCurrency(swaps.swapTokens.cow)
+      swaps.clickOnSettingsBtn()
+      swaps.setSlippage('0.30')
+      swaps.setExpiry('2')
+      swaps.clickOnSettingsBtn()
+      swaps.setInputValue(4)
+      swaps.checkSwapBtnIsVisible()
+      swaps.isInputGreaterZero(swaps.outputurrencyInput).then((isGreaterThanZero) => {
+        cy.wrap(isGreaterThanZero).should('be.true')
+      })
+      swaps.clickOnExceeFeeChkbox()
+      swaps.clickOnSwapBtn()
+      swaps.clickOnSwapBtn()
+    })
+
+    swaps.verifyOrderDetails(limitPrice, swapOrder.expiry2Mins, slippage, swapOrder.interactWith, orderID, widgetFee)
+  })
+
+  it(
+    'Verify recipient address alert is displayed in order details if the recipient is not owner of the order',
+    { defaultCommandTimeout: 30000 },
+    () => {
+      const limitPrice = swaps.createRegex(swapOrder.DAIeqCOW, 'COW')
+      const widgetFee = swaps.getWidgetFee()
+      const orderID = swaps.getOrderID()
+
+      const isCustomRecipientFound = ($frame, customRecipient) => {
+        const element = $frame.find(customRecipient)
+        return element.length > 0
+      }
+
+      swaps.acceptLegalDisclaimer()
+      cy.wait(4000)
+      main.getIframeBody(iframeSelector).then(($frame) => {
+        cy.wrap($frame).within(() => {
+          swaps.selectInputCurrency(swaps.swapTokens.cow)
+          swaps.setInputValue(4)
+          swaps.checkSwapBtnIsVisible()
+          swaps.clickOnSettingsBtn()
+
+          if (isCustomRecipientFound($frame, swaps.customRecipient)) {
+            swaps.disableCustomRecipient(true)
+            cy.wait(1000)
+            swaps.enableCustomRecipient(!isCustomRecipientFound($frame, swaps.customRecipient))
+          } else {
+            swaps.enableCustomRecipient(isCustomRecipientFound($frame, swaps.customRecipient))
+            cy.wait(1000)
+          }
+
+          swaps.clickOnSettingsBtn()
+          swaps.enterRecipient(signer2)
+          swaps.clickOnExceeFeeChkbox()
+          swaps.clickOnSwapBtn()
+          swaps.clickOnSwapBtn()
+        })
+        swaps.verifyRecipientAlertIsDisplayed()
+      })
+    },
+  )
 })

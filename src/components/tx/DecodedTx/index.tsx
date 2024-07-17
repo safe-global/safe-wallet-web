@@ -33,7 +33,6 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import accordionCss from '@/styles/accordion.module.css'
-import { formatVisualAmount } from '@/utils/formatters'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
@@ -75,7 +74,7 @@ const DecodedTx = ({
 
   if (!decodedData) return null
 
-  const amount = tx?.data.value ? formatVisualAmount(tx.data.value, chain?.nativeCurrency.decimals) : '0'
+  const amount = tx?.data.value ?? '0'
 
   return (
     <Stack spacing={2}>
@@ -83,7 +82,7 @@ const DecodedTx = ({
         <>
           {amount !== '0' && (
             <SendAmountBlock
-              amount={amount}
+              amountInWei={amount}
               tokenInfo={{
                 type: TokenType.NATIVE_TOKEN,
                 address: ZERO_ADDRESS,

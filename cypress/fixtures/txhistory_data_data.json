@@ -10,7 +10,7 @@
       "executedBy": "Executed"
     },
     "accountCreation": {
-      "actionsSummary": "Safe Account created by 0xC16D...6fED",
+      "actionsSummary": "Created by 0xC16D...6fED",
       "transactionSafehash": {},
       "summaryTime": "10:30 AM",
       "title": "Safe Account created",
@@ -34,11 +34,11 @@
     "receive": {
       "title": "Receive",
       "summaryTitle": "Received",
-      "summaryTxInfo": "< 0.00001 ETH",
+      "summaryTxInfo": "1,000 QTRUST",
       "summaryTime": "11:00 AM",
-      "receivedFrom": "Received 0.00000000001 ETH from:",
+      "receivedFrom": "Received 1,000 QTRUST from",
       "senderAddress": "sep:0x96D4c6fFC338912322813a77655fCC926b9A5aC5",
-      "transactionHash": "0x4159...3e7d",
+      "transactionHash": "0xd89d...9136",
       "transactionHashCopied": "0x415977f4e4912e22a5cabc4116f7e8f8984996e00a641dcccf8cbe1eb3db3e7d",
       "altImage": "Received",
       "altToken": "ETH"
@@ -82,9 +82,9 @@
       "description": "Add signer",
       "altImage": "addOwnerWithThreshold",
       "requiredConfirmationsTitle": "Required confirmations for new transactions",
-      "ownerAddress": "sep:0x01A9F68e339da12565cfBc47fe7D6EdEcB11C46f",
-      "transactionHash": "0x51d5...da62",
-      "safeTxHash": "0xdcc5...e1b2"
+      "ownerAddress": "sep:0x4fe7164d7cA511Ab35520bb14065F1693240dC90",
+      "transactionHash": "0xfcad...ab35",
+      "safeTxHash": "0x8583...3d2d"
     },
     "removeOwner": {
       "title": "removeOwner",

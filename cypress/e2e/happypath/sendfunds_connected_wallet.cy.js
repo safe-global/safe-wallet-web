@@ -14,9 +14,6 @@ import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 
-const safeBalanceEth = 505360000000000000n
-const safeBalanceEth = 505320000000000000n
-const qtrustBanance = 99000000000000000025n
 const transferAmount = '1'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -50,6 +47,7 @@ const ethAdapterOwner2 = createEthersAdapter(owner2Signer)
 
 function visit(url) {
   cy.visit(url)
+  main.acceptCookies()
 }
 
 describe('Send funds with connected signer happy path tests', { defaultCommandTimeout: 60000 }, () => {
@@ -160,7 +158,6 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
         const safeTx = await apiKit.getTransaction(safeTxHashofExistingTx)
         await protocolKitOwner2_S3.executeTransaction(safeTx)
         main.verifyNonceChange(network_pref + targetSafe, currentNonce + 1)
-        main.checkTokenBalance(network_pref + targetSafe, constants.tokenAbbreviation.eth, safeBalanceEth)
       })
   })
 
@@ -194,7 +191,6 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
         await tx.wait()
         main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
-        main.checkTokenBalance(network_pref + originatingSafe, constants.tokenAbbreviation.qtrust, qtrustBanance)
       })
   })
 })

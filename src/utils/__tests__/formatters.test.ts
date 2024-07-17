@@ -1,4 +1,5 @@
 import * as formatters from '@/utils/formatters'
+import { parseEther } from 'ethers'
 
 describe('formatters', () => {
   describe('removeTrailingZeros', () => {
@@ -65,6 +66,39 @@ describe('formatters', () => {
 
       // @ts-ignore - Invalid type
       expect(formatters.shortenAddress(null, 5)).toEqual('')
+    })
+  })
+
+  describe('formatVisualAmount', () => {
+    it('should format with different decimals', () => {
+      expect(formatters.formatVisualAmount('123456789', 0, 10)).toEqual('123,456,789')
+      expect(formatters.formatVisualAmount('123456789', 1, 10)).toEqual('12,345,678.9')
+      expect(formatters.formatVisualAmount('123456789', 2, 10)).toEqual('1,234,567.89')
+      expect(formatters.formatVisualAmount('123456789', 3, 10)).toEqual('123,456.789')
+      expect(formatters.formatVisualAmount('123456789', 4, 10)).toEqual('12,345.6789')
+      expect(formatters.formatVisualAmount('123456789', 5, 10)).toEqual('1,234.56789')
+      expect(formatters.formatVisualAmount('123456789', 6, 10)).toEqual('123.456789')
+      expect(formatters.formatVisualAmount('123456789', 7, 10)).toEqual('12.3456789')
+      expect(formatters.formatVisualAmount('123456789', 8, 10)).toEqual('1.23456789')
+      expect(formatters.formatVisualAmount('123456789', 9, 10)).toEqual('0.123456789')
+    })
+
+    it('should format with different precisions', () => {
+      expect(formatters.formatVisualAmount('123456789', 6, 0)).toEqual('123')
+      expect(formatters.formatVisualAmount('123456789', 6, 1)).toEqual('123.5')
+      expect(formatters.formatVisualAmount('123456789', 6, 2)).toEqual('123.46')
+      expect(formatters.formatVisualAmount('123456789', 6, 3)).toEqual('123.457')
+      expect(formatters.formatVisualAmount('123456789', 6, 4)).toEqual('123.4568')
+      expect(formatters.formatVisualAmount('123456789', 6, 5)).toEqual('123.45679')
+      expect(formatters.formatVisualAmount('123456789', 6, 6)).toEqual('123.456789')
+    })
+
+    it('should format wei correctly', () => {
+      expect(formatters.formatVisualAmount(parseEther('1'), 18, 18)).toEqual('1')
+      expect(formatters.formatVisualAmount(parseEther('10'), 18, 18)).toEqual('10')
+      expect(formatters.formatVisualAmount(parseEther('1000'), 18, 18)).toEqual('1,000')
+      expect(formatters.formatVisualAmount(parseEther('0.00001'), 18, 18)).toEqual('0.00001')
+      expect(formatters.formatVisualAmount('1', 18, 18)).toEqual('0.000000000000000001')
     })
   })
 })

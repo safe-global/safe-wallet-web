@@ -24,6 +24,17 @@ describe('Tx history tests 2', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
+    cy.intercept(
+      'GET',
+      `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
+        constants.stagingCGWSafes
+      }${staticSafes.SEP_STATIC_SAFE_7.substring(4)}/transactions/history**`,
+      (req) => {
+        req.url = `https://safe-client.staging.5afe.dev/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone_offset=7200000&trusted=false&cursor=limit=100&offset=1`
+        req.continue()
+      },
+    ).as('allTransactions')
+
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     main.acceptCookies()
   })
