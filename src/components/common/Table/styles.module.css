@@ -4,6 +4,7 @@
   gap: var(--space-1);
   justify-content: flex-start;
   max-width: 900px;
+  overflow-x: auto;
 }
 
 .gridEmptyRow {
