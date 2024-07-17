@@ -63,6 +63,21 @@ jest.mock('@/services/transactions', () => ({
   getModuleTransactionId: jest.fn(() => 'i1234567890'),
 }))
 
+// Mock useGasPrice
+jest.mock('@/hooks/useGasPrice', () => ({
+  __esModule: true,
+  default() {
+    return [
+      {
+        maxFeePerGas: undefined,
+        maxPriorityFeePerGas: undefined,
+      },
+      undefined,
+      false,
+    ]
+  },
+}))
+
 describe('ExecuteThroughRoleForm', () => {
   let executeSpy: jest.SpyInstance
 
