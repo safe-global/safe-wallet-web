@@ -142,6 +142,7 @@ describe('Swaps tests', () => {
       swaps.setExpiry('2')
       swaps.clickOnSettingsBtn()
       swaps.setInputValue(4)
+      swaps.selectOutputCurrency(swaps.swapTokens.dai)
       swaps.checkSwapBtnIsVisible()
       swaps.isInputGreaterZero(swaps.outputCurrencyInput).then((isGreaterThanZero) => {
         cy.wrap(isGreaterThanZero).should('be.true')
