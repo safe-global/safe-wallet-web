@@ -18,15 +18,21 @@ export const getTxDetails = memoize(
   (id: string, chainId: string) => `${chainId}-${id}`,
 )
 
-export const getTxHistory = (chainId: string, safeAddress: string, hideSuspicious = false, pageUrl?: string) => {
+export const getTxHistory = (
+  chainId: string,
+  safeAddress: string,
+  hideUntrustedTxs = false,
+  hideImitationTxs = false,
+  pageUrl?: string,
+) => {
   return getTransactionHistory(
     chainId,
     safeAddress,
     {
       timezone_offset: getTimezoneOffset(), // used for grouping txs by date
       // Untrusted and imitation txs are filtered together in the UI
-      trusted: hideSuspicious, // if false, include transactions marked untrusted in the UI
-      imitation: !hideSuspicious, // If true, include transactions marked imitation in the UI
+      trusted: hideUntrustedTxs, // if false, include transactions marked untrusted in the UI
+      imitation: !hideImitationTxs, // If true, include transactions marked imitation in the UI
     },
     pageUrl,
   )

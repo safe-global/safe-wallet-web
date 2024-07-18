@@ -21,7 +21,12 @@ export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
       if (!safeLoaded) return
       if (!safe.deployed) return Promise.resolve({ results: [] })
 
-      return getTxHistory(chainId, safeAddress, hasDefaultTokenlist && hideSuspiciousTransactions)
+      return getTxHistory(
+        chainId,
+        safeAddress,
+        hasDefaultTokenlist && hideSuspiciousTransactions,
+        hideSuspiciousTransactions,
+      )
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [safeLoaded, chainId, safeAddress, hideSuspiciousTransactions, hasDefaultTokenlist, txHistoryTag, safe.deployed],
