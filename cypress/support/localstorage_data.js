@@ -111,7 +111,7 @@ export const batchData = {
                 logoUri: null,
               },
               direction: 'OUTGOING',
-              transferInfo: { type: 'NATIVE_COIN', value: '1000000000000000' },
+              transferInfo: { type: 'NATIVE_COIN', value: '2000000000000000' },
             },
             txData: {
               hexData: null,

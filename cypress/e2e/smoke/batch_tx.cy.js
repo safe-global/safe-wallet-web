@@ -46,14 +46,15 @@ describe('[SMOKE] Batch transaction tests', () => {
       .then(() => main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0))
       .then(() => {
         cy.reload()
-        batch.clickOnBatchCounter()
         wallet.connectSigner(signer)
+        batch.clickOnBatchCounter()
+
         batch.clickOnConfirmBatchBtn()
         batch.verifyBatchTransactionsCount(2)
         batch.clickOnBatchCounter()
         cy.contains(funds_first_tx).parents('ul').as('TransactionList')
         cy.get('@TransactionList').find('li').eq(0).contains(funds_first_tx)
-        cy.get('@TransactionList').find('li').eq(1).contains(funds_first_tx)
+        cy.get('@TransactionList').find('li').eq(1).contains(funds_second_tx)
       })
   })
 
@@ -63,12 +64,12 @@ describe('[SMOKE] Batch transaction tests', () => {
       .then(() => main.isItemInLocalstorage(constants.localStorageKeys.SAFE_v2__batch, ls.batchData.entry0))
       .then(() => {
         cy.reload()
-        batch.clickOnBatchCounter()
         wallet.connectSigner(signer)
+        batch.clickOnBatchCounter()
         cy.contains(batch.batchedTransactionsStr).should('be.visible').parents('aside').find('ul > li').as('BatchList')
         cy.get('@BatchList').find(batch.deleteTransactionbtn).eq(0).click()
         cy.get('@BatchList').should('have.length', 1)
-        cy.get('@BatchList').contains(funds_second_tx).should('not.exist')
+        cy.get('@BatchList').contains(funds_first_tx).should('not.exist')
       })
   })
 })
