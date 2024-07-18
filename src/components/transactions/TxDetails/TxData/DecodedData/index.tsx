@@ -4,7 +4,6 @@ import { TokenType, type TransactionDetails } from '@safe-global/safe-gateway-ty
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { useCurrentChain } from '@/hooks/useChains'
-import { formatVisualAmount } from '@/utils/formatters'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import SendToBlock from '@/components/tx/SendToBlock'
@@ -31,13 +30,13 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
     decodedData = <HexEncodedData title="Data (hex encoded)" hexData={txData.hexData} />
   }
 
-  const amount = txData.value ? formatVisualAmount(txData.value, chainInfo?.nativeCurrency.decimals) : '0'
+  const amountInWei = txData.value ?? '0'
   // we render the decoded data
   return (
     <Stack spacing={1}>
-      {amount !== '0' && (
+      {amountInWei !== '0' && (
         <SendAmountBlock
-          amount={amount}
+          amountInWei={amountInWei}
           tokenInfo={{
             type: TokenType.NATIVE_TOKEN,
             address: ZERO_ADDRESS,

@@ -5,6 +5,8 @@ import WarningIcon from '@/public/images/notifications/warning.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import css from './styles.module.css'
 
+const ETHERS_PREFIX = 'could not coalesce error'
+
 const ErrorMessage = ({
   children,
   error,
@@ -46,7 +48,7 @@ const ErrorMessage = ({
 
           {error && showDetails && (
             <Typography variant="body2" className={css.details}>
-              {error.reason || error.message.slice(0, 300)}
+              {(error.reason || error.message).replace(ETHERS_PREFIX, '').trim().slice(0, 500)}
             </Typography>
           )}
         </div>

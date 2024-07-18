@@ -111,7 +111,7 @@ export const batchData = {
                 logoUri: null,
               },
               direction: 'OUTGOING',
-              transferInfo: { type: 'NATIVE_COIN', value: '1000000000000000' },
+              transferInfo: { type: 'NATIVE_COIN', value: '2000000000000000' },
             },
             txData: {
               hexData: null,
@@ -333,6 +333,11 @@ export const addressBookData = {
     11155111: {
       '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AA Safe',
       '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'BB Safe',
+    },
+  },
+  autofillData: {
+    11155111: {
+      '0x01A9F68e339da12565cfBc47fe7D6EdEcB11C46f': 'David',
     },
   },
   sameOwnerName: {

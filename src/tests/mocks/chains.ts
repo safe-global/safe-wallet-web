@@ -1,9 +1,22 @@
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES, GAS_PRICE_TYPE, RPC_AUTHENTICATION } from '@safe-global/safe-gateway-typescript-sdk'
 
+const contractAddresses = {
+  createCallAddress: null,
+  fallbackHandlerAddress: null,
+  multiSendAddress: null,
+  multiSendCallOnlyAddress: null,
+  safeProxyFactoryAddress: null,
+  safeSingletonAddress: null,
+  safeWebAuthnSignerFactoryAddress: null,
+  signMessageLibAddress: null,
+  simulateTxAccessorAddress: null,
+}
+
 const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   {
     transactionService: 'https://safe-transaction.mainnet.gnosis.io',
+    contractAddresses,
     chainId: '1',
     chainName: 'Ethereum',
     chainLogoUri: '',
@@ -58,6 +71,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.xdai.gnosis.io',
+    contractAddresses,
     chainId: '100',
     chainName: 'Gnosis Chain',
     chainLogoUri: '',
@@ -111,6 +125,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.polygon.gnosis.io',
+    contractAddresses,
     chainId: '137',
     chainName: 'Polygon',
     chainLogoUri: '',
@@ -170,6 +185,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.bsc.gnosis.io',
+    contractAddresses,
     chainId: '56',
     chainName: 'BNB Smart Chain',
     chainLogoUri: '',
@@ -225,6 +241,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.ewc.gnosis.io',
+    contractAddresses,
     chainId: '246',
     chainName: 'Energy Web Chain',
     chainLogoUri: '',
@@ -278,6 +295,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.arbitrum.gnosis.io',
+    contractAddresses,
     chainId: '42161',
     chainName: 'Arbitrum',
     chainLogoUri: '',
@@ -324,6 +342,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.aurora.gnosis.io',
+    contractAddresses,
     chainId: '1313161554',
     chainName: 'Aurora',
     chainLogoUri: '',
@@ -371,6 +390,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.avalanche.gnosis.io',
+    contractAddresses,
     chainId: '43114',
     chainName: 'Avalanche',
     chainLogoUri: '',
@@ -429,6 +449,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.optimism.gnosis.io',
+    contractAddresses,
     chainId: '10',
     chainName: 'Optimism',
     chainLogoUri: '',
@@ -475,6 +496,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.goerli.gnosis.io/',
+    contractAddresses,
     chainId: '5',
     chainName: 'Goerli',
     chainLogoUri: '',
@@ -529,6 +551,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.rinkeby.gnosis.io',
+    contractAddresses,
     chainId: '4',
     chainName: 'Rinkeby',
     chainLogoUri: '',
@@ -573,6 +596,7 @@ const CONFIG_SERVICE_CHAINS: ChainInfo[] = [
   },
   {
     transactionService: 'https://safe-transaction.volta.gnosis.io',
+    contractAddresses,
     chainId: '73799',
     chainName: 'Volta',
     chainLogoUri: '',

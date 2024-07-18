@@ -39,7 +39,7 @@ export const formatVisualAmount = (
   precision?: number,
 ): string => {
   const amount = safeFormatUnits(value, decimals)
-  return precision ? formatAmountPrecise(amount, precision) : formatAmount(amount)
+  return precision !== undefined ? formatAmountPrecise(amount, precision) : formatAmount(amount)
 }
 
 export const safeParseUnits = (value: string, decimals: number | string = GWEI): bigint | undefined => {

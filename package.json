@@ -58,7 +58,7 @@
     "@safe-global/protocol-kit": "^4.0.1",
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@safe-global/safe-deployments": "^1.37.1",
-    "@safe-global/safe-gateway-typescript-sdk": "3.21.8",
+    "@safe-global/safe-gateway-typescript-sdk": "3.22.0",
     "@safe-global/safe-modules-deployments": "^1.2.0",
     "@sentry/react": "^7.91.0",
     "@spindl-xyz/attribution-lite": "^1.4.0",

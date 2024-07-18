@@ -1,4 +1,5 @@
 import { pollSafeInfo } from '@/components/new-safe/create/logic'
+import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import {
   safeCreationDispatch,
   SafeCreationEvent,
@@ -50,7 +51,7 @@ const usePendingSafeMonitor = (): void => {
 
         const monitorPendingSafe = async () => {
           const {
-            status: { status, txHash, taskId, startBlock },
+            status: { status, txHash, taskId, startBlock, type },
           } = undeployedSafe
 
           const isProcessing = status === PendingSafeStatus.PROCESSING && txHash !== undefined
@@ -62,11 +63,11 @@ const usePendingSafeMonitor = (): void => {
           monitoredSafes.current[safeAddress] = true
 
           if (isProcessing) {
-            checkSafeActivation(provider, txHash, safeAddress, startBlock)
+            checkSafeActivation(provider, txHash, safeAddress, type, startBlock)
           }
 
           if (isRelaying) {
-            checkSafeActionViaRelay(taskId, safeAddress)
+            checkSafeActionViaRelay(taskId, safeAddress, type)
           }
         }
 
@@ -110,6 +111,12 @@ const usePendingSafeStatus = (): void => {
         if (event === SafeCreationEvent.SUCCESS) {
           // TODO: Possible to add a label with_tx, without_tx?
           trackEvent(CREATE_SAFE_EVENTS.ACTIVATED_SAFE)
+
+          // Not a counterfactual deployment
+          if ('type' in detail && detail.type === PayMethod.PayNow) {
+            trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
+          }
+
           pollSafeInfo(chainId, detail.safeAddress).finally(() => {
             safeCreationDispatch(SafeCreationEvent.INDEXED, {
               groupKey: detail.groupKey,
