@@ -30,6 +30,12 @@
   .indicator {
     min-width: 35px;
   }
+  .responsive {
+    min-width: 0;
+  }
+  .responsive .name {
+    display: none;
+  }
 }
 
 @container my-accounts-container (max-width: 500px) {
@@ -40,3 +46,12 @@
     display: none;
   }
 }
+
+/* @media (max-width: 899.95pxpx) {
+  .responsive {
+    min-width: 0;
+  }
+  .responsive .name {
+    display: none;
+  }
+} */

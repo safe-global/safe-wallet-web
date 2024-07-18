@@ -37,12 +37,14 @@
     font-size: 12px;
   }
 
-  .walletDetails {
-    display: none;
-  }
-
   .imageContainer img {
     width: 22px;
     height: auto;
+  }
+}
+
+@media (max-width: 899.95px) {
+  .walletDetails {
+    display: none;
   }
 }
