@@ -26,21 +26,22 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 
   let submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, refundReceiver, safeTxGas
   if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-    ;({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
+    ; ({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
     refundReceiver = detailedExecutionInfo.refundReceiver?.value
   }
 
   return (
     <>
-      <TxDataRow datatestid="tx-hash" title="Transaction hash:">
-        {generateDataRowValue(txHash, 'hash', true)}{' '}
-      </TxDataRow>
-      <TxDataRow datatestid="tx-safe-hash" title="safeTxHash:">
-        {generateDataRowValue(safeTxHash, 'hash')}
-      </TxDataRow>
+      {txHash && (
+        <TxDataRow datatestid="tx-hash" title="Transaction hash:">
+          {generateDataRowValue(txHash, 'hash', true)}{' '}
+        </TxDataRow>
+      )}
+
       <TxDataRow datatestid="tx-created-at" title="Created:">
         {submittedAt ? dateString(submittedAt) : null}
       </TxDataRow>
+
       {executedAt && (
         <TxDataRow datatestid="tx-executed-at" title="Executed:">
           {dateString(executedAt)}
@@ -64,6 +65,10 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 
           {expanded && (
             <div>
+              <TxDataRow datatestid="tx-safe-hash" title="safeTxHash:">
+                {generateDataRowValue(safeTxHash, 'hash')}
+              </TxDataRow>
+
               <TxDataRow datatestid="tx-operation" title="Operation:">
                 {`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
               </TxDataRow>
