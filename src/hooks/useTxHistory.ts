@@ -22,7 +22,8 @@ const useTxHistory = (
   const [filter] = useTxFilter()
   const { hideSuspiciousTransactions } = useAppSelector(selectSettings)
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
-  const hideSuspicious = hideSuspiciousTransactions || false
+  const hideUntrustedTxs = (hasDefaultTokenlist && hideSuspiciousTransactions) || false
+  const hideImitationTxs = hideSuspiciousTransactions || false
 
   const {
     safe: { chainId },
@@ -35,10 +36,10 @@ const useTxHistory = (
       if (!(filter || pageUrl)) return
 
       return filter
-        ? fetchFilteredTxHistory(chainId, safeAddress, filter, hideSuspicious, pageUrl)
-        : getTxHistory(chainId, safeAddress, hasDefaultTokenlist && hideSuspicious, hideSuspicious, pageUrl)
+        ? fetchFilteredTxHistory(chainId, safeAddress, filter, hideUntrustedTxs, hideImitationTxs, pageUrl)
+        : getTxHistory(chainId, safeAddress, hideUntrustedTxs, hideImitationTxs, pageUrl)
     },
-    [filter, pageUrl, chainId, safeAddress, hideSuspicious, hasDefaultTokenlist],
+    [filter, pageUrl, chainId, safeAddress, hideUntrustedTxs, hideImitationTxs],
     false,
   )
 
