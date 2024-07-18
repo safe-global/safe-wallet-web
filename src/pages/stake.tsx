@@ -7,6 +7,9 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
 import { useMemo } from 'react'
 import AppFrame from '@/components/safe-apps/AppFrame'
+import Disclaimer from '@/components/common/Disclaimer'
+import LegalDisclaimerContent from '@/features/stake/components/LegalDisclaimer'
+import useStakeConsent from '@/features/stake/useStakeConsent'
 
 const Swap: NextPage = () => {
   const appData: SafeAppData = useMemo(
@@ -25,17 +28,27 @@ const Swap: NextPage = () => {
     [],
   )
 
+  const { isConsentAccepted, onAccept } = useStakeConsent()
+
+  let content = (
+    <AppFrame
+      allowedFeaturesList="clipboard-read; clipboard-write"
+      appUrl={appData.url}
+      safeAppFromManifest={{ ...appData, safeAppsPermissions: [] }}
+    />
+  )
+
+  if (!isConsentAccepted) {
+    content = <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
+  }
+
   return (
     <>
       <Head>
         <title>{'Safe{Wallet} – Stake'}</title>
       </Head>
 
-      <AppFrame
-        allowedFeaturesList="clipboard-read; clipboard-write"
-        appUrl={appData.url}
-        safeAppFromManifest={{ ...appData, safeAppsPermissions: [] }}
-      />
+      {content}
     </>
   )
 }
