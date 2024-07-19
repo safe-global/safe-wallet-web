@@ -42,6 +42,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { SignerForm } from './SignerForm'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -204,7 +205,6 @@ export const SignOrExecuteForm = ({
           variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
           isCreation={isCreation}
         />
-
         {safeTxError && (
           <ErrorMessage error={safeTxError}>
             This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
@@ -220,6 +220,8 @@ export const SignOrExecuteForm = ({
         {!isMultiChainMigration && <UnknownContractError />}
 
         <Blockaid />
+
+        <SignerForm />
 
         {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />

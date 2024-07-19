@@ -4,6 +4,7 @@ import TxModalDialog from '@/components/common/TxModalDialog'
 import { SuccessScreenFlow } from './flows'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
+import { setNestedSafeAddress } from '../common/WalletProvider'
 
 const noop = () => {}
 
@@ -41,6 +42,8 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     onClose.current()
     onClose.current = noop
     setFlow(undefined)
+
+    setNestedSafeAddress(undefined)
   }, [])
 
   // Open a new tx flow, close the previous one if any

@@ -2,6 +2,15 @@ import { Builder, type IBuilder } from '@/tests/Builder'
 import { faker } from '@faker-js/faker'
 import { type SafeTransactionData, type SafeSignature, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import {
+  type Custom,
+  DetailedExecutionInfoType,
+  type MultisigExecutionInfo,
+  type TransactionInfo,
+  TransactionInfoType,
+  type TransactionSummary,
+} from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionStatus } from '@safe-global/safe-apps-sdk'
 
 // TODO: Convert to builder
 export const createSafeTx = (data = '0x'): SafeTransaction => {
@@ -63,5 +72,42 @@ export function safeSignatureBuilder(): IBuilder<SafeSignature> {
   return Builder.new<SafeSignature>().with({
     signer: faker.finance.ethereumAddress(),
     data: faker.string.hexadecimal({ length: faker.number.int({ max: 500 }) }),
+  })
+}
+
+export function safeTxSummaryBuilder(): IBuilder<TransactionSummary> {
+  return Builder.new<TransactionSummary>().with({
+    id: `multisig_${faker.string.hexadecimal({ length: 40 })}_${faker.string.hexadecimal({ length: 64 })}`,
+    executionInfo: executionInfoBuilder().build(),
+    txInfo: txInfoBuilder().build(),
+    txStatus: faker.helpers.enumValue(TransactionStatus),
+  })
+}
+
+export function executionInfoBuilder(): IBuilder<MultisigExecutionInfo> {
+  const num1 = faker.number.int({ min: 1, max: 10 })
+  const num2 = faker.number.int({ min: 1, max: 10 })
+
+  return Builder.new<MultisigExecutionInfo>().with({
+    nonce: faker.number.int(),
+    type: DetailedExecutionInfoType.MULTISIG,
+    confirmationsRequired: Math.max(num1, num2),
+    confirmationsSubmitted: Math.min(num1, num2),
+    missingSigners: Array.from(new Array(Math.min(num1, num2))).map(() => ({
+      value: faker.finance.ethereumAddress(),
+    })),
+  })
+}
+
+export function txInfoBuilder(): IBuilder<TransactionInfo> {
+  const mockData = faker.string.hexadecimal({ length: { min: 0, max: 128 } })
+  return Builder.new<Custom>().with({
+    type: TransactionInfoType.CUSTOM,
+    actionCount: 1,
+    dataSize: mockData.length.toString(),
+    isCancellation: false,
+    methodName: faker.string.alpha(),
+    to: { value: faker.finance.ethereumAddress() },
+    value: faker.number.bigInt({ min: 0, max: 10n ** 18n }).toString(),
   })
 }

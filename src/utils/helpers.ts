@@ -29,7 +29,7 @@ export function assertChainInfo(chainInfo: ChainInfo | undefined): asserts chain
   return invariant(chainInfo, 'No chain config available')
 }
 
-export function assertProvider(provider: Eip1193Provider | undefined): asserts provider {
+export function assertProvider(provider: Eip1193Provider | undefined | null): asserts provider {
   return invariant(provider, 'Provider not found')
 }
 
