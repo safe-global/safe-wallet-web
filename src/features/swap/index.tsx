@@ -39,6 +39,7 @@ import {
 import { calculateFeePercentageInBps } from '@/features/swap/helpers/fee'
 import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
 import { FEATURES } from '@/utils/chains'
+import { useGetContractDataQuery } from '@/store/ofac'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -87,6 +88,9 @@ const SwapWidget = ({ sell }: Params) => {
   const feeEnabled = useHasFeature(FEATURES.NATIVE_SWAPS_FEE_ENABLED)
   const useStagingCowServer = useHasFeature(FEATURES.NATIVE_SWAPS_USE_COW_STAGING_SERVER)
 
+  const { data, error } = useGetContractDataQuery({ method: 'isSanctioned', args: [safeAddress] })
+
+  console.log('data', data)
   const [params, setParams] = useState<CowSwapWidgetParams>({
     appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
     width: '100%', // Width in pixels (or 100% to use all available space)
@@ -299,6 +303,8 @@ const SwapWidget = ({ sell }: Params) => {
       </Container>
     )
   }
+
+  console.log('params', params)
 
   return (
     <Box className={css.swapWidget} id="swapWidget">
