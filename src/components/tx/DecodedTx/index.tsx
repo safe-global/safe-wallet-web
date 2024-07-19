@@ -1,5 +1,5 @@
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
-import { isConfirmationViewOrder } from '@/utils/transaction-guards'
+import { isConfirmationViewOrder, isCustomTxInfo } from '@/utils/transaction-guards'
 import {
   Accordion,
   AccordionDetails,
@@ -74,11 +74,15 @@ const DecodedTx = ({
     addressInfoIndex,
   }
 
+  const toInfo = (txDetails && isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined) || {
+    value: tx?.data.to,
+  }
+
   return (
     <Stack spacing={2}>
       {!isSwapOrder && tx && showToBlock && (
         <>
-          <DecodedData txData={txDetails?.txData || txData} txInfo={txDetails?.txInfo} />
+          <DecodedData txData={txDetails?.txData || txData} toInfo={toInfo} />
         </>
       )}
 

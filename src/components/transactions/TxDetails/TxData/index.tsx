@@ -32,6 +32,7 @@ const TxData = ({
 }): ReactElement => {
   const chainId = useChainId()
   const txInfo = txDetails.txInfo
+  const toInfo = isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined
 
   if (isTransferTxInfo(txInfo)) {
     return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} imitation={imitation} />
@@ -58,7 +59,7 @@ const TxData = ({
     return <InteractWith txData={txDetails.txData} />
   }
 
-  return <DecodedData txData={txDetails.txData} txInfo={txInfo} />
+  return <DecodedData txData={txDetails.txData} toInfo={toInfo} />
 }
 
 export default TxData

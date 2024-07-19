@@ -1,30 +1,35 @@
 import type { ReactElement } from 'react'
 import { Stack } from '@mui/material'
-import { TokenType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { type AddressEx, TokenType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { useCurrentChain } from '@/hooks/useChains'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import { isCustomTxInfo } from '@/utils/transaction-guards'
+import SendToBlock from '@/components/tx/SendToBlock'
 import MethodCall from './MethodCall'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { sameAddress } from '@/utils/addresses'
 
 interface Props {
   txData: TransactionDetails['txData']
-  txInfo?: TransactionDetails['txInfo']
+  toInfo?: AddressEx
 }
 
-export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
+export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
+  const safeAddress = useSafeAddress()
   const chainInfo = useCurrentChain()
   // nothing to render
   if (!txData) {
     return null
   }
 
+  const toAddress = toInfo?.value || txData.to.value
   const method = txData.dataDecoded?.method || ''
-  const addressInfo =
-    (txInfo && isCustomTxInfo(txInfo) ? txInfo.to : undefined) || txData.addressInfoIndex?.[txData.to.value]
+  const addressInfo = txData.addressInfoIndex?.[toAddress]
+  const name = sameAddress(toAddress, safeAddress) ? 'this Safe Account' : addressInfo?.name || toInfo?.name
+  const avatar = addressInfo?.logoUri || toInfo?.logoUri
 
   let decodedData = <></>
   if (txData.dataDecoded) {
@@ -51,12 +56,11 @@ export const DecodedData = ({ txData, txInfo }: Props): ReactElement | null => {
         />
       )}
 
-      <MethodCall
-        contractAddress={txData.to.value}
-        contractName={addressInfo?.name}
-        contractLogo={addressInfo?.logoUri}
-        method={method}
-      />
+      {method ? (
+        <MethodCall contractAddress={toAddress} contractName={name} contractLogo={avatar} method={method} />
+      ) : (
+        <SendToBlock address={toAddress} name={name} title="Recipient" avatarSize={26} customAvatar={avatar} />
+      )}
 
       {decodedData}
     </Stack>
