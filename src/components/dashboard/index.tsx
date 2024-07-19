@@ -1,6 +1,6 @@
 import FirstSteps from '@/components/dashboard/FirstSteps'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import type { ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import dynamic from 'next/dynamic'
 import { Grid } from '@mui/material'
 import PendingTxsList from '@/components/dashboard/PendingTxs/PendingTxsList'
@@ -16,11 +16,15 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import css from './styles.module.css'
 import SwapWidget from '@/features/swap/components/SwapWidget'
+import useOwnedSafes from '@/hooks/useOwnedSafes'
+
+import NestedSafeBanner from './NestedSafeBanner'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
 const Dashboard = (): ReactElement => {
   const { safe } = useSafeInfo()
+  const ownedSafes = useOwnedSafes()
   const showSafeApps = useHasFeature(FEATURES.SAFE_APPS)
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
   const supportsRecovery = useIsRecoverySupported()
@@ -31,6 +35,8 @@ const Dashboard = (): ReactElement => {
     <>
       <Grid container spacing={3}>
         {supportsRecovery && <RecoveryHeader />}
+
+        <NestedSafeBanner />
 
         <Grid item xs={12}>
           <Overview />

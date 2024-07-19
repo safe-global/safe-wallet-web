@@ -112,6 +112,7 @@ export const dispatchOnChainSigning = async (
   provider: Eip1193Provider,
   chainId: SafeInfo['chainId'],
 ) => {
+  debugger
   const sdkUnchecked = await getUncheckedSafeSDK(provider)
   const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
   const eventParams = { txId }
