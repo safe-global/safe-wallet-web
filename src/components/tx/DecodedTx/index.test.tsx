@@ -24,7 +24,7 @@ describe('DecodedTx', () => {
           } as SafeTransaction
         }
         decodedData={{
-          method: 'Native token transfer',
+          method: 'transfer',
           parameters: [
             {
               name: 'to',
@@ -43,10 +43,10 @@ describe('DecodedTx', () => {
 
     fireEvent.click(result.getByText('Transaction details'))
 
-    expect(result.queryAllByText('Native token transfer').length).toBe(2)
-    expect(result.queryByText('to(address):')).toBeInTheDocument()
+    expect(result.queryAllByText('Call transfer on').length).toBeInTheDocument()
+    expect(result.queryByText('to address')).toBeInTheDocument()
     expect(result.queryByText('0x3430...7600')).toBeInTheDocument()
-    expect(result.queryByText('value(uint256):')).toBeInTheDocument()
+    expect(result.queryByText('value uint256')).toBeInTheDocument()
     expect(result.queryByText('1000000')).toBeInTheDocument()
   })
 

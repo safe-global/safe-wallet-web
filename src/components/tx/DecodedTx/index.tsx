@@ -1,7 +1,5 @@
-import SendToBlock from '@/components/tx/SendToBlock'
-import { useCurrentChain } from '@/hooks/useChains'
-import { isConfirmationViewOrder } from '@/utils/transaction-guards'
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
+import { isConfirmationViewOrder } from '@/utils/transaction-guards'
 import {
   Accordion,
   AccordionDetails,
@@ -15,12 +13,7 @@ import {
 } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import {
-  getTransactionDetails,
-  type TransactionDetails,
-  Operation,
-  TokenType,
-} from '@safe-global/safe-gateway-typescript-sdk'
+import { getTransactionDetails, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
 import useAsync from '@/hooks/useAsync'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
@@ -32,9 +25,8 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import accordionCss from '@/styles/accordion.module.css'
-import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
-import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -56,7 +48,6 @@ const DecodedTx = ({
   showToBlock = false,
 }: DecodedTxProps): ReactElement | null => {
   const chainId = useChainId()
-  const chain = useCurrentChain()
   const isSwapOrder = isConfirmationViewOrder(decodedData)
 
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
@@ -66,49 +57,34 @@ const DecodedTx = ({
     return getTransactionDetails(chainId, txId)
   }, [chainId, txId])
 
-  const addressInfoIndex = txDetails?.txData?.addressInfoIndex
-
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
 
-  if (!decodedData) return null
+  if (!decodedData || !tx) return null
 
-  const amount = tx?.data.value ?? '0'
+  const addressInfoIndex = txDetails?.txData?.addressInfoIndex
+
+  const txData = {
+    dataDecoded: decodedData,
+    to: { value: tx?.data.to || '' },
+    value: tx?.data.value,
+    operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
+    trustedDelegateCallTarget: false,
+    addressInfoIndex,
+  }
 
   return (
     <Stack spacing={2}>
       {!isSwapOrder && tx && showToBlock && (
         <>
-          {amount !== '0' && (
-            <SendAmountBlock
-              amountInWei={amount}
-              tokenInfo={{
-                type: TokenType.NATIVE_TOKEN,
-                address: ZERO_ADDRESS,
-                decimals: chain?.nativeCurrency.decimals ?? 18,
-                symbol: chain?.nativeCurrency.symbol ?? 'ETH',
-                logoUri: chain?.nativeCurrency.logoUri,
-              }}
-            />
-          )}
-          <SendToBlock address={tx.data.to} title="Interact with" name={addressInfoIndex?.[tx.data.to]?.name} />
+          <DecodedData txData={txDetails?.txData || txData} txInfo={txDetails?.txInfo} />
         </>
       )}
 
       {isMultisend && showMultisend && (
         <Box>
-          <Multisend
-            txData={{
-              dataDecoded: decodedData,
-              to: { value: tx?.data.to || '' },
-              value: tx?.data.value,
-              operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
-              trustedDelegateCallTarget: false,
-              addressInfoIndex,
-            }}
-            compact
-          />
+          <Multisend txData={txDetails?.txData || txData} compact />
         </Box>
       )}
 

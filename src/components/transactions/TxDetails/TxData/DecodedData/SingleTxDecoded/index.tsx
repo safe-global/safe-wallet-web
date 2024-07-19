@@ -19,6 +19,7 @@ import { DelegateCallWarning } from '@/components/transactions/Warning'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import SendToBlock from '@/components/tx/SendToBlock'
+import MethodCall from '../MethodCall'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction
@@ -54,6 +55,7 @@ export const SingleTxDecoded = ({
 
   const addressInfo = txData.addressInfoIndex?.[tx.to]
   const name = addressInfo?.name
+  const avatar = addressInfo?.logoUri
   const isDelegateCall = tx.operation === Operation.DELEGATE && showDelegateCallWarning
   const isSpendingLimitMethod = isSetAllowance(tx.dataDecoded?.method) || isDeleteAllowance(tx.dataDecoded?.method)
 
@@ -73,6 +75,7 @@ export const SingleTxDecoded = ({
       <AccordionDetails>
         {/* We always warn of nested delegate calls */}
         {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
+
         {!isSpendingLimitMethod && (
           <Stack spacing={1}>
             {amountInWei !== '0' && (
@@ -87,9 +90,15 @@ export const SingleTxDecoded = ({
                 }}
               />
             )}
-            <SendToBlock address={tx.to} title="Interact with:" avatarSize={26} />
+
+            {isNativeTransfer ? (
+              <SendToBlock address={tx.to} name={name} title="Recipient" avatarSize={26} customAvatar={avatar} />
+            ) : (
+              <MethodCall contractAddress={tx.to} contractName={name} method={method} />
+            )}
           </Stack>
         )}
+
         {details}
       </AccordionDetails>
     </Accordion>

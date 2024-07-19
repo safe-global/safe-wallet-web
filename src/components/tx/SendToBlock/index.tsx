@@ -5,12 +5,14 @@ import FieldsGrid from '../FieldsGrid'
 const SendToBlock = ({
   address,
   title = 'To',
+  customAvatar,
   avatarSize,
   name,
 }: {
   address: string
   name?: string
   title?: string
+  customAvatar?: string
   avatarSize?: number
 }) => {
   return (
@@ -23,6 +25,7 @@ const SendToBlock = ({
           hasExplorer
           showCopyButton
           avatarSize={avatarSize}
+          customAvatar={customAvatar}
         />
       </Typography>
     </FieldsGrid>
