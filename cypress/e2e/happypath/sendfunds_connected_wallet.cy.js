@@ -82,6 +82,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
     function executeTransactionFlow(fromSafe, toSafe) {
       return cy.visit(constants.balanceNftsUrl + fromSafe).then(() => {
+        main.acceptCookies()
         wallet.connectSigner(signer)
         nfts.selectNFTs(1)
         nfts.sendNFT()
@@ -105,6 +106,8 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
           })
           await tx.wait()
           main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
+          navigation.clickOnWalletExpandMoreIcon()
+          navigation.clickOnDisconnectBtn()
         })
       })
   })
@@ -158,6 +161,8 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
         const safeTx = await apiKit.getTransaction(safeTxHashofExistingTx)
         await protocolKitOwner2_S3.executeTransaction(safeTx)
         main.verifyNonceChange(network_pref + targetSafe, currentNonce + 1)
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
       })
   })
 
@@ -168,6 +173,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
     function executeTransactionFlow(fromSafe, toSafe) {
       visit(constants.BALANCE_URL + fromSafe)
+      main.acceptCookies()
       wallet.connectSigner(signer)
       assets.selectTokenList(assets.tokenListOptions.allTokens)
       assets.clickOnSendBtn(1)
@@ -191,6 +197,8 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
         await tx.wait()
         main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
       })
   })
 })
