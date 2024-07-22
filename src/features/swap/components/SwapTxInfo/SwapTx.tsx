@@ -1,26 +1,39 @@
-import type { Order } from '@safe-global/safe-gateway-typescript-sdk'
+import type { Order, OrderToken } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import TokenAmount from '@/components/common/TokenAmount'
+import TokenIcon from '@/components/common/TokenIcon'
+
+const Amount = ({ value, token }: { value: string; token: OrderToken }) => (
+  <TokenAmount
+    value={value}
+    decimals={token.decimals}
+    tokenSymbol={token.symbol}
+    logoUri={token.logoUri ?? undefined}
+  />
+)
+
+const OnlyToken = ({ token }: { token: OrderToken }) => (
+  <TokenIcon tokenSymbol={token.symbol} logoUri={token.logoUri ?? undefined} />
+)
 
 export const SwapTx = ({ info }: { info: Order }): ReactElement => {
   const { kind, sellToken, sellAmount, buyToken, buyAmount } = info
   const isSellOrder = kind === 'sell'
 
-  let from = <TokenAmount value={sellAmount} decimals={sellToken.decimals} logoUri={sellToken.logoUri ?? undefined} />
-  let to = <TokenAmount value={buyAmount} decimals={buyToken.decimals} logoUri={buyToken.logoUri ?? undefined} />
+  let from = <Amount value={sellAmount} token={sellToken} />
+  let to = <OnlyToken token={buyToken} />
 
   if (!isSellOrder) {
-    ;[from, to] = [to, from]
+    from = <OnlyToken token={sellToken} />
+    to = <Amount value={buyAmount} token={buyToken} />
   }
 
   return (
-    <Box display="flex">
-      <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
-        {from}
-        <Typography component="span">&nbsp;to&nbsp;</Typography>
-        {to}
-      </Typography>
-    </Box>
+    <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
+      {from}
+      <Typography component="span">&nbsp;to&nbsp;</Typography>
+      {to}
+    </Typography>
   )
 }
