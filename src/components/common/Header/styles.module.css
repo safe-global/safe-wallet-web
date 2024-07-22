@@ -74,7 +74,7 @@
     flex: 1;
     border: none;
     align-items: flex-start;
-    margin-left: var(--space-1);
+    margin-left: var(--space-2);
   }
 
   .menuButton {
