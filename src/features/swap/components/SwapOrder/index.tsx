@@ -1,4 +1,3 @@
-import TokenIcon from '@/components/common/TokenIcon'
 import OrderId from '@/features/swap/components/OrderId'
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import SwapProgress from '@/features/swap/components/SwapProgress'
