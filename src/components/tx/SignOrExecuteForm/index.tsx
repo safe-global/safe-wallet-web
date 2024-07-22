@@ -31,6 +31,7 @@ import { isConfirmationViewOrder } from '@/utils/transaction-guards'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
+import { SignerForm } from './SignerForm'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -145,20 +146,16 @@ export const SignOrExecuteForm = ({
           variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
           isCreation={isCreation}
         />
-
         {safeTxError && (
           <ErrorMessage error={safeTxError}>
             This transaction will most likely fail. To save gas costs, avoid confirming the transaction.
           </ErrorMessage>
         )}
-
         {canExecute && !props.onlyExecute && !isCounterfactualSafe && <ExecuteCheckbox onChange={setShouldExecute} />}
-
         <WrongChainWarning />
-
         <UnknownContractError />
-
         <RiskConfirmationError />
+        <SignerForm />
 
         {isCounterfactualSafe ? (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />

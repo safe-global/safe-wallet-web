@@ -45,7 +45,7 @@ const Banner = ({ onClick }: { onClick: () => void }) => {
   )
 }
 
-const useNestedSafeOwner = () => {
+export const useNestedSafeOwners = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const allOwned = useAllSafes()
 
@@ -55,23 +55,20 @@ const useNestedSafeOwner = () => {
     // Find an intersection of owned safes and the owners of the current safe
     const ownerAddresses = safe?.owners.map((owner) => owner.value)
 
-    const match = allOwned.find(
+    return allOwned.filter(
       (ownedSafe) => ownedSafe.chainId === safe.chainId && ownerAddresses?.includes(ownedSafe.address),
     )
-
-    return match?.address
   }, [allOwned, safe, safeLoaded])
 
   return nestedSafeOwner
 }
 
 const NestedSafeBanner = () => {
-  const nestedSafeOwner = useNestedSafeOwner()
-  const chain = useCurrentChain()
+  const nestedSafeOwners = useNestedSafeOwners()
 
-  if (!nestedSafeOwner) return null
+  if (!nestedSafeOwners || nestedSafeOwners.length === 0) return null
 
-  return <Banner onClick={() => setNestedSafeAddress(nestedSafeOwner)} />
+  return <Banner onClick={() => setNestedSafeAddress(nestedSafeOwners[0]?.address)} />
 }
 
 export default NestedSafeBanner
