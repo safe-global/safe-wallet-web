@@ -2,14 +2,15 @@ import { Box, Card, CardContent, CardHeader, List, ListItem, ListItemIcon, ListI
 import type { ListItemTextProps } from '@mui/material'
 import type { CardHeaderProps } from '@mui/material'
 import type { ReactElement } from 'react'
-
 import FileIcon from '@/public/images/settings/data/file.svg'
+
 import useChains from '@/hooks/useChains'
 import { ImportErrors } from '@/components/settings/DataManagement/useGlobalImportFileParser'
 import type { AddedSafesState } from '@/store/addedSafesSlice'
 import type { AddressBookState } from '@/store/addressBookSlice'
 import type { SafeAppsState } from '@/store/safeAppsSlice'
 import type { SettingsState } from '@/store/settingsSlice'
+import type { UndeployedSafesState } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
@@ -51,6 +52,7 @@ type Data = {
   addressBook?: AddressBookState
   settings?: SettingsState
   safeApps?: SafeAppsState
+  undeployedSafes?: UndeployedSafesState
   error?: string
 }
 
@@ -65,6 +67,7 @@ const getItems = ({
   addressBook,
   settings,
   safeApps,
+  undeployedSafes,
   error,
   chains,
   showPreview = false,
@@ -129,6 +132,18 @@ const getItems = ({
     items.push(safeAppsPreview)
   }
 
+  if (undeployedSafes) {
+    const undeployedSafesPreview: ListItemTextProps = {
+      primary: (
+        <>
+          <b>Undeployed Safes</b> {Object.keys(undeployedSafes).length}
+        </>
+      ),
+    }
+
+    items.push(undeployedSafesPreview)
+  }
+
   if (items.length === 0) {
     return [{ primary: <>{ImportErrors.NO_IMPORT_DATA_FOUND}</> }]
   }
@@ -143,12 +158,22 @@ export const FileListCard = ({
   addressBook,
   settings,
   safeApps,
+  undeployedSafes,
   error,
   showPreview = false,
   ...cardHeaderProps
 }: Props): ReactElement => {
   const chains = useChains()
-  const items = getItems({ addedSafes, addressBook, settings, safeApps, error, chains: chains.configs, showPreview })
+  const items = getItems({
+    addedSafes,
+    addressBook,
+    settings,
+    safeApps,
+    undeployedSafes,
+    error,
+    chains: chains.configs,
+    showPreview,
+  })
 
   return (
     <Card className={css.card}>
