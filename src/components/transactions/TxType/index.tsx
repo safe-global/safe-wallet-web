@@ -3,6 +3,7 @@ import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sd
 import { Box } from '@mui/material'
 import css from './styles.module.css'
 import SafeAppIconCard from '@/components/safe-apps/SafeAppIconCard'
+import { isValidElement } from 'react'
 
 type TxTypeProps = {
   tx: TransactionSummary
@@ -13,13 +14,18 @@ const TxType = ({ tx }: TxTypeProps) => {
 
   return (
     <Box className={css.txType}>
-      <SafeAppIconCard
-        src={type.icon}
-        alt={type.text}
-        width={16}
-        height={16}
-        fallback="/images/transactions/custom.svg"
-      />
+      {isValidElement(type.icon) ? (
+        type.icon
+      ) : typeof type.icon == 'string' ? (
+        <SafeAppIconCard
+          src={type.icon}
+          alt={type.text}
+          width={16}
+          height={16}
+          fallback="/images/transactions/custom.svg"
+        />
+      ) : null}
+
       <span className={css.txTypeText}>{type.text}</span>
     </Box>
   )
