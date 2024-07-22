@@ -304,8 +304,6 @@ const SwapWidget = ({ sell }: Params) => {
     )
   }
 
-  console.log('params', params)
-
   return (
     <Box className={css.swapWidget} id="swapWidget">
       <CowSwapWidget params={params} listeners={listeners} />

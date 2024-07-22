@@ -1,4 +1,3 @@
-import type { BaseQueryApi, BaseQueryFn } from '@reduxjs/toolkit/query/react'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { selectChainById } from '@/store/chainsSlice'
 import { Contract } from 'ethers'
