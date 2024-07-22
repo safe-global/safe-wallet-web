@@ -38,7 +38,7 @@ const MethodCall = ({
           onlyName
           hasExplorer
           showCopyButton
-          avatarSize={26}
+          avatarSize={24}
         />
       </Typography>
 
