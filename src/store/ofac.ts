@@ -4,6 +4,7 @@ import { Contract } from 'ethers'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
 import type { RootState } from '.'
 import { CHAINALYSIS_OFAC_CONTRACT } from '@/config/constants'
+import chains from '@/config/chains'
 
 // Chainalysis contract ABI and address
 const contractAbi = [
