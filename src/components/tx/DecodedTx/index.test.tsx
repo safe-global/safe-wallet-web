@@ -27,13 +27,13 @@ describe('DecodedTx', () => {
           method: 'transfer',
           parameters: [
             {
-              name: 'to',
-              type: 'address',
+              name: 'toParam',
+              type: 'addressType',
               value: '0x3430d04E42a722c5Ae52C5Bffbf1F230C2677600',
             },
             {
-              name: 'value',
-              type: 'uint256',
+              name: 'valueParam',
+              type: 'uint256Type',
               value: '1000000',
             },
           ],
@@ -43,10 +43,12 @@ describe('DecodedTx', () => {
 
     fireEvent.click(result.getByText('Transaction details'))
 
-    expect(result.queryAllByText('Call transfer on').length).toBeInTheDocument()
-    expect(result.queryByText('to address')).toBeInTheDocument()
+    expect(result.queryAllByText('transfer').length).toBe(2)
+    expect(result.queryByText('toParam')).toBeInTheDocument()
+    expect(result.queryByText('addressType')).toBeInTheDocument()
     expect(result.queryByText('0x3430...7600')).toBeInTheDocument()
-    expect(result.queryByText('value uint256')).toBeInTheDocument()
+    expect(result.queryByText('valueParam')).toBeInTheDocument()
+    expect(result.queryByText('uint256Type')).toBeInTheDocument()
     expect(result.queryByText('1000000')).toBeInTheDocument()
   })
 

@@ -46,7 +46,7 @@ export type SignOrExecuteProps = {
   disableSubmit?: boolean
   origin?: string
   isCreation?: boolean
-  showToBlock?: boolean
+  showMethodCall?: boolean
 }
 
 const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean, isExecuted: boolean) => {
@@ -77,8 +77,8 @@ export const SignOrExecuteForm = ({
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
-  const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
+  const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx) && !isSwapOrder
 
   const { safe } = useSafeInfo()
   const isCounterfactualSafe = !safe.deployed
@@ -121,7 +121,7 @@ export const SignOrExecuteForm = ({
             decodedDataError={decodedDataError}
             decodedDataLoading={decodedDataLoading}
             showMultisend={!props.isBatch}
-            showToBlock={props.showToBlock}
+            showMethodCall={props.showMethodCall && !isSwapOrder}
           />
         </ErrorBoundary>
 

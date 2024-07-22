@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { Stack } from '@mui/material'
+import { Stack, Box } from '@mui/material'
 import { type AddressEx, TokenType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
@@ -28,8 +28,10 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
   const toAddress = toInfo?.value || txData.to.value
   const method = txData.dataDecoded?.method || ''
   const addressInfo = txData.addressInfoIndex?.[toAddress]
-  const name = sameAddress(toAddress, safeAddress) ? 'this Safe Account' : addressInfo?.name || toInfo?.name
-  const avatar = addressInfo?.logoUri || toInfo?.logoUri
+  const name = sameAddress(toAddress, safeAddress)
+    ? 'this Safe Account'
+    : addressInfo?.name || toInfo?.name || txData.to.name
+  const avatar = addressInfo?.logoUri || toInfo?.logoUri || txData.to.logoUri
 
   let decodedData = <></>
   if (txData.dataDecoded) {
@@ -44,23 +46,22 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
   return (
     <Stack spacing={1}>
       {amountInWei !== '0' && (
-        <SendAmountBlock
-          amountInWei={amountInWei}
-          tokenInfo={{
-            type: TokenType.NATIVE_TOKEN,
-            address: ZERO_ADDRESS,
-            decimals: chainInfo?.nativeCurrency.decimals ?? 18,
-            symbol: chainInfo?.nativeCurrency.symbol ?? 'ETH',
-            logoUri: chainInfo?.nativeCurrency.logoUri,
-          }}
-        />
+        <Box pb={2}>
+          <SendAmountBlock
+            amountInWei={amountInWei}
+            tokenInfo={{
+              type: TokenType.NATIVE_TOKEN,
+              address: ZERO_ADDRESS,
+              decimals: chainInfo?.nativeCurrency.decimals ?? 18,
+              symbol: chainInfo?.nativeCurrency.symbol ?? 'ETH',
+              logoUri: chainInfo?.nativeCurrency.logoUri,
+            }}
+          />
+          <SendToBlock address={toAddress} name={name} title="Recipient" avatarSize={26} customAvatar={avatar} />
+        </Box>
       )}
 
-      {method ? (
-        <MethodCall contractAddress={toAddress} contractName={name} contractLogo={avatar} method={method} />
-      ) : (
-        <SendToBlock address={toAddress} name={name} title="Recipient" avatarSize={26} customAvatar={avatar} />
-      )}
+      {method && <MethodCall contractAddress={toAddress} contractName={name} contractLogo={avatar} method={method} />}
 
       {decodedData}
     </Stack>
