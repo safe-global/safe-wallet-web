@@ -1,7 +1,6 @@
 import { isEmptyHexData } from '@/utils/hex'
 import { type InternalTransaction, Operation, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
-import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
 import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import css from './styles.module.css'
@@ -35,7 +34,6 @@ export const SingleTxDecoded = ({
   const addressInfo = txData.addressInfoIndex?.[tx.to]
   const name = addressInfo?.name
   const isDelegateCall = tx.operation === Operation.DELEGATE && showDelegateCallWarning
-  const isSpendingLimitMethod = isSetAllowance(tx.dataDecoded?.method) || isDeleteAllowance(tx.dataDecoded?.method)
 
   const singleTxData = {
     ...tx,
@@ -61,11 +59,9 @@ export const SingleTxDecoded = ({
         {/* We always warn of nested delegate calls */}
         {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
 
-        {!isSpendingLimitMethod && (
-          <Stack spacing={1}>
-            <DecodedData txData={singleTxData} toInfo={{ value: tx.to }} />
-          </Stack>
-        )}
+        <Stack spacing={1}>
+          <DecodedData txData={singleTxData} toInfo={{ value: tx.to }} />
+        </Stack>
       </AccordionDetails>
     </Accordion>
   )

@@ -1,4 +1,4 @@
-import EthHashInfo from '@/components/common/EthHashInfo'
+import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 import { Box, Typography } from '@mui/material'
 
 const MethodCall = ({
@@ -31,7 +31,7 @@ const MethodCall = ({
           {method}
         </Typography>{' '}
         on
-        <EthHashInfo
+        <NamedAddressInfo
           address={contractAddress}
           name={contractName}
           customAvatar={contractLogo}
