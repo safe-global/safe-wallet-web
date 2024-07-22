@@ -73,6 +73,7 @@ export const TransferTx = ({
           withLogo ? 16 : 100,
         )}
         value="1"
+        decimals={0}
         direction={undefined}
         logoUri={withLogo ? transfer?.logoUri : undefined}
         fallbackSrc="/images/common/nft-placeholder.png"
