@@ -14,7 +14,10 @@ const Amount = ({ value, token }: { value: string; token: OrderToken }) => (
 )
 
 const OnlyToken = ({ token }: { token: OrderToken }) => (
-  <TokenIcon tokenSymbol={token.symbol} logoUri={token.logoUri ?? undefined} />
+  <Typography fontWeight="bold" component="span" display="flex" alignItems="center" gap={1}>
+    <TokenIcon tokenSymbol={token.symbol} logoUri={token.logoUri ?? undefined} />
+    {token.symbol}
+  </Typography>
 )
 
 export const SwapTx = ({ info }: { info: Order }): ReactElement => {
@@ -32,7 +35,9 @@ export const SwapTx = ({ info }: { info: Order }): ReactElement => {
   return (
     <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
       {from}
-      <Typography component="span">&nbsp;to&nbsp;</Typography>
+      <Typography component="span" mx={0.5}>
+        &nbsp;to&nbsp;
+      </Typography>
       {to}
     </Typography>
   )
