@@ -93,9 +93,9 @@ const SwapWidget = ({ sell }: Params) => {
   const { data: isWalletAddressBlocked } = useGetIsSanctionedQuery(wallet?.address ?? skipToken)
   const { data: isRecipientAddressBlocked } = useGetIsSanctionedQuery(recipientAddress ?? skipToken)
   const blockedAddresses = {
-    [safeAddress]: isSafeAddressBlocked,
-    [wallet?.address || '']: isWalletAddressBlocked,
-    [recipientAddress]: isRecipientAddressBlocked,
+    [safeAddress]: !!isSafeAddressBlocked,
+    [wallet?.address || '']: !!isWalletAddressBlocked,
+    [recipientAddress]: !!isRecipientAddressBlocked,
   }
 
   const blockedAddress = getKeyWithTrueValue(blockedAddresses)
@@ -244,7 +244,9 @@ const SwapWidget = ({ sell }: Params) => {
             },
           }))
 
-          if (recipient) setRecipientAddress(recipient)
+          if (recipient) {
+            setRecipientAddress(recipient)
+          }
 
           dispatch(setSwapParams({ tradeType }))
         },
