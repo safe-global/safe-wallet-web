@@ -11,17 +11,11 @@ import NoAssetsIcon from '@/public/images/balances/no-assets.svg'
 import HiddenTokenButton from '@/components/balances/HiddenTokenButton'
 import CurrencySelect from '@/components/balances/CurrencySelect'
 import TokenListSelect from '@/components/balances/TokenListSelect'
-import { useGetContractDataQuery } from '@/store/ofac'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
 const Balances: NextPage = () => {
   const { error } = useBalances()
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)
   const toggleShowHiddenAssets = () => setShowHiddenAssets((prev) => !prev)
-  const { safeAddress } = useSafeInfo()
-  const { data } = useGetContractDataQuery({ method: 'isSanctioned', args: [safeAddress] })
-
-  console.log('data', data)
   return (
     <>
       <Head>
