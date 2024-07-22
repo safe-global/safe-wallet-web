@@ -29,9 +29,5 @@ export function assertProvider(provider: Eip1193Provider | undefined): asserts p
 }
 
 export const getKeyWithTrueValue = (obj: Record<string, boolean>) => {
-  for (const [key, value] of Object.entries(obj)) {
-    if (value) {
-      return key
-    }
-  }
+  return Object.entries(obj).find([,value] => !!value)?.[0]
 }
