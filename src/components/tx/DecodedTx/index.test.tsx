@@ -24,16 +24,16 @@ describe('DecodedTx', () => {
           } as SafeTransaction
         }
         decodedData={{
-          method: 'transfer',
+          method: '',
           parameters: [
             {
-              name: 'toParam',
-              type: 'addressType',
+              name: 'to',
+              type: 'address',
               value: '0x3430d04E42a722c5Ae52C5Bffbf1F230C2677600',
             },
             {
-              name: 'valueParam',
-              type: 'uint256Type',
+              name: 'value',
+              type: 'uint256',
               value: '1000000',
             },
           ],
@@ -41,14 +41,13 @@ describe('DecodedTx', () => {
       />,
     )
 
-    fireEvent.click(result.getByText('Transaction details'))
+    fireEvent.click(result.getByText('Advanced details'))
 
-    expect(result.queryAllByText('transfer').length).toBe(2)
-    expect(result.queryByText('toParam')).toBeInTheDocument()
-    expect(result.queryByText('addressType')).toBeInTheDocument()
+    expect(result.queryByText('to')).toBeInTheDocument()
+    expect(result.queryByText('address')).toBeInTheDocument()
     expect(result.queryByText('0x3430...7600')).toBeInTheDocument()
-    expect(result.queryByText('valueParam')).toBeInTheDocument()
-    expect(result.queryByText('uint256Type')).toBeInTheDocument()
+    expect(result.queryByText('value')).toBeInTheDocument()
+    expect(result.queryByText('uint256')).toBeInTheDocument()
     expect(result.queryByText('1000000')).toBeInTheDocument()
   })
 
@@ -89,13 +88,16 @@ describe('DecodedTx', () => {
       />,
     )
 
-    fireEvent.click(result.getByText('Transaction details'))
+    fireEvent.click(result.getByText('Advanced details'))
 
     await waitFor(() => {
-      expect(result.queryAllByText('transfer').length).toBe(2)
-      expect(result.queryByText('to(address):')).toBeInTheDocument()
+      expect(result.queryByText('transfer')).toBeInTheDocument()
+      expect(result.queryByText('Parameters')).toBeInTheDocument()
+      expect(result.queryByText('to')).toBeInTheDocument()
+      expect(result.queryByText('address')).toBeInTheDocument()
       expect(result.queryByText('0x474e...78C8')).toBeInTheDocument()
-      expect(result.queryByText('value(uint256):')).toBeInTheDocument()
+      expect(result.queryByText('value')).toBeInTheDocument()
+      expect(result.queryByText('uint256')).toBeInTheDocument()
       expect(result.queryByText('16745726664999765048')).toBeInTheDocument()
     })
   })
@@ -187,11 +189,9 @@ describe('DecodedTx', () => {
     )
 
     await waitFor(() => {
-      expect(result.queryByText('multi Send')).toBeInTheDocument()
-      expect(result.queryByText('transactions(bytes):')).toBeInTheDocument()
-      expect(result.queryByText('1')).toBeInTheDocument()
-      expect(result.queryByText('2')).toBeInTheDocument()
+      expect(result.queryByText('All actions')).toBeInTheDocument()
     })
+    expect(result.queryAllByText('safeTransferFrom').length).toBe(4)
   })
 
   it('should render a function call without parameters', async () => {
@@ -220,8 +220,8 @@ describe('DecodedTx', () => {
       />,
     )
 
-    fireEvent.click(result.getByText('Transaction details'))
+    fireEvent.click(result.getByText('Advanced details'))
 
-    expect((await result.findAllByText('deposit')).length).toBe(2)
+    expect(result.queryByText('deposit')).toBeInTheDocument()
   })
 })
