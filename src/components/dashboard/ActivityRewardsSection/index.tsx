@@ -35,12 +35,14 @@ const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
   )
 }
 
+const LOCAL_STORAGE_KEY_HIDE_WIDGET = 'hideActivityRewardsBanner'
+
 const ActivityRewardsSection = () => {
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.SAFE_GOVERNANCE_APP)
   const isDarkMode = useDarkMode()
   const router = useRouter()
 
-  const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>('show-activity-rewards-section')
+  const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>(LOCAL_STORAGE_KEY_HIDE_WIDGET)
 
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
   const governanceApp = matchingApps?.[0]
@@ -51,6 +53,15 @@ const ActivityRewardsSection = () => {
 
   const onClick = () => {
     trackEvent(OVERVIEW_EVENTS.OPEN_ACTIVITY_APP)
+  }
+
+  const onHide = () => {
+    setWidgetHidden(true)
+    trackEvent(OVERVIEW_EVENTS.HIDE_ACTIVITY_APP_WIDGET)
+  }
+
+  const onLearnMore = () => {
+    trackEvent(OVERVIEW_EVENTS.OPEN_LEARN_MORE_ACTIVITY_APP)
   }
 
   return (
@@ -101,15 +112,17 @@ const ActivityRewardsSection = () => {
               <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
                 <Button variant="contained">{'Open Safe{Pass}'}</Button>
               </NextLink>
-              <Button variant="text" onClick={() => setWidgetHidden(true)}>
+
+              <Button variant="text" onClick={onHide}>
                 Don&apos;t show again
               </Button>
+
               <NextLink
                 href="https://safe.global/pass"
                 target="_blank"
                 passHref
                 rel="noreferrer"
-                onClick={onClick}
+                onClick={onLearnMore}
                 style={{ marginLeft: 'auto' }}
               >
                 <Button variant="text">Learn more</Button>

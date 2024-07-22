@@ -145,6 +145,16 @@ export const OVERVIEW_EVENTS = {
     action: 'Open activity app from widget',
     category: OVERVIEW_CATEGORY,
   },
+  HIDE_ACTIVITY_APP_WIDGET: {
+    event: EventType.CLICK,
+    action: 'Hide activity app widget',
+    category: OVERVIEW_CATEGORY,
+  },
+  OPEN_LEARN_MORE_ACTIVITY_APP: {
+    event: EventType.CLICK,
+    action: 'Open learn more page from widget',
+    category: OVERVIEW_CATEGORY,
+  },
 }
 
 export enum OPEN_SAFE_LABELS {
