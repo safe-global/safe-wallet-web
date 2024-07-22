@@ -14,8 +14,9 @@ const TxType = ({ tx }: TxTypeProps) => {
 
   return (
     <Box className={css.txType}>
-      {isValidElement(type.icon) && type.icon}
-      {typeof type.icon == 'string' && (
+      {isValidElement(type.icon) ? (
+        type.icon
+      ) : typeof type.icon == 'string' ? (
         <SafeAppIconCard
           src={type.icon}
           alt={type.text}
@@ -23,7 +24,7 @@ const TxType = ({ tx }: TxTypeProps) => {
           height={16}
           fallback="/images/transactions/custom.svg"
         />
-      )}
+      ) : null}
 
       <span className={css.txTypeText}>{type.text}</span>
     </Box>
