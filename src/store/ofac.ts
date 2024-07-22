@@ -36,6 +36,10 @@ const contractAbi = [
 
 const noopBaseQuery = async () => ({ data: null })
 
+const createBadRequestError = (message: string) => ({
+  error: { status: 400, statusText: 'Bad Request', data: message },
+})
+
 export const ofacApi = createApi({
   reducerPath: 'ofacApi',
   baseQuery: noopBaseQuery,
@@ -45,14 +49,8 @@ export const ofacApi = createApi({
         const state = getState()
         const chain = selectChainById(state as RootState, chains.eth)
 
-        if (!chain)
-          return {
-            error: { status: 400, statusText: 'Bad Request', data: 'Chain info not found' },
-          }
-        if (!address)
-          return {
-            error: { status: 400, statusText: 'Bad Request', data: 'No address provided' },
-          }
+        if (!chain) return createBadRequestError('Chain info not found')
+        if (!address) return createBadRequestError('No address provided')
 
         const provider = createWeb3ReadOnly(chain)
         const contract = new Contract(CHAINALYSIS_OFAC_CONTRACT, contractAbi, provider)
