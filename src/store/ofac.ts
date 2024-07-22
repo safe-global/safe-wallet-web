@@ -42,7 +42,7 @@ export const ofacApi = createApi({
     getIsSanctioned: builder.query({
       async queryFn(address, { getState }) {
         const state = getState()
-        const chain = selectChainById(state as RootState, '1')
+        const chain = selectChainById(state as RootState, chains.eth)
 
         if (!chain)
           return {
