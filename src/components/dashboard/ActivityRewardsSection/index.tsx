@@ -14,6 +14,7 @@ import NextLink from 'next/link'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import useLocalStorage from '@/services/local-storage/useLocalStorage'
 
 const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
   return (
@@ -39,10 +40,12 @@ const ActivityRewardsSection = () => {
   const isDarkMode = useDarkMode()
   const router = useRouter()
 
+  const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>('show-activity-rewards-section')
+
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
   const governanceApp = matchingApps?.[0]
 
-  if (!governanceApp || !governanceApp?.url || !isSAPBannerEnabled) return null
+  if (!governanceApp || !governanceApp?.url || !isSAPBannerEnabled || widgetHidden) return null
 
   const appUrl = getSafeAppUrl(router, governanceApp?.url)
 
@@ -82,14 +85,6 @@ const ActivityRewardsSection = () => {
             >
               Interact with Safe and get rewards
             </Typography>
-            <Box className={css.links} gap={2}>
-              <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
-                <Button variant="contained">{'Open Safe{Pass}'}</Button>
-              </NextLink>
-              <NextLink href="https://safe.global/pass" target="_blank" passHref rel="noreferrer" onClick={onClick}>
-                <Button variant="text">Learn more</Button>
-              </NextLink>
-            </Box>
           </Grid>
           <Grid item xs={12} lg={6} p={0} zIndex={2}>
             <Typography variant="overline" color="primary.light">
@@ -100,6 +95,26 @@ const ActivityRewardsSection = () => {
               <Step title="Get activity points" active />
               <Step title="Receive rewards" active={false} />
             </div>
+          </Grid>
+          <Grid item xs={12}>
+            <Box className={css.links} gap={2}>
+              <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
+                <Button variant="contained">{'Open Safe{Pass}'}</Button>
+              </NextLink>
+              <Button variant="text" onClick={() => setWidgetHidden(true)}>
+                Don&apos;t show again
+              </Button>
+              <NextLink
+                href="https://safe.global/pass"
+                target="_blank"
+                passHref
+                rel="noreferrer"
+                onClick={onClick}
+                style={{ marginLeft: 'auto' }}
+              >
+                <Button variant="text">Learn more</Button>
+              </NextLink>
+            </Box>
           </Grid>
         </Grid>
       </Card>
