@@ -18,7 +18,7 @@ const Balances: NextPage = () => {
   const { error } = useBalances()
   const [showHiddenAssets, setShowHiddenAssets] = useState(false)
   const toggleShowHiddenAssets = () => setShowHiddenAssets((prev) => !prev)
-  const {safeAddress} = useSafeInfo()
+  const { safeAddress } = useSafeInfo()
   const { data } = useGetContractDataQuery({ method: 'isSanctioned', args: [safeAddress] })
 
   console.log('data', data)

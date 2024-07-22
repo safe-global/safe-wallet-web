@@ -39,7 +39,9 @@ import {
 import { calculateFeePercentageInBps } from '@/features/swap/helpers/fee'
 import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
 import { FEATURES } from '@/utils/chains'
-import { useGetContractDataQuery } from '@/store/ofac'
+import { useGetIsSanctionedQuery } from '@/store/ofac'
+import { skipToken } from '@reduxjs/toolkit/query/react'
+import { getKeyWithTrueValue } from '@/utils/helpers'
 
 const BASE_URL = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
 
@@ -82,15 +84,23 @@ const SwapWidget = ({ sell }: Params) => {
   const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const swapParams = useAppSelector(selectSwapParams)
   const { safeAddress, safeLoading } = useSafeInfo()
-  const [blockedAddress, setBlockedAddress] = useState('')
+  const [recipientAddress, setRecipientAddress] = useState('')
   const wallet = useWallet()
   const { isConsentAccepted, onAccept } = useSwapConsent()
   const feeEnabled = useHasFeature(FEATURES.NATIVE_SWAPS_FEE_ENABLED)
   const useStagingCowServer = useHasFeature(FEATURES.NATIVE_SWAPS_USE_COW_STAGING_SERVER)
 
-  const { data, error } = useGetContractDataQuery({ method: 'isSanctioned', args: [safeAddress] })
+  const { data: isSafeAddressBlocked } = useGetIsSanctionedQuery(safeAddress ?? skipToken)
+  const { data: isWalletAddressBlocked } = useGetIsSanctionedQuery(wallet?.address ?? skipToken)
+  const { data: isRecipientAddressBlocked } = useGetIsSanctionedQuery(recipientAddress ?? skipToken)
+  const blockedAddresses = {
+    [safeAddress]: isSafeAddressBlocked,
+    [wallet?.address || '']: isWalletAddressBlocked,
+    [recipientAddress]: isRecipientAddressBlocked,
+  }
 
-  console.log('data', data)
+  const blockedAddress = getKeyWithTrueValue(blockedAddresses)
+
   const [params, setParams] = useState<CowSwapWidgetParams>({
     appCode: 'Safe Wallet Swaps', // Name of your app (max 50 characters)
     width: '100%', // Width in pixels (or 100% to use all available space)
@@ -144,15 +154,6 @@ const SwapWidget = ({ sell }: Params) => {
         'The [tiered widget fee](https://help.safe.global/en/articles/178530-how-does-the-widget-fee-work-for-native-swaps) incurred here is charged by CoW Protocol for the operation of this widget. The fee is automatically calculated into this quote. Part of the fee will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor Safe{Wallet} operate the CoW Swap Widget and/or CoW Swap',
     },
   })
-
-  useEffect(() => {
-    if (isBlockedAddress(safeAddress)) {
-      setBlockedAddress(safeAddress)
-    }
-    if (wallet?.address && isBlockedAddress(wallet.address)) {
-      setBlockedAddress(wallet.address)
-    }
-  }, [safeAddress, wallet?.address])
 
   const appData: SafeAppData = useMemo(
     () => ({
@@ -244,9 +245,7 @@ const SwapWidget = ({ sell }: Params) => {
             },
           }))
 
-          if (recipient && isBlockedAddress(recipient)) {
-            setBlockedAddress(recipient)
-          }
+          if (recipient) setRecipientAddress(recipient)
 
           dispatch(setSwapParams({ tradeType }))
         },
