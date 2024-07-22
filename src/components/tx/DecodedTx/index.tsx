@@ -13,6 +13,7 @@ import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Mu
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import accordionCss from '@/styles/accordion.module.css'
+import HelpToolTip from './HelpTooltip'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -28,6 +29,8 @@ const DecodedTx = ({
   tx,
   txId,
   decodedData,
+  decodedDataError,
+  decodedDataLoading,
   showMultisend = true,
   showMethodCall = false,
 }: DecodedTxProps): ReactElement | null => {
@@ -61,9 +64,17 @@ const DecodedTx = ({
     value: tx?.data.to,
   }
 
+  const decodedDataBlock = decodedDataLoading ? (
+    <Skeleton />
+  ) : decodedDataError ? (
+    <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
+  ) : (
+    <DecodedData txData={txData} toInfo={toInfo} />
+  )
+
   return (
     <Stack spacing={2}>
-      {!isMethodCallInAdvanced && <DecodedData txData={txDetails?.txData || txData} toInfo={toInfo} />}
+      {!isMethodCallInAdvanced && decodedDataBlock}
 
       {isMultisend && showMultisend && (
         <Box>
@@ -78,13 +89,16 @@ const DecodedTx = ({
             expandIcon={<ExpandMoreIcon />}
             className={accordionCss.accordion}
           >
-            Advanced details
+            <Box display="flex" alignItems="center">
+              Advanced details
+              <HelpToolTip />
+            </Box>
           </AccordionSummary>
 
           <AccordionDetails data-testid="decoded-tx-details">
             {isMethodCallInAdvanced && (
               <>
-                <DecodedData txData={txDetails?.txData || txData} toInfo={toInfo} />
+                {decodedDataBlock}
 
                 {/* Divider */}
                 <Box
