@@ -5,10 +5,10 @@
   justify-content: flex-start;
   max-width: 900px;
   overflow-x: auto;
-  margin-bottom: var(--space-1);
+  margin-top: 4px;
 }
 
-.gridRow:last-of-type {
+.gridRow:first-of-type {
   margin-bottom: 0;
 }
 

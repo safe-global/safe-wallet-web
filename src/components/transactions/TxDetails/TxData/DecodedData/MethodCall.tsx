@@ -14,7 +14,15 @@ const MethodCall = ({
 }) => {
   return (
     <>
-      <Typography fontWeight="bold" display="flex" alignItems="center" gap=".5em" pb={1.5} component="div">
+      <Typography
+        fontWeight="bold"
+        display="flex"
+        flexWrap="wrap"
+        alignItems="center"
+        gap=".5em"
+        pb={1.5}
+        component="div"
+      >
         Call{' '}
         <Typography
           component="code"

@@ -36,8 +36,10 @@ export const SingleTxDecoded = ({
   const isDelegateCall = tx.operation === Operation.DELEGATE && showDelegateCallWarning
 
   const singleTxData = {
-    ...tx,
     to: { value: tx.to },
+    value: tx.value,
+    operation: tx.operation,
+    hexData: tx.data ?? undefined,
     trustedDelegateCallTarget: false,
     addressInfoIndex: txData.addressInfoIndex,
   }

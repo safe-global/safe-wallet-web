@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 import FieldsGrid from '../FieldsGrid'
 
 const SendToBlock = ({
@@ -18,7 +18,7 @@ const SendToBlock = ({
   return (
     <FieldsGrid title={title}>
       <Typography variant="body2" component="div">
-        <EthHashInfo
+        <NamedAddressInfo
           address={address}
           name={name}
           shortAddress={false}
