@@ -54,6 +54,11 @@ export const TX_LIST_EVENTS = {
     category: TX_LIST_CATEGORY,
     event: EventType.CLICK,
   },
+  COPY_WARNING_CLOSE: {
+    action: 'Do not copy address',
+    category: TX_LIST_CATEGORY,
+    event: EventType.CLICK,
+  },
   TOGGLE_UNTRUSTED: {
     action: 'Toggle untrusted transactions',
     category: TX_LIST_CATEGORY,

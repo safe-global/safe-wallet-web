@@ -1,10 +1,10 @@
 import * as constants from '../../support/constants'
 import * as main from '../../e2e/pages/main.page'
 import * as owner from '../pages/owners.pages'
-import * as addressBook from '../pages/address_book.page'
 import * as createTx from '../pages/create_tx.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
+import * as ls from '../../support/localstorage_data.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -37,14 +37,8 @@ describe('Replace Owners tests', () => {
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
 
-  // TODO: Rework with localstorage
   it('Verify that Address input auto-fills with related value', () => {
-    cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_4)
-    addressBook.clickOnCreateEntryBtn()
-    addressBook.typeInName(constants.addresBookContacts.user1.name)
-    addressBook.typeInAddress(constants.addresBookContacts.user1.address)
-    addressBook.clickOnSaveEntryBtn()
-    addressBook.verifyNewEntryAdded(constants.addresBookContacts.user1.name, constants.addresBookContacts.user1.address)
+    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.autofillData)
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()

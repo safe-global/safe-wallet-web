@@ -7,7 +7,6 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import { useCurrentChain } from '@/hooks/useChains'
-import { safeFormatUnits } from '@/utils/formatters'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { isDeleteAllowance, isSetAllowance } from '@/utils/transaction-guards'
@@ -43,8 +42,7 @@ export const SingleTxDecoded = ({
   const chain = useCurrentChain()
   const isNativeTransfer = tx.value !== '0' && (!tx.data || isEmptyHexData(tx.data))
   const method = tx.dataDecoded?.method || (isNativeTransfer ? 'native transfer' : 'contract interaction')
-  const { decimals } = chain?.nativeCurrency || {}
-  const amount = tx.value ? safeFormatUnits(tx.value, decimals) : 0
+  const amountInWei = tx.value ?? '0'
 
   let details
   if (tx.dataDecoded) {
@@ -77,9 +75,9 @@ export const SingleTxDecoded = ({
         {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
         {!isSpendingLimitMethod && (
           <Stack spacing={1}>
-            {amount !== '0' && (
+            {amountInWei !== '0' && (
               <SendAmountBlock
-                amount={amount}
+                amountInWei={amountInWei}
                 tokenInfo={{
                   type: TokenType.NATIVE_TOKEN,
                   address: ZERO_ADDRESS,

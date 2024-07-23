@@ -1,6 +1,6 @@
-import { type ReactElement } from 'react'
-import { IconButton, Dialog, DialogTitle, type DialogProps } from '@mui/material'
+import { Dialog, DialogContent, DialogContentText, DialogTitle, IconButton, type DialogProps } from '@mui/material'
 import classnames from 'classnames'
+import type { ReactElement } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import css from './styles.module.css'
 
@@ -42,8 +42,9 @@ const TxModalDialog = ({
           </IconButton>
         </div>
       </DialogTitle>
-
-      {children}
+      <DialogContent dividers={false}>
+        <DialogContentText tabIndex={-1}>{children}</DialogContentText>
+      </DialogContent>
     </Dialog>
   )
 }

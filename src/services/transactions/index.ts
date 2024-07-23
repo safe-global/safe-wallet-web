@@ -1,6 +1,9 @@
 import memoize from 'lodash/memoize'
-import { getTransactionDetails, getTransactionHistory } from '@safe-global/safe-gateway-typescript-sdk'
-import { trimTrailingSlash } from '@/utils/url'
+import {
+  getModuleTransactions,
+  getTransactionDetails,
+  getTransactionHistory,
+} from '@safe-global/safe-gateway-typescript-sdk'
 
 export const getTimezoneOffset = () => new Date().getTimezoneOffset() * 60 * -1000
 
@@ -31,29 +34,10 @@ export const getTxHistory = (chainId: string, safeAddress: string, trusted = fal
 }
 
 /**
- * Fetch the module transaction id from the transaction service providing the transaction hash
+ * Fetch the ID of a module transaction for the given transaction hash
  */
-export const getModuleTransactionId = async ({
-  transactionService,
-  safeAddress,
-  txHash,
-}: {
-  transactionService: string
-  safeAddress: string
-  txHash: string
-}) => {
-  const url = `${trimTrailingSlash(
-    transactionService,
-  )}/api/v1/safes/${safeAddress}/module-transactions/?transaction_hash=${txHash}`
-  const { results } = await fetch(url).then((res) => {
-    if (res.ok && res.status === 200) {
-      return res.json() as Promise<any>
-    } else {
-      throw new Error('Error fetching Safe module transactions')
-    }
-  })
-
+export const getModuleTransactionId = async (chainId: string, safeAddress: string, txHash: string) => {
+  const { results } = await getModuleTransactions(chainId, safeAddress, { transaction_hash: txHash })
   if (results.length === 0) throw new Error('module transaction not found')
-
-  return results[0].moduleTransactionId as string
+  return results[0].transaction.id
 }
