@@ -84,6 +84,7 @@ describe('ApprovalEditor', () => {
       amountFormatted: '420.0',
       method: 'approve',
       transactionIndex: 0,
+      isErc721: false,
     } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
     const mockSafeTx = safeTxBuilder()
@@ -113,6 +114,7 @@ describe('ApprovalEditor', () => {
       amountFormatted: '420.0',
       method: 'approve',
       transactionIndex: 0,
+      isErc721: false,
     } as const
     jest.spyOn(approvalInfos, 'useApprovalInfos').mockReturnValue([[mockApprovalInfo], undefined, false])
     const mockSafeTx = createMockSafeTransaction({

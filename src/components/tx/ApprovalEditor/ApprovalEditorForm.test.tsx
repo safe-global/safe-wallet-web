@@ -26,6 +26,7 @@ describe('ApprovalEditorForm', () => {
         amountFormatted: '420.0',
         method: 'approve',
         transactionIndex: 0,
+        isErc721: false,
       },
       {
         tokenInfo: { symbol: 'TST', decimals: 18, address: tokenAddress2, type: TokenType.ERC20 },
@@ -35,6 +36,7 @@ describe('ApprovalEditorForm', () => {
         amountFormatted: '69.0',
         method: 'increaseAllowance',
         transactionIndex: 1,
+        isErc721: false,
       },
     ]
 
@@ -111,6 +113,7 @@ describe('ApprovalEditorForm', () => {
       amountFormatted: '420.0',
       method: 'approve',
       transactionIndex: 0,
+      isErc721: false,
     }
 
     const result = render(<ApprovalEditorForm approvalInfos={[mockApprovalInfo]} updateApprovals={updateCallback} />)

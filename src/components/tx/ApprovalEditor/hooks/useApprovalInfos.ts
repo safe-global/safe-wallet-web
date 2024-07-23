@@ -1,7 +1,12 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
 import { type Approval, ApprovalModule } from '@/services/security/modules/ApprovalModule'
-import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT, UNLIMITED_PERMIT2_AMOUNT } from '@/utils/tokens'
+import {
+  getERC20TokenInfoOnChain,
+  isErc721Token,
+  UNLIMITED_APPROVAL_AMOUNT,
+  UNLIMITED_PERMIT2_AMOUNT,
+} from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { formatUnits } from 'ethers'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
@@ -18,6 +23,7 @@ export type ApprovalInfo = {
   method: Approval['method']
   /** Index of approval transaction within (batch) transaction */
   transactionIndex: number
+  isErc721: boolean
 }
 
 const ApprovalModuleInstance = new ApprovalModule()
@@ -49,8 +55,14 @@ export const useApprovalInfos = (payload: {
             sameAddress(item.tokenInfo.address, approval.tokenAddress),
           )?.tokenInfo
 
+          let isErc721 = false
+
           if (!tokenInfo) {
-            tokenInfo = await getERC20TokenInfoOnChain(approval.tokenAddress)
+            try {
+              tokenInfo = await getERC20TokenInfoOnChain(approval.tokenAddress)
+            } catch (e) {
+              isErc721 = await isErc721Token(approval.tokenAddress)
+            }
           }
 
           const amountFormatted =
@@ -58,7 +70,7 @@ export const useApprovalInfos = (payload: {
               ? PSEUDO_APPROVAL_VALUES.UNLIMITED
               : formatUnits(approval.amount, tokenInfo?.decimals)
 
-          return { ...approval, tokenInfo, amountFormatted }
+          return { ...approval, tokenInfo, amountFormatted, isErc721 }
         }),
       )
     },

@@ -11,11 +11,16 @@ import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
 import Approvals from '@/components/tx/ApprovalEditor/Approvals'
 import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
-const Title = () => {
+const Title = ({ isErc721 }: { isErc721: boolean }) => {
+  const title = isErc721 ? 'Allow access to tokens?' : 'Allow access to tokens?'
+  const subtitle = isErc721
+    ? 'This allows the spender to transfer the specified token.'
+    : 'This allows the spender to spend the specified amount of your tokens.'
+
   return (
     <div>
-      <Typography fontWeight={700}>Allow access to tokens?</Typography>
-      <Typography variant="body2">This allows the spender to spend the specified amount of your tokens.</Typography>
+      <Typography fontWeight={700}>{title}</Typography>
+      <Typography variant="body2">{subtitle}</Typography>
     </div>
   )
 }
@@ -51,11 +56,15 @@ export const ApprovalEditor = ({
     createSafeTx().then(setSafeTx).catch(setSafeTxError)
   }
 
-  const isReadOnly = (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined
+  const isErc721Approval = !!readableApprovals?.some((approval) => approval.isErc721)
+
+  const isReadOnly =
+    (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined || isErc721Approval
 
   return (
     <Box display="flex" flexDirection="column" gap={2} className={css.container}>
-      <Title />
+      <Title isErc721={isErc721Approval} />
+
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>
       ) : loading || !readableApprovals ? (
