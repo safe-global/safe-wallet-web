@@ -8,7 +8,7 @@ const Earn: NextPage = () => {
   const appData: SafeAppData = useMemo(
     () => ({
       id: 1,
-      url: 'https://widget.devnet.kiln.fi/d6309182-cbad-11ec-9d64-0242ac120003/overview',
+      url: 'https://widget.devnet.kiln.fi/safe-widget/overview',
       name: 'Earn',
       iconUrl: './images/common/earn.svg',
       description: 'Safe Apps',
