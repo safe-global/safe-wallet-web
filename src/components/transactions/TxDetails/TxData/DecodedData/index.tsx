@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { Stack, Box } from '@mui/material'
-import { type AddressEx, TokenType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { type AddressEx, TokenType, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { MethodDetails } from '@/components/transactions/TxDetails/TxData/DecodedData/MethodDetails'
@@ -11,6 +11,7 @@ import SendToBlock from '@/components/tx/SendToBlock'
 import MethodCall from './MethodCall'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
+import { DelegateCallWarning } from '@/components/transactions/Warning'
 
 interface Props {
   txData: TransactionDetails['txData']
@@ -20,11 +21,13 @@ interface Props {
 export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
   const safeAddress = useSafeAddress()
   const chainInfo = useCurrentChain()
+
   // nothing to render
   if (!txData) {
     return null
   }
 
+  const isDelegateCall = txData.operation === Operation.DELEGATE
   const toAddress = toInfo?.value || txData.to.value
   const method = txData.dataDecoded?.method || ''
   const addressInfo = txData.addressInfoIndex?.[toAddress]
@@ -44,9 +47,11 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
   const amountInWei = txData.value ?? '0'
   // we render the decoded data
   return (
-    <Stack spacing={1}>
+    <Stack spacing={2}>
+      {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
+
       {amountInWei !== '0' && (
-        <Box pb={2}>
+        <Box pb={1}>
           <SendAmountBlock
             amountInWei={amountInWei}
             tokenInfo={{
@@ -61,7 +66,15 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
         </Box>
       )}
 
-      {method && <MethodCall contractAddress={toAddress} contractName={name} contractLogo={avatar} method={method} />}
+      {method && (
+        <MethodCall
+          contractAddress={toAddress}
+          contractName={name}
+          contractLogo={avatar}
+          method={method}
+          isDelegateCall={isDelegateCall}
+        />
+      )}
 
       {decodedData}
     </Stack>

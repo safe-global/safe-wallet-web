@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import React, { useState } from 'react'
-import { Link } from '@mui/material'
+import { Link, Box } from '@mui/material'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -26,7 +26,7 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 
   let submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, refundReceiver, safeTxGas
   if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-    ;({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
+    ; ({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
     refundReceiver = detailedExecutionInfo.refundReceiver?.value
   }
 
@@ -64,7 +64,7 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
           )}
 
           {expanded && (
-            <div>
+            <Box mt={1}>
               <TxDataRow datatestid="tx-safe-hash" title="safeTxHash:">
                 {generateDataRowValue(safeTxHash, 'hash')}
               </TxDataRow>
@@ -95,7 +95,7 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
               <TxDataRow datatestid="tx-raw-data" title="Raw data:">
                 {generateDataRowValue(txData.hexData, 'rawData')}
               </TxDataRow>
-            </div>
+            </Box>
           )}
         </>
       )}

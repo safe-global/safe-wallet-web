@@ -3,27 +3,23 @@ import { Box, Typography } from '@mui/material'
 
 const MethodCall = ({
   method,
+  isDelegateCall,
   contractAddress,
   contractName,
   contractLogo,
 }: {
   method: string
+  isDelegateCall: boolean
   contractAddress: string
   contractName?: string
   contractLogo?: string
 }) => {
   return (
     <>
-      <Typography
-        fontWeight="bold"
-        display="flex"
-        flexWrap="wrap"
-        alignItems="center"
-        gap=".5em"
-        pb={1.5}
-        component="div"
-      >
-        Call{' '}
+      <Typography fontWeight="bold" display="flex" alignItems="center" gap=".5em" component="div">
+        <Typography component="span" whiteSpace="nowrap" fontWeight="bold">
+          {isDelegateCall ? 'Delegate call' : 'Call'}
+        </Typography>
         <Typography
           component="code"
           variant="body2"

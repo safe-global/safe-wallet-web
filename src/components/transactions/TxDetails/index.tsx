@@ -3,7 +3,7 @@ import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import useIntervalCounter from '@/hooks/useIntervalCounter'
 import React, { type ReactElement } from 'react'
 import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { getTransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, CircularProgress, Typography } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
@@ -31,7 +31,7 @@ import { ErrorBoundary } from '@sentry/react'
 import ExecuteTxButton from '@/components/transactions/ExecuteTxButton'
 import SignTxButton from '@/components/transactions/SignTxButton'
 import RejectTxButton from '@/components/transactions/RejectTxButton'
-import { DelegateCallWarning, UnsignedWarning } from '@/components/transactions/Warning'
+import { UnsignedWarning } from '@/components/transactions/Warning'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useIsPending from '@/hooks/useIsPending'
@@ -100,6 +100,11 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           </ErrorBoundary>
         </div>
 
+        <div className={css.txSummary}>
+          {isUntrusted && !isPending && <UnsignedWarning />}
+          <Summary txDetails={txDetails} />
+        </div>
+
         {/* Module information*/}
         {isModuleExecutionInfo(txSummary.executionInfo) && (
           <div className={css.txModule}>
@@ -113,17 +118,6 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
             </InfoDetails>
           </div>
         )}
-
-        <div className={css.txSummary}>
-          {isUntrusted && !isPending && <UnsignedWarning />}
-
-          {txDetails.txData?.operation === Operation.DELEGATE && (
-            <div className={css.delegateCall}>
-              <DelegateCallWarning showWarning={!txDetails.txData.trustedDelegateCallTarget} />
-            </div>
-          )}
-          <Summary txDetails={txDetails} />
-        </div>
 
         {(isMultiSendTxInfo(txDetails.txInfo) || isOrderTxInfo(txDetails.txInfo)) && (
           <div className={css.multiSend}>

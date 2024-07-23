@@ -1,44 +1,34 @@
 import { isEmptyHexData } from '@/utils/hex'
-import { type InternalTransaction, Operation, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import { type InternalTransaction, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { AccordionProps } from '@mui/material/Accordion/Accordion'
 import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import css from './styles.module.css'
 import accordionCss from '@/styles/accordion.module.css'
 import CodeIcon from '@mui/icons-material/Code'
-import { DelegateCallWarning } from '@/components/transactions/Warning'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction
   txData: TransactionData
   actionTitle: string
-  showDelegateCallWarning: boolean
   variant?: AccordionProps['variant']
   expanded?: boolean
   onChange?: AccordionProps['onChange']
 }
 
-export const SingleTxDecoded = ({
-  tx,
-  txData,
-  actionTitle,
-  showDelegateCallWarning,
-  variant,
-  expanded,
-  onChange,
-}: SingleTxDecodedProps) => {
+export const SingleTxDecoded = ({ tx, txData, actionTitle, variant, expanded, onChange }: SingleTxDecodedProps) => {
   const isNativeTransfer = tx.value !== '0' && (!tx.data || isEmptyHexData(tx.data))
   const method = tx.dataDecoded?.method || (isNativeTransfer ? 'native transfer' : 'contract interaction')
 
   const addressInfo = txData.addressInfoIndex?.[tx.to]
   const name = addressInfo?.name
-  const isDelegateCall = tx.operation === Operation.DELEGATE && showDelegateCallWarning
 
   const singleTxData = {
     to: { value: tx.to },
     value: tx.value,
     operation: tx.operation,
+    dataDecoded: tx.dataDecoded,
     hexData: tx.data ?? undefined,
     trustedDelegateCallTarget: false,
     addressInfoIndex: txData.addressInfoIndex,
@@ -58,9 +48,6 @@ export const SingleTxDecoded = ({
       </AccordionSummary>
 
       <AccordionDetails>
-        {/* We always warn of nested delegate calls */}
-        {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
-
         <Stack spacing={1}>
           <DecodedData txData={singleTxData} toInfo={{ value: tx.to }} />
         </Stack>
