@@ -66,15 +66,7 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
         </Box>
       )}
 
-      {method && (
-        <MethodCall
-          contractAddress={toAddress}
-          contractName={name}
-          contractLogo={avatar}
-          method={method}
-          isDelegateCall={isDelegateCall}
-        />
-      )}
+      {method && <MethodCall contractAddress={toAddress} contractName={name} contractLogo={avatar} method={method} />}
 
       {!method && amountInWei === '0' && (
         <SendToBlock address={toAddress} name={name} title="Interacted with" avatarSize={26} customAvatar={avatar} />
