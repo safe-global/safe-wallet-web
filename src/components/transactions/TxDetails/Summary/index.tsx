@@ -26,7 +26,7 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 
   let submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, refundReceiver, safeTxGas
   if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-    ; ({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
+    ;({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
     refundReceiver = detailedExecutionInfo.refundReceiver?.value
   }
 

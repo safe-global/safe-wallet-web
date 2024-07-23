@@ -20,7 +20,6 @@ import {
   isMultisigExecutionInfo,
   isOpenSwapOrder,
   isTxQueued,
-  isSwapTransferOrderTxInfo,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -87,16 +86,21 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <TxShareLink id={txSummary.id} />
         </div>
 
+        {(isMultiSendTxInfo(txDetails.txInfo) || isOrderTxInfo(txDetails.txInfo)) && (
+          <div className={css.multiSend}>
+            {isMultiSendTxInfo(txDetails.txInfo) && (
+              <div className={css.txData}>Batch transaction with {txDetails.txInfo.actionCount} actions</div>
+            )}
+
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <Multisend txData={txDetails.txData} />
+            </ErrorBoundary>
+          </div>
+        )}
+
         <div className={css.txData}>
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
             <TxData txDetails={txDetails} trusted={isTrustedTransfer} imitation={isImitationTransaction} />
-            {isSwapTransferOrderTxInfo(txDetails.txInfo) && (
-              <div className={css.swapOrderTransfer}>
-                <ErrorBoundary fallback={<div>Error parsing data</div>}>
-                  <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
-                </ErrorBoundary>
-              </div>
-            )}
           </ErrorBoundary>
         </div>
 
@@ -116,14 +120,6 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
                 hasExplorer
               />
             </InfoDetails>
-          </div>
-        )}
-
-        {(isMultiSendTxInfo(txDetails.txInfo) || isOrderTxInfo(txDetails.txInfo)) && (
-          <div className={css.multiSend}>
-            <ErrorBoundary fallback={<div>Error parsing data</div>}>
-              <Multisend txData={txDetails.txData} />
-            </ErrorBoundary>
           </div>
         )}
       </div>

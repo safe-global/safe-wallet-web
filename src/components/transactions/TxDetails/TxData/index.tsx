@@ -1,4 +1,3 @@
-import { Box } from '@mui/material'
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
 import {
