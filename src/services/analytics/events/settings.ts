@@ -88,7 +88,7 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
     IMPORT_UNDEPLOYED_SAFES: {
-      action: 'Imported undeployed safes via Import all',
+      action: 'Imported counterfactual safes via Import all',
       category: SETTINGS_CATEGORY,
     },
   },

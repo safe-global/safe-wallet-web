@@ -136,7 +136,7 @@ const getItems = ({
     const undeployedSafesPreview: ListItemTextProps = {
       primary: (
         <>
-          <b>Undeployed Safes</b> {Object.keys(undeployedSafes).length}
+          <b>Not activated Safe Accounts</b> {Object.keys(undeployedSafes).length}
         </>
       ),
     }
