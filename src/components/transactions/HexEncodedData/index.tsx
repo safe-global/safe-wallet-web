@@ -3,6 +3,7 @@ import { Box, Link } from '@mui/material'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import css from './styles.module.css'
+import CopyButton from '@/components/common/CopyButton'
 
 interface Props {
   hexData: string
@@ -18,6 +19,9 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
     setShowTxData((val) => !val)
   }
 
+  const firstBytes = <b>{hexData.slice(0, 8)}</b>
+  const restBytes = hexData.slice(8)
+
   return (
     <Box data-testid="tx-hexData" className={css.encodedData}>
       {title && (
@@ -25,15 +29,19 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
           <b>{title}: </b>
         </span>
       )}
+
+      <CopyButton text={hexData} />
+
+      {firstBytes}
       {showExpandBtn ? (
         <>
-          {showTxData ? hexData : shortenText(hexData, 25)}{' '}
+          {showTxData ? restBytes : shortenText(restBytes, 25)}{' '}
           <Link component="button" onClick={toggleExpanded} type="button" sx={{ verticalAlign: 'text-top' }}>
             Show {showTxData ? 'less' : 'more'}
           </Link>
         </>
       ) : (
-        <span>{hexData}</span>
+        <span>{restBytes}</span>
       )}
     </Box>
   )
