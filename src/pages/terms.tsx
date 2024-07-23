@@ -42,7 +42,7 @@ const SafeTerms = () => (
         upon if you do not object to their validity within 14 days after receipt of the notification. We will separately
         inform you about the essential changes, the possibility to object, the deadline and the consequences of
         inactivity. If you object, the current version of the Terms remains applicable. Our right to terminate the
-        contract according to Clause 8 remains unaffected.
+        contract according to Clause 13 remains unaffected.
       </li>
     </ol>
 
@@ -408,7 +408,7 @@ const SafeTerms = () => (
         If you use the Safe App via web browser, the strict liability of CC for damages (sec. 536a German Civil Code)
         for defects existing at the time of conclusion of the contract is precluded.{' '}
       </li>
-      <li>The foregoing provisions will not limit CC&rsquo;s liability as defined in Clause 13. </li>
+      <li>The foregoing provisions will not limit CC&rsquo;s liability as defined in Clause 18. </li>
       <li>
         We reserve the right to change the format and features of the Services by making any updates to Services
         available for you to download or, where your device settings permit it, by automatic delivery of updates.
