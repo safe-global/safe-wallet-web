@@ -76,6 +76,10 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
         />
       )}
 
+      {!method && amountInWei === '0' && (
+        <SendToBlock address={toAddress} name={name} title="Interacted with" avatarSize={26} customAvatar={avatar} />
+      )}
+
       {decodedData}
     </Stack>
   )
