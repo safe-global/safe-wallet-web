@@ -1,4 +1,5 @@
 import { getOrderClass } from '@/features/swap/helpers/utils'
+import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import {
   type AddressEx,
@@ -6,11 +7,13 @@ import {
   TransactionInfoType,
   type TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import SwapIcon from '@/public/images/common/swap.svg'
 
 import { isCancellationTxInfo, isModuleExecutionInfo, isOutgoingTransfer, isTxQueued } from '@/utils/transaction-guards'
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
 import { TWAP_ORDER_TITLE } from '@/features/swap/constants'
+import { SvgIcon } from '@mui/material'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -30,7 +33,7 @@ const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | un
 }
 
 type TxType = {
-  icon: string
+  icon: string | ReactElement
   text: string
 }
 
@@ -66,10 +69,11 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
     }
     case TransactionInfoType.SWAP_ORDER: {
       const orderClass = getOrderClass(tx.txInfo)
+      const altText = orderClass === 'limit' ? 'Limit order' : 'Swap order'
 
       return {
-        icon: '/images/common/swap.svg',
-        text: orderClass === 'limit' ? 'Limit order' : 'Swap order',
+        icon: <SvgIcon component={SwapIcon} inheritViewBox fontSize="small" alt={altText} />,
+        text: altText,
       }
     }
     case TransactionInfoType.TWAP_ORDER: {
