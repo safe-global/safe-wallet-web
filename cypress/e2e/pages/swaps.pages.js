@@ -178,11 +178,10 @@ function selectCurrency(inputSelector, option) {
   cy.get(inputSelector).within(() => {
     cy.get('button')
       .eq(0)
-      .find('span')
       .invoke('text')
       .then(($value) => {
         cy.log('*** Currency value ' + $value)
-        if ($value != option) {
+        if (!$value.includes(option)) {
           cy.log('*** Currency value is different from specified')
           cy.get('button').eq(0).trigger('mouseover').trigger('click')
           cy.wrap(true).as('isAction')

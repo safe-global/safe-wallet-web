@@ -64,3 +64,14 @@
     display: block;
   }
 }
+
+.zodiac {
+  color: var(--color-text-primary);
+}
+
+.roleChip {
+  background-color: var(--color-background-main);
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
