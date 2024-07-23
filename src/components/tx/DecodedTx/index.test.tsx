@@ -191,7 +191,7 @@ describe('DecodedTx', () => {
     await waitFor(() => {
       expect(result.queryByText('All actions')).toBeInTheDocument()
     })
-    expect(result.queryAllByText('safeTransferFrom').length).toBe(4)
+    expect(result.queryAllByText('safeTransferFrom').length).toBe(2)
   })
 
   it('should render a function call without parameters', async () => {
