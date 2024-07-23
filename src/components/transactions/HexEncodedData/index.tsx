@@ -24,7 +24,7 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
 
   const firstBytes = (
     <Tooltip title="The first 4 bytes determine the contract method that is being called" arrow>
-      <b style={{ fontFamily: 'monospace' }}>{hexData.slice(0, FIRST_BYTES)}</b>
+      <b>{hexData.slice(0, FIRST_BYTES)}</b>
     </Tooltip>
   )
   const restBytes = hexData.slice(FIRST_BYTES)
