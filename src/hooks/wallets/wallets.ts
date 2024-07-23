@@ -43,7 +43,7 @@ const WALLET_MODULES: Partial<{ [key in WALLET_KEYS]: (chain: ChainInfo) => Wall
   [WALLET_KEYS.METAMASK]: () =>
     metamaskSDK({
       options: {
-        extensionOnly: true,
+        extensionOnly: false,
         dappMetadata: {
           name: 'Safe Wallet',
         },
