@@ -89,9 +89,9 @@ const SwapWidget = ({ sell }: Params) => {
   const feeEnabled = useHasFeature(FEATURES.NATIVE_SWAPS_FEE_ENABLED)
   const useStagingCowServer = useHasFeature(FEATURES.NATIVE_SWAPS_USE_COW_STAGING_SERVER)
 
-  const { data: isSafeAddressBlocked } = useGetIsSanctionedQuery(safeAddress ?? skipToken)
-  const { data: isWalletAddressBlocked } = useGetIsSanctionedQuery(wallet?.address ?? skipToken)
-  const { data: isRecipientAddressBlocked } = useGetIsSanctionedQuery(recipientAddress ?? skipToken)
+  const { data: isSafeAddressBlocked } = useGetIsSanctionedQuery(safeAddress || skipToken)
+  const { data: isWalletAddressBlocked } = useGetIsSanctionedQuery(wallet?.address || skipToken)
+  const { data: isRecipientAddressBlocked } = useGetIsSanctionedQuery(recipientAddress || skipToken)
   const blockedAddresses = {
     [safeAddress]: !!isSafeAddressBlocked,
     [wallet?.address || '']: !!isWalletAddressBlocked,
