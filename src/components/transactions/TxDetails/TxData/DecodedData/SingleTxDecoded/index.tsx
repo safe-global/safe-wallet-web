@@ -30,8 +30,8 @@ export const SingleTxDecoded = ({ tx, txData, actionTitle, variant, expanded, on
     operation: tx.operation,
     dataDecoded: tx.dataDecoded,
     hexData: tx.data ?? undefined,
-    trustedDelegateCallTarget: false,
     addressInfoIndex: txData.addressInfoIndex,
+    trustedDelegateCallTarget: false, // Nested delegate calls are always untrusted
   }
 
   return (

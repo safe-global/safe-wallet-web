@@ -56,7 +56,7 @@ const DecodedTx = ({
     to: { value: tx?.data.to || '' },
     value: tx?.data.value,
     operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
-    trustedDelegateCallTarget: false,
+    trustedDelegateCallTarget: txDetails?.txData?.trustedDelegateCallTarget ?? true,
     addressInfoIndex,
   }
 

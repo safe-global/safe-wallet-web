@@ -27,6 +27,7 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
     return null
   }
 
+  const amountInWei = txData.value ?? '0'
   const isDelegateCall = txData.operation === Operation.DELEGATE
   const toAddress = toInfo?.value || txData.to.value
   const method = txData.dataDecoded?.method || ''
@@ -44,8 +45,6 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
     decodedData = <HexEncodedData title="Data (hex-encoded)" hexData={txData.hexData} />
   }
 
-  const amountInWei = txData.value ?? '0'
-  // we render the decoded data
   return (
     <Stack spacing={2}>
       {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
