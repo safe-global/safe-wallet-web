@@ -21,6 +21,7 @@ export type ConnectedWallet = {
   provider: Eip1193Provider
   icon?: string
   balance?: string
+  parentWallet?: ConnectedWallet
 }
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()

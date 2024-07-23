@@ -6,7 +6,7 @@ import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import chains from '@/config/chains'
-import useWallet from './wallets/useWallet'
+import { useSigner } from './wallets/useWallet'
 import { useSafeSDK } from './coreSDK/safeCoreSDK'
 import useIsSafeOwner from './useIsSafeOwner'
 import { Errors, logError } from '@/services/exceptions'
@@ -141,7 +141,7 @@ const useGasLimit = (
   const { safe } = useSafeInfo()
   const safeAddress = safe.address.value
   const threshold = safe.threshold
-  const wallet = useWallet()
+  const wallet = useSigner()
   const walletAddress = wallet?.address
   const isOwner = useIsSafeOwner()
   const currentChainId = useChainId()

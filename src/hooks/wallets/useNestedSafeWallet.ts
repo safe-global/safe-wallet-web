@@ -1,5 +1,5 @@
 import { type ConnectedWallet } from './useOnboard'
-import { BrowserProvider, Interface, ethers, getAddress, type JsonRpcProvider } from 'ethers'
+import { BrowserProvider, type Eip1193Provider, Interface, ethers, getAddress, type JsonRpcProvider } from 'ethers'
 import { type AppInfo, SafeWalletProvider, type WalletSDK } from '@/services/safe-wallet-provider'
 import { getTransactionDetails, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getCreateCallContractDeployment } from '@/services/contracts/deployments'
@@ -11,12 +11,18 @@ import { EthersAdapter } from '@safe-global/protocol-kit'
 import proposeTx from '@/services/tx/proposeTransaction'
 import { isSmartContractWallet } from '@/utils/wallets'
 
+export type NestedWallet = {
+  address: string
+  chainId: string
+  provider: Eip1193Provider | null
+}
+
 export const getNestedWallet = (
   actualWallet: ConnectedWallet,
   safeInfo: SafeInfo,
   web3ReadOnly: JsonRpcProvider,
   router: NextRouter,
-): ConnectedWallet => {
+): NestedWallet => {
   const nestedSafeSdk: WalletSDK = {
     getBySafeTxHash(safeTxHash) {
       return getTransactionDetails(safeInfo.chainId, safeTxHash)
@@ -148,14 +154,12 @@ export const getNestedWallet = (
   return {
     provider: {
       async request(request) {
-        console.log('Request for nestedSafe provider', request)
         const result = await nestedSafeProvider.request(69420, request, {
           url: '',
           description: '',
           iconUrl: '',
           name: 'Nested Safe',
         })
-        console.log('Result of nestedSafe provider', result)
 
         if ('result' in result) {
           return result.result
@@ -164,6 +168,5 @@ export const getNestedWallet = (
     },
     address: safeInfo.address.value,
     chainId: safeInfo.chainId,
-    label: 'Nested Safe',
   }
 }

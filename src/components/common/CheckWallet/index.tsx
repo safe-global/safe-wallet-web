@@ -4,6 +4,7 @@ import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBen
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
+import { useNestedSafeOwners } from '@/components/dashboard/NestedSafeBanner'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
@@ -23,8 +24,14 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }:
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
 
+  const nestedOwners = useNestedSafeOwners()
+
   const message =
-    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit))
+    wallet &&
+    (isSafeOwner ||
+      allowNonOwner ||
+      (isSpendingLimit && allowSpendingLimit) ||
+      (nestedOwners && nestedOwners.length > 0))
       ? ''
       : !wallet
       ? Message.WalletNotConnected

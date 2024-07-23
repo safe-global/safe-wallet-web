@@ -24,6 +24,6 @@ export function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard 
   return invariant(onboard, 'Onboard not connected')
 }
 
-export function assertProvider(provider: Eip1193Provider | undefined): asserts provider {
+export function assertProvider(provider: Eip1193Provider | undefined | null): asserts provider {
   return invariant(provider, 'Provider not found')
 }
