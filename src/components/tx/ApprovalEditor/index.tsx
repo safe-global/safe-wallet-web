@@ -12,7 +12,7 @@ import Approvals from '@/components/tx/ApprovalEditor/Approvals'
 import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
 const Title = ({ isErc721 }: { isErc721: boolean }) => {
-  const title = isErc721 ? 'Allow access to tokens?' : 'Allow access to tokens?'
+  const title = 'Allow access to tokens?'
   const subtitle = isErc721
     ? 'This allows the spender to transfer the specified token.'
     : 'This allows the spender to spend the specified amount of your tokens.'
