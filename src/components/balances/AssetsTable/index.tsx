@@ -164,7 +164,7 @@ const AssetsTable = ({
                           inheritViewBox
                           color="error"
                           fontSize="small"
-                          sx={{ verticalAlign: 'middle', marginLeft: 0.5 }}
+                          sx={{ verticalAlign: 'middle', ml: 0.5, mr: [0, '-20px'] }}
                         />
                       </span>
                     </Tooltip>

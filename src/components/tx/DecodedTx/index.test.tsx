@@ -38,17 +38,18 @@ describe('DecodedTx', () => {
             },
           ],
         }}
+        showMethodCall
       />,
     )
 
+    expect(result.queryByText('Send')).toBeInTheDocument()
+
     fireEvent.click(result.getByText('Advanced details'))
 
-    expect(result.queryByText('to')).toBeInTheDocument()
-    expect(result.queryByText('address')).toBeInTheDocument()
-    expect(result.queryByText('0x3430...7600')).toBeInTheDocument()
-    expect(result.queryByText('value')).toBeInTheDocument()
-    expect(result.queryByText('uint256')).toBeInTheDocument()
-    expect(result.queryByText('1000000')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(result.queryByText('safeTxGas:')).toBeInTheDocument()
+      expect(result.queryByText('Raw data:')).toBeInTheDocument()
+    })
   })
 
   it('should render an ERC20 transfer', async () => {
@@ -85,6 +86,7 @@ describe('DecodedTx', () => {
             },
           ],
         }}
+        showMethodCall
       />,
     )
 
@@ -185,6 +187,7 @@ describe('DecodedTx', () => {
             },
           ],
         }}
+        showMethodCall
       />,
     )
 
@@ -214,6 +217,7 @@ describe('DecodedTx', () => {
           method: 'deposit',
           parameters: [],
         }}
+        showMethodCall
       />,
     )
 
