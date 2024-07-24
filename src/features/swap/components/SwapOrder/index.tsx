@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import OrderId from '@/features/swap/components/OrderId'
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import SwapProgress from '@/features/swap/components/SwapProgress'
@@ -234,7 +235,11 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
         </DataRow>,
         <PartSellAmount order={order} key="part_sell_amount" />,
         <PartBuyAmount order={order} key="part_buy_amount" />,
-        <FilledRow order={order} key="filled-row" />,
+        order.executedSellAmount !== null && order.executedBuyAmount !== null ? (
+          <FilledRow order={order} key="filled-row" />
+        ) : (
+          <Fragment key="filled-row" />
+        ),
         <PartDuration order={order} key="part_duration" />,
         <EmptyRow key="spacer-1" />,
         status !== 'fulfilled' && compareAsc(now, expires) !== 1 ? (
