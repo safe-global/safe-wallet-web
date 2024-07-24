@@ -28,7 +28,7 @@ describe('CF Safe regression tests', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_14)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_0)
     main.acceptCookies()
   })
 
