@@ -16,6 +16,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import css from './styles.module.css'
 import SwapWidget from '@/features/swap/components/SwapWidget'
+import SignInBanner from '@/features/siwe/components/SignInBanner'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
@@ -31,6 +32,10 @@ const Dashboard = (): ReactElement => {
     <>
       <Grid container spacing={3}>
         {supportsRecovery && <RecoveryHeader />}
+
+        <Grid item xs={12} className={css.hideIfEmpty}>
+          <SignInBanner />
+        </Grid>
 
         <Grid item xs={12}>
           <Overview />

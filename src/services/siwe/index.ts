@@ -1,11 +1,12 @@
 import { getAuthNonce, verifyAuth } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BrowserProvider } from 'ethers'
+import { GATEWAY_URL_STAGING } from '@/config/constants'
 
 /**
  * Prompt the user to sign in with their wallet and set an access_token cookie
  * @param provider
  */
-async function signInWithEthereum(provider: BrowserProvider) {
+export const signInWithEthereum = async (provider: BrowserProvider) => {
   const { nonce } = await getAuthNonce()
 
   const [network, signer] = await Promise.all([provider.getNetwork(), provider.getSigner()])
@@ -38,4 +39,30 @@ Issued At: ${message.issuedAt.toISOString()}`
   return verifyAuth({ message: signableMessage, signature })
 }
 
-export default signInWithEthereum
+const createUserAccount = async (address: string) => {
+  return await fetch(`${GATEWAY_URL_STAGING}/v1/accounts`, {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ address }),
+  }).then((response) => response.json())
+}
+
+export const getUserAccount = async (address: string) => {
+  if (!address) return
+
+  try {
+    const response = await fetch(`${GATEWAY_URL_STAGING}/v1/accounts/${address}`, { credentials: 'include' })
+    if (response.ok) {
+      return response.json()
+    }
+    if (response.status === 404) {
+      return await createUserAccount(address)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
