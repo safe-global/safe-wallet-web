@@ -62,11 +62,11 @@
       "safeTxHash": "0x1303...0fe2"
     },
     "batchNativeTransfer": {
-      "title": "Safe: MultiSendCallOnly 1.3.0",
+      "title": "Batch",
       "summaryTxInfo": "2 actions",
       "summaryTime": "11:24 AM",
       "description": "MultiSend contract",
-      "altImage": "Safe: MultiSendCallOnly 1.3.0",
+      "altImage": "Batch",
       "contractTitle": "Safe: MultiSendCallOnly 1.3.0",
       "contractAddress": "sep:0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B",
       "transactionHash": "0xa5dd...b064",
@@ -145,11 +145,11 @@
       "baseGas": "baseGas"
     },
     "spendingLimits": {
-      "title": "Safe: MultiSendCallOnly 1.3.0",
+      "title": "Batch",
       "summaryTxInfo": "3 actions",
       "summaryTime": "11:06 AM",
       "description": "MultiSend contract",
-      "altImage": "Safe: MultiSendCallOnly 1.3.0",
+      "altImage": "Batch",
       "contractTitle": "Safe: MultiSendCallOnly 1.3.0",
       "contractAddress": "sep:0xA1dabEF33b3B82c7814B6D82A79e50F4AC44102B",
       "transactionHash": "0x69c3...bc37",
