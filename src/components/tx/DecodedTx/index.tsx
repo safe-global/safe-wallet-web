@@ -88,7 +88,7 @@ const DecodedTx = ({
           </AccordionSummary>
 
           <AccordionDetails data-testid="decoded-tx-details">
-            {isMethodCallInAdvanced && (
+            {isMethodCallInAdvanced && decodedData?.method && (
               <>
                 {decodedDataBlock}
 
