@@ -15,7 +15,8 @@ export const signInWithEthereum = async (provider: BrowserProvider) => {
     domain: window.location.host,
     address: signer.address as `0x${string}`,
     // Results in special signing window in MetaMask
-    statement: 'Sign in with Ethereum to the app.',
+    statement:
+      'By signing, you are agreeing to store this data on the Safe Cloud. This does not initiate a transaction or cost any fees.',
     uri: window.location.origin,
     version: '1',
     chainId: Number(network.chainId),
