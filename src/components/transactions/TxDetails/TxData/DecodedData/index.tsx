@@ -37,6 +37,8 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
     )
   }
 
+  if (!txData) return null
+
   const amountInWei = txData.value ?? '0'
   const isDelegateCall = txData.operation === Operation.DELEGATE
   const toAddress = toInfo?.value || txData.to.value
