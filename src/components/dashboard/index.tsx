@@ -16,7 +16,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import css from './styles.module.css'
 import SwapWidget from '@/features/swap/components/SwapWidget'
-import SignInBanner from '@/features/siwe/components/SignInBanner'
+import SignInBanner from '@/features/siweAccounts/components/EnableAccountBanner'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
