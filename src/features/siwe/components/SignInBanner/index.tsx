@@ -7,17 +7,20 @@ import DownloadCloud from '@/public/images/common/download-cloud.svg'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 import css from './style.module.css'
+import { useState } from 'react'
 
 const SignInBanner = () => {
   const provider = useWeb3()
   const { address = '' } = useWallet() || {}
+  const [isDismissed, setIsDismissed] = useState(false)
 
-  if (!provider) return null
+  if (!provider || isDismissed) return null
 
   const signIn = async () => {
     try {
       await signInWithEthereum(provider)
-      await getUserAccount(address)
+      const userAccount = await getUserAccount(address)
+      console.log('!!', userAccount)
     } catch (error) {
       console.log(error)
     }
@@ -39,7 +42,7 @@ const SignInBanner = () => {
               color="inherit"
               size="small"
               onClick={() => {
-                // setOpen(false)
+                setIsDismissed(true)
               }}
             >
               <CloseIcon fontSize="inherit" sx={{ color: 'border.main' }} />

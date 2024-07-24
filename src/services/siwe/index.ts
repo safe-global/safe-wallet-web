@@ -54,15 +54,13 @@ const createUserAccount = async (address: string) => {
 export const getUserAccount = async (address: string) => {
   if (!address) return
 
-  try {
-    const response = await fetch(`${GATEWAY_URL_STAGING}/v1/accounts/${address}`, { credentials: 'include' })
-    if (response.ok) {
-      return response.json()
+  return fetch(`${GATEWAY_URL_STAGING}/v1/accounts/${address}`, { credentials: 'include' }).then((res) => {
+    if (res.ok && res.status === 200) {
+      return res.json()
+    } else if (res.status === 404) {
+      return createUserAccount(address)
+    } else {
+      throw new Error('Error fetching User Account')
     }
-    if (response.status === 404) {
-      return await createUserAccount(address)
-    }
-  } catch (error) {
-    console.log(error)
-  }
+  })
 }
