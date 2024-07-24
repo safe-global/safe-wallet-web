@@ -58,8 +58,8 @@ const DecodedTx = ({
     (txDetails && isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined) ||
     (tx
       ? {
-        value: tx.data.to,
-      }
+          value: tx.data.to,
+        }
       : undefined)
 
   const decodedDataBlock = <DecodedData txData={txData} toInfo={toInfo} />

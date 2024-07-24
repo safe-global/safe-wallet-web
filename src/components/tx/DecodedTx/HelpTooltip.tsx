@@ -7,8 +7,9 @@ const HelpToolTip = () => (
   <Tooltip
     title={
       <>
+        Learn more about{' '}
         <ExternalLink href={HelpCenterArticle.ADVANCED_PARAMS} title="Learn more about advanced details">
-          Learn more about advanced details
+          advanced details
         </ExternalLink>
         .
       </>
