@@ -1,67 +1,44 @@
-import type { Order } from '@safe-global/safe-gateway-typescript-sdk'
+import type { Order, OrderToken } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
+import TokenAmount from '@/components/common/TokenAmount'
 import TokenIcon from '@/components/common/TokenIcon'
-import { formatVisualAmount } from '@/utils/formatters'
+
+const Amount = ({ value, token }: { value: string; token: OrderToken }) => (
+  <TokenAmount
+    value={value}
+    decimals={token.decimals}
+    tokenSymbol={token.symbol}
+    logoUri={token.logoUri ?? undefined}
+  />
+)
+
+const OnlyToken = ({ token }: { token: OrderToken }) => (
+  <Typography fontWeight="bold" component="span" display="flex" alignItems="center" gap={1}>
+    <TokenIcon tokenSymbol={token.symbol} logoUri={token.logoUri ?? undefined} />
+    {token.symbol}
+  </Typography>
+)
 
 export const SwapTx = ({ info }: { info: Order }): ReactElement => {
   const { kind, sellToken, sellAmount, buyToken, buyAmount } = info
   const isSellOrder = kind === 'sell'
 
-  let from = (
-    <>
-      <Box style={{ paddingRight: 5, display: 'inline-block' }}>
-        <TokenIcon logoUri={sellToken.logoUri || undefined} tokenSymbol={sellToken.symbol} />
-      </Box>
-      <Typography component="span" fontWeight="bold">
-        {formatVisualAmount(sellAmount, sellToken.decimals)} {sellToken.symbol}{' '}
-      </Typography>
-    </>
-  )
-
-  let to = (
-    <>
-      <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
-        <TokenIcon logoUri={buyToken.logoUri || undefined} tokenSymbol={buyToken.symbol} />
-      </Box>{' '}
-      <Typography component="span" fontWeight="bold">
-        {buyToken.symbol}
-      </Typography>
-    </>
-  )
+  let from = <Amount value={sellAmount} token={sellToken} />
+  let to = <OnlyToken token={buyToken} />
 
   if (!isSellOrder) {
-    from = (
-      <>
-        <Box style={{ paddingRight: 5, display: 'inline-block' }}>
-          <TokenIcon logoUri={sellToken.logoUri || undefined} tokenSymbol={sellToken.symbol} />
-        </Box>
-        <Typography component="span" fontWeight="bold">
-          {sellToken.symbol}
-        </Typography>
-      </>
-    )
-    to = (
-      <>
-        <Box style={{ paddingLeft: 5, paddingRight: 5, display: 'inline-block' }}>
-          <TokenIcon logoUri={buyToken.logoUri || undefined} tokenSymbol={buyToken.symbol} />
-        </Box>{' '}
-        <Typography component="span" fontWeight="bold">
-          {formatVisualAmount(buyAmount, buyToken.decimals)} {buyToken.symbol}{' '}
-        </Typography>
-      </>
-    )
+    from = <OnlyToken token={sellToken} />
+    to = <Amount value={buyAmount} token={buyToken} />
   }
 
   return (
-    <Box display="flex">
-      <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
-        {from}
-        <Typography component="span" ml={0.5}>
-          to
-        </Typography>
-        {to}
+    <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
+      {from}
+      <Typography component="span" mx={0.5}>
+        &nbsp;to&nbsp;
       </Typography>
-    </Box>
+      {to}
+    </Typography>
   )
 }
