@@ -23,8 +23,18 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
   const chainInfo = useCurrentChain()
 
   // nothing to render
-  if (!txData) {
-    return null
+  if (!txData && !toInfo) return null
+
+  if (!txData && toInfo) {
+    return (
+      <SendToBlock
+        title="Interact with"
+        address={toInfo.value}
+        name={toInfo.name}
+        customAvatar={toInfo.logoUri}
+        avatarSize={26}
+      />
+    )
   }
 
   const amountInWei = txData.value ?? '0'

@@ -33,7 +33,7 @@ const DecodedTx = ({
   decodedDataLoading,
   showMultisend = true,
   showMethodCall = false,
-}: DecodedTxProps): ReactElement | null => {
+}: DecodedTxProps): ReactElement => {
   const chainId = useChainId()
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
   const isMethodCallInAdvanced = !showMethodCall || isMultisend
@@ -47,8 +47,6 @@ const DecodedTx = ({
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
 
-  if (!decodedData || !tx) return null
-
   const addressInfoIndex = txDetails?.txData?.addressInfoIndex
 
   const txData = {
@@ -60,9 +58,13 @@ const DecodedTx = ({
     addressInfoIndex,
   }
 
-  const toInfo = (txDetails && isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined) || {
-    value: tx?.data.to,
-  }
+  const toInfo =
+    (txDetails && isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined) ||
+    (tx
+      ? {
+          value: tx.data.to,
+        }
+      : undefined)
 
   const decodedDataBlock = decodedDataLoading ? (
     <Skeleton />
