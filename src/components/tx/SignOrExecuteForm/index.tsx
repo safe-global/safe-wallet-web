@@ -28,11 +28,13 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isConfirmationViewOrder } from '@/utils/transaction-guards'
+import { isConfirmationViewOrder, isCustomTxInfo } from '@/utils/transaction-guards'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import TxData from '@/components/transactions/TxDetails/TxData'
+import useTxDetails from '@/hooks/useTxDetails'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -63,6 +65,7 @@ const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean,
 }
 
 export const SignOrExecuteForm = ({
+  txId,
   chainId,
   safeTx,
   safeTxError,
@@ -75,10 +78,11 @@ export const SignOrExecuteForm = ({
 }): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
-  const isCreation = !props.txId
+  const isCreation = !txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData] = useDecodeTx(safeTx)
+  const [txDetails] = useTxDetails(txId)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx) && !isSwapOrder
 
@@ -103,14 +107,16 @@ export const SignOrExecuteForm = ({
     (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
 
   const onFormSubmit = useCallback<SubmitCallback>(
-    async (txId, isExecuted = false) => {
-      onSubmit?.(txId, isExecuted)
+    async (newTxId, isExecuted = false) => {
+      onSubmit?.(newTxId, isExecuted)
 
       // Track tx event
-      trackTxEvents(chainId, txId, isCreation, isExecuted)
+      trackTxEvents(chainId, newTxId, isCreation, isExecuted)
     },
     [chainId, isCreation, onSubmit],
   )
+
+  const showTxDetails = txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
 
   return (
     <>
@@ -128,12 +134,14 @@ export const SignOrExecuteForm = ({
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor safeTransaction={safeTx} />
 
+          {showTxDetails && <TxData txDetails={txDetails} imitation={false} trusted />}
+
           <DecodedTx
             tx={safeTx}
-            txId={props.txId}
+            txId={txId}
             decodedData={decodedData}
             showMultisend={!props.isBatch}
-            showMethodCall={props.showMethodCall && !isSwapOrder}
+            showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder}
           />
         </ErrorBoundary>
 

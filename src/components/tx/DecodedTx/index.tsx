@@ -3,9 +3,7 @@ import { isCustomTxInfo } from '@/utils/transaction-guards'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Stack } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { getTransactionDetails, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
-import useChainId from '@/hooks/useChainId'
-import useAsync from '@/hooks/useAsync'
+import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import ErrorMessage from '../ErrorMessage'
 import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
@@ -14,6 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import accordionCss from '@/styles/accordion.module.css'
 import HelpToolTip from './HelpTooltip'
+import useTxDetails from '@/hooks/useTxDetails'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -30,14 +29,9 @@ const DecodedTx = ({
   showMultisend = true,
   showMethodCall = false,
 }: DecodedTxProps): ReactElement => {
-  const chainId = useChainId()
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
   const isMethodCallInAdvanced = !showMethodCall || isMultisend
-
-  const [txDetails, txDetailsError, txDetailsLoading] = useAsync<TransactionDetails>(() => {
-    if (!txId) return
-    return getTransactionDetails(chainId, txId)
-  }, [chainId, txId])
+  const [txDetails, txDetailsError, txDetailsLoading] = useTxDetails(txId)
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
