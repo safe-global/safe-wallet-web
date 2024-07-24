@@ -20,8 +20,6 @@ type DecodedTxProps = {
   txId?: string
   showMultisend?: boolean
   decodedData?: DecodedDataResponse
-  decodedDataError?: Error
-  decodedDataLoading?: boolean
   showMethodCall?: boolean
 }
 
@@ -29,8 +27,6 @@ const DecodedTx = ({
   tx,
   txId,
   decodedData,
-  decodedDataError,
-  decodedDataLoading,
   showMultisend = true,
   showMethodCall = false,
 }: DecodedTxProps): ReactElement => {
@@ -62,17 +58,11 @@ const DecodedTx = ({
     (txDetails && isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined) ||
     (tx
       ? {
-          value: tx.data.to,
-        }
+        value: tx.data.to,
+      }
       : undefined)
 
-  const decodedDataBlock = decodedDataLoading ? (
-    <Skeleton />
-  ) : decodedDataError ? (
-    <ErrorMessage error={decodedDataError}>Failed decoding transaction data</ErrorMessage>
-  ) : (
-    <DecodedData txData={txData} toInfo={toInfo} />
-  )
+  const decodedDataBlock = <DecodedData txData={txData} toInfo={toInfo} />
 
   return (
     <Stack spacing={2}>

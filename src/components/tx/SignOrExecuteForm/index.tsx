@@ -78,7 +78,7 @@ export const SignOrExecuteForm = ({
   const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
-  const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
+  const [decodedData] = useDecodeTx(safeTx)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx) && !isSwapOrder
 
@@ -132,8 +132,6 @@ export const SignOrExecuteForm = ({
             tx={safeTx}
             txId={props.txId}
             decodedData={decodedData}
-            decodedDataError={decodedDataError}
-            decodedDataLoading={decodedDataLoading}
             showMultisend={!props.isBatch}
             showMethodCall={props.showMethodCall && !isSwapOrder}
           />
