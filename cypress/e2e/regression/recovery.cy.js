@@ -6,7 +6,6 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as modules from '../pages/modules.page.js'
 import * as navigation from '../pages/navigation.page.js'
-import * as create_wallet from '../pages/create_wallet.pages.js'
 
 let recoverySafes,
   staticSafes = []
