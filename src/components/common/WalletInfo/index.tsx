@@ -1,6 +1,17 @@
 import WalletBalance from '@/components/common/WalletBalance'
 import { WalletIdenticon } from '@/components/common/WalletOverview'
+import { useWeb3 } from '@/hooks/wallets/web3'
+import signInWithEthereum from '@/services/siwe'
 import { Box, Button, Typography } from '@mui/material'
+import {
+  getAccount,
+  setBaseUrl,
+  createAccount,
+  deleteAccount,
+  getAccountDataTypes,
+  getAccountDataSettings,
+  putAccountDataSettings,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ChainSwitcher from '@/components/common/ChainSwitcher'
@@ -11,6 +22,59 @@ import { selectChainById } from '@/store/chainsSlice'
 import madProps from '@/utils/mad-props'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 import useChainId from '@/hooks/useChainId'
+
+const SignInButton = ({ wallet }: { wallet: ConnectedWallet }) => {
+  setBaseUrl('https://safe-client.staging.5afe.dev')
+
+  const provider = useWeb3()
+
+  if (!provider) return null
+
+  const createUserAccount = async () => {
+    await signInWithEthereum(provider)
+
+    return createAccount({ address: wallet.address as any })
+  }
+
+  const getUserAccount = async () => {
+    await signInWithEthereum(provider)
+
+    return getAccount(wallet.address)
+  }
+
+  const deleteUserAccount = async () => {
+    await signInWithEthereum(provider)
+
+    return deleteAccount(wallet.address)
+  }
+
+  const getDataTypes = async () => {
+    return getAccountDataTypes()
+  }
+
+  const getUserDataSettings = async () => {
+    await signInWithEthereum(provider)
+
+    return getAccountDataSettings(wallet.address)
+  }
+
+  const updateUserDataSetting = async () => {
+    await signInWithEthereum(provider)
+
+    return putAccountDataSettings(wallet.address, { accountDataSettings: [{ dataTypeId: '1', enabled: true }] })
+  }
+
+  return (
+    <>
+      <button onClick={createUserAccount}>Create account</button>
+      <button onClick={getUserAccount}>Get account</button>
+      <button onClick={deleteUserAccount}>Delete account</button>
+      <button onClick={getDataTypes}>Get data types</button>
+      <button onClick={getUserDataSettings}>Get user settings</button>
+      <button onClick={updateUserDataSetting}>Update user settings</button>
+    </>
+  )
+}
 
 type WalletInfoProps = {
   wallet: ConnectedWallet
@@ -101,6 +165,7 @@ export const WalletInfo = ({ wallet, balance, currentChainId, onboard, addressBo
         >
           Disconnect
         </Button>
+        <SignInButton wallet={wallet} />
       </Box>
     </>
   )
