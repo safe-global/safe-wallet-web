@@ -41,6 +41,8 @@ type SwapOrderProps = {
   txInfo?: Order
 }
 
+const TWAP_PARTS_STATUS_THRESHOLD = 10
+
 const AmountRow = ({ order }: { order: Order }) => {
   const { sellToken, buyToken, sellAmount, buyAmount, kind } = order
   const isSellOrder = kind === 'sell'
@@ -217,9 +219,9 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
   const isPartiallyFilled = isOrderPartiallyFilled(order)
   const expires = new Date(validUntil * 1000)
   const now = new Date()
-
   const orderKindLabel = capitalize(kind)
 
+  const isStatusKnown = Number(numberOfParts) <= TWAP_PARTS_STATUS_THRESHOLD
   return (
     <DataTable
       header={`${orderKindLabel} order`}
@@ -256,9 +258,13 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
             {formatDateTime(validUntil * 1000)}
           </DataRow>
         ),
-        <DataRow key="Status" title="Status">
-          <StatusLabel status={isPartiallyFilled ? 'partiallyFilled' : status} />
-        </DataRow>,
+        isStatusKnown ? (
+          <DataRow key="Status" title="Status">
+            <StatusLabel status={isPartiallyFilled ? 'partiallyFilled' : status} />
+          </DataRow>
+        ) : (
+          <Fragment key="status" />
+        ),
       ]}
     />
   )
