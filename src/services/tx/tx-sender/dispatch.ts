@@ -1,3 +1,4 @@
+import { isSmartContractWallet } from '@/utils/wallets'
 import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
 import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type {
@@ -18,9 +19,10 @@ import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeC
 import {
   getAndValidateSafeSDK,
   getSafeSDKWithSigner,
-  getUncheckedSafeSDK,
   tryOffChainTxSigning,
   getUncheckedSigner,
+  prepareTxExecution,
+  prepareApproveTxHash,
 } from './sdk'
 import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
@@ -111,17 +113,23 @@ export const dispatchOnChainSigning = async (
   txId: string,
   provider: Eip1193Provider,
   chainId: SafeInfo['chainId'],
+  signerAddress: string,
+  safeAddress: string,
 ) => {
-  const sdkUnchecked = await getUncheckedSafeSDK(provider)
-  const safeTxHash = await sdkUnchecked.getTransactionHash(safeTx)
+  const sdk = await getSafeSDKWithSigner(provider)
+  const safeTxHash = await sdk.getTransactionHash(safeTx)
   const eventParams = { txId }
 
   const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
 
   try {
-    // With the unchecked signer, the contract call resolves once the tx
-    // has been submitted in the wallet not when it has been executed
-    await sdkUnchecked.approveTransactionHash(safeTxHash, options)
+    // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
+    const encodedApproveHashTx = await prepareApproveTxHash(safeTxHash, provider)
+
+    await provider.request({
+      method: 'eth_sendTransaction',
+      params: [{ from: signerAddress, to: safeAddress, data: encodedApproveHashTx, gas: options?.gasLimit }],
+    })
 
     txDispatch(TxEvent.ONCHAIN_SIGNATURE_REQUESTED, eventParams)
   } catch (err) {
@@ -143,15 +151,31 @@ export const dispatchSafeTxSpeedUp = async (
   signerAddress: string,
   safeAddress: string,
 ) => {
-  const sdkUnchecked = await getUncheckedSafeSDK(provider)
+  const sdk = await getSafeSDKWithSigner(provider)
   const eventParams = { txId }
   const signerNonce = txOptions.nonce
+  const isSmartAccount = await isSmartContractWallet(chainId, signerAddress)
 
   // Execute the tx
   let result: TransactionResult | undefined
   try {
     const safeTx = await createExistingTx(chainId, safeAddress, txId)
-    result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
+
+    // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
+    if (isSmartAccount) {
+      const encodedTx = await prepareTxExecution(safeTx, provider)
+      const txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{ from: signerAddress, to: safeAddress, data: encodedTx }],
+      })
+
+      result = {
+        hash: txHash,
+        transactionResponse: null,
+      }
+    } else {
+      result = await sdk.executeTransaction(safeTx, txOptions)
+    }
     txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
     txDispatch(TxEvent.SPEEDUP_FAILED, { ...eventParams, error: asError(error) })
@@ -230,8 +254,9 @@ export const dispatchTxExecution = async (
   provider: Eip1193Provider,
   signerAddress: string,
   safeAddress: string,
+  isSmartAccount: boolean,
 ): Promise<string> => {
-  const sdkUnchecked = await getUncheckedSafeSDK(provider)
+  const sdk = await getSafeSDKWithSigner(provider)
   const eventParams = { txId }
 
   const signerNonce = txOptions.nonce ?? (await getUserNonce(signerAddress))
@@ -239,7 +264,21 @@ export const dispatchTxExecution = async (
   // Execute the tx
   let result: TransactionResult | undefined
   try {
-    result = await sdkUnchecked.executeTransaction(safeTx, txOptions)
+    // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
+    if (isSmartAccount) {
+      const encodedTx = await prepareTxExecution(safeTx, provider)
+      const txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{ from: signerAddress, to: safeAddress, data: encodedTx }],
+      })
+
+      result = {
+        hash: txHash,
+        transactionResponse: null,
+      }
+    } else {
+      result = await sdk.executeTransaction(safeTx, txOptions)
+    }
     txDispatch(TxEvent.EXECUTING, eventParams)
   } catch (error) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })

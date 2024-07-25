@@ -1,6 +1,11 @@
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
 import { SafeProvider, SigningMethod } from '@safe-global/protocol-kit'
+import {
+  generatePreValidatedSignature,
+  isSafeMultisigTransactionResponse,
+  sameString,
+} from '@safe-global/protocol-kit/dist/src/utils'
 import type { Eip1193Provider, JsonRpcSigner } from 'ethers'
 import { isWalletRejection, isHardwareWallet, isWalletConnect } from '@/utils/wallets'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -135,21 +140,6 @@ export const getUncheckedSigner = async (provider: Eip1193Provider) => {
   return new UncheckedJsonRpcSigner(browserProvider, (await browserProvider.getSigner()).address)
 }
 
-/**
- * https://docs.ethers.io/v5/api/providers/jsonrpc-provider/#UncheckedJsonRpcSigner
- * This resolves the promise sooner when executing a tx and mocks
- * most of the values of transactionResponse which is needed when
- * dealing with smart-contract wallet owners
- */
-export const getUncheckedSafeSDK = async (provider: Eip1193Provider): Promise<Safe> => {
-  const sdk = getAndValidateSafeSDK()
-  const browserProvider = createWeb3(provider)
-  const signer = await browserProvider.getSigner()
-  const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(signer.provider, await signer.getAddress())
-
-  return sdk.connect({ provider, signer: uncheckedJsonRpcSigner.address })
-}
-
 export const getSafeSDKWithSigner = async (provider: Eip1193Provider): Promise<Safe> => {
   const sdk = getAndValidateSafeSDK()
 
@@ -189,4 +179,74 @@ export const tryOffChainTxSigning = async (
 
 export const isDelegateCall = (safeTx: SafeTransaction): boolean => {
   return safeTx.data.operation === OperationType.DelegateCall
+}
+
+// TODO: This is a workaround and a duplication of sdk.executeTransaction but it returns the encoded tx instead of executing it.
+export const prepareTxExecution = async (safeTransaction: SafeTransaction, provider: Eip1193Provider) => {
+  const sdk = await getSafeSDKWithSigner(provider)
+
+  if (!sdk.getContractManager().safeContract) {
+    throw new Error('Safe is not deployed')
+  }
+
+  const transaction = isSafeMultisigTransactionResponse(safeTransaction)
+    ? await sdk.toSafeTransactionType(safeTransaction)
+    : safeTransaction
+
+  const signedSafeTransaction = await sdk.copyTransaction(transaction)
+
+  const txHash = await sdk.getTransactionHash(signedSafeTransaction)
+  const ownersWhoApprovedTx = await sdk.getOwnersWhoApprovedTx(txHash)
+  for (const owner of ownersWhoApprovedTx) {
+    signedSafeTransaction.addSignature(generatePreValidatedSignature(owner))
+  }
+  const owners = await sdk.getOwners()
+  const threshold = await sdk.getThreshold()
+  const signerAddress = await sdk.getSafeProvider().getSignerAddress()
+  if (threshold > signedSafeTransaction.signatures.size && signerAddress && owners.includes(signerAddress)) {
+    signedSafeTransaction.addSignature(generatePreValidatedSignature(signerAddress))
+  }
+
+  if (threshold > signedSafeTransaction.signatures.size) {
+    const signaturesMissing = threshold - signedSafeTransaction.signatures.size
+    throw new Error(
+      `There ${signaturesMissing > 1 ? 'are' : 'is'} ${signaturesMissing} signature${
+        signaturesMissing > 1 ? 's' : ''
+      } missing`,
+    )
+  }
+
+  const value = BigInt(signedSafeTransaction.data.value)
+  if (value !== 0n) {
+    const balance = await sdk.getBalance()
+    if (value > balance) {
+      throw new Error('Not enough Ether funds')
+    }
+  }
+
+  return sdk.getEncodedTransaction(signedSafeTransaction)
+}
+
+// TODO: This is a duplication of sdk.approveTransactionHash but it returns the encoded tx instead of executing it.
+export const prepareApproveTxHash = async (hash: string, provider: Eip1193Provider) => {
+  const sdk = await getSafeSDKWithSigner(provider)
+
+  const safeContract = sdk.getContractManager().safeContract
+
+  if (!safeContract) {
+    throw new Error('Safe is not deployed')
+  }
+
+  const owners = await sdk.getOwners()
+  const signerAddress = await sdk.getSafeProvider().getSignerAddress()
+  if (!signerAddress) {
+    throw new Error('SafeProvider must be initialized with a signer to use this method')
+  }
+  const addressIsOwner = owners.some((owner: string) => signerAddress && sameString(owner, signerAddress))
+  if (!addressIsOwner) {
+    throw new Error('Transaction hashes can only be approved by Safe owners')
+  }
+
+  // @ts-expect-error TS2590: Expression produces a union type that is too complex to represent.
+  return safeContract.encode('approveHash', [hash])
 }

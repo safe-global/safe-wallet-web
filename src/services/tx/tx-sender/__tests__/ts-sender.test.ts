@@ -442,7 +442,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, safeAddress)
+      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, safeAddress, false)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -470,7 +470,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(safeTx, {}, txId, MockEip1193Provider, '5', safeAddress)).rejects.toThrow(
+      await expect(dispatchTxExecution(safeTx, {}, txId, MockEip1193Provider, '5', safeAddress, false)).rejects.toThrow(
         'error',
       )
 
@@ -491,7 +491,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, '0x123')
+      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, '0x123', false)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })

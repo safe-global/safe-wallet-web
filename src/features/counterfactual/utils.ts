@@ -5,10 +5,10 @@ import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { createWeb3, getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import ExternalStore from '@/services/ExternalStore'
-import { getUncheckedSafeSDK, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
+import { getSafeSDKWithSigner, getUncheckedSigner, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
 import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
@@ -51,17 +51,15 @@ export const dispatchTxExecutionAndDeploySafe = async (
   provider: Eip1193Provider,
   safeAddress: string,
 ) => {
-  const sdkUnchecked = await getUncheckedSafeSDK(provider)
+  const sdk = await getSafeSDKWithSigner(provider)
   const eventParams = { groupKey: CF_TX_GROUP_KEY }
 
   let result: ContractTransactionResponse | undefined
   try {
-    const signedTx = await tryOffChainTxSigning(safeTx, await sdkUnchecked.getContractVersion(), sdkUnchecked)
+    const signedTx = await tryOffChainTxSigning(safeTx, await sdk.getContractVersion(), sdk)
+    const signer = await getUncheckedSigner(provider)
 
-    const browserProvider = createWeb3(provider)
-    const signer = await browserProvider.getSigner()
-
-    const deploymentTx = await sdkUnchecked.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
+    const deploymentTx = await sdk.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
 
     // We need to estimate the actual gasLimit after the user has signed since it is more accurate than what useDeployGasLimit returns
     const gas = await signer.estimateGas({ data: deploymentTx.data, value: deploymentTx.value, to: deploymentTx.to })

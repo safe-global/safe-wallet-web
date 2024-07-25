@@ -47,7 +47,7 @@ export const isSmartContract = async (address: string): Promise<boolean> => {
 }
 
 export const isSmartContractWallet = memoize(
-  async (_chainId: string, address: string) => {
+  async (_chainId: string, address: string): Promise<boolean> => {
     return isSmartContract(address)
   },
   (chainId, address) => chainId + address,
