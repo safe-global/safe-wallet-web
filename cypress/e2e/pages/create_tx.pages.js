@@ -53,7 +53,7 @@ const transactionsPerHrStr = 'free transactions left this hour'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
-const nativeTokenTransferStr = 'Send'
+const nativeTokenTransferStr = 'ETH'
 const yesStr = 'Yes, '
 const estimatedFeeStr = 'Estimated fee'
 const executeStr = 'Execute'
