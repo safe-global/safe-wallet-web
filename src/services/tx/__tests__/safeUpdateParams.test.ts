@@ -18,7 +18,7 @@ jest.mock('@safe-global/protocol-kit', () => {
 
   // Mock class
   class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
+    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(1)))
   }
 
   return {
@@ -39,7 +39,7 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.0.0',
     } as SafeInfo
-    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo)
+    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '1', l2: false } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -49,7 +49,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeChangeMasterCopyAddress(masterCopyTx.data),
-        getSafeSingletonDeployment({ version: '1.3.0', network: '4' })?.defaultAddress,
+        getSafeSingletonDeployment({ version: '1.4.1', network: '1' })?.defaultAddress,
       ),
     ).toBeTruthy()
 
@@ -59,14 +59,14 @@ describe('safeUpgradeParams', () => {
     expect(fallbackHandlerTx.data).toEqual('0x')
   })
 
-  it('Should upgrade L1 safe to L1 1.3.0', async () => {
+  it('Should upgrade L1 safe to L1 1.4.1', async () => {
     const mockSafe = {
       address: {
         value: MOCK_SAFE_ADDRESS,
       },
       version: '1.1.1',
     } as SafeInfo
-    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '4', l2: false } as ChainInfo)
+    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '1', l2: false } as ChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -76,7 +76,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeChangeMasterCopyAddress(masterCopyTx.data),
-        getSafeSingletonDeployment({ version: '1.3.0', network: '4' })?.defaultAddress,
+        getSafeSingletonDeployment({ version: '1.4.1', network: '1' })?.defaultAddress,
       ),
     ).toBeTruthy()
 
@@ -86,12 +86,12 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeSetFallbackHandlerAddress(fallbackHandlerTx.data),
-        getFallbackHandlerDeployment({ version: LATEST_SAFE_VERSION, network: '4' })?.defaultAddress,
+        getFallbackHandlerDeployment({ version: LATEST_SAFE_VERSION, network: '1' })?.defaultAddress,
       ),
     ).toBeTruthy()
   })
 
-  it('Should upgrade L2 safe to L2 1.3.0', async () => {
+  it('Should upgrade L2 safe to L2 1.4.1', async () => {
     const mockSafe = {
       address: {
         value: MOCK_SAFE_ADDRESS,
@@ -108,7 +108,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeChangeMasterCopyAddress(masterCopyTx.data),
-        getSafeL2SingletonDeployment({ version: '1.3.0', network: '100' })?.defaultAddress,
+        getSafeL2SingletonDeployment({ version: '1.4.1', network: '100' })?.defaultAddress,
       ),
     ).toBeTruthy()
 
@@ -118,7 +118,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeSetFallbackHandlerAddress(fallbackHandlerTx.data),
-        getFallbackHandlerDeployment({ version: '1.3.0', network: '100' })?.defaultAddress,
+        getFallbackHandlerDeployment({ version: '1.4.1', network: '100' })?.defaultAddress,
       ),
     ).toBeTruthy()
   })

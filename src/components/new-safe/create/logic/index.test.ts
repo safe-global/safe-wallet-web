@@ -16,31 +16,14 @@ import {
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 
-const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
-
-const mockTransaction = {
-  data: EMPTY_DATA,
-  nonce: 1,
-  from: '0x10',
-  to: '0x11',
-  value: BigInt(0),
-}
-
-const mockPendingTx = {
-  data: EMPTY_DATA,
-  from: ZERO_ADDRESS,
-  to: ZERO_ADDRESS,
-  nonce: 0,
-  startBlock: 0,
-  value: BigInt(0),
-}
+const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
 
 jest.mock('@safe-global/protocol-kit', () => {
   const originalModule = jest.requireActual('@safe-global/protocol-kit')
 
   // Mock class
   class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
+    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(1)))
   }
 
   return {
@@ -54,7 +37,7 @@ describe('createNewSafeViaRelayer', () => {
   const owner2 = toBeHex('0x2', 20)
 
   const mockChainInfo = {
-    chainId: '5',
+    chainId: '1',
     l2: false,
   } as ChainInfo
 
@@ -68,8 +51,8 @@ describe('createNewSafeViaRelayer', () => {
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract('5', LATEST_SAFE_VERSION)).getAddress()
-    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract('5', LATEST_SAFE_VERSION)
+    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract('1', LATEST_SAFE_VERSION)).getAddress()
+    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract('1', LATEST_SAFE_VERSION)
     const safeContractAddress = await (await getReadOnlyGnosisSafeContract(mockChainInfo)).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
@@ -93,7 +76,7 @@ describe('createNewSafeViaRelayer', () => {
 
     expect(taskId).toEqual('0x123')
     expect(relayTransaction).toHaveBeenCalledTimes(1)
-    expect(relayTransaction).toHaveBeenCalledWith('5', {
+    expect(relayTransaction).toHaveBeenCalledWith('1', {
       to: proxyFactoryAddress,
       data: expectedCallData,
       version: LATEST_SAFE_VERSION,

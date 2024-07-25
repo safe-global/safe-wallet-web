@@ -67,7 +67,7 @@ describe('deployments', () => {
       expect(getSafeSpy).toHaveBeenCalledTimes(1)
 
       expect(getSafeSpy).toHaveBeenNthCalledWith(1, {
-        version: '1.3.0',
+        version: '1.4.1',
         network: '1',
       })
     })
@@ -83,7 +83,7 @@ describe('deployments', () => {
 
       expect(getSafeSpy).toHaveBeenNthCalledWith(1, {
         network: '69420',
-        version: '1.3.0',
+        version: '1.4.1',
       })
     })
   })
@@ -98,6 +98,7 @@ describe('deployments', () => {
       expect(deployments._isLegacy('1.1.1')).toBe(false)
       expect(deployments._isLegacy('1.2.0')).toBe(false)
       expect(deployments._isLegacy('1.3.0')).toBe(false)
+      expect(deployments._isLegacy('1.4.1')).toBe(false)
       expect(deployments._isLegacy(LATEST_SAFE_VERSION)).toBe(false)
     })
 
@@ -110,6 +111,7 @@ describe('deployments', () => {
     it('should return true for L2 versions', () => {
       expect(deployments._isL2({ l2: true } as ChainInfo, '1.3.0')).toBe(true)
       expect(deployments._isL2({ l2: true } as ChainInfo, '1.3.0+L2')).toBe(true)
+      expect(deployments._isL2({ l2: true } as ChainInfo, '1.4.1+L2')).toBe(true)
       expect(deployments._isL2({ l2: true } as ChainInfo, LATEST_SAFE_VERSION)).toBe(true)
       expect(deployments._isL2({ l2: true } as ChainInfo, `${LATEST_SAFE_VERSION}+L2`)).toBe(true)
     })
@@ -123,6 +125,7 @@ describe('deployments', () => {
       expect(deployments._isL2({ l2: false } as ChainInfo, '1.1.1')).toBe(false)
       expect(deployments._isL2({ l2: false } as ChainInfo, '1.2.0')).toBe(false)
       expect(deployments._isL2({ l2: false } as ChainInfo, '1.3.0')).toBe(false)
+      expect(deployments._isL2({ l2: false } as ChainInfo, '1.4.1+L2')).toBe(false)
       expect(deployments._isL2({ l2: false } as ChainInfo, LATEST_SAFE_VERSION)).toBe(false)
     })
   })
