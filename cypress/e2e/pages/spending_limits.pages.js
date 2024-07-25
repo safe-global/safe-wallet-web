@@ -48,7 +48,7 @@ export const timePeriodOptions = {
 const getBeneficiaryInput = () => cy.get(beneficiarySection).find('input').should('be.enabled')
 const automationOwner = ls.addressBookData.sepoliaAddress2[11155111]['0xC16Db0251654C0a72E91B190d81eAD367d2C6fED']
 
-const expectedSpendOptions = ['0 of 0.17 ETH', '0.00001 of 0.05 ETH', '0 of 0.01 ETH']
+const expectedSpendOptions = ['0.02 of 0.17 ETH', '0.00001 of 0.05 ETH', '0 of 0.01 ETH']
 const expectedResetOptions = new Array(3).fill('One-time')
 
 const newTransactionStr = 'New transaction'

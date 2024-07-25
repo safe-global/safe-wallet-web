@@ -13,7 +13,7 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const tokenAmount = 0.1
 const newTokenAmount = 0.001
-const spendingLimitBalance = '(0.17 ETH)'
+const spendingLimitBalance = '(0.15 ETH)'
 
 describe('Spending limits tests', () => {
   before(async () => {

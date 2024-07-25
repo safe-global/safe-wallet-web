@@ -19,7 +19,7 @@ const initialState: CookiesAndTermsState = {
 }
 
 export const cookiesAndTermsSlice = createSlice({
-  name: 'cookies_terms_v1',
+  name: 'cookies_terms_v1.1',
   initialState,
   reducers: {
     saveCookieAndTermConsent: (_, { payload }: PayloadAction<CookiesAndTermsState>) => payload,

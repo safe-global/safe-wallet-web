@@ -30,9 +30,9 @@ export const getExecutionPrice = (
   const { executedSellAmount, executedBuyAmount, buyToken, sellToken } = order
 
   const ratio = calculateRatio(
-    { amount: executedSellAmount, decimals: sellToken.decimals },
+    { amount: executedSellAmount || '0', decimals: sellToken.decimals },
     {
-      amount: executedBuyAmount,
+      amount: executedBuyAmount || '0',
       decimals: buyToken.decimals,
     },
   )
@@ -54,6 +54,9 @@ export const getLimitPrice = (
 }
 
 const calculateRatio = (a: Quantity, b: Quantity) => {
+  if (BigInt(b.amount) === 0n) {
+    return 0
+  }
   return asDecimal(BigInt(a.amount), a.decimals) / asDecimal(BigInt(b.amount), b.decimals)
 }
 
@@ -65,9 +68,9 @@ export const getSurplusPrice = (
 ): number => {
   const { kind, executedSellAmount, sellAmount, sellToken, executedBuyAmount, buyAmount, buyToken } = order
   if (kind === OrderKind.BUY) {
-    return calculateDifference(sellAmount, executedSellAmount, sellToken.decimals)
+    return calculateDifference(sellAmount, executedSellAmount || '', sellToken.decimals)
   } else if (kind === OrderKind.SELL) {
-    return calculateDifference(executedBuyAmount, buyAmount, buyToken.decimals)
+    return calculateDifference(executedBuyAmount || '', buyAmount, buyToken.decimals)
   } else {
     return 0
   }
@@ -95,8 +98,8 @@ const getPartiallyFilledBuySurplus = (
     { amount: sellAmount, decimals: sellToken.decimals },
     { amount: buyAmount, decimals: buyToken.decimals },
   )
-  const maximumSellAmount = asDecimal(BigInt(executedBuyAmount), buyToken.decimals) * limitPrice
-  return maximumSellAmount - asDecimal(BigInt(executedSellAmount), sellToken.decimals)
+  const maximumSellAmount = asDecimal(BigInt(executedBuyAmount || 0n), buyToken.decimals) * limitPrice
+  return maximumSellAmount - asDecimal(BigInt(executedSellAmount || 0n), sellToken.decimals)
 }
 
 const getPartiallyFilledSellSurplus = (
@@ -112,8 +115,8 @@ const getPartiallyFilledSellSurplus = (
     { amount: sellAmount, decimals: sellToken.decimals },
   )
 
-  const minimumBuyAmount = asDecimal(BigInt(executedSellAmount), sellToken.decimals) * limitPrice
-  return asDecimal(BigInt(executedBuyAmount), buyToken.decimals) - minimumBuyAmount
+  const minimumBuyAmount = asDecimal(BigInt(executedSellAmount || 0n), sellToken.decimals) * limitPrice
+  return asDecimal(BigInt(executedBuyAmount || 0n), buyToken.decimals) - minimumBuyAmount
 }
 
 export const getFilledPercentage = (
@@ -139,9 +142,9 @@ export const getFilledAmount = (
   order: Pick<SwapOrder, 'kind' | 'executedBuyAmount' | 'executedSellAmount' | 'buyToken' | 'sellToken'>,
 ): string => {
   if (order.kind === OrderKind.BUY) {
-    return formatUnits(order.executedBuyAmount, order.buyToken.decimals)
+    return formatUnits(order.executedBuyAmount || 0n, order.buyToken.decimals)
   } else if (order.kind === OrderKind.SELL) {
-    return formatUnits(order.executedSellAmount, order.sellToken.decimals)
+    return formatUnits(order.executedSellAmount || 0n, order.sellToken.decimals)
   } else {
     return '0'
   }
@@ -171,9 +174,9 @@ export const getOrderFeeBps = (order: Pick<SwapOrder, 'fullAppData'>): number =>
 export const isOrderPartiallyFilled = (
   order: Pick<SwapOrder, 'executedBuyAmount' | 'executedSellAmount' | 'sellAmount' | 'buyAmount' | 'kind'>,
 ): boolean => {
-  const executedBuyAmount = BigInt(order.executedBuyAmount)
+  const executedBuyAmount = BigInt(order.executedBuyAmount || 0)
   const buyAmount = BigInt(order.buyAmount)
-  const executedSellAmount = BigInt(order.executedSellAmount)
+  const executedSellAmount = BigInt(order.executedSellAmount || 0)
   const sellAmount = BigInt(order.sellAmount)
 
   if (order.kind === OrderKind.BUY) {
