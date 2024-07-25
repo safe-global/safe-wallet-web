@@ -37,7 +37,9 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
           {generateDataRowValue(txHash, 'hash', true)}{' '}
         </TxDataRow>
       )}
-
+      <TxDataRow datatestid="tx-safe-hash" title="safeTxHash:">
+        {generateDataRowValue(safeTxHash, 'hash')}
+      </TxDataRow>
       <TxDataRow datatestid="tx-created-at" title="Created:">
         {submittedAt ? dateString(submittedAt) : null}
       </TxDataRow>
@@ -65,10 +67,6 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 
           {expanded && (
             <Box mt={1}>
-              <TxDataRow datatestid="tx-safe-hash" title="safeTxHash:">
-                {generateDataRowValue(safeTxHash, 'hash')}
-              </TxDataRow>
-
               <TxDataRow datatestid="tx-operation" title="Operation:">
                 {`${txData.operation} (${Operation[txData.operation].toLowerCase()})`}
               </TxDataRow>
