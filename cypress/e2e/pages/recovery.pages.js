@@ -4,23 +4,51 @@ import * as safe from '../pages/load_safe.pages'
 import * as tx from '../pages/transactions.page'
 import { tableContainer } from '../pages/address_book.page'
 import { txDate } from '../pages/create_tx.pages'
+import { modalHeader } from '../pages/modals.page'
 
-const setupRecoveryBtn = '[data-testid="setup-recovery-btn"]'
-const setupRecoveryModalBtn = '[data-testid="setup-btn"]'
+export const setupRecoveryBtn = '[data-testid="setup-recovery-btn"]'
+export const setupRecoveryModalBtn = '[data-testid="setup-btn"]'
 const recoveryNextBtn = '[data-testid="next-btn"]'
 const warningSection = '[data-testid="warning-section"]'
 const termsCheckbox = 'input[type="checkbox"]'
-const removeRecovererBtn = '[data-testid="remove-recoverer-btn"]'
+export const removeRecovererBtn = '[data-testid="remove-recoverer-btn"]'
+export const editRecovererBtn = '[data-testid="edit-recoverer-btn"]'
 const removeRecovererSection = '[data-testid="remove-recoverer-section"]'
 const startRecoveryBtn = '[data-testid="start-recovery-btn"]'
 const recoveryDelaySelect = '[data-testid="recovery-delay-select"]'
+const recoveryExpirySelect = '[data-testid="recovery-expiry-select"]'
 const postponeRecoveryBtn = '[data-testid="postpone-recovery-btn"]'
 const goToQueueBtn = '[data-testid="queue-btn"]'
 const executeBtn = '[data-testid="execute-btn"]'
 const cancelRecoveryBtn = '[data-testid="cancel-recovery-btn"]'
 const cancelProposalBtn = '[data-testid="cancel-proposal-btn"]'
 const executeFormBtn = '[data-testid="execute-form-btn"]'
+const advancedBtn = '[data-testid="advanced-btn"]'
+const recoveryProposalModal = '[data-testid="recovery-proposal"]'
+const recoveryProposalHorizontal = '[data-testid="recovery-proposal-hr"]'
 
+export const recoveryOptions = {
+  fiveMin: '5 minutes',
+  oneHr: '1 hour',
+  fiveSixDays: '56 days',
+  never: 'never',
+}
+export function clickOnEditRecoverer() {
+  cy.get(editRecovererBtn).click()
+}
+export function verifyRecovererSettings(data) {
+  main.checkTextsExistWithinElement(tableContainer, data)
+}
+
+export function verifyRecovererConfirmationData(data) {
+  data.forEach((item) => {
+    cy.get(modalHeader).next('div').contains(item)
+  })
+}
+
+export function verifyRecoveryTableDisplayed() {
+  cy.get(tableContainer).should('be.visible')
+}
 export function clickOnExecuteRecoveryCancelBtn() {
   cy.get(executeFormBtn).click()
 }
@@ -44,6 +72,27 @@ export const recoveryDelayOptions = {
 export function setRecoveryDelay(option) {
   cy.get(recoveryDelaySelect).click()
   cy.contains(option).click()
+}
+
+export function verifyRecoveryDelayOptions(options) {
+  cy.get(recoveryDelaySelect).click()
+  options.forEach((item) => {
+    cy.contains(item)
+  })
+}
+
+export function setRecoveryExpiry(option) {
+  cy.get(advancedBtn).click()
+  cy.get(recoveryExpirySelect).click()
+  cy.contains(option).click()
+}
+
+export function verifyRecoveryExpiryOptions(options) {
+  cy.get(advancedBtn).click()
+  cy.get(recoveryExpirySelect).click()
+  options.forEach((item) => {
+    cy.contains(item)
+  })
 }
 
 export function getSetupRecoveryBtn() {
@@ -115,4 +164,22 @@ export function postponeRecovery() {
       cy.wrap($button).click()
       cy.get(postponeRecoveryBtn).should('not.exist')
     })
+}
+
+export function clickOnRecoverLaterBtn() {
+  cy.get(postponeRecoveryBtn).click()
+  cy.get(postponeRecoveryBtn).should('not.exist')
+}
+
+export function verifyNonceState(state) {
+  if (state === constants.elementExistanceStates.exist) {
+    cy.get(nonceFld).should(constants.elementExistanceStates.exist)
+  }
+  cy.get(nonceFld).should(constants.elementExistanceStates.not_exist)
+}
+
+export function verifyRecoveryProposalModalState(option, horizontal = false) {
+  let modal = recoveryProposalModal
+  if (horizontal) modal = recoveryProposalHorizontal
+  cy.get(modal).should(option)
 }
