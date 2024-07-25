@@ -54,7 +54,7 @@ export const ApprovalEditor = ({
   const isReadOnly = (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} className={css.container} mb={2}>
+    <Box display="flex" flexDirection="column" gap={2} className={css.container} mb={1}>
       <Title />
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>

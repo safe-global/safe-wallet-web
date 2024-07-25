@@ -26,6 +26,7 @@ const HelpToolTip = () => (
         sx={{
           verticalAlign: 'middle',
           ml: 0.5,
+          mt: '-1px',
         }}
       />
     </span>

@@ -22,6 +22,15 @@ type DecodedTxProps = {
   showMethodCall?: boolean
 }
 
+const Divider = () => (
+  <Box
+    borderBottom="1px solid var(--color-border-light)"
+    width="calc(100% + 32px)"
+    my={2}
+    sx={{ ml: '-16px !important' }}
+  />
+)
+
 const DecodedTx = ({
   tx,
   txId,
@@ -48,25 +57,24 @@ const DecodedTx = ({
     addressInfoIndex,
   }
 
-  const toInfo =
-    (txDetails && isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined) ||
-    (tx
-      ? {
-          value: tx.data.to,
-        }
-      : undefined)
+  let toInfo = tx && {
+    value: tx.data.to,
+  }
+  if (txDetails && isCustomTxInfo(txDetails.txInfo)) {
+    toInfo = txDetails.txInfo.to
+  }
 
   const decodedDataBlock = <DecodedData txData={txData} toInfo={toInfo} />
 
   return (
     <Stack spacing={2}>
-      {!isMethodCallInAdvanced && decodedDataBlock}
-
-      {isMultisend && showMultisend && (
-        <Box>
-          <Multisend txData={txDetails?.txData || txData} compact />
+      {!isMethodCallInAdvanced && (
+        <Box border="1px solid var(--color-border-light)" borderRadius={1} p={2}>
+          {decodedDataBlock}
         </Box>
       )}
+
+      {isMultisend && showMultisend && <Multisend txData={txDetails?.txData || txData} compact />}
 
       <Box>
         <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
@@ -85,14 +93,7 @@ const DecodedTx = ({
             {isMethodCallInAdvanced && decodedData?.method && (
               <>
                 {decodedDataBlock}
-
-                {/* Divider */}
-                <Box
-                  borderBottom="1px solid var(--color-border-light)"
-                  width="calc(100% + 32px)"
-                  my={2}
-                  sx={{ ml: '-16px !important' }}
-                />
+                <Divider />
               </>
             )}
 
