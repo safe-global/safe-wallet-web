@@ -47,4 +47,5 @@ before(() => {
 
 beforeEach(() => {
   cy.setupInterceptors()
+  cy.clearAllSessionStorage()
 })

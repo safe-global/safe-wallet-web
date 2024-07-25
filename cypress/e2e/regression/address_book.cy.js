@@ -79,8 +79,38 @@ describe('Address book tests', () => {
         addressBook.verifyExportMessage(12)
         addressBook.confirmExport()
         const downloadsFolder = Cypress.config('downloadsFolder')
-        //File reading is failing in the CI. Can be tested locally
-        cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
+
+        cy.readFile(path.join(downloadsFolder, fileName), 'utf-8').then((content) => {
+          const lines = content
+            .replace(/^\uFEFF/, '')
+            .trim()
+            .split('\r\n')
+
+          const [header, ...dataLines] = lines
+          const actualData = dataLines.reduce((acc, line) => {
+            const [address, name, chainId] = line.split(',')
+            acc[chainId] = acc[chainId] || {}
+            acc[chainId][address] = name
+            return acc
+          }, {})
+
+          Object.keys(ls.addressBookData.dataSet).forEach((chainId) => {
+            cy.log(`Checking chainId: ${chainId}`)
+
+            const actualChainData = actualData[chainId] || {}
+            const expectedChainData = ls.addressBookData.dataSet[chainId]
+
+            Object.keys(expectedChainData).forEach((address) => {
+              const actualName = actualChainData[address]
+              const expectedName = expectedChainData[address]
+
+              cy.log(
+                `ChainId: ${chainId}, Address: ${address}, Actual Name: ${actualName}, Expected Name: ${expectedName}`,
+              )
+              expect(actualName).to.equal(expectedName)
+            })
+          })
+        })
       })
   })
 

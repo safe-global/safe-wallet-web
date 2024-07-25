@@ -47,7 +47,14 @@ const ModuleDisplay = ({ moduleAddress, chainId, name }: { moduleAddress: string
       />
       <CheckWallet>
         {(isOk) => (
-          <IconButton onClick={onRemove} color="error" size="small" disabled={!isOk} title="Remove module">
+          <IconButton
+            data-testid="module-remove-btn"
+            onClick={onRemove}
+            color="error"
+            size="small"
+            disabled={!isOk}
+            title="Remove module"
+          >
             <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
           </IconButton>
         )}

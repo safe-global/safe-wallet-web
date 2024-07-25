@@ -2,10 +2,13 @@ import { Methods } from '@safe-global/safe-apps-sdk'
 import * as web3 from '@/hooks/wallets/web3'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import { render, screen } from '@/tests/test-utils'
+import * as execThroughRoleHooks from '@/components/tx/SignOrExecuteForm/ExecuteThroughRoleForm/hooks'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import ReviewSignMessageOnChain from '@/components/tx-flow/flows/SignMessageOnChain/ReviewSignMessageOnChain'
 import { JsonRpcProvider, zeroPadValue } from 'ethers'
 import { act } from '@testing-library/react'
+
+jest.spyOn(execThroughRoleHooks, 'useRoles').mockReturnValue([])
 
 describe('ReviewSignMessageOnChain', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', async () => {

@@ -35,7 +35,7 @@ export function DelayModifierRow({ delayModifier }: { delayModifier: RecoverySta
           <Tooltip title={isOk ? 'Edit recovery setup' : undefined}>
             <span>
               <Track {...RECOVERY_EVENTS.EDIT_RECOVERY}>
-                <IconButton onClick={onEdit} size="small" disabled={!isOk}>
+                <IconButton data-testid="edit-recoverer-btn" onClick={onEdit} size="small" disabled={!isOk}>
                   <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
                 </IconButton>
               </Track>
