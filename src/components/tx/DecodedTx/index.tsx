@@ -83,10 +83,10 @@ const DecodedTx = ({
             expandIcon={<ExpandMoreIcon />}
             className={accordionCss.accordion}
           >
-            <Box display="flex" alignItems="center">
-              Advanced details
-              <HelpToolTip />
-            </Box>
+            Advanced details
+            <HelpToolTip />
+            <Box flexGrow={1} />
+            {isMethodCallInAdvanced && decodedData?.method}
           </AccordionSummary>
 
           <AccordionDetails data-testid="decoded-tx-details">
