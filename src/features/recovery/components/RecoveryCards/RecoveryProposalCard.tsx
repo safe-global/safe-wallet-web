@@ -67,7 +67,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
 
   if (orientation === 'horizontal') {
     return (
-      <Card sx={{ py: 3, px: 4 }}>
+      <Card data-testid="recovery-proposal-hr" sx={{ py: 3, px: 4 }}>
         <Grid
           container
           display="flex"
@@ -96,7 +96,7 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
   }
 
   return (
-    <Card elevation={0} className={css.card}>
+    <Card data-testid="recovery-proposal" elevation={0} className={css.card}>
       <Grid container display="flex" flexDirection="column" gap={4}>
         <Grid item xs={12} display="flex" justifyContent="space-between">
           {icon}
