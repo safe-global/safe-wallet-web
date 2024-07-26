@@ -3,8 +3,8 @@ import {
   combineReducers,
   createListenerMiddleware,
   type ThunkAction,
-  type PreloadedState,
-  type AnyAction,
+  type UnknownAction,
+  type Middleware,
 } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
 import merge from 'lodash/merge'
@@ -47,7 +47,7 @@ const rootReducer = combineReducers({
   [ofacApi.reducerPath]: ofacApi.reducer,
 })
 
-const persistedSlices: (keyof PreloadedState<RootState>)[] = [
+const persistedSlices: (keyof Partial<RootState>)[] = [
   slices.sessionSlice.name,
   slices.addressBookSlice.name,
   slices.pendingTxsSlice.name,
@@ -68,7 +68,7 @@ export const getPersistedState = () => {
 
 export const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
 
-const middleware = [
+const middleware: Middleware[] = [
   persistState(persistedSlices),
   broadcastState(persistedSlices),
   listenerMiddlewareInstance.middleware,
@@ -86,13 +86,12 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
      *
      * @see https://lodash.com/docs/4.17.15#merge
      */
-
-    return merge({}, state, action.payload)
+    return merge({}, state, action.payload) as RootState
   }
-  return rootReducer(state, action)
+  return rootReducer(state, action) as RootState
 }
 
-export const makeStore = (initialState?: Record<string, any>) => {
+export const makeStore = (initialState?: Partial<RootState>) => {
   const store = configureStore({
     reducer: _hydrationReducer,
     middleware: (getDefaultMiddleware) => {
@@ -109,9 +108,8 @@ export const makeStore = (initialState?: Record<string, any>) => {
 }
 
 export type AppDispatch = ReturnType<typeof makeStore>['dispatch']
-export type RootState = ReturnType<typeof _hydrationReducer>
-
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AnyAction>
+export type RootState = ReturnType<typeof rootReducer>
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, UnknownAction>
 
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
