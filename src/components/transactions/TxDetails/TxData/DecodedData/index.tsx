@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { Stack, Box } from '@mui/material'
+import { Stack } from '@mui/material'
 import { type AddressEx, TokenType, type TransactionDetails, Operation } from '@safe-global/safe-gateway-typescript-sdk'
 
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
@@ -51,7 +51,9 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
 
   let decodedData = <></>
   if (txData.dataDecoded) {
-    decodedData = <MethodDetails data={txData.dataDecoded} addressInfoIndex={txData.addressInfoIndex} />
+    if (amountInWei === '0') {
+      decodedData = <MethodDetails data={txData.dataDecoded} addressInfoIndex={txData.addressInfoIndex} />
+    }
   } else if (txData.hexData) {
     // When no decoded data, display raw hex data
     decodedData = <HexEncodedData title="Data (hex-encoded)" hexData={txData.hexData} />
@@ -61,26 +63,24 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
     <Stack spacing={2}>
       {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
 
-      {amountInWei !== '0' && (
-        <Box pb={1}>
-          <SendAmountBlock
-            amountInWei={amountInWei}
-            tokenInfo={{
-              type: TokenType.NATIVE_TOKEN,
-              address: ZERO_ADDRESS,
-              decimals: chainInfo?.nativeCurrency.decimals ?? 18,
-              symbol: chainInfo?.nativeCurrency.symbol ?? 'ETH',
-              logoUri: chainInfo?.nativeCurrency.logoUri,
-            }}
-          />
-          <SendToBlock address={toAddress} name={name} title="Recipient" avatarSize={26} customAvatar={avatar} />
-        </Box>
+      {method ? (
+        <MethodCall contractAddress={toAddress} contractName={name} contractLogo={avatar} method={method} />
+      ) : (
+        <SendToBlock address={toAddress} name={name} title="Interacted with:" avatarSize={26} customAvatar={avatar} />
       )}
 
-      {method && <MethodCall contractAddress={toAddress} contractName={name} contractLogo={avatar} method={method} />}
-
-      {!method && amountInWei === '0' && (
-        <SendToBlock address={toAddress} name={name} title="Interacted with" avatarSize={26} customAvatar={avatar} />
+      {amountInWei !== '0' && (
+        <SendAmountBlock
+          title="Value:"
+          amountInWei={amountInWei}
+          tokenInfo={{
+            type: TokenType.NATIVE_TOKEN,
+            address: ZERO_ADDRESS,
+            decimals: chainInfo?.nativeCurrency.decimals ?? 18,
+            symbol: chainInfo?.nativeCurrency.symbol ?? 'ETH',
+            logoUri: chainInfo?.nativeCurrency.logoUri,
+          }}
+        />
       )}
 
       {decodedData}

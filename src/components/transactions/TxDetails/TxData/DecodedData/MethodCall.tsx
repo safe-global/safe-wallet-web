@@ -1,5 +1,6 @@
 import NamedAddressInfo from '@/components/common/NamedAddressInfo'
-import { Box, Typography } from '@mui/material'
+import { Divider } from '@/components/tx/DecodedTx'
+import { Typography } from '@mui/material'
 
 const MethodCall = ({
   method,
@@ -42,12 +43,7 @@ const MethodCall = ({
         />
       </Typography>
 
-      {/* Divider */}
-      <Box
-        borderBottom="1px solid var(--color-border-light)"
-        width="calc(100% + 32px)"
-        sx={{ ml: '-16px !important' }}
-      />
+      <Divider />
     </>
   )
 }

@@ -40,7 +40,7 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
 
   return (
     <SignOrExecuteForm txId={txId} isExecutable={canExecute} onlyExecute={!canSign} showMethodCall>
-      <Typography mb={2}>{text}</Typography>
+      <Typography mb={1}>{text}</Typography>
     </SignOrExecuteForm>
   )
 }

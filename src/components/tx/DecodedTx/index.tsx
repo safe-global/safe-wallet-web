@@ -22,7 +22,7 @@ type DecodedTxProps = {
   showMethodCall?: boolean
 }
 
-const Divider = () => (
+export const Divider = () => (
   <Box
     borderBottom="1px solid var(--color-border-light)"
     width="calc(100% + 32px)"

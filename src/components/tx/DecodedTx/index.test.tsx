@@ -42,7 +42,7 @@ describe('DecodedTx', () => {
       />,
     )
 
-    expect(result.queryByText('Send')).toBeInTheDocument()
+    expect(result.queryByText('Value:')).toBeInTheDocument()
 
     fireEvent.click(result.getByText('Advanced details'))
 
