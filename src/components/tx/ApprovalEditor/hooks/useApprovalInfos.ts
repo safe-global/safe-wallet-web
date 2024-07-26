@@ -1,18 +1,19 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
 import { type Approval, ApprovalModule } from '@/services/security/modules/ApprovalModule'
+import { sameAddress } from '@/utils/addresses'
 import {
   getERC20TokenInfoOnChain,
+  getErc721Symbol,
   isErc721Token,
   UNLIMITED_APPROVAL_AMOUNT,
   UNLIMITED_PERMIT2_AMOUNT,
 } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type EIP712TypedData, type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
-import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 import { useMemo } from 'react'
-import { type EIP712TypedData, type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { sameAddress } from '@/utils/addresses'
+import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 
 export type ApprovalInfo = {
   tokenInfo: (Omit<TokenInfo, 'logoUri' | 'name'> & { logoUri?: string }) | undefined
@@ -23,7 +24,6 @@ export type ApprovalInfo = {
   method: Approval['method']
   /** Index of approval transaction within (batch) transaction */
   transactionIndex: number
-  isErc721: boolean
 }
 
 const ApprovalModuleInstance = new ApprovalModule()
@@ -55,13 +55,19 @@ export const useApprovalInfos = (payload: {
             sameAddress(item.tokenInfo.address, approval.tokenAddress),
           )?.tokenInfo
 
-          let isErc721 = false
-
           if (!tokenInfo) {
             try {
               tokenInfo = await getERC20TokenInfoOnChain(approval.tokenAddress)
             } catch (e) {
-              isErc721 = await isErc721Token(approval.tokenAddress)
+              const isErc721 = await isErc721Token(approval.tokenAddress)
+              const symbol = await getErc721Symbol(approval.tokenAddress)
+
+              tokenInfo = {
+                address: approval.tokenAddress,
+                symbol,
+                decimals: 1, // Doesn't exist for ERC-721 tokens
+                type: isErc721 ? TokenType.ERC721 : TokenType.ERC20,
+              }
             }
           }
 
@@ -70,7 +76,7 @@ export const useApprovalInfos = (payload: {
               ? PSEUDO_APPROVAL_VALUES.UNLIMITED
               : formatUnits(approval.amount, tokenInfo?.decimals)
 
-          return { ...approval, tokenInfo, amountFormatted, isErc721 }
+          return { ...approval, tokenInfo, amountFormatted }
         }),
       )
     },

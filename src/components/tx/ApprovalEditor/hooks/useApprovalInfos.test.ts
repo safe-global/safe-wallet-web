@@ -69,7 +69,6 @@ describe('useApprovalInfos', () => {
       tokenInfo: undefined,
       method: 'approve',
       transactionIndex: 0,
-      isErc721: false,
     }
 
     await waitFor(() => {
@@ -96,7 +95,6 @@ describe('useApprovalInfos', () => {
       tokenInfo: undefined,
       method: 'increaseAllowance',
       transactionIndex: 0,
-      isErc721: false,
     }
 
     await waitFor(() => {
@@ -144,7 +142,6 @@ describe('useApprovalInfos', () => {
         tokenInfo: undefined,
         method: 'increaseAllowance',
         transactionIndex: 0,
-        isErc721: false,
       },
       {
         amount: BigInt('456'),
@@ -154,7 +151,6 @@ describe('useApprovalInfos', () => {
         tokenInfo: undefined,
         method: 'approve',
         transactionIndex: 1,
-        isErc721: false,
       },
     ]
 
@@ -221,7 +217,6 @@ describe('useApprovalInfos', () => {
         tokenInfo: undefined,
         method: 'increaseAllowance',
         transactionIndex: 1,
-        isErc721: false,
       },
       {
         amount: BigInt('456'),
@@ -231,7 +226,6 @@ describe('useApprovalInfos', () => {
         tokenInfo: undefined,
         method: 'approve',
         transactionIndex: 3,
-        isErc721: false,
       },
     ]
 
@@ -318,7 +312,6 @@ describe('useApprovalInfos', () => {
       tokenInfo: undefined,
       method: 'Permit2',
       transactionIndex: 0,
-      isErc721: false,
     }
 
     await waitFor(() => {
@@ -416,7 +409,6 @@ describe('useApprovalInfos', () => {
         tokenInfo: undefined,
         method: 'Permit2',
         transactionIndex: 0,
-        isErc721: false,
       },
       {
         amount: BigInt(getTokenInfo.UNLIMITED_PERMIT2_AMOUNT),
@@ -426,7 +418,6 @@ describe('useApprovalInfos', () => {
         tokenInfo: undefined,
         method: 'Permit2',
         transactionIndex: 1,
-        isErc721: false,
       },
     ]
 
@@ -471,7 +462,6 @@ describe('useApprovalInfos', () => {
       tokenInfo: mockBalanceItem.tokenInfo,
       method: 'approve',
       transactionIndex: 0,
-      isErc721: false,
     }
 
     await waitFor(() => {
@@ -507,7 +497,6 @@ describe('useApprovalInfos', () => {
       tokenInfo: mockTokenInfo,
       method: 'approve',
       transactionIndex: 0,
-      isErc721: false,
     }
 
     await waitFor(() => {
@@ -535,7 +524,6 @@ describe('useApprovalInfos', () => {
       tokenInfo: undefined,
       method: 'approve',
       transactionIndex: 0,
-      isErc721: false,
     }
 
     await waitFor(() => {

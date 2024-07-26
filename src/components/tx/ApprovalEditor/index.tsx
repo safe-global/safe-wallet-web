@@ -1,15 +1,15 @@
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import Approvals from '@/components/tx/ApprovalEditor/Approvals'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
+import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
 import { Alert, Box, Skeleton, Typography } from '@mui/material'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type EIP712TypedData, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { useContext } from 'react'
-import css from './styles.module.css'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
-import { updateApprovalTxs } from './utils/approvals'
 import { useApprovalInfos } from './hooks/useApprovalInfos'
-import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
-import Approvals from '@/components/tx/ApprovalEditor/Approvals'
-import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
+import css from './styles.module.css'
+import { updateApprovalTxs } from './utils/approvals'
 
 const Title = ({ isErc721 }: { isErc721: boolean }) => {
   const title = 'Allow access to tokens?'
@@ -56,7 +56,7 @@ export const ApprovalEditor = ({
     createSafeTx().then(setSafeTx).catch(setSafeTxError)
   }
 
-  const isErc721Approval = !!readableApprovals?.some((approval) => approval.isErc721)
+  const isErc721Approval = !!readableApprovals?.some((approval) => approval.tokenInfo?.type === TokenType.ERC721)
 
   const isReadOnly =
     (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined || isErc721Approval

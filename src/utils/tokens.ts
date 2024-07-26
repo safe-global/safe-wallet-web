@@ -28,11 +28,28 @@ export const getERC20TokenInfoOnChain = async (
   }
 }
 
+export const getErc721Symbol = async (address: string) => {
+  const web3 = getWeb3ReadOnly()
+  if (!web3) return ''
+
+  const erc721 = ERC721__factory.connect(address, web3)
+
+  try {
+    return await erc721.symbol()
+  } catch (e) {
+    return ''
+  }
+}
+
 export const isErc721Token = async (address: string) => {
   const web3 = getWeb3ReadOnly()
   if (!web3) return false
 
   const erc721 = ERC721__factory.connect(address, web3)
 
-  return erc721.supportsInterface(ERC721_IDENTIFIER)
+  try {
+    return await erc721.supportsInterface(ERC721_IDENTIFIER)
+  } catch (e) {
+    return false
+  }
 }
