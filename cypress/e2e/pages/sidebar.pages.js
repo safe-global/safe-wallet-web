@@ -80,11 +80,11 @@ export function showAllSafes() {
   })
 }
 
-export function verifyNetworkIsDisplayed(netwrok) {
+export function verifyNetworkIsDisplayed(network) {
   cy.get(sidebarContainer)
     .should('be.visible')
     .within(() => {
-      cy.get(chainLogo).should('contain', netwrok)
+      cy.get(chainLogo).should('contain', network)
     })
 }
 
@@ -165,10 +165,10 @@ export function verifyAddedSafesExistByIndex(index, safe) {
   cy.get(sideSafeListItem).eq(index).should('contain', 'sep:')
 }
 
-export function verifySafesByNetwork(netwrok, safes) {
+export function verifySafesByNetwork(network, safes) {
   cy.get(sidebarSafeContainer).within(() => {
     cy.get(chainLogo)
-      .contains(netwrok)
+      .contains(network)
       .parent()
       .next()
       .within(() => {

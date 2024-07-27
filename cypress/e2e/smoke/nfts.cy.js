@@ -32,7 +32,7 @@ describe('[SMOKE] NFTs tests', () => {
   it('[SMOKE] Verify NFT preview window can be opened', () => {
     nfts.openActiveNFT(0)
     nfts.verifyNameInNFTModal(nftsTokenID)
-    nfts.verifySelectedNetwrokSepolia()
+    nfts.verifySelectedNetworkSepolia()
     nfts.closeNFTModal()
   })
 

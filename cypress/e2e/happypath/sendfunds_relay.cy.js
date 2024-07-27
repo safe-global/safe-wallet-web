@@ -20,7 +20,7 @@ const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 const tokenAmount2 = '0.00001'
-const netwrok = 'sepolia'
+const network = 'sepolia'
 const network_pref = 'sep:'
 const unit_eth = 'ether'
 let apiKit, protocolKitOwner1_S3, protocolKitOwner2_S3, outgoingSafeAddress
@@ -28,7 +28,7 @@ let apiKit, protocolKitOwner1_S3, protocolKitOwner2_S3, outgoingSafeAddress
 let safes = []
 let safesData = []
 
-const provider = new ethers.InfuraProvider(netwrok, Cypress.env('INFURA_API_KEY'))
+const provider = new ethers.InfuraProvider(network, Cypress.env('INFURA_API_KEY'))
 const privateKeys = [walletCredentials.OWNER_1_PRIVATE_KEY, walletCredentials.OWNER_2_PRIVATE_KEY]
 const walletAddress = [walletCredentials.OWNER_1_WALLET_ADDRESS]
 const signers = createSigners(privateKeys, provider)

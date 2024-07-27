@@ -79,7 +79,7 @@ export function verifyNameInNFTModal(name) {
   cy.get(nftModalTitle).contains(name)
 }
 
-export function verifySelectedNetwrokSepolia() {
+export function verifySelectedNetworkSepolia() {
   cy.get(nftModal).within(() => {
     cy.get(nftModalTitle).contains(constants.networks.sepolia)
   })
