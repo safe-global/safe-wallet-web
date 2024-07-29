@@ -36,7 +36,12 @@
   align-items: flex-start;
 }
 
-.logo svg {
+.logoMobile {
+  display: none;
+}
+
+.logo svg,
+.logoMobile svg {
   width: auto;
   display: block;
   color: var(--color-logo-main);
@@ -64,8 +69,17 @@
     display: none;
   }
 
+  .logoMobile {
+    display: flex;
+    flex: 1;
+    border: none;
+    align-items: flex-start;
+    margin-left: var(--space-2);
+  }
+
   .menuButton {
     display: flex;
+    flex: 0;
   }
 }
 
