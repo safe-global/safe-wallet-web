@@ -20,6 +20,7 @@ import {
 } from './slices'
 import * as slices from './slices'
 import * as hydrate from './useHydrateStore'
+import { ofacApi } from '@/store/ofac'
 
 const rootReducer = combineReducers({
   [slices.chainsSlice.name]: slices.chainsSlice.reducer,
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   [slices.batchSlice.name]: slices.batchSlice.reducer,
   [slices.undeployedSafesSlice.name]: slices.undeployedSafesSlice.reducer,
   [slices.swapParamsSlice.name]: slices.swapParamsSlice.reducer,
+  [ofacApi.reducerPath]: ofacApi.reducer,
 })
 
 const persistedSlices: (keyof PreloadedState<RootState>)[] = [
@@ -70,6 +72,7 @@ const middleware = [
   persistState(persistedSlices),
   broadcastState(persistedSlices),
   listenerMiddlewareInstance.middleware,
+  ofacApi.middleware,
 ]
 const listeners = [safeMessagesListener, txHistoryListener, txQueueListener, swapOrderListener, swapOrderStatusListener]
 
