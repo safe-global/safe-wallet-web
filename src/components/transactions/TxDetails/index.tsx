@@ -76,7 +76,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
       {/* /Details */}
       <div className={`${css.details} ${isUnsigned ? css.noSigners : ''}`}>
         {isOrderTxInfo(txDetails.txInfo) && (
-          <div className={css.swapOrder}>
+          <div>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
               <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
             </ErrorBoundary>

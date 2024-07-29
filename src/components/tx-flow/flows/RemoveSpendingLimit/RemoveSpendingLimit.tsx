@@ -1,7 +1,7 @@
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { getSpendingLimitInterface, getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
 import useChainId from '@/hooks/useChainId'
-import { useContext, useEffect, useMemo } from 'react'
+import { useContext, useEffect } from 'react'
 import { SafeTxContext } from '../../SafeTxProvider'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Grid, Typography } from '@mui/material'
@@ -10,7 +10,6 @@ import { relativeTime } from '@/utils/date'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import useBalances from '@/hooks/useBalances'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
-import { safeParseUnits } from '@/utils/formatters'
 import SpendingLimitLabel from '@/components/common/SpendingLimitLabel'
 import { createTx } from '@/services/tx/tx-sender'
 
@@ -24,10 +23,7 @@ export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) 
   const { balances } = useBalances()
   const token = balances.items.find((item) => item.tokenInfo.address === params.token.address)
 
-  const amountInWei = useMemo(
-    () => safeParseUnits(params.amount, token?.tokenInfo.decimals)?.toString() || '0',
-    [params.amount, token?.tokenInfo.decimals],
-  )
+  const amountInWei = params.amount
 
   useEffect(() => {
     const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)

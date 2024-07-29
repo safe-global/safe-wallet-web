@@ -27,3 +27,7 @@ export function assertOnboard(onboard: OnboardAPI | undefined): asserts onboard 
 export function assertProvider(provider: Eip1193Provider | undefined): asserts provider {
   return invariant(provider, 'Provider not found')
 }
+
+export const getKeyWithTrueValue = (obj: Record<string, boolean>) => {
+  return Object.entries(obj).find(([, value]) => !!value)?.[0]
+}

@@ -58,8 +58,7 @@
   padding: 0 var(--space-1);
 }
 
-.multiSend,
-.swapOrder {
+.multiSend {
   border-top: 1px solid var(--color-border-light);
 }
 
