@@ -21,8 +21,8 @@ export const getTxDetails = memoize(
 export const getTxHistory = (
   chainId: string,
   safeAddress: string,
-  hideUntrustedTxs = false,
-  hideImitationTxs = false,
+  hideUntrustedTxs: boolean,
+  hideImitationTxs: boolean,
   pageUrl?: string,
 ) => {
   return getTransactionHistory(
