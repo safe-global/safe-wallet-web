@@ -72,7 +72,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
       const chain = chains.data.find((chain) => chain.chainId === chainId)
       if (!chain) return null
       return (
-        <MenuItem key={chainId} value={chainId}>
+        <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
           <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
             <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
           </Link>
