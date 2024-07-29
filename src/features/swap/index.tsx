@@ -52,6 +52,7 @@ const CANCEL_ORDER_SIGHASH = id('invalidateOrder(bytes)').slice(0, 10)
 
 type Params = {
   sell?: {
+    // The token address
     asset: string
     amount: string
   }
@@ -237,10 +238,10 @@ const SwapWidget = ({ sell }: Params) => {
               bps: newFeeBps,
             },
             sell: {
-              asset: sellToken?.symbol,
+              asset: sellToken?.address,
             },
             buy: {
-              asset: buyToken?.symbol,
+              asset: buyToken?.address,
             },
           }))
 
