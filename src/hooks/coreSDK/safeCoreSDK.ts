@@ -59,7 +59,9 @@ export const initSafeSDK = async ({
     const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
     const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
 
-    isL1SafeSingleton = masterCopy === safeL1Deployment?.networkAddresses[chainId]
+    isL1SafeSingleton =
+      masterCopy === safeL1Deployment?.networkAddresses[chainId] ||
+      masterCopy === safeL1Deployment?.deployments.canonical?.address
     const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.networkAddresses[chainId]
 
     // Unknown deployment, which we do not want to support
@@ -79,11 +81,16 @@ export const initSafeSDK = async ({
       predictedSafe: undeployedSafe.props,
     })
   }
-
   return Safe.init({
     provider: provider._getConnection().url,
     safeAddress: address,
     isL1SafeSingleton,
+    // @ts-ignore
+    contractNetworks: {
+      [chainId]: {
+        safeSingletonAddress: implementation,
+      },
+    },
   })
 }
 
