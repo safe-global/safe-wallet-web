@@ -28,9 +28,8 @@
   pointer-events: none;
 }
 
-.menuItem {
-  padding-top: var(--space-1);
-  padding-bottom: var(--space-1);
+.select :global .MuiMenuItem-root {
+  padding: 0;
 }
 
 .listSubHeader {

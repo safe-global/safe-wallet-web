@@ -14,7 +14,6 @@ import SendFromBlock from '@/components/tx/SendFromBlock'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import useChainId from '@/hooks/useChainId'
 import { getReadOnlySignMessageLibContract } from '@/services/contracts/safeContracts'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
@@ -40,7 +39,6 @@ export type SignMessageOnChainProps = {
 }
 
 const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnChainProps): ReactElement => {
-  const chainId = useChainId()
   const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const wallet = useWallet()
@@ -51,8 +49,8 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const isTypedMessage = method === Methods.signTypedMessage && isEIP712TypedData(message)
 
   const [readOnlySignMessageLibContract] = useAsync(
-    async () => getReadOnlySignMessageLibContract(chainId, safe.version),
-    [chainId, safe.version],
+    async () => getReadOnlySignMessageLibContract(safe.version),
+    [safe.version],
   )
 
   const [signMessageAddress, setSignMessageAddress] = useState<string>('')

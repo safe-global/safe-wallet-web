@@ -1,6 +1,10 @@
 import { JsonRpcProvider } from 'ethers'
+import * as contracts from '@/services/contracts/safeContracts'
+import type { SafeProvider } from '@safe-global/protocol-kit'
+import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
+import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
 import { relaySafeCreation } from '@/components/new-safe/create/logic/index'
 import { relayTransaction, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
@@ -16,38 +20,7 @@ import {
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 
-const provider = new JsonRpcProvider(undefined, { name: 'rinkeby', chainId: 4 })
-
-const mockTransaction = {
-  data: EMPTY_DATA,
-  nonce: 1,
-  from: '0x10',
-  to: '0x11',
-  value: BigInt(0),
-}
-
-const mockPendingTx = {
-  data: EMPTY_DATA,
-  from: ZERO_ADDRESS,
-  to: ZERO_ADDRESS,
-  nonce: 0,
-  startBlock: 0,
-  value: BigInt(0),
-}
-
-jest.mock('@safe-global/protocol-kit', () => {
-  const originalModule = jest.requireActual('@safe-global/protocol-kit')
-
-  // Mock class
-  class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(4)))
-  }
-
-  return {
-    ...originalModule,
-    EthersAdapter: MockEthersAdapter,
-  }
-})
+const provider = new JsonRpcProvider(undefined, { name: 'sepolia', chainId: 11155111 })
 
 describe('createNewSafeViaRelayer', () => {
   const owner1 = toBeHex('0x1', 20)
@@ -64,13 +37,26 @@ describe('createNewSafeViaRelayer', () => {
   })
 
   it('returns taskId if create Safe successfully relayed', async () => {
+    const mockSafeProvider = {
+      getExternalProvider: jest.fn(),
+      getExternalSigner: jest.fn(),
+      getChainId: jest.fn().mockReturnValue(BigInt(1)),
+    } as unknown as SafeProvider
+
     jest.spyOn(gateway, 'relayTransaction').mockResolvedValue({ taskId: '0x123' })
+    jest.spyOn(sdkHelpers, 'getSafeProvider').mockImplementation(() => mockSafeProvider)
+
+    jest.spyOn(contracts, 'getReadOnlyFallbackHandlerContract').mockResolvedValue({
+      getAddress: () => '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+    } as unknown as CompatibilityFallbackHandlerContractImplementationType)
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract('5', LATEST_SAFE_VERSION)).getAddress()
-    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract('5', LATEST_SAFE_VERSION)
-    const safeContractAddress = await (await getReadOnlyGnosisSafeContract(mockChainInfo)).getAddress()
+    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)).getAddress()
+    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
+    const safeContractAddress = await (
+      await getReadOnlyGnosisSafeContract(mockChainInfo, LATEST_SAFE_VERSION)
+    ).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
       [owner1, owner2],

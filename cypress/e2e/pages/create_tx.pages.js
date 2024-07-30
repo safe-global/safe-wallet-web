@@ -1,6 +1,7 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as wallet from '../pages/create_wallet.pages'
+import * as modal from '../pages/modals.page'
 
 export const delegateCallWarning = '[data-testid="delegate-call-warning"]'
 export const policyChangeWarning = '[data-testid="threshold-warning"]'
@@ -63,6 +64,19 @@ const collapseAllBtnStr = 'Collapse all'
 export const messageNestedStr = `"nestedString": "Test message 3 off-chain"`
 const noTxFoundStr = (type) => `0 ${type} transactions found`
 const deleteFromQueueStr = 'Delete from the queue'
+const bulkExecuteBtn = (tx) => `Bulk execute ${tx} transactions`
+const bulkConfirmationText = (tx) =>
+  `This transaction batches a total of ${tx} transactions from your queue into a single Ethereum transaction`
+
+const disabledBultExecuteBtnTooltip =
+  'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe Account nonce'
+const enabledBulkExecuteBtnTooltip =
+  'All transactions highlighted in light green will be included in the batch execution'
+
+const bulkExecuteBtnStr = 'Bulk execute'
+
+const batchModalTitle = 'Batch'
+const bulkTxStr = 'Bulk transactions'
 
 export const filterTypes = {
   incoming: 'Incoming',
@@ -72,6 +86,15 @@ export const filterTypes = {
 
 function clickOnRejectBtn() {
   cy.get(rejectTxBtn).click()
+}
+
+export function verifyBulkExecuteBtnIsEnabled(txs) {
+  return cy.get('button').contains(bulkExecuteBtn(txs)).should('be.enabled')
+}
+
+export function verifyEnabledBulkExecuteBtnTooltip() {
+  cy.get('button').contains(bulkExecuteBtnStr).trigger('mouseover', { force: true })
+  cy.contains(enabledBulkExecuteBtnTooltip).should('exist')
 }
 
 export function deleteTx() {
@@ -540,4 +563,36 @@ export function verifyTxDestinationAddress(receivedAddress) {
 
 export function verifyReplacedSigner(newSignerName) {
   cy.get(replacementNewSigner).should('exist').contains(newSignerName)
+}
+
+function verifyBulkActions(actions) {
+  actions.forEach((action) => {
+    cy.contains(action).should('exist')
+  })
+}
+
+export function verifyBulkConfirmationScreen(tx, actions) {
+  cy.contains(bulkConfirmationText(tx))
+  verifyBulkActions(actions)
+  cy.get(modal.modalHeader).within(() => {
+    cy.contains(batchModalTitle).should('exist')
+    cy.get('svg').should('exist')
+  })
+}
+
+export function verifyBulkTxHistoryBlock(tx, actions) {
+  cy.contains(bulkTxStr)
+    .parent('div')
+    .parent()
+    .eq(0)
+    .within(() => {
+      cy.contains(tx)
+      verifyBulkActions(actions)
+    })
+}
+
+export function verifyBulkExecuteBtnIsDisabled() {
+  cy.get('button').contains(bulkExecuteBtnStr).should('be.disabled')
+  cy.get('button').contains(bulkExecuteBtnStr).trigger('mouseover', { force: true })
+  cy.contains(disabledBultExecuteBtnTooltip).should('exist')
 }

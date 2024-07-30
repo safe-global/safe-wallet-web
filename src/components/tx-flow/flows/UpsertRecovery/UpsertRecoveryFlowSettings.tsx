@@ -198,7 +198,13 @@ export function UpsertRecoveryFlowSettings({
                 )}
               </Box>
             </Box>
-            <Typography variant="body2" onClick={onShowAdvanced} role="button" className={css.advanced}>
+            <Typography
+              data-testid="advanced-btn"
+              variant="body2"
+              onClick={onShowAdvanced}
+              role="button"
+              className={css.advanced}
+            >
               Advanced {showAdvanced ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </Typography>
             <Collapse in={showAdvanced}>
@@ -229,7 +235,14 @@ export function UpsertRecoveryFlowSettings({
                 // Don't reset value if advanced section is collapsed
                 shouldUnregister={false}
                 render={({ field: { ref, ...field } }) => (
-                  <TextField inputRef={ref} {...field} fullWidth select sx={{ width: '55%', maxWidth: '240px' }}>
+                  <TextField
+                    data-testid="recovery-expiry-select"
+                    inputRef={ref}
+                    {...field}
+                    fullWidth
+                    select
+                    sx={{ width: '55%', maxWidth: '240px' }}
+                  >
                     {periods.expiration.map(({ label, value }, index) => (
                       <MenuItem key={index} value={value}>
                         {label}
