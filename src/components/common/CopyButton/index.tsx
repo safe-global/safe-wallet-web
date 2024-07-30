@@ -10,7 +10,7 @@ export interface ButtonProps {
   children?: ReactNode
   initialToolTipText?: string
   ariaLabel?: string
-  onCopy?: () => void
+  onCopy?: (e: React.SyntheticEvent) => void
   dialogContent?: ReactElement
 }
 
@@ -19,7 +19,7 @@ const CopyButton = ({
   className,
   children,
   initialToolTipText = 'Copy to clipboard',
-  onCopy,
+  onCopy = () => {},
   dialogContent,
 }: ButtonProps): ReactElement => {
   return (
