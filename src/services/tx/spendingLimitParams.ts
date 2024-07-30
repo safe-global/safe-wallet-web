@@ -11,6 +11,7 @@ export const createEnableModuleTx = async (
 ): Promise<MetaTransactionData> => {
   const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
 
+  // @ts-ignore
   const data = contract.encode('enableModule', [spendingLimitAddress])
 
   return {

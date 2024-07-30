@@ -4131,6 +4131,19 @@
     web3-core "^1.10.3"
     web3-utils "^1.10.3"
 
+"@safe-global/protocol-kit@^4.0.1":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-4.0.2.tgz#5555e65359eeb5d210608aaa1ab889df15c14150"
+  integrity sha512-csmBR22XY0Sgx2Q6WSdRiAPj5UlR3FxrMeoAqUbV7kCzT7SVXBwrsRqLjiW2+B59Dgcxs6fR8aLjl7maweBPXw==
+  dependencies:
+    "@noble/hashes" "^1.3.3"
+    "@safe-global/safe-core-sdk-types" "^5.0.2"
+    "@safe-global/safe-deployments" "^1.37.0"
+    abitype "^1.0.2"
+    ethereumjs-util "^7.1.5"
+    ethers "^6.13.1"
+    semver "^7.6.2"
+
 "@safe-global/safe-apps-sdk@^9.1.0":
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-apps-sdk/-/safe-apps-sdk-9.1.0.tgz#0e65913e0f202e529ed3c846e0f5a98c2d35aa98"
@@ -4149,6 +4162,13 @@
     web3-core "^1.10.3"
     web3-utils "^1.10.3"
 
+"@safe-global/safe-core-sdk-types@^5.0.1", "@safe-global/safe-core-sdk-types@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-5.0.2.tgz#9552f5793581333c81676986b3eb19697e1c6627"
+  integrity sha512-UK2WL9nXN/8ez4Upx1D0KhtNXwkEjuV5O2XDem4Jchw5IBCLJnLowUBgEq8Tw4xdB7x2rw72VFAJXYZ/iY4qYw==
+  dependencies:
+    abitype "^1.0.2"
+
 "@safe-global/safe-deployments@^1.36.0":
   version "1.36.0"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.36.0.tgz#7e5cd470cc1042182d47f65b59831a64ed8feff1"
@@ -4156,7 +4176,7 @@
   dependencies:
     semver "^7.6.0"
 
-"@safe-global/safe-deployments@^1.37.1":
+"@safe-global/safe-deployments@^1.37.0", "@safe-global/safe-deployments@^1.37.1":
   version "1.37.1"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.1.tgz#d8293c421b1b7445899aec720061be26bb3c4976"
   integrity sha512-duCCQghqw9B/MmHPMXlkPpZwyq3T92unWVnwwhiA8alhush2FZ22+x6uF8bQtk/RYJzkpYzV1tPL/VBLt9U9XQ==
@@ -7160,6 +7180,11 @@ abitype@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.0.0.tgz#237176dace81d90d018bebf3a45cb42f2a2d9e97"
   integrity sha512-NMeMah//6bJ56H5XRj8QCV4AwuW6hB6zqz2LnhhLdcWVQOsXki6/Pn3APeqxCma62nXIcmZWdu1DlHWS74umVQ==
+
+abitype@^1.0.2:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.0.5.tgz#29d0daa3eea867ca90f7e4123144c1d1270774b6"
+  integrity sha512-YzDhti7cjlfaBhHutMaboYB21Ha3rXR9QTkNJFzYC4kC8YclaiwPBBBJY8ejFdu2wnJeZCVZSMlQJ7fi8S6hsw==
 
 abort-controller@^3.0.0:
   version "3.0.0"
@@ -10666,7 +10691,7 @@ ethers@5.7.2:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^6.11.1, ethers@^6.7.1, ethers@^6.9.2:
+ethers@^6.11.1, ethers@^6.13.1, ethers@^6.7.1, ethers@^6.9.2:
   version "6.11.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.11.1.tgz#96aae00b627c2e35f9b0a4d65c7ab658259ee6af"
   integrity sha512-mxTAE6wqJQAbp5QAe/+o+rXOID7Nw91OZXvgpjDa1r4fAbq2Nu314oEZSbjoRLacuCzs7kUC3clEvkCQowffGg==
