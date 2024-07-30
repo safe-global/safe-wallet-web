@@ -5,7 +5,6 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 
 import css from '@/components/new-safe/create/steps/SetNameStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
@@ -17,6 +16,9 @@ import { AppRoutes } from '@/config/routes'
 import MUILink from '@mui/material/Link'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import useWallet from '@/hooks/wallets/useWallet'
+import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
+import NoWalletConnectedWarning from '../../NoWalletConnectedWarning'
 
 type SetNameStepForm = {
   name: string
@@ -35,9 +37,9 @@ function SetNameStep({
   setSafeName,
 }: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const router = useRouter()
+  const wallet = useWallet()
   const fallbackName = useMnemonicSafeName()
   const isWrongChain = useIsWrongChain()
-  useSyncSafeCreationStep(setStep)
 
   const formMethods = useForm<SetNameStepForm>({
     mode: 'all',
@@ -113,6 +115,7 @@ function SetNameStep({
           </Typography>
 
           {isWrongChain && <NetworkWarning />}
+          <NoWalletConnectedWarning />
         </Box>
         <Divider />
         <Box className={layoutCss.row}>

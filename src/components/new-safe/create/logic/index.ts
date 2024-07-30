@@ -56,6 +56,7 @@ export const computeNewSafeAddress = async (
   ethersProvider: BrowserProvider,
   props: DeploySafeProps,
   chainId: string,
+  safeVersion?: SafeVersion,
 ): Promise<string> => {
   const ethAdapter = await createEthersAdapter(ethersProvider)
 
@@ -65,7 +66,7 @@ export const computeNewSafeAddress = async (
     safeAccountConfig: props.safeAccountConfig,
     safeDeploymentConfig: {
       saltNonce: props.saltNonce,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+      safeVersion: safeVersion ?? (LATEST_SAFE_VERSION as SafeVersion),
     },
   })
 }
@@ -79,10 +80,11 @@ export const encodeSafeCreationTx = async ({
   threshold,
   saltNonce,
   chain,
-}: SafeCreationProps & { chain: ChainInfo }) => {
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
-  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(chain.chainId, LATEST_SAFE_VERSION)
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, LATEST_SAFE_VERSION)
+  safeVersion = LATEST_SAFE_VERSION as SafeVersion,
+}: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion }) => {
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(chain.chainId, safeVersion)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, safeVersion)
 
   const setupData = readOnlySafeContract.encode('setup', [
     owners,
@@ -107,8 +109,9 @@ export const estimateSafeCreationGas = async (
   provider: Provider,
   from: string,
   safeParams: SafeCreationProps,
+  safeVersion: SafeVersion = LATEST_SAFE_VERSION as SafeVersion,
 ): Promise<bigint> => {
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(chain.chainId, LATEST_SAFE_VERSION)
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(chain.chainId, safeVersion)
   const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
 
   const gas = await provider.estimateGas({

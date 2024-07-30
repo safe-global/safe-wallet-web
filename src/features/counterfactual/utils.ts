@@ -18,7 +18,7 @@ import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import {
   type ChainInfo,
   ImplementationVersionState,
@@ -139,7 +139,7 @@ export const createCounterfactualSafe = (
   data: NewSafeFormData,
   dispatch: AppDispatch,
   props: DeploySafeProps,
-  router: NextRouter,
+  router?: NextRouter,
 ) => {
   const undeployedSafe = {
     chainId: chain.chainId,
@@ -149,7 +149,7 @@ export const createCounterfactualSafe = (
       safeAccountConfig: props.safeAccountConfig,
       safeDeploymentConfig: {
         saltNonce,
-        safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+        safeVersion: data.safeVersion,
       },
     },
   }
@@ -170,7 +170,8 @@ export const createCounterfactualSafe = (
       },
     }),
   )
-  return router.push({
+
+  router?.push({
     pathname: AppRoutes.home,
     query: { safe: `${chain.shortName}:${safeAddress}` },
   })

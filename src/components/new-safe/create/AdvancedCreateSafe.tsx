@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '@/components/new-safe/create/OverviewWidget'
-import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { TxStepperProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import SetNameStep from '@/components/new-safe/create/steps/SetNameStep'
 import OwnerPolicyStep from '@/components/new-safe/create/steps/OwnerPolicyStep'
@@ -18,17 +17,9 @@ import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle, LATEST_SAFE_VERSION } from '@/config/constants'
+import { type NewSafeFormData } from '.'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
-
-export type NewSafeFormData = {
-  name: string
-  threshold: number
-  owners: NamedAddress[]
-  saltNonce: number
-  safeVersion: SafeVersion
-  safeAddress?: string
-  willRelay?: boolean
-}
+import AdvancedOptionsStep from './steps/AdvancedOptionsStep'
 
 const staticHints: Record<
   number,
@@ -96,7 +87,7 @@ const staticHints: Record<
   },
 }
 
-const CreateSafe = () => {
+const AdvancedCreateSafe = () => {
   const router = useRouter()
   const wallet = useWallet()
 
@@ -124,6 +115,13 @@ const CreateSafe = () => {
           onBack={onBack}
           setStep={setStep}
         />
+      ),
+    },
+    {
+      title: 'Advanced settings',
+      subtitle: 'Choose the Safe version and optionally a specific salt nonce',
+      render: (data, onSubmit, onBack, setStep) => (
+        <AdvancedOptionsStep data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
       ),
     },
     {
@@ -195,4 +193,4 @@ const CreateSafe = () => {
   )
 }
 
-export default CreateSafe
+export default AdvancedCreateSafe
