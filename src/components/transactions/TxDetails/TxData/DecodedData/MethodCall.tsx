@@ -36,6 +36,7 @@ const MethodCall = ({
           address={contractAddress}
           name={contractName}
           customAvatar={contractLogo}
+          showAvatar
           onlyName
           hasExplorer
           showCopyButton

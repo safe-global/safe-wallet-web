@@ -14,9 +14,7 @@ const NamedAddressInfo = ({ address, name, customAvatar, ...props }: EthHashInfo
   const finalName = name || contract?.displayName || contract?.name
   const finalAvatar = customAvatar || contract?.logoUri
 
-  return (
-    <EthHashInfo address={address} name={finalName} customAvatar={finalAvatar} showAvatar={!!finalAvatar} {...props} />
-  )
+  return <EthHashInfo address={address} name={finalName} customAvatar={finalAvatar} {...props} />
 }
 
 export default NamedAddressInfo
