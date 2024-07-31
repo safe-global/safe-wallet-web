@@ -16,8 +16,6 @@ import { AppRoutes } from '@/config/routes'
 import MUILink from '@mui/material/Link'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import useWallet from '@/hooks/wallets/useWallet'
-import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import NoWalletConnectedWarning from '../../NoWalletConnectedWarning'
 
 type SetNameStepForm = {
@@ -37,7 +35,6 @@ function SetNameStep({
   setSafeName,
 }: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const router = useRouter()
-  const wallet = useWallet()
   const fallbackName = useMnemonicSafeName()
   const isWrongChain = useIsWrongChain()
 
