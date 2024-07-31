@@ -26,3 +26,4 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
           spec: cypress/e2e/**/*.cy.js
           group: 'Regression tests'
+          tag: 'regression'

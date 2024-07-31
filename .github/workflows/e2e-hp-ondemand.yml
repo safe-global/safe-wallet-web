@@ -26,6 +26,7 @@ jobs:
           spec: |
             cypress/e2e/happypath/*.cy.js
           group: 'Happy path on demand tests'
+          tag: 'happypath'
 
       - name: Python setup
         if: always()

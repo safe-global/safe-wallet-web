@@ -25,3 +25,4 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
           spec: cypress/e2e/smoke/*.cy.js
           group: 'Smoke tests'
+          tag: 'smoke'

@@ -23,6 +23,10 @@ inputs:
     description: 'Cypress cloud record key'
     required: false
 
+  tag:
+    description: 'Cypress cloud tag key'
+    required: false
+
 runs:
   using: 'composite'
   steps:
@@ -50,6 +54,7 @@ runs:
         parallel: true
         browser: chrome
         record: true
+        tag: ${{ inputs.tag }}
         config: baseUrl=http://localhost:8080
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.record_key || fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}
