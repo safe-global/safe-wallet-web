@@ -23,10 +23,6 @@ inputs:
     description: 'Cypress cloud record key'
     required: false
 
-  tag:
-    description: 'Tag to run specific tests'
-    required: false
-
 runs:
   using: 'composite'
   steps:
@@ -47,8 +43,7 @@ runs:
       shell: bash
       run: yarn serve &
 
-    - name: Run Cypress Tests
-      uses: cypress-io/github-action@v4
+    - uses: cypress-io/github-action@v4
       with:
         spec: ${{ inputs.spec }}
         group: ${{ inputs.group }}
@@ -61,9 +56,3 @@ runs:
         GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
         CYPRESS_PROJECT_ID: ${{ inputs.project_id }}
         CYPRESS_WALLET_CREDENTIALS: ${{ fromJSON(inputs.secrets).CYPRESS_WALLET_CREDENTIALS }}
-        TAG_ARG: ${{ inputs.tag && `--tag ${inputs.tag}` }}
-
-    - name: Run Cypress Command
-      shell: bash
-      run: |
-        cypress run --spec ${{ inputs.spec }} $TAG_ARG
