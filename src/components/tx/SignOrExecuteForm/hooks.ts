@@ -30,6 +30,7 @@ type TxActions = {
     origin?: string,
     isRelayed?: boolean,
   ) => Promise<string>
+  proposeTx: (sender: string, safeTx: SafeTransaction, txId?: string, origin?: string) => Promise<TransactionDetails>
 }
 
 export const useTxActions = (): TxActions => {
@@ -134,7 +135,7 @@ export const useTxActions = (): TxActions => {
       return txId
     }
 
-    return { addToBatch, signTx, executeTx }
+    return { addToBatch, signTx, executeTx, proposeTx }
   }, [safe, wallet, addTxToBatch, onboard])
 }
 

@@ -22,9 +22,10 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }:
   const isSafeOwner = useIsSafeOwner()
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
+  const isDelegate = wallet?.isDelegate
 
   const message =
-    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit))
+    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit) || isDelegate)
       ? ''
       : !wallet
       ? Message.WalletNotConnected
