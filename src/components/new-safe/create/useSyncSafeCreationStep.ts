@@ -7,7 +7,7 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useRouter } from 'next/router'
 
 const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setStep']) => {
-  const [safeAddress, pendingSafe] = useUndeployedSafe()
+  const [_, pendingSafe] = useUndeployedSafe()
 
   const wallet = useWallet()
   const isWrongChain = useIsWrongChain()
