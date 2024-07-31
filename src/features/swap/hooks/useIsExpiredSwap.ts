@@ -3,8 +3,8 @@ import type { TransactionInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { isSwapOrderTxInfo } from '@/utils/transaction-guards'
 
 /**
- * Checks the expiry time of a swap every 10s
- * and returns true if the swap expired
+ * Checks whether a swap has expired and if it hasn't it sets a timeout
+ * for the exact moment it will expire
  * @param txInfo
  */
 const useIsExpiredSwap = (txInfo: TransactionInfo) => {
