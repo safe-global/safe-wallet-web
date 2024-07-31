@@ -225,7 +225,7 @@ describe('useSafeWalletProvider', () => {
       expect(resp).toBeInstanceOf(Promise)
     })
 
-    it('should should send (batched) transactions', () => {
+    it('should send (batched) transactions', () => {
       jest.spyOn(router, 'useRouter').mockReturnValue({} as unknown as router.NextRouter)
       const showNotificationSpy = jest.spyOn(notifications, 'showNotification')
 

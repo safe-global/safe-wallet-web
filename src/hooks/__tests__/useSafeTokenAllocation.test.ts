@@ -32,7 +32,7 @@ describe('_getRedeemDeadline', () => {
     jest.clearAllMocks()
   })
 
-  it('should should only call the provider once per address on a chain', async () => {
+  it('should only call the provider once per address on a chain', async () => {
     for await (const _ of Array.from({ length: 10 })) {
       await _getRedeemDeadline({ chainId: 1, contract: toBeHex('0x1', 20) } as VestingData, mockProvider)
     }

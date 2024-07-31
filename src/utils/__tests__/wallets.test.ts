@@ -20,7 +20,7 @@ describe('wallets', () => {
       })
     })
 
-    it('should should only call the provider once per address on a chain', async () => {
+    it('should only call the provider once per address on a chain', async () => {
       for await (const _ of Array.from({ length: 10 })) {
         await isSmartContractWallet('1', toBeHex('0x1', 20))
       }
