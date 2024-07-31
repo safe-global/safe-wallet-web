@@ -134,22 +134,17 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
       {!completed && (
         <>
           <Box mt={2}>
-            <CheckWallet>
-              {(isOk) => (
-                <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
-                  <Button
-                    data-testid="add-funds-btn"
-                    onClick={toggleDialog}
-                    variant="contained"
-                    size="small"
-                    sx={{ minHeight: '40px' }}
-                    disabled={!isOk}
-                  >
-                    Add funds
-                  </Button>
-                </Track>
-              )}
-            </CheckWallet>
+            <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
+              <Button
+                data-testid="add-funds-btn"
+                onClick={toggleDialog}
+                variant="contained"
+                size="small"
+                sx={{ minHeight: '40px' }}
+              >
+                Add funds
+              </Button>
+            </Track>
           </Box>
           <ModalDialog
             open={open}
@@ -280,13 +275,7 @@ const ActivateSafeWidget = () => {
         completed={false}
         content=""
       >
-        <CheckWallet allowNonOwner>
-          {(isOk) => (
-            <Track {...OVERVIEW_EVENTS.NEW_TRANSACTION} label="onboarding">
-              <ActivateAccountButton />
-            </Track>
-          )}
-        </CheckWallet>
+        <ActivateAccountButton />
       </StatusCard>
       <FirstTxFlow open={open} onClose={() => setOpen(false)} />
     </>
