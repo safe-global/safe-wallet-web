@@ -54,7 +54,7 @@ export function ExecuteRecoveryButton({
   }
 
   return (
-    <CheckWallet allowNonOwner>
+    <CheckWallet allowNonOwner checkNetwork>
       {(isOk) => {
         const isDisabled = !isOk || !isExecutable || isPending
 

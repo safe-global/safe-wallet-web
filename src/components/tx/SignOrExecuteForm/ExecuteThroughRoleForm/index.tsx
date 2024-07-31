@@ -234,7 +234,7 @@ export const ExecuteThroughRoleForm = ({
 
         <CardActions>
           {/* Submit button, also available to non-owner role members */}
-          <CheckWallet allowNonOwner>
+          <CheckWallet allowNonOwner checkNetwork>
             {(isOk) => (
               <Button
                 data-testid="execute-through-role-form-btn"

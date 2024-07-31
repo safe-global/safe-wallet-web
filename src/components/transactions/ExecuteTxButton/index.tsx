@@ -50,7 +50,7 @@ const ExecuteTxButton = ({
 
   return (
     <>
-      <CheckWallet allowNonOwner>
+      <CheckWallet allowNonOwner checkNetwork>
         {(isOk) => (
           <Tooltip title={isOk && !isNext ? 'You must execute the transaction with the lowest nonce first' : ''}>
             <span>

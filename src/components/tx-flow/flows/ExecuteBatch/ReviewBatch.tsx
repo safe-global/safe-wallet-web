@@ -223,7 +223,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           <Divider className={commonCss.nestedDivider} sx={{ pt: 2 }} />
 
           <CardActions>
-            <CheckWallet allowNonOwner={true}>
+            <CheckWallet allowNonOwner={true} checkNetwork>
               {(isOk) => (
                 <Button
                   variant="contained"

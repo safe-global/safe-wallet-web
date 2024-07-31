@@ -179,7 +179,7 @@ export const CounterfactualForm = ({
 
         <CardActions>
           {/* Submit button */}
-          <CheckWallet allowNonOwner={onlyExecute}>
+          <CheckWallet allowNonOwner={onlyExecute} checkNetwork>
             {(isOk) => (
               <Button variant="contained" type="submit" disabled={!isOk || submitDisabled} sx={{ minWidth: '112px' }}>
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
