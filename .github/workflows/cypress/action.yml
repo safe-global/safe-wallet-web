@@ -47,7 +47,7 @@ runs:
       shell: bash
       run: yarn serve &
 
-    - uses: cypress-io/github-action@v4
+    - uses: cypress-io/github-action@v6
       with:
         spec: ${{ inputs.spec }}
         group: ${{ inputs.group }}
