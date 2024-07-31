@@ -23,6 +23,10 @@ inputs:
     description: 'Cypress cloud record key'
     required: false
 
+  tag:
+    description: 'Tag to run specific tests'
+    required: false
+
 runs:
   using: 'composite'
   steps:
@@ -51,6 +55,7 @@ runs:
         browser: chrome
         record: true
         config: baseUrl=http://localhost:8080
+        command: npx cypress run --spec ${{ inputs.spec }} ${{ inputs.tag && `--tag ${inputs.tag}` }}
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.record_key || fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
