@@ -56,7 +56,7 @@ const ReviewSafeAppsTx = ({
 
     let safeTxHash = ''
     try {
-      await assertWalletChain(onboard, safe.chainId)
+      // await assertWalletChain(onboard, safe.chainId)
       safeTxHash = await dispatchSafeAppsTx(safeTx, requestId, wallet.provider, txId)
     } catch (error) {
       setSafeTxError(asError(error))

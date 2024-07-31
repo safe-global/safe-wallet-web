@@ -112,7 +112,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
     if (!safeTx || !onboard || !wallet) return
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
+      // await assertWalletChain(onboard, safe.chainId)
       await dispatchSafeAppsTx(safeTx, requestId, wallet.provider)
     } catch (error) {
       setSafeTxError(asError(error))

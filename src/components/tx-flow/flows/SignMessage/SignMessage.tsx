@@ -56,6 +56,7 @@ import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import MsgShareLink from '@/components/safe-messages/MsgShareLink'
 import LinkIcon from '@/public/images/messages/link.svg'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -368,9 +369,13 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </TxCard>
           <TxCard>
             <CardActions>
-              <Button variant="contained" color="primary" onClick={handleSign} disabled={isDisabled}>
-                Sign
-              </Button>
+              <CheckWallet checkNetwork={!isDisabled}>
+                {(isOk) => (
+                  <Button variant="contained" color="primary" onClick={handleSign} disabled={!isOk || isDisabled}>
+                    Sign
+                  </Button>
+                )}
+              </CheckWallet>
             </CardActions>
           </TxCard>
         </>

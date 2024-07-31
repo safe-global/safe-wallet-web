@@ -27,6 +27,7 @@ import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import CheckWallet from '@/components/common/CheckWallet'
 
 type Props = {
   open: boolean
@@ -196,9 +197,19 @@ export const SpeedUpModal = ({
           <Button onClick={onCancel}>Cancel</Button>
 
           <Tooltip title="Speed up transaction">
-            <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>
-              {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
-            </Button>
+            <CheckWallet checkNetwork={!isDisabled}>
+              {(isOk) => (
+                <Button
+                  color="primary"
+                  disabled={!isOk || isDisabled}
+                  onClick={onSubmit}
+                  variant="contained"
+                  disableElevation
+                >
+                  {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
+                </Button>
+              )}
+            </CheckWallet>
           </Tooltip>
         </DialogActions>
       </ModalDialog>

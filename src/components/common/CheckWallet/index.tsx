@@ -35,34 +35,10 @@ const CheckWallet = ({
   const isSafeOwner = useIsSafeOwner()
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
-  const chain = useCurrentChain()
   const isWrongChain = useIsWrongChain()
-  const onboard = useOnboard()
-  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
-
-  const handleNetworkChange = async (onboard: OnboardAPI | undefined, chainId: string | undefined) => {
-    if (!onboard || !chainId) return null
-    setIsSubmittable(false)
-    try {
-      await switchWalletChain(onboard, chainId)
-    } catch (error) {
-      console.log(error)
-    }
-    setIsSubmittable(true)
-  }
 
   if (checkNetwork && isWrongChain) {
-    return <ChainSwitcher size="medium" contained />
-    return (
-      <Button
-        variant="contained"
-        sx={{ minWidth: '170px' }}
-        onClick={() => handleNetworkChange(onboard, chain?.chainId)}
-        disabled={!isSubmittable}
-      >
-        {!isSubmittable ? <CircularProgress size={20} /> : 'Switch Network'}
-      </Button>
-    )
+    return <ChainSwitcher primaryCta />
   }
 
   const message =
@@ -73,7 +49,6 @@ const CheckWallet = ({
       : Message.NotSafeOwner
 
   if (!message) return children(true)
-
   if (noTooltip) return children(false)
 
   return (

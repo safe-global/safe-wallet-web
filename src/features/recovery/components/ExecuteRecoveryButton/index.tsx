@@ -36,7 +36,7 @@ export function ExecuteRecoveryButton({
     }
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
+      // await assertWalletChain(onboard, safe.chainId)
 
       await dispatchRecoveryExecution({
         provider: wallet.provider,

@@ -78,7 +78,7 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      await assertWalletChain(onboard, chainId)
+      // await assertWalletChain(onboard, chainId)
 
       // Smart contract wallets must sign via an on-chain tx
       if (await isSmartContractWallet(wallet.chainId, wallet.address)) {
@@ -101,7 +101,7 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      await assertWalletChain(onboard, chainId)
+      // await assertWalletChain(onboard, chainId)
 
       let tx: TransactionDetails | undefined
       // Relayed transactions must be fully signed, so request a final signature if needed

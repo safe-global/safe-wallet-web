@@ -29,6 +29,7 @@ import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import { safeParseUnits } from '@/utils/formatters'
+import CheckWallet from '@/components/common/CheckWallet'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -103,7 +104,7 @@ const ReviewSpendingLimitTx = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
+      // await assertWalletChain(onboard, safe.chainId)
       await dispatchSpendingLimitTxExecution(txParams, txOptions, wallet.provider, safe.chainId, safeAddress)
       onSubmit('', true)
       setTxFlow(undefined)
@@ -152,9 +153,13 @@ const ReviewSpendingLimitTx = ({
         </Typography>
 
         <CardActions>
-          <Button variant="contained" type="submit" disabled={submitDisabled}>
-            Submit
-          </Button>
+          <CheckWallet allowNonOwner checkNetwork>
+            {(isOk) => (
+              <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
+                Submit
+              </Button>
+            )}
+          </CheckWallet>
         </CardActions>
       </TxCard>
     </form>

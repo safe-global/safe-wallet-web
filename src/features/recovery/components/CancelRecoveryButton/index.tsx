@@ -43,7 +43,7 @@ export function CancelRecoveryButton({
       setTxFlow(<CancelRecoveryFlow recovery={recovery} />)
     } else if (onboard && wallet) {
       try {
-        await assertWalletChain(onboard, safe.chainId)
+        // await assertWalletChain(onboard, safe.chainId)
 
         await dispatchRecoverySkipExpired({
           provider: wallet.provider,
@@ -62,7 +62,7 @@ export function CancelRecoveryButton({
   }
 
   return (
-    <CheckWallet allowNonOwner>
+    <CheckWallet allowNonOwner checkNetwork>
       {(isOk) => {
         const isDisabled = isPending || (isOwner ? !isOk : !isOk || !isExpired)
 

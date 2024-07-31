@@ -5,16 +5,14 @@ import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import css from './styles.module.css'
-import { switchWalletChain } from '@/services/tx/tx-sender/sdk'
+import { assertWalletChain, switchWalletChain } from '@/services/tx/tx-sender/sdk'
 
 const ChainSwitcher = ({
   fullWidth,
-  size = 'small',
-  contained = false,
+  primaryCta = false,
 }: {
   fullWidth?: boolean
-  size?: 'small' | 'medium' | 'large'
-  contained?: boolean
+  primaryCta?: boolean
 }): ReactElement | null => {
   const chain = useCurrentChain()
   const onboard = useOnboard()
@@ -25,6 +23,7 @@ const ChainSwitcher = ({
     if (!onboard || !chain) return
     setIsLoading(true)
     await switchWalletChain(onboard, chain.chainId)
+    // await assertWalletChain(onboard, chain.chainId)
     setIsLoading(false)
   }, [chain, onboard])
 
@@ -33,9 +32,9 @@ const ChainSwitcher = ({
   return (
     <Button
       onClick={handleChainSwitch}
-      variant={contained ? 'contained' : 'outlined'}
+      variant={primaryCta ? 'contained' : 'outlined'}
       sx={{ minWidth: '200px' }}
-      size={size}
+      size={primaryCta ? 'medium' : 'small'}
       fullWidth={fullWidth}
       color="primary"
       disabled={loading}

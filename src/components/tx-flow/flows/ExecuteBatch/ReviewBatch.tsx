@@ -99,7 +99,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
     overrides.nonce = userNonce
 
-    await assertWalletChain(onboard, safe.chainId)
+    // await assertWalletChain(onboard, safe.chainId)
 
     await dispatchBatchExecution(
       txsWithDetails,

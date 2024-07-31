@@ -80,7 +80,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
     setIsRejectedByUser(false)
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
+      // await assertWalletChain(onboard, safe.chainId)
 
       await dispatchRecoveryProposal({
         provider: wallet.provider,
@@ -179,7 +179,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions sx={{ mt: 'var(--space-1) !important' }}>
-            <CheckWallet allowNonOwner>
+            <CheckWallet allowNonOwner checkNetwork>
               {(isOk) => (
                 <Button
                   data-testid="execute-btn"
