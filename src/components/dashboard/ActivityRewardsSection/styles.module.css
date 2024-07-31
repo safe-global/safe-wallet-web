@@ -78,6 +78,13 @@
   .header {
     padding: 0;
   }
+  .links {
+    flex-direction: column;
+  }
+
+  .links a {
+    width: 100%;
+  }
 
   .widgetWrapper {
     padding: 32px;

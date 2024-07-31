@@ -15,6 +15,7 @@ import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
   return (
@@ -106,27 +107,19 @@ const ActivityRewardsSection = () => {
               <Step title="Get activity points" active />
               <Step title="Receive rewards" active={false} />
             </div>
+            <ExternalLink href="https://safe.global/pass">Learn more</ExternalLink>
           </Grid>
           <Grid item xs={12}>
             <Box className={css.links} gap={2}>
               <NextLink href={appUrl} passHref rel="noreferrer" onClick={onClick}>
-                <Button variant="contained">{'Open Safe{Pass}'}</Button>
+                <Button fullWidth variant="contained">
+                  {'Open Safe{Pass}'}
+                </Button>
               </NextLink>
 
               <Button variant="text" onClick={onHide}>
                 Don&apos;t show again
               </Button>
-
-              <NextLink
-                href="https://safe.global/pass"
-                target="_blank"
-                passHref
-                rel="noreferrer"
-                onClick={onLearnMore}
-                style={{ marginLeft: 'auto' }}
-              >
-                <Button variant="text">Learn more</Button>
-              </NextLink>
             </Box>
           </Grid>
         </Grid>
