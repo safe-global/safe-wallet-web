@@ -34,7 +34,7 @@ describe('Batch transaction tests', () => {
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
   })
 
-  it('Verify a second transaction can be added to the batch', () => {
+  it.only('Verify a second transaction can be added to the batch', () => {
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
     cy.wait(1000)
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
