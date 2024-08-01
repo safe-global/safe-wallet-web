@@ -55,7 +55,7 @@ export const NetworkFee = ({
 }) => {
   return (
     <Box className={classnames(css.networkFee, { [css.networkFeeInline]: inline })}>
-      <Typography className={classnames({ [css.sponsoredFee]: strikethrough })}>
+      <Typography className={classnames({ [css.strikethrough]: strikethrough })}>
         <b>
           &asymp; {totalFee} {chain?.nativeCurrency.symbol}
         </b>

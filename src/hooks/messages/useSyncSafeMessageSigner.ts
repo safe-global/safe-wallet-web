@@ -11,7 +11,6 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { useEffect, useCallback, useState } from 'react'
 import useSafeInfo from '../useSafeInfo'
-import useOnboard from '../wallets/useOnboard'
 
 const HIDE_DELAY = 3000
 
@@ -38,7 +37,6 @@ const useSyncSafeMessageSigner = (
   onClose: () => void,
 ) => {
   const [submitError, setSubmitError] = useState<Error | undefined>()
-  const onboard = useOnboard()
   const wallet = useWallet()
   const { safe } = useSafeInfo()
 
@@ -53,7 +51,7 @@ const useSyncSafeMessageSigner = (
 
   const onSign = useCallback(async () => {
     // Error is shown when no wallet is connected, this appeases TypeScript
-    if (!onboard || !wallet) {
+    if (!wallet) {
       return
     }
 
@@ -88,7 +86,7 @@ const useSyncSafeMessageSigner = (
     } catch (e) {
       setSubmitError(asError(e))
     }
-  }, [onboard, wallet, safe, message, decodedMessage, safeAppId, safeMessageHash, onClose, requestId])
+  }, [wallet, safe, message, decodedMessage, safeAppId, safeMessageHash, onClose, requestId])
 
   return { submitError, onSign }
 }

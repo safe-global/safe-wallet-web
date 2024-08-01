@@ -181,8 +181,6 @@ const ActivateAccountFlow = () => {
             </Box>
           )}
 
-          {/* {isWrongChain && <NetworkWarning />} */}
-
           {!walletCanPay && !willRelay && (
             <ErrorMessage>
               Your connected wallet doesn&apos;t have enough funds to execute this transaction

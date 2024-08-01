@@ -148,7 +148,7 @@ const ReviewSpendingLimitTx = ({
         </Typography>
 
         <CardActions>
-          <CheckWallet allowNonOwner checkNetwork>
+          <CheckWallet allowNonOwner checkNetwork={!submitDisabled}>
             {(isOk) => (
               <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
                 Submit
