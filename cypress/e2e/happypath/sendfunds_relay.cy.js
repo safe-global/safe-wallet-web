@@ -43,7 +43,7 @@ const owner2Signer = signers[1]
 
 function visit(url) {
   cy.visit(url)
-  main.acceptCookies()
+  cy.reload()
 }
 
 // TODO: Relay only allows 5 txs per hour.
@@ -78,7 +78,7 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
     const originatingSafe = safesData.SEP_FUNDS_SAFE_9.substring(4)
     function executeTransactionFlow(fromSafe, toSafe) {
       return cy.visit(constants.balanceNftsUrl + fromSafe).then(() => {
-        main.acceptCookies()
+        cy.reload()
         wallet.connectSigner(signer)
         nfts.selectNFTs(1)
         nfts.sendNFT()

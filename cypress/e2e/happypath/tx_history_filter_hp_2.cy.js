@@ -25,6 +25,6 @@ describe('Tx history happy path tests 2', () => {
     createTx.fillFilterForm({ address: moduleAddress })
     createTx.clickOnApplyBtn()
     createTx.verifyNumberOfTransactions(1)
-    createTx.checkTxItemDate(0, uiDate)
+    createTx.checkTxItemDate(1, uiDate)
   })
 })

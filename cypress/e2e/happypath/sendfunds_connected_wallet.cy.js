@@ -43,7 +43,7 @@ const owner1Signer = signers[0]
 
 function visit(url) {
   cy.visit(url)
-  main.acceptCookies()
+  cy.reload()
 }
 
 describe('Send funds with connected signer happy path tests', { defaultCommandTimeout: 60000 }, () => {
@@ -78,6 +78,7 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
     function executeTransactionFlow(fromSafe, toSafe) {
       return cy.visit(constants.balanceNftsUrl + fromSafe).then(() => {
+        cy.reload()
         wallet.connectSigner(signer)
         nfts.selectNFTs(1)
         nfts.sendNFT()
