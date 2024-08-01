@@ -142,11 +142,7 @@ export const SignOrExecuteForm = ({
         {!isCounterfactualSafe && <RedefineBalanceChanges />}
       </TxCard>
 
-      {!isCounterfactualSafe && (
-        <TxCard>
-          <TxChecks />
-        </TxCard>
-      )}
+      {!isCounterfactualSafe && <TxChecks />}
 
       <TxCard>
         <ConfirmationTitle
