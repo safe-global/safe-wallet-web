@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import type { ReactElement } from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { useMemo } from 'react'

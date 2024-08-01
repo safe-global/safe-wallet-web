@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react'
 import { useCallback, useState } from 'react'
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import css from './styles.module.css'
-import { assertWalletChain, switchWalletChain } from '@/services/tx/tx-sender/sdk'
+import { switchWalletChain } from '@/services/tx/tx-sender/sdk'
 
 const ChainSwitcher = ({
   fullWidth,
@@ -23,7 +23,6 @@ const ChainSwitcher = ({
     if (!onboard || !chain) return
     setIsLoading(true)
     await switchWalletChain(onboard, chain.chainId)
-    // await assertWalletChain(onboard, chain.chainId)
     setIsLoading(false)
   }, [chain, onboard])
 
@@ -43,7 +42,7 @@ const ChainSwitcher = ({
         <CircularProgress size={20} />
       ) : (
         <>
-          Switch to&nbsp;
+          <Typography noWrap>Switch to&nbsp;</Typography>
           <Box className={css.circle} bgcolor={chain?.theme?.backgroundColor || ''} />
           &nbsp;{chain?.chainName}
         </>

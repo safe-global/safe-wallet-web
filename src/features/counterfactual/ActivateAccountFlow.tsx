@@ -1,5 +1,4 @@
 import { createNewSafe, relaySafeCreation } from '@/components/new-safe/create/logic'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'

@@ -1,14 +1,10 @@
-import { useState, type ReactElement } from 'react'
-import { Button, CircularProgress, Tooltip } from '@mui/material'
+import { type ReactElement } from 'react'
+import { Tooltip } from '@mui/material'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
-import { useCurrentChain } from '@/hooks/useChains'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import { switchWalletChain } from '@/services/tx/tx-sender/sdk'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import type { OnboardAPI } from '@web3-onboard/core'
 import ChainSwitcher from '../ChainSwitcher'
 
 type CheckWalletProps = {

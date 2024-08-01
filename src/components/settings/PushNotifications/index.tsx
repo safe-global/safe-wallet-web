@@ -9,6 +9,8 @@ import {
   Switch,
   Divider,
   Link as MuiLink,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -40,6 +42,8 @@ export const PushNotifications = (): ReactElement => {
   const [isRegistering, setIsRegistering] = useState(false)
   const [isUpdatingIndexedDb, setIsUpdatingIndexedDb] = useState(false)
   const onboard = useOnboard()
+  const theme = useTheme()
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
 
   const { updatePreferences, getPreferences, getAllPreferences } = useNotificationPreferences()
   const { unregisterSafeNotifications, unregisterDeviceNotifications, registerNotifications } =
@@ -131,11 +135,11 @@ export const PushNotifications = (): ReactElement => {
                     <EthHashInfo
                       address={safe.address.value}
                       showCopyButton
-                      shortAddress={false}
+                      shortAddress={!isLargeScreen}
                       showName={true}
                       hasExplorer
                     />
-                    <CheckWallet allowNonOwner>
+                    <CheckWallet allowNonOwner checkNetwork={!isRegistering && safe.deployed}>
                       {(isOk) => (
                         <FormControlLabel
                           data-testid="notifications-switch"

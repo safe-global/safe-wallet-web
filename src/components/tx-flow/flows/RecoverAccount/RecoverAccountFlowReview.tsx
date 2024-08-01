@@ -1,6 +1,5 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { CardActions, Button, Typography, Divider, Box, CircularProgress } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
@@ -12,7 +11,6 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { RedefineBalanceChanges } from '@/components/tx/security/redefine/RedefineBalanceChange'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import TxChecks from '@/components/tx/SignOrExecuteForm/TxChecks'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import TxCard from '../../common/TxCard'
 import { SafeTxContext } from '../../SafeTxProvider'
@@ -163,8 +161,6 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           {submitError && (
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           )}
-
-          <WrongChainWarning />
 
           {recovery?.delay !== undefined && (
             <ErrorMessage level="info">

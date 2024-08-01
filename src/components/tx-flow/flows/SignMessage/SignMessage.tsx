@@ -29,7 +29,6 @@ import useSafeMessage from '@/hooks/messages/useSafeMessage'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '@/components/tx-flow'
 import CopyButton from '@/components/common/CopyButton'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import useDecodedSafeMessage from '@/hooks/messages/useDecodedSafeMessage'
 import useSyncSafeMessageSigner from '@/hooks/messages/useSyncSafeMessageSigner'
@@ -358,8 +357,6 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
                 icon={LinkIcon}
               />
             )}
-
-            <WrongChainWarning />
 
             <MessageDialogError isOwner={isOwner} submitError={submitError} />
 

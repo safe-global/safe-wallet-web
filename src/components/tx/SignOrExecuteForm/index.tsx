@@ -4,7 +4,6 @@ import { type ReactElement, type ReactNode, useState, useContext, useCallback } 
 import madProps from '@/utils/mad-props'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
-import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useValidateNonce } from './hooks'
 import ExecuteForm from './ExecuteForm'
 import SignForm from './SignForm'
@@ -163,8 +162,6 @@ export const SignOrExecuteForm = ({
         {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && (
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
-
-        <WrongChainWarning />
 
         <UnknownContractError />
 

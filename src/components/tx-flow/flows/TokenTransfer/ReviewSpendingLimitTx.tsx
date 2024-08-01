@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import type { ReactElement, SyntheticEvent } from 'react'
 import { useContext, useMemo, useState } from 'react'
 import { type BigNumberish, type BytesLike, parseUnits } from 'ethers'
@@ -21,7 +20,6 @@ import { dispatchSpendingLimitTxExecution } from '@/services/tx/tx-sender'
 import { getTxOptions } from '@/utils/transactions'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
@@ -139,8 +137,6 @@ const ReviewSpendingLimitTx = ({
         <SendToBlock address={params.recipient} />
 
         <AdvancedParams params={advancedParams} willExecute={true} onFormSubmit={setManualParams} />
-
-        <WrongChainWarning />
 
         {submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>

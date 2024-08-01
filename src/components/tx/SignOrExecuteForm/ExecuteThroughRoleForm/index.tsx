@@ -31,7 +31,6 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { assertOnboard, assertWallet } from '@/utils/helpers'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
 import { Status } from 'zodiac-roles-deployments'
 
@@ -95,8 +94,6 @@ export const ExecuteThroughRoleForm = ({
 
     assertWallet(wallet)
     assertOnboard(onboard)
-
-    await assertWalletChain(onboard, chainId)
 
     setIsRejectedByUser(false)
     setIsPending(true)

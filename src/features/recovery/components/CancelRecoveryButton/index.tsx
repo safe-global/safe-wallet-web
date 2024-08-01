@@ -1,7 +1,6 @@
 import useWallet from '@/hooks/wallets/useWallet'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { Button } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
