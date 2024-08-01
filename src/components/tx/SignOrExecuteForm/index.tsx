@@ -33,8 +33,10 @@ import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfi
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useTxDetails from '@/hooks/useTxDetails'
 import TxData from '@/components/transactions/TxDetails/TxData'
+
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -53,9 +55,9 @@ export type SignOrExecuteProps = {
   showMethodCall?: boolean
 }
 
-const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean, isExecuted: boolean) => {
+const trackTxEvents = (details: TransactionDetails | undefined, isCreation: boolean, isExecuted: boolean) => {
   const event = isCreation ? TX_EVENTS.CREATE : isExecuted ? TX_EVENTS.EXECUTE : TX_EVENTS.CONFIRM
-  const txType = await getTransactionTrackingType(chainId, txId)
+  const txType = getTransactionTrackingType(details)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
@@ -83,8 +85,9 @@ export const SignOrExecuteForm = ({
   const [decodedData] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
-  const [txDetails] = useTxDetails(props.txId)
+  const { data: txDetails } = useGetTransactionDetailsQuery({ chainId, txId: props.txId })
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const [trigger] = useLazyGetTransactionDetailsQuery()
 
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
@@ -110,10 +113,11 @@ export const SignOrExecuteForm = ({
     async (txId, isExecuted = false) => {
       onSubmit?.(txId, isExecuted)
 
+      const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(chainId, txId, isCreation, isExecuted)
+      trackTxEvents(details, isCreation, isExecuted)
     },
-    [chainId, isCreation, onSubmit],
+    [chainId, isCreation, onSubmit, trigger],
   )
 
   return (

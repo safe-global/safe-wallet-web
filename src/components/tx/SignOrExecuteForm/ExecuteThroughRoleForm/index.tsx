@@ -34,6 +34,7 @@ import { assertOnboard, assertWallet } from '@/utils/helpers'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
 import { Status } from 'zodiac-roles-deployments'
+import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 
 const Role = ({ children }: { children: string }) => {
   let humanReadableRoleKey = children
@@ -60,7 +61,7 @@ export const ExecuteThroughRoleForm = ({
   const onboard = useOnboard()
   const wallet = useWallet()
   const { safe } = useSafeInfo()
-
+  const [trigger] = useLazyGetTransactionDetailsQuery()
   const chainId = currentChain?.chainId || '1'
 
   const [isPending, setIsPending] = useState<boolean>(false)
@@ -135,8 +136,9 @@ export const ExecuteThroughRoleForm = ({
     const txId = await pollModuleTransactionId(chainId, safe.address.value, txHash)
     onSubmit?.(txId, true)
 
+    const { data: details } = await trigger({ chainId, txId })
     // Track tx event
-    const txType = await getTransactionTrackingType(chainId, txId)
+    const txType = getTransactionTrackingType(details)
     trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
 
     // Update the success screen so it shows a link to the transaction

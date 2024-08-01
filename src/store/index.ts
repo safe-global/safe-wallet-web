@@ -3,8 +3,10 @@ import {
   combineReducers,
   createListenerMiddleware,
   type ThunkAction,
-  type UnknownAction,
+  type Action,
   type Middleware,
+  type EnhancedStore,
+  type ThunkDispatch,
 } from '@reduxjs/toolkit'
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
 import merge from 'lodash/merge'
@@ -69,7 +71,7 @@ export const getPersistedState = () => {
 
 export const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
 
-const middleware: Middleware[] = [
+const middleware: Middleware<{}, RootState>[] = [
   persistState(persistedSlices),
   broadcastState(persistedSlices),
   listenerMiddlewareInstance.middleware,
@@ -93,7 +95,7 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
   return rootReducer(state, action) as RootState
 }
 
-export const makeStore = (initialState?: Partial<RootState>) => {
+export const makeStore = (initialState?: Partial<RootState>): EnhancedStore<RootState, Action> => {
   const store = configureStore({
     reducer: _hydrationReducer,
     middleware: (getDefaultMiddleware) => {
@@ -109,9 +111,9 @@ export const makeStore = (initialState?: Partial<RootState>) => {
   return store
 }
 
-export type AppDispatch = ReturnType<typeof makeStore>['dispatch']
 export type RootState = ReturnType<typeof rootReducer>
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, UnknownAction>
+export type AppDispatch = ThunkDispatch<RootState, unknown, Action> & EnhancedStore<RootState, Action>['dispatch']
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action>
 
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
