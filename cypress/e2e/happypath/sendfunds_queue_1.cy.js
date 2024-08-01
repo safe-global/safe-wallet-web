@@ -46,7 +46,6 @@ function visit(url) {
 
 function executeTransactionFlow(fromSafe) {
   visit(constants.transactionQueueUrl + fromSafe)
-  cy.reload()
   wallet.connectSigner(signer)
   assets.clickOnConfirmBtn(0)
   tx.executeFlow_1()
@@ -55,12 +54,15 @@ function executeTransactionFlow(fromSafe) {
 
 describe('Send funds from queue happy path tests 1', () => {
   before(async () => {
+    cy.clearLocalStorage().then(() => {
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v1_cookies, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(
+        constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
+        ls.cookies.acceptedTokenListOnboarding,
+      )
+    })
+
     safesData = await getSafes(CATEGORIES.funds)
-    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__cookies, ls.cookies.acceptedCookies)
-    main.addToLocalStorage(
-      constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
-      ls.cookies.acceptedTokenListOnboarding,
-    )
     apiKit = new SafeApiKit({
       chainId: BigInt(1),
       txServiceUrl: constants.stagingTxServiceUrl,
@@ -85,43 +87,39 @@ describe('Send funds from queue happy path tests 1', () => {
     protocolKitOwner2_S3 = safes[3]
   })
 
-  it(
-    'Verify confirmation and execution of native token queued tx by second signer with connected wallet',
-    { defaultCommandTimeout: 300000 },
-    () => {
-      cy.wrap(null)
-        .then(() => {
-          return main.fetchCurrentNonce(network_pref + existingSafeAddress1)
+  it('Verify confirmation and execution of native token queued tx by second signer with connected wallet', () => {
+    cy.wrap(null)
+      .then(() => {
+        return main.fetchCurrentNonce(network_pref + existingSafeAddress1)
+      })
+      .then(async (currentNonce) => {
+        const amount = ethers.parseUnits(tokenAmount, unit_eth).toString()
+        const safeTransactionData = {
+          to: receiver,
+          data: '0x',
+          value: amount.toString(),
+        }
+
+        const safeTransaction = await protocolKitOwnerS1.createTransaction({ transactions: [safeTransactionData] })
+        const safeTxHash = await protocolKitOwnerS1.getTransactionHash(safeTransaction)
+        const senderSignature = await protocolKitOwnerS1.signHash(safeTxHash)
+        const safeAddress = existingSafeAddress1
+
+        await apiKit.proposeTransaction({
+          safeAddress,
+          safeTransactionData: safeTransaction.data,
+          safeTxHash,
+          senderAddress: await owner1Signer.getAddress(),
+          senderSignature: senderSignature.data,
         })
-        .then(async (currentNonce) => {
-          const amount = ethers.parseUnits(tokenAmount, unit_eth).toString()
-          const safeTransactionData = {
-            to: receiver,
-            data: '0x',
-            value: amount.toString(),
-          }
 
-          const safeTransaction = await protocolKitOwnerS1.createTransaction({ transactions: [safeTransactionData] })
-          const safeTxHash = await protocolKitOwnerS1.getTransactionHash(safeTransaction)
-          const senderSignature = await protocolKitOwnerS1.signHash(safeTxHash)
-          const safeAddress = existingSafeAddress1
-
-          await apiKit.proposeTransaction({
-            safeAddress,
-            safeTransactionData: safeTransaction.data,
-            safeTxHash,
-            senderAddress: await owner1Signer.getAddress(),
-            senderSignature: senderSignature.data,
-          })
-
-          executeTransactionFlow(safeAddress)
-          cy.wait(5000)
-          main.verifyNonceChange(network_pref + safeAddress, currentNonce + 1)
-          navigation.clickOnWalletExpandMoreIcon()
-          navigation.clickOnDisconnectBtn()
-        })
-    },
-  )
+        executeTransactionFlow(safeAddress)
+        cy.wait(5000)
+        main.verifyNonceChange(network_pref + safeAddress, currentNonce + 1)
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
+      })
+  })
 
   it.skip('Verify confirmation and execution of native token queued tx by second signer with relayer', () => {
     function executeTransactionFlow(fromSafe) {
