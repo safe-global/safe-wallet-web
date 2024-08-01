@@ -2,8 +2,10 @@ import { render } from '@/tests/test-utils'
 import CheckWallet from '.'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useWallet from '@/hooks/wallets/useWallet'
 import { chainBuilder } from '@/tests/builders/chains'
+// import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
 
 // mock useWallet
 jest.mock('@/hooks/wallets/useWallet', () => ({
@@ -31,7 +33,14 @@ jest.mock('@/hooks/useChains', () => ({
   useCurrentChain: jest.fn(() => chainBuilder().build()),
 }))
 
-const renderButton = () => render(<CheckWallet>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>)
+// mock useIsWrongChain
+jest.mock('@/hooks/useIsWrongChain', () => ({
+  __esModule: true,
+  default: jest.fn(() => false),
+}))
+
+const renderButton = () =>
+  render(<CheckWallet checkNetwork={false}>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>)
 
 describe('CheckWallet', () => {
   beforeEach(() => {
@@ -50,6 +59,8 @@ describe('CheckWallet', () => {
 
     const { container } = renderButton()
 
+    console.log(container)
+
     // Check that the button is disabled
     expect(container.querySelector('button')).toBeDisabled()
 
@@ -67,6 +78,18 @@ describe('CheckWallet', () => {
       'aria-label',
       `Your connected wallet is not a signer of this Safe Account`,
     )
+  })
+
+  it('should show the network switch button when connected to the wrong network', () => {
+    ;(useIsWrongChain as jest.MockedFunction<typeof useIsWrongChain>).mockReturnValue(true)
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
+
+    const renderButtonWithNetworkCheck = () =>
+      render(<CheckWallet checkNetwork={true}>{(isOk) => <button disabled={true}></button>}</CheckWallet>)
+
+    const { container } = renderButtonWithNetworkCheck()
+
+    expect(container.querySelector('button')).not.toBeDisabled()
   })
 
   it('should not disable the button for non-owner spending limit benificiaries', () => {

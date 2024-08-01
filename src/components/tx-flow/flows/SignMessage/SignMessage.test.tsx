@@ -367,14 +367,14 @@ describe('SignMessage', () => {
     expect(getByText('Sign')).toBeDisabled()
   })
 
-  it('displays an error if connected to the wrong chain', () => {
+  it('displays an network switch button if connected to the wrong chain', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => true)
     jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue(chainBuilder().build())
     jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn(), undefined])
 
-    const { getByText } = render(
+    const { getByText, queryByText } = render(
       <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
@@ -384,9 +384,8 @@ describe('SignMessage', () => {
       />,
     )
 
-    expect(getByText('Wallet network switch')).toBeInTheDocument()
-
-    expect(getByText('Sign')).not.toBeDisabled()
+    expect(getByText('Switch to')).toBeInTheDocument()
+    expect(queryByText('Sign')).not.toBeInTheDocument()
   })
 
   it('displays an error if not an owner', () => {
