@@ -1,5 +1,6 @@
 import { setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import type Safe from '@safe-global/protocol-kit'
+import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import extractTxInfo from '../../extractTxInfo'
@@ -23,7 +24,6 @@ import {
 } from 'ethers'
 import * as safeContracts from '@/services/contracts/safeContracts'
 
-import type { MultiSendCallOnlyEthersContract } from '@safe-global/protocol-kit'
 import * as web3 from '@/hooks/wallets/web3'
 
 const setupFetchStub = (data: any) => (_url: string) => {
@@ -442,7 +442,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, safeAddress)
+      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, safeAddress, false)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -470,7 +470,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await expect(dispatchTxExecution(safeTx, {}, txId, MockEip1193Provider, '5', safeAddress)).rejects.toThrow(
+      await expect(dispatchTxExecution(safeTx, {}, txId, MockEip1193Provider, '5', safeAddress, false)).rejects.toThrow(
         'error',
       )
 
@@ -491,7 +491,7 @@ describe('txSender', () => {
         nonce: 1,
       })
 
-      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, '0x123')
+      await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, '0x123', false)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
       expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
@@ -534,7 +534,7 @@ describe('txSender', () => {
           },
         } as any,
         getAddress: async () => mockMultisendAddress,
-      } as MultiSendCallOnlyEthersContract
+      } as MultiSendCallOnlyContractImplementationType
 
       jest
         .spyOn(safeContracts, 'getReadOnlyMultiSendCallOnlyContract')

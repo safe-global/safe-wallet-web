@@ -1,8 +1,9 @@
 import type { CSSProperties, ReactElement } from 'react'
 import { useMemo } from 'react'
+import { Tooltip } from '@mui/material'
 import { useAppSelector } from '@/store'
 import { selectCurrency } from '@/store/settingsSlice'
-import { formatCurrency } from '@/utils/formatNumber'
+import { formatCurrency, formatCurrencyPrecise } from '@/utils/formatNumber'
 
 const style = { whiteSpace: 'nowrap' } as CSSProperties
 
@@ -13,10 +14,16 @@ const FiatValue = ({ value, maxLength }: { value: string | number; maxLength?: n
     return formatCurrency(value, currency, maxLength)
   }, [value, currency, maxLength])
 
+  const preciseFiat = useMemo(() => {
+    return formatCurrencyPrecise(value, currency)
+  }, [value, currency])
+
   return (
-    <span suppressHydrationWarning style={style}>
-      {fiat}
-    </span>
+    <Tooltip title={preciseFiat}>
+      <span suppressHydrationWarning style={style}>
+        {fiat}
+      </span>
+    </Tooltip>
   )
 }
 

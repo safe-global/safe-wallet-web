@@ -7,6 +7,7 @@ import { selectBatchBySafe, addTx, removeTx } from '@/store/batchSlice'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { BATCH_EVENTS, trackEvent } from '@/services/analytics'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { shallowEqual } from 'react-redux'
 
 export const useUpdateBatch = () => {
   const chainId = useChainId()
@@ -49,6 +50,6 @@ export const useUpdateBatch = () => {
 export const useDraftBatch = (): DraftBatchItem[] => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
-  const batch = useAppSelector((state) => selectBatchBySafe(state, chainId, safeAddress))
+  const batch = useAppSelector((state) => selectBatchBySafe(state, chainId, safeAddress), shallowEqual)
   return batch
 }

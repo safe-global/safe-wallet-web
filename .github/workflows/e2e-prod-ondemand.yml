@@ -1,9 +1,9 @@
-name: Happy path on demand tests
+name: Production health check tests
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 4 * * 1,4'
+    - cron: '0 4 * * 1-5'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -12,11 +12,11 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-20.04
-    name: Cypress Happy path on demand tests
+    name: Cypress production health check tests
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3]
+        containers: [1]
     steps:
       - uses: actions/checkout@v4
 
@@ -24,9 +24,9 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           spec: |
-            cypress/e2e/happypath/*.cy.js
-          group: 'Happy path on demand tests'
-          tag: 'happypath'
+            cypress/e2e/prodhealthcheck/*.cy.js
+          group: 'Production health check tests'
+          tag: 'production'
 
       - name: Python setup
         if: always()
@@ -54,6 +54,6 @@ jobs:
           --username ${{ secrets.TESTRAIL_USERNAME }} \
           --password ${{ secrets.TESTRAIL_PASSWORD }} \
           parse_junit \
-          --title "Happy path Tests, branch: ${GITHUB_REF_NAME}" \
+          --title "Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
           -f "reports/junit-report.xml"
