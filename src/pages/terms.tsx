@@ -12,7 +12,7 @@ const SafeTerms = () => (
     <Typography variant="h1" mb={2}>
       Terms and Conditions
     </Typography>
-    <p>Last updated: July 2024.</p>
+    <p>Last updated: August 2024.</p>
 
     <h3>1. What is the scope of the Terms?</h3>
     <ol start={1}>
