@@ -36,6 +36,7 @@ import { FEATURES } from '@/utils/chains'
 import { SwapOrder } from '@/features/swap/components/SwapOrder'
 import { useGetTransactionDetailsQuery } from '@/store/gateway'
 import { asError } from '@/services/exceptions/utils'
+import { POLLING_INTERVAL } from '@/config/constants'
 
 export const NOT_AVAILABLE = 'n/a'
 
