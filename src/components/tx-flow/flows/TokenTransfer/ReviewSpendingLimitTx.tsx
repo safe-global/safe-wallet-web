@@ -102,7 +102,6 @@ const ReviewSpendingLimitTx = ({
     const txOptions = getTxOptions(advancedParams, currentChain)
 
     try {
-      // await assertWalletChain(onboard, safe.chainId)
       await dispatchSpendingLimitTxExecution(txParams, txOptions, wallet.provider, safe.chainId, safeAddress)
       onSubmit('', true)
       setTxFlow(undefined)

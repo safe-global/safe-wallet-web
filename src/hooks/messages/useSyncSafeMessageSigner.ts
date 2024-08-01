@@ -3,7 +3,6 @@ import { Errors, logError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
 import { dispatchPreparedSignature } from '@/services/safe-messages/safeMsgNotifications'
 import { dispatchSafeMsgProposal, dispatchSafeMsgConfirmation } from '@/services/safe-messages/safeMsgSender'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import {
   getSafeMessage,
   SafeMessageListItemType,
@@ -61,8 +60,6 @@ const useSyncSafeMessageSigner = (
     setSubmitError(undefined)
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
-
       // When collecting the first signature
       if (!message) {
         await dispatchSafeMsgProposal({ provider: wallet.provider, safe, message: decodedMessage, safeAppId })

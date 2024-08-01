@@ -78,6 +78,9 @@ export const ExecuteForm = ({
   // Check if transaction will fail
   const { executionValidationError } = useIsValidExecution(safeTx, advancedParams.gasLimit)
 
+  // const onboard = useOnboard()
+  // assertWalletChain(onboard, chain.chainId)
+
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()

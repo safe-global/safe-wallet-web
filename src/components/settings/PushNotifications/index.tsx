@@ -30,7 +30,6 @@ import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsMac } from '@/hooks/useIsMac'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import ExternalLink from '@/components/common/ExternalLink'
 
 import css from './styles.module.css'
@@ -62,17 +61,7 @@ export const PushNotifications = (): ReactElement => {
   const shouldShowMacHelper = isMac || IS_DEV
 
   const handleOnChange = async () => {
-    if (!onboard) {
-      return
-    }
-
     setIsRegistering(true)
-
-    try {
-      await assertWalletChain(onboard, safe.chainId)
-    } catch {
-      return
-    }
 
     if (!preferences) {
       await registerNotifications({ [safe.chainId]: [safe.address.value] })

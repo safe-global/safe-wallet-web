@@ -34,7 +34,7 @@ const SignTxButton = ({
   }
 
   return (
-    <CheckWallet checkNetwork>
+    <CheckWallet checkNetwork={!isDisabled}>
       {(isOk) => (
         <Tooltip title={isOk && !isSignable ? "You've already signed this transaction" : ''}>
           <span>

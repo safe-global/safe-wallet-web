@@ -11,7 +11,6 @@ import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useChainsHook from '@/hooks/useChains'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
-import * as sdk from '@/services/tx/tx-sender/sdk'
 import * as useSafeMessage from '@/hooks/messages/useSafeMessage'
 import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -102,8 +101,6 @@ describe('SignMessage', () => {
     }))
 
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
-
-    jest.spyOn(sdk, 'assertWalletChain').mockImplementation(jest.fn())
   })
 
   describe('EIP-191 messages', () => {

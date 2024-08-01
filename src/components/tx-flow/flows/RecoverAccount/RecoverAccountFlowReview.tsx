@@ -78,8 +78,6 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
     setIsRejectedByUser(false)
 
     try {
-      // await assertWalletChain(onboard, safe.chainId)
-
       await dispatchRecoveryProposal({
         provider: wallet.provider,
         safe,

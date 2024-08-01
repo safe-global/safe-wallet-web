@@ -83,7 +83,6 @@ export const CounterfactualForm = ({
     try {
       trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: TX_TYPES.activate_with_tx })
 
-      // onboard && (await assertWalletChain(onboard, chainId))
       await deploySafeAndExecuteTx(txOptions, wallet, safeAddress, safeTx, wallet?.provider)
 
       trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_with_tx })

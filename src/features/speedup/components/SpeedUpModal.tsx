@@ -1,6 +1,5 @@
 import useGasPrice from '@/hooks/useGasPrice'
 import ModalDialog from '@/components/common/ModalDialog'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import DialogContent from '@mui/material/DialogContent'
 import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
 import RocketSpeedup from '@/public/images/common/ic-rocket-speedup.svg'
@@ -91,7 +90,6 @@ export const SpeedUpModal = ({
 
     try {
       setWaitingForConfirmation(true)
-      await assertWalletChain(onboard, chainInfo.chainId)
 
       if (pendingTx.txType === PendingTxType.SAFE_TX) {
         await dispatchSafeTxSpeedUp(
