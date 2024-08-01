@@ -165,7 +165,7 @@ const TxDetails = ({
   } = useGetTransactionDetailsQuery(
     { chainId, txId: txSummary.id },
     {
-      pollingInterval: isOpenSwapOrder(txSummary.txInfo) ? 2000 : undefined,
+      pollingInterval: isOpenSwapOrder(txSummary.txInfo) ? POLLING_INTERVAL : undefined,
     },
   )
 
