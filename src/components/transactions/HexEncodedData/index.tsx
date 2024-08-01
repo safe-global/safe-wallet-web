@@ -34,7 +34,8 @@ export const HexEncodedData = ({ hexData, title, limit = 20 }: Props): ReactElem
       <CopyButton text={hexData} />
 
       <>
-        {firstBytes} {showTxData || !showExpandBtn ? restBytes : shortenText(restBytes, limit - FIRST_BYTES)}{' '}
+        {firstBytes}
+        {showTxData || !showExpandBtn ? restBytes : shortenText(restBytes, limit - FIRST_BYTES)}{' '}
         {showExpandBtn && (
           <Link component="button" onClick={toggleExpanded} type="button" sx={{ verticalAlign: 'text-top' }}>
             Show {showTxData ? 'less' : 'more'}
