@@ -38,12 +38,6 @@ runs:
         curl -O 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
         sudo apt-get install ./google-chrome-stable_current_amd64.deb
 
-    - name: Install Chrome 127
-      run: |
-        curl -O https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_127.0.0.0-1_amd64.deb
-        sudo apt-get install -y ./google-chrome-stable_127.0.0.0-1_amd64.deb
-      shell: bash
-
     - name: Install Cypress 13.13.1
       shell: bash
       run: npm install cypress@13.13.1 --legacy-peer-deps
