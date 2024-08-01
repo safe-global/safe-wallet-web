@@ -89,7 +89,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
       }
     }
     case TransactionInfoType.CUSTOM: {
-      if (isMultiSendTxInfo(tx.txInfo)) {
+      if (isMultiSendTxInfo(tx.txInfo) && !tx.safeAppInfo) {
         return {
           icon: '/images/common/multisend.svg',
           text: 'Batch',
