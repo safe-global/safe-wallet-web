@@ -22,7 +22,7 @@ import {
   isTxQueued,
 } from '@/utils/transaction-guards'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
-import EthHashInfo from '@/components/common/EthHashInfo'
+import NamedAddressInfo from '@/components/common/NamedAddressInfo'
 import css from './styles.module.css'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import TxShareLink from '../TxShareLink'
@@ -70,6 +70,10 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
 
   const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
 
+  // Module address, name and logoUri
+  const moduleAddress = isModuleExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.address : undefined
+  const moduleAddressInfo = moduleAddress ? txDetails.txData?.addressInfoIndex?.[moduleAddress.value] : undefined
+
   return (
     <>
       {/* /Details */}
@@ -104,17 +108,14 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           </ErrorBoundary>
         </div>
 
-        <div className={css.txSummary}>
-          {isUntrusted && !isPending && <UnsignedWarning />}
-          <Summary txDetails={txDetails} />
-        </div>
-
         {/* Module information*/}
-        {isModuleExecutionInfo(txSummary.executionInfo) && (
+        {moduleAddress && (
           <div className={css.txModule}>
-            <InfoDetails title="Module:">
-              <EthHashInfo
-                address={txSummary.executionInfo.address.value}
+            <InfoDetails title="Executed via module:">
+              <NamedAddressInfo
+                address={moduleAddress.value}
+                name={moduleAddressInfo?.name || moduleAddress.name}
+                customAvatar={moduleAddressInfo?.logoUri || moduleAddress.logoUri}
                 shortAddress={false}
                 showCopyButton
                 hasExplorer
@@ -122,6 +123,11 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
             </InfoDetails>
           </div>
         )}
+
+        <div className={css.txSummary}>
+          {isUntrusted && !isPending && <UnsignedWarning />}
+          <Summary txDetails={txDetails} />
+        </div>
       </div>
 
       {/* Signers */}
