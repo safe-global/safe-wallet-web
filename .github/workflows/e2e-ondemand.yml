@@ -12,6 +12,7 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-20.04
+    timeout-minutes: 40
     name: Cypress Regression on demand tests
     strategy:
       fail-fast: false
@@ -27,7 +28,9 @@ jobs:
             cypress/e2e/regression/*.cy.js
             cypress/e2e/safe-apps/*.cy.js
             cypress/e2e/smoke/*.cy.js
+            cypress/e2e/prodhealthcheck/*.cy.js
           group: 'Regression on demand tests'
+          tag: 'regression'
 
       - name: Python setup
         if: always()

@@ -135,9 +135,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
         <RedefineBalanceChanges />
       </TxCard>
 
-      <TxCard>
-        <TxChecks executionOwner={safe.owners[0].value} />
-      </TxCard>
+      <TxChecks executionOwner={safe.owners[0].value} />
 
       <TxCard>
         <>
