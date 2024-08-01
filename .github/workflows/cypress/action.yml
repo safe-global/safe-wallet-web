@@ -38,6 +38,9 @@ runs:
         curl -O 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
         sudo apt-get install ./google-chrome-stable_current_amd64.deb
 
+    - name: Install Cypress 13.13.1
+      run: npm install cypress@13.13.1
+
     - uses: ./.github/workflows/build
       with:
         secrets: ${{ inputs.secrets }}
