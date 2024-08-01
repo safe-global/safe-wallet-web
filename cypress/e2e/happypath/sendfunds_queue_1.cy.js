@@ -9,6 +9,7 @@ import { createSafes } from '../../support/api/utils_protocolkit'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as ls from '../../support/localstorage_data.js'
+import * as navigation from '../pages/navigation.page.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const receiver = walletCredentials.OWNER_2_WALLET_ADDRESS
@@ -116,6 +117,8 @@ describe('Send funds from queue happy path tests 1', () => {
           executeTransactionFlow(safeAddress)
           cy.wait(5000)
           main.verifyNonceChange(network_pref + safeAddress, currentNonce + 1)
+          navigation.clickOnWalletExpandMoreIcon()
+          navigation.clickOnDisconnectBtn()
         })
     },
   )
@@ -201,6 +204,8 @@ describe('Send funds from queue happy path tests 1', () => {
         executeTransaction(safeAddress)
         cy.wait(5000)
         main.verifyNonceChange(network_pref + safeAddress, currentNonce + 1)
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
       })
   })
 })

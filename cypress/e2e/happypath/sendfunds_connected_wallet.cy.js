@@ -102,6 +102,8 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
           })
           await tx.wait()
           main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
+          navigation.clickOnWalletExpandMoreIcon()
+          navigation.clickOnDisconnectBtn()
         })
       })
   })
@@ -155,6 +157,8 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
         const safeTx = await apiKit.getTransaction(safeTxHashofExistingTx)
         await protocolKitOwner2_S3.executeTransaction(safeTx)
         main.verifyNonceChange(network_pref + targetSafe, currentNonce + 1)
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
       })
   })
 
@@ -188,6 +192,8 @@ describe('Send funds with connected signer happy path tests', { defaultCommandTi
 
         await tx.wait()
         main.verifyNonceChange(network_pref + originatingSafe, currentNonce + 1)
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
       })
   })
 })
