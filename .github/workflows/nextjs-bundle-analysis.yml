@@ -60,7 +60,7 @@ jobs:
         run: echo "${{ steps.get-comment-body.outputs.body }}" > next-bundle-analysis.txt
 
       - name: Upload next bundle analysis to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: next-bundle-analysis
           path: next-bundle-analysis.txt

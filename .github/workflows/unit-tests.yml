@@ -32,7 +32,7 @@ jobs:
         run: echo "${{ steps.jest-coverage.outputs.report-markdown }}" > jest-coverage-report.md
 
       - name: Upload test coverage to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jest-coverage-report
           path: jest-coverage-report.md
