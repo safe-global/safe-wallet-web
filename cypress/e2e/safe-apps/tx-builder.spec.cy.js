@@ -5,6 +5,7 @@ import * as safeapps from '../pages/safeapps.pages'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 import * as navigation from '../pages/navigation.page'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as ls from '../../support/localstorage_data.js'
 
 let safeAppSafes = []
 let iframeSelector
@@ -12,17 +13,20 @@ let iframeSelector
 describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
   before(async () => {
     safeAppSafes = await getSafes(CATEGORIES.safeapps)
+    cy.clearLocalStorage().then(() => {
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(
+        constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
+        ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
+      )
+    })
   })
 
   beforeEach(() => {
     const appUrl = constants.TX_Builder_url
     iframeSelector = `iframe[id="iframe-${appUrl}"]`
     const visitUrl = `/apps/open?safe=${safeAppSafes.SEP_SAFEAPP_SAFE_1}&appUrl=${encodeURIComponent(appUrl)}`
-
-    cy.clearLocalStorage()
     cy.visit(visitUrl)
-    main.acceptCookies()
-    safeapps.clickOnContinueBtn()
   })
 
   it('Verify a simple batch can be created', () => {
