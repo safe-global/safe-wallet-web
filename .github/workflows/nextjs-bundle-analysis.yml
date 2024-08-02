@@ -56,8 +56,11 @@ jobs:
           echo "$(cat .next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
           echo EOF >> $GITHUB_OUTPUT
 
-      - name: Comment
-        uses: marocchino/sticky-pull-request-comment@v2
+      - name: Save coverage report to file
+        run: echo "${{ steps.get-comment-body.outputs.body }}" > next-bundle-analysis.txt
+
+      - name: Upload next bundle analysis to artifacts
+        uses: actions/upload-artifact@v3
         with:
-          header: next-bundle-analysis
-          message: ${{ steps.get-comment-body.outputs.body }}
+          name: next-bundle-analysis
+          path: next-bundle-analysis.txt
