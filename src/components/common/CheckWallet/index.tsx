@@ -26,14 +26,14 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }:
   const connectWallet = useConnectWallet()
 
   const { safe } = useSafeInfo()
-  const isCounteractualMultiSig = !allowNonOwner && !safe.deployed && safe.threshold > 1
+  const isCounterfactualMultiSig = !allowNonOwner && !safe.deployed && safe.threshold > 1
 
   const message =
-    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit)) && !isCounteractualMultiSig
+    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit)) && !isCounterfactualMultiSig
       ? ''
       : !wallet
       ? Message.WalletNotConnected
-      : isCounteractualMultiSig
+      : isCounterfactualMultiSig
       ? Message.CounterfactualMultisig
       : Message.NotSafeOwner
 
