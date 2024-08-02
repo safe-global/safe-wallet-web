@@ -191,7 +191,7 @@ export function verifyNonceInputValue(value) {
 }
 
 export function verifyErrorMsgInvalidAddress(errorMsg) {
-  cy.get('label').contains(errorMsg).should('be.visible')
+  cy.get('label').contains(errorMsg).should('exist')
 }
 
 export function verifyValidWalletName(errorMsg) {

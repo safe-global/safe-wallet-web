@@ -8,11 +8,22 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import * as notificationsSlice from '@/store/notificationsSlice'
 
+import { type TypedStartListening } from '@reduxjs/toolkit'
+import { type RootState, type AppDispatch } from '@/store' // adjust the import path as needed
+
+type StartListeningType = TypedStartListening<RootState, AppDispatch> & {
+  withTypes: () => TypedStartListening<RootState, AppDispatch>
+} & jest.Mock
+const createStartListeningMock = () => {
+  const mock = jest.fn() as unknown as StartListeningType
+  mock.withTypes = jest.fn().mockReturnValue(mock)
+  return mock
+}
 describe('swapOrderSlice', () => {
   describe('swapOrderListener', () => {
     const listenerMiddleware = listenerMiddlewareInstance
     const mockDispatch = jest.fn()
-    const startListeningMock = jest.fn()
+    const startListeningMock = createStartListeningMock()
 
     beforeEach(() => {
       jest.clearAllMocks()
@@ -158,7 +169,7 @@ describe('swapOrderSlice', () => {
     const listenerMiddleware = listenerMiddlewareInstance
     const mockDispatch = jest.fn()
     const showNotificationSpy = jest.spyOn(notificationsSlice, 'showNotification')
-    const startListeningMock = jest.fn()
+    const startListeningMock = createStartListeningMock()
 
     beforeEach(() => {
       jest.clearAllMocks()

@@ -1,3 +1,4 @@
+import type { SafeContractImplementationType } from '@safe-global/protocol-kit'
 import type { SafeTransaction, SafeSignature } from '@safe-global/safe-core-sdk-types'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { act, renderHook } from '@/tests/test-utils'
@@ -9,7 +10,6 @@ import type { Eip1193Provider } from 'ethers'
 import { JsonRpcProvider, BrowserProvider } from 'ethers'
 import * as contracts from '@/services/contracts/safeContracts'
 
-import type { SafeContractEthers } from '@safe-global/protocol-kit'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
 
 const createSafeTx = (data = '0x'): SafeTransaction => {
@@ -69,7 +69,7 @@ describe('useIsValidExecution', () => {
             },
           },
         },
-      } as unknown as SafeContractEthers),
+      } as unknown as SafeContractImplementationType),
     )
 
     const mockTx = createSafeTx()

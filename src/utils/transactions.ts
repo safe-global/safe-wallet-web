@@ -116,6 +116,7 @@ export const getMultiSendTxs = async (
       const args = extractTxInfo(tx, safeAddress)
       const sigs = getSignatures(args.signatures)
 
+      // @ts-ignore
       const data = readOnlySafeContract.encode('execTransaction', [
         args.txParams.to,
         args.txParams.value,

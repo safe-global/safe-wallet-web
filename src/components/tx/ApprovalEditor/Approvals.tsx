@@ -29,6 +29,7 @@ const Approvals = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
                   spender={tx.spender}
                   method={tx.method}
                   amount={tx.amountFormatted}
+                  rawAmount={tx.amount}
                   tokenInfo={tx.tokenInfo}
                 />
               </ListItem>
