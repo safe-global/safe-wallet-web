@@ -1,0 +1,313 @@
+import { useContext } from 'react'
+import { TxSecurityContext, type TxSecurityContextProps } from '@/components/tx/security/shared/TxSecurityContext'
+import groupBy from 'lodash/groupBy'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  AlertTitle,
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Stack,
+  SvgIcon,
+  Tooltip,
+  Typography,
+} from '@mui/material'
+import ExternalLink from '@/components/common/ExternalLink'
+import { FEATURES } from '@/utils/chains'
+import { useHasFeature } from '@/hooks/useChains'
+import { ErrorBoundary } from '@sentry/react'
+import { REDEFINE_ARTICLE } from '@/config/constants'
+import css from './styles.module.css'
+import sharedCss from '@/components/tx/security/shared/styles.module.css'
+
+import Track from '@/components/common/Track'
+import { MODALS_EVENTS } from '@/services/analytics'
+import CircularProgress from '@mui/material/CircularProgress'
+import InfoIcon from '@/public/images/notifications/info.svg'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import { type SecurityWarningProps, mapSecuritySeverity } from '../utils'
+import { BlockaidHint } from './BlockaidHint'
+import { ExpandMore, WarningAmber } from '@mui/icons-material'
+import { SecuritySeverity } from '@/services/security/modules/types'
+
+const MAX_SHOWN_WARNINGS = 3
+
+export const REASON_MAPPING: Record<string, string> = {
+  raw_ether_transfer: 'transfers native currency',
+  signature_farming: 'is a raw signed transaction',
+  transfer_farming: 'transfers tokens',
+  approval_farming: 'approves erc20 tokens',
+  set_approval_for_all: 'approves all tokens of the account',
+  permit_farming: 'authorizes access or permissions',
+  seaport_farming: 'authorizes transfer of assets via Opeansea marketplace',
+  blur_farming: 'authorizes transfer of assets via Blur marketplace',
+}
+
+export const CLASSIFICATION_MAPPING: Record<string, string> = {
+  known_malicious: 'to a known malicious address',
+  unverified_contract: 'to an unverified contract',
+  new_address: 'to a new address',
+  untrusted_address: 'to an untrusted address',
+  address_poisoning: 'to a poisoned address',
+  losing_mint: 'resulting in a mint for a new token with a significantly higher price than the known price',
+  losing_assets: 'resulting in a loss of assets without any compensation',
+  losing_trade: 'resulting in a losing trade',
+  drainer_contract: 'to a known drainer contract',
+  user_mistake: 'resulting in a loss of assets due to an innocent mistake',
+  gas_farming_attack: 'resulting in a waste of the account address’ gas to generate tokens for a scammer',
+  other: 'resulting in a malicious outcome',
+}
+
+const BlockaidResultWarning = ({
+  blockaidResponse,
+  severityProps,
+  needsRiskConfirmation,
+  isRiskConfirmed,
+  isTransaction,
+  toggleConfirmation,
+}: {
+  blockaidResponse?: TxSecurityContextProps['blockaidResponse']
+  severityProps?: SecurityWarningProps
+  needsRiskConfirmation: boolean
+  isRiskConfirmed: boolean
+  isTransaction: boolean
+  toggleConfirmation: () => void
+}) => {
+  return (
+    <Box>
+      {blockaidResponse && blockaidResponse.severity !== SecuritySeverity.NONE && (
+        <Alert
+          severity={severityProps?.color}
+          icon={<WarningAmber />}
+          className={css.customAlert}
+          sx={
+            needsRiskConfirmation
+              ? {
+                  borderBottomLeftRadius: '0px',
+                  borderBottomRightRadius: '0px',
+                }
+              : undefined
+          }
+        >
+          <AlertTitle>
+            <ResultDescription
+              classification={blockaidResponse.classification}
+              reason={blockaidResponse.reason}
+              description={blockaidResponse.description}
+            />
+          </AlertTitle>
+          <BlockaidMessage />
+        </Alert>
+      )}
+      {needsRiskConfirmation && (
+        <Box pl={2} className={css.riskConfirmationBlock}>
+          <Track {...MODALS_EVENTS.ACCEPT_RISK}>
+            <FormControlLabel
+              label={
+                <Typography variant="body2">
+                  I understand the risks and would like to sign this {isTransaction ? 'transaction' : 'message'}
+                </Typography>
+              }
+              control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} />}
+            />
+          </Track>
+        </Box>
+      )}
+    </Box>
+  )
+}
+
+const ResultDescription = ({
+  description,
+  reason,
+  classification,
+}: {
+  description: string | undefined
+  reason: string | undefined
+  classification: string | undefined
+}) => {
+  let text: string | undefined = ''
+  if (reason && classification && REASON_MAPPING[reason] && CLASSIFICATION_MAPPING[classification]) {
+    text = `The transaction ${REASON_MAPPING[reason]} ${CLASSIFICATION_MAPPING[classification]}.`
+  } else {
+    text = description
+  }
+
+  return (
+    <Typography fontWeight={700} variant="subtitle1">
+      {text ?? 'The transaction is malicious.'}
+    </Typography>
+  )
+}
+
+const BlockaidBlock = () => {
+  const { blockaidResponse, setIsRiskConfirmed, needsRiskConfirmation, isRiskConfirmed, isRiskIgnored } =
+    useContext(TxSecurityContext)
+  const { severity, warnings, isLoading, error } = blockaidResponse ?? {}
+
+  const { safeTx } = useContext(SafeTxContext)
+
+  // We either scan a tx or a message if tx is undefined
+  const isTransaction = !!safeTx
+
+  const severityProps = severity !== undefined ? mapSecuritySeverity[severity] : undefined
+
+  const toggleConfirmation = () => {
+    setIsRiskConfirmed((prev) => !prev)
+  }
+
+  return (
+    <div className={css.wrapperBox}>
+      <Accordion expanded={!!blockaidResponse && severity !== SecuritySeverity.NONE}>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          sx={
+            needsRiskConfirmation ? { borderTop: 'none', borderLeft: 'none', borderRight: 'none' } : { border: 'none' }
+          }
+        >
+          <Stack direction="row" width="100%" justifyContent="space-between">
+            <div>
+              <Typography variant="body2" fontWeight={700}>
+                Scan for risks
+                <Tooltip
+                  title={
+                    <>
+                      This {isTransaction ? 'transaction' : 'message'} has been automatically scanned for risks to help
+                      prevent scams.&nbsp;
+                      <ExternalLink href={REDEFINE_ARTICLE} title="Learn more about security scans">
+                        Learn more about security scans
+                      </ExternalLink>
+                      .
+                    </>
+                  }
+                  arrow
+                  placement="top"
+                >
+                  <span>
+                    <SvgIcon
+                      component={InfoIcon}
+                      inheritViewBox
+                      color="border"
+                      fontSize="small"
+                      sx={{
+                        verticalAlign: 'middle',
+                        ml: 0.5,
+                      }}
+                    />
+                  </span>
+                </Tooltip>
+              </Typography>
+            </div>
+
+            <div className={sharedCss.result}>
+              {isLoading ? (
+                <CircularProgress
+                  size={22}
+                  sx={{
+                    color: ({ palette }) => palette.text.secondary,
+                  }}
+                />
+              ) : severityProps ? (
+                <Typography variant="body2" color={`${severityProps.color}.main`} className={sharedCss.result}>
+                  <SvgIcon
+                    component={severityProps.icon}
+                    inheritViewBox
+                    fontSize="small"
+                    sx={{ verticalAlign: 'middle', mr: 1 }}
+                  />
+                  {severityProps.label}
+                </Typography>
+              ) : error ? (
+                <Typography variant="body2" color="error" className={sharedCss.result}>
+                  {error.message}
+                </Typography>
+              ) : null}
+            </div>
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails>
+          <BlockaidResultWarning
+            isRiskConfirmed={isRiskConfirmed}
+            isTransaction={isTransaction}
+            needsRiskConfirmation={needsRiskConfirmation}
+            toggleConfirmation={toggleConfirmation}
+            blockaidResponse={blockaidResponse}
+            severityProps={severityProps}
+          />
+        </AccordionDetails>
+      </Accordion>
+    </div>
+  )
+}
+
+export const Blockaid = () => {
+  const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
+
+  if (!isFeatureEnabled) {
+    return null
+  }
+
+  return (
+    <ErrorBoundary fallback={<div>Error showing scan result</div>}>
+      <BlockaidWarning />
+    </ErrorBoundary>
+  )
+}
+
+const BlockaidWarning = () => {
+  const { blockaidResponse, setIsRiskConfirmed, needsRiskConfirmation, isRiskConfirmed, isRiskIgnored } =
+    useContext(TxSecurityContext)
+  const { severity, warnings, isLoading, error } = blockaidResponse ?? {}
+
+  const { safeTx } = useContext(SafeTxContext)
+
+  // We either scan a tx or a message if tx is undefined
+  const isTransaction = !!safeTx
+
+  const severityProps = severity !== undefined ? mapSecuritySeverity[severity] : undefined
+
+  const toggleConfirmation = () => {
+    setIsRiskConfirmed((prev) => !prev)
+  }
+
+  return (
+    <BlockaidResultWarning
+      isRiskConfirmed={isRiskConfirmed}
+      isTransaction={isTransaction}
+      needsRiskConfirmation={needsRiskConfirmation}
+      toggleConfirmation={toggleConfirmation}
+      blockaidResponse={blockaidResponse}
+      severityProps={severityProps}
+    />
+  )
+}
+
+export const BlockaidMessage = () => {
+  const { blockaidResponse } = useContext(TxSecurityContext)
+  if (!blockaidResponse) {
+    return null
+  }
+
+  const { severity, warnings } = blockaidResponse
+
+  /* Evaluate security warnings */
+  const groupedShownWarnings = groupBy(warnings, (warning) => warning.severity)
+  const sortedSeverities = Object.keys(groupedShownWarnings).sort((a, b) => (Number(a) < Number(b) ? 1 : -1))
+
+  if (sortedSeverities.length === 0) return null
+
+  return (
+    <Box display="flex" flexDirection="column" gap={1}>
+      {sortedSeverities.map((key) => (
+        <BlockaidHint
+          key={key}
+          severity={Number(key)}
+          warnings={groupedShownWarnings[key].map((warning) => warning.description)}
+        />
+      ))}
+    </Box>
+  )
+}

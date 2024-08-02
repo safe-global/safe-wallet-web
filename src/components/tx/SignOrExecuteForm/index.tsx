@@ -15,9 +15,7 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import UnknownContractError from './UnknownContractError'
-import RiskConfirmationError from './RiskConfirmationError'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
@@ -33,6 +31,8 @@ import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfi
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
+import { Blockaid } from '../security/blockaid'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -139,7 +139,7 @@ export const SignOrExecuteForm = ({
           />
         </ErrorBoundary>
 
-        {!isCounterfactualSafe && <RedefineBalanceChanges />}
+        {!isCounterfactualSafe && <BlockaidBalanceChanges />}
       </TxCard>
 
       {!isCounterfactualSafe && <TxChecks />}
@@ -164,7 +164,7 @@ export const SignOrExecuteForm = ({
 
         <UnknownContractError />
 
-        <RiskConfirmationError />
+        <Blockaid />
 
         {isCounterfactualSafe && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />

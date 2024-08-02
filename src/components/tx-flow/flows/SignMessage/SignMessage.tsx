@@ -43,7 +43,6 @@ import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { SafeTxContext } from '../../SafeTxProvider'
 import RiskConfirmationError from '@/components/tx/SignOrExecuteForm/RiskConfirmationError'
-import { Redefine } from '@/components/tx/security/redefine'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { isBlindSigningPayload, isEIP712TypedData } from '@/utils/safe-messages'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
@@ -56,6 +55,7 @@ import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import MsgShareLink from '@/components/safe-messages/MsgShareLink'
 import LinkIcon from '@/public/images/messages/link.svg'
+import { Blockaid } from '@/components/tx/security/blockaid'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -316,7 +316,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </Accordion>
 
           <Box sx={{ '&:not(:empty)': { mt: 2 } }}>
-            <Redefine />
+            <Blockaid />
           </Box>
         </CardContent>
       </TxCard>

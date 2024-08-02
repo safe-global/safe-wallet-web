@@ -9,7 +9,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { getRecoveryProposalTransactions } from '@/features/recovery/services/transaction'
 import DecodedTx from '@/components/tx/DecodedTx'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { RedefineBalanceChanges } from '@/components/tx/security/redefine/RedefineBalanceChange'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import TxChecks from '@/components/tx/SignOrExecuteForm/TxChecks'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
@@ -35,6 +34,7 @@ import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { BlockaidBalanceChanges } from '@/components/tx/security/blockaid/BlockaidBalanceChange'
 
 export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlowProps }): ReactElement | null {
   // Form state
@@ -137,7 +137,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           decodedDataLoading={decodedDataLoading}
         />
 
-        <RedefineBalanceChanges />
+        <BlockaidBalanceChanges />
       </TxCard>
 
       <TxChecks executionOwner={safe.owners[0].value} />
