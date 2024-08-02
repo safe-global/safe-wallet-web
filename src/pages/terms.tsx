@@ -12,7 +12,7 @@ const SafeTerms = () => (
     <Typography variant="h1" mb={2}>
       Terms and Conditions
     </Typography>
-    <p>Last updated: July 2024.</p>
+    <p>Last updated: August 2024.</p>
 
     <h3>1. What is the scope of the Terms?</h3>
     <ol start={1}>
@@ -42,7 +42,7 @@ const SafeTerms = () => (
         upon if you do not object to their validity within 14 days after receipt of the notification. We will separately
         inform you about the essential changes, the possibility to object, the deadline and the consequences of
         inactivity. If you object, the current version of the Terms remains applicable. Our right to terminate the
-        contract according to Clause 8 remains unaffected.
+        contract according to Clause 13 remains unaffected.
       </li>
     </ol>
 
@@ -286,7 +286,7 @@ const SafeTerms = () => (
         Recovery feature via our Safe App taking the user&apos;s reasonable interests into account and providing due
         notification.
       </li>
-      <li>The recovery feature is provided free of charge and liability is limited pursuant to Section 17.4 below.</li>
+      <li>The recovery feature is provided free of charge and liability is limited pursuant to Section 18 below.</li>
     </ol>
 
     <h3>9. Are we responsible for notifying you about events occuring in your Safe Account?</h3>
@@ -299,7 +299,7 @@ const SafeTerms = () => (
       <li>
         Any notification service we provide or offer for subscription within the Safe App via e-mail or push
         notifications or any other means of communication is provided free of charge and liability is limited pursuant
-        to Section 17.4 below. Furthermore we reserve the right to change the notification feature from time to time or
+        to Section 18 below. Furthermore we reserve the right to change the notification feature from time to time or
         cease to provide them without notice.
       </li>
     </ol>
@@ -309,12 +309,12 @@ const SafeTerms = () => (
       <li>We shall not be responsible for flagging malicious transactions in our Safe App.</li>
       <li>
         You are solely responsible for checking any transaction, address, Token or other item you interact with via your
-        Smart Account in our Safe App.{' '}
+        Smart Account in our Safe App.
       </li>
       <li>
         Any security flagging or warning service we provide or offer for subscription within the Safe App is provided
-        free of charge and liability is limited pursuant to Section 17.4 below. Furthermore we reserve the right to
-        change the feature from time to time or cease to provide them without notice.
+        free of charge and liability is limited pursuant to Section 18 below. Furthermore we reserve the right to change
+        the feature from time to time or cease to provide them without notice.
       </li>
     </ol>
 
@@ -358,9 +358,9 @@ const SafeTerms = () => (
       </li>
       <li>
         If we offer access to Third-Party Features in the Safe App free of charge by us (Third-Parties may charge
-        separate fees), the liability for providing access to such Third-Party Feature is limited pursuant to Section
-        17.1 below. Furthermore we reserve the right to cease to provide access to those Third-Party Features through
-        the Safe App without notice.
+        separate fees), the liability for providing access to such Third-Party Feature is limited pursuant to Section 18
+        below. Furthermore we reserve the right to cease to provide access to those Third-Party Features through the
+        Safe App without notice.
       </li>
     </ol>
 
@@ -408,7 +408,7 @@ const SafeTerms = () => (
         If you use the Safe App via web browser, the strict liability of CC for damages (sec. 536a German Civil Code)
         for defects existing at the time of conclusion of the contract is precluded.{' '}
       </li>
-      <li>The foregoing provisions will not limit CC&rsquo;s liability as defined in Clause 13. </li>
+      <li>The foregoing provisions will not limit CC&rsquo;s liability as defined in Clause 18. </li>
       <li>
         We reserve the right to change the format and features of the Services by making any updates to Services
         available for you to download or, where your device settings permit it, by automatic delivery of updates.
@@ -490,169 +490,38 @@ const SafeTerms = () => (
         If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
         service, network, and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
         by us), CC shall be liable only in cases of intent, gross negligence, or if CC has fraudulently concealed a
-        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
-        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
-        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
-        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
-        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
-        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
-        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
-        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
-        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
-        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
-        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
-        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
-        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
-        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
-        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
-        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
-        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
-        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
-        economically expected of CC.
+        possible material or legal defect of the Safe App or Services.
       </li>
       <li>
-        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
-        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
-        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
-        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
-        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
-        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
-        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
-        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
-        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
-        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
-        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
-        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
-        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
-        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
-        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
-        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
-        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
-        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
-        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
-        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
-        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
-        economically expected of CC.
+        If the Safe App or Services are not provided to the User free of charge, CC shall be liable only (i) in cases
+        pursuant to Clause 18.1 as well as (ii) in cases of simple negligence for damages resulting from the breach of
+        an essential contractual duty, a duty, the performance of which enables the proper execution of this Agreement
+        in the first place and on the compliance of which the User regularly relies and may rely, whereby CC&apos;s
+        liability shall be limited to the compensation of the foreseeable, typically occurring damage. The Parties agree
+        that the typical foreseeable damage equals the sum of the annual Fees paid or agreed to be paid by the User to
+        CC during the course of the calendar year in which the event giving rise to the damage claim occurred. Liability
+        in cases of simple negligence for damages resulting from the breach of a non-essential contractual duty are
+        excluded.{' '}
       </li>
       <li>
-        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
-        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
-        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
-        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
-        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
-        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
-        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
-        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
-        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
-        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
-        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
-        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
-        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
-        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
-        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
-        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
-        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
-        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
-        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
-        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
-        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
-        economically expected of CC.
+        The limitations of liability according to Clause 18.1 and Clause 18.2 do not apply (i) to damages resulting from
+        injury to life, body or health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User
+        according to the Product Liability Act and (iv) to claims of the User according to the applicable data
+        protection law.
       </li>
       <li>
-        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
-        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
-        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
-        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
-        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
-        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
-        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
-        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
-        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
-        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
-        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
-        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
-        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
-        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
-        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
-        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
-        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
-        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
-        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
-        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
-        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
-        economically expected of CC.
+        The limitation of liability also applies to the personal liability of the organs, legal representatives,
+        employees and vicarious agents of CC.
       </li>
       <li>
-        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
-        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
-        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
-        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
-        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
-        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
-        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
-        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
-        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
-        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
-        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
-        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
-        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
-        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
-        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
-        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
-        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
-        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
-        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
-        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
-        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
-        economically expected of CC.
+        If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the damage would have
+        been avoided by a regular and complete backup of all relevant data by the User.
       </li>
       <li>
-        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
-        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
-        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
-        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
-        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
-        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
-        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
-        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
-        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
-        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
-        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
-        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
-        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
-        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
-        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
-        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
-        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
-        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
-        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
-        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
-        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
-        economically expected of CC.
-      </li>
-      <li>
-        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
-        service, network and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
-        by us), CC shall be liable only in cases of intent, gross negligence or if CC has fraudulently concealed a
-        possible material or legal defect of the Safe App or Services. If the Safe App or Services are not provided to
-        the User free of charge, CC shall be liable only (i) in cases pursuant to Clause 17.1 as well as (ii) in cases
-        of simple negligence for damages resulting from the breach of an essential contractual duty, a duty, the
-        performance of which enables the proper execution of this Agreement in the first place and on the compliance of
-        which the User regularly relies and may rely, whereby CC&apos;s liability shall be limited to the compensation
-        of the foreseeable, typically occurring damage. The Parties agree that the typical foreseeable damage equals the
-        sum of the annual Fees paid or agreed to be paid by the User to CC during the course of the calendar year in
-        which the event giving rise to the damage claim occurred. Liability in cases of simple negligence for damages
-        resulting from the breach of a non-essential contractual duty are excluded. The limitations of liability
-        according to Clause 17.1 and Clause 17.2 do not apply (i) to damages resulting from injury to life, body or
-        health, (ii) insofar as CC has assumed a guarantee, (iii) to claims of the User according to the Product
-        Liability Act and (iv) to claims of the User according to the applicable data protection law. The limitation of
-        liability also applies to the personal liability of the organs, legal representatives, employees and vicarious
-        agents of CC. If the User suffers damages due to the loss of data, CC is not liable for this, insofar as the
-        damage would have been avoided by a regular and complete backup of all relevant data by the User. In the event
-        of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain that we are not
-        responsible for, we shall be exempt from our obligation to perform. This also applies if we are prevented from
-        performing due to force majeure or other circumstances, the elimination of which is not possible or cannot be
-        economically expected of CC.
+        In the event of disruptions to the technical infrastructure, the internet connection or a relevant Blockchain
+        that we are not responsible for, we shall be exempt from our obligation to perform. This also applies if we are
+        prevented from performing due to force majeure or other circumstances, the elimination of which is not possible
+        or cannot be economically expected of CC.
       </li>
     </ol>
 

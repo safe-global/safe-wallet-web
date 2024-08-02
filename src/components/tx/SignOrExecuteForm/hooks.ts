@@ -87,7 +87,7 @@ export const useTxActions = (): TxActions => {
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed
         const id = txId || (await proposeTx(signer.address, safeTx, txId, origin)).txId
-        await dispatchOnChainSigning(safeTx, id, signer.provider, chainId)
+        await dispatchOnChainSigning(safeTx, id, signer.provider, chainId, signer.address, safeAddress)
         return id
       }
 
@@ -127,7 +127,9 @@ export const useTxActions = (): TxActions => {
       if (isRelayed) {
         await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit)
       } else {
-        await dispatchTxExecution(safeTx, txOptions, txId, signer.provider, signer.address, safeAddress)
+        const isSmartAccount = await isSmartContractWallet(signer.chainId, signer.address)
+
+        await dispatchTxExecution(safeTx, txOptions, txId, signer.provider, signer.address, safeAddress, isSmartAccount)
       }
 
       return txId

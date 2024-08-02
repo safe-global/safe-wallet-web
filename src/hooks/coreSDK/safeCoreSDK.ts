@@ -1,19 +1,16 @@
 import chains from '@/config/chains'
 import type { UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
-import { getSafeSingletonDeployment, getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
+import { getSafeSingletonDeployments, getSafeL2SingletonDeployments } from '@safe-global/safe-deployments'
 import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
-import type { BrowserProvider, Provider } from 'ethers'
+import type { JsonRpcProvider } from 'ethers'
 import Safe from '@safe-global/protocol-kit'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { EthersAdapter } from '@safe-global/protocol-kit'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { ethers } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { sameAddress } from '@/utils/addresses'
 
 export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
@@ -30,33 +27,21 @@ export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersio
   return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe Account version`)
 }
 
-export const createEthersAdapter = async (provider: BrowserProvider) => {
-  const signer = new UncheckedJsonRpcSigner(provider, (await provider.getSigner()).address)
-  return new EthersAdapter({
-    ethers,
-    signerOrProvider: signer,
-  })
-}
-
-export const createReadOnlyEthersAdapter = (provider: Provider | undefined = getWeb3ReadOnly()) => {
-  if (!provider) {
-    throw new Error('Unable to create `EthersAdapter` without a provider')
-  }
-
-  return new EthersAdapter({
-    ethers,
-    signerOrProvider: provider,
-  })
-}
-
 type SafeCoreSDKProps = {
-  provider: Provider
+  provider: JsonRpcProvider
   chainId: SafeInfo['chainId']
   address: SafeInfo['address']['value']
   version: SafeInfo['version']
   implementationVersionState: SafeInfo['implementationVersionState']
   implementation: SafeInfo['implementation']['value']
   undeployedSafe?: UndeployedSafe
+}
+
+const isInDeployments = (address: string, deployments: string | string[] | undefined): boolean => {
+  if (Array.isArray(deployments)) {
+    return deployments.some((deployment) => sameAddress(deployment, address))
+  }
+  return sameAddress(address, deployments)
 }
 
 // Safe Core SDK
@@ -79,11 +64,11 @@ export const initSafeSDK = async ({
   if (!isValidMasterCopy(implementationVersionState)) {
     const masterCopy = implementation
 
-    const safeL1Deployment = getSafeSingletonDeployment({ network: chainId, version: safeVersion })
-    const safeL2Deployment = getSafeL2SingletonDeployment({ network: chainId, version: safeVersion })
+    const safeL1Deployment = getSafeSingletonDeployments({ network: chainId, version: safeVersion })
+    const safeL2Deployment = getSafeL2SingletonDeployments({ network: chainId, version: safeVersion })
 
-    isL1SafeSingleton = masterCopy === safeL1Deployment?.networkAddresses[chainId]
-    const isL2SafeMasterCopy = masterCopy === safeL2Deployment?.networkAddresses[chainId]
+    isL1SafeSingleton = isInDeployments(masterCopy, safeL1Deployment?.networkAddresses[chainId])
+    const isL2SafeMasterCopy = isInDeployments(masterCopy, safeL2Deployment?.networkAddresses[chainId])
 
     // Unknown deployment, which we do not want to support
     if (!isL1SafeSingleton && !isL2SafeMasterCopy) {
@@ -96,15 +81,14 @@ export const initSafeSDK = async ({
   }
 
   if (undeployedSafe) {
-    return Safe.create({
-      ethAdapter: createReadOnlyEthersAdapter(provider),
+    return Safe.init({
+      provider: provider._getConnection().url,
       isL1SafeSingleton,
       predictedSafe: undeployedSafe.props,
     })
   }
-
-  return Safe.create({
-    ethAdapter: createReadOnlyEthersAdapter(provider),
+  return Safe.init({
+    provider: provider._getConnection().url,
     safeAddress: address,
     isL1SafeSingleton,
   })

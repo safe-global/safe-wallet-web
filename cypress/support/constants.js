@@ -37,6 +37,7 @@ export const goerlySafeName = /g(ö|oe)rli-safe/
 export const sepoliaSafeName = 'sepolia-safe'
 export const goerliToken = /G(ö|oe)rli Ether/
 
+export const prodbaseUrl = 'https://app.safe.global'
 export const swapWidget = 'https://swap.cow.fi/#/11155111/widget/swap/'
 export const safeTestAppurl = 'https://safe-apps-test-app.pages.dev'
 export const TX_Builder_url = 'https://safe-apps.dev.5afe.dev/tx-builder'
@@ -65,6 +66,7 @@ export const appSettingsUrl = '/settings/safe-apps'
 export const setupUrl = '/settings/setup?safe='
 export const dataSettingsUrl = '/settings/data?safe='
 export const securityUrl = '/settings/security?safe='
+export const modulesUrl = '/settings/modules?safe='
 export const notificationsUrl = '/settings/notifications?safe='
 export const invalidAppUrl = 'https://my-invalid-custom-app.com/manifest.json'
 export const validAppUrlJson = 'https://my-valid-custom-app.com/manifest.json'
@@ -196,6 +198,7 @@ export const addressBookErrrMsg = {
   emptyAddress: 'Owner',
   safeAlreadyAdded: 'Safe Account is already added',
   prefixMismatch: "doesn't match the current chain",
+  ownSafeGuardian: 'The Safe Account cannot be a Recoverer of itself',
   invalidPrefix(prefix) {
     return `"${prefix}" doesn't match the current chain`
   },
@@ -231,7 +234,7 @@ export const localStorageKeys = {
   SAFE_v2__settings: 'SAFE_v2__settings',
   SAFE_v2__addedSafes: 'SAFE_v2__addedSafes',
   SAFE_v2__safeApps: 'SAFE_v2__safeApps',
-  SAFE_v2__cookies: 'SAFE_v2__cookies',
+  SAFE_v2_cookies_1_1: 'SAFE_v2__cookies_terms_v1.1',
   SAFE_v2__tokenlist_onboarding: 'SAFE_v2__tokenlist_onboarding',
   SAFE_v2__customSafeApps_11155111: 'SAFE_v2__customSafeApps-11155111',
   SAFE_v2__SafeApps__browserPermissions: 'SAFE_v2__SafeApps__browserPermissions',

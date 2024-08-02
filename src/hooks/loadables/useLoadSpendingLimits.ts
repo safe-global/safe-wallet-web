@@ -103,7 +103,7 @@ export const useLoadSpendingLimits = (): AsyncResult<SpendingLimitState[]> => {
 
   const [data, error, loading] = useAsync<SpendingLimitState[] | undefined>(
     () => {
-      if (!provider || !safeLoaded || !safe.modules || !tokenInfoFromBalances) return
+      if (!provider || !safeLoaded || !safe.modules || tokenInfoFromBalances.length === 0) return
 
       return getSpendingLimits(provider, safe.modules, safeAddress, chainId, tokenInfoFromBalances)
     },

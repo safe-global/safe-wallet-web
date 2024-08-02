@@ -1,24 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { TransactionInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { isSwapOrderTxInfo } from '@/utils/transaction-guards'
-import useIntervalCounter from '@/hooks/useIntervalCounter'
-
-const INTERVAL_IN_MS = 10_000
 
 /**
- * Checks the expiry time of a swap every 10s
- * and returns true if the swap expired
+ * Checks whether a swap has expired and if it hasn't it sets a timeout
+ * for the exact moment it will expire
  * @param txInfo
  */
 const useIsExpiredSwap = (txInfo: TransactionInfo) => {
   const [isExpired, setIsExpired] = useState<boolean>(false)
-  const [counter] = useIntervalCounter(INTERVAL_IN_MS)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     if (!isSwapOrderTxInfo(txInfo)) return
 
-    setIsExpired(Date.now() > txInfo.validUntil * 1000)
-  }, [counter, txInfo])
+    const checkExpiry = () => {
+      const now = Date.now()
+      const expiryTime = txInfo.validUntil * 1000
+
+      if (now > expiryTime) {
+        setIsExpired(true)
+      } else {
+        // Set a timeout for the exact moment it will expire
+        timerRef.current = setTimeout(() => {
+          setIsExpired(true)
+        }, expiryTime - now)
+      }
+    }
+
+    checkExpiry()
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [txInfo])
 
   return isExpired
 }
