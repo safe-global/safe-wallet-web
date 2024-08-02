@@ -43,14 +43,13 @@ const owner2Signer = signers[1]
 
 function visit(url) {
   cy.visit(url)
-  cy.reload()
 }
 
 // TODO: Relay only allows 5 txs per hour.
 describe('Send funds with relay happy path tests', { defaultCommandTimeout: 300000 }, () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v1_cookies, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
       main.addToLocalStorage(
         constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
         ls.cookies.acceptedTokenListOnboarding,
@@ -80,7 +79,6 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
     const originatingSafe = safesData.SEP_FUNDS_SAFE_9.substring(4)
     function executeTransactionFlow(fromSafe, toSafe) {
       return cy.visit(constants.balanceNftsUrl + fromSafe).then(() => {
-        cy.reload()
         wallet.connectSigner(signer)
         nfts.selectNFTs(1)
         nfts.sendNFT()
