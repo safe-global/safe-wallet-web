@@ -1,8 +1,8 @@
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as safeDeployments from '@safe-global/safe-deployments'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import * as deployments from '../deployments'
+import { getLatestSafeVersion } from '@/config/chains'
 
 describe('deployments', () => {
   beforeEach(() => {
@@ -75,14 +75,14 @@ describe('deployments', () => {
     it('should call the deployment getter with the latest version/unsupported network if no version is provider', () => {
       deployments._tryDeploymentVersions(
         getSafeSpy as unknown as typeof safeDeployments.getSafeSingletonDeployment,
-        '69420',
+        '1',
         null,
       )
 
       expect(getSafeSpy).toHaveBeenCalledTimes(1)
 
       expect(getSafeSpy).toHaveBeenNthCalledWith(1, {
-        network: '69420',
+        network: '1',
         version: '1.4.1',
       })
     })
@@ -99,7 +99,6 @@ describe('deployments', () => {
       expect(deployments._isLegacy('1.2.0')).toBe(false)
       expect(deployments._isLegacy('1.3.0')).toBe(false)
       expect(deployments._isLegacy('1.4.1')).toBe(false)
-      expect(deployments._isLegacy(LATEST_SAFE_VERSION)).toBe(false)
     })
 
     it('should return false for unsupported versions', () => {
@@ -112,8 +111,6 @@ describe('deployments', () => {
       expect(deployments._isL2({ l2: true } as ChainInfo, '1.3.0')).toBe(true)
       expect(deployments._isL2({ l2: true } as ChainInfo, '1.3.0+L2')).toBe(true)
       expect(deployments._isL2({ l2: true } as ChainInfo, '1.4.1+L2')).toBe(true)
-      expect(deployments._isL2({ l2: true } as ChainInfo, LATEST_SAFE_VERSION)).toBe(true)
-      expect(deployments._isL2({ l2: true } as ChainInfo, `${LATEST_SAFE_VERSION}+L2`)).toBe(true)
     })
 
     it('should return true for unsupported L2 versions', () => {
@@ -126,7 +123,6 @@ describe('deployments', () => {
       expect(deployments._isL2({ l2: false } as ChainInfo, '1.2.0')).toBe(false)
       expect(deployments._isL2({ l2: false } as ChainInfo, '1.3.0')).toBe(false)
       expect(deployments._isL2({ l2: false } as ChainInfo, '1.4.1+L2')).toBe(false)
-      expect(deployments._isL2({ l2: false } as ChainInfo, LATEST_SAFE_VERSION)).toBe(false)
     })
   })
 
@@ -175,7 +171,7 @@ describe('deployments', () => {
 
       it('should return the latest deployment for no version/supported chain', () => {
         const expected = safeDeployments.getSafeSingletonDeployment({
-          version: LATEST_SAFE_VERSION,
+          version: getLatestSafeVersion('1'),
           network: '1',
         })
 
@@ -208,18 +204,13 @@ describe('deployments', () => {
       })
 
       it('should return undefined for unsupported version/chain', () => {
-        const expected = safeDeployments.getSafeSingletonDeployment({
-          version: LATEST_SAFE_VERSION,
-        })
-
-        expect(expected).toBeDefined()
         const deployment = deployments.getSafeContractDeployment({ chainId: '69420' } as ChainInfo, '1.2.3')
         expect(deployment).toBe(undefined)
       })
 
       it('should return the latest deployment for no version/supported chain', () => {
         const expected = safeDeployments.getSafeL2SingletonDeployment({
-          version: LATEST_SAFE_VERSION,
+          version: getLatestSafeVersion('1'),
           network: '1',
         })
 
@@ -259,7 +250,7 @@ describe('deployments', () => {
 
     it('should return the latest deployment for no version/supported chain', () => {
       const expected = safeDeployments.getMultiSendCallOnlyDeployment({
-        version: LATEST_SAFE_VERSION,
+        version: getLatestSafeVersion('1'),
         network: '1',
       })
 
@@ -298,7 +289,7 @@ describe('deployments', () => {
 
     it('should return the latest deployment for no version/supported chain', () => {
       const expected = safeDeployments.getFallbackHandlerDeployment({
-        version: LATEST_SAFE_VERSION,
+        version: getLatestSafeVersion('1'),
         network: '1',
       })
 
@@ -337,7 +328,7 @@ describe('deployments', () => {
 
     it('should return the latest deployment for no version/supported chain', () => {
       const expected = safeDeployments.getProxyFactoryDeployment({
-        version: LATEST_SAFE_VERSION,
+        version: getLatestSafeVersion('1'),
         network: '1',
       })
 
@@ -376,7 +367,7 @@ describe('deployments', () => {
 
     it('should return the latest deployment for no version/supported chain', () => {
       const expected = safeDeployments.getSignMessageLibDeployment({
-        version: LATEST_SAFE_VERSION,
+        version: getLatestSafeVersion('1'),
         network: '1',
       })
 

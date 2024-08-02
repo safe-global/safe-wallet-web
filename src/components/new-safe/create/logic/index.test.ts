@@ -17,10 +17,12 @@ import {
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
+import { getLatestSafeVersion } from '@/config/chains'
 
 const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
+
+const latestSafeVersion = getLatestSafeVersion('1')
 
 describe('createNewSafeViaRelayer', () => {
   const owner1 = toBeHex('0x1', 20)
@@ -52,10 +54,10 @@ describe('createNewSafeViaRelayer', () => {
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)).getAddress()
-    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
+    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract(latestSafeVersion)).getAddress()
+    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(latestSafeVersion)
     const safeContractAddress = await (
-      await getReadOnlyGnosisSafeContract(mockChainInfo, LATEST_SAFE_VERSION)
+      await getReadOnlyGnosisSafeContract(mockChainInfo, latestSafeVersion)
     ).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
@@ -82,7 +84,7 @@ describe('createNewSafeViaRelayer', () => {
     expect(relayTransaction).toHaveBeenCalledWith('1', {
       to: proxyFactoryAddress,
       data: expectedCallData,
-      version: LATEST_SAFE_VERSION,
+      version: latestSafeVersion,
     })
   })
 

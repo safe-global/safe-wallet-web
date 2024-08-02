@@ -30,6 +30,7 @@ import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/m
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
+import { getLatestSafeVersion } from '@/config/chains'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -114,7 +115,7 @@ const ActivateAccountFlow = () => {
             options,
             callback: onSubmit,
           },
-          safeVersion,
+          safeVersion ?? getLatestSafeVersion(chainId),
         )
       }
     } catch (_err) {

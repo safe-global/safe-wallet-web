@@ -9,8 +9,8 @@ import {
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { Interface, JsonRpcProvider } from 'ethers'
 import { createUpdateSafeTxs } from '../safeUpdateParams'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as web3 from '@/hooks/wallets/web3'
+import { getLatestSafeVersion } from '@/config/chains'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 
@@ -84,7 +84,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeSetFallbackHandlerAddress(fallbackHandlerTx.data),
-        getFallbackHandlerDeployment({ version: LATEST_SAFE_VERSION, network: '1' })?.defaultAddress,
+        getFallbackHandlerDeployment({ version: getLatestSafeVersion('1'), network: '1' })?.defaultAddress,
       ),
     ).toBeTruthy()
   })

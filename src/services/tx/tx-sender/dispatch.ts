@@ -26,8 +26,7 @@ import {
 } from './sdk'
 import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
-import chains from '@/config/chains'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
+import chains, { getLatestSafeVersion } from '@/config/chains'
 import { createExistingTx } from './create'
 
 /**
@@ -507,7 +506,7 @@ export const dispatchTxRelay = async (
       to: safe.address.value,
       data,
       gasLimit: gasLimit?.toString(),
-      version: safe.version ?? LATEST_SAFE_VERSION,
+      version: safe.version ?? getLatestSafeVersion(safe.chainId),
     })
     const taskId = relayResponse.taskId
 
