@@ -1,0 +1,41 @@
+name: Aggregate Outputs and Post Comment
+
+on:
+  workflow_run:
+    workflows: ["Unit tests", "Next.js Bundle Analysis"]
+    types:
+      - completed
+
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Jest Coverage Report
+        uses: actions/download-artifact@v3
+        with:
+          name:  jest-coverage-report
+          path: .
+
+      - name: Nextjs Bundle Analysis Report
+        uses: actions/download-artifact@v3
+        with:
+          name: next-bundle-analysis
+          path: .
+
+      - name: Aggregate Outputs
+        run: |
+          echo "### Consolidated Output" > consolidated_output.txt
+          echo "" >> consolidated_output.txt
+          echo "####  jest-coverage-report" >> consolidated_output.txt
+          cat  jest-coverage-report.md >> consolidated_output.txt
+          echo "" >> consolidated_output.txt
+          echo "#### Nextjs Bundle Analysis Report" >> consolidated_output.txt
+          cat next-bundle-analysis.txt >> consolidated_output.txt
+
+      - name: Post Consolidated Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: consolidated_output.txt
