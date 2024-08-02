@@ -1,4 +1,4 @@
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
+import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { Button, CardActions, CircularProgress, Divider } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -48,10 +48,11 @@ export const DelegateForm = ({
     setIsSubmittable(false)
 
     try {
-      const txDetails = await proposeTx(wallet.address, safeTx)
-      txDispatch(TxEvent.PROPOSED, {
-        txId: txDetails.txId,
-      })
+      // We have to manually sign because sdk.signTransaction doesn't support delegates yet
+      const sdk = await getSafeSDKWithSigner(wallet.provider)
+      const signature = await sdk.signTypedData(safeTx)
+      safeTx.addSignature(signature)
+      await proposeTx(wallet.address, safeTx)
     } catch (_err) {
       const err = asError(_err)
       trackError(Errors._805, err)
