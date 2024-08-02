@@ -79,7 +79,7 @@ export const AppProviders = ({ children }: { children: ReactNode | ReactNode[] }
   const isDarkMode = useDarkMode()
   const themeMode = isDarkMode ? 'dark' : 'light'
 
-  console.log('test4')
+  console.log('test5')
   return (
     <SafeThemeProvider mode={themeMode}>
       {(safeTheme: Theme) => (
