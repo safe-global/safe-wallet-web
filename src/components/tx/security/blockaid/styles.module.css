@@ -11,8 +11,9 @@
   padding: 0;
 }
 
-.wrapperBox :global .MuiAccordion-root.Mui-expanded {
-  border-color: var(--color-border-light) !important;
+.wrapperBox :global .MuiAccordion-root.Mui-expanded,
+.wrapperBox :global .MuiAccordion-root {
+  border: none;
 }
 
 .wrapperBox {
@@ -97,4 +98,22 @@
   width: 52px;
   position: absolute;
   right: -58px;
+}
+
+.resultAccordion :global .Mui-expanded.MuiAccordionSummary-root {
+  background: inherit;
+}
+
+.resultAccordion :global .Mui-expanded {
+  border: var(--color-border-light);
+}
+
+.customAlert {
+  border: none;
+}
+
+.riskConfirmationBlock {
+  background-color: var(--color-error-light);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
