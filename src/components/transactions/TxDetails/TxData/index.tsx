@@ -5,6 +5,7 @@ import {
   isCustomTxInfo,
   isMultiSendTxInfo,
   isMultisigDetailedExecutionInfo,
+  isOnChainConfirmation,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
   isSupportedSpendingLimitAddress,
@@ -20,6 +21,8 @@ import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
 import { MultiSendTxInfo } from '@/components/transactions/TxDetails/TxData/MultiSendTxInfo'
 import InteractWith from '@/features/swap/components/SwapTxInfo/interactWith'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { OnChainConfirmation } from './OnChainConfirmation'
 
 const TxData = ({
   txDetails,
@@ -32,6 +35,8 @@ const TxData = ({
 }): ReactElement => {
   const chainId = useChainId()
   const txInfo = txDetails.txInfo
+
+  const safeAddress = useSafeAddress()
 
   if (isTransferTxInfo(txInfo)) {
     return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} imitation={imitation} />
@@ -58,6 +63,9 @@ const TxData = ({
     return <InteractWith txData={txDetails.txData} />
   }
 
+  if (isOnChainConfirmation(safeAddress, txDetails?.txData)) {
+    return <OnChainConfirmation data={txDetails?.txData} />
+  }
   return <DecodedData txData={txDetails.txData} txInfo={txInfo} />
 }
 

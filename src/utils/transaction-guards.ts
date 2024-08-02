@@ -25,6 +25,7 @@ import type {
   SwapOrder,
   SwapOrderConfirmationView,
   Transaction,
+  TransactionData,
   TransactionInfo,
   TransactionListItem,
   TransactionSummary,
@@ -48,6 +49,7 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
+import { Safe__factory } from '@/types/contracts'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -245,6 +247,15 @@ export const isDeleteAllowance = (method?: string): method is SpendingLimitMetho
 
 export const isSpendingLimitMethod = (method?: string): boolean => {
   return isSetAllowance(method) || isDeleteAllowance(method)
+}
+
+/**
+ * True if the tx calls `approveHash` on the Safe itself.
+ */
+export const isOnChainConfirmation = (safeAddress: string, data?: TransactionData): boolean => {
+  const approveHashSelector = Safe__factory.createInterface().getFunction('approveHash').selector
+
+  return Boolean(data && data.hexData?.startsWith(approveHashSelector))
 }
 
 export const isSupportedSpendingLimitAddress = (txInfo: TransactionInfo, chainId: string): boolean => {

@@ -98,6 +98,7 @@ export const getNestedWallet = (
       const safeTxHash = await connectedSDK.getTransactionHash(safeTx)
 
       try {
+        debugger
         if (await isSmartContractWallet(safeInfo.chainId, actualWallet.address)) {
           // With the unchecked signer, the contract call resolves once the tx
           // has been submitted in the wallet not when it has been executed

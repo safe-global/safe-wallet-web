@@ -18,8 +18,6 @@ import css from './styles.module.css'
 import SwapWidget from '@/features/swap/components/SwapWidget'
 import useOwnedSafes from '@/hooks/useOwnedSafes'
 
-import NestedSafeBanner from './NestedSafeBanner'
-
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
 const Dashboard = (): ReactElement => {
@@ -35,8 +33,6 @@ const Dashboard = (): ReactElement => {
     <>
       <Grid container spacing={3}>
         {supportsRecovery && <RecoveryHeader />}
-
-        <NestedSafeBanner />
 
         <Grid item xs={12}>
           <Overview />
