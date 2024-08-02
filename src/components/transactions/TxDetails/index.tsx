@@ -90,18 +90,6 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           <TxShareLink id={txSummary.id} />
         </div>
 
-        {(isMultiSendTxInfo(txDetails.txInfo) || isOrderTxInfo(txDetails.txInfo)) && (
-          <div className={css.multiSend}>
-            {isMultiSendTxInfo(txDetails.txInfo) && (
-              <div className={css.txData}>Batch transaction with {txDetails.txInfo.actionCount} actions</div>
-            )}
-
-            <ErrorBoundary fallback={<div>Error parsing data</div>}>
-              <Multisend txData={txDetails.txData} />
-            </ErrorBoundary>
-          </div>
-        )}
-
         <div className={css.txData}>
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
             <TxData txDetails={txDetails} trusted={isTrustedTransfer} imitation={isImitationTransaction} />
@@ -121,6 +109,14 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
                 hasExplorer
               />
             </InfoDetails>
+          </div>
+        )}
+
+        {(isMultiSendTxInfo(txDetails.txInfo) || isOrderTxInfo(txDetails.txInfo)) && (
+          <div className={css.multiSend}>
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <Multisend txData={txDetails.txData} />
+            </ErrorBoundary>
           </div>
         )}
 
