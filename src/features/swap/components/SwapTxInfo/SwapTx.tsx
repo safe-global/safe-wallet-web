@@ -20,7 +20,7 @@ const OnlyToken = ({ token }: { token: OrderToken }) => (
   </Typography>
 )
 
-export const SwapTx = ({ info }: { info: Order }): ReactElement => {
+export const SwapTx = ({ info, truncateText }: { info: Order; truncateText?: boolean }): ReactElement => {
   const { kind, sellToken, sellAmount, buyToken, buyAmount } = info
   const isSellOrder = kind === 'sell'
 
@@ -33,7 +33,17 @@ export const SwapTx = ({ info }: { info: Order }): ReactElement => {
   }
 
   return (
-    <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
+    <Typography
+      component="div"
+      display="flex"
+      alignItems="center"
+      fontWeight="bold"
+      {...(truncateText && {
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      })}
+    >
       {from}
       <Typography component="span" mx={0.5}>
         &nbsp;to&nbsp;
