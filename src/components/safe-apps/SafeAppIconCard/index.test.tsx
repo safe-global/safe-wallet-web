@@ -12,6 +12,5 @@ describe('SafeAppIconCard', () => {
     expect(img).toHaveAttribute('src', '/icon.png')
     expect(img).toHaveAttribute('height', '100')
     expect(img).toHaveAttribute('width', '100')
-    expect(img).toHaveAttribute('crossorigin', 'anonymous')
   })
 })

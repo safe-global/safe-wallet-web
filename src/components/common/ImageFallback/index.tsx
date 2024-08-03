@@ -26,7 +26,6 @@ const ImageFallback = ({ src, fallbackSrc, fallbackComponent, ...props }: ImageF
       alt={props.alt || ''}
       src={isError || src === undefined ? fallbackSrc : src}
       onError={() => setIsError(true)}
-      crossOrigin="anonymous"
     />
   )
 }
