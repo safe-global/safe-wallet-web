@@ -26,8 +26,8 @@ jobs:
       - name: Branch preview message
         if: github.event.number
         run: |
-          echo "## Branch preview" > message.txt
-          echo "⏳ Deploying a preview site..." >> start-comment.txt
+          echo "## Branch preview
+          ⏳ Deploying a preview site..." >> start-comment.txt
 
       - name: Upload message artifact
         uses: actions/upload-artifact@v3
