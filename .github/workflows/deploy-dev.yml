@@ -27,13 +27,13 @@ jobs:
         if: github.event.number
         run: |
           echo "## Branch preview" > message.txt
-          echo "⏳ Deploying a preview site..." >> start_comment.txt
+          echo "⏳ Deploying a preview site..." >> start-comment.txt
 
       - name: Upload message artifact
         uses: actions/upload-artifact@v3
         with:
           name: start-comment
-          path: start_comment.txt
+          path: start-comment.txt
 
       - uses: actions/checkout@v4
 
@@ -93,13 +93,13 @@ jobs:
           https://${{ steps.extract_branch.outputs.branch }}--walletweb.review.5afe.dev/home?safe=eth:0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6
           
           **Storybook:**
-          https://${{ steps.extract_branch.outputs.branch }}--walletweb.review.5afe.dev/storybook/" > done_comment.txt
+          https://${{ steps.extract_branch.outputs.branch }}--walletweb.review.5afe.dev/storybook/" > done-comment.txt
 
       - name: Save failure comment as artifact
         if: failure() && github.event.number
-        run: echo "## Branch preview\n❌  Deploy failed!" > done_comment.txt
+        run: echo "## Branch preview\n❌  Deploy failed!" > done-comment.txt
 
       - uses: actions/upload-artifact@v3
         with:
           name: done-comment
-          path: done_comment.txt
+          path: done-comment.txt
