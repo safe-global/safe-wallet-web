@@ -26,9 +26,9 @@ const FiatValue = ({
     return formatCurrencyPrecise(value, currency)
   }, [value, currency])
 
-  const [whole, decimals] = useMemo(() => {
-    const match = preciseFiat.match(/(.+)(\D\d+)$/)
-    return match ? match.slice(1) : [preciseFiat, '']
+  const [whole, decimals, endCurrency] = useMemo(() => {
+    const match = preciseFiat.match(/(.+)(\D\d+)(\D+)?$/)
+    return match ? match.slice(1) : ['', preciseFiat, '', '']
   }, [preciseFiat])
 
   return (
@@ -42,6 +42,7 @@ const FiatValue = ({
                 {decimals}
               </Typography>
             )}
+            {endCurrency}
           </>
         ) : (
           fiat
