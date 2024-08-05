@@ -15,7 +15,6 @@ import SafeLogo from '@/public/images/logo-no-text.svg'
 import { TxSecurityProvider } from '@/components/tx/security/shared/TxSecurityContext'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import SecurityWarnings from '@/components/tx/security/SecurityWarnings'
-import ChosenSignerProvider from '@/components/common/ChosenSignerProvider'
 
 const TxLayoutHeader = ({
   hideNonce,
