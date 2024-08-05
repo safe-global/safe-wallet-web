@@ -19,7 +19,7 @@ const WalletProvider = ({ children }: { children: ReactNode }): ReactElement => 
     const walletSubscription = onboard.state.select('wallets').subscribe(async (wallets) => {
       const newWallet = getConnectedWallet(wallets)
 
-      if (newWallet) {
+      if (newWallet && chainId && safeAddress) {
         const delegates = await getDelegates(chainId, { safe: safeAddress })
         newWallet.isDelegate = delegates.results.some((delegate) => delegate.delegate === newWallet.address)
       }
