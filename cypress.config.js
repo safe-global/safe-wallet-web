@@ -42,7 +42,7 @@ export default defineConfig({
       visualRegressionDiffDirectory: 'cypress/snapshots/diff',
       visualRegressionGenerateDiff: 'fail',
     },
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'http://localhost:8080',
     testIsolation: false,
     hideXHR: true,
     defaultCommandTimeout: 10000,

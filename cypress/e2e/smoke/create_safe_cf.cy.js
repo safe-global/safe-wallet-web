@@ -5,7 +5,7 @@ import * as owner from '../pages/owners.pages'
 import * as wallet from '../../support/utils/wallet.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
-const signer = walletCredentials.OWNER_4_PRIVATE_KEY
+const signer = walletCredentials.OWNER_2_PRIVATE_KEY
 
 describe('[SMOKE] CF Safe creation tests', () => {
   beforeEach(() => {
