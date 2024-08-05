@@ -23,8 +23,6 @@ import { TxSecurityContext } from '../../security/shared/TxSecurityContext'
 
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { pollModuleTransactionId, useExecuteThroughRole, useGasLimit, useMetaTransactions, type Role } from './hooks'
-import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
-import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { decodeBytes32String } from 'ethers'
 import useOnboard from '@/hooks/wallets/useOnboard'
@@ -133,11 +131,7 @@ export const ExecuteThroughRoleForm = ({
       throw new Error('Transaction service not found')
     }
     const txId = await pollModuleTransactionId(chainId, safe.address.value, txHash)
-    onSubmit?.(txId, true)
-
-    // Track tx event
-    const txType = await getTransactionTrackingType(chainId, txId)
-    trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
+    onSubmit?.(txId, true, TX_EVENTS.EXECUTE_VIA_ROLE)
 
     // Update the success screen so it shows a link to the transaction
     setTxFlow(<SuccessScreenFlow txId={txId} />, undefined, false)

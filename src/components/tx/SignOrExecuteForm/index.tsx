@@ -24,7 +24,7 @@ import ApprovalEditor from '../ApprovalEditor'
 import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
-import { trackEvent } from '@/services/analytics'
+import { type AnalyticsEvent, trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
@@ -36,7 +36,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useTxDetails from '@/hooks/useTxDetails'
 import TxData from '@/components/transactions/TxDetails/TxData'
 
-export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
+export type SubmitCallback = (txId: string, isExecuted?: boolean, executionEvent?: AnalyticsEvent) => void
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -53,14 +53,20 @@ export type SignOrExecuteProps = {
   showMethodCall?: boolean
 }
 
-const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean, isExecuted: boolean) => {
+const trackTxEvents = async (
+  chainId: string,
+  txId: string,
+  isCreation: boolean,
+  isExecuted: boolean,
+  executionEvent?: AnalyticsEvent,
+) => {
   const event = isCreation ? TX_EVENTS.CREATE : isExecuted ? TX_EVENTS.EXECUTE : TX_EVENTS.CONFIRM
   const txType = await getTransactionTrackingType(chainId, txId)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
   if (isCreation && isExecuted) {
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: txType })
+    trackEvent({ ...(executionEvent ?? TX_EVENTS.EXECUTE), label: txType })
   }
 }
 
@@ -107,11 +113,11 @@ export const SignOrExecuteForm = ({
     (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
 
   const onFormSubmit = useCallback<SubmitCallback>(
-    async (txId, isExecuted = false) => {
+    async (txId, isExecuted = false, executionEvent) => {
       onSubmit?.(txId, isExecuted)
 
       // Track tx event
-      trackTxEvents(chainId, txId, isCreation, isExecuted)
+      trackTxEvents(chainId, txId, isCreation, isExecuted, executionEvent)
     },
     [chainId, isCreation, onSubmit],
   )
