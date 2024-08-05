@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 import { Grid, Typography } from '@mui/material'
 
-const minWidth = { xl: '25%', lg: '3vw' }
+const minWidth = { xl: '25%', lg: '2vw' }
 
 const FieldsGrid = ({ title, children }: { title: string; children: ReactNode }) => {
   return (
