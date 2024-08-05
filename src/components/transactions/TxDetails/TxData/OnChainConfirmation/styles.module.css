@@ -1,0 +1,5 @@
+.nestedTx {
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  padding: var(--space-2);
+}

@@ -1,5 +1,5 @@
 import { type ConnectedWallet } from './useOnboard'
-import { BrowserProvider, type Eip1193Provider, Interface, ethers, getAddress, type JsonRpcProvider } from 'ethers'
+import { BrowserProvider, type Eip1193Provider, Interface, getAddress, type JsonRpcProvider } from 'ethers'
 import { type AppInfo, SafeWalletProvider, type WalletSDK } from '@/services/safe-wallet-provider'
 import { getTransactionDetails, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getCreateCallContractDeployment } from '@/services/contracts/deployments'
@@ -7,9 +7,9 @@ import { type NextRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
 import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 import { initSafeSDK } from '../coreSDK/safeCoreSDK'
-import { EthersAdapter } from '@safe-global/protocol-kit'
 import proposeTx from '@/services/tx/proposeTransaction'
 import { isSmartContractWallet } from '@/utils/wallets'
+import { prepareApproveTxHash, prepareTxExecution } from '@/services/tx/tx-sender/sdk'
 
 export type NestedWallet = {
   address: string
@@ -70,12 +70,9 @@ export const getNestedWallet = (
         implementation: safeInfo.implementation.value,
       })
 
-      const ethAdapter = new EthersAdapter({
-        ethers,
-        signerOrProvider: uncheckedJsonRpcSigner,
+      const connectedSDK = await safeCoreSDK?.connect({
+        provider: actualWallet.provider,
       })
-
-      const connectedSDK = await safeCoreSDK?.connect({ ethAdapter })
 
       if (!connectedSDK) {
         return Promise.reject('Could not initialize core sdk')
@@ -105,13 +102,35 @@ export const getNestedWallet = (
 
           // First we propose so the backend will pick it up
           await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, safeTx, safeTxHash)
-          await connectedSDK.approveTransactionHash(safeTxHash)
+          const encodedApproveHashTx = await prepareApproveTxHash(safeTxHash, actualWallet.provider)
+
+          await actualWallet.provider.request({
+            method: 'eth_sendTransaction',
+            params: [
+              {
+                from: actualWallet.address,
+                to: safeInfo.address.value,
+                data: encodedApproveHashTx,
+              },
+            ],
+          })
         } else {
-          // Sign off-chain
           if (safeInfo.threshold === 1) {
+            const encodedTxExecution = await prepareTxExecution(safeTx, connectedSDK)
+
             // Directly execute the tx
-            await connectedSDK.executeTransaction(safeTx)
+            await actualWallet.provider.request({
+              method: 'eth_sendTransaction',
+              params: [
+                {
+                  from: actualWallet.address,
+                  to: safeInfo.address.value,
+                  data: encodedTxExecution,
+                },
+              ],
+            })
           } else {
+            // sign off-chain
             const signedTx = await connectedSDK.signTransaction(safeTx)
             await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, signedTx, safeTxHash)
           }
