@@ -20,7 +20,7 @@ jobs:
 
       - name: Annotations and coverage report
         id: jest-coverage
-        uses: ArtiomTr/jest-coverage-report-action@v3
+        uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           skip-step: install
           output: report-markdown
@@ -30,7 +30,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Save coverage report to file
-        run: echo "${{ steps.jest-coverage.outputs.report-markdown }}" > jest-coverage-report.md
+        run: echo "${{ steps.jest-coverage.outputs.report }}" > jest-coverage-report.md
 
       - name: Upload test coverage to artifacts
         uses: actions/upload-artifact@v4
