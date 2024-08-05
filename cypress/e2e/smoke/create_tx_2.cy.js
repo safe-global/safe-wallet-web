@@ -43,6 +43,7 @@ describe('[SMOKE] Create transactions tests 2', () => {
   it('[SMOKE] Verify a transaction shows relayer and addToBatch button', () => {
     happyPathToStepTwo()
     createtx.verifySubmitBtnIsEnabled()
+    createtx.verifyNativeTokenTransfer()
     createtx.changeNonce('1')
     createtx.verifyConfirmTransactionData()
     createtx.verifyRelayerAttemptsAvailable()
