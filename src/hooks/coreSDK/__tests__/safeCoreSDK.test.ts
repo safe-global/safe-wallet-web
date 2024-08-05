@@ -215,6 +215,29 @@ describe('safeCoreSDK', () => {
           safeAddress: expect.anything(),
         })
       })
+
+      it('should return an L1 SDK instance for a canonical mastercopy on optimism', async () => {
+        const chainId = '10' // Optimism mainnet
+        const version = '1.3.0'
+
+        const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
+
+        await initSafeSDK({
+          provider: mockProvider,
+          chainId,
+          address: toBeHex('0x1', 20),
+          version,
+          implementation: MAINNET_MASTER_COPY,
+          implementationVersionState: ImplementationVersionState.UNKNOWN,
+        })
+
+        expect(Safe.init).toHaveBeenCalledWith({
+          isL1SafeSingleton: true,
+          provider: expect.anything(),
+          safeAddress: expect.anything(),
+        })
+      })
     })
 
     describe('Unsupported contracts', () => {
