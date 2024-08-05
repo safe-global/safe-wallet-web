@@ -23,7 +23,6 @@ import { MultiSendTxInfo } from '@/components/transactions/TxDetails/TxData/Mult
 import InteractWith from '@/features/swap/components/SwapTxInfo/interactWith'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { OnChainConfirmation } from './OnChainConfirmation'
-import { Divider, Stack } from '@mui/material'
 
 const TxData = ({
   txDetails,
