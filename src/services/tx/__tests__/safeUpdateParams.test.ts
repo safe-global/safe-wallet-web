@@ -10,7 +10,7 @@ import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-s
 import { Interface, JsonRpcProvider } from 'ethers'
 import { createUpdateSafeTxs } from '../safeUpdateParams'
 import * as web3 from '@/hooks/wallets/web3'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 

@@ -17,7 +17,7 @@ import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 import { backOff } from 'exponential-backoff'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 export type SafeCreationProps = {
   owners: string[]

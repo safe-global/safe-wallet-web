@@ -11,7 +11,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { UpdateSafeFlow } from '@/components/tx-flow/flows'
 import ExternalLink from '@/components/common/ExternalLink'
 import CheckWallet from '@/components/common/CheckWallet'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 export const ContractVersion = () => {
   const { setTxFlow } = useContext(TxModalContext)

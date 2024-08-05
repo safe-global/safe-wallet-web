@@ -6,7 +6,7 @@ import { getReadOnlyFallbackHandlerContract, getReadOnlyGnosisSafeContract } fro
 import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 const getChangeFallbackHandlerCallData = async (
   safe: SafeInfo,

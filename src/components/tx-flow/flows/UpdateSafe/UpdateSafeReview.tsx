@@ -9,7 +9,7 @@ import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAsync from '@/hooks/useAsync'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 export const UpdateSafeReview = () => {
   const { safe, safeLoaded } = useSafeInfo()

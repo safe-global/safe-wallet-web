@@ -18,7 +18,7 @@ import {
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
 

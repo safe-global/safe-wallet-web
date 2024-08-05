@@ -7,7 +7,7 @@ import { Builder } from '../Builder'
 import { generateRandomArray } from './utils'
 import { checksumAddress } from '@/utils/addresses'
 import type { IBuilder } from '../Builder'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 const MAX_OWNERS_LENGTH = 10
 

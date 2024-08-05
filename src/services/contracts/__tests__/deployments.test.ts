@@ -2,7 +2,7 @@ import * as safeDeployments from '@safe-global/safe-deployments'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import * as deployments from '../deployments'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 describe('deployments', () => {
   beforeEach(() => {

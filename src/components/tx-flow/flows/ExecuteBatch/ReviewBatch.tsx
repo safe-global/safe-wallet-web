@@ -37,7 +37,7 @@ import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {

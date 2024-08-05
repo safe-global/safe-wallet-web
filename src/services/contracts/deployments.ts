@@ -10,7 +10,7 @@ import {
 } from '@safe-global/safe-deployments'
 import type { SingletonDeployment, DeploymentFilter } from '@safe-global/safe-deployments'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 export const _tryDeploymentVersions = (
   getDeployment: (filter?: DeploymentFilter) => SingletonDeployment | undefined,

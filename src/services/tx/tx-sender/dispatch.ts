@@ -26,8 +26,9 @@ import {
 } from './sdk'
 import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
-import chains, { getLatestSafeVersion } from '@/config/chains'
+import chains from '@/config/chains'
 import { createExistingTx } from './create'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 /**
  * Propose a transaction

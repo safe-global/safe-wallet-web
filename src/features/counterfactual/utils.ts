@@ -1,5 +1,5 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import { getLatestSafeVersion } from '@/config/chains'
+import { getLatestSafeVersion } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
