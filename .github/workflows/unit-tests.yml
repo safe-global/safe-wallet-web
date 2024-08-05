@@ -30,7 +30,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Save coverage report to file
-        run: echo "${{ steps.jest-coverage.outputs.report }}" > jest-coverage-report.md
+        run: |
+          cat << 'EOF' > jest-coverage-report.md
+          ${{ steps.jest-coverage.outputs.report }}
+          EOF
 
       - name: Upload test coverage to artifacts
         uses: actions/upload-artifact@v4
