@@ -16,3 +16,4 @@ jobs:
       - uses: Maggi64/eslint-plus-action@master
         with:
           npmInstall: false
+          issueSummary: false
