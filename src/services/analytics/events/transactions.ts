@@ -53,6 +53,11 @@ export const TX_EVENTS = {
     action: 'Speed up transaction',
     category: TX_CATEGORY,
   },
+  EXECUTE_SPENDING_LIMIT: {
+    event: EventType.TX_EXECUTED,
+    action: 'Execute via spending limit',
+    category: TX_CATEGORY,
+  },
   EXECUTE_VIA_ROLE: {
     event: EventType.TX_EXECUTED,
     action: 'Execute via role',

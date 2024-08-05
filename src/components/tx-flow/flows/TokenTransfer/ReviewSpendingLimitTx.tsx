@@ -119,7 +119,7 @@ const ReviewSpendingLimitTx = ({
     }
 
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.transfer_token })
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: TX_TYPES.transfer_token })
+    trackEvent({ ...TX_EVENTS.EXECUTE_SPENDING_LIMIT, label: TX_TYPES.transfer_token })
   }
 
   const submitDisabled = !isSubmittable || gasLimitLoading
