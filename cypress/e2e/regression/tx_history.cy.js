@@ -104,8 +104,8 @@ describe('Tx history tests 1', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [
-        typeSpendingLimits.title,
-        typeSpendingLimits.description,
+        typeSpendingLimits.contractTitle,
+        typeSpendingLimits.call_multiSend,
         typeSpendingLimits.transactionHash,
         typeSpendingLimits.safeTxHash,
       ],
