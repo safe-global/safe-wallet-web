@@ -33,10 +33,6 @@ describe('Sidebar tests', () => {
     sideBar.verifyQRModalDisplayed()
   })
 
-  it.skip('Verify Copy button copies the address', () => {
-    sideBar.verifyCopyAddressBtn(staticSafes.SEP_STATIC_SAFE_9.substring(4))
-  })
-
   it('Verify Open blockexplorer button contain etherscan link', () => {
     sideBar.verifyEtherscanLinkExists()
   })
