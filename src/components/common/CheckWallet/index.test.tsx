@@ -5,7 +5,6 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useWallet from '@/hooks/wallets/useWallet'
 import { chainBuilder } from '@/tests/builders/chains'
-// import * as useIsWrongChainHook from '@/hooks/useIsWrongChain'
 
 // mock useWallet
 jest.mock('@/hooks/wallets/useWallet', () => ({

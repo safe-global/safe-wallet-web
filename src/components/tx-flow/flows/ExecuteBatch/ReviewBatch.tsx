@@ -15,6 +15,7 @@ import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/Execut
 import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import { TxSimulation } from '@/components/tx/security/tenderly'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
@@ -184,6 +185,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
       <TxCard>
         <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
+
+        <WrongChainWarning />
 
         {canRelay ? (
           <>

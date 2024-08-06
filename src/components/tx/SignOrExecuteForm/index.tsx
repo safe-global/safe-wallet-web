@@ -32,6 +32,7 @@ import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfi
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { WrongChainWarning } from '../WrongChainWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -162,6 +163,8 @@ export const SignOrExecuteForm = ({
         {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && (
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
+
+        <WrongChainWarning />
 
         <UnknownContractError />
 
