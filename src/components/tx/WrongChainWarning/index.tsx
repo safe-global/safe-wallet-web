@@ -15,7 +15,7 @@ export const WrongChainWarning = (): ReactElement | null => {
   return (
     <ErrorMessage level="info">
       <Typography fontWeight="bold">Wallet network switch</Typography>
-      When you submit the transaction, you will be asked to switch your wallet network to {chain.chainName}.
+      To submit the transaction, you will first need to switch your wallet network to {chain.chainName}.
     </ErrorMessage>
   )
 }
