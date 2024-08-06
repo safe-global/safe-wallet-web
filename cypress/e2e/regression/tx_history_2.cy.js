@@ -62,13 +62,7 @@ describe('Tx history tests 2', () => {
   it('Verify exapanded details for batch', () => {
     createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
-      [
-        typeBatch.description,
-        typeBatch.contractTitle,
-        typeBatch.contractAddress,
-        typeBatch.transactionHash,
-        typeBatch.safeTxHash,
-      ],
+      [typeBatch.contractTitle, typeBatch.transactionHash, typeBatch.safeTxHash],
       createTx.delegateCallWarning,
     )
     createTx.verifyActions([typeBatch.nativeTransfer.title])

@@ -4176,10 +4176,17 @@
   dependencies:
     semver "^7.6.0"
 
-"@safe-global/safe-deployments@^1.37.0", "@safe-global/safe-deployments@^1.37.1":
+"@safe-global/safe-deployments@^1.37.0":
   version "1.37.1"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.1.tgz#d8293c421b1b7445899aec720061be26bb3c4976"
   integrity sha512-duCCQghqw9B/MmHPMXlkPpZwyq3T92unWVnwwhiA8alhush2FZ22+x6uF8bQtk/RYJzkpYzV1tPL/VBLt9U9XQ==
+  dependencies:
+    semver "^7.6.2"
+
+"@safe-global/safe-deployments@^1.37.2":
+  version "1.37.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.2.tgz#d63947bf631d63f5991f3732fad08b17b7264505"
+  integrity sha512-kWRim5vY9W/yNKUUehUQDhCHz7NWzXjhkpMDvvnrrkEn9U461zwCcmJmPVnPrjnaY4dPpJsGZSzUuU4+uxH+vg==
   dependencies:
     semver "^7.6.2"
 

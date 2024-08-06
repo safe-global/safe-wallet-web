@@ -14,7 +14,6 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { isTxValid } from '@/components/safe-apps/utils'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { asError } from '@/services/exceptions/utils'
-import { SWAP_TITLE } from '@/features/swap/constants'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -67,7 +66,7 @@ const ReviewSafeAppsTx = ({
   const error = !isTxValid(txs)
 
   return (
-    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin} showToBlock isBatchable={app?.name !== SWAP_TITLE}>
+    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin} showMethodCall>
       {error ? (
         <ErrorMessage error={safeTxError}>
           This Safe App initiated a transaction which cannot be processed. Please get in touch with the developer of
