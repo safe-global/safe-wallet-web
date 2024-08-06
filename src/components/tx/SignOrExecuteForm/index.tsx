@@ -37,6 +37,7 @@ import TxData from '@/components/transactions/TxDetails/TxData'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -85,7 +86,14 @@ export const SignOrExecuteForm = ({
   const [decodedData] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
-  const { data: txDetails } = useGetTransactionDetailsQuery({ chainId, txId: props.txId })
+  const { data: txDetails } = useGetTransactionDetailsQuery(
+    chainId && props.txId
+      ? {
+          chainId,
+          txId: props.txId,
+        }
+      : skipToken,
+  )
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
   const [trigger] = useLazyGetTransactionDetailsQuery()
 
