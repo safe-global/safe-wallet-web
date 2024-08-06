@@ -78,6 +78,7 @@ const getItems = ({
 
   const addedSafeChainAmount = Object.keys(addedSafes || {}).length
   const addressBookChainAmount = Object.keys(addressBook || {}).length
+  const undeployedSafesCount = Object.values(undeployedSafes || {}).flatMap((items) => Object.keys(items)).length
 
   const items: Array<ListItemTextProps> = []
 
@@ -136,7 +137,7 @@ const getItems = ({
     const undeployedSafesPreview: ListItemTextProps = {
       primary: (
         <>
-          <b>Not activated Safe Accounts</b> {Object.keys(undeployedSafes).length}
+          <b>Not activated Safe Accounts</b> {undeployedSafesCount}
         </>
       ),
     }
