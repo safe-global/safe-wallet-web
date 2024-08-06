@@ -10,13 +10,16 @@ import AppFrame from '@/components/safe-apps/AppFrame'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/features/stake/components/LegalDisclaimer'
 import useStakeConsent from '@/features/stake/useStakeConsent'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 const Swap: NextPage = () => {
+  const isDarkMode = useDarkMode()
+
   const appData: SafeAppData = useMemo(
     () => ({
-      id: 321412441,
-      url: 'https://widget.devnet.kiln.fi/safe-widget/earn',
-      name: 'Stake',
+      id: 1,
+      url: `http://widget.devnet.kiln.fi/safe-widget/overview?theme=${isDarkMode ? 'dark' : 'light'}`,
+      name: 'Earn',
       iconUrl: './images/common/earn.svg',
       description: 'Safe Apps',
       chainIds: ['17000', '11155111', '1', '42161', '137', '56', '8453', '10'],
@@ -25,7 +28,7 @@ const Swap: NextPage = () => {
       features: [SafeAppFeatures.BATCHED_TRANSACTIONS],
       socialProfiles: [],
     }),
-    [],
+    [isDarkMode],
   )
 
   const { isConsentAccepted, onAccept } = useStakeConsent()
