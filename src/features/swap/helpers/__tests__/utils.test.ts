@@ -8,7 +8,7 @@ import {
   isSettingTwapFallbackHandler,
   TWAP_FALLBACK_HANDLER,
 } from '../utils'
-import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse, TwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('Swap helpers', () => {
@@ -84,6 +84,25 @@ describe('Swap helpers', () => {
     const surplusPrice = getSurplusPrice(mockOrder)
 
     expect(executionPrice).toBe(2)
+    expect(limitPrice).toBe(2)
+    expect(surplusPrice).toBe(0)
+  })
+
+  test('twap order with unknown executed sell and buy amounts', () => {
+    const mockOrder = {
+      executedSellAmount: null,
+      executedBuyAmount: null,
+      buyToken: { decimals: 8 },
+      sellToken: { decimals: 18 },
+      sellAmount: '100000000000000000000',
+      buyAmount: '5000000000',
+    } as unknown as TwapOrder
+
+    const executionPrice = getExecutionPrice(mockOrder)
+    const limitPrice = getLimitPrice(mockOrder)
+    const surplusPrice = getSurplusPrice(mockOrder)
+
+    expect(executionPrice).toBe(0)
     expect(limitPrice).toBe(2)
     expect(surplusPrice).toBe(0)
   })

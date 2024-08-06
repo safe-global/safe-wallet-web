@@ -1,4 +1,4 @@
-import TokenIcon from '@/components/common/TokenIcon'
+import { Fragment } from 'react'
 import OrderId from '@/features/swap/components/OrderId'
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import SwapProgress from '@/features/swap/components/SwapProgress'
@@ -18,7 +18,6 @@ import { compareAsc } from 'date-fns'
 import css from './styles.module.css'
 import { Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
-import { formatVisualAmount } from '@/utils/formatters'
 import {
   getExecutionPrice,
   getLimitPrice,
@@ -28,6 +27,7 @@ import {
   isOrderPartiallyFilled,
 } from '@/features/swap/helpers/utils'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import TokenAmount from '@/components/common/TokenAmount'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { isSwapOrderTxInfo, isSwapTransferOrderTxInfo, isTwapOrderTxInfo } from '@/utils/transaction-guards'
 import { EmptyRow } from '@/components/common/Table/EmptyRow'
@@ -41,6 +41,8 @@ type SwapOrderProps = {
   txInfo?: Order
 }
 
+const TWAP_PARTS_STATUS_THRESHOLD = 10
+
 const AmountRow = ({ order }: { order: Order }) => {
   const { sellToken, buyToken, sellAmount, buyAmount, kind } = order
   const isSellOrder = kind === 'sell'
@@ -50,19 +52,23 @@ const AmountRow = ({ order }: { order: Order }) => {
         <div>
           <span className={css.value}>
             {isSellOrder ? 'Sell' : 'For at most'}{' '}
-            {sellToken.logoUri && <TokenIcon logoUri={sellToken.logoUri} size={24} />}{' '}
-            <Typography component="span" fontWeight="bold">
-              {formatVisualAmount(sellAmount, sellToken.decimals)} {sellToken.symbol}
-            </Typography>
+            <TokenAmount
+              value={sellAmount}
+              decimals={sellToken.decimals}
+              tokenSymbol={sellToken.symbol}
+              logoUri={sellToken.logoUri ?? undefined}
+            />
           </span>
         </div>
         <div>
           <span className={css.value}>
             {isSellOrder ? 'for at least' : 'Buy'}{' '}
-            {buyToken.logoUri && <TokenIcon logoUri={buyToken.logoUri} size={24} />}
-            <Typography component="span" fontWeight="bold">
-              {formatVisualAmount(buyAmount, buyToken.decimals)} {buyToken.symbol}
-            </Typography>
+            <TokenAmount
+              value={buyAmount}
+              decimals={buyToken.decimals}
+              tokenSymbol={buyToken.symbol}
+              logoUri={buyToken.logoUri ?? undefined}
+            />
           </span>
         </div>
       </Stack>
@@ -213,9 +219,9 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
   const isPartiallyFilled = isOrderPartiallyFilled(order)
   const expires = new Date(validUntil * 1000)
   const now = new Date()
-
   const orderKindLabel = capitalize(kind)
 
+  const isStatusKnown = Number(numberOfParts) <= TWAP_PARTS_STATUS_THRESHOLD
   return (
     <DataTable
       header={`${orderKindLabel} order`}
@@ -231,7 +237,11 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
         </DataRow>,
         <PartSellAmount order={order} key="part_sell_amount" />,
         <PartBuyAmount order={order} key="part_buy_amount" />,
-        <FilledRow order={order} key="filled-row" />,
+        order.executedSellAmount !== null && order.executedBuyAmount !== null ? (
+          <FilledRow order={order} key="filled-row" />
+        ) : (
+          <Fragment key="filled-row" />
+        ),
         <PartDuration order={order} key="part_duration" />,
         <EmptyRow key="spacer-1" />,
         status !== 'fulfilled' && compareAsc(now, expires) !== 1 ? (
@@ -248,9 +258,13 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
             {formatDateTime(validUntil * 1000)}
           </DataRow>
         ),
-        <DataRow key="Status" title="Status">
-          <StatusLabel status={isPartiallyFilled ? 'partiallyFilled' : status} />
-        </DataRow>,
+        isStatusKnown ? (
+          <DataRow key="Status" title="Status">
+            <StatusLabel status={isPartiallyFilled ? 'partiallyFilled' : status} />
+          </DataRow>
+        ) : (
+          <Fragment key="status" />
+        ),
       ]}
     />
   )

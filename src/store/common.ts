@@ -1,4 +1,5 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import type { RootState } from '@/store/index'
 
 export type Loadable<T> = {
   data: T
@@ -32,3 +33,9 @@ export const makeLoadableSlice = <N extends string, T>(name: N, data: T) => {
     selector,
   }
 }
+
+// Memoized selector for chainId and safeAddress
+export const selectChainIdAndSafeAddress = createSelector(
+  [(_: RootState, chainId: string) => chainId, (_: RootState, _chainId: string, safeAddress: string) => safeAddress],
+  (chainId, safeAddress) => [chainId, safeAddress] as const,
+)

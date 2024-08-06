@@ -43,7 +43,9 @@ const TxModalDialog = ({
         </div>
       </DialogTitle>
       <DialogContent dividers={false}>
-        <DialogContentText tabIndex={-1}>{children}</DialogContentText>
+        <DialogContentText component="div" tabIndex={-1} color="text.primary">
+          {children}
+        </DialogContentText>
       </DialogContent>
     </Dialog>
   )

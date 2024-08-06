@@ -72,6 +72,7 @@
   }
   .safeLink :nth-child(3) {
     grid-area: c;
+    text-align: left;
   }
   .safeLink :nth-child(4) {
     grid-area: d;

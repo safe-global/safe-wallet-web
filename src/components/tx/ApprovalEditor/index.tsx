@@ -1,21 +1,26 @@
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
+import Approvals from '@/components/tx/ApprovalEditor/Approvals'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
+import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
 import { Alert, Box, Skeleton, Typography } from '@mui/material'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type EIP712TypedData, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { useContext } from 'react'
-import css from './styles.module.css'
 import { ApprovalEditorForm } from './ApprovalEditorForm'
-import { updateApprovalTxs } from './utils/approvals'
 import { useApprovalInfos } from './hooks/useApprovalInfos'
-import { decodeSafeTxToBaseTransactions } from '@/utils/transactions'
-import Approvals from '@/components/tx/ApprovalEditor/Approvals'
-import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
+import css from './styles.module.css'
+import { updateApprovalTxs } from './utils/approvals'
 
-const Title = () => {
+const Title = ({ isErc721 }: { isErc721: boolean }) => {
+  const title = 'Allow access to tokens?'
+  const subtitle = isErc721
+    ? 'This allows the spender to transfer the specified token.'
+    : 'This allows the spender to spend the specified amount of your tokens.'
+
   return (
     <div>
-      <Typography fontWeight={700}>Allow access to tokens?</Typography>
-      <Typography variant="body2">This allows the spender to spend the specified amount of your tokens.</Typography>
+      <Typography fontWeight={700}>{title}</Typography>
+      <Typography variant="body2">{subtitle}</Typography>
     </div>
   )
 }
@@ -51,11 +56,15 @@ export const ApprovalEditor = ({
     createSafeTx().then(setSafeTx).catch(setSafeTxError)
   }
 
-  const isReadOnly = (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined
+  const isErc721Approval = !!readableApprovals?.some((approval) => approval.tokenInfo?.type === TokenType.ERC721)
+
+  const isReadOnly =
+    (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined || isErc721Approval
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} className={css.container}>
-      <Title />
+    <Box display="flex" flexDirection="column" gap={2} className={css.container} mb={1}>
+      <Title isErc721={isErc721Approval} />
+
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>
       ) : loading || !readableApprovals ? (

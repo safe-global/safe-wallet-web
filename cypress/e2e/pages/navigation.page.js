@@ -3,7 +3,7 @@ export const setupSection = '[data-testid="setup-section"]'
 export const modalBackBtn = '[data-testid="modal-back-btn"]'
 export const newTxBtn = '[data-testid="new-tx-btn"]'
 const modalCloseIcon = '[data-testid="CloseIcon"]'
-const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
+export const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
 const sentinelStart = 'div[data-testid="sentinelStart"]'
 
 const disconnectBtnStr = 'Disconnect'

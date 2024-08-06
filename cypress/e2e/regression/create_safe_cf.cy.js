@@ -10,7 +10,8 @@ import * as wallet from '../../support/utils/wallet.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
-const signer = walletCredentials.OWNER_4_PRIVATE_KEY
+// DO NOT use OWNER_2_PRIVATE_KEY for safe creation. Used for CF safes.
+const signer = walletCredentials.OWNER_2_PRIVATE_KEY
 
 const txOrder = [
   'Activate Safe now',
@@ -28,7 +29,7 @@ describe('CF Safe regression tests', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_14)
+    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_0)
     main.acceptCookies()
   })
 
@@ -140,21 +141,21 @@ describe('CF Safe regression tests', () => {
   it('Verify "Notifications" in the settings are disabled', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__undeployedSafes, ls.undeployedSafe.safe1)
     cy.reload()
-    cy.visit(constants.notificationsUrl + staticSafes.SEP_STATIC_SAFE_14)
+    cy.visit(constants.notificationsUrl + staticSafes.SEP_STATIC_SAFE_0)
     createwallet.checkNotificationsSwitchIs(constants.enabledStates.disabled)
   })
 
   it('Verify in assets, that a "Add funds" block is present', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__undeployedSafes, ls.undeployedSafe.safe1)
     cy.reload()
-    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_14)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_0)
     main.verifyElementsIsVisible([createwallet.addFundsSection, createwallet.noTokensAlert])
   })
 
   it('Verify clicking on "Activate now" button opens safe activation flow', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__undeployedSafes, ls.undeployedSafe.safe1)
     cy.reload()
-    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_14)
+    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_0)
     createwallet.clickOnActivateAccountBtn()
     main.verifyElementsIsVisible([createwallet.activateAccountBtn])
   })
