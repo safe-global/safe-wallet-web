@@ -61,22 +61,9 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  it.skip('Verify copy bottons work as expected for account creation', () => {
-    createTx.clickOnTransactionItemByName(typeCreateAccount.title)
-    createTx.verifyNumberOfCopyIcons(4)
-    createTx.verifyCopyIconWorks(0, typeCreateAccount.creator.address)
-  })
-
   it('Verify external links exist for account creation', () => {
     createTx.clickOnTransactionItemByName(typeCreateAccount.title)
     createTx.verifyNumberOfExternalLinks(4)
-  })
-
-  // Token receipt
-  it.skip('Verify copy button copies tx hash', () => {
-    createTx.clickOnTransactionItemByName(typeReceive.summaryTitle, typeReceive.summaryTxInfo)
-    createTx.verifyNumberOfCopyIcons(2)
-    createTx.verifyCopyIconWorks(1, typeReceive.transactionHashCopied)
   })
 
   // Token send
