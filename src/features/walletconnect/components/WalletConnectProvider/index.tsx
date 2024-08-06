@@ -23,6 +23,12 @@ export enum WCLoadingState {
   DISCONNECT = 'Disconnect',
 }
 
+// The URL of the former WalletConnect Safe App
+// This is still used to differentiate these txs from Safe App txs in the analytics
+const LEGACY_WC_APP_URL = IS_PRODUCTION
+  ? 'https://apps-portal.safe.global/wallet-connect'
+  : 'https://safe-apps.dev.5afe.dev/wallet-connect'
+
 const walletConnectSingleton = new WalletConnectWallet()
 
 const getWrongChainError = (dappName: string): Error => {
@@ -88,7 +94,7 @@ export const WalletConnectProvider = ({ children }: { children: ReactNode }) => 
 
         // Get response from Safe Wallet Provider
         return safeWalletProvider.request(event.id, event.params.request, {
-          url: session.peer.metadata.url,
+          url: LEGACY_WC_APP_URL, // required for server-side analytics
           name: getPeerName(session.peer) || 'WalletConnect',
           description: session.peer.metadata.description,
           iconUrl: session.peer.metadata.icons[0],
