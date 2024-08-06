@@ -357,7 +357,7 @@ describe('WalletConnectProvider', () => {
             metadata: {
               name: 'name',
               description: 'description',
-              url: 'https://apps-portal.safe.global/wallet-connect',
+              url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
               icons: ['iconUrl'],
             },
           },
@@ -412,7 +412,7 @@ describe('WalletConnectProvider', () => {
         {
           name: 'name',
           description: 'description',
-          url: 'https://apps-portal.safe.global/wallet-connect',
+          url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
           iconUrl: 'iconUrl',
         },
       )
@@ -432,7 +432,7 @@ describe('WalletConnectProvider', () => {
             metadata: {
               name: 'name',
               description: 'description',
-              url: 'https://apps-portal.safe.global/wallet-connect',
+              url: 'https://safe-apps.dev.5afe.dev/wallet-connect',
               icons: ['iconUrl'],
             },
           },
