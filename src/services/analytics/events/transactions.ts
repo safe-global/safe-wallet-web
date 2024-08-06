@@ -38,6 +38,16 @@ export const TX_EVENTS = {
     category: TX_CATEGORY,
     // label: TX_TYPES,
   },
+  CREATE_VIA_ROLE: {
+    event: EventType.TX_CREATED,
+    action: 'Create via role',
+    category: TX_CATEGORY,
+  },
+  CREATE_VIA_SPENDING_LIMTI: {
+    event: EventType.TX_CREATED,
+    action: 'Create via spending limit',
+    category: TX_CATEGORY,
+  },
   CONFIRM: {
     event: EventType.TX_CONFIRMED,
     action: 'Confirm transaction',
@@ -53,7 +63,7 @@ export const TX_EVENTS = {
     action: 'Speed up transaction',
     category: TX_CATEGORY,
   },
-  EXECUTE_SPENDING_LIMIT: {
+  EXECUTE_VIA_SPENDING_LIMIT: {
     event: EventType.TX_EXECUTED,
     action: 'Execute via spending limit',
     category: TX_CATEGORY,

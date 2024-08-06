@@ -23,7 +23,6 @@ import { TxSecurityContext } from '../../security/shared/TxSecurityContext'
 
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { pollModuleTransactionId, useExecuteThroughRole, useGasLimit, useMetaTransactions, type Role } from './hooks'
-import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { decodeBytes32String } from 'ethers'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -131,7 +130,7 @@ export const ExecuteThroughRoleForm = ({
       throw new Error('Transaction service not found')
     }
     const txId = await pollModuleTransactionId(chainId, safe.address.value, txHash)
-    onSubmit?.(txId, true, TX_EVENTS.EXECUTE_VIA_ROLE)
+    onSubmit?.(txId, true)
 
     // Update the success screen so it shows a link to the transaction
     setTxFlow(<SuccessScreenFlow txId={txId} />, undefined, false)

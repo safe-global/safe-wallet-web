@@ -24,7 +24,7 @@ import ApprovalEditor from '../ApprovalEditor'
 import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
-import { type AnalyticsEvent, trackEvent } from '@/services/analytics'
+import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
@@ -36,7 +36,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useTxDetails from '@/hooks/useTxDetails'
 import TxData from '@/components/transactions/TxDetails/TxData'
 
-export type SubmitCallback = (txId: string, isExecuted?: boolean, executionEvent?: AnalyticsEvent) => void
+export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
 export type SignOrExecuteProps = {
   txId?: string
@@ -58,15 +58,18 @@ const trackTxEvents = async (
   txId: string,
   isCreation: boolean,
   isExecuted: boolean,
-  executionEvent?: AnalyticsEvent,
+  isRoleExecution: boolean,
 ) => {
-  const event = isCreation ? TX_EVENTS.CREATE : isExecuted ? TX_EVENTS.EXECUTE : TX_EVENTS.CONFIRM
+  const creationEvent = isRoleExecution ? TX_EVENTS.CREATE_VIA_ROLE : TX_EVENTS.CREATE
+  const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
+  const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
+
   const txType = await getTransactionTrackingType(chainId, txId)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
   if (isCreation && isExecuted) {
-    trackEvent({ ...(executionEvent ?? TX_EVENTS.EXECUTE), label: txType })
+    trackEvent({ ...executionEvent, label: txType })
   }
 }
 
@@ -112,14 +115,19 @@ export const SignOrExecuteForm = ({
   const willExecuteThroughRole =
     (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
 
-  const onFormSubmit = useCallback<SubmitCallback>(
-    async (txId, isExecuted = false, executionEvent) => {
+  const onFormSubmit = useCallback(
+    async (txId: string, isExecuted = false, isRoleExecution = false) => {
       onSubmit?.(txId, isExecuted)
 
       // Track tx event
-      trackTxEvents(chainId, txId, isCreation, isExecuted, executionEvent)
+      trackTxEvents(chainId, txId, isCreation, isExecuted, isRoleExecution)
     },
     [chainId, isCreation, onSubmit],
+  )
+
+  const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(
+    (txId, isExecuted) => onFormSubmit(txId, isExecuted, true),
+    [onFormSubmit],
   )
 
   return (
@@ -187,7 +195,7 @@ export const SignOrExecuteForm = ({
             {...props}
             safeTx={safeTx}
             safeTxError={safeTxError}
-            onSubmit={onFormSubmit}
+            onSubmit={onRoleExecutionSubmit}
             role={(allowingRole || mostLikelyRole)!}
           />
         )}
