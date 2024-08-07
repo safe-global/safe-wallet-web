@@ -131,7 +131,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
-  const latestSafeVersion = getLatestSafeVersion(chain?.chainId)
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const safeParams = useMemo(() => {
     return {
@@ -173,8 +173,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         },
       }
 
-      const saltNonce = await getAvailableSaltNonce(wallet.provider, { ...props, saltNonce: '0' }, chain.chainId)
-      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain.chainId)
+      const saltNonce = await getAvailableSaltNonce(wallet.provider, { ...props, saltNonce: '0' }, chain)
+      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain)
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)

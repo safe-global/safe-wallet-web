@@ -65,7 +65,7 @@ export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: str
 }
 
 export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
-  const version = safeVersion ?? getLatestSafeVersion(chain.chainId)
+  const version = safeVersion ?? getLatestSafeVersion(chain)
 
   const safeProvider = getSafeProvider()
 

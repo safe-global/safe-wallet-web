@@ -6,7 +6,7 @@ import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/uti
 import * as web3 from '@/hooks/wallets/web3'
 import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
 import { relaySafeCreation } from '@/components/new-safe/create/logic/index'
-import { relayTransaction, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
 import {
   Gnosis_safe__factory,
@@ -18,20 +18,29 @@ import {
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
-import { getLatestSafeVersion } from '@/utils/chains'
+import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
+import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
+import { chainBuilder } from '@/tests/builders/chains'
 
 const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
 
-const latestSafeVersion = getLatestSafeVersion('1')
+const latestSafeVersion = getLatestSafeVersion(
+  chainBuilder()
+    .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
+    .build(),
+)
 
 describe('createNewSafeViaRelayer', () => {
   const owner1 = toBeHex('0x1', 20)
   const owner2 = toBeHex('0x2', 20)
 
-  const mockChainInfo = {
-    chainId: '1',
-    l2: false,
-  } as ChainInfo
+  const mockChainInfo = chainBuilder()
+    .with({
+      chainId: '1',
+      l2: false,
+      features: [FEATURES.SAFE_141 as unknown as GatewayFeatures],
+    })
+    .build()
 
   beforeAll(() => {
     jest.resetAllMocks()

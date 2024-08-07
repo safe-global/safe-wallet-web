@@ -6,11 +6,12 @@ import {
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
 } from '@safe-global/safe-deployments'
-import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { Interface, JsonRpcProvider } from 'ethers'
 import { createUpdateSafeTxs } from '../safeUpdateParams'
 import * as web3 from '@/hooks/wallets/web3'
-import { getLatestSafeVersion } from '@/utils/chains'
+import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
+import { chainBuilder } from '@/tests/builders/chains'
 
 const MOCK_SAFE_ADDRESS = '0x0000000000000000000000000000000000005AFE'
 
@@ -36,7 +37,11 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.0.0',
     } as SafeInfo
-    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '1', l2: false } as ChainInfo)
+
+    const mockChainInfo = chainBuilder()
+      .with({ chainId: '1', l2: false, features: [FEATURES.SAFE_141 as any] })
+      .build()
+    const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -63,8 +68,10 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.1.1',
     } as SafeInfo
-
-    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '1', l2: false } as ChainInfo)
+    const mockChainInfo = chainBuilder()
+      .with({ chainId: '1', l2: false, features: [FEATURES.SAFE_141 as any] })
+      .build()
+    const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)
@@ -84,7 +91,7 @@ describe('safeUpgradeParams', () => {
     expect(
       sameAddress(
         decodeSetFallbackHandlerAddress(fallbackHandlerTx.data),
-        getFallbackHandlerDeployment({ version: getLatestSafeVersion('1'), network: '1' })?.defaultAddress,
+        getFallbackHandlerDeployment({ version: getLatestSafeVersion(mockChainInfo), network: '1' })?.defaultAddress,
       ),
     ).toBeTruthy()
   })
@@ -98,7 +105,11 @@ describe('safeUpgradeParams', () => {
       },
       version: '1.1.1',
     } as SafeInfo
-    const txs = await createUpdateSafeTxs(mockSafe, { chainId: '100', l2: true } as ChainInfo)
+    const mockChainInfo = chainBuilder()
+      .with({ chainId: '100', l2: true, features: [FEATURES.SAFE_141 as any] })
+      .build()
+
+    const txs = await createUpdateSafeTxs(mockSafe, mockChainInfo)
     const [masterCopyTx, fallbackHandlerTx] = txs
     // Safe upgrades mastercopy and fallbackhandler
     expect(txs).toHaveLength(2)

@@ -53,7 +53,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
   const userNonce = useUserNonce()
 
-  const latestSafeVersion = getLatestSafeVersion(chain?.chainId)
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas

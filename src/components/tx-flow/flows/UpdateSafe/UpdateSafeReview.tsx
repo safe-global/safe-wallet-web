@@ -16,7 +16,7 @@ export const UpdateSafeReview = () => {
   const chain = useCurrentChain()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
 
-  const latestSafeVersion = getLatestSafeVersion(safe.chainId)
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   useAsync(async () => {
     if (!chain || !safeLoaded) {

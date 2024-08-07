@@ -50,15 +50,15 @@ export const createNewSafe = async (
 export const computeNewSafeAddress = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
-  chainId: string,
+  chain: ChainInfo,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
 
-  const latestSafeVersion = getLatestSafeVersion(chainId)
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   return predictSafeAddress({
     safeProvider,
-    chainId: BigInt(chainId),
+    chainId: BigInt(chain.chainId),
     safeAccountConfig: props.safeAccountConfig,
     safeDeploymentConfig: {
       saltNonce: props.saltNonce,
@@ -77,7 +77,7 @@ export const encodeSafeCreationTx = async ({
   saltNonce,
   chain,
 }: SafeCreationProps & { chain: ChainInfo }) => {
-  const latestSafeVersion = getLatestSafeVersion(chain.chainId)
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, latestSafeVersion)
   const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(latestSafeVersion)
@@ -108,7 +108,7 @@ export const estimateSafeCreationGas = async (
   from: string,
   safeParams: SafeCreationProps,
 ): Promise<bigint> => {
-  const latestSafeVersion = getLatestSafeVersion(chain.chainId)
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(latestSafeVersion)
   const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
@@ -174,7 +174,7 @@ export const relaySafeCreation = async (
   saltNonce: number,
   version?: SafeVersion,
 ) => {
-  const latestSafeVersion = getLatestSafeVersion(chain.chainId)
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const safeVersion = version ?? latestSafeVersion
 

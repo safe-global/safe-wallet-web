@@ -7,7 +7,6 @@ import { Builder } from '../Builder'
 import { generateRandomArray } from './utils'
 import { checksumAddress } from '@/utils/addresses'
 import type { IBuilder } from '../Builder'
-import { getLatestSafeVersion } from '@/utils/chains'
 
 const MAX_OWNERS_LENGTH = 10
 
@@ -32,7 +31,7 @@ export function safeInfoBuilder(): IBuilder<SafeInfo> {
     modules: [],
     guard: null,
     fallbackHandler: addressExBuilder().build(),
-    version: getLatestSafeVersion(chainId),
+    version: '1.4.1',
     collectiblesTag: faker.string.numeric(),
     txQueuedTag: faker.string.numeric(),
     txHistoryTag: faker.string.numeric(),

@@ -12,11 +12,13 @@ import { UpdateSafeFlow } from '@/components/tx-flow/flows'
 import ExternalLink from '@/components/common/ExternalLink'
 import CheckWallet from '@/components/common/CheckWallet'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export const ContractVersion = () => {
   const { setTxFlow } = useContext(TxModalContext)
   const [masterCopies] = useMasterCopies()
   const { safe, safeLoaded } = useSafeInfo()
+  const currentChain = useCurrentChain()
   const masterCopyAddress = safe.implementation.value
 
   const safeMasterCopy: MasterCopy | undefined = useMemo(() => {
@@ -27,7 +29,7 @@ export const ContractVersion = () => {
   const showUpdateDialog = safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
   const isLatestVersion = safe.version && !showUpdateDialog
 
-  const latestSafeVersion = getLatestSafeVersion(safe.chainId)
+  const latestSafeVersion = getLatestSafeVersion(currentChain)
 
   return (
     <>

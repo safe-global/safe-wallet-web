@@ -29,13 +29,13 @@ import {
 import type { BrowserProvider, ContractTransactionResponse, Eip1193Provider, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
 
-export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
-  const latestSafeVersion = getLatestSafeVersion(chainId)
+export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chain: ChainInfo) => {
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   return {
     ...defaultSafeInfo,
     address: { value: address },
-    chainId,
+    chainId: chain.chainId,
     owners: undeployedSafe.safeAccountConfig.owners.map((owner) => ({ value: owner })),
     nonce: 0,
     threshold: undeployedSafe.safeAccountConfig.threshold,
@@ -142,7 +142,7 @@ export const createCounterfactualSafe = (
   props: DeploySafeProps,
   router: NextRouter,
 ) => {
-  const latestSafeVersion = getLatestSafeVersion(chain.chainId)
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const undeployedSafe = {
     chainId: chain.chainId,
