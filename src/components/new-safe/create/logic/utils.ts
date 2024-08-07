@@ -1,17 +1,17 @@
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic/index'
-import { isSmartContract } from '@/hooks/wallets/web3'
+import { isSmartContract } from '@/utils/wallets'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
-import type { BrowserProvider } from 'ethers'
+import type { Eip1193Provider } from 'ethers'
 
 export const getAvailableSaltNonce = async (
-  provider: BrowserProvider,
+  provider: Eip1193Provider,
   props: DeploySafeProps,
   chainId: string,
   safeVersion?: SafeVersion,
 ): Promise<string> => {
   const safeAddress = await computeNewSafeAddress(provider, props, chainId, safeVersion)
-  const isContractDeployed = await isSmartContract(provider, safeAddress)
+  const isContractDeployed = await isSmartContract(safeAddress)
 
   // Safe is already deployed so we try the next saltNonce
   if (isContractDeployed) {

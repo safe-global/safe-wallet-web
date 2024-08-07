@@ -13,10 +13,11 @@ import NumberField from '@/components/common/NumberField'
 import { useCurrentChain } from '@/hooks/useChains'
 import useAsync from '@/hooks/useAsync'
 import { computeNewSafeAddress } from '../../logic'
-import { isSmartContract, useWeb3 } from '@/hooks/wallets/web3'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import useWallet from '@/hooks/wallets/useWallet'
+import { isSmartContract } from '@/utils/wallets'
 
 enum AdvancedOptionsFields {
   safeVersion = 'safeVersion',
@@ -31,7 +32,7 @@ export type AdvancedOptionsStepForm = {
 const ADVANCED_OPTIONS_STEP_FORM_ID = 'create-safe-advanced-options-step-form'
 
 const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
-  const provider = useWeb3()
+  const wallet = useWallet()
   useSyncSafeCreationStep(setStep)
   const chain = useCurrentChain()
 
@@ -49,16 +50,16 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
   const selectedSaltNonce = watch(AdvancedOptionsFields.saltNonce)
 
   const [readOnlyFallbackHandlerContract] = useAsync(
-    () => (chain ? getReadOnlyFallbackHandlerContract(chain.chainId, selectedSafeVersion) : undefined),
+    () => (chain ? getReadOnlyFallbackHandlerContract(selectedSafeVersion) : undefined),
     [chain, selectedSafeVersion],
   )
 
   const [predictedSafeAddress] = useAsync(async () => {
-    if (!chain || !readOnlyFallbackHandlerContract || !provider) {
+    if (!chain || !readOnlyFallbackHandlerContract || !wallet) {
       return undefined
     }
     return computeNewSafeAddress(
-      provider,
+      wallet.provider,
       {
         safeAccountConfig: {
           owners: data.owners.map((owner) => owner.address),
@@ -74,15 +75,15 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
     chain,
     data.owners,
     data.threshold,
-    provider,
+    wallet,
     readOnlyFallbackHandlerContract,
     selectedSafeVersion,
     selectedSaltNonce,
   ])
 
   const [isDeployed] = useAsync(
-    async () => (provider && predictedSafeAddress ? await isSmartContract(provider, predictedSafeAddress) : false),
-    [predictedSafeAddress, provider],
+    async () => (predictedSafeAddress ? await isSmartContract(predictedSafeAddress) : false),
+    [predictedSafeAddress],
   )
 
   const isDisabled = !formState.isValid || Boolean(isDeployed)

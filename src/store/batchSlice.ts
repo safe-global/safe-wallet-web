@@ -1,6 +1,7 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import type { RootState } from '.'
+import { selectChainIdAndSafeAddress } from '@/store/common'
 
 export type DraftBatchItem = {
   id: string
@@ -65,7 +66,7 @@ const selectAllBatches = (state: RootState): BatchTxsState => {
 }
 
 export const selectBatchBySafe = createSelector(
-  [selectAllBatches, (_, chainId: string, safeAddress: string) => [chainId, safeAddress]],
+  [selectAllBatches, selectChainIdAndSafeAddress],
   (allBatches, [chainId, safeAddress]): DraftBatchItem[] => {
     return allBatches[chainId]?.[safeAddress] || []
   },

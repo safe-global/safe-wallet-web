@@ -12,6 +12,7 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-20.04
+    timeout-minutes: 60
     name: Cypress Happy path on demand tests
     strategy:
       fail-fast: false
@@ -26,6 +27,7 @@ jobs:
           spec: |
             cypress/e2e/happypath/*.cy.js
           group: 'Happy path on demand tests'
+          tag: 'happypath'
 
       - name: Python setup
         if: always()

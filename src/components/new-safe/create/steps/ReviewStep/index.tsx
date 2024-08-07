@@ -23,7 +23,6 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { gtmSetSafeAddress } from '@/services/analytics/gtm'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
@@ -113,7 +112,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   useSyncSafeCreationStep(setStep)
   const chain = useCurrentChain()
   const wallet = useWallet()
-  const provider = useWeb3()
   const dispatch = useAppDispatch()
   const router = useRouter()
   const [gasPrice] = useGasPrice()
@@ -156,12 +154,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   }
 
   const createSafe = async () => {
-    if (!wallet || !provider || !chain) return
+    if (!wallet || !chain) return
 
     setIsCreating(true)
 
     try {
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, data.safeVersion)
+      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(data.safeVersion)
 
       const props: DeploySafeProps = {
         safeAccountConfig: {
@@ -172,13 +170,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       }
 
       const saltNonce = await getAvailableSaltNonce(
-        provider,
+        wallet.provider,
         { ...props, saltNonce: '0' },
         chain.chainId,
         data.safeVersion,
       )
       const safeAddress = await computeNewSafeAddress(
-        provider,
+        wallet.provider,
         { ...props, saltNonce },
         chain.chainId,
         data.safeVersion,
@@ -247,7 +245,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         onSubmitCallback(taskId)
       } else {
         await createNewSafe(
-          provider,
+          wallet.provider,
           {
             safeAccountConfig: props.safeAccountConfig,
             saltNonce,

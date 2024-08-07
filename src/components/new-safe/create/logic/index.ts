@@ -1,5 +1,5 @@
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { type BrowserProvider, type Provider } from 'ethers'
+import { type Eip1193Provider, type Provider } from 'ethers'
 
 import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -10,10 +10,10 @@ import {
 import type { UrlObject } from 'url'
 import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
-import { predictSafeAddress, SafeFactory } from '@safe-global/protocol-kit'
+import { predictSafeAddress, SafeFactory, SafeProvider } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
-import { createEthersAdapter, isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 import { backOff } from 'exponential-backoff'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
@@ -25,27 +25,22 @@ export type SafeCreationProps = {
   saltNonce: number
 }
 
-const getSafeFactory = async (
-  ethersProvider: BrowserProvider,
-  safeVersion = LATEST_SAFE_VERSION,
-): Promise<SafeFactory> => {
+const getSafeFactory = async (provider: Eip1193Provider, safeVersion = LATEST_SAFE_VERSION): Promise<SafeFactory> => {
   if (!isValidSafeVersion(safeVersion)) {
     throw new Error('Invalid Safe version')
   }
-  const ethAdapter = await createEthersAdapter(ethersProvider)
-  const safeFactory = await SafeFactory.create({ ethAdapter, safeVersion })
-  return safeFactory
+  return SafeFactory.init({ provider, safeVersion })
 }
 
 /**
  * Create a Safe creation transaction via Core SDK and submits it to the wallet
  */
 export const createNewSafe = async (
-  ethersProvider: BrowserProvider,
+  provider: Eip1193Provider,
   props: DeploySafeProps,
   safeVersion?: SafeVersion,
 ): Promise<Safe> => {
-  const safeFactory = await getSafeFactory(ethersProvider, safeVersion)
+  const safeFactory = await getSafeFactory(provider, safeVersion)
   return safeFactory.deploySafe(props)
 }
 
@@ -53,15 +48,15 @@ export const createNewSafe = async (
  * Compute the new counterfactual Safe address before it is actually created
  */
 export const computeNewSafeAddress = async (
-  ethersProvider: BrowserProvider,
+  provider: Eip1193Provider,
   props: DeploySafeProps,
   chainId: string,
   safeVersion?: SafeVersion,
 ): Promise<string> => {
-  const ethAdapter = await createEthersAdapter(ethersProvider)
+  const safeProvider = new SafeProvider({ provider })
 
   return predictSafeAddress({
-    ethAdapter,
+    safeProvider,
     chainId: BigInt(chainId),
     safeAccountConfig: props.safeAccountConfig,
     safeDeploymentConfig: {
@@ -83,9 +78,10 @@ export const encodeSafeCreationTx = async ({
   safeVersion = LATEST_SAFE_VERSION as SafeVersion,
 }: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion }) => {
   const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
-  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(chain.chainId, safeVersion)
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, safeVersion)
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(safeVersion)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(safeVersion)
 
+  // @ts-ignore union type is too complex
   const setupData = readOnlySafeContract.encode('setup', [
     owners,
     threshold,
@@ -100,7 +96,7 @@ export const encodeSafeCreationTx = async ({
   return readOnlyProxyContract.encode('createProxyWithNonce', [
     await readOnlySafeContract.getAddress(),
     setupData,
-    saltNonce,
+    BigInt(saltNonce),
   ])
 }
 
@@ -111,7 +107,7 @@ export const estimateSafeCreationGas = async (
   safeParams: SafeCreationProps,
   safeVersion: SafeVersion = LATEST_SAFE_VERSION as SafeVersion,
 ): Promise<bigint> => {
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(chain.chainId, safeVersion)
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion)
   const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
 
   const gas = await provider.estimateGas({
@@ -177,11 +173,11 @@ export const relaySafeCreation = async (
 ) => {
   const safeVersion = version ?? LATEST_SAFE_VERSION
 
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(chain.chainId, safeVersion)
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion)
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(chain.chainId, safeVersion)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(safeVersion)
   const fallbackHandlerAddress = await readOnlyFallbackHandlerContract.getAddress()
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
   const safeContractAddress = await readOnlySafeContract.getAddress()
 
   const callData = {
@@ -195,6 +191,7 @@ export const relaySafeCreation = async (
     paymentReceiver: ZERO_ADDRESS,
   }
 
+  // @ts-ignore
   const initializer = readOnlySafeContract.encode('setup', [
     callData.owners,
     callData.threshold,
@@ -209,7 +206,7 @@ export const relaySafeCreation = async (
   const createProxyWithNonceCallData = readOnlyProxyFactoryContract.encode('createProxyWithNonce', [
     safeContractAddress,
     initializer,
-    saltNonce,
+    BigInt(saltNonce),
   ])
 
   const relayResponse = await relayTransaction(chain.chainId, {

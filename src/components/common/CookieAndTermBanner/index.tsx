@@ -75,7 +75,7 @@ export const CookieAndTermBanner = ({
           <Grid item xs>
             <Typography variant="body2" mb={2}>
               By browsing this page, you accept our{' '}
-              <ExternalLink href={AppRoutes.terms}>Terms & Conditions</ExternalLink> (last updated July 2024) and the
+              <ExternalLink href={AppRoutes.terms}>Terms & Conditions</ExternalLink> (last updated August 2024) and the
               use of necessary cookies. By clicking &quot;Accept all&quot; you additionally agree to the use of Beamer
               and Analytics cookies as listed below. <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
             </Typography>

@@ -1,13 +1,19 @@
 import useAsync from '@/hooks/useAsync'
 import useBalances from '@/hooks/useBalances'
 import { type Approval, ApprovalModule } from '@/services/security/modules/ApprovalModule'
-import { getERC20TokenInfoOnChain, UNLIMITED_APPROVAL_AMOUNT, UNLIMITED_PERMIT2_AMOUNT } from '@/utils/tokens'
-import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { formatUnits } from 'ethers'
-import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
-import { useMemo } from 'react'
-import { type EIP712TypedData, type TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
+import {
+  getERC20TokenInfoOnChain,
+  getErc721Symbol,
+  isErc721Token,
+  UNLIMITED_APPROVAL_AMOUNT,
+  UNLIMITED_PERMIT2_AMOUNT,
+} from '@/utils/tokens'
+import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type EIP712TypedData, type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import { formatUnits } from 'ethers'
+import { useMemo } from 'react'
+import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 
 export type ApprovalInfo = {
   tokenInfo: (Omit<TokenInfo, 'logoUri' | 'name'> & { logoUri?: string }) | undefined
@@ -50,7 +56,19 @@ export const useApprovalInfos = (payload: {
           )?.tokenInfo
 
           if (!tokenInfo) {
-            tokenInfo = await getERC20TokenInfoOnChain(approval.tokenAddress)
+            try {
+              tokenInfo = await getERC20TokenInfoOnChain(approval.tokenAddress)
+            } catch (e) {
+              const isErc721 = await isErc721Token(approval.tokenAddress)
+              const symbol = await getErc721Symbol(approval.tokenAddress)
+
+              tokenInfo = {
+                address: approval.tokenAddress,
+                symbol,
+                decimals: 1, // Doesn't exist for ERC-721 tokens
+                type: isErc721 ? TokenType.ERC721 : TokenType.ERC20,
+              }
+            }
           }
 
           const amountFormatted =
