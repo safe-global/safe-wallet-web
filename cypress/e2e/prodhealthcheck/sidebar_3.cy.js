@@ -1,10 +1,8 @@
 import * as constants from '../../support/constants.js'
 import * as main from '../pages/main.page.js'
 import * as sideBar from '../pages/sidebar.pages.js'
-import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
-import * as create_wallet from '../pages/create_wallet.pages.js'
 import * as navigation from '../pages/navigation.page.js'
 import * as owner from '../pages/owners.pages.js'
 

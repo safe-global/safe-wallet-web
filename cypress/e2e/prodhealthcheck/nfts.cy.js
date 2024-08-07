@@ -1,7 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as nfts from '../pages/nfts.pages'
-import * as navigation from '../pages/navigation.page'
 import * as createTx from '../pages/create_tx.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'

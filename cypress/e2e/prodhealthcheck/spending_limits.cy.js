@@ -3,7 +3,6 @@ import * as main from '../pages/main.page'
 import * as spendinglimit from '../pages/spending_limits.pages'
 import * as navigation from '../pages/navigation.page'
 import * as tx from '../pages/create_tx.pages'
-import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 
