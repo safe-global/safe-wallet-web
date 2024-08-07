@@ -5,12 +5,14 @@ import ExternalStore from '@/services/ExternalStore'
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { invariant } from '@/utils/helpers'
 import type { JsonRpcProvider } from 'ethers'
+import type { ContractNetworksConfig } from '@safe-global/protocol-kit'
 import Safe from '@safe-global/protocol-kit'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import semverSatisfies from 'semver/functions/satisfies'
 import { isValidMasterCopy } from '@/services/contracts/safeContracts'
 import { sameAddress } from '@/utils/addresses'
+import { IS_OFFICIAL_HOST, IS_PRODUCTION } from '@/config/constants'
 
 export const isLegacyVersion = (safeVersion: string): boolean => {
   const LEGACY_VERSION = '<1.3.0'
@@ -27,6 +29,22 @@ export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersio
   return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe Account version`)
 }
 
+const isContractNetworkConfig = (obj: {
+  [id: string]: Omit<ChainInfo['contractAddresses'], 'safeWebAuthnSignerFactoryAddress'>
+}): obj is ContractNetworksConfig => {
+  return Object.values(obj).every((value) => !!value)
+}
+
+export const getContractNetworksConfig = (chain: ChainInfo | undefined) => {
+  if (!chain || (IS_PRODUCTION && IS_OFFICIAL_HOST)) return
+
+  // Exclude safeWebAuthnSignerFactoryAddress as it is not yet supported
+  const { safeWebAuthnSignerFactoryAddress, ...contractAddresses } = chain.contractAddresses
+
+  if (!isContractNetworkConfig({ [chain.chainId]: contractAddresses })) return
+  return { [chain.chainId]: contractAddresses }
+}
+
 type SafeCoreSDKProps = {
   provider: JsonRpcProvider
   chainId: SafeInfo['chainId']
@@ -35,6 +53,7 @@ type SafeCoreSDKProps = {
   implementationVersionState: SafeInfo['implementationVersionState']
   implementation: SafeInfo['implementation']['value']
   undeployedSafe?: UndeployedSafe
+  contractNetworks?: ContractNetworksConfig
 }
 
 const isInDeployments = (address: string, deployments: string | string[] | undefined): boolean => {
@@ -53,6 +72,7 @@ export const initSafeSDK = async ({
   implementationVersionState,
   implementation,
   undeployedSafe,
+  contractNetworks,
 }: SafeCoreSDKProps): Promise<Safe | undefined> => {
   const providerNetwork = (await provider.getNetwork()).chainId
   if (providerNetwork !== BigInt(chainId)) return
@@ -87,6 +107,16 @@ export const initSafeSDK = async ({
       predictedSafe: undeployedSafe.props,
     })
   }
+
+  if (contractNetworks) {
+    return Safe.init({
+      provider: provider._getConnection().url,
+      safeAddress: address,
+      isL1SafeSingleton,
+      contractNetworks,
+    })
+  }
+
   return Safe.init({
     provider: provider._getConnection().url,
     safeAddress: address,
