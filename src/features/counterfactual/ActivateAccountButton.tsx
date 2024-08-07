@@ -33,6 +33,7 @@ const ActivateAccountButton = () => {
               size="small"
               onClick={activateAccount}
               disabled={isProcessing || !isOk}
+              sx={{ minHeight: '40px' }}
             >
               {isProcessing ? (
                 <>

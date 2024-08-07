@@ -1,17 +1,4 @@
-import useWallet from '@/hooks/wallets/useWallet'
-import {
-  Button,
-  MenuItem,
-  Divider,
-  Box,
-  TextField,
-  Stack,
-  Skeleton,
-  Grid,
-  SvgIcon,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Button, MenuItem, Divider, Box, TextField, Stack, Skeleton, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import type { ReactElement } from 'react'
 
@@ -28,7 +15,6 @@ import useAsync from '@/hooks/useAsync'
 import { computeNewSafeAddress } from '../../logic'
 import { isSmartContract, useWeb3 } from '@/hooks/wallets/web3'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
-import ReviewRow from '@/components/new-safe/ReviewRow'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
@@ -45,7 +31,6 @@ export type AdvancedOptionsStepForm = {
 const ADVANCED_OPTIONS_STEP_FORM_ID = 'create-safe-advanced-options-step-form'
 
 const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
-  const wallet = useWallet()
   const provider = useWeb3()
   useSyncSafeCreationStep(setStep)
   const chain = useCurrentChain()
@@ -58,7 +43,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
     },
   })
 
-  const { handleSubmit, control, watch, formState, getValues, setValue, trigger, register } = formMethods
+  const { handleSubmit, control, watch, formState, getValues, register } = formMethods
 
   const selectedSafeVersion = watch(AdvancedOptionsFields.safeVersion)
   const selectedSaltNonce = watch(AdvancedOptionsFields.saltNonce)
@@ -150,7 +135,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
             <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
               Salt nonce
               <Tooltip
-                title="The salt nonce changes the predicted Safe address. It can be used to re-create a Safe from anothet chain or to create a specifcic Safe address"
+                title="The salt nonce changes the predicted Safe address. It can be used to re-create a Safe from another chain or to create a specific Safe address"
                 arrow
                 placement="top"
               >
@@ -172,6 +157,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
                     return 'Salt nonce must be positive'
                   }
                 },
+                required: true,
               })}
               label="Salt nonce"
               error={Boolean(formState.errors[AdvancedOptionsFields.saltNonce]) || Boolean(isDeployed)}
@@ -182,18 +168,16 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
               }
             />
           </Box>
-          <Grid container spacing={3}>
-            <ReviewRow
-              name="New Safe address"
-              value={
-                predictedSafeAddress ? (
-                  <EthHashInfo address={predictedSafeAddress} hasExplorer showCopyButton />
-                ) : (
-                  <Skeleton />
-                )
-              }
-            />
-          </Grid>
+          <Box className={layoutCss.row}>
+            <Typography variant="h4" fontWeight={700} mb={1}>
+              New Safe address
+            </Typography>
+            {predictedSafeAddress ? (
+              <EthHashInfo address={predictedSafeAddress} hasExplorer showCopyButton />
+            ) : (
+              <Skeleton />
+            )}
+          </Box>
           <Divider />
           <Box className={layoutCss.row}>
             <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
