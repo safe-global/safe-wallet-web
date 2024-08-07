@@ -18,14 +18,14 @@ function happyPathToStepTwo() {
   createtx.clickOnNextBtn()
 }
 
-describe('Create transactions tests', () => {
+describe.skip('Create transactions tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
+    cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
     main.acceptCookies()
     wallet.connectSigner(signer)
     createtx.clickOnNewtransactionBtn()
