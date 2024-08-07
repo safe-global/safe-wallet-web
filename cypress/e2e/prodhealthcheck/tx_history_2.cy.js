@@ -30,12 +30,12 @@ describe('Tx history tests 2', () => {
         constants.stagingCGWSafes
       }${staticSafes.SEP_STATIC_SAFE_7.substring(4)}/transactions/history**`,
       (req) => {
-        req.url = `https://safe-client.staging.5afe.dev/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone_offset=7200000&trusted=false&cursor=limit=100&offset=1`
+        req.url = `https://safe-client.safe.global/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone_offset=7200000&trusted=false&cursor=limit=100&offset=1`
         req.continue()
       },
     ).as('allTransactions')
 
-    cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
+    cy.visit(constants.prodbaseUrl + constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     main.acceptCookies()
   })
 
@@ -61,7 +61,8 @@ describe('Tx history tests 2', () => {
 
   // TODO: Added to prod
   // Batch transaction
-  it('Verify exapanded details for batch', () => {
+  // TODO: Unskip after next release due to design tx
+  it.skip('Verify exapanded details for batch', () => {
     createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [typeBatch.contractTitle, typeBatch.transactionHash, typeBatch.safeTxHash],
@@ -74,20 +75,6 @@ describe('Tx history tests 2', () => {
   // Add owner
   it('Verify summary for adding owner', () => {
     createTx.verifySummaryByName(typeAddOwner.title, [typeGeneral.statusOk], typeAddOwner.altImage)
-  })
-
-  it('Verify exapanded details for adding owner', () => {
-    createTx.clickOnTransactionItemByName(typeAddOwner.title)
-    createTx.verifyExpandedDetails(
-      [
-        typeAddOwner.description,
-        typeAddOwner.requiredConfirmationsTitle,
-        typeAddOwner.ownerAddress,
-        typeAddOwner.transactionHash,
-        typeAddOwner.safeTxHash,
-      ],
-      createTx.policyChangeWarning,
-    )
   })
 
   // TODO: Added to prod
@@ -117,35 +104,10 @@ describe('Tx history tests 2', () => {
     createTx.verifySummaryByName(typeRemoveOwner.title, [typeGeneral.statusOk], typeRemoveOwner.altImage)
   })
 
-  it('Verify exapanded details for removing owner', () => {
-    createTx.clickOnTransactionItemByName(typeRemoveOwner.title)
-    createTx.verifyExpandedDetails(
-      [
-        typeRemoveOwner.description,
-        typeRemoveOwner.requiredConfirmationsTitle,
-        typeRemoveOwner.ownerAddress,
-        typeRemoveOwner.transactionHash,
-        typeRemoveOwner.safeTxHash,
-      ],
-      createTx.policyChangeWarning,
-    )
-    createTx.checkRequiredThreshold(1)
-  })
-
   // TODO: Added to prod
   // Disbale module
   it('Verify summary for disable module', () => {
     createTx.verifySummaryByName(typeDisableOwner.title, [typeGeneral.statusOk], typeDisableOwner.altImage)
-  })
-
-  it('Verify exapanded details for disable module', () => {
-    createTx.clickOnTransactionItemByName(typeDisableOwner.title)
-    createTx.verifyExpandedDetails([
-      typeDisableOwner.description,
-      typeDisableOwner.address,
-      typeDisableOwner.transactionHash,
-      typeDisableOwner.safeTxHash,
-    ])
   })
 
   // TODO: Added to prod

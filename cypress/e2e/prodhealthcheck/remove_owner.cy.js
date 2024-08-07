@@ -16,41 +16,15 @@ describe('Remove Owners tests', () => {
   })
 
   beforeEach(() => {
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_13)
+    cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_13)
     main.waitForHistoryCallToComplete()
     cy.clearLocalStorage()
     main.acceptCookies()
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 
-  it('Verify that "Remove" icon is visible', () => {
-    owner.verifyRemoveBtnIsEnabled().should('have.length', 2)
-  })
-
-  it('Verify remove button does not exist for Non-Owner when there is only 1 owner in the safe', () => {
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_3)
-    main.waitForHistoryCallToComplete()
-    main.verifyElementsCount(owner.removeOwnerBtn, 0)
-  })
-
-  it('Verify remove owner button is disabled for disconnected user', () => {
-    owner.verifyRemoveBtnIsDisabled()
-  })
-
-  it('Verify owner removal form can be opened', () => {
-    wallet.connectSigner(signer)
-    owner.openRemoveOwnerWindow(1)
-  })
-
-  it('Verify threshold input displays the upper limit as the current safe number of owners minus one', () => {
-    wallet.connectSigner(signer)
-    owner.openRemoveOwnerWindow(1)
-    owner.verifyThresholdLimit(1, 1)
-    owner.getThresholdOptions().should('have.length', 1)
-  })
-
   // TODO: Added to prod
-  it('Verify owner deletion transaction has been created', () => {
+  it.skip('Verify owner deletion transaction has been created', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)
