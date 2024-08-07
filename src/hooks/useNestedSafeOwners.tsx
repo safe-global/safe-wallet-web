@@ -13,7 +13,8 @@ export const useNestedSafeOwners = () => {
     const ownerAddresses = safe?.owners.map((owner) => owner.value)
 
     return allOwned.filter(
-      (ownedSafe) => ownedSafe.chainId === safe.chainId && ownerAddresses?.includes(ownedSafe.address),
+      (ownedSafe) =>
+        !ownedSafe.isWatchlist && ownedSafe.chainId === safe.chainId && ownerAddresses?.includes(ownedSafe.address),
     )
   }, [allOwned, safe, safeLoaded])
 

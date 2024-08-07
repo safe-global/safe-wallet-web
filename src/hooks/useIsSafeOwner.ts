@@ -6,8 +6,6 @@ const useIsSafeOwner = () => {
   const { safe } = useSafeInfo()
   const signer = useSigner()
 
-  console.log('useIsOwner', signer, isOwner(safe.owners, signer?.address))
-
   return isOwner(safe.owners, signer?.address)
 }
 

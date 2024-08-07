@@ -1,6 +1,6 @@
 import { Box, MenuItem, Select, type SelectChangeEvent } from '@mui/material'
 import FieldsGrid from '../FieldsGrid'
-import { useNestedSafeOwners } from '@/components/dashboard/NestedSafeBanner'
+import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
 import useWallet from '@/hooks/wallets/useWallet'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useEffect, useMemo } from 'react'
@@ -22,6 +22,8 @@ export const SignerForm = () => {
     [wallet?.address, safe.owners],
   )
 
+  const isNotNestedOwner = useMemo(() => nestedSafeOwners && nestedSafeOwners.length === 0, [nestedSafeOwners])
+
   const options = useMemo(
     () =>
       isOwner && wallet
@@ -37,9 +39,12 @@ export const SignerForm = () => {
     if (!isOwner && nestedSafeOwners && nestedSafeOwners.length > 0) {
       setNestedSafeAddress(nestedSafeOwners[0].address)
     }
+    if (isOwner && (!nestedSafeOwners || nestedSafeOwners.length === 0)) {
+      setNestedSafeAddress(undefined)
+    }
   }, [isOwner, nestedSafeAddress, nestedSafeOwners])
 
-  if (!wallet || !options) {
+  if (!wallet || isNotNestedOwner) {
     return null
   }
 

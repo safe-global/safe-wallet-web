@@ -4,7 +4,7 @@ import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBen
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
-import { useNestedSafeOwners } from '@/components/dashboard/NestedSafeBanner'
+import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement

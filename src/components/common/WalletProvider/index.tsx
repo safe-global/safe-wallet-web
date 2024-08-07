@@ -14,13 +14,15 @@ const { getStore, setStore, useStore } = new ExternalStore<string | null>(null)
 export const setNestedSafeAddress = setStore
 export const useNestedSafeAddress = useStore
 
+export type SignerWallet = {
+  provider: Eip1193Provider | null
+  address: string
+  chainId: string
+}
+
 export type WalletContextType = {
   connectedWallet: ConnectedWallet | null
-  signer: {
-    provider: Eip1193Provider | null
-    address: string
-    chainId: string
-  } | null
+  signer: SignerWallet | null
 }
 
 export const WalletContext = createContext<WalletContextType | null>(null)

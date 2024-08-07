@@ -52,7 +52,7 @@ describe('useIsValidExecution', () => {
     jest.resetAllMocks()
 
     jest.spyOn(web3, 'useWeb3ReadOnly').mockImplementation(() => mockReadOnlyProvider)
-    jest.spyOn(useWallet, 'default').mockReturnValue(mockWallet)
+    jest.spyOn(useWallet, 'useSigner').mockReturnValue(mockWallet)
     jest.spyOn(web3, 'createWeb3').mockImplementation(() => mockProvider)
   })
 
