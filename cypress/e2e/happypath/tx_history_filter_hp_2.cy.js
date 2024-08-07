@@ -1,8 +1,8 @@
 import * as constants from '../../support/constants.js'
 import * as main from '../pages/main.page.js'
 import * as createTx from '../pages/create_tx.pages.js'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as ls from '../../support/localstorage_data.js'
+import * as safesStatic from '../../fixtures/safes/static.json'
 
 let staticSafes = []
 
@@ -15,7 +15,7 @@ describe('Tx history happy path tests 2', () => {
         ls.cookies.acceptedTokenListOnboarding,
       )
     })
-    staticSafes = await getSafes(CATEGORIES.static)
+    staticSafes = safesStatic
   })
 
   beforeEach(() => {
