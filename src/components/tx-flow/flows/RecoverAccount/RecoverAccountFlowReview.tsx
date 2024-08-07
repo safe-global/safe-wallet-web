@@ -45,7 +45,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   // Hooks
   const { setTxFlow } = useContext(TxModalContext)
   const { safeTx, safeTxError, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
-  const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
+  const [decodedData] = useDecodeTx(safeTx)
   const { safe } = useSafeInfo()
   const wallet = useWallet()
   const onboard = useOnboard()
@@ -130,19 +130,12 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <Divider className={commonCss.nestedDivider} />
 
-        <DecodedTx
-          tx={safeTx}
-          decodedData={decodedData}
-          decodedDataError={decodedDataError}
-          decodedDataLoading={decodedDataLoading}
-        />
+        <DecodedTx tx={safeTx} decodedData={decodedData} />
 
         <RedefineBalanceChanges />
       </TxCard>
 
-      <TxCard>
-        <TxChecks executionOwner={safe.owners[0].value} />
-      </TxCard>
+      <TxChecks executionOwner={safe.owners[0].value} />
 
       <TxCard>
         <>

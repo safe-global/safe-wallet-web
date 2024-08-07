@@ -2,6 +2,7 @@ import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolki
 
 import type { RootState } from '@/store'
 import { sameAddress } from '@/utils/addresses'
+import { selectChainIdAndSafeAddress } from '@/store/common'
 
 export enum PendingStatus {
   SIGNING = 'SIGNING',
@@ -106,9 +107,10 @@ export const selectPendingTxById = createSelector(
 )
 
 export const selectPendingTxIdsBySafe = createSelector(
-  [selectPendingTxs, (_: RootState, chainId: string, safeAddress: string) => [chainId, safeAddress]],
-  (pendingTxs, [chainId, safeAddress]) =>
-    Object.keys(pendingTxs).filter(
+  [selectPendingTxs, selectChainIdAndSafeAddress],
+  (pendingTxs, [chainId, safeAddress]) => {
+    return Object.keys(pendingTxs).filter(
       (id) => pendingTxs[id].chainId === chainId && sameAddress(pendingTxs[id].safeAddress, safeAddress),
-    ),
+    )
+  },
 )

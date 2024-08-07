@@ -1,5 +1,6 @@
-import { toBeHex } from 'ethers'
-import { BrowserProvider, id, AbiCoder, type Eip1193Provider } from 'ethers'
+import { Gnosis_safe__factory } from '@/types/contracts'
+import { JsonRpcProvider, toBeHex } from 'ethers'
+import { id, AbiCoder, type Eip1193Provider } from 'ethers'
 import Safe from '@safe-global/protocol-kit'
 import {
   getProxyFactoryContract,
@@ -25,17 +26,22 @@ jest.mock('@/types/contracts', () => {
 })
 
 jest.mock('@safe-global/protocol-kit', () => {
-  const originalModule = jest.requireActual('@safe-global/protocol-kit')
-
-  // Mock class
-  class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(1)))
-  }
-
   return {
+    ...jest.requireActual('@safe-global/protocol-kit'),
     __esModule: true,
-    ...originalModule,
-    EthersAdapter: MockEthersAdapter,
+    default: {
+      init: jest.fn(),
+    },
+  }
+})
+
+jest.mock('@/types/contracts', () => {
+  return {
+    ...jest.requireActual('@/types/contracts'),
+    _esModule: true,
+    Gnosis_safe__factory: {
+      connect: jest.fn().mockReturnValue({ VERSION: jest.fn() }),
+    },
   }
 })
 
@@ -118,7 +124,7 @@ describe('safeCoreSDK', () => {
         }),
       }
 
-      return new BrowserProvider(mockProvider)
+      return new JsonRpcProvider()
     }
 
     describe('Supported contracts', () => {
@@ -127,8 +133,9 @@ describe('safeCoreSDK', () => {
         const version = '1.3.0'
 
         const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
 
-        const sdk = await initSafeSDK({
+        await initSafeSDK({
           provider: mockProvider,
           chainId,
           address: toBeHex('0x1', 20),
@@ -137,7 +144,7 @@ describe('safeCoreSDK', () => {
           implementationVersionState: ImplementationVersionState.UP_TO_DATE,
         })
 
-        expect(sdk).toBeInstanceOf(Safe)
+        expect(Safe.init).toHaveBeenCalled()
       })
 
       it('should return an L1 SDK instance for mainnet', async () => {
@@ -145,8 +152,9 @@ describe('safeCoreSDK', () => {
         const version = '1.3.0'
 
         const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
 
-        const sdk = await initSafeSDK({
+        await initSafeSDK({
           provider: mockProvider,
           chainId,
           address: toBeHex('0x1', 20),
@@ -155,8 +163,11 @@ describe('safeCoreSDK', () => {
           implementationVersionState: ImplementationVersionState.UP_TO_DATE,
         })
 
-        expect(sdk).toBeInstanceOf(Safe)
-        expect(sdk?.getContractManager().isL1SafeSingleton).toBe(true)
+        expect(Safe.init).toHaveBeenCalledWith({
+          isL1SafeSingleton: true,
+          provider: expect.anything(),
+          safeAddress: expect.anything(),
+        })
       })
 
       it('should return an L2 SDK instance for L2 chain', async () => {
@@ -164,8 +175,9 @@ describe('safeCoreSDK', () => {
         const version = '1.3.0'
 
         const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
 
-        const sdk = await initSafeSDK({
+        await initSafeSDK({
           provider: mockProvider,
           chainId,
           address: toBeHex('0x1', 20),
@@ -174,8 +186,11 @@ describe('safeCoreSDK', () => {
           implementationVersionState: ImplementationVersionState.UP_TO_DATE,
         })
 
-        expect(sdk).toBeInstanceOf(Safe)
-        expect(sdk?.getContractManager().isL1SafeSingleton).toBe(false)
+        expect(Safe.init).toHaveBeenCalledWith({
+          isL1SafeSingleton: false,
+          provider: expect.anything(),
+          safeAddress: expect.anything(),
+        })
       })
 
       it('should return an L1 SDK instance for legacy Safes, regardless of chain', async () => {
@@ -183,8 +198,9 @@ describe('safeCoreSDK', () => {
         const version = '1.0.0'
 
         const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
 
-        const sdk = await initSafeSDK({
+        await initSafeSDK({
           provider: mockProvider,
           chainId,
           address: toBeHex('0x1', 20),
@@ -193,8 +209,34 @@ describe('safeCoreSDK', () => {
           implementationVersionState: ImplementationVersionState.OUTDATED,
         })
 
-        expect(sdk).toBeInstanceOf(Safe)
-        expect(sdk?.getContractManager().isL1SafeSingleton).toBe(true)
+        expect(Safe.init).toHaveBeenCalledWith({
+          isL1SafeSingleton: true,
+          provider: expect.anything(),
+          safeAddress: expect.anything(),
+        })
+      })
+
+      it('should return an L1 SDK instance for a canonical mastercopy on optimism', async () => {
+        const chainId = '10' // Optimism mainnet
+        const version = '1.3.0'
+
+        const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
+
+        await initSafeSDK({
+          provider: mockProvider,
+          chainId,
+          address: toBeHex('0x1', 20),
+          version,
+          implementation: MAINNET_MASTER_COPY,
+          implementationVersionState: ImplementationVersionState.UNKNOWN,
+        })
+
+        expect(Safe.init).toHaveBeenCalledWith({
+          isL1SafeSingleton: true,
+          provider: expect.anything(),
+          safeAddress: expect.anything(),
+        })
       })
     })
 
@@ -205,8 +247,9 @@ describe('safeCoreSDK', () => {
         const version = '1.3.0'
 
         const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
 
-        const sdk = await initSafeSDK({
+        await initSafeSDK({
           provider: mockProvider,
           chainId: '1',
           address: toBeHex('0x1', 20),
@@ -215,7 +258,7 @@ describe('safeCoreSDK', () => {
           implementationVersionState: ImplementationVersionState.UNKNOWN,
         })
 
-        expect(sdk).toBeInstanceOf(Safe)
+        expect(Gnosis_safe__factory.connect(MAINNET_MASTER_COPY, mockProvider).VERSION).toHaveBeenCalled()
       })
 
       it('should return an L1 SDK instance for L1 contracts not deployed on mainnet', async () => {
@@ -223,8 +266,9 @@ describe('safeCoreSDK', () => {
         const version = '1.3.0'
 
         const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
 
-        const sdk = await initSafeSDK({
+        await initSafeSDK({
           provider: mockProvider,
           chainId,
           address: toBeHex('0x1', 20),
@@ -233,8 +277,11 @@ describe('safeCoreSDK', () => {
           implementationVersionState: ImplementationVersionState.UNKNOWN,
         })
 
-        expect(sdk).toBeInstanceOf(Safe)
-        expect(sdk?.getContractManager().isL1SafeSingleton).toBe(true)
+        expect(Safe.init).toHaveBeenCalledWith({
+          isL1SafeSingleton: true,
+          provider: expect.anything(),
+          safeAddress: expect.anything(),
+        })
       })
 
       it('should return undefined for unsupported mastercopies', async () => {
@@ -242,11 +289,12 @@ describe('safeCoreSDK', () => {
         const version = '1.3.0'
 
         const mockProvider = getMockProvider(chainId, version)
+        mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
 
         const sdk = await initSafeSDK({
           provider: mockProvider,
           chainId,
-          address: toBeHex('0x1', 20),
+          address: MAINNET_MASTER_COPY,
           version: null,
           implementation: '0xinvalid',
           implementationVersionState: ImplementationVersionState.UNKNOWN,
@@ -262,6 +310,7 @@ describe('safeCoreSDK', () => {
       const version = '1.3.0'
 
       const mockProvider = getMockProvider(chainId, version)
+      mockProvider.getNetwork = jest.fn().mockReturnValue({ chainId: BigInt(chainId) })
 
       const sdk = await initSafeSDK({
         provider: mockProvider,

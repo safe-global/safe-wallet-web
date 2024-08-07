@@ -8,20 +8,6 @@ import ReviewSignMessageOnChain from '@/components/tx-flow/flows/SignMessageOnCh
 import { JsonRpcProvider, zeroPadValue } from 'ethers'
 import { act } from '@testing-library/react'
 
-jest.mock('@safe-global/protocol-kit', () => {
-  const originalModule = jest.requireActual('@safe-global/protocol-kit')
-
-  // Mock class
-  class MockEthersAdapter extends originalModule.EthersAdapter {
-    getChainId = jest.fn().mockImplementation(() => Promise.resolve(BigInt(1)))
-  }
-
-  return {
-    ...originalModule,
-    EthersAdapter: MockEthersAdapter,
-  }
-})
-
 jest.spyOn(execThroughRoleHooks, 'useRoles').mockReturnValue([])
 
 describe('ReviewSignMessageOnChain', () => {

@@ -15,11 +15,12 @@ import {
   isTransactionListItem,
 } from '@/utils/transaction-guards'
 import useSafeInfo from './useSafeInfo'
+import { shallowEqual } from 'react-redux'
 
 const usePendingTxIds = (): Array<TransactionSummary['id']> => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
-  return useAppSelector((state) => selectPendingTxIdsBySafe(state, chainId, safeAddress))
+  return useAppSelector((state) => selectPendingTxIdsBySafe(state, chainId, safeAddress), shallowEqual)
 }
 
 export const useHasPendingTxs = (): boolean => {

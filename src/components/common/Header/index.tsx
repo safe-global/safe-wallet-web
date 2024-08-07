@@ -13,6 +13,7 @@ import NotificationCenter from '@/components/notification-center/NotificationCen
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
 import SafeLogo from '@/public/images/logo.svg'
+import SafeLogoMobile from '@/public/images/logo-no-text.svg'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import BatchIndicator from '@/components/batch/BatchIndicator'
@@ -67,6 +68,12 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
             <MenuIcon />
           </IconButton>
         )}
+      </div>
+
+      <div className={classnames(css.element, css.logoMobile)}>
+        <Link href={logoHref} passHref>
+          <SafeLogoMobile alt="Safe logo" />
+        </Link>
       </div>
 
       <div className={classnames(css.element, css.hideMobile, css.logo)}>

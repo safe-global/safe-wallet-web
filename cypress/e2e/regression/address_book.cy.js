@@ -45,25 +45,6 @@ describe('Address book tests', () => {
       })
   })
 
-  //TODO: Rework to use Polygon. Replace Verify csv file can be imported (Goerli) with this test
-  it.skip('Verify that Sepolia and Polygon addresses can be imported', () => {
-    // Go to a Safe on Gnosis Chain
-    cy.get('header')
-      .contains(/^G(ö|oe)rli$/)
-      .click()
-    cy.contains('Gnosis Chain').click()
-
-    // Navigate to the Address Book page
-    cy.visit(`/address-book?safe=${constants.GNO_TEST_SAFE}`)
-
-    // Waits for the Address Book table to be in the page
-    cy.contains('p', 'Address book').should('be.visible')
-
-    // Finds the imported Gnosis Chain address
-    cy.contains(constants.GNO_CSV_ENTRY.name).should('exist')
-    cy.contains(constants.GNO_CSV_ENTRY.address).should('exist')
-  })
-
   it('Verify the address book file can be exported', () => {
     cy.wrap(null)
       .then(() => main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.dataSet))
@@ -79,8 +60,38 @@ describe('Address book tests', () => {
         addressBook.verifyExportMessage(12)
         addressBook.confirmExport()
         const downloadsFolder = Cypress.config('downloadsFolder')
-        //File reading is failing in the CI. Can be tested locally
-        cy.readFile(path.join(downloadsFolder, fileName)).should('exist')
+
+        cy.readFile(path.join(downloadsFolder, fileName), 'utf-8').then((content) => {
+          const lines = content
+            .replace(/^\uFEFF/, '')
+            .trim()
+            .split('\r\n')
+
+          const [header, ...dataLines] = lines
+          const actualData = dataLines.reduce((acc, line) => {
+            const [address, name, chainId] = line.split(',')
+            acc[chainId] = acc[chainId] || {}
+            acc[chainId][address] = name
+            return acc
+          }, {})
+
+          Object.keys(ls.addressBookData.dataSet).forEach((chainId) => {
+            cy.log(`Checking chainId: ${chainId}`)
+
+            const actualChainData = actualData[chainId] || {}
+            const expectedChainData = ls.addressBookData.dataSet[chainId]
+
+            Object.keys(expectedChainData).forEach((address) => {
+              const actualName = actualChainData[address]
+              const expectedName = expectedChainData[address]
+
+              cy.log(
+                `ChainId: ${chainId}, Address: ${address}, Actual Name: ${actualName}, Expected Name: ${expectedName}`,
+              )
+              expect(actualName).to.equal(expectedName)
+            })
+          })
+        })
       })
   })
 

@@ -10,6 +10,7 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-20.04
+    timeout-minutes: 30
     name: Cypress Smoke tests
 
     strategy:
@@ -25,3 +26,4 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
           spec: cypress/e2e/smoke/*.cy.js
           group: 'Smoke tests'
+          tag: 'smoke'

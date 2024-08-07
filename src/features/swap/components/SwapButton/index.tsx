@@ -37,7 +37,7 @@ const SwapButton = ({
                 pathname: AppRoutes.swap,
                 query: {
                   ...router.query,
-                  token: tokenInfo.symbol,
+                  token: tokenInfo.address,
                   amount,
                 },
               })
