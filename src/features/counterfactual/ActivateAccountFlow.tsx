@@ -162,7 +162,7 @@ const ActivateAccountFlow = () => {
               name="Est. network fee"
               value={
                 <>
-                  <NetworkFee totalFee={totalFee} strikethrough={willRelay || isWrongChain} chain={chain} />
+                  <NetworkFee totalFee={totalFee} isWaived={willRelay || isWrongChain} chain={chain} />
 
                   {!willRelay && (
                     <Typography variant="body2" color="text.secondary" mt={1}>

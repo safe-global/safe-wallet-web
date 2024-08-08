@@ -58,8 +58,6 @@ describe('CheckWallet', () => {
 
     const { container } = renderButton()
 
-    console.log(container)
-
     // Check that the button is disabled
     expect(container.querySelector('button')).toBeDisabled()
 

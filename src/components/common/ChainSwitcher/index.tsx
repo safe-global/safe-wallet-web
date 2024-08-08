@@ -1,10 +1,9 @@
 import type { ReactElement } from 'react'
 import { useCallback, useState } from 'react'
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { Button, CircularProgress, Typography } from '@mui/material'
 import { useCurrentChain } from '@/hooks/useChains'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import css from './styles.module.css'
 import { switchWalletChain } from '@/services/tx/tx-sender/sdk'
 
 const ChainSwitcher = ({
@@ -43,8 +42,14 @@ const ChainSwitcher = ({
       ) : (
         <>
           <Typography noWrap>Switch to&nbsp;</Typography>
-          <Box className={css.circle} bgcolor={chain?.theme?.backgroundColor || ''} />
-          &nbsp;{chain?.chainName}
+          <img
+            src={chain?.chainLogoUri ?? undefined}
+            alt={`${chain?.chainName} Logo`}
+            width={24}
+            height={24}
+            loading="lazy"
+          />
+          <Typography noWrap>&nbsp;{chain?.chainName}</Typography>
         </>
       )}
     </Button>
