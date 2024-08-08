@@ -22,7 +22,17 @@ jobs:
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           skip-step: install
+          output: report-markdown
           annotations: failed-tests
           package-manager: yarn
           test-script: yarn test:ci
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save coverage report to file
+        run: echo "${{ steps.jest-coverage.outputs.report-markdown }}" > jest-coverage-report.md
+
+      - name: Upload test coverage to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-coverage-report
+          path: jest-coverage-report.md
