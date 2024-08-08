@@ -9,7 +9,7 @@ const FIAT_AMOUNT_COLUMN = 2
 
 let staticSafes = []
 
-describe('Tokens tests', () => {
+describe('Prod tokens tests', () => {
   const fiatRegex = assets.fiatRegex
 
   before(async () => {
