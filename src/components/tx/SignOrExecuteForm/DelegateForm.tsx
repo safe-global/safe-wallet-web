@@ -1,8 +1,8 @@
-import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
-import { isHardwareWallet } from '@/utils/wallets'
+import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
+import { isWalletRejection } from '@/utils/wallets'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Button, CardActions, CircularProgress, Divider } from '@mui/material'
-import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { Box, Button, CardActions, CircularProgress, Divider } from '@mui/material'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -28,10 +28,11 @@ export const DelegateForm = ({
 }): ReactElement => {
   // Form state
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
+  const [isRejectedByUser, setIsRejectedByUser] = useState<Boolean>(false)
 
   // Hooks
   const wallet = useWallet()
-  const { proposeTx } = txActions
+  const { signDelegateTx } = txActions
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
 
@@ -47,24 +48,17 @@ export const DelegateForm = ({
     if (!safeTx || !wallet) return
 
     setIsSubmittable(false)
+    setIsRejectedByUser(false)
 
     try {
-      // We have to manually sign because sdk.signTransaction doesn't support delegates yet
-      const sdk = await getSafeSDKWithSigner(wallet.provider)
-
-      let signature: SafeSignature
-      if (isHardwareWallet(wallet)) {
-        const txHash = await sdk.getTransactionHash(safeTx)
-        signature = await sdk.signHash(txHash)
-      } else {
-        signature = await sdk.signTypedData(safeTx)
-      }
-
-      safeTx.addSignature(signature)
-      await proposeTx(wallet.address, safeTx)
+      await signDelegateTx(safeTx)
     } catch (_err) {
       const err = asError(_err)
-      trackError(Errors._805, err)
+      if (isWalletRejection(err)) {
+        setIsRejectedByUser(true)
+      } else {
+        trackError(Errors._805, err)
+      }
       setIsSubmittable(true)
       return
     }
@@ -80,6 +74,12 @@ export const DelegateForm = ({
         You are creating this transaction as a delegate. It will not have any signatures until it is confirmed by an
         owner.
       </ErrorMessage>
+
+      {isRejectedByUser && (
+        <Box mt={1}>
+          <WalletRejectionError />
+        </Box>
+      )}
 
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
 
