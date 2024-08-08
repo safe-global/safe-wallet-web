@@ -186,7 +186,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
-        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
+        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, payMethod, router)
         trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
         return
       }
@@ -199,22 +199,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           }
         : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
 
-      const undeployedSafe = {
-        chainId: chain.chainId,
-        address: safeAddress,
-        type: PayMethod.PayNow,
-        safeProps: {
-          safeAccountConfig: props.safeAccountConfig,
-          safeDeploymentConfig: {
-            saltNonce,
-            safeVersion: data.safeVersion,
-          },
-        },
-      }
-
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
         // Create a counterfactual Safe
-        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props)
+        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, payMethod)
 
         if (taskId) {
           safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
