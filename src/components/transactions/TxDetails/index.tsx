@@ -163,6 +163,7 @@ const TxDetails = ({
     error,
     isLoading: loading,
     refetch,
+    isUninitialized,
   } = useGetTransactionDetailsQuery(
     { chainId, txId: txSummary.id },
     {
@@ -171,8 +172,8 @@ const TxDetails = ({
   )
 
   useEffect(() => {
-    refetch()
-  }, [safe.txQueuedTag, refetch, txDetails])
+    !isUninitialized && refetch()
+  }, [safe.txQueuedTag, refetch, txDetails, isUninitialized])
 
   return (
     <div className={css.container}>

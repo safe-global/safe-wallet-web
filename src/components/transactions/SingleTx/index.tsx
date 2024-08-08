@@ -46,6 +46,7 @@ const SingleTx = () => {
     data: txDetails,
     error: txDetailsError,
     refetch,
+    isUninitialized,
   } = useGetTransactionDetailsQuery(
     transactionId && safe.chainId
       ? {
@@ -56,8 +57,8 @@ const SingleTx = () => {
   )
 
   useEffect(() => {
-    refetch()
-  }, [safe.txHistoryTag, safe.txQueuedTag, safeAddress, refetch])
+    !isUninitialized && refetch()
+  }, [safe.txHistoryTag, safe.txQueuedTag, safeAddress, refetch, isUninitialized])
 
   if (txDetails && !sameAddress(txDetails.safeAddress, safeAddress)) {
     txDetailsError = new Error('Transaction with this id was not found in this Safe Account')
