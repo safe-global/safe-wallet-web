@@ -123,7 +123,7 @@ const BalanceChanges = () => {
     ? balanceChange.reduce((prev, current) => prev + current.in.length + current.out.length, 0)
     : 0
 
-  if (isLoading && !balanceChange) {
+  if (isLoading) {
     return (
       <div className={css.loader}>
         <CircularProgress

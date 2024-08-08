@@ -54,6 +54,5 @@ export const useBlockaid = (
 
     [blockaidErrors, blockaidPayload],
   )
-
   return [blockaidPayload, errorMsg, loading]
 }

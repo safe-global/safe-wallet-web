@@ -72,7 +72,6 @@ export class BlockaidModule implements SecurityModule<BlockaidModuleRequest, Blo
           safeAddress,
           safeVersion: '1.3.0', // TODO: pass to module, taking into account that lower Safe versions don't have chainId in payload
           chainId: BigInt(chainId),
-          // TODO: find out why these types are incompaitble
           data: {
             ...data.data,
             safeTxGas: data.data.safeTxGas,
@@ -104,7 +103,6 @@ export class BlockaidModule implements SecurityModule<BlockaidModuleRequest, Blo
         domain: 'http://localhost:3000',
       },
     }
-
     const res = await fetch(`${BLOCKAID_API}/v0/evm/json-rpc/scan`, {
       method: 'POST',
       headers: {

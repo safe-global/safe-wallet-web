@@ -33,8 +33,6 @@ import { BlockaidHint } from './BlockaidHint'
 import { ExpandMore, WarningAmber } from '@mui/icons-material'
 import { SecuritySeverity } from '@/services/security/modules/types'
 
-const MAX_SHOWN_WARNINGS = 3
-
 export const REASON_MAPPING: Record<string, string> = {
   raw_ether_transfer: 'transfers native currency',
   signature_farming: 'is a raw signed transaction',
@@ -137,7 +135,7 @@ const ResultDescription = ({
   }
 
   return (
-    <Typography fontWeight={700} variant="subtitle1">
+    <Typography fontWeight={700} variant="subtitle1" lineHeight="20px">
       {text ?? 'The transaction is malicious.'}
     </Typography>
   )
@@ -243,6 +241,21 @@ const BlockaidBlock = () => {
   )
 }
 
+const BlockaidError = ({ error }: { error: Error }) => {
+  return (
+    <Alert severity="error" icon={<WarningAmber />} className={css.customAlert}>
+      <AlertTitle>
+        <Typography fontWeight={700} variant="subtitle1">
+          The transaction could not be analyzed.
+        </Typography>
+      </AlertTitle>
+      <Typography mb={2}>Reason: {error.message}</Typography>
+      <Typography variant="body2">Check that the transaction is correct before proceeding.</Typography>
+      <BlockaidMessage />
+    </Alert>
+  )
+}
+
 export const Blockaid = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 
@@ -273,6 +286,10 @@ const BlockaidWarning = () => {
     setIsRiskConfirmed((prev) => !prev)
   }
 
+  if (error) {
+    return <BlockaidError error={error} />
+  }
+
   return (
     <BlockaidResultWarning
       isRiskConfirmed={isRiskConfirmed}
@@ -291,7 +308,7 @@ export const BlockaidMessage = () => {
     return null
   }
 
-  const { severity, warnings } = blockaidResponse
+  const { warnings } = blockaidResponse
 
   /* Evaluate security warnings */
   const groupedShownWarnings = groupBy(warnings, (warning) => warning.severity)
