@@ -1,7 +1,7 @@
 import DelegateForm from '@/components/tx/SignOrExecuteForm/DelegateForm'
 import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
+import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
 import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
 import madProps from '@/utils/mad-props'
 import DecodedTx from '../DecodedTx'
@@ -87,8 +87,7 @@ export const SignOrExecuteForm = ({
   const isSwapOrder = isConfirmationViewOrder(decodedData)
   const [txDetails] = useTxDetails(props.txId)
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
-  const wallet = useWallet()
-  const isDelegate = wallet?.isDelegate
+  const isDelegate = useIsWalletDelegate()
 
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
