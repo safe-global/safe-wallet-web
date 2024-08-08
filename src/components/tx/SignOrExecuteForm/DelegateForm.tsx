@@ -1,7 +1,8 @@
 import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
+import { isHardwareWallet } from '@/utils/wallets'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
 import { Button, CardActions, CircularProgress, Divider } from '@mui/material'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -50,7 +51,15 @@ export const DelegateForm = ({
     try {
       // We have to manually sign because sdk.signTransaction doesn't support delegates yet
       const sdk = await getSafeSDKWithSigner(wallet.provider)
-      const signature = await sdk.signTypedData(safeTx)
+
+      let signature: SafeSignature
+      if (isHardwareWallet(wallet)) {
+        const txHash = await sdk.getTransactionHash(safeTx)
+        signature = await sdk.signHash(txHash)
+      } else {
+        signature = await sdk.signTypedData(safeTx)
+      }
+
       safeTx.addSignature(signature)
       await proposeTx(wallet.address, safeTx)
     } catch (_err) {
