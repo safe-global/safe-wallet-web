@@ -130,6 +130,8 @@ export const SignOrExecuteForm = ({
     [onFormSubmit],
   )
 
+  const approvalEditor = <ApprovalEditor safeTransaction={safeTx} />
+
   return (
     <>
       <TxCard>
@@ -144,7 +146,7 @@ export const SignOrExecuteForm = ({
         )}
 
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor safeTransaction={safeTx} />
+          {approvalEditor}
 
           {showTxDetails && <TxData txDetails={txDetails} imitation={false} trusted />}
 
@@ -153,7 +155,7 @@ export const SignOrExecuteForm = ({
             txId={props.txId}
             decodedData={decodedData}
             showMultisend={!props.isBatch}
-            showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder}
+            showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder && !approvalEditor}
           />
         </ErrorBoundary>
 
