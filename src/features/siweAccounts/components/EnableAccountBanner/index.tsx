@@ -1,4 +1,3 @@
-import { useWeb3 } from '@/hooks/wallets/web3'
 import { signInWithEthereum } from '@/services/siwe'
 import { Alert, Box, Button, IconButton, Typography } from '@mui/material'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -9,9 +8,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import css from './style.module.css'
 import { useState } from 'react'
 import { createAccount, getAccount } from '@safe-global/safe-gateway-typescript-sdk'
+import type { BrowserProvider } from 'ethers'
 
-const SignInBanner = () => {
-  const provider = useWeb3()
+const SignInBanner = ({ provider }: { provider: BrowserProvider | undefined }) => {
   const { address = '' } = useWallet() || {}
   const [isDismissed, setIsDismissed] = useState(false)
 
