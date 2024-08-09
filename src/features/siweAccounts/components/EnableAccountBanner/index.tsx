@@ -9,6 +9,8 @@ import css from './style.module.css'
 import { useState } from 'react'
 import { createAccount, getAccount } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BrowserProvider } from 'ethers'
+import { logError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 
 const SignInBanner = ({ provider }: { provider: BrowserProvider | undefined }) => {
   const { address = '' } = useWallet() || {}
@@ -22,16 +24,15 @@ const SignInBanner = ({ provider }: { provider: BrowserProvider | undefined }) =
       await signInWithEthereum(provider)
       account = await getAccount(address)
     } catch (error) {
-      console.log(error)
+      logError(ErrorCodes._640, error)
     }
     if (!account) {
       try {
         account = await createAccount({ address: address as `0x${string}` })
       } catch (error) {
-        console.log(error)
+        logError(ErrorCodes._641, error)
       }
     }
-    console.log('!!', account)
   }
 
   return (
