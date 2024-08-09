@@ -8,7 +8,6 @@ import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCre
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import NumberField from '@/components/common/NumberField'
 import { useCurrentChain } from '@/hooks/useChains'
 import useAsync from '@/hooks/useAsync'
@@ -38,10 +37,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
 
   const formMethods = useForm<AdvancedOptionsStepForm>({
     mode: 'onChange',
-    defaultValues: {
-      [AdvancedOptionsFields.safeVersion]: LATEST_SAFE_VERSION as SafeVersion,
-      [AdvancedOptionsFields.saltNonce]: 0,
-    },
+    defaultValues: data,
   })
 
   const { handleSubmit, control, watch, formState, getValues, register } = formMethods
