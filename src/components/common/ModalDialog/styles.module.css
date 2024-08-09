@@ -1,5 +1,5 @@
 .dialog :global .MuiDialogActions-root {
-  border-top: 2px solid var(--color-border-light);
+  border-top: 1px solid var(--color-border-light);
   padding: var(--space-3);
 }
 
@@ -14,7 +14,7 @@
 }
 
 .dialog :global .MuiDialogTitle-root {
-  border-bottom: 2px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 @media (min-width: 600px) {

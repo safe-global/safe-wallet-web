@@ -23,6 +23,10 @@ inputs:
     description: 'Cypress cloud record key'
     required: false
 
+  tag:
+    description: 'Cypress cloud tag key'
+    required: false
+
 runs:
   using: 'composite'
   steps:
@@ -34,6 +38,10 @@ runs:
         curl -O 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
         sudo apt-get install ./google-chrome-stable_current_amd64.deb
 
+    - name: Install Cypress 13.13.1
+      shell: bash
+      run: npm install cypress@13.13.1 --legacy-peer-deps
+
     - uses: ./.github/workflows/build
       with:
         secrets: ${{ inputs.secrets }}
@@ -43,13 +51,14 @@ runs:
       shell: bash
       run: yarn serve &
 
-    - uses: cypress-io/github-action@v4
+    - uses: cypress-io/github-action@v6
       with:
         spec: ${{ inputs.spec }}
         group: ${{ inputs.group }}
         parallel: true
         browser: chrome
         record: true
+        tag: ${{ inputs.tag }}
         config: baseUrl=http://localhost:8080
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.record_key || fromJSON(inputs.secrets).CYPRESS_RECORD_KEY }}

@@ -1,5 +1,6 @@
 export const modalTitle = '[data-testid="modal-title"]'
 export const modal = '[data-testid="modal-view"]'
+export const modalHeader = '[data-testid="modal-header"]'
 
 export const modalTitiles = {
   editEntry: 'Edit entry',

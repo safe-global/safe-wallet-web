@@ -28,7 +28,8 @@ const TokenAmount = ({
   const sign = direction === TransferDirection.OUTGOING ? '-' : ''
   const amount =
     decimals !== undefined ? formatVisualAmount(value, decimals, preciseAmount ? PRECISION : undefined) : value
-  const fullAmount = sign + formatVisualAmount(value, decimals, PRECISION) + ' ' + tokenSymbol
+  const fullAmount =
+    decimals !== undefined ? sign + formatVisualAmount(value, decimals, PRECISION) + ' ' + tokenSymbol : value
 
   return (
     <Tooltip title={fullAmount}>
