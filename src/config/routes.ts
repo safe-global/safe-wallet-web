@@ -1,6 +1,6 @@
 export const AppRoutes = {
-  '404': '/404',
   '403': '/403',
+  '404': '/404',
   wc: '/wc',
   terms: '/terms',
   swap: '/swap',
@@ -26,6 +26,7 @@ export const AppRoutes = {
   newSafe: {
     load: '/new-safe/load',
     create: '/new-safe/create',
+    advancedCreate: '/new-safe/advanced-create',
   },
   settings: {
     setup: '/settings/setup',
@@ -46,8 +47,8 @@ export const AppRoutes = {
   },
   transactions: {
     tx: '/transactions/tx',
-    msg: '/transactions/msg',
     queue: '/transactions/queue',
+    msg: '/transactions/msg',
     messages: '/transactions/messages',
     index: '/transactions',
     history: '/transactions/history',

@@ -51,6 +51,7 @@ export const computeNewSafeAddress = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
   chainId: string,
+  safeVersion?: SafeVersion,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
 
@@ -60,7 +61,7 @@ export const computeNewSafeAddress = async (
     safeAccountConfig: props.safeAccountConfig,
     safeDeploymentConfig: {
       saltNonce: props.saltNonce,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+      safeVersion: safeVersion ?? (LATEST_SAFE_VERSION as SafeVersion),
     },
   })
 }
@@ -74,10 +75,11 @@ export const encodeSafeCreationTx = async ({
   threshold,
   saltNonce,
   chain,
-}: SafeCreationProps & { chain: ChainInfo }) => {
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
-  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
+  safeVersion = LATEST_SAFE_VERSION as SafeVersion,
+}: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion }) => {
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(safeVersion)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(safeVersion)
 
   // @ts-ignore union type is too complex
   const setupData = readOnlySafeContract.encode('setup', [
@@ -103,8 +105,9 @@ export const estimateSafeCreationGas = async (
   provider: Provider,
   from: string,
   safeParams: SafeCreationProps,
+  safeVersion: SafeVersion = LATEST_SAFE_VERSION as SafeVersion,
 ): Promise<bigint> => {
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion)
   const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
 
   const gas = await provider.estimateGas({
