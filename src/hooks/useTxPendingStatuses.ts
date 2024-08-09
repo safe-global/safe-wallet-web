@@ -19,7 +19,7 @@ import { SimpleTxWatcher } from '@/utils/SimpleTxWatcher'
 
 const FINAL_PENDING_STATUSES = [TxEvent.SIGNATURE_INDEXED, TxEvent.SUCCESS, TxEvent.REVERTED, TxEvent.FAILED]
 
-const useTxMonitor = (): void => {
+export const useTxMonitor = (): void => {
   const chainId = useChainId()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const pendingTxEntriesOnChain = Object.entries(pendingTxs).filter(([, pendingTx]) => pendingTx.chainId === chainId)

@@ -454,7 +454,6 @@ describe('txSender', () => {
         gasLimit: undefined,
         txType: 'SafeTx',
       })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { txId, safeAddress, txHash: TX_HASH })
     })
 
     it('should fail executing a tx', async () => {
@@ -502,10 +501,6 @@ describe('txSender', () => {
         txHash: TX_HASH,
         txType: 'SafeTx',
         gasLimit: undefined,
-      })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('REVERTED', {
-        txId,
-        error: new Error('Transaction reverted by EVM.'),
       })
     })
   })
