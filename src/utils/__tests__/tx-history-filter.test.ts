@@ -388,13 +388,14 @@ describe('tx-history-filter', () => {
         '0x123',
         { type: 'Incoming' as TxFilterType, filter: { value: '123' } },
         false,
+        false,
         'pageUrl1',
       )
 
       expect(getIncomingTransfers).toHaveBeenCalledWith(
         '4',
         '0x123',
-        { value: '123', executed: undefined, timezone_offset: 3600000, trusted: false, imitation: false },
+        { value: '123', executed: undefined, timezone_offset: 3600000, trusted: false, imitation: true },
         'pageUrl1',
       )
 
@@ -411,6 +412,7 @@ describe('tx-history-filter', () => {
           filter: { execution_date__gte: '1970-01-01T00:00:00.000Z', executed: 'true' },
         },
         false,
+        false,
         'pageUrl2',
       )
 
@@ -422,7 +424,7 @@ describe('tx-history-filter', () => {
           executed: 'true',
           timezone_offset: 3600000,
           trusted: false,
-          imitation: false,
+          imitation: true,
         },
         'pageUrl2',
       )
@@ -437,13 +439,14 @@ describe('tx-history-filter', () => {
         '0x789',
         { type: 'Module-based' as TxFilterType, filter: { to: '0x123' } },
         false,
+        false,
         'pageUrl3',
       )
 
       expect(getModuleTransactions).toHaveBeenCalledWith(
         '1',
         '0x789',
-        { to: '0x123', executed: undefined, timezone_offset: 3600000, trusted: false, imitation: false },
+        { to: '0x123', executed: undefined, timezone_offset: 3600000, trusted: false, imitation: true },
         'pageUrl3',
       )
 
@@ -459,6 +462,7 @@ describe('tx-history-filter', () => {
           type: 'Test' as TxFilterType,
           filter: { token_address: '0x123' },
         },
+        false,
         false,
         'pageUrl3',
       )
