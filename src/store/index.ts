@@ -45,6 +45,7 @@ const rootReducer = combineReducers({
   [slices.undeployedSafesSlice.name]: slices.undeployedSafesSlice.reducer,
   [slices.swapParamsSlice.name]: slices.swapParamsSlice.reducer,
   [ofacApi.reducerPath]: ofacApi.reducer,
+  [slices.gatewayApi.reducerPath]: slices.gatewayApi.reducer,
 })
 
 const persistedSlices: (keyof Partial<RootState>)[] = [
@@ -73,6 +74,7 @@ const middleware: Middleware[] = [
   broadcastState(persistedSlices),
   listenerMiddlewareInstance.middleware,
   ofacApi.middleware,
+  slices.gatewayApi.middleware,
 ]
 const listeners = [safeMessagesListener, txHistoryListener, txQueueListener, swapOrderListener, swapOrderStatusListener]
 
