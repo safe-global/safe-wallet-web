@@ -5,7 +5,7 @@
   font-size: 14px;
 }
 
-.sponsoredFee {
+.strikethrough {
   text-decoration: line-through;
   color: var(--color-text-secondary);
 }

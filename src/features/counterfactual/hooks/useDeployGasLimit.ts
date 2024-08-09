@@ -2,7 +2,7 @@ import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain, getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
+import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { estimateSafeDeploymentGas, estimateTxBaseGas } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
 
@@ -28,7 +28,6 @@ const useDeployGasLimit = (safeTx?: SafeTransaction) => {
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<DeployGasLimitProps | undefined>(async () => {
     if (!wallet || !onboard) return
 
-    await assertWalletChain(onboard, chainId)
     const sdk = await getSafeSDKWithSigner(wallet.provider)
 
     const [baseGas, batchTxGas, safeDeploymentGas] = await Promise.all([

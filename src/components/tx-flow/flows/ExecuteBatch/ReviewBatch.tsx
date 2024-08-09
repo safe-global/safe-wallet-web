@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@/utils/chains'
@@ -14,8 +13,8 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import { TxSimulation } from '@/components/tx/security/tenderly'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
+import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
@@ -98,8 +97,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       : { gasPrice: maxFeePerGas?.toString() }
 
     overrides.nonce = userNonce
-
-    await assertWalletChain(onboard, safe.chainId)
 
     await dispatchBatchExecution(
       txsWithDetails,
@@ -216,7 +213,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           <Divider className={commonCss.nestedDivider} sx={{ pt: 2 }} />
 
           <CardActions>
-            <CheckWallet allowNonOwner={true}>
+            <CheckWallet allowNonOwner={true} checkNetwork>
               {(isOk) => (
                 <Button
                   variant="contained"

@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { Button, Tooltip } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
@@ -26,6 +25,7 @@ export function ExecuteRecoveryButton({
   const onboard = useOnboard()
   const wallet = useWallet()
   const { safe } = useSafeInfo()
+  const isDisabled = !isExecutable || isPending
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -36,8 +36,6 @@ export function ExecuteRecoveryButton({
     }
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
-
       await dispatchRecoveryExecution({
         provider: wallet.provider,
         chainId: safe.chainId,
@@ -54,14 +52,12 @@ export function ExecuteRecoveryButton({
   }
 
   return (
-    <CheckWallet allowNonOwner>
+    <CheckWallet allowNonOwner checkNetwork={!isDisabled}>
       {(isOk) => {
-        const isDisabled = !isOk || !isExecutable || isPending
-
         return (
           <Tooltip
             title={
-              isDisabled
+              !isOk || isDisabled
                 ? isNext
                   ? 'You can execute the recovery after the specified review window'
                   : 'Previous recovery proposals must be executed or cancelled first'
@@ -73,7 +69,7 @@ export function ExecuteRecoveryButton({
                 data-testid="execute-btn"
                 onClick={onClick}
                 variant="contained"
-                disabled={isDisabled}
+                disabled={!isOk || isDisabled}
                 sx={{ minWidth: '106.5px', py: compact ? 0.8 : undefined }}
                 size={compact ? 'small' : 'stretched'}
               >

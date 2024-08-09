@@ -188,7 +188,7 @@ export const ExecuteForm = ({
 
         <CardActions>
           {/* Submit button */}
-          <CheckWallet allowNonOwner={onlyExecute}>
+          <CheckWallet allowNonOwner={onlyExecute} checkNetwork={!submitDisabled}>
             {(isOk) => (
               <Button
                 data-testid="execute-form-btn"

@@ -131,7 +131,7 @@ export const SignForm = ({
           )}
 
           {/* Submit button */}
-          <CheckWallet>
+          <CheckWallet checkNetwork={!submitDisabled}>
             {(isOk) => (
               <Button
                 data-testid="sign-btn"

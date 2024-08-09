@@ -9,6 +9,8 @@ import {
   Switch,
   Divider,
   Link as MuiLink,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -28,7 +30,6 @@ import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsMac } from '@/hooks/useIsMac'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import ExternalLink from '@/components/common/ExternalLink'
 
 import css from './styles.module.css'
@@ -40,6 +41,8 @@ export const PushNotifications = (): ReactElement => {
   const [isRegistering, setIsRegistering] = useState(false)
   const [isUpdatingIndexedDb, setIsUpdatingIndexedDb] = useState(false)
   const onboard = useOnboard()
+  const theme = useTheme()
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
 
   const { updatePreferences, getPreferences, getAllPreferences } = useNotificationPreferences()
   const { unregisterSafeNotifications, unregisterDeviceNotifications, registerNotifications } =
@@ -58,17 +61,7 @@ export const PushNotifications = (): ReactElement => {
   const shouldShowMacHelper = isMac || IS_DEV
 
   const handleOnChange = async () => {
-    if (!onboard) {
-      return
-    }
-
     setIsRegistering(true)
-
-    try {
-      await assertWalletChain(onboard, safe.chainId)
-    } catch {
-      return
-    }
 
     if (!preferences) {
       await registerNotifications({ [safe.chainId]: [safe.address.value] })
@@ -131,11 +124,11 @@ export const PushNotifications = (): ReactElement => {
                     <EthHashInfo
                       address={safe.address.value}
                       showCopyButton
-                      shortAddress={false}
+                      shortAddress={!isLargeScreen}
                       showName={true}
                       hasExplorer
                     />
-                    <CheckWallet allowNonOwner>
+                    <CheckWallet allowNonOwner checkNetwork={!isRegistering && safe.deployed}>
                       {(isOk) => (
                         <FormControlLabel
                           data-testid="notifications-switch"

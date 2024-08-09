@@ -1,6 +1,5 @@
 import useGasPrice from '@/hooks/useGasPrice'
 import ModalDialog from '@/components/common/ModalDialog'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import DialogContent from '@mui/material/DialogContent'
 import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
 import RocketSpeedup from '@/public/images/common/ic-rocket-speedup.svg'
@@ -27,6 +26,7 @@ import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import CheckWallet from '@/components/common/CheckWallet'
 
 type Props = {
   open: boolean
@@ -90,7 +90,6 @@ export const SpeedUpModal = ({
 
     try {
       setWaitingForConfirmation(true)
-      await assertWalletChain(onboard, chainInfo.chainId)
 
       if (pendingTx.txType === PendingTxType.SAFE_TX) {
         await dispatchSafeTxSpeedUp(
@@ -196,9 +195,19 @@ export const SpeedUpModal = ({
           <Button onClick={onCancel}>Cancel</Button>
 
           <Tooltip title="Speed up transaction">
-            <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>
-              {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
-            </Button>
+            <CheckWallet checkNetwork={!isDisabled}>
+              {(isOk) => (
+                <Button
+                  color="primary"
+                  disabled={!isOk || isDisabled}
+                  onClick={onSubmit}
+                  variant="contained"
+                  disableElevation
+                >
+                  {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
+                </Button>
+              )}
+            </CheckWallet>
           </Tooltip>
         </DialogActions>
       </ModalDialog>

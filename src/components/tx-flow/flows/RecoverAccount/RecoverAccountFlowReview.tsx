@@ -1,6 +1,5 @@
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { CardActions, Button, Typography, Divider, Box, CircularProgress } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
@@ -80,8 +79,6 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
     setIsRejectedByUser(false)
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
-
       await dispatchRecoveryProposal({
         provider: wallet.provider,
         safe,
@@ -172,7 +169,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
           <Divider className={commonCss.nestedDivider} />
 
           <CardActions sx={{ mt: 'var(--space-1) !important' }}>
-            <CheckWallet allowNonOwner>
+            <CheckWallet allowNonOwner checkNetwork>
               {(isOk) => (
                 <Button
                   data-testid="execute-btn"

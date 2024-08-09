@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import type { ReactElement } from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { useMemo } from 'react'
@@ -112,7 +111,6 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
     if (!safeTx || !onboard || !wallet) return
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
       await dispatchSafeAppsTx(safeTx, requestId, wallet.provider)
     } catch (error) {
       setSafeTxError(asError(error))
