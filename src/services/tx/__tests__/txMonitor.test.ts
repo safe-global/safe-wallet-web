@@ -47,7 +47,7 @@ describe('txMonitor', () => {
       // https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/-%23-Provider-waitForTransaction
       const receipt = null as unknown as TransactionReceipt
       watchTxHashSpy.mockImplementation(() => Promise.resolve(receipt))
-      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1, '11155111')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
     })
@@ -58,7 +58,7 @@ describe('txMonitor', () => {
       } as TransactionReceipt
 
       watchTxHashSpy.mockImplementation(() => Promise.resolve(receipt))
-      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1, '11155111')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
         txId: '0x0',
@@ -68,7 +68,7 @@ describe('txMonitor', () => {
 
     it('emits a FAILED event if waitForTransaction throws', async () => {
       watchTxHashSpy.mockImplementation(() => Promise.reject(new Error('Test error.')))
-      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1, '11155111')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: new Error('Test error.') })
     })

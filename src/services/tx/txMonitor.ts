@@ -4,6 +4,7 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
+import { getSafeTransaction } from '@/utils/transactions'
 import { asError } from '../exceptions/utils'
 import { type JsonRpcProvider, type TransactionReceipt } from 'ethers'
 import { SimpleTxWatcher } from '@/utils/SimpleTxWatcher'
@@ -23,6 +24,7 @@ export const waitForTx = async (
   safeAddress: string,
   walletAddress: string,
   walletNonce: number,
+  chainId: string,
 ) => {
   const processReceipt = (receipt: TransactionReceipt | null, txIds: string[]) => {
     if (receipt === null) {
@@ -62,8 +64,27 @@ export const waitForTx = async (
   }
 
   try {
-    const receipt = await SimpleTxWatcher.getInstance().watchTxHash(txHash, walletAddress, walletNonce, provider)
-    processReceipt(receipt, txIds)
+    const isSafeTx = !!(await getSafeTransaction(txHash, chainId, safeAddress))
+    if (isSafeTx) {
+      // Poll for the transaction until it has a transactionHash and start the watcher
+      const interval = setInterval(async () => {
+        const safeTx = await getSafeTransaction(txHash, chainId, safeAddress)
+        if (!safeTx?.txHash) return
+
+        clearInterval(interval)
+
+        const receipt = await SimpleTxWatcher.getInstance().watchTxHash(
+          safeTx.txHash,
+          walletAddress,
+          walletNonce,
+          provider,
+        )
+        processReceipt(receipt, txIds)
+      }, POLLING_INTERVAL)
+    } else {
+      const receipt = await SimpleTxWatcher.getInstance().watchTxHash(txHash, walletAddress, walletNonce, provider)
+      processReceipt(receipt, txIds)
+    }
   } catch (error) {
     processError(error, txIds)
   }

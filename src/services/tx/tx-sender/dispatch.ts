@@ -14,7 +14,7 @@ import type { ContractTransactionResponse, Eip1193Provider, Overrides, Transacti
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
-import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
+import { waitForRelayedTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import {
   getAndValidateSafeSDK,
@@ -24,7 +24,7 @@ import {
   prepareTxExecution,
   prepareApproveTxHash,
 } from './sdk'
-import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { createWeb3, getUserNonce } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import chains from '@/config/chains'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
@@ -191,13 +191,6 @@ export const dispatchSafeTxSpeedUp = async (
     txType: 'SafeTx',
   })
 
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
-
   return result.hash
 }
 
@@ -233,13 +226,6 @@ export const dispatchCustomTxSpeedUp = async (
     groupKey: result?.hash,
     txType: 'Custom',
   })
-
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
 
   return result.hash
 }
@@ -294,14 +280,6 @@ export const dispatchTxExecution = async (
     txType: 'SafeTx',
   })
 
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  // Asynchronously watch the tx to be mined/validated
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
-
   return result.hash
 }
 
@@ -352,13 +330,6 @@ export const dispatchBatchExecution = async (
       to: txTo,
     })
   })
-
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, txIds, result.hash, safeAddress, signerAddress, signerNonce)
-  }
 
   return result!.hash
 }

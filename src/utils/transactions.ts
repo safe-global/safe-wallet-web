@@ -303,3 +303,13 @@ export const isTrustedTx = (tx: TransactionSummary) => {
 export const isImitation = ({ txInfo }: TransactionSummary): boolean => {
   return isTransferTxInfo(txInfo) && isERC20Transfer(txInfo.transferInfo) && Boolean(txInfo.transferInfo.imitation)
 }
+
+export const getSafeTransaction = async (safeTxHash: string, chainId: string, safeAddress: string) => {
+  const txId = `multisig_${safeAddress}_${safeTxHash}`
+
+  try {
+    return await getTransactionDetails(chainId, txId)
+  } catch (e) {
+    return undefined
+  }
+}
