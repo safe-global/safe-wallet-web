@@ -15,7 +15,7 @@ const CopyTooltip = ({
   text: string
   children?: ReactNode
   initialToolTipText?: string
-  onCopy?: () => void
+  onCopy?: (e: SyntheticEvent) => void
   dialogContent?: ReactElement
 }): ReactElement => {
   const [tooltipText, setTooltipText] = useState(initialToolTipText)
@@ -32,23 +32,68 @@ const CopyTooltip = ({
         setShowConfirmation(true)
         return
       }
+
       let timeout: NodeJS.Timeout | undefined
 
-      try {
-        navigator.clipboard.writeText(text).then(() => setTooltipText('Copied'))
-        setShowConfirmation(false)
-        setShowTooltip(true)
-        timeout = setTimeout(() => {
-          if (isCopyEnabled) {
-            setShowTooltip(false)
-            setTooltipText(initialToolTipText)
+      const copyToClipboard = async (text: string): Promise<boolean> => {
+        if (navigator.clipboard && window.isSecureContext) {
+          // Use Clipboard API if available and in secure context
+          try {
+            await navigator.clipboard.writeText(text)
+            return true
+          } catch (err) {
+            console.warn('Clipboard API failed:', err)
           }
-        }, 750)
-        onCopy?.()
-      } catch (err) {
-        setIsCopyEnabled(false)
-        setTooltipText('Copying is disabled in your browser')
+        }
+
+        // Fallback for iOS
+        const textArea = document.createElement('textarea')
+        textArea.value = text
+        // Avoid scrolling to bottom
+        textArea.style.top = '0'
+        textArea.style.left = '0'
+        textArea.style.position = 'fixed'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+
+        try {
+          // Using touch events for iOS
+          const event = new TouchEvent('touch')
+          textArea.dispatchEvent(event)
+          document.execCommand('selectall')
+          const successful = document.execCommand('copy')
+          document.body.removeChild(textArea)
+          return successful
+        } catch (err) {
+          console.warn('execCommand failed:', err)
+          document.body.removeChild(textArea)
+          return false
+        }
       }
+
+      copyToClipboard(text)
+        .then((success) => {
+          if (success) {
+            setTooltipText('Copied')
+            setShowConfirmation(false)
+            setShowTooltip(true)
+            timeout = setTimeout(() => {
+              if (isCopyEnabled) {
+                setShowTooltip(false)
+                setTooltipText(initialToolTipText)
+              }
+            }, 750)
+            onCopy?.(e)
+          } else {
+            throw new Error('Copying failed')
+          }
+        })
+        .catch((err) => {
+          console.error('Copy failed:', err)
+          setIsCopyEnabled(false)
+          setTooltipText('Copying is disabled in your browser')
+        })
 
       return () => clearTimeout(timeout)
     },
