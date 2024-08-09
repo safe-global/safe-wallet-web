@@ -42,6 +42,8 @@ enum ErrorCodes {
   _631 = '631: Transaction failed to be relayed',
   _632 = '632: Error fetching relay task status',
   _633 = '633: Notification (un-)registration failed',
+  _640 = '640: User account not found',
+  _641 = '641: Error creating user account',
 
   _700 = '700: Failed to read from local/session storage',
   _701 = '701: Failed to write to local/session storage',
