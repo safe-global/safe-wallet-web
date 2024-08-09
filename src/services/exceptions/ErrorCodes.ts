@@ -22,7 +22,6 @@ enum ErrorCodes {
 
   _400 = '400: Error requesting browser notification permissions',
   _401 = '401: Error tracking push notifications',
-  _404 = '401: Error tracking push notifications',
 
   _600 = '600: Error fetching Safe info',
   _601 = '601: Error fetching balances',
