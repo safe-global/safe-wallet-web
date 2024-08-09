@@ -53,6 +53,7 @@ const useTxMonitor = (): void => {
           pendingTx.safeAddress,
           pendingTx.signerAddress,
           pendingTx.signerNonce,
+          chainId,
         )
         continue
       }
@@ -63,7 +64,7 @@ const useTxMonitor = (): void => {
     }
     // `provider` is updated when switching chains, re-running this effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider])
+  }, [pendingTxEntriesOnChain.length, provider])
 }
 
 const useTxPendingStatuses = (): void => {
