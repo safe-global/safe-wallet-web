@@ -8,6 +8,7 @@ import ABIcon from '@/public/images/sidebar/address-book.svg'
 import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import SwapIcon from '@/public/images/common/swap.svg'
+import GrowIcon from '@/public/images/common/grow.svg'
 import { SvgIcon } from '@mui/material'
 import { Chip } from '@/components/common/Chip'
 
@@ -34,6 +35,11 @@ export const navItems: NavItem[] = [
     icon: <SvgIcon component={SwapIcon} inheritViewBox />,
     href: AppRoutes.swap,
     tag: <Chip component="span" />,
+  },
+  {
+    label: 'Stake',
+    icon: <SvgIcon component={GrowIcon} inheritViewBox />,
+    href: AppRoutes.stake,
   },
   {
     label: 'Transactions',
