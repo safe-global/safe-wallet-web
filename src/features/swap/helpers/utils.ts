@@ -1,8 +1,13 @@
-import type { DecodedDataResponse, Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
-import { formatUnits } from 'ethers'
+import type { DecodedDataResponse, Order as SwapOrder, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import { AbiCoder, formatUnits, keccak256 } from 'ethers'
 import type { AnyAppDataDocVersion, latest, LatestAppDataDocVersion } from '@cowprotocol/app-data'
 
 import { TradeType, UiOrderType } from '@/features/swap/types'
+import { isMultiSendCalldata } from '@/utils/transaction-calldata'
+import { decodeMultiSendTxs } from '@/utils/transactions'
+import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
+import { ComposableCowInterface } from '@/features/swap/helpers/composableCowInterface'
+import { CREATE_WITH_CONTEXT_SIGNATURE } from '@/features/swap/constants'
 
 type Quantity = {
   amount: string | number | bigint
@@ -211,4 +216,40 @@ export const isSettingTwapFallbackHandler = (decodedData: DecodedDataResponse | 
         ),
     ) || false
   )
+}
+
+export const calculateSingleOrderHash = (txData: TransactionData | undefined) => {
+  if (!txData || !txData.hexData) {
+    return
+  }
+
+  const data = isMultiSendCalldata(txData.hexData)
+    ? decodeMultiSendTxs(txData.hexData)
+    : [
+        {
+          to: txData.to.value,
+          value: txData.value,
+          data: txData.hexData ?? '0x',
+        } as BaseTransaction,
+      ]
+
+  const createWithContextParams = data.find((value) => {
+    return value.data.startsWith(CREATE_WITH_CONTEXT_SIGNATURE)
+  })
+
+  if (!createWithContextParams) {
+    return
+  }
+
+  const [createWithContext] = ComposableCowInterface.decodeFunctionData(
+    'createWithContext',
+    createWithContextParams.data,
+  )
+
+  const encodedParams = AbiCoder.defaultAbiCoder().encode(
+    ['tuple(address handler, bytes32 salt, bytes staticInput)'],
+    [createWithContext],
+  )
+
+  return keccak256(encodedParams)
 }
