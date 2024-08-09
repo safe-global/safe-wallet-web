@@ -15,6 +15,9 @@ import * as messages from '@/utils/safe-messages'
 import { faker } from '@faker-js/faker'
 import { Interface } from 'ethers'
 import { getCreateCallDeployment } from '@safe-global/safe-deployments'
+import { useCurrentChain } from '@/hooks/useChains'
+import { chainBuilder } from '@/tests/builders/chains'
+import { FEATURES } from '@/utils/chains'
 
 const appInfo = {
   id: 1,
@@ -31,9 +34,23 @@ jest.mock('./notifications', () => {
   }
 })
 
+jest.mock('@/hooks/useChains', () => ({
+  __esModule: true,
+  ...jest.requireActual('@/hooks/useChains'),
+  useCurrentChain: jest.fn(),
+}))
+
 describe('useSafeWalletProvider', () => {
+  const mockUseCurrentChain = useCurrentChain as jest.MockedFunction<typeof useCurrentChain>
+
   beforeEach(() => {
     jest.clearAllMocks()
+
+    mockUseCurrentChain.mockReturnValue(
+      chainBuilder()
+        .with({ chainId: '1', features: [FEATURES.SAFE_141 as any] })
+        .build(),
+    )
   })
 
   describe('useSafeWalletProvider', () => {

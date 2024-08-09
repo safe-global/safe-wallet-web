@@ -6,7 +6,7 @@ import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/uti
 import * as web3 from '@/hooks/wallets/web3'
 import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
 import { relaySafeCreation } from '@/components/new-safe/create/logic/index'
-import { relayTransaction, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
 import {
   Gnosis_safe__factory,
@@ -17,19 +17,30 @@ import {
   getReadOnlyGnosisSafeContract,
   getReadOnlyProxyFactoryContract,
 } from '@/services/contracts/safeContracts'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
+import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
+import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
+import { chainBuilder } from '@/tests/builders/chains'
 
-const provider = new JsonRpcProvider(undefined, { name: 'sepolia', chainId: 11155111 })
+const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
+
+const latestSafeVersion = getLatestSafeVersion(
+  chainBuilder()
+    .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
+    .build(),
+)
 
 describe('createNewSafeViaRelayer', () => {
   const owner1 = toBeHex('0x1', 20)
   const owner2 = toBeHex('0x2', 20)
 
-  const mockChainInfo = {
-    chainId: '5',
-    l2: false,
-  } as ChainInfo
+  const mockChainInfo = chainBuilder()
+    .with({
+      chainId: '1',
+      l2: false,
+      features: [FEATURES.SAFE_141 as unknown as GatewayFeatures],
+    })
+    .build()
 
   beforeAll(() => {
     jest.resetAllMocks()
@@ -52,10 +63,10 @@ describe('createNewSafeViaRelayer', () => {
 
     const expectedSaltNonce = 69
     const expectedThreshold = 1
-    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)).getAddress()
-    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
+    const proxyFactoryAddress = await (await getReadOnlyProxyFactoryContract(latestSafeVersion)).getAddress()
+    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(latestSafeVersion)
     const safeContractAddress = await (
-      await getReadOnlyGnosisSafeContract(mockChainInfo, LATEST_SAFE_VERSION)
+      await getReadOnlyGnosisSafeContract(mockChainInfo, latestSafeVersion)
     ).getAddress()
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
@@ -79,10 +90,10 @@ describe('createNewSafeViaRelayer', () => {
 
     expect(taskId).toEqual('0x123')
     expect(relayTransaction).toHaveBeenCalledTimes(1)
-    expect(relayTransaction).toHaveBeenCalledWith('5', {
+    expect(relayTransaction).toHaveBeenCalledWith('1', {
       to: proxyFactoryAddress,
       data: expectedCallData,
-      version: LATEST_SAFE_VERSION,
+      version: latestSafeVersion,
     })
   })
 

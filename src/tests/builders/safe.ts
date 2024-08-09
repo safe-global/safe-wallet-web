@@ -5,7 +5,6 @@ import type { SafeInfo, AddressEx } from '@safe-global/safe-gateway-typescript-s
 
 import { Builder } from '../Builder'
 import { generateRandomArray } from './utils'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { checksumAddress } from '@/utils/addresses'
 import type { IBuilder } from '../Builder'
 
@@ -20,9 +19,10 @@ export function addressExBuilder(): IBuilder<AddressEx> {
 }
 
 export function safeInfoBuilder(): IBuilder<SafeInfo> {
+  const chainId = faker.helpers.arrayElement(['1', '11155111', '100', '10', '137'])
   return Builder.new<SafeInfo>().with({
     address: addressExBuilder().build(),
-    chainId: faker.string.numeric(),
+    chainId,
     nonce: faker.number.int(),
     threshold: faker.number.int(),
     owners: generateRandomArray(() => addressExBuilder().build(), { min: 1, max: MAX_OWNERS_LENGTH }),
@@ -31,7 +31,7 @@ export function safeInfoBuilder(): IBuilder<SafeInfo> {
     modules: [],
     guard: null,
     fallbackHandler: addressExBuilder().build(),
-    version: LATEST_SAFE_VERSION,
+    version: '1.4.1',
     collectiblesTag: faker.string.numeric(),
     txQueuedTag: faker.string.numeric(),
     txHistoryTag: faker.string.numeric(),

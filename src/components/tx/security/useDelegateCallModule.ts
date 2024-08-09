@@ -5,22 +5,24 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { DelegateCallModule } from '@/services/security/modules/DelegateCallModule'
 import type { DelegateCallModuleResponse } from '@/services/security/modules/DelegateCallModule'
 import type { SecurityResponse } from '@/services/security/modules/types'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const DelegateCallModuleInstance = new DelegateCallModule()
 
 // TODO: Not being used right now
 export const useDelegateCallModule = (safeTransaction: SafeTransaction | undefined) => {
   const { safe, safeLoaded } = useSafeInfo()
+  const currentChain = useCurrentChain()
 
   return useAsync<SecurityResponse<DelegateCallModuleResponse>>(() => {
-    if (!safeTransaction || !safeLoaded) {
+    if (!safeTransaction || !safeLoaded || !currentChain) {
       return
     }
 
     return DelegateCallModuleInstance.scanTransaction({
       safeTransaction,
       safeVersion: safe.version,
-      chainId: safe.chainId,
+      chain: currentChain,
     })
-  }, [safeTransaction, safeLoaded, safe.version, safe.chainId])
+  }, [safeTransaction, safeLoaded, safe.version, currentChain])
 }

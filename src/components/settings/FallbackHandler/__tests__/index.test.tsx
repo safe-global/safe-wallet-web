@@ -2,13 +2,13 @@ import { chainBuilder } from '@/tests/builders/chains'
 import { render, waitFor } from '@/tests/test-utils'
 
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
-import * as useChainId from '@/hooks/useChainId'
+import * as useChains from '@/hooks/useChains'
 import * as useTxBuilderHook from '@/hooks/safe-apps/useTxBuilderApp'
 import { FallbackHandler } from '..'
 
 const GOERLI_FALLBACK_HANDLER = '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4'
 
-const mockChain = chainBuilder().build()
+const mockChain = chainBuilder().with({ chainId: '1' }).build()
 
 describe('FallbackHandler', () => {
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('FallbackHandler', () => {
       link: { href: 'https://mock.link/tx-builder' },
     }))
 
-    jest.spyOn(useChainId, 'default').mockImplementation(() => mockChain.chainId)
+    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(mockChain)
   })
 
   it('should render the Fallback Handler when one is set', async () => {
@@ -27,7 +27,7 @@ describe('FallbackHandler', () => {
         ({
           safe: {
             version: '1.3.0',
-            chainId: '5',
+            chainId: '1',
             fallbackHandler: {
               value: GOERLI_FALLBACK_HANDLER,
               name: 'FallbackHandlerName',

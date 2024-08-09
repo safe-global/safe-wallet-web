@@ -1,5 +1,6 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import { LATEST_SAFE_VERSION, POLLING_INTERVAL } from '@/config/constants'
+import { getLatestSafeVersion } from '@/utils/chains'
+import { POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
@@ -18,7 +19,7 @@ import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import {
   type ChainInfo,
   ImplementationVersionState,
@@ -28,17 +29,19 @@ import {
 import type { BrowserProvider, ContractTransactionResponse, Eip1193Provider, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
 
-export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chainId: string) => {
+export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chain: ChainInfo) => {
+  const latestSafeVersion = getLatestSafeVersion(chain)
+
   return {
     ...defaultSafeInfo,
     address: { value: address },
-    chainId,
+    chainId: chain.chainId,
     owners: undeployedSafe.safeAccountConfig.owners.map((owner) => ({ value: owner })),
     nonce: 0,
     threshold: undeployedSafe.safeAccountConfig.threshold,
     implementationVersionState: ImplementationVersionState.UP_TO_DATE,
     fallbackHandler: { value: undeployedSafe.safeAccountConfig.fallbackHandler! },
-    version: undeployedSafe.safeDeploymentConfig?.safeVersion || LATEST_SAFE_VERSION,
+    version: undeployedSafe.safeDeploymentConfig?.safeVersion || latestSafeVersion,
     deployed: false,
   }
 }
@@ -139,6 +142,8 @@ export const createCounterfactualSafe = (
   props: DeploySafeProps,
   router: NextRouter,
 ) => {
+  const latestSafeVersion = getLatestSafeVersion(chain)
+
   const undeployedSafe = {
     chainId: chain.chainId,
     address: safeAddress,
@@ -147,7 +152,7 @@ export const createCounterfactualSafe = (
       safeAccountConfig: props.safeAccountConfig,
       safeDeploymentConfig: {
         saltNonce,
-        safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+        safeVersion: latestSafeVersion,
       },
     },
   }

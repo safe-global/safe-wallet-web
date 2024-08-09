@@ -20,6 +20,10 @@ import {
 } from './hooks'
 import * as recommendedNonce from '@/services/tx/tx-sender/recommendedNonce'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { chainBuilder } from '@/tests/builders/chains'
+import * as useChains from '@/hooks/useChains'
+
+const chainInfo = chainBuilder().with({ chainId: '1' }).build()
 
 describe('SignOrExecute hooks', () => {
   const extendedSafeInfo = extendedSafeInfoBuilder().build()
@@ -50,6 +54,8 @@ describe('SignOrExecute hooks', () => {
       label: 'MetaMask',
       address: '0x1234567890000000000000000000000000000000',
     } as unknown as ConnectedWallet)
+
+    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainInfo)
   })
 
   describe('useValidateNonce', () => {
