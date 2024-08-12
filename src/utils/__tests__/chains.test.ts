@@ -66,7 +66,13 @@ describe('chains', () => {
       })
 
       it('should return 1.3.0 on networks where 1.4.1 is not released', () => {
-        expect(getLatestSafeVersion(chainBuilder().with({ chainId: '324' }).build())).toEqual('1.3.0')
+        expect(
+          getLatestSafeVersion(
+            chainBuilder()
+              .with({ chainId: '324', features: [FEATURES.SAFE_141 as any] })
+              .build(),
+          ),
+        ).toEqual('1.3.0')
       })
 
       it('should return 1.3.0 if the feature is off', () => {
