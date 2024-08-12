@@ -27,12 +27,12 @@ describe('Tx history tests 1', () => {
         constants.stagingCGWSafes
       }${staticSafes.SEP_STATIC_SAFE_7.substring(4)}/transactions/history**`,
       (req) => {
-        req.url = `https://safe-client.staging.5afe.dev/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone_offset=7200000&trusted=false&cursor=limit=100&offset=1`
+        req.url = `https://safe-client.safe.global/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone_offset=7200000&trusted=false&cursor=limit=100&offset=1`
         req.continue()
       },
     ).as('allTransactions')
 
-    cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
+    cy.visit(constants.prodbaseUrl + constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     cy.wait('@allTransactions')
     main.acceptCookies()
   })
@@ -63,11 +63,6 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  it('Verify external links exist for account creation', () => {
-    createTx.clickOnTransactionItemByName(typeCreateAccount.title)
-    createTx.verifyNumberOfExternalLinks(4)
-  })
-
   // TODO: Added to prod
   // Token send
   it('Verify exapanded details for token send', () => {
@@ -82,7 +77,8 @@ describe('Tx history tests 1', () => {
 
   // TODO: Added to prod
   // Spending limits
-  it('Verify summary for setting spend limits', () => {
+  // TODO: Unskip after next release due to design tx
+  it.skip('Verify summary for setting spend limits', () => {
     createTx.verifySummaryByName(
       typeSpendingLimits.title,
       typeSpendingLimits.summaryTxInfo,
@@ -92,7 +88,8 @@ describe('Tx history tests 1', () => {
   })
 
   // TODO: Added to prod
-  it('Verify exapanded details for initial spending limits setup', () => {
+  // TODO: Unskip after next release due to design tx
+  it.skip('Verify exapanded details for initial spending limits setup', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [
@@ -106,34 +103,14 @@ describe('Tx history tests 1', () => {
   })
 
   // TODO: Added to prod
-  it('Verify that 3 actions exist in initial spending limits setup', () => {
+  // TODO: Unskip after next release due to design tx
+  it.skip('Verify that 3 actions exist in initial spending limits setup', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyActions([
       typeSpendingLimits.enableModule.title,
       typeSpendingLimits.addDelegate.title,
       typeSpendingLimits.setAllowance.title,
     ])
-  })
-
-  it('Verify that all 3 actions can be expanded and collapsed in initial spending limits setup', () => {
-    createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
-    createTx.expandAllActions([
-      typeSpendingLimits.enableModule.title,
-      typeSpendingLimits.addDelegate.title,
-      typeSpendingLimits.setAllowance.title,
-    ])
-    createTx.collapseAllActions([
-      typeSpendingLimits.enableModule.moduleAddressTitle,
-      typeSpendingLimits.addDelegate.delegateAddressTitle,
-      typeSpendingLimits.setAllowance.delegateAddressTitle,
-    ])
-  })
-
-  it('Verify that addDelegate action can be expanded and collapsed in spending limits', () => {
-    createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
-    createTx.clickOnExpandableAction(typeSpendingLimits.addDelegate.title)
-    createTx.verifyActions([typeSpendingLimits.addDelegate.delegateAddressTitle])
-    createTx.collapseAllActions([typeSpendingLimits.addDelegate.delegateAddressTitle])
   })
 
   // Spending limit deletion

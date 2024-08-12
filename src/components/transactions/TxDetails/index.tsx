@@ -112,6 +112,11 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
           </div>
         )}
 
+        <div className={css.txSummary}>
+          {isUntrusted && !isPending && <UnsignedWarning />}
+          <Summary txDetails={txDetails} />
+        </div>
+
         {(isMultiSendTxInfo(txDetails.txInfo) || isOrderTxInfo(txDetails.txInfo)) && (
           <div className={css.multiSend}>
             <ErrorBoundary fallback={<div>Error parsing data</div>}>
@@ -119,11 +124,6 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
             </ErrorBoundary>
           </div>
         )}
-
-        <div className={css.txSummary}>
-          {isUntrusted && !isPending && <UnsignedWarning />}
-          <Summary txDetails={txDetails} />
-        </div>
       </div>
 
       {/* Signers */}
