@@ -85,7 +85,7 @@ const AdvancedCreateSafe = () => {
     name: '',
     owners: [],
     threshold: 1,
-    saltNonce: Date.now(),
+    saltNonce: 0,
     safeVersion: LATEST_SAFE_VERSION as SafeVersion,
   }
 
