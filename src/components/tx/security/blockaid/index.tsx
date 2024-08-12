@@ -27,6 +27,7 @@ import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
 import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import BlockaidIcon from '@/public/images/transactions/blockaid-icon.svg'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { type SecurityWarningProps, mapSecuritySeverity } from '../utils'
 import { BlockaidHint } from './BlockaidHint'
@@ -78,42 +79,50 @@ const BlockaidResultWarning = ({
   return (
     <Box>
       {blockaidResponse && blockaidResponse.severity !== SecuritySeverity.NONE && (
-        <Alert
-          severity={severityProps?.color}
-          icon={<Warning />}
-          className={css.customAlert}
-          sx={
-            needsRiskConfirmation
-              ? {
-                  borderBottomLeftRadius: '0px',
-                  borderBottomRightRadius: '0px',
-                }
-              : undefined
-          }
-        >
-          <AlertTitle>
-            <ResultDescription
-              classification={blockaidResponse.classification}
-              reason={blockaidResponse.reason}
-              description={blockaidResponse.description}
-            />
-          </AlertTitle>
-          <BlockaidMessage />
-        </Alert>
-      )}
-      {needsRiskConfirmation && (
-        <Box pl={2} className={css.riskConfirmationBlock}>
-          <Track {...MODALS_EVENTS.ACCEPT_RISK}>
-            <FormControlLabel
-              label={
-                <Typography variant="body2">
-                  I understand the risks and would like to sign this {isTransaction ? 'transaction' : 'message'}
-                </Typography>
-              }
-              control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} />}
-            />
-          </Track>
-        </Box>
+        <>
+          <Alert
+            severity={severityProps?.color}
+            icon={<Warning />}
+            className={css.customAlert}
+            sx={
+              needsRiskConfirmation
+                ? {
+                    borderBottomLeftRadius: '0px',
+                    borderBottomRightRadius: '0px',
+                  }
+                : undefined
+            }
+          >
+            <AlertTitle>
+              <ResultDescription
+                classification={blockaidResponse.classification}
+                reason={blockaidResponse.reason}
+                description={blockaidResponse.description}
+              />
+            </AlertTitle>
+            <BlockaidMessage />
+          </Alert>
+          {needsRiskConfirmation && (
+            <Box pl={2} className={css.riskConfirmationBlock}>
+              <Track {...MODALS_EVENTS.ACCEPT_RISK}>
+                <FormControlLabel
+                  label={
+                    <Typography variant="body2">
+                      I understand the risks and would like to sign this {isTransaction ? 'transaction' : 'message'}
+                    </Typography>
+                  }
+                  control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} />}
+                />
+              </Track>
+            </Box>
+          )}
+          <Stack direction="row" alignItems="center" spacing={0.5} mt={1}>
+            <Typography variant="caption" color="text.secondary">
+              Powered by
+            </Typography>
+            <BlockaidIcon />
+          </Stack>
+        </>
       )}
     </Box>
   )
