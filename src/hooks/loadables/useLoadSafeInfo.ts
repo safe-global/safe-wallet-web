@@ -34,7 +34,7 @@ export const useLoadSafeInfo = (): AsyncResult<SafeInfo> => {
 
     return { ...safeInfo, deployed: true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, address, pollCount, undeployedSafe])
+  }, [chainId, address, pollCount, undeployedSafe, chain])
 
   // Reset the counter when safe address/chainId changes
   useEffect(() => {
