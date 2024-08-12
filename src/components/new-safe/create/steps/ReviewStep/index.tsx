@@ -27,7 +27,6 @@ import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { gtmSetSafeAddress } from '@/services/analytics/gtm'
-import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch } from '@/store'
 import { FEATURES, hasFeature } from '@/utils/chains'
@@ -41,6 +40,8 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
+import { useCustomNetworkContracts, useCustomNetworksConfig } from '@/hooks/coreSDK/useCustomNetworkContracts'
+import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 
 export const NetworkFee = ({
   totalFee,
@@ -124,6 +125,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
+  const customContracts = useCustomNetworkContracts()
+  const customContractsConfig = useCustomNetworksConfig()
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
@@ -162,18 +165,32 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     setIsCreating(true)
 
     try {
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
+      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+        LATEST_SAFE_VERSION,
+        customContracts?.fallbackHandlerAddress,
+      )
 
       const props: DeploySafeProps = {
         safeAccountConfig: {
           threshold: data.threshold,
           owners: data.owners.map((owner) => owner.address),
+          // fallbackHandler: '0x3ea2bFb6CbD9a9ad5Ec1Fcac3F5BfF51148C6ecd',
           fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
         },
       }
 
-      const saltNonce = await getAvailableSaltNonce(wallet.provider, { ...props, saltNonce: '0' }, chain.chainId)
-      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain.chainId)
+      const saltNonce = await getAvailableSaltNonce(
+        wallet.provider,
+        { ...props, saltNonce: '0' },
+        chain.chainId,
+        customContracts,
+      )
+      const safeAddress = await computeNewSafeAddress(
+        wallet.provider,
+        { ...props, saltNonce },
+        chain.chainId,
+        customContracts,
+      )
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
@@ -235,14 +252,18 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         )
         onSubmitCallback(taskId)
       } else {
-        await createNewSafe(wallet.provider, {
-          safeAccountConfig: props.safeAccountConfig,
-          saltNonce,
-          options,
-          callback: (txHash) => {
-            onSubmitCallback(undefined, txHash)
+        await createNewSafe(
+          wallet.provider,
+          {
+            safeAccountConfig: props.safeAccountConfig,
+            saltNonce,
+            options,
+            callback: (txHash) => {
+              onSubmitCallback(undefined, txHash)
+            },
           },
-        })
+          customContractsConfig,
+        )
       }
     } catch (_err) {
       const error = asError(_err)

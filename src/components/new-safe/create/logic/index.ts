@@ -12,7 +12,7 @@ import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import { predictSafeAddress, SafeFactory, SafeProvider } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
-import type { DeploySafeProps } from '@safe-global/protocol-kit'
+import type { ContractNetworkConfig, ContractNetworksConfig, DeploySafeProps } from '@safe-global/protocol-kit'
 import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 import { backOff } from 'exponential-backoff'
@@ -25,11 +25,15 @@ export type SafeCreationProps = {
   saltNonce: number
 }
 
-const getSafeFactory = async (provider: Eip1193Provider, safeVersion = LATEST_SAFE_VERSION): Promise<SafeFactory> => {
+const getSafeFactory = async (
+  provider: Eip1193Provider,
+  safeVersion = LATEST_SAFE_VERSION,
+  customContractsConfig?: ContractNetworksConfig,
+): Promise<SafeFactory> => {
   if (!isValidSafeVersion(safeVersion)) {
     throw new Error('Invalid Safe version')
   }
-  return SafeFactory.init({ provider, safeVersion })
+  return SafeFactory.init({ provider, safeVersion, contractNetworks: customContractsConfig })
 }
 
 /**
@@ -38,9 +42,10 @@ const getSafeFactory = async (provider: Eip1193Provider, safeVersion = LATEST_SA
 export const createNewSafe = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
+  customContractsConfig?: ContractNetworksConfig,
   safeVersion?: SafeVersion,
 ): Promise<Safe> => {
-  const safeFactory = await getSafeFactory(provider, safeVersion)
+  const safeFactory = await getSafeFactory(provider, safeVersion, customContractsConfig)
   return safeFactory.deploySafe(props)
 }
 
@@ -51,6 +56,7 @@ export const computeNewSafeAddress = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
   chainId: string,
+  customContracts?: ContractNetworkConfig,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
 
@@ -62,6 +68,7 @@ export const computeNewSafeAddress = async (
       saltNonce: props.saltNonce,
       safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     },
+    customContracts,
   })
 }
 

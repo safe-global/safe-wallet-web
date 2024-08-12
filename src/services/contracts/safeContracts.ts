@@ -118,12 +118,16 @@ export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['ver
 
 // Fallback handler
 
-export const getReadOnlyFallbackHandlerContract = async (safeVersion: SafeInfo['version']) => {
+export const getReadOnlyFallbackHandlerContract = async (
+  safeVersion: SafeInfo['version'],
+  contractAddress: string | undefined,
+) => {
   const safeProvider = getSafeProvider()
 
   return getCompatibilityFallbackHandlerContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
     safeProvider,
+    contractAddress,
   )
 }
 

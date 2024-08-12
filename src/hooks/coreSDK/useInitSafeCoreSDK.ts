@@ -2,7 +2,7 @@ import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployed
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { getContractNetworksConfig, initSafeSDK, setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { initSafeSDK, setSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -11,6 +11,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
 import { asError } from '@/services/exceptions/utils'
 import { useCurrentChain } from '../useChains'
+import { useCustomNetworksConfig } from './useCustomNetworkContracts'
 
 export const useInitSafeCoreSDK = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -22,6 +23,7 @@ export const useInitSafeCoreSDK = () => {
   const { address } = parsePrefixedAddress(prefixedAddress || '')
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, address))
   const currentChain = useCurrentChain()
+  const contractNetworks = useCustomNetworksConfig()
 
   useEffect(() => {
     if (!safeLoaded || !web3ReadOnly || !sameAddress(address, safe.address.value)) {
@@ -30,7 +32,7 @@ export const useInitSafeCoreSDK = () => {
       return
     }
 
-    const contractNetworks = getContractNetworksConfig(currentChain)
+    // const contractNetworks = getContractNetworksConfig(currentChain) as ContractNetworksConfig | undefined
 
     // A read-only instance of the SDK is sufficient because we connect the signer to it when needed
     initSafeSDK({
@@ -68,5 +70,6 @@ export const useInitSafeCoreSDK = () => {
     web3ReadOnly,
     undeployedSafe,
     currentChain,
+    contractNetworks,
   ])
 }
