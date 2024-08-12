@@ -14,6 +14,6 @@ const SafeAppIconCard = ({
   width?: number
   height?: number
   fallback?: string
-}) => <ImageFallback src={src} alt={alt} width={width} height={height} fallbackSrc={fallback} crossOrigin="anonymous" />
+}) => <ImageFallback src={src} alt={alt} width={width} height={height} fallbackSrc={fallback} />
 
 export default SafeAppIconCard
