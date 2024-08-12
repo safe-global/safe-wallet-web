@@ -30,7 +30,8 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { type SecurityWarningProps, mapSecuritySeverity } from '../utils'
 import { BlockaidHint } from './BlockaidHint'
-import { ExpandMore, WarningAmber } from '@mui/icons-material'
+import Warning from '@/public/images/notifications/alert.svg'
+import { ExpandMore } from '@mui/icons-material'
 import { SecuritySeverity } from '@/services/security/modules/types'
 
 export const REASON_MAPPING: Record<string, string> = {
@@ -79,7 +80,7 @@ const BlockaidResultWarning = ({
       {blockaidResponse && blockaidResponse.severity !== SecuritySeverity.NONE && (
         <Alert
           severity={severityProps?.color}
-          icon={<WarningAmber />}
+          icon={<Warning />}
           className={css.customAlert}
           sx={
             needsRiskConfirmation
@@ -241,16 +242,17 @@ const BlockaidBlock = () => {
   )
 }
 
-const BlockaidError = ({ error }: { error: Error }) => {
+const BlockaidError = () => {
   return (
-    <Alert severity="error" icon={<WarningAmber />} className={css.customAlert}>
+    <Alert severity="warning" icon={<Warning />} className={css.customAlert}>
       <AlertTitle>
         <Typography fontWeight={700} variant="subtitle1">
-          The transaction could not be analyzed.
+          Proceed with caution
         </Typography>
       </AlertTitle>
-      <Typography mb={2}>Reason: {error.message}</Typography>
-      <Typography variant="body2">Check that the transaction is correct before proceeding.</Typography>
+      <Typography variant="body2">
+        The transaction could not be checked for security alerts. Verify the details and addresses before proceeding.
+      </Typography>
       <BlockaidMessage />
     </Alert>
   )
@@ -287,7 +289,7 @@ const BlockaidWarning = () => {
   }
 
   if (error) {
-    return <BlockaidError error={error} />
+    return <BlockaidError />
   }
 
   return (

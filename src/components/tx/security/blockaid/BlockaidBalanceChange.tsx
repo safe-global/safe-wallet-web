@@ -117,7 +117,7 @@ const BalanceChange = ({
 }
 const BalanceChanges = () => {
   const { blockaidResponse } = useContext(TxSecurityContext)
-  const { isLoading, balanceChange } = blockaidResponse ?? {}
+  const { isLoading, balanceChange, error } = blockaidResponse ?? {}
 
   const totalBalanceChanges = balanceChange
     ? balanceChange.reduce((prev, current) => prev + current.in.length + current.out.length, 0)
@@ -138,7 +138,13 @@ const BalanceChanges = () => {
       </div>
     )
   }
-
+  if (error) {
+    return (
+      <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
+        Could not calculate balance changes.
+      </Typography>
+    )
+  }
   if (totalBalanceChanges === 0) {
     return (
       <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
