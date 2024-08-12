@@ -1,7 +1,6 @@
 import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as nfts from '../pages/nfts.pages'
-import * as navigation from '../pages/navigation.page'
 import * as createTx from '../pages/create_tx.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
@@ -17,7 +16,7 @@ let nftsSafes,
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
-describe('NFTs tests', () => {
+describe.skip('NFTs tests', () => {
   before(() => {
     getSafes(CATEGORIES.nfts)
       .then((nfts) => {
@@ -31,7 +30,7 @@ describe('NFTs tests', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
+    cy.visit(constants.prodbaseUrl + constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
     main.acceptCookies()
     wallet.connectSigner(signer)
     nfts.waitForNftItems(2)
@@ -48,16 +47,6 @@ describe('NFTs tests', () => {
     nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
     nfts.clikOnNextBtn()
     nfts.verifyReviewModalData(2)
-  })
-
-  it('Verify that when 1 NFTs is selected, there is no Actions block in Review step', () => {
-    nfts.verifyInitialNFTData()
-    nfts.selectNFTs(1)
-    nfts.sendNFT()
-    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
-    nfts.clikOnNextBtn()
-    nfts.verifyTxDetails(singleNFT)
-    nfts.verifyCountOfActions(0)
   })
 
   // TODO: Added to prod
@@ -77,13 +66,6 @@ describe('NFTs tests', () => {
   it('Verify Send button is disabled for non-owner', () => {
     cy.visit(constants.balanceNftsUrl + nftsSafes.SEP_NFT_SAFE_2)
     nfts.verifyInitialNFTData()
-    nfts.selectNFTs(1)
-    nfts.verifySendNFTBtnDisabled()
-  })
-
-  it('Verify Send button is disabled for disconnected wallet', () => {
-    navigation.clickOnWalletExpandMoreIcon()
-    navigation.clickOnDisconnectBtn()
     nfts.selectNFTs(1)
     nfts.verifySendNFTBtnDisabled()
   })

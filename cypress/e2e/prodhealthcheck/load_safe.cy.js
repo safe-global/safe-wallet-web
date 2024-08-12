@@ -28,16 +28,9 @@ describe('Load Safe tests', () => {
 
   beforeEach(() => {
     cy.clearLocalStorage()
-    cy.visit(constants.loadNewSafeSepoliaUrl)
+    cy.visit(constants.prodbaseUrl + constants.loadNewSafeSepoliaUrl)
     main.acceptCookies()
     cy.wait(2000)
-  })
-
-  it('Verify custom name in the first owner can be set', () => {
-    safe.inputNameAndAddress(testSafeName, staticSafes.SEP_STATIC_SAFE_4)
-    safe.clickOnNextBtn()
-    createwallet.typeOwnerName(testOwnerName, 0)
-    safe.clickOnNextBtn()
   })
 
   // TODO: Added to prod

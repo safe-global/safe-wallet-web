@@ -15,13 +15,9 @@ describe('Sidebar tests', () => {
   })
 
   beforeEach(() => {
-    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_9)
+    cy.visit(constants.prodbaseUrl + constants.homeUrl + staticSafes.SEP_STATIC_SAFE_9)
     cy.clearLocalStorage()
     main.acceptCookies()
-  })
-
-  it('Verify Current network is displayed at the top', () => {
-    sideBar.verifyNetworkIsDisplayed(constants.networks.sepolia)
   })
 
   // TODO: Added to prod
@@ -29,24 +25,15 @@ describe('Sidebar tests', () => {
     sideBar.verifySafeHeaderDetails(sideBar.testSafeHeaderDetails)
   })
 
-  it('Verify QR button opens the QR code modal', () => {
-    sideBar.clickOnQRCodeBtn()
-    sideBar.verifyQRModalDisplayed()
-  })
-
-  it('Verify Open blockexplorer button contain etherscan link', () => {
-    sideBar.verifyEtherscanLinkExists()
-  })
-
   // TODO: Added to prod
-  it('Verify New transaction button enabled for owners', () => {
+  it.skip('Verify New transaction button enabled for owners', () => {
     wallet.connectSigner(signer)
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
 
   // TODO: Added to prod
-  it('Verify New transaction button enabled for beneficiaries who are non-owners', () => {
-    cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_11)
+  it.skip('Verify New transaction button enabled for beneficiaries who are non-owners', () => {
+    cy.visit(constants.prodbaseUrl + constants.homeUrl + staticSafes.SEP_STATIC_SAFE_11)
     wallet.connectSigner(signer)
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
@@ -54,13 +41,5 @@ describe('Sidebar tests', () => {
   // TODO: Added to prod
   it('Verify New Transaction button disabled for non-owners', () => {
     main.verifyElementsCount(navigation.newTxBtn, 0)
-  })
-
-  it('Verify the side menu buttons exist', () => {
-    sideBar.verifySideListItems()
-  })
-
-  it('Verify counter in the "Transaction" menu item if there are tx in the queue tab', () => {
-    sideBar.verifyTxCounter(1)
   })
 })

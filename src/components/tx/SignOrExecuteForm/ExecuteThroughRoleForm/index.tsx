@@ -23,9 +23,6 @@ import { TxSecurityContext } from '../../security/shared/TxSecurityContext'
 
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { pollModuleTransactionId, useExecuteThroughRole, useGasLimit, useMetaTransactions, type Role } from './hooks'
-import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
-import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { decodeBytes32String } from 'ethers'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -34,7 +31,6 @@ import { assertOnboard, assertWallet } from '@/utils/helpers'
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
 import { Status } from 'zodiac-roles-deployments'
-import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 
 const Role = ({ children }: { children: string }) => {
   let humanReadableRoleKey = children
@@ -61,7 +57,7 @@ export const ExecuteThroughRoleForm = ({
   const onboard = useOnboard()
   const wallet = useWallet()
   const { safe } = useSafeInfo()
-  const [trigger] = useLazyGetTransactionDetailsQuery()
+
   const chainId = currentChain?.chainId || '1'
 
   const [isPending, setIsPending] = useState<boolean>(false)
@@ -135,11 +131,6 @@ export const ExecuteThroughRoleForm = ({
     }
     const txId = await pollModuleTransactionId(chainId, safe.address.value, txHash)
     onSubmit?.(txId, true)
-
-    const { data: details } = await trigger({ chainId, txId })
-    // Track tx event
-    const txType = getTransactionTrackingType(details)
-    trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
 
     // Update the success screen so it shows a link to the transaction
     setTxFlow(<SuccessScreenFlow txId={txId} />, undefined, false)

@@ -167,8 +167,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         <Typography variant="body2">
           This transaction batches a total of {params.txs.length} transactions from your queue into a single Ethereum
           transaction. Please check every included transaction carefully, especially if you have rejection transactions,
-          and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
-          over the execute button.
+          and make sure you want to execute all of them. Included transactions are highlighted when you hover over the
+          execute button.
         </Typography>
 
         {multiSendContract && <SendToBlock address={multisendContractAddress} title="Interact with" />}

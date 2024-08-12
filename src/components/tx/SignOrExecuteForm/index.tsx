@@ -56,14 +56,21 @@ export type SignOrExecuteProps = {
   showMethodCall?: boolean
 }
 
-const trackTxEvents = (details: TransactionDetails | undefined, isCreation: boolean, isExecuted: boolean) => {
-  const event = isCreation ? TX_EVENTS.CREATE : isExecuted ? TX_EVENTS.EXECUTE : TX_EVENTS.CONFIRM
+const trackTxEvents = (
+  details: TransactionDetails | undefined,
+  isCreation: boolean,
+  isExecuted: boolean,
+  isRoleExecution: boolean,
+) => {
+  const creationEvent = isRoleExecution ? TX_EVENTS.CREATE_VIA_ROLE : TX_EVENTS.CREATE
+  const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
+  const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
   const txType = getTransactionTrackingType(details)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
   if (isCreation && isExecuted) {
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: txType })
+    trackEvent({ ...executionEvent, label: txType })
   }
 }
 
@@ -117,15 +124,20 @@ export const SignOrExecuteForm = ({
   const willExecuteThroughRole =
     (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
 
-  const onFormSubmit = useCallback<SubmitCallback>(
-    async (txId, isExecuted = false) => {
+  const onFormSubmit = useCallback(
+    async (txId: string, isExecuted = false, isRoleExecution = false) => {
       onSubmit?.(txId, isExecuted)
 
       const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(details, isCreation, isExecuted)
+      trackTxEvents(details, isCreation, isExecuted, isRoleExecution)
     },
     [chainId, isCreation, onSubmit, trigger],
+  )
+
+  const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(
+    (txId, isExecuted) => onFormSubmit(txId, isExecuted, true),
+    [onFormSubmit],
   )
 
   return (
@@ -193,7 +205,7 @@ export const SignOrExecuteForm = ({
             {...props}
             safeTx={safeTx}
             safeTxError={safeTxError}
-            onSubmit={onFormSubmit}
+            onSubmit={onRoleExecutionSubmit}
             role={(allowingRole || mostLikelyRole)!}
           />
         )}

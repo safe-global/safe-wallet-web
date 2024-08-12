@@ -49,6 +49,7 @@ describe('Spending limits tests', () => {
     spendinglimit.verifyDecodedTxSummary([spendinglimit.actionNames.setAllowance])
   })
 
+  // TODO: Added to prod
   it('Verify that the Review step shows beneficiary, amount allowed, reset time', () => {
     //Assume that default reset time is set to One time
     wallet.connectSigner(signer)
@@ -63,10 +64,12 @@ describe('Spending limits tests', () => {
     )
   })
 
+  // TODO: Added to prod
   it('Verify values and trash icons are displayed in Beneficiary table', () => {
     spendinglimit.verifyBeneficiaryTable()
   })
 
+  // TODO: Added to prod
   it('Verify Spending limit option is available when selecting the corresponding token', () => {
     wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
@@ -167,11 +170,6 @@ describe('Spending limits tests', () => {
         spendinglimit.enterBeneficiaryAddress(constants.DEFAULT_OWNER_ADDRESS.substring(30))
         spendinglimit.selectRecipient(constants.DEFAULT_OWNER_ADDRESS)
       })
-  })
-
-  it.skip('Verify that clicking on copy icon of a beneficiary works', () => {
-    tx.verifyNumberOfCopyIcons(3)
-    tx.verifyCopyIconWorks(0, constants.DEFAULT_OWNER_ADDRESS)
   })
 
   it('Verify explorer links contain Sepolia link', () => {

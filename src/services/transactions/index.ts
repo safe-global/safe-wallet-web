@@ -2,13 +2,21 @@ import { getModuleTransactions, getTransactionHistory } from '@safe-global/safe-
 
 export const getTimezoneOffset = () => new Date().getTimezoneOffset() * 60 * -1000
 
-export const getTxHistory = (chainId: string, safeAddress: string, trusted = false, pageUrl?: string) => {
+export const getTxHistory = (
+  chainId: string,
+  safeAddress: string,
+  hideUntrustedTxs: boolean,
+  hideImitationTxs: boolean,
+  pageUrl?: string,
+) => {
   return getTransactionHistory(
     chainId,
     safeAddress,
     {
       timezone_offset: getTimezoneOffset(), // used for grouping txs by date
-      trusted, // if false, load all transactions, mark untrusted in the UI
+      // Untrusted and imitation txs are filtered together in the UI
+      trusted: hideUntrustedTxs, // if false, include transactions marked untrusted in the UI
+      imitation: !hideImitationTxs, // If true, include transactions marked imitation in the UI
     },
     pageUrl,
   )
