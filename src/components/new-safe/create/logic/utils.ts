@@ -1,6 +1,6 @@
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic/index'
 import { isSmartContract } from '@/utils/wallets'
-import type { DeploySafeProps } from '@safe-global/protocol-kit'
+import type { ContractNetworkConfig, DeploySafeProps } from '@safe-global/protocol-kit'
 import type { Eip1193Provider } from 'ethers'
 
 export const getAvailableSaltNonce = async (
@@ -14,7 +14,12 @@ export const getAvailableSaltNonce = async (
 
   // Safe is already deployed so we try the next saltNonce
   if (isContractDeployed) {
-    return getAvailableSaltNonce(provider, { ...props, saltNonce: (Number(props.saltNonce) + 1).toString() }, chainId)
+    return getAvailableSaltNonce(
+      provider,
+      { ...props, saltNonce: (Number(props.saltNonce) + 1).toString() },
+      chainId,
+      customContracts,
+    )
   }
 
   // We know that there will be a saltNonce but the type has it as optional
