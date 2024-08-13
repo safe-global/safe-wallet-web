@@ -2,7 +2,7 @@ import type { NewSafeFormData } from '@/components/new-safe/create'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
+import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -140,19 +140,18 @@ export const createCounterfactualSafe = (
   data: NewSafeFormData,
   dispatch: AppDispatch,
   props: DeploySafeProps,
-  router: NextRouter,
+  payMethod: PayMethod,
+  router?: NextRouter,
 ) => {
-  const latestSafeVersion = getLatestSafeVersion(chain)
-
   const undeployedSafe = {
     chainId: chain.chainId,
     address: safeAddress,
-    type: PayMethod.PayLater,
+    type: payMethod,
     safeProps: {
       safeAccountConfig: props.safeAccountConfig,
       safeDeploymentConfig: {
         saltNonce,
-        safeVersion: latestSafeVersion,
+        safeVersion: data.safeVersion,
       },
     },
   }
@@ -173,7 +172,8 @@ export const createCounterfactualSafe = (
       },
     }),
   )
-  return router.push({
+
+  router?.push({
     pathname: AppRoutes.home,
     query: { safe: `${chain.shortName}:${safeAddress}` },
   })

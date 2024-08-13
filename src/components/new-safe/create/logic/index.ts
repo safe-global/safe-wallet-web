@@ -51,10 +51,9 @@ export const computeNewSafeAddress = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
   chain: ChainInfo,
+  safeVersion?: SafeVersion,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
-
-  const latestSafeVersion = getLatestSafeVersion(chain)
 
   return predictSafeAddress({
     safeProvider,
@@ -62,7 +61,7 @@ export const computeNewSafeAddress = async (
     safeAccountConfig: props.safeAccountConfig,
     safeDeploymentConfig: {
       saltNonce: props.saltNonce,
-      safeVersion: latestSafeVersion,
+      safeVersion: safeVersion ?? getLatestSafeVersion(chain),
     },
   })
 }
@@ -76,12 +75,12 @@ export const encodeSafeCreationTx = async ({
   threshold,
   saltNonce,
   chain,
-}: SafeCreationProps & { chain: ChainInfo }) => {
-  const latestSafeVersion = getLatestSafeVersion(chain)
-
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, latestSafeVersion)
-  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(latestSafeVersion)
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(latestSafeVersion)
+  safeVersion,
+}: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion }) => {
+  const usedSafeVersion = safeVersion ?? getLatestSafeVersion(chain)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, usedSafeVersion)
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(usedSafeVersion)
 
   // @ts-ignore union type is too complex
   const setupData = readOnlySafeContract.encode('setup', [
@@ -107,10 +106,9 @@ export const estimateSafeCreationGas = async (
   provider: Provider,
   from: string,
   safeParams: SafeCreationProps,
+  safeVersion?: SafeVersion,
 ): Promise<bigint> => {
-  const latestSafeVersion = getLatestSafeVersion(chain)
-
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(latestSafeVersion)
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion ?? getLatestSafeVersion(chain))
   const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
 
   const gas = await provider.estimateGas({

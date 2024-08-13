@@ -17,13 +17,15 @@ import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafe
 import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle } from '@/config/constants'
+import { HelpCenterArticle, LATEST_SAFE_VERSION } from '@/config/constants'
+import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 
 export type NewSafeFormData = {
   name: string
   threshold: number
   owners: NamedAddress[]
   saltNonce: number
+  safeVersion: SafeVersion
   safeAddress?: string
   willRelay?: boolean
 }
@@ -156,6 +158,7 @@ const CreateSafe = () => {
     owners: [],
     threshold: 1,
     saltNonce: Date.now(),
+    safeVersion: LATEST_SAFE_VERSION as SafeVersion,
   }
 
   const onClose = () => {

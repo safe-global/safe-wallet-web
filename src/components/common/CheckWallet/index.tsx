@@ -4,6 +4,7 @@ import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBen
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
@@ -15,6 +16,7 @@ type CheckWalletProps = {
 enum Message {
   WalletNotConnected = 'Please connect your wallet',
   NotSafeOwner = 'Your connected wallet is not a signer of this Safe Account',
+  CounterfactualMultisig = 'You need to activate the Safe before transacting',
 }
 
 const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }: CheckWalletProps): ReactElement => {
@@ -23,11 +25,16 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }:
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
 
+  const { safe } = useSafeInfo()
+  const isCounterfactualMultiSig = !allowNonOwner && !safe.deployed && safe.threshold > 1
+
   const message =
-    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit))
+    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit)) && !isCounterfactualMultiSig
       ? ''
       : !wallet
       ? Message.WalletNotConnected
+      : isCounterfactualMultiSig
+      ? Message.CounterfactualMultisig
       : Message.NotSafeOwner
 
   if (!message) return children(true)

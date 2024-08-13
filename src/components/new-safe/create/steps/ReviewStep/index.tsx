@@ -2,7 +2,6 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
-import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
@@ -141,7 +140,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     }
   }, [data.owners, data.threshold])
 
-  const { gasLimit } = useEstimateSafeCreationGas(safeParams)
+  const { gasLimit } = useEstimateSafeCreationGas(safeParams, data.safeVersion)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -163,7 +162,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     setIsCreating(true)
 
     try {
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(latestSafeVersion)
+      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(data.safeVersion)
 
       const props: DeploySafeProps = {
         safeAccountConfig: {
@@ -173,14 +172,19 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         },
       }
 
-      const saltNonce = await getAvailableSaltNonce(wallet.provider, { ...props, saltNonce: '0' }, chain)
-      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain)
+      const saltNonce = await getAvailableSaltNonce(
+        wallet.provider,
+        { ...props, saltNonce: '0' },
+        chain,
+        data.safeVersion,
+      )
+      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain, data.safeVersion)
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
-        await createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
+        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayLater, router)
         trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
         return
       }
@@ -193,21 +197,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           }
         : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
 
-      const undeployedSafe = {
-        chainId: chain.chainId,
-        address: safeAddress,
-        type: PayMethod.PayNow,
-        safeProps: {
-          safeAccountConfig: props.safeAccountConfig,
-          safeDeploymentConfig: {
-            saltNonce,
-            safeVersion: latestSafeVersion,
-          },
-        },
-      }
-
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
-        dispatch(addUndeployedSafe(undeployedSafe))
+        // Create a counterfactual Safe
+        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayNow)
 
         if (taskId) {
           safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
@@ -233,6 +225,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           props.safeAccountConfig.owners,
           props.safeAccountConfig.threshold,
           Number(saltNonce),
+          data.safeVersion,
         )
         onSubmitCallback(taskId)
       } else {
@@ -246,7 +239,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               onSubmitCallback(undefined, txHash)
             },
           },
-          latestSafeVersion,
+          data.safeVersion,
         )
       }
     } catch (_err) {
