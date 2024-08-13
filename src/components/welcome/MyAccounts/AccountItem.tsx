@@ -110,7 +110,11 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
           </Typography>
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
-            {safeOverview ? <FiatValue value={safeOverview.fiatTotal} /> : <Skeleton variant="text" />}
+            {safeOverview ? (
+              <FiatValue value={safeOverview.fiatTotal} />
+            ) : undeployedSafe ? null : (
+              <Skeleton variant="text" />
+            )}
           </Typography>
 
           <ChainIndicator chainId={chainId} responsive />
