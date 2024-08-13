@@ -4,7 +4,7 @@ import { type AddressBookItem, Methods } from '@safe-global/safe-apps-sdk'
 import type { ReactElement } from 'react'
 import { useMemo } from 'react'
 import { useCallback, useEffect } from 'react'
-import { CircularProgress, Typography } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
@@ -28,6 +28,8 @@ import { PermissionStatus, type SafeAppDataWithPermissions } from '@/components/
 import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
+import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
+import BlockedAddress from '@/components/common/BlockedAddress'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -43,6 +45,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
   const chainId = useChainId()
   const chain = useCurrentChain()
   const router = useRouter()
+  const sanctionedAddress = useSanctionedAddress()
+  const isSafePassApp = appUrl.startsWith('https://community.safe.global')
   const {
     expanded: queueBarExpanded,
     dismissedByUser: queueBarDismissed,
@@ -114,6 +118,19 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
 
   if (!safeLoaded) {
     return <div />
+  }
+
+  if (Boolean(sanctionedAddress) && isSafePassApp) {
+    return (
+      <>
+        <Head>
+          <title>{`Safe Apps - Viewer - ${remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}`}</title>
+        </Head>
+        <Box p={2}>
+          <BlockedAddress address={sanctionedAddress} featureName="Safe{Pass} Safe app" />
+        </Box>
+      </>
+    )
   }
 
   return (

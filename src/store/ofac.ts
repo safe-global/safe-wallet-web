@@ -44,7 +44,7 @@ export const ofacApi = createApi({
   reducerPath: 'ofacApi',
   baseQuery: noopBaseQuery,
   endpoints: (builder) => ({
-    getIsSanctioned: builder.query({
+    getIsSanctioned: builder.query<boolean, string>({
       async queryFn(address, { getState }) {
         const state = getState()
         const chain = selectChainById(state as RootState, chains.eth)
