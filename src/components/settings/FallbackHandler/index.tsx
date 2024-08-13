@@ -11,18 +11,23 @@ import { getFallbackHandlerContractDeployment } from '@/services/contracts/deplo
 import { HelpCenterArticle } from '@/config/constants'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const FALLBACK_HANDLER_VERSION = '>=1.1.1'
 
 export const FallbackHandler = (): ReactElement | null => {
   const { safe } = useSafeInfo()
   const txBuilder = useTxBuilderApp()
+  const chain = useCurrentChain()
 
   const supportsFallbackHandler = !!safe.version && semverSatisfies(safe.version, FALLBACK_HANDLER_VERSION)
 
   const fallbackHandlerDeployment = useMemo(() => {
-    return getFallbackHandlerContractDeployment(safe.chainId, safe.version)
-  }, [safe.version, safe.chainId])
+    if (!chain) {
+      return undefined
+    }
+    return getFallbackHandlerContractDeployment(chain, safe.version)
+  }, [safe.version, chain])
 
   if (!supportsFallbackHandler) {
     return null
