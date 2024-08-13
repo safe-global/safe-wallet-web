@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 
 import useWallet from '@/hooks/wallets/useWallet'
 import OverviewWidget from '@/components/new-safe/create/OverviewWidget'
-import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { TxStepperProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import SetNameStep from '@/components/new-safe/create/steps/SetNameStep'
 import OwnerPolicyStep from '@/components/new-safe/create/steps/OwnerPolicyStep'
@@ -12,91 +11,15 @@ import { CreateSafeStatus } from '@/components/new-safe/create/steps/StatusStep'
 import { CardStepper } from '@/components/new-safe/CardStepper'
 import { AppRoutes } from '@/config/routes'
 import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
-import type { AlertColor } from '@mui/material'
 import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafeInfos'
 import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
-import { type ReactElement, useMemo, useState } from 'react'
-import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle, LATEST_SAFE_VERSION } from '@/config/constants'
+import { useState } from 'react'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { type NewSafeFormData } from '.'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import AdvancedOptionsStep from './steps/AdvancedOptionsStep'
 
-export type NewSafeFormData = {
-  name: string
-  threshold: number
-  owners: NamedAddress[]
-  saltNonce: number
-  safeVersion: SafeVersion
-  safeAddress?: string
-  willRelay?: boolean
-}
-
-const staticHints: Record<
-  number,
-  { title: string; variant: AlertColor; steps: { title: string; text: string | ReactElement }[] }
-> = {
-  1: {
-    title: 'Safe Account creation',
-    variant: 'info',
-    steps: [
-      {
-        title: 'Network fee',
-        text: 'Deploying your Safe Account requires the payment of the associated network fee with your connected wallet. An estimation will be provided in the last step.',
-      },
-      {
-        title: 'Address book privacy',
-        text: 'The name of your Safe Account will be stored in a local address book on your device and can be changed at a later stage. It will not be shared with us or any third party.',
-      },
-    ],
-  },
-  2: {
-    title: 'Safe Account creation',
-    variant: 'info',
-    steps: [
-      {
-        title: 'Flat hierarchy',
-        text: 'Every signer has the same rights within the Safe Account and can propose, sign and execute transactions that have the required confirmations.',
-      },
-      {
-        title: 'Managing Signers',
-        text: 'You can always change the number of signers and required confirmations in your Safe Account after creation.',
-      },
-      {
-        title: 'Safe Account setup',
-        text: (
-          <>
-            Not sure how many signers and confirmations you need for your Safe Account?
-            <br />
-            <ExternalLink href={HelpCenterArticle.SAFE_SETUP} fontWeight="bold">
-              Learn more about setting up your Safe Account.
-            </ExternalLink>
-          </>
-        ),
-      },
-    ],
-  },
-  3: {
-    title: 'Safe Account creation',
-    variant: 'info',
-    steps: [
-      {
-        title: 'Wait for the creation',
-        text: 'Depending on network usage, it can take some time until the transaction is successfully added to the blockchain and picked up by our services.',
-      },
-    ],
-  },
-  4: {
-    title: 'Safe Account usage',
-    variant: 'success',
-    steps: [
-      {
-        title: 'Connect your Safe Account',
-        text: 'In our Safe Apps section you can connect your Safe Account to over 70 dApps directly or via Wallet Connect to interact with any application.',
-      },
-    ],
-  },
-}
-
-const CreateSafe = () => {
+const AdvancedCreateSafe = () => {
   const router = useRouter()
   const wallet = useWallet()
 
@@ -127,6 +50,13 @@ const CreateSafe = () => {
       ),
     },
     {
+      title: 'Advanced settings',
+      subtitle: 'Choose the Safe version and optionally a specific salt nonce',
+      render: (data, onSubmit, onBack, setStep) => (
+        <AdvancedOptionsStep data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+      ),
+    },
+    {
       title: 'Review',
       subtitle:
         "You're about to create a new Safe Account and will have to confirm the transaction with your connected wallet.",
@@ -150,14 +80,12 @@ const CreateSafe = () => {
     },
   ]
 
-  const staticHint = useMemo(() => staticHints[activeStep], [activeStep])
-
   const initialStep = 0
   const initialData: NewSafeFormData = {
     name: '',
     owners: [],
     threshold: 1,
-    saltNonce: Date.now(),
+    saltNonce: 0,
     safeVersion: LATEST_SAFE_VERSION as SafeVersion,
   }
 
@@ -187,7 +115,7 @@ const CreateSafe = () => {
         <Grid item xs={12} md={4} mb={[3, null, 0]} order={[0, null, 1]}>
           <Grid container spacing={3}>
             {activeStep < 2 && <OverviewWidget safeName={safeName} />}
-            {wallet?.address && <CreateSafeInfos staticHint={staticHint} dynamicHint={dynamicHint} />}
+            {wallet?.address && <CreateSafeInfos dynamicHint={dynamicHint} />}
           </Grid>
         </Grid>
       </Grid>
@@ -195,4 +123,4 @@ const CreateSafe = () => {
   )
 }
 
-export default CreateSafe
+export default AdvancedCreateSafe

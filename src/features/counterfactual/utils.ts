@@ -1,7 +1,7 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { LATEST_SAFE_VERSION, POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
+import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -18,7 +18,7 @@ import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
 import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import {
   type ChainInfo,
   ImplementationVersionState,
@@ -137,17 +137,18 @@ export const createCounterfactualSafe = (
   data: NewSafeFormData,
   dispatch: AppDispatch,
   props: DeploySafeProps,
-  router: NextRouter,
+  payMethod: PayMethod,
+  router?: NextRouter,
 ) => {
   const undeployedSafe = {
     chainId: chain.chainId,
     address: safeAddress,
-    type: PayMethod.PayLater,
+    type: payMethod,
     safeProps: {
       safeAccountConfig: props.safeAccountConfig,
       safeDeploymentConfig: {
         saltNonce,
-        safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+        safeVersion: data.safeVersion,
       },
     },
   }
@@ -168,7 +169,8 @@ export const createCounterfactualSafe = (
       },
     }),
   )
-  return router.push({
+
+  router?.push({
     pathname: AppRoutes.home,
     query: { safe: `${chain.shortName}:${safeAddress}` },
   })
