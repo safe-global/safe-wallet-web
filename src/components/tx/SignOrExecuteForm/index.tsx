@@ -35,6 +35,7 @@ import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallb
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useTxDetails from '@/hooks/useTxDetails'
 import TxData from '@/components/transactions/TxDetails/TxData'
+import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -94,6 +95,8 @@ export const SignOrExecuteForm = ({
   const isSwapOrder = isConfirmationViewOrder(decodedData)
   const [txDetails] = useTxDetails(props.txId)
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
+  const isApproval = readableApprovals && readableApprovals.length > 0
 
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
@@ -144,7 +147,7 @@ export const SignOrExecuteForm = ({
         )}
 
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor safeTransaction={safeTx} />
+          {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
 
           {showTxDetails && <TxData txDetails={txDetails} imitation={false} trusted />}
 
@@ -153,7 +156,7 @@ export const SignOrExecuteForm = ({
             txId={props.txId}
             decodedData={decodedData}
             showMultisend={!props.isBatch}
-            showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder}
+            showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder && !isApproval}
           />
         </ErrorBoundary>
 

@@ -64,7 +64,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
         },
         saltNonce: selectedSaltNonce.toString(),
       },
-      chain.chainId,
+      chain,
       selectedSafeVersion,
     )
   }, [

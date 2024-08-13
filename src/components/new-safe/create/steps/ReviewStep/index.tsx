@@ -38,6 +38,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 export const NetworkFee = ({
   totalFee,
@@ -129,6 +130,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
+  const latestSafeVersion = getLatestSafeVersion(chain)
+
   const safeParams = useMemo(() => {
     return {
       owners: data.owners.map((owner) => owner.address),
@@ -172,15 +175,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const saltNonce = await getAvailableSaltNonce(
         wallet.provider,
         { ...props, saltNonce: '0' },
-        chain.chainId,
+        chain,
         data.safeVersion,
       )
-      const safeAddress = await computeNewSafeAddress(
-        wallet.provider,
-        { ...props, saltNonce },
-        chain.chainId,
-        data.safeVersion,
-      )
+      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain, data.safeVersion)
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
