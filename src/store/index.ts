@@ -21,6 +21,7 @@ import {
 import * as slices from './slices'
 import * as hydrate from './useHydrateStore'
 import { ofacApi } from '@/store/ofac'
+import { safePassApi } from './safePass'
 
 const rootReducer = combineReducers({
   [slices.chainsSlice.name]: slices.chainsSlice.reducer,
@@ -45,6 +46,7 @@ const rootReducer = combineReducers({
   [slices.undeployedSafesSlice.name]: slices.undeployedSafesSlice.reducer,
   [slices.swapParamsSlice.name]: slices.swapParamsSlice.reducer,
   [ofacApi.reducerPath]: ofacApi.reducer,
+  [safePassApi.reducerPath]: safePassApi.reducer,
 })
 
 const persistedSlices: (keyof Partial<RootState>)[] = [
@@ -73,6 +75,7 @@ const middleware: Middleware[] = [
   broadcastState(persistedSlices),
   listenerMiddlewareInstance.middleware,
   ofacApi.middleware,
+  safePassApi.middleware,
 ]
 const listeners = [safeMessagesListener, txHistoryListener, txQueueListener, swapOrderListener, swapOrderStatusListener]
 
