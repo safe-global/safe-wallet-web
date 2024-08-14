@@ -40,7 +40,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { useCustomNetworkContracts, useCustomNetworksConfig } from '@/hooks/coreSDK/useCustomNetworkContracts'
+import { useCustomNetworkConfig, useCustomNetworksConfig } from '@/hooks/coreSDK/useCustomNetworkContracts'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 
 export const NetworkFee = ({
@@ -125,7 +125,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
-  const customContracts = useCustomNetworkContracts()
+  const customContracts = useCustomNetworkConfig()
   const customContractsConfig = useCustomNetworksConfig()
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])

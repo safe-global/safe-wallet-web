@@ -32,8 +32,6 @@ export const useInitSafeCoreSDK = () => {
       return
     }
 
-    // const contractNetworks = getContractNetworksConfig(currentChain) as ContractNetworksConfig | undefined
-
     // A read-only instance of the SDK is sufficient because we connect the signer to it when needed
     initSafeSDK({
       provider: web3ReadOnly,

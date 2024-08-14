@@ -28,22 +28,6 @@ export function assertValidSafeVersion<T extends SafeInfo['version']>(safeVersio
   return invariant(isValidSafeVersion(safeVersion), `${safeVersion} is not a valid Safe Account version`)
 }
 
-// const isContractNetworksConfig = (obj: {
-//   [id: string]: Omit<ChainInfo['contractAddresses'], 'safeWebAuthnSignerFactoryAddress'>
-// }): obj is ContractNetworksConfig => {
-//   return Object.values(obj).every((value) => !!value)
-// }
-
-// export const getContractNetworksConfig = (chain: ChainInfo | undefined) => {
-//   if (!chain || (IS_PRODUCTION && IS_OFFICIAL_HOST)) return
-
-//   // Exclude safeWebAuthnSignerFactoryAddress as it is not yet supported
-//   const { safeWebAuthnSignerFactoryAddress, ...contractAddresses } = chain.contractAddresses
-
-//   if (!isContractNetworksConfig({ [chain.chainId]: contractAddresses })) return
-//   return { [chain.chainId]: contractAddresses }
-// }
-
 type SafeCoreSDKProps = {
   provider: JsonRpcProvider
   chainId: SafeInfo['chainId']
