@@ -17,8 +17,7 @@ import { Alert, AlertTitle, Box, Button, Paper, Stack, SvgIcon, Typography } fro
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 const SPEED_UP_THRESHOLD_IN_SECONDS = 15
 
@@ -85,7 +84,7 @@ export const CreateSafeStatus = ({
       threshold: pendingSafe.props.safeAccountConfig.threshold,
       saltNonce: Number(pendingSafe.props.safeDeploymentConfig?.saltNonce),
       safeAddress,
-      safeVersion: pendingSafe.props.safeDeploymentConfig?.safeVersion ?? (LATEST_SAFE_VERSION as SafeVersion),
+      safeVersion: pendingSafe.props.safeDeploymentConfig?.safeVersion ?? getLatestSafeVersion(chain),
     })
   }
 

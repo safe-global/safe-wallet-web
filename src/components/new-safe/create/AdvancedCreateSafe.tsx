@@ -14,14 +14,15 @@ import { CREATE_SAFE_CATEGORY } from '@/services/analytics'
 import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafeInfos'
 import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { useState } from 'react'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { type NewSafeFormData } from '.'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import AdvancedOptionsStep from './steps/AdvancedOptionsStep'
+import { getLatestSafeVersion } from '@/utils/chains'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const AdvancedCreateSafe = () => {
   const router = useRouter()
   const wallet = useWallet()
+  const chain = useCurrentChain()
 
   const [safeName, setSafeName] = useState('')
   const [dynamicHint, setDynamicHint] = useState<CreateSafeInfoItem>()
@@ -86,7 +87,7 @@ const AdvancedCreateSafe = () => {
     owners: [],
     threshold: 1,
     saltNonce: 0,
-    safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+    safeVersion: getLatestSafeVersion(chain),
   }
 
   const onClose = () => {
