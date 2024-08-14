@@ -36,8 +36,8 @@ import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
+import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
@@ -52,6 +52,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [gasPrice] = useGasPrice()
 
   const userNonce = useUserNonce()
+
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -121,7 +123,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       multiSendTxData,
       safe.chainId,
       safe.address.value,
-      safe.version ?? LATEST_SAFE_VERSION,
+      safe.version ?? latestSafeVersion,
     )
   }
 
@@ -158,8 +160,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         <Typography variant="body2">
           This transaction batches a total of {params.txs.length} transactions from your queue into a single Ethereum
           transaction. Please check every included transaction carefully, especially if you have rejection transactions,
-          and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
-          over the execute button.
+          and make sure you want to execute all of them. Included transactions are highlighted when you hover over the
+          execute button.
         </Typography>
 
         {multiSendContract && <SendToBlock address={multisendContractAddress} title="Interact with" />}

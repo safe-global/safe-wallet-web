@@ -24,7 +24,7 @@ import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { asError } from '@/services/exceptions/utils'
 import { useAppSelector } from '@/store'
-import { hasFeature } from '@/utils/chains'
+import { getLatestSafeVersion, hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
@@ -116,8 +116,8 @@ const ActivateAccountFlow = () => {
             options,
             callback: onSubmit,
           },
+          safeVersion ?? getLatestSafeVersion(chain),
           customContractsConfig,
-          safeVersion,
         )
       }
     } catch (_err) {

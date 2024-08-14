@@ -2,7 +2,6 @@ import { useContext } from 'react'
 import { Typography } from '@mui/material'
 
 import ExternalLink from '@/components/common/ExternalLink'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { createUpdateSafeTxs } from '@/services/tx/safeUpdateParams'
@@ -10,11 +9,14 @@ import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAsync from '@/hooks/useAsync'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 export const UpdateSafeReview = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
+
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   useAsync(async () => {
     if (!chain || !safeLoaded) {
@@ -33,7 +35,7 @@ export const UpdateSafeReview = () => {
 
       <Typography mb={2}>
         To check details about updates added by this smart contract version please visit{' '}
-        <ExternalLink href={`https://github.com/safe-global/safe-contracts/releases/tag/v${LATEST_SAFE_VERSION}`}>
+        <ExternalLink href={`https://github.com/safe-global/safe-contracts/releases/tag/v${latestSafeVersion}`}>
           latest Safe Account contracts changelog
         </ExternalLink>
       </Typography>

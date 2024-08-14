@@ -8,13 +8,13 @@ import {
   getSafeProxyFactoryContractInstance,
   getSignMessageLibContractInstance,
 } from '@safe-global/protocol-kit/dist/src/contracts/contractInstances'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import type SafeBaseContract from '@safe-global/protocol-kit/dist/src/contracts/Safe/SafeBaseContract'
 import { type ChainInfo, ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { assertValidSafeVersion, getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import semver from 'semver'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
 // @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
@@ -64,16 +64,15 @@ export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: str
   return getGnosisSafeContract(safe, safeProvider)
 }
 
-export const getReadOnlyGnosisSafeContract = async (
-  chain: ChainInfo,
-  safeVersion: SafeInfo['version'] = LATEST_SAFE_VERSION,
-) => {
+export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
+  const version = safeVersion ?? getLatestSafeVersion(chain)
+
   const safeProvider = getSafeProvider()
 
-  const isL1SafeSingleton = !_isL2(chain, _getValidatedGetContractProps(safeVersion).safeVersion)
+  const isL1SafeSingleton = !_isL2(chain, _getValidatedGetContractProps(version).safeVersion)
 
   return getSafeContractInstance(
-    _getValidatedGetContractProps(safeVersion).safeVersion,
+    _getValidatedGetContractProps(version).safeVersion,
     safeProvider,
     undefined,
     undefined,

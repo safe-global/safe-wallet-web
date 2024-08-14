@@ -2,7 +2,6 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
-import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
@@ -16,7 +15,6 @@ import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCre
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import PayNowPayLater, { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { CF_TX_GROUP_KEY, createCounterfactualSafe } from '@/features/counterfactual/utils'
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
@@ -35,7 +33,6 @@ import { isWalletRejection } from '@/utils/wallets'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import { type DeploySafeProps } from '@safe-global/protocol-kit'
-import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
@@ -146,7 +143,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     }
   }, [data.owners, data.threshold])
 
-  const { gasLimit } = useEstimateSafeCreationGas(safeParams)
+  const { gasLimit } = useEstimateSafeCreationGas(safeParams, data.safeVersion)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -169,7 +166,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
     try {
       const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
-        LATEST_SAFE_VERSION,
+        data.safeVersion,
         contractAddresses?.fallbackHandlerAddress,
       )
 
@@ -185,13 +182,15 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const saltNonce = await getAvailableSaltNonce(
         wallet.provider,
         { ...props, saltNonce: '0' },
-        chain.chainId,
+        chain,
+        data.safeVersion,
         contractAddresses,
       )
       const safeAddress = await computeNewSafeAddress(
         wallet.provider,
         { ...props, saltNonce },
-        chain.chainId,
+        chain,
+        data.safeVersion,
         contractAddresses,
       )
 
@@ -199,7 +198,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
-        await createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, router)
+        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayLater, router)
         trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
         return
       }
@@ -212,21 +211,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           }
         : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
 
-      const undeployedSafe = {
-        chainId: chain.chainId,
-        address: safeAddress,
-        type: PayMethod.PayNow,
-        safeProps: {
-          safeAccountConfig: props.safeAccountConfig,
-          safeDeploymentConfig: {
-            saltNonce,
-            safeVersion: LATEST_SAFE_VERSION as SafeVersion,
-          },
-        },
-      }
-
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
-        dispatch(addUndeployedSafe(undeployedSafe))
+        // Create a counterfactual Safe
+        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayNow)
 
         if (taskId) {
           safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
@@ -252,6 +239,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           props.safeAccountConfig.owners,
           props.safeAccountConfig.threshold,
           Number(saltNonce),
+          data.safeVersion,
         )
         onSubmitCallback(taskId)
       } else {
@@ -265,6 +253,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               onSubmitCallback(undefined, txHash)
             },
           },
+          data.safeVersion,
           contractAddressesConfig,
         )
       }
