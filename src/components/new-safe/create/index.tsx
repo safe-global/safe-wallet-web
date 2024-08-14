@@ -17,8 +17,10 @@ import type { CreateSafeInfoItem } from '@/components/new-safe/create/CreateSafe
 import CreateSafeInfos from '@/components/new-safe/create/CreateSafeInfos'
 import { type ReactElement, useMemo, useState } from 'react'
 import ExternalLink from '@/components/common/ExternalLink'
-import { HelpCenterArticle, LATEST_SAFE_VERSION } from '@/config/constants'
+import { HelpCenterArticle } from '@/config/constants'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { getLatestSafeVersion } from '@/utils/chains'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export type NewSafeFormData = {
   name: string
@@ -99,6 +101,7 @@ const staticHints: Record<
 const CreateSafe = () => {
   const router = useRouter()
   const wallet = useWallet()
+  const chain = useCurrentChain()
 
   const [safeName, setSafeName] = useState('')
   const [dynamicHint, setDynamicHint] = useState<CreateSafeInfoItem>()
@@ -158,7 +161,7 @@ const CreateSafe = () => {
     owners: [],
     threshold: 1,
     saltNonce: Date.now(),
-    safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+    safeVersion: getLatestSafeVersion(chain) as SafeVersion,
   }
 
   const onClose = () => {
