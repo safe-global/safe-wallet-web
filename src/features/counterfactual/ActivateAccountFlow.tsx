@@ -30,7 +30,7 @@ import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/m
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
-import { useCustomNetworksConfig } from '@/hooks/coreSDK/useCustomNetworkContracts'
+import { useCustomContractNetworksConfig } from '@/hooks/coreSDK/useCustomNetworkContracts'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -68,7 +68,7 @@ const ActivateAccountFlow = () => {
   const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
   const { options, totalFee, walletCanPay } = useActivateAccount()
-  const customContractsConfig = useCustomNetworksConfig()
+  const customContractsConfig = useCustomContractNetworksConfig()
 
   const ownerAddresses = undeployedSafe?.props.safeAccountConfig.owners || []
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)

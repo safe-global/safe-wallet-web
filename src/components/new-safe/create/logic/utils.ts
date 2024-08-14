@@ -7,9 +7,9 @@ export const getAvailableSaltNonce = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
   chainId: string,
-  customContracts?: ContractNetworkConfig,
+  contractAddresses?: ContractNetworkConfig,
 ): Promise<string> => {
-  const safeAddress = await computeNewSafeAddress(provider, props, chainId, customContracts)
+  const safeAddress = await computeNewSafeAddress(provider, props, chainId, contractAddresses)
   const isContractDeployed = await isSmartContract(safeAddress)
 
   // Safe is already deployed so we try the next saltNonce
@@ -18,7 +18,7 @@ export const getAvailableSaltNonce = async (
       provider,
       { ...props, saltNonce: (Number(props.saltNonce) + 1).toString() },
       chainId,
-      customContracts,
+      contractAddresses,
     )
   }
 

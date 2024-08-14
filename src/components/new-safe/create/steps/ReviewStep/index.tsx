@@ -40,7 +40,10 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { useCustomNetworkConfig, useCustomNetworksConfig } from '@/hooks/coreSDK/useCustomNetworkContracts'
+import {
+  useCustomContractNetworkAddresses,
+  useCustomContractNetworksConfig,
+} from '@/hooks/coreSDK/useCustomNetworkContracts'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 
 export const NetworkFee = ({
@@ -125,8 +128,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
-  const customContracts = useCustomNetworkConfig()
-  const customContractsConfig = useCustomNetworksConfig()
+  const contractAddresses = useCustomContractNetworkAddresses()
+  const contractAddressesConfig = useCustomContractNetworksConfig()
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
@@ -167,7 +170,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     try {
       const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
         LATEST_SAFE_VERSION,
-        customContracts?.fallbackHandlerAddress,
+        contractAddresses?.fallbackHandlerAddress,
       )
 
       const props: DeploySafeProps = {
@@ -183,13 +186,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         wallet.provider,
         { ...props, saltNonce: '0' },
         chain.chainId,
-        customContracts,
+        contractAddresses,
       )
       const safeAddress = await computeNewSafeAddress(
         wallet.provider,
         { ...props, saltNonce },
         chain.chainId,
-        customContracts,
+        contractAddresses,
       )
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
@@ -262,7 +265,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               onSubmitCallback(undefined, txHash)
             },
           },
-          customContractsConfig,
+          contractAddressesConfig,
         )
       }
     } catch (_err) {

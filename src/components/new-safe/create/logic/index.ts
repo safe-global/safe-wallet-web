@@ -28,12 +28,12 @@ export type SafeCreationProps = {
 const getSafeFactory = async (
   provider: Eip1193Provider,
   safeVersion = LATEST_SAFE_VERSION,
-  customContractsConfig?: ContractNetworksConfig,
+  contractAddressesConfig?: ContractNetworksConfig,
 ): Promise<SafeFactory> => {
   if (!isValidSafeVersion(safeVersion)) {
     throw new Error('Invalid Safe version')
   }
-  return SafeFactory.init({ provider, safeVersion, contractNetworks: customContractsConfig })
+  return SafeFactory.init({ provider, safeVersion, contractNetworks: contractAddressesConfig })
 }
 
 /**
@@ -42,10 +42,10 @@ const getSafeFactory = async (
 export const createNewSafe = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
-  customContractsConfig?: ContractNetworksConfig,
+  contractAddressesConfig?: ContractNetworksConfig,
   safeVersion?: SafeVersion,
 ): Promise<Safe> => {
-  const safeFactory = await getSafeFactory(provider, safeVersion, customContractsConfig)
+  const safeFactory = await getSafeFactory(provider, safeVersion, contractAddressesConfig)
   return safeFactory.deploySafe(props)
 }
 
@@ -56,7 +56,7 @@ export const computeNewSafeAddress = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
   chainId: string,
-  customContracts?: ContractNetworkConfig,
+  contractAddresses?: ContractNetworkConfig,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
 
@@ -68,7 +68,7 @@ export const computeNewSafeAddress = async (
       saltNonce: props.saltNonce,
       safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     },
-    customContracts,
+    customContracts: contractAddresses,
   })
 }
 

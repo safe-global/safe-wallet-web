@@ -11,7 +11,7 @@ const isContractNetworkConfig = (obj: Omit<ChainInfo['contractAddresses'], 'safe
  * Get deployed safe contract addresses from the config service.
  * To be used when the addresses are not available from safe-deployments
  */
-export const useCustomNetworkConfig = () => {
+export const useCustomContractNetworkAddresses = () => {
   const currentChain = useCurrentChain()
   if (!currentChain || (IS_PRODUCTION && IS_OFFICIAL_HOST)) return
 
@@ -22,8 +22,8 @@ export const useCustomNetworkConfig = () => {
   return contractAddresses as ContractNetworkConfig
 }
 
-export const useCustomNetworksConfig = () => {
-  const customNetworkContracts = useCustomNetworkConfig()
+export const useCustomContractNetworksConfig = () => {
+  const customNetworkContracts = useCustomContractNetworkAddresses()
   const currentChain = useCurrentChain()
 
   if (!currentChain || !customNetworkContracts) return
