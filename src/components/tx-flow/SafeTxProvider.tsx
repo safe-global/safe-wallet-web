@@ -76,7 +76,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
         !safeTx ||
         safeTx.signatures.size > 0 ||
         !chain.l2 ||
-        safe.nonce > 0 ||
+        safeTx.data.nonce > 0 ||
         isValidMasterCopy(safe.implementationVersionState)
       ) {
         // We do not migrate on L1s
