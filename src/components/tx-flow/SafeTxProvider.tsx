@@ -132,7 +132,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
       __unsafe_createMultiSendTx(newTxs).then(setSafeTx)
     },
-    [chain, safe.implementation.value, safe.implementationVersionState, safe.nonce, safe.version],
+    [chain, safe.implementation.value, safe.implementationVersionState, safe.version],
   )
 
   // Signed txs cannot be updated
