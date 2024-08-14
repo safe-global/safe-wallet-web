@@ -91,19 +91,11 @@ export const initSafeSDK = async ({
     })
   }
 
-  if (contractNetworks) {
-    return Safe.init({
-      provider: provider._getConnection().url,
-      safeAddress: address,
-      isL1SafeSingleton,
-      contractNetworks,
-    })
-  }
-
   return Safe.init({
     provider: provider._getConnection().url,
     safeAddress: address,
     isL1SafeSingleton,
+    contractNetworks,
   })
 }
 

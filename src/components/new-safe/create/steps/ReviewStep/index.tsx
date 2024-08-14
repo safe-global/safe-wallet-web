@@ -174,7 +174,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         safeAccountConfig: {
           threshold: data.threshold,
           owners: data.owners.map((owner) => owner.address),
-          // fallbackHandler: '0x3ea2bFb6CbD9a9ad5Ec1Fcac3F5BfF51148C6ecd',
           fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
         },
       }
