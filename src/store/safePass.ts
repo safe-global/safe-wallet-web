@@ -2,6 +2,7 @@ import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { IS_PRODUCTION, GATEWAY_URL_PRODUCTION, GATEWAY_URL_STAGING } from '@/config/constants'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
+// TODO: Replace this with the auto-generated SDK once available.
 const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 const GLOBAL_CAMPAIGN_IDS: Record<'1' | '11155111', string> = {
   '11155111': 'fa9f462b-8e8c-4122-aa41-2464e919b721',
