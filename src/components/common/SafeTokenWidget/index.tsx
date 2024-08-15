@@ -12,6 +12,7 @@ import SafeTokenIcon from '@/public/images/common/safe-token.svg'
 import css from './styles.module.css'
 import UnreadBadge from '../UnreadBadge'
 import classnames from 'classnames'
+import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
 
 const TOKEN_DECIMALS = 18
 
@@ -47,8 +48,10 @@ const SafeTokenWidget = () => {
   const [allocationData, , allocationDataLoading] = useSafeTokenAllocation()
   const [allocation, , allocationLoading] = useSafeVotingPower(allocationData)
 
+  const sanctionedAddress = useSanctionedAddress()
+
   const tokenAddress = getSafeTokenAddress(chainId)
-  if (!tokenAddress) {
+  if (!tokenAddress || Boolean(sanctionedAddress)) {
     return null
   }
 

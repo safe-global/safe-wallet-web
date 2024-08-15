@@ -16,6 +16,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import ExternalLink from '@/components/common/ExternalLink'
+import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
 
 const Step = ({ active, title }: { active: boolean; title: ReactNode }) => {
   return (
@@ -43,12 +44,15 @@ const ActivityRewardsSection = () => {
   const isDarkMode = useDarkMode()
   const router = useRouter()
 
+  const sanctionedAddress = useSanctionedAddress()
+
   const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>(LOCAL_STORAGE_KEY_HIDE_WIDGET)
 
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
   const governanceApp = matchingApps?.[0]
 
-  if (!governanceApp || !governanceApp?.url || !isSAPBannerEnabled || widgetHidden) return null
+  if (!governanceApp || !governanceApp?.url || !isSAPBannerEnabled || widgetHidden || Boolean(sanctionedAddress))
+    return null
 
   const appUrl = getSafeAppUrl(router, governanceApp?.url)
 
