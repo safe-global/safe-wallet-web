@@ -17,13 +17,19 @@ import MUILink from '@mui/material/Link'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import NoWalletConnectedWarning from '../../NoWalletConnectedWarning'
+import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { useCurrentChain } from '@/hooks/useChains'
+import { useEffect } from 'react'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 type SetNameStepForm = {
   name: string
+  safeVersion: SafeVersion
 }
 
 enum SetNameStepFields {
   name = 'name',
+  safeVersion = 'safeVersion',
 }
 
 const SET_NAME_STEP_FORM_ID = 'create-safe-set-name-step-form'
@@ -31,22 +37,22 @@ const SET_NAME_STEP_FORM_ID = 'create-safe-set-name-step-form'
 function SetNameStep({
   data,
   onSubmit,
-  setStep,
   setSafeName,
 }: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const router = useRouter()
   const fallbackName = useMnemonicSafeName()
   const isWrongChain = useIsWrongChain()
 
+  const chain = useCurrentChain()
+
   const formMethods = useForm<SetNameStepForm>({
     mode: 'all',
-    defaultValues: {
-      [SetNameStepFields.name]: data.name,
-    },
+    defaultValues: data,
   })
 
   const {
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = formMethods
 
@@ -64,6 +70,11 @@ function SetNameStep({
     trackEvent(CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE_FORM)
     router.push(AppRoutes.welcome.index)
   }
+
+  // whenever the chain switches we need to update the latest Safe version
+  useEffect(() => {
+    setValue(SetNameStepFields.safeVersion, getLatestSafeVersion(chain))
+  }, [chain, setValue])
 
   const isDisabled = isWrongChain || !isValid
 
