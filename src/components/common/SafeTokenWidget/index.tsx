@@ -15,6 +15,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useGetOwnGlobalCampaignRankQuery } from '@/store/safePass'
+import { formatAmount } from '@/utils/formatNumber'
 
 const TOKEN_DECIMALS = 18
 
@@ -57,7 +58,7 @@ const SafeTokenWidget = () => {
     query: { safe: query?.get('safe'), appUrl: GOVERNANCE_APP_URL },
   }
 
-  const flooredSafeBalance = formatVisualAmount(allocation || BigInt(0), TOKEN_DECIMALS, 2)
+  const flooredSafeBalance = formatVisualAmount(allocation || BigInt(0), TOKEN_DECIMALS, 0)
 
   return (
     <Box className={css.container}>
@@ -99,7 +100,7 @@ const SafeTokenWidget = () => {
                   {ownGlobalRankLoading ? (
                     <Skeleton width="16px" animation="wave" />
                   ) : (
-                    ownGlobalRank?.totalBoostedPoints ?? 0
+                    formatAmount(ownGlobalRank?.totalBoostedPoints ?? 0, 0)
                   )}
                 </Typography>
               </ButtonBase>

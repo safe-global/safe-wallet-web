@@ -54,8 +54,8 @@ describe('SafeTokenWidget', () => {
 
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
-      expect(result.baseElement).toHaveTextContent('472.24')
-      expect(result.baseElement).not.toHaveTextContent('472.2388')
+      expect(result.baseElement).toHaveTextContent('472')
+      expect(result.baseElement).not.toHaveTextContent('472.2')
     })
   })
 
