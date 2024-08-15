@@ -81,7 +81,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
             {name && (
-              <Typography variant="subtitle2" component="p" fontWeight="bold">
+              <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
                 {name}
               </Typography>
             )}
