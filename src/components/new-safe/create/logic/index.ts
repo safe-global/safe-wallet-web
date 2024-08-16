@@ -18,6 +18,7 @@ import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { backOff } from 'exponential-backoff'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -41,7 +42,14 @@ export const createNewSafe = async (
   safeVersion: SafeVersion,
 ): Promise<Safe> => {
   const safeFactory = await getSafeFactory(provider, safeVersion)
-  return safeFactory.deploySafe(props)
+  const config = {
+    ...props,
+    safeAccountConfig: {
+      ...props.safeAccountConfig,
+      paymentReceiver: ECOSYSTEM_ID_ADDRESS,
+    },
+  }
+  return safeFactory.deploySafe(config)
 }
 
 /**
@@ -82,16 +90,27 @@ export const encodeSafeCreationTx = async ({
   const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion)
   const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(usedSafeVersion)
 
-  // @ts-ignore union type is too complex
-  const setupData = readOnlySafeContract.encode('setup', [
+  const callData = {
     owners,
     threshold,
-    ZERO_ADDRESS,
-    EMPTY_DATA,
-    await readOnlyFallbackHandlerContract.getAddress(),
-    ZERO_ADDRESS,
-    '0',
-    ZERO_ADDRESS,
+    to: ZERO_ADDRESS,
+    data: EMPTY_DATA,
+    fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
+    paymentToken: ZERO_ADDRESS,
+    payment: 0,
+    paymentReceiver: ECOSYSTEM_ID_ADDRESS,
+  }
+
+  // @ts-ignore union type is too complex
+  const setupData = readOnlySafeContract.encode('setup', [
+    callData.owners,
+    callData.threshold,
+    callData.to,
+    callData.data,
+    callData.fallbackHandler,
+    callData.paymentToken,
+    callData.payment,
+    callData.paymentReceiver,
   ])
 
   return readOnlyProxyContract.encode('createProxyWithNonce', [
@@ -191,7 +210,7 @@ export const relaySafeCreation = async (
     fallbackHandler: fallbackHandlerAddress,
     paymentToken: ZERO_ADDRESS,
     payment: 0,
-    paymentReceiver: ZERO_ADDRESS,
+    paymentReceiver: ECOSYSTEM_ID_ADDRESS,
   }
 
   // @ts-ignore

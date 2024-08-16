@@ -38,7 +38,6 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { getLatestSafeVersion } from '@/utils/chains'
 
 export const NetworkFee = ({
   totalFee,
@@ -129,8 +128,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   // Every owner has remaining relays and relay method is selected
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
-
-  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const safeParams = useMemo(() => {
     return {
