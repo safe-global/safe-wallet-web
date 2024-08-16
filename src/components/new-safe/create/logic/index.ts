@@ -42,14 +42,7 @@ export const createNewSafe = async (
   safeVersion: SafeVersion,
 ): Promise<Safe> => {
   const safeFactory = await getSafeFactory(provider, safeVersion)
-  const config = {
-    ...props,
-    safeAccountConfig: {
-      ...props.safeAccountConfig,
-      paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-    },
-  }
-  return safeFactory.deploySafe(config)
+  return safeFactory.deploySafe(props)
 }
 
 /**
