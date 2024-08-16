@@ -39,6 +39,7 @@ describe('Onchain Messages tests', () => {
     )
   })
 
+  // TODO: Added to prod
   it('Verify summary for signed on-chain message', () => {
     createTx.verifySummaryByName(
       typeMessagesOnchain.contractName,

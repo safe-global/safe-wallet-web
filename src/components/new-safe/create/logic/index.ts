@@ -16,8 +16,8 @@ import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 import { backOff } from 'exponential-backoff'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -25,7 +25,7 @@ export type SafeCreationProps = {
   saltNonce: number
 }
 
-const getSafeFactory = async (provider: Eip1193Provider, safeVersion = LATEST_SAFE_VERSION): Promise<SafeFactory> => {
+const getSafeFactory = async (provider: Eip1193Provider, safeVersion: SafeVersion): Promise<SafeFactory> => {
   if (!isValidSafeVersion(safeVersion)) {
     throw new Error('Invalid Safe version')
   }
@@ -38,7 +38,7 @@ const getSafeFactory = async (provider: Eip1193Provider, safeVersion = LATEST_SA
 export const createNewSafe = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
-  safeVersion?: SafeVersion,
+  safeVersion: SafeVersion,
 ): Promise<Safe> => {
   const safeFactory = await getSafeFactory(provider, safeVersion)
   return safeFactory.deploySafe(props)
@@ -50,17 +50,18 @@ export const createNewSafe = async (
 export const computeNewSafeAddress = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
-  chainId: string,
+  chain: ChainInfo,
+  safeVersion?: SafeVersion,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
 
   return predictSafeAddress({
     safeProvider,
-    chainId: BigInt(chainId),
+    chainId: BigInt(chain.chainId),
     safeAccountConfig: props.safeAccountConfig,
     safeDeploymentConfig: {
       saltNonce: props.saltNonce,
-      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
+      safeVersion: safeVersion ?? getLatestSafeVersion(chain),
     },
   })
 }
@@ -74,10 +75,12 @@ export const encodeSafeCreationTx = async ({
   threshold,
   saltNonce,
   chain,
-}: SafeCreationProps & { chain: ChainInfo }) => {
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, LATEST_SAFE_VERSION)
-  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(LATEST_SAFE_VERSION)
+  safeVersion,
+}: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion }) => {
+  const usedSafeVersion = safeVersion ?? getLatestSafeVersion(chain)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, usedSafeVersion)
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(usedSafeVersion)
 
   // @ts-ignore union type is too complex
   const setupData = readOnlySafeContract.encode('setup', [
@@ -103,8 +106,9 @@ export const estimateSafeCreationGas = async (
   provider: Provider,
   from: string,
   safeParams: SafeCreationProps,
+  safeVersion?: SafeVersion,
 ): Promise<bigint> => {
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(LATEST_SAFE_VERSION)
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion ?? getLatestSafeVersion(chain))
   const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
 
   const gas = await provider.estimateGas({
@@ -168,7 +172,9 @@ export const relaySafeCreation = async (
   saltNonce: number,
   version?: SafeVersion,
 ) => {
-  const safeVersion = version ?? LATEST_SAFE_VERSION
+  const latestSafeVersion = getLatestSafeVersion(chain)
+
+  const safeVersion = version ?? latestSafeVersion
 
   const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion)
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()

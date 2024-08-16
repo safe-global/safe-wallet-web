@@ -1,7 +1,12 @@
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { isHardwareWallet, isSmartContractWallet } from '@/utils/wallets'
 import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
-import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type ChainInfo,
+  relayTransaction,
+  type SafeInfo,
+  type TransactionDetails,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import type {
   SafeSignature,
   SafeTransaction,
@@ -29,8 +34,8 @@ import {
 import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import chains from '@/config/chains'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { createExistingTx } from './create'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 /**
  * Propose a transaction
@@ -503,6 +508,7 @@ export const dispatchTxRelay = async (
   safeTx: SafeTransaction,
   safe: SafeInfo,
   txId: string,
+  chain: ChainInfo,
   gasLimit?: string | number,
 ) => {
   const readOnlySafeContract = await getReadOnlyCurrentGnosisSafeContract(safe)
@@ -526,7 +532,7 @@ export const dispatchTxRelay = async (
       to: safe.address.value,
       data,
       gasLimit: gasLimit?.toString(),
-      version: safe.version ?? LATEST_SAFE_VERSION,
+      version: safe.version ?? getLatestSafeVersion(chain),
     })
     const taskId = relayResponse.taskId
 

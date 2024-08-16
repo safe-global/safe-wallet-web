@@ -40,10 +40,6 @@ describe('[SMOKE] Dashboard tests', { defaultCommandTimeout: 20000 }, () => {
     dashboard.verifySafeAppsSection()
   })
 
-  it.skip('[SMOKE] Verify clicking on the share icon copies the app URL to the clipboard', () => {
-    dashboard.verifyShareBtnWorks(0, dashboard.copiedAppUrl)
-  })
-
   it('[SMOKE] Verify clicking on Explore Safe apps button opens list of all apps', () => {
     dashboard.clickOnExploreAppsBtn()
   })

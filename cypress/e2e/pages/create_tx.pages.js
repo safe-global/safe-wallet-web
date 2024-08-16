@@ -70,8 +70,7 @@ const bulkConfirmationText = (tx) =>
 
 const disabledBultExecuteBtnTooltip =
   'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe Account nonce'
-const enabledBulkExecuteBtnTooltip =
-  'All transactions highlighted in light green will be included in the batch execution'
+const enabledBulkExecuteBtnTooltip = 'All highlighted transactions will be included in the batch execution'
 
 const bulkExecuteBtnStr = 'Bulk execute'
 

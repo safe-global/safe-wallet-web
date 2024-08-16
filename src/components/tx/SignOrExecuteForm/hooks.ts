@@ -1,5 +1,5 @@
 import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
-import { assertTx, assertWallet, assertOnboard } from '@/utils/helpers'
+import { assertTx, assertWallet, assertOnboard, assertChainInfo } from '@/utils/helpers'
 import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
@@ -20,6 +20,7 @@ import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonc
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { useCurrentChain } from '@/hooks/useChains'
 
 type TxActions = {
   addToBatch: (safeTx?: SafeTransaction, origin?: string) => Promise<string>
@@ -39,6 +40,7 @@ export const useTxActions = (): TxActions => {
   const onboard = useOnboard()
   const wallet = useWallet()
   const [addTxToBatch] = useUpdateBatch()
+  const chain = useCurrentChain()
 
   return useMemo<TxActions>(() => {
     const safeAddress = safe.address.value
@@ -115,6 +117,7 @@ export const useTxActions = (): TxActions => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
+      assertChainInfo(chain)
 
       await assertWalletChain(onboard, chainId)
 
@@ -139,7 +142,7 @@ export const useTxActions = (): TxActions => {
 
       // Relay or execute the tx via connected wallet
       if (isRelayed) {
-        await dispatchTxRelay(safeTx, safe, txId, txOptions.gasLimit)
+        await dispatchTxRelay(safeTx, safe, txId, chain, txOptions.gasLimit)
       } else {
         const isSmartAccount = await isSmartContractWallet(wallet.chainId, wallet.address)
 
@@ -150,7 +153,7 @@ export const useTxActions = (): TxActions => {
     }
 
     return { addToBatch, signTx, executeTx, signDelegateTx }
-  }, [safe, wallet, addTxToBatch, onboard])
+  }, [safe, wallet, addTxToBatch, onboard, chain])
 }
 
 export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {
