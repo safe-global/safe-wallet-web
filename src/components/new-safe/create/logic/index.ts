@@ -1,5 +1,5 @@
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { type Eip1193Provider, type Provider } from 'ethers'
+import { Interface, type Eip1193Provider, type Provider } from 'ethers'
 
 import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -18,6 +18,7 @@ import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { backOff } from 'exponential-backoff'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -25,11 +26,15 @@ export type SafeCreationProps = {
   saltNonce: number
 }
 
-const getSafeFactory = async (provider: Eip1193Provider, safeVersion: SafeVersion): Promise<SafeFactory> => {
+const getSafeFactory = async (
+  provider: Eip1193Provider,
+  safeVersion: SafeVersion,
+  isL1SafeSingleton?: boolean,
+): Promise<SafeFactory> => {
   if (!isValidSafeVersion(safeVersion)) {
     throw new Error('Invalid Safe version')
   }
-  return SafeFactory.init({ provider, safeVersion })
+  return SafeFactory.init({ provider, safeVersion, isL1SafeSingleton })
 }
 
 /**
@@ -39,8 +44,9 @@ export const createNewSafe = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
   safeVersion: SafeVersion,
+  isL1SafeSingleton?: boolean,
 ): Promise<Safe> => {
-  const safeFactory = await getSafeFactory(provider, safeVersion)
+  const safeFactory = await getSafeFactory(provider, safeVersion, isL1SafeSingleton)
   return safeFactory.deploySafe(props)
 }
 
@@ -63,8 +69,12 @@ export const computeNewSafeAddress = async (
       saltNonce: props.saltNonce,
       safeVersion: safeVersion ?? getLatestSafeVersion(chain),
     },
+    isL1SafeSingleton: true,
   })
 }
+
+export const SAFE_TO_L2_SETUP_ADDRESS = '0x80E0d1577aD3d982BF2F49aAB00BfA161AA763c4'
+export const SAFE_TO_L2_SETUP_INTERFACE = new Interface(['function setupToL2(address l2Singleton)'])
 
 /**
  * Encode a Safe creation transaction NOT using the Core SDK because it doesn't support that
@@ -76,18 +86,19 @@ export const encodeSafeCreationTx = async ({
   saltNonce,
   chain,
   safeVersion,
-}: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion }) => {
+}: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion; to?: string; data?: string }) => {
   const usedSafeVersion = safeVersion ?? getLatestSafeVersion(chain)
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, usedSafeVersion)
+  const readOnlyL1SafeContract = await getReadOnlyGnosisSafeContract(chain, usedSafeVersion, true)
+  const l2Deployment = getSafeL2SingletonDeployment({ version: safeVersion, network: chain.chainId })
   const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion)
   const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(usedSafeVersion)
 
   // @ts-ignore union type is too complex
-  const setupData = readOnlySafeContract.encode('setup', [
+  const setupData = readOnlyL1SafeContract.encode('setup', [
     owners,
     threshold,
-    ZERO_ADDRESS,
-    EMPTY_DATA,
+    SAFE_TO_L2_SETUP_ADDRESS,
+    SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [l2Deployment?.defaultAddress]),
     await readOnlyFallbackHandlerContract.getAddress(),
     ZERO_ADDRESS,
     '0',
@@ -95,7 +106,7 @@ export const encodeSafeCreationTx = async ({
   ])
 
   return readOnlyProxyContract.encode('createProxyWithNonce', [
-    await readOnlySafeContract.getAddress(),
+    await readOnlyL1SafeContract.getAddress(), // always L1 Mastercopy
     setupData,
     BigInt(saltNonce),
   ])

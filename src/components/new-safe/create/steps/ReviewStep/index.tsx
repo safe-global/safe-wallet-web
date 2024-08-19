@@ -5,7 +5,13 @@ import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactu
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import { computeNewSafeAddress, createNewSafe, relaySafeCreation } from '@/components/new-safe/create/logic'
+import {
+  computeNewSafeAddress,
+  createNewSafe,
+  relaySafeCreation,
+  SAFE_TO_L2_SETUP_ADDRESS,
+  SAFE_TO_L2_SETUP_INTERFACE,
+} from '@/components/new-safe/create/logic'
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
@@ -38,7 +44,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { getLatestSafeVersion } from '@/utils/chains'
+import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 
 export const NetworkFee = ({
   totalFee,
@@ -130,8 +136,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
-  const latestSafeVersion = getLatestSafeVersion(chain)
-
   const safeParams = useMemo(() => {
     return {
       owners: data.owners.map((owner) => owner.address),
@@ -163,12 +167,19 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
     try {
       const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(data.safeVersion)
+      const safeL2Deployment = getSafeL2SingletonDeployment({ version: data.safeVersion, network: chain.chainId })
+      const safeL2Address = safeL2Deployment?.defaultAddress
+      if (!safeL2Address) {
+        throw new Error('No Safe deployment found')
+      }
 
       const props: DeploySafeProps = {
         safeAccountConfig: {
           threshold: data.threshold,
           owners: data.owners.map((owner) => owner.address),
           fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
+          to: SAFE_TO_L2_SETUP_ADDRESS,
+          data: SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [safeL2Address]),
         },
       }
 
@@ -240,6 +251,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             },
           },
           data.safeVersion,
+          true,
         )
       }
     } catch (_err) {

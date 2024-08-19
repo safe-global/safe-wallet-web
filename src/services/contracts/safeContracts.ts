@@ -64,12 +64,16 @@ export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: str
   return getGnosisSafeContract(safe, safeProvider)
 }
 
-export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
+export const getReadOnlyGnosisSafeContract = async (
+  chain: ChainInfo,
+  safeVersion: SafeInfo['version'],
+  isL1?: boolean,
+) => {
   const version = safeVersion ?? getLatestSafeVersion(chain)
 
   const safeProvider = getSafeProvider()
 
-  const isL1SafeSingleton = !_isL2(chain, _getValidatedGetContractProps(version).safeVersion)
+  const isL1SafeSingleton = isL1 ?? !_isL2(chain, _getValidatedGetContractProps(version).safeVersion)
 
   return getSafeContractInstance(
     _getValidatedGetContractProps(version).safeVersion,

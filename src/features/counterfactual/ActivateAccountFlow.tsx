@@ -1,4 +1,4 @@
-import { createNewSafe, relaySafeCreation } from '@/components/new-safe/create/logic'
+import { createNewSafe, relaySafeCreation, SAFE_TO_L2_SETUP_ADDRESS } from '@/components/new-safe/create/logic'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
 import ReviewRow from '@/components/new-safe/ReviewRow'
@@ -31,6 +31,7 @@ import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { sameAddress } from '@/utils/addresses'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -70,6 +71,8 @@ const ActivateAccountFlow = () => {
   const { options, totalFee, walletCanPay } = useActivateAccount()
 
   const ownerAddresses = undeployedSafe?.props.safeAccountConfig.owners || []
+  // TODO: Maybe also verify the data?
+  const isMultichainSafe = sameAddress(undeployedSafe?.props.safeAccountConfig.to, SAFE_TO_L2_SETUP_ADDRESS)
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
   // Every owner has remaining relays and relay method is selected
@@ -116,6 +119,7 @@ const ActivateAccountFlow = () => {
             callback: onSubmit,
           },
           safeVersion ?? getLatestSafeVersion(chain),
+          isMultichainSafe ? true : undefined,
         )
       }
     } catch (_err) {
