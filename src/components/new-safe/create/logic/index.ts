@@ -16,7 +16,7 @@ import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 import { backOff } from 'exponential-backoff'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 
@@ -191,14 +191,15 @@ export const relaySafeCreation = async (
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()
   const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(safeVersion)
   const fallbackHandlerAddress = await readOnlyFallbackHandlerContract.getAddress()
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
-  const safeContractAddress = await readOnlySafeContract.getAddress()
+  const readOnlyL1SafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion, true)
+  const safeContractAddress = await readOnlyL1SafeContract.getAddress()
+  const l2Deployment = getSafeL2SingletonDeployment({ version: safeVersion, network: chain.chainId })
 
   const callData = {
     owners,
     threshold,
-    to: ZERO_ADDRESS,
-    data: EMPTY_DATA,
+    to: SAFE_TO_L2_SETUP_ADDRESS,
+    data: SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [l2Deployment?.defaultAddress]),
     fallbackHandler: fallbackHandlerAddress,
     paymentToken: ZERO_ADDRESS,
     payment: 0,
@@ -206,7 +207,7 @@ export const relaySafeCreation = async (
   }
 
   // @ts-ignore
-  const initializer = readOnlySafeContract.encode('setup', [
+  const initializer = readOnlyL1SafeContract.encode('setup', [
     callData.owners,
     callData.threshold,
     callData.to,
