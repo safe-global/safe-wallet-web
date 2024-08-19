@@ -11,8 +11,7 @@ import WcErrorMessage from '../WcErrorMessage'
 import WcProposalForm from '../WcProposalForm'
 import { trackEvent } from '@/services/analytics'
 import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
-import { isSafePassApp, splitError } from '@/features/walletconnect/services/utils'
-import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
+import { splitError } from '@/features/walletconnect/services/utils'
 
 type WcSessionManagerProps = {
   sessions: SessionTypes.Struct[]
@@ -30,7 +29,6 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
   const { safe, safeAddress } = useSafeInfo()
   const { chainId } = safe
   const [proposal, setProposal] = useState<Web3WalletTypes.SessionProposal>()
-  const sanctionedAddress = useSanctionedAddress()
 
   // On session approve
   const onApprove = useCallback(
@@ -93,10 +91,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
     return walletConnect.onSessionPropose((proposalData) => {
       setError(null)
 
-      if (
-        autoApprove[chainId]?.[proposalData.verifyContext.verified.origin] &&
-        (!isSafePassApp(proposalData.verifyContext.verified.origin) || !sanctionedAddress)
-      ) {
+      if (autoApprove[chainId]?.[proposalData.verifyContext.verified.origin]) {
         onApprove(proposalData)
         return
       }
@@ -104,7 +99,7 @@ const WcSessionManager = ({ sessions, uri }: WcSessionManagerProps) => {
       setProposal(proposalData)
       setIsLoading(undefined)
     })
-  }, [autoApprove, chainId, onApprove, setError, setIsLoading, walletConnect, sanctionedAddress])
+  }, [autoApprove, chainId, onApprove, setError, setIsLoading, walletConnect])
 
   // Track errors
   useEffect(() => {

@@ -5,6 +5,7 @@ import useWallet from '../wallets/useWallet'
 import { faker } from '@faker-js/faker'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
 import * as ofac from '@/store/ofac'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 jest.mock('@/hooks/useSafeAddress')
 jest.mock('@/hooks/wallets/useWallet')
@@ -62,9 +63,30 @@ describe('useSanctionedAddress', () => {
     mockUseSafeAddress.mockReturnValue(mockSafeAddress)
     mockUseWallet.mockReturnValue(connectedWalletBuilder().with({ address: mockWalletAddress }).build())
 
-    jest.spyOn(ofac, 'useGetIsSanctionedQuery').mockReturnValue({ data: true, refetch: jest.fn() })
-
+    jest.spyOn(ofac, 'useGetIsSanctionedQuery').mockImplementation((arg) => {
+      if (arg === skipToken) {
+        return { data: undefined, refetch: jest.fn() }
+      }
+      return { data: true, refetch: jest.fn() }
+    })
     const { result } = renderHook(() => useSanctionedAddress())
     expect(result.current).toEqual(mockSafeAddress)
+  })
+
+  it('should skip sanction check if isRestricted is false', () => {
+    const mockSafeAddress = faker.finance.ethereumAddress()
+    const mockWalletAddress = faker.finance.ethereumAddress()
+    mockUseSafeAddress.mockReturnValue(mockSafeAddress)
+    mockUseWallet.mockReturnValue(connectedWalletBuilder().with({ address: mockWalletAddress }).build())
+
+    jest.spyOn(ofac, 'useGetIsSanctionedQuery').mockImplementation((arg) => {
+      if (arg === skipToken) {
+        return { data: undefined, refetch: jest.fn() }
+      }
+      return { data: true, refetch: jest.fn() }
+    })
+
+    const { result } = renderHook(() => useSanctionedAddress(false))
+    expect(result.current).toBeUndefined()
   })
 })

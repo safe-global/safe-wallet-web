@@ -30,6 +30,7 @@ import SafeAppIframe from './SafeAppIframe'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
 import BlockedAddress from '@/components/common/BlockedAddress'
+import { SAFE_PASS_URL } from '@/config/constants'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -45,8 +46,8 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
   const chainId = useChainId()
   const chain = useCurrentChain()
   const router = useRouter()
-  const sanctionedAddress = useSanctionedAddress()
-  const isSafePassApp = appUrl.startsWith('https://community.safe.global')
+  const isSafePassApp = appUrl.startsWith(SAFE_PASS_URL)
+  const sanctionedAddress = useSanctionedAddress(isSafePassApp)
   const {
     expanded: queueBarExpanded,
     dismissedByUser: queueBarDismissed,

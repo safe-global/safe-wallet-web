@@ -44,12 +44,12 @@ const ActivityRewardsSection = () => {
   const isDarkMode = useDarkMode()
   const router = useRouter()
 
-  const sanctionedAddress = useSanctionedAddress()
-
   const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>(LOCAL_STORAGE_KEY_HIDE_WIDGET)
 
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
   const governanceApp = matchingApps?.[0]
+
+  const sanctionedAddress = useSanctionedAddress(isSAPBannerEnabled && !widgetHidden && !!governanceApp)
 
   if (!governanceApp || !governanceApp?.url || !isSAPBannerEnabled || widgetHidden || Boolean(sanctionedAddress))
     return null

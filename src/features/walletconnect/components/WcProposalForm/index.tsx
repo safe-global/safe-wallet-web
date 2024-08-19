@@ -41,8 +41,8 @@ const WcProposalForm = ({ proposal, setProposal, onApprove }: ProposalFormProps)
   const { isScam, origin } = proposal.verifyContext.verified
   const url = proposer.metadata.url || origin
 
-  const sanctionedAddress = useSanctionedAddress()
   const isSafePass = isSafePassApp(origin)
+  const sanctionedAddress = useSanctionedAddress(isSafePass)
 
   const chainIds = useMemo(() => getSupportedChainIds(configs, proposal.params), [configs, proposal.params])
   const isUnsupportedChain = !chainIds.includes(chainId)
