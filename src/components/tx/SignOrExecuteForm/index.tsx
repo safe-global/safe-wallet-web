@@ -26,13 +26,16 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isConfirmationViewOrder } from '@/utils/transaction-guards'
+import { isConfirmationViewOrder, isCustomTxInfo } from '@/utils/transaction-guards'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
 import { Blockaid } from '../security/blockaid'
+import useTxDetails from '@/hooks/useTxDetails'
+import TxData from '@/components/transactions/TxDetails/TxData'
+import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -48,17 +51,26 @@ export type SignOrExecuteProps = {
   disableSubmit?: boolean
   origin?: string
   isCreation?: boolean
-  showToBlock?: boolean
+  showMethodCall?: boolean
 }
 
-const trackTxEvents = async (chainId: string, txId: string, isCreation: boolean, isExecuted: boolean) => {
-  const event = isCreation ? TX_EVENTS.CREATE : isExecuted ? TX_EVENTS.EXECUTE : TX_EVENTS.CONFIRM
+const trackTxEvents = async (
+  chainId: string,
+  txId: string,
+  isCreation: boolean,
+  isExecuted: boolean,
+  isRoleExecution: boolean,
+) => {
+  const creationEvent = isRoleExecution ? TX_EVENTS.CREATE_VIA_ROLE : TX_EVENTS.CREATE
+  const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
+  const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
+
   const txType = await getTransactionTrackingType(chainId, txId)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
   if (isCreation && isExecuted) {
-    trackEvent({ ...TX_EVENTS.EXECUTE, label: txType })
+    trackEvent({ ...executionEvent, label: txType })
   }
 }
 
@@ -78,9 +90,13 @@ export const SignOrExecuteForm = ({
   const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
-  const [decodedData, decodedDataError, decodedDataLoading] = useDecodeTx(safeTx)
+  const [decodedData] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
+  const [txDetails] = useTxDetails(props.txId)
+  const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
+  const isApproval = readableApprovals && readableApprovals.length > 0
 
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
@@ -102,14 +118,19 @@ export const SignOrExecuteForm = ({
   const willExecuteThroughRole =
     (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
 
-  const onFormSubmit = useCallback<SubmitCallback>(
-    async (txId, isExecuted = false) => {
+  const onFormSubmit = useCallback(
+    async (txId: string, isExecuted = false, isRoleExecution = false) => {
       onSubmit?.(txId, isExecuted)
 
       // Track tx event
-      trackTxEvents(chainId, txId, isCreation, isExecuted)
+      trackTxEvents(chainId, txId, isCreation, isExecuted, isRoleExecution)
     },
     [chainId, isCreation, onSubmit],
+  )
+
+  const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(
+    (txId, isExecuted) => onFormSubmit(txId, isExecuted, true),
+    [onFormSubmit],
   )
 
   return (
@@ -125,24 +146,25 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor safeTransaction={safeTx} />
+        {!props.isRejection && (
+          <ErrorBoundary fallback={<div>Error parsing data</div>}>
+            {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
 
-          <DecodedTx
-            tx={safeTx}
-            txId={props.txId}
-            decodedData={decodedData}
-            decodedDataError={decodedDataError}
-            decodedDataLoading={decodedDataLoading}
-            showMultisend={!props.isBatch}
-            showToBlock={props.showToBlock}
-          />
-        </ErrorBoundary>
+            {showTxDetails && <TxData txDetails={txDetails} imitation={false} trusted />}
 
-        {!isCounterfactualSafe && <BlockaidBalanceChanges />}
+            <DecodedTx
+              tx={safeTx}
+              txId={props.txId}
+              decodedData={decodedData}
+              showMultisend={!props.isBatch}
+              showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder && !isApproval}
+            />
+          </ErrorBoundary>
+        )}
+        {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>
 
-      {!isCounterfactualSafe && <TxChecks />}
+      {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
 
       <TxCard>
         <ConfirmationTitle
@@ -177,7 +199,7 @@ export const SignOrExecuteForm = ({
             {...props}
             safeTx={safeTx}
             safeTxError={safeTxError}
-            onSubmit={onFormSubmit}
+            onSubmit={onRoleExecutionSubmit}
             role={(allowingRole || mostLikelyRole)!}
           />
         )}
