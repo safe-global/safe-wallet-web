@@ -7,6 +7,8 @@ import css from './styles.module.css'
 import accordionCss from '@/styles/accordion.module.css'
 import CodeIcon from '@mui/icons-material/Code'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
+import { SAFE_TO_L2_MIGRATION_ADDRESS } from '@/components/tx-flow/SafeTxProvider'
+import { sameAddress } from '@/utils/addresses'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction
@@ -31,7 +33,7 @@ export const SingleTxDecoded = ({ tx, txData, actionTitle, variant, expanded, on
     dataDecoded: tx.dataDecoded,
     hexData: tx.data ?? undefined,
     addressInfoIndex: txData.addressInfoIndex,
-    trustedDelegateCallTarget: false, // Nested delegate calls are always untrusted
+    trustedDelegateCallTarget: sameAddress(tx.to, SAFE_TO_L2_MIGRATION_ADDRESS), // We only trusted a nested Migration
   }
 
   return (
