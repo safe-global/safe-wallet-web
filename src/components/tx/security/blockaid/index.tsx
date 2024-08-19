@@ -1,38 +1,20 @@
 import { useContext } from 'react'
 import { TxSecurityContext, type TxSecurityContextProps } from '@/components/tx/security/shared/TxSecurityContext'
 import groupBy from 'lodash/groupBy'
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  AlertTitle,
-  Box,
-  Checkbox,
-  FormControlLabel,
-  Stack,
-  SvgIcon,
-  Tooltip,
-  Typography,
-} from '@mui/material'
-import ExternalLink from '@/components/common/ExternalLink'
+import { Alert, AlertTitle, Box, Checkbox, FormControlLabel, Stack, Typography } from '@mui/material'
 import { FEATURES } from '@/utils/chains'
 import { useHasFeature } from '@/hooks/useChains'
 import { ErrorBoundary } from '@sentry/react'
-import { REDEFINE_ARTICLE } from '@/config/constants'
 import css from './styles.module.css'
-import sharedCss from '@/components/tx/security/shared/styles.module.css'
 
 import Track from '@/components/common/Track'
 import { MODALS_EVENTS } from '@/services/analytics'
-import CircularProgress from '@mui/material/CircularProgress'
-import InfoIcon from '@/public/images/notifications/info.svg'
+
 import BlockaidIcon from '@/public/images/transactions/blockaid-icon.svg'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { type SecurityWarningProps, mapSecuritySeverity } from '../utils'
 import { BlockaidHint } from './BlockaidHint'
 import Warning from '@/public/images/notifications/alert.svg'
-import { ExpandMore } from '@mui/icons-material'
 import { SecuritySeverity } from '@/services/security/modules/types'
 
 export const REASON_MAPPING: Record<string, string> = {
@@ -148,106 +130,6 @@ const ResultDescription = ({
     <Typography fontWeight={700} variant="subtitle1" lineHeight="20px">
       {text ?? 'The transaction is malicious.'}
     </Typography>
-  )
-}
-
-const BlockaidBlock = () => {
-  const { blockaidResponse, setIsRiskConfirmed, needsRiskConfirmation, isRiskConfirmed, isRiskIgnored } =
-    useContext(TxSecurityContext)
-  const { severity, warnings, isLoading, error } = blockaidResponse ?? {}
-
-  const { safeTx } = useContext(SafeTxContext)
-
-  // We either scan a tx or a message if tx is undefined
-  const isTransaction = !!safeTx
-
-  const severityProps = severity !== undefined ? mapSecuritySeverity[severity] : undefined
-
-  const toggleConfirmation = () => {
-    setIsRiskConfirmed((prev) => !prev)
-  }
-
-  return (
-    <div className={css.wrapperBox}>
-      <Accordion expanded={!!blockaidResponse && severity !== SecuritySeverity.NONE}>
-        <AccordionSummary
-          expandIcon={<ExpandMore />}
-          sx={
-            needsRiskConfirmation ? { borderTop: 'none', borderLeft: 'none', borderRight: 'none' } : { border: 'none' }
-          }
-        >
-          <Stack direction="row" width="100%" justifyContent="space-between">
-            <div>
-              <Typography variant="body2" fontWeight={700}>
-                Scan for risks
-                <Tooltip
-                  title={
-                    <>
-                      This {isTransaction ? 'transaction' : 'message'} has been automatically scanned for risks to help
-                      prevent scams.&nbsp;
-                      <ExternalLink href={REDEFINE_ARTICLE} title="Learn more about security scans">
-                        Learn more about security scans
-                      </ExternalLink>
-                      .
-                    </>
-                  }
-                  arrow
-                  placement="top"
-                >
-                  <span>
-                    <SvgIcon
-                      component={InfoIcon}
-                      inheritViewBox
-                      color="border"
-                      fontSize="small"
-                      sx={{
-                        verticalAlign: 'middle',
-                        ml: 0.5,
-                      }}
-                    />
-                  </span>
-                </Tooltip>
-              </Typography>
-            </div>
-
-            <div className={sharedCss.result}>
-              {isLoading ? (
-                <CircularProgress
-                  size={22}
-                  sx={{
-                    color: ({ palette }) => palette.text.secondary,
-                  }}
-                />
-              ) : severityProps ? (
-                <Typography variant="body2" color={`${severityProps.color}.main`} className={sharedCss.result}>
-                  <SvgIcon
-                    component={severityProps.icon}
-                    inheritViewBox
-                    fontSize="small"
-                    sx={{ verticalAlign: 'middle', mr: 1 }}
-                  />
-                  {severityProps.label}
-                </Typography>
-              ) : error ? (
-                <Typography variant="body2" color="error" className={sharedCss.result}>
-                  {error.message}
-                </Typography>
-              ) : null}
-            </div>
-          </Stack>
-        </AccordionSummary>
-        <AccordionDetails>
-          <BlockaidResultWarning
-            isRiskConfirmed={isRiskConfirmed}
-            isTransaction={isTransaction}
-            needsRiskConfirmation={needsRiskConfirmation}
-            toggleConfirmation={toggleConfirmation}
-            blockaidResponse={blockaidResponse}
-            severityProps={severityProps}
-          />
-        </AccordionDetails>
-      </Accordion>
-    </div>
   )
 }
 

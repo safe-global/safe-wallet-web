@@ -68,8 +68,6 @@ const DecodedTx = ({
 
   const addressInfoIndex = txDetails?.txData?.addressInfoIndex
 
-  txDetails?.txData?.trustedDelegateCallTarget
-
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }

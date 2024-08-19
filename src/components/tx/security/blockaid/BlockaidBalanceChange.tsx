@@ -162,7 +162,7 @@ const BalanceChanges = () => {
               <BalanceChange key={`${assetIdx}-in-${changeIdx}`} asset={change.asset} positive diff={diff} />
             ))}
             {change.out.map((diff, changeIdx) => (
-              <BalanceChange key={`${assetIdx}-in-${changeIdx}`} asset={change.asset} diff={diff} />
+              <BalanceChange key={`${assetIdx}-out-${changeIdx}`} asset={change.asset} diff={diff} />
             ))}
           </>
         ))}

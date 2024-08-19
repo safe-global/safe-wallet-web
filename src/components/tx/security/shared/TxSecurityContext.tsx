@@ -5,14 +5,6 @@ import type { BlockaidModuleResponse } from '@/services/security/modules/Blockai
 import { useBlockaid } from '../blockaid/useBlockaid'
 
 export const defaultSecurityContextValues = {
-  redefineResponse: {
-    warnings: [],
-    simulationUuid: undefined,
-    balanceChange: undefined,
-    severity: SecuritySeverity.NONE,
-    isLoading: false,
-    error: undefined,
-  },
   blockaidResponse: {
     warnings: [],
     description: undefined,

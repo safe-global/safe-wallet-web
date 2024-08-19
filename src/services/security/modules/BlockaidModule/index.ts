@@ -10,14 +10,17 @@ import { BLOCKAID_API } from '@/config/constants'
 /** @see https://docs.blockaid.io/docs/supported-chains */
 const API_CHAINS: Record<string, string> = {
   1: 'ethereum',
-  56: 'bsc',
-  137: 'polygon',
   10: 'optimism',
+  56: 'bsc',
+  100: 'gnosis',
+  137: 'polygon',
+  238: 'blast',
+  324: 'zksync',
+  8453: 'base',
   42161: 'arbitrum',
   43114: 'avalanche',
-  8453: 'base',
-  238: 'blast',
   59144: 'linea',
+  534352: 'scroll',
   7777777: 'zora',
 }
 const blockaidSeverityMap: Record<string, SecuritySeverity> = {
@@ -89,6 +92,10 @@ export class BlockaidModule implements SecurityModule<BlockaidModuleRequest, Blo
 
     const { chainId, safeAddress, data } = request
 
+    if (!API_CHAINS[chainId]) {
+      throw new Error('Security checks are not available on the current chain.')
+    }
+
     const message = BlockaidModule.prepareMessage(request)
 
     const payload: BlockaidPayload = {
@@ -100,7 +107,8 @@ export class BlockaidModule implements SecurityModule<BlockaidModuleRequest, Blo
       },
       options: ['simulation', 'validation'],
       metadata: {
-        domain: 'http://localhost:3000',
+        // TODO: Pass domain from safe app or wallet connect connection if the tx originates from there
+        domain: window.location.host,
       },
     }
     const res = await fetch(`${BLOCKAID_API}/v0/evm/json-rpc/scan`, {
