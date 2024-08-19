@@ -59,7 +59,7 @@ export const ofacApi = createApi({
           const isAddressBlocked: boolean = await contract['isSanctioned'](address)
           return { data: isAddressBlocked }
         } catch (error) {
-          return { error: { status: 'CUSTOM_ERROR', data: (error as Error).message } }
+          return { error }
         }
       },
     }),
