@@ -31,7 +31,7 @@
     "update-wc": "yarn add @walletconnect/web3wallet@latest @walletconnect/utils@latest; yarn add -D @walletconnect/types@latest",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build --quiet"
   },
   "engines": {
     "node": ">=16"
