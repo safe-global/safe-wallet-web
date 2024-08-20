@@ -48,6 +48,8 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
+import { type TransactionData } from '@safe-global/safe-apps-sdk'
+import { SAFE_TO_L2_INTERFACE, SAFE_TO_L2_MIGRATION_ADDRESS } from '@/components/tx-flow/SafeTxProvider'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -74,6 +76,14 @@ export const isMultisigDetailedExecutionInfo = (value?: DetailedExecutionInfo): 
 
 export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is ModuleExecutionDetails => {
   return value?.type === DetailedExecutionInfoType.MODULE
+}
+
+export const isMigrateToL2TxInfo = (value: TransactionData | undefined): boolean => {
+  if (sameAddress(value?.to.value, SAFE_TO_L2_MIGRATION_ADDRESS)) {
+    const migrateToL2Selector = SAFE_TO_L2_INTERFACE.getFunction('migrateToL2')?.selector
+    return migrateToL2Selector && value?.hexData ? value.hexData?.startsWith(migrateToL2Selector) : false
+  }
+  return false
 }
 
 // TransactionInfo type guards

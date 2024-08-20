@@ -44,7 +44,7 @@ export const SafeTxContext = createContext<{
 
 // TODO: Get from safe-deployments once available
 export const SAFE_TO_L2_MIGRATION_ADDRESS = '0x7Baec386CAF8e02B0BB4AFc98b4F9381EEeE283C'
-const SAFE_TO_L2_INTERFACE = new Interface(['function migrateToL2(address l2Singleton)'])
+export const SAFE_TO_L2_INTERFACE = new Interface(['function migrateToL2(address l2Singleton)'])
 
 const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [safeTx, setSafeTx] = useState<SafeTransaction>()

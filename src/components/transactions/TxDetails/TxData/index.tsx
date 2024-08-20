@@ -3,6 +3,7 @@ import type { SpendingLimitMethods } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
   isCustomTxInfo,
+  isMigrateToL2TxInfo,
   isMultisigDetailedExecutionInfo,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
@@ -16,6 +17,7 @@ import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejectio
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
+import { MigrationToL2TxData } from './MigrationToL2TxData'
 
 const TxData = ({
   txDetails,
@@ -47,6 +49,9 @@ const TxData = ({
     return <SpendingLimits txData={txDetails.txData} txInfo={txInfo} type={method} />
   }
 
+  if (isMigrateToL2TxInfo(txDetails.txData)) {
+    return <MigrationToL2TxData txDetails={txDetails} />
+  }
   return <DecodedData txData={txDetails.txData} toInfo={toInfo} />
 }
 
