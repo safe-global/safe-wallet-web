@@ -31,6 +31,7 @@ import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
 import CheckWallet from '@/components/common/CheckWallet'
 import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -115,7 +116,7 @@ const ActivateAccountFlow = () => {
             options,
             callback: onSubmit,
           },
-          safeVersion,
+          safeVersion ?? getLatestSafeVersion(chain),
         )
       }
     } catch (_err) {

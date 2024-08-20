@@ -1,7 +1,6 @@
 import { useContext, useMemo } from 'react'
 import { SvgIcon, Typography, Alert, AlertTitle, Skeleton, Button } from '@mui/material'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { sameAddress } from '@/utils/addresses'
 import type { MasterCopy } from '@/hooks/useMasterCopies'
 import { MasterCopyDeployer, useMasterCopies } from '@/hooks/useMasterCopies'
@@ -12,11 +11,14 @@ import { TxModalContext } from '@/components/tx-flow'
 import { UpdateSafeFlow } from '@/components/tx-flow/flows'
 import ExternalLink from '@/components/common/ExternalLink'
 import CheckWallet from '@/components/common/CheckWallet'
+import { getLatestSafeVersion } from '@/utils/chains'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export const ContractVersion = () => {
   const { setTxFlow } = useContext(TxModalContext)
   const [masterCopies] = useMasterCopies()
   const { safe, safeLoaded } = useSafeInfo()
+  const currentChain = useCurrentChain()
   const masterCopyAddress = safe.implementation.value
 
   const safeMasterCopy: MasterCopy | undefined = useMemo(() => {
@@ -26,6 +28,8 @@ export const ContractVersion = () => {
   const needsUpdate = safe.implementationVersionState === ImplementationVersionState.OUTDATED
   const showUpdateDialog = safeMasterCopy?.deployer === MasterCopyDeployer.GNOSIS && needsUpdate
   const isLatestVersion = safe.version && !showUpdateDialog
+
+  const latestSafeVersion = getLatestSafeVersion(currentChain)
 
   return (
     <>
@@ -53,7 +57,7 @@ export const ContractVersion = () => {
           sx={{ mt: 2, borderRadius: '2px', borderColor: '#B0FFC9' }}
           icon={<SvgIcon component={InfoIcon} inheritViewBox color="secondary" />}
         >
-          <AlertTitle sx={{ fontWeight: 700 }}>New version is available: {LATEST_SAFE_VERSION}</AlertTitle>
+          <AlertTitle sx={{ fontWeight: 700 }}>New version is available: {latestSafeVersion}</AlertTitle>
 
           <Typography mb={3}>
             Update now to take advantage of new features and the highest security standards available. You will need to

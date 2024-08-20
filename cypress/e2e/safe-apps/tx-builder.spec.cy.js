@@ -210,7 +210,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     })
   })
 
-  it.skip('Verify a batch cannot be created without asset amount', () => {
+  it('Verify a batch cannot be created without asset amount', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.keepProxiABIStr).click()
@@ -280,7 +280,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     })
   })
 
-  it.skip('Verify a valid batch as successful can be simulated', () => {
+  it('Verify a valid batch as successful can be simulated', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.keepProxiABIStr).click()
@@ -293,7 +293,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     })
   })
 
-  it.skip('Verify an invalid batch as failed can be simulated', () => {
+  it('Verify an invalid batch as failed can be simulated', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByText(safeapps.keepProxiABIStr).click()

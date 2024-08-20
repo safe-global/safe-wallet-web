@@ -29,7 +29,7 @@ export type SettingsState = {
 
   tokenList: TOKEN_LISTS
 
-  showOnlyTrustedTransactions?: boolean
+  hideSuspiciousTransactions?: boolean
 
   shortName: {
     copy: boolean
@@ -53,7 +53,7 @@ export const initialState: SettingsState = {
 
   hiddenTokens: {},
 
-  showOnlyTrustedTransactions: false,
+  hideSuspiciousTransactions: false,
 
   shortName: {
     copy: true,
@@ -100,8 +100,8 @@ export const settingsSlice = createSlice({
     setTokenList: (state, { payload }: PayloadAction<SettingsState['tokenList']>) => {
       state.tokenList = payload
     },
-    setshowOnlyTrustedTransactions: (state, { payload }: PayloadAction<boolean>) => {
-      state.showOnlyTrustedTransactions = payload
+    hideSuspiciousTransactions: (state, { payload }: PayloadAction<boolean>) => {
+      state.hideSuspiciousTransactions = payload
     },
     setRpc: (state, { payload }: PayloadAction<{ chainId: string; rpc: string }>) => {
       const { chainId, rpc } = payload
@@ -135,7 +135,7 @@ export const {
   setDarkMode,
   setHiddenTokensForChain,
   setTokenList,
-  setshowOnlyTrustedTransactions,
+  hideSuspiciousTransactions,
   setRpc,
   setTenderly,
   setOnChainSigning,

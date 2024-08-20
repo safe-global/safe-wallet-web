@@ -6,6 +6,7 @@ import useConnectWallet from '../ConnectWallet/useConnectWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import ChainSwitcher from '../ChainSwitcher'
 import { Tooltip } from '@mui/material'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
@@ -18,6 +19,7 @@ type CheckWalletProps = {
 enum Message {
   WalletNotConnected = 'Please connect your wallet',
   NotSafeOwner = 'Your connected wallet is not a signer of this Safe Account',
+  CounterfactualMultisig = 'You need to activate the Safe before transacting',
 }
 
 const CheckWallet = ({
@@ -32,16 +34,21 @@ const CheckWallet = ({
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
   const isWrongChain = useIsWrongChain()
+  const { safe } = useSafeInfo()
 
   if (checkNetwork && isWrongChain) {
     return <ChainSwitcher primaryCta />
   }
 
+  const isCounterfactualMultiSig = !allowNonOwner && !safe.deployed && safe.threshold > 1
+
   const message =
-    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit))
+    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit)) && !isCounterfactualMultiSig
       ? ''
       : !wallet
       ? Message.WalletNotConnected
+      : isCounterfactualMultiSig
+      ? Message.CounterfactualMultisig
       : Message.NotSafeOwner
 
   if (!message) return children(true)

@@ -4,6 +4,7 @@ import * as walletUtils from '@/utils/wallets'
 import { faker } from '@faker-js/faker'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
+import { chainBuilder } from '@/tests/builders/chains'
 
 describe('getAvailableSaltNonce', () => {
   jest.spyOn(creationUtils, 'computeNewSafeAddress').mockReturnValue(Promise.resolve(faker.finance.ethereumAddress()))
@@ -27,12 +28,12 @@ describe('getAvailableSaltNonce', () => {
   it('should return initial nonce if no contract is deployed to the computed address', async () => {
     jest.spyOn(walletUtils, 'isSmartContract').mockReturnValue(Promise.resolve(false))
     const initialNonce = faker.string.numeric()
-    const mockChainId = faker.string.numeric()
+    const mockChain = chainBuilder().build()
 
     const result = await getAvailableSaltNonce(
       MockEip1193Provider,
       { ...mockDeployProps, saltNonce: initialNonce },
-      mockChainId,
+      mockChain,
     )
 
     expect(result).toEqual(initialNonce)
@@ -41,12 +42,12 @@ describe('getAvailableSaltNonce', () => {
   it('should return an increased nonce if a contract is deployed to the computed address', async () => {
     jest.spyOn(walletUtils, 'isSmartContract').mockReturnValueOnce(Promise.resolve(true))
     const initialNonce = faker.string.numeric()
-    const mockChainId = faker.string.numeric()
+    const mockChain = chainBuilder().build()
 
     const result = await getAvailableSaltNonce(
       MockEip1193Provider,
       { ...mockDeployProps, saltNonce: initialNonce },
-      mockChainId,
+      mockChain,
     )
 
     jest.spyOn(walletUtils, 'isSmartContract').mockReturnValueOnce(Promise.resolve(false))
