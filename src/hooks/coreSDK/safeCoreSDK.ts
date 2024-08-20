@@ -88,6 +88,7 @@ export const initSafeSDK = async ({
       provider: provider._getConnection().url,
       isL1SafeSingleton,
       predictedSafe: undeployedSafe.props,
+      contractNetworks,
     })
   }
 

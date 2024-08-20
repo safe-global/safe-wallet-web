@@ -39,7 +39,7 @@ export const _getValidatedGetContractProps = (
 
 // GnosisSafe
 
-const getGnosisSafeContract = async (safe: SafeInfo, safeProvider: SafeProvider) => {
+const getGnosisSafeContract = async (safe: SafeInfo, safeProvider: SafeProvider, contractAddress?: string) => {
   return getSafeContractInstance(
     _getValidatedGetContractProps(safe.version).safeVersion,
     safeProvider,
@@ -64,7 +64,11 @@ export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: str
   return getGnosisSafeContract(safe, safeProvider)
 }
 
-export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
+export const getReadOnlyGnosisSafeContract = async (
+  chain: ChainInfo,
+  safeVersion: SafeInfo['version'],
+  contractAddress?: string,
+) => {
   const version = safeVersion ?? getLatestSafeVersion(chain)
 
   const safeProvider = getSafeProvider()
@@ -74,7 +78,7 @@ export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersio
   return getSafeContractInstance(
     _getValidatedGetContractProps(version).safeVersion,
     safeProvider,
-    undefined,
+    contractAddress,
     undefined,
     isL1SafeSingleton,
   )
@@ -92,7 +96,10 @@ export const _getMinimumMultiSendCallOnlyVersion = (safeVersion: SafeInfo['versi
   return semver.gte(safeVersion, INITIAL_CALL_ONLY_VERSION) ? safeVersion : INITIAL_CALL_ONLY_VERSION
 }
 
-export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo['version']) => {
+export const getReadOnlyMultiSendCallOnlyContract = async (
+  safeVersion: SafeInfo['version'],
+  contractAddress?: string,
+) => {
   const safeSDK = getSafeSDK()
   if (!safeSDK) {
     throw new Error('Safe SDK not found.')
@@ -100,7 +107,11 @@ export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo
 
   const safeProvider = safeSDK.getSafeProvider()
 
-  return getMultiSendCallOnlyContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
+  return getMultiSendCallOnlyContractInstance(
+    _getValidatedGetContractProps(safeVersion).safeVersion,
+    safeProvider,
+    contractAddress,
+  )
 }
 
 // GnosisSafeProxyFactory
