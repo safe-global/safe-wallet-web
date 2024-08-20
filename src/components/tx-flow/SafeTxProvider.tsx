@@ -1,18 +1,14 @@
 import { createContext, useState, useEffect, useCallback } from 'react'
 import type { Dispatch, ReactNode, SetStateAction, ReactElement } from 'react'
-import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { __unsafe_createMultiSendTx, createTx } from '@/services/tx/tx-sender'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { createTx } from '@/services/tx/tx-sender'
 import { useRecommendedNonce, useSafeTxGas } from '../tx/SignOrExecuteForm/hooks'
 import { Errors, logError } from '@/services/exceptions'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { isMultiSendCalldata } from '@/utils/transaction-calldata'
-import { getSafeContractDeployment } from '@/services/contracts/deployments'
-import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { useCurrentChain } from '@/hooks/useChains'
-import { sameAddress } from '@/utils/addresses'
 import { Interface } from 'ethers'
-import { isValidMasterCopy } from '@/services/contracts/safeContracts'
+import { prependSafeToL2Migration } from '@/utils/transactions'
 
 export const SafeTxContext = createContext<{
   safeTx?: SafeTransaction
@@ -61,10 +57,6 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
     (
       value: SafeTransaction | undefined | ((prevState: SafeTransaction | undefined) => SafeTransaction | undefined),
     ) => {
-      if (!chain) {
-        throw new Error('No Network information available')
-      }
-
       let safeTx: SafeTransaction | undefined
       if (typeof value === 'function') {
         safeTx = value(safeTx)
@@ -72,67 +64,9 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
         safeTx = value
       }
 
-      if (
-        !safeTx ||
-        safeTx.signatures.size > 0 ||
-        !chain.l2 ||
-        safeTx.data.nonce > 0 ||
-        isValidMasterCopy(safe.implementationVersionState)
-      ) {
-        // We do not migrate on L1s
-        // We cannot migrate if the nonce is > 0
-        // We do not modify already signed txs
-        // We do not modify supported masterCopies
-        setSafeTx(safeTx)
-        return
-      }
-
-      const safeL2Deployment = getSafeContractDeployment(chain, safe.version)
-      const safeL2DeploymentAddress = safeL2Deployment?.networkAddresses[chain.chainId]
-
-      if (!safeL2DeploymentAddress) {
-        throw new Error('No L2 MasterCopy found')
-      }
-
-      if (sameAddress(safe.implementation.value, safeL2DeploymentAddress)) {
-        // Safe already has the correct L2 masterCopy
-        // This should in theory never happen if the implementationState is valid
-        setSafeTx(safeTx)
-        return
-      }
-
-      // If the Safe is a L1 masterCopy on a L2 network and still has nonce 0, we prepend a call to the migration contract to the safeTx.
-      const txData = safeTx.data.data
-
-      let internalTxs: MetaTransactionData[]
-
-      if (isMultiSendCalldata(txData)) {
-        // Check if the first tx is already a call to the migration contract
-        internalTxs = decodeMultiSendData(txData)
-        const firstTx = internalTxs[0]
-        if (sameAddress(firstTx?.to, SAFE_TO_L2_MIGRATION_ADDRESS)) {
-          // We already migrate. Nothing to do.
-          setSafeTx(safeTx)
-          return
-        }
-      } else {
-        internalTxs = [{ to: safeTx.data.to, operation: safeTx.data.operation, value: safeTx.data.value, data: txData }]
-      }
-
-      // Prepend the migration tx
-      const newTxs: MetaTransactionData[] = [
-        {
-          operation: 1, // DELEGATE CALL REQUIRED
-          data: SAFE_TO_L2_INTERFACE.encodeFunctionData('migrateToL2', [safeL2DeploymentAddress]),
-          to: SAFE_TO_L2_MIGRATION_ADDRESS,
-          value: '0',
-        },
-        ...internalTxs,
-      ]
-
-      __unsafe_createMultiSendTx(newTxs).then(setSafeTx)
+      prependSafeToL2Migration(safeTx, safe, chain).then(setSafeTx)
     },
-    [chain, safe.implementation.value, safe.implementationVersionState, safe.version],
+    [chain, safe],
   )
 
   // Signed txs cannot be updated

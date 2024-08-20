@@ -1,6 +1,6 @@
 import { Builder, type IBuilder } from '@/tests/Builder'
 import { faker } from '@faker-js/faker'
-import type { SafeSignature, SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type SafeTransactionData, type SafeSignature, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 // TODO: Convert to builder
@@ -29,18 +29,7 @@ export const createSafeTx = (data = '0x'): SafeTransaction => {
 
 export function safeTxBuilder(): IBuilder<SafeTransaction> {
   return Builder.new<SafeTransaction>().with({
-    data: {
-      to: faker.finance.ethereumAddress(),
-      value: '0x0',
-      data: faker.string.hexadecimal({ length: faker.number.int({ max: 500 }) }),
-      operation: 0,
-      nonce: faker.number.int(),
-      safeTxGas: faker.number.toString(),
-      gasPrice: faker.number.toString(),
-      gasToken: ZERO_ADDRESS,
-      baseGas: faker.number.toString(),
-      refundReceiver: faker.finance.ethereumAddress(),
-    },
+    data: safeTxDataBuilder().build(),
     signatures: new Map([]),
     addSignature: function (sig: SafeSignature): void {
       this.signatures!.set(sig.signer, sig)
@@ -52,6 +41,21 @@ export function safeTxBuilder(): IBuilder<SafeTransaction> {
         })
         .join('; ')
     },
+  })
+}
+
+export function safeTxDataBuilder(): IBuilder<SafeTransactionData> {
+  return Builder.new<SafeTransactionData>().with({
+    to: faker.finance.ethereumAddress(),
+    value: '0x0',
+    data: faker.string.hexadecimal({ length: faker.number.int({ max: 500 }) }),
+    operation: 0,
+    nonce: faker.number.int(),
+    safeTxGas: faker.number.toString(),
+    gasPrice: faker.number.toString(),
+    gasToken: ZERO_ADDRESS,
+    baseGas: faker.number.toString(),
+    refundReceiver: faker.finance.ethereumAddress(),
   })
 }
 
