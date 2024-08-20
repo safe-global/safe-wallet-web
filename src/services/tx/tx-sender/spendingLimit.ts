@@ -28,6 +28,7 @@ export const createNewSpendingLimitTx = async (
   deployed: boolean,
   tokenDecimals?: number,
   existingSpendingLimit?: SpendingLimitState,
+  safeContractAddress?: string,
 ) => {
   const sdk = getSafeSDK()
   const spendingLimitAddress = getSpendingLimitModuleAddress(chainId)
@@ -43,6 +44,7 @@ export const createNewSpendingLimitTx = async (
       await sdk.getAddress(),
       await sdk.getContractVersion(),
       spendingLimitAddress,
+      safeContractAddress,
     )
 
     const tx = {

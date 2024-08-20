@@ -83,11 +83,26 @@ export const encodeSafeCreationTx = async ({
   saltNonce,
   chain,
   safeVersion,
-}: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion }) => {
+  contractAddresses,
+}: SafeCreationProps & {
+  chain: ChainInfo
+  safeVersion?: SafeVersion
+  contractAddresses?: ContractNetworkConfig
+}) => {
   const usedSafeVersion = safeVersion ?? getLatestSafeVersion(chain)
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, usedSafeVersion)
-  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion)
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(usedSafeVersion)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(
+    chain,
+    usedSafeVersion,
+    contractAddresses?.safeSingletonAddress,
+  )
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(
+    usedSafeVersion,
+    contractAddresses?.safeProxyFactoryAddress,
+  )
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+    usedSafeVersion,
+    contractAddresses?.fallbackHandlerAddress,
+  )
 
   // @ts-ignore union type is too complex
   const setupData = readOnlySafeContract.encode('setup', [
@@ -114,9 +129,13 @@ export const estimateSafeCreationGas = async (
   from: string,
   safeParams: SafeCreationProps,
   safeVersion?: SafeVersion,
+  contractAddresses?: ContractNetworkConfig,
 ): Promise<bigint> => {
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion ?? getLatestSafeVersion(chain))
-  const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(
+    safeVersion ?? getLatestSafeVersion(chain),
+    contractAddresses?.safeProxyFactoryAddress,
+  )
+  const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain, contractAddresses })
 
   const gas = await provider.estimateGas({
     from,
@@ -178,16 +197,27 @@ export const relaySafeCreation = async (
   threshold: number,
   saltNonce: number,
   version?: SafeVersion,
+  contractAddresses?: ContractNetworkConfig,
 ) => {
   const latestSafeVersion = getLatestSafeVersion(chain)
 
   const safeVersion = version ?? latestSafeVersion
 
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion)
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(
+    safeVersion,
+    contractAddresses?.safeProxyFactoryAddress,
+  )
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(safeVersion)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+    safeVersion,
+    contractAddresses?.fallbackHandlerAddress,
+  )
   const fallbackHandlerAddress = await readOnlyFallbackHandlerContract.getAddress()
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(
+    chain,
+    safeVersion,
+    contractAddresses?.safeSingletonAddress,
+  )
   const safeContractAddress = await readOnlySafeContract.getAddress()
 
   const callData = {

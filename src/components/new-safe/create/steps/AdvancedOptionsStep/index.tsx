@@ -17,6 +17,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import useWallet from '@/hooks/wallets/useWallet'
 import { isSmartContract } from '@/utils/wallets'
+import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 
 enum AdvancedOptionsFields {
   safeVersion = 'safeVersion',
@@ -34,6 +35,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
   const wallet = useWallet()
   useSyncSafeCreationStep(setStep)
   const chain = useCurrentChain()
+  const contractAddresses = useCustomNetworkContracts()
 
   const formMethods = useForm<AdvancedOptionsStepForm>({
     mode: 'onChange',
@@ -46,8 +48,11 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
   const selectedSaltNonce = watch(AdvancedOptionsFields.saltNonce)
 
   const [readOnlyFallbackHandlerContract] = useAsync(
-    () => (chain ? getReadOnlyFallbackHandlerContract(selectedSafeVersion) : undefined),
-    [chain, selectedSafeVersion],
+    () =>
+      chain
+        ? getReadOnlyFallbackHandlerContract(selectedSafeVersion, contractAddresses?.fallbackHandlerAddress)
+        : undefined,
+    [chain, contractAddresses?.fallbackHandlerAddress, selectedSafeVersion],
   )
 
   const [predictedSafeAddress] = useAsync(async () => {

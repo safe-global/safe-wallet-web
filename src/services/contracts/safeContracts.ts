@@ -116,13 +116,14 @@ export const getReadOnlyMultiSendCallOnlyContract = async (
 
 // GnosisSafeProxyFactory
 
-export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['version']) => {
+export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['version'], contractAddress?: string) => {
   const safeProvider = getSafeProvider()
 
   return getSafeProxyFactoryContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
     safeProvider,
     safeProvider.getExternalProvider(),
+    contractAddress,
   )
 }
 
@@ -143,7 +144,7 @@ export const getReadOnlyFallbackHandlerContract = async (
 
 // Sign messages deployment
 
-export const getReadOnlySignMessageLibContract = async (safeVersion: SafeInfo['version']) => {
+export const getReadOnlySignMessageLibContract = async (safeVersion: SafeInfo['version'], contractAddress?: string) => {
   const safeSDK = getSafeSDK()
   if (!safeSDK) {
     throw new Error('Safe SDK not found.')
@@ -151,5 +152,9 @@ export const getReadOnlySignMessageLibContract = async (safeVersion: SafeInfo['v
 
   const safeProvider = safeSDK.getSafeProvider()
 
-  return getSignMessageLibContractInstance(_getValidatedGetContractProps(safeVersion).safeVersion, safeProvider)
+  return getSignMessageLibContractInstance(
+    _getValidatedGetContractProps(safeVersion).safeVersion,
+    safeProvider,
+    contractAddress,
+  )
 }

@@ -119,9 +119,13 @@ export const _getSingleTransactionPayload = async (
 
 export const _getMultiSendCallOnlyPayload = async (
   params: MultiSendTransactionSimulationParams,
+  multiSendCallOnlyContractAddress?: string,
 ): Promise<Pick<TenderlySimulatePayload, 'to' | 'input'>> => {
   const data = encodeMultiSendData(params.transactions)
-  const readOnlyMultiSendContract = await getReadOnlyMultiSendCallOnlyContract(params.safe.version)
+  const readOnlyMultiSendContract = await getReadOnlyMultiSendCallOnlyContract(
+    params.safe.version,
+    multiSendCallOnlyContractAddress,
+  )
 
   return {
     to: await readOnlyMultiSendContract.getAddress(),
@@ -209,7 +213,10 @@ const getLatestBlockGasLimit = async (): Promise<number> => {
   return Number(latestBlock.gasLimit)
 }
 
-export const getSimulationPayload = async (params: SimulationTxParams): Promise<TenderlySimulatePayload> => {
+export const getSimulationPayload = async (
+  params: SimulationTxParams,
+  multiSendCallOnlyContractAddress?: string,
+): Promise<TenderlySimulatePayload> => {
   const gasLimit = params.gasLimit ?? (await getLatestBlockGasLimit())
 
   const payload = isSingleTransactionSimulation(params)

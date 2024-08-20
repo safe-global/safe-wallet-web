@@ -11,7 +11,7 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { parsePrefixedAddress, sameAddress } from '@/utils/addresses'
 import { asError } from '@/services/exceptions/utils'
 import { useCurrentChain } from '../useChains'
-import { useCustomContractNetworksConfig } from './useCustomNetworkContracts'
+import { useCustomNetworksContracts } from './useCustomNetworkContracts'
 
 export const useInitSafeCoreSDK = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -23,7 +23,7 @@ export const useInitSafeCoreSDK = () => {
   const { address } = parsePrefixedAddress(prefixedAddress || '')
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, address))
   const currentChain = useCurrentChain()
-  const contractNetworks = useCustomContractNetworksConfig()
+  const contractNetworks = useCustomNetworksContracts()
 
   useEffect(() => {
     if (!safeLoaded || !web3ReadOnly || !sameAddress(address, safe.address.value)) {

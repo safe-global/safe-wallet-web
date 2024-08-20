@@ -37,10 +37,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import {
-  useCustomContractNetworkAddresses,
-  useCustomContractNetworksConfig,
-} from '@/hooks/coreSDK/useCustomNetworkContracts'
+import { useCustomNetworkContracts, useCustomNetworksContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 
 export const NetworkFee = ({
@@ -125,8 +122,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
-  const contractAddresses = useCustomContractNetworkAddresses()
-  const contractAddressesConfig = useCustomContractNetworksConfig()
+  const contractAddresses = useCustomNetworkContracts()
+  const contractAddressesConfig = useCustomNetworksContracts()
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
@@ -143,7 +140,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     }
   }, [data.owners, data.threshold])
 
-  const { gasLimit } = useEstimateSafeCreationGas(safeParams, data.safeVersion)
+  const { gasLimit } = useEstimateSafeCreationGas(safeParams, data.safeVersion, contractAddresses)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas

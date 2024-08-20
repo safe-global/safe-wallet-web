@@ -34,13 +34,14 @@ export const createAddOwnerTx = async (
   chain: ChainInfo,
   isDeployed: boolean,
   txParams: AddOwnerTxParams,
+  safeContractAddress?: string,
 ): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
   if (isDeployed) return safeSDK.createAddOwnerTx(txParams)
 
   const safeVersion = await safeSDK.getContractVersion()
 
-  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion, safeContractAddress)
   // @ts-ignore
   const data = contract.encode('addOwnerWithThreshold', [txParams.ownerAddress, txParams.threshold])
 
@@ -59,13 +60,14 @@ export const createSwapOwnerTx = async (
   chain: ChainInfo,
   isDeployed: boolean,
   txParams: SwapOwnerTxParams,
+  safeContractAddress?: string,
 ): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
   if (isDeployed) return safeSDK.createSwapOwnerTx(txParams)
 
   const safeVersion = await safeSDK.getContractVersion()
 
-  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion, safeContractAddress)
   const data = contract.encode('swapOwner', [SENTINEL_ADDRESS, txParams.oldOwnerAddress, txParams.newOwnerAddress])
 
   const tx = {

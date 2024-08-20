@@ -39,7 +39,7 @@ import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletReject
 import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { useCustomContractNetworkAddresses } from '@/hooks/coreSDK/useCustomNetworkContracts'
+import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -66,7 +66,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
   const wallet = useWallet()
-  const customContractAddresses = useCustomContractNetworkAddresses()
+  const customContractAddresses = useCustomNetworkContracts()
 
   const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
     if (!chain?.chainId) return
