@@ -68,11 +68,7 @@ const DecodedTx = ({
 
   return (
     <Stack spacing={2}>
-      {!isMethodCallInAdvanced && (
-        <Box border="1px solid var(--color-border-light)" borderRadius={1} p={2}>
-          {decodedDataBlock}
-        </Box>
-      )}
+      {!isMethodCallInAdvanced && decodedDataBlock}
 
       {isMultisend && showMultisend && <Multisend txData={txDetails?.txData || txData} compact />}
 
