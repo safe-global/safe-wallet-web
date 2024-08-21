@@ -2,11 +2,9 @@ import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Gri
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 
-import css from '@/components/new-safe/create/steps/SetNameStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
@@ -19,8 +17,12 @@ import { useRouter } from 'next/router'
 import NoWalletConnectedWarning from '../../NoWalletConnectedWarning'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { useCurrentChain } from '@/hooks/useChains'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import NetworkMultiSelector from '@/components/common/NetworkMultiSelector'
+
+const checkedIcon = <CheckBoxIcon fontSize="small" />
 
 type SetNameStepForm = {
   name: string
@@ -42,8 +44,9 @@ function SetNameStep({
   const router = useRouter()
   const fallbackName = useMnemonicSafeName()
   const isWrongChain = useIsWrongChain()
-
   const chain = useCurrentChain()
+
+  const [chains, setChains] = useState<string[]>([chain?.chainName || ''])
 
   const formMethods = useForm<SetNameStepForm>({
     mode: 'all',
@@ -56,10 +59,10 @@ function SetNameStep({
     formState: { errors, isValid },
   } = formMethods
 
-  const onFormSubmit = (data: Pick<NewSafeFormData, 'name'>) => {
+  const onFormSubmit = (data: Pick<NewSafeFormData, 'name' | 'chains'>) => {
     const name = data.name || fallbackName
     setSafeName(name)
-    onSubmit({ ...data, name })
+    onSubmit({ ...data, name, chains })
 
     if (data.name) {
       trackEvent(CREATE_SAFE_EVENTS.NAME_SAFE)
@@ -83,7 +86,7 @@ function SetNameStep({
       <form onSubmit={handleSubmit(onFormSubmit)} id={SET_NAME_STEP_FORM_ID}>
         <Box className={layoutCss.row}>
           <Grid container spacing={1}>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={12}>
               <NameInput
                 name={SetNameStepFields.name}
                 label={errors?.[SetNameStepFields.name]?.message || 'Name'}
@@ -104,10 +107,22 @@ function SetNameStep({
                 }}
               />
             </Grid>
-            <Grid item>
-              <Box className={css.select} data-cy="create-safe-select-network">
-                <NetworkSelector />
-              </Box>
+            <Grid xs={12} item>
+              <Typography variant="h5" fontWeight={700} display="inline-flex" alignItems="center" gap={1} mt={2}>
+                Select Networks
+              </Typography>
+              <Typography variant="body2" mb={2}>
+                Choose which networks you want your account to be active on. You can add more networks later.{' '}
+              </Typography>
+
+              {/* <Box className={css.select} data-cy="create-safe-select-network"> */}
+              {/* <NetworkSelector /> */}
+              {/* </Box> */}
+              <NetworkMultiSelector
+                onChainsUpdate={(selectedChains) => {
+                  setChains(selectedChains)
+                }}
+              />
             </Grid>
           </Grid>
           <Typography variant="body2" mt={2}>

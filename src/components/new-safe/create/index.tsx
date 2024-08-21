@@ -24,6 +24,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 
 export type NewSafeFormData = {
   name: string
+  chains: string[]
   threshold: number
   owners: NamedAddress[]
   saltNonce: number
@@ -158,6 +159,7 @@ const CreateSafe = () => {
   const initialStep = 0
   const initialData: NewSafeFormData = {
     name: '',
+    chains: [],
     owners: [],
     threshold: 1,
     saltNonce: Date.now(),

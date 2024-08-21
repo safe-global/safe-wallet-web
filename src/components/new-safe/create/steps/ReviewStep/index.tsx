@@ -73,16 +73,19 @@ export const SafeSetupOverview = ({
   name,
   owners,
   threshold,
+  chains,
 }: {
   name?: string
   owners: NamedAddress[]
   threshold: number
+  chains: string[]
 }) => {
   const chain = useCurrentChain()
 
   return (
     <Grid container spacing={3}>
       <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
+      <ReviewRow name="Networks" value={<>{JSON.stringify(chains)}</>} />
       {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
       <ReviewRow
         name="Signers"
@@ -276,7 +279,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   return (
     <>
       <Box className={layoutCss.row}>
-        <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} />
+        <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} chains={data.chains} />
       </Box>
 
       {isCounterfactual && (

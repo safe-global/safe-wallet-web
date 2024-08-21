@@ -142,7 +142,11 @@ const ActivateAccountFlow = () => {
 
         <Divider sx={{ mx: -3, my: 2 }} />
 
-        <SafeSetupOverview owners={owners.map((owner) => ({ name: '', address: owner }))} threshold={threshold} />
+        <SafeSetupOverview
+          owners={owners.map((owner) => ({ name: '', address: owner }))}
+          threshold={threshold}
+          chains={[]}
+        />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
         <Box display="flex" flexDirection="column" gap={3}>

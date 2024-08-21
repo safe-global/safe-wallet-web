@@ -84,6 +84,7 @@ const AdvancedCreateSafe = () => {
   const initialStep = 0
   const initialData: NewSafeFormData = {
     name: '',
+    chains: [],
     owners: [],
     threshold: 1,
     saltNonce: 0,
