@@ -87,7 +87,7 @@ const DecodedTx = ({
             <HelpToolTip />
             <Box flexGrow={1} />
             {isMethodCallInAdvanced && decodedData?.method}
-            {!showMethodCall && !decodedData?.method && tx?.data.value && 'native transfer'}
+            {!showMethodCall && !decodedData?.method && Number(tx?.data.value) > 0 && 'native transfer'}
           </AccordionSummary>
 
           <AccordionDetails data-testid="decoded-tx-details">

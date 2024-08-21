@@ -32,6 +32,7 @@ export function connectSigner(signer) {
   function enterPrivateKey() {
     cy.wait(1000)
     cy.get(connectWalletBtn)
+      .eq(0)
       .should('be.enabled')
       .and('be.visible')
       .click()
