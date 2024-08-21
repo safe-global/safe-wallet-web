@@ -39,6 +39,7 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { useCustomNetworkContracts, useCustomNetworksContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 
 export const NetworkFee = ({
   totalFee,
@@ -172,6 +173,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           threshold: data.threshold,
           owners: data.owners.map((owner) => owner.address),
           fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
+          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
         },
       }
 
