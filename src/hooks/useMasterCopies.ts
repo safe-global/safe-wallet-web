@@ -1,20 +1,19 @@
-import useAsync from '@/hooks/useAsync'
+import useAsync, { type AsyncResult } from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { Errors, logError } from '@/services/exceptions'
-import type { MasterCopyReponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { getMasterCopies } from '@safe-global/safe-gateway-typescript-sdk'
+import { getMasterCopies, type MasterCopy as SdkMasterCopy } from 'safe-client-gateway-sdk'
 
 export enum MasterCopyDeployer {
   GNOSIS = 'Gnosis',
   CIRCLES = 'Circles',
 }
 
-export type MasterCopy = MasterCopyReponse[number] & {
+export type MasterCopy = SdkMasterCopy & {
   deployer: MasterCopyDeployer
   deployerRepoUrl: string
 }
 
-const extractMasterCopyInfo = (mc: MasterCopyReponse[number]): MasterCopy => {
+const extractMasterCopyInfo = (mc: SdkMasterCopy): MasterCopy => {
   const isCircles = mc.version.toLowerCase().includes(MasterCopyDeployer.CIRCLES.toLowerCase())
   const dashIndex = mc.version.indexOf('-')
 
@@ -29,15 +28,19 @@ const extractMasterCopyInfo = (mc: MasterCopyReponse[number]): MasterCopy => {
   return masterCopy
 }
 
-export const useMasterCopies = () => {
+export const useMasterCopies = (): AsyncResult<MasterCopy[]> => {
   const chainId = useChainId()
-  const fetchMasterCopies = async (): Promise<MasterCopy[] | undefined> => {
+
+  return useAsync(async () => {
     try {
-      const res = await getMasterCopies(chainId)
-      return res.map(extractMasterCopyInfo)
+      const { data, error } = await getMasterCopies({ path: { chainId } })
+      if (error) {
+        throw error
+      }
+      return data.map(extractMasterCopyInfo)
     } catch (error) {
       logError(Errors._619, error)
+      throw error
     }
-  }
-  return useAsync(fetchMasterCopies, [chainId])
+  }, [chainId])
 }

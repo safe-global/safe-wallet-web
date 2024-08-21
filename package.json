@@ -91,6 +91,7 @@
     "react-hook-form": "7.41.1",
     "react-papaparse": "^4.0.2",
     "react-redux": "^9.1.2",
+    "safe-client-gateway-sdk": "git+https://github.com/safe-global/safe-client-gateway-sdk.git",
     "semver": "^7.5.2",
     "zodiac-roles-deployments": "^2.2.5"
   },
