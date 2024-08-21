@@ -1,5 +1,6 @@
 import type {
   ChainInfo,
+  DecodedDataResponse,
   ExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
@@ -39,8 +40,8 @@ import { getSafeContractDeployment } from '@/services/contracts/deployments'
 import { sameAddress } from './addresses'
 import { isMultiSendCalldata } from './transaction-calldata'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
-import { SAFE_TO_L2_INTERFACE, SAFE_TO_L2_MIGRATION_ADDRESS } from '@/components/tx-flow/SafeTxProvider'
 import { __unsafe_createMultiSendTx } from '@/services/tx/tx-sender'
+import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -397,4 +398,22 @@ export const prependSafeToL2Migration = (
   ]
 
   return __unsafe_createMultiSendTx(newTxs)
+}
+
+export const extractMigrationL2MasterCopyAddress = (
+  decodedData: DecodedDataResponse | undefined,
+): string | undefined => {
+  if (decodedData?.method === 'multiSend' && Array.isArray(decodedData.parameters[0].valueDecoded)) {
+    const innerTxs = decodedData.parameters[0].valueDecoded
+    const firstInnerTx = innerTxs[0]
+    if (firstInnerTx) {
+      return firstInnerTx.dataDecoded?.method === 'migrateToL2' &&
+        firstInnerTx.dataDecoded.parameters.length === 1 &&
+        firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address'
+        ? firstInnerTx.dataDecoded.parameters?.[0].value.toString()
+        : undefined
+    }
+  }
+
+  return undefined
 }

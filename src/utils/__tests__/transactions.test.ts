@@ -11,7 +11,6 @@ import { getQueuedTransactionCount, getTxOrigin, prependSafeToL2Migration } from
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { chainBuilder } from '@/tests/builders/chains'
 import { safeSignatureBuilder, safeTxBuilder, safeTxDataBuilder } from '@/tests/builders/safeTx'
-import { SAFE_TO_L2_INTERFACE, SAFE_TO_L2_MIGRATION_ADDRESS } from '@/components/tx-flow/SafeTxProvider'
 import {
   getMultiSendCallOnlyDeployment,
   getMultiSendDeployment,
@@ -25,6 +24,7 @@ import { faker } from '@faker-js/faker'
 import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { checksumAddress } from '../addresses'
+import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
 
 jest.mock('@/services/tx/tx-sender/sdk')
 

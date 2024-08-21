@@ -49,7 +49,7 @@ import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
 import { type TransactionData } from '@safe-global/safe-apps-sdk'
-import { SAFE_TO_L2_INTERFACE, SAFE_TO_L2_MIGRATION_ADDRESS } from '@/components/tx-flow/SafeTxProvider'
+import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -86,6 +86,22 @@ export const isMigrateToL2TxInfo = (value: TransactionData | undefined): boolean
   return false
 }
 
+export const isMigrateToL2MultiSend = (decodedData: DecodedDataResponse | undefined) => {
+  if (decodedData?.method === 'multiSend' && Array.isArray(decodedData.parameters[0].valueDecoded)) {
+    const innerTxs = decodedData.parameters[0].valueDecoded
+    const firstInnerTx = innerTxs[0]
+    if (firstInnerTx) {
+      return (
+        firstInnerTx.dataDecoded?.method === 'migrateToL2' &&
+        firstInnerTx.dataDecoded.parameters.length === 1 &&
+        firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address'
+      )
+    }
+  }
+
+  return false
+}
+
 // TransactionInfo type guards
 export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
   return value.type === TransactionInfoType.TRANSFER || isSwapTransferOrderTxInfo(value)
@@ -119,6 +135,10 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
 
 export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
   return isSwapOrderTxInfo(value) || isTwapOrderTxInfo(value)
+}
+
+export const isMigrationTxInfo = (value: TransactionInfo): value is Custom => {
+  return isCustomTxInfo(value) && sameAddress(value.to.value, SAFE_TO_L2_MIGRATION_ADDRESS)
 }
 
 export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {

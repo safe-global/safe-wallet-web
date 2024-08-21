@@ -19,6 +19,7 @@ import {
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
   isTransferTxInfo,
+  isMigrationTxInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -111,6 +112,10 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   return <></>
 }
 
+const MigrationToL2Tx = (): ReactElement => {
+  return <>Migrate base contract</>
+}
+
 const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; withLogo?: boolean }): ReactElement => {
   if (isSettingsChangeTxInfo(info)) {
     return <SettingsChangeTx info={info} />
@@ -122,6 +127,10 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
 
   if (isTransferTxInfo(info)) {
     return <TransferTx info={info} {...rest} />
+  }
+
+  if (isMigrationTxInfo(info)) {
+    return <MigrationToL2Tx />
   }
 
   if (isCustomTxInfo(info)) {

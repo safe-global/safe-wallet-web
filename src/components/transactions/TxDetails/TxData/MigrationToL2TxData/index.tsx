@@ -12,6 +12,8 @@ import { zeroPadValue } from 'ethers'
 import DecodedData from '../DecodedData'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { MigrateToL2Information } from '@/components/tx/SignOrExecuteForm/MigrateToL2Information'
+import { Box } from '@mui/material'
 
 export const MigrationToL2TxData = ({ txDetails }: { txDetails: TransactionDetails }) => {
   const readOnlyProvider = useWeb3ReadOnly()
@@ -62,11 +64,17 @@ export const MigrationToL2TxData = ({ txDetails }: { txDetails: TransactionDetai
   const [decodedRealTx] = useDecodeTx(realSafeTx)
 
   const decodedDataUnavailable = !realSafeTx && !realSafeTxLoading
-  if (realSafeTxError) {
-    return <ErrorMessage>{realSafeTxError.message}</ErrorMessage>
-  }
-  if (decodedDataUnavailable) {
-    return <DecodedData txData={txDetails.txData} />
-  }
-  return <DecodedTx decodedData={decodedRealTx} tx={realSafeTx} />
+
+  return (
+    <Box>
+      <MigrateToL2Information variant="history" />
+      {realSafeTxError ? (
+        <ErrorMessage>{realSafeTxError.message}</ErrorMessage>
+      ) : decodedDataUnavailable ? (
+        <DecodedData txData={txDetails.txData} />
+      ) : (
+        <DecodedTx decodedData={decodedRealTx} tx={realSafeTx} />
+      )}
+    </Box>
+  )
 }

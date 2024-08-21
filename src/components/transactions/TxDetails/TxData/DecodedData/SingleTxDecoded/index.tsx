@@ -7,8 +7,8 @@ import css from './styles.module.css'
 import accordionCss from '@/styles/accordion.module.css'
 import CodeIcon from '@mui/icons-material/Code'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
-import { SAFE_TO_L2_MIGRATION_ADDRESS } from '@/components/tx-flow/SafeTxProvider'
 import { sameAddress } from '@/utils/addresses'
+import { SAFE_TO_L2_MIGRATION_ADDRESS } from '@/config/constants'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction

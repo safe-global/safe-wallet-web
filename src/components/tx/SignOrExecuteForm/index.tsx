@@ -28,7 +28,7 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isConfirmationViewOrder, isCustomTxInfo } from '@/utils/transaction-guards'
+import { isConfirmationViewOrder, isCustomTxInfo, isMigrateToL2MultiSend } from '@/utils/transaction-guards'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
@@ -36,6 +36,8 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useTxDetails from '@/hooks/useTxDetails'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
+import { MigrateToL2Information } from './MigrateToL2Information'
+import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -102,6 +104,8 @@ export const SignOrExecuteForm = ({
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
   const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
+  const isMultiChainMigration = isMigrateToL2MultiSend(decodedData)
+  const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(decodedData)
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
   const roles = useRoles(
@@ -139,6 +143,8 @@ export const SignOrExecuteForm = ({
         {props.children}
 
         {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
+
+        {isMultiChainMigration && <MigrateToL2Information variant="queue" newMasterCopy={multiChainMigrationTarget} />}
 
         {isSwapOrder && (
           <ErrorBoundary fallback={<></>}>
@@ -183,7 +189,7 @@ export const SignOrExecuteForm = ({
 
         <WrongChainWarning />
 
-        <UnknownContractError />
+        {!isMigrateToL2MultiSend && <UnknownContractError />}
 
         <RiskConfirmationError />
 
