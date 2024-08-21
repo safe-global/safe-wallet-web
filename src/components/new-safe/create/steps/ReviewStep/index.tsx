@@ -45,6 +45,7 @@ import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 
 export const NetworkFee = ({
   totalFee,
@@ -180,6 +181,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
           to: SAFE_TO_L2_SETUP_ADDRESS,
           data: SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [safeL2Address]),
+          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
         },
       }
 
