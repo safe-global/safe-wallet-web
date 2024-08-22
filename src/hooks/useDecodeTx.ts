@@ -28,7 +28,12 @@ const useDecodeTx = (
       const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
       return Promise.resolve(nativeTransfer)
     }
-    return getConfirmationView(chainId, safeAddress, encodedData, tx.data.to)
+    return getConfirmationView(
+      chainId,
+      safeAddress,
+      encodedData,
+      '0xbce4d2d73436ff23d3e5da7b0c435c218c25c5e0' || tx.data.to,
+    )
   }, [chainId, encodedData, isEmptyData, tx?.data, isRejection, safeAddress])
 
   return [data, error, loading]

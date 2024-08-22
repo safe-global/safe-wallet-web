@@ -18,6 +18,7 @@ import type {
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   NativeCoinTransfer,
+  NativeStakingDepositConfirmationView,
   Order,
   OrderConfirmationView,
   SafeInfo,
@@ -119,12 +120,6 @@ export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder =>
   return value.type === TransactionInfoType.TWAP_ORDER
 }
 
-export const isConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
-): decodedData is OrderConfirmationView => {
-  return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
-}
-
 export const isTwapConfirmationViewOrder = (
   decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
 ): decodedData is TwapOrderConfirmationView => {
@@ -142,6 +137,21 @@ export const isSwapConfirmationViewOrder = (
     return decodedData.type === ConfirmationViewTypes.COW_SWAP_ORDER
   }
 
+  return false
+}
+
+export const isAnySwapConfirmationViewOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is OrderConfirmationView => {
+  return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
+}
+
+export const isStakingConfirmationOrder = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is NativeStakingDepositConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
+  }
   return false
 }
 

@@ -1,5 +1,5 @@
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
-import { isConfirmationViewOrder } from '@/utils/transaction-guards'
+import { isAnySwapConfirmationViewOrder, isStakingConfirmationOrder } from '@/utils/transaction-guards'
 import type {
   BaselineConfirmationView,
   OrderConfirmationView,
@@ -12,11 +12,15 @@ type OrderConfirmationViewProps = {
 }
 
 const ConfirmationOrder = ({ decodedData, toAddress }: OrderConfirmationViewProps) => {
-  if (isConfirmationViewOrder(decodedData)) {
+  if (isAnySwapConfirmationViewOrder(decodedData)) {
     return <SwapOrderConfirmationView order={decodedData} settlementContract={toAddress} />
   }
 
-  return <>{JSON.stringify(decodedData)}</>
+  if (isStakingConfirmationOrder(decodedData)) {
+    return <>{JSON.stringify(decodedData, null, 2)}</>
+  }
+
+  return <>{JSON.stringify(decodedData, null, 2)}</>
 }
 
 export default ConfirmationOrder
