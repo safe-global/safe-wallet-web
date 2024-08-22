@@ -1,4 +1,4 @@
-import { selectUndeployedSafesByAddress } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo, useState } from 'react'
 import {
@@ -39,7 +39,7 @@ type MultiAccountItemProps = {
 
 const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: MultiAccountItemProps) => {
   const { address, safes } = multiSafeAccountItem
-  const undeployedSafes = useAppSelector((state) => selectUndeployedSafesByAddress(state, address))
+  const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const safeAddress = useSafeAddress()
   const router = useRouter()
   const isCurrentSafe = sameAddress(safeAddress, address)
@@ -59,7 +59,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
   }, [address, allAddressBooks])
 
   const sharedSetup = useMemo(
-    () => getSharedSetup(safes, safeOverviews ?? [], undeployedSafes[0]),
+    () => getSharedSetup(safes, safeOverviews ?? [], undeployedSafes),
     [safeOverviews, safes, undeployedSafes],
   )
 

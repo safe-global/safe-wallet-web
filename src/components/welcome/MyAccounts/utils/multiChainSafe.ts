@@ -1,6 +1,6 @@
 import { type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SafeItem } from '../useAllSafes'
-import { type UndeployedSafe } from '@/store/slices'
+import { type UndeployedSafesState, type UndeployedSafe } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
 import { type MultiChainSafeItem } from '../useAllSafesGrouped'
 
@@ -12,21 +12,35 @@ export const isMultiChainSafeItem = (safe: SafeItem | MultiChainSafeItem): safe 
 }
 
 const areOwnersMatching = (owners1: string[], owners2: string[]) =>
-  owners1.every((owner) => owners2.some((owner2) => sameAddress(owner, owner2)))
+  owners1.length === owners2.length && owners1.every((owner) => owners2.some((owner2) => sameAddress(owner, owner2)))
 
 export const getSharedSetup = (
   safes: SafeItem[],
   safeOverviews: SafeOverview[],
-  undeployedSafe: UndeployedSafe | undefined,
+  undeployedSafes: UndeployedSafesState | undefined,
 ): { owners: string[]; threshold: number } | undefined => {
   // We fetch one example setup and check that all other Safes have the same threshold and owners
   let comparisonSetup: { threshold: number; owners: string[] } | undefined = undefined
+
+  const undeployedSafesWithData = safes
+    .map((safeItem) => ({
+      chainId: safeItem.chainId,
+      address: safeItem.address,
+      undeployedSafe: undeployedSafes?.[safeItem.chainId]?.[safeItem.address],
+    }))
+    .filter((value) => Boolean(value.undeployedSafe)) as {
+    chainId: string
+    address: string
+    undeployedSafe: UndeployedSafe
+  }[]
+
   if (safeOverviews && safeOverviews.length > 0) {
     comparisonSetup = {
       threshold: safeOverviews[0].threshold,
       owners: safeOverviews[0].owners.map((owner) => owner.value),
     }
-  } else if (undeployedSafe) {
+  } else if (undeployedSafesWithData.length > 0) {
+    const undeployedSafe = undeployedSafesWithData[0].undeployedSafe
     // Use first undeployed Safe
     comparisonSetup = {
       threshold: undeployedSafe.props.safeAccountConfig.threshold,
@@ -40,7 +54,9 @@ export const getSharedSetup = (
   if (
     safes.every((safeItem) => {
       // Find overview or undeployed Safe
-      const foundOverview = safeOverviews?.find((overview) => overview.chainId === safeItem.chainId)
+      const foundOverview = safeOverviews?.find(
+        (overview) => overview.chainId === safeItem.chainId && sameAddress(overview.address.value, safeItem.address),
+      )
       if (foundOverview) {
         return (
           areOwnersMatching(
@@ -49,7 +65,10 @@ export const getSharedSetup = (
           ) && foundOverview.threshold === comparisonSetup.threshold
         )
       }
-      // Compare with counterfactual Safe instead?
+      // Check if the Safe is counterfactual
+      const undeployedSafe = undeployedSafesWithData.find(
+        (value) => value.chainId === safeItem.chainId && sameAddress(value.address, safeItem.address),
+      )?.undeployedSafe
       if (!undeployedSafe) {
         return false
       }
