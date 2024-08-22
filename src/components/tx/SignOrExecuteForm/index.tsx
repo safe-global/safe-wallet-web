@@ -28,13 +28,13 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isConfirmationViewOrder, isCustomTxInfo } from '@/utils/transaction-guards'
-import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
+import { isCustomTxInfo } from '@/utils/transaction-guards'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useTxDetails from '@/hooks/useTxDetails'
 import TxData from '@/components/transactions/TxDetails/TxData'
+import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
@@ -92,7 +92,6 @@ export const SignOrExecuteForm = ({
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
-  const isSwapOrder = isConfirmationViewOrder(decodedData)
   const [txDetails] = useTxDetails(props.txId)
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
@@ -140,9 +139,9 @@ export const SignOrExecuteForm = ({
 
         {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
 
-        {isSwapOrder && (
+        {decodedData && (
           <ErrorBoundary fallback={<></>}>
-            <SwapOrderConfirmationView order={decodedData} settlementContract={safeTx?.data.to ?? ''} />
+            <ConfirmationOrder decodedData={decodedData} toAddress={safeTx?.data.to ?? ''} />
           </ErrorBoundary>
         )}
 
@@ -157,7 +156,7 @@ export const SignOrExecuteForm = ({
               txId={props.txId}
               decodedData={decodedData}
               showMultisend={!props.isBatch}
-              showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder && !isApproval}
+              showMethodCall={props.showMethodCall && !showTxDetails && !isApproval}
             />
           </ErrorBoundary>
         )}

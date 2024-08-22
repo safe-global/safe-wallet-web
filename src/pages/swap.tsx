@@ -7,6 +7,7 @@ import { AppRoutes } from '@/config/routes'
 import dynamic from 'next/dynamic'
 
 const SwapWidgetNoSSR = dynamic(() => import('@/features/swap'), { ssr: false })
+
 const Swap: NextPage = () => {
   const router = useRouter()
   const isBlockedCountry = useContext(GeoblockingContext)
@@ -27,7 +28,7 @@ const Swap: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Swap'}</title>
+        <title>{'Safe{Wallet} – Swaps'}</title>
       </Head>
 
       <main className="swapWrapper">

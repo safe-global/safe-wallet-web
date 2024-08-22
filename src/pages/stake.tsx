@@ -38,6 +38,7 @@ const Swap: NextPage = () => {
       allowedFeaturesList="clipboard-read; clipboard-write"
       appUrl={appData.url}
       safeAppFromManifest={{ ...appData, safeAppsPermissions: [] }}
+      isNativeEmbed
     />
   )
 
