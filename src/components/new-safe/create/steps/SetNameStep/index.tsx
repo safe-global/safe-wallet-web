@@ -1,4 +1,4 @@
-import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Grid } from '@mui/material'
+import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Grid, Chip } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -19,13 +19,15 @@ import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { useCurrentChain } from '@/hooks/useChains'
 import { useEffect, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import NetworkMultiSelector from '@/components/common/NetworkMultiSelector'
-
-const checkedIcon = <CheckBoxIcon fontSize="small" />
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useSafeSetupHints } from '../OwnerPolicyStep/useSafeSetupHints'
+import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 type SetNameStepForm = {
   name: string
+  networks: ChainInfo[]
   safeVersion: SafeVersion
 }
 
@@ -40,13 +42,19 @@ function SetNameStep({
   data,
   onSubmit,
   setSafeName,
-}: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
+  setDynamicHint,
+}: StepRenderProps<NewSafeFormData> & {
+  setSafeName: (name: string) => void
+  setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
+}) {
   const router = useRouter()
   const fallbackName = useMnemonicSafeName()
   const isWrongChain = useIsWrongChain()
   const chain = useCurrentChain()
 
-  const [chains, setChains] = useState<string[]>([chain?.chainName || ''])
+  const initialState = chain ? [chain] : []
+  const [networks, setNetworks] = useState<ChainInfo[]>(initialState)
+  useSafeSetupHints(setDynamicHint, undefined, undefined, networks.length > 1)
 
   const formMethods = useForm<SetNameStepForm>({
     mode: 'all',
@@ -59,10 +67,10 @@ function SetNameStep({
     formState: { errors, isValid },
   } = formMethods
 
-  const onFormSubmit = (data: Pick<NewSafeFormData, 'name' | 'chains'>) => {
+  const onFormSubmit = (data: Pick<NewSafeFormData, 'name' | 'networks'>) => {
     const name = data.name || fallbackName
     setSafeName(name)
-    onSubmit({ ...data, name, chains })
+    onSubmit({ ...data, name, networks })
 
     if (data.name) {
       trackEvent(CREATE_SAFE_EVENTS.NAME_SAFE)
@@ -107,6 +115,7 @@ function SetNameStep({
                 }}
               />
             </Grid>
+
             <Grid xs={12} item>
               <Typography variant="h5" fontWeight={700} display="inline-flex" alignItems="center" gap={1} mt={2}>
                 Select Networks
@@ -114,13 +123,25 @@ function SetNameStep({
               <Typography variant="body2" mb={2}>
                 Choose which networks you want your account to be active on. You can add more networks later.{' '}
               </Typography>
-
-              {/* <Box className={css.select} data-cy="create-safe-select-network"> */}
-              {/* <NetworkSelector /> */}
-              {/* </Box> */}
+              <Box display="flex" flexWrap="wrap" gap={1}>
+                {networks.map((network) => (
+                  <Box key={network.chainId}>
+                    <Chip
+                      variant="outlined"
+                      key={network.chainId}
+                      label={<ChainIndicator chainId={network.chainId} inline />}
+                      onDelete={() => {
+                        setNetworks(networks.filter((item) => item.chainId !== network.chainId))
+                      }}
+                      sx={{ py: 2 }}
+                    ></Chip>
+                  </Box>
+                ))}
+              </Box>
               <NetworkMultiSelector
+                networks={networks}
                 onChainsUpdate={(selectedChains) => {
-                  setChains(selectedChains)
+                  setNetworks(selectedChains)
                 }}
               />
             </Grid>
@@ -137,6 +158,7 @@ function SetNameStep({
             .
           </Typography>
 
+          {/* {isWrongChain && data.networks.length === 1 && <NetworkWarning />} */}
           {isWrongChain && <NetworkWarning />}
           <NoWalletConnectedWarning />
         </Box>

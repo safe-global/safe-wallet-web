@@ -21,10 +21,11 @@ import { HelpCenterArticle } from '@/config/constants'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 export type NewSafeFormData = {
   name: string
-  chains: string[]
+  networks: ChainInfo[]
   threshold: number
   owners: NamedAddress[]
   saltNonce: number
@@ -113,7 +114,14 @@ const CreateSafe = () => {
       title: 'Select network and name of your Safe Account',
       subtitle: 'Select the network on which to create your Safe Account',
       render: (data, onSubmit, onBack, setStep) => (
-        <SetNameStep setSafeName={setSafeName} data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+        <SetNameStep
+          setDynamicHint={setDynamicHint}
+          setSafeName={setSafeName}
+          data={data}
+          onSubmit={onSubmit}
+          onBack={onBack}
+          setStep={setStep}
+        />
       ),
     },
     {
@@ -159,7 +167,7 @@ const CreateSafe = () => {
   const initialStep = 0
   const initialData: NewSafeFormData = {
     name: '',
-    chains: [],
+    networks: [],
     owners: [],
     threshold: 1,
     saltNonce: Date.now(),

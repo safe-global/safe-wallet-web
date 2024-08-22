@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 
 import css from './styles.module.css'
+import ErrorMessage from '@/components/tx/ErrorMessage'
 
 export const enum PayMethod {
   PayNow = 'PayNow',
@@ -23,11 +24,13 @@ export const enum PayMethod {
 const PayNowPayLater = ({
   totalFee,
   canRelay,
+  isMultiChain,
   payMethod,
   setPayMethod,
 }: {
   totalFee: string
   canRelay: boolean
+  isMultiChain: boolean
   payMethod: PayMethod
   setPayMethod: Dispatch<SetStateAction<PayMethod>>
 }) => {
@@ -42,6 +45,12 @@ const PayNowPayLater = ({
       <Typography variant="h4" fontWeight="bold">
         Before you continue
       </Typography>
+      {isMultiChain && (
+        <ErrorMessage level="info">
+          You will need to <b>activate your account</b> separately, on each network. Make sure you have funds on your
+          wallet to pay the network fee.
+        </ErrorMessage>
+      )}
       <List>
         <ListItem disableGutters>
           <ListItemIcon className={css.listItem}>
@@ -66,46 +75,48 @@ const PayNowPayLater = ({
           <Typography variant="body2">Safe doesn&apos;t profit from the fees.</Typography>
         </ListItem>
       </List>
-      <FormControl fullWidth>
-        <RadioGroup row value={payMethod} onChange={onChoosePayMethod} className={css.radioGroup}>
-          <FormControlLabel
-            sx={{ flex: 1 }}
-            value={PayMethod.PayNow}
-            className={classnames(css.radioContainer, { [css.active]: payMethod === PayMethod.PayNow })}
-            label={
-              <>
-                <Typography className={css.radioTitle}>Pay now</Typography>
-                <Typography className={css.radioSubtitle} variant="body2" color="text.secondary">
-                  {canRelay ? (
-                    'Sponsored free transaction'
-                  ) : (
-                    <>
-                      &asymp; {totalFee} {chain?.nativeCurrency.symbol}
-                    </>
-                  )}
-                </Typography>
-              </>
-            }
-            control={<Radio />}
-          />
+      {!isMultiChain && (
+        <FormControl fullWidth>
+          <RadioGroup row value={payMethod} onChange={onChoosePayMethod} className={css.radioGroup}>
+            <FormControlLabel
+              sx={{ flex: 1 }}
+              value={PayMethod.PayNow}
+              className={classnames(css.radioContainer, { [css.active]: payMethod === PayMethod.PayNow })}
+              label={
+                <>
+                  <Typography className={css.radioTitle}>Pay now</Typography>
+                  <Typography className={css.radioSubtitle} variant="body2" color="text.secondary">
+                    {canRelay ? (
+                      'Sponsored free transaction'
+                    ) : (
+                      <>
+                        &asymp; {totalFee} {chain?.nativeCurrency.symbol}
+                      </>
+                    )}
+                  </Typography>
+                </>
+              }
+              control={<Radio />}
+            />
 
-          <FormControlLabel
-            data-testid="connected-wallet-execution-method"
-            sx={{ flex: 1 }}
-            value={PayMethod.PayLater}
-            className={classnames(css.radioContainer, { [css.active]: payMethod === PayMethod.PayLater })}
-            label={
-              <>
-                <Typography className={css.radioTitle}>Pay later</Typography>
-                <Typography className={css.radioSubtitle} variant="body2" color="text.secondary">
-                  with the first transaction
-                </Typography>
-              </>
-            }
-            control={<Radio />}
-          />
-        </RadioGroup>
-      </FormControl>
+            <FormControlLabel
+              data-testid="connected-wallet-execution-method"
+              sx={{ flex: 1 }}
+              value={PayMethod.PayLater}
+              className={classnames(css.radioContainer, { [css.active]: payMethod === PayMethod.PayLater })}
+              label={
+                <>
+                  <Typography className={css.radioTitle}>Pay later</Typography>
+                  <Typography className={css.radioSubtitle} variant="body2" color="text.secondary">
+                    with the first transaction
+                  </Typography>
+                </>
+              }
+              control={<Radio />}
+            />
+          </RadioGroup>
+        </FormControl>
+      )}
     </>
   )
 }

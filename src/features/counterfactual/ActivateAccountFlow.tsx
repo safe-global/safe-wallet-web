@@ -1,5 +1,4 @@
 import { createNewSafe, relaySafeCreation, SAFE_TO_L2_SETUP_ADDRESS } from '@/components/new-safe/create/logic'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'
@@ -32,6 +31,7 @@ import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { sameAddress } from '@/utils/addresses'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -145,7 +145,7 @@ const ActivateAccountFlow = () => {
         <SafeSetupOverview
           owners={owners.map((owner) => ({ name: '', address: owner }))}
           threshold={threshold}
-          chains={[]}
+          networks={[]}
         />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />

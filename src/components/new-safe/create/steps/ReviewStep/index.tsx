@@ -1,4 +1,3 @@
-import ChainIndicator from '@/components/common/ChainIndicator'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
@@ -46,6 +45,7 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
+import ChainIndicator from '@/components/common/ChainIndicator'
 
 export const NetworkFee = ({
   totalFee,
@@ -73,19 +73,27 @@ export const SafeSetupOverview = ({
   name,
   owners,
   threshold,
-  chains,
+  networks,
 }: {
   name?: string
   owners: NamedAddress[]
   threshold: number
-  chains: string[]
+  networks: ChainInfo[]
 }) => {
   const chain = useCurrentChain()
 
   return (
     <Grid container spacing={3}>
-      <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
-      <ReviewRow name="Networks" value={<>{JSON.stringify(chains)}</>} />
+      <ReviewRow
+        name={networks.length > 1 ? 'Networks' : 'Network'}
+        value={
+          <Box display="flex" flexWrap="wrap" gap={1}>
+            {networks.map((network) => (
+              <ChainIndicator inline key={network.chainId} chainId={network.chainId} showUnknown={false} />
+            ))}
+          </Box>
+        }
+      />
       {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
       <ReviewRow
         name="Signers"
@@ -136,9 +144,11 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
+  const isMultiChainDeployment = data.networks.length > 1
+
   // Every owner has remaining relays and relay method is selected
   const canRelay = hasRemainingRelays(minRelays)
-  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY && !isMultiChainDeployment
 
   const safeParams = useMemo(() => {
     return {
@@ -164,7 +174,19 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     onBack(data)
   }
 
-  const createSafe = async () => {
+  // TODO
+  const handleCreateSafeClick = () => {
+    if (!data.networks || data.networks.length === 0) return
+
+    if (isMultiChainDeployment) {
+      for (const network of data.networks) {
+        createSafe(network)
+      }
+    }
+    createSafe(chain)
+  }
+
+  const createSafe = async (chain: ChainInfo | undefined) => {
     if (!wallet || !chain) return
 
     setIsCreating(true)
@@ -279,14 +301,20 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   return (
     <>
       <Box className={layoutCss.row}>
-        <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} chains={data.chains} />
+        <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} networks={data.networks} />
       </Box>
 
       {isCounterfactual && (
         <>
           <Divider />
           <Box className={layoutCss.row}>
-            <PayNowPayLater totalFee={totalFee} canRelay={canRelay} payMethod={payMethod} setPayMethod={setPayMethod} />
+            <PayNowPayLater
+              totalFee={totalFee}
+              isMultiChain={isMultiChainDeployment}
+              canRelay={canRelay}
+              payMethod={payMethod}
+              setPayMethod={setPayMethod}
+            />
 
             {canRelay && payMethod === PayMethod.PayNow && (
               <Grid container spacing={3} pt={2}>
@@ -351,7 +379,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               />
             </Grid>
 
-            {isWrongChain && <NetworkWarning />}
+            {isWrongChain && data.networks.length === 1 && <NetworkWarning />}
 
             {!walletCanPay && !willRelay && (
               <ErrorMessage>
@@ -378,7 +406,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           </Button>
           <Button
             data-testid="review-step-next-btn"
-            onClick={createSafe}
+            // onClick={() => createSafe(data.networks[0])}
+            onClick={handleCreateSafeClick}
+            // onClick={isMultiChainDeployment ? createMultiChainSafe(data.chains) : createSafe(data.chains[0])}
             variant="contained"
             size="stretched"
             disabled={isDisabled}

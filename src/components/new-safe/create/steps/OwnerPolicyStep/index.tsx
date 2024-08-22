@@ -75,7 +75,7 @@ const OwnerPolicyStep = ({
 
   const isDisabled = !formState.isValid
 
-  useSafeSetupHints(threshold, ownerFields.length, setDynamicHint)
+  useSafeSetupHints(setDynamicHint, threshold, ownerFields.length)
 
   const handleBack = () => {
     const formData = getValues()

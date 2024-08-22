@@ -33,7 +33,14 @@ const AdvancedCreateSafe = () => {
       title: 'Select network and name of your Safe Account',
       subtitle: 'Select the network on which to create your Safe Account',
       render: (data, onSubmit, onBack, setStep) => (
-        <SetNameStep setSafeName={setSafeName} data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+        <SetNameStep
+          setDynamicHint={setDynamicHint}
+          setSafeName={setSafeName}
+          data={data}
+          onSubmit={onSubmit}
+          onBack={onBack}
+          setStep={setStep}
+        />
       ),
     },
     {
@@ -84,7 +91,7 @@ const AdvancedCreateSafe = () => {
   const initialStep = 0
   const initialData: NewSafeFormData = {
     name: '',
-    chains: [],
+    networks: [],
     owners: [],
     threshold: 1,
     saltNonce: 0,
