@@ -2,7 +2,7 @@ import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { type RootState } from '@/store'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { PredictedSafeProps } from '@safe-global/protocol-kit'
-import { selectChainIdAndSafeAddress } from '@/store/common'
+import { selectChainIdAndSafeAddress, selectSafeAddress } from '@/store/common'
 
 export enum PendingSafeStatus {
   AWAITING_EXECUTION = 'AWAITING_EXECUTION',
@@ -100,6 +100,15 @@ export const selectUndeployedSafe = createSelector(
   [selectUndeployedSafes, selectChainIdAndSafeAddress],
   (undeployedSafes, [chainId, address]): UndeployedSafe | undefined => {
     return undeployedSafes[chainId]?.[address]
+  },
+)
+
+export const selectUndeployedSafesByAddress = createSelector(
+  [selectUndeployedSafes, selectSafeAddress],
+  (undeployedSafes, [address]): UndeployedSafe[] => {
+    return Object.values(undeployedSafes)
+      .flatMap((value) => value[address])
+      .filter(Boolean)
   },
 )
 

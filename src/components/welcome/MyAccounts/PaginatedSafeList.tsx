@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, useState, useCallback, useEffect } from 'react'
+import { type ReactElement, type ReactNode, useState, useCallback, useEffect, useMemo } from 'react'
 import { Paper, Typography } from '@mui/material'
 import AccountItem from './AccountItem'
 import { type SafeItem } from './useAllSafes'
@@ -6,9 +6,12 @@ import css from './styles.module.css'
 import useSafeOverviews from './useSafeOverviews'
 import { sameAddress } from '@/utils/addresses'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
+import { type MultiChainSafeItem } from './useAllSafesGrouped'
+import MultiAccountItem from './MultiAccountItem'
+import { isMultiChainSafeItem } from './utils/multiChainSafe'
 
 type PaginatedSafeListProps = {
-  safes?: SafeItem[]
+  safes?: (SafeItem | MultiChainSafeItem)[]
   title: ReactNode
   noSafesMessage?: ReactNode
   action?: ReactElement
@@ -16,14 +19,35 @@ type PaginatedSafeListProps = {
 }
 
 type SafeListPageProps = {
-  safes: SafeItem[]
+  safes: (SafeItem | MultiChainSafeItem)[]
   onLinkClick: PaginatedSafeListProps['onLinkClick']
 }
 
 const PAGE_SIZE = 10
 
-const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
-  const [overviews] = useSafeOverviews(safes)
+/**
+ * Slices Safe list. We need this helper as MultiChainSafeItems can contain multiple Safes.
+ *
+ * Will always slice in a way that a Account group is not split up.
+ */
+const sliceSafes = (
+  safes: (SafeItem | MultiChainSafeItem)[],
+  start: number,
+  end?: number,
+): (SafeItem | MultiChainSafeItem)[] => {
+  // Find start Safe
+  const allSafes = safes.flatMap((safe) => (isMultiChainSafeItem(safe) ? safe.safes : safe))
+  const slicedSafesAddresses = allSafes.slice(start, end).map((value) => value.address)
+
+  return safes.filter((value) => slicedSafesAddresses.includes(value.address))
+}
+
+export const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
+  const flattenedSafes = useMemo(
+    () => safes.flatMap((safe) => (isMultiChainSafeItem(safe) ? safe.safes : safe)),
+    [safes],
+  )
+  const [overviews] = useSafeOverviews(flattenedSafes)
 
   const findOverview = (item: SafeItem) => {
     return overviews?.find(
@@ -33,32 +57,45 @@ const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
 
   return (
     <>
-      {safes.map((item) => (
-        <AccountItem
-          onLinkClick={onLinkClick}
-          safeItem={item}
-          safeOverview={findOverview(item)}
-          key={item.chainId + item.address}
-        />
-      ))}
+      {safes.map((item) =>
+        isMultiChainSafeItem(item) ? (
+          <MultiAccountItem
+            onLinkClick={onLinkClick}
+            key={item.address}
+            multiSafeAccountItem={item}
+            safeOverviews={overviews?.filter((overview) => sameAddress(overview.address.value, item.address))}
+          />
+        ) : (
+          <AccountItem
+            onLinkClick={onLinkClick}
+            safeItem={item}
+            safeOverview={findOverview(item)}
+            key={item.chainId + item.address}
+          />
+        ),
+      )}
     </>
   )
 }
 
 const AllSafeListPages = ({ safes, onLinkClick }: SafeListPageProps) => {
-  const totalPages = Math.ceil(safes.length / PAGE_SIZE)
-  const [pages, setPages] = useState<SafeItem[][]>([])
+  const totalSafes = safes.reduce(
+    (prev, current) => prev + (isMultiChainSafeItem(current) ? current.safes.length : 1),
+    0,
+  )
+  const totalPages = Math.ceil(totalSafes / PAGE_SIZE)
+  const [pages, setPages] = useState<(SafeItem | MultiChainSafeItem)[][]>([])
 
   const onNextPage = useCallback(() => {
     setPages((prev) => {
       const pageIndex = prev.length
-      const nextPage = safes.slice(pageIndex * PAGE_SIZE, (pageIndex + 1) * PAGE_SIZE)
+      const nextPage = sliceSafes(safes, pageIndex * PAGE_SIZE, (pageIndex + 1) * PAGE_SIZE)
       return prev.concat([nextPage])
     })
   }, [safes])
 
   useEffect(() => {
-    setPages([safes.slice(0, PAGE_SIZE)])
+    setPages([sliceSafes(safes, 0, PAGE_SIZE)])
   }, [safes])
 
   return (

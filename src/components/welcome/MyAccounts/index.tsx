@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { Box, Button, Link, SvgIcon, Typography } from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
-import useAllSafes, { type SafeItems } from './useAllSafes'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
@@ -15,20 +14,44 @@ import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWallet
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
 import useTrackSafesCount from './useTrackedSafesCount'
+import { type AllSafesGrouped, useAllSafesGrouped, type MultiChainSafeItem } from './useAllSafesGrouped'
+import { type SafeItem } from './useAllSafes'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 const NO_WATCHED_MESSAGE = 'Watch any Safe Account to keep an eye on its activity'
 
 type AccountsListProps = {
-  safes?: SafeItems | undefined
+  safes: AllSafesGrouped
   onLinkClick?: () => void
 }
 const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
   const wallet = useWallet()
   const router = useRouter()
 
-  const ownedSafes = useMemo(() => safes?.filter(({ isWatchlist }) => !isWatchlist), [safes])
-  const watchlistSafes = useMemo(() => safes?.filter(({ isWatchlist }) => isWatchlist), [safes])
+  // We consider a multiChain account owned if at least one of the multiChain accounts is not on the watchlist
+  const ownedMultiChainSafes = useMemo(
+    () => safes.allMultiChainSafes?.filter((account) => account.safes.some(({ isWatchlist }) => !isWatchlist)),
+    [safes],
+  )
+
+  // If all safes of a multichain account are on the watchlist we put the entire account on the watchlist
+  const watchlistMultiChainSafes = useMemo(
+    () => safes.allMultiChainSafes?.filter((account) => !account.safes.some(({ isWatchlist }) => !isWatchlist)),
+    [safes],
+  )
+
+  const ownedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
+    () => [...(ownedMultiChainSafes ?? []), ...(safes.allSingleSafes?.filter(({ isWatchlist }) => !isWatchlist) ?? [])],
+    [safes, ownedMultiChainSafes],
+  )
+  const watchlistSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
+    () => [
+      ...(watchlistMultiChainSafes ?? []),
+      ...(safes.allSingleSafes?.filter(({ isWatchlist }) => isWatchlist) ?? []),
+    ],
+    [safes, watchlistMultiChainSafes],
+  )
+
   useTrackSafesCount(ownedSafes, watchlistSafes, wallet)
 
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
@@ -97,7 +120,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
 }
 
 const MyAccounts = madProps(AccountsList, {
-  safes: useAllSafes,
+  safes: useAllSafesGrouped,
 })
 
 export default MyAccounts
