@@ -138,8 +138,6 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
           </Box>
         </AccordionDetails>
       </Accordion>
-
-      {/* <SafeListContextMenu name={name ?? ''} address={address} chainId={chainId} />  */}
     </ListItemButton>
   )
 }
