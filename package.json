@@ -74,7 +74,7 @@
     "blo": "^1.1.1",
     "classnames": "^2.3.1",
     "date-fns": "^2.30.0",
-    "ethers": "^6.11.1",
+    "ethers": "^6.13.2",
     "exponential-backoff": "^3.1.0",
     "firebase": "^10.3.1",
     "fuse.js": "^6.6.2",
