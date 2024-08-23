@@ -66,7 +66,7 @@
     "@walletconnect/web3wallet": "^1.12.1",
     "@web3-onboard/coinbase": "^2.2.6",
     "@web3-onboard/core": "^2.21.4",
-    "@web3-onboard/injected-wallets": "^2.10.14",
+    "@web3-onboard/injected-wallets": "^2.11.2",
     "@web3-onboard/keystone": "^2.3.7",
     "@web3-onboard/ledger": "2.3.2",
     "@web3-onboard/trezor": "^2.4.2",
