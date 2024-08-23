@@ -18,7 +18,7 @@ const Swap: NextPage = () => {
   const appData: SafeAppData = useMemo(
     () => ({
       id: 1,
-      url: `https://widget.devnet.kiln.fi/safe-widget/overview?theme=${isDarkMode ? 'dark' : 'light'}`,
+      url: `https://widget.testnet.kiln.fi/safe-widget/earn?theme=${isDarkMode ? 'dark' : 'light'}`,
       name: 'Earn',
       iconUrl: './images/common/earn.svg',
       description: 'Safe Apps',

@@ -1,13 +1,10 @@
+import StakingOrderConfirmationView from '@/features/stake/components/StakingOrderConfirmationView'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
+import type useDecodeTx from '@/hooks/useDecodeTx'
 import { isAnySwapConfirmationViewOrder, isStakingConfirmationOrder } from '@/utils/transaction-guards'
-import type {
-  BaselineConfirmationView,
-  OrderConfirmationView,
-  DecodedDataResponse,
-} from '@safe-global/safe-gateway-typescript-sdk'
 
 type OrderConfirmationViewProps = {
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView
+  decodedData: ReturnType<typeof useDecodeTx>[0]
   toAddress: string
 }
 
@@ -17,10 +14,10 @@ const ConfirmationOrder = ({ decodedData, toAddress }: OrderConfirmationViewProp
   }
 
   if (isStakingConfirmationOrder(decodedData)) {
-    return <>{JSON.stringify(decodedData, null, 2)}</>
+    return <StakingOrderConfirmationView order={decodedData} contractAddress={toAddress} />
   }
 
-  return <>{JSON.stringify(decodedData, null, 2)}</>
+  return null
 }
 
 export default ConfirmationOrder
