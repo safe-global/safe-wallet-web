@@ -32,10 +32,13 @@ import { isCustomTxInfo } from '@/utils/transaction-guards'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useTxDetails from '@/hooks/useTxDetails'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
+
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -54,9 +57,8 @@ export type SignOrExecuteProps = {
   showMethodCall?: boolean
 }
 
-const trackTxEvents = async (
-  chainId: string,
-  txId: string,
+const trackTxEvents = (
+  details: TransactionDetails | undefined,
   isCreation: boolean,
   isExecuted: boolean,
   isRoleExecution: boolean,
@@ -64,8 +66,7 @@ const trackTxEvents = async (
   const creationEvent = isRoleExecution ? TX_EVENTS.CREATE_VIA_ROLE : TX_EVENTS.CREATE
   const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
   const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
-
-  const txType = await getTransactionTrackingType(chainId, txId)
+  const txType = getTransactionTrackingType(details)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
@@ -92,8 +93,17 @@ export const SignOrExecuteForm = ({
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
-  const [txDetails] = useTxDetails(props.txId)
+
+  const { data: txDetails } = useGetTransactionDetailsQuery(
+    chainId && props.txId
+      ? {
+          chainId,
+          txId: props.txId,
+        }
+      : skipToken,
+  )
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
 
@@ -121,10 +131,11 @@ export const SignOrExecuteForm = ({
     async (txId: string, isExecuted = false, isRoleExecution = false) => {
       onSubmit?.(txId, isExecuted)
 
+      const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(chainId, txId, isCreation, isExecuted, isRoleExecution)
+      trackTxEvents(details, isCreation, isExecuted, isRoleExecution)
     },
-    [chainId, isCreation, onSubmit],
+    [chainId, isCreation, onSubmit, trigger],
   )
 
   const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(

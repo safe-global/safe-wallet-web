@@ -124,16 +124,16 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
     return <TransferTx info={info} {...rest} />
   }
 
-  if (isCustomTxInfo(info)) {
-    return <CustomTx info={info} />
-  }
-
   if (isCreationTxInfo(info)) {
     return <CreationTx info={info} />
   }
 
   if (isOrderTxInfo(info)) {
     return <SwapTx info={info} />
+  }
+
+  if (isCustomTxInfo(info)) {
+    return <CustomTx info={info} />
   }
 
   return <></>
