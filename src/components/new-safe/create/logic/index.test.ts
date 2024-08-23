@@ -5,7 +5,7 @@ import type { CompatibilityFallbackHandlerContractImplementationType } from '@sa
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
 import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
-import { relaySafeCreation } from '@/components/new-safe/create/logic/index'
+import { getRedirect, relaySafeCreation } from '@/components/new-safe/create/logic/index'
 import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
 import {
@@ -102,5 +102,28 @@ describe('createNewSafeViaRelayer', () => {
     jest.spyOn(gateway, 'relayTransaction').mockRejectedValue(relayFailedError)
 
     expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
+  })
+
+  describe('getRedirect', () => {
+    it("should redirect to home for any redirect that doesn't start with /apps", () => {
+      const expected = {
+        pathname: '/home',
+        query: {
+          safe: 'sep:0x1234',
+        },
+      }
+      expect(getRedirect('sep', '0x1234', 'https://google.com')).toEqual(expected)
+      expect(getRedirect('sep', '0x1234', '/queue')).toEqual(expected)
+    })
+
+    it('should redirect to an app if an app URL is passed', () => {
+      expect(getRedirect('sep', '0x1234', '/apps?appUrl=https://safe-eth.everstake.one/?chain=eth')).toEqual(
+        '/apps?appUrl=https://safe-eth.everstake.one/?chain=eth&safe=sep:0x1234',
+      )
+
+      expect(getRedirect('sep', '0x1234', '/apps?appUrl=https://safe-eth.everstake.one')).toEqual(
+        '/apps?appUrl=https://safe-eth.everstake.one&safe=sep:0x1234',
+      )
+    })
   })
 })
