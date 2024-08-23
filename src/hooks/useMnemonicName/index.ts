@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useCurrentChain } from '@/hooks/useChains'
 import { animalsDict, adjectivesDict } from './dict'
 
 const animals: string[] = animalsDict.trim().split(/\s+/)
@@ -11,16 +10,19 @@ const getRandomItem = <T>(arr: T[]): T => {
   return arr[Math.floor(arr.length * Math.random())]
 }
 
-export const getRandomName = (noun = capitalize(getRandomItem<string>(animals))): string => {
+export const getRandomAdjective = () => {
+  return capitalize(getRandomItem<string>(adjectives))
+}
+
+export const getRandomName = (): string => {
   const adj = capitalize(getRandomItem<string>(adjectives))
-  return `${adj} ${noun}`
+  return `${adj} Safe`
 }
 
-export const useMnemonicName = (noun?: string): string => {
-  return useMemo(() => getRandomName(noun), [noun])
+export const useMnemonicSafeName = (noun?: string): string => {
+  return useMemo(() => getRandomName(), [])
 }
 
-export const useMnemonicSafeName = (): string => {
-  const networkName = useCurrentChain()?.chainName
-  return useMnemonicName(`${networkName} Safe`)
-}
+// export const useMnemonicSafeName = (): string => {
+//   return useMnemonicName(` Safe`)
+// }

@@ -14,6 +14,7 @@ type ChainIndicatorProps = {
   className?: string
   showUnknown?: boolean
   showLogo?: boolean
+  showTitle?: boolean
   responsive?: boolean
 }
 
@@ -34,6 +35,7 @@ const ChainIndicator = ({
   showUnknown = true,
   showLogo = true,
   responsive = false,
+  showTitle = true,
 }: ChainIndicatorProps): ReactElement | null => {
   const currentChainId = useChainId()
   const id = chainId || currentChainId
@@ -63,6 +65,7 @@ const ChainIndicator = ({
         [css.indicator]: !inline,
         [css.withLogo]: showLogo,
         [css.responsive]: responsive,
+        [css.onlyLogo]: !showTitle,
       })}
     >
       {showLogo && (
@@ -75,7 +78,7 @@ const ChainIndicator = ({
         />
       )}
 
-      <span className={css.name}>{chainConfig.chainName}</span>
+      {showTitle && <span className={css.name}>{chainConfig.chainName}</span>}
     </span>
   ) : null
 }

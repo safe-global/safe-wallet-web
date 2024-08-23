@@ -1,4 +1,4 @@
-import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Grid, Chip } from '@mui/material'
+import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Grid } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -23,7 +23,6 @@ import NetworkMultiSelector from '@/components/common/NetworkMultiSelector'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useSafeSetupHints } from '../OwnerPolicyStep/useSafeSetupHints'
 import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
-import ChainIndicator from '@/components/common/ChainIndicator'
 
 type SetNameStepForm = {
   name: string
@@ -33,6 +32,7 @@ type SetNameStepForm = {
 
 enum SetNameStepFields {
   name = 'name',
+  networks = 'networks',
   safeVersion = 'safeVersion',
 }
 
@@ -42,18 +42,22 @@ function SetNameStep({
   data,
   onSubmit,
   setSafeName,
+  setOverviewNetworks,
   setDynamicHint,
 }: StepRenderProps<NewSafeFormData> & {
   setSafeName: (name: string) => void
+  setOverviewNetworks: (networks: ChainInfo[]) => void
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }) {
   const router = useRouter()
-  const fallbackName = useMnemonicSafeName()
   const isWrongChain = useIsWrongChain()
   const chain = useCurrentChain()
 
-  const initialState = chain ? [chain] : []
+  const initialState = data.networks.length ? data.networks : chain ? [chain] : []
   const [networks, setNetworks] = useState<ChainInfo[]>(initialState)
+
+  const fallbackName = useMnemonicSafeName()
+
   useSafeSetupHints(setDynamicHint, undefined, undefined, networks.length > 1)
 
   const formMethods = useForm<SetNameStepForm>({
@@ -65,6 +69,7 @@ function SetNameStep({
     handleSubmit,
     setValue,
     formState: { errors, isValid },
+    control,
   } = formMethods
 
   const onFormSubmit = (data: Pick<NewSafeFormData, 'name' | 'networks'>) => {
@@ -82,12 +87,17 @@ function SetNameStep({
     router.push(AppRoutes.welcome.index)
   }
 
+  const onNetworksChange = (networks: ChainInfo[]) => {
+    setNetworks(networks)
+    setOverviewNetworks(networks)
+  }
+
   // whenever the chain switches we need to update the latest Safe version
   useEffect(() => {
     setValue(SetNameStepFields.safeVersion, getLatestSafeVersion(chain))
   }, [chain, setValue])
 
-  const isDisabled = isWrongChain || !isValid
+  const isDisabled = isWrongChain || !isValid || !networks.length
 
   return (
     <FormProvider {...formMethods}>
@@ -123,27 +133,20 @@ function SetNameStep({
               <Typography variant="body2" mb={2}>
                 Choose which networks you want your account to be active on. You can add more networks later.{' '}
               </Typography>
-              <Box display="flex" flexWrap="wrap" gap={1}>
-                {networks.map((network) => (
-                  <Box key={network.chainId}>
-                    <Chip
-                      variant="outlined"
-                      key={network.chainId}
-                      label={<ChainIndicator chainId={network.chainId} inline />}
-                      onDelete={() => {
-                        setNetworks(networks.filter((item) => item.chainId !== network.chainId))
-                      }}
-                      sx={{ py: 2 }}
-                    ></Chip>
-                  </Box>
-                ))}
-              </Box>
+              {/* <Controller
+                name={SetNameStepFields.networks}
+                control={control}
+                rules={{ required: 'At least one network must be selected' }}
+                render={({ field: { onChange, value }, fieldState: { error } }) => ( */}
               <NetworkMultiSelector
-                networks={networks}
+                name={SetNameStepFields.name}
                 onChainsUpdate={(selectedChains) => {
-                  setNetworks(selectedChains)
+                  onNetworksChange(selectedChains)
                 }}
+                // error={error?.message}
               />
+              {/* )}
+              /> */}
             </Grid>
           </Grid>
           <Typography variant="body2" mt={2}>

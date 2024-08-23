@@ -1,94 +1,69 @@
-import { useDarkMode } from '@/hooks/useDarkMode'
-import { useTheme } from '@mui/material/styles'
-import partition from 'lodash/partition'
 import useChains from '@/hooks/useChains'
-import { type ReactElement, useMemo, useState, useCallback } from 'react'
-import { useAppSelector } from '@/store'
-import { selectChains } from '@/store/chainsSlice'
-import type { SelectChangeEvent } from '@mui/material'
-import { Box, Button, ListSubheader, MenuItem, Select, SvgIcon, Checkbox } from '@mui/material'
+import { type ReactElement, useState } from 'react'
+import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import ChainIndicator from '../ChainIndicator'
-import AddIcon from '@/public/images/common/add.svg'
-import css from './styles.module.css'
+import { useFormContext } from 'react-hook-form'
 
 const NetworkMultiSelector = ({
-  networks,
+  name,
+  error,
   onChainsUpdate,
 }: {
-  networks: ChainInfo[]
+  name: string
   onChainsUpdate: (selectedChains: ChainInfo[]) => void
+  error?: string
 }): ReactElement => {
-  const isDarkMode = useDarkMode()
-  const theme = useTheme()
   const { configs } = useChains()
-  const [testNets, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
-  const chains = useAppSelector(selectChains)
-  // const [selectedValues, setSelectedValues] = useState<string[]>([])
-  const [open, setOpen] = useState(false)
+  const { register, formState } = useFormContext() || {}
 
-  const selectedValues = networks.map((chain) => chain.chainId)
+  const [selectedOptions, setSelectedOptions] = useState<ChainInfo[]>([])
+  const errorText = !selectedOptions.length && 'Select at least one network'
 
-  const handleChange = (event: SelectChangeEvent<string[]>) => {
-    const value = event.target.value as string[]
-    // setSelectedValues(value)
-    const selected = value.map((chainId) => {
-      return configs.find((chain) => chain.chainId === chainId)
-    })
+  const [inputValue, setInputValue] = useState('')
 
-    onChainsUpdate(selected.filter((item): item is ChainInfo => item !== undefined))
+  const handleChange = (newValue: ChainInfo[]) => {
+    onChainsUpdate(newValue)
+    setSelectedOptions(newValue)
   }
 
-  const handleClose = () => {
-    setOpen(false)
+  const handleDelete = (optionToDelete: ChainInfo) => {
+    const updatedNetworks = selectedOptions.filter((option) => option.chainId !== optionToDelete.chainId)
+    handleChange(updatedNetworks)
   }
-
-  const handleOpen = () => {
-    setOpen(true)
-  }
-
-  const renderMenuItem = useCallback(
-    (chainId: string, isSelected: boolean) => {
-      const chain = chains.data.find((chain) => chain.chainId === chainId)
-      if (!chain) return null
-      return (
-        <MenuItem key={chainId} value={chainId}>
-          <Checkbox size="small" checked={isSelected} sx={{ p: 0, pr: 1 }} />
-          <ChainIndicator chainId={chain.chainId} inline />
-        </MenuItem>
-      )
-    },
-    [chains.data],
-  )
 
   return (
-    <Box mt={1}>
-      <Button
-        disableElevation
-        size="small"
-        onClick={handleOpen}
-        startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-        sx={{ p: 1 }}
-      >
-        Add new network
-      </Button>
-      <Select
-        multiple
-        open={open}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        value={selectedValues}
-        onChange={handleChange}
-        renderValue={(selected) => selected.join(', ')}
-        sx={{ visibility: 'hidden', height: 0, width: '200px' }}
-      >
-        {prodNets.map((chain) => renderMenuItem(chain.chainId, selectedValues.includes(chain.chainId)))}
-
-        <ListSubheader className={css.listSubHeader}>Testnets</ListSubheader>
-
-        {testNets.map((chain) => renderMenuItem(chain.chainId, selectedValues.includes(chain.chainId)))}
-      </Select>
-    </Box>
+    <Autocomplete
+      multiple
+      value={selectedOptions}
+      onChange={(_, newValue: ChainInfo[]) => handleChange(newValue)}
+      inputValue={inputValue}
+      onInputChange={(event, newInputValue) => {
+        setInputValue(newInputValue)
+      }}
+      options={configs}
+      getOptionLabel={(option) => option.chainName}
+      disableCloseOnSelect
+      renderTags={(selectedOptions, getTagProps) =>
+        selectedOptions.map((network) => (
+          <Chip
+            variant="outlined"
+            key={network.chainId}
+            label={<ChainIndicator chainId={network.chainId} inline />}
+            onDelete={() => handleDelete(network)}
+            sx={{ py: 2, mr: 0.5, mb: 0.5 }}
+          ></Chip>
+        ))
+      }
+      renderOption={(props, option, { selected }) => (
+        <li {...props}>
+          <Checkbox size="small" checked={selected} />
+          <ChainIndicator chainId={option.chainId} inline />
+        </li>
+      )}
+      renderInput={(params) => <TextField {...params} error={!!errorText} helperText={errorText} />}
+      sx={{ width: '100%', '&.MuiInputBase-root': { pr: 1 } }}
+    />
   )
 }
 
