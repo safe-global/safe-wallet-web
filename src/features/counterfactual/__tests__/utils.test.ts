@@ -25,7 +25,7 @@ describe('Counterfactual utils', () => {
       const mockAddress = faker.finance.ethereumAddress()
       const mockChainId = '1'
 
-      const result = getUndeployedSafeInfo(undeployedSafe, mockAddress, mockChainId)
+      const result = getUndeployedSafeInfo(undeployedSafe, mockAddress, chainBuilder().with({ chainId: '1' }).build())
 
       expect(result.nonce).toEqual(0)
       expect(result.deployed).toEqual(false)

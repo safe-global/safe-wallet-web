@@ -35,8 +35,8 @@ import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
+import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { useGetMultipleTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
@@ -53,6 +53,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [gasPrice] = useGasPrice()
 
   const userNonce = useUserNonce()
+
+  const latestSafeVersion = getLatestSafeVersion(chain)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -130,7 +132,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       multiSendTxData,
       safe.chainId,
       safe.address.value,
-      safe.version ?? LATEST_SAFE_VERSION,
+      safe.version ?? latestSafeVersion,
     )
   }
 

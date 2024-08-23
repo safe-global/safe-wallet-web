@@ -34,6 +34,7 @@ import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import TxData from '@/components/transactions/TxDetails/TxData'
+import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
@@ -96,13 +97,15 @@ export const SignOrExecuteForm = ({
   const { data: txDetails } = useGetTransactionDetailsQuery(
     chainId && props.txId
       ? {
-          chainId,
-          txId: props.txId,
-        }
+        chainId,
+        txId: props.txId,
+      }
       : skipToken,
   )
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
   const [trigger] = useLazyGetTransactionDetailsQuery()
+  const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
+  const isApproval = readableApprovals && readableApprovals.length > 0
 
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
@@ -153,24 +156,26 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        <ErrorBoundary fallback={<div>Error parsing data</div>}>
-          <ApprovalEditor safeTransaction={safeTx} />
+        {!props.isRejection && (
+          <ErrorBoundary fallback={<div>Error parsing data</div>}>
+            {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
 
-          {showTxDetails && <TxData txDetails={txDetails} imitation={false} trusted />}
+            {showTxDetails && <TxData txDetails={txDetails} imitation={false} trusted />}
 
-          <DecodedTx
-            tx={safeTx}
-            txId={props.txId}
-            decodedData={decodedData}
-            showMultisend={!props.isBatch}
-            showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder}
-          />
-        </ErrorBoundary>
+            <DecodedTx
+              tx={safeTx}
+              txId={props.txId}
+              decodedData={decodedData}
+              showMultisend={!props.isBatch}
+              showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder && !isApproval}
+            />
+          </ErrorBoundary>
+        )}
 
-        {!isCounterfactualSafe && <RedefineBalanceChanges />}
+        {!isCounterfactualSafe && !props.isRejection && <RedefineBalanceChanges />}
       </TxCard>
 
-      {!isCounterfactualSafe && <TxChecks />}
+      {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
 
       <TxCard>
         <ConfirmationTitle

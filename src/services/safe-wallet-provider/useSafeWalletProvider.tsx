@@ -208,7 +208,9 @@ export const _useTxFlowApi = (chainId: string, safeAddress: string): WalletSDK |
       },
 
       getCreateCallTransaction(data) {
-        const createCallDeployment = getCreateCallContractDeployment(safe.chainId, safe.version)
+        const createCallDeployment = currentChain
+          ? getCreateCallContractDeployment(currentChain, safe.version)
+          : undefined
         if (!createCallDeployment) {
           throw new Error('No CreateCall deployment found for chain and safe version')
         }
