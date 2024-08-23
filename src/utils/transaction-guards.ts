@@ -142,7 +142,7 @@ export const isSwapConfirmationViewOrder = (
 
 export const isAnySwapConfirmationViewOrder = (
   decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
-): decodedData is OrderConfirmationView => {
+): decodedData is SwapOrderConfirmationView | TwapOrderConfirmationView => {
   return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
 }
 

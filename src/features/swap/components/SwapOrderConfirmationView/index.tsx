@@ -8,7 +8,7 @@ import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { formatVisualAmount } from '@/utils/formatters'
 import { getLimitPrice, getOrderClass, getSlippageInPercent } from '@/features/swap/helpers/utils'
-import type { OrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SwapOrderConfirmationView, TwapOrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
 import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
@@ -22,11 +22,11 @@ import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuy
 import { OrderFeeConfirmationView } from '@/features/swap/components/SwapOrderConfirmationView/OrderFeeConfirmationView'
 
 type SwapOrderProps = {
-  order: OrderConfirmationView
+  order: SwapOrderConfirmationView | TwapOrderConfirmationView
   settlementContract: string
 }
 
-export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrderProps): ReactElement => {
+export const SwapOrderConfirmation = ({ order, settlementContract }: SwapOrderProps): ReactElement => {
   const { owner, kind, validUntil, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
   const isTwapOrder = order.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
@@ -147,4 +147,4 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
   )
 }
 
-export default SwapOrderConfirmationView
+export default SwapOrderConfirmation
