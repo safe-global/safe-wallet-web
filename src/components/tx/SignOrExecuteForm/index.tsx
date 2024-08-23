@@ -97,9 +97,9 @@ export const SignOrExecuteForm = ({
   const { data: txDetails } = useGetTransactionDetailsQuery(
     chainId && props.txId
       ? {
-        chainId,
-        txId: props.txId,
-      }
+          chainId,
+          txId: props.txId,
+        }
       : skipToken,
   )
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
