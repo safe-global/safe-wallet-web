@@ -20,9 +20,13 @@ const OverviewWidget = ({ safeName, networks }: { safeName: string; networks: Ch
       ? [
           {
             title: 'Network(s)',
-            component: networks.map((chain) => (
-              <ChainIndicator key={chain.chainId} chainId={chain.chainId} showTitle={false} inline />
-            )),
+            component: (
+              <Box className={css.networks}>
+                {networks.map((chain) => (
+                  <ChainIndicator key={chain.chainId} chainId={chain.chainId} showTitle={false} inline />
+                ))}
+              </Box>
+            ),
           },
         ]
       : []),

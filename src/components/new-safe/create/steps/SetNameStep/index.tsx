@@ -17,7 +17,7 @@ import { useRouter } from 'next/router'
 import NoWalletConnectedWarning from '../../NoWalletConnectedWarning'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { useCurrentChain } from '@/hooks/useChains'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
 import NetworkMultiSelector from '@/components/common/NetworkMultiSelector'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -51,9 +51,9 @@ function SetNameStep({
 }) {
   const router = useRouter()
   const isWrongChain = useIsWrongChain()
-  const chain = useCurrentChain()
+  const currentChain = useCurrentChain()
 
-  const initialState = data.networks.length ? data.networks : chain ? [chain] : []
+  const initialState = data.networks.length ? data.networks : currentChain ? [currentChain] : []
   const [networks, setNetworks] = useState<ChainInfo[]>(initialState)
 
   const fallbackName = useMnemonicSafeName()
@@ -69,7 +69,6 @@ function SetNameStep({
     handleSubmit,
     setValue,
     formState: { errors, isValid },
-    control,
   } = formMethods
 
   const onFormSubmit = (data: Pick<NewSafeFormData, 'name' | 'networks'>) => {
@@ -87,15 +86,23 @@ function SetNameStep({
     router.push(AppRoutes.welcome.index)
   }
 
-  const onNetworksChange = (networks: ChainInfo[]) => {
-    setNetworks(networks)
-    setOverviewNetworks(networks)
-  }
+  const handleNetworksChange = useCallback(
+    (networks: ChainInfo[]) => {
+      setNetworks(networks)
+      setOverviewNetworks(networks)
+    },
+    [setOverviewNetworks],
+  )
 
   // whenever the chain switches we need to update the latest Safe version
   useEffect(() => {
-    setValue(SetNameStepFields.safeVersion, getLatestSafeVersion(chain))
-  }, [chain, setValue])
+    setValue(SetNameStepFields.safeVersion, getLatestSafeVersion(currentChain))
+  }, [currentChain, setValue])
+
+  useEffect(() => {
+    const chain = currentChain ? [currentChain] : []
+    handleNetworksChange(chain)
+  }, [currentChain, handleNetworksChange])
 
   const isDisabled = isWrongChain || !isValid || !networks.length
 
@@ -139,10 +146,9 @@ function SetNameStep({
                 rules={{ required: 'At least one network must be selected' }}
                 render={({ field: { onChange, value }, fieldState: { error } }) => ( */}
               <NetworkMultiSelector
-                name={SetNameStepFields.name}
-                onChainsUpdate={(selectedChains) => {
-                  onNetworksChange(selectedChains)
-                }}
+                // name={SetNameStepFields.name}
+                selectedNetworks={networks}
+                setSelectedNetworks={handleNetworksChange}
                 // error={error?.message}
               />
               {/* )}

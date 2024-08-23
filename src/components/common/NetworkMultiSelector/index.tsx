@@ -3,39 +3,32 @@ import { type ReactElement, useState } from 'react'
 import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import ChainIndicator from '../ChainIndicator'
-import { useFormContext } from 'react-hook-form'
 
 const NetworkMultiSelector = ({
-  name,
-  error,
-  onChainsUpdate,
+  selectedNetworks,
+  setSelectedNetworks,
 }: {
-  name: string
-  onChainsUpdate: (selectedChains: ChainInfo[]) => void
-  error?: string
+  selectedNetworks: ChainInfo[]
+  setSelectedNetworks: (selectedChains: ChainInfo[]) => void
 }): ReactElement => {
   const { configs } = useChains()
-  const { register, formState } = useFormContext() || {}
-
-  const [selectedOptions, setSelectedOptions] = useState<ChainInfo[]>([])
-  const errorText = !selectedOptions.length && 'Select at least one network'
+  const errorText = !selectedNetworks.length && 'Select at least one network'
 
   const [inputValue, setInputValue] = useState('')
 
   const handleChange = (newValue: ChainInfo[]) => {
-    onChainsUpdate(newValue)
-    setSelectedOptions(newValue)
+    setSelectedNetworks(newValue)
   }
 
   const handleDelete = (optionToDelete: ChainInfo) => {
-    const updatedNetworks = selectedOptions.filter((option) => option.chainId !== optionToDelete.chainId)
+    const updatedNetworks = selectedNetworks.filter((option) => option.chainId !== optionToDelete.chainId)
     handleChange(updatedNetworks)
   }
 
   return (
     <Autocomplete
       multiple
-      value={selectedOptions}
+      value={selectedNetworks}
       onChange={(_, newValue: ChainInfo[]) => handleChange(newValue)}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => {
