@@ -42,7 +42,7 @@ const Swap: NextPage = () => {
     />
   )
 
-  if (!isConsentAccepted) {
+  if (isConsentAccepted === false) {
     content = <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
   }
 

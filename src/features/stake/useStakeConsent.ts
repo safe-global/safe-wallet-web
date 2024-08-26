@@ -1,16 +1,22 @@
-import { useCallback } from 'react'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import { localItem } from '@/services/local-storage/local'
+import { useCallback, useEffect, useState } from 'react'
 
 const STAKE_CONSENT_STORAGE_KEY = 'stakeDisclaimerAcceptedV1'
+const stakeConsentStorage = localItem<boolean>(STAKE_CONSENT_STORAGE_KEY)
 
 const useStakeConsent = (): {
-  isConsentAccepted: boolean
+  isConsentAccepted: boolean | undefined
   onAccept: () => void
 } => {
-  const [isConsentAccepted = false, setIsConsentAccepted] = useLocalStorage<boolean>(STAKE_CONSENT_STORAGE_KEY)
+  const [isConsentAccepted, setIsConsentAccepted] = useState<boolean | undefined>()
 
   const onAccept = useCallback(() => {
     setIsConsentAccepted(true)
+    stakeConsentStorage.set(true)
+  }, [setIsConsentAccepted])
+
+  useEffect(() => {
+    setIsConsentAccepted(stakeConsentStorage.get() || false)
   }, [setIsConsentAccepted])
 
   return {
