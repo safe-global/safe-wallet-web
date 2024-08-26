@@ -83,10 +83,10 @@
   top: 0;
   bottom: 0;
   position: absolute;
-  border-left: 2px solid var(--color-border-light);
+  border-left: 1px solid var(--color-border-light);
 }
 .subItem.currentListItem .borderLeft {
-  border-left: 2px solid var(--color-secondary-light);
+  border-left: 1px solid var(--color-secondary-light);
 }
 
 .subItem:last-child {
