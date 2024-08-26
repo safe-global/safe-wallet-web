@@ -54,7 +54,10 @@ export const CreateSafeStatus = ({
 
     if (status === SafeCreationEvent.SUCCESS) {
       dispatch(updateAddressBook(chain.chainId, safeAddress, data.name, data.owners, data.threshold))
-      router.push(getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL))
+      const redirect = getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL)
+      if (typeof redirect !== 'string' || redirect.startsWith('/')) {
+        router.push(redirect)
+      }
     }
   }, [dispatch, chain, data.name, data.owners, data.threshold, router, safeAddress, status])
 

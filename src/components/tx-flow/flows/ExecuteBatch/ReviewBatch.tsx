@@ -3,7 +3,6 @@ import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@/utils/chains'
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -20,7 +19,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { getTxsWithDetails, getMultiSendTxs } from '@/utils/transactions'
+import { getMultiSendTxs } from '@/utils/transactions'
 import TxCard from '../../common/TxCard'
 import CheckWallet from '@/components/common/CheckWallet'
 import type { ExecuteBatchFlowProps } from '.'
@@ -40,6 +39,8 @@ import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
+import { useGetMultipleTransactionDetailsQuery } from '@/store/gateway'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -68,10 +69,18 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const wallet = useWallet()
   const customContractAddresses = useCustomNetworkContracts()
 
-  const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
-    if (!chain?.chainId) return
-    return getTxsWithDetails(params.txs, chain.chainId)
-  }, [params.txs, chain?.chainId])
+  const {
+    data: txsWithDetails,
+    error,
+    isLoading: loading,
+  } = useGetMultipleTransactionDetailsQuery(
+    chain?.chainId && params.txs.length
+      ? {
+          chainId: chain.chainId,
+          txIds: params.txs.map((tx) => tx.transaction.id),
+        }
+      : skipToken,
+  )
 
   const [multiSendContract] = useAsync(async () => {
     if (!safe.version) return
@@ -211,7 +220,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         </Alert>
 
         {error && (
-          <ErrorMessage error={error}>
+          <ErrorMessage error={asError(error)}>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
           </ErrorMessage>
         )}
