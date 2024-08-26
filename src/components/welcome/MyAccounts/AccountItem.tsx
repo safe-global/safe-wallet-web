@@ -25,6 +25,7 @@ import type { SafeItem } from './useAllSafes'
 import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import { useGetHref } from './useGetHref'
+import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -54,6 +55,10 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
 
   const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
+  const counterfactualSetup = undeployedSafe
+    ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
+    : undefined
+
   return (
     <ListItemButton
       data-testid="safe-list-item"
@@ -65,8 +70,8 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
           <Box pr={2.5}>
             <SafeIcon
               address={address}
-              owners={safeOverview?.owners.length ?? undeployedSafe?.props.safeAccountConfig.owners.length}
-              threshold={safeOverview?.threshold ?? undeployedSafe?.props.safeAccountConfig.threshold}
+              owners={safeOverview?.owners.length ?? counterfactualSetup?.owners.length}
+              threshold={safeOverview?.threshold ?? counterfactualSetup?.threshold}
               chainId={chainId}
             />
           </Box>

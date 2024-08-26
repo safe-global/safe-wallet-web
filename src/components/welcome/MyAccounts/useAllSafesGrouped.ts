@@ -36,5 +36,7 @@ export const useAllSafesGrouped = () => {
       allMultiChainSafes,
       allSingleSafes,
     }
-  }, [allSafes])
+    // allSafes cause re-renderings every X seconds
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allSafes?.length])
 }

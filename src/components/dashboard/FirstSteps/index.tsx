@@ -25,6 +25,7 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined'
 import css from './styles.module.css'
 import ActivateAccountButton from '@/features/counterfactual/ActivateAccountButton'
+import { isReplayedSafeProps } from '@/features/counterfactual/utils'
 
 const calculateProgress = (items: boolean[]) => {
   const totalNumberOfItems = items.length
@@ -304,6 +305,7 @@ const FirstSteps = () => {
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, safe.chainId, safeAddress))
 
   const isMultiSig = safe.threshold > 1
+  const isReplayedSafe = undeployedSafe && isReplayedSafeProps(undeployedSafe?.props)
 
   const hasNonZeroBalance = balances && (balances.items.length > 1 || BigInt(balances.items[0]?.balance || 0) > 0)
   const hasOutgoingTransactions = !!outgoingTransactions && outgoingTransactions.length > 0
@@ -383,7 +385,7 @@ const FirstSteps = () => {
           <Grid item xs={12} md={4}>
             {isActivating ? (
               <UsefulHintsWidget />
-            ) : isMultiSig ? (
+            ) : isMultiSig || isReplayedSafe ? (
               <ActivateSafeWidget />
             ) : (
               <FirstTransactionWidget completed={hasOutgoingTransactions} />

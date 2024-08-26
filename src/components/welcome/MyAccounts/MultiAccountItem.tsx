@@ -10,7 +10,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Divider,
-  Button,
 } from '@mui/material'
 import SafeIcon from '@/components/common/SafeIcon'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
@@ -30,6 +29,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { type SafeItem } from './useAllSafes'
 import SubAccountItem from './SubAccountItem'
 import { getSharedSetup } from './utils/multiChainSafe'
+import { AddNetworkButton } from './AddNetworkButton'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -131,10 +131,11 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
           </Box>
           <Divider />
           <Box display="flex" alignItems="center" justifyContent="center">
-            {/* TODO: Trigger Safe creation flow with a new network */}
-            <Button variant="text" fullWidth>
-              + Add another network
-            </Button>
+            <AddNetworkButton
+              currentName={name}
+              safeAddress={address}
+              deployedChains={safes.map((safe) => safe.chainId)}
+            />
           </Box>
         </AccordionDetails>
       </Accordion>

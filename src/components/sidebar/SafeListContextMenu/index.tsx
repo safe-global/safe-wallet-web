@@ -12,19 +12,22 @@ import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
 import EditIcon from '@/public/images/common/edit.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
+import PlusIcon from '@/public/images/common/plus.svg'
 import ContextMenu from '@/components/common/ContextMenu'
 import { trackEvent, OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { SvgIcon } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
 import { AppRoutes } from '@/config/routes'
 import router from 'next/router'
+import { CreateSafeOnNewChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 
 enum ModalType {
   RENAME = 'rename',
   REMOVE = 'remove',
+  ADD_CHAIN = 'add_chain',
 }
 
-const defaultOpen = { [ModalType.RENAME]: false, [ModalType.REMOVE]: false }
+const defaultOpen = { [ModalType.RENAME]: false, [ModalType.REMOVE]: false, [ModalType.ADD_CHAIN]: false }
 
 const SafeListContextMenu = ({
   name,
@@ -88,6 +91,13 @@ const SafeListContextMenu = ({
             <ListItemText data-testid="remove-btn">Remove</ListItemText>
           </MenuItem>
         )}
+
+        <MenuItem onClick={handleOpenModal(ModalType.ADD_CHAIN, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
+          <ListItemIcon>
+            <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" color="primary" />
+          </ListItemIcon>
+          <ListItemText data-testid="add-chain-btn">Add another network</ListItemText>
+        </MenuItem>
       </ContextMenu>
 
       {open[ModalType.RENAME] && (
@@ -101,6 +111,16 @@ const SafeListContextMenu = ({
 
       {open[ModalType.REMOVE] && (
         <SafeListRemoveDialog handleClose={handleCloseModal} address={address} chainId={chainId} />
+      )}
+
+      {open[ModalType.ADD_CHAIN] && (
+        <CreateSafeOnNewChain
+          onClose={handleCloseModal}
+          currentName={name}
+          deployedChainIds={[chainId]}
+          open
+          safeAddress={address}
+        />
       )}
     </>
   )

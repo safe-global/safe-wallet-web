@@ -173,10 +173,11 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       const saltNonce = await getAvailableSaltNonce(
         wallet.provider,
-        { ...props, saltNonce: '0' },
+        { ...props, saltNonce: data.saltNonce.toString() },
         chain,
         data.safeVersion,
       )
+
       const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain, data.safeVersion)
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
