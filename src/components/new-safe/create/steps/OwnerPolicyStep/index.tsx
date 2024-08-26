@@ -46,7 +46,7 @@ const OwnerPolicyStep = ({
     name: defaultOwnerAddressBookName || wallet?.ens || '',
     address: wallet?.address || '',
   }
-  useSyncSafeCreationStep(setStep)
+  useSyncSafeCreationStep(setStep, data.networks)
 
   const formMethods = useForm<OwnerPolicyStepForm>({
     mode: 'onChange',
@@ -79,7 +79,7 @@ const OwnerPolicyStep = ({
 
   const handleBack = () => {
     const formData = getValues()
-    onBack(formData)
+    onBack({ ...data, ...formData })
   }
 
   const onFormSubmit = handleSubmit((data) => {

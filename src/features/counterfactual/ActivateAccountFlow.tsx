@@ -31,7 +31,6 @@ import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { sameAddress } from '@/utils/addresses'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -187,8 +186,6 @@ const ActivateAccountFlow = () => {
               <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
             </Box>
           )}
-
-          {isWrongChain && <NetworkWarning />}
 
           {!walletCanPay && !willRelay && (
             <ErrorMessage>

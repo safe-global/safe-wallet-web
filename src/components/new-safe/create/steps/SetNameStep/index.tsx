@@ -6,8 +6,6 @@ import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardS
 import type { NewSafeFormData } from '@/components/new-safe/create'
 
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import NameInput from '@/components/common/NameInput'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
@@ -19,10 +17,10 @@ import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { useCurrentChain } from '@/hooks/useChains'
 import { useCallback, useEffect, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
-import NetworkMultiSelector from '@/components/common/NetworkMultiSelector'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useSafeSetupHints } from '../OwnerPolicyStep/useSafeSetupHints'
 import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
+import NetworkMultiSelector from '@/components/common/NetworkSelector/NetworkMultiSelector'
 
 type SetNameStepForm = {
   name: string
@@ -50,7 +48,6 @@ function SetNameStep({
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
 }) {
   const router = useRouter()
-  const isWrongChain = useIsWrongChain()
   const currentChain = useCurrentChain()
 
   const initialState = data.networks.length ? data.networks : currentChain ? [currentChain] : []
@@ -74,6 +71,7 @@ function SetNameStep({
   const onFormSubmit = (data: Pick<NewSafeFormData, 'name' | 'networks'>) => {
     const name = data.name || fallbackName
     setSafeName(name)
+
     onSubmit({ ...data, name, networks })
 
     if (data.name) {
@@ -94,17 +92,16 @@ function SetNameStep({
     [setOverviewNetworks],
   )
 
-  // whenever the chain switches we need to update the latest Safe version
+  // whenever the chain switches we need to update the latest Safe version and selected chain
   useEffect(() => {
     setValue(SetNameStepFields.safeVersion, getLatestSafeVersion(currentChain))
-  }, [currentChain, setValue])
+    if (networks.length === 1) {
+      const chain = currentChain ? [currentChain] : []
+      handleNetworksChange(chain)
+    }
+  }, [currentChain, handleNetworksChange, networks.length, setValue])
 
-  useEffect(() => {
-    const chain = currentChain ? [currentChain] : []
-    handleNetworksChange(chain)
-  }, [currentChain, handleNetworksChange])
-
-  const isDisabled = isWrongChain || !isValid || !networks.length
+  const isDisabled = !isValid || !networks.length
 
   return (
     <FormProvider {...formMethods}>
@@ -140,19 +137,7 @@ function SetNameStep({
               <Typography variant="body2" mb={2}>
                 Choose which networks you want your account to be active on. You can add more networks later.{' '}
               </Typography>
-              {/* <Controller
-                name={SetNameStepFields.networks}
-                control={control}
-                rules={{ required: 'At least one network must be selected' }}
-                render={({ field: { onChange, value }, fieldState: { error } }) => ( */}
-              <NetworkMultiSelector
-                // name={SetNameStepFields.name}
-                selectedNetworks={networks}
-                setSelectedNetworks={handleNetworksChange}
-                // error={error?.message}
-              />
-              {/* )}
-              /> */}
+              <NetworkMultiSelector selectedNetworks={networks} setSelectedNetworks={handleNetworksChange} />
             </Grid>
           </Grid>
           <Typography variant="body2" mt={2}>
@@ -167,8 +152,6 @@ function SetNameStep({
             .
           </Typography>
 
-          {/* {isWrongChain && data.networks.length === 1 && <NetworkWarning />} */}
-          {isWrongChain && <NetworkWarning />}
           <NoWalletConnectedWarning />
         </Box>
         <Divider />

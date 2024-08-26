@@ -3,6 +3,9 @@ import { type ReactElement, useState } from 'react'
 import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import ChainIndicator from '../ChainIndicator'
+import { useRouter } from 'next/router'
+import useWallet from '@/hooks/wallets/useWallet'
+import { getNetworkLink } from '.'
 
 const NetworkMultiSelector = ({
   selectedNetworks,
@@ -13,10 +16,18 @@ const NetworkMultiSelector = ({
 }): ReactElement => {
   const { configs } = useChains()
   const errorText = !selectedNetworks.length && 'Select at least one network'
+  const isWalletConnected = !!useWallet()
+
+  const router = useRouter()
 
   const [inputValue, setInputValue] = useState('')
 
   const handleChange = (newValue: ChainInfo[]) => {
+    if (newValue.length === 1) {
+      const shortName = newValue[0].shortName
+      const networkLink = getNetworkLink(router.pathname, router.query, shortName, isWalletConnected)
+      router.push(networkLink)
+    }
     setSelectedNetworks(newValue)
   }
 

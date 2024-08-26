@@ -17,6 +17,32 @@ import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useAppSelector } from '@/store'
 import { selectChains } from '@/store/chainsSlice'
+import type { ParsedUrlQuery } from 'querystring'
+
+export const getNetworkLink = (
+  pathname: string,
+  query: ParsedUrlQuery,
+  networkShortName: string,
+  isWalletConnected: boolean,
+) => {
+  const shouldKeepPath = !query.safe
+
+  const route = {
+    pathname: shouldKeepPath ? pathname : isWalletConnected ? AppRoutes.welcome.accounts : AppRoutes.welcome.index,
+    query: {
+      chain: networkShortName,
+    } as {
+      chain: string
+      safeViewRedirectURL?: string
+    },
+  }
+
+  if (query?.safeViewRedirectURL) {
+    route.query.safeViewRedirectURL = query?.safeViewRedirectURL.toString()
+  }
+
+  return route
+}
 
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const isDarkMode = useDarkMode()
@@ -28,33 +54,6 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
   const [testNets, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
   const chains = useAppSelector(selectChains)
 
-  const getNetworkLink = useCallback(
-    (shortName: string) => {
-      const shouldKeepPath = !router.query.safe
-
-      const route = {
-        pathname: shouldKeepPath
-          ? router.pathname
-          : isWalletConnected
-          ? AppRoutes.welcome.accounts
-          : AppRoutes.welcome.index,
-        query: {
-          chain: shortName,
-        } as {
-          chain: string
-          safeViewRedirectURL?: string
-        },
-      }
-
-      if (router.query?.safeViewRedirectURL) {
-        route.query.safeViewRedirectURL = router.query?.safeViewRedirectURL.toString()
-      }
-
-      return route
-    },
-    [router, isWalletConnected],
-  )
-
   const onChange = (event: SelectChangeEvent) => {
     event.preventDefault() // Prevent the link click
 
@@ -63,7 +62,8 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
 
     if (shortName) {
       trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: newChainId })
-      router.push(getNetworkLink(shortName))
+      const networkLink = getNetworkLink(router.pathname, router.query, shortName, isWalletConnected)
+      router.push(networkLink)
     }
   }
 
@@ -73,13 +73,17 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
       if (!chain) return null
       return (
         <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
-          <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
+          <Link
+            href={getNetworkLink(router.pathname, router.query, chain.shortName, isWalletConnected)}
+            onClick={props.onChainSelect}
+            className={css.item}
+          >
             <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
           </Link>
         </MenuItem>
       )
     },
-    [chains.data, getNetworkLink, props.onChainSelect],
+    [chains.data, isWalletConnected, props.onChainSelect, router.pathname, router.query],
   )
 
   return configs.length ? (

@@ -20,7 +20,7 @@ describe('useSyncSafeCreationStep', () => {
     } as unknown as NextRouter)
     const mockSetStep = jest.fn()
 
-    renderHook(() => useSyncSafeCreationStep(mockSetStep))
+    renderHook(() => useSyncSafeCreationStep(mockSetStep, []))
 
     expect(mockSetStep).toHaveBeenCalledWith(0)
   })
@@ -28,11 +28,10 @@ describe('useSyncSafeCreationStep', () => {
   it('should go to the first step if the wrong chain is connected', async () => {
     jest.spyOn(localStorage, 'default').mockReturnValue([{}, jest.fn()])
     jest.spyOn(wallet, 'default').mockReturnValue({ address: '0x1' } as ConnectedWallet)
-    jest.spyOn(useIsWrongChain, 'default').mockReturnValue(true)
 
     const mockSetStep = jest.fn()
 
-    renderHook(() => useSyncSafeCreationStep(mockSetStep))
+    renderHook(() => useSyncSafeCreationStep(mockSetStep, []))
 
     expect(mockSetStep).toHaveBeenCalledWith(0)
   })
@@ -44,7 +43,7 @@ describe('useSyncSafeCreationStep', () => {
 
     const mockSetStep = jest.fn()
 
-    renderHook(() => useSyncSafeCreationStep(mockSetStep))
+    renderHook(() => useSyncSafeCreationStep(mockSetStep, []))
 
     expect(mockSetStep).not.toHaveBeenCalled()
   })

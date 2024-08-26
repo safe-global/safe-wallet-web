@@ -12,7 +12,6 @@ import {
   SAFE_TO_L2_SETUP_INTERFACE,
 } from '@/components/new-safe/create/logic'
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
@@ -46,6 +45,7 @@ import { useMemo, useState } from 'react'
 import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 import ChainIndicator from '@/components/common/ChainIndicator'
+import NetworkWarning from '../../NetworkWarning'
 
 export const NetworkFee = ({
   totalFee,
@@ -128,7 +128,7 @@ export const SafeSetupOverview = ({
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
-  useSyncSafeCreationStep(setStep)
+  useSyncSafeCreationStep(setStep, data.networks)
   const chain = useCurrentChain()
   const wallet = useWallet()
   const dispatch = useAppDispatch()
@@ -148,7 +148,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   // Every owner has remaining relays and relay method is selected
   const canRelay = hasRemainingRelays(minRelays)
-  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY && !isMultiChainDeployment
+  const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
   const safeParams = useMemo(() => {
     return {
@@ -296,7 +296,11 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     setIsCreating(false)
   }
 
-  const isDisabled = isWrongChain || isCreating
+  const showNetworkWarning =
+    (isWrongChain && payMethod === PayMethod.PayNow && !willRelay && !isMultiChainDeployment) ||
+    (isWrongChain && !isCounterfactual && !isMultiChainDeployment)
+
+  const isDisabled = showNetworkWarning || isCreating
 
   return (
     <>
@@ -317,18 +321,22 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             />
 
             {canRelay && payMethod === PayMethod.PayNow && (
-              <Grid container spacing={3} pt={2}>
-                <ReviewRow
-                  value={
-                    <ExecutionMethodSelector
-                      executionMethod={executionMethod}
-                      setExecutionMethod={setExecutionMethod}
-                      relays={minRelays}
-                    />
-                  }
-                />
-              </Grid>
+              <>
+                <Grid container spacing={3} pt={2}>
+                  <ReviewRow
+                    value={
+                      <ExecutionMethodSelector
+                        executionMethod={executionMethod}
+                        setExecutionMethod={setExecutionMethod}
+                        relays={minRelays}
+                      />
+                    }
+                  />
+                </Grid>
+              </>
             )}
+
+            {showNetworkWarning && <NetworkWarning />}
 
             {payMethod === PayMethod.PayNow && (
               <Grid item>
@@ -379,7 +387,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               />
             </Grid>
 
-            {isWrongChain && data.networks.length === 1 && <NetworkWarning />}
+            {showNetworkWarning && <NetworkWarning />}
 
             {!walletCanPay && !willRelay && (
               <ErrorMessage>
