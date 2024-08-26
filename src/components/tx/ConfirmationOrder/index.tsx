@@ -6,15 +6,16 @@ import { isAnySwapConfirmationViewOrder, isStakingConfirmationOrder } from '@/ut
 type OrderConfirmationViewProps = {
   decodedData: ReturnType<typeof useDecodeTx>[0]
   toAddress: string
+  value?: string
 }
 
-const ConfirmationOrder = ({ decodedData, toAddress }: OrderConfirmationViewProps) => {
+const ConfirmationOrder = ({ decodedData, value, toAddress }: OrderConfirmationViewProps) => {
   if (isAnySwapConfirmationViewOrder(decodedData)) {
     return <SwapOrderConfirmationView order={decodedData} settlementContract={toAddress} />
   }
 
   if (isStakingConfirmationOrder(decodedData)) {
-    return <StakingOrderConfirmationView order={decodedData} contractAddress={toAddress} />
+    return <StakingOrderConfirmationView order={decodedData} contractAddress={toAddress} value={value} />
   }
 
   return null

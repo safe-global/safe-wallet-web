@@ -6,7 +6,6 @@ import { DataTable } from '@/components/common/Table/DataTable'
 import { compareAsc } from 'date-fns'
 import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
-import { formatVisualAmount } from '@/utils/formatters'
 import { getLimitPrice, getOrderClass, getSlippageInPercent } from '@/features/swap/helpers/utils'
 import type { SwapOrderConfirmationView, TwapOrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
@@ -47,16 +46,14 @@ export const SwapOrderConfirmation = ({ order, settlementContract }: SwapOrderPr
           <div key="amount" className={css.amount}>
             <SwapTokens
               first={{
-                value: formatVisualAmount(sellAmount, sellToken.decimals),
+                value: sellAmount,
                 label: isSellOrder ? 'Sell' : 'For at most',
-                logoUri: sellToken.logoUri as string,
-                tokenSymbol: sellToken.symbol,
+                tokenInfo: sellToken,
               }}
               second={{
-                value: formatVisualAmount(buyAmount, buyToken.decimals),
+                value: buyAmount,
                 label: isSellOrder ? 'For at least' : 'Buy exactly',
-                logoUri: buyToken.logoUri as string,
-                tokenSymbol: buyToken.symbol,
+                tokenInfo: buyToken,
               }}
             />
           </div>,
