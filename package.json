@@ -2,7 +2,7 @@
   "name": "safe-wallet-web",
   "homepage": "https://github.com/safe-global/safe-wallet-web",
   "license": "GPL-3.0",
-  "version": "1.40.1",
+  "version": "1.41.2",
   "type": "module",
   "scripts": {
     "dev": "next dev",
@@ -31,7 +31,7 @@
     "update-wc": "yarn add @walletconnect/web3wallet@latest @walletconnect/utils@latest; yarn add -D @walletconnect/types@latest",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build --quiet"
   },
   "engines": {
     "node": ">=16"
@@ -49,7 +49,7 @@
     "@emotion/react": "^11.11.0",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@gnosis.pm/zodiac": "^4.0.1",
+    "@gnosis.pm/zodiac": "^4.0.3",
     "@mui/icons-material": "^5.14.20",
     "@mui/material": "^5.14.20",
     "@mui/x-date-pickers": "^5.0.20",
