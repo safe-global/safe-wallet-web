@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { Box } from '@mui/material'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
 import {
   SafeAppAccessPolicyTypes,
@@ -18,7 +19,7 @@ const Swap: NextPage = () => {
   const appData: SafeAppData = useMemo(
     () => ({
       id: 1,
-      url: `https://widget.testnet.kiln.fi/safe-widget/earn?theme=${isDarkMode ? 'dark' : 'light'}`,
+      url: `https://safe.widget.testnet.kiln.fi/earn?theme=${isDarkMode ? 'dark' : 'light'}`,
       name: 'Earn',
       iconUrl: './images/common/earn.svg',
       description: 'Safe Apps',
@@ -33,26 +34,24 @@ const Swap: NextPage = () => {
 
   const { isConsentAccepted, onAccept } = useStakeConsent()
 
-  let content = (
-    <AppFrame
-      allowedFeaturesList="clipboard-read; clipboard-write"
-      appUrl={appData.url}
-      safeAppFromManifest={{ ...appData, safeAppsPermissions: [] }}
-      isNativeEmbed
-    />
-  )
-
-  if (isConsentAccepted === false) {
-    content = <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
-  }
-
   return (
     <>
       <Head>
         <title>{'Safe{Wallet} – Stake'}</title>
       </Head>
 
-      {content}
+      {isConsentAccepted === undefined ? null : isConsentAccepted ? (
+        <AppFrame
+          allowedFeaturesList="clipboard-read; clipboard-write"
+          appUrl={appData.url}
+          safeAppFromManifest={{ ...appData, safeAppsPermissions: [] }}
+          isNativeEmbed
+        />
+      ) : (
+        <Box mt={3}>
+          <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
+        </Box>
+      )}
     </>
   )
 }

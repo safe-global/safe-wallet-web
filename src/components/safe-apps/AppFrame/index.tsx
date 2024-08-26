@@ -156,15 +156,17 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
           />
         </div>
 
-        <TransactionQueueBar
-          expanded={queueBarExpanded}
-          visible={queueBarVisible && !queueBarDismissed}
-          setExpanded={setExpanded}
-          onDismiss={dismissQueueBar}
-          transactions={transactions}
-        />
+        {!isNativeEmbed && (
+          <TransactionQueueBar
+            expanded={queueBarExpanded}
+            visible={queueBarVisible && !queueBarDismissed}
+            setExpanded={setExpanded}
+            onDismiss={dismissQueueBar}
+            transactions={transactions}
+          />
+        )}
 
-        {permissionsRequest && (
+        {!isNativeEmbed && permissionsRequest && (
           <PermissionsPrompt
             isOpen
             origin={permissionsRequest.origin}
