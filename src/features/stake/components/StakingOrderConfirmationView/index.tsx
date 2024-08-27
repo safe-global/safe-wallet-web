@@ -1,18 +1,13 @@
 import { Typography } from '@mui/material'
 import { formatDuration, intervalToDuration } from 'date-fns'
 import FieldsGrid from '@/components/tx/FieldsGrid'
-import type { NativeStakingDepositConfirmationView, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { NativeStakingDepositConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenInfoPair from '@/components/tx/ConfirmationOrder/TokenInfoPair'
-import useBalances from '@/hooks/useBalances'
-import madProps from '@/utils/mad-props'
-import { useMemo } from 'react'
-import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 type StakingOrderConfirmationViewProps = {
   order: NativeStakingDepositConfirmationView
   contractAddress: string
   value?: string
-  tokenInfo?: TokenInfo
 }
 
 const formatSeconds = (seconds: number) => {
@@ -22,7 +17,7 @@ const formatSeconds = (seconds: number) => {
   })
 }
 
-const _StakingOrderConfirmationView = ({ order, value, tokenInfo }: StakingOrderConfirmationViewProps) => {
+const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmationViewProps) => {
   /* https://docs.api.kiln.fi/reference/getethnetworkstats */
   return (
     <>
@@ -30,7 +25,7 @@ const _StakingOrderConfirmationView = ({ order, value, tokenInfo }: StakingOrder
         blocks={[
           {
             value: value || '',
-            tokenInfo,
+            tokenInfo: order.tokenInfo,
             label: 'Deposit',
           },
           {
@@ -56,18 +51,5 @@ const _StakingOrderConfirmationView = ({ order, value, tokenInfo }: StakingOrder
     </>
   )
 }
-
-const useNativeToken = () => {
-  const { balances } = useBalances()
-  const nativeBalance = useMemo(
-    () => balances.items.find((balance) => balance.tokenInfo.address === ZERO_ADDRESS),
-    [balances.items],
-  )
-  return nativeBalance?.tokenInfo
-}
-
-const StakingOrderConfirmationView = madProps(_StakingOrderConfirmationView, {
-  tokenInfo: useNativeToken,
-})
 
 export default StakingOrderConfirmationView
