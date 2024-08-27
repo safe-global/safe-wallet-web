@@ -23,24 +23,7 @@ type SafeListPageProps = {
   onLinkClick: PaginatedSafeListProps['onLinkClick']
 }
 
-const PAGE_SIZE = 10
-
-/**
- * Slices Safe list. We need this helper as MultiChainSafeItems can contain multiple Safes.
- *
- * Will always slice in a way that a Account group is not split up.
- */
-const sliceSafes = (
-  safes: (SafeItem | MultiChainSafeItem)[],
-  start: number,
-  end?: number,
-): (SafeItem | MultiChainSafeItem)[] => {
-  // Find start Safe
-  const allSafes = safes.flatMap((safe) => (isMultiChainSafeItem(safe) ? safe.safes : safe))
-  const slicedSafesAddresses = allSafes.slice(start, end).map((value) => value.address)
-
-  return safes.filter((value) => slicedSafesAddresses.includes(value.address))
-}
+const DEFAULT_PAGE_SIZE = 10
 
 export const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
   const flattenedSafes = useMemo(
@@ -78,25 +61,27 @@ export const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
   )
 }
 
-const AllSafeListPages = ({ safes, onLinkClick }: SafeListPageProps) => {
-  const totalSafes = safes.reduce(
-    (prev, current) => prev + (isMultiChainSafeItem(current) ? current.safes.length : 1),
-    0,
-  )
-  const totalPages = Math.ceil(totalSafes / PAGE_SIZE)
+const AllSafeListPages = ({
+  safes,
+  onLinkClick,
+  pageSize = DEFAULT_PAGE_SIZE,
+}: SafeListPageProps & { pageSize?: number }) => {
+  const totalPages = Math.ceil(safes.length / pageSize)
   const [pages, setPages] = useState<(SafeItem | MultiChainSafeItem)[][]>([])
 
   const onNextPage = useCallback(() => {
     setPages((prev) => {
       const pageIndex = prev.length
-      const nextPage = sliceSafes(safes, pageIndex * PAGE_SIZE, (pageIndex + 1) * PAGE_SIZE)
+      const nextPage = safes.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
       return prev.concat([nextPage])
     })
-  }, [safes])
+  }, [safes, pageSize])
 
   useEffect(() => {
-    setPages([sliceSafes(safes, 0, PAGE_SIZE)])
-  }, [safes])
+    if (safes.length > 0) {
+      setPages([safes.slice(0, pageSize)])
+    }
+  }, [safes, pageSize])
 
   return (
     <>
@@ -110,6 +95,10 @@ const AllSafeListPages = ({ safes, onLinkClick }: SafeListPageProps) => {
 }
 
 const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }: PaginatedSafeListProps) => {
+  const multiChainSafes = useMemo(() => safes?.filter(isMultiChainSafeItem), [safes])
+  const singleChainSafes = useMemo(() => safes?.filter((safe) => !isMultiChainSafeItem(safe)), [safes])
+
+  const totalSafes = !safes ? 0 : multiChainSafes?.length ?? 0 + (singleChainSafes?.length ?? 0)
   return (
     <Paper className={css.safeList}>
       <div className={css.listHeader}>
@@ -127,8 +116,15 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
         {action}
       </div>
 
-      {safes && safes.length > 0 ? (
-        <AllSafeListPages safes={safes} onLinkClick={onLinkClick} />
+      {totalSafes > 0 ? (
+        <>
+          {multiChainSafes && multiChainSafes.length > 0 && (
+            <AllSafeListPages safes={multiChainSafes} onLinkClick={onLinkClick} pageSize={1} />
+          )}
+          {singleChainSafes && singleChainSafes.length > 0 && (
+            <AllSafeListPages safes={singleChainSafes} onLinkClick={onLinkClick} pageSize={10} />
+          )}
+        </>
       ) : (
         <Typography variant="body2" color="text.secondary" textAlign="center" py={3} mx="auto" width={250}>
           {safes ? noSafesMessage : 'Loading...'}
