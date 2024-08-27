@@ -6,6 +6,7 @@ import ChainIndicator from '../ChainIndicator'
 import { useRouter } from 'next/router'
 import useWallet from '@/hooks/wallets/useWallet'
 import { getNetworkLink } from '.'
+import css from './styles.module.css'
 
 const NetworkMultiSelector = ({
   selectedNetworks,
@@ -53,9 +54,10 @@ const NetworkMultiSelector = ({
           <Chip
             variant="outlined"
             key={network.chainId}
-            label={<ChainIndicator chainId={network.chainId} inline />}
+            avatar={<ChainIndicator chainId={network.chainId} onlyLogo inline />}
+            label={network.chainName}
             onDelete={() => handleDelete(network)}
-            sx={{ py: 2, mr: 0.5, mb: 0.5 }}
+            className={css.multiChainChip}
           ></Chip>
         ))
       }

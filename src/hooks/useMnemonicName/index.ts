@@ -18,5 +18,5 @@ export const getRandomAdjective = (): string => {
 export const useMnemonicSafeName = (multiChain?: boolean): string => {
   const currentNetwork = useCurrentChain()?.chainName
   const adjective = useMemo(() => getRandomAdjective(), [])
-  return `${adjective} ${multiChain ? 'MultiChain' : currentNetwork} Safe`
+  return `${adjective} ${multiChain ? 'Multi-Chain' : currentNetwork} Safe`
 }

@@ -52,3 +52,8 @@
   align-items: center;
   gap: var(--space-1);
 }
+
+.multiChainChip {
+  padding: var(--space-2) 0;
+  margin: 2px;
+}
