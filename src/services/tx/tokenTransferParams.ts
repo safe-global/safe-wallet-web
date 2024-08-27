@@ -64,19 +64,22 @@ export const createNftTransferParams = (
   }
 }
 
-export const getNativeTransferData = (data: MetaTransactionData): DecodedDataResponse => {
+export const getNativeTransferData = ({
+  to,
+  value,
+}: Pick<MetaTransactionData, 'to' | 'value'>): DecodedDataResponse => {
   return {
     method: '',
     parameters: [
       {
         name: 'to',
         type: 'address',
-        value: data.to,
+        value: to,
       },
       {
         name: 'value',
         type: 'uint256',
-        value: data.value,
+        value,
       },
     ],
   }

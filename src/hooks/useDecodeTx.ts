@@ -17,21 +17,20 @@ const useDecodeTx = (
 ): AsyncResult<DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView> => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
-  const encodedData = tx?.data.data
-  const isEmptyData = !!encodedData && isEmptyHexData(encodedData)
-  const isRejection = isEmptyData && tx?.data.value === '0'
+  const { to, value, data } = tx?.data || {}
 
-  const [data, error, loading] = useAsync<
-    DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined
-  >(() => {
-    if (!encodedData || isEmptyData) {
-      const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
+  return useAsync<DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined>(() => {
+    if (to === undefined || value === undefined) return
+
+    const isEmptyData = !!data && isEmptyHexData(data)
+    if (!data || isEmptyData) {
+      const isRejection = isEmptyData && value === '0'
+      const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData({ to, value }) : undefined
       return Promise.resolve(nativeTransfer)
     }
-    return getConfirmationView(chainId, safeAddress, encodedData, tx.data.to, tx.data.value)
-  }, [chainId, encodedData, isEmptyData, tx?.data, isRejection, safeAddress])
 
-  return [data, error, loading]
+    return getConfirmationView(chainId, safeAddress, data, to, value)
+  }, [chainId, safeAddress, to, value, data])
 }
 
 export default useDecodeTx
