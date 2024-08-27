@@ -1,14 +1,17 @@
-import { Typography } from '@mui/material'
+import { Typography, Box } from '@mui/material'
 import { formatDuration, intervalToDuration } from 'date-fns'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { NativeStakingDepositConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenInfoPair from '@/components/tx/ConfirmationOrder/TokenInfoPair'
+import { safeFormatUnits } from '@/utils/formatters'
 
 type StakingOrderConfirmationViewProps = {
   order: NativeStakingDepositConfirmationView
   contractAddress: string
   value?: string
 }
+
+const ETH_PER_VALIDATOR = 32
 
 const formatSeconds = (seconds: number) => {
   const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
@@ -18,6 +21,11 @@ const formatSeconds = (seconds: number) => {
 }
 
 const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmationViewProps) => {
+  const amount = safeFormatUnits(BigInt(value || '0'), order.tokenInfo.decimals)
+  const validators = Number(amount) / ETH_PER_VALIDATOR
+  const ethRewards = (order.annualNrr / 100) * Number(amount)
+  const monthly = ethRewards / 12
+
   /* https://docs.api.kiln.fi/reference/getethnetworkstats */
   return (
     <>
@@ -34,20 +42,30 @@ const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmation
           },
         ]}
       />
-
-      <FieldsGrid title="Time to active *">{formatSeconds(order.estimatedEntryTime)}</FieldsGrid>
-      <FieldsGrid title="Time to exit">{formatSeconds(order.estimatedExitTime)}</FieldsGrid>
-      <FieldsGrid title="Time to withdraw">{formatSeconds(order.estimatedWithdrawalTime)}</FieldsGrid>
+      <FieldsGrid title="Annual rewards">
+        {ethRewards.toFixed(3)} {order.tokenInfo.symbol}
+      </FieldsGrid>
+      <FieldsGrid title="Monthly rewards">
+        {monthly.toFixed(3)} {order.tokenInfo.symbol}
+      </FieldsGrid>
       <FieldsGrid title="Fee">{order.fee}%</FieldsGrid>
-      <FieldsGrid title="Annual NRR">{order.annualNrr.toFixed(3)}%</FieldsGrid>
 
-      <Typography variant="body2" color="text.secondary" display="flex">
-        <span>*&nbsp;</span>
-        <span>
-          Estimated time to active is the time it takes for the staking order to be activated and start earning rewards
-          after executing this transaction.
-        </span>
-      </Typography>
+      <Box borderRadius={1} border="1px solid" borderColor="border.light" p={2}>
+        <Typography fontWeight="bold" mb={2}>
+          You will own{' '}
+          <Box component="span" bgcolor="border.background" px={1} py={0.5} borderRadius={1}>
+            {validators} Ethereum validator{validators === 1 ? '' : 's'}
+          </Box>
+        </Typography>
+
+        <FieldsGrid title="Active in">{formatSeconds(order.estimatedEntryTime)}</FieldsGrid>
+        <FieldsGrid title="Rewards">Approx. every 5 days after 4 days from activation</FieldsGrid>
+
+        <Typography variant="body2" color="text.secondary" mt={2}>
+          Earn ETH rewards with dedicated validators. Rewards must be withdrawn manually, and you can request a
+          withdrawal at any time.
+        </Typography>
+      </Box>
     </>
   )
 }

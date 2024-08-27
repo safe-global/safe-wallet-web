@@ -28,7 +28,7 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isCustomTxInfo } from '@/utils/transaction-guards'
+import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
@@ -167,7 +167,9 @@ export const SignOrExecuteForm = ({
               txId={props.txId}
               decodedData={decodedData}
               showMultisend={!props.isBatch}
-              showMethodCall={props.showMethodCall && !showTxDetails && !isApproval}
+              showMethodCall={
+                props.showMethodCall && !showTxDetails && !isApproval && isGenericConfirmation(decodedData)
+              }
             />
           </ErrorBoundary>
         )}

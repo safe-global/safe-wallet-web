@@ -155,6 +155,15 @@ export const isStakingConfirmationOrder = (
   return false
 }
 
+export const isGenericConfirmation = (
+  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+): decodedData is BaselineConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData.type === 'GENERIC'
+  }
+  return false
+}
+
 export const isCancelledSwapOrder = (value: TransactionInfo) => {
   return isSwapOrderTxInfo(value) && value.status === 'cancelled'
 }
