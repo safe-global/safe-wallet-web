@@ -24,7 +24,7 @@ describe('useMnemonicName tests', () => {
 
   it('should return a random safe name indicating a multichain safe', () => {
     const { result } = renderHook(() => useMnemonicSafeName(true))
-    const regex = new RegExp(`^[A-Z][a-z-]+ MultiChain Safe$`)
+    const regex = new RegExp(`^[A-Z][a-z-]+ Multi-Chain Safe$`)
     expect(result.current).toMatch(regex)
   })
 })
