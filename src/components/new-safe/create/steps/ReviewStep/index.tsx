@@ -174,16 +174,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     onBack(data)
   }
 
-  // TODO
   const handleCreateSafeClick = () => {
-    if (!data.networks || data.networks.length === 0) return
-
-    if (isMultiChainDeployment) {
-      for (const network of data.networks) {
-        createSafe(network)
-      }
+    for (const network of data.networks) {
+      createSafe(network)
     }
-    createSafe(chain)
   }
 
   const createSafe = async (chain: ChainInfo | undefined) => {
