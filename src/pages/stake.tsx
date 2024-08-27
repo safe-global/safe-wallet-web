@@ -20,8 +20,8 @@ const Swap: NextPage = () => {
     () => ({
       id: 1,
       url: `https://safe.widget.testnet.kiln.fi/earn?theme=${isDarkMode ? 'dark' : 'light'}`,
-      name: 'Earn',
-      iconUrl: './images/common/earn.svg',
+      name: 'Stake',
+      iconUrl: './images/common/stake.svg',
       description: 'Safe Apps',
       chainIds: ['17000', '11155111', '1', '42161', '137', '56', '8453', '10'],
       accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
