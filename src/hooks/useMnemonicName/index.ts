@@ -11,16 +11,12 @@ const getRandomItem = <T>(arr: T[]): T => {
   return arr[Math.floor(arr.length * Math.random())]
 }
 
-export const getRandomName = (noun = capitalize(getRandomItem<string>(animals))): string => {
-  const adj = capitalize(getRandomItem<string>(adjectives))
-  return `${adj} ${noun}`
-}
-
-export const useMnemonicName = (noun?: string): string => {
-  return useMemo(() => getRandomName(noun), [noun])
+export const getRandomAdjective = (): string => {
+  return capitalize(getRandomItem<string>(adjectives))
 }
 
 export const useMnemonicSafeName = (multiChain?: boolean): string => {
   const currentNetwork = useCurrentChain()?.chainName
-  return useMnemonicName(`${multiChain ? 'MultiChain' : currentNetwork} Safe`)
+  const adjective = useMemo(() => getRandomAdjective(), [])
+  return `${adjective} ${multiChain ? 'MultiChain' : currentNetwork} Safe`
 }
