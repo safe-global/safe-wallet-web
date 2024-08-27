@@ -414,9 +414,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           </Button>
           <Button
             data-testid="review-step-next-btn"
-            // onClick={() => createSafe(data.networks[0])}
             onClick={handleCreateSafeClick}
-            // onClick={isMultiChainDeployment ? createMultiChainSafe(data.chains) : createSafe(data.chains[0])}
             variant="contained"
             size="stretched"
             disabled={isDisabled}

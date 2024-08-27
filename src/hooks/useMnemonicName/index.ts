@@ -15,14 +15,10 @@ export const getRandomAdjective = () => {
 }
 
 export const getRandomName = (): string => {
-  const adj = capitalize(getRandomItem<string>(adjectives))
+  const adj = getRandomAdjective()
   return `${adj} Safe`
 }
 
-export const useMnemonicSafeName = (noun?: string): string => {
+export const useMnemonicSafeName = (): string => {
   return useMemo(() => getRandomName(), [])
 }
-
-// export const useMnemonicSafeName = (): string => {
-//   return useMnemonicName(` Safe`)
-// }

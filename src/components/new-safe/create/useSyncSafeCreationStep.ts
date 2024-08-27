@@ -10,7 +10,7 @@ const useSyncSafeCreationStep = (setStep: StepRenderProps<NewSafeFormData>['setS
   const currentChain = useCurrentChain()
 
   useEffect(() => {
-    // Jump to choose name and network step if the wallet is connected to the wrong chain and there is no pending Safe
+    // Jump to choose name and network step if there is no pending Safe or if the selected network does not match the connected network
     if (!wallet || (networks.length === 1 && currentChain?.chainId !== networks[0].chainId)) {
       setStep(0)
       return
