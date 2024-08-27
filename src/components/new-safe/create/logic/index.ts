@@ -19,7 +19,7 @@ import { backOff } from 'exponential-backoff'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
-import { ReplayedSafeProps } from '@/store/slices'
+import { type ReplayedSafeProps } from '@/store/slices'
 
 export type SafeCreationProps = {
   owners: string[]
