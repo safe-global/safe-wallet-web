@@ -53,6 +53,7 @@ function SetNameStep({
   const initialState = data.networks.length ? data.networks : currentChain ? [currentChain] : []
   const [networks, setNetworks] = useState<ChainInfo[]>(initialState)
 
+  const isMultiChain = networks.length > 1
   const fallbackName = useMnemonicSafeName()
 
   useSafeSetupHints(setDynamicHint, undefined, undefined, networks.length > 1)
