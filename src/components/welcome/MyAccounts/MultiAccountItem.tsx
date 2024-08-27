@@ -46,6 +46,11 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const [expanded, setExpanded] = useState(isCurrentSafe)
 
+  const isWatchlist = useMemo(
+    () => multiSafeAccountItem.safes.every((safe) => safe.isWatchlist),
+    [multiSafeAccountItem.safes],
+  )
+
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
   const toggleExpand = () => {
@@ -129,14 +134,18 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
               />
             ))}
           </Box>
-          <Divider />
-          <Box display="flex" alignItems="center" justifyContent="center">
-            <AddNetworkButton
-              currentName={name}
-              safeAddress={address}
-              deployedChains={safes.map((safe) => safe.chainId)}
-            />
-          </Box>
+          {!isWatchlist && (
+            <>
+              <Divider />
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <AddNetworkButton
+                  currentName={name}
+                  safeAddress={address}
+                  deployedChains={safes.map((safe) => safe.chainId)}
+                />
+              </Box>
+            </>
+          )}
         </AccordionDetails>
       </Accordion>
     </ListItemButton>

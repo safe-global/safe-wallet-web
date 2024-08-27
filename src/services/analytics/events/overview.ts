@@ -31,6 +31,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Remove from watchlist',
     category: OVERVIEW_CATEGORY,
   },
+  ADD_NEW_NETWORK: {
+    action: 'Add new network',
+    category: OVERVIEW_CATEGORY,
+  },
   DELETED_FROM_WATCHLIST: {
     action: 'Deleted from watchlist',
     category: OVERVIEW_CATEGORY,

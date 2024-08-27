@@ -33,10 +33,12 @@ const SafeListContextMenu = ({
   name,
   address,
   chainId,
+  addNetwork,
 }: {
   name: string
   address: string
   chainId: string
+  addNetwork: boolean
 }): ReactElement => {
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
@@ -92,12 +94,14 @@ const SafeListContextMenu = ({
           </MenuItem>
         )}
 
-        <MenuItem onClick={handleOpenModal(ModalType.ADD_CHAIN, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
-          <ListItemIcon>
-            <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" color="primary" />
-          </ListItemIcon>
-          <ListItemText data-testid="add-chain-btn">Add another network</ListItemText>
-        </MenuItem>
+        {addNetwork && (
+          <MenuItem onClick={handleOpenModal(ModalType.ADD_CHAIN, OVERVIEW_EVENTS.ADD_NEW_NETWORK)}>
+            <ListItemIcon>
+              <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" color="primary" />
+            </ListItemIcon>
+            <ListItemText data-testid="add-chain-btn">Add another network</ListItemText>
+          </MenuItem>
+        )}
       </ContextMenu>
 
       {open[ModalType.RENAME] && (

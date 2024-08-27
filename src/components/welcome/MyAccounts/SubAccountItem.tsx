@@ -112,7 +112,7 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
         </Link>
       </Track>
 
-      <SafeListContextMenu name={name} address={address} chainId={chainId} />
+      <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={false} />
 
       <QueueActions
         queued={safeOverview?.queued || 0}
