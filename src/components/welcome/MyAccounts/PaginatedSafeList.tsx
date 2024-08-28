@@ -98,7 +98,10 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
   const multiChainSafes = useMemo(() => safes?.filter(isMultiChainSafeItem), [safes])
   const singleChainSafes = useMemo(() => safes?.filter((safe) => !isMultiChainSafeItem(safe)), [safes])
 
-  const totalSafes = !safes ? 0 : multiChainSafes?.length ?? 0 + (singleChainSafes?.length ?? 0)
+  const totalMultiChainSafes = multiChainSafes?.length ?? 0
+  const totalSingleChainSafes = singleChainSafes?.length ?? 0
+  const totalSafes = totalMultiChainSafes + totalSingleChainSafes
+
   return (
     <Paper className={css.safeList}>
       <div className={css.listHeader}>
