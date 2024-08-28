@@ -17,7 +17,7 @@ export const ContentSecurityPolicy = `
      ? "'unsafe-eval'" // Dev server and cypress need unsafe-eval
      : "'wasm-unsafe-eval'"
  };
- frame-src http://* https://*;
+ frame-src http: https:;
  style-src 'self' 'unsafe-inline' https://*.getbeamer.com https://*.googleapis.com;
  font-src 'self' data:;
  worker-src 'self' blob:;
