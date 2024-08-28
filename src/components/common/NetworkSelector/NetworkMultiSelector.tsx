@@ -1,75 +1,92 @@
 import useChains from '@/hooks/useChains'
-import { type ReactElement, useState } from 'react'
+import { type ReactElement } from 'react'
 import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import ChainIndicator from '../ChainIndicator'
-import { useRouter } from 'next/router'
-import useWallet from '@/hooks/wallets/useWallet'
-import { getNetworkLink } from '.'
 import css from './styles.module.css'
+import { Controller, useFormContext } from 'react-hook-form'
+import { useRouter } from 'next/router'
+import { getNetworkLink } from '.'
+import useWallet from '@/hooks/wallets/useWallet'
 
-const NetworkMultiSelector = ({
-  selectedNetworks,
-  setSelectedNetworks,
-}: {
-  selectedNetworks: ChainInfo[]
-  setSelectedNetworks: (selectedChains: ChainInfo[]) => void
-}): ReactElement => {
+const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
   const { configs } = useChains()
-  const errorText = !selectedNetworks.length && 'Select at least one network'
+  const router = useRouter()
   const isWalletConnected = !!useWallet()
 
-  const router = useRouter()
+  const {
+    formState: { errors },
+    control,
+    getValues,
+    setValue,
+  } = useFormContext()
 
-  const [inputValue, setInputValue] = useState('')
-
-  const handleChange = (newValue: ChainInfo[]) => {
-    if (newValue.length === 1) {
-      const shortName = newValue[0].shortName
-      const networkLink = getNetworkLink(router.pathname, router.query, shortName, isWalletConnected)
-      router.push(networkLink)
-    }
-    setSelectedNetworks(newValue)
+  const handleDelete = (deletedChainId: string) => {
+    const currentValues: ChainInfo[] = getValues(name) || []
+    const updatedValues = currentValues.filter((chain) => chain.chainId !== deletedChainId)
+    updateSelectedNetwork(updatedValues)
+    setValue(name, updatedValues)
   }
 
-  const handleDelete = (optionToDelete: ChainInfo) => {
-    const updatedNetworks = selectedNetworks.filter((option) => option.chainId !== optionToDelete.chainId)
-    handleChange(updatedNetworks)
+  const updateSelectedNetwork = (chains: ChainInfo[]) => {
+    if (chains.length !== 1) return
+    const shortName = chains[0].shortName
+    const networkLink = getNetworkLink(router.pathname, router.query, shortName, isWalletConnected)
+    router.push(networkLink)
   }
 
   return (
-    <Autocomplete
-      multiple
-      value={selectedNetworks}
-      onChange={(_, newValue: ChainInfo[]) => handleChange(newValue)}
-      inputValue={inputValue}
-      onInputChange={(event, newInputValue) => {
-        setInputValue(newInputValue)
-      }}
-      options={configs}
-      getOptionLabel={(option) => option.chainName}
-      disableCloseOnSelect
-      renderTags={(selectedOptions, getTagProps) =>
-        selectedOptions.map((network) => (
-          <Chip
-            variant="outlined"
-            key={network.chainId}
-            avatar={<ChainIndicator chainId={network.chainId} onlyLogo inline />}
-            label={network.chainName}
-            onDelete={() => handleDelete(network)}
-            className={css.multiChainChip}
-          ></Chip>
-        ))
-      }
-      renderOption={(props, option, { selected }) => (
-        <li {...props}>
-          <Checkbox size="small" checked={selected} />
-          <ChainIndicator chainId={option.chainId} inline />
-        </li>
-      )}
-      renderInput={(params) => <TextField {...params} error={!!errorText} helperText={errorText} />}
-      sx={{ width: '100%', '&.MuiInputBase-root': { pr: 1 } }}
-    />
+    <>
+      <Controller
+        name={name}
+        control={control}
+        defaultValue={[]}
+        render={({ field }) => (
+          <Autocomplete
+            {...field}
+            multiple
+            value={field.value || []}
+            disableCloseOnSelect
+            options={configs}
+            renderTags={(selectedOptions, getTagProps) =>
+              selectedOptions.map((chain) => (
+                <Chip
+                  variant="outlined"
+                  key={chain.chainId}
+                  avatar={<ChainIndicator chainId={chain.chainId} onlyLogo inline />}
+                  label={chain.chainName}
+                  onDelete={() => handleDelete(chain.chainId)}
+                  className={css.multiChainChip}
+                ></Chip>
+              ))
+            }
+            renderOption={(props, chain, { selected }) => (
+              <li {...props}>
+                <Checkbox size="small" checked={selected} />
+                <ChainIndicator chainId={chain.chainId} inline />
+              </li>
+            )}
+            getOptionLabel={(option) => option.chainName}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={!!errors.networks}
+                helperText={errors.networks ? 'Select at least one network' : ''}
+              />
+            )}
+            filterOptions={(options, { inputValue }) =>
+              options.filter((option) => option.chainName.toLowerCase().includes(inputValue.toLowerCase()))
+            }
+            isOptionEqualToValue={(option, value) => option.chainId === value.chainId}
+            onChange={(_, data) => {
+              updateSelectedNetwork(data)
+              return field.onChange(data)
+            }}
+          />
+        )}
+        rules={{ required: true }}
+      />
+    </>
   )
 }
 
