@@ -101,8 +101,9 @@ export const TWITTER_URL = 'https://twitter.com/safe'
 // Legal
 export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST === 'true'
 
-// Risk mitigation (Redefine)
-export const BLOCKAID_API = process.env.NEXT_PUBLIC_BLOCKAID_API
+// Risk mitigation (Blockaid)
+export const BLOCKAID_API = 'https://client.blockaid.io'
+export const BLOCKAID_CLIENT_ID = process.env.NEXT_PUBLIC_BLOCKAID_CLIENT_ID
 export const REDEFINE_ARTICLE = 'https://safe.mirror.xyz/rInLWZwD_sf7enjoFerj6FIzCYmVMGrrV8Nhg4THdwI'
 
 export const CHAINALYSIS_OFAC_CONTRACT = '0x40c57923924b5c5c5455c48d93317139addac8fb'

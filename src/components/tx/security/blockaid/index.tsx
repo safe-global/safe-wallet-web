@@ -26,6 +26,7 @@ export const REASON_MAPPING: Record<string, string> = {
   permit_farming: 'authorizes access or permissions',
   seaport_farming: 'authorizes transfer of assets via Opeansea marketplace',
   blur_farming: 'authorizes transfer of assets via Blur marketplace',
+  delegatecall_execution: 'involves a delegate call',
 }
 
 export const CLASSIFICATION_MAPPING: Record<string, string> = {

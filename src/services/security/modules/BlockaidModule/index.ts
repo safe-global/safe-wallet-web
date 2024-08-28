@@ -5,7 +5,7 @@ import { generateTypedData } from '@safe-global/protocol-kit/dist/src/utils/eip-
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
 import type { AssetDiff, TransactionScanResponse } from './types'
-import { BLOCKAID_API } from '@/config/constants'
+import { BLOCKAID_API, BLOCKAID_CLIENT_ID } from '@/config/constants'
 
 /** @see https://docs.blockaid.io/docs/supported-chains */
 const API_CHAINS: Record<string, string> = {
@@ -86,8 +86,8 @@ export class BlockaidModule implements SecurityModule<BlockaidModuleRequest, Blo
     }
   }
   async scanTransaction(request: BlockaidModuleRequest): Promise<SecurityResponse<BlockaidModuleResponse>> {
-    if (!BLOCKAID_API) {
-      throw new Error('Security check API not configured')
+    if (!BLOCKAID_CLIENT_ID) {
+      throw new Error('Security check CLIENT_ID not configured')
     }
 
     const { chainId, safeAddress, data } = request
@@ -116,6 +116,7 @@ export class BlockaidModule implements SecurityModule<BlockaidModuleRequest, Blo
       headers: {
         'content-type': 'application/json',
         accept: 'application/json',
+        'X-CLIENT-ID': BLOCKAID_CLIENT_ID,
       },
       body: JSON.stringify(payload),
     })
