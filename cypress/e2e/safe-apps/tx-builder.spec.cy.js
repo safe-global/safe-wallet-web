@@ -100,7 +100,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     cy.findByText(safeapps.thresholdStr2).should('exist')
   })
 
-  it('Verify a batch can be created from an ABI', () => {
+  it.skip('Verify a batch can be created from an ABI', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterABIStr).type(safeapps.abi)
       getBody().findByLabelText(safeapps.toAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)

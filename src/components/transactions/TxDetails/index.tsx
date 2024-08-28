@@ -1,16 +1,12 @@
-import { POLLING_INTERVAL } from '@/config/constants'
 import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
-import useIntervalCounter from '@/hooks/useIntervalCounter'
-import React, { type ReactElement } from 'react'
+import React, { type ReactElement, useEffect } from 'react'
 import type { TransactionDetails, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-import { getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Box, CircularProgress, Typography } from '@mui/material'
 
 import TxSigners from '@/components/transactions/TxSigners'
 import Summary from '@/components/transactions/TxDetails/Summary'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import useChainId from '@/hooks/useChainId'
-import useAsync from '@/hooks/useAsync'
 import {
   isAwaitingExecution,
   isOrderTxInfo,
@@ -38,6 +34,9 @@ import { isImitation, isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import { SwapOrder } from '@/features/swap/components/SwapOrder'
+import { useGetTransactionDetailsQuery } from '@/store/gateway'
+import { asError } from '@/services/exceptions/utils'
+import { POLLING_INTERVAL } from '@/config/constants'
 
 export const NOT_AVAILABLE = 'n/a'
 
@@ -159,20 +158,22 @@ const TxDetails = ({
   const chainId = useChainId()
   const { safe } = useSafeInfo()
 
-  const [pollCount] = useIntervalCounter(POLLING_INTERVAL)
-  const swapPollCount = isOpenSwapOrder(txSummary.txInfo) ? pollCount : 0
-
-  const [txDetailsData, error, loading] = useAsync<TransactionDetails>(
-    async () => {
-      if (txDetails && swapPollCount <= 0) {
-        return txDetails
-      }
-      return getTransactionDetails(chainId, txSummary.id)
+  const {
+    data: txDetailsData,
+    error,
+    isLoading: loading,
+    refetch,
+    isUninitialized,
+  } = useGetTransactionDetailsQuery(
+    { chainId, txId: txSummary.id },
+    {
+      pollingInterval: isOpenSwapOrder(txSummary.txInfo) ? POLLING_INTERVAL : undefined,
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [txDetails, chainId, txSummary.id, safe.txQueuedTag, swapPollCount],
-    false,
   )
+
+  useEffect(() => {
+    !isUninitialized && refetch()
+  }, [safe.txQueuedTag, refetch, txDetails, isUninitialized])
 
   return (
     <div className={css.container}>
@@ -185,7 +186,7 @@ const TxDetails = ({
       ) : (
         error && (
           <div className={css.error}>
-            <ErrorMessage error={error}>Couldn&apos;t load the transaction details</ErrorMessage>
+            <ErrorMessage error={asError(error)}>Couldn&apos;t load the transaction details</ErrorMessage>
           </div>
         )
       )}
