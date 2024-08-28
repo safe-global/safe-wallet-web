@@ -3,16 +3,13 @@ import { formatDuration, intervalToDuration } from 'date-fns'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { NativeStakingDepositConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenInfoPair from '@/components/tx/ConfirmationOrder/TokenInfoPair'
-import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
+import { formatVisualAmount } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 
 type StakingOrderConfirmationViewProps = {
   order: NativeStakingDepositConfirmationView
-  contractAddress: string
-  value?: string
 }
 
-const ETH_PER_VALIDATOR = 32
 const CURRENCY = 'USD'
 
 const formatSeconds = (seconds: number) => {
@@ -22,17 +19,14 @@ const formatSeconds = (seconds: number) => {
   })
 }
 
-const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmationViewProps) => {
-  const amount = safeFormatUnits(BigInt(value || '0'), order.tokenInfo.decimals)
-  const validators = Number(amount) / ETH_PER_VALIDATOR
-
-  /* https://docs.api.kiln.fi/reference/getethnetworkstats */
+/* https://docs.api.kiln.fi/reference/getethnetworkstats */
+const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewProps) => {
   return (
-    <>
+    <Box display="flex" flexDirection="column" gap={2}>
       <TokenInfoPair
         blocks={[
           {
-            value: value || '',
+            value: order.value || '0',
             tokenInfo: order.tokenInfo,
             label: 'Deposit',
           },
@@ -43,14 +37,14 @@ const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmation
         ]}
       />
 
-      <FieldsGrid title="Annual rewards">
-        {formatVisualAmount(order.expectedAnnualReward.toString(), order.tokenInfo.decimals)} {order.tokenInfo.symbol}
+      <FieldsGrid title="Net annual rewards">
+        {formatVisualAmount(order.expectedAnnualReward, order.tokenInfo.decimals)} {order.tokenInfo.symbol}
         {' ('}
         {formatCurrency(order.expectedFiatAnnualReward, CURRENCY)})
       </FieldsGrid>
 
-      <FieldsGrid title="Monthly rewards">
-        {formatVisualAmount(order.expectedMonthlyReward.toString(), order.tokenInfo.decimals)} {order.tokenInfo.symbol}
+      <FieldsGrid title="Net monthly rewards">
+        {formatVisualAmount(order.expectedMonthlyReward, order.tokenInfo.decimals)} {order.tokenInfo.symbol}
         {' ('}
         {formatCurrency(order.expectedFiatMonthlyReward, CURRENCY)})
       </FieldsGrid>
@@ -61,7 +55,7 @@ const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmation
         <Typography fontWeight="bold" mb={2}>
           You will own{' '}
           <Box component="span" bgcolor="border.background" px={1} py={0.5} borderRadius={1}>
-            {validators} Ethereum validator{validators === 1 ? '' : 's'}
+            {order.numValidators} Ethereum validator{order.numValidators === 1 ? '' : 's'}
           </Box>
         </Typography>
 
@@ -73,7 +67,7 @@ const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmation
           withdrawal at any time.
         </Typography>
       </Box>
-    </>
+    </Box>
   )
 }
 

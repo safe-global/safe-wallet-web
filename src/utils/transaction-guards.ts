@@ -33,6 +33,7 @@ import type {
   TransferInfo,
   TwapOrder,
   TwapOrderConfirmationView,
+  StakingTxInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -118,6 +119,10 @@ export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder =>
 
 export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder => {
   return value.type === TransactionInfoType.TWAP_ORDER
+}
+
+export const isStakingTxInfo = (value: TransactionInfo): value is StakingTxInfo => {
+  return value.type === TransactionInfoType.NATIVE_STAKING_DEPOSIT
 }
 
 export const isTwapConfirmationViewOrder = (

@@ -152,7 +152,7 @@ export const SignOrExecuteForm = ({
 
         {decodedData && (
           <ErrorBoundary fallback={<></>}>
-            <ConfirmationOrder decodedData={decodedData} toAddress={safeTx?.data.to ?? ''} value={safeTx?.data.value} />
+            <ConfirmationOrder decodedData={decodedData} toAddress={safeTx?.data.to ?? ''} />
           </ErrorBoundary>
         )}
 

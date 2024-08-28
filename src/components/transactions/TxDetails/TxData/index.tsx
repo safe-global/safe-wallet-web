@@ -4,8 +4,10 @@ import {
   isCancellationTxInfo,
   isCustomTxInfo,
   isMultisigDetailedExecutionInfo,
+  isOrderTxInfo,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
+  isStakingTxInfo,
   isSupportedSpendingLimitAddress,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
@@ -16,6 +18,8 @@ import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejectio
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
+import SwapOrder from '@/features/swap/components/SwapOrder'
+import StakingTxDetails from '@/features/stake/components/StakingTxDetails'
 
 const TxData = ({
   txDetails,
@@ -29,6 +33,14 @@ const TxData = ({
   const chainId = useChainId()
   const txInfo = txDetails.txInfo
   const toInfo = isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined
+
+  if (isOrderTxInfo(txDetails.txInfo)) {
+    return <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
+  }
+
+  if (isStakingTxInfo(txDetails.txInfo)) {
+    return <StakingTxDetails txData={txDetails.txData} info={txDetails.txInfo} />
+  }
 
   if (isTransferTxInfo(txInfo)) {
     return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} imitation={imitation} />
