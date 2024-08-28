@@ -77,7 +77,7 @@ describe('CheckWallet', () => {
     )
   })
 
-  it('should show the network switch button when connected to the wrong network', () => {
+  it('should be disabled when connected to the wrong network', () => {
     ;(useIsWrongChain as jest.MockedFunction<typeof useIsWrongChain>).mockReturnValue(true)
     ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
 
@@ -86,7 +86,7 @@ describe('CheckWallet', () => {
 
     const { container } = renderButtonWithNetworkCheck()
 
-    expect(container.querySelector('button')).not.toBeDisabled()
+    expect(container.querySelector('button')).toBeDisabled()
   })
 
   it('should not disable the button for non-owner spending limit benificiaries', () => {
