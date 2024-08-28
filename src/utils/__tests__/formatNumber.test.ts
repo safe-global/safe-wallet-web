@@ -1,4 +1,4 @@
-import { formatAmountPrecise, formatAmount, formatCurrency } from '@/utils/formatNumber'
+import { formatAmountPrecise, formatAmount, formatCurrency, formatCurrencyPrecise } from '@/utils/formatNumber'
 
 describe('formatNumber', () => {
   describe('formatAmountPrecise', () => {
@@ -56,6 +56,38 @@ describe('formatNumber', () => {
 
     it('should abbreviate a number with more than a given amount of digits', () => {
       expect(formatCurrency(1234.12, 'USD', 4)).toBe('$ 1.23K')
+    })
+  })
+
+  describe('formatCurrencyPrecise', () => {
+    it('should format the number correctly for USD', () => {
+      const result = formatCurrencyPrecise(1234.56, 'USD')
+      expect(result).toBe('$ 1,234.56')
+    })
+
+    it('should format the number correctly for EUR', () => {
+      const result = formatCurrencyPrecise(1234.56, 'EUR')
+      expect(result).toBe('€ 1,234.56')
+    })
+
+    it('should handle string input as number', () => {
+      const result = formatCurrencyPrecise('1234.56', 'USD')
+      expect(result).toBe('$ 1,234.56')
+    })
+
+    it('should add the narrow non-breaking space after the currency symbol', () => {
+      const result = formatCurrencyPrecise(1234.56, 'USD')
+      expect(result).toBe('$ 1,234.56')
+    })
+
+    it('should format the number correctly with 5 decimal places for USD', () => {
+      const result = formatCurrencyPrecise(1234.56789, 'USD')
+      expect(result).toBe('$ 1,234.57')
+    })
+
+    it('should return "NaN" for invalid number input', () => {
+      const result = formatCurrencyPrecise('invalid-number', 'USD')
+      expect(result).toBe('$NaN ')
     })
   })
 })
