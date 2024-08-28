@@ -3,7 +3,8 @@ import { formatDuration, intervalToDuration } from 'date-fns'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { NativeStakingDepositConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenInfoPair from '@/components/tx/ConfirmationOrder/TokenInfoPair'
-import { safeFormatUnits } from '@/utils/formatters'
+import { formatVisualAmount, safeFormatUnits } from '@/utils/formatters'
+import { formatCurrency } from '@/utils/formatNumber'
 
 type StakingOrderConfirmationViewProps = {
   order: NativeStakingDepositConfirmationView
@@ -12,6 +13,7 @@ type StakingOrderConfirmationViewProps = {
 }
 
 const ETH_PER_VALIDATOR = 32
+const CURRENCY = 'USD'
 
 const formatSeconds = (seconds: number) => {
   const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
@@ -23,8 +25,6 @@ const formatSeconds = (seconds: number) => {
 const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmationViewProps) => {
   const amount = safeFormatUnits(BigInt(value || '0'), order.tokenInfo.decimals)
   const validators = Number(amount) / ETH_PER_VALIDATOR
-  const ethRewards = (order.annualNrr / 100) * Number(amount)
-  const monthly = ethRewards / 12
 
   /* https://docs.api.kiln.fi/reference/getethnetworkstats */
   return (
@@ -42,12 +42,19 @@ const StakingOrderConfirmationView = ({ order, value }: StakingOrderConfirmation
           },
         ]}
       />
+
       <FieldsGrid title="Annual rewards">
-        {ethRewards.toFixed(3)} {order.tokenInfo.symbol}
+        {formatVisualAmount(order.expectedAnnualReward.toString(), order.tokenInfo.decimals)} {order.tokenInfo.symbol}
+        {' ('}
+        {formatCurrency(order.expectedFiatAnnualReward, CURRENCY)})
       </FieldsGrid>
+
       <FieldsGrid title="Monthly rewards">
-        {monthly.toFixed(3)} {order.tokenInfo.symbol}
+        {formatVisualAmount(order.expectedMonthlyReward.toString(), order.tokenInfo.decimals)} {order.tokenInfo.symbol}
+        {' ('}
+        {formatCurrency(order.expectedFiatMonthlyReward, CURRENCY)})
       </FieldsGrid>
+
       <FieldsGrid title="Fee">{order.fee}%</FieldsGrid>
 
       <Box borderRadius={1} border="1px solid" borderColor="border.light" p={2}>
