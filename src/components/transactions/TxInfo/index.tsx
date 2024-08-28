@@ -25,7 +25,6 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
 import { Box } from '@mui/material'
 import css from './styles.module.css'
-import classNames from 'classnames'
 
 export const TransferTx = ({
   info,
@@ -87,51 +86,39 @@ export const TransferTx = ({
   return <></>
 }
 
-const CustomTx = ({ info, truncateText }: { info: Custom; truncateText?: boolean }): ReactElement => {
-  return <Box className={classNames({ [css.txInfo]: truncateText })}>{info.methodName}</Box>
+const CustomTx = ({ info }: { info: Custom }): ReactElement => {
+  return <Box className={css.txInfo}>{info.methodName}</Box>
 }
 
-const CreationTx = ({ info, truncateText }: { info: Creation; truncateText?: boolean }): ReactElement => {
-  return (
-    <Box className={classNames({ [css.txInfo]: truncateText })}>Created by {shortenAddress(info.creator.value)}</Box>
-  )
+const CreationTx = ({ info }: { info: Creation }): ReactElement => {
+  return <Box className={css.txInfo}>Created by {shortenAddress(info.creator.value)}</Box>
 }
 
-const MultiSendTx = ({ info, truncateText }: { info: MultiSend; truncateText?: boolean }): ReactElement => {
+const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   return (
-    <Box className={classNames({ [css.txInfo]: truncateText })}>
+    <Box className={css.txInfo}>
       {info.actionCount} {`action${info.actionCount > 1 ? 's' : ''}`}
     </Box>
   )
 }
 
-const SettingsChangeTx = ({ info, truncateText }: { info: SettingsChange; truncateText?: boolean }): ReactElement => {
+const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   if (
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
     info.settingsInfo?.type === SettingsInfoType.DISABLE_MODULE
   ) {
-    return <Box className={classNames({ [css.txInfo]: truncateText })}>{info.settingsInfo.module.name}</Box>
+    return <Box className={css.txInfo}>{info.settingsInfo.module.name}</Box>
   }
-
   return <></>
 }
 
-const TxInfo = ({
-  info,
-  truncateText,
-  ...rest
-}: {
-  info: TransactionInfo
-  omitSign?: boolean
-  withLogo?: boolean
-  truncateText?: boolean
-}): ReactElement => {
+const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; withLogo?: boolean }): ReactElement => {
   if (isSettingsChangeTxInfo(info)) {
-    return <SettingsChangeTx info={info} truncateText={truncateText} />
+    return <SettingsChangeTx info={info} />
   }
 
   if (isMultiSendTxInfo(info)) {
-    return <MultiSendTx info={info} truncateText={truncateText} />
+    return <MultiSendTx info={info} />
   }
 
   if (isTransferTxInfo(info)) {
@@ -139,15 +126,15 @@ const TxInfo = ({
   }
 
   if (isCustomTxInfo(info)) {
-    return <CustomTx info={info} truncateText={truncateText} />
+    return <CustomTx info={info} />
   }
 
   if (isCreationTxInfo(info)) {
-    return <CreationTx info={info} truncateText={truncateText} />
+    return <CreationTx info={info} />
   }
 
   if (isOrderTxInfo(info)) {
-    return <SwapTx info={info} truncateText={truncateText} />
+    return <SwapTx info={info} />
   }
 
   return <></>

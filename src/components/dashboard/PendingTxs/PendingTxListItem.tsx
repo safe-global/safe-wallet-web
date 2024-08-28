@@ -46,7 +46,7 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
           </Box>
 
           <Box minWidth={0} flexGrow={1}>
-            <TxInfo truncateText info={transaction.txInfo} />
+            <TxInfo info={transaction.txInfo} />
           </Box>
         </Box>
 
