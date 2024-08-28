@@ -6,7 +6,6 @@ import type {
   Creation,
   Custom,
   DateLabel,
-  DecodedDataResponse,
   DetailedExecutionInfo,
   Erc20Transfer,
   Erc721Transfer,
@@ -20,7 +19,8 @@ import type {
   NativeCoinTransfer,
   NativeStakingDepositConfirmationView,
   Order,
-  OrderConfirmationView,
+  AnyConfirmationView,
+  AnySwapOrderConfirmationView,
   SafeInfo,
   SettingsChange,
   SwapOrder,
@@ -121,7 +121,7 @@ export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder =>
 }
 
 export const isTwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+  decodedData: AnyConfirmationView | undefined,
 ): decodedData is TwapOrderConfirmationView => {
   if (decodedData && 'type' in decodedData) {
     return decodedData.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
@@ -131,7 +131,7 @@ export const isTwapConfirmationViewOrder = (
 }
 
 export const isSwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+  decodedData: AnyConfirmationView | undefined,
 ): decodedData is SwapOrderConfirmationView => {
   if (decodedData && 'type' in decodedData) {
     return decodedData.type === ConfirmationViewTypes.COW_SWAP_ORDER
@@ -141,13 +141,13 @@ export const isSwapConfirmationViewOrder = (
 }
 
 export const isAnySwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
-): decodedData is SwapOrderConfirmationView | TwapOrderConfirmationView => {
+  decodedData: AnyConfirmationView | undefined,
+): decodedData is AnySwapOrderConfirmationView => {
   return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
 }
 
 export const isStakingConfirmationOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+  decodedData: AnyConfirmationView | undefined,
 ): decodedData is NativeStakingDepositConfirmationView => {
   if (decodedData && 'type' in decodedData) {
     return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
@@ -156,10 +156,10 @@ export const isStakingConfirmationOrder = (
 }
 
 export const isGenericConfirmation = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+  decodedData: AnyConfirmationView | undefined,
 ): decodedData is BaselineConfirmationView => {
   if (decodedData && 'type' in decodedData) {
-    return decodedData.type === 'GENERIC'
+    return decodedData.type === ConfirmationViewTypes.GENERIC
   }
   return false
 }
