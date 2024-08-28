@@ -82,6 +82,15 @@ describe('transactions', () => {
       expect(getTxOrigin(app)).toBe('{"url":"https://test.com","name":"Test name"}')
     })
 
+    it('should return a stringified object with the app name and url with a query param', () => {
+      const app = {
+        url: 'https://test.com/hello?world=1',
+        name: 'Test name',
+      } as SafeAppData
+
+      expect(getTxOrigin(app)).toBe('{"url":"https://test.com/hello","name":"Test name"}')
+    })
+
     it('should limit the origin to 200 characters with preference of the URL', () => {
       const app = {
         url: 'https://test.com/' + 'a'.repeat(160),

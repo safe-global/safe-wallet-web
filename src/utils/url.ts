@@ -36,8 +36,8 @@ export const sanitizeUrl = (url: string): string => {
 
 export const getOriginPath = (url: string): string => {
   try {
-    const urlObj = new URL(url)
-    return urlObj.origin + urlObj.pathname
+    const { origin, pathname } = new URL(url)
+    return origin + (pathname === '/' ? '' : pathname)
   } catch (e) {
     console.error('Error parsing URL', url, e)
     return url
