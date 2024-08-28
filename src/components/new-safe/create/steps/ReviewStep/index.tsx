@@ -333,7 +333,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               />
             </Grid>
 
-            {isWrongChain && <NetworkWarning />}
+            <NetworkWarning action="create a Safe Account" />
 
             {!walletCanPay && !willRelay && (
               <ErrorMessage>

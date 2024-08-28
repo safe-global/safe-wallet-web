@@ -4,7 +4,6 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
-import ChainSwitcher from '../ChainSwitcher'
 import { Tooltip } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
@@ -36,10 +35,6 @@ const CheckWallet = ({
   const isWrongChain = useIsWrongChain()
   const { safe } = useSafeInfo()
 
-  if (checkNetwork && isWrongChain) {
-    return <ChainSwitcher primaryCta />
-  }
-
   const isCounterfactualMultiSig = !allowNonOwner && !safe.deployed && safe.threshold > 1
 
   const message =
@@ -51,6 +46,7 @@ const CheckWallet = ({
       ? Message.CounterfactualMultisig
       : Message.NotSafeOwner
 
+  if (checkNetwork && isWrongChain) return children(false)
   if (!message) return children(true)
   if (noTooltip) return children(false)
 

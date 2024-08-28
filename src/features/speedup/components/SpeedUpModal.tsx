@@ -1,7 +1,7 @@
 import useGasPrice from '@/hooks/useGasPrice'
 import ModalDialog from '@/components/common/ModalDialog'
 import DialogContent from '@mui/material/DialogContent'
-import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
 import RocketSpeedup from '@/public/images/common/ic-rocket-speedup.svg'
 import DialogActions from '@mui/material/DialogActions'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -28,6 +28,7 @@ import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 type Props = {
   open: boolean
@@ -192,6 +193,9 @@ export const SpeedUpModal = ({
               />
             )}
           </Box>
+          <Box sx={{ '&:not(:empty)': { mt: 3 } }}>
+            <NetworkWarning />
+          </Box>
         </DialogContent>
 
         <DialogActions>
@@ -207,7 +211,7 @@ export const SpeedUpModal = ({
                   variant="contained"
                   disableElevation
                 >
-                  {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
+                  {isDisabled ? <CircularProgress size={20} /> : 'Confirm'}
                 </Button>
               )}
             </CheckWallet>

@@ -11,7 +11,6 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { RedefineBalanceChanges } from '@/components/tx/security/redefine/RedefineBalanceChange'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import TxChecks from '@/components/tx/SignOrExecuteForm/TxChecks'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import TxCard from '../../common/TxCard'
 import { SafeTxContext } from '../../SafeTxProvider'
@@ -34,6 +33,7 @@ import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlowProps }): ReactElement | null {
   // Form state
@@ -154,7 +154,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           )}
 
-          <WrongChainWarning />
+          <NetworkWarning />
 
           {recovery?.delay !== undefined && (
             <ErrorMessage level="info">

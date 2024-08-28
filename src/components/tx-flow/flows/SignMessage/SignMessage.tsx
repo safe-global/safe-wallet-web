@@ -56,7 +56,7 @@ import { useRouter } from 'next/router'
 import MsgShareLink from '@/components/safe-messages/MsgShareLink'
 import LinkIcon from '@/public/images/messages/link.svg'
 import CheckWallet from '@/components/common/CheckWallet'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -361,7 +361,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
               />
             )}
 
-            <WrongChainWarning />
+            <NetworkWarning />
 
             <MessageDialogError isOwner={isOwner} submitError={submitError} />
 

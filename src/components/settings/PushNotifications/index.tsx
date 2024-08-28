@@ -33,6 +33,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import ExternalLink from '@/components/common/ExternalLink'
 
 import css from './styles.module.css'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export const PushNotifications = (): ReactElement => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -119,6 +120,7 @@ export const PushNotifications = (): ReactElement => {
               {safeLoaded ? (
                 <>
                   <Divider />
+                  <NetworkWarning action="change your notification settings" />
 
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <EthHashInfo

@@ -28,7 +28,7 @@ import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import { safeParseUnits } from '@/utils/formatters'
 import CheckWallet from '@/components/common/CheckWallet'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export type SpendingLimitTxParams = {
   safeAddress: string
@@ -139,7 +139,7 @@ const ReviewSpendingLimitTx = ({
 
         <AdvancedParams params={advancedParams} willExecute={true} onFormSubmit={setManualParams} />
 
-        <WrongChainWarning />
+        <NetworkWarning />
 
         {submitError && (
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>

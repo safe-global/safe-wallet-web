@@ -32,13 +32,13 @@ import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfi
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { WrongChainWarning } from '../WrongChainWarning'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -193,7 +193,7 @@ export const SignOrExecuteForm = ({
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
 
-        <WrongChainWarning />
+        <NetworkWarning />
 
         <UnknownContractError />
 

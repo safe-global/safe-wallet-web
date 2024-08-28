@@ -13,7 +13,6 @@ import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/Execut
 import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import { TxSimulation } from '@/components/tx/security/tenderly'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
@@ -39,6 +38,7 @@ import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { useGetMultipleTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -190,7 +190,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       <TxCard>
         <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
 
-        <WrongChainWarning />
+        <NetworkWarning />
 
         {canRelay ? (
           <>
