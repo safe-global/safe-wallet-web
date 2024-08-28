@@ -3,7 +3,6 @@ import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@/utils/chains'
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getReadOnlyMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
 import { useCurrentChain } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -20,7 +19,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
 import { dispatchBatchExecution, dispatchBatchExecutionRelay } from '@/services/tx/tx-sender'
 import { hasRemainingRelays } from '@/utils/relaying'
-import { getTxsWithDetails, getMultiSendTxs } from '@/utils/transactions'
+import { getMultiSendTxs } from '@/utils/transactions'
 import TxCard from '../../common/TxCard'
 import CheckWallet from '@/components/common/CheckWallet'
 import type { ExecuteBatchFlowProps } from '.'
@@ -36,9 +35,11 @@ import { trackEvent } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
+import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
+import { useGetMultipleTransactionDetailsQuery } from '@/store/gateway'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -53,6 +54,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
   const userNonce = useUserNonce()
 
+  const latestSafeVersion = getLatestSafeVersion(chain)
+
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
 
@@ -64,10 +67,18 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const onboard = useOnboard()
   const wallet = useWallet()
 
-  const [txsWithDetails, error, loading] = useAsync<TransactionDetails[]>(() => {
-    if (!chain?.chainId) return
-    return getTxsWithDetails(params.txs, chain.chainId)
-  }, [params.txs, chain?.chainId])
+  const {
+    data: txsWithDetails,
+    error,
+    isLoading: loading,
+  } = useGetMultipleTransactionDetailsQuery(
+    chain?.chainId && params.txs.length
+      ? {
+          chainId: chain.chainId,
+          txIds: params.txs.map((tx) => tx.transaction.id),
+        }
+      : skipToken,
+  )
 
   const [multiSendContract] = useAsync(async () => {
     if (!safe.version) return
@@ -121,7 +132,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       multiSendTxData,
       safe.chainId,
       safe.address.value,
-      safe.version ?? LATEST_SAFE_VERSION,
+      safe.version ?? latestSafeVersion,
     )
   }
 
@@ -158,8 +169,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         <Typography variant="body2">
           This transaction batches a total of {params.txs.length} transactions from your queue into a single Ethereum
           transaction. Please check every included transaction carefully, especially if you have rejection transactions,
-          and make sure you want to execute all of them. Included transactions are highlighted in green when you hover
-          over the execute button.
+          and make sure you want to execute all of them. Included transactions are highlighted when you hover over the
+          execute button.
         </Typography>
 
         {multiSendContract && <SendToBlock address={multisendContractAddress} title="Interact with" />}
@@ -201,7 +212,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
         </Alert>
 
         {error && (
-          <ErrorMessage error={error}>
+          <ErrorMessage error={asError(error)}>
             This transaction will most likely fail. To save gas costs, avoid creating the transaction.
           </ErrorMessage>
         )}

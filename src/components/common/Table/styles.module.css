@@ -29,6 +29,10 @@
   word-break: break-all;
 }
 
+.title span:nth-child(2) {
+  word-break: normal;
+}
+
 .gridRow > * {
   flex-shrink: 0;
 }
