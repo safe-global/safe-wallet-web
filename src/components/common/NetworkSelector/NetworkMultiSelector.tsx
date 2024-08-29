@@ -10,6 +10,7 @@ import { getNetworkLink } from '.'
 import useWallet from '@/hooks/wallets/useWallet'
 import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameStep'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 const ZKSYNC_ID = '324'
 
@@ -25,7 +26,7 @@ const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
     setValue,
   } = useFormContext()
 
-  const selectedSafeVersion = useWatch({ control, name: SetNameStepFields.safeVersion })
+  const selectedNetworkSafeVersion = useWatch({ control, name: SetNameStepFields.safeVersion })
   const selectedNetworks = useWatch({ control, name: SetNameStepFields.networks })
 
   const handleDelete = (deletedChainId: string) => {
@@ -42,18 +43,16 @@ const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
     router.push(networkLink)
   }
 
-  const isOptionDisabled = (chain: ChainInfo) => {
+  const isOptionDisabled = (optionNetwork: ChainInfo) => {
     if (selectedNetworks.length === 0) return false
 
     // zkSync safes cannot be deployed as part of a multichain group
-    const isZkSync = chain.chainId === ZKSYNC_ID
-    const isZkSyncSelected = selectedNetworks[0].chainId === ZKSYNC_ID
-    if (isZkSyncSelected) return !isZkSync
-    if (selectedNetworks.length > 0 && isZkSync) return true
+    if (selectedNetworks[0].chainId === ZKSYNC_ID) return optionNetwork.chainId !== ZKSYNC_ID
+    if (optionNetwork.chainId === ZKSYNC_ID) return optionNetwork.chainId === ZKSYNC_ID
 
-    // Safes in a multichain group must have the same version
-    const safeVersion = getLatestSafeVersion(chain)
-    return safeVersion !== selectedSafeVersion
+    // Multichain is only available for 1.4.1 networks
+    if (selectedNetworkSafeVersion !== LATEST_SAFE_VERSION) return selectedNetworks[0].chainId !== optionNetwork.chainId
+    return getLatestSafeVersion(optionNetwork) !== LATEST_SAFE_VERSION
   }
 
   return (
