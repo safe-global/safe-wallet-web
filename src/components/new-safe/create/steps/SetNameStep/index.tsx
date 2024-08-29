@@ -42,10 +42,12 @@ function SetNameStep({
   setSafeName,
   setOverviewNetworks,
   setDynamicHint,
+  isAdvancedFlow = false,
 }: StepRenderProps<NewSafeFormData> & {
   setSafeName: (name: string) => void
   setOverviewNetworks: (networks: ChainInfo[]) => void
   setDynamicHint: (hints: CreateSafeInfoItem | undefined) => void
+  isAdvancedFlow?: boolean
 }) {
   const router = useRouter()
   const currentChain = useCurrentChain()
@@ -129,7 +131,7 @@ function SetNameStep({
               <Typography variant="body2" mb={2}>
                 Choose which networks you want your account to be active on. You can add more networks later.{' '}
               </Typography>
-              <NetworkMultiSelector name={SetNameStepFields.networks} />
+              <NetworkMultiSelector isAdvancedFlow={isAdvancedFlow} name={SetNameStepFields.networks} />
             </Grid>
           </Grid>
           <Typography variant="body2" mt={2}>

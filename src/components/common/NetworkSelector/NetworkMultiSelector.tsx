@@ -14,7 +14,13 @@ import { LATEST_SAFE_VERSION } from '@/config/constants'
 
 const ZKSYNC_ID = '324'
 
-const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
+const NetworkMultiSelector = ({
+  name,
+  isAdvancedFlow = false,
+}: {
+  name: string
+  isAdvancedFlow?: boolean
+}): ReactElement => {
   const { configs } = useChains()
   const router = useRouter()
   const isWalletConnected = !!useWallet()
@@ -45,6 +51,9 @@ const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
 
   const isOptionDisabled = (optionNetwork: ChainInfo) => {
     if (selectedNetworks.length === 0) return false
+
+    // do not allow multi chain safes for advanced setup flow.
+    if (isAdvancedFlow) return optionNetwork.chainId != selectedNetworks[0].chainId
 
     // zkSync safes cannot be deployed as part of a multichain group
     if (selectedNetworks[0].chainId === ZKSYNC_ID) return optionNetwork.chainId !== ZKSYNC_ID
