@@ -1,6 +1,7 @@
 import { CreateSafeOnNewChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 import { Button } from '@mui/material'
 import { useState } from 'react'
+import PlusIcon from '@/public/images/common/plus.svg'
 
 export const AddNetworkButton = ({
   safeAddress,
@@ -16,7 +17,7 @@ export const AddNetworkButton = ({
   return (
     <>
       <Button variant="text" fullWidth onClick={() => setOpen(true)}>
-        + Add another network
+        <PlusIcon /> Add another network
       </Button>
 
       {open && (
