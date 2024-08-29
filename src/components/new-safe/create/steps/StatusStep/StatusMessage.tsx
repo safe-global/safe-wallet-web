@@ -72,7 +72,9 @@ const StatusMessage = ({
             {stepInfo.instruction}
           </Typography>
         )}
-        {!isError && explorerLink && <ExternalLink href={explorerLink.href}>Check Status</ExternalLink>}
+        {!isError && explorerLink && (
+          <ExternalLink href={explorerLink.href}>Check status on block explorer</ExternalLink>
+        )}
       </Box>
     </>
   )
