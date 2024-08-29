@@ -12,11 +12,12 @@ import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
 import { type ReactElement, useMemo } from 'react'
 import { useCallback } from 'react'
-import { AppRoutes } from '@/config/routes'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
-import useWallet from '@/hooks/wallets/useWallet'
-import { useAppSelector } from '@/store'
-import { selectChains } from '@/store/chainsSlice'
+
+import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { sameAddress } from '@/utils/addresses'
+import uniq from 'lodash/uniq'
 
 const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
   const isDarkMode = useDarkMode()
@@ -24,26 +25,49 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
   const { configs } = useChains()
   const chainId = useChainId()
   const router = useRouter()
-  const isWalletConnected = !!useWallet()
-  const [testNets, prodNets] = useMemo(() => partition(configs, (config) => config.isTestnet), [configs])
-  const chains = useAppSelector(selectChains)
+  const safeAddress = useSafeAddress()
+
+  const isSafeOpened = safeAddress !== ''
+
+  const safesGrouped = useAllSafesGrouped()
+  const availableChainIds = useMemo(() => {
+    if (!isSafeOpened) {
+      // Offer all chains
+      return configs.map((config) => config.chainId)
+    }
+    return uniq([
+      chainId,
+      ...(safesGrouped.allMultiChainSafes
+        ?.find((item) => sameAddress(item.address, safeAddress))
+        ?.safes.map((safe) => safe.chainId) ?? []),
+    ])
+  }, [chainId, configs, isSafeOpened, safeAddress, safesGrouped.allMultiChainSafes])
+
+  const [testNets, prodNets] = useMemo(
+    () =>
+      partition(
+        configs.filter((config) => availableChainIds.includes(config.chainId)),
+        (config) => config.isTestnet,
+      ),
+    [availableChainIds, configs],
+  )
 
   const getNetworkLink = useCallback(
     (shortName: string) => {
-      const shouldKeepPath = !router.query.safe
-
+      const query = (
+        isSafeOpened
+          ? {
+              safe: `${shortName}:${safeAddress}`,
+            }
+          : { chain: shortName }
+      ) as {
+        safe?: string
+        chain?: string
+        safeViewRedirectURL?: string
+      }
       const route = {
-        pathname: shouldKeepPath
-          ? router.pathname
-          : isWalletConnected
-          ? AppRoutes.welcome.accounts
-          : AppRoutes.welcome.index,
-        query: {
-          chain: shortName,
-        } as {
-          chain: string
-          safeViewRedirectURL?: string
-        },
+        pathname: router.pathname,
+        query,
       }
 
       if (router.query?.safeViewRedirectURL) {
@@ -52,7 +76,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
 
       return route
     },
-    [router, isWalletConnected],
+    [isSafeOpened, router.pathname, router.query?.safeViewRedirectURL, safeAddress],
   )
 
   const onChange = (event: SelectChangeEvent) => {
@@ -69,7 +93,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
 
   const renderMenuItem = useCallback(
     (chainId: string, isSelected: boolean) => {
-      const chain = chains.data.find((chain) => chain.chainId === chainId)
+      const chain = configs.find((chain) => chain.chainId === chainId)
       if (!chain) return null
       return (
         <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
@@ -79,7 +103,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
         </MenuItem>
       )
     },
-    [chains.data, getNetworkLink, props.onChainSelect],
+    [configs, getNetworkLink, props.onChainSelect],
   )
 
   return configs.length ? (
@@ -114,7 +138,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
     >
       {prodNets.map((chain) => renderMenuItem(chain.chainId, false))}
 
-      <ListSubheader className={css.listSubHeader}>Testnets</ListSubheader>
+      {testNets.length > 0 && <ListSubheader className={css.listSubHeader}>Testnets</ListSubheader>}
 
       {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
     </Select>
