@@ -2,9 +2,15 @@ import type { NewSafeFormData } from '@/components/new-safe/create'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
-import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
+import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
-import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import {
+  addUndeployedSafe,
+  type UndeployedSafeProps,
+  type ReplayedSafeProps,
+  type UndeployedSafe,
+  PendingSafeStatus,
+} from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
@@ -17,9 +23,9 @@ import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
-import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
+import { type DeploySafeProps, type PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
 import {
   type ChainInfo,
   ImplementationVersionState,
@@ -28,20 +34,30 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BrowserProvider, ContractTransactionResponse, Eip1193Provider, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
+import { Safe__factory } from '@/types/contracts'
+import { getCompatibilityFallbackHandlerDeployments } from '@safe-global/safe-deployments'
+import { sameAddress } from '@/utils/addresses'
 
-export const getUndeployedSafeInfo = (undeployedSafe: PredictedSafeProps, address: string, chain: ChainInfo) => {
+import { getReadOnlyProxyFactoryContract } from '@/services/contracts/safeContracts'
+
+export const getUndeployedSafeInfo = (undeployedSafe: UndeployedSafe, address: string, chain: ChainInfo) => {
+  const safeSetup = extractCounterfactualSafeSetup(undeployedSafe, chain.chainId)
+
+  if (!safeSetup) {
+    throw Error('Could not determine Safe Setup.')
+  }
   const latestSafeVersion = getLatestSafeVersion(chain)
 
   return {
     ...defaultSafeInfo,
     address: { value: address },
     chainId: chain.chainId,
-    owners: undeployedSafe.safeAccountConfig.owners.map((owner) => ({ value: owner })),
+    owners: safeSetup.owners.map((owner) => ({ value: owner })),
     nonce: 0,
-    threshold: undeployedSafe.safeAccountConfig.threshold,
+    threshold: safeSetup.threshold,
     implementationVersionState: ImplementationVersionState.UP_TO_DATE,
-    fallbackHandler: { value: undeployedSafe.safeAccountConfig.fallbackHandler! },
-    version: undeployedSafe.safeDeploymentConfig?.safeVersion || latestSafeVersion,
+    fallbackHandler: { value: safeSetup.fallbackHandler! },
+    version: safeSetup?.safeVersion || latestSafeVersion,
     deployed: false,
   }
 }
@@ -179,6 +195,52 @@ export const createCounterfactualSafe = (
   })
 }
 
+export const replayCounterfactualSafeDeployment = (
+  chainId: string,
+  safeAddress: string,
+  replayedSafeProps: ReplayedSafeProps,
+  name: string,
+  dispatch: AppDispatch,
+) => {
+  const undeployedSafe = {
+    chainId,
+    address: safeAddress,
+    type: PayMethod.PayLater,
+    safeProps: replayedSafeProps,
+  }
+
+  const setup = extractCounterfactualSafeSetup(
+    {
+      props: replayedSafeProps,
+      status: {
+        status: PendingSafeStatus.AWAITING_EXECUTION,
+        type: PayMethod.PayLater,
+      },
+    },
+    chainId,
+  )
+  if (!setup) {
+    throw Error('Safe Setup could not be decoded')
+  }
+
+  dispatch(addUndeployedSafe(undeployedSafe))
+  dispatch(upsertAddressBookEntry({ chainId, address: safeAddress, name }))
+  dispatch(
+    addOrUpdateSafe({
+      safe: {
+        ...defaultSafeInfo,
+        address: { value: safeAddress, name },
+        threshold: setup.threshold,
+        owners: setup.owners.map((owner) => ({
+          value: owner,
+          name: undefined,
+        })),
+        chainId,
+      },
+    }),
+  )
+}
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /**
@@ -311,4 +373,97 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, typ
 
     clearInterval(intervalId)
   }, TIMEOUT_TIME)
+}
+
+export const isReplayedSafeProps = (props: UndeployedSafeProps): props is ReplayedSafeProps => {
+  if ('setupData' in props && 'masterCopy' in props && 'factoryAddress' in props && 'saltNonce' in props) {
+    return true
+  }
+  return false
+}
+
+export const isPredictedSafeProps = (props: UndeployedSafeProps): props is PredictedSafeProps => {
+  if ('safeAccountConfig' in props) {
+    return true
+  }
+  return false
+}
+
+const determineFallbackHandlerVersion = (fallbackHandler: string, chainId: string): SafeVersion | undefined => {
+  const SAFE_VERSIONS: SafeVersion[] = ['1.4.1', '1.3.0', '1.2.0', '1.1.1', '1.0.0']
+  return SAFE_VERSIONS.find((version) => {
+    const deployments = getCompatibilityFallbackHandlerDeployments({ version })?.networkAddresses[chainId]
+
+    if (Array.isArray(deployments)) {
+      return deployments.some((deployment) => sameAddress(fallbackHandler, deployment))
+    }
+    return sameAddress(fallbackHandler, deployments)
+  })
+}
+
+export const extractCounterfactualSafeSetup = (
+  undeployedSafe: UndeployedSafe | undefined,
+  chainId: string | undefined,
+):
+  | {
+      owners: string[]
+      threshold: number
+      fallbackHandler: string | undefined
+      safeVersion: SafeVersion | undefined
+      saltNonce: string | undefined
+    }
+  | undefined => {
+  if (!undeployedSafe || !chainId) {
+    return undefined
+  }
+  if (isPredictedSafeProps(undeployedSafe.props)) {
+    return {
+      owners: undeployedSafe.props.safeAccountConfig.owners,
+      threshold: undeployedSafe.props.safeAccountConfig.threshold,
+      fallbackHandler: undeployedSafe.props.safeAccountConfig.fallbackHandler,
+      safeVersion: undeployedSafe.props.safeDeploymentConfig?.safeVersion,
+      saltNonce: undeployedSafe.props.safeDeploymentConfig?.saltNonce,
+    }
+  } else {
+    if (!undeployedSafe.props.setupData) {
+      return undefined
+    }
+    const [owners, threshold, to, data, fallbackHandler, ...setupParams] =
+      Safe__factory.createInterface().decodeFunctionData('setup', undeployedSafe.props.setupData)
+
+    const safeVersion = determineFallbackHandlerVersion(fallbackHandler, chainId)
+
+    return {
+      owners,
+      threshold: Number(threshold),
+      fallbackHandler,
+      safeVersion,
+      saltNonce: undeployedSafe.props.saltNonce,
+    }
+  }
+}
+
+export const activateReplayedSafe = async (
+  safeVersion: SafeVersion,
+  chain: ChainInfo,
+  props: ReplayedSafeProps,
+  provider: BrowserProvider,
+) => {
+  const usedSafeVersion = safeVersion ?? getLatestSafeVersion(chain)
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion, props.factoryAddress)
+
+  if (!props.masterCopy || !props.setupData) {
+    throw Error('Cannot replay Safe without deployment info')
+  }
+  const data = readOnlyProxyContract.encode('createProxyWithNonce', [
+    props.masterCopy,
+    props.setupData,
+    BigInt(props.saltNonce),
+  ])
+
+  return (await provider.getSigner()).sendTransaction({
+    to: props.factoryAddress,
+    data,
+    value: '0',
+  })
 }

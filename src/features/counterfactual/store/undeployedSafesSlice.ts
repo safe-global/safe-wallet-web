@@ -3,6 +3,7 @@ import { type RootState } from '@/store'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 import { selectChainIdAndSafeAddress, selectSafeAddress } from '@/store/common'
+import { type CreationTransaction } from 'safe-client-gateway-sdk'
 
 export enum PendingSafeStatus {
   AWAITING_EXECUTION = 'AWAITING_EXECUTION',
@@ -21,9 +22,15 @@ type UndeployedSafeStatus = {
   signerNonce?: number | null
 }
 
+export type ReplayedSafeProps = Pick<CreationTransaction, 'factoryAddress' | 'masterCopy' | 'setupData'> & {
+  saltNonce: string
+}
+
+export type UndeployedSafeProps = PredictedSafeProps | ReplayedSafeProps
+
 export type UndeployedSafe = {
   status: UndeployedSafeStatus
-  props: PredictedSafeProps
+  props: UndeployedSafeProps
 }
 
 type UndeployedSafesSlice = { [address: string]: UndeployedSafe }
@@ -38,7 +45,12 @@ export const undeployedSafesSlice = createSlice({
   reducers: {
     addUndeployedSafe: (
       state,
-      action: PayloadAction<{ chainId: string; address: string; type: PayMethod; safeProps: PredictedSafeProps }>,
+      action: PayloadAction<{
+        chainId: string
+        address: string
+        type: PayMethod
+        safeProps: PredictedSafeProps | ReplayedSafeProps
+      }>,
     ) => {
       const { chainId, address, type, safeProps } = action.payload
 

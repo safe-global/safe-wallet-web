@@ -105,13 +105,14 @@ export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo
 
 // GnosisSafeProxyFactory
 
-export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['version']) => {
+export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['version'], contractAddress?: string) => {
   const safeProvider = getSafeProvider()
 
   return getSafeProxyFactoryContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
     safeProvider,
     safeProvider.getExternalProvider(),
+    contractAddress,
   )
 }
 

@@ -1,8 +1,11 @@
 import { type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SafeItem } from '../useAllSafes'
-import { type UndeployedSafesState, type UndeployedSafe } from '@/store/slices'
+import { type UndeployedSafesState, type UndeployedSafe, type ReplayedSafeProps } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
 import { type MultiChainSafeItem } from '../useAllSafesGrouped'
+import { Safe_proxy_factory__factory } from '@/types/contracts'
+import { keccak256, ethers, solidityPacked, getCreate2Address, type JsonRpcProvider } from 'ethers'
+import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
 
 export const isMultiChainSafeItem = (safe: SafeItem | MultiChainSafeItem): safe is MultiChainSafeItem => {
   if ('safes' in safe && 'address' in safe) {
@@ -41,11 +44,14 @@ export const getSharedSetup = (
     }
   } else if (undeployedSafesWithData.length > 0) {
     const undeployedSafe = undeployedSafesWithData[0].undeployedSafe
+    const undeployedSafeSetup = extractCounterfactualSafeSetup(undeployedSafe, undeployedSafesWithData[0].chainId)
     // Use first undeployed Safe
-    comparisonSetup = {
-      threshold: undeployedSafe.props.safeAccountConfig.threshold,
-      owners: undeployedSafe.props.safeAccountConfig.owners,
-    }
+    comparisonSetup = undeployedSafeSetup
+      ? {
+          threshold: undeployedSafeSetup.threshold,
+          owners: undeployedSafeSetup.owners,
+        }
+      : undefined
   }
   if (!comparisonSetup) {
     return undefined
@@ -66,19 +72,56 @@ export const getSharedSetup = (
         )
       }
       // Check if the Safe is counterfactual
-      const undeployedSafe = undeployedSafesWithData.find(
+      const undeployedSafeItem = undeployedSafesWithData.find(
         (value) => value.chainId === safeItem.chainId && sameAddress(value.address, safeItem.address),
-      )?.undeployedSafe
-      if (!undeployedSafe) {
+      )
+      if (!undeployedSafeItem) {
         return false
       }
+
+      const undeployedSafeSetup = extractCounterfactualSafeSetup(
+        undeployedSafeItem.undeployedSafe,
+        undeployedSafeItem.chainId,
+      )
+      if (!undeployedSafeSetup) {
+        return false
+      }
+
       return (
-        areOwnersMatching(undeployedSafe.props.safeAccountConfig.owners, comparisonSetup.owners) &&
-        undeployedSafe.props.safeAccountConfig.threshold === comparisonSetup.threshold
+        areOwnersMatching(undeployedSafeSetup.owners, comparisonSetup.owners) &&
+        undeployedSafeSetup.threshold === comparisonSetup.threshold
       )
     })
   ) {
     return comparisonSetup
   }
   return undefined
+}
+
+export const predictAddressBasedOnReplayData = async (
+  safeCreationData: ReplayedSafeProps,
+  provider: JsonRpcProvider,
+) => {
+  if (!safeCreationData.setupData) {
+    throw new Error('Cannot predict address without setupData')
+  }
+
+  // Step 1: Hash the initializer
+  const initializerHash = keccak256(safeCreationData.setupData)
+
+  // Step 2: Encode the initializerHash and saltNonce using abi.encodePacked equivalent
+  const encoded = ethers.concat([initializerHash, solidityPacked(['uint256'], [safeCreationData.saltNonce])])
+
+  // Step 3: Hash the encoded value to get the final salt
+  const salt = keccak256(encoded)
+
+  // Get Proxy creation code
+  const proxyCreationCode = await Safe_proxy_factory__factory.connect(
+    safeCreationData.factoryAddress,
+    provider,
+  ).proxyCreationCode()
+
+  const constructorData = safeCreationData.masterCopy
+  const initCode = proxyCreationCode + solidityPacked(['uint256'], [constructorData]).slice(2)
+  return getCreate2Address(safeCreationData.factoryAddress, salt, keccak256(initCode))
 }
