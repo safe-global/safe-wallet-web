@@ -30,6 +30,8 @@ import React, { useContext, useMemo, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { sameAddress } from '@/utils/addresses'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
   const chain = useCurrentChain()
@@ -80,6 +82,7 @@ const ActivateAccountFlow = () => {
   const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
   const { options, totalFee, walletCanPay } = useActivateAccount(undeployedSafe)
+  const isWrongChain = useIsWrongChain()
 
   const ownerAddresses = undeployedSafe?.props.safeAccountConfig.owners || []
   // TODO: Maybe also verify the data?
@@ -141,7 +144,7 @@ const ActivateAccountFlow = () => {
     }
   }
 
-  const submitDisabled = !isSubmittable
+  const submitDisabled = !isSubmittable || isWrongChain
 
   return (
     <TxLayout title="Activate account" hideNonce>
@@ -198,7 +201,7 @@ const ActivateAccountFlow = () => {
               <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
             </Box>
           )}
-
+          {isWrongChain && <NetworkWarning />}
           {!walletCanPay && !willRelay && (
             <ErrorMessage>
               Your connected wallet doesn&apos;t have enough funds to execute this transaction
