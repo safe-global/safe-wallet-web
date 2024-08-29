@@ -1,9 +1,8 @@
 import { Typography, Box } from '@mui/material'
-import { formatDuration, intervalToDuration } from 'date-fns'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { NativeStakingDepositConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenInfoPair from '@/components/tx/ConfirmationOrder/TokenInfoPair'
-import { formatVisualAmount } from '@/utils/formatters'
+import { formatVisualAmount, formatSecondsDuration } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 
 type StakingOrderConfirmationViewProps = {
@@ -11,13 +10,6 @@ type StakingOrderConfirmationViewProps = {
 }
 
 const CURRENCY = 'USD'
-
-const formatSeconds = (seconds: number) => {
-  const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
-  return formatDuration(duration, {
-    format: ['hours', 'minutes'],
-  })
-}
 
 /* https://docs.api.kiln.fi/reference/getethnetworkstats */
 const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewProps) => {
@@ -59,7 +51,7 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
           </Box>
         </Typography>
 
-        <FieldsGrid title="Active in">{formatSeconds(order.estimatedEntryTime)}</FieldsGrid>
+        <FieldsGrid title="Active in">{formatSecondsDuration(order.estimatedEntryTime)}</FieldsGrid>
         <FieldsGrid title="Rewards">Approx. every 5 days after 4 days from activation</FieldsGrid>
 
         <Typography variant="body2" color="text.secondary" mt={2}>
