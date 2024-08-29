@@ -117,6 +117,12 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
     //label: OPEN_SAFE_LABELS
   },
+  // Track clicks on links to Safe Accounts
+  EXPAND_MULTI_SAFE: {
+    action: 'Expand multi Safe',
+    category: OVERVIEW_CATEGORY,
+    //label: OPEN_SAFE_LABELS
+  },
   // Track actual Safe views
   SAFE_VIEWED: {
     event: EventType.SAFE_OPENED,

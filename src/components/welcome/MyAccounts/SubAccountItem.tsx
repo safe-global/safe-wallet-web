@@ -10,10 +10,8 @@ import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
-import ChainIndicator from '@/components/common/ChainIndicator'
 import css from './styles.module.css'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
-import { shortenAddress } from '@/utils/formatters'
 import SafeListContextMenu from '@/components/sidebar/SafeListContextMenu'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
@@ -26,13 +24,13 @@ import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import { useGetHref } from './useGetHref'
 
-type AccountItemProps = {
+type SubAccountItem = {
   safeItem: SafeItem
   safeOverview?: SafeOverview
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) => {
+const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem) => {
   const { chainId, address } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
@@ -58,7 +56,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
     <ListItemButton
       data-testid="safe-list-item"
       selected={isCurrentSafe}
-      className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}
+      className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe }, css.subItem)}
     >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
         <Link onClick={onLinkClick} href={href} className={css.safeLink}>
@@ -67,6 +65,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
               address={address}
               owners={safeOverview?.owners.length ?? undeployedSafe?.props.safeAccountConfig.owners.length}
               threshold={safeOverview?.threshold ?? undeployedSafe?.props.safeAccountConfig.threshold}
+              isSubItem
               chainId={chainId}
             />
           </Box>
@@ -77,9 +76,8 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
                 {name}
               </Typography>
             )}
-            {chain?.shortName}:
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
-              {shortenAddress(address)}
+              {chain?.chainName}
             </Typography>
             {undeployedSafe && (
               <div>
@@ -108,8 +106,6 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
               <Skeleton variant="text" />
             )}
           </Typography>
-
-          <ChainIndicator chainId={chainId} responsive />
         </Link>
       </Track>
 
@@ -121,8 +117,9 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
         safeAddress={address}
         chainShortName={chain?.shortName || ''}
       />
+      <div className={css.borderLeft} />
     </ListItemButton>
   )
 }
 
-export default AccountItem
+export default SubAccountItem

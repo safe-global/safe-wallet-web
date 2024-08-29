@@ -44,6 +44,60 @@
   background-color: var(--color-background-light) !important;
 }
 
+.listItem :global .MuiAccordion-root,
+.listItem :global .MuiAccordion-root:hover > .MuiAccordionSummary-root {
+  background-color: transparent;
+}
+
+.listItem :global .MuiAccordion-root.Mui-expanded {
+  background-color: var(--color-background-paper);
+}
+
+.listItem.subItem {
+  border: none;
+  margin-bottom: 0px;
+  border-radius: 0px;
+}
+
+.subItem:before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 1px;
+  background: var(--color-border-light);
+  left: 0;
+  top: 50%;
+  position: absolute;
+}
+
+.subItem.currentListItem {
+  border: none;
+}
+
+.subItem.currentListItem:before {
+  background: var(--color-secondary-light);
+  height: 1px;
+}
+
+.subItem .borderLeft {
+  top: 0;
+  bottom: 0;
+  position: absolute;
+  border-left: 1px solid var(--color-border-light);
+}
+.subItem.currentListItem .borderLeft {
+  border-left: 1px solid var(--color-secondary-light);
+}
+
+.subItem:last-child {
+  border-left: none;
+}
+
+.subItem:last-child .borderLeft {
+  top: 0%;
+  bottom: 50%;
+}
+
 .listItem > :first-child {
   flex: 1;
   width: 90%;
