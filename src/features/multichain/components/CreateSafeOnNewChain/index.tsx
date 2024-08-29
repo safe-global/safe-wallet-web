@@ -49,7 +49,7 @@ export const CreateSafeOnNewChain = ({
   const dispatch = useAppDispatch()
 
   // Load some data
-  const [safeCreationData] = useSafeCreationData(safeAddress, chain)
+  const [safeCreationData, safeCreationDataError] = useSafeCreationData(safeAddress, chain)
 
   const onFormSubmit = handleSubmit(async (data) => {
     const selectedChain = configs.find((config) => config.chainId === data.chainId)
@@ -84,30 +84,38 @@ export const CreateSafeOnNewChain = ({
     [deployedChainIds, replayableChains],
   )
 
+  const submitDisabled = !!safeCreationDataError
+
   return (
     <Dialog open={open} onClose={onClose}>
       <form onSubmit={onFormSubmit} id="recreate-safe">
         <DialogTitle fontWeight={700}>Add another network</DialogTitle>
         <DialogContent>
-          <FormProvider {...formMethods}>
-            <Stack spacing={2}>
-              <Typography>This action re-deploys a Safe to another network with the same address.</Typography>
-              <ErrorMessage level="info">
-                The Safe will use the initial setup of the copied Safe. Any changes to owners, threshold, modules or the
-                Safe&apos;s version will not be reflected in the copy.
-              </ErrorMessage>
+          {safeCreationDataError ? (
+            <ErrorMessage error={safeCreationDataError} level="error">
+              Could not determine the Safe creation parameters.
+            </ErrorMessage>
+          ) : (
+            <FormProvider {...formMethods}>
+              <Stack spacing={2}>
+                <Typography>This action re-deploys a Safe to another network with the same address.</Typography>
+                <ErrorMessage level="info">
+                  The Safe will use the initial setup of the copied Safe. Any changes to owners, threshold, modules or
+                  the Safe&apos;s version will not be reflected in the copy.
+                </ErrorMessage>
 
-              <NameInput name="name" label="Name" />
+                <NameInput name="name" label="Name" />
 
-              <NetworkInput required name="chainId" chainConfigs={newReplayableChains} />
-            </Stack>
-          </FormProvider>
+                <NetworkInput required name="chainId" chainConfigs={newReplayableChains} />
+              </Stack>
+            </FormProvider>
+          )}
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" disabled={submitDisabled}>
             Submit
           </Button>
         </DialogActions>
