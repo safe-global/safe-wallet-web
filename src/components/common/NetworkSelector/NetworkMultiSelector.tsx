@@ -4,10 +4,14 @@ import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import ChainIndicator from '../ChainIndicator'
 import css from './styles.module.css'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { getNetworkLink } from '.'
 import useWallet from '@/hooks/wallets/useWallet'
+import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameStep'
+import { getLatestSafeVersion } from '@/utils/chains'
+
+const ZKSYNC_ID = '324'
 
 const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
   const { configs } = useChains()
@@ -21,6 +25,9 @@ const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
     setValue,
   } = useFormContext()
 
+  const selectedSafeVersion = useWatch({ control, name: SetNameStepFields.safeVersion })
+  const selectedNetworks = useWatch({ control, name: SetNameStepFields.networks })
+
   const handleDelete = (deletedChainId: string) => {
     const currentValues: ChainInfo[] = getValues(name) || []
     const updatedValues = currentValues.filter((chain) => chain.chainId !== deletedChainId)
@@ -33,6 +40,20 @@ const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
     const shortName = chains[0].shortName
     const networkLink = getNetworkLink(router.pathname, router.query, shortName, isWalletConnected)
     router.push(networkLink)
+  }
+
+  const isOptionDisabled = (chain: ChainInfo) => {
+    if (selectedNetworks.length === 0) return false
+
+    // zkSync safes cannot be deployed as part of a multichain group
+    const isZkSync = chain.chainId === ZKSYNC_ID
+    const isZkSyncSelected = selectedNetworks[0].chainId === ZKSYNC_ID
+    if (isZkSyncSelected) return !isZkSync
+    if (selectedNetworks.length > 0 && isZkSync) return true
+
+    // Safes in a multichain group must have the same version
+    const safeVersion = getLatestSafeVersion(chain)
+    return safeVersion !== selectedSafeVersion
   }
 
   return (
@@ -67,6 +88,7 @@ const NetworkMultiSelector = ({ name }: { name: string }): ReactElement => {
               </li>
             )}
             getOptionLabel={(option) => option.chainName}
+            getOptionDisabled={isOptionDisabled}
             renderInput={(params) => (
               <TextField
                 {...params}

@@ -1,5 +1,5 @@
 import { InputAdornment, Tooltip, SvgIcon, Typography, Box, Divider, Button, Grid } from '@mui/material'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 import NoWalletConnectedWarning from '../../NoWalletConnectedWarning'
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { useCurrentChain } from '@/hooks/useChains'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useSafeSetupHints } from '../OwnerPolicyStep/useSafeSetupHints'
@@ -28,7 +28,7 @@ type SetNameStepForm = {
   safeVersion: SafeVersion
 }
 
-enum SetNameStepFields {
+export enum SetNameStepFields {
   name = 'name',
   networks = 'networks',
   safeVersion = 'safeVersion',
@@ -51,13 +51,6 @@ function SetNameStep({
   const currentChain = useCurrentChain()
 
   const initialState = data.networks.length > 1 ? data.networks : currentChain ? [currentChain] : []
-  const [networks, setNetworks] = useState<ChainInfo[]>(initialState)
-
-  const isMultiChain = networks.length > 1
-  const fallbackName = useMnemonicSafeName(isMultiChain)
-
-  useSafeSetupHints(setDynamicHint, undefined, undefined, networks.length > 1)
-
   const formMethods = useForm<SetNameStepForm>({
     mode: 'all',
     defaultValues: {
@@ -69,8 +62,14 @@ function SetNameStep({
   const {
     handleSubmit,
     setValue,
+    control,
     formState: { errors, isValid },
   } = formMethods
+
+  const networks = useWatch({ control, name: SetNameStepFields.networks })
+  const isMultiChain = networks.length > 1
+  const fallbackName = useMnemonicSafeName(isMultiChain)
+  useSafeSetupHints(setDynamicHint, undefined, undefined, isMultiChain)
 
   const onFormSubmit = (data: Pick<NewSafeFormData, 'name' | 'networks'>) => {
     const name = data.name || fallbackName
@@ -92,11 +91,7 @@ function SetNameStep({
   // whenever the chain switches we need to update the latest Safe version and selected chain
   useEffect(() => {
     setValue(SetNameStepFields.safeVersion, getLatestSafeVersion(currentChain))
-    // if (networks.length === 1) {
-    //   const chain = currentChain ? [currentChain] : []
-    //   handleNetworksChange(chain)
-    // }
-  }, [currentChain, networks.length, setValue])
+  }, [currentChain, setValue])
 
   const isDisabled = !isValid
 
