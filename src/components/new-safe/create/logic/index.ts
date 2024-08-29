@@ -55,7 +55,7 @@ export const createNewSafe = async (
  * Compute the new counterfactual Safe address before it is actually created
  */
 export const computeNewSafeAddress = async (
-  provider: Eip1193Provider,
+  provider: Eip1193Provider | string,
   props: DeploySafeProps,
   chain: ChainInfo,
   safeVersion?: SafeVersion,

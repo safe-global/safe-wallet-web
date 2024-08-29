@@ -31,7 +31,7 @@ import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent }
 import { gtmSetSafeAddress } from '@/services/analytics/gtm'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { asError } from '@/services/exceptions/utils'
-import { useAppDispatch } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { isWalletRejection } from '@/utils/wallets'
@@ -46,6 +46,9 @@ import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import NetworkWarning from '../../NetworkWarning'
+import useAllSafes from '@/components/welcome/MyAccounts/useAllSafes'
+import { uniq } from 'lodash'
+import { selectRpc } from '@/store/settingsSlice'
 
 export const NetworkFee = ({
   totalFee,
@@ -167,6 +170,11 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const totalFee = getTotalFeeFormatted(maxFeePerGas, gasLimit, chain)
 
+  const allSafes = useAllSafes()
+  const knownAddresses = useMemo(() => uniq(allSafes?.map((safe) => safe.address)), [allSafes])
+
+  const customRPCs = useAppSelector(selectRpc)
+
   // Only 1 out of 1 safe setups are supported for now
   const isCounterfactual = data.threshold === 1 && data.owners.length === 1 && isCounterfactualEnabled
 
@@ -174,18 +182,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     onBack(data)
   }
 
-  const handleCreateSafeClick = () => {
-    for (const network of data.networks) {
-      createSafe(network)
-    }
-  }
-
-  const createSafe = async (chain: ChainInfo | undefined) => {
-    if (!wallet || !chain) return
-
-    setIsCreating(true)
-
+  const handleCreateSafeClick = async () => {
     try {
+      if (!wallet || !chain) return
+
+      setIsCreating(true)
+
+      // Create universal deployment Data across chains:
       const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(data.safeVersion)
       const safeL2Deployment = getSafeL2SingletonDeployment({ version: data.safeVersion, network: chain.chainId })
       const safeL2Address = safeL2Deployment?.defaultAddress
@@ -203,15 +206,36 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           paymentReceiver: ECOSYSTEM_ID_ADDRESS,
         },
       }
+      // Figure out the shared available nonce across chains
+      const nextAvailableNonce = await getAvailableSaltNonce(
+        customRPCs,
+        { ...props, saltNonce: data.saltNonce.toString() },
+        data.networks,
+        knownAddresses,
+        data.safeVersion,
+      )
 
-      const saltNonce = await getAvailableSaltNonce(
+      const safeAddress = await computeNewSafeAddress(
         wallet.provider,
-        { ...props, saltNonce: '0' },
+        { ...props, saltNonce: nextAvailableNonce },
         chain,
         data.safeVersion,
       )
-      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain, data.safeVersion)
 
+      for (const network of data.networks) {
+        createSafe(network, props, safeAddress, nextAvailableNonce)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  const createSafe = async (chain: ChainInfo, props: DeploySafeProps, safeAddress: string, saltNonce: string) => {
+    if (!wallet) return
+
+    try {
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
 

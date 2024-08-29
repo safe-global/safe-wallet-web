@@ -6,7 +6,7 @@ import { estimateSafeCreationGas, type SafeCreationProps } from '@/components/ne
 import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 
 export const useEstimateSafeCreationGas = (
-  safeParams: SafeCreationProps,
+  safeParams: SafeCreationProps | undefined,
   safeVersion?: SafeVersion,
 ): {
   gasLimit?: bigint
@@ -18,7 +18,7 @@ export const useEstimateSafeCreationGas = (
   const wallet = useWallet()
 
   const [gasLimit, gasLimitError, gasLimitLoading] = useAsync<bigint>(() => {
-    if (!wallet?.address || !chain || !web3ReadOnly) return
+    if (!wallet?.address || !chain || !web3ReadOnly || !safeParams) return
 
     return estimateSafeCreationGas(chain, web3ReadOnly, wallet.address, safeParams, safeVersion)
   }, [wallet, chain, web3ReadOnly, safeParams, safeVersion])

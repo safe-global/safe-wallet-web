@@ -3,7 +3,6 @@ import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
 import * as walletUtils from '@/utils/wallets'
 import { faker } from '@faker-js/faker'
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
-import { MockEip1193Provider } from '@/tests/mocks/providers'
 import { chainBuilder } from '@/tests/builders/chains'
 
 describe('getAvailableSaltNonce', () => {
@@ -30,11 +29,7 @@ describe('getAvailableSaltNonce', () => {
     const initialNonce = faker.string.numeric()
     const mockChain = chainBuilder().build()
 
-    const result = await getAvailableSaltNonce(
-      MockEip1193Provider,
-      { ...mockDeployProps, saltNonce: initialNonce },
-      mockChain,
-    )
+    const result = await getAvailableSaltNonce({}, { ...mockDeployProps, saltNonce: initialNonce }, [mockChain], [])
 
     expect(result).toEqual(initialNonce)
   })
@@ -44,11 +39,7 @@ describe('getAvailableSaltNonce', () => {
     const initialNonce = faker.string.numeric()
     const mockChain = chainBuilder().build()
 
-    const result = await getAvailableSaltNonce(
-      MockEip1193Provider,
-      { ...mockDeployProps, saltNonce: initialNonce },
-      mockChain,
-    )
+    const result = await getAvailableSaltNonce({}, { ...mockDeployProps, saltNonce: initialNonce }, [mockChain], [])
 
     jest.spyOn(walletUtils, 'isSmartContract').mockReturnValueOnce(Promise.resolve(false))
 
