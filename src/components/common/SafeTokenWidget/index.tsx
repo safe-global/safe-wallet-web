@@ -100,7 +100,7 @@ const SafeTokenWidget = () => {
                   {ownGlobalRankLoading ? (
                     <Skeleton width="16px" animation="wave" />
                   ) : (
-                    formatAmount(ownGlobalRank?.totalBoostedPoints ?? 0, 0)
+                    formatAmount(Math.floor(ownGlobalRank?.totalBoostedPoints ?? 0), 0)
                   )}
                 </Typography>
               </ButtonBase>
