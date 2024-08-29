@@ -47,8 +47,7 @@ const PayNowPayLater = ({
       </Typography>
       {isMultiChain && (
         <ErrorMessage level="info">
-          You will need to <b>activate your account</b> separately, on each network. Make sure you have funds on your
-          wallet to pay the network fee.
+          You will need to <b>activate your account</b> separately, on each network.
         </ErrorMessage>
       )}
       <List>
@@ -60,14 +59,16 @@ const PayNowPayLater = ({
             There will be a one-time network fee to activate your smart account wallet.
           </Typography>
         </ListItem>
-        <ListItem disableGutters>
-          <ListItemIcon className={css.listItem}>
-            <CheckRoundedIcon fontSize="small" color="inherit" />
-          </ListItemIcon>
-          <Typography variant="body2">
-            If you choose to pay later, the fee will be included with the first transaction you make.
-          </Typography>
-        </ListItem>
+        {!isMultiChain && (
+          <ListItem disableGutters>
+            <ListItemIcon className={css.listItem}>
+              <CheckRoundedIcon fontSize="small" color="inherit" />
+            </ListItemIcon>
+            <Typography variant="body2">
+              If you choose to pay later, the fee will be included with the first transaction you make.
+            </Typography>
+          </ListItem>
+        )}
         <ListItem disableGutters>
           <ListItemIcon className={css.listItem}>
             <CheckRoundedIcon fontSize="small" color="inherit" />
