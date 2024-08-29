@@ -175,9 +175,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const customRPCs = useAppSelector(selectRpc)
 
-  // Only 1 out of 1 safe setups are supported for now
-  const isCounterfactual = data.threshold === 1 && data.owners.length === 1 && isCounterfactualEnabled
-
   const handleBack = () => {
     onBack(data)
   }
@@ -236,7 +233,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     if (!wallet) return
 
     try {
-      if (isCounterfactual && payMethod === PayMethod.PayLater) {
+      if (isCounterfactualEnabled && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
@@ -316,7 +313,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const showNetworkWarning =
     (isWrongChain && payMethod === PayMethod.PayNow && !willRelay && !isMultiChainDeployment) ||
-    (isWrongChain && !isCounterfactual && !isMultiChainDeployment)
+    (isWrongChain && !isCounterfactualEnabled && !isMultiChainDeployment)
 
   const isDisabled = showNetworkWarning || isCreating
 
@@ -326,7 +323,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} networks={data.networks} />
       </Box>
 
-      {isCounterfactual && (
+      {isCounterfactualEnabled && (
         <>
           <Divider />
           <Box className={layoutCss.row}>
@@ -369,7 +366,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         </>
       )}
 
-      {!isCounterfactual && (
+      {!isCounterfactualEnabled && (
         <>
           <Divider />
           <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>

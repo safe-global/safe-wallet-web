@@ -1,4 +1,3 @@
-import CounterfactualHint from '@/features/counterfactual/CounterfactualHint'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { Button, SvgIcon, MenuItem, Tooltip, Typography, Divider, Box, Grid, TextField } from '@mui/material'
@@ -157,8 +156,6 @@ const OwnerPolicyStep = ({
               <Typography>out of {ownerFields.length} signer(s)</Typography>
             </Grid>
           </Grid>
-
-          {ownerFields.length > 1 && <CounterfactualHint />}
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
