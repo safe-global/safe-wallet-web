@@ -1,7 +1,6 @@
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
-import { AppRoutes } from '@/config/routes'
 import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { addUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
@@ -172,11 +171,6 @@ export const createCounterfactualSafe = (
       },
     }),
   )
-
-  router?.push({
-    pathname: AppRoutes.home,
-    query: { safe: `${chain.shortName}:${safeAddress}` },
-  })
 }
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))

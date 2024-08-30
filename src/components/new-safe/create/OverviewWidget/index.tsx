@@ -1,4 +1,3 @@
-import ChainIndicator from '@/components/common/ChainIndicator'
 import WalletOverview from 'src/components/common/WalletOverview'
 import useWallet from '@/hooks/wallets/useWallet'
 import { Box, Card, Grid, Typography } from '@mui/material'
@@ -8,6 +7,7 @@ import SafeLogo from '@/public/images/logo-no-text.svg'
 import css from '@/components/new-safe/create/OverviewWidget/styles.module.css'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
 
 const LOGO_DIMENSIONS = '22px'
 
@@ -20,13 +20,7 @@ const OverviewWidget = ({ safeName, networks }: { safeName: string; networks: Ch
       ? [
           {
             title: 'Network(s)',
-            component: (
-              <Box className={css.networks}>
-                {networks.map((chain) => (
-                  <ChainIndicator key={chain.chainId} chainId={chain.chainId} onlyLogo inline />
-                ))}
-              </Box>
-            ),
+            component: <NetworkLogosList networks={networks} />,
           },
         ]
       : []),

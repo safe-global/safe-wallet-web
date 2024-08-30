@@ -49,6 +49,7 @@ import NetworkWarning from '../../NetworkWarning'
 import useAllSafes from '@/components/welcome/MyAccounts/useAllSafes'
 import { uniq } from 'lodash'
 import { selectRpc } from '@/store/settingsSlice'
+import { AppRoutes } from '@/config/routes'
 
 export const NetworkFee = ({
   totalFee,
@@ -221,6 +222,18 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       for (const network of data.networks) {
         createSafe(network, props, safeAddress, nextAvailableNonce)
+      }
+
+      if (isCounterfactualEnabled && payMethod === PayMethod.PayLater) {
+        router?.push({
+          pathname: AppRoutes.home,
+          query: { safe: `${data.networks[0].shortName}:${safeAddress}` },
+        })
+        safeCreationDispatch(SafeCreationEvent.AWAITING_EXECUTION, {
+          groupKey: CF_TX_GROUP_KEY,
+          safeAddress,
+          networks: data.networks,
+        })
       }
     } catch (err) {
       console.error(err)
