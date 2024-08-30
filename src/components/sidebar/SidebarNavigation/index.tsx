@@ -24,6 +24,8 @@ const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
 }
 
+const geoBlockedRoutes = [AppRoutes.swap, AppRoutes.stake]
+
 const Navigation = (): ReactElement => {
   const chain = useCurrentChain()
   const router = useRouter()
@@ -31,14 +33,14 @@ const Navigation = (): ReactElement => {
   const currentSubdirectory = getSubdirectory(router.pathname)
   const queueSize = useQueuedTxsLength()
   const isBlockedCountry = useContext(GeoblockingContext)
+
   const enabledNavItems = useMemo(() => {
     return navItems.filter((item) => {
-      const enabled = isRouteEnabled(item.href, chain)
-
-      if (item.href === AppRoutes.swap && isBlockedCountry) {
+      if (isBlockedCountry && geoBlockedRoutes.includes(item.href)) {
         return false
       }
-      return enabled
+
+      return isRouteEnabled(item.href, chain)
     })
   }, [chain, isBlockedCountry])
 

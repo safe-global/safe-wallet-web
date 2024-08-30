@@ -10,7 +10,7 @@ const _TrustedToggleButton = ({
 }: {
   onlyTrusted: boolean
   setOnlyTrusted: (on: boolean) => void
-  hasDefaultTokenlist: boolean
+  hasDefaultTokenlist?: boolean
 }): ReactElement | null => {
   const onClick = () => {
     setOnlyTrusted(!onlyTrusted)

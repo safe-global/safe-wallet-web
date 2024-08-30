@@ -3,7 +3,7 @@ import { type CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 import type { OnTradeParamsPayload } from '@cowprotocol/events'
 import { type CowEventListeners, CowEvents } from '@cowprotocol/events'
 import { type MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Container, Grid, useTheme } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import {
   SafeAppAccessPolicyTypes,
   type SafeAppData,
@@ -27,7 +27,6 @@ import useChainId from '@/hooks/useChainId'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { id } from 'ethers'
-import useIsSwapFeatureEnabled from './hooks/useIsSwapFeatureEnabled'
 import {
   LIMIT_ORDER_TITLE,
   SWAP_TITLE,
@@ -81,7 +80,6 @@ const SwapWidget = ({ sell }: Params) => {
   const darkMode = useDarkMode()
   const chainId = useChainId()
   const dispatch = useAppDispatch()
-  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const swapParams = useAppSelector(selectSwapParams)
   const { safeAddress, safeLoading } = useSafeInfo()
   const [recipientAddress, setRecipientAddress] = useState('')
@@ -293,16 +291,6 @@ const SwapWidget = ({ sell }: Params) => {
 
   if (!isConsentAccepted) {
     return <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
-  }
-
-  if (!isSwapFeatureEnabled) {
-    return (
-      <Container>
-        <Grid container justifyContent="center">
-          <div>Swaps are not supported on this chain</div>
-        </Grid>
-      </Container>
-    )
   }
 
   return (
