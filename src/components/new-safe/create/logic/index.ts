@@ -20,6 +20,7 @@ import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants
 import { getLatestSafeVersion } from '@/utils/chains'
 import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
+import { type ReplayedSafeProps } from '@/store/slices'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -240,6 +241,32 @@ export const relaySafeCreation = async (
     to: proxyFactoryAddress,
     data: createProxyWithNonceCallData,
     version: safeVersion,
+  })
+
+  return relayResponse.taskId
+}
+
+export const relayReplayedSafeCreation = async (
+  chain: ChainInfo,
+  replayedSafe: ReplayedSafeProps,
+  safeVersion: SafeVersion | undefined,
+) => {
+  const usedSafeVersion = safeVersion ?? getLatestSafeVersion(chain)
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion, replayedSafe.factoryAddress)
+
+  if (!replayedSafe.masterCopy || !replayedSafe.setupData) {
+    throw Error('Cannot replay Safe without deployment info')
+  }
+  const createProxyWithNonceCallData = readOnlyProxyContract.encode('createProxyWithNonce', [
+    replayedSafe.masterCopy,
+    replayedSafe.setupData,
+    BigInt(replayedSafe.saltNonce),
+  ])
+
+  const relayResponse = await relayTransaction(chain.chainId, {
+    to: replayedSafe.factoryAddress,
+    data: createProxyWithNonceCallData,
+    version: usedSafeVersion,
   })
 
   return relayResponse.taskId

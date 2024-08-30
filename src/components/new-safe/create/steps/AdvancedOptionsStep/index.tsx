@@ -54,6 +54,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
     if (!chain || !readOnlyFallbackHandlerContract || !wallet) {
       return undefined
     }
+
     return computeNewSafeAddress(
       wallet.provider,
       {

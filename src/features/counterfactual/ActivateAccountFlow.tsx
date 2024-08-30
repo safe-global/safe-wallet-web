@@ -1,4 +1,9 @@
-import { createNewSafe, relaySafeCreation, SAFE_TO_L2_SETUP_ADDRESS } from '@/components/new-safe/create/logic'
+import {
+  createNewSafe,
+  relayReplayedSafeCreation,
+  relaySafeCreation,
+  SAFE_TO_L2_SETUP_ADDRESS,
+} from '@/components/new-safe/create/logic'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'
@@ -9,7 +14,12 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { selectUndeployedSafe, type UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import { CF_TX_GROUP_KEY } from '@/features/counterfactual/utils'
+import {
+  activateReplayedSafe,
+  CF_TX_GROUP_KEY,
+  extractCounterfactualSafeSetup,
+  isPredictedSafeProps,
+} from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
@@ -32,13 +42,14 @@ import { sameAddress } from '@/utils/addresses'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { createWeb3 } from '@/hooks/wallets/web3'
 
 const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
   const chain = useCurrentChain()
   const [gasPrice] = useGasPrice()
   const deploymentProps = useMemo(
     () =>
-      undeployedSafe
+      undeployedSafe && isPredictedSafeProps(undeployedSafe.props)
         ? {
             owners: undeployedSafe.props.safeAccountConfig.owners,
             saltNonce: Number(undeployedSafe.props.safeDeploymentConfig?.saltNonce ?? 0),
@@ -47,10 +58,12 @@ const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
         : undefined,
     [undeployedSafe],
   )
-  const { gasLimit } = useEstimateSafeCreationGas(
-    deploymentProps,
-    undeployedSafe?.props.safeDeploymentConfig?.safeVersion,
-  )
+
+  const safeVersion =
+    undeployedSafe && isPredictedSafeProps(undeployedSafe?.props)
+      ? undeployedSafe?.props.safeDeploymentConfig?.safeVersion
+      : undefined
+  const { gasLimit } = useEstimateSafeCreationGas(deploymentProps, safeVersion)
 
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
   const maxFeePerGas = gasPrice?.maxFeePerGas
@@ -84,19 +97,25 @@ const ActivateAccountFlow = () => {
   const { options, totalFee, walletCanPay } = useActivateAccount(undeployedSafe)
   const isWrongChain = useIsWrongChain()
 
-  const ownerAddresses = undeployedSafe?.props.safeAccountConfig.owners || []
-  // TODO: Maybe also verify the data?
-  const isMultichainSafe = sameAddress(undeployedSafe?.props.safeAccountConfig.to, SAFE_TO_L2_SETUP_ADDRESS)
+  const undeployedSafeSetup = useMemo(
+    () => extractCounterfactualSafeSetup(undeployedSafe, chainId),
+    [undeployedSafe, chainId],
+  )
+
+  const safeAccountConfig =
+    undeployedSafe && isPredictedSafeProps(undeployedSafe?.props) ? undeployedSafe?.props.safeAccountConfig : undefined
+  const isMultichainSafe = sameAddress(safeAccountConfig?.to, SAFE_TO_L2_SETUP_ADDRESS)
+  const ownerAddresses = undeployedSafeSetup?.owners || []
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
   // Every owner has remaining relays and relay method is selected
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
-  if (!undeployedSafe) return null
+  if (!undeployedSafe || !undeployedSafeSetup) return null
 
-  const { owners, threshold } = undeployedSafe.props.safeAccountConfig
-  const { saltNonce, safeVersion } = undeployedSafe.props.safeDeploymentConfig || {}
+  const { owners, threshold } = undeployedSafeSetup
+  const { saltNonce, safeVersion } = undeployedSafeSetup
 
   const onSubmit = (txHash?: string) => {
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_without_tx })
@@ -119,22 +138,38 @@ const ActivateAccountFlow = () => {
 
     try {
       if (willRelay) {
-        const taskId = await relaySafeCreation(chain, owners, threshold, Number(saltNonce!), safeVersion)
+        let taskId: string
+        if (isPredictedSafeProps(undeployedSafe.props)) {
+          taskId = await relaySafeCreation(chain, owners, threshold, Number(saltNonce!), safeVersion)
+        } else {
+          taskId = await relayReplayedSafeCreation(chain, undeployedSafe.props, safeVersion)
+        }
         safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
 
         onSubmit()
       } else {
-        await createNewSafe(
-          wallet.provider,
-          {
-            safeAccountConfig: undeployedSafe.props.safeAccountConfig,
-            saltNonce,
-            options,
-            callback: onSubmit,
-          },
-          safeVersion ?? getLatestSafeVersion(chain),
-          isMultichainSafe ? true : undefined,
-        )
+        if (isPredictedSafeProps(undeployedSafe.props)) {
+          await createNewSafe(
+            wallet.provider,
+            {
+              safeAccountConfig: undeployedSafe.props.safeAccountConfig,
+              saltNonce,
+              options,
+              callback: onSubmit,
+            },
+            safeVersion ?? getLatestSafeVersion(chain),
+            isMultichainSafe ? true : undefined,
+          )
+        } else {
+          // Deploy replayed Safe Creation
+          const txResponse = await activateReplayedSafe(
+            safeVersion ?? getLatestSafeVersion(chain),
+            chain,
+            undeployedSafe.props,
+            createWeb3(wallet.provider),
+          )
+          onSubmit(txResponse.hash)
+        }
       }
     } catch (_err) {
       const err = asError(_err)
