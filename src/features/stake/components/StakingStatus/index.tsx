@@ -46,7 +46,13 @@ const StakingStatus = ({ status }: { status: NativeStakingStatus }) => {
 
   return (
     <TxStatusChip color={config?.color}>
-      {config?.icon && <SvgIcon component={config.icon} fontSize="inherit" />}
+      {config?.icon && (
+        <SvgIcon
+          component={config.icon}
+          fontSize="inherit"
+          viewBox={config.icon === SignatureIcon ? '0 0 16 16' : undefined}
+        />
+      )}
       {text}
     </TxStatusChip>
   )

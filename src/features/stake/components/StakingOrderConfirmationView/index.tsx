@@ -1,33 +1,42 @@
-import { Typography, Box } from '@mui/material'
+import { Typography, Stack, Box } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
-import type { NativeStakingDepositConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  ConfirmationViewTypes,
+  type NativeStakingDepositConfirmationView,
+  type StakingTxInfo,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import TokenInfoPair from '@/components/tx/ConfirmationOrder/TokenInfoPair'
 import { formatVisualAmount, formatSecondsDuration } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
+import StakingStatus from '@/features/stake/components/StakingStatus'
 
 type StakingOrderConfirmationViewProps = {
-  order: NativeStakingDepositConfirmationView
+  order: NativeStakingDepositConfirmationView | StakingTxInfo
 }
 
 const CURRENCY = 'USD'
 
 /* https://docs.api.kiln.fi/reference/getethnetworkstats */
 const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewProps) => {
+  const isOrder = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
+
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
-      <TokenInfoPair
-        blocks={[
-          {
-            value: order.value || '0',
-            tokenInfo: order.tokenInfo,
-            label: 'Deposit',
-          },
-          {
-            value: order.annualNrr.toFixed(3) + '%',
-            label: 'Earn (after fees)',
-          },
-        ]}
-      />
+    <Stack gap={2}>
+      {isOrder && (
+        <TokenInfoPair
+          blocks={[
+            {
+              value: order.value || '0',
+              tokenInfo: order.tokenInfo,
+              label: 'Deposit',
+            },
+            {
+              value: order.annualNrr.toFixed(3) + '%',
+              label: 'Earn (after fees)',
+            },
+          ]}
+        />
+      )}
 
       <FieldsGrid title="Net annual rewards">
         {formatVisualAmount(order.expectedAnnualReward, order.tokenInfo.decimals)} {order.tokenInfo.symbol}
@@ -43,7 +52,7 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
 
       <FieldsGrid title="Fee">{order.fee}%</FieldsGrid>
 
-      <Box borderRadius={1} border="1px solid" borderColor="border.light" p={2}>
+      <Stack borderRadius={1} border="1px solid" borderColor="border.light" p={2} gap={1}>
         <Typography fontWeight="bold" mb={2}>
           You will own{' '}
           <Box component="span" bgcolor="border.background" px={1} py={0.5} borderRadius={1}>
@@ -54,12 +63,18 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
         <FieldsGrid title="Active in">{formatSecondsDuration(order.estimatedEntryTime)}</FieldsGrid>
         <FieldsGrid title="Rewards">Approx. every 5 days after 4 days from activation</FieldsGrid>
 
+        {!isOrder && (
+          <FieldsGrid title="Status">
+            <StakingStatus status={order.status} />
+          </FieldsGrid>
+        )}
+
         <Typography variant="body2" color="text.secondary" mt={2}>
           Earn ETH rewards with dedicated validators. Rewards must be withdrawn manually, and you can request a
           withdrawal at any time.
         </Typography>
-      </Box>
-    </Box>
+      </Stack>
+    </Stack>
   )
 }
 
