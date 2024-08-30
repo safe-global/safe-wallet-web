@@ -1,7 +1,7 @@
 import { NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { SvgIcon } from '@mui/material'
-import TimelapseIcon from '@mui/icons-material/Timelapse'
-import CheckIcon from '@mui/icons-material/Check'
+import CheckIcon from '@/public/images/common/circle-check.svg'
+import ClockIcon from '@/public/images/common/clock.svg'
 import SignatureIcon from '@/public/images/common/document_signature.svg'
 import TxStatusChip, { type TxStatusChipProps } from '@/components/transactions/TxStatusChip'
 
@@ -16,12 +16,12 @@ const ColorIcons: Record<
 > = {
   [NativeStakingStatus.AWAITING_ENTRY]: {
     color: 'info',
-    icon: TimelapseIcon,
+    icon: ClockIcon,
     text: 'Activating',
   },
   [NativeStakingStatus.REQUESTED_EXIT]: {
     color: 'info',
-    icon: TimelapseIcon,
+    icon: ClockIcon,
     text: 'Requested exit',
   },
   [NativeStakingStatus.SIGNATURE_NEEDED]: {
@@ -31,13 +31,13 @@ const ColorIcons: Record<
   },
   [NativeStakingStatus.AWAITING_EXECUTION]: {
     color: 'warning',
-    icon: TimelapseIcon,
+    icon: ClockIcon,
     text: 'Awaiting execution',
   },
   [NativeStakingStatus.VALIDATION_STARTED]: {
     color: 'success',
     icon: CheckIcon,
-    text: 'Validating',
+    text: 'Validation started',
   },
   [NativeStakingStatus.WITHDRAWN]: {
     color: 'success',
@@ -58,13 +58,7 @@ const StakingStatus = ({ status }: { status: NativeStakingStatus }) => {
 
   return (
     <TxStatusChip color={config?.color}>
-      {config?.icon && (
-        <SvgIcon
-          component={config.icon}
-          fontSize="inherit"
-          viewBox={config.icon === SignatureIcon ? '0 0 16 16' : undefined}
-        />
-      )}
+      {config?.icon && <SvgIcon component={config.icon} fontSize="inherit" inheritViewBox />}
       {config?.text || capitalizedStatus(status)}
     </TxStatusChip>
   )
