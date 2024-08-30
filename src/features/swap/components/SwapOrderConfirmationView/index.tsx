@@ -7,7 +7,7 @@ import { compareAsc } from 'date-fns'
 import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { getLimitPrice, getOrderClass, getSlippageInPercent } from '@/features/swap/helpers/utils'
-import type { SwapOrderConfirmationView, TwapOrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AnySwapOrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
 import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
@@ -23,7 +23,7 @@ import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 
 type SwapOrderProps = {
-  order: SwapOrderConfirmationView | TwapOrderConfirmationView
+  order: AnySwapOrderConfirmationView
   settlementContract: string
 }
 
