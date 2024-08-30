@@ -10,6 +10,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Divider,
+  Tooltip,
 } from '@mui/material'
 import SafeIcon from '@/components/common/SafeIcon'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
@@ -25,11 +26,12 @@ import FiatValue from '@/components/common/FiatValue'
 import { type MultiChainSafeItem } from './useAllSafesGrouped'
 import MultiChainIcon from '@/public/images/sidebar/multichain-account.svg'
 import { shortenAddress } from '@/utils/formatters'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { type SafeItem } from './useAllSafes'
 import SubAccountItem from './SubAccountItem'
 import { getSharedSetup } from './utils/multiChainSafe'
 import { AddNetworkButton } from './AddNetworkButton'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import MultiAccountContextMenu from '@/components/sidebar/SafeListContextMenu/MultiAccountContextMenu'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -45,6 +47,8 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
   const isCurrentSafe = sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const [expanded, setExpanded] = useState(isCurrentSafe)
+
+  const deployedChains = useMemo(() => safes.map((safe) => safe.chainId), [safes])
 
   const isWatchlist = useMemo(
     () => multiSafeAccountItem.safes.every((safe) => safe.isWatchlist),
@@ -83,16 +87,15 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
     <ListItemButton
       data-testid="safe-list-item"
       selected={isCurrentSafe}
-      className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}
+      className={classnames(css.multiListItem, css.listItem, { [css.currentListItem]: isCurrentSafe })}
       sx={{ p: 0 }}
     >
       <Accordion expanded={expanded} sx={{ border: 'none' }}>
         <AccordionSummary
           onClick={toggleExpand}
-          expandIcon={<ExpandMoreIcon />}
           sx={{
             pl: 0,
-            '& .MuiAccordionSummary-content': { m: 0 },
+            '& .MuiAccordionSummary-content': { m: 0, alignItems: 'center' },
             '&.Mui-expanded': { backgroundColor: 'transparent !important' },
           }}
         >
@@ -100,7 +103,6 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
             <Box pr={2.5}>
               <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
             </Box>
-
             <Typography variant="body2" component="div" className={css.safeAddress}>
               {name && (
                 <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
@@ -111,7 +113,6 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
                 {shortenAddress(address)}
               </Typography>
             </Typography>
-
             <Typography variant="body2" fontWeight="bold" textAlign="right" pr={4}>
               {totalFiatValue !== undefined ? (
                 <FiatValue value={totalFiatValue} />
@@ -119,12 +120,28 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
                 <Skeleton variant="text" sx={{ ml: 'auto' }} />
               )}
             </Typography>
-
-            <MultiChainIcon />
+            <Tooltip
+              title={
+                <Box>
+                  <Typography fontSize="14px">Multichain account on:</Typography>
+                  {safes.map((safeItem) => (
+                    <Box p="4px 0px" key={safeItem.chainId}>
+                      <ChainIndicator chainId={safeItem.chainId} />
+                    </Box>
+                  ))}
+                </Box>
+              }
+              arrow
+            >
+              <Box height="26px">
+                <MultiChainIcon />
+              </Box>
+            </Tooltip>
           </Box>
+          <MultiAccountContextMenu name={name ?? ''} address={address} chainIds={deployedChains} />
         </AccordionSummary>
-        <AccordionDetails sx={{ padding: 0 }}>
-          <Box sx={{ padding: '0px 0px 0px 36px' }}>
+        <AccordionDetails sx={{ padding: '0px 12px' }}>
+          <Box>
             {safes.map((safeItem) => (
               <SubAccountItem
                 onLinkClick={onLinkClick}
@@ -136,8 +153,8 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
           </Box>
           {!isWatchlist && (
             <>
-              <Divider />
-              <Box display="flex" alignItems="center" justifyContent="center">
+              <Divider sx={{ ml: '-12px', mr: '-12px' }} />
+              <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>
                 <AddNetworkButton
                   currentName={name}
                   safeAddress={address}

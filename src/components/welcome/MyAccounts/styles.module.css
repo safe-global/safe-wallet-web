@@ -44,6 +44,12 @@
   background-color: var(--color-background-light) !important;
 }
 
+.currentListItem.multiListItem {
+  border-left-width: 1px;
+  border: 1px solid var(--color-border-light);
+  background-color: none;
+}
+
 .listItem :global .MuiAccordion-root,
 .listItem :global .MuiAccordion-root:hover > .MuiAccordionSummary-root {
   background-color: transparent;
@@ -54,48 +60,18 @@
 }
 
 .listItem.subItem {
-  border: none;
-  margin-bottom: 0px;
-  border-radius: 0px;
-}
-
-.subItem:before {
-  content: '';
-  display: block;
-  width: 8px;
-  height: 1px;
-  background: var(--color-border-light);
-  left: 0;
-  top: 50%;
-  position: absolute;
-}
-
-.subItem.currentListItem {
-  border: none;
-}
-
-.subItem.currentListItem:before {
-  background: var(--color-secondary-light);
-  height: 1px;
+  margin-bottom: 8px;
 }
 
 .subItem .borderLeft {
   top: 0;
   bottom: 0;
   position: absolute;
-  border-left: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  border: 1px solid var(--color-border-light);
 }
 .subItem.currentListItem .borderLeft {
-  border-left: 1px solid var(--color-secondary-light);
-}
-
-.subItem:last-child {
-  border-left: none;
-}
-
-.subItem:last-child .borderLeft {
-  top: 0%;
-  bottom: 50%;
+  border-left: 4px solid var(--color-secondary-light);
 }
 
 .listItem > :first-child {

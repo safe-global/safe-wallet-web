@@ -120,7 +120,6 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
         safeAddress={address}
         chainShortName={chain?.shortName || ''}
       />
-      <div className={css.borderLeft} />
     </ListItemButton>
   )
 }

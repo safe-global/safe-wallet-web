@@ -87,7 +87,7 @@ export const CreateSafeOnNewChain = ({
   const submitDisabled = !!safeCreationDataError
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} onClick={(e) => e.stopPropagation()}>
       <form onSubmit={onFormSubmit} id="recreate-safe">
         <DialogTitle fontWeight={700}>Add another network</DialogTitle>
         <DialogContent>

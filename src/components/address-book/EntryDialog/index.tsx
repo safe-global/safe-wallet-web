@@ -22,13 +22,13 @@ function EntryDialog({
     address: '',
   },
   disableAddressInput = false,
-  chainId,
+  chainIds,
   currentChainId,
 }: {
   handleClose: () => void
   defaultValues?: AddressEntry
   disableAddressInput?: boolean
-  chainId?: string
+  chainIds?: string[]
   currentChainId: string
 }): ReactElement {
   const dispatch = useAppDispatch()
@@ -41,7 +41,11 @@ function EntryDialog({
   const { handleSubmit, formState } = methods
 
   const submitCallback = handleSubmit((data: AddressEntry) => {
-    dispatch(upsertAddressBookEntry({ ...data, chainId: chainId || currentChainId }))
+    if (chainIds) {
+      chainIds?.forEach((chainId) => dispatch(upsertAddressBookEntry({ ...data, chainId })))
+    } else {
+      dispatch(upsertAddressBookEntry({ ...data, chainId: currentChainId }))
+    }
     handleClose()
   })
 
