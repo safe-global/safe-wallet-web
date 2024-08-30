@@ -14,6 +14,7 @@ import { selectRpc } from '@/store/settingsSlice'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 import { sameAddress } from '@/utils/addresses'
+import { useRouter } from 'next/router'
 
 type CreateSafeOnNewChainForm = {
   name: string
@@ -42,14 +43,15 @@ export const CreateSafeOnNewChain = ({
 
   const { handleSubmit } = formMethods
   const { configs } = useChains()
+  const router = useRouter()
 
-  const chain = configs.find((config) => config.chainId === deployedChainIds[0])
+  const deployedChains = configs.filter((config) => config.chainId === deployedChainIds[0])
 
   const customRpc = useAppSelector(selectRpc)
   const dispatch = useAppDispatch()
 
   // Load some data
-  const [safeCreationData, safeCreationDataError] = useSafeCreationData(safeAddress, chain)
+  const [safeCreationData, safeCreationDataError] = useSafeCreationData(safeAddress, deployedChains)
 
   const onFormSubmit = handleSubmit(async (data) => {
     const selectedChain = configs.find((config) => config.chainId === data.chainId)
@@ -72,6 +74,12 @@ export const CreateSafeOnNewChain = ({
 
     // 2. Replay Safe creation and add it to the counterfactual Safes
     replayCounterfactualSafeDeployment(selectedChain.chainId, safeAddress, safeCreationData, data.name, dispatch)
+
+    router.push({
+      query: {
+        safe: `${selectedChain.shortName}:${safeAddress}`,
+      },
+    })
 
     // Close modal
     onClose()

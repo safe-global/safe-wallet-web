@@ -3,14 +3,25 @@ import { useDarkMode } from '@/hooks/useDarkMode'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
-import { ListSubheader, MenuItem, Select, Skeleton } from '@mui/material'
+import {
+  Box,
+  ButtonBase,
+  Collapse,
+  Divider,
+  ListSubheader,
+  MenuItem,
+  Select,
+  Skeleton,
+  Stack,
+  Typography,
+} from '@mui/material'
 import partition from 'lodash/partition'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
-import { type ReactElement, useMemo } from 'react'
+import { type ReactElement, useMemo, useState } from 'react'
 import { useCallback } from 'react'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
@@ -18,8 +29,150 @@ import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesG
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import uniq from 'lodash/uniq'
+import useSafeOverviews from '@/components/welcome/MyAccounts/useSafeOverviews'
+import { useReplayableNetworks } from '@/features/multichain/hooks/useReplayableNetworks'
+import { useSafeCreationData } from '@/features/multichain/hooks/useSafeCreationData'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import PlusIcon from '@/public/images/common/plus.svg'
+import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnSpecificChain'
+import useAddressBook from '@/hooks/useAddressBook'
 
-const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement => {
+const NetworkSkeleton = () => {
+  return (
+    <Stack direction="row" spacing={1} alignItems="center" p="4px 0px">
+      <Skeleton variant="circular" width="24px" height="24px" />
+      <Skeleton variant="rounded" sx={{ flexGrow: 1 }} />
+    </Stack>
+  )
+}
+
+const TestnetDivider = () => {
+  return (
+    <Divider sx={{ m: '0px !important', '& .MuiDivider-wrapper': { p: '0px 16px' } }}>
+      <Typography variant="overline" color="border.main">
+        Testnets
+      </Typography>
+    </Divider>
+  )
+}
+
+const UndeployedNetworks = ({
+  deployedChains,
+  chains,
+  safeAddress,
+}: {
+  deployedChains: string[]
+  chains: ChainInfo[]
+  safeAddress: string
+}) => {
+  const [open, setOpen] = useState(false)
+  const [replayOnChain, setReplayOnChain] = useState<ChainInfo>()
+  const addressBook = useAddressBook()
+  const safeName = addressBook[safeAddress]
+  const deployedChainInfos = useMemo(
+    () => chains.filter((chain) => deployedChains.includes(chain.chainId)),
+    [chains, deployedChains],
+  )
+  const [safeCreationData, safeCreationDataError] = useSafeCreationData(safeAddress, deployedChainInfos)
+
+  const availableNetworks = useReplayableNetworks(safeCreationData)
+
+  const [testNets, prodNets] = useMemo(
+    () =>
+      partition(
+        availableNetworks.filter((network) => !deployedChains.includes(network.chainId)),
+        (config) => config.isTestnet,
+      ),
+    [availableNetworks, deployedChains],
+  )
+
+  const onSelect = (chain: ChainInfo) => {
+    setReplayOnChain(chain)
+  }
+
+  const renderMenuItem = useCallback(
+    (chainId: string, isSelected: boolean) => {
+      const chain = chains.find((chain) => chain.chainId === chainId)
+      if (!chain) return null
+      return (
+        <>
+          <MenuItem
+            key={chainId}
+            value={chainId}
+            sx={{ '&:hover': { backgroundColor: 'inherit' } }}
+            onClick={() => onSelect(chain)}
+          >
+            <Box className={css.item}>
+              <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
+              <PlusIcon className={css.plusIcon} />
+            </Box>
+          </MenuItem>
+        </>
+      )
+    },
+    [chains],
+  )
+
+  if (safeCreationDataError) {
+    return (
+      <Box p="0px 16px">
+        <Typography color="text.secondary" fontSize="14px">
+          Adding another network is not possible for this Safe
+        </Typography>
+      </Box>
+    )
+  }
+
+  return (
+    <>
+      <ListSubheader className={css.undeployedNetworksHeader}>
+        <ButtonBase className={css.listSubHeader} onClick={() => setOpen((prev) => !prev)}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <div>Show all networks</div>
+            <ExpandMoreIcon
+              fontSize="small"
+              sx={{
+                transform: open ? 'rotate(180deg)' : undefined,
+              }}
+            />
+          </Stack>
+        </ButtonBase>
+      </ListSubheader>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        {!safeCreationData ? (
+          <Box p="0px 16px">
+            <NetworkSkeleton />
+            <NetworkSkeleton />
+          </Box>
+        ) : (
+          <>
+            {prodNets.map((chain) => renderMenuItem(chain.chainId, false))}
+            {testNets.length > 0 && <TestnetDivider />}
+            {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
+          </>
+        )}
+      </Collapse>
+      {replayOnChain && safeCreationData && (
+        <CreateSafeOnSpecificChain
+          chain={replayOnChain}
+          safeAddress={safeAddress}
+          open
+          onClose={() => setReplayOnChain(undefined)}
+          currentName={safeName ?? ''}
+          safeCreationData={safeCreationData}
+        />
+      )}
+    </>
+  )
+}
+
+const NetworkSelector = ({
+  onChainSelect,
+  offerSafeCreation = false,
+}: {
+  onChainSelect?: () => void
+  offerSafeCreation?: boolean
+}): ReactElement => {
   const isDarkMode = useDarkMode()
   const theme = useTheme()
   const { configs } = useChains()
@@ -51,6 +204,12 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
       ),
     [availableChainIds, configs],
   )
+
+  const multiChainSafes = useMemo(
+    () => availableChainIds.map((chain) => ({ address: safeAddress, chainId: chain })),
+    [availableChainIds, safeAddress],
+  )
+  const [safeOverviews] = useSafeOverviews(multiChainSafes)
 
   const getNetworkLink = useCallback(
     (shortName: string) => {
@@ -94,16 +253,22 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
   const renderMenuItem = useCallback(
     (chainId: string, isSelected: boolean) => {
       const chain = configs.find((chain) => chain.chainId === chainId)
+      const safeOverview = safeOverviews?.find((overview) => chainId === overview.chainId)
       if (!chain) return null
       return (
         <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
-          <Link href={getNetworkLink(chain.shortName)} onClick={props.onChainSelect} className={css.item}>
-            <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
+          <Link href={getNetworkLink(chain.shortName)} onClick={onChainSelect} className={css.item}>
+            <ChainIndicator
+              responsive={isSelected}
+              chainId={chain.chainId}
+              fiatValue={isSafeOpened ? safeOverview?.fiatTotal : undefined}
+              inline
+            />
           </Link>
         </MenuItem>
       )
     },
-    [configs, getNetworkLink, props.onChainSelect],
+    [configs, getNetworkLink, isSafeOpened, onChainSelect, safeOverviews],
   )
 
   return configs.length ? (
@@ -120,6 +285,7 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
         sx: {
           '& .MuiPaper-root': {
             overflow: 'auto',
+            minWidth: '250px !important',
           },
           ...(isDarkMode
             ? {
@@ -138,9 +304,13 @@ const NetworkSelector = (props: { onChainSelect?: () => void }): ReactElement =>
     >
       {prodNets.map((chain) => renderMenuItem(chain.chainId, false))}
 
-      {testNets.length > 0 && <ListSubheader className={css.listSubHeader}>Testnets</ListSubheader>}
+      {testNets.length > 0 && <TestnetDivider />}
 
       {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
+
+      {offerSafeCreation && isSafeOpened && (
+        <UndeployedNetworks chains={configs} deployedChains={availableChainIds} safeAddress={safeAddress} />
+      )}
     </Select>
   ) : (
     <Skeleton width={94} height={31} sx={{ mx: 2 }} />
