@@ -9,7 +9,8 @@ import { IS_OFFICIAL_HOST, IS_PRODUCTION } from '@/config/constants'
 
 export const useCustomNetworkContracts =
   IS_PRODUCTION && IS_OFFICIAL_HOST
-    ? () => {
+    ? () => undefined
+    : () => {
         const currentChain = useCurrentChain()
         if (!currentChain) return
 
@@ -21,9 +22,8 @@ export const useCustomNetworkContracts =
 
         return contractAddresses as ContractNetworkConfig
       }
-    : () => undefined
 
-export const useCustomNetworksContracts = () => {
+export const useCustomContractsByNetwork = () => {
   const customNetworkContracts = useCustomNetworkContracts()
   const currentChain = useCurrentChain()
 

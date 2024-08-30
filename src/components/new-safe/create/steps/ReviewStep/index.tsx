@@ -37,7 +37,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { useCustomNetworkContracts, useCustomNetworksContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
+import { useCustomNetworkContracts, useCustomContractsByNetwork } from '@/hooks/coreSDK/useCustomNetworkContracts'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 
@@ -124,7 +124,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
   const contractAddresses = useCustomNetworkContracts()
-  const contractAddressesConfig = useCustomNetworksContracts()
+  const contractAddressesConfig = useCustomContractsByNetwork()
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
