@@ -114,6 +114,10 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
     }
   }, [appIsLoading, isBackendAppsLoading, appName, isNativeEmbed])
 
+  useEffect(() => {
+    if (isNativeEmbed) dismissQueueBar()
+  }, [isNativeEmbed, dismissQueueBar])
+
   if (!safeLoaded) {
     return <div />
   }
