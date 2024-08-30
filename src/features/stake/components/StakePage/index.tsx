@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material'
 import Disclaimer from '@/components/common/Disclaimer'
-import LegalDisclaimerContent from '@/features/stake/components/LegalDisclaimer'
+import WidgetDisclaimer from '@/components/common/WidgetDisclaimer'
 import useStakeConsent from '@/features/stake/useStakeConsent'
 import StakingWidget from '../StakingWidget'
 
@@ -13,7 +13,12 @@ const StakePage = () => {
         <StakingWidget />
       ) : (
         <Stack direction="column" alignItems="center" justifyContent="center" flex={1}>
-          <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
+          <Disclaimer
+            title="Note"
+            content={<WidgetDisclaimer widgetName="Stake Widget by Kiln" />}
+            onAccept={onAccept}
+            buttonText="Continue"
+          />
         </Stack>
       )}
     </>

@@ -20,7 +20,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import BlockedAddress from '@/components/common/BlockedAddress'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
-import LegalDisclaimerContent from '@/features/swap/components/LegalDisclaimer'
+import WidgetDisclaimer from '@/components/common/WidgetDisclaimer'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
 import useChainId from '@/hooks/useChainId'
@@ -290,7 +290,14 @@ const SwapWidget = ({ sell }: Params) => {
   }
 
   if (!isConsentAccepted) {
-    return <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
+    return (
+      <Disclaimer
+        title="Note"
+        content={<WidgetDisclaimer widgetName="CoW Swap Widget" />}
+        onAccept={onAccept}
+        buttonText="Continue"
+      />
+    )
   }
 
   return (
