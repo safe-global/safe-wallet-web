@@ -19,6 +19,8 @@ import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDura
 import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
 import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
 import { OrderFeeConfirmationView } from '@/features/swap/components/SwapOrderConfirmationView/OrderFeeConfirmationView'
+import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
+import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 
 type SwapOrderProps = {
   order: SwapOrderConfirmationView | TwapOrderConfirmationView
@@ -37,9 +39,12 @@ export const SwapOrderConfirmation = ({ order, settlementContract }: SwapOrderPr
 
   const slippage = getSlippageInPercent(order)
   const isSellOrder = kind === 'sell'
+  const isChangingFallbackHandler = isSettingTwapFallbackHandler(order)
 
   return (
-    <div className={css.tableWrapper}>
+    <>
+      {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
+
       <DataTable
         header="Order details"
         rows={[
@@ -140,7 +145,7 @@ export const SwapOrderConfirmation = ({ order, settlementContract }: SwapOrderPr
           />
         </div>
       )}
-    </div>
+    </>
   )
 }
 

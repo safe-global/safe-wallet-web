@@ -29,8 +29,6 @@ import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
 import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
-import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
-import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
@@ -110,7 +108,6 @@ export const SignOrExecuteForm = ({
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
-  const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
   const roles = useRoles(
@@ -147,8 +144,6 @@ export const SignOrExecuteForm = ({
     <>
       <TxCard>
         {props.children}
-
-        {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
 
         {decodedData && (
           <ErrorBoundary fallback={<></>}>
