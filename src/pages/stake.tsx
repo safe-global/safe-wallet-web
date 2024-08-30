@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { Box } from '@mui/material'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
@@ -6,15 +7,25 @@ import {
   SafeAppAccessPolicyTypes,
   SafeAppFeatures,
 } from '@safe-global/safe-gateway-typescript-sdk/dist/types/safe-apps'
-import { useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import AppFrame from '@/components/safe-apps/AppFrame'
 import Disclaimer from '@/components/common/Disclaimer'
 import LegalDisclaimerContent from '@/features/stake/components/LegalDisclaimer'
 import useStakeConsent from '@/features/stake/useStakeConsent'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
+import { AppRoutes } from '@/config/routes'
 
-const Swap: NextPage = () => {
+const StakePage: NextPage = () => {
   const isDarkMode = useDarkMode()
+  const router = useRouter()
+  const isBlockedCountry = useContext(GeoblockingContext)
+
+  useEffect(() => {
+    if (isBlockedCountry) {
+      router.replace(AppRoutes['403'])
+    }
+  }, [isBlockedCountry, router])
 
   const appData: SafeAppData = useMemo(
     () => ({
@@ -33,6 +44,10 @@ const Swap: NextPage = () => {
   )
 
   const { isConsentAccepted, onAccept } = useStakeConsent()
+
+  if (isBlockedCountry) {
+    return null
+  }
 
   return (
     <>
@@ -56,4 +71,4 @@ const Swap: NextPage = () => {
   )
 }
 
-export default Swap
+export default StakePage
