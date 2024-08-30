@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material'
 import type { StakingTxInfo, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import FieldsGrid from '@/components/tx/FieldsGrid'
-import TxStatusChip from '@/components/transactions/TxStatusChip'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import { formatSecondsDuration } from '@/utils/formatters'
+import StakingStatus from '@/features/stake/components/StakingStatus'
 
 const StakingTxDetails = ({ info, txData }: { info: StakingTxInfo; txData?: TransactionData }) => {
   return (
@@ -21,7 +21,7 @@ const StakingTxDetails = ({ info, txData }: { info: StakingTxInfo; txData?: Tran
       <FieldsGrid title="Active in">{formatSecondsDuration(info.estimatedEntryTime)}</FieldsGrid>
       <FieldsGrid title="Rewards">Approx. every 5 days after 4 days from activation</FieldsGrid>
       <FieldsGrid title="Status">
-        <TxStatusChip>{info.status.toLowerCase().replace(/_/g, ' ')}</TxStatusChip>
+        <StakingStatus status={info.status} />
       </FieldsGrid>
 
       <Typography variant="body2" color="text.secondary" mt={2}>
