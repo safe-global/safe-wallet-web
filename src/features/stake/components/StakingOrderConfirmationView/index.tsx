@@ -21,7 +21,7 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
   const isOrder = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
 
   return (
-    <Stack gap={2}>
+    <Stack gap={isOrder ? 2 : 1}>
       {isOrder && (
         <TokenInfoPair
           blocks={[
@@ -52,13 +52,22 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
 
       <FieldsGrid title="Fee">{order.fee}%</FieldsGrid>
 
-      <Stack borderRadius={1} border="1px solid" borderColor="border.light" p={2} gap={1}>
-        <Typography fontWeight="bold" mb={2}>
-          You will own{' '}
-          <Box component="span" bgcolor="border.background" px={1} py={0.5} borderRadius={1}>
-            {order.numValidators} Ethereum validator{order.numValidators === 1 ? '' : 's'}
-          </Box>
-        </Typography>
+      <Stack
+        {...{ [isOrder ? 'border' : 'borderTop']: '1px solid' }}
+        {...(isOrder ? { p: 2, borderRadius: 1 } : { mt: 1, pt: 2, pb: 1 })}
+        borderColor="border.light"
+        gap={1}
+      >
+        {isOrder ? (
+          <Typography fontWeight="bold" mb={2}>
+            You will own{' '}
+            <Box component="span" bgcolor="border.background" px={1} py={0.5} borderRadius={1}>
+              {order.numValidators} Ethereum validator{order.numValidators === 1 ? '' : 's'}
+            </Box>
+          </Typography>
+        ) : (
+          <FieldsGrid title="Validators">{order.numValidators}</FieldsGrid>
+        )}
 
         <FieldsGrid title="Active in">{formatSecondsDuration(order.estimatedEntryTime)}</FieldsGrid>
         <FieldsGrid title="Rewards">Approx. every 5 days after 4 days from activation</FieldsGrid>
@@ -69,10 +78,12 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
           </FieldsGrid>
         )}
 
-        <Typography variant="body2" color="text.secondary" mt={2}>
-          Earn ETH rewards with dedicated validators. Rewards must be withdrawn manually, and you can request a
-          withdrawal at any time.
-        </Typography>
+        {isOrder && (
+          <Typography variant="body2" color="text.secondary" mt={2}>
+            Earn ETH rewards with dedicated validators. Rewards must be withdrawn manually, and you can request a
+            withdrawal at any time.
+          </Typography>
+        )}
       </Stack>
     </Stack>
   )
