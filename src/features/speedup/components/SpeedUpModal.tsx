@@ -27,6 +27,7 @@ import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 
 type Props = {
   open: boolean
@@ -58,7 +59,7 @@ export const SpeedUpModal = ({
   const safeAddress = useSafeAddress()
   const hasActions = signerAddress && signerAddress === wallet?.address
   const dispatch = useAppDispatch()
-
+  const [trigger] = useLazyGetTransactionDetailsQuery()
   const isDisabled = waitingForConfirmation || !wallet || !speedUpFee || !onboard
   const [safeTx] = useAsync(async () => {
     if (!chainInfo?.chainId || !safeAddress) {
@@ -101,7 +102,8 @@ export const SpeedUpModal = ({
           wallet.address,
           safeAddress,
         )
-        const txType = await getTransactionTrackingType(chainInfo.chainId, txId)
+        const { data: details } = await trigger({ chainId: chainInfo.chainId, txId })
+        const txType = getTransactionTrackingType(details)
         trackEvent({ ...TX_EVENTS.SPEED_UP, label: txType })
       } else {
         await dispatchCustomTxSpeedUp(
@@ -152,6 +154,7 @@ export const SpeedUpModal = ({
     txId,
     wallet,
     safeTx,
+    trigger,
   ])
 
   if (!hasActions) {

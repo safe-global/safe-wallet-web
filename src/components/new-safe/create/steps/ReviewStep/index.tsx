@@ -38,7 +38,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { getLatestSafeVersion } from '@/utils/chains'
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 
 export const NetworkFee = ({
   totalFee,
@@ -130,8 +130,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
-  const latestSafeVersion = getLatestSafeVersion(chain)
-
   const safeParams = useMemo(() => {
     return {
       owners: data.owners.map((owner) => owner.address),
@@ -169,6 +167,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           threshold: data.threshold,
           owners: data.owners.map((owner) => owner.address),
           fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
+          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
         },
       }
 

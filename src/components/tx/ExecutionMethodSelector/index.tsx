@@ -56,7 +56,7 @@ const _ExecutionMethodSelector = ({
               sx={{ flex: 1 }}
               value={ExecutionMethod.RELAY}
               label={
-                <Typography className={css.radioLabel}>
+                <Typography className={css.radioLabel} whiteSpace="nowrap">
                   Sponsored by
                   <SponsoredBy chainId={chain?.chainId ?? ''} />
                 </Typography>
