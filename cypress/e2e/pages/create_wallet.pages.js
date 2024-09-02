@@ -17,6 +17,7 @@ const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
 export const accountInfoHeader = '[data-testid="open-account-center"]'
 export const reviewStepOwnerInfo = '[data-testid="review-step-owner-info"]'
 const reviewStepNextBtn = '[data-testid="review-step-next-btn"]'
+const creationModalLetsGoBtn = '[data-testid="cf-creation-lets-go-btn"]'
 const safeCreationStatusInfo = '[data-testid="safe-status-info"]'
 const startUsingSafeBtn = '[data-testid="start-using-safe-btn"]'
 const sponsorIcon = '[data-testid="sponsor-icon"]'
@@ -117,6 +118,12 @@ export function clickOnReviewStepNextBtn() {
   cy.get(reviewStepNextBtn).click()
   cy.get(reviewStepNextBtn, { timeout: 60000 }).should('not.exist')
 }
+
+export function clickOnLetsGoBtn() {
+  cy.get(creationModalLetsGoBtn).click()
+  cy.get(creationModalLetsGoBtn, { timeout: 60000 }).should('not.exist')
+}
+
 export function verifyOwnerInfoIsPresent() {
   return cy.get(reviewStepOwnerInfo).shoul('exist')
 }

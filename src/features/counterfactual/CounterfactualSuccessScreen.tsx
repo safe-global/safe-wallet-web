@@ -99,7 +99,7 @@ const CounterfactualSuccessScreen = () => {
           </Box>
         )}
 
-        <Button variant="contained" onClick={() => setOpen(false)}>
+        <Button variant="contained" onClick={() => setOpen(false)} data-testid="cf-creation-lets-go-btn">
           Let&apos;s go
         </Button>
       </DialogContent>
