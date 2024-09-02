@@ -9,8 +9,8 @@ import { useRouter } from 'next/router'
 import { getNetworkLink } from '.'
 import useWallet from '@/hooks/wallets/useWallet'
 import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameStep'
-import { getLatestSafeVersion } from '@/utils/chains'
 import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 
 const ZKSYNC_ID = '324'
 
@@ -55,13 +55,19 @@ const NetworkMultiSelector = ({
     // do not allow multi chain safes for advanced setup flow.
     if (isAdvancedFlow) return optionNetwork.chainId != selectedNetworks[0].chainId
 
-    // zkSync safes cannot be deployed as part of a multichain group
-    if (selectedNetworks[0].chainId === ZKSYNC_ID) return optionNetwork.chainId !== ZKSYNC_ID
-    if (optionNetwork.chainId === ZKSYNC_ID) return optionNetwork.chainId === ZKSYNC_ID
+    // const hasCanonicalSingletonDeployment = getSafeSingletonDeployment({ version: LATEST_SAFE_VERSION })?.deployments
+    const optionHasCanonicalSingletonDeployment = Boolean(
+      getSafeSingletonDeployment({ network: optionNetwork.chainId, version: LATEST_SAFE_VERSION })?.deployments
+        .canonical,
+    )
+    const selectedHasCanonicalSingletonDeployment = Boolean(
+      getSafeSingletonDeployment({ network: selectedNetworks[0].chainId, version: LATEST_SAFE_VERSION })?.deployments
+        .canonical,
+    )
 
-    // Multichain is only available for 1.4.1 networks
-    if (selectedNetworkSafeVersion !== LATEST_SAFE_VERSION) return selectedNetworks[0].chainId !== optionNetwork.chainId
-    return getLatestSafeVersion(optionNetwork) !== LATEST_SAFE_VERSION
+    // Only 1.4.1 safes with canonical deployment addresses can be deployed as part of a multichain group
+    if (!selectedHasCanonicalSingletonDeployment) return selectedNetworks[0].chainId !== optionNetwork.chainId
+    return !optionHasCanonicalSingletonDeployment
   }
 
   return (
