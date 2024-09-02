@@ -19,7 +19,7 @@ const RejectTx = ({ txNonce }: RejectTxProps): ReactElement => {
   }, [txNonce, setNonce, setSafeTx, setSafeTxError])
 
   return (
-    <SignOrExecuteForm isBatchable={false}>
+    <SignOrExecuteForm isBatchable={false} isRejection>
       <Typography mb={2}>
         To reject the transaction, a separate rejection transaction will be created to replace the original one.
       </Typography>
