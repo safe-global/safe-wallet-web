@@ -1,4 +1,6 @@
+import DelegateForm from '@/components/tx/SignOrExecuteForm/DelegateForm'
 import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
+import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
 import madProps from '@/utils/mad-props'
@@ -103,6 +105,7 @@ export const SignOrExecuteForm = ({
       : skipToken,
   )
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const isDelegate = useIsWalletDelegate()
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
@@ -189,7 +192,7 @@ export const SignOrExecuteForm = ({
           </ErrorMessage>
         )}
 
-        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && (
+        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && !isDelegate && (
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
 
@@ -199,10 +202,10 @@ export const SignOrExecuteForm = ({
 
         <RiskConfirmationError />
 
-        {isCounterfactualSafe && (
+        {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
         )}
-        {!isCounterfactualSafe && willExecute && (
+        {!isCounterfactualSafe && willExecute && !isDelegate && (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         )}
         {!isCounterfactualSafe && willExecuteThroughRole && (
@@ -214,7 +217,7 @@ export const SignOrExecuteForm = ({
             role={(allowingRole || mostLikelyRole)!}
           />
         )}
-        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && (
+        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isDelegate && (
           <SignForm
             {...props}
             safeTx={safeTx}
@@ -223,6 +226,8 @@ export const SignOrExecuteForm = ({
             onSubmit={onFormSubmit}
           />
         )}
+
+        {isDelegate && <DelegateForm {...props} safeTx={safeTx} onSubmit={onFormSubmit} />}
       </TxCard>
     </>
   )

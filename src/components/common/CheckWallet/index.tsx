@@ -1,3 +1,4 @@
+import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import { type ReactElement } from 'react'
 import { Tooltip } from '@mui/material'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
@@ -24,12 +25,15 @@ const CheckWallet = ({ children, allowSpendingLimit, allowNonOwner, noTooltip }:
   const isSafeOwner = useIsSafeOwner()
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
+  const isDelegate = useIsWalletDelegate()
 
   const { safe } = useSafeInfo()
   const isCounterfactualMultiSig = !allowNonOwner && !safe.deployed && safe.threshold > 1
 
   const message =
-    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit)) && !isCounterfactualMultiSig
+    wallet &&
+    (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit) || isDelegate) &&
+    !isCounterfactualMultiSig
       ? ''
       : !wallet
       ? Message.WalletNotConnected
