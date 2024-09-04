@@ -22,7 +22,7 @@ const Warning = ({
     <Tooltip data-testid={datatestid} title={title} placement="top-start" arrow>
       <Alert
         className={css.alert}
-        sx={{ borderLeft: ({ palette }) => `3px solid ${palette[severity].main} !important` }}
+        sx={{ borderLeft: ({ palette }) => `3px solid ${palette[severity].main} !important`, alignItems: 'center' }}
         severity={severity}
         icon={<SvgIcon component={InfoOutlinedIcon} inheritViewBox color={severity} />}
       >
