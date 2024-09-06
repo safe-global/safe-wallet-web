@@ -56,7 +56,9 @@ const PayNowPayLater = ({
             <CheckRoundedIcon fontSize="small" color="inherit" />
           </ListItemIcon>
           <Typography variant="body2">
-            There will be a one-time network fee to activate your smart account wallet.
+            {`There will be a one-time network fee to activate your smart account wallet ${
+              isMultiChain ? 'on each network' : ''
+            }.`}
           </Typography>
         </ListItem>
         {!isMultiChain && (
