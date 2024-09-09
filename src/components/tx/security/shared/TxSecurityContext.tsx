@@ -53,18 +53,16 @@ export const TxSecurityProvider = ({ children }: { children: JSX.Element }) => {
 
   const providedValue = useMemo(
     () => ({
-      blockaidResponse: blockaidLoading
-        ? undefined
-        : {
-            description: blockaidResponse?.payload?.description,
-            reason: blockaidResponse?.payload?.reason,
-            classification: blockaidResponse?.payload?.classification,
-            severity: blockaidResponse?.severity,
-            warnings: blockaidResponse?.payload?.issues || [],
-            balanceChange: blockaidResponse?.payload?.balanceChange,
-            error: blockaidError,
-            isLoading: blockaidLoading,
-          },
+      blockaidResponse: {
+        description: blockaidResponse?.payload?.description,
+        reason: blockaidResponse?.payload?.reason,
+        classification: blockaidResponse?.payload?.classification,
+        severity: blockaidResponse?.severity,
+        warnings: blockaidResponse?.payload?.issues || [],
+        balanceChange: blockaidResponse?.payload?.balanceChange,
+        error: blockaidError,
+        isLoading: blockaidLoading,
+      },
       needsRiskConfirmation: !!blockaidResponse && blockaidResponse.severity >= SecuritySeverity.HIGH,
       isRiskConfirmed,
       setIsRiskConfirmed,

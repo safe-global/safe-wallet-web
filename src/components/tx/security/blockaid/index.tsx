@@ -184,6 +184,10 @@ const BlockaidWarning = () => {
     return <BlockaidError />
   }
 
+  if (isLoading || !blockaidResponse || !blockaidResponse.severity) {
+    return null
+  }
+
   return (
     <BlockaidResultWarning
       isRiskConfirmed={isRiskConfirmed}
