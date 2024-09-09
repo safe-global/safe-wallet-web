@@ -49,8 +49,13 @@ const initialSteps = '0 of 2 steps completed'
 export const addSignerStr = 'Add signer'
 export const accountRecoveryStr = 'Account recovery'
 export const sendTokensStr = 'Send tokens'
+const noWalletConnectedMsg = 'No wallet connected'
 
 const connectWalletBtn = '[data-testid="connect-wallet-btn"]'
+
+export function waitForConnectionMsgDisappear() {
+  cy.contains(noWalletConnectedMsg).should('not.exist')
+}
 export function checkNotificationsSwitchIs(status) {
   cy.get(notificationsSwitch).find('input').should(`be.${status}`)
 }
