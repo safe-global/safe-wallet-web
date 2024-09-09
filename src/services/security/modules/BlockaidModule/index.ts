@@ -143,6 +143,11 @@ export class BlockaidModule implements SecurityModule<BlockaidModuleRequest, Blo
       error = new Error('Simulation failed')
     }
 
+    // Sometimes the validation is missing
+    if (result.validation === undefined) {
+      error = new Error('Validation result missing')
+    }
+
     return {
       severity: result.validation?.result_type
         ? blockaidSeverityMap[result.validation.result_type]
