@@ -195,7 +195,7 @@ export const ExecuteForm = ({
                 variant="contained"
                 type="submit"
                 disabled={!isOk || submitDisabled}
-                sx={{ minWidth: '112px' }}
+                sx={{ minWidth: '112px', width: ['100%', '100%', '100%', 'auto'] }}
               >
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
