@@ -23,8 +23,7 @@ describe('[SMOKE] Swaps token tests', () => {
   })
 
   // TODO: Added to prod
-  // TODO: Bug reported, skiping until fixed
-  it.skip(
+  it(
     'Verify that clicking the swap from assets tab, autofills that token automatically in the form',
     { defaultCommandTimeout: 30000 },
     () => {
