@@ -8,7 +8,7 @@ import FieldsGrid from '@/components/tx/FieldsGrid'
 
 interface Props {
   hexData: string
-  highlightFirstBytes?: boolean;
+  highlightFirstBytes?: boolean
   title?: string
   limit?: number
 }
@@ -38,7 +38,13 @@ export const HexEncodedData = ({ hexData, title, highlightFirstBytes = true, lim
         {firstBytes}
         {showTxData || !showExpandBtn ? restBytes : shortenText(restBytes, limit - FIRST_BYTES)}{' '}
         {showExpandBtn && (
-          <Link component="button" data-testid="show-more" onClick={toggleExpanded} type="button" sx={{ verticalAlign: 'text-top' }}>
+          <Link
+            component="button"
+            data-testid="show-more"
+            onClick={toggleExpanded}
+            type="button"
+            sx={{ verticalAlign: 'text-top' }}
+          >
             Show {showTxData ? 'less' : 'more'}
           </Link>
         )}
