@@ -1,4 +1,5 @@
-import { isSmartContractWallet } from '@/utils/wallets'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { isHardwareWallet, isSmartContractWallet } from '@/utils/wallets'
 import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
 import {
   type ChainInfo,
@@ -7,6 +8,7 @@ import {
   type TransactionDetails,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type {
+  SafeSignature,
   SafeTransaction,
   Transaction,
   TransactionOptions,
@@ -106,6 +108,23 @@ export const dispatchTxSigning = async (
   txDispatch(TxEvent.SIGNED, { txId })
 
   return signedTx
+}
+
+// We have to manually sign because sdk.signTransaction doesn't support delegates
+export const dispatchDelegateTxSigning = async (safeTx: SafeTransaction, wallet: ConnectedWallet) => {
+  const sdk = await getSafeSDKWithSigner(wallet.provider)
+
+  let signature: SafeSignature
+  if (isHardwareWallet(wallet)) {
+    const txHash = await sdk.getTransactionHash(safeTx)
+    signature = await sdk.signHash(txHash)
+  } else {
+    signature = await sdk.signTypedData(safeTx)
+  }
+
+  safeTx.addSignature(signature)
+
+  return safeTx
 }
 
 const ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT = 4_500_000

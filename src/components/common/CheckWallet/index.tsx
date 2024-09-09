@@ -1,3 +1,4 @@
+import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import { type ReactElement } from 'react'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
@@ -33,12 +34,16 @@ const CheckWallet = ({
   const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
   const isWrongChain = useIsWrongChain()
+  const isDelegate = useIsWalletDelegate()
+
   const { safe } = useSafeInfo()
 
   const isCounterfactualMultiSig = !allowNonOwner && !safe.deployed && safe.threshold > 1
 
   const message =
-    wallet && (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit)) && !isCounterfactualMultiSig
+    wallet &&
+    (isSafeOwner || allowNonOwner || (isSpendingLimit && allowSpendingLimit) || isDelegate) &&
+    !isCounterfactualMultiSig
       ? ''
       : !wallet
       ? Message.WalletNotConnected
