@@ -63,7 +63,7 @@
     "@sentry/react": "^7.91.0",
     "@spindl-xyz/attribution-lite": "^1.4.0",
     "@walletconnect/utils": "^2.15.2",
-    "@walletconnect/web3wallet": "^1.14.2",
+    "@walletconnect/web3wallet": "^1.15.0",
     "@web3-onboard/coinbase": "^2.2.6",
     "@web3-onboard/core": "^2.21.4",
     "@web3-onboard/injected-wallets": "^2.11.2",
