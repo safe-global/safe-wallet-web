@@ -35,7 +35,6 @@ describe('[SMOKE] Create transactions tests 2', () => {
   it('[SMOKE] Verify advance parameters gas limit input', () => {
     happyPathToStepTwo()
     createtx.changeNonce('1')
-    createtx.selectCurrentWallet()
     createtx.openExecutionParamsModal()
     createtx.verifyAndSubmitExecutionParams()
   })

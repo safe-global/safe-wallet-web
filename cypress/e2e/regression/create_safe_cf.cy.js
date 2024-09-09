@@ -154,8 +154,9 @@ describe('CF Safe regression tests', () => {
 
   it('Verify clicking on "Activate now" button opens safe activation flow', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__undeployedSafes, ls.undeployedSafe.safe1)
-    cy.reload()
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_0)
+    wallet.connectSigner(signer)
+    owner.waitForConnectionStatus()
     createwallet.clickOnActivateAccountBtn()
     main.verifyElementsIsVisible([createwallet.activateAccountBtn])
   })
