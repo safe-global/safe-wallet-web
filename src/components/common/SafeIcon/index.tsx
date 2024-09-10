@@ -1,8 +1,9 @@
 import type { ReactElement } from 'react'
-import { Box } from '@mui/material'
+import { Box, Skeleton } from '@mui/material'
 
 import css from './styles.module.css'
 import Identicon, { type IdenticonProps } from '../Identicon'
+import { useChain } from '@/hooks/useChains'
 
 interface ThresholdProps {
   threshold: number | string
@@ -18,13 +19,35 @@ interface SafeIconProps extends IdenticonProps {
   threshold?: ThresholdProps['threshold']
   owners?: ThresholdProps['owners']
   size?: number
+  chainId?: string
+  isSubItem?: boolean
 }
 
-const SafeIcon = ({ address, threshold, owners, size }: SafeIconProps): ReactElement => (
-  <div className={css.container}>
-    {threshold && owners ? <Threshold threshold={threshold} owners={owners} /> : null}
-    <Identicon address={address} size={size} />
-  </div>
-)
+const ChainIcon = ({ chainId }: { chainId: string }) => {
+  const chainConfig = useChain(chainId)
+
+  if (!chainConfig) {
+    return <Skeleton variant="circular" width={40} height={40} />
+  }
+
+  return (
+    <img
+      src={chainConfig.chainLogoUri ?? undefined}
+      alt={`${chainConfig.chainName} Logo`}
+      width={40}
+      height={40}
+      loading="lazy"
+    />
+  )
+}
+
+const SafeIcon = ({ address, threshold, owners, size, chainId, isSubItem = false }: SafeIconProps): ReactElement => {
+  return (
+    <div className={css.container}>
+      {threshold && owners ? <Threshold threshold={threshold} owners={owners} /> : null}
+      {isSubItem && chainId ? <ChainIcon chainId={chainId} /> : <Identicon address={address} size={size} />}
+    </div>
+  )
+}
 
 export default SafeIcon

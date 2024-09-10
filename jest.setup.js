@@ -5,6 +5,7 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
 import { TextEncoder, TextDecoder } from 'util'
+import { Headers, Request, Response } from 'node-fetch'
 
 jest.mock('@web3-onboard/coinbase', () => jest.fn())
 jest.mock('@web3-onboard/injected-wallets', () => ({ ProviderLabel: { MetaMask: 'MetaMask' } }))
@@ -12,6 +13,7 @@ jest.mock('@web3-onboard/keystone/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/ledger/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/trezor', () => jest.fn())
 jest.mock('@web3-onboard/walletconnect', () => jest.fn())
+jest.mock('safe-client-gateway-sdk')
 
 const mockOnboardState = {
   chains: [],
@@ -43,7 +45,7 @@ const NumberFormat = Intl.NumberFormat
 const englishTestLocale = 'en'
 
 // `viem` used by the `safe-apps-sdk` uses `TextEncoder` and `TextDecoder` which are not available in jsdom for some reason
-Object.assign(global, { TextDecoder, TextEncoder })
+Object.assign(global, { TextDecoder, TextEncoder, fetch: jest.fn() })
 
 jest.spyOn(Intl, 'NumberFormat').mockImplementation((locale, ...rest) => new NumberFormat([englishTestLocale], ...rest))
 
@@ -68,3 +70,8 @@ Object.defineProperty(Uint8Array, Symbol.hasInstance, {
       : Uint8Array[Symbol.hasInstance].call(this, potentialInstance)
   },
 })
+
+// These are required for safe-client-gateway-sdk
+globalThis.Request = Request
+globalThis.Response = Response
+globalThis.Headers = Headers

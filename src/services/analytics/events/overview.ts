@@ -31,6 +31,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Remove from watchlist',
     category: OVERVIEW_CATEGORY,
   },
+  ADD_NEW_NETWORK: {
+    action: 'Add new network',
+    category: OVERVIEW_CATEGORY,
+  },
   DELETED_FROM_WATCHLIST: {
     action: 'Deleted from watchlist',
     category: OVERVIEW_CATEGORY,
@@ -114,6 +118,12 @@ export const OVERVIEW_EVENTS = {
   // Track clicks on links to Safe Accounts
   OPEN_SAFE: {
     action: 'Open Safe',
+    category: OVERVIEW_CATEGORY,
+    //label: OPEN_SAFE_LABELS
+  },
+  // Track clicks on links to Safe Accounts
+  EXPAND_MULTI_SAFE: {
+    action: 'Expand multi Safe',
     category: OVERVIEW_CATEGORY,
     //label: OPEN_SAFE_LABELS
   },

@@ -160,7 +160,7 @@ const CreateSafe = () => {
     name: '',
     owners: [],
     threshold: 1,
-    saltNonce: Date.now(),
+    saltNonce: 0,
     safeVersion: getLatestSafeVersion(chain) as SafeVersion,
   }
 

@@ -24,6 +24,8 @@ import {
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
+import { Box } from '@mui/material'
+import css from './styles.module.css'
 
 export const TransferTx = ({
   info,
@@ -86,18 +88,18 @@ export const TransferTx = ({
 }
 
 const CustomTx = ({ info }: { info: Custom }): ReactElement => {
-  return <>{info.methodName}</>
+  return <Box className={css.txInfo}>{info.methodName}</Box>
 }
 
 const CreationTx = ({ info }: { info: Creation }): ReactElement => {
-  return <>Created by {shortenAddress(info.creator.value)}</>
+  return <Box className={css.txInfo}>Created by {shortenAddress(info.creator.value)}</Box>
 }
 
 const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   return (
-    <>
+    <Box className={css.txInfo}>
       {info.actionCount} {`action${info.actionCount > 1 ? 's' : ''}`}
-    </>
+    </Box>
   )
 }
 
@@ -106,9 +108,8 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
     info.settingsInfo?.type === SettingsInfoType.DISABLE_MODULE
   ) {
-    return <>{info.settingsInfo.module.name}</>
+    return <Box className={css.txInfo}>{info.settingsInfo.module.name}</Box>
   }
-
   return <></>
 }
 

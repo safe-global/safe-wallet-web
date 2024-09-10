@@ -77,6 +77,7 @@ export const createSwapOwnerTx = async (
   const safeVersion = await safeSDK.getContractVersion()
 
   const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  // @ts-ignore SwapOwnerTxParams is a union type and the method expects a specific one
   const data = contract.encode('swapOwner', [SENTINEL_ADDRESS, txParams.oldOwnerAddress, txParams.newOwnerAddress])
 
   const tx = {

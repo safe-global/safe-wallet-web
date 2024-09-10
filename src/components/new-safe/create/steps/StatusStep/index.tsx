@@ -18,6 +18,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 
 const SPEED_UP_THRESHOLD_IN_SECONDS = 15
 
@@ -54,7 +55,10 @@ export const CreateSafeStatus = ({
 
     if (status === SafeCreationEvent.SUCCESS) {
       dispatch(updateAddressBook(chain.chainId, safeAddress, data.name, data.owners, data.threshold))
-      router.push(getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL))
+      const redirect = getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL)
+      if (typeof redirect !== 'string' || redirect.startsWith('/')) {
+        router.push(redirect)
+      }
     }
   }, [dispatch, chain, data.name, data.owners, data.threshold, router, safeAddress, status])
 
@@ -71,7 +75,7 @@ export const CreateSafeStatus = ({
   const tryAgain = () => {
     trackEvent(CREATE_SAFE_EVENTS.RETRY_CREATE_SAFE)
 
-    if (!pendingSafe) {
+    if (!pendingSafe || !isPredictedSafeProps(pendingSafe.props)) {
       setStep(0)
       return
     }

@@ -1,4 +1,6 @@
+import DelegateForm from '@/components/tx/SignOrExecuteForm/DelegateForm'
 import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
+import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
 import madProps from '@/utils/mad-props'
@@ -33,11 +35,14 @@ import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfi
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import useTxDetails from '@/hooks/useTxDetails'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 import { MigrateToL2Information } from './MigrateToL2Information'
 import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
+
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -56,9 +61,8 @@ export type SignOrExecuteProps = {
   showMethodCall?: boolean
 }
 
-const trackTxEvents = async (
-  chainId: string,
-  txId: string,
+const trackTxEvents = (
+  details: TransactionDetails | undefined,
   isCreation: boolean,
   isExecuted: boolean,
   isRoleExecution: boolean,
@@ -66,8 +70,7 @@ const trackTxEvents = async (
   const creationEvent = isRoleExecution ? TX_EVENTS.CREATE_VIA_ROLE : TX_EVENTS.CREATE
   const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
   const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
-
-  const txType = await getTransactionTrackingType(chainId, txId)
+  const txType = getTransactionTrackingType(details)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
@@ -95,8 +98,17 @@ export const SignOrExecuteForm = ({
   const [decodedData] = useDecodeTx(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
-  const [txDetails] = useTxDetails(props.txId)
+  const { data: txDetails } = useGetTransactionDetailsQuery(
+    chainId && props.txId
+      ? {
+          chainId,
+          txId: props.txId,
+        }
+      : skipToken,
+  )
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const isDelegate = useIsWalletDelegate()
+  const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
 
@@ -126,10 +138,11 @@ export const SignOrExecuteForm = ({
     async (txId: string, isExecuted = false, isRoleExecution = false) => {
       onSubmit?.(txId, isExecuted)
 
+      const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(chainId, txId, isCreation, isExecuted, isRoleExecution)
+      trackTxEvents(details, isCreation, isExecuted, isRoleExecution)
     },
-    [chainId, isCreation, onSubmit],
+    [chainId, isCreation, onSubmit, trigger],
   )
 
   const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(
@@ -185,7 +198,7 @@ export const SignOrExecuteForm = ({
           </ErrorMessage>
         )}
 
-        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && (
+        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && !isDelegate && (
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
 
@@ -195,10 +208,10 @@ export const SignOrExecuteForm = ({
 
         <RiskConfirmationError />
 
-        {isCounterfactualSafe && (
+        {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
         )}
-        {!isCounterfactualSafe && willExecute && (
+        {!isCounterfactualSafe && willExecute && !isDelegate && (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         )}
         {!isCounterfactualSafe && willExecuteThroughRole && (
@@ -210,7 +223,7 @@ export const SignOrExecuteForm = ({
             role={(allowingRole || mostLikelyRole)!}
           />
         )}
-        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && (
+        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isDelegate && (
           <SignForm
             {...props}
             safeTx={safeTx}
@@ -219,6 +232,8 @@ export const SignOrExecuteForm = ({
             onSubmit={onFormSubmit}
           />
         )}
+
+        {isDelegate && <DelegateForm {...props} safeTx={safeTx} onSubmit={onFormSubmit} />}
       </TxCard>
     </>
   )
