@@ -94,6 +94,7 @@ export const SignOrExecuteForm = ({
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData] = useDecodeTx(safeTx)
+
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
   const { data: txDetails } = useGetTransactionDetailsQuery(
@@ -159,7 +160,7 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        {!props.isRejection && (
+        {!props.isRejection && decodedData && (
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
             {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
 
