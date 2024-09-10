@@ -17,16 +17,14 @@ export const getAvailableSaltNonce = async (
   safeVersion?: SafeVersion,
 ): Promise<string> => {
   let isAvailableOnAllChains = true
-  const allRPCs = await Promise.all(
-    chains.map((chain) => {
-      const rpcUrl = customRpcs?.[chain.chainId] || getRpcServiceUrl(chain.rpcUri)
-      // Turn into Eip1993Provider
-      return {
-        rpcUrl,
-        chainId: chain.chainId,
-      }
-    }),
-  )
+  const allRPCs = chains.map((chain) => {
+    const rpcUrl = customRpcs?.[chain.chainId] || getRpcServiceUrl(chain.rpcUri)
+    // Turn into Eip1993Provider
+    return {
+      rpcUrl,
+      chainId: chain.chainId,
+    }
+  })
 
   for (const chain of chains) {
     const rpcUrl = allRPCs.find((rpc) => chain.chainId === rpc.chainId)?.rpcUrl
