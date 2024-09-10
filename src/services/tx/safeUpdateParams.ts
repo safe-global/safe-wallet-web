@@ -1,4 +1,7 @@
-import type { SafeContractImplementationType } from '@safe-global/protocol-kit/dist/src/types/contracts'
+import type {
+  ContractNetworkConfig,
+  SafeContractImplementationType,
+} from '@safe-global/protocol-kit/dist/src/types/contracts'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -12,13 +15,14 @@ const getChangeFallbackHandlerCallData = async (
   safe: SafeInfo,
   safeContractInstance: SafeContractImplementationType,
   chain: ChainInfo,
+  fallbackHandlerContractAddress?: string,
 ): Promise<string> => {
   if (!hasSafeFeature(SAFE_FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
     return '0x'
   }
 
   const fallbackHandlerAddress = await (
-    await getReadOnlyFallbackHandlerContract(getLatestSafeVersion(chain))
+    await getReadOnlyFallbackHandlerContract(getLatestSafeVersion(chain), fallbackHandlerContractAddress)
   ).getAddress()
   // @ts-ignore
   return safeContractInstance.encode('setFallbackHandler', [fallbackHandlerAddress])
@@ -30,17 +34,26 @@ const getChangeFallbackHandlerCallData = async (
  * - set the fallback handler address
  * Only works for safes < 1.3.0 as the changeMasterCopy function was removed
  */
-export const createUpdateSafeTxs = async (safe: SafeInfo, chain: ChainInfo): Promise<MetaTransactionData[]> => {
+export const createUpdateSafeTxs = async (
+  safe: SafeInfo,
+  chain: ChainInfo,
+  contractAddresses?: ContractNetworkConfig,
+): Promise<MetaTransactionData[]> => {
   assertValidSafeVersion(safe.version)
 
   const latestMasterCopyAddress = await (
-    await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain))
+    await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain), contractAddresses?.safeSingletonAddress)
   ).getAddress()
   const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safe.version)
 
   // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
   const changeMasterCopyCallData = readOnlySafeContract.encode('changeMasterCopy', [latestMasterCopyAddress])
-  const changeFallbackHandlerCallData = await getChangeFallbackHandlerCallData(safe, readOnlySafeContract, chain)
+  const changeFallbackHandlerCallData = await getChangeFallbackHandlerCallData(
+    safe,
+    readOnlySafeContract,
+    chain,
+    contractAddresses?.fallbackHandlerAddress,
+  )
 
   const txs: MetaTransactionData[] = [
     {

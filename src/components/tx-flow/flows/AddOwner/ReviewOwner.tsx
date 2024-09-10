@@ -15,6 +15,7 @@ import { OwnerList } from '../../common/OwnerList'
 import MinusIcon from '@/public/images/common/minus.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
@@ -23,22 +24,42 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
   const { chainId } = safe
   const chain = useCurrentChain()
   const { newOwner, removedOwner, threshold } = params
+  const contractAddresses = useCustomNetworkContracts()
 
   useEffect(() => {
     if (!chain) return
 
     const promise = removedOwner
-      ? createSwapOwnerTx(chain, safe.deployed, {
-          newOwnerAddress: newOwner.address,
-          oldOwnerAddress: removedOwner.address,
-        })
-      : createAddOwnerTx(chain, safe.deployed, {
-          ownerAddress: newOwner.address,
-          threshold,
-        })
+      ? createSwapOwnerTx(
+          chain,
+          safe.deployed,
+          {
+            newOwnerAddress: newOwner.address,
+            oldOwnerAddress: removedOwner.address,
+          },
+          contractAddresses?.safeSingletonAddress,
+        )
+      : createAddOwnerTx(
+          chain,
+          safe.deployed,
+          {
+            ownerAddress: newOwner.address,
+            threshold,
+          },
+          contractAddresses?.safeSingletonAddress,
+        )
 
     promise.then(setSafeTx).catch(setSafeTxError)
-  }, [removedOwner, newOwner, threshold, setSafeTx, setSafeTxError, chain, safe.deployed])
+  }, [
+    removedOwner,
+    newOwner,
+    threshold,
+    setSafeTx,
+    setSafeTxError,
+    chain,
+    safe.deployed,
+    contractAddresses?.safeSingletonAddress,
+  ])
 
   const addAddressBookEntryAndSubmit = () => {
     if (typeof newOwner.name !== 'undefined') {

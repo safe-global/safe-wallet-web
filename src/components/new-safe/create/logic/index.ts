@@ -12,7 +12,7 @@ import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
 import { predictSafeAddress, SafeFactory, SafeProvider } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
-import type { DeploySafeProps } from '@safe-global/protocol-kit'
+import type { ContractNetworkConfig, ContractNetworksConfig, DeploySafeProps } from '@safe-global/protocol-kit'
 import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
 
 import { backOff } from 'exponential-backoff'
@@ -26,11 +26,15 @@ export type SafeCreationProps = {
   saltNonce: number
 }
 
-const getSafeFactory = async (provider: Eip1193Provider, safeVersion: SafeVersion): Promise<SafeFactory> => {
+const getSafeFactory = async (
+  provider: Eip1193Provider,
+  safeVersion: SafeVersion,
+  contractAddressesConfig?: ContractNetworksConfig,
+): Promise<SafeFactory> => {
   if (!isValidSafeVersion(safeVersion)) {
     throw new Error('Invalid Safe version')
   }
-  return SafeFactory.init({ provider, safeVersion })
+  return SafeFactory.init({ provider, safeVersion, contractNetworks: contractAddressesConfig })
 }
 
 /**
@@ -40,8 +44,9 @@ export const createNewSafe = async (
   provider: Eip1193Provider,
   props: DeploySafeProps,
   safeVersion: SafeVersion,
+  contractAddressesConfig?: ContractNetworksConfig,
 ): Promise<Safe> => {
-  const safeFactory = await getSafeFactory(provider, safeVersion)
+  const safeFactory = await getSafeFactory(provider, safeVersion, contractAddressesConfig)
   return safeFactory.deploySafe(props)
 }
 
@@ -53,6 +58,7 @@ export const computeNewSafeAddress = async (
   props: DeploySafeProps,
   chain: ChainInfo,
   safeVersion?: SafeVersion,
+  contractAddresses?: ContractNetworkConfig,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
 
@@ -64,6 +70,7 @@ export const computeNewSafeAddress = async (
       saltNonce: props.saltNonce,
       safeVersion: safeVersion ?? getLatestSafeVersion(chain),
     },
+    customContracts: contractAddresses,
   })
 }
 
@@ -77,11 +84,26 @@ export const encodeSafeCreationTx = async ({
   saltNonce,
   chain,
   safeVersion,
-}: SafeCreationProps & { chain: ChainInfo; safeVersion?: SafeVersion }) => {
+  contractAddresses,
+}: SafeCreationProps & {
+  chain: ChainInfo
+  safeVersion?: SafeVersion
+  contractAddresses?: ContractNetworkConfig
+}) => {
   const usedSafeVersion = safeVersion ?? getLatestSafeVersion(chain)
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, usedSafeVersion)
-  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion)
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(usedSafeVersion)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(
+    chain,
+    usedSafeVersion,
+    contractAddresses?.safeSingletonAddress,
+  )
+  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(
+    usedSafeVersion,
+    contractAddresses?.safeProxyFactoryAddress,
+  )
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+    usedSafeVersion,
+    contractAddresses?.fallbackHandlerAddress,
+  )
 
   const callData = {
     owners,
@@ -119,9 +141,13 @@ export const estimateSafeCreationGas = async (
   from: string,
   safeParams: SafeCreationProps,
   safeVersion?: SafeVersion,
+  contractAddresses?: ContractNetworkConfig,
 ): Promise<bigint> => {
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion ?? getLatestSafeVersion(chain))
-  const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain })
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(
+    safeVersion ?? getLatestSafeVersion(chain),
+    contractAddresses?.safeProxyFactoryAddress,
+  )
+  const encodedSafeCreationTx = await encodeSafeCreationTx({ ...safeParams, chain, contractAddresses })
 
   const gas = await provider.estimateGas({
     from,
@@ -180,16 +206,27 @@ export const relaySafeCreation = async (
   threshold: number,
   saltNonce: number,
   version?: SafeVersion,
+  contractAddresses?: ContractNetworkConfig,
 ) => {
   const latestSafeVersion = getLatestSafeVersion(chain)
 
   const safeVersion = version ?? latestSafeVersion
 
-  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion)
+  const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(
+    safeVersion,
+    contractAddresses?.safeProxyFactoryAddress,
+  )
   const proxyFactoryAddress = await readOnlyProxyFactoryContract.getAddress()
-  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(safeVersion)
+  const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+    safeVersion,
+    contractAddresses?.fallbackHandlerAddress,
+  )
   const fallbackHandlerAddress = await readOnlyFallbackHandlerContract.getAddress()
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(
+    chain,
+    safeVersion,
+    contractAddresses?.safeSingletonAddress,
+  )
   const safeContractAddress = await readOnlySafeContract.getAddress()
 
   const callData = {

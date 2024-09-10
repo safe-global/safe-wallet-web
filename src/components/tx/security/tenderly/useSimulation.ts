@@ -6,6 +6,7 @@ import { getSimulationPayload, type SimulationTxParams } from '@/components/tx/s
 import { useAppSelector } from '@/store'
 import { selectTenderly } from '@/store/settingsSlice'
 import { asError } from '@/services/exceptions/utils'
+import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 
 export type UseSimulationReturn =
   | {
@@ -30,6 +31,7 @@ export const useSimulation = (): UseSimulationReturn => {
   const [simulationRequestStatus, setSimulationRequestStatus] = useState<FETCH_STATUS>(FETCH_STATUS.NOT_ASKED)
   const [requestError, setRequestError] = useState<string | undefined>(undefined)
   const tenderly = useAppSelector(selectTenderly)
+  const contractAddresses = useCustomNetworkContracts()
 
   const simulationLink = useMemo(() => getSimulationLink(simulation?.simulation.id || ''), [simulation])
 
@@ -45,7 +47,7 @@ export const useSimulation = (): UseSimulationReturn => {
       setRequestError(undefined)
 
       try {
-        const simulationPayload = await getSimulationPayload(params)
+        const simulationPayload = await getSimulationPayload(params, contractAddresses?.multiSendCallOnlyAddress)
 
         const data = await getSimulation(simulationPayload, tenderly)
 
@@ -58,7 +60,7 @@ export const useSimulation = (): UseSimulationReturn => {
         setSimulationRequestStatus(FETCH_STATUS.ERROR)
       }
     },
-    [tenderly],
+    [contractAddresses?.multiSendCallOnlyAddress, tenderly],
   )
 
   return {

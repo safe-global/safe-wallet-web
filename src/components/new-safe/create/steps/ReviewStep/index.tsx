@@ -25,7 +25,6 @@ import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { gtmSetSafeAddress } from '@/services/analytics/gtm'
-import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch } from '@/store'
 import { FEATURES, hasFeature } from '@/utils/chains'
@@ -38,6 +37,8 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
+import { useCustomNetworkContracts, useCustomContractsByNetwork } from '@/hooks/coreSDK/useCustomNetworkContracts'
+import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 
 export const NetworkFee = ({
@@ -122,6 +123,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
+  const contractAddresses = useCustomNetworkContracts()
+  const contractAddressesConfig = useCustomContractsByNetwork()
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
@@ -138,7 +141,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     }
   }, [data.owners, data.threshold])
 
-  const { gasLimit } = useEstimateSafeCreationGas(safeParams, data.safeVersion)
+  const { gasLimit } = useEstimateSafeCreationGas(safeParams, data.safeVersion, contractAddresses)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -160,7 +163,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     setIsCreating(true)
 
     try {
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(data.safeVersion)
+      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(
+        data.safeVersion,
+        contractAddresses?.fallbackHandlerAddress,
+      )
 
       const props: DeploySafeProps = {
         safeAccountConfig: {
@@ -176,8 +182,15 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         { ...props, saltNonce: '0' },
         chain,
         data.safeVersion,
+        contractAddresses,
       )
-      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain, data.safeVersion)
+      const safeAddress = await computeNewSafeAddress(
+        wallet.provider,
+        { ...props, saltNonce },
+        chain,
+        data.safeVersion,
+        contractAddresses,
+      )
 
       if (isCounterfactual && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
@@ -239,6 +252,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             },
           },
           data.safeVersion,
+          contractAddressesConfig,
         )
       }
     } catch (_err) {

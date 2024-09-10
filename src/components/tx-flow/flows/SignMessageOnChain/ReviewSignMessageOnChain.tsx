@@ -30,6 +30,7 @@ import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { ErrorBoundary } from '@sentry/react'
 import useAsync from '@/hooks/useAsync'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
+import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -44,13 +45,14 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
   const wallet = useWallet()
   const { safeTx, setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   useHighlightHiddenTab()
+  const contractAddresses = useCustomNetworkContracts()
 
   const isTextMessage = method === Methods.signMessage && typeof message === 'string'
   const isTypedMessage = method === Methods.signTypedMessage && isEIP712TypedData(message)
 
   const [readOnlySignMessageLibContract] = useAsync(
-    async () => getReadOnlySignMessageLibContract(safe.version),
-    [safe.version],
+    async () => getReadOnlySignMessageLibContract(safe.version, contractAddresses?.signMessageLibAddress),
+    [contractAddresses?.signMessageLibAddress, safe.version],
   )
 
   const [signMessageAddress, setSignMessageAddress] = useState<string>('')

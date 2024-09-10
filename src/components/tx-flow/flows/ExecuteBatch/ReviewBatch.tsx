@@ -38,6 +38,7 @@ import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletReject
 import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
+import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 import { useGetMultipleTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 
@@ -66,6 +67,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
   const onboard = useOnboard()
   const wallet = useWallet()
+  const customContractAddresses = useCustomNetworkContracts()
 
   const {
     data: txsWithDetails,
@@ -82,8 +84,8 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
   const [multiSendContract] = useAsync(async () => {
     if (!safe.version) return
-    return await getReadOnlyMultiSendCallOnlyContract(safe.version)
-  }, [safe.version])
+    return await getReadOnlyMultiSendCallOnlyContract(safe.version, customContractAddresses?.multiSendCallOnlyAddress)
+  }, [customContractAddresses?.multiSendCallOnlyAddress, safe.version])
 
   const [multisendContractAddress = ''] = useAsync(async () => {
     if (!multiSendContract) return ''
@@ -92,8 +94,14 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
 
   const [multiSendTxs] = useAsync(async () => {
     if (!txsWithDetails || !chain || !safe.version) return
-    return getMultiSendTxs(txsWithDetails, chain, safe.address.value, safe.version)
-  }, [chain, safe.address.value, safe.version, txsWithDetails])
+    return getMultiSendTxs(
+      txsWithDetails,
+      chain,
+      safe.address.value,
+      safe.version,
+      customContractAddresses?.safeSingletonAddress,
+    )
+  }, [chain, customContractAddresses?.safeSingletonAddress, safe.address.value, safe.version, txsWithDetails])
 
   const multiSendTxData = useMemo(() => {
     if (!txsWithDetails || !multiSendTxs) return

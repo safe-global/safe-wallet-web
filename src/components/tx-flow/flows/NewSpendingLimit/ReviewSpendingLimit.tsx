@@ -17,6 +17,7 @@ import { formatVisualAmount, safeParseUnits } from '@/utils/formatters'
 import type { NewSpendingLimitFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { SafeTxContext } from '../../SafeTxProvider'
+import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 
 export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowProps }) => {
   const spendingLimits = useSelector(selectSpendingLimits)
@@ -24,6 +25,7 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   const chainId = useChainId()
   const chain = useCurrentChain()
   const { balances } = useBalances()
+  const contractAddresses = useCustomNetworkContracts()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const token = balances.items.find((item) => item.tokenInfo.address === params.tokenAddress)
   const { decimals } = token?.tokenInfo || {}
@@ -41,12 +43,22 @@ export const ReviewSpendingLimit = ({ params }: { params: NewSpendingLimitFlowPr
   }, [spendingLimits, params])
 
   useEffect(() => {
-    createNewSpendingLimitTx(params, spendingLimits, chainId, chain, safe.deployed, decimals, existingSpendingLimit)
+    createNewSpendingLimitTx(
+      params,
+      spendingLimits,
+      chainId,
+      chain,
+      safe.deployed,
+      decimals,
+      existingSpendingLimit,
+      contractAddresses?.safeSingletonAddress,
+    )
       .then(setSafeTx)
       .catch(setSafeTxError)
   }, [
     chain,
     chainId,
+    contractAddresses?.safeSingletonAddress,
     decimals,
     existingSpendingLimit,
     params,

@@ -10,11 +10,13 @@ import { SafeTxContext } from '../../SafeTxProvider'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import useAsync from '@/hooks/useAsync'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { useCustomNetworkContracts } from '@/hooks/coreSDK/useCustomNetworkContracts'
 
 export const UpdateSafeReview = () => {
   const { safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
+  const contractAddresses = useCustomNetworkContracts()
 
   const latestSafeVersion = getLatestSafeVersion(chain)
 
@@ -23,9 +25,9 @@ export const UpdateSafeReview = () => {
       return
     }
 
-    const txs = await createUpdateSafeTxs(safe, chain)
+    const txs = await createUpdateSafeTxs(safe, chain, contractAddresses)
     createMultiSendCallOnlyTx(txs).then(setSafeTx).catch(setSafeTxError)
-  }, [safe, safeLoaded, chain, setSafeTx, setSafeTxError])
+  }, [chain, safeLoaded, safe, contractAddresses, setSafeTx, setSafeTxError])
 
   return (
     <SignOrExecuteForm>

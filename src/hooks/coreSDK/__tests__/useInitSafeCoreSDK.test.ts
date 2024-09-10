@@ -1,14 +1,13 @@
 import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
-import { renderHook } from '@/tests/test-utils'
+import { renderHook, waitFor } from '@/tests/test-utils'
 import { useInitSafeCoreSDK } from '@/hooks/coreSDK/useInitSafeCoreSDK'
 import * as web3 from '@/hooks/wallets/web3'
 import * as router from 'next/router'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import * as coreSDK from '@/hooks/coreSDK/safeCoreSDK'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
-import { waitFor } from '@testing-library/react'
-import type Safe from '@safe-global/protocol-kit'
 import { type JsonRpcProvider } from 'ethers'
+import type Safe from '@safe-global/protocol-kit'
 
 describe('useInitSafeCoreSDK hook', () => {
   const mockSafeAddress = '0x0000000000000000000000000000000000005AFE'
@@ -70,7 +69,7 @@ describe('useInitSafeCoreSDK hook', () => {
     const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
-    jest.spyOn(useSafeInfo, 'default').mockReturnValueOnce({
+    jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       ...mockSafeInfo,
       safeLoaded: false,
     })
@@ -85,7 +84,7 @@ describe('useInitSafeCoreSDK hook', () => {
     const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
-    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValueOnce(undefined)
+    jest.spyOn(web3, 'useWeb3ReadOnly').mockReturnValue(undefined)
 
     renderHook(() => useInitSafeCoreSDK())
 
@@ -97,7 +96,7 @@ describe('useInitSafeCoreSDK hook', () => {
     const initMock = jest.spyOn(coreSDK, 'initSafeSDK')
     const setSDKMock = jest.spyOn(coreSDK, 'setSafeSDK')
 
-    jest.spyOn(router, 'useRouter').mockReturnValueOnce({ query: {} } as unknown as router.NextRouter)
+    jest.spyOn(router, 'useRouter').mockReturnValue({ query: {} } as unknown as router.NextRouter)
 
     renderHook(() => useInitSafeCoreSDK())
 
