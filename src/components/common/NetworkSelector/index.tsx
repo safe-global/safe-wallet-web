@@ -34,8 +34,8 @@ import { useReplayableNetworks } from '@/features/multichain/hooks/useReplayable
 import { useSafeCreationData } from '@/features/multichain/hooks/useSafeCreationData'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
-import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnSpecificChain'
 import useAddressBook from '@/hooks/useAddressBook'
+import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 
 const NetworkSkeleton = () => {
   return (
@@ -73,17 +73,14 @@ const UndeployedNetworks = ({
     () => chains.filter((chain) => deployedChains.includes(chain.chainId)),
     [chains, deployedChains],
   )
-  const [safeCreationData, safeCreationDataError] = useSafeCreationData(safeAddress, deployedChainInfos)
+  const safeCreationResult = useSafeCreationData(safeAddress, deployedChainInfos)
+  const [safeCreationData, safeCreationDataError] = safeCreationResult
 
-  const availableNetworks = useReplayableNetworks(safeCreationData)
+  const availableNetworks = useReplayableNetworks(safeCreationData, deployedChains)
 
   const [testNets, prodNets] = useMemo(
-    () =>
-      partition(
-        availableNetworks.filter((network) => !deployedChains.includes(network.chainId)),
-        (config) => config.isTestnet,
-      ),
-    [availableNetworks, deployedChains],
+    () => partition(availableNetworks, (config) => config.isTestnet),
+    [availableNetworks],
   )
 
   const onSelect = (chain: ChainInfo) => {
@@ -159,7 +156,7 @@ const UndeployedNetworks = ({
           open
           onClose={() => setReplayOnChain(undefined)}
           currentName={safeName ?? ''}
-          safeCreationData={safeCreationData}
+          safeCreationResult={safeCreationResult}
         />
       )}
     </>
