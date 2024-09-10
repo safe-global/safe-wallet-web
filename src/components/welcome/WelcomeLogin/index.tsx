@@ -21,6 +21,10 @@ const WelcomeLogin = () => {
     setShouldRedirect(true)
   }, [])
 
+  const onContinue = useCallback(() => {
+    router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
+  }, [router])
+
   useEffect(() => {
     if (!shouldRedirect) return
 
@@ -50,7 +54,7 @@ const WelcomeLogin = () => {
         </Typography>
 
         <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={OVERVIEW_LABELS.welcome_page}>
-          <WalletLogin onLogin={onLogin} />
+          <WalletLogin onLogin={onLogin} onContinue={onContinue} />
         </Track>
 
         {!wallet && (
