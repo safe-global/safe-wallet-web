@@ -51,6 +51,7 @@ describe('useOnboard', () => {
         chainId: '4',
         ens: 'test.eth',
         balance: '0.00235 ETH',
+        isDelegate: false,
       })
     })
 

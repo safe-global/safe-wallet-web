@@ -158,17 +158,14 @@ export const getRedirect = (
   if (!chainPrefix) return AppRoutes.index
 
   // Go to the dashboard if no specific redirect is provided
-  if (!redirectUrl) {
+  if (!redirectUrl || !redirectUrl.startsWith(AppRoutes.apps.index)) {
     return { pathname: AppRoutes.home, query: { safe: address } }
   }
 
   // Otherwise, redirect to the provided URL (e.g. from a Safe App)
 
   // Track the redirect to Safe App
-  // TODO: Narrow this down to /apps only
-  if (redirectUrl.includes('apps')) {
-    trackEvent(SAFE_APPS_EVENTS.SHARED_APP_OPEN_AFTER_SAFE_CREATION)
-  }
+  trackEvent(SAFE_APPS_EVENTS.SHARED_APP_OPEN_AFTER_SAFE_CREATION)
 
   // We're prepending the safe address directly here because the `router.push` doesn't parse
   // The URL for already existing query params

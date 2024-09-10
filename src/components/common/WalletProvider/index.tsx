@@ -13,6 +13,7 @@ const WalletProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       const newWallet = getConnectedWallet(wallets)
+
       setWallet(newWallet)
     })
 
