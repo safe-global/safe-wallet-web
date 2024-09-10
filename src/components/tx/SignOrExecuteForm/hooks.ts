@@ -31,6 +31,7 @@ type TxActions = {
     origin?: string,
     isRelayed?: boolean,
   ) => Promise<string>
+  proposeTx: (safeTx: SafeTransaction, txId?: string, origin?: string) => Promise<TransactionDetails>
 }
 
 export const useTxActions = (): TxActions => {
@@ -44,7 +45,7 @@ export const useTxActions = (): TxActions => {
     const safeAddress = safe.address.value
     const { chainId, version } = safe
 
-    const proposeTx = async (sender: string, safeTx: SafeTransaction, txId?: string, origin?: string) => {
+    const _propose = async (sender: string, safeTx: SafeTransaction, txId?: string, origin?: string) => {
       return dispatchTxProposal({
         chainId,
         safeAddress,
@@ -59,7 +60,7 @@ export const useTxActions = (): TxActions => {
       assertTx(safeTx)
       assertWallet(wallet)
 
-      const tx = await proposeTx(wallet.address, safeTx, undefined, origin)
+      const tx = await _propose(wallet.address, safeTx, undefined, origin)
       await addTxToBatch(tx)
       return tx.txId
     }
@@ -87,14 +88,14 @@ export const useTxActions = (): TxActions => {
         // If the first signature is a smart contract wallet, we have to propose w/o signatures
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed
-        const id = txId || (await proposeTx(wallet.address, safeTx, txId, origin)).txId
+        const id = txId || (await _propose(wallet.address, safeTx, txId, origin)).txId
         await dispatchOnChainSigning(safeTx, id, wallet.provider, chainId, wallet.address, safeAddress)
         return id
       }
 
       // Otherwise, sign off-chain
       const signedTx = await dispatchTxSigning(safeTx, version, wallet.provider, txId)
-      const tx = await proposeTx(wallet.address, signedTx, txId, origin)
+      const tx = await _propose(wallet.address, signedTx, txId, origin)
       return tx.txId
     }
 
@@ -111,9 +112,9 @@ export const useTxActions = (): TxActions => {
       if (isRelayed && safeTx.signatures.size < safe.threshold) {
         if (txId) {
           safeTx = await signRelayedTx(safeTx)
-          tx = await proposeTx(wallet.address, safeTx, txId, origin)
+          tx = await _propose(wallet.address, safeTx, txId, origin)
         } else {
-          tx = await proposeTx(wallet.address, safeTx, txId, origin)
+          tx = await _propose(wallet.address, safeTx, txId, origin)
           safeTx = await signRelayedTx(safeTx)
         }
         txId = tx.txId
@@ -121,7 +122,7 @@ export const useTxActions = (): TxActions => {
 
       // Propose the tx if there's no id yet ("immediate execution")
       if (!txId) {
-        tx = await proposeTx(wallet.address, safeTx, txId, origin)
+        tx = await _propose(wallet.address, safeTx, txId, origin)
         txId = tx.txId
       }
 
@@ -137,7 +138,13 @@ export const useTxActions = (): TxActions => {
       return txId
     }
 
-    return { addToBatch, signTx, executeTx }
+    const proposeTx: TxActions['proposeTx'] = async (safeTx, txId, origin) => {
+      assertTx(safeTx)
+      assertWallet(wallet)
+      return _propose(wallet.address, safeTx, txId, origin)
+    }
+
+    return { addToBatch, signTx, executeTx, proposeTx }
   }, [safe, wallet, addTxToBatch, onboard, chain])
 }
 
@@ -187,11 +194,11 @@ export const useSafeTxGas = (safeTx: SafeTransaction | undefined): string | unde
     return !safeTx?.data?.to
       ? undefined
       : {
-          to: safeTx?.data.to,
-          value: safeTx?.data?.value,
-          data: safeTx?.data?.data,
-          operation: safeTx?.data?.operation,
-        }
+        to: safeTx?.data.to,
+        value: safeTx?.data?.value,
+        data: safeTx?.data?.data,
+        operation: safeTx?.data?.operation,
+      }
   }, [safeTx?.data.to, safeTx?.data.value, safeTx?.data.data, safeTx?.data.operation])
 
   const [safeTxGas] = useAsync(() => {
