@@ -6,6 +6,15 @@ import { useContext } from 'react'
 import { AppRoutes } from '@/config/routes'
 import dynamic from 'next/dynamic'
 
+// Cow Swap expects native token addresses to be in the format '0xeeee...eeee'
+const adjustEthAddress = (address: string) => {
+  if (address && Number(address) === 0) {
+    const ETH_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    return ETH_ADDRESS
+  }
+  return address
+}
+
 const SwapWidgetNoSSR = dynamic(() => import('@/features/swap'), { ssr: false })
 const Swap: NextPage = () => {
   const router = useRouter()
@@ -19,8 +28,8 @@ const Swap: NextPage = () => {
   let sell = undefined
   if (token && amount) {
     sell = {
-      asset: String(token),
-      amount: String(amount),
+      asset: adjustEthAddress(String(token ?? '')),
+      amount: adjustEthAddress(String(amount ?? '')),
     }
   }
 
