@@ -102,8 +102,6 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      await assertWalletChain(onboard, chainId)
-
       const signedTx = await dispatchDelegateTxSigning(safeTx, wallet)
 
       const tx = await proposeTx(wallet.address, signedTx)
