@@ -6,7 +6,6 @@ import { type ReactElement, type ReactNode, useState, useContext, useCallback } 
 import madProps from '@/utils/mad-props'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
-import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useValidateNonce } from './hooks'
 import ExecuteForm from './ExecuteForm'
 import SignForm from './SignForm'
@@ -41,6 +40,7 @@ import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -196,7 +196,7 @@ export const SignOrExecuteForm = ({
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
 
-        <WrongChainWarning />
+        <NetworkWarning />
 
         <UnknownContractError />
 

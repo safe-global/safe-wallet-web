@@ -92,7 +92,7 @@ export const DelegateForm = ({
           spacing={{ xs: 2, md: 2 }}
         >
           {/* Submit button */}
-          <CheckWallet>
+          <CheckWallet checkNetwork>
             {(isOk) => (
               <Button
                 data-testid="sign-btn"

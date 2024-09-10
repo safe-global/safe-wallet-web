@@ -29,7 +29,6 @@ import useSafeMessage from '@/hooks/messages/useSafeMessage'
 import useOnboard, { switchWallet } from '@/hooks/wallets/useOnboard'
 import { TxModalContext } from '@/components/tx-flow'
 import CopyButton from '@/components/common/CopyButton'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import MsgSigners from '@/components/safe-messages/MsgSigners'
 import useDecodedSafeMessage from '@/hooks/messages/useDecodedSafeMessage'
 import useSyncSafeMessageSigner from '@/hooks/messages/useSyncSafeMessageSigner'
@@ -56,6 +55,8 @@ import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
 import MsgShareLink from '@/components/safe-messages/MsgShareLink'
 import LinkIcon from '@/public/images/messages/link.svg'
+import CheckWallet from '@/components/common/CheckWallet'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -360,7 +361,7 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
               />
             )}
 
-            <WrongChainWarning />
+            <NetworkWarning />
 
             <MessageDialogError isOwner={isOwner} submitError={submitError} />
 
@@ -370,9 +371,13 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </TxCard>
           <TxCard>
             <CardActions>
-              <Button variant="contained" color="primary" onClick={handleSign} disabled={isDisabled}>
-                Sign
-              </Button>
+              <CheckWallet checkNetwork={!isDisabled}>
+                {(isOk) => (
+                  <Button variant="contained" color="primary" onClick={handleSign} disabled={!isOk || isDisabled}>
+                    Sign
+                  </Button>
+                )}
+              </CheckWallet>
             </CardActions>
           </TxCard>
         </>
