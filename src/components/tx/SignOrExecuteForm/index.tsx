@@ -191,7 +191,7 @@ export const SignOrExecuteForm = ({
 
         <WrongChainWarning />
 
-        {!isMigrateToL2MultiSend && <UnknownContractError />}
+        {!isMultiChainMigration && <UnknownContractError />}
 
         <RiskConfirmationError />
 

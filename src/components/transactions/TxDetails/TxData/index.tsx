@@ -3,7 +3,7 @@ import type { SpendingLimitMethods } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
   isCustomTxInfo,
-  isMigrateToL2TxInfo,
+  isMigrateToL2TxData,
   isMultisigDetailedExecutionInfo,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
@@ -49,7 +49,7 @@ const TxData = ({
     return <SpendingLimits txData={txDetails.txData} txInfo={txInfo} type={method} />
   }
 
-  if (isMigrateToL2TxInfo(txDetails.txData)) {
+  if (isMigrateToL2TxData(txDetails.txData)) {
     return <MigrationToL2TxData txDetails={txDetails} />
   }
   return <DecodedData txData={txDetails.txData} toInfo={toInfo} />

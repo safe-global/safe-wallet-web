@@ -78,7 +78,7 @@ export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): va
   return value?.type === DetailedExecutionInfoType.MODULE
 }
 
-export const isMigrateToL2TxInfo = (value: TransactionData | undefined): boolean => {
+export const isMigrateToL2TxData = (value: TransactionData | undefined): boolean => {
   if (sameAddress(value?.to.value, SAFE_TO_L2_MIGRATION_ADDRESS)) {
     const migrateToL2Selector = SAFE_TO_L2_INTERFACE.getFunction('migrateToL2')?.selector
     return migrateToL2Selector && value?.hexData ? value.hexData?.startsWith(migrateToL2Selector) : false
@@ -94,7 +94,9 @@ export const isMigrateToL2MultiSend = (decodedData: DecodedDataResponse | undefi
       return (
         firstInnerTx.dataDecoded?.method === 'migrateToL2' &&
         firstInnerTx.dataDecoded.parameters.length === 1 &&
-        firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address'
+        firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address' &&
+        typeof firstInnerTx.dataDecoded?.parameters[0].value === 'string' &&
+        sameAddress(firstInnerTx.dataDecoded?.parameters[0].value, SAFE_TO_L2_MIGRATION_ADDRESS)
       )
     }
   }
@@ -137,7 +139,7 @@ export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
   return isSwapOrderTxInfo(value) || isTwapOrderTxInfo(value)
 }
 
-export const isMigrationTxInfo = (value: TransactionInfo): value is Custom => {
+export const isMigrateToL2TxInfo = (value: TransactionInfo): value is Custom => {
   return isCustomTxInfo(value) && sameAddress(value.to.value, SAFE_TO_L2_MIGRATION_ADDRESS)
 }
 

@@ -371,17 +371,11 @@ export const prependSafeToL2Migration = (
   if (isMultiSendCalldata(txData)) {
     // Check if the first tx is already a call to the migration contract
     internalTxs = decodeMultiSendData(txData)
-    firstTx = internalTxs[0]
-    if (sameAddress(firstTx?.to, SAFE_TO_L2_MIGRATION_ADDRESS)) {
-      // We already migrate. Nothing to do.
-      return Promise.resolve(safeTx)
-    }
   } else {
     internalTxs = [{ to: safeTx.data.to, operation: safeTx.data.operation, value: safeTx.data.value, data: txData }]
-    firstTx = internalTxs[0]
   }
 
-  if (sameAddress(firstTx?.to, SAFE_TO_L2_MIGRATION_ADDRESS)) {
+  if (sameAddress(internalTxs[0]?.to, SAFE_TO_L2_MIGRATION_ADDRESS)) {
     // We already migrate. Nothing to do.
     return Promise.resolve(safeTx)
   }

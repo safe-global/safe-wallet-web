@@ -19,7 +19,7 @@ import {
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
   isTransferTxInfo,
-  isMigrationTxInfo,
+  isMigrateToL2TxInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -129,7 +129,7 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
     return <TransferTx info={info} {...rest} />
   }
 
-  if (isMigrationTxInfo(info)) {
+  if (isMigrateToL2TxInfo(info)) {
     return <MigrationToL2Tx />
   }
 

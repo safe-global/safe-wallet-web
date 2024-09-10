@@ -177,7 +177,7 @@ describe('useSafeNotifications', () => {
       expect(showNotification).toHaveBeenCalledWith({
         variant: 'info',
         message: `This Safe Account was created with an unsupported base contract.
-           It is possible to migrate it to a compatible base contract. This migration will automatically included in your first transaction.`,
+           It is possible to migrate it to a compatible base contract. This migration will be automatically included with your first transaction.`,
         groupKey: 'invalid-mastercopy',
         link: undefined,
       })
