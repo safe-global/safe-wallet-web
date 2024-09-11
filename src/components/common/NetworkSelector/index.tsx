@@ -32,10 +32,35 @@ import uniq from 'lodash/uniq'
 import useSafeOverviews from '@/components/welcome/MyAccounts/useSafeOverviews'
 import { useReplayableNetworks } from '@/features/multichain/hooks/useReplayableNetworks'
 import { useSafeCreationData } from '@/features/multichain/hooks/useSafeCreationData'
-import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type SafeOverview, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
+
+const UndeployedNetworkMenuItem = ({
+  chainId,
+  chainConfigs,
+  isSelected = false,
+  onSelect,
+}: {
+  chainId: string
+  chainConfigs: ChainInfo[]
+  isSelected?: boolean
+  onSelect: (chain: ChainInfo) => void
+}) => {
+  const chain = useMemo(() => chainConfigs.find((chain) => chain.chainId === chainId), [chainConfigs, chainId])
+
+  if (!chain) return null
+
+  return (
+    <MenuItem value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }} onClick={() => onSelect(chain)}>
+      <Box className={css.item}>
+        <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
+        <PlusIcon className={css.plusIcon} />
+      </Box>
+    </MenuItem>
+  )
+}
 
 const NetworkSkeleton = () => {
   return (
@@ -87,29 +112,6 @@ const UndeployedNetworks = ({
     setReplayOnChain(chain)
   }
 
-  const renderMenuItem = useCallback(
-    (chainId: string, isSelected: boolean) => {
-      const chain = chains.find((chain) => chain.chainId === chainId)
-      if (!chain) return null
-      return (
-        <>
-          <MenuItem
-            key={chainId}
-            value={chainId}
-            sx={{ '&:hover': { backgroundColor: 'inherit' } }}
-            onClick={() => onSelect(chain)}
-          >
-            <Box className={css.item}>
-              <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
-              <PlusIcon className={css.plusIcon} />
-            </Box>
-          </MenuItem>
-        </>
-      )
-    },
-    [chains],
-  )
-
   if (safeCreationDataError) {
     return (
       <Box p="0px 16px">
@@ -143,9 +145,23 @@ const UndeployedNetworks = ({
           </Box>
         ) : (
           <>
-            {prodNets.map((chain) => renderMenuItem(chain.chainId, false))}
+            {prodNets.map((chain) => (
+              <UndeployedNetworkMenuItem
+                chainConfigs={chains}
+                chainId={chain.chainId}
+                onSelect={onSelect}
+                key={chain.chainId}
+              />
+            ))}
             {testNets.length > 0 && <TestnetDivider />}
-            {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
+            {testNets.map((chain) => (
+              <UndeployedNetworkMenuItem
+                chainConfigs={chains}
+                chainId={chain.chainId}
+                onSelect={onSelect}
+                key={chain.chainId}
+              />
+            ))}
           </>
         )}
       </Collapse>
@@ -160,6 +176,46 @@ const UndeployedNetworks = ({
         />
       )}
     </>
+  )
+}
+
+const DeployedNetworkMenuItem = ({
+  chainId,
+  chainConfigs,
+  isSelected = false,
+  onClick,
+  safeOverviews,
+  getNetworkLink,
+}: {
+  chainId: string
+  chainConfigs: ChainInfo[]
+  isSelected?: boolean
+  onClick?: () => void
+  safeOverviews?: SafeOverview[]
+  getNetworkLink: (shortName: string) => {
+    pathname: string
+    query: {
+      safe?: string | undefined
+      chain?: string | undefined
+      safeViewRedirectURL?: string | undefined
+    }
+  }
+}) => {
+  const chain = chainConfigs.find((chain) => chain.chainId === chainId)
+  const safeOverview = safeOverviews?.find((overview) => chainId === overview.chainId)
+
+  if (!chain) return null
+  return (
+    <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
+      <Link href={getNetworkLink(chain.shortName)} onClick={onClick} className={css.item}>
+        <ChainIndicator
+          responsive={isSelected}
+          chainId={chain.chainId}
+          fiatValue={safeOverview ? safeOverview.fiatTotal : undefined}
+          inline
+        />
+      </Link>
+    </MenuItem>
   )
 }
 
@@ -247,27 +303,6 @@ const NetworkSelector = ({
     }
   }
 
-  const renderMenuItem = useCallback(
-    (chainId: string, isSelected: boolean) => {
-      const chain = configs.find((chain) => chain.chainId === chainId)
-      const safeOverview = safeOverviews?.find((overview) => chainId === overview.chainId)
-      if (!chain) return null
-      return (
-        <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
-          <Link href={getNetworkLink(chain.shortName)} onClick={onChainSelect} className={css.item}>
-            <ChainIndicator
-              responsive={isSelected}
-              chainId={chain.chainId}
-              fiatValue={isSafeOpened ? safeOverview?.fiatTotal : undefined}
-              inline
-            />
-          </Link>
-        </MenuItem>
-      )
-    },
-    [configs, getNetworkLink, isSafeOpened, onChainSelect, safeOverviews],
-  )
-
   return configs.length ? (
     <Select
       value={chainId}
@@ -276,7 +311,16 @@ const NetworkSelector = ({
       className={css.select}
       variant="standard"
       IconComponent={ExpandMoreIcon}
-      renderValue={(value) => renderMenuItem(value, true)}
+      renderValue={(value) => (
+        <DeployedNetworkMenuItem
+          chainConfigs={configs}
+          chainId={value}
+          getNetworkLink={getNetworkLink}
+          onClick={onChainSelect}
+          safeOverviews={safeOverviews}
+          isSelected
+        />
+      )}
       MenuProps={{
         transitionDuration: 0,
         sx: {
@@ -299,11 +343,29 @@ const NetworkSelector = ({
         },
       }}
     >
-      {prodNets.map((chain) => renderMenuItem(chain.chainId, false))}
+      {prodNets.map((chain) => (
+        <DeployedNetworkMenuItem
+          key={chain.chainId}
+          chainConfigs={configs}
+          chainId={chain.chainId}
+          getNetworkLink={getNetworkLink}
+          onClick={onChainSelect}
+          safeOverviews={safeOverviews}
+        />
+      ))}
 
       {testNets.length > 0 && <TestnetDivider />}
 
-      {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
+      {testNets.map((chain) => (
+        <DeployedNetworkMenuItem
+          key={chain.chainId}
+          chainConfigs={configs}
+          chainId={chain.chainId}
+          getNetworkLink={getNetworkLink}
+          onClick={onChainSelect}
+          safeOverviews={safeOverviews}
+        />
+      ))}
 
       {offerSafeCreation && isSafeOpened && (
         <UndeployedNetworks chains={configs} deployedChains={availableChainIds} safeAddress={safeAddress} />
