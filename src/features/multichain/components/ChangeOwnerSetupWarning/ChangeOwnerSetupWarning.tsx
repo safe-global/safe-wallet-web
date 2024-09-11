@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import { useIsMultichainSafe } from '../../hooks/useIsMultichainSafe'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 
-export const ChangeOwnerSetupWarning = () => {
+export const ChangeSignerSetupWarning = () => {
   const isMultichainSafe = useIsMultichainSafe()
 
   if (!isMultichainSafe) return
@@ -10,7 +10,7 @@ export const ChangeOwnerSetupWarning = () => {
   return (
     <Box mt={1} mb={1}>
       <ErrorMessage level="warning">
-        Owners are not consistent across networks on this account. Changing owners will only affect the account on the
+        Signers are not consistent across networks on this account. Changing signers will only affect the account on the
         selected network.
       </ErrorMessage>
     </Box>

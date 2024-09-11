@@ -41,8 +41,8 @@ import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
-import { isChangingSignerSetupp } from '@/features/multichain/helpers/utils'
-import { ChangeOwnerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
+import { isChangingSignerSetup } from '@/features/multichain/helpers/utils'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -116,7 +116,7 @@ export const SignOrExecuteForm = ({
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
   const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
-  const isChangingSignerSetup = isChangingSignerSetupp(decodedData)
+  const isChangingSigners = isChangingSignerSetup(decodedData)
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
   const roles = useRoles(
@@ -201,7 +201,7 @@ export const SignOrExecuteForm = ({
 
         <WrongChainWarning />
 
-        {isChangingSignerSetup && <ChangeOwnerSetupWarning />}
+        {isChangingSigners && <ChangeSignerSetupWarning />}
 
         <UnknownContractError />
 
