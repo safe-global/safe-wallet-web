@@ -39,6 +39,28 @@ type MultiAccountItemProps = {
   onLinkClick?: () => void
 }
 
+const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
+  return (
+    <Tooltip
+      title={
+        <Box>
+          <Typography fontSize="14px">Multichain account on:</Typography>
+          {safes.map((safeItem) => (
+            <Box p="4px 0px" key={safeItem.chainId}>
+              <ChainIndicator chainId={safeItem.chainId} />
+            </Box>
+          ))}
+        </Box>
+      }
+      arrow
+    >
+      <Box height="26px">
+        <MultiChainIcon />
+      </Box>
+    </Tooltip>
+  )
+}
+
 const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: MultiAccountItemProps) => {
   const { address, safes } = multiSafeAccountItem
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
@@ -120,23 +142,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
                 <Skeleton variant="text" sx={{ ml: 'auto' }} />
               )}
             </Typography>
-            <Tooltip
-              title={
-                <Box>
-                  <Typography fontSize="14px">Multichain account on:</Typography>
-                  {safes.map((safeItem) => (
-                    <Box p="4px 0px" key={safeItem.chainId}>
-                      <ChainIndicator chainId={safeItem.chainId} />
-                    </Box>
-                  ))}
-                </Box>
-              }
-              arrow
-            >
-              <Box height="26px">
-                <MultiChainIcon />
-              </Box>
-            </Tooltip>
+            <MultichainIndicator safes={safes} />
           </Box>
           <MultiAccountContextMenu name={name ?? ''} address={address} chainIds={deployedChains} />
         </AccordionSummary>
