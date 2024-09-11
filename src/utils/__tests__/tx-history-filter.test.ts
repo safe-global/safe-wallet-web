@@ -19,6 +19,7 @@ import {
 import { renderHook } from '@/tests/test-utils'
 import type { NextRouter } from 'next/router'
 import { type TxFilterFormState } from '@/components/transactions/TxFilterForm'
+import { getTimezone } from '@/services/transactions'
 
 MockDate.set('2021-01-01T00:00:00.000Z')
 
@@ -395,7 +396,7 @@ describe('tx-history-filter', () => {
       expect(getIncomingTransfers).toHaveBeenCalledWith(
         '4',
         '0x123',
-        { value: '123', executed: undefined, timezone_offset: 3600000, trusted: false, imitation: true },
+        { value: '123', executed: undefined, timezone: getTimezone(), trusted: false, imitation: true },
         'pageUrl1',
       )
 
@@ -422,7 +423,7 @@ describe('tx-history-filter', () => {
         {
           execution_date__gte: '1970-01-01T00:00:00.000Z',
           executed: 'true',
-          timezone_offset: 3600000,
+          timezone: getTimezone(),
           trusted: false,
           imitation: true,
         },
@@ -446,7 +447,7 @@ describe('tx-history-filter', () => {
       expect(getModuleTransactions).toHaveBeenCalledWith(
         '1',
         '0x789',
-        { to: '0x123', executed: undefined, timezone_offset: 3600000, trusted: false, imitation: true },
+        { to: '0x123', executed: undefined, timezone: getTimezone(), trusted: false, imitation: true },
         'pageUrl3',
       )
 
