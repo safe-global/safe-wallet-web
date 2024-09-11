@@ -96,9 +96,10 @@ export const formatError = (error: Error & { reason?: string }): string => {
   return ` ${capitalize(reason)}`
 }
 
-export const formatSecondsDuration = (seconds: number) => {
+export const formatDurationFromSeconds = (
+  seconds: number,
+  format: Array<'years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds'> = ['hours', 'minutes'],
+) => {
   const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
-  return formatDuration(duration, {
-    format: ['hours', 'minutes'],
-  })
+  return formatDuration(duration, { format })
 }

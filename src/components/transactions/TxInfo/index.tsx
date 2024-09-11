@@ -19,12 +19,13 @@ import {
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
   isTransferTxInfo,
-  isStakingTxInfo,
+  isStakingTxDepositInfo,
+  isStakingTxExitInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
-import StakingTx from '@/features/stake/components/StakingTxInfo'
+import StakingTxExitInfo from 'src/features/stake/components/StakingTxDepositInfo'
 import { Box } from '@mui/material'
 import css from './styles.module.css'
 
@@ -135,8 +136,12 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
     return <SwapTx info={info} />
   }
 
-  if (isStakingTxInfo(info)) {
-    return <StakingTx info={info} />
+  if (isStakingTxDepositInfo(info)) {
+    return <StakingTxExitInfo info={info} />
+  }
+
+  if (isStakingTxExitInfo(info)) {
+    return <StakingTxExitInfo info={info} />
   }
 
   if (isCustomTxInfo(info)) {

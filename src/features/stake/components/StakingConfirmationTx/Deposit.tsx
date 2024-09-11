@@ -1,23 +1,22 @@
 import { Typography, Stack, Box } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
+import type { StakingTxDepositInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
   type NativeStakingDepositConfirmationView,
-  type StakingTxInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
-import { formatVisualAmount, formatSecondsDuration } from '@/utils/formatters'
+import { formatVisualAmount, formatDurationFromSeconds } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import StakingStatus from '@/features/stake/components/StakingStatus'
 
 type StakingOrderConfirmationViewProps = {
-  order: NativeStakingDepositConfirmationView | StakingTxInfo
+  order: NativeStakingDepositConfirmationView | StakingTxDepositInfo
 }
 
 const CURRENCY = 'USD'
 
-/* https://docs.api.kiln.fi/reference/getethnetworkstats */
-const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewProps) => {
+const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewProps) => {
   const isOrder = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
 
   return (
@@ -69,7 +68,7 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
           <FieldsGrid title="Validators">{order.numValidators}</FieldsGrid>
         )}
 
-        <FieldsGrid title="Active in">{formatSecondsDuration(order.estimatedEntryTime)}</FieldsGrid>
+        <FieldsGrid title="Active in">{formatDurationFromSeconds(order.estimatedEntryTime)}</FieldsGrid>
         <FieldsGrid title="Rewards">Approx. every 5 days after 4 days from activation</FieldsGrid>
 
         {!isOrder && (
@@ -89,4 +88,4 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
   )
 }
 
-export default StakingOrderConfirmationView
+export default StakingConfirmationTxDeposit

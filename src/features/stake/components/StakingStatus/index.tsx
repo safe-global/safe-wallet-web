@@ -1,4 +1,4 @@
-import { NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { NativeStakingExitStatus, NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { SvgIcon } from '@mui/material'
 import CheckIcon from '@/public/images/common/circle-check.svg'
 import ClockIcon from '@/public/images/common/clock.svg'
@@ -6,7 +6,7 @@ import SignatureIcon from '@/public/images/common/document_signature.svg'
 import TxStatusChip, { type TxStatusChipProps } from '@/components/transactions/TxStatusChip'
 
 const ColorIcons: Record<
-  NativeStakingStatus,
+  NativeStakingStatus | NativeStakingExitStatus,
   | {
       color: TxStatusChipProps['color']
       icon?: React.ComponentType
@@ -44,6 +44,16 @@ const ColorIcons: Record<
     icon: CheckIcon,
     text: 'Withdrawn',
   },
+  [NativeStakingExitStatus.READY_TO_WITHDRAW]: {
+    color: 'success',
+    icon: CheckIcon,
+    text: 'Ready to withdraw',
+  },
+  [NativeStakingExitStatus.REQUEST_PENDING]: {
+    color: 'info',
+    icon: ClockIcon,
+    text: 'Request pending',
+  },
   [NativeStakingStatus.UNKNOWN]: undefined,
 }
 
@@ -53,7 +63,7 @@ const capitalizedStatus = (status: string) =>
     .replace(/_/g, ' ')
     .replace(/^\w/g, (l) => l.toUpperCase())
 
-const StakingStatus = ({ status }: { status: NativeStakingStatus }) => {
+const StakingStatus = ({ status }: { status: NativeStakingStatus | NativeStakingExitStatus }) => {
   const config = ColorIcons[status]
 
   return (

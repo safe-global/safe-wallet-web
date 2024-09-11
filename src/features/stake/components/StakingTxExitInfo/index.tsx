@@ -1,8 +1,8 @@
 import { camelCaseToSpaces } from '@/utils/formatters'
 import type { StakingTxInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-const StakingTx = ({ info }: { info: StakingTxInfo }) => {
+const StakingTxDepositInfo = ({ info }: { info: StakingTxInfo }) => {
   return <>{camelCaseToSpaces(info.type).toLowerCase()}</>
 }
 
-export default StakingTx
+export default StakingTxDepositInfo
