@@ -48,7 +48,6 @@ export type SignOrExecuteProps = {
   disableSubmit?: boolean
   origin?: string
   isCreation?: boolean
-  showMethodCall?: boolean
 }
 
 const trackTxEvents = (
@@ -90,9 +89,9 @@ export const SignOrExecuteForm = ({
   const { data: txDetails } = useGetTransactionDetailsQuery(
     chainId
       ? {
-        chainId,
-        txId: props.txId,
-      }
+          chainId,
+          txId: props.txId,
+        }
       : skipToken,
   )
   const [trigger] = useLazyGetTransactionDetailsQuery()
@@ -145,7 +144,9 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        {txDetails && <ConfirmationView txDetails={txDetails} safeTx={safeTx} />}
+        {txDetails && (
+          <ConfirmationView isApproval={isApproval} txId={props.txId} txDetails={txDetails} safeTx={safeTx} />
+        )}
 
         {!isCounterfactualSafe && !props.isRejection && <RedefineBalanceChanges />}
       </TxCard>
