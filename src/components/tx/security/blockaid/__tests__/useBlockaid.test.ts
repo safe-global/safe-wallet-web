@@ -24,7 +24,7 @@ const setupFetchStub = (data: any) => (_url: string) => {
 // Mock BLOCKAID_API
 jest.mock('@/config/constants', () => ({
   ...jest.requireActual('@/config/constants'),
-  BLOCKAID_API: 'https://blockaid-api.test',
+  BLOCKAID_CLIENT_ID: 'some-client-id',
 }))
 
 enum TEST_CASES {
