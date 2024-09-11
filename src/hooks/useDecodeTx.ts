@@ -12,18 +12,22 @@ const useDecodeTx = (tx?: SafeTransaction): AsyncResult<AnyConfirmationView> => 
   const safeAddress = useSafeAddress()
   const { to, value, data } = tx?.data || {}
 
-  return useAsync<AnyConfirmationView | undefined>(() => {
-    if (to === undefined || value === undefined) return
+  return useAsync<AnyConfirmationView | undefined>(
+    () => {
+      if (to === undefined || value === undefined) return
 
-    const isEmptyData = !!data && isEmptyHexData(data)
-    if (!data || isEmptyData) {
-      const isRejection = isEmptyData && value === '0'
-      const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData({ to, value }) : undefined
-      return Promise.resolve(nativeTransfer)
-    }
+      const isEmptyData = !!data && isEmptyHexData(data)
+      if (!data || isEmptyData) {
+        const isRejection = isEmptyData && value === '0'
+        const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData({ to, value }) : undefined
+        return Promise.resolve(nativeTransfer)
+      }
 
-    return getConfirmationView(chainId, safeAddress, data, to, value)
-  }, [chainId, safeAddress, to, value, data])
+      return getConfirmationView(chainId, safeAddress, data, to, value)
+    },
+    [chainId, safeAddress, to, value, data],
+    false,
+  )
 }
 
 export default useDecodeTx

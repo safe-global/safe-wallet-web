@@ -40,7 +40,7 @@ export const generateDataRowValue = (
         </Box>
       )
     case 'bytes':
-      return <HexEncodedData limit={60} hexData={value} />
+      return <HexEncodedData highlightFirstBytes={false} limit={60} hexData={value} />
     default:
       return <Typography sx={{ wordBreak: 'break-all' }}>{value}</Typography>
   }

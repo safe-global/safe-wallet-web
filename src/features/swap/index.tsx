@@ -272,6 +272,14 @@ const SwapWidget = ({ sell }: Params) => {
     }))
   }, [palette, darkMode, chainId])
 
+  useEffect(() => {
+    if (!sell) return
+    setParams((params) => ({
+      ...params,
+      sell,
+    }))
+  }, [sell])
+
   const chain = useCurrentChain()
 
   const iframeRef: MutableRefObject<HTMLIFrameElement | null> = useRef<HTMLIFrameElement | null>(null)

@@ -6,6 +6,15 @@ import { Typography } from '@mui/material'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 
+// Cow Swap expects native token addresses to be in the format '0xeeee...eeee'
+const adjustEthAddress = (address: string) => {
+  if (address && Number(address) === 0) {
+    const ETH_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    return ETH_ADDRESS
+  }
+  return address
+}
+
 const SwapWidgetNoSSR = dynamic(() => import('@/features/swap'), { ssr: false })
 
 const SwapPage: NextPage = () => {
@@ -16,8 +25,8 @@ const SwapPage: NextPage = () => {
   let sell = undefined
   if (token && amount) {
     sell = {
-      asset: String(token),
-      amount: String(amount),
+      asset: adjustEthAddress(String(token ?? '')),
+      amount: adjustEthAddress(String(amount ?? '')),
     }
   }
 

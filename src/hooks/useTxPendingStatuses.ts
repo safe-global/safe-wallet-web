@@ -19,7 +19,7 @@ import { SimpleTxWatcher } from '@/utils/SimpleTxWatcher'
 
 const FINAL_PENDING_STATUSES = [TxEvent.SIGNATURE_INDEXED, TxEvent.SUCCESS, TxEvent.REVERTED, TxEvent.FAILED]
 
-const useTxMonitor = (): void => {
+export const useTxMonitor = (): void => {
   const chainId = useChainId()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const pendingTxEntriesOnChain = Object.entries(pendingTxs).filter(([, pendingTx]) => pendingTx.chainId === chainId)
@@ -53,6 +53,7 @@ const useTxMonitor = (): void => {
           pendingTx.safeAddress,
           pendingTx.signerAddress,
           pendingTx.signerNonce,
+          chainId,
         )
         continue
       }
@@ -63,7 +64,7 @@ const useTxMonitor = (): void => {
     }
     // `provider` is updated when switching chains, re-running this effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider])
+  }, [pendingTxEntriesOnChain.length, provider])
 }
 
 const useTxPendingStatuses = (): void => {

@@ -1,10 +1,11 @@
+import DelegateForm from '@/components/tx/SignOrExecuteForm/DelegateForm'
 import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
+import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
 import madProps from '@/utils/mad-props'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
-import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useValidateNonce } from './hooks'
 import ExecuteForm from './ExecuteForm'
 import SignForm from './SignForm'
@@ -37,6 +38,7 @@ import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -90,6 +92,7 @@ export const SignOrExecuteForm = ({
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData] = useDecodeTx(safeTx)
+
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
   const { data: txDetails } = useGetTransactionDetailsQuery(
@@ -101,6 +104,7 @@ export const SignOrExecuteForm = ({
       : skipToken,
   )
   const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const isDelegate = useIsWalletDelegate()
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
@@ -151,7 +155,7 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        {!props.isRejection && (
+        {!props.isRejection && decodedData && (
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
             {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
 
@@ -186,20 +190,20 @@ export const SignOrExecuteForm = ({
           </ErrorMessage>
         )}
 
-        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && (
+        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && !isDelegate && (
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
 
-        <WrongChainWarning />
+        <NetworkWarning />
 
         <UnknownContractError />
 
         <RiskConfirmationError />
 
-        {isCounterfactualSafe && (
+        {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
         )}
-        {!isCounterfactualSafe && willExecute && (
+        {!isCounterfactualSafe && willExecute && !isDelegate && (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         )}
         {!isCounterfactualSafe && willExecuteThroughRole && (
@@ -211,7 +215,7 @@ export const SignOrExecuteForm = ({
             role={(allowingRole || mostLikelyRole)!}
           />
         )}
-        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && (
+        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isDelegate && (
           <SignForm
             {...props}
             safeTx={safeTx}
@@ -220,6 +224,8 @@ export const SignOrExecuteForm = ({
             onSubmit={onFormSubmit}
           />
         )}
+
+        {isDelegate && <DelegateForm {...props} safeTx={safeTx} onSubmit={onFormSubmit} />}
       </TxCard>
     </>
   )

@@ -5,8 +5,10 @@ import SafeTokenWidget from '..'
 import { toBeHex } from 'ethers'
 import { AppRoutes } from '@/config/routes'
 import useSafeTokenAllocation, { useSafeVotingPower } from '@/hooks/useSafeTokenAllocation'
+import * as safePass from '@/store/safePass'
+import type { CampaignLeaderboardEntry } from '@/store/safePass'
 
-jest.mock('@/hooks/useChainId', () => jest.fn(() => '1'))
+jest.mock('@/hooks/useChainId')
 
 jest.mock('@/hooks/useSafeTokenAllocation')
 
@@ -20,10 +22,17 @@ describe('SafeTokenWidget', () => {
           get: () => fakeSafeAddress,
         } as any),
     )
+
+    jest.spyOn(safePass, 'useGetOwnGlobalCampaignRankQuery').mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      refetch: jest.fn(),
+    })
+    ;(useChainId as jest.Mock).mockImplementation(jest.fn(() => '1'))
   })
 
   it('Should render nothing for unsupported chains', () => {
-    ;(useChainId as jest.Mock).mockImplementationOnce(jest.fn(() => '100'))
+    ;(useChainId as jest.Mock).mockImplementation(jest.fn(() => '100'))
     ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[], , false])
     ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigInt(0), , false])
 
@@ -43,16 +52,10 @@ describe('SafeTokenWidget', () => {
     ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[], , false])
     ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigInt('472238796133701648384'), , false])
 
-    // to avoid failing tests in some environments
-    const NumberFormat = Intl.NumberFormat
-    const englishTestLocale = 'en'
-
-    jest.spyOn(Intl, 'NumberFormat').mockImplementation((_, ...rest) => new NumberFormat([englishTestLocale], ...rest))
-
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
-      expect(result.baseElement).toHaveTextContent('472.24')
-      expect(result.baseElement).not.toHaveTextContent('472.2388')
+      expect(result.baseElement).toHaveTextContent('472')
+      expect(result.baseElement).not.toHaveTextContent('472.2')
     })
   })
 
@@ -70,13 +73,25 @@ describe('SafeTokenWidget', () => {
     })
   })
 
-  it('Should render a claim button for SEP5 qualification', async () => {
-    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[{ tag: 'user_v2' }], , false])
-    ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigInt(420000), , false])
-
+  it('Should render the Safe{Pass} points', async () => {
+    ;(useSafeTokenAllocation as jest.Mock).mockImplementation(() => [[], , false])
+    ;(useSafeVotingPower as jest.Mock).mockImplementation(() => [BigInt(420 * 10 ** 18), , false])
+    const mockCampaignRank: CampaignLeaderboardEntry = {
+      boost: '2.0',
+      holder: fakeSafeAddress,
+      position: 421,
+      totalBoostedPoints: 138,
+      totalPoints: 69,
+    }
+    jest.spyOn(safePass, 'useGetOwnGlobalCampaignRankQuery').mockReturnValue({
+      data: mockCampaignRank,
+      isLoading: false,
+      refetch: jest.fn(),
+    })
     const result = render(<SafeTokenWidget />)
     await waitFor(() => {
-      expect(result.baseElement).toContainHTML('New allocation')
+      expect(result.queryByText('420')).toBeInTheDocument() // Safe Voting power
+      expect(result.queryByText('138')).toBeInTheDocument() // Safe Pass points
     })
   })
 })

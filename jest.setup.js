@@ -43,7 +43,7 @@ const NumberFormat = Intl.NumberFormat
 const englishTestLocale = 'en'
 
 // `viem` used by the `safe-apps-sdk` uses `TextEncoder` and `TextDecoder` which are not available in jsdom for some reason
-Object.assign(global, { TextDecoder, TextEncoder })
+Object.assign(global, { TextDecoder, TextEncoder, fetch: jest.fn() })
 
 jest.spyOn(Intl, 'NumberFormat').mockImplementation((locale, ...rest) => new NumberFormat([englishTestLocale], ...rest))
 
