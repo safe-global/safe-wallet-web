@@ -24,13 +24,13 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
 
     const promise = removedOwner
       ? createSwapOwnerTx(chain, safe.deployed, {
-        newOwnerAddress: newOwner.address,
-        oldOwnerAddress: removedOwner.address,
-      })
+          newOwnerAddress: newOwner.address,
+          oldOwnerAddress: removedOwner.address,
+        })
       : createAddOwnerTx(chain, safe.deployed, {
-        ownerAddress: newOwner.address,
-        threshold,
-      })
+          ownerAddress: newOwner.address,
+          threshold,
+        })
 
     promise.then(setSafeTx).catch(setSafeTxError)
   }, [removedOwner, newOwner, threshold, setSafeTx, setSafeTxError, chain, safe.deployed])
@@ -50,5 +50,5 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
   }
 
-  return <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit} showMethodCall></SignOrExecuteForm>
+  return <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit} />
 }
