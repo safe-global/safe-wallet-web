@@ -1,5 +1,6 @@
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
+import { isStakingTxExitInfo } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
   isCustomTxInfo,
@@ -7,7 +8,7 @@ import {
   isOrderTxInfo,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
-  isStakingTxInfo,
+  isStakingTxDepositInfo,
   isSupportedSpendingLimitAddress,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
@@ -19,7 +20,8 @@ import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
 import SwapOrder from '@/features/swap/components/SwapOrder'
-import StakingTxDetails from '@/features/stake/components/StakingTxDetails'
+import StakingTxDepositDetails from 'src/features/stake/components/StakingTxDepositDetails'
+import StakingTxExitDetails from '@/features/stake/components/StakingTxExitDetails'
 
 const TxData = ({
   txDetails,
@@ -38,8 +40,12 @@ const TxData = ({
     return <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
   }
 
-  if (isStakingTxInfo(txDetails.txInfo)) {
-    return <StakingTxDetails txData={txDetails.txData} info={txDetails.txInfo} />
+  if (isStakingTxDepositInfo(txDetails.txInfo)) {
+    return <StakingTxDepositDetails txData={txDetails.txData} info={txDetails.txInfo} />
+  }
+
+  if (isStakingTxExitInfo(txDetails.txInfo)) {
+    return <StakingTxExitDetails txData={txDetails.txData} info={txDetails.txInfo} />
   }
 
   if (isTransferTxInfo(txInfo)) {

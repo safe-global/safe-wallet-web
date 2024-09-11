@@ -94,6 +94,12 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         text: 'Stake',
       }
     }
+    case TransactionInfoType.NATIVE_STAKING_VALIDATORS_EXIT: {
+      return {
+        icon: '/images/common/stake.svg',
+        text: 'Withdraw request',
+      }
+    }
     case TransactionInfoType.CUSTOM: {
       if (isMultiSendTxInfo(tx.txInfo) && !tx.safeAppInfo) {
         return {

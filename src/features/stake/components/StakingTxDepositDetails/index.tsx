@@ -1,10 +1,10 @@
 import { Box } from '@mui/material'
-import type { StakingTxInfo, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import type { StakingTxDepositInfo, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
-import StakingOrderConfirmationView from '@/features/stake/components/StakingOrderConfirmationView'
+import StakingConfirmationTxDeposit from '@/features/stake/components/StakingConfirmationTx/Deposit'
 
-const StakingTxDetails = ({ info, txData }: { info: StakingTxInfo; txData?: TransactionData }) => {
+const StakingTxDepositDetails = ({ info, txData }: { info: StakingTxDepositInfo; txData?: TransactionData }) => {
   return (
     <Box pl={1} pr={5} display="flex" flexDirection="column" gap={1}>
       {txData && (
@@ -13,9 +13,9 @@ const StakingTxDetails = ({ info, txData }: { info: StakingTxInfo; txData?: Tran
 
       <FieldsGrid title="Net reward rate">{info.annualNrr.toFixed(3)}%</FieldsGrid>
 
-      <StakingOrderConfirmationView order={info} />
+      <StakingConfirmationTxDeposit order={info} />
     </Box>
   )
 }
 
-export default StakingTxDetails
+export default StakingTxDepositDetails
