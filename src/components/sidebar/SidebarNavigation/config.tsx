@@ -8,6 +8,7 @@ import ABIcon from '@/public/images/sidebar/address-book.svg'
 import AppsIcon from '@/public/images/apps/apps-icon.svg'
 import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import SwapIcon from '@/public/images/common/swap.svg'
+import StakeIcon from '@/public/images/common/stake.svg'
 import { SvgIcon } from '@mui/material'
 import { Chip } from '@/components/common/Chip'
 
@@ -16,6 +17,8 @@ export type NavItem = {
   icon?: ReactElement
   href: string
   tag?: ReactElement
+  disabled?: boolean
+  tooltip?: string
 }
 
 export const navItems: NavItem[] = [
@@ -33,7 +36,14 @@ export const navItems: NavItem[] = [
     label: 'Swap',
     icon: <SvgIcon component={SwapIcon} inheritViewBox />,
     href: AppRoutes.swap,
-    tag: <Chip component="span" />,
+  },
+  {
+    label: 'Stake',
+    icon: <SvgIcon component={StakeIcon} inheritViewBox />,
+    href: AppRoutes.stake,
+    tag: <Chip label="Soon" />,
+    disabled: true,
+    tooltip: 'Native staking is coming soon, stay tuned!',
   },
   {
     label: 'Transactions',
