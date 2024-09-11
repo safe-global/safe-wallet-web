@@ -1,8 +1,7 @@
 import useGasPrice from '@/hooks/useGasPrice'
 import ModalDialog from '@/components/common/ModalDialog'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import DialogContent from '@mui/material/DialogContent'
-import { Box, Button, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, SvgIcon, Tooltip, Typography } from '@mui/material'
 import RocketSpeedup from '@/public/images/common/ic-rocket-speedup.svg'
 import DialogActions from '@mui/material/DialogActions'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -27,7 +26,9 @@ import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import CheckWallet from '@/components/common/CheckWallet'
 import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 type Props = {
   open: boolean
@@ -91,7 +92,6 @@ export const SpeedUpModal = ({
 
     try {
       setWaitingForConfirmation(true)
-      await assertWalletChain(onboard, chainInfo.chainId)
 
       if (pendingTx.txType === PendingTxType.SAFE_TX) {
         await dispatchSafeTxSpeedUp(
@@ -193,15 +193,28 @@ export const SpeedUpModal = ({
               />
             )}
           </Box>
+          <Box sx={{ '&:not(:empty)': { mt: 3 } }}>
+            <NetworkWarning />
+          </Box>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={onCancel}>Cancel</Button>
 
           <Tooltip title="Speed up transaction">
-            <Button color="primary" disabled={isDisabled} onClick={onSubmit} variant="contained" disableElevation>
-              {isDisabled ? 'Waiting on confirmation in wallet...' : 'Confirm'}
-            </Button>
+            <CheckWallet checkNetwork={!isDisabled}>
+              {(isOk) => (
+                <Button
+                  color="primary"
+                  disabled={!isOk || isDisabled}
+                  onClick={onSubmit}
+                  variant="contained"
+                  disableElevation
+                >
+                  {isDisabled ? <CircularProgress size={20} /> : 'Confirm'}
+                </Button>
+              )}
+            </CheckWallet>
           </Tooltip>
         </DialogActions>
       </ModalDialog>

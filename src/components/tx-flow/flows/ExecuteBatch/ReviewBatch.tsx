@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { CircularProgress, Typography, Button, CardActions, Divider, Alert } from '@mui/material'
 import useAsync from '@/hooks/useAsync'
 import { FEATURES } from '@/utils/chains'
@@ -13,7 +12,6 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import DecodedTxs from '@/components/tx-flow/flows/ExecuteBatch/DecodedTxs'
 import { TxSimulation } from '@/components/tx/security/tenderly'
-import { WrongChainWarning } from '@/components/tx/WrongChainWarning'
 import { useRelaysBySafe } from '@/hooks/useRemainingRelays'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { logError, Errors } from '@/services/exceptions'
@@ -40,6 +38,7 @@ import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { useGetMultipleTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
@@ -109,8 +108,6 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       : { gasPrice: maxFeePerGas?.toString() }
 
     overrides.nonce = userNonce
-
-    await assertWalletChain(onboard, safe.chainId)
 
     await dispatchBatchExecution(
       txsWithDetails,
@@ -193,7 +190,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       <TxCard>
         <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />
 
-        <WrongChainWarning />
+        <NetworkWarning />
 
         {canRelay ? (
           <>
@@ -227,7 +224,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
           <Divider className={commonCss.nestedDivider} sx={{ pt: 2 }} />
 
           <CardActions>
-            <CheckWallet allowNonOwner={true}>
+            <CheckWallet allowNonOwner={true} checkNetwork>
               {(isOk) => (
                 <Button
                   variant="contained"
