@@ -12,8 +12,6 @@ import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameSte
 import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 
-const ZKSYNC_ID = '324'
-
 const NetworkMultiSelector = ({
   name,
   isAdvancedFlow = false,
@@ -32,7 +30,6 @@ const NetworkMultiSelector = ({
     setValue,
   } = useFormContext()
 
-  const selectedNetworkSafeVersion = useWatch({ control, name: SetNameStepFields.safeVersion })
   const selectedNetworks = useWatch({ control, name: SetNameStepFields.networks })
 
   const handleDelete = (deletedChainId: string) => {
@@ -46,27 +43,27 @@ const NetworkMultiSelector = ({
     if (chains.length !== 1) return
     const shortName = chains[0].shortName
     const networkLink = getNetworkLink(router.pathname, router.query, shortName, isWalletConnected)
-    router.push(networkLink)
+    router.replace(networkLink)
   }
 
   const isOptionDisabled = (optionNetwork: ChainInfo) => {
     if (selectedNetworks.length === 0) return false
+    const firstSelectedNetwork = selectedNetworks[0]
 
     // do not allow multi chain safes for advanced setup flow.
-    if (isAdvancedFlow) return optionNetwork.chainId != selectedNetworks[0].chainId
+    if (isAdvancedFlow) return optionNetwork.chainId != firstSelectedNetwork.chainId
 
-    // const hasCanonicalSingletonDeployment = getSafeSingletonDeployment({ version: LATEST_SAFE_VERSION })?.deployments
     const optionHasCanonicalSingletonDeployment = Boolean(
       getSafeSingletonDeployment({ network: optionNetwork.chainId, version: LATEST_SAFE_VERSION })?.deployments
         .canonical,
     )
     const selectedHasCanonicalSingletonDeployment = Boolean(
-      getSafeSingletonDeployment({ network: selectedNetworks[0].chainId, version: LATEST_SAFE_VERSION })?.deployments
+      getSafeSingletonDeployment({ network: firstSelectedNetwork.chainId, version: LATEST_SAFE_VERSION })?.deployments
         .canonical,
     )
 
     // Only 1.4.1 safes with canonical deployment addresses can be deployed as part of a multichain group
-    if (!selectedHasCanonicalSingletonDeployment) return selectedNetworks[0].chainId !== optionNetwork.chainId
+    if (!selectedHasCanonicalSingletonDeployment) return firstSelectedNetwork.chainId !== optionNetwork.chainId
     return !optionHasCanonicalSingletonDeployment
   }
 
@@ -83,7 +80,7 @@ const NetworkMultiSelector = ({
             value={field.value || []}
             disableCloseOnSelect
             options={configs}
-            renderTags={(selectedOptions, getTagProps) =>
+            renderTags={(selectedOptions) =>
               selectedOptions.map((chain) => (
                 <Chip
                   variant="outlined"
