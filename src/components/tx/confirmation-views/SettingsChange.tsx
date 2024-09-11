@@ -7,16 +7,15 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import type { SettingsChange } from '@safe-global/safe-gateway-typescript-sdk'
 
-interface SettingsChangeProps extends NarrowConfirmationViewProps {
+export interface SettingsChangeProps extends NarrowConfirmationViewProps {
   txInfo: SettingsChange
 }
 
 const SettingsChange: React.FC<SettingsChangeProps> = (props) => {
   const { safe } = useSafeInfo()
   const params = props.txInfo.settingsInfo
-  if (!params) return null
 
-  // TODO: handle other settings change types like Fallback Handler setting
+  if (!params) return null
 
   return (
     <>
