@@ -96,7 +96,7 @@ export const isMigrateToL2MultiSend = (decodedData: DecodedDataResponse | undefi
         firstInnerTx.dataDecoded.parameters.length === 1 &&
         firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address' &&
         typeof firstInnerTx.dataDecoded?.parameters[0].value === 'string' &&
-        sameAddress(firstInnerTx.dataDecoded?.parameters[0].value, SAFE_TO_L2_MIGRATION_ADDRESS)
+        sameAddress(firstInnerTx.to, SAFE_TO_L2_MIGRATION_ADDRESS)
       )
     }
   }
