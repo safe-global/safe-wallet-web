@@ -35,7 +35,7 @@ describe('WalletLogin', () => {
     const button = await result.findByRole('button')
     button.click()
 
-    expect(mockOnLogin).toHaveBeenCalled()
+    expect(mockOnContinue).toHaveBeenCalled()
   })
 
   it('should render connect wallet if no wallet is connected', async () => {
