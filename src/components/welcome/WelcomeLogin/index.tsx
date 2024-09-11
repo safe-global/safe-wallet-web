@@ -17,26 +17,29 @@ const WelcomeLogin = () => {
   const { isLoaded, hasSafes } = useHasSafes()
   const [shouldRedirect, setShouldRedirect] = useState(false)
 
+  const redirect = useCallback(() => {
+    if (wallet) {
+      if (isLoaded && !hasSafes) {
+        trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
+        router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
+      } else {
+        router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
+      }
+    }
+  }, [hasSafes, isLoaded, router, wallet])
+
   const onLogin = useCallback(() => {
     setShouldRedirect(true)
   }, [])
 
   const onContinue = useCallback(() => {
-    router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
-  }, [router])
+    redirect()
+  }, [redirect])
 
   useEffect(() => {
     if (!shouldRedirect) return
-
-    if (wallet && isLoaded) {
-      if (hasSafes) {
-        router.push({ pathname: AppRoutes.welcome.accounts, query: router.query })
-      } else {
-        trackEvent(CREATE_SAFE_EVENTS.OPEN_SAFE_CREATION)
-        router.push({ pathname: AppRoutes.newSafe.create, query: router.query })
-      }
-    }
-  }, [hasSafes, isLoaded, router, wallet, shouldRedirect])
+    redirect()
+  }, [redirect, shouldRedirect])
 
   return (
     <Paper className={css.loginCard} data-testid="welcome-login">
