@@ -42,7 +42,3 @@
   height: 6px;
   color: transparent;
 }
-
-.listItemButton.disabled {
-  pointer-events: none;
-}

@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import classnames from 'classnames'
 import List, { type ListProps } from '@mui/material/List'
 import ListItemButton, { type ListItemButtonProps } from '@mui/material/ListItemButton'
 import ListItemIcon, { type ListItemIconProps } from '@mui/material/ListItemIcon'
@@ -23,7 +22,7 @@ export const SidebarListItemButton = ({
   ...rest
 }: Omit<ListItemButtonProps, 'sx'> & { href?: LinkProps['href'] }): ReactElement => {
   const button = (
-    <ListItemButton className={classnames(css.listItemButton, disabled ? css.disabled : undefined)} {...rest}>
+    <ListItemButton className={css.listItemButton} {...rest} sx={disabled ? { pointerEvents: 'none' } : undefined}>
       {children}
     </ListItemButton>
   )
