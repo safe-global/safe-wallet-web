@@ -5,6 +5,7 @@ import { faker } from '@faker-js/faker'
 describe('isSpeedableTx', () => {
   it('returns true when all conditions are met', () => {
     const pendingTx: PendingTx = {
+      nonce: 1,
       status: PendingStatus.PROCESSING,
       txHash: '0x123',
       signerAddress: '0xabc',
@@ -26,6 +27,7 @@ describe('isSpeedableTx', () => {
 
   it('returns false when one of the conditions is not met', () => {
     const pendingTx: PendingTx = {
+      nonce: 1,
       status: PendingStatus.PROCESSING,
       txHash: '0x123',
       signerAddress: '0xabc',

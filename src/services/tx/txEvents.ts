@@ -25,16 +25,16 @@ export enum TxEvent {
   SPEEDUP_FAILED = 'SPEEDUP_FAILED',
 }
 
-type Id = { txId: string; groupKey?: string } | { txId?: string; groupKey: string }
+type Id = { txId: string; nonce: number; groupKey?: string } | { txId?: string; nonce?: number; groupKey: string }
 
 interface TxEvents {
   [TxEvent.SIGNED]: { txId?: string }
   [TxEvent.SIGN_FAILED]: { txId?: string; error: Error }
   [TxEvent.PROPOSE_FAILED]: { error: Error }
-  [TxEvent.PROPOSED]: { txId: string }
+  [TxEvent.PROPOSED]: { txId: string; nonce: number }
   [TxEvent.DELETED]: { safeTxHash: string }
   [TxEvent.SIGNATURE_PROPOSE_FAILED]: { txId: string; error: Error }
-  [TxEvent.SIGNATURE_PROPOSED]: { txId: string; signerAddress: string }
+  [TxEvent.SIGNATURE_PROPOSED]: { txId: string; nonce: number; signerAddress: string }
   [TxEvent.SIGNATURE_INDEXED]: { txId: string }
   [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id
   [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id

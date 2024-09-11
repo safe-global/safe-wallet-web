@@ -54,6 +54,7 @@ describe('useTxMonitor', () => {
 
     const pendingTx: PendingTxsState = {
       '123': {
+        nonce: 1,
         chainId: '11155111',
         safeAddress: faker.finance.ethereumAddress(),
         status: PendingStatus.PROCESSING,
@@ -77,6 +78,7 @@ describe('useTxMonitor', () => {
 
     const pendingTx: PendingTxsState = {
       '123': {
+        nonce: 1,
         chainId: '11155111',
         safeAddress: faker.finance.ethereumAddress(),
         status: PendingStatus.RELAYING,
@@ -95,6 +97,7 @@ describe('useTxMonitor', () => {
 
     const pendingTxs: PendingTxsState = {
       '123': {
+        nonce: 1,
         chainId: '11155111',
         safeAddress: faker.finance.ethereumAddress(),
         status: PendingStatus.PROCESSING,
@@ -146,11 +149,13 @@ describe('useTxPendingStatuses', () => {
     const mockSignerAddress = faker.finance.ethereumAddress()
 
     txDispatch(TxEvent.SIGNATURE_PROPOSED, {
+      nonce: 1,
       txId: mockTxId,
       signerAddress: mockSignerAddress,
     })
 
     expect(setPendingTx).toHaveBeenCalledWith({
+      nonce: 1,
       chainId: expect.anything(),
       safeAddress: expect.anything(),
       signerAddress: mockSignerAddress,
@@ -170,6 +175,7 @@ describe('useTxPendingStatuses', () => {
     const mockTo = faker.finance.ethereumAddress()
 
     txDispatch(TxEvent.PROCESSING, {
+      nonce: 1,
       txId: mockTxId,
       txHash: mockTxHash,
       signerNonce: mockNonce,
@@ -180,6 +186,7 @@ describe('useTxPendingStatuses', () => {
     })
 
     expect(setPendingTx).toHaveBeenCalledWith({
+      nonce: 1,
       chainId: expect.anything(),
       safeAddress: expect.anything(),
       submittedAt: expect.anything(),
@@ -204,6 +211,7 @@ describe('useTxPendingStatuses', () => {
     const mockSignerAddress = faker.finance.ethereumAddress()
 
     txDispatch(TxEvent.PROCESSING, {
+      nonce: 1,
       txId: mockTxId,
       txHash: mockTxHash,
       signerNonce: mockNonce,
@@ -213,6 +221,7 @@ describe('useTxPendingStatuses', () => {
     })
 
     expect(setPendingTx).toHaveBeenCalledWith({
+      nonce: 1,
       chainId: expect.anything(),
       safeAddress: expect.anything(),
       submittedAt: expect.anything(),
@@ -232,10 +241,12 @@ describe('useTxPendingStatuses', () => {
     const mockTxId = '123'
 
     txDispatch(TxEvent.EXECUTING, {
+      nonce: 1,
       txId: mockTxId,
     })
 
     expect(setPendingTx).toHaveBeenCalledWith({
+      nonce: 1,
       chainId: expect.anything(),
       safeAddress: expect.anything(),
       status: PendingStatus.SUBMITTING,
@@ -249,11 +260,13 @@ describe('useTxPendingStatuses', () => {
     const mockTxId = '123'
 
     txDispatch(TxEvent.PROCESSED, {
+      nonce: 1,
       txId: mockTxId,
       safeAddress: faker.finance.ethereumAddress(),
     })
 
     expect(setPendingTx).toHaveBeenCalledWith({
+      nonce: 1,
       chainId: expect.anything(),
       safeAddress: expect.anything(),
       status: PendingStatus.INDEXING,
@@ -268,11 +281,13 @@ describe('useTxPendingStatuses', () => {
     const mockTaskId = '0x123'
 
     txDispatch(TxEvent.RELAYING, {
+      nonce: 1,
       txId: mockTxId,
       taskId: mockTaskId,
     })
 
     expect(setPendingTx).toHaveBeenCalledWith({
+      nonce: 1,
       chainId: expect.anything(),
       safeAddress: expect.anything(),
       status: PendingStatus.RELAYING,
@@ -287,6 +302,7 @@ describe('useTxPendingStatuses', () => {
     const mockTxId = '123'
 
     txDispatch(TxEvent.SUCCESS, {
+      nonce: 1,
       txId: mockTxId,
     })
 
@@ -313,6 +329,7 @@ describe('useTxPendingStatuses', () => {
     const mockTxId = '123'
 
     txDispatch(TxEvent.REVERTED, {
+      nonce: 1,
       txId: mockTxId,
       error: new Error('Transaction reverted'),
     })
@@ -327,6 +344,7 @@ describe('useTxPendingStatuses', () => {
     const mockTxId = '123'
 
     txDispatch(TxEvent.FAILED, {
+      nonce: 1,
       txId: mockTxId,
       error: new Error('Transaction failed'),
     })

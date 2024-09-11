@@ -25,6 +25,7 @@ describe('txHistorySlice', () => {
       const state = {
         pendingTxs: {
           '0x123': {
+            nonce: 1,
             chainId: '5',
             safeAddress: '0x0000000000000000000000000000000000000000',
             status: PendingStatus.INDEXING,
@@ -42,6 +43,10 @@ describe('txHistorySlice', () => {
         type: TransactionListItemType.TRANSACTION,
         transaction: {
           id: '0x123',
+          executionInfo: {
+            type: 'MULTISIG',
+            nonce: 1,
+          },
         },
       } as TransactionListItem
 
@@ -55,6 +60,7 @@ describe('txHistorySlice', () => {
       listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(txDispatchSpy).toHaveBeenCalledWith(txEvents.TxEvent.SUCCESS, {
+        nonce: 1,
         txId: '0x123',
         groupKey: 'groupKey',
       })
@@ -64,6 +70,7 @@ describe('txHistorySlice', () => {
       const state = {
         pendingTxs: {
           '0x123': {
+            nonce: 1,
             chainId: '5',
             safeAddress: '0x0000000000000000000000000000000000000000',
             status: PendingStatus.INDEXING,
@@ -98,6 +105,7 @@ describe('txHistorySlice', () => {
       const state = {
         pendingTxs: {
           '0x123': {
+            nonce: 1,
             chainId: '5',
             safeAddress: '0x0000000000000000000000000000000000000000',
             status: PendingStatus.INDEXING,
@@ -142,6 +150,7 @@ describe('txHistorySlice', () => {
       const state = {
         pendingTxs: {
           '0x123': {
+            nonce: 1,
             chainId: '5',
             safeAddress: '0x0000000000000000000000000000000000000000',
             status: PendingStatus.INDEXING,
