@@ -7,7 +7,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { upsertAddressBookEntry, upsertMultichainAddressBookEntry } from '@/store/addressBookSlice'
 import madProps from '@/utils/mad-props'
 
 export type AddressEntry = {
@@ -42,7 +42,7 @@ function EntryDialog({
 
   const submitCallback = handleSubmit((data: AddressEntry) => {
     if (chainIds) {
-      chainIds?.forEach((chainId) => dispatch(upsertAddressBookEntry({ ...data, chainId })))
+      dispatch(upsertMultichainAddressBookEntry({ ...data, chainIds }))
     } else {
       dispatch(upsertAddressBookEntry({ ...data, chainId: currentChainId }))
     }
