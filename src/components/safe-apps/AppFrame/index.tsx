@@ -114,10 +114,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
     }
   }, [appIsLoading, isBackendAppsLoading, appName, isNativeEmbed])
 
-  useEffect(() => {
-    if (isNativeEmbed) dismissQueueBar()
-  }, [isNativeEmbed, dismissQueueBar])
-
   if (!safeLoaded) {
     return <div />
   }
@@ -160,15 +156,13 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
           />
         </div>
 
-        {!isNativeEmbed && (
-          <TransactionQueueBar
-            expanded={queueBarExpanded}
-            visible={queueBarVisible && !queueBarDismissed}
-            setExpanded={setExpanded}
-            onDismiss={dismissQueueBar}
-            transactions={transactions}
-          />
-        )}
+        <TransactionQueueBar
+          expanded={queueBarExpanded}
+          visible={queueBarVisible && !queueBarDismissed}
+          setExpanded={setExpanded}
+          onDismiss={dismissQueueBar}
+          transactions={transactions}
+        />
 
         {!isNativeEmbed && permissionsRequest && (
           <PermissionsPrompt
