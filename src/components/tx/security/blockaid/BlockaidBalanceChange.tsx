@@ -3,10 +3,8 @@ import TokenIcon from '@/components/common/TokenIcon'
 import useBalances from '@/hooks/useBalances'
 import useChainId from '@/hooks/useChainId'
 import { useHasFeature } from '@/hooks/useChains'
-import { type RedefineModuleResponse } from '@/services/security/modules/RedefineModule'
 import { sameAddress } from '@/utils/addresses'
 import { FEATURES } from '@/utils/chains'
-import { formatVisualAmount } from '@/utils/formatters'
 import { Box, Chip, CircularProgress, Grid, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { ErrorBoundary } from '@sentry/react'
@@ -19,63 +17,75 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { REDEFINE_ARTICLE } from '@/config/constants'
 
 import css from './styles.module.css'
+import type {
+  AssetDiff,
+  Erc1155Diff,
+  Erc1155TokenDetails,
+  Erc20Diff,
+  Erc721Diff,
+  Erc721TokenDetails,
+  GeneralAssetDiff,
+  NativeDiff,
+} from '@/services/security/modules/BlockaidModule/types'
+import { formatAmount } from '@/utils/formatNumber'
 
-const FungibleBalanceChange = ({
-  change,
-}: {
-  change: NonNullable<RedefineModuleResponse['balanceChange']>['in' | 'out'][number] & { type: 'ERC20' | 'NATIVE' }
-}) => {
+const FungibleBalanceChange = ({ change, asset }: { asset: AssetDiff['asset']; change: Erc20Diff | NativeDiff }) => {
   const { balances } = useBalances()
-
-  const logoUri = balances.items.find((item) => {
-    return change.type === 'NATIVE'
-      ? item.tokenInfo.type === TokenType.NATIVE_TOKEN
-      : sameAddress(item.tokenInfo.address, change.address)
-  })?.tokenInfo.logoUri
+  const logoUri =
+    asset.logo_url ??
+    balances.items.find((item) => {
+      return asset.type === 'NATIVE'
+        ? item.tokenInfo.type === TokenType.NATIVE_TOKEN
+        : sameAddress(item.tokenInfo.address, asset.address)
+    })?.tokenInfo.logoUri
 
   return (
     <>
       <Typography variant="body2" mx={1}>
-        {formatVisualAmount(change.amount.value, change.decimals)}
+        {change.value ? formatAmount(change.value) : 'unknown'}
       </Typography>
-      <TokenIcon size={16} logoUri={logoUri} tokenSymbol={change.symbol} />
+      <TokenIcon size={16} logoUri={logoUri} tokenSymbol={asset.symbol} />
       <Typography variant="body2" fontWeight={700} display="inline" ml={0.5}>
-        {change.symbol}
+        {asset.symbol}
       </Typography>
       <span style={{ margin: 'auto' }} />
-      <Chip className={css.categoryChip} label={change.type} />
+      <Chip className={css.categoryChip} label={asset.type} />
     </>
   )
 }
 
 const NFTBalanceChange = ({
   change,
+  asset,
 }: {
-  change: NonNullable<RedefineModuleResponse['balanceChange']>['in' | 'out'][number] & { type: 'ERC721' }
+  asset: Erc721TokenDetails | Erc1155TokenDetails
+  change: Erc721Diff | Erc1155Diff
 }) => {
   const chainId = useChainId()
 
   return (
     <>
-      {change.symbol ? (
+      {asset.symbol ? (
         <Typography variant="body2" fontWeight={700} display="inline" ml={1}>
-          {change.symbol}
+          {asset.symbol}
         </Typography>
       ) : (
         <Typography variant="body2" ml={1}>
           <EthHashInfo
-            address={change.address}
+            address={asset.address}
             chainId={chainId}
             showCopyButton={false}
             showPrefix={false}
             hasExplorer
-            showAvatar={false}
+            customAvatar={asset.logo_url}
+            showAvatar={!!asset.logo_url}
+            avatarSize={16}
             shortAddress
           />
         </Typography>
       )}
       <Typography variant="subtitle2" className={css.nftId} ml={1}>
-        #{change.tokenId}
+        #{Number(change.token_id)}
       </Typography>
       <span style={{ margin: 'auto' }} />
       <Chip className={css.categoryChip} label="NFT" />
@@ -84,27 +94,36 @@ const NFTBalanceChange = ({
 }
 
 const BalanceChange = ({
-  change,
+  asset,
   positive = false,
+  diff,
 }: {
-  change: NonNullable<RedefineModuleResponse['balanceChange']>['in' | 'out'][number]
+  asset: NonNullable<AssetDiff['asset']>
   positive?: boolean
+  diff: GeneralAssetDiff
 }) => {
   return (
     <Grid item xs={12} md={12}>
       <Box className={css.balanceChange}>
         {positive ? <ArrowDownwardIcon /> : <ArrowOutwardIcon />}
-        {change.type === 'ERC721' ? <NFTBalanceChange change={change} /> : <FungibleBalanceChange change={change} />}
+        {asset.type === 'ERC721' || asset.type === 'ERC1155' ? (
+          <NFTBalanceChange asset={asset} change={diff as Erc721Diff | Erc1155Diff} />
+        ) : (
+          <FungibleBalanceChange asset={asset} change={diff as NativeDiff | Erc20Diff} />
+        )}
       </Box>
     </Grid>
   )
 }
-
 const BalanceChanges = () => {
-  const { balanceChange, isLoading } = useContext(TxSecurityContext)
-  const totalBalanceChanges = balanceChange ? balanceChange.in.length + balanceChange.out.length : 0
+  const { blockaidResponse } = useContext(TxSecurityContext)
+  const { isLoading, balanceChange, error } = blockaidResponse ?? {}
 
-  if (isLoading && !balanceChange) {
+  const totalBalanceChanges = balanceChange
+    ? balanceChange.reduce((prev, current) => prev + current.in.length + current.out.length, 0)
+    : 0
+
+  if (isLoading) {
     return (
       <div className={css.loader}>
         <CircularProgress
@@ -119,7 +138,13 @@ const BalanceChanges = () => {
       </div>
     )
   }
-
+  if (error) {
+    return (
+      <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
+        Could not calculate balance changes.
+      </Typography>
+    )
+  }
   if (totalBalanceChanges === 0) {
     return (
       <Typography variant="body2" color="text.secondary" justifySelf="flex-end">
@@ -131,18 +156,22 @@ const BalanceChanges = () => {
   return (
     <Grid container className={css.balanceChanges}>
       <>
-        {balanceChange?.in.map((change, idx) => (
-          <BalanceChange change={change} key={idx} positive />
-        ))}
-        {balanceChange?.out.map((change, idx) => (
-          <BalanceChange change={change} key={idx} />
+        {balanceChange?.map((change, assetIdx) => (
+          <>
+            {change.in.map((diff, changeIdx) => (
+              <BalanceChange key={`${assetIdx}-in-${changeIdx}`} asset={change.asset} positive diff={diff} />
+            ))}
+            {change.out.map((diff, changeIdx) => (
+              <BalanceChange key={`${assetIdx}-out-${changeIdx}`} asset={change.asset} diff={diff} />
+            ))}
+          </>
         ))}
       </>
     </Grid>
   )
 }
 
-export const RedefineBalanceChanges = () => {
+export const BlockaidBalanceChanges = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 
   if (!isFeatureEnabled) {
