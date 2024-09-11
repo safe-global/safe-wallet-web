@@ -40,7 +40,7 @@ export const navItems: NavItem[] = [
     label: 'Stake',
     icon: <SvgIcon component={StakeIcon} inheritViewBox />,
     href: '',
-    tag: <Chip component="span" label="Soon" color="default" />,
+    tag: <Chip label="Soon" />,
     disabled: true,
   },
   {
