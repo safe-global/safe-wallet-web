@@ -9,7 +9,7 @@ import {
   getSafeSingletonDeployments,
 } from '@safe-global/safe-deployments'
 
-const SUPPORTED_VERSIONS: SafeVersion[] = ['1.4.1', '1.3.0', '1.1.1']
+const SUPPORTED_VERSIONS: SafeVersion[] = ['1.4.1', '1.3.0']
 
 const hasDeployment = (chainId: string, contractAddress: string, deployments: SingletonDeploymentV2[]) => {
   return deployments.some((deployment) => {
@@ -30,13 +30,13 @@ export const useReplayableNetworks = (creation: ReplayedSafeProps | undefined) =
   const { configs } = useChains()
 
   if (!creation) {
-    return []
+    return
   }
 
   const { masterCopy, factoryAddress } = creation
 
   if (!masterCopy) {
-    return []
+    return
   }
 
   const allL1SingletonDeployments = SUPPORTED_VERSIONS.map((version) =>

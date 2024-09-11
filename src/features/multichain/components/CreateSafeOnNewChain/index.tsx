@@ -1,7 +1,18 @@
 import NameInput from '@/components/common/NameInput'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSafeCreationData } from '../../hooks/useSafeCreationData'
 import { useReplayableNetworks } from '../../hooks/useReplayableNetworks'
@@ -14,6 +25,7 @@ import { selectRpc } from '@/store/settingsSlice'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 import { sameAddress } from '@/utils/addresses'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type CreateSafeOnNewChainForm = {
   name: string
@@ -39,8 +51,7 @@ export const CreateSafeOnNewChain = ({
       name: currentName,
     },
   })
-
-  const { handleSubmit } = formMethods
+  const { handleSubmit, formState } = formMethods
   const { configs } = useChains()
 
   const chain = configs.find((config) => config.chainId === deployedChainIds[0])
@@ -78,23 +89,34 @@ export const CreateSafeOnNewChain = ({
   })
 
   const replayableChains = useReplayableNetworks(safeCreationData)
+  const isLoading = !replayableChains
 
-  const newReplayableChains = useMemo(
-    () => replayableChains.filter((chain) => !deployedChainIds.includes(chain.chainId)),
-    [deployedChainIds, replayableChains],
-  )
+  const newReplayableChains = useMemo(() => {
+    if (!replayableChains) return []
+    return replayableChains.filter((chain) => !deployedChainIds.includes(chain.chainId))
+  }, [deployedChainIds, replayableChains])
 
-  const submitDisabled = !!safeCreationDataError
+  const isUnsupportedSafeCreationVersion = !newReplayableChains.length
+  const submitDisabled = isUnsupportedSafeCreationVersion || !!safeCreationDataError || !formState.isValid
 
   return (
     <Dialog open={open} onClose={onClose}>
       <form onSubmit={onFormSubmit} id="recreate-safe">
         <DialogTitle fontWeight={700}>Add another network</DialogTitle>
+        <Divider />
         <DialogContent>
           {safeCreationDataError ? (
             <ErrorMessage error={safeCreationDataError} level="error">
               Could not determine the Safe creation parameters.
             </ErrorMessage>
+          ) : isLoading ? (
+            <Box my={16} px="auto" display="flex" alignItems="center" justifyContent="center">
+              <CircularProgress size={20} />
+            </Box>
+          ) : isUnsupportedSafeCreationVersion ? (
+            <Typography>
+              This account was created from an outdated mastercopy. Adding another network is not possible.
+            </Typography>
           ) : (
             <FormProvider {...formMethods}>
               <Stack spacing={2}>
@@ -111,13 +133,27 @@ export const CreateSafeOnNewChain = ({
             </FormProvider>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit" variant="contained" disabled={submitDisabled}>
-            Submit
-          </Button>
+        <Divider />
+        <DialogActions sx={{ m: 2 }}>
+          {isUnsupportedSafeCreationVersion ? (
+            <Box display="flex" width="100%" alignItems="center" justifyContent="space-between">
+              <ExternalLink sx={{ flexGrow: 1 }} href="https://safe.global">
+                Read more
+              </ExternalLink>
+              <Button variant="contained" onClick={onClose}>
+                Got it
+              </Button>
+            </Box>
+          ) : (
+            <>
+              <Button variant="outlined" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="contained" disabled={submitDisabled}>
+                Add network
+              </Button>
+            </>
+          )}
         </DialogActions>
       </form>
     </Dialog>
