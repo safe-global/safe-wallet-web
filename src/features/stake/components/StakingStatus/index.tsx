@@ -58,7 +58,7 @@ const StakingStatus = ({ status }: { status: NativeStakingStatus }) => {
 
   return (
     <TxStatusChip color={config?.color}>
-      {config?.icon && <SvgIcon component={config.icon} fontSize="inherit" inheritViewBox />}
+      {config?.icon && <SvgIcon component={config.icon} fontSize="small" inheritViewBox />}
       {config?.text || capitalizedStatus(status)}
     </TxStatusChip>
   )

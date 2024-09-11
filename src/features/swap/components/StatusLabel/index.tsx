@@ -57,7 +57,7 @@ export const StatusLabel = (props: Props): ReactElement => {
 
   return (
     <TxStatusChip color={color}>
-      <SvgIcon component={icon} inheritViewBox fontSize="inherit" />
+      <SvgIcon component={icon} inheritViewBox fontSize="small" />
       {label}
     </TxStatusChip>
   )

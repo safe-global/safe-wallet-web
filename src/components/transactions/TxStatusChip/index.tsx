@@ -10,7 +10,10 @@ const TxStatusChip = ({ children, color }: TxStatusChipProps): ReactElement => {
   return (
     <Chip
       size="small"
-      sx={{ backgroundColor: `${color}.background`, color: `${color}.dark` }}
+      sx={{
+        backgroundColor: `${color}.background`,
+        color: `${color}.${color === 'success' ? 'dark' : color === 'primary' ? 'light' : 'main'}`,
+      }}
       label={
         <Typography
           variant="caption"
