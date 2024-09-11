@@ -5,7 +5,7 @@ import {
   type NativeStakingDepositConfirmationView,
   type StakingTxInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import TokenInfoPair from '@/components/tx/ConfirmationOrder/TokenInfoPair'
+import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
 import { formatVisualAmount, formatSecondsDuration } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import StakingStatus from '@/features/stake/components/StakingStatus'
@@ -23,7 +23,7 @@ const StakingOrderConfirmationView = ({ order }: StakingOrderConfirmationViewPro
   return (
     <Stack gap={isOrder ? 2 : 1}>
       {isOrder && (
-        <TokenInfoPair
+        <ConfirmationOrderHeader
           blocks={[
             {
               value: order.value || '0',

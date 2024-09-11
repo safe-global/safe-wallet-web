@@ -13,7 +13,7 @@ export type InfoBlock = {
   }
 }
 
-const TokenInfoPair = ({ blocks, showArrow }: { blocks: [InfoBlock, InfoBlock]; showArrow?: boolean }) => {
+const ConfirmationOrderHeader = ({ blocks, showArrow }: { blocks: [InfoBlock, InfoBlock]; showArrow?: boolean }) => {
   return (
     <Stack direction="row" spacing={1}>
       {blocks.map((block, index) => (
@@ -74,4 +74,4 @@ const TokenInfoPair = ({ blocks, showArrow }: { blocks: [InfoBlock, InfoBlock]; 
   )
 }
 
-export default TokenInfoPair
+export default ConfirmationOrderHeader
