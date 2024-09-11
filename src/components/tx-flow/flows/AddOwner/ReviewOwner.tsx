@@ -61,7 +61,7 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
         <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: 2 }}>
           <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
             <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-            Previous signe
+            Previous signer
           </Typography>
           <EthHashInfo
             name={params.removedOwner.name}
