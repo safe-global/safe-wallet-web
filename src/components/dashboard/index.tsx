@@ -1,6 +1,6 @@
 import FirstSteps from '@/components/dashboard/FirstSteps'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import type { ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import dynamic from 'next/dynamic'
 import { Grid } from '@mui/material'
 import PendingTxsList from '@/components/dashboard/PendingTxs/PendingTxsList'
@@ -16,13 +16,17 @@ import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import css from './styles.module.css'
 import SwapWidget from '@/features/swap/components/SwapWidget'
+import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
+import { useSafeTokenEnabled } from '@/hooks/useSafeTokenEnabled'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
 const Dashboard = (): ReactElement => {
   const { safe } = useSafeInfo()
   const showSafeApps = useHasFeature(FEATURES.SAFE_APPS)
-  const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER)
+  const isSafeTokenEnabled = useSafeTokenEnabled()
+  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
+  const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER) && isSafeTokenEnabled
   const supportsRecovery = useIsRecoverySupported()
   const [recovery] = useRecovery()
   const showRecoveryWidget = supportsRecovery && !recovery
@@ -42,13 +46,17 @@ const Dashboard = (): ReactElement => {
 
         {safe.deployed && (
           <>
-            <Grid item xs={12} xl={isSAPBannerEnabled ? 6 : 12} className={css.hideIfEmpty}>
-              <SwapWidget />
-            </Grid>
+            {isSwapFeatureEnabled && (
+              <Grid item xs={12} xl={isSAPBannerEnabled ? 6 : 12} className={css.hideIfEmpty}>
+                <SwapWidget />
+              </Grid>
+            )}
 
-            <Grid item xs className={css.hideIfEmpty}>
-              <ActivityRewardsSection />
-            </Grid>
+            {isSAPBannerEnabled && (
+              <Grid item xs className={css.hideIfEmpty}>
+                <ActivityRewardsSection />
+              </Grid>
+            )}
 
             <Grid item xs={12} />
 

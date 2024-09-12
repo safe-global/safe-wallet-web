@@ -16,9 +16,7 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import UnknownContractError from './UnknownContractError'
-import RiskConfirmationError from './RiskConfirmationError'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
@@ -31,6 +29,9 @@ import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
 import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
+import { Blockaid } from '../security/blockaid'
+
 import TxData from '@/components/transactions/TxDetails/TxData'
 import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
@@ -172,8 +173,7 @@ export const SignOrExecuteForm = ({
             />
           </ErrorBoundary>
         )}
-
-        {!isCounterfactualSafe && !props.isRejection && <RedefineBalanceChanges />}
+        {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
@@ -198,7 +198,7 @@ export const SignOrExecuteForm = ({
 
         <UnknownContractError />
 
-        <RiskConfirmationError />
+        <Blockaid />
 
         {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />

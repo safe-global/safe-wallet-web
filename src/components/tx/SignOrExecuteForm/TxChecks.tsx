@@ -6,7 +6,6 @@ import { TxSimulation, TxSimulationMessage } from '@/components/tx/security/tend
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { Box, Typography } from '@mui/material'
-import { Redefine, RedefineMessage } from '@/components/tx/security/redefine'
 
 import css from './styles.module.css'
 
@@ -28,12 +27,6 @@ const TxChecks = ({ executionOwner }: { executionOwner?: string }): ReactElement
 
       <Box className={css.mobileTxCheckMessages}>
         <TxSimulationMessage />
-      </Box>
-
-      <Redefine />
-
-      <Box className={css.mobileTxCheckMessages}>
-        <RedefineMessage />
       </Box>
     </TxCard>
   )

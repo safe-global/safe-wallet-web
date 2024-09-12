@@ -46,6 +46,7 @@ export const AppRoutes = {
   share: {
     safeApp: '/share/safe-app',
   },
+  stake: '/stake',
   transactions: {
     tx: '/transactions/tx',
     queue: '/transactions/queue',
