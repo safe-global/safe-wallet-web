@@ -5,8 +5,9 @@ import { useAppSelector } from '@/store'
 import { selectChainById, selectChains } from '@/store/chainsSlice'
 import css from './styles.module.css'
 import useChainId from '@/hooks/useChainId'
-import { Skeleton } from '@mui/material'
+import { Skeleton, Stack, Typography } from '@mui/material'
 import isEmpty from 'lodash/isEmpty'
+import FiatValue from '../FiatValue'
 
 type ChainIndicatorProps = {
   chainId?: string
@@ -16,6 +17,7 @@ type ChainIndicatorProps = {
   showLogo?: boolean
   onlyLogo?: boolean
   responsive?: boolean
+  fiatValue?: string
 }
 
 const fallbackChainConfig = {
@@ -30,6 +32,7 @@ const fallbackChainConfig = {
 
 const ChainIndicator = ({
   chainId,
+  fiatValue,
   className,
   inline = false,
   showUnknown = true,
@@ -77,8 +80,16 @@ const ChainIndicator = ({
           loading="lazy"
         />
       )}
-
-      {!onlyLogo && <span className={css.name}>{chainConfig.chainName}</span>}
+      {!onlyLogo && (
+        <Stack>
+          <span className={css.name}>{chainConfig.chainName}</span>
+          {fiatValue && (
+            <Typography fontWeight={700} textAlign="left" fontSize="14px">
+              <FiatValue value={fiatValue} />
+            </Typography>
+          )}
+        </Stack>
+      )}
     </span>
   ) : null
 }

@@ -42,7 +42,7 @@ const NetworkMultiSelector = ({
   const updateSelectedNetwork = (chains: ChainInfo[]) => {
     if (chains.length !== 1) return
     const shortName = chains[0].shortName
-    const networkLink = getNetworkLink(router.pathname, router.query, shortName, isWalletConnected)
+    const networkLink = getNetworkLink(router, shortName, isWalletConnected)
     router.replace(networkLink)
   }
 

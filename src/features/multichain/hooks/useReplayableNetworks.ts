@@ -26,7 +26,7 @@ const hasDeployment = (chainId: string, contractAddress: string, deployments: Si
  * Therefore the creation's masterCopy and factory need to be deployed to that network.
  * @param creation
  */
-export const useReplayableNetworks = (creation: ReplayedSafeProps | undefined) => {
+export const useReplayableNetworks = (creation: ReplayedSafeProps | undefined, deployedChainIds: string[]) => {
   const { configs } = useChains()
 
   if (!creation) {
@@ -51,10 +51,12 @@ export const useReplayableNetworks = (creation: ReplayedSafeProps | undefined) =
     getProxyFactoryDeployments({ version }),
   ).filter(Boolean) as SingletonDeploymentV2[]
 
-  return configs.filter(
-    (config) =>
-      (hasDeployment(config.chainId, masterCopy, allL1SingletonDeployments) ||
-        hasDeployment(config.chainId, masterCopy, allL2SingletonDeployments)) &&
-      hasDeployment(config.chainId, factoryAddress, allProxyFactoryDeployments),
-  )
+  return configs
+    .filter((config) => !deployedChainIds.includes(config.chainId))
+    .filter(
+      (config) =>
+        (hasDeployment(config.chainId, masterCopy, allL1SingletonDeployments) ||
+          hasDeployment(config.chainId, masterCopy, allL2SingletonDeployments)) &&
+        hasDeployment(config.chainId, factoryAddress, allProxyFactoryDeployments),
+    )
 }

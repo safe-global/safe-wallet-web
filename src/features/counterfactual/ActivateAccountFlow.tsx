@@ -3,7 +3,6 @@ import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/step
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'
 import TxCard from '@/components/tx-flow/common/TxCard'
-
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
@@ -39,6 +38,7 @@ import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
+import CheckWallet from '@/components/common/CheckWallet'
 
 const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
   const chain = useCurrentChain()
@@ -215,11 +215,13 @@ const ActivateAccountFlow = () => {
               name="Est. network fee"
               value={
                 <>
-                  <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
+                  <NetworkFee totalFee={totalFee} isWaived={willRelay || isWrongChain} chain={chain} />
 
                   {!willRelay && (
                     <Typography variant="body2" color="text.secondary" mt={1}>
-                      You will have to confirm a transaction with your connected wallet.
+                      {isWrongChain
+                        ? `Switch your connected wallet to ${chain?.chainName} to see the correct estimated network fee`
+                        : 'You will have to confirm a transaction with your connected wallet.'}
                     </Typography>
                   )}
                 </>
@@ -243,15 +245,19 @@ const ActivateAccountFlow = () => {
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
         <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
-          <Button
-            data-testid="activate-account-btn"
-            onClick={createSafe}
-            variant="contained"
-            size="stretched"
-            disabled={submitDisabled}
-          >
-            {!isSubmittable ? <CircularProgress size={20} /> : 'Activate'}
-          </Button>
+          <CheckWallet checkNetwork={!submitDisabled}>
+            {(isOk) => (
+              <Button
+                data-testid="activate-account-btn"
+                onClick={createSafe}
+                variant="contained"
+                size="stretched"
+                disabled={!isOk || submitDisabled}
+              >
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Activate'}
+              </Button>
+            )}
+          </CheckWallet>
         </Box>
       </TxCard>
     </TxLayout>

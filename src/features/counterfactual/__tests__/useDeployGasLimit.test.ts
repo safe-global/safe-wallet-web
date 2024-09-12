@@ -22,7 +22,6 @@ describe('useDeployGasLimit hook', () => {
     jest.resetAllMocks()
 
     jest.spyOn(useWallet, 'default').mockReturnValue({} as ConnectedWallet)
-    jest.spyOn(sdk, 'assertWalletChain').mockImplementation(jest.fn())
   })
 
   it('returns undefined in onboard is not initialized', () => {
