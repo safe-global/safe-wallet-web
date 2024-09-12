@@ -28,7 +28,7 @@ import { useRouter } from 'next/router'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo, useState } from 'react'
-import { useCompatibleNetworks } from '../../hooks/useReplayableNetworks'
+import { useCompatibleNetworks } from '../../hooks/useCompatibleNetworks'
 
 type CreateSafeOnNewChainForm = {
   name: string
@@ -43,7 +43,7 @@ type ReplaySafeDialogProps = {
   currentName: string | undefined
   open: boolean
   onClose: () => void
-  isUnsupportedSafeCreationVersion: boolean
+  isUnsupportedSafeCreationVersion?: boolean
 }
 
 const ReplaySafeDialog = ({
@@ -106,7 +106,6 @@ const ReplaySafeDialog = ({
     onClose()
   })
 
-  // const isUnsupportedSafeCreationVersion = !newReplayableChains.length
   const submitDisabled =
     isUnsupportedSafeCreationVersion || !!safeCreationDataError || safeCreationDataLoading || !formState.isValid
 
