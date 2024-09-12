@@ -28,7 +28,6 @@ const ActivateAccountButton = () => {
         <CheckWallet allowNonOwner>
           {(isOk) => (
             <Button
-              data-testid="activate-account-btn"
               variant="contained"
               size="small"
               onClick={activateAccount}
