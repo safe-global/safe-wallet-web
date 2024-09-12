@@ -205,7 +205,7 @@ export const SignOrExecuteForm = ({
 }
 
 const useSafeTx = () => useContext(SafeTxContext).safeTx
-const useSafeTxError = () => useContext(SafeTxContext).safeTxError
+export const useSafeTxError = () => useContext(SafeTxContext).safeTxError
 
 export default madProps(SignOrExecuteForm, {
   chainId: useChainId,

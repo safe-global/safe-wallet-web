@@ -21,7 +21,7 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
   const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
-  const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
+  const { setSafeTx, setSafeTxError, setNonce, safeTxError } = useContext(SafeTxContext)
 
   const txId = txSummary.id
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined
@@ -38,8 +38,15 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
 
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
+  // TODO: This component had showMethodCall, so we need to show the methodCall in the confirmationView
   return (
-    <SignOrExecuteForm txId={txId} isExecutable={canExecute} onlyExecute={!canSign} showMethodCall>
+    <SignOrExecuteForm
+      chainId={safe.chainId}
+      safeTxError={safeTxError}
+      txId={txId}
+      isExecutable={canExecute}
+      onlyExecute={!canSign}
+    >
       <Typography mb={1}>{text}</Typography>
     </SignOrExecuteForm>
   )
