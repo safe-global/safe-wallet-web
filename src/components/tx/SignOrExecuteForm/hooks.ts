@@ -1,4 +1,3 @@
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { assertTx, assertWallet, assertOnboard, assertChainInfo } from '@/utils/helpers'
 import { useMemo } from 'react'
 import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -82,8 +81,6 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      await assertWalletChain(onboard, chainId)
-
       // Smart contract wallets must sign via an on-chain tx
       if (await isSmartContractWallet(wallet.chainId, wallet.address)) {
         // If the first signature is a smart contract wallet, we have to propose w/o signatures
@@ -105,8 +102,6 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      await assertWalletChain(onboard, chainId)
-
       const signedTx = await dispatchDelegateTxSigning(safeTx, wallet)
 
       const tx = await proposeTx(wallet.address, signedTx)
@@ -118,8 +113,6 @@ export const useTxActions = (): TxActions => {
       assertWallet(wallet)
       assertOnboard(onboard)
       assertChainInfo(chain)
-
-      await assertWalletChain(onboard, chainId)
 
       let tx: TransactionDetails | undefined
       // Relayed transactions must be fully signed, so request a final signature if needed
