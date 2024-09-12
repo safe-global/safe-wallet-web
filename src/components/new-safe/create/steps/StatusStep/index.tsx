@@ -85,6 +85,7 @@ export const CreateSafeStatus = ({
     setStepData?.({
       owners: pendingSafe.props.safeAccountConfig.owners.map((owner) => ({ name: '', address: owner })),
       name: '',
+      networks: [],
       threshold: pendingSafe.props.safeAccountConfig.threshold,
       saltNonce: Number(pendingSafe.props.safeDeploymentConfig?.saltNonce),
       safeAddress,
