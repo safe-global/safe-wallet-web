@@ -25,9 +25,10 @@ import {
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
-import StakingTxExitInfo from 'src/features/stake/components/StakingTxDepositInfo'
+import StakingTxExitInfo from '@/features/stake/components/StakingTxExitInfo'
 import { Box } from '@mui/material'
 import css from './styles.module.css'
+import StakingTxDepositInfo from '@/features/stake/components/StakingTxDepositInfo'
 
 export const TransferTx = ({
   info,
@@ -137,7 +138,7 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
   }
 
   if (isStakingTxDepositInfo(info)) {
-    return <StakingTxExitInfo info={info} />
+    return <StakingTxDepositInfo info={info} />
   }
 
   if (isStakingTxExitInfo(info)) {

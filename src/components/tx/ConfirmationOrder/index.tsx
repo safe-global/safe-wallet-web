@@ -1,4 +1,4 @@
-import StrakingConfirmationTx from 'src/features/stake/components/StakingConfirmationTx'
+import StrakingConfirmationTx from '@/features/stake/components/StakingConfirmationTx'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 import type useDecodeTx from '@/hooks/useDecodeTx'
 import { isAnyStakingConfirmationView, isAnySwapConfirmationViewOrder } from '@/utils/transaction-guards'
