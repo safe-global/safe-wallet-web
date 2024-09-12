@@ -88,7 +88,7 @@ describe('CF Safe regression tests', () => {
     owner.waitForConnectionStatus()
     createwallet.clickOnCreateTxBtn()
     createwallet.clickOnTxType(txOrder[0])
-    main.verifyElementsExist([createwallet.activateAccountBtn])
+    cy.contains(createwallet.deployWalletStr)
   })
 
   it('Verify "Add another Owner" takes to a tx Add owner', () => {
