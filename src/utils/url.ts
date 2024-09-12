@@ -1,8 +1,8 @@
-const trimTrailingSlash = (url: string): string => {
+export const trimTrailingSlash = (url: string): string => {
   return url.replace(/\/$/, '')
 }
 
-const isSameUrl = (url1: string, url2: string): boolean => {
+export const isSameUrl = (url1: string, url2: string): boolean => {
   return trimTrailingSlash(url1) === trimTrailingSlash(url2)
 }
 export const prefixedAddressRe = /[a-z0-9-]+\:0x[a-f0-9]{40}/i
@@ -10,11 +10,11 @@ const invalidProtocolRegex = /^(\W*)(javascript|data|vbscript)/im
 const ctrlCharactersRegex = /[\u0000-\u001F\u007F-\u009F\u2000-\u200D\uFEFF]/gim
 const urlSchemeRegex = /^([^:]+):/gm
 const relativeFirstCharacters = ['.', '/']
-const isRelativeUrl = (url: string): boolean => {
+export const isRelativeUrl = (url: string): boolean => {
   return relativeFirstCharacters.indexOf(url[0]) > -1
 }
 
-const sanitizeUrl = (url: string): string => {
+export const sanitizeUrl = (url: string): string => {
   const sanitizedUrl = url.replace(ctrlCharactersRegex, '').trim()
 
   if (isRelativeUrl(sanitizedUrl)) {
@@ -34,4 +34,12 @@ const sanitizeUrl = (url: string): string => {
   return sanitizedUrl
 }
 
-export { trimTrailingSlash, isSameUrl, sanitizeUrl, isRelativeUrl }
+export const getOriginPath = (url: string): string => {
+  try {
+    const { origin, pathname } = new URL(url)
+    return origin + (pathname === '/' ? '' : pathname)
+  } catch (e) {
+    console.error('Error parsing URL', url, e)
+    return url
+  }
+}

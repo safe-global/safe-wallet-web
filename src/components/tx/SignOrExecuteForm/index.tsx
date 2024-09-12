@@ -27,15 +27,13 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isConfirmationViewOrder, isCustomTxInfo } from '@/utils/transaction-guards'
-import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
-import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
-import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
+import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
 import { Blockaid } from '../security/blockaid'
 
 import TxData from '@/components/transactions/TxDetails/TxData'
+import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -97,7 +95,7 @@ export const SignOrExecuteForm = ({
   const [decodedData] = useDecodeTx(safeTx)
 
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
-  const isSwapOrder = isConfirmationViewOrder(decodedData)
+
   const { data: txDetails } = useGetTransactionDetailsQuery(
     chainId && props.txId
       ? {
@@ -115,7 +113,6 @@ export const SignOrExecuteForm = ({
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
-  const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
   const roles = useRoles(
@@ -153,11 +150,9 @@ export const SignOrExecuteForm = ({
       <TxCard>
         {props.children}
 
-        {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
-
-        {isSwapOrder && (
+        {decodedData && (
           <ErrorBoundary fallback={<></>}>
-            <SwapOrderConfirmationView order={decodedData} settlementContract={safeTx?.data.to ?? ''} />
+            <ConfirmationOrder decodedData={decodedData} toAddress={safeTx?.data.to ?? ''} />
           </ErrorBoundary>
         )}
 
@@ -172,7 +167,9 @@ export const SignOrExecuteForm = ({
               txId={props.txId}
               decodedData={decodedData}
               showMultisend={!props.isBatch}
-              showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder && !isApproval}
+              showMethodCall={
+                props.showMethodCall && !showTxDetails && !isApproval && isGenericConfirmation(decodedData)
+              }
             />
           </ErrorBoundary>
         )}

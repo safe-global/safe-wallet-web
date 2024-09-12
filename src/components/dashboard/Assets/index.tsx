@@ -43,7 +43,7 @@ const NoAssets = () => (
   </Paper>
 )
 
-const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][number]; showSwap: boolean }) => (
+const AssetRow = ({ item, showSwap }: { item: SafeBalanceResponse['items'][number]; showSwap?: boolean }) => (
   <Box className={css.container} key={item.tokenInfo.address}>
     <Box flex={1}>
       <TokenAmount
