@@ -50,6 +50,7 @@ export const addSignerStr = 'Add signer'
 export const accountRecoveryStr = 'Account recovery'
 export const sendTokensStr = 'Send tokens'
 const noWalletConnectedMsg = 'No wallet connected'
+export const deployWalletStr = 'about to deploy this Safe Account'
 
 const connectWalletBtn = '[data-testid="connect-wallet-btn"]'
 
