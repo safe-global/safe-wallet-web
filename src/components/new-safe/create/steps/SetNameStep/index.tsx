@@ -68,7 +68,7 @@ function SetNameStep({
     formState: { errors, isValid },
   } = formMethods
 
-  const networks = useWatch({ control, name: SetNameStepFields.networks })
+  const networks: ChainInfo[] = useWatch({ control, name: SetNameStepFields.networks })
   const isMultiChain = networks.length > 1
   const fallbackName = useMnemonicSafeName(isMultiChain)
   useSafeSetupHints(setDynamicHint, undefined, undefined, isMultiChain)

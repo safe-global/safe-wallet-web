@@ -1,5 +1,5 @@
 import useChains from '@/hooks/useChains'
-import { type ReactElement } from 'react'
+import { useCallback, type ReactElement } from 'react'
 import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import ChainIndicator from '../ChainIndicator'
@@ -9,8 +9,8 @@ import { useRouter } from 'next/router'
 import { getNetworkLink } from '.'
 import useWallet from '@/hooks/wallets/useWallet'
 import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameStep'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 const NetworkMultiSelector = ({
   name,
@@ -30,42 +30,55 @@ const NetworkMultiSelector = ({
     setValue,
   } = useFormContext()
 
-  const selectedNetworks = useWatch({ control, name: SetNameStepFields.networks })
+  const selectedNetworks: ChainInfo[] = useWatch({ control, name: SetNameStepFields.networks })
 
-  const handleDelete = (deletedChainId: string) => {
-    const currentValues: ChainInfo[] = getValues(name) || []
-    const updatedValues = currentValues.filter((chain) => chain.chainId !== deletedChainId)
-    updateSelectedNetwork(updatedValues)
-    setValue(name, updatedValues)
-  }
+  const updateSelectedNetwork = useCallback(
+    (chains: ChainInfo[]) => {
+      if (chains.length !== 1) return
+      const shortName = chains[0].shortName
+      const networkLink = getNetworkLink(router, shortName, isWalletConnected)
+      router.replace(networkLink)
+    },
+    [isWalletConnected, router],
+  )
 
-  const updateSelectedNetwork = (chains: ChainInfo[]) => {
-    if (chains.length !== 1) return
-    const shortName = chains[0].shortName
-    const networkLink = getNetworkLink(router, shortName, isWalletConnected)
-    router.replace(networkLink)
-  }
+  const handleDelete = useCallback(
+    (deletedChainId: string) => {
+      const currentValues: ChainInfo[] = getValues(name) || []
+      const updatedValues = currentValues.filter((chain) => chain.chainId !== deletedChainId)
+      updateSelectedNetwork(updatedValues)
+      setValue(name, updatedValues)
+    },
+    [getValues, name, setValue, updateSelectedNetwork],
+  )
 
-  const isOptionDisabled = (optionNetwork: ChainInfo) => {
-    if (selectedNetworks.length === 0) return false
-    const firstSelectedNetwork = selectedNetworks[0]
+  const isOptionDisabled = useCallback(
+    (optionNetwork: ChainInfo) => {
+      if (selectedNetworks.length === 0) return false
+      const firstSelectedNetwork = selectedNetworks[0]
 
-    // do not allow multi chain safes for advanced setup flow.
-    if (isAdvancedFlow) return optionNetwork.chainId != firstSelectedNetwork.chainId
+      // do not allow multi chain safes for advanced setup flow.
+      if (isAdvancedFlow) return optionNetwork.chainId != firstSelectedNetwork.chainId
 
-    const optionHasCanonicalSingletonDeployment = Boolean(
-      getSafeSingletonDeployment({ network: optionNetwork.chainId, version: LATEST_SAFE_VERSION })?.deployments
-        .canonical,
-    )
-    const selectedHasCanonicalSingletonDeployment = Boolean(
-      getSafeSingletonDeployment({ network: firstSelectedNetwork.chainId, version: LATEST_SAFE_VERSION })?.deployments
-        .canonical,
-    )
+      const optionHasCanonicalSingletonDeployment = Boolean(
+        getSafeSingletonDeployment({
+          network: optionNetwork.chainId,
+          version: getLatestSafeVersion(firstSelectedNetwork),
+        })?.deployments.canonical,
+      )
+      const selectedHasCanonicalSingletonDeployment = Boolean(
+        getSafeSingletonDeployment({
+          network: firstSelectedNetwork.chainId,
+          version: getLatestSafeVersion(firstSelectedNetwork),
+        })?.deployments.canonical,
+      )
 
-    // Only 1.4.1 safes with canonical deployment addresses can be deployed as part of a multichain group
-    if (!selectedHasCanonicalSingletonDeployment) return firstSelectedNetwork.chainId !== optionNetwork.chainId
-    return !optionHasCanonicalSingletonDeployment
-  }
+      // Only 1.4.1 safes with canonical deployment addresses can be deployed as part of a multichain group
+      if (!selectedHasCanonicalSingletonDeployment) return firstSelectedNetwork.chainId !== optionNetwork.chainId
+      return !optionHasCanonicalSingletonDeployment
+    },
+    [isAdvancedFlow, selectedNetworks],
+  )
 
   return (
     <>
