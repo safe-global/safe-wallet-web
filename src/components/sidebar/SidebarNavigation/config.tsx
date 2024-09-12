@@ -18,7 +18,6 @@ export type NavItem = {
   href: string
   tag?: ReactElement
   disabled?: boolean
-  tooltip?: string
 }
 
 export const navItems: NavItem[] = [

@@ -19,7 +19,6 @@ import { isRouteEnabled } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
-import { Tooltip } from '@mui/material'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
@@ -78,23 +77,26 @@ const Navigation = (): ReactElement => {
         }
 
         return (
-          <Tooltip title={item.tooltip} placement="right" key={item.href} arrow>
-            <ListItem disablePadding selected={isSelected} onClick={() => handleNavigationClick(item.href)}>
-              <SidebarListItemButton
-                selected={isSelected}
-                href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
-                disabled={item.disabled}
-              >
-                {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
+          <ListItem
+            disablePadding
+            selected={isSelected}
+            onClick={() => handleNavigationClick(item.href)}
+            key={item.href}
+          >
+            <SidebarListItemButton
+              selected={isSelected}
+              href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
+              disabled={item.disabled}
+            >
+              {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
 
-                <SidebarListItemText data-testid="sidebar-list-item" bold>
-                  {item.label}
+              <SidebarListItemText data-testid="sidebar-list-item" bold>
+                {item.label}
 
-                  {ItemTag}
-                </SidebarListItemText>
-              </SidebarListItemButton>
-            </ListItem>
-          </Tooltip>
+                {ItemTag}
+              </SidebarListItemText>
+            </SidebarListItemButton>
+          </ListItem>
         )
       })}
     </SidebarList>
