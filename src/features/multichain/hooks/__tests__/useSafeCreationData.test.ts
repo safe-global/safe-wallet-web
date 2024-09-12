@@ -17,6 +17,7 @@ import {
 import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
 import { type JsonRpcProvider } from 'ethers'
 import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 describe('useSafeCreationData', () => {
   beforeAll(() => {
@@ -28,7 +29,8 @@ describe('useSafeCreationData', () => {
   })
   it('should return undefined without chain info', async () => {
     const safeAddress = faker.finance.ethereumAddress()
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, undefined))
+    const chainInfos: ChainInfo[] = []
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
     await waitFor(async () => {
       await Promise.resolve()
       expect(result.current).toEqual([undefined, undefined, false])
@@ -37,7 +39,7 @@ describe('useSafeCreationData', () => {
 
   it('should return the replayedSafe when copying one', async () => {
     const safeAddress = faker.finance.ethereumAddress()
-    const chainIndo = chainBuilder().with({ chainId: '1' }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1' }).build()]
     const undeployedSafe: UndeployedSafe = {
       props: {
         factoryAddress: faker.finance.ethereumAddress(),
@@ -51,7 +53,7 @@ describe('useSafeCreationData', () => {
       },
     }
 
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainIndo), {
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos), {
       initialReduxState: {
         undeployedSafes: {
           '1': {
@@ -68,7 +70,7 @@ describe('useSafeCreationData', () => {
 
   it('should extract replayedSafe data from an predictedSafe', async () => {
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
     const undeployedSafe = {
       props: {
         safeAccountConfig: {
@@ -86,7 +88,7 @@ describe('useSafeCreationData', () => {
       },
     }
 
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo), {
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos), {
       initialReduxState: {
         undeployedSafes: {
           '1': {
@@ -122,7 +124,7 @@ describe('useSafeCreationData', () => {
 
   it('should extract replayedSafe data from an predictedSafe which has a custom Setup', async () => {
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
     const undeployedSafe = {
       props: {
         safeAccountConfig: {
@@ -166,7 +168,7 @@ describe('useSafeCreationData', () => {
     }
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo), {
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos), {
       initialReduxState: {
         undeployedSafes: {
           '1': {
@@ -190,10 +192,10 @@ describe('useSafeCreationData', () => {
     } as any)
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.NO_CREATION_DATA), false])
@@ -214,10 +216,10 @@ describe('useSafeCreationData', () => {
     })
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.NO_CREATION_DATA), false])
@@ -251,10 +253,10 @@ describe('useSafeCreationData', () => {
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue(undefined)
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.NO_PROVIDER), false])
@@ -293,10 +295,10 @@ describe('useSafeCreationData', () => {
     } as JsonRpcProvider)
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.TX_NOT_FOUND), false])
@@ -347,10 +349,10 @@ describe('useSafeCreationData', () => {
     } as JsonRpcProvider)
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_SAFE_CREATION), false])
@@ -412,10 +414,10 @@ describe('useSafeCreationData', () => {
     } as JsonRpcProvider)
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_SAFE_CREATION), false])
@@ -466,10 +468,10 @@ describe('useSafeCreationData', () => {
     } as JsonRpcProvider)
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_SAFE_CREATION), false])
@@ -520,10 +522,10 @@ describe('useSafeCreationData', () => {
     } as JsonRpcProvider)
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([
@@ -598,10 +600,10 @@ describe('useSafeCreationData', () => {
     } as JsonRpcProvider)
 
     const safeAddress = faker.finance.ethereumAddress()
-    const chainInfo = chainBuilder().with({ chainId: '1', l2: false }).build()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
 
     // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfo))
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
 
     await waitFor(() => {
       expect(result.current).toEqual([

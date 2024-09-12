@@ -22,21 +22,20 @@ const hasDeployment = (chainId: string, contractAddress: string, deployments: Si
 }
 
 /**
- * Returns all chains where the transaction can be replayed successfully.
- * Therefore the creation's masterCopy and factory need to be deployed to that network.
+ * Returns all chains where the creations's masterCopy and factory are deployed.
  * @param creation
  */
-export const useReplayableNetworks = (creation: ReplayedSafeProps | undefined) => {
+export const useCompatibleNetworks = (creation: ReplayedSafeProps | undefined) => {
   const { configs } = useChains()
 
   if (!creation) {
-    return
+    return []
   }
 
   const { masterCopy, factoryAddress } = creation
 
   if (!masterCopy) {
-    return
+    return []
   }
 
   const allL1SingletonDeployments = SUPPORTED_VERSIONS.map((version) =>

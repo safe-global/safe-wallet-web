@@ -15,8 +15,6 @@ import {
 } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSafeCreationData } from '../../hooks/useSafeCreationData'
-import { useReplayableNetworks } from '../../hooks/useReplayableNetworks'
-import { useMemo } from 'react'
 import { replayCounterfactualSafeDeployment } from '@/features/counterfactual/utils'
 
 import useChains from '@/hooks/useChains'
@@ -26,44 +24,57 @@ import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 import { sameAddress } from '@/utils/addresses'
 import ExternalLink from '@/components/common/ExternalLink'
+import { useRouter } from 'next/router'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { useMemo, useState } from 'react'
+import { useCompatibleNetworks } from '../../hooks/useReplayableNetworks'
 
 type CreateSafeOnNewChainForm = {
   name: string
   chainId: string
 }
 
-export const CreateSafeOnNewChain = ({
-  safeAddress,
-  deployedChainIds,
-  currentName,
-  open,
-  onClose,
-}: {
+type ReplaySafeDialogProps = {
   safeAddress: string
-  deployedChainIds: string[]
+  safeCreationResult: ReturnType<typeof useSafeCreationData>
+  replayableChains?: ReturnType<typeof useCompatibleNetworks>
+  chain?: ChainInfo
   currentName: string | undefined
   open: boolean
   onClose: () => void
-}) => {
+  isUnsupportedSafeCreationVersion: boolean
+}
+
+const ReplaySafeDialog = ({
+  safeAddress,
+  chain,
+  currentName,
+  open,
+  onClose,
+  safeCreationResult,
+  replayableChains,
+  isUnsupportedSafeCreationVersion,
+}: ReplaySafeDialogProps) => {
   const formMethods = useForm<CreateSafeOnNewChainForm>({
     mode: 'all',
     defaultValues: {
       name: currentName,
+      chainId: chain?.chainId,
     },
   })
   const { handleSubmit, formState } = formMethods
-  const { configs } = useChains()
-
-  const chain = configs.find((config) => config.chainId === deployedChainIds[0])
+  const router = useRouter()
 
   const customRpc = useAppSelector(selectRpc)
   const dispatch = useAppDispatch()
+  const [creationError, setCreationError] = useState<Error>()
 
   // Load some data
-  const [safeCreationData, safeCreationDataError] = useSafeCreationData(safeAddress, chain)
+  const [safeCreationData, safeCreationDataError, safeCreationDataLoading] = safeCreationResult
 
   const onFormSubmit = handleSubmit(async (data) => {
-    const selectedChain = configs.find((config) => config.chainId === data.chainId)
+    const selectedChain = chain ?? replayableChains?.find((config) => config.chainId === data.chainId)
     if (!safeCreationData || !safeCreationData.setupData || !selectedChain || !safeCreationData.masterCopy) {
       return
     }
@@ -78,26 +89,26 @@ export const CreateSafeOnNewChain = ({
     // 1. Double check that the creation Data will lead to the correct address
     const predictedAddress = await predictAddressBasedOnReplayData(safeCreationData, provider)
     if (!sameAddress(safeAddress, predictedAddress)) {
-      throw new Error('The replayed Safe leads to an unexpected address')
+      setCreationError(new Error('The replayed Safe leads to an unexpected address'))
+      return
     }
 
     // 2. Replay Safe creation and add it to the counterfactual Safes
     replayCounterfactualSafeDeployment(selectedChain.chainId, safeAddress, safeCreationData, data.name, dispatch)
 
+    router.push({
+      query: {
+        safe: `${selectedChain.shortName}:${safeAddress}`,
+      },
+    })
+
     // Close modal
     onClose()
   })
 
-  const replayableChains = useReplayableNetworks(safeCreationData)
-  const isLoading = !replayableChains
-
-  const newReplayableChains = useMemo(() => {
-    if (!replayableChains) return []
-    return replayableChains.filter((chain) => !deployedChainIds.includes(chain.chainId))
-  }, [deployedChainIds, replayableChains])
-
-  const isUnsupportedSafeCreationVersion = !newReplayableChains.length
-  const submitDisabled = isUnsupportedSafeCreationVersion || !!safeCreationDataError || !formState.isValid
+  // const isUnsupportedSafeCreationVersion = !newReplayableChains.length
+  const submitDisabled =
+    isUnsupportedSafeCreationVersion || !!safeCreationDataError || safeCreationDataLoading || !formState.isValid
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -109,10 +120,11 @@ export const CreateSafeOnNewChain = ({
             <ErrorMessage error={safeCreationDataError} level="error">
               Could not determine the Safe creation parameters.
             </ErrorMessage>
-          ) : isLoading ? (
-            <Box my={16} px="auto" display="flex" alignItems="center" justifyContent="center">
-              <CircularProgress size={20} />
-            </Box>
+          ) : safeCreationDataLoading ? (
+            <Stack direction="column" alignItems="center" gap={1}>
+              <CircularProgress />
+              <Typography variant="body2">Loading Safe data</Typography>
+            </Stack>
           ) : isUnsupportedSafeCreationVersion ? (
             <Typography>
               This account was created from an outdated mastercopy. Adding another network is not possible.
@@ -128,7 +140,17 @@ export const CreateSafeOnNewChain = ({
 
                 <NameInput name="name" label="Name" />
 
-                <NetworkInput required name="chainId" chainConfigs={newReplayableChains} />
+                {chain ? (
+                  <ChainIndicator chainId={chain.chainId} />
+                ) : (
+                  <NetworkInput required name="chainId" chainConfigs={replayableChains ?? []} />
+                )}
+
+                {creationError && (
+                  <ErrorMessage error={creationError} level="error">
+                    The Safe could not be created with the same address.
+                  </ErrorMessage>
+                )}
               </Stack>
             </FormProvider>
           )}
@@ -158,4 +180,40 @@ export const CreateSafeOnNewChain = ({
       </form>
     </Dialog>
   )
+}
+
+export const CreateSafeOnNewChain = ({
+  safeAddress,
+  deployedChainIds,
+  ...props
+}: Omit<
+  ReplaySafeDialogProps,
+  'safeCreationResult' | 'replayableChains' | 'chain' | 'isUnsupportedSafeCreationVersion'
+> & {
+  deployedChainIds: string[]
+}) => {
+  const { configs } = useChains()
+  const deployedChains = useMemo(
+    () => configs.filter((config) => config.chainId === deployedChainIds[0]),
+    [configs, deployedChainIds],
+  )
+
+  const safeCreationResult = useSafeCreationData(safeAddress, deployedChains)
+  const allCompatibleChains = useCompatibleNetworks(safeCreationResult[0])
+  const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
+  const replayableChains = allCompatibleChains?.filter((config) => !deployedChainIds.includes(config.chainId)) || []
+
+  return (
+    <ReplaySafeDialog
+      safeCreationResult={safeCreationResult}
+      replayableChains={replayableChains}
+      safeAddress={safeAddress}
+      isUnsupportedSafeCreationVersion={isUnsupportedSafeCreationVersion}
+      {...props}
+    />
+  )
+}
+
+export const CreateSafeOnSpecificChain = ({ ...props }: Omit<ReplaySafeDialogProps, 'replayableChains'>) => {
+  return <ReplaySafeDialog {...props} isUnsupportedSafeCreationVersion={false} />
 }
