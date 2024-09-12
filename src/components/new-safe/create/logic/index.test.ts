@@ -5,12 +5,7 @@ import type { CompatibilityFallbackHandlerContractImplementationType } from '@sa
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
 import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
-import {
-  SAFE_TO_L2_SETUP_ADDRESS,
-  SAFE_TO_L2_SETUP_INTERFACE,
-  relaySafeCreation,
-  getRedirect,
-} from '@/components/new-safe/create/logic/index'
+import { SAFE_TO_L2_SETUP_INTERFACE, relaySafeCreation, getRedirect } from '@/components/new-safe/create/logic/index'
 import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
 import {
@@ -27,6 +22,7 @@ import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
 import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import { chainBuilder } from '@/tests/builders/chains'
 import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
+import { SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
 
 const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
 

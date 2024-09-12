@@ -1,9 +1,4 @@
-import {
-  createNewSafe,
-  relayReplayedSafeCreation,
-  relaySafeCreation,
-  SAFE_TO_L2_SETUP_ADDRESS,
-} from '@/components/new-safe/create/logic'
+import { createNewSafe, relayReplayedSafeCreation, relaySafeCreation } from '@/components/new-safe/create/logic'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'
@@ -43,6 +38,7 @@ import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEsti
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { createWeb3 } from '@/hooks/wallets/web3'
+import { SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
 
 const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
   const chain = useCurrentChain()

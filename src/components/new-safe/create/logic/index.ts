@@ -19,7 +19,7 @@ import { backOff } from 'exponential-backoff'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
-import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
+import { ECOSYSTEM_ID_ADDRESS, SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
 import { type ReplayedSafeProps } from '@/store/slices'
 
 export type SafeCreationProps = {
@@ -75,7 +75,6 @@ export const computeNewSafeAddress = async (
   })
 }
 
-export const SAFE_TO_L2_SETUP_ADDRESS = '0x80E0d1577aD3d982BF2F49aAB00BfA161AA763c4'
 export const SAFE_TO_L2_SETUP_INTERFACE = new Interface(['function setupToL2(address l2Singleton)'])
 
 /**
