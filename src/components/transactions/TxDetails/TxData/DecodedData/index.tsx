@@ -51,9 +51,7 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
 
   let decodedData = <></>
   if (txData.dataDecoded) {
-    if (amountInWei === '0') {
-      decodedData = <MethodDetails data={txData.dataDecoded} addressInfoIndex={txData.addressInfoIndex} />
-    }
+    decodedData = <MethodDetails data={txData.dataDecoded} addressInfoIndex={txData.addressInfoIndex} />
   } else if (txData.hexData) {
     // When no decoded data, display raw hex data
     decodedData = <HexEncodedData title="Data (hex-encoded)" hexData={txData.hexData} />

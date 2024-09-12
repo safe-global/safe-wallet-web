@@ -1,5 +1,6 @@
 import type {
   ChainInfo,
+  DecodedDataResponse,
   ExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
@@ -22,7 +23,7 @@ import {
 } from './transaction-guards'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types/dist/src/types'
 import { OperationType } from '@safe-global/safe-core-sdk-types/dist/src/types'
-import { getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
+import { getReadOnlyGnosisSafeContract, isValidMasterCopy } from '@/services/contracts/safeContracts'
 import extractTxInfo from '@/services/tx/extractTxInfo'
 import type { AdvancedParameters } from '@/components/tx/AdvancedParams'
 import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core-sdk-types'
@@ -34,6 +35,13 @@ import { toBeHex, AbiCoder } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
+import { type ExtendedSafeInfo } from '@/store/safeInfoSlice'
+import { getSafeContractDeployment } from '@/services/contracts/deployments'
+import { sameAddress } from './addresses'
+import { isMultiSendCalldata } from './transaction-calldata'
+import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
+import { __unsafe_createMultiSendTx } from '@/services/tx/tx-sender'
+import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -138,14 +146,6 @@ export const getMultiSendTxs = async (
       }
     })
     .filter(Boolean) as MetaTransactionData[]
-}
-
-export const getTxsWithDetails = (txs: Transaction[], chainId: string) => {
-  return Promise.all(
-    txs.map(async (tx) => {
-      return await getTransactionDetails(chainId, tx.transaction.id)
-    }),
-  )
 }
 
 export const getTxOptions = (params: AdvancedParameters, currentChain: ChainInfo | undefined): TransactionOptions => {
@@ -302,4 +302,114 @@ export const isTrustedTx = (tx: TransactionSummary) => {
 
 export const isImitation = ({ txInfo }: TransactionSummary): boolean => {
   return isTransferTxInfo(txInfo) && isERC20Transfer(txInfo.transferInfo) && Boolean(txInfo.transferInfo.imitation)
+}
+
+/**
+ *
+ * If the Safe is using a invalid masterCopy this function will modify the passed in `safeTx` by making it a MultiSend that migrates the Safe to L2 as the first action.
+ *
+ * This only happens under the conditions that
+ * - The Safe's nonce is 0
+ * - The SafeTx's nonce is 0
+ * - The Safe is using an invalid masterCopy
+ * - The SafeTx is not already including a Migration
+ *
+ * @param safeTx original SafeTx
+ * @param safe
+ * @param chain
+ * @returns
+ */
+export const prependSafeToL2Migration = (
+  safeTx: SafeTransaction | undefined,
+  safe: ExtendedSafeInfo,
+  chain: ChainInfo | undefined,
+): Promise<SafeTransaction | undefined> => {
+  if (!chain) {
+    throw new Error('No Network information available')
+  }
+
+  if (
+    !safeTx ||
+    safeTx.signatures.size > 0 ||
+    !chain.l2 ||
+    safeTx.data.nonce > 0 ||
+    isValidMasterCopy(safe.implementationVersionState)
+  ) {
+    // We do not migrate on L1s
+    // We cannot migrate if the nonce is > 0
+    // We do not modify already signed txs
+    // We do not modify supported masterCopies
+    return Promise.resolve(safeTx)
+  }
+
+  const safeL2Deployment = getSafeContractDeployment(chain, safe.version)
+  const safeL2DeploymentAddress = safeL2Deployment?.networkAddresses[chain.chainId]
+
+  if (!safeL2DeploymentAddress) {
+    throw new Error('No L2 MasterCopy found')
+  }
+
+  if (sameAddress(safe.implementation.value, safeL2DeploymentAddress)) {
+    // Safe already has the correct L2 masterCopy
+    // This should in theory never happen if the implementationState is valid
+    return Promise.resolve(safeTx)
+  }
+
+  // If the Safe is a L1 masterCopy on a L2 network and still has nonce 0, we prepend a call to the migration contract to the safeTx.
+  const txData = safeTx.data.data
+
+  let internalTxs: MetaTransactionData[]
+  let firstTx: MetaTransactionData
+  if (isMultiSendCalldata(txData)) {
+    // Check if the first tx is already a call to the migration contract
+    internalTxs = decodeMultiSendData(txData)
+  } else {
+    internalTxs = [{ to: safeTx.data.to, operation: safeTx.data.operation, value: safeTx.data.value, data: txData }]
+  }
+
+  if (sameAddress(internalTxs[0]?.to, SAFE_TO_L2_MIGRATION_ADDRESS)) {
+    // We already migrate. Nothing to do.
+    return Promise.resolve(safeTx)
+  }
+
+  // Prepend the migration tx
+  const newTxs: MetaTransactionData[] = [
+    {
+      operation: 1, // DELEGATE CALL REQUIRED
+      data: SAFE_TO_L2_INTERFACE.encodeFunctionData('migrateToL2', [safeL2DeploymentAddress]),
+      to: SAFE_TO_L2_MIGRATION_ADDRESS,
+      value: '0',
+    },
+    ...internalTxs,
+  ]
+
+  return __unsafe_createMultiSendTx(newTxs)
+}
+
+export const extractMigrationL2MasterCopyAddress = (
+  decodedData: DecodedDataResponse | undefined,
+): string | undefined => {
+  if (decodedData?.method === 'multiSend' && Array.isArray(decodedData.parameters[0].valueDecoded)) {
+    const innerTxs = decodedData.parameters[0].valueDecoded
+    const firstInnerTx = innerTxs[0]
+    if (firstInnerTx) {
+      return firstInnerTx.dataDecoded?.method === 'migrateToL2' &&
+        firstInnerTx.dataDecoded.parameters.length === 1 &&
+        firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address'
+        ? firstInnerTx.dataDecoded.parameters?.[0].value.toString()
+        : undefined
+    }
+  }
+
+  return undefined
+}
+
+export const getSafeTransaction = async (safeTxHash: string, chainId: string, safeAddress: string) => {
+  const txId = `multisig_${safeAddress}_${safeTxHash}`
+
+  try {
+    return await getTransactionDetails(chainId, txId)
+  } catch (e) {
+    return undefined
+  }
 }

@@ -1,4 +1,5 @@
-import { isSmartContractWallet } from '@/utils/wallets'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { isHardwareWallet, isSmartContractWallet } from '@/utils/wallets'
 import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
 import {
   type ChainInfo,
@@ -7,6 +8,7 @@ import {
   type TransactionDetails,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type {
+  SafeSignature,
   SafeTransaction,
   Transaction,
   TransactionOptions,
@@ -19,7 +21,7 @@ import type { ContractTransactionResponse, Eip1193Provider, Overrides, Transacti
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
-import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
+import { waitForRelayedTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import {
   getAndValidateSafeSDK,
@@ -29,7 +31,7 @@ import {
   prepareTxExecution,
   prepareApproveTxHash,
 } from './sdk'
-import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { createWeb3, getUserNonce } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import chains from '@/config/chains'
 import { createExistingTx } from './create'
@@ -106,6 +108,23 @@ export const dispatchTxSigning = async (
   txDispatch(TxEvent.SIGNED, { txId })
 
   return signedTx
+}
+
+// We have to manually sign because sdk.signTransaction doesn't support delegates
+export const dispatchDelegateTxSigning = async (safeTx: SafeTransaction, wallet: ConnectedWallet) => {
+  const sdk = await getSafeSDKWithSigner(wallet.provider)
+
+  let signature: SafeSignature
+  if (isHardwareWallet(wallet)) {
+    const txHash = await sdk.getTransactionHash(safeTx)
+    signature = await sdk.signHash(txHash)
+  } else {
+    signature = await sdk.signTypedData(safeTx)
+  }
+
+  safeTx.addSignature(signature)
+
+  return safeTx
 }
 
 const ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT = 4_500_000
@@ -196,13 +215,6 @@ export const dispatchSafeTxSpeedUp = async (
     txType: 'SafeTx',
   })
 
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
-
   return result.hash
 }
 
@@ -238,13 +250,6 @@ export const dispatchCustomTxSpeedUp = async (
     groupKey: result?.hash,
     txType: 'Custom',
   })
-
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
 
   return result.hash
 }
@@ -299,14 +304,6 @@ export const dispatchTxExecution = async (
     txType: 'SafeTx',
   })
 
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  // Asynchronously watch the tx to be mined/validated
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
-
   return result.hash
 }
 
@@ -357,13 +354,6 @@ export const dispatchBatchExecution = async (
       to: txTo,
     })
   })
-
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, txIds, result.hash, safeAddress, signerAddress, signerNonce)
-  }
 
   return result!.hash
 }

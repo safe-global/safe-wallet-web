@@ -62,7 +62,7 @@ export const Value = ({ type, value, ...props }: ValueArrayProps): ReactElement 
 }
 
 const getTextValue = (value: string, key?: string) => {
-  return <HexEncodedData limit={60} hexData={value} key={key} />
+  return <HexEncodedData highlightFirstBytes={false} limit={60} hexData={value} key={key} />
 }
 
 const getArrayValue = (parentId: string, value: string[], separator?: boolean) => (

@@ -12,7 +12,7 @@ type MethodDetailsProps = {
   }
 }
 
-export const MethodDetails = ({ data, addressInfoIndex }: MethodDetailsProps): ReactElement | null => {
+export const MethodDetails = ({ data, addressInfoIndex }: MethodDetailsProps): ReactElement => {
   if (!data.parameters?.length) {
     return <Typography color="text.secondary">No parameters</Typography>
   }

@@ -25,6 +25,17 @@ export const createMultiSendCallOnlyTx = async (txParams: MetaTransactionData[])
   return safeSDK.createTransaction({ transactions: txParams, onlyCalls: true })
 }
 
+/**
+ * Create a multiSend transaction from an array of MetaTransactionData and options
+ * If only one tx is passed it will be created without multiSend and without onlyCalls.
+ *
+ * This function can create delegateCalls, which is usually not necessary
+ */
+export const __unsafe_createMultiSendTx = async (txParams: MetaTransactionData[]): Promise<SafeTransaction> => {
+  const safeSDK = getAndValidateSafeSDK()
+  return safeSDK.createTransaction({ transactions: txParams, onlyCalls: false })
+}
+
 export const createRemoveOwnerTx = async (txParams: RemoveOwnerTxParams): Promise<SafeTransaction> => {
   const safeSDK = getAndValidateSafeSDK()
   return safeSDK.createRemoveOwnerTx(txParams)
@@ -66,6 +77,7 @@ export const createSwapOwnerTx = async (
   const safeVersion = await safeSDK.getContractVersion()
 
   const contract = await getReadOnlyGnosisSafeContract(chain, safeVersion)
+  // @ts-ignore SwapOwnerTxParams is a union type and the method expects a specific one
   const data = contract.encode('swapOwner', [SENTINEL_ADDRESS, txParams.oldOwnerAddress, txParams.newOwnerAddress])
 
   const tx = {

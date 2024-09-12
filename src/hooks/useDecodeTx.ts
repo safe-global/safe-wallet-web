@@ -23,13 +23,17 @@ const useDecodeTx = (
 
   const [data, error, loading] = useAsync<
     DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined
-  >(() => {
-    if (!encodedData || isEmptyData) {
-      const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
-      return Promise.resolve(nativeTransfer)
-    }
-    return getConfirmationView(chainId, safeAddress, encodedData, tx.data.to)
-  }, [chainId, encodedData, isEmptyData, tx?.data, isRejection, safeAddress])
+  >(
+    () => {
+      if (!encodedData || isEmptyData) {
+        const nativeTransfer = isEmptyData && !isRejection ? getNativeTransferData(tx?.data) : undefined
+        return Promise.resolve(nativeTransfer)
+      }
+      return getConfirmationView(chainId, safeAddress, encodedData, tx.data.to)
+    },
+    [chainId, encodedData, isEmptyData, tx?.data, isRejection, safeAddress],
+    false,
+  )
 
   return [data, error, loading]
 }

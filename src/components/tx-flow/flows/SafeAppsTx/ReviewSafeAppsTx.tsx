@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { useContext, useEffect, useMemo } from 'react'
 import type { ReactElement } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -55,7 +54,6 @@ const ReviewSafeAppsTx = ({
 
     let safeTxHash = ''
     try {
-      await assertWalletChain(onboard, safe.chainId)
       safeTxHash = await dispatchSafeAppsTx(safeTx, requestId, wallet.provider, txId)
     } catch (error) {
       setSafeTxError(asError(error))
