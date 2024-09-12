@@ -16,7 +16,7 @@ import {
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonce'
-import useAsync from '@/hooks/useAsync'
+import useAsync, { AsyncResult } from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -32,6 +32,21 @@ type TxActions = {
     isRelayed?: boolean,
   ) => Promise<string>
   proposeTx: (safeTx: SafeTransaction, txId?: string, origin?: string) => Promise<TransactionDetails>
+}
+
+type txDetails = AsyncResult<TransactionDetails>
+
+export const useTxDetails = (safeTx?: SafeTransaction, txId?: string, origin?: string): txDetails => {
+  const { proposeTx } = useTxActions()
+
+  return useAsync(
+    () => {
+      if (!safeTx) return
+      return proposeTx(safeTx, txId, origin)
+    },
+    [safeTx, txId, origin],
+    false,
+  )
 }
 
 export const useTxActions = (): TxActions => {

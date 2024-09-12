@@ -1,26 +1,21 @@
 import { useContext } from 'react'
-import useAsync from '@/hooks/useAsync'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import SignOrExecuteForm, { type SignOrExecuteProps } from './SignOrExecuteForm'
+import SignOrExecuteForm, { useSafeTxError, type SignOrExecuteProps } from './SignOrExecuteForm'
 import SignOrExecuteSkeleton from './SignOrExecuteSkeleton'
-import { useTxActions } from './hooks'
+import { useTxDetails } from './hooks'
+import useChainId from '@/hooks/useChainId'
 
 const useSafeTx = () => useContext(SafeTxContext)
 
-type SignOrExecuteExtendedProps = Omit<SignOrExecuteProps, 'txId'> & { txId?: string }
+type SignOrExecuteExtendedProps = Omit<SignOrExecuteProps, 'txId'> & {
+  txId?: string
+  chainId: ReturnType<typeof useChainId>
+  safeTxError: ReturnType<typeof useSafeTxError>
+}
 
-const SignOrExecute = (props: SignOrExecuteExtendedProps) => {
-  const { proposeTx } = useTxActions()
+export const SignOrExecute = (props: SignOrExecuteExtendedProps) => {
   const { safeTx } = useSafeTx()
-
-  const [txDetails, isLoading] = useAsync(
-    () => {
-      if (!safeTx) return
-      return proposeTx(safeTx, props.txId, props.origin)
-    },
-    [safeTx, props.txId, props.origin],
-    false,
-  )
+  const [txDetails, _error, isLoading] = useTxDetails(safeTx, props.txId, props.origin)
 
   return isLoading || !txDetails ? (
     <SignOrExecuteSkeleton />
