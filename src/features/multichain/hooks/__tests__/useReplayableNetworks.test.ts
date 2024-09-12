@@ -38,12 +38,12 @@ describe('useReplayableNetworks', () => {
       ],
     })
   })
-  it('should return empty list without any creation data', () => {
+  it('should return undefined without any creation data', () => {
     const { result } = renderHook(() => useReplayableNetworks(undefined))
-    expect(result.current).toHaveLength(0)
+    expect(result.current).toBeUndefined()
   })
 
-  it('should return empty list for incomplete creation data', () => {
+  it('should return undefined for incomplete creation data', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -73,7 +73,7 @@ describe('useReplayableNetworks', () => {
       setupData,
     }
     const { result } = renderHook(() => useReplayableNetworks(creationData))
-    expect(result.current).toHaveLength(0)
+    expect(result.current).toBeUndefined()
   })
 
   it('should return empty list for unknown masterCopies', () => {
@@ -174,7 +174,7 @@ describe('useReplayableNetworks', () => {
       }
       const { result } = renderHook(() => useReplayableNetworks(creationData))
       expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
+      expect(result.current?.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
     }
 
     {
@@ -186,7 +186,7 @@ describe('useReplayableNetworks', () => {
       }
       const { result } = renderHook(() => useReplayableNetworks(creationData))
       expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
+      expect(result.current?.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
     }
   })
 
@@ -223,7 +223,7 @@ describe('useReplayableNetworks', () => {
       }
       const { result } = renderHook(() => useReplayableNetworks(creationData))
       expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
+      expect(result.current?.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
     }
 
     // 1.3.0, L2 and canonical
@@ -236,7 +236,7 @@ describe('useReplayableNetworks', () => {
       }
       const { result } = renderHook(() => useReplayableNetworks(creationData))
       expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
+      expect(result.current?.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
     }
 
     // 1.3.0, L1 and EIP155 is not available on Worldchain
@@ -249,7 +249,7 @@ describe('useReplayableNetworks', () => {
       }
       const { result } = renderHook(() => useReplayableNetworks(creationData))
       expect(result.current).toHaveLength(3)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100'])
+      expect(result.current?.map((chain) => chain.chainId)).toEqual(['1', '10', '100'])
     }
 
     // 1.3.0, L2 and EIP155
@@ -262,11 +262,11 @@ describe('useReplayableNetworks', () => {
       }
       const { result } = renderHook(() => useReplayableNetworks(creationData))
       expect(result.current).toHaveLength(3)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100'])
+      expect(result.current?.map((chain) => chain.chainId)).toEqual(['1', '10', '100'])
     }
   })
 
-  it('should return correct chains for 1.1.1 Safes', () => {
+  it('should return empty list for 1.1.1 Safes', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -296,7 +296,6 @@ describe('useReplayableNetworks', () => {
       setupData,
     }
     const { result } = renderHook(() => useReplayableNetworks(creationData))
-    expect(result.current).toHaveLength(2)
-    expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '100'])
+    expect(result.current).toHaveLength(0)
   })
 })
