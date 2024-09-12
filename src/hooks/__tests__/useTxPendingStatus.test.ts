@@ -1,11 +1,8 @@
-import { txDispatch, TxEvent } from '@/services/tx/txEvents'
-import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
-import { faker } from '@faker-js/faker'
-import type { JsonRpcProvider } from 'ethers'
 import * as useChainIdHook from '@/hooks/useChainId'
 import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import useTxPendingStatuses, { useTxMonitor } from '@/hooks/useTxPendingStatuses'
 import * as web3 from '@/hooks/wallets/web3'
+import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import * as txMonitor from '@/services/tx/txMonitor'
 import {
   clearPendingTx,
@@ -14,7 +11,11 @@ import {
   PendingTxType,
   setPendingTx,
 } from '@/store/pendingTxsSlice'
+import { pendingTxBuilder } from '@/tests/builders/pendingTx'
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { renderHook } from '@/tests/test-utils'
+import { faker } from '@faker-js/faker'
+import type { JsonRpcProvider } from 'ethers'
 
 describe('useTxMonitor', () => {
   let mockProvider
@@ -53,17 +54,7 @@ describe('useTxMonitor', () => {
     const mockWaitForRelayedTx = jest.spyOn(txMonitor, 'waitForRelayedTx')
 
     const pendingTx: PendingTxsState = {
-      '123': {
-        nonce: 1,
-        chainId: '11155111',
-        safeAddress: faker.finance.ethereumAddress(),
-        status: PendingStatus.PROCESSING,
-        txHash: '0x456',
-        submittedAt: Date.now(),
-        signerNonce: 1,
-        signerAddress: faker.finance.ethereumAddress(),
-        txType: PendingTxType.SAFE_TX,
-      },
+      '123': pendingTxBuilder().with({ chainId: '11155111', status: PendingStatus.PROCESSING }).build(),
     }
 
     renderHook(() => useTxMonitor(), { initialReduxState: { pendingTxs: pendingTx } })
@@ -77,13 +68,7 @@ describe('useTxMonitor', () => {
     const mockWaitForRelayedTx = jest.spyOn(txMonitor, 'waitForRelayedTx')
 
     const pendingTx: PendingTxsState = {
-      '123': {
-        nonce: 1,
-        chainId: '11155111',
-        safeAddress: faker.finance.ethereumAddress(),
-        status: PendingStatus.RELAYING,
-        taskId: '0x456',
-      },
+      '123': pendingTxBuilder().with({ chainId: '11155111', status: PendingStatus.RELAYING }).build(),
     }
 
     renderHook(() => useTxMonitor(), { initialReduxState: { pendingTxs: pendingTx } })
@@ -96,17 +81,7 @@ describe('useTxMonitor', () => {
     const mockWaitForTx = jest.spyOn(txMonitor, 'waitForTx')
 
     const pendingTxs: PendingTxsState = {
-      '123': {
-        nonce: 1,
-        chainId: '11155111',
-        safeAddress: faker.finance.ethereumAddress(),
-        status: PendingStatus.PROCESSING,
-        txHash: '0x456',
-        submittedAt: Date.now(),
-        signerNonce: 1,
-        signerAddress: faker.finance.ethereumAddress(),
-        txType: PendingTxType.SAFE_TX,
-      },
+      '123': pendingTxBuilder().with({ chainId: '11155111', status: PendingStatus.PROCESSING }).build(),
     }
 
     const { rerender } = renderHook(() => useTxMonitor(), { initialReduxState: { pendingTxs } })
