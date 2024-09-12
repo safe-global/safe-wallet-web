@@ -43,9 +43,9 @@ export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareI
             : false,
         )
 
-        const txId = result.transaction.id
-
         if (!pendingTxByNonce) continue
+
+        const txId = result.transaction.id
 
         const [pendingTxId, pendingTx] = pendingTxByNonce
 

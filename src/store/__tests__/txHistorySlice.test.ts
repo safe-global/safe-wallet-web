@@ -84,13 +84,6 @@ describe('txHistorySlice', () => {
         dispatch: jest.fn(),
       }
 
-      const transaction = {
-        type: TransactionListItemType.TRANSACTION,
-        transaction: {
-          id: '0x123',
-        },
-      } as TransactionListItem
-
       const action = txHistorySlice.actions.set({
         loading: false,
         data: undefined, // Cleared
@@ -181,6 +174,50 @@ describe('txHistorySlice', () => {
       listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
 
       expect(txDispatchSpy).not.toHaveBeenCalled()
+    })
+
+    it('should clear a replaced pending transaction', () => {
+      const state = {
+        pendingTxs: {
+          '0x123': {
+            nonce: 1,
+            chainId: '5',
+            safeAddress: '0x0000000000000000000000000000000000000000',
+            status: PendingStatus.INDEXING,
+            groupKey: '',
+          },
+        } as PendingTxsState,
+      } as RootState
+
+      const listenerApi = {
+        getState: jest.fn(() => state),
+        dispatch: jest.fn(),
+      }
+
+      const transaction = {
+        type: TransactionListItemType.TRANSACTION,
+        transaction: {
+          id: '0x456',
+          executionInfo: {
+            nonce: 1,
+            type: 'MULTISIG',
+          },
+        },
+      } as TransactionListItem
+
+      const action = txHistorySlice.actions.set({
+        loading: false,
+        data: {
+          results: [transaction],
+        },
+      })
+
+      listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+      expect(listenerApi.dispatch).toHaveBeenCalledWith({
+        payload: expect.anything(),
+        type: 'pendingTxs/clearPendingTx',
+      })
     })
   })
 })
