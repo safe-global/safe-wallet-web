@@ -43,6 +43,8 @@ import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
+import { isChangingSignerSetup } from '@/features/multichain/helpers/utils'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
@@ -118,6 +120,7 @@ export const SignOrExecuteForm = ({
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
   const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
+  const isChangingSigners = isChangingSignerSetup(decodedData)
   const isMultiChainMigration = isMigrateToL2MultiSend(decodedData)
   const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(decodedData)
 
@@ -204,6 +207,8 @@ export const SignOrExecuteForm = ({
         )}
 
         <NetworkWarning />
+
+        {isChangingSigners && <ChangeSignerSetupWarning />}
 
         {!isMultiChainMigration && <UnknownContractError />}
 
