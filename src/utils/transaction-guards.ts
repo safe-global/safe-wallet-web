@@ -36,6 +36,8 @@ import type {
   AnyStakingConfirmationView,
   StakingTxExitInfo,
   StakingTxDepositInfo,
+  StakingTxWithdrawInfo,
+  NativeStakingWithdrawConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -129,8 +131,11 @@ export const isStakingTxDepositInfo = (value: TransactionInfo): value is Staking
 }
 
 export const isStakingTxExitInfo = (value: TransactionInfo): value is StakingTxExitInfo => {
-  console.log('is staking tx exit info', value, TransactionInfoType.NATIVE_STAKING_VALIDATORS_EXIT)
   return value.type === TransactionInfoType.NATIVE_STAKING_VALIDATORS_EXIT
+}
+
+export const isStakingTxWithdrawInfo = (value: TransactionInfo): value is StakingTxWithdrawInfo => {
+  return value.type === TransactionInfoType.NATIVE_STAKING_WITHDRAW
 }
 
 export const isTwapConfirmationViewOrder = (
@@ -177,10 +182,23 @@ export const isStakingExitConfirmationView = (
   return false
 }
 
+export const isStakingWithdrawConfirmationView = (
+  decodedData: AnyConfirmationView | undefined,
+): decodedData is NativeStakingWithdrawConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_WITHDRAW
+  }
+  return false
+}
+
 export const isAnyStakingConfirmationView = (
   decodedData: AnyConfirmationView | undefined,
 ): decodedData is AnyStakingConfirmationView => {
-  return isStakingDepositConfirmationView(decodedData) || isStakingExitConfirmationView(decodedData)
+  return (
+    isStakingDepositConfirmationView(decodedData) ||
+    isStakingExitConfirmationView(decodedData) ||
+    isStakingWithdrawConfirmationView(decodedData)
+  )
 }
 
 export const isGenericConfirmation = (
