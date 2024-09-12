@@ -1,6 +1,6 @@
 import { Paper, Typography, Box, Divider, SvgIcon } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import type { NarrowConfirmationViewProps } from './types'
+import type { NarrowConfirmationViewProps } from '../types'
 import { OwnerList } from '@/components/tx-flow/common/OwnerList'
 import MinusIcon from '@/public/images/common/minus.svg'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -11,9 +11,9 @@ export interface SettingsChangeProps extends NarrowConfirmationViewProps {
   txInfo: SettingsChange
 }
 
-const SettingsChange: React.FC<SettingsChangeProps> = (props) => {
+const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo }) => {
   const { safe } = useSafeInfo()
-  const params = props.txInfo.settingsInfo
+  const params = txInfo.settingsInfo
 
   if (!params) return null
 
