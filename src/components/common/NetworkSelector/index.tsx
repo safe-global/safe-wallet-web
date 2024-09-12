@@ -284,33 +284,6 @@ const NetworkSelector = ({
   )
   const [safeOverviews] = useSafeOverviews(multiChainSafes)
 
-  // const getNetworkLink = useCallback(
-  //   (shortName: string) => {
-  //     const query = (
-  //       isSafeOpened
-  //         ? {
-  //             safe: `${shortName}:${safeAddress}`,
-  //           }
-  //         : { chain: shortName }
-  //     ) as {
-  //       safe?: string
-  //       chain?: string
-  //       safeViewRedirectURL?: string
-  //     }
-  //     const route = {
-  //       pathname: router.pathname,
-  //       query,
-  //     }
-
-  //     if (router.query?.safeViewRedirectURL) {
-  //       route.query.safeViewRedirectURL = router.query?.safeViewRedirectURL.toString()
-  //     }
-
-  //     return route
-  //   },
-  //   [isSafeOpened, router.pathname, router.query?.safeViewRedirectURL, safeAddress],
-  // )
-
   const onChange = (event: SelectChangeEvent) => {
     event.preventDefault() // Prevent the link click
 
@@ -336,7 +309,6 @@ const NetworkSelector = ({
         <DeployedNetworkMenuItem
           chainConfigs={configs}
           chainId={value}
-          // getNetworkLink={getNetworkLink}
           onClick={onChainSelect}
           safeOverviews={safeOverviews}
           isSelected
