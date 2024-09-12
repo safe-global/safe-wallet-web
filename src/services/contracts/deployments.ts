@@ -3,6 +3,7 @@ import {
   getSafeSingletonDeployment,
   getSafeL2SingletonDeployment,
   getMultiSendCallOnlyDeployment,
+  getMultiSendDeployment,
   getFallbackHandlerDeployment,
   getProxyFactoryDeployment,
   getSignMessageLibDeployment,
@@ -66,6 +67,10 @@ export const getSafeContractDeployment = (
 
 export const getMultiSendCallOnlyContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
   return _tryDeploymentVersions(getMultiSendCallOnlyDeployment, chain, safeVersion)
+}
+
+export const getMultiSendContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
+  return _tryDeploymentVersions(getMultiSendDeployment, chain, safeVersion)
 }
 
 export const getFallbackHandlerContractDeployment = (chain: ChainInfo, safeVersion: SafeInfo['version']) => {

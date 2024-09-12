@@ -18,10 +18,11 @@ export const SidebarList = ({ children, ...rest }: Omit<ListProps, 'className'>)
 export const SidebarListItemButton = ({
   href,
   children,
+  disabled,
   ...rest
 }: Omit<ListItemButtonProps, 'sx'> & { href?: LinkProps['href'] }): ReactElement => {
   const button = (
-    <ListItemButton className={css.listItemButton} {...rest}>
+    <ListItemButton className={css.listItemButton} {...rest} sx={disabled ? { pointerEvents: 'none' } : undefined}>
       {children}
     </ListItemButton>
   )

@@ -23,6 +23,10 @@ export const isValidMasterCopy = (implementationVersionState: SafeInfo['implemen
   return implementationVersionState !== ImplementationVersionState.UNKNOWN
 }
 
+export const isMigrationToL2Possible = (safe: SafeInfo): boolean => {
+  return safe.nonce === 0
+}
+
 export const _getValidatedGetContractProps = (
   safeVersion: SafeInfo['version'],
 ): Pick<GetContractProps, 'safeVersion'> => {

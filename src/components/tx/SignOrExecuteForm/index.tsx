@@ -6,7 +6,6 @@ import { type ReactElement, type ReactNode, useState, useContext, useCallback } 
 import madProps from '@/utils/mad-props'
 import DecodedTx from '../DecodedTx'
 import ExecuteCheckbox from '../ExecuteCheckbox'
-import { WrongChainWarning } from '../WrongChainWarning'
 import { useImmediatelyExecutable, useValidateNonce } from './hooks'
 import ExecuteForm from './ExecuteForm'
 import SignForm from './SignForm'
@@ -17,9 +16,7 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
 import { useAppSelector } from '@/store'
 import { selectSettings } from '@/store/settingsSlice'
-import { RedefineBalanceChanges } from '../security/redefine/RedefineBalanceChange'
 import UnknownContractError from './UnknownContractError'
-import RiskConfirmationError from './RiskConfirmationError'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import { ErrorBoundary } from '@sentry/react'
 import ApprovalEditor from '../ApprovalEditor'
@@ -30,19 +27,25 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isConfirmationViewOrder, isCustomTxInfo } from '@/utils/transaction-guards'
+import { isConfirmationViewOrder, isCustomTxInfo, isMigrateToL2MultiSend } from '@/utils/transaction-guards'
 import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
+import { Blockaid } from '../security/blockaid'
+
 import TxData from '@/components/transactions/TxDetails/TxData'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
+import { MigrateToL2Information } from './MigrateToL2Information'
+import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
 import { isChangingSignerSetup } from '@/features/multichain/helpers/utils'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -96,6 +99,7 @@ export const SignOrExecuteForm = ({
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
   const [decodedData] = useDecodeTx(safeTx)
+
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
   const isSwapOrder = isConfirmationViewOrder(decodedData)
   const { data: txDetails } = useGetTransactionDetailsQuery(
@@ -117,6 +121,8 @@ export const SignOrExecuteForm = ({
   const isCounterfactualSafe = !safe.deployed
   const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
   const isChangingSigners = isChangingSignerSetup(decodedData)
+  const isMultiChainMigration = isMigrateToL2MultiSend(decodedData)
+  const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(decodedData)
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
   const roles = useRoles(
@@ -156,13 +162,15 @@ export const SignOrExecuteForm = ({
 
         {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
 
+        {isMultiChainMigration && <MigrateToL2Information variant="queue" newMasterCopy={multiChainMigrationTarget} />}
+
         {isSwapOrder && (
           <ErrorBoundary fallback={<></>}>
             <SwapOrderConfirmationView order={decodedData} settlementContract={safeTx?.data.to ?? ''} />
           </ErrorBoundary>
         )}
 
-        {!props.isRejection && (
+        {!props.isRejection && decodedData && (
           <ErrorBoundary fallback={<div>Error parsing data</div>}>
             {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
 
@@ -177,8 +185,7 @@ export const SignOrExecuteForm = ({
             />
           </ErrorBoundary>
         )}
-
-        {!isCounterfactualSafe && !props.isRejection && <RedefineBalanceChanges />}
+        {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
@@ -199,13 +206,13 @@ export const SignOrExecuteForm = ({
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
 
-        <WrongChainWarning />
+        <NetworkWarning />
 
         {isChangingSigners && <ChangeSignerSetupWarning />}
 
-        <UnknownContractError />
+        {!isMultiChainMigration && <UnknownContractError />}
 
-        <RiskConfirmationError />
+        <Blockaid />
 
         {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
