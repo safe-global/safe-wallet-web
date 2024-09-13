@@ -4,7 +4,7 @@ import AppFrame from '@/components/safe-apps/AppFrame'
 import { getEmptySafeApp } from '@/components/safe-apps/utils'
 
 const widgetAppData = {
-  url: 'https://safe.widget.testnet.kiln.fi/earn',
+  url: 'https://safe.widget.kiln.fi/earn',
   name: 'Stake',
   iconUrl: '/images/common/stake.svg',
   chainIds: ['17000', '11155111', '1', '42161', '137', '56', '8453', '10'],
