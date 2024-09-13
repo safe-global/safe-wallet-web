@@ -30,8 +30,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
-import { skipToken } from '@reduxjs/toolkit/query/react'
+import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import ConfirmationView from '../confirmation-views'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
