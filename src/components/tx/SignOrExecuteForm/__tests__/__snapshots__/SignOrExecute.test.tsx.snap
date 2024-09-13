@@ -54,7 +54,6 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
             class="MuiStack-root css-irtfmw-MuiStack-root"
           >
             <span
-              aria-label="Cannot batch this type of transaction"
               class=""
               data-mui-internal-clone-element="true"
             >
@@ -62,9 +61,8 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
                 data-track="batching: Add to batch"
               >
                 <button
-                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-fj99we-MuiButtonBase-root-MuiButton-root"
-                  disabled=""
-                  tabindex="-1"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-fj99we-MuiButtonBase-root-MuiButton-root"
+                  tabindex="0"
                   type="button"
                 >
                   <mock-icon
@@ -73,6 +71,9 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
                     focusable="false"
                   />
                   Add to batch
+                  <span
+                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                  />
                 </button>
               </span>
             </span>

@@ -38,15 +38,8 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
 
   const text = canSign ? (canExecute ? SIGN_EXECUTE_TEXT : SIGN_TEXT) : EXECUTE_TEXT
 
-  // TODO: This component had showMethodCall, so we need to show the methodCall in the confirmationView
   return (
-    <SignOrExecuteForm
-      chainId={safe.chainId}
-      safeTxError={safeTxError}
-      txId={txId}
-      isExecutable={canExecute}
-      onlyExecute={!canSign}
-    >
+    <SignOrExecuteForm txId={txId} isExecutable={canExecute} onlyExecute={!canSign}>
       <Typography mb={1}>{text}</Typography>
     </SignOrExecuteForm>
   )

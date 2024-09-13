@@ -37,7 +37,7 @@ import ConfirmationView from '../confirmation-views'
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
 export type SignOrExecuteProps = {
-  txId: string
+  txId?: string
   onSubmit?: SubmitCallback
   children?: ReactNode
   isExecutable?: boolean
@@ -87,7 +87,7 @@ export const SignOrExecuteForm = ({
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
   const { data: txDetails } = useGetTransactionDetailsQuery(
-    chainId
+    chainId && props.txId
       ? {
           chainId,
           txId: props.txId,

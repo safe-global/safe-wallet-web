@@ -41,7 +41,7 @@ export const useTxDetails = (safeTx?: SafeTransaction, txId?: string, origin?: s
 
   return useAsync(
     () => {
-      if (!safeTx) return
+      if (!safeTx || txId) return
       return proposeTx(safeTx, txId, origin)
     },
     [safeTx, txId, origin],
