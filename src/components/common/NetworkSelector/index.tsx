@@ -20,11 +20,11 @@ import {
 import partition from 'lodash/partition'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import useChains from '@/hooks/useChains'
+import type { NextRouter } from 'next/router'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
-import { type ReactElement, useMemo, useState } from 'react'
-import { useCallback } from 'react'
+import { type ReactElement, useCallback, useMemo, useState } from 'react'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
 import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
@@ -38,6 +38,32 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
+import { AppRoutes } from '@/config/routes'
+import useWallet from '@/hooks/wallets/useWallet'
+
+export const getNetworkLink = (router: NextRouter, networkShortName: string, isWalletConnected: boolean) => {
+  const shouldKeepPath = !router.query.safe
+
+  const route = {
+    pathname: shouldKeepPath
+      ? router.pathname
+      : isWalletConnected
+      ? AppRoutes.welcome.accounts
+      : AppRoutes.welcome.index,
+    query: {
+      chain: networkShortName,
+    } as {
+      chain: string
+      safeViewRedirectURL?: string
+    },
+  }
+
+  if (router.query?.safeViewRedirectURL) {
+    route.query.safeViewRedirectURL = router.query?.safeViewRedirectURL.toString()
+  }
+
+  return route
+}
 
 const UndeployedNetworkMenuItem = ({
   chainId,
@@ -195,6 +221,7 @@ const NetworkSelector = ({
   const router = useRouter()
   const safeAddress = useSafeAddress()
   const chains = useAppSelector(selectChains)
+  const isWalletConnected = !!useWallet()
 
   const isSafeOpened = safeAddress !== ''
 
@@ -227,33 +254,6 @@ const NetworkSelector = ({
   )
   const [safeOverviews] = useSafeOverviews(multiChainSafes)
 
-  const getNetworkLink = useCallback(
-    (shortName: string) => {
-      const query = (
-        isSafeOpened
-          ? {
-              safe: `${shortName}:${safeAddress}`,
-            }
-          : { chain: shortName }
-      ) as {
-        safe?: string
-        chain?: string
-        safeViewRedirectURL?: string
-      }
-      const route = {
-        pathname: router.pathname,
-        query,
-      }
-
-      if (router.query?.safeViewRedirectURL) {
-        route.query.safeViewRedirectURL = router.query?.safeViewRedirectURL.toString()
-      }
-
-      return route
-    },
-    [isSafeOpened, router.pathname, router.query?.safeViewRedirectURL, safeAddress],
-  )
-
   const onChange = (event: SelectChangeEvent) => {
     event.preventDefault() // Prevent the link click
 
@@ -262,7 +262,8 @@ const NetworkSelector = ({
 
     if (shortName) {
       trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: newChainId })
-      router.push(getNetworkLink(shortName))
+      const networkLink = getNetworkLink(router, shortName, isWalletConnected)
+      router.push(networkLink)
     }
   }
 
@@ -275,7 +276,11 @@ const NetworkSelector = ({
 
       return (
         <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
-          <Link href={getNetworkLink(chain.shortName)} onClick={onChainSelect} className={css.item}>
+          <Link
+            href={getNetworkLink(router, chain.shortName, isWalletConnected)}
+            onClick={onChainSelect}
+            className={css.item}
+          >
             <ChainIndicator
               responsive={isSelected}
               chainId={chain.chainId}
@@ -286,7 +291,7 @@ const NetworkSelector = ({
         </MenuItem>
       )
     },
-    [chains.data, getNetworkLink, onChainSelect, safeOverviews],
+    [chains.data, isWalletConnected, onChainSelect, router, safeOverviews],
   )
 
   return configs.length ? (

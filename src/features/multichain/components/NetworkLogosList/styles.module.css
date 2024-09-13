@@ -1,0 +1,12 @@
+.networks {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 12px;
+}
+
+.networks img {
+  margin-left: -12px;
+  background-color: var(--color-background-main);
+  padding: 1px;
+  border-radius: 12px;
+}
