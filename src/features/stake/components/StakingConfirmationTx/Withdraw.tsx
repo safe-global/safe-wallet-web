@@ -4,7 +4,6 @@ import type {
   NativeStakingWithdrawConfirmationView,
   StakingTxWithdrawInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 
 type StakingOrderConfirmationViewProps = {
@@ -12,10 +11,9 @@ type StakingOrderConfirmationViewProps = {
 }
 
 const StakingConfirmationTxWithdraw = ({ order }: StakingOrderConfirmationViewProps) => {
-  const isOrder = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_WITHDRAW
   return (
     <Stack gap={2}>
-      <FieldsGrid title={isOrder ? 'Receive' : 'Amount'}>
+      <FieldsGrid title="Receive">
         {' '}
         <TokenAmount
           value={order.rewards}
