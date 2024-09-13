@@ -2,10 +2,10 @@ import { safeTxBuilder } from '@/tests/builders/safeTx'
 import ConfirmationView from './index'
 import { render } from '@/tests/test-utils'
 import { createMockTransactionDetails } from '@/tests/transactions'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   DetailedExecutionInfoType,
   SettingsInfoType,
-  TransactionDetails,
   TransactionInfoType,
 } from '@safe-global/safe-gateway-typescript-sdk'
 

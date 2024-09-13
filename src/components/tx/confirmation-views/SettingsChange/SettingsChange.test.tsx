@@ -1,5 +1,6 @@
 import { render } from '@/tests/test-utils'
-import { SettingsInfoType, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import SettingsChange from './index'
 import { ownerAddress, txInfo } from './utils'
 

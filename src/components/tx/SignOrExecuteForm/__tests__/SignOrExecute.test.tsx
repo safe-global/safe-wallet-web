@@ -1,10 +1,10 @@
 import SignOrExecute from '../index'
-import { render, waitFor } from '@/tests/test-utils'
+import { render } from '@/tests/test-utils'
 import * as hooks from '../hooks'
-import { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SafeTxContextParams } from '@/components/tx-flow/SafeTxProvider'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { createSafeTx } from '@/tests/builders/safeTx'
-import { act } from 'react-dom/test-utils'
 
 let isSafeOwner = true
 // mock useIsSafeOwner
@@ -20,9 +20,7 @@ describe('SignOrExecute', () => {
   })
 
   it('should display a loading component', () => {
-    const { container } = render(
-      <SignOrExecute onSubmit={jest.fn()} safeTxError={undefined} isExecutable={true} chainId="1" />,
-    )
+    const { container } = render(<SignOrExecute onSubmit={jest.fn()} isExecutable={true} />)
 
     expect(container).toMatchSnapshot()
   })
@@ -32,9 +30,11 @@ describe('SignOrExecute', () => {
 
     const { container, getByTestId } = render(
       <SafeTxContext.Provider
-        value={{
-          safeTx: createSafeTx(),
-        }}
+        value={
+          {
+            safeTx: createSafeTx(),
+          } as SafeTxContextParams
+        }
       >
         <SignOrExecute onSubmit={jest.fn()} isExecutable={true} />
       </SafeTxContext.Provider>,

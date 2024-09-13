@@ -14,7 +14,7 @@ import HelpToolTip from './HelpTooltip'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
-  txDetails: TransactionDetails
+  txDetails?: TransactionDetails
   showMultisend?: boolean
   decodedData?: DecodedDataResponse
   showMethodCall?: boolean
@@ -43,22 +43,22 @@ const DecodedTx = ({
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
 
-  const addressInfoIndex = txDetails.txData?.addressInfoIndex
+  const addressInfoIndex = txDetails?.txData?.addressInfoIndex
 
   const txData = {
     dataDecoded: decodedData,
     to: { value: tx?.data.to || '' },
     value: tx?.data.value,
     operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
-    trustedDelegateCallTarget: txDetails.txData?.trustedDelegateCallTarget ?? true,
+    trustedDelegateCallTarget: txDetails?.txData?.trustedDelegateCallTarget ?? true,
     addressInfoIndex,
   }
 
   let toInfo = tx && {
     value: tx.data.to,
   }
-  if (txDetails && isCustomTxInfo(txDetails.txInfo)) {
-    toInfo = txDetails.txInfo.to
+  if (txDetails && isCustomTxInfo(txDetails?.txInfo)) {
+    toInfo = txDetails?.txInfo.to
   }
 
   const decodedDataBlock = <DecodedData txData={txData} toInfo={toInfo} />
@@ -71,7 +71,7 @@ const DecodedTx = ({
         </Box>
       )}
 
-      {isMultisend && showMultisend && <Multisend txData={txDetails.txData || txData} compact />}
+      {isMultisend && showMultisend && <Multisend txData={txDetails?.txData || txData} compact />}
 
       <Box>
         <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>

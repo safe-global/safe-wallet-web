@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import SettingsChange from './index'
 import { Paper } from '@mui/material'
-import { SettingsInfoType, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import { StoreDecorator } from '@/stories/storeDecorator'
 import { ownerAddress, txInfo } from './utils'
 

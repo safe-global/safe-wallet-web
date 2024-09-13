@@ -1,4 +1,5 @@
-import { SettingsInfoType,  TransactionInfoType, SettingsChange } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SettingsChange } from '@safe-global/safe-gateway-typescript-sdk'
+import { SettingsInfoType, TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const ownerAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
 export const txInfo: SettingsChange = {
@@ -28,4 +29,4 @@ export const txInfo: SettingsChange = {
     },
     threshold: 1,
   },
-} 
+}

@@ -16,7 +16,8 @@ import {
 } from '@/services/tx/tx-sender'
 import { useHasPendingTxs } from '@/hooks/usePendingTxs'
 import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonce'
-import useAsync, { AsyncResult } from '@/hooks/useAsync'
+import type { AsyncResult } from '@/hooks/useAsync'
+import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -209,11 +210,11 @@ export const useSafeTxGas = (safeTx: SafeTransaction | undefined): string | unde
     return !safeTx?.data?.to
       ? undefined
       : {
-        to: safeTx?.data.to,
-        value: safeTx?.data?.value,
-        data: safeTx?.data?.data,
-        operation: safeTx?.data?.operation,
-      }
+          to: safeTx?.data.to,
+          value: safeTx?.data?.value,
+          data: safeTx?.data?.data,
+          operation: safeTx?.data?.operation,
+        }
   }, [safeTx?.data.to, safeTx?.data.value, safeTx?.data.data, safeTx?.data.operation])
 
   const [safeTxGas] = useAsync(() => {

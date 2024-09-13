@@ -205,7 +205,6 @@ describe('DecodedTx', () => {
   it('should render a multisend transaction', async () => {
     const result = render(
       <DecodedTx
-        txDetails={txDetails}
         tx={
           {
             data: {
@@ -287,6 +286,7 @@ describe('DecodedTx', () => {
           ],
         }}
         showMethodCall
+        showMultisend
       />,
     )
 

@@ -5,9 +5,8 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
 import { ERC20__factory, ERC721__factory, Multi_send__factory } from '@/types/contracts'
 import EthSafeTransaction from '@safe-global/protocol-kit/dist/src/utils/transactions/SafeTransaction'
-import { DetailedExecutionInfoType, SettingsInfoType, TransactionDetails, TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransactionStatus } from '@safe-global/safe-apps-sdk'
-import { CreateTransactionDetailsArgs } from '@/types/contracts/common'
 
 export const getMockErc20TransferCalldata = (to: string) => {
   const erc20Interface = ERC20__factory.createInterface()
@@ -68,15 +67,21 @@ export const getMockMultiSendCalldata = (recipients: Array<string>): string => {
   return multiSendInterface.encodeFunctionData('multiSend', [concat(internalTransactions)])
 }
 
-
-
-export const createMockTransactionDetails = ({ txInfo, txData, detailedExecutionInfo }:CreateTransactionDetailsArgs ):TransactionDetails => ({
+export const createMockTransactionDetails = ({
+  txInfo,
+  txData,
+  detailedExecutionInfo,
+}: {
+  txInfo: TransactionDetails['txInfo']
+  txData: TransactionDetails['txData']
+  detailedExecutionInfo: TransactionDetails['detailedExecutionInfo']
+}): TransactionDetails => ({
   safeAddress: 'sep:0xE20CcFf2c38Ef3b64109361D7b7691ff2c7D5f67',
   txId: 'multisig_0xBd69b0a9DC90eB6F9bAc3E4a5875f437348b6415_0xcb83bc36cf4a2998e7fe222e36c458c59c3778f65b4e5bb361c29a73c2de62cc',
   txStatus: TransactionStatus.AWAITING_CONFIRMATIONS,
   txInfo,
   txData,
-  detailedExecutionInfo
+  detailedExecutionInfo,
 })
 
 // TODO: Replace with safeTxBuilder

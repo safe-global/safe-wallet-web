@@ -21,7 +21,7 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
   const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
   const chainId = useChainId()
-  const { setSafeTx, setSafeTxError, setNonce, safeTxError } = useContext(SafeTxContext)
+  const { setSafeTx, setSafeTxError, setNonce } = useContext(SafeTxContext)
 
   const txId = txSummary.id
   const txNonce = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo.nonce : undefined

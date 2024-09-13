@@ -3,10 +3,12 @@ import * as web3 from '@/hooks/wallets/web3'
 import * as useSafeInfo from '@/hooks/useSafeInfo'
 import { render, screen } from '@/tests/test-utils'
 import * as execThroughRoleHooks from '@/components/tx/SignOrExecuteForm/ExecuteThroughRoleForm/hooks'
-import { SafeAppAccessPolicyTypes, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import ReviewSignMessageOnChain from '@/components/tx-flow/flows/SignMessageOnChain/ReviewSignMessageOnChain'
 import { JsonRpcProvider, zeroPadValue } from 'ethers'
 import { act } from '@testing-library/react'
+import type { SafeTxContextParams } from '../../SafeTxProvider'
 import { SafeTxContext } from '../../SafeTxProvider'
 import { createSafeTx } from '@/tests/builders/safeTx'
 import * as hooks from '@/components/tx/SignOrExecuteForm/hooks'
@@ -34,7 +36,7 @@ describe('ReviewSignMessageOnChain', () => {
           value={
             {
               safeTx: createSafeTx(),
-            } as any
+            } as SafeTxContextParams
           }
         >
           <ReviewSignMessageOnChain

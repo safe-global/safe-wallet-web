@@ -1,5 +1,5 @@
 import { TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
-import { NarrowConfirmationViewProps } from './types'
+import type { NarrowConfirmationViewProps } from './types'
 import type { SettingsChange } from '@safe-global/safe-gateway-typescript-sdk'
 import SettingsChangeComponent from './SettingsChange'
 

@@ -58,7 +58,13 @@ describe('SignOrExecute', () => {
       jest.spyOn(hooks, 'useImmediatelyExecutable').mockReturnValue(true)
 
       const { getByText } = render(
-        <SignOrExecuteForm safeTx={safeTxBuilder().build()} onSubmit={jest.fn()} isExecutable={true} chainId="1" />,
+        <SignOrExecuteForm
+          safeTxError={undefined}
+          safeTx={safeTxBuilder().build()}
+          onSubmit={jest.fn()}
+          isExecutable={true}
+          chainId="1"
+        />,
       )
 
       expect(getByText('Would you like to execute the transaction immediately?')).toBeInTheDocument()
@@ -71,6 +77,7 @@ describe('SignOrExecute', () => {
 
       const { queryByTestId } = render(
         <SignOrExecuteForm
+          safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
           onlyExecute={true}
@@ -90,6 +97,7 @@ describe('SignOrExecute', () => {
 
       const { queryByTestId } = render(
         <SignOrExecuteForm
+          safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
           onlyExecute={true}
@@ -109,6 +117,7 @@ describe('SignOrExecute', () => {
 
       const { queryByTestId } = render(
         <SignOrExecuteForm
+          safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
           onlyExecute={true}
@@ -126,6 +135,7 @@ describe('SignOrExecute', () => {
 
       const { queryByTestId } = render(
         <SignOrExecuteForm
+          safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
           onlyExecute={true}
@@ -142,7 +152,13 @@ describe('SignOrExecute', () => {
     jest.spyOn(execThroughRoleHooks, 'useRoles').mockReturnValue([])
 
     const { queryByText } = render(
-      <SignOrExecuteForm safeTx={safeTxBuilder().build()} onSubmit={jest.fn()} onlyExecute={true} chainId="1" />,
+      <SignOrExecuteForm
+        safeTxError={undefined}
+        safeTx={safeTxBuilder().build()}
+        onSubmit={jest.fn()}
+        onlyExecute={true}
+        chainId="1"
+      />,
     )
     expect(queryByText('Would you like to execute the transaction immediately?')).not.toBeInTheDocument()
   })
@@ -152,6 +168,7 @@ describe('SignOrExecute', () => {
 
     const { getByTestId, getByText } = render(
       <SignOrExecuteForm
+        safeTxError={undefined}
         safeTx={safeTxBuilder().build()}
         onSubmit={jest.fn()}
         txId="someid"
@@ -178,7 +195,7 @@ describe('SignOrExecute', () => {
 
   it('should not display safeTxError message for valid transactions', () => {
     const { queryByText } = render(
-      <SignOrExecuteForm safeTx={safeTxBuilder().build()} onSubmit={jest.fn()} chainId="1" />,
+      <SignOrExecuteForm safeTxError={undefined} safeTx={safeTxBuilder().build()} onSubmit={jest.fn()} chainId="1" />,
     )
 
     expect(
