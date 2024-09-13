@@ -1,6 +1,6 @@
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Stack } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'

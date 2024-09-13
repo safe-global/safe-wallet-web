@@ -45,7 +45,7 @@ export const useTxDetails = (safeTx?: SafeTransaction, txId?: string, origin?: s
       if (!safeTx || txId) return
       return proposeTx(safeTx, txId, origin)
     },
-    [safeTx, txId, origin],
+    [safeTx, txId, origin, proposeTx],
     false,
   )
 }
