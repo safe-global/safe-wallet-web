@@ -16,7 +16,7 @@ type ConfirmationViewProps = {
 }
 
 const ConfirmationView = (props: ConfirmationViewProps) => {
-  const { txInfo } = props.txDetails
+  const { txInfo, txId } = props.txDetails
   const [decodedData] = useDecodeTx(props.safeTx)
 
   const ConfirmationViewComponent = useMemo(
@@ -27,7 +27,7 @@ const ConfirmationView = (props: ConfirmationViewProps) => {
       }),
     [props.txDetails, txInfo],
   )
-  const showTxDetails = props.txId && props.txDetails && !isCustomTxInfo(props.txDetails.txInfo)
+  const showTxDetails = txId && props.txDetails && !isCustomTxInfo(props.txDetails.txInfo)
 
   return (
     <>

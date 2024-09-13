@@ -78,6 +78,7 @@ export const SignOrExecuteForm = ({
   chainId: ReturnType<typeof useChainId>
   safeTx: ReturnType<typeof useSafeTx>
   safeTxError: ReturnType<typeof useSafeTxError>
+  txDetails?: TransactionDetails
 }): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
@@ -87,14 +88,6 @@ export const SignOrExecuteForm = ({
   const isCorrectNonce = useValidateNonce(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
-  const { data: txDetails } = useGetTransactionDetailsQuery(
-    chainId && props.txId
-      ? {
-          chainId,
-          txId: props.txId,
-        }
-      : skipToken,
-  )
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
@@ -146,8 +139,8 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        {txDetails && (
-          <ConfirmationView isApproval={isApproval} txId={props.txId} txDetails={txDetails} safeTx={safeTx} />
+        {props.txDetails && (
+          <ConfirmationView isApproval={isApproval} txId={props.txId} txDetails={props.txDetails} safeTx={safeTx} />
         )}
 
         {!isCounterfactualSafe && !props.isRejection && <RedefineBalanceChanges />}
