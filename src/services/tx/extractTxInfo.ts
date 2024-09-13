@@ -63,6 +63,7 @@ const extractTxInfo = (
         return txDetails.txData?.value ?? '0'
       case 'NativeStakingDeposit':
       case 'NativeStakingValidatorsExit':
+      case 'NativeStakingWithdraw':
         return txDetails.txData?.value ?? '0'
       case 'Custom':
         return txDetails.txInfo.value
@@ -92,6 +93,7 @@ const extractTxInfo = (
         return orderTo
       case 'NativeStakingDeposit':
       case 'NativeStakingValidatorsExit':
+      case 'NativeStakingWithdraw':
         const stakingTo = txDetails.txData?.to.value
         if (!stakingTo) {
           throw new Error('Staking tx data does not have a `to` field')
