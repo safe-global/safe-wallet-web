@@ -69,7 +69,7 @@ const ReviewSafeAppsTx = ({
 
   // TODO: This component had showMethodCall, so we need to show the methodCall in the confirmationView
   return (
-    <SignOrExecuteForm safeTxError={safeTxError} chainId={safe.chainId} onSubmit={handleSubmit} origin={origin}>
+    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
       {error ? (
         <ErrorMessage error={safeTxError}>
           This Safe App initiated a transaction which cannot be processed. Please get in touch with the developer of

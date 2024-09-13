@@ -94,7 +94,8 @@ const DecodedTx = ({
                 <Divider />
               </>
             )}
-            <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />
+
+            {txDetails ? <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />}
           </AccordionDetails>
         </Accordion>
       </Box>
