@@ -42,6 +42,7 @@ import { isMultiSendCalldata } from './transaction-calldata'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { __unsafe_createMultiSendTx } from '@/services/tx/tx-sender'
 import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
+import { getOriginPath } from './url'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -194,7 +195,7 @@ export const getTxOrigin = (app?: Partial<SafeAppData>): string | undefined => {
   try {
     // Must include empty string to avoid including the length of `undefined`
     const maxUrlLength = MAX_ORIGIN_LENGTH - JSON.stringify({ url: '', name: '' }).length
-    const trimmedUrl = url.slice(0, maxUrlLength)
+    const trimmedUrl = getOriginPath(url).slice(0, maxUrlLength)
 
     const maxNameLength = Math.max(0, maxUrlLength - trimmedUrl.length)
     const trimmedName = name.slice(0, maxNameLength)

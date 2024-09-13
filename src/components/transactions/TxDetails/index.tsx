@@ -33,7 +33,6 @@ import useIsPending from '@/hooks/useIsPending'
 import { isImitation, isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { SwapOrder } from '@/features/swap/components/SwapOrder'
 import { useGetTransactionDetailsQuery } from '@/store/gateway'
 import { asError } from '@/services/exceptions/utils'
 import { POLLING_INTERVAL } from '@/config/constants'
@@ -77,14 +76,6 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
     <>
       {/* /Details */}
       <div className={`${css.details} ${isUnsigned ? css.noSigners : ''}`}>
-        {isOrderTxInfo(txDetails.txInfo) && (
-          <div className={css.swapOrder}>
-            <ErrorBoundary fallback={<div>Error parsing data</div>}>
-              <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
-            </ErrorBoundary>
-          </div>
-        )}
-
         <div className={css.shareLink}>
           <TxShareLink id={txSummary.id} />
         </div>

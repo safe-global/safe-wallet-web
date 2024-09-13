@@ -1,4 +1,4 @@
-import { Chip as MuiChip, SvgIcon } from '@mui/material'
+import { SvgIcon } from '@mui/material'
 import type { OrderStatuses } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ReactElement } from 'react'
 import CheckIcon from '@/public/images/common/circle-check.svg'
@@ -6,6 +6,7 @@ import ClockIcon from '@/public/images/common/clock.svg'
 import BlockIcon from '@/public/images/common/block.svg'
 import SignatureIcon from '@/public/images/common/document_signature.svg'
 import CircleIPartialFillcon from '@/public/images/common/circle-partial-fill.svg'
+import TxStatusChip, { type TxStatusChipProps } from '@/components/transactions/TxStatusChip'
 
 type CustomOrderStatuses = OrderStatuses | 'partiallyFilled'
 type Props = {
@@ -14,72 +15,51 @@ type Props = {
 
 type StatusProps = {
   label: string
-  color: string
-  backgroundColor: string
-  iconColor: string
-  icon: any
+  color: TxStatusChipProps['color']
+  icon: React.ComponentType
 }
 
 const statusMap: Record<CustomOrderStatuses, StatusProps> = {
   presignaturePending: {
     label: 'Execution needed',
-    color: 'warning.main',
-    backgroundColor: 'warning.background',
-    iconColor: 'warning.main',
+    color: 'warning',
     icon: SignatureIcon,
   },
   fulfilled: {
     label: 'Filled',
-    color: 'success.dark',
-    backgroundColor: 'secondary.background',
-    iconColor: 'success.dark',
+    color: 'success',
     icon: CheckIcon,
   },
   open: {
     label: 'Open',
-    color: 'warning.main',
-    backgroundColor: 'warning.background',
-    iconColor: 'warning.main',
+    color: 'warning',
     icon: ClockIcon,
   },
   cancelled: {
     label: 'Cancelled',
-    color: 'error.main',
-    backgroundColor: 'error.background',
-    iconColor: 'error.main',
+    color: 'error',
     icon: BlockIcon,
   },
   expired: {
     label: 'Expired',
-    color: 'primary.light',
-    backgroundColor: 'background.main',
-    iconColor: 'border.main',
+    color: 'primary',
     icon: ClockIcon,
   },
   partiallyFilled: {
     label: 'Partially filled',
-    color: 'success.dark',
-    backgroundColor: 'secondary.background',
-    iconColor: 'success.dark',
+    color: 'success',
     icon: CircleIPartialFillcon,
   },
 }
 export const StatusLabel = (props: Props): ReactElement => {
   const { status } = props
-  const { label, color, icon, iconColor, backgroundColor } = statusMap[status]
+  const { label, color, icon } = statusMap[status]
 
   return (
-    <MuiChip
-      label={label}
-      size="small"
-      sx={{
-        fontWeight: 800,
-        backgroundColor,
-        color,
-        '& .MuiChip-icon': { color: iconColor },
-      }}
-      icon={<SvgIcon component={icon} inheritViewBox />}
-    />
+    <TxStatusChip color={color}>
+      <SvgIcon component={icon} inheritViewBox fontSize="small" />
+      {label}
+    </TxStatusChip>
   )
 }
 

@@ -1,10 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
-import { useContext } from 'react'
-import { AppRoutes } from '@/config/routes'
 import dynamic from 'next/dynamic'
+import { Typography } from '@mui/material'
+import { useHasFeature } from '@/hooks/useChains'
+import { FEATURES } from '@/utils/chains'
 
 // Cow Swap expects native token addresses to be in the format '0xeeee...eeee'
 const adjustEthAddress = (address: string) => {
@@ -16,14 +16,11 @@ const adjustEthAddress = (address: string) => {
 }
 
 const SwapWidgetNoSSR = dynamic(() => import('@/features/swap'), { ssr: false })
-const Swap: NextPage = () => {
-  const router = useRouter()
-  const isBlockedCountry = useContext(GeoblockingContext)
-  const { token, amount } = router.query
 
-  if (isBlockedCountry) {
-    router.replace(AppRoutes['403'])
-  }
+const SwapPage: NextPage = () => {
+  const router = useRouter()
+  const { token, amount } = router.query
+  const isFeatureEnabled = useHasFeature(FEATURES.NATIVE_SWAPS)
 
   let sell = undefined
   if (token && amount) {
@@ -39,11 +36,17 @@ const Swap: NextPage = () => {
         <title>{'Safe{Wallet} – Swap'}</title>
       </Head>
 
-      <main className="swapWrapper">
-        <SwapWidgetNoSSR sell={sell} />
+      <main style={{ height: 'calc(100vh - 52px)' }}>
+        {isFeatureEnabled === true ? (
+          <SwapWidgetNoSSR sell={sell} />
+        ) : isFeatureEnabled === false ? (
+          <Typography textAlign="center" my={3}>
+            Swaps are not supported on this network.
+          </Typography>
+        ) : null}
       </main>
     </>
   )
 }
 
-export default Swap
+export default SwapPage

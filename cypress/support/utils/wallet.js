@@ -23,7 +23,7 @@ export function connectSigner(signer) {
   function handlePkConnect() {
     cy.get('body').then(($body) => {
       if ($body.find(pkConnectBtn).length > 0) {
-        cy.get(pkInput).find('input').clear().type(signer)
+        cy.get(pkInput).find('input').clear().type(signer, { log: false })
         cy.get(pkConnectBtn).click()
       }
     })

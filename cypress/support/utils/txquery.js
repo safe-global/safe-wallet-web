@@ -9,7 +9,7 @@ function buildQueryUrl({ chainId, safeAddress, transactionType, ...params }) {
 
   const defaultParams = {
     safe: `sep:${safeAddress}`,
-    timezone_offset: '7200000',
+    timezone: 'Europe/Berlin',
     trusted: 'false',
   }
 

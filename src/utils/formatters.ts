@@ -1,6 +1,7 @@
 import type { BigNumberish } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers'
 import { formatAmount, formatAmountPrecise } from './formatNumber'
+import { formatDuration, intervalToDuration } from 'date-fns'
 
 const GWEI = 'gwei'
 
@@ -93,4 +94,12 @@ export const formatError = (error: Error & { reason?: string }): string => {
   if (!reason) return ''
   if (!reason.endsWith('.')) reason += '.'
   return ` ${capitalize(reason)}`
+}
+
+export const formatDurationFromSeconds = (
+  seconds: number,
+  format: Array<'years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds'> = ['hours', 'minutes'],
+) => {
+  const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
+  return formatDuration(duration, { format })
 }
