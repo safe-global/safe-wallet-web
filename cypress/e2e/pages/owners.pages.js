@@ -80,7 +80,7 @@ export function verifyOwnerDeletionWindowDisplayed() {
 }
 
 function clickOnThresholdDropdown() {
-  cy.get(thresholdDropdown).eq(1).click()
+  cy.get(thresholdDropdown).eq(0).click()
 }
 
 export function getThresholdOptions() {
