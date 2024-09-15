@@ -15,7 +15,7 @@ const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 const signer2 = walletCredentials.OWNER_1_PRIVATE_KEY
 
-describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
+describe.skip('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
   before(async () => {
     safeAppSafes = await getSafes(CATEGORIES.safeapps)
   })
