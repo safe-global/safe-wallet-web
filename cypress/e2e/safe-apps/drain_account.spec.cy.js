@@ -3,6 +3,7 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 import * as navigation from '../pages/navigation.page'
+import * as modal from '../pages/modals.page.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as ls from '../../support/localstorage_data.js'
 
@@ -69,7 +70,7 @@ describe('Drain Account tests', () => {
       getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
-    navigation.clickOnModalCloseBtn()
+    navigation.clickOnModalCloseBtn(1)
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findAllByText(safeapps.transferEverythingStr).should('be.visible')
     })
