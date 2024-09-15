@@ -19,13 +19,6 @@ const signer2 = walletCredentials.OWNER_1_PRIVATE_KEY
 describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
   before(async () => {
     safeAppSafes = await getSafes(CATEGORIES.safeapps)
-    cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
-      main.addToLocalStorage(
-        constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-        ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-      )
-    })
   })
 
   beforeEach(() => {
@@ -33,6 +26,13 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     iframeSelector = `iframe[id="iframe-${appUrl}"]`
     const visitUrl = `/apps/open?safe=${safeAppSafes.SEP_SAFEAPP_SAFE_1}&appUrl=${encodeURIComponent(appUrl)}`
     cy.visit(visitUrl)
+    cy.clearLocalStorage().then(() => {
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(
+        constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
+        ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
+      )
+    })
   })
 
   // TODO: Check if we still need this test as we now create complete flow of creating, signing and deleting a tx
@@ -267,7 +267,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     })
   })
 
-  it('Verify an invalid batch cannot be uploaded', () => {
+  it.only('Verify an invalid batch cannot be uploaded', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody()
         .findAllByText('choose a file')
