@@ -5,10 +5,12 @@ import * as createTx from '../pages/create_tx.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as ls from '../../support/localstorage_data.js'
+import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
+const signer2 = walletCredentials.OWNER_1_PRIVATE_KEY
 
 const ownerName = 'Replacement Signer Name'
 
@@ -76,8 +78,16 @@ describe('Replace Owners tests', () => {
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.alreadyAdded)
   })
 
-  // TODO: Flaky. Fix ProposeTx request
-  it.skip("Verify 'Replace' tx is created", () => {
+  it("Verify 'Replace' tx is created. GA tx_created", () => {
+    const tx_created = [
+      {
+        eventLabel: events.txCreatedSwapOwner.eventLabel,
+        eventCategory: events.txCreatedSwapOwner.category,
+        eventAction: events.txCreatedSwapOwner.action,
+        event: events.txCreatedSwapOwner.eventName,
+        safeAddress: staticSafes.SEP_STATIC_SAFE_4.slice(6),
+      },
+    ]
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
@@ -88,8 +98,9 @@ describe('Replace Owners tests', () => {
     createTx.changeNonce(2)
     owner.clickOnNextBtn()
     createTx.clickOnSignTransactionBtn()
-    createTx.waitForProposeRequest()
     createTx.clickViewTransaction()
     createTx.verifyReplacedSigner(ownerName)
+    getEvents()
+    checkDataLayerEvents(tx_created)
   })
 })

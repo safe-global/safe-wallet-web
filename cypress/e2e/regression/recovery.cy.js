@@ -147,7 +147,7 @@ describe('Recovery regression tests', { defaultCommandTimeout: 50000 }, () => {
     recovery.enterRecovererAddress(constants.SEPOLIA_OWNER_2)
     recovery.agreeToTerms()
     recovery.clickOnNextBtn()
-    navigation.clickOnModalCloseBtn()
+    navigation.clickOnModalCloseBtn(0)
     recovery.getSetupRecoveryBtn()
     navigation.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
