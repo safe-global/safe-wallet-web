@@ -267,7 +267,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     })
   })
 
-  it.only('Verify an invalid batch cannot be uploaded', () => {
+  it('Verify an invalid batch cannot be uploaded', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody()
         .findAllByText('choose a file')
