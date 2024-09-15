@@ -22,17 +22,20 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
   })
 
   beforeEach(() => {
-    const appUrl = constants.TX_Builder_url
-    iframeSelector = `iframe[id="iframe-${appUrl}"]`
-    const visitUrl = `/apps/open?safe=${safeAppSafes.SEP_SAFEAPP_SAFE_1}&appUrl=${encodeURIComponent(appUrl)}`
-    cy.visit(visitUrl)
-    cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
-      main.addToLocalStorage(
+    cy.clearLocalStorage()
+    cy.clearCookies()
+    cy.window().then((win) => {
+      win.localStorage.setItem(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      win.localStorage.setItem(
         constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
         ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
       )
     })
+
+    const appUrl = constants.TX_Builder_url
+    iframeSelector = `iframe[id="iframe-${appUrl}"]`
+    const visitUrl = `/apps/open?safe=${safeAppSafes.SEP_SAFEAPP_SAFE_1}&appUrl=${encodeURIComponent(appUrl)}`
+    cy.visit(visitUrl)
   })
 
   // TODO: Check if we still need this test as we now create complete flow of creating, signing and deleting a tx
