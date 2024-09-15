@@ -35,7 +35,8 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     cy.visit(visitUrl)
   })
 
-  it('Verify a simple batch can be created', () => {
+  // TODO: Check if we still need this test as we now create complete flow of creating, signing and deleting a tx
+  it.skip('Verify a simple batch can be created', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SAFE_APP_ADDRESS)
       getBody().find(safeapps.contractMethodIndex).parent().click()
