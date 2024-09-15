@@ -1,6 +1,5 @@
 import 'cypress-file-upload'
 import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 import * as navigation from '../pages/navigation.page'
