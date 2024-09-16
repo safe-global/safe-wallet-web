@@ -1,8 +1,8 @@
 import { render } from '@/tests/test-utils'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
-import SettingsChange from './index'
-import { ownerAddress, txInfo } from './utils'
+import SettingsChange from '.'
+import { ownerAddress, txInfo } from './mockData'
 
 describe('SettingsChange', () => {
   it('should display the SettingsChange component with owner details', () => {
