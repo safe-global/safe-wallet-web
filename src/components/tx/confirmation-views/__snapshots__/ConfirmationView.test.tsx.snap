@@ -265,7 +265,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                               style="cursor: pointer;"
                             >
                               <span>
-                                0xc7bc...f71e
+                                0x7996...aC52
                               </span>
                             </span>
                           </div>
@@ -506,7 +506,7 @@ exports[`ConfirmationView should display a confirmation with method call when th
                               style="cursor: pointer;"
                             >
                               <span>
-                                0xc7bc...f71e
+                                0x7996...aC52
                               </span>
                             </span>
                           </div>
