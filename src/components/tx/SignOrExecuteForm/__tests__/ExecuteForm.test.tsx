@@ -33,7 +33,13 @@ describe('ExecuteForm', () => {
     isOwner: true,
     isExecutionLoop: false,
     relays: [undefined, undefined, false] as AsyncResult<RelayCountResponse>,
-    txActions: { signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn(), signDelegateTx: jest.fn() },
+    txActions: {
+      proposeTx: jest.fn(),
+      signTx: jest.fn(),
+      addToBatch: jest.fn(),
+      executeTx: jest.fn(),
+      signDelegateTx: jest.fn(),
+    },
     txSecurity: defaultSecurityContextValues,
   }
 
@@ -107,7 +113,13 @@ describe('ExecuteForm', () => {
     const { getByText } = render(
       <ExecuteForm
         {...defaultProps}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn(), signDelegateTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: jest.fn(),
+          addToBatch: jest.fn(),
+          executeTx: jest.fn(),
+          signDelegateTx: jest.fn(),
+        }}
       />,
     )
 
@@ -138,7 +150,13 @@ describe('ExecuteForm', () => {
         {...defaultProps}
         safeTx={safeTransaction}
         onSubmit={jest.fn()}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: mockExecuteTx, signDelegateTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: jest.fn(),
+          addToBatch: jest.fn(),
+          executeTx: mockExecuteTx,
+          signDelegateTx: jest.fn(),
+        }}
       />,
     )
 
@@ -158,7 +176,13 @@ describe('ExecuteForm', () => {
       <ExecuteForm
         {...defaultProps}
         safeTx={safeTransaction}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: mockExecuteTx, signDelegateTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: jest.fn(),
+          addToBatch: jest.fn(),
+          executeTx: mockExecuteTx,
+          signDelegateTx: jest.fn(),
+        }}
       />,
     )
 
