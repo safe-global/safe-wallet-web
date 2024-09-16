@@ -2,7 +2,7 @@ import { type SyntheticEvent, type ReactElement, memo } from 'react'
 import { isCustomTxInfo } from '@/utils/transaction-guards'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Stack } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import useChainId from '@/hooks/useChainId'
 import ErrorMessage from '../ErrorMessage'
@@ -20,6 +20,7 @@ import { asError } from '@/services/exceptions/utils'
 type DecodedTxProps = {
   tx?: SafeTransaction
   txId?: string
+  txDetails?: TransactionDetails
   showMultisend?: boolean
   decodedData?: DecodedDataResponse
   showMethodCall?: boolean
@@ -76,8 +77,8 @@ const DecodedTx = ({
   let toInfo = tx && {
     value: tx.data.to,
   }
-  if (txDetails && isCustomTxInfo(txDetails.txInfo)) {
-    toInfo = txDetails.txInfo.to
+  if (txDetails && isCustomTxInfo(txDetails?.txInfo)) {
+    toInfo = txDetails?.txInfo.to
   }
 
   const decodedDataBlock = <DecodedData txData={txData} toInfo={toInfo} />

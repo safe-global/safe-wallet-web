@@ -9,7 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import { prependSafeToL2Migration } from '@/utils/transactions'
 
-export const SafeTxContext = createContext<{
+export type SafeTxContextParams = {
   safeTx?: SafeTransaction
   setSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>>
 
@@ -28,7 +28,9 @@ export const SafeTxContext = createContext<{
   setSafeTxGas: Dispatch<SetStateAction<string | undefined>>
 
   recommendedNonce?: number
-}>({
+}
+
+export const SafeTxContext = createContext<SafeTxContextParams>({
   setSafeTx: () => {},
   setSafeMessage: () => {},
   setSafeTxError: () => {},
