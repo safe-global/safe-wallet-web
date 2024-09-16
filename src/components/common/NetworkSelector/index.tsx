@@ -143,13 +143,15 @@ const UndeployedNetworks = ({
     [availableNetworks],
   )
 
+  const noAvailableNetworks = useMemo(() => availableNetworks.every((config) => !config.available), [availableNetworks])
+
   const onSelect = (chain: ChainInfo) => {
     setReplayOnChain(chain)
   }
 
-  if (safeCreationDataError) {
+  if (safeCreationDataError || (safeCreationData && noAvailableNetworks)) {
     return (
-      <Box p="0px 16px">
+      <Box px={2} py={1}>
         <Typography color="text.secondary" fontSize="14px">
           Adding another network is not possible for this Safe
         </Typography>
