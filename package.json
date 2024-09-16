@@ -91,7 +91,7 @@
     "react-hook-form": "7.41.1",
     "react-papaparse": "^4.0.2",
     "react-redux": "^9.1.2",
-    "semver": "^7.5.2",
+    "semver": "^7.6.3",
     "zodiac-roles-deployments": "^2.2.5"
   },
   "devDependencies": {
