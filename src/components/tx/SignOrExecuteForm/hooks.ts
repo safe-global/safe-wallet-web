@@ -19,7 +19,7 @@ import { getSafeTxGas, getNonces } from '@/services/tx/tx-sender/recommendedNonc
 import type { AsyncResult } from '@/hooks/useAsync'
 import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
-import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCurrentChain } from '@/hooks/useChains'
 
 type TxActions = {
@@ -40,10 +40,13 @@ type txDetails = AsyncResult<TransactionDetails>
 
 export const useProposeTx = (safeTx?: SafeTransaction, txId?: string, origin?: string): txDetails => {
   const { proposeTx } = useTxActions()
+  const { safe } = useSafeInfo()
 
   return useAsync(
     () => {
-      if (!safeTx || txId) return
+      if (!safeTx) return
+      if (txId) return getTransactionDetails(safe.chainId, txId)
+
       return proposeTx(safeTx, txId, origin)
     },
     [safeTx, txId, origin, proposeTx],
@@ -75,8 +78,8 @@ export const useTxActions = (): TxActions => {
 
     const proposeTx: TxActions['proposeTx'] = async (safeTx, txId, origin) => {
       assertTx(safeTx)
-      assertWallet(wallet)
-      return _propose(wallet.address, safeTx, txId, origin)
+      // assertWallet(wallet)
+      return _propose(wallet?.address || safe.owners[0].value, safeTx, txId, origin)
     }
 
     const addToBatch: TxActions['addToBatch'] = async (safeTx, origin) => {
