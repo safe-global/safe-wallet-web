@@ -36,7 +36,6 @@ import { BlockaidBalanceChanges } from '@/components/tx/security/blockaid/Blocka
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { useGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query'
-import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlowProps }): ReactElement | null {
   // Form state
@@ -132,8 +131,7 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <Divider className={commonCss.nestedDivider} />
 
-        {/* TODO: the TransactionDetails casting will be removed once we move this view to confirmations-views folder */}
-        <DecodedTx txDetails={txDetails as TransactionDetails} tx={safeTx} decodedData={decodedData} />
+        <DecodedTx txDetails={txDetails} tx={safeTx} decodedData={decodedData} />
 
         <BlockaidBalanceChanges />
       </TxCard>
