@@ -73,6 +73,7 @@
 .item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--space-1);
   width: 100%;
 }
@@ -80,4 +81,11 @@
 .multiChainChip {
   padding: var(--space-2) 0;
   margin: 2px;
+}
+
+.comingSoon {
+  background-color: var(--color-border-light);
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  padding: 4px 8px;
 }
