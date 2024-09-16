@@ -30,6 +30,7 @@ import { type SafeItem } from './useAllSafes'
 import SubAccountItem from './SubAccountItem'
 import { getSharedSetup } from './utils/multiChainSafe'
 import { AddNetworkButton } from './AddNetworkButton'
+import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -71,6 +72,16 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
   const totalFiatValue = useMemo(
     () => safeOverviews?.reduce((prev, current) => prev + Number(current.fiatTotal), 0),
     [safeOverviews],
+  )
+
+  const hasReplayableSafe = useMemo(
+    () =>
+      safes.some((safeItem) => {
+        const undeployedSafe = undeployedSafes[safeItem.chainId]?.[safeItem.address]
+        // We can only replay deployed Safes and new counterfactual Safes.
+        return !undeployedSafe || !isPredictedSafeProps(undeployedSafe.props)
+      }),
+    [safes, undeployedSafes],
   )
 
   const findOverview = (item: SafeItem) => {
@@ -134,7 +145,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
               />
             ))}
           </Box>
-          {!isWatchlist && (
+          {!isWatchlist && hasReplayableSafe && (
             <>
               <Divider />
               <Box display="flex" alignItems="center" justifyContent="center">

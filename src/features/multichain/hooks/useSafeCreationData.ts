@@ -7,60 +7,13 @@ import { getCreationTransaction } from 'safe-client-gateway-sdk'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import { isPredictedSafeProps } from '@/features/counterfactual/utils'
-import {
-  getReadOnlyGnosisSafeContract,
-  getReadOnlyProxyFactoryContract,
-  getReadOnlyFallbackHandlerContract,
-} from '@/services/contracts/safeContracts'
-import { getLatestSafeVersion } from '@/utils/chains'
-import { ZERO_ADDRESS, EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
 
-const getUndeployedSafeCreationData = async (
-  undeployedSafe: UndeployedSafe,
-  chain: ChainInfo,
-): Promise<ReplayedSafeProps> => {
+const getUndeployedSafeCreationData = async (undeployedSafe: UndeployedSafe): Promise<ReplayedSafeProps> => {
   if (isPredictedSafeProps(undeployedSafe.props)) {
-    // Copy predicted safe
-    // Encode Safe creation and determine the addresses the Safe creation would use
-    const { owners, threshold, to, data, fallbackHandler, paymentToken, payment, paymentReceiver } =
-      undeployedSafe.props.safeAccountConfig
-    const usedSafeVersion = undeployedSafe.props.safeDeploymentConfig?.safeVersion ?? getLatestSafeVersion(chain)
-    const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, usedSafeVersion)
-    const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(usedSafeVersion)
-    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(usedSafeVersion)
-
-    const callData = {
-      owners,
-      threshold,
-      to: to ?? ZERO_ADDRESS,
-      data: data ?? EMPTY_DATA,
-      fallbackHandler: fallbackHandler ?? (await readOnlyFallbackHandlerContract.getAddress()),
-      paymentToken: paymentToken ?? ZERO_ADDRESS,
-      payment: payment ?? 0,
-      paymentReceiver: paymentReceiver ?? ZERO_ADDRESS,
-    }
-
-    // @ts-ignore union type is too complex
-    const setupData = readOnlySafeContract.encode('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
-
-    return {
-      factoryAddress: await readOnlyProxyFactoryContract.getAddress(),
-      masterCopy: await readOnlySafeContract.getAddress(),
-      saltNonce: undeployedSafe.props.safeDeploymentConfig?.saltNonce ?? '0',
-      setupData,
-    }
+    throw new Error('Old counterfactual Safes do not support replaying. Please activate the Safe first.')
   }
 
   // We already have a replayed Safe. In this case we can return the identical data
@@ -85,7 +38,7 @@ const getCreationDataForChain = async (
 ): Promise<ReplayedSafeProps> => {
   // 1. The safe is counterfactual
   if (undeployedSafe) {
-    return getUndeployedSafeCreationData(undeployedSafe, chain)
+    return getUndeployedSafeCreationData(undeployedSafe)
   }
 
   const { data: creation } = await getCreationTransaction({
@@ -156,6 +109,10 @@ export const useSafeCreationData = (safeAddress: string, chains: ChainInfo[]): A
     try {
       for (const chain of chains) {
         const undeployedSafe = undeployedSafes[chain.chainId]?.[safeAddress]
+        if (undeployedSafe && isPredictedSafeProps(undeployedSafe.props)) {
+          // predicted Safe props are not supported
+          continue
+        }
         try {
           const creationData = await getCreationDataForChain(chain, undeployedSafe, safeAddress, customRpc)
           return creationData

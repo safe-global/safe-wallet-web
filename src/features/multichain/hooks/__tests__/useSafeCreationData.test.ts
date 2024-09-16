@@ -1,19 +1,13 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
 import { SAFE_CREATION_DATA_ERRORS, useSafeCreationData } from '../useSafeCreationData'
 import { faker } from '@faker-js/faker'
-import { PendingSafeStatus, type ReplayedSafeProps, type UndeployedSafe } from '@/store/slices'
+import { PendingSafeStatus, type UndeployedSafe } from '@/store/slices'
 import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { chainBuilder } from '@/tests/builders/chains'
-import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as sdk from '@/services/tx/tx-sender/sdk'
 import * as cgwSdk from 'safe-client-gateway-sdk'
 import * as web3 from '@/hooks/wallets/web3'
 import { encodeMultiSendData, type SafeProvider } from '@safe-global/protocol-kit'
-import {
-  getCompatibilityFallbackHandlerDeployment,
-  getProxyFactoryDeployment,
-  getSafeSingletonDeployment,
-} from '@safe-global/safe-deployments'
 import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
 import { type JsonRpcProvider } from 'ethers'
 import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
@@ -68,7 +62,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should extract replayedSafe data from an predictedSafe', async () => {
+  it('should ignore old predictedSafes', async () => {
     const safeAddress = faker.finance.ethereumAddress()
     const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
     const undeployedSafe = {
@@ -98,90 +92,9 @@ describe('useSafeCreationData', () => {
       },
     })
 
-    const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
-      undeployedSafe.props.safeAccountConfig.owners,
-      undeployedSafe.props.safeAccountConfig.threshold,
-      ZERO_ADDRESS,
-      EMPTY_DATA,
-      getCompatibilityFallbackHandlerDeployment({ network: '1', version: '1.3.0' })?.defaultAddress!,
-      ZERO_ADDRESS,
-      0,
-      ZERO_ADDRESS,
-    ])
-
-    // Should return replayedSafeProps
-    const expectedProps: ReplayedSafeProps = {
-      factoryAddress: getProxyFactoryDeployment({ network: '1', version: '1.3.0' })?.defaultAddress!,
-      saltNonce: '69',
-      masterCopy: getSafeSingletonDeployment({ network: '1', version: '1.3.0' })?.networkAddresses['1'],
-      setupData,
-    }
     await waitFor(async () => {
       await Promise.resolve()
-      expect(result.current).toEqual([expectedProps, undefined, false])
-    })
-  })
-
-  it('should extract replayedSafe data from an predictedSafe which has a custom Setup', async () => {
-    const safeAddress = faker.finance.ethereumAddress()
-    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
-    const undeployedSafe = {
-      props: {
-        safeAccountConfig: {
-          owners: [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
-          threshold: 2,
-          fallbackHandler: faker.finance.ethereumAddress(),
-          data: faker.string.hexadecimal({ length: 64 }),
-          to: faker.finance.ethereumAddress(),
-          payment: 123,
-          paymentReceiver: faker.finance.ethereumAddress(),
-          paymentToken: faker.finance.ethereumAddress(),
-        },
-        safeDeploymentConfig: {
-          saltNonce: '69',
-          safeVersion: '1.3.0',
-        },
-      },
-      status: {
-        status: PendingSafeStatus.AWAITING_EXECUTION,
-        type: PayMethod.PayLater,
-      },
-    }
-
-    const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
-      undeployedSafe.props.safeAccountConfig.owners,
-      undeployedSafe.props.safeAccountConfig.threshold,
-      undeployedSafe.props.safeAccountConfig.to,
-      undeployedSafe.props.safeAccountConfig.data,
-      undeployedSafe.props.safeAccountConfig.fallbackHandler,
-      undeployedSafe.props.safeAccountConfig.paymentToken,
-      undeployedSafe.props.safeAccountConfig.payment,
-      undeployedSafe.props.safeAccountConfig.paymentReceiver,
-    ])
-
-    // Should return replayedSafeProps
-    const expectedProps: ReplayedSafeProps = {
-      factoryAddress: getProxyFactoryDeployment({ network: '1', version: '1.3.0' })?.defaultAddress!,
-      saltNonce: '69',
-      masterCopy: getSafeSingletonDeployment({ network: '1', version: '1.3.0' })?.defaultAddress,
-      setupData,
-    }
-
-    // Run hook
-    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos), {
-      initialReduxState: {
-        undeployedSafes: {
-          '1': {
-            [safeAddress]: undeployedSafe as UndeployedSafe,
-          },
-        },
-      },
-    })
-
-    // Expectations
-    await waitFor(async () => {
-      await Promise.resolve()
-      expect(result.current).toEqual([expectedProps, undefined, false])
+      expect(result.current).toEqual([undefined, undefined, false])
     })
   })
 

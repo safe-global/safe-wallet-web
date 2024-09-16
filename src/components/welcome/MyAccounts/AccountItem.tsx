@@ -25,7 +25,7 @@ import type { SafeItem } from './useAllSafes'
 import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import { useGetHref } from './useGetHref'
-import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
+import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -58,6 +58,8 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const counterfactualSetup = undeployedSafe
     ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
     : undefined
+
+  const isReplayable = !safeItem.isWatchlist && (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
   return (
     <ListItemButton
@@ -118,7 +120,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
         </Link>
       </Track>
 
-      <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={!safeItem.isWatchlist} />
+      <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} />
 
       <QueueActions
         queued={safeOverview?.queued || 0}
