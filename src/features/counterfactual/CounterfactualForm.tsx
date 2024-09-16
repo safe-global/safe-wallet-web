@@ -43,6 +43,7 @@ export const CounterfactualForm = ({
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
+  isCreation?: boolean
 }): ReactElement => {
   const wallet = useWallet()
   const chain = useCurrentChain()

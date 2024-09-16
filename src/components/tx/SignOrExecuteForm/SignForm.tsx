@@ -34,6 +34,7 @@ export const SignForm = ({
   isOwner: ReturnType<typeof useIsSafeOwner>
   txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
+  isCreation?: boolean
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
