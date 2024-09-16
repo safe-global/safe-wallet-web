@@ -100,8 +100,16 @@ const txDetails = createMockTransactionDetails({
   },
 })
 const safeTx = safeTxBuilder().build()
-const safeTxWithNativeData = { ...safeTx, data: { ...safeTx.data, data: '0x' } }
-
+const safeTxWithNativeData = {
+  ...safeTx,
+  data: {
+    ...safeTx.data,
+    refundReceiver: '0x79964FA459D36EbFfc2a2cA66321B689F6E4aC52',
+    to: '0xDa5e9FA404881Ff36DDa97b41Da402dF6430EE6b',
+    data: '0x',
+  },
+}
+console.log(safeTxWithNativeData)
 describe('ConfirmationView', () => {
   it('should display a confirmation screen for a SETTINGS_CHANGE transaction', () => {
     const { container, getByTestId } = render(
