@@ -16,7 +16,7 @@ import * as hooks from '@/components/tx/SignOrExecuteForm/hooks'
 jest.spyOn(execThroughRoleHooks, 'useRoles').mockReturnValue([])
 describe('ReviewSignMessageOnChain', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', async () => {
-    jest.spyOn(hooks, 'useTxDetails').mockReturnValue([
+    jest.spyOn(hooks, 'useProposeTx').mockReturnValue([
       {
         txInfo: {},
       } as TransactionDetails,
