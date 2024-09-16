@@ -1,12 +1,13 @@
-import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionInfoType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import DecodedTx from '../DecodedTx'
 import ConfirmationOrder from '../ConfirmationOrder'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
-import { getConfirmationViewComponent } from './utils'
 import { useMemo } from 'react'
 import TxData from '@/components/transactions/TxDetails/TxData'
+import type { NarrowConfirmationViewProps } from './types'
+import SettingsChange from './SettingsChange'
 
 type ConfirmationViewProps = {
   txDetails: TransactionDetails
@@ -14,6 +15,13 @@ type ConfirmationViewProps = {
   txId?: string
   isBatch?: boolean
   isApproval?: boolean
+}
+
+const getConfirmationViewComponent = (txType: TransactionInfoType, props: NarrowConfirmationViewProps) => {
+  if (txType === TransactionInfoType.SETTINGS_CHANGE)
+    return <SettingsChange txDetails={props.txDetails} txInfo={props.txInfo as SettingsChange} />
+
+  return null
 }
 
 const ConfirmationView = (props: ConfirmationViewProps) => {
