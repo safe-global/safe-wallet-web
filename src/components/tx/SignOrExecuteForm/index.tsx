@@ -28,7 +28,7 @@ const SignOrExecute = (props: SignOrExecuteExtendedProps) => {
   return isLoading || isTxDetailsId || !safeTx ? (
     <SignOrExecuteSkeleton />
   ) : (
-    <SignOrExecuteForm {...props} txId={props.txId} txDetails={txDetails} />
+    <SignOrExecuteForm {...props} txId={props.txId || txDetails?.txId} txDetails={txDetails} />
   )
 }
 
