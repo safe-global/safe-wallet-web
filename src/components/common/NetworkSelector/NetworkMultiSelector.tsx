@@ -1,4 +1,5 @@
 import useChains from '@/hooks/useChains'
+import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCallback, type ReactElement } from 'react'
 import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -22,6 +23,7 @@ const NetworkMultiSelector = ({
   const { configs } = useChains()
   const router = useRouter()
   const isWalletConnected = !!useWallet()
+  const safeAddress = useSafeAddress()
 
   const {
     formState: { errors },
@@ -36,7 +38,7 @@ const NetworkMultiSelector = ({
     (chains: ChainInfo[]) => {
       if (chains.length !== 1) return
       const shortName = chains[0].shortName
-      const networkLink = getNetworkLink(router, shortName, isWalletConnected)
+      const networkLink = getNetworkLink(router, safeAddress, shortName)
       router.replace(networkLink)
     },
     [isWalletConnected, router],
