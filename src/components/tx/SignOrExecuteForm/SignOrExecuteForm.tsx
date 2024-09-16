@@ -142,8 +142,6 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        {/* {showTxDetails && <TxData txDetails={txDetails} imitation={false} trusted />} */}
-
         {props.txDetails && <ConfirmationView txDetails={props.txDetails} safeTx={safeTx} />}
 
         {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
