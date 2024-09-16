@@ -1,13 +1,14 @@
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import SignOrExecuteForm, { SignOrExecuteProps, SubmitCallback } from './SignOrExecuteForm'
+import SignOrExecuteForm from './SignOrExecuteForm'
+import type { SignOrExecuteProps, SubmitCallback } from './SignOrExecuteForm'
 import SignOrExecuteSkeleton from './SignOrExecuteSkeleton'
 import { useTxDetails } from './hooks'
-import { ReactNode, useContext } from 'react'
+import { useContext } from 'react'
 
 type SignOrExecuteExtendedProps = Omit<SignOrExecuteProps, 'txId'> & {
   onSubmit?: SubmitCallback
   txId?: string
-  children?: ReactNode
+  children?: React.ReactNode
   isExecutable?: boolean
   isRejection?: boolean
   isBatch?: boolean
