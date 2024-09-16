@@ -210,7 +210,7 @@ export function verifyDataInReviewSection(safeName, ownerName, threshold = null,
   cy.findByText(ownerName).should('be.visible')
   if (ownerAddress !== null) cy.get(safeDataForm).contains(ownerAddress).should('be.visible')
   if (threshold !== null) cy.get(safeDataForm).contains(threshold).should('be.visible')
-  if (network !== null) cy.get(sidebar.chainLogo).eq(1).contains(network).should('be.visible')
+  if (network !== null) cy.get(sidebar.chainLogo).eq(0).contains(network).should('be.visible')
 }
 
 export function clickOnAddBtn() {
