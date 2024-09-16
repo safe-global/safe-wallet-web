@@ -7,15 +7,23 @@ export enum CookieAndTermType {
   NECESSARY = 'necessary',
   UPDATES = 'updates',
   ANALYTICS = 'analytics',
+  VERSION = 'version',
 }
 
-export type CookiesAndTermsState = Record<CookieAndTermType, boolean | undefined>
+export type CookiesAndTermsState = {
+  [CookieAndTermType.TERMS]: boolean | undefined
+  [CookieAndTermType.NECESSARY]: boolean | undefined
+  [CookieAndTermType.UPDATES]: boolean | undefined
+  [CookieAndTermType.ANALYTICS]: boolean | undefined
+  [CookieAndTermType.VERSION]: string | undefined
+}
 
 const initialState: CookiesAndTermsState = {
   [CookieAndTermType.TERMS]: undefined,
   [CookieAndTermType.NECESSARY]: undefined,
   [CookieAndTermType.UPDATES]: undefined,
   [CookieAndTermType.ANALYTICS]: undefined,
+  [CookieAndTermType.VERSION]: undefined,
 }
 
 export const cookiesAndTermsSlice = createSlice({

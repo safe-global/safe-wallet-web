@@ -4,6 +4,7 @@ import type { CheckboxProps } from '@mui/material'
 import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'
+import { metadata } from '@/markdown/terms/terms.md'
 
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectCookies, CookieAndTermType, saveCookieAndTermConsent } from '@/store/cookiesAndTermsSlice'
@@ -18,6 +19,7 @@ const COOKIE_AND_TERM_WARNING: Record<CookieAndTermType, string> = {
   [CookieAndTermType.NECESSARY]: '',
   [CookieAndTermType.UPDATES]: `You attempted to open the "What's new" section but need to accept the "Beamer" cookies first.`,
   [CookieAndTermType.ANALYTICS]: '',
+  [CookieAndTermType.VERSION]: '',
 }
 
 const CookieCheckbox = ({
@@ -47,6 +49,7 @@ export const CookieAndTermBanner = ({
       [CookieAndTermType.NECESSARY]: true,
       [CookieAndTermType.UPDATES]: cookies[CookieAndTermType.UPDATES] ?? false,
       [CookieAndTermType.ANALYTICS]: cookies[CookieAndTermType.ANALYTICS] ?? false,
+      [CookieAndTermType.VERSION]: metadata.version,
       ...(warningKey ? { [warningKey]: true } : {}),
     },
   })
@@ -75,9 +78,9 @@ export const CookieAndTermBanner = ({
           <Grid item xs>
             <Typography variant="body2" mb={2}>
               By browsing this page, you accept our{' '}
-              <ExternalLink href={AppRoutes.terms}>Terms & Conditions</ExternalLink> (last updated September 2024) and
-              the use of necessary cookies. By clicking &quot;Accept all&quot; you additionally agree to the use of
-              Beamer and Analytics cookies as listed below.{' '}
+              <ExternalLink href={AppRoutes.terms}>Terms & Conditions</ExternalLink> (last updated{' '}
+              {metadata.last_update_date}) and the use of necessary cookies. By clicking &quot;Accept all&quot; you
+              additionally agree to the use of Beamer and Analytics cookies as listed below.{' '}
               <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
             </Typography>
 
@@ -141,7 +144,7 @@ const CookieBannerPopup = (): ReactElement | null => {
   const dispatch = useAppDispatch()
 
   // Open the banner if cookie preferences haven't been set
-  const shouldOpen = cookies[CookieAndTermType.NECESSARY] === undefined
+  const shouldOpen = cookies[CookieAndTermType.VERSION] !== metadata.version
 
   useEffect(() => {
     if (shouldOpen) {
