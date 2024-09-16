@@ -26,7 +26,13 @@ describe('SignOrExecute', () => {
   })
 
   it('should display a confirmation screen', async () => {
-    jest.spyOn(hooks, 'useTxDetails').mockReturnValue([{} as TransactionDetails, undefined, false])
+    jest.spyOn(hooks, 'useTxDetails').mockReturnValue([
+      {
+        txInfo: {},
+      } as TransactionDetails,
+      undefined,
+      false,
+    ])
 
     const { container, getByTestId } = render(
       <SafeTxContext.Provider

@@ -16,7 +16,13 @@ import * as hooks from '@/components/tx/SignOrExecuteForm/hooks'
 jest.spyOn(execThroughRoleHooks, 'useRoles').mockReturnValue([])
 describe('ReviewSignMessageOnChain', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', async () => {
-    jest.spyOn(hooks, 'useTxDetails').mockReturnValue([{} as TransactionDetails, undefined, false])
+    jest.spyOn(hooks, 'useTxDetails').mockReturnValue([
+      {
+        txInfo: {},
+      } as TransactionDetails,
+      undefined,
+      false,
+    ])
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new JsonRpcProvider())
     jest.spyOn(useSafeInfo, 'default').mockImplementation(
       () =>
