@@ -49,7 +49,6 @@ export type SignOrExecuteProps = {
   onlyExecute?: boolean
   disableSubmit?: boolean
   origin?: string
-  isCreation?: boolean
 }
 
 const trackTxEvents = (
@@ -75,16 +74,17 @@ export const SignOrExecuteForm = ({
   safeTx,
   safeTxError,
   onSubmit,
+  isCreation,
   ...props
 }: SignOrExecuteProps & {
   chainId: ReturnType<typeof useChainId>
   safeTx: ReturnType<typeof useSafeTx>
   safeTxError: ReturnType<typeof useSafeTxError>
+  isCreation?: boolean
   txDetails?: TransactionDetails
 }): ReactElement => {
   const { transactionExecution } = useAppSelector(selectSettings)
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
-  const isCreation = !props.txId
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
 
@@ -121,7 +121,7 @@ export const SignOrExecuteForm = ({
 
       const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(details, isCreation, isExecuted, isRoleExecution)
+      trackTxEvents(details, !!isCreation, isExecuted, isRoleExecution)
     },
     [chainId, isCreation, onSubmit, trigger],
   )

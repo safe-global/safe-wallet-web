@@ -1,11 +1,9 @@
 import { TxModalContext } from '@/components/tx-flow'
 import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
 import { deploySafeAndExecuteTx } from '@/features/counterfactual/utils'
-import useChainId from '@/hooks/useChainId'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
 import { OVERVIEW_EVENTS, trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
@@ -45,11 +43,10 @@ export const CounterfactualForm = ({
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
+  isCreation?: boolean
 }): ReactElement => {
   const wallet = useWallet()
-  const onboard = useOnboard()
   const chain = useCurrentChain()
-  const chainId = useChainId()
   const { safeAddress } = useSafeInfo()
 
   // Form state
