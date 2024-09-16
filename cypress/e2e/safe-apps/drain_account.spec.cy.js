@@ -69,7 +69,7 @@ describe('Drain Account tests', () => {
       getBody().findByLabelText(safeapps.recipientStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findAllByText(safeapps.transferEverythingStr).click()
     })
-    navigation.clickOnModalCloseBtn()
+    navigation.clickOnModalCloseBtn(1)
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findAllByText(safeapps.transferEverythingStr).should('be.visible')
     })
