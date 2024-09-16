@@ -34,6 +34,9 @@ import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletReject
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { BlockaidBalanceChanges } from '@/components/tx/security/blockaid/BlockaidBalanceChange'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { useGetTransactionDetailsQuery } from '@/store/gateway'
+import { skipToken } from '@reduxjs/toolkit/query'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlowProps }): ReactElement | null {
   // Form state
@@ -51,6 +54,8 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const [data] = useRecovery()
   const recovery = data && selectDelayModifierByRecoverer(data, wallet?.address ?? '')
   const [, executionValidationError] = useIsValidRecoveryExecTransactionFromModule(recovery?.address, safeTx)
+
+  const { data: txDetails } = useGetTransactionDetailsQuery(skipToken)
 
   // Proposal
   const newThreshold = Number(params[RecoverAccountFlowFields.threshold])
@@ -127,7 +132,8 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <Divider className={commonCss.nestedDivider} />
 
-        <DecodedTx tx={safeTx} decodedData={decodedData} />
+        {/* TODO: the TransactionDetails casting will be removed once we move this view to confirmations-views folder */}
+        <DecodedTx txDetails={txDetails as TransactionDetails} tx={safeTx} decodedData={decodedData} />
 
         <BlockaidBalanceChanges />
       </TxCard>
