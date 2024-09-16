@@ -8,7 +8,6 @@ import css from './styles.module.css'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { getNetworkLink } from '.'
-import useWallet from '@/hooks/wallets/useWallet'
 import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameStep'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 import { getLatestSafeVersion } from '@/utils/chains'
@@ -22,7 +21,6 @@ const NetworkMultiSelector = ({
 }): ReactElement => {
   const { configs } = useChains()
   const router = useRouter()
-  const isWalletConnected = !!useWallet()
   const safeAddress = useSafeAddress()
 
   const {
@@ -41,7 +39,7 @@ const NetworkMultiSelector = ({
       const networkLink = getNetworkLink(router, safeAddress, shortName)
       router.replace(networkLink)
     },
-    [isWalletConnected, router],
+    [router, safeAddress],
   )
 
   const handleDelete = useCallback(

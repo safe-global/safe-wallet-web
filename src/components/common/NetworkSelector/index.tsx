@@ -38,7 +38,6 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
-import useWallet from '@/hooks/wallets/useWallet'
 
 export const getNetworkLink = (router: NextRouter, safeAddress: string, networkShortName: string) => {
   const isSafeOpened = safeAddress !== ''
@@ -223,7 +222,6 @@ const NetworkSelector = ({
   const router = useRouter()
   const safeAddress = useSafeAddress()
   const chains = useAppSelector(selectChains)
-  const isWalletConnected = !!useWallet()
 
   const isSafeOpened = safeAddress !== ''
 
@@ -293,7 +291,7 @@ const NetworkSelector = ({
         </MenuItem>
       )
     },
-    [chains.data, isWalletConnected, onChainSelect, router, safeOverviews],
+    [chains.data, onChainSelect, router, safeAddress, safeOverviews],
   )
 
   return configs.length ? (
