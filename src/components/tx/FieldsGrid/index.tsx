@@ -4,7 +4,7 @@ import { Grid, Typography } from '@mui/material'
 const minWidth = { xl: '25%', lg: '100px' }
 const wrap = { flexWrap: { xl: 'nowrap' } }
 
-const FieldsGrid = ({ title, children }: { title: string; children: ReactNode }) => {
+const FieldsGrid = ({ title, children }: { title: string | ReactNode; children: ReactNode }) => {
   return (
     <Grid container alignItems="center" gap={1} sx={wrap}>
       <Grid item minWidth={minWidth}>
