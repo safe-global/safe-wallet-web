@@ -26,7 +26,7 @@ describe('SignOrExecute', () => {
   })
 
   it('should display a confirmation screen', async () => {
-    jest.spyOn(hooks, 'useTxDetails').mockReturnValue([
+    jest.spyOn(hooks, 'useProposeTx').mockReturnValue([
       {
         txInfo: {},
       } as TransactionDetails,

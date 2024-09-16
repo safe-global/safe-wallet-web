@@ -38,7 +38,7 @@ type TxActions = {
 
 type txDetails = AsyncResult<TransactionDetails>
 
-export const useTxDetails = (safeTx?: SafeTransaction, txId?: string, origin?: string): txDetails => {
+export const useProposeTx = (safeTx?: SafeTransaction, txId?: string, origin?: string): txDetails => {
   const { proposeTx } = useTxActions()
 
   return useAsync(

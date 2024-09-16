@@ -6,6 +6,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
 import { getConfirmationViewComponent } from './utils'
 import { useMemo } from 'react'
+import TxData from '@/components/transactions/TxDetails/TxData'
 
 type ConfirmationViewProps = {
   txDetails: TransactionDetails
@@ -31,7 +32,7 @@ const ConfirmationView = (props: ConfirmationViewProps) => {
 
   return (
     <>
-      {ConfirmationViewComponent}
+      {ConfirmationViewComponent || (showTxDetails && <TxData txDetails={props.txDetails} imitation={false} trusted />)}
 
       {decodedData && <ConfirmationOrder decodedData={decodedData} toAddress={props.safeTx?.data.to ?? ''} />}
 
