@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import SettingsChange from './index'
 import { Paper } from '@mui/material'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import { StoreDecorator } from '@/stories/storeDecorator'
-import { ownerAddress, txInfo } from './utils'
+import { ownerAddress, txInfo } from './mockData'
+import SettingsChange from '.'
 
 const meta = {
   component: SettingsChange,
