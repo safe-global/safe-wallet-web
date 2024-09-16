@@ -73,7 +73,7 @@
     "@web3-onboard/walletconnect": "^2.5.4",
     "blo": "^1.1.1",
     "classnames": "^2.5.1",
-    "date-fns": "^2.30.0",
+    "date-fns": "^3.6.0",
     "ethers": "^6.11.1",
     "exponential-backoff": "^3.1.0",
     "firebase": "^10.3.1",
