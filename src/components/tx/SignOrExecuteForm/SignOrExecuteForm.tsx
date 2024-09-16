@@ -142,7 +142,7 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        {props.txDetails && <ConfirmationView txDetails={props.txDetails} safeTx={safeTx} />}
+        {props.txDetails && <ConfirmationView isCreation={isCreation} txDetails={props.txDetails} safeTx={safeTx} />}
 
         {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>

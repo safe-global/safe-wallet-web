@@ -15,6 +15,7 @@ type ConfirmationViewProps = {
   txId?: string
   isBatch?: boolean
   isApproval?: boolean
+  isCreation?: boolean
 }
 
 const getConfirmationViewComponent = (txType: TransactionInfoType, props: NarrowConfirmationViewProps) => {
@@ -36,7 +37,7 @@ const ConfirmationView = (props: ConfirmationViewProps) => {
       }),
     [props.txDetails, txInfo],
   )
-  const showTxDetails = txId && props.txDetails && !isCustomTxInfo(props.txDetails.txInfo)
+  const showTxDetails = txId && !props.isCreation && props.txDetails && !isCustomTxInfo(props.txDetails.txInfo)
 
   return (
     <>
