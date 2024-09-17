@@ -11,7 +11,6 @@ import * as useSafeInfoHook from '@/hooks/useSafeInfo'
 import * as useChainsHook from '@/hooks/useChains'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
-import * as sdk from '@/services/tx/tx-sender/sdk'
 import * as useSafeMessage from '@/hooks/messages/useSafeMessage'
 import { render, act, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
@@ -102,8 +101,6 @@ describe('SignMessage', () => {
     }))
 
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
-
-    jest.spyOn(sdk, 'assertWalletChain').mockImplementation(jest.fn())
   })
 
   describe('EIP-191 messages', () => {
@@ -367,14 +364,14 @@ describe('SignMessage', () => {
     expect(getByText('Sign')).toBeDisabled()
   })
 
-  it('displays an error if connected to the wrong chain', () => {
+  it('displays a network switch warning if connected to the wrong chain', () => {
     jest.spyOn(onboard, 'default').mockReturnValue(mockOnboard)
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => true)
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => true)
     jest.spyOn(useChainsHook, 'useCurrentChain').mockReturnValue(chainBuilder().build())
     jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn(), undefined])
 
-    const { getByText } = render(
+    const { getByText, queryByText, container } = render(
       <SignMessage
         logoUri="www.fake.com/test.png"
         name="Test App"
@@ -384,9 +381,8 @@ describe('SignMessage', () => {
       />,
     )
 
-    expect(getByText('Wallet network switch')).toBeInTheDocument()
-
-    expect(getByText('Sign')).not.toBeDisabled()
+    expect(getByText('Change your wallet network')).toBeInTheDocument()
+    expect(queryByText('Sign')).toBeDisabled()
   })
 
   it('displays an error if not an owner', () => {

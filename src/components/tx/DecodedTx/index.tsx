@@ -4,6 +4,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Stack } f
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
+import useChainId from '@/hooks/useChainId'
 import ErrorMessage from '../ErrorMessage'
 import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
@@ -12,7 +13,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import accordionCss from '@/styles/accordion.module.css'
 import HelpToolTip from './HelpTooltip'
-import useTxDetails from '@/hooks/useTxDetails'
+import { useGetTransactionDetailsQuery } from '@/store/gateway'
+import { skipToken } from '@reduxjs/toolkit/query/react'
+import { asError } from '@/services/exceptions/utils'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
@@ -38,9 +41,22 @@ const DecodedTx = ({
   showMultisend = true,
   showMethodCall = false,
 }: DecodedTxProps): ReactElement => {
+  const chainId = useChainId()
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
-  const isMethodCallInAdvanced = !showMethodCall || isMultisend
-  const [txDetails, txDetailsError, txDetailsLoading] = useTxDetails(txId)
+  const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
+
+  const {
+    data: txDetails,
+    error: txDetailsError,
+    isLoading: txDetailsLoading,
+  } = useGetTransactionDetailsQuery(
+    chainId && txId
+      ? {
+          chainId,
+          txId,
+        }
+      : skipToken,
+  )
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
@@ -87,6 +103,7 @@ const DecodedTx = ({
             <HelpToolTip />
             <Box flexGrow={1} />
             {isMethodCallInAdvanced && decodedData?.method}
+            {!showMethodCall && !decodedData?.method && Number(tx?.data.value) > 0 && 'native transfer'}
           </AccordionSummary>
 
           <AccordionDetails data-testid="decoded-tx-details">
@@ -102,7 +119,7 @@ const DecodedTx = ({
             {txDetailsLoading && <Skeleton />}
 
             {txDetailsError && (
-              <ErrorMessage error={txDetailsError}>Failed loading all transaction details</ErrorMessage>
+              <ErrorMessage error={asError(txDetailsError)}>Failed loading all transaction details</ErrorMessage>
             )}
           </AccordionDetails>
         </Accordion>

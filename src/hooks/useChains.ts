@@ -37,7 +37,7 @@ export const useCurrentChain = (): ChainInfo | undefined => {
  * @param feature name of the feature to check for
  * @returns `true`, if the feature is enabled on the current chain. Otherwise `false`
  */
-export const useHasFeature = (feature: FEATURES): boolean => {
+export const useHasFeature = (feature: FEATURES): boolean | undefined => {
   const currentChain = useCurrentChain()
-  return !!currentChain && hasFeature(currentChain, feature)
+  return currentChain ? hasFeature(currentChain, feature) : undefined
 }

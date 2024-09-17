@@ -13,6 +13,7 @@ import { formatDateTime } from '@/utils/date'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
 import txSignersCss from '@/components/transactions/TxSigners/styles.module.css'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactElement {
   const { isExecutable, isExpired, isNext, remainingSeconds } = useRecoveryTxState(item)
@@ -69,6 +70,8 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
 
         {isNext && <Countdown seconds={remainingSeconds} />}
       </Box>
+
+      <NetworkWarning />
 
       <RecoveryValidationErrors item={item} />
 

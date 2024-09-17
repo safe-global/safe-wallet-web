@@ -15,6 +15,10 @@ const useAppsSearch = (apps: SafeAppData[], query: string): SafeAppData[] => {
             name: 'description',
             weight: 0.5,
           },
+          {
+            name: 'tags',
+            weight: 0.99,
+          },
         ],
         // https://fusejs.io/api/options.html#threshold
         // Very naive explanation: threshold represents how accurate the search results should be. The default is 0.6

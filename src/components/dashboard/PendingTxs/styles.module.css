@@ -4,13 +4,21 @@
   background-color: var(--color-background-paper);
   border: 1px solid var(--color-background-paper);
   border-radius: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   display: flex;
   align-items: center;
   gap: var(--space-2);
   min-height: 50px;
 }
-
+.innerContainer {
+  min-width: 0;
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--space-2);
+}
 .container:hover {
   background-color: var(--color-background-light);
   border-color: var(--color-secondary-light);
@@ -31,4 +39,12 @@
 .title {
   display: flex;
   justify-content: space-between;
+}
+
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+    align-items: start;
+    flex-wrap: wrap;
+  }
 }

@@ -1,25 +1,6 @@
-import memoize from 'lodash/memoize'
-import {
-  getModuleTransactions,
-  getTransactionDetails,
-  getTransactionHistory,
-} from '@safe-global/safe-gateway-typescript-sdk'
+import { getModuleTransactions, getTransactionHistory } from '@safe-global/safe-gateway-typescript-sdk'
 
-export const getTimezoneOffset = () => new Date().getTimezoneOffset() * 60 * -1000
-
-/**
- * Fetch and memoize transaction details from Safe Gateway
- *
- * @param chainId Chain id
- * @param id Transaction id or hash
- * @returns Transaction details
- */
-export const getTxDetails = memoize(
-  (chainId: string, id: string) => {
-    return getTransactionDetails(chainId, id)
-  },
-  (id: string, chainId: string) => `${chainId}-${id}`,
-)
+export const getTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone
 
 export const getTxHistory = (
   chainId: string,
@@ -32,7 +13,7 @@ export const getTxHistory = (
     chainId,
     safeAddress,
     {
-      timezone_offset: getTimezoneOffset(), // used for grouping txs by date
+      timezone: getTimezone(), // used for grouping txs by date
       // Untrusted and imitation txs are filtered together in the UI
       trusted: hideUntrustedTxs, // if false, include transactions marked untrusted in the UI
       imitation: !hideImitationTxs, // If true, include transactions marked imitation in the UI

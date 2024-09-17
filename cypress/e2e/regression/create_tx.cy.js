@@ -39,7 +39,6 @@ describe('Create transactions tests', () => {
     createtx.changeNonce(14)
     cy.wait(1000)
     createtx.clickOnSignTransactionBtn()
-    createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()
     createtx.verifyQueueLabel()

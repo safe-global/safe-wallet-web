@@ -59,6 +59,7 @@ const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
+const confirmBtnStr = 'Confirm'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
 export const messageNestedStr = `"nestedString": "Test message 3 off-chain"`
@@ -484,7 +485,6 @@ export function openExecutionParamsModal() {
 
 export function verifyAndSubmitExecutionParams() {
   cy.contains(executionParamsStr).parents('form').as('Paramsform')
-
   const arrayNames = ['Wallet nonce', 'Max priority fee (Gwei)', 'Max fee (Gwei)', 'Gas limit']
   arrayNames.forEach((element) => {
     cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('not.be.disabled')
@@ -503,6 +503,10 @@ export function clickOnNoLaterOption() {
 
 export function clickOnSignTransactionBtn() {
   cy.get('button').contains(signBtnStr).click()
+}
+
+export function clickOnConfirmTransactionBtn() {
+  cy.get('button').contains(confirmBtnStr).click()
 }
 
 export function waitForProposeRequest() {

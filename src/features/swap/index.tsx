@@ -3,7 +3,7 @@ import { type CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 import type { OnTradeParamsPayload } from '@cowprotocol/events'
 import { type CowEventListeners, CowEvents } from '@cowprotocol/events'
 import { type MutableRefObject, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Container, Grid, useTheme } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import {
   SafeAppAccessPolicyTypes,
   type SafeAppData,
@@ -20,14 +20,13 @@ import useWallet from '@/hooks/wallets/useWallet'
 import BlockedAddress from '@/components/common/BlockedAddress'
 import useSwapConsent from './useSwapConsent'
 import Disclaimer from '@/components/common/Disclaimer'
-import LegalDisclaimerContent from '@/features/swap/components/LegalDisclaimer'
+import WidgetDisclaimer from '@/components/common/WidgetDisclaimer'
 import { selectSwapParams, setSwapParams, type SwapState } from './store/swapParamsSlice'
 import { setSwapOrder } from '@/store/swapOrderSlice'
 import useChainId from '@/hooks/useChainId'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { id } from 'ethers'
-import useIsSwapFeatureEnabled from './hooks/useIsSwapFeatureEnabled'
 import {
   LIMIT_ORDER_TITLE,
   SWAP_TITLE,
@@ -81,7 +80,6 @@ const SwapWidget = ({ sell }: Params) => {
   const darkMode = useDarkMode()
   const chainId = useChainId()
   const dispatch = useAppDispatch()
-  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const swapParams = useAppSelector(selectSwapParams)
   const { safeAddress, safeLoading } = useSafeInfo()
   const [recipientAddress, setRecipientAddress] = useState('')
@@ -274,6 +272,14 @@ const SwapWidget = ({ sell }: Params) => {
     }))
   }, [palette, darkMode, chainId])
 
+  useEffect(() => {
+    if (!sell) return
+    setParams((params) => ({
+      ...params,
+      sell,
+    }))
+  }, [sell])
+
   const chain = useCurrentChain()
 
   const iframeRef: MutableRefObject<HTMLIFrameElement | null> = useRef<HTMLIFrameElement | null>(null)
@@ -292,16 +298,13 @@ const SwapWidget = ({ sell }: Params) => {
   }
 
   if (!isConsentAccepted) {
-    return <Disclaimer title="Note" content={<LegalDisclaimerContent />} onAccept={onAccept} buttonText="Continue" />
-  }
-
-  if (!isSwapFeatureEnabled) {
     return (
-      <Container>
-        <Grid container justifyContent="center">
-          <div>Swaps are not supported on this chain</div>
-        </Grid>
-      </Container>
+      <Disclaimer
+        title="Note"
+        content={<WidgetDisclaimer widgetName="CoW Swap Widget" />}
+        onAccept={onAccept}
+        buttonText="Continue"
+      />
     )
   }
 
