@@ -27,12 +27,12 @@ const SignOrExecute = (props: SignOrExecuteExtendedProps) => {
 
   const [txDetails, error, isLoading] = useProposeTx(safeTx, props.txId, props.origin)
 
-  return isLoading || !safeTx || !txDetails ? (
-    <SignOrExecuteSkeleton />
-  ) : error ? (
+  return error ? (
     <TxCard>
       <ErrorBoundary error={error} componentStack="SignOrExecuteForm/index" />
     </TxCard>
+  ) : isLoading || !safeTx || !txDetails ? (
+    <SignOrExecuteSkeleton />
   ) : (
     <SignOrExecuteForm {...props} isCreation={!props.txId} txId={props.txId || txDetails.txId} txDetails={txDetails} />
   )
