@@ -49,4 +49,23 @@ describe('SignOrExecute', () => {
     expect(getByTestId('sign-btn')).toBeInTheDocument()
     expect(container).toMatchSnapshot()
   })
+
+  it('should display an error screen', async () => {
+    jest.spyOn(hooks, 'useProposeTx').mockReturnValue([undefined, new Error('This is a mock error message'), false])
+
+    const { container } = render(
+      <SafeTxContext.Provider
+        value={
+          {
+            safeTx: createSafeTx(),
+          } as SafeTxContextParams
+        }
+      >
+        <SignOrExecute onSubmit={jest.fn()} isExecutable={true} />
+      </SafeTxContext.Provider>,
+    )
+
+    expect(container.querySelector('sign-btn')).not.toBeInTheDocument()
+    expect(container).toMatchSnapshot()
+  })
 })

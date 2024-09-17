@@ -39,7 +39,7 @@ import ConfirmationView from '../confirmation-views'
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
 export type SignOrExecuteProps = {
-  txId?: string
+  txId: string
   onSubmit?: SubmitCallback
   children?: ReactNode
   isExecutable?: boolean
@@ -90,7 +90,6 @@ export const SignOrExecuteForm = ({
 
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
-  // const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
   const isDelegate = useIsWalletDelegate()
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
