@@ -10,7 +10,7 @@ import {
 } from '@safe-global/safe-deployments'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-const SUPPORTED_VERSIONS: SafeVersion[] = ['1.4.1', '1.3.0', '1.1.1']
+const SUPPORTED_VERSIONS: SafeVersion[] = ['1.4.1', '1.3.0']
 
 const hasDeployment = (chainId: string, contractAddress: string, deployments: SingletonDeploymentV2[]) => {
   return deployments.some((deployment) => {
@@ -23,13 +23,11 @@ const hasDeployment = (chainId: string, contractAddress: string, deployments: Si
 }
 
 /**
- * Returns all chains where the transaction can be replayed successfully.
- * Therefore the creation's masterCopy and factory need to be deployed to that network.
+ * Returns all chains where the creations's masterCopy and factory are deployed.
  * @param creation
  */
-export const useReplayableNetworks = (
+export const useCompatibleNetworks = (
   creation: ReplayedSafeProps | undefined,
-  deployedChainIds: string[],
 ): (ChainInfo & { available: boolean })[] => {
   const { configs } = useChains()
 
@@ -55,15 +53,13 @@ export const useReplayableNetworks = (
     getProxyFactoryDeployments({ version }),
   ).filter(Boolean) as SingletonDeploymentV2[]
 
-  return configs
-    .filter((config) => !deployedChainIds.includes(config.chainId))
-    .map((config) => {
-      return {
-        ...config,
-        available:
-          (hasDeployment(config.chainId, masterCopy, allL1SingletonDeployments) ||
-            hasDeployment(config.chainId, masterCopy, allL2SingletonDeployments)) &&
-          hasDeployment(config.chainId, factoryAddress, allProxyFactoryDeployments),
-      }
-    })
+  return configs.map((config) => {
+    return {
+      ...config,
+      available:
+        (hasDeployment(config.chainId, masterCopy, allL1SingletonDeployments) ||
+          hasDeployment(config.chainId, masterCopy, allL2SingletonDeployments)) &&
+        hasDeployment(config.chainId, factoryAddress, allProxyFactoryDeployments),
+    }
+  })
 }

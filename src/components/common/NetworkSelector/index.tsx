@@ -8,6 +8,7 @@ import type { SelectChangeEvent } from '@mui/material'
 import {
   Box,
   ButtonBase,
+  CircularProgress,
   Collapse,
   Divider,
   ListSubheader,
@@ -32,7 +33,7 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import uniq from 'lodash/uniq'
 import useSafeOverviews from '@/components/welcome/MyAccounts/useSafeOverviews'
-import { useReplayableNetworks } from '@/features/multichain/hooks/useReplayableNetworks'
+import { useCompatibleNetworks } from '@/features/multichain/hooks/useCompatibleNetworks'
 import { useSafeCreationData } from '@/features/multichain/hooks/useSafeCreationData'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
@@ -134,9 +135,15 @@ const UndeployedNetworks = ({
     [chains, deployedChains],
   )
   const safeCreationResult = useSafeCreationData(safeAddress, deployedChainInfos)
-  const [safeCreationData, safeCreationDataError] = safeCreationResult
+  const [safeCreationData, safeCreationDataError, safeCreationLoading] = safeCreationResult
 
-  const availableNetworks = useReplayableNetworks(safeCreationData, deployedChains)
+  const allCompatibleChains = useCompatibleNetworks(safeCreationData)
+  const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
+
+  const availableNetworks = useMemo(
+    () => allCompatibleChains?.filter((config) => !deployedChains.includes(config.chainId)) || [],
+    [allCompatibleChains, deployedChains],
+  )
 
   const [testNets, prodNets] = useMemo(
     () => partition(availableNetworks, (config) => config.isTestnet),
@@ -149,11 +156,26 @@ const UndeployedNetworks = ({
     setReplayOnChain(chain)
   }
 
-  if (safeCreationDataError || (safeCreationData && noAvailableNetworks)) {
+  if (safeCreationLoading) {
+    return (
+      <Box display="flex" alignItems="center" justifyContent="center" my={1}>
+        <CircularProgress size={18} />
+      </Box>
+    )
+  }
+
+  const errorMessage =
+    safeCreationDataError || (safeCreationData && noAvailableNetworks)
+      ? 'Adding another network is not possible for this Safe.'
+      : isUnsupportedSafeCreationVersion
+      ? 'This account was created from an outdated mastercopy. Adding another network is not possible.'
+      : ''
+
+  if (errorMessage) {
     return (
       <Box px={2} py={1}>
-        <Typography color="text.secondary" fontSize="14px">
-          Adding another network is not possible for this Safe
+        <Typography color="text.secondary" fontSize="14px" maxWidth={300}>
+          {errorMessage}
         </Typography>
       </Box>
     )

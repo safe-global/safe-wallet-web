@@ -7,7 +7,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { upsertAddressBookEntry, upsertMultichainAddressBookEntry } from '@/store/addressBookSlice'
 import madProps from '@/utils/mad-props'
 
 export type AddressEntry = {
@@ -22,13 +22,13 @@ function EntryDialog({
     address: '',
   },
   disableAddressInput = false,
-  chainId,
+  chainIds,
   currentChainId,
 }: {
   handleClose: () => void
   defaultValues?: AddressEntry
   disableAddressInput?: boolean
-  chainId?: string
+  chainIds?: string[]
   currentChainId: string
 }): ReactElement {
   const dispatch = useAppDispatch()
@@ -41,7 +41,11 @@ function EntryDialog({
   const { handleSubmit, formState } = methods
 
   const submitCallback = handleSubmit((data: AddressEntry) => {
-    dispatch(upsertAddressBookEntry({ ...data, chainId: chainId || currentChainId }))
+    if (chainIds) {
+      dispatch(upsertMultichainAddressBookEntry({ ...data, chainIds }))
+    } else {
+      dispatch(upsertAddressBookEntry({ ...data, chainId: currentChainId }))
+    }
     handleClose()
   })
 

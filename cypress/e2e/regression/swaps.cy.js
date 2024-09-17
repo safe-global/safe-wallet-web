@@ -7,10 +7,14 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as owner from '../pages/owners.pages'
 import * as wallet from '../../support/utils/wallet.js'
 import * as swaps_data from '../../fixtures/swaps_data.json'
+import * as navigation from '../pages/navigation.page'
+import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 const signer2 = walletCredentials.OWNER_3_WALLET_ADDRESS
+const signer3 = walletCredentials.OWNER_1_PRIVATE_KEY
+
 let staticSafes = []
 
 let iframeSelector
@@ -195,6 +199,61 @@ describe('Swaps tests', () => {
         })
         swaps.verifyRecipientAlertIsDisplayed()
       })
+    },
+  )
+
+  it(
+    'Verify an order can be created, signed by second signer and deleted. GA tx_confirm, tx_created',
+    { defaultCommandTimeout: 30000 },
+    () => {
+      const tx_created = [
+        {
+          eventLabel: events.txCreatedSwap.eventLabel,
+          eventCategory: events.txCreatedSwap.category,
+          eventType: events.txCreatedSwap.eventType,
+          safeAddress: staticSafes.SEP_STATIC_SAFE_1.slice(6),
+        },
+      ]
+      const tx_confirmed = [
+        {
+          eventLabel: events.txConfirmedSwap.eventLabel,
+          eventCategory: events.txConfirmedSwap.category,
+          eventType: events.txConfirmedSwap.eventType,
+          safeAddress: staticSafes.SEP_STATIC_SAFE_1.slice(6),
+        },
+      ]
+      swaps.acceptLegalDisclaimer()
+      cy.wait(4000)
+      main.getIframeBody(iframeSelector).within(() => {
+        swaps.clickOnSettingsBtn()
+        swaps.setSlippage('0.30')
+        swaps.setExpiry('2')
+        swaps.clickOnSettingsBtn()
+        swaps.selectInputCurrency(swaps.swapTokens.cow)
+        swaps.checkTokenBalance(staticSafes.SEP_STATIC_SAFE_1.substring(4), swaps.swapTokens.cow)
+        swaps.setInputValue(100)
+        swaps.selectOutputCurrency(swaps.swapTokens.dai)
+        swaps.clickOnExceeFeeChkbox()
+        swaps.clickOnSwapBtn()
+        swaps.clickOnSwapBtn()
+      })
+      create_tx.changeNonce(22)
+      create_tx.clickOnSignTransactionBtn()
+      create_tx.clickViewTransaction()
+      navigation.clickOnWalletExpandMoreIcon()
+      navigation.clickOnDisconnectBtn()
+      wallet.connectSigner(signer3)
+      create_tx.clickOnConfirmTransactionBtn()
+      create_tx.clickOnNoLaterOption()
+      create_tx.clickOnSignTransactionBtn()
+      navigation.clickOnWalletExpandMoreIcon()
+      navigation.clickOnDisconnectBtn()
+      wallet.connectSigner(signer)
+      create_tx.deleteTx()
+
+      getEvents()
+      checkDataLayerEvents(tx_created)
+      checkDataLayerEvents(tx_confirmed)
     },
   )
 })

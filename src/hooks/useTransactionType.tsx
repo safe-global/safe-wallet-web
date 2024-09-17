@@ -100,6 +100,12 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         text: 'Withdraw request',
       }
     }
+    case TransactionInfoType.NATIVE_STAKING_WITHDRAW: {
+      return {
+        icon: '/images/common/stake.svg',
+        text: 'Claim',
+      }
+    }
     case TransactionInfoType.CUSTOM: {
       if (isMultiSendTxInfo(tx.txInfo) && !tx.safeAppInfo) {
         return {
