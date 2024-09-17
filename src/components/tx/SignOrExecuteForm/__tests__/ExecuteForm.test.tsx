@@ -31,6 +31,7 @@ describe('ExecuteForm', () => {
   const defaultProps = {
     onSubmit: jest.fn(),
     isOwner: true,
+    txId: '0x123123',
     isExecutionLoop: false,
     relays: [undefined, undefined, false] as AsyncResult<RelayCountResponse>,
     txActions: {
