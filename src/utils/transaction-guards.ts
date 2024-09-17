@@ -6,7 +6,6 @@ import type {
   Creation,
   Custom,
   DateLabel,
-  DecodedDataResponse,
   DetailedExecutionInfo,
   Erc20Transfer,
   Erc721Transfer,
@@ -18,8 +17,10 @@ import type {
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   NativeCoinTransfer,
+  NativeStakingDepositConfirmationView,
   Order,
-  OrderConfirmationView,
+  AnyConfirmationView,
+  AnySwapOrderConfirmationView,
   SafeInfo,
   SettingsChange,
   SwapOrder,
@@ -32,6 +33,11 @@ import type {
   TransferInfo,
   TwapOrder,
   TwapOrderConfirmationView,
+  AnyStakingConfirmationView,
+  StakingTxExitInfo,
+  StakingTxDepositInfo,
+  StakingTxWithdrawInfo,
+  NativeStakingWithdrawConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -50,6 +56,10 @@ import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-st
 import { ethers } from 'ethers'
 import { type TransactionData } from '@safe-global/safe-apps-sdk'
 import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
+import type {
+  DecodedDataResponse,
+  NativeStakingValidatorsExitConfirmationView,
+} from '@safe-global/safe-gateway-typescript-sdk/dist/types/decoded-data'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -151,14 +161,20 @@ export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder =>
   return value.type === TransactionInfoType.TWAP_ORDER
 }
 
-export const isConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
-): decodedData is OrderConfirmationView => {
-  return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
+export const isStakingTxDepositInfo = (value: TransactionInfo): value is StakingTxDepositInfo => {
+  return value.type === TransactionInfoType.NATIVE_STAKING_DEPOSIT
+}
+
+export const isStakingTxExitInfo = (value: TransactionInfo): value is StakingTxExitInfo => {
+  return value.type === TransactionInfoType.NATIVE_STAKING_VALIDATORS_EXIT
+}
+
+export const isStakingTxWithdrawInfo = (value: TransactionInfo): value is StakingTxWithdrawInfo => {
+  return value.type === TransactionInfoType.NATIVE_STAKING_WITHDRAW
 }
 
 export const isTwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+  decodedData: AnyConfirmationView | undefined,
 ): decodedData is TwapOrderConfirmationView => {
   if (decodedData && 'type' in decodedData) {
     return decodedData.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
@@ -168,12 +184,64 @@ export const isTwapConfirmationViewOrder = (
 }
 
 export const isSwapConfirmationViewOrder = (
-  decodedData: DecodedDataResponse | BaselineConfirmationView | OrderConfirmationView | undefined,
+  decodedData: AnyConfirmationView | undefined,
 ): decodedData is SwapOrderConfirmationView => {
   if (decodedData && 'type' in decodedData) {
     return decodedData.type === ConfirmationViewTypes.COW_SWAP_ORDER
   }
 
+  return false
+}
+
+export const isAnySwapConfirmationViewOrder = (
+  decodedData: AnyConfirmationView | undefined,
+): decodedData is AnySwapOrderConfirmationView => {
+  return isSwapConfirmationViewOrder(decodedData) || isTwapConfirmationViewOrder(decodedData)
+}
+
+export const isStakingDepositConfirmationView = (
+  decodedData: AnyConfirmationView | undefined,
+): decodedData is NativeStakingDepositConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
+  }
+  return false
+}
+
+export const isStakingExitConfirmationView = (
+  decodedData: AnyConfirmationView | undefined,
+): decodedData is NativeStakingValidatorsExitConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_VALIDATORS_EXIT
+  }
+  return false
+}
+
+export const isStakingWithdrawConfirmationView = (
+  decodedData: AnyConfirmationView | undefined,
+): decodedData is NativeStakingWithdrawConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData?.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_WITHDRAW
+  }
+  return false
+}
+
+export const isAnyStakingConfirmationView = (
+  decodedData: AnyConfirmationView | undefined,
+): decodedData is AnyStakingConfirmationView => {
+  return (
+    isStakingDepositConfirmationView(decodedData) ||
+    isStakingExitConfirmationView(decodedData) ||
+    isStakingWithdrawConfirmationView(decodedData)
+  )
+}
+
+export const isGenericConfirmation = (
+  decodedData: AnyConfirmationView | undefined,
+): decodedData is BaselineConfirmationView => {
+  if (decodedData && 'type' in decodedData) {
+    return decodedData.type === ConfirmationViewTypes.GENERIC
+  }
   return false
 }
 

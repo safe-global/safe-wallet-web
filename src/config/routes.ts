@@ -4,6 +4,7 @@ export const AppRoutes = {
   wc: '/wc',
   terms: '/terms',
   swap: '/swap',
+  stake: '/stake',
   privacy: '/privacy',
   licenses: '/licenses',
   index: '/',
@@ -45,7 +46,6 @@ export const AppRoutes = {
   share: {
     safeApp: '/share/safe-app',
   },
-  stake: '/stake',
   transactions: {
     tx: '/transactions/tx',
     queue: '/transactions/queue',

@@ -17,6 +17,7 @@ const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
 export const accountInfoHeader = '[data-testid="open-account-center"]'
 export const reviewStepOwnerInfo = '[data-testid="review-step-owner-info"]'
 const reviewStepNextBtn = '[data-testid="review-step-next-btn"]'
+const creationModalLetsGoBtn = '[data-testid="cf-creation-lets-go-btn"]'
 const safeCreationStatusInfo = '[data-testid="safe-status-info"]'
 const startUsingSafeBtn = '[data-testid="start-using-safe-btn"]'
 const sponsorIcon = '[data-testid="sponsor-icon"]'
@@ -32,7 +33,7 @@ export const choiceBtn = '[data-testid="choice-btn"]'
 const addFundsBtn = '[data-testid="add-funds-btn"]'
 const createTxBtn = '[data-testid="create-tx-btn"]'
 const qrCodeSwitch = '[data-testid="qr-code-switch"]'
-export const activateAccountBtn = '[data-testid="activate-account-btn"]'
+export const activateAccountBtn = '[data-testid="activate-account-btn-cf"]'
 const notificationsSwitch = '[data-testid="notifications-switch"]'
 export const addFundsSection = '[data-testid="add-funds-section"]'
 export const noTokensAlert = '[data-testid="no-tokens-alert"]'
@@ -50,6 +51,7 @@ export const addSignerStr = 'Add signer'
 export const accountRecoveryStr = 'Account recovery'
 export const sendTokensStr = 'Send tokens'
 const noWalletConnectedMsg = 'No wallet connected'
+export const deployWalletStr = 'about to deploy this Safe Account'
 
 const connectWalletBtn = '[data-testid="connect-wallet-btn"]'
 
@@ -122,6 +124,12 @@ export function clickOnReviewStepNextBtn() {
   cy.get(reviewStepNextBtn).click()
   cy.get(reviewStepNextBtn, { timeout: 60000 }).should('not.exist')
 }
+
+export function clickOnLetsGoBtn() {
+  cy.get(creationModalLetsGoBtn).click()
+  cy.get(creationModalLetsGoBtn, { timeout: 60000 }).should('not.exist')
+}
+
 export function verifyOwnerInfoIsPresent() {
   return cy.get(reviewStepOwnerInfo).shoul('exist')
 }

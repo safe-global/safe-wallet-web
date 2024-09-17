@@ -18,7 +18,6 @@ export type NavItem = {
   href: string
   tag?: ReactElement
   disabled?: boolean
-  tooltip?: string
 }
 
 export const navItems: NavItem[] = [
@@ -41,9 +40,7 @@ export const navItems: NavItem[] = [
     label: 'Stake',
     icon: <SvgIcon component={StakeIcon} inheritViewBox />,
     href: AppRoutes.stake,
-    tag: <Chip label="Soon" />,
-    disabled: true,
-    tooltip: 'Native staking is coming soon, stay tuned!',
+    tag: <Chip label="New" />,
   },
   {
     label: 'Transactions',

@@ -1,7 +1,9 @@
 import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import EventBus from '@/services/EventBus'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 export enum SafeCreationEvent {
+  AWAITING_EXECUTION = 'AWAITING_EXECUTION',
   PROCESSING = 'PROCESSING',
   RELAYING = 'RELAYING',
   SUCCESS = 'SUCCESS',
@@ -11,6 +13,11 @@ export enum SafeCreationEvent {
 }
 
 export interface SafeCreationEvents {
+  [SafeCreationEvent.AWAITING_EXECUTION]: {
+    groupKey: string
+    safeAddress: string
+    networks: ChainInfo[]
+  }
   [SafeCreationEvent.PROCESSING]: {
     groupKey: string
     txHash: string

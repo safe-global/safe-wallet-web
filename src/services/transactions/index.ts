@@ -1,6 +1,6 @@
 import { getModuleTransactions, getTransactionHistory } from '@safe-global/safe-gateway-typescript-sdk'
 
-export const getTimezoneOffset = () => new Date().getTimezoneOffset() * 60 * -1000
+export const getTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone
 
 export const getTxHistory = (
   chainId: string,
@@ -13,7 +13,7 @@ export const getTxHistory = (
     chainId,
     safeAddress,
     {
-      timezone_offset: getTimezoneOffset(), // used for grouping txs by date
+      timezone: getTimezone(), // used for grouping txs by date
       // Untrusted and imitation txs are filtered together in the UI
       trusted: hideUntrustedTxs, // if false, include transactions marked untrusted in the UI
       imitation: !hideImitationTxs, // If true, include transactions marked imitation in the UI

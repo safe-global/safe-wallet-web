@@ -25,14 +25,7 @@ describe('Swaps history tests 2', () => {
     const dai = swaps.createRegex(swapsHistory.forAtLeastFullDai, 'DAI')
     const eq = swaps.createRegex(swapsHistory.DAIeqCOW, 'COW')
 
-    create_tx.verifyExpandedDetails([
-      swapsHistory.sellFull,
-      dai,
-      eq,
-      swapsHistory.dai,
-      swapsHistory.filled,
-      swapsHistory.gGpV2,
-    ])
+    create_tx.verifyExpandedDetails([swapsHistory.sellFull, dai, eq, swapsHistory.dai, swapsHistory.filled])
   })
 
   // TODO: Added to prod
@@ -70,7 +63,6 @@ describe('Swaps history tests 2', () => {
       eq,
       swapsHistory.cow,
       swapsHistory.cancelled,
-      swapsHistory.gGpV2,
     ])
   })
 
@@ -133,7 +125,7 @@ describe('Swaps history tests 2', () => {
         swapsHistory.forAtMost,
       ])
       main.verifyValuesDoNotExist(create_tx.transactionItem, [swapsHistory.title, swapsHistory.cow, swapsHistory.dai])
-      main.verifyValuesExist(create_tx.transactionItem, [swapsHistory.actionPreSignatureG, swapsHistory.safeAppTitile])
+      main.verifyValuesExist(create_tx.transactionItem, [swapsHistory.actionPreSignatureG, swapsHistory.gGpV2])
     },
   )
 

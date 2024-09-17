@@ -6,9 +6,8 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
-import useDeployGasLimit from '@/features/counterfactual/hooks/useDeployGasLimit'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
-import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
+import { selectUndeployedSafe, type UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import {
   activateReplayedSafe,
   CF_TX_GROUP_KEY,
@@ -18,7 +17,6 @@ import {
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
-import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
@@ -34,14 +32,34 @@ import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@/utils/chains'
 import React, { useContext, useMemo, useState } from 'react'
 import { getLatestSafeVersion } from '@/utils/chains'
-import { createWeb3 } from '@/hooks/wallets/web3'
-import CheckWallet from '@/components/common/CheckWallet'
+import { sameAddress } from '@/utils/addresses'
+import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { createWeb3 } from '@/hooks/wallets/web3'
+import { SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
+import CheckWallet from '@/components/common/CheckWallet'
 
-const useActivateAccount = () => {
+const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
   const chain = useCurrentChain()
   const [gasPrice] = useGasPrice()
-  const { gasLimit } = useDeployGasLimit()
+  const deploymentProps = useMemo(
+    () =>
+      undeployedSafe && isPredictedSafeProps(undeployedSafe.props)
+        ? {
+            owners: undeployedSafe.props.safeAccountConfig.owners,
+            saltNonce: Number(undeployedSafe.props.safeDeploymentConfig?.saltNonce ?? 0),
+            threshold: undeployedSafe.props.safeAccountConfig.threshold,
+          }
+        : undefined,
+    [undeployedSafe],
+  )
+
+  const safeVersion =
+    undeployedSafe && isPredictedSafeProps(undeployedSafe?.props)
+      ? undeployedSafe?.props.safeDeploymentConfig?.safeVersion
+      : undefined
+  const { gasLimit } = useEstimateSafeCreationGas(deploymentProps, safeVersion)
 
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
   const maxFeePerGas = gasPrice?.maxFeePerGas
@@ -51,12 +69,12 @@ const useActivateAccount = () => {
     ? {
         maxFeePerGas: maxFeePerGas?.toString(),
         maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
-        gasLimit: gasLimit?.totalGas.toString(),
+        gasLimit: gasLimit?.toString(),
       }
-    : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.totalGas.toString() }
+    : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
 
-  const totalFee = getTotalFeeFormatted(maxFeePerGas, gasLimit?.totalGas, chain)
-  const walletCanPay = useWalletCanPay({ gasLimit: gasLimit?.totalGas, maxFeePerGas, maxPriorityFeePerGas })
+  const totalFee = getTotalFeeFormatted(maxFeePerGas, gasLimit, chain)
+  const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
 
   return { options, totalFee, walletCanPay }
 }
@@ -66,20 +84,23 @@ const ActivateAccountFlow = () => {
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
 
-  const isWrongChain = useIsWrongChain()
   const chain = useCurrentChain()
   const chainId = useChainId()
   const { safeAddress } = useSafeInfo()
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, safeAddress))
   const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
-  const { options, totalFee, walletCanPay } = useActivateAccount()
+  const { options, totalFee, walletCanPay } = useActivateAccount(undeployedSafe)
+  const isWrongChain = useIsWrongChain()
 
   const undeployedSafeSetup = useMemo(
     () => extractCounterfactualSafeSetup(undeployedSafe, chainId),
     [undeployedSafe, chainId],
   )
 
+  const safeAccountConfig =
+    undeployedSafe && isPredictedSafeProps(undeployedSafe?.props) ? undeployedSafe?.props.safeAccountConfig : undefined
+  const isMultichainSafe = sameAddress(safeAccountConfig?.to, SAFE_TO_L2_SETUP_ADDRESS)
   const ownerAddresses = undeployedSafeSetup?.owners || []
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
@@ -133,6 +154,7 @@ const ActivateAccountFlow = () => {
               callback: onSubmit,
             },
             safeVersion ?? getLatestSafeVersion(chain),
+            isMultichainSafe ? true : undefined,
           )
         } else {
           // Deploy replayed Safe Creation
@@ -153,7 +175,7 @@ const ActivateAccountFlow = () => {
     }
   }
 
-  const submitDisabled = !isSubmittable
+  const submitDisabled = !isSubmittable || isWrongChain
 
   return (
     <TxLayout title="Activate account" hideNonce>
@@ -165,7 +187,11 @@ const ActivateAccountFlow = () => {
 
         <Divider sx={{ mx: -3, my: 2 }} />
 
-        <SafeSetupOverview owners={owners.map((owner) => ({ name: '', address: owner }))} threshold={threshold} />
+        <SafeSetupOverview
+          owners={owners.map((owner) => ({ name: '', address: owner }))}
+          threshold={threshold}
+          networks={[]}
+        />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
         <Box display="flex" flexDirection="column" gap={3}>
@@ -208,9 +234,7 @@ const ActivateAccountFlow = () => {
               <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
             </Box>
           )}
-
-          <NetworkWarning />
-
+          {isWrongChain && <NetworkWarning />}
           {!walletCanPay && !willRelay && (
             <ErrorMessage>
               Your connected wallet doesn&apos;t have enough funds to execute this transaction
@@ -221,7 +245,7 @@ const ActivateAccountFlow = () => {
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
         <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
-          <CheckWallet checkNetwork={!submitDisabled}>
+          <CheckWallet checkNetwork={!submitDisabled} allowNonOwner>
             {(isOk) => (
               <Button
                 data-testid="activate-account-btn"

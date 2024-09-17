@@ -3,6 +3,7 @@ import * as main from '../pages/main.page'
 import * as createwallet from '../pages/create_wallet.pages'
 import * as owner from '../pages/owners.pages'
 import * as wallet from '../../support/utils/wallet.js'
+import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 // DO NOT use OWNER_2_PRIVATE_KEY for safe creation. Used for CF safes.
@@ -13,8 +14,10 @@ describe('[SMOKE] CF Safe creation tests', () => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
     cy.clearLocalStorage()
     main.acceptCookies()
+    getEvents()
   })
-  it('[SMOKE] CF creation happy path', () => {
+
+  it('[SMOKE] CF creation happy path. GA safe_created', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     createwallet.clickOnContinueWithWalletBtn()
@@ -23,6 +26,21 @@ describe('[SMOKE] CF Safe creation tests', () => {
     createwallet.clickOnNextBtn()
     createwallet.selectPayLaterOption()
     createwallet.clickOnReviewStepNextBtn()
-    createwallet.verifyCFSafeCreated()
+    cy.wait(1000)
+    main.getAddedSafeAddressFromLocalStorage(constants.networkKeys.sepolia, 0).then((address) => {
+      const safe_created = [
+        {
+          eventLabel: events.safeCreatedCF.eventLabel,
+          eventCategory: events.safeCreatedCF.category,
+          eventAction: events.safeCreatedCF.action,
+          eventType: events.safeCreatedCF.eventType,
+          event: events.safeCreatedCF.eventName,
+          safeAddress: address.slice(2),
+        },
+      ]
+      checkDataLayerEvents(safe_created)
+      createwallet.clickOnLetsGoBtn()
+      createwallet.verifyCFSafeCreated()
+    })
   })
 })

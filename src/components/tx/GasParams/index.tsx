@@ -28,7 +28,7 @@ const GasDetail = ({ name, value, isLoading }: { name: string; value: string; is
 type GasParamsProps = {
   params: AdvancedParameters
   isExecution: boolean
-  isEIP1559: boolean
+  isEIP1559?: boolean
   onEdit?: () => void
   gasLimitError?: Error
   willRelay?: boolean

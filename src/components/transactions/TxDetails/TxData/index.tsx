@@ -1,12 +1,16 @@
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
+import { isStakingTxWithdrawInfo } from '@/utils/transaction-guards'
+import { isStakingTxExitInfo } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
   isCustomTxInfo,
   isMigrateToL2TxData,
   isMultisigDetailedExecutionInfo,
+  isOrderTxInfo,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
+  isStakingTxDepositInfo,
   isSupportedSpendingLimitAddress,
   isTransferTxInfo,
 } from '@/utils/transaction-guards'
@@ -18,6 +22,10 @@ import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
 import { MigrationToL2TxData } from './MigrationToL2TxData'
+import SwapOrder from '@/features/swap/components/SwapOrder'
+import StakingTxDepositDetails from '@/features/stake/components/StakingTxDepositDetails'
+import StakingTxExitDetails from '@/features/stake/components/StakingTxExitDetails'
+import StakingTxWithdrawDetails from '@/features/stake/components/StakingTxWithdrawDetails'
 
 const TxData = ({
   txDetails,
@@ -31,6 +39,22 @@ const TxData = ({
   const chainId = useChainId()
   const txInfo = txDetails.txInfo
   const toInfo = isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined
+
+  if (isOrderTxInfo(txDetails.txInfo)) {
+    return <SwapOrder txData={txDetails.txData} txInfo={txDetails.txInfo} />
+  }
+
+  if (isStakingTxDepositInfo(txDetails.txInfo)) {
+    return <StakingTxDepositDetails txData={txDetails.txData} info={txDetails.txInfo} />
+  }
+
+  if (isStakingTxExitInfo(txDetails.txInfo)) {
+    return <StakingTxExitDetails txData={txDetails.txData} info={txDetails.txInfo} />
+  }
+
+  if (isStakingTxWithdrawInfo(txDetails.txInfo)) {
+    return <StakingTxWithdrawDetails info={txDetails.txInfo} />
+  }
 
   if (isTransferTxInfo(txInfo)) {
     return <TransferTxInfo txInfo={txInfo} txStatus={txDetails.txStatus} trusted={trusted} imitation={imitation} />

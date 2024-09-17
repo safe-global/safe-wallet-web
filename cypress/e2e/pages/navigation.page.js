@@ -16,8 +16,8 @@ export function clickOnSideNavigation(option) {
   cy.get(option).should('exist').click()
 }
 
-export function clickOnModalCloseBtn() {
-  cy.get(modalCloseIcon).eq(0).trigger('click')
+export function clickOnModalCloseBtn(index) {
+  cy.get(modalCloseIcon).eq(index).trigger('click')
 }
 
 export function clickOnNewTxBtn() {

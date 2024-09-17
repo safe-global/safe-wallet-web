@@ -5,6 +5,7 @@ import { WALLET_KEYS } from '@/hooks/wallets/consts'
 import { EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import memoize from 'lodash/memoize'
 import { PRIVATE_KEY_MODULE_LABEL } from '@/services/private-key-module'
+import { type JsonRpcProvider } from 'ethers'
 
 const WALLETCONNECT = 'WalletConnect'
 
@@ -34,14 +35,14 @@ export const isHardwareWallet = (wallet: ConnectedWallet): boolean => {
   )
 }
 
-export const isSmartContract = async (address: string): Promise<boolean> => {
-  const provider = getWeb3ReadOnly()
+export const isSmartContract = async (address: string, provider?: JsonRpcProvider): Promise<boolean> => {
+  const web3 = provider ?? getWeb3ReadOnly()
 
-  if (!provider) {
+  if (!web3) {
     throw new Error('Provider not found')
   }
 
-  const code = await provider.getCode(address)
+  const code = await web3.getCode(address)
 
   return code !== EMPTY_DATA
 }

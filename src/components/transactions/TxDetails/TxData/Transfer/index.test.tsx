@@ -56,7 +56,7 @@ describe('TransferTxInfo', () => {
       expect(result.getByText('1 TST')).toBeInTheDocument()
       expect(result.getByText(recipient)).toBeInTheDocument()
       expect(result.queryByText('malicious', { exact: false })).toBeNull()
-      expect(result.queryByLabelText('This token is unfamiliar', { exact: false })).toBeNull()
+      expect(result.queryByLabelText('This token isn’t verified on major token lists', { exact: false })).toBeNull()
     })
 
     it('incoming tx', () => {
@@ -91,7 +91,7 @@ describe('TransferTxInfo', () => {
       expect(result.getByText('12.34 TST')).toBeInTheDocument()
       expect(result.getByText(sender)).toBeInTheDocument()
       expect(result.queryByText('malicious', { exact: false })).toBeNull()
-      expect(result.queryByLabelText('This token is unfamiliar', { exact: false })).toBeNull()
+      expect(result.queryByLabelText('This token isn’t verified on major token lists', { exact: false })).toBeNull()
     })
   })
 
@@ -128,7 +128,9 @@ describe('TransferTxInfo', () => {
       expect(result.getByText('1 TST')).toBeInTheDocument()
       expect(result.getByText(recipient)).toBeInTheDocument()
       expect(result.queryByText('malicious', { exact: false })).toBeNull()
-      expect(result.getByLabelText('This token is unfamiliar', { exact: false })).toBeInTheDocument()
+      expect(
+        result.getByLabelText('This token isn’t verified on major token lists', { exact: false }),
+      ).toBeInTheDocument()
     })
 
     it('incoming tx', () => {
@@ -163,7 +165,9 @@ describe('TransferTxInfo', () => {
       expect(result.getByText('12.34 TST')).toBeInTheDocument()
       expect(result.getByText(sender)).toBeInTheDocument()
       expect(result.queryByText('malicious', { exact: false })).toBeNull()
-      expect(result.queryByLabelText('This token is unfamiliar', { exact: false })).toBeInTheDocument()
+      expect(
+        result.queryByLabelText('This token isn’t verified on major token lists', { exact: false }),
+      ).toBeInTheDocument()
     })
   })
 
@@ -200,7 +204,7 @@ describe('TransferTxInfo', () => {
       expect(result.getByText('1 TST')).toBeInTheDocument()
       expect(result.getByText(recipient)).toBeInTheDocument()
       expect(result.getByText('malicious', { exact: false })).toBeInTheDocument()
-      expect(result.queryByLabelText('This token is unfamiliar', { exact: false })).toBeNull()
+      expect(result.queryByLabelText('This token isn’t verified on major token lists', { exact: false })).toBeNull()
     })
 
     it('incoming tx', () => {
@@ -235,7 +239,7 @@ describe('TransferTxInfo', () => {
       expect(result.getByText('12.34 TST')).toBeInTheDocument()
       expect(result.getByText(sender)).toBeInTheDocument()
       expect(result.getByText('malicious', { exact: false })).toBeInTheDocument()
-      expect(result.queryByLabelText('This token is unfamiliar', { exact: false })).toBeNull()
+      expect(result.queryByLabelText('This token isn’t verified on major token lists', { exact: false })).toBeNull()
     })
 
     it('untrusted and imitation tx', () => {
@@ -270,7 +274,7 @@ describe('TransferTxInfo', () => {
       expect(result.getByText('12.34 TST')).toBeInTheDocument()
       expect(result.getByText(sender)).toBeInTheDocument()
       expect(result.getByText('malicious', { exact: false })).toBeInTheDocument()
-      expect(result.queryByLabelText('This token is unfamiliar', { exact: false })).toBeNull()
+      expect(result.queryByLabelText('This token isn’t verified on major token lists', { exact: false })).toBeNull()
     })
   })
 })

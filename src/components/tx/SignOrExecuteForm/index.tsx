@@ -27,15 +27,14 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isConfirmationViewOrder, isCustomTxInfo, isMigrateToL2MultiSend } from '@/utils/transaction-guards'
-import SwapOrderConfirmationView from '@/features/swap/components/SwapOrderConfirmationView'
 import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
-import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
+import { isCustomTxInfo, isGenericConfirmation, isMigrateToL2MultiSend } from '@/utils/transaction-guards'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
 import { Blockaid } from '../security/blockaid'
 
 import TxData from '@/components/transactions/TxDetails/TxData'
+import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
 import { MigrateToL2Information } from './MigrateToL2Information'
 import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
@@ -43,6 +42,8 @@ import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
+import { isChangingSignerSetup } from '@/features/multichain/helpers/utils'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
@@ -99,7 +100,7 @@ export const SignOrExecuteForm = ({
   const [decodedData] = useDecodeTx(safeTx)
 
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
-  const isSwapOrder = isConfirmationViewOrder(decodedData)
+
   const { data: txDetails } = useGetTransactionDetailsQuery(
     chainId && props.txId
       ? {
@@ -118,6 +119,7 @@ export const SignOrExecuteForm = ({
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
   const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
+  const isChangingSigners = isChangingSignerSetup(decodedData)
   const isMultiChainMigration = isMigrateToL2MultiSend(decodedData)
   const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(decodedData)
 
@@ -157,13 +159,11 @@ export const SignOrExecuteForm = ({
       <TxCard>
         {props.children}
 
-        {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
-
         {isMultiChainMigration && <MigrateToL2Information variant="queue" newMasterCopy={multiChainMigrationTarget} />}
 
-        {isSwapOrder && (
+        {decodedData && (
           <ErrorBoundary fallback={<></>}>
-            <SwapOrderConfirmationView order={decodedData} settlementContract={safeTx?.data.to ?? ''} />
+            <ConfirmationOrder decodedData={decodedData} toAddress={safeTx?.data.to ?? ''} />
           </ErrorBoundary>
         )}
 
@@ -178,7 +178,9 @@ export const SignOrExecuteForm = ({
               txId={props.txId}
               decodedData={decodedData}
               showMultisend={!props.isBatch}
-              showMethodCall={props.showMethodCall && !showTxDetails && !isSwapOrder && !isApproval}
+              showMethodCall={
+                props.showMethodCall && !showTxDetails && !isApproval && isGenericConfirmation(decodedData)
+              }
             />
           </ErrorBoundary>
         )}
@@ -204,6 +206,8 @@ export const SignOrExecuteForm = ({
         )}
 
         <NetworkWarning />
+
+        {isChangingSigners && <ChangeSignerSetupWarning />}
 
         {!isMultiChainMigration && <UnknownContractError />}
 
