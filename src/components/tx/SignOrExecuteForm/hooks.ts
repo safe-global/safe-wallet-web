@@ -44,8 +44,8 @@ export const useProposeTx = (safeTx?: SafeTransaction, txId?: string, origin?: s
 
   return useAsync(
     () => {
-      if (!safeTx) return
       if (txId) return getTransactionDetails(safe.chainId, txId)
+      if (!safeTx) return
 
       return proposeTx(safeTx, txId, origin)
     },
@@ -78,7 +78,6 @@ export const useTxActions = (): TxActions => {
 
     const proposeTx: TxActions['proposeTx'] = async (safeTx, txId, origin) => {
       assertTx(safeTx)
-      // assertWallet(wallet)
       return _propose(wallet?.address || safe.owners[0].value, safeTx, txId, origin)
     }
 
