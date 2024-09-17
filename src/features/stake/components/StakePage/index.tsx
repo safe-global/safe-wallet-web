@@ -13,7 +13,7 @@ const StakePage = () => {
   return (
     <>
       {isConsentAccepted === undefined ? null : isConsentAccepted ? (
-        <StakingWidget asset={String(asset)} />
+        <StakingWidget asset={String(asset ? asset : '')} />
       ) : (
         <Stack direction="column" alignItems="center" justifyContent="center" flex={1}>
           <Disclaimer

@@ -4,7 +4,7 @@ import useChains from '@/hooks/useChains'
 import { useMemo } from 'react'
 import { WIDGET_PRODUCTION_URL, WIDGET_TESTNET_URL } from '@/features/stake/constants'
 
-export const useGetStakeWidgetUrl = (asset?: string) => {
+export const useGetStakeWidgetUrl = (asset?: string, tab = 'earn') => {
   let url = WIDGET_PRODUCTION_URL
   const isDarkMode = useDarkMode()
   const currentChainId = useChainId()
@@ -13,6 +13,9 @@ export const useGetStakeWidgetUrl = (asset?: string) => {
   if (testChains.some((chain) => chain.chainId === currentChainId)) {
     url = WIDGET_TESTNET_URL
   }
+
+  url = `${url}/${tab}`
+
   const params = new URLSearchParams()
   params.append('theme', isDarkMode ? 'dark' : 'light')
 

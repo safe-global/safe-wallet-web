@@ -18,6 +18,7 @@ import css from './styles.module.css'
 import SwapWidget from '@/features/swap/components/SwapWidget'
 import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
 import { useSafeTokenEnabled } from '@/hooks/useSafeTokenEnabled'
+import StakingDashboardWidget from '@/features/stake/components/StakeDashboardWidget'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
@@ -66,6 +67,10 @@ const Dashboard = (): ReactElement => {
 
             <Grid item xs={12} lg={6}>
               <PendingTxsList />
+            </Grid>
+
+            <Grid item xs={12}>
+              <StakingDashboardWidget />
             </Grid>
 
             {showSafeApps && (
