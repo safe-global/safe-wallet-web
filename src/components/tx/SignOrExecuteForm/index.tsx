@@ -6,6 +6,7 @@ import { useProposeTx } from './hooks'
 import { useContext } from 'react'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import TxCard from '@/components/tx-flow/common/TxCard'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 type SignOrExecuteExtendedProps = Omit<SignOrExecuteProps, 'txId'> & {
   onSubmit?: SubmitCallback
@@ -24,17 +25,17 @@ type SignOrExecuteExtendedProps = Omit<SignOrExecuteProps, 'txId'> & {
 
 const SignOrExecute = (props: SignOrExecuteExtendedProps) => {
   const { safeTx } = useContext(SafeTxContext)
-
-  const [txDetails, error, isLoading] = useProposeTx(safeTx, props.txId, props.origin)
+  const { safe } = useSafeInfo()
+  const [txDetails, error, isLoading] = useProposeTx(safe.deployed ? safeTx : undefined, props.txId, props.origin)
 
   return error ? (
     <TxCard>
       <ErrorBoundary error={error} componentStack="SignOrExecuteForm/index" />
     </TxCard>
-  ) : isLoading || !safeTx || !txDetails ? (
+  ) : isLoading || !safeTx || (!txDetails && safe.deployed) ? (
     <SignOrExecuteSkeleton />
   ) : (
-    <SignOrExecuteForm {...props} isCreation={!props.txId} txId={props.txId || txDetails.txId} txDetails={txDetails} />
+    <SignOrExecuteForm {...props} isCreation={!props.txId} txId={props.txId || txDetails?.txId} txDetails={txDetails} />
   )
 }
 

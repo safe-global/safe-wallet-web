@@ -39,7 +39,7 @@ import ConfirmationView from '../confirmation-views'
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
 export type SignOrExecuteProps = {
-  txId: string
+  txId?: string
   onSubmit?: SubmitCallback
   children?: ReactNode
   isExecutable?: boolean
@@ -141,7 +141,7 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        {props.txDetails && <ConfirmationView isCreation={isCreation} txDetails={props.txDetails} safeTx={safeTx} />}
+        <ConfirmationView isCreation={isCreation} txDetails={props.txDetails} safeTx={safeTx} />
 
         {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>
