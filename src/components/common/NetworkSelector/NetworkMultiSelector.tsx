@@ -9,8 +9,9 @@ import { useRouter } from 'next/router'
 import { getNetworkLink } from '.'
 import useWallet from '@/hooks/wallets/useWallet'
 import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameStep'
-import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { getSafeSingletonDeployments } from '@safe-global/safe-deployments'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { hasCanonicalDeployment } from '@/services/contracts/deployments'
 
 const NetworkMultiSelector = ({
   name,
@@ -60,17 +61,19 @@ const NetworkMultiSelector = ({
       // do not allow multi chain safes for advanced setup flow.
       if (isAdvancedFlow) return optionNetwork.chainId != firstSelectedNetwork.chainId
 
-      const optionHasCanonicalSingletonDeployment = Boolean(
-        getSafeSingletonDeployment({
+      const optionHasCanonicalSingletonDeployment = hasCanonicalDeployment(
+        getSafeSingletonDeployments({
           network: optionNetwork.chainId,
           version: getLatestSafeVersion(firstSelectedNetwork),
-        })?.deployments.canonical,
+        }),
+        optionNetwork.chainId,
       )
-      const selectedHasCanonicalSingletonDeployment = Boolean(
-        getSafeSingletonDeployment({
+      const selectedHasCanonicalSingletonDeployment = hasCanonicalDeployment(
+        getSafeSingletonDeployments({
           network: firstSelectedNetwork.chainId,
           version: getLatestSafeVersion(firstSelectedNetwork),
-        })?.deployments.canonical,
+        }),
+        firstSelectedNetwork.chainId,
       )
 
       // Only 1.4.1 safes with canonical deployment addresses can be deployed as part of a multichain group
