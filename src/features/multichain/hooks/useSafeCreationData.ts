@@ -1,15 +1,31 @@
 import useAsync, { type AsyncResult } from '@/hooks/useAsync'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type UndeployedSafe, selectRpc, type ReplayedSafeProps, selectUndeployedSafes } from '@/store/slices'
-import { Safe_proxy_factory__factory } from '@/types/contracts'
+import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
 import { sameAddress } from '@/utils/addresses'
 import { getCreationTransaction } from 'safe-client-gateway-sdk'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
-import { isPredictedSafeProps } from '@/features/counterfactual/utils'
+import { determineMasterCopyVersion, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
+
+export const decodeSetupData = (setupData: string): ReplayedSafeProps['safeAccountConfig'] => {
+  const [owners, threshold, to, data, fallbackHandler, paymentToken, payment, paymentReceiver] =
+    Safe__factory.createInterface().decodeFunctionData('setup', setupData)
+
+  return {
+    owners: [...owners],
+    threshold: Number(threshold),
+    to,
+    data,
+    fallbackHandler,
+    paymentToken,
+    payment: Number(payment),
+    paymentReceiver,
+  }
+}
 
 const getUndeployedSafeCreationData = async (undeployedSafe: UndeployedSafe): Promise<ReplayedSafeProps> => {
   if (isPredictedSafeProps(undeployedSafe.props)) {
@@ -72,7 +88,6 @@ const getCreationDataForChain = async (
   }
 
   // decode tx
-
   const [masterCopy, initializer, saltNonce] = proxyFactoryInterface.decodeFunctionData(
     'createProxyWithNonce',
     `0x${txData.slice(startOfTx)}`,
@@ -86,12 +101,19 @@ const getCreationDataForChain = async (
     // We found the wrong tx. This tx seems to deploy multiple Safes at once. This is not supported yet.
     throw new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_SAFE_CREATION)
   }
+  const safeAccountConfig = decodeSetupData(creation.setupData)
+  const safeVersion = determineMasterCopyVersion(creation.masterCopy, chain.chainId)
+
+  if (!safeVersion) {
+    throw new Error('Could not determine Safe version of used master copy')
+  }
 
   return {
     factoryAddress: creation.factoryAddress,
     masterCopy: creation.masterCopy,
-    setupData: creation.setupData,
+    safeAccountConfig,
     saltNonce: saltNonce.toString(),
+    safeVersion,
   }
 }
 

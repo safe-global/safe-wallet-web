@@ -71,7 +71,7 @@ const ReplaySafeDialog = ({
 
   const onFormSubmit = handleSubmit(async (data) => {
     const selectedChain = chain ?? replayableChains?.find((config) => config.chainId === data.chainId)
-    if (!safeCreationData || !safeCreationData.setupData || !selectedChain || !safeCreationData.masterCopy) {
+    if (!safeCreationData || !selectedChain) {
       return
     }
 

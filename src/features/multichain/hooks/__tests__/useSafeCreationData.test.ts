@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@/tests/test-utils'
+import { fakerChecksummedAddress, renderHook, waitFor } from '@/tests/test-utils'
 import { SAFE_CREATION_DATA_ERRORS, useSafeCreationData } from '../useSafeCreationData'
 import { faker } from '@faker-js/faker'
 import { PendingSafeStatus, type UndeployedSafe } from '@/store/slices'
@@ -12,6 +12,8 @@ import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
 import { type JsonRpcProvider } from 'ethers'
 import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 
 describe('useSafeCreationData', () => {
   beforeAll(() => {
@@ -39,7 +41,17 @@ describe('useSafeCreationData', () => {
         factoryAddress: faker.finance.ethereumAddress(),
         saltNonce: '420',
         masterCopy: faker.finance.ethereumAddress(),
-        setupData: faker.string.hexadecimal({ length: 64 }),
+        safeVersion: '1.3.0',
+        safeAccountConfig: {
+          owners: [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
+          threshold: 1,
+          data: faker.string.hexadecimal({ length: 64 }),
+          to: faker.finance.ethereumAddress(),
+          fallbackHandler: faker.finance.ethereumAddress(),
+          payment: 0,
+          paymentToken: ZERO_ADDRESS,
+          paymentReceiver: ZERO_ADDRESS,
+        },
       },
       status: {
         status: PendingSafeStatus.AWAITING_EXECUTION,
@@ -342,7 +354,7 @@ describe('useSafeCreationData', () => {
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
       faker.finance.ethereumAddress(),
-      faker.string.hexadecimal({ length: 64 }),
+      faker.string.hexadecimal({ length: 64, casing: 'lower' }),
       faker.finance.ethereumAddress(),
       faker.finance.ethereumAddress(),
       0,
@@ -392,24 +404,34 @@ describe('useSafeCreationData', () => {
   })
 
   it('should return transaction data for direct Safe creation txs', async () => {
+    const safeProps = {
+      owners: [fakerChecksummedAddress(), fakerChecksummedAddress()],
+      threshold: 1,
+      to: fakerChecksummedAddress(),
+      data: faker.string.hexadecimal({ length: 64, casing: 'lower' }),
+      fallbackHandler: fakerChecksummedAddress(),
+      paymentToken: ZERO_ADDRESS,
+      payment: 0,
+      paymentReceiver: fakerChecksummedAddress(),
+    }
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
-      [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
-      1,
-      faker.finance.ethereumAddress(),
-      faker.string.hexadecimal({ length: 64 }),
-      faker.finance.ethereumAddress(),
-      faker.finance.ethereumAddress(),
-      0,
-      faker.finance.ethereumAddress(),
+      safeProps.owners,
+      safeProps.threshold,
+      safeProps.to,
+      safeProps.data,
+      safeProps.fallbackHandler,
+      safeProps.paymentToken,
+      safeProps.payment,
+      safeProps.paymentReceiver,
     ])
 
     const mockTxHash = faker.string.hexadecimal({ length: 64 })
-    const mockFactoryAddress = faker.finance.ethereumAddress()
-    const mockMasterCopyAddress = faker.finance.ethereumAddress()
+    const mockFactoryAddress = fakerChecksummedAddress()
+    const mockMasterCopyAddress = getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress!
     jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
       data: {
         created: new Date(Date.now()).toISOString(),
-        creator: faker.finance.ethereumAddress(),
+        creator: fakerChecksummedAddress(),
         factoryAddress: mockFactoryAddress,
         transactionHash: mockTxHash,
         masterCopy: mockMasterCopyAddress,
@@ -445,8 +467,9 @@ describe('useSafeCreationData', () => {
         {
           factoryAddress: mockFactoryAddress,
           masterCopy: mockMasterCopyAddress,
-          setupData,
+          safeAccountConfig: safeProps,
           saltNonce: '69',
+          safeVersion: '1.3.0',
         },
         undefined,
         false,
@@ -455,20 +478,31 @@ describe('useSafeCreationData', () => {
   })
 
   it('should return transaction data for creation bundles', async () => {
+    const safeProps = {
+      owners: [fakerChecksummedAddress(), fakerChecksummedAddress()],
+      threshold: 1,
+      to: fakerChecksummedAddress(),
+      data: faker.string.hexadecimal({ length: 64, casing: 'lower' }),
+      fallbackHandler: fakerChecksummedAddress(),
+      paymentToken: ZERO_ADDRESS,
+      payment: 0,
+      paymentReceiver: fakerChecksummedAddress(),
+    }
+
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
-      [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
-      1,
-      faker.finance.ethereumAddress(),
-      faker.string.hexadecimal({ length: 64 }),
-      faker.finance.ethereumAddress(),
-      faker.finance.ethereumAddress(),
-      0,
-      faker.finance.ethereumAddress(),
+      safeProps.owners,
+      safeProps.threshold,
+      safeProps.to,
+      safeProps.data,
+      safeProps.fallbackHandler,
+      safeProps.paymentToken,
+      safeProps.payment,
+      safeProps.paymentReceiver,
     ])
 
     const mockTxHash = faker.string.hexadecimal({ length: 64 })
     const mockFactoryAddress = faker.finance.ethereumAddress()
-    const mockMasterCopyAddress = faker.finance.ethereumAddress()
+    const mockMasterCopyAddress = getSafeSingletonDeployment({ version: '1.4.1' })?.defaultAddress!
 
     jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
       data: {
@@ -523,7 +557,8 @@ describe('useSafeCreationData', () => {
         {
           factoryAddress: mockFactoryAddress,
           masterCopy: mockMasterCopyAddress,
-          setupData,
+          safeAccountConfig: safeProps,
+          safeVersion: '1.4.1',
           saltNonce: '69',
         },
         undefined,

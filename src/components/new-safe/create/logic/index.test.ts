@@ -2,10 +2,10 @@ import { JsonRpcProvider } from 'ethers'
 import * as contracts from '@/services/contracts/safeContracts'
 import type { SafeProvider } from '@safe-global/protocol-kit'
 import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
-import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import * as web3 from '@/hooks/wallets/web3'
 import * as sdkHelpers from '@/services/tx/tx-sender/sdk'
-import { SAFE_TO_L2_SETUP_INTERFACE, relaySafeCreation, getRedirect } from '@/components/new-safe/create/logic/index'
+import { relaySafeCreation, getRedirect } from '@/components/new-safe/create/logic/index'
 import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
 import {
@@ -21,8 +21,8 @@ import * as gateway from '@safe-global/safe-gateway-typescript-sdk'
 import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
 import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import { chainBuilder } from '@/tests/builders/chains'
-import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
-import { SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
+import { type ReplayedSafeProps } from '@/store/slices'
+import { faker } from '@faker-js/faker'
 
 const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
 
@@ -70,13 +70,29 @@ describe('createNewSafeViaRelayer', () => {
     const safeContractAddress = await (
       await getReadOnlyGnosisSafeContract(mockChainInfo, latestSafeVersion)
     ).getAddress()
-    const l2Deployment = getSafeL2SingletonDeployment({ version: latestSafeVersion, network: mockChainInfo.chainId })
+
+    const undeployedSafeProps: ReplayedSafeProps = {
+      safeAccountConfig: {
+        owners: [owner1, owner2],
+        threshold: 1,
+        data: EMPTY_DATA,
+        to: ZERO_ADDRESS,
+        fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
+        paymentReceiver: ZERO_ADDRESS,
+        payment: 0,
+        paymentToken: ZERO_ADDRESS,
+      },
+      safeVersion: latestSafeVersion,
+      factoryAddress: proxyFactoryAddress,
+      masterCopy: safeContractAddress,
+      saltNonce: '69',
+    }
 
     const expectedInitializer = Gnosis_safe__factory.createInterface().encodeFunctionData('setup', [
       [owner1, owner2],
       expectedThreshold,
-      SAFE_TO_L2_SETUP_ADDRESS,
-      SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [l2Deployment?.defaultAddress]),
+      ZERO_ADDRESS,
+      EMPTY_DATA,
       await readOnlyFallbackHandlerContract.getAddress(),
       ZERO_ADDRESS,
       0,
@@ -89,7 +105,7 @@ describe('createNewSafeViaRelayer', () => {
       expectedSaltNonce,
     ])
 
-    const taskId = await relaySafeCreation(mockChainInfo, [owner1, owner2], expectedThreshold, expectedSaltNonce)
+    const taskId = await relaySafeCreation(mockChainInfo, undeployedSafeProps)
 
     expect(taskId).toEqual('0x123')
     expect(relayTransaction).toHaveBeenCalledTimes(1)
@@ -104,7 +120,24 @@ describe('createNewSafeViaRelayer', () => {
     const relayFailedError = new Error('Relay failed')
     jest.spyOn(gateway, 'relayTransaction').mockRejectedValue(relayFailedError)
 
-    expect(relaySafeCreation(mockChainInfo, [owner1, owner2], 1, 69)).rejects.toEqual(relayFailedError)
+    const undeployedSafeProps: ReplayedSafeProps = {
+      safeAccountConfig: {
+        owners: [owner1, owner2],
+        threshold: 1,
+        data: EMPTY_DATA,
+        to: ZERO_ADDRESS,
+        fallbackHandler: faker.finance.ethereumAddress(),
+        paymentReceiver: ZERO_ADDRESS,
+        payment: 0,
+        paymentToken: ZERO_ADDRESS,
+      },
+      safeVersion: latestSafeVersion,
+      factoryAddress: faker.finance.ethereumAddress(),
+      masterCopy: faker.finance.ethereumAddress(),
+      saltNonce: '69',
+    }
+
+    expect(relaySafeCreation(mockChainInfo, undeployedSafeProps)).rejects.toEqual(relayFailedError)
   })
 
   describe('getRedirect', () => {

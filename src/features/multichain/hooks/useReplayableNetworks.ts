@@ -35,10 +35,6 @@ export const useReplayableNetworks = (creation: ReplayedSafeProps | undefined, d
 
   const { masterCopy, factoryAddress } = creation
 
-  if (!masterCopy) {
-    return []
-  }
-
   const allL1SingletonDeployments = SUPPORTED_VERSIONS.map((version) =>
     getSafeSingletonDeployments({ version }),
   ).filter(Boolean) as SingletonDeploymentV2[]
