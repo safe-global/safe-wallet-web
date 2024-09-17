@@ -39,24 +39,25 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
-import { AppRoutes } from '@/config/routes'
-import useWallet from '@/hooks/wallets/useWallet'
 
-export const getNetworkLink = (router: NextRouter, networkShortName: string, isWalletConnected: boolean) => {
-  const shouldKeepPath = !router.query.safe
+export const getNetworkLink = (router: NextRouter, safeAddress: string, networkShortName: string) => {
+  const isSafeOpened = safeAddress !== ''
+
+  const query = (
+    isSafeOpened
+      ? {
+          safe: `${networkShortName}:${safeAddress}`,
+        }
+      : { chain: networkShortName }
+  ) as {
+    safe?: string
+    chain?: string
+    safeViewRedirectURL?: string
+  }
 
   const route = {
-    pathname: shouldKeepPath
-      ? router.pathname
-      : isWalletConnected
-      ? AppRoutes.welcome.accounts
-      : AppRoutes.welcome.index,
-    query: {
-      chain: networkShortName,
-    } as {
-      chain: string
-      safeViewRedirectURL?: string
-    },
+    pathname: router.pathname,
+    query,
   }
 
   if (router.query?.safeViewRedirectURL) {
@@ -242,7 +243,6 @@ const NetworkSelector = ({
   const router = useRouter()
   const safeAddress = useSafeAddress()
   const chains = useAppSelector(selectChains)
-  const isWalletConnected = !!useWallet()
 
   const isSafeOpened = safeAddress !== ''
 
@@ -283,7 +283,7 @@ const NetworkSelector = ({
 
     if (shortName) {
       trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: newChainId })
-      const networkLink = getNetworkLink(router, shortName, isWalletConnected)
+      const networkLink = getNetworkLink(router, safeAddress, shortName)
       router.push(networkLink)
     }
   }
@@ -298,7 +298,7 @@ const NetworkSelector = ({
       return (
         <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
           <Link
-            href={getNetworkLink(router, chain.shortName, isWalletConnected)}
+            href={getNetworkLink(router, safeAddress, chain.shortName)}
             onClick={onChainSelect}
             className={css.item}
           >
@@ -312,7 +312,7 @@ const NetworkSelector = ({
         </MenuItem>
       )
     },
-    [chains.data, isWalletConnected, onChainSelect, router, safeOverviews],
+    [chains.data, onChainSelect, router, safeAddress, safeOverviews],
   )
 
   return configs.length ? (
