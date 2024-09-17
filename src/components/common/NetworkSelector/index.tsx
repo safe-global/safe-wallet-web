@@ -68,25 +68,32 @@ export const getNetworkLink = (router: NextRouter, safeAddress: string, networkS
 }
 
 const UndeployedNetworkMenuItem = ({
-  chainId,
-  chainConfigs,
+  chain,
   isSelected = false,
   onSelect,
 }: {
-  chainId: string
-  chainConfigs: ChainInfo[]
+  chain: ChainInfo & { available: boolean }
   isSelected?: boolean
   onSelect: (chain: ChainInfo) => void
 }) => {
-  const chain = useMemo(() => chainConfigs.find((chain) => chain.chainId === chainId), [chainConfigs, chainId])
-
-  if (!chain) return null
+  const isDisabled = !chain.available
 
   return (
-    <MenuItem value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }} onClick={() => onSelect(chain)}>
+    <MenuItem
+      value={chain.chainId}
+      sx={{ '&:hover': { backgroundColor: 'inherit' } }}
+      onClick={() => onSelect(chain)}
+      disabled={isDisabled}
+    >
       <Box className={css.item}>
         <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
-        <PlusIcon className={css.plusIcon} />
+        {isDisabled ? (
+          <Typography variant="caption" component="span" className={css.comingSoon}>
+            Not available
+          </Typography>
+        ) : (
+          <PlusIcon className={css.plusIcon} />
+        )}
       </Box>
     </MenuItem>
   )
@@ -144,6 +151,8 @@ const UndeployedNetworks = ({
     [availableNetworks],
   )
 
+  const noAvailableNetworks = useMemo(() => availableNetworks.every((config) => !config.available), [availableNetworks])
+
   const onSelect = (chain: ChainInfo) => {
     setReplayOnChain(chain)
   }
@@ -156,15 +165,16 @@ const UndeployedNetworks = ({
     )
   }
 
-  const errorMessage = safeCreationDataError
-    ? 'Adding another network is not possible for this Safe.'
-    : isUnsupportedSafeCreationVersion
-    ? 'This account was created from an outdated mastercopy. Adding another network is not possible.'
-    : ''
+  const errorMessage =
+    safeCreationDataError || (safeCreationData && noAvailableNetworks)
+      ? 'Adding another network is not possible for this Safe.'
+      : isUnsupportedSafeCreationVersion
+      ? 'This account was created from an outdated mastercopy. Adding another network is not possible.'
+      : ''
 
   if (errorMessage) {
     return (
-      <Box p="0px 16px">
+      <Box px={2} py={1}>
         <Typography color="text.secondary" fontSize="14px" maxWidth={300}>
           {errorMessage}
         </Typography>
@@ -196,21 +206,11 @@ const UndeployedNetworks = ({
         ) : (
           <>
             {prodNets.map((chain) => (
-              <UndeployedNetworkMenuItem
-                chainConfigs={chains}
-                chainId={chain.chainId}
-                onSelect={onSelect}
-                key={chain.chainId}
-              />
+              <UndeployedNetworkMenuItem chain={chain} onSelect={onSelect} key={chain.chainId} />
             ))}
             {testNets.length > 0 && <TestnetDivider />}
             {testNets.map((chain) => (
-              <UndeployedNetworkMenuItem
-                chainConfigs={chains}
-                chainId={chain.chainId}
-                onSelect={onSelect}
-                key={chain.chainId}
-              />
+              <UndeployedNetworkMenuItem chain={chain} onSelect={onSelect} key={chain.chainId} />
             ))}
           </>
         )}

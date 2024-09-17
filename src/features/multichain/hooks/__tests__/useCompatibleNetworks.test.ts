@@ -26,7 +26,7 @@ const PROXY_FACTORY_111_DEPLOYMENTS = getProxyFactoryDeployments({ version: '1.1
 const PROXY_FACTORY_130_DEPLOYMENTS = getProxyFactoryDeployments({ version: '1.3.0' })?.deployments
 const PROXY_FACTORY_141_DEPLOYMENTS = getProxyFactoryDeployments({ version: '1.4.1' })?.deployments
 
-describe('useReplayableNetworks', () => {
+describe('useCompatibleNetworks', () => {
   beforeAll(() => {
     jest.spyOn(useChains, 'default').mockReturnValue({
       configs: [
@@ -77,7 +77,7 @@ describe('useReplayableNetworks', () => {
     expect(result.current).toHaveLength(0)
   })
 
-  it('should return empty list for unknown masterCopies', () => {
+  it('should set available to false for unknown masterCopies', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -107,43 +107,10 @@ describe('useReplayableNetworks', () => {
       setupData,
     }
     const { result } = renderHook(() => useCompatibleNetworks(creationData))
-    expect(result.current).toHaveLength(0)
+    expect(result.current.every((config) => config.available)).toEqual(false)
   })
 
-  it('should return empty list for unknown masterCopies', () => {
-    const callData = {
-      owners: [faker.finance.ethereumAddress()],
-      threshold: 1,
-      to: ZERO_ADDRESS,
-      data: EMPTY_DATA,
-      fallbackHandler: faker.finance.ethereumAddress(),
-      paymentToken: ZERO_ADDRESS,
-      payment: 0,
-      paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-    }
-
-    const setupData = safeInterface.encodeFunctionData('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
-
-    const creationData: ReplayedSafeProps = {
-      factoryAddress: faker.finance.ethereumAddress(),
-      masterCopy: faker.finance.ethereumAddress(),
-      saltNonce: '0',
-      setupData,
-    }
-    const { result } = renderHook(() => useCompatibleNetworks(creationData))
-    expect(result.current).toHaveLength(0)
-  })
-
-  it('should return everything but zkSync for 1.4.1 Safes', () => {
+  it('should set everything to available except zkSync for 1.4.1 Safes', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -172,8 +139,9 @@ describe('useReplayableNetworks', () => {
         setupData,
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
+      expect(result.current).toHaveLength(5)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
     }
 
     {
@@ -184,12 +152,13 @@ describe('useReplayableNetworks', () => {
         setupData,
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
+      expect(result.current).toHaveLength(5)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
     }
   })
 
-  it('should return correct chains for 1.3.0 Safes', () => {
+  it('should mark already deployed chains as not available', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -221,8 +190,9 @@ describe('useReplayableNetworks', () => {
         setupData,
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
+      expect(result.current).toHaveLength(5)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
     }
 
     // 1.3.0, L2 and canonical
@@ -234,8 +204,9 @@ describe('useReplayableNetworks', () => {
         setupData,
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
+      expect(result.current).toHaveLength(5)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
     }
 
     // 1.3.0, L1 and EIP155 is not available on Worldchain
@@ -247,8 +218,9 @@ describe('useReplayableNetworks', () => {
         setupData,
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(3)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100'])
+      expect(result.current).toHaveLength(5)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, false])
     }
 
     // 1.3.0, L2 and EIP155
@@ -260,12 +232,13 @@ describe('useReplayableNetworks', () => {
         setupData,
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(3)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100'])
+      expect(result.current).toHaveLength(5)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, false])
     }
   })
 
-  it('should return empty list for 1.1.1 Safes', () => {
+  it('should set everything to not available for 1.1.1 Safes', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -295,6 +268,8 @@ describe('useReplayableNetworks', () => {
       setupData,
     }
     const { result } = renderHook(() => useCompatibleNetworks(creationData))
-    expect(result.current).toHaveLength(0)
+    expect(result.current).toHaveLength(5)
+    expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
+    expect(result.current.map((chain) => chain.available)).toEqual([false, false, false, false, false])
   })
 })
