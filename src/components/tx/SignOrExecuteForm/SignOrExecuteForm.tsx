@@ -42,7 +42,7 @@ import ConfirmationView from '../confirmation-views'
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
 export type SignOrExecuteProps = {
-  txId?: string
+  txId: string
   onSubmit?: SubmitCallback
   children?: ReactNode
   isExecutable?: boolean
