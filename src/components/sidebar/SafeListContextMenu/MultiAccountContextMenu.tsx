@@ -35,9 +35,6 @@ const MultiAccountContextMenu = ({
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
 
-  const trackingLabel =
-    router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
-
   const handleOpenContextMenu = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     e.stopPropagation()
     setAnchorEl(e.currentTarget)
@@ -49,8 +46,10 @@ const MultiAccountContextMenu = ({
   }
 
   const handleOpenModal =
-    (type: keyof typeof open, event: typeof OVERVIEW_EVENTS.SIDEBAR_RENAME | typeof OVERVIEW_EVENTS.SIDEBAR_RENAME) =>
+    (type: ModalType, event: typeof OVERVIEW_EVENTS.SIDEBAR_RENAME | typeof OVERVIEW_EVENTS.ADD_NEW_NETWORK) =>
     (e: MouseEvent) => {
+      const trackingLabel =
+        router.pathname === AppRoutes.welcome.accounts ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
       handleCloseContextMenu(e)
       setOpen((prev) => ({ ...prev, [type]: true }))
 

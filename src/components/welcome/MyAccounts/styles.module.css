@@ -45,7 +45,6 @@
 }
 
 .currentListItem.multiListItem {
-  border-left-width: 1px;
   border: 1px solid var(--color-border-light);
   background-color: none;
 }
