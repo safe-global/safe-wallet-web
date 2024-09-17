@@ -12,7 +12,7 @@ const SafeTerms = () => (
     <Typography variant="h1" mb={2}>
       Terms and Conditions
     </Typography>
-    <p>Last updated: August 2024.</p>
+    <p>Last updated: September 2024.</p>
 
     <h3>1. What is the scope of the Terms?</h3>
     <ol start={1}>
@@ -38,11 +38,8 @@ const SafeTerms = () => (
       </li>
       <li>
         We reserve the right to change these Terms at any time and without giving reasons, while considering and
-        weighing your interests. The new Terms will be communicated to you in advance. They are considered as agreed
-        upon if you do not object to their validity within 14 days after receipt of the notification. We will separately
-        inform you about the essential changes, the possibility to object, the deadline and the consequences of
-        inactivity. If you object, the current version of the Terms remains applicable. Our right to terminate the
-        contract according to Clause 13 remains unaffected.
+        weighing your interests. The new Terms will be communicated to you in advance. If you do not accept the new
+        Terms, you are no longer entitled to use the Services.
       </li>
     </ol>
 
@@ -111,31 +108,32 @@ const SafeTerms = () => (
       WalletConnect.
     </p>
     <ol start={2}>
-      <li>&ldquo;Safe App&rdquo;</li>
+      <li>{'“Safe{Wallet} App”'}</li>
     </ol>
     <p>
       You may access Safe Accounts using the {'Safe{Wallet}'} web app, mobile app for iOS and android, or the browser
-      extension&nbsp;(each a &ldquo;Safe App&rdquo;). The Safe App may be used to manage your personal digital assets on
-      Ethereum and other common EVM chains when you connect a Safe Account with third-party&nbsp;services (as defined
-      below). The Safe App provides certain features that may be amended from time to time.{' '}
+      extension&nbsp;(each a {'“Safe{Wallet} App”'}). The {'Safe{Wallet}'} App may be used to manage your personal
+      digital assets on Ethereum and other common EVM chains when you connect a Safe Account with
+      third-party&nbsp;services (as defined below). The {'Safe{Wallet}'} App provides certain features that may be
+      amended from time to time.{' '}
     </p>
     <ol start={3}>
       <li>&ldquo;Third-Party&nbsp;Safe Apps&rdquo;</li>
     </ol>
     <p>
-      The Safe App allows you to connect Safe Accounts to third-party decentralized applications
+      The {'Safe{Wallet}'} App allows you to connect Safe Accounts to third-party applications
       (&ldquo;Third-Party&nbsp;Safe Apps&rdquo;) and use third-party&nbsp;services such as from the decentralized
-      finance sector, DAO Tools or services related to NFTs (&ldquo;Third-Party&nbsp;Services&quot;). The
-      Third-Party&nbsp;Safe Apps are integrated in the user interface of the Safe App via inline framing. The provider
-      of the Third-Party&nbsp;Safe App and related Third-Party Service is responsible for the operation of the service
-      and the correctness, completeness and actuality of any information provided therein. We make a pre-selection of
-      Third-Party&nbsp;Safe Apps that we show in the Safe App. However, we only perform a rough triage in advance for
-      obvious problems and functionality in terms of loading time and resolution capability of the transactions.
-      Accordingly, in the event of any (technical) issues concerning the Third-Party Services, the user must only
-      contact the respective service provider directly. The terms of service, if any, shall be governed by the
-      applicable contractual provisions between the User and the respective provider of the Third-Party&nbsp;Service.
-      Accordingly, we are not liable in the event of a breach of contract, damage or loss related to the use of such
-      Third-Party Service.
+      finance sector, DAO tools or services related to NFTs (&ldquo;Third-Party Services&quot;). The
+      Third-Party&nbsp;Safe Apps are integrated in the user interface of the {'Safe{Wallet}'} App via inline framing.
+      The provider of the Third-Party&nbsp;Safe App and/or related Third-Party Services is responsible for the operation
+      of the service and the correctness, completeness and actuality of any information provided therein. We make a
+      pre-selection of Third-Party&nbsp;Safe Apps that we show in the {'Safe{Wallet}'} App. However, we only perform a
+      rough triage in advance for obvious problems and functionality in terms of loading time and resolution capability
+      of the transactions. Accordingly, in the event of any (technical) issues concerning the Third-Party Services, the
+      user must only contact the respective service provider directly. The terms of service, if any, shall be governed
+      by the applicable contractual provisions between the User and the respective provider of the Third-Party Safe Apps
+      or Third-Party Services. Accordingly, we are not liable in the event of a breach of contract, damage or loss
+      related to the use of such Third-Party Safe Apps or Third-Party Services.
     </p>
 
     <h3>4. What do the Services not consist of?</h3>
@@ -169,7 +167,7 @@ const SafeTerms = () => (
       <li>issuance of the Safe Token and any related functionalities or reward programs.</li>
     </ol>
 
-    <h3>5. What do you need to know about Third-Party Services?</h3>
+    <h3>5. What do you need to know about Third-Party Safe Apps and Third-Party Services?</h3>
     <ol start={1}>
       <li>
         We provide you the possibility to interact with your Safe Account through&nbsp;Third-Party Services. Any
@@ -187,29 +185,29 @@ const SafeTerms = () => (
     </ol>
     <ul>
       <li>
-        We do not have any oversight over your activities with Third-Party&nbsp;Services especially by using
+        We do not have any oversight over your activities with Third-Party Services especially by using
         Third-Party&nbsp;Safe Apps, and therefore we do not and cannot make any representation regarding their
         appropriateness and suitability for you.
       </li>
       <li>
-        Third-Party&nbsp;Services are not hosted, owned, controlled or maintained by us. We also do not participate in
-        the Transaction and will not and cannot monitor, verify, censor or edit the functioning or content of any
-        Third-Party Service.
+        Third-Party Safe Apps and Third-Party Services are not hosted, owned, controlled or maintained by us. We also do
+        not participate in the Transaction and will not and cannot monitor, verify, censor or edit the functioning or
+        content of any Third-Party Safe Apps and Third-Party Services.
       </li>
       <li>
         We have not conducted any security audit, bug bounty or formal verification (whether internal or external) of
-        the Third-Party Services.
+        the Third-Party Safe Apps and Third-Party Services.
       </li>
       <li>
         We have no control over, do not recommend, endorse, or otherwise take a position on the integrity, functioning
-        of, content and your use of Third-Party&nbsp;Services, whose sole responsibility lies with the person from whom
-        such services or content originated.
+        of, content and your use of Third-Party Safe Apps and Third-Party Services, whose sole responsibility lies with
+        the person from whom such services or content originated.
       </li>
       <li>
-        When you access or use Third-Party&nbsp;Services you accept that there are risks in doing so and that you alone
-        assume any such risks when choosing to interact with them. We are not liable for any errors or omissions or for
-        any damages or loss you might suffer through interacting with those Third-Party&nbsp;Services, such as
-        Third-Party&nbsp;Safe Apps.
+        When you access or use Third-Party Safe Apps and Third-Party Services you accept that there are risks in doing
+        so and that you alone assume any such risks when choosing to interact with them. We are not liable for any
+        errors or omissions or for any damages or loss you might suffer through interacting with those Third-Party Safe
+        Apps and Third-Party Services.
       </li>
       <li>
         You know of the inherent risks of cryptographic and Blockchain-based systems and the high volatility of Token
@@ -217,37 +215,39 @@ const SafeTerms = () => (
         to refund Token that have been deployed.
       </li>
       <li>
-        You should read the license requirements, terms and conditions as well as privacy policy of each
-        Third-Party&nbsp;Service that you access or use. Certain Third-Party&nbsp;Services may involve complex
-        Transactions that entail a high degree of risk.
+        You should read the license requirements, terms and conditions as well as privacy policy of each Third-Party
+        Safe App and Third-Party Service that you access or use. Certain Third-Party Safe Apps and Third-Party Services
+        may involve complex Transactions that entail a high degree of risk.
       </li>
       <li>
-        If you contribute integrations to Third-Party&nbsp;Services, you are responsible for all content you contribute,
-        in any manner, and you must have all rights necessary to do so, in the manner in which you contribute it. You
-        are responsible for all your activity in connection with any such Third-Party&nbsp;Service.{' '}
+        If you contribute integrations to Third-Party Safe Apps and Third-Party Services, you are responsible for all
+        content you contribute, in any manner, and you must have all rights necessary to do so, in the manner in which
+        you contribute it. You are responsible for all your activity in connection with any such Third-Party Safe Apps
+        and Third-Party Services.
       </li>
       <li>
-        Your interactions with persons found on or through the Third-Party&nbsp;Service, including payment and delivery
-        of goods and services, financial transactions, and any other terms associated with such dealings, are solely
-        between you and such persons. You agree that we shall not be responsible or liable for any loss or damage of any
-        sort incurred as the result of any such dealings.
+        Your interactions with persons found on or through the Third-Party Safe Apps and Third-Party Services, including
+        payment and delivery of goods and services, financial transactions, and any other terms associated with such
+        dealings, are solely between you and such persons. You agree that we shall not be responsible or liable for any
+        loss or damage of any sort incurred as the result of any such dealings.
       </li>
       <li>
-        If there is a dispute between you and the Third-Party&nbsp;Service provider or/and other users of the
-        Third-Party&nbsp;Service, you agree that we are under no obligation to become involved. In the event that you
-        have a dispute with one or more other users, you release us, our officers, employees, agents, contractors and
-        successors from claims, demands, and damages of every kind or nature, known or unknown, suspected or
-        unsuspected, disclosed or undisclosed, arising out of or in any way related to such disputes and/or our
-        Services.
+        If there is a dispute between you and the Third-Party Safe Apps or Third-Party Services provider or/and other
+        users of the Third-Party Safe Apps and Third-Party Services, you agree that we are under no obligation to become
+        involved. In the event that you have a dispute with one or more other users, you release us, our officers,
+        employees, agents, contractors and successors from claims, demands, and damages of every kind or nature, known
+        or unknown, suspected or unsuspected, disclosed or undisclosed, arising out of or in any way related to such
+        disputes and/or our Services.
       </li>
     </ul>
 
     <h3>6. What are the fees for the Services?</h3>
     <ol start={1}>
       <li>
-        The use of the Safe App or Third-Party&nbsp;Safe Apps may cause fees, including network fees, as indicated in
-        the respective app. CC has no control over the fees charged by the Third-Party Services. CC may change its own
-        fees at any time. Price changes will be communicated to the User in due time before taking effect.
+        The use of the {'Safe{Wallet}'} App, Third-Party Safe Apps or Third-Party Services may cause fees, including
+        network fees, as indicated in the respective app. CC has no control over the fees charged by the Third-Party
+        Safe Apps or Third-Party Services. CC may change its own fees at any time. Price changes will be communicated to
+        the User in due time before taking effect.
       </li>
       <li>
         The User is only entitled to offset and/or assert rights of retention if his counterclaims are legally
@@ -277,14 +277,14 @@ const SafeTerms = () => (
       <li>We shall not be responsible for recovering your Safe Account.</li>
       <li>You are solely responsible for securing a back-up of your Safe Account access as you see fit. </li>
       <li>
-        Any recovery feature we provide access to within the Safe App is a mechanism controlled by your Safe Account on
-        the Blockchain, both of which we don&apos;t have any influence over once you have set it up. We will never act
-        as a recoverer ourselves and don&apos;t offer recovery services. The Self Custodial Recovery feature allows you
-        to determine your own recovery setup and nominate anyone including yourself as your recoverer. The recoverer can
-        start the recovery process at any time. Please note that we are not responsible for notifying you of this
-        process (see Section 7 above). Furthermore we reserve the right to cease the access to the Self Custodial
-        Recovery feature via our Safe App taking the user&apos;s reasonable interests into account and providing due
-        notification.
+        Any recovery feature we provide access to within the {'Safe{Wallet}'} App is a mechanism controlled by your Safe
+        Account on the Blockchain, both of which we don&apos;t have any influence over once you have set it up. We will
+        never act as a recoverer ourselves and don&apos;t offer recovery services. The Self Custodial Recovery feature
+        allows you to determine your own recovery setup and nominate anyone including yourself as your recoverer. The
+        recoverer can start the recovery process at any time. Please note that we are not responsible for notifying you
+        of this process (see Section 7 above). Furthermore we reserve the right to cease the access to the Self
+        Custodial Recovery feature via our {'Safe{Wallet}'} App taking the user&apos;s reasonable interests into account
+        and providing due notification.
       </li>
       <li>The recovery feature is provided free of charge and liability is limited pursuant to Section 18 below.</li>
     </ol>
@@ -297,7 +297,7 @@ const SafeTerms = () => (
       </li>
       <li>You are responsible for monitoring Safe Account as you see fit. </li>
       <li>
-        Any notification service we provide or offer for subscription within the Safe App via e-mail or push
+        Any notification service we provide or offer for subscription within the {'Safe{Wallet}'} App via e-mail or push
         notifications or any other means of communication is provided free of charge and liability is limited pursuant
         to Section 18 below. Furthermore we reserve the right to change the notification feature from time to time or
         cease to provide them without notice.
@@ -306,15 +306,15 @@ const SafeTerms = () => (
 
     <h3>10. Are we responsible for flagging malicious transactions?</h3>
     <ol>
-      <li>We shall not be responsible for flagging malicious transactions in our Safe App.</li>
+      <li>We shall not be responsible for flagging malicious transactions in our {'Safe{Wallet}'} App.</li>
       <li>
         You are solely responsible for checking any transaction, address, Token or other item you interact with via your
-        Smart Account in our Safe App.
+        Smart Account in our {'Safe{Wallet}'} App.
       </li>
       <li>
-        Any security flagging or warning service we provide or offer for subscription within the Safe App is provided
-        free of charge and liability is limited pursuant to Section 18 below. Furthermore we reserve the right to change
-        the feature from time to time or cease to provide them without notice.
+        Any security flagging or warning service we provide or offer for subscription within the {'Safe{Wallet}'} App is
+        provided free of charge and liability is limited pursuant to Section 18 below. Furthermore we reserve the right
+        to change the feature from time to time or cease to provide them without notice.
       </li>
     </ol>
 
@@ -343,9 +343,10 @@ const SafeTerms = () => (
     <ol>
       <li>
         You may view, have access to, and use third-party content and services, for example widget integrations, within
-        the Safe App (“Third-Party Features”). You view, access, or use Third-Party Features at your own election. Your
-        reliance on Third-Party Features is subject to separate terms and conditions set forth by the applicable third
-        party content and/or service provider (“Third-Party Terms”). Third-Party Terms may, amongst other things,
+        the {'Safe{Wallet}'} App (“Third-Party Features”). You view, access, or use Third-Party Features at your own
+        election. Your reliance on Third-Party Features is subject to separate terms and conditions set forth by the
+        applicable third party content and/or service provider (“Third-Party Terms”). Third-Party Terms may, amongst
+        other things,
         <ol type="a">
           <li>involve separate fees and charges, </li>
           <li>include disclaimers or risk warnings, </li>
@@ -357,26 +358,27 @@ const SafeTerms = () => (
         Features.{' '}
       </li>
       <li>
-        If we offer access to Third-Party Features in the Safe App free of charge by us (Third-Parties may charge
-        separate fees), the liability for providing access to such Third-Party Feature is limited pursuant to Section 18
-        below. Furthermore we reserve the right to cease to provide access to those Third-Party Features through the
-        Safe App without notice.
+        If we offer access to Third-Party Features in the {'Safe{Wallet}'} App free of charge by us (Third-Parties may
+        charge separate fees), the liability for providing access to such Third-Party Feature is limited pursuant to
+        Section 18 below. Furthermore we reserve the right to cease to provide access to those Third-Party Features
+        through the
+        {'Safe{Wallet}'} App without notice.
       </li>
     </ol>
 
     <h3>13. Can we terminate or limit your right to use our Services?</h3>
     <ol>
       <li>
-        We may cease offering our Services and/or terminate the Agreement and refuse access to the Safe Apps at any
-        time. The right of the parties to terminate the Agreement at any time for cause remains unaffected. In case of
-        our termination of the Agreement, you may no longer access your Safe Account via our Services. However, you may
-        continue to access your Safe Account and any Tokens via a third-party wallet provider using your Recovery Phrase
-        and Private Keys.
+        We may cease offering our Services and/or terminate the Agreement and refuse access to the {'Safe{Wallet}'} App
+        at any time. The right of the parties to terminate the Agreement at any time for cause remains unaffected. In
+        case of our termination of the Agreement, you may no longer access your Safe Account via our Services. However,
+        you may continue to access your Safe Account and any Tokens via a third-party wallet provider using your
+        Recovery Phrase and Private Keys.
       </li>
       <li>
-        We reserve the right to limit the use of the Safe Apps to a specified number of Users if necessary to protect or
-        ensure the stability and integrity of the Services. We will only be able to limit access to the Services. At no
-        time will we be able to limit or block access to or transfer your funds without your consent.
+        We reserve the right to limit the use of the {'Safe{Wallet}'} App to a specified number of Users if necessary to
+        protect or ensure the stability and integrity of the Services. We will only be able to limit access to the
+        Services. At no time will we be able to limit or block access to or transfer your funds without your consent.
       </li>
     </ol>
 
@@ -388,8 +390,8 @@ const SafeTerms = () => (
       <li>
         All intellectual property rights in Safe Accounts and the Services throughout the world belong to us as owner or
         our licensors. Nothing in these Terms gives you any rights in respect of any intellectual property owned by us
-        or our licensors and you acknowledge that you do not acquire any ownership rights by downloading the Safe App or
-        any content from the Safe App.
+        or our licensors and you acknowledge that you do not acquire any ownership rights by downloading the{' '}
+        {'Safe{Wallet}'} App or any content from the {'Safe{Wallet}'} App.
       </li>
       <li>
         If you are a consumer we grant you a simple, limited license, but do not sell, to you the Services you download
@@ -405,8 +407,8 @@ const SafeTerms = () => (
         or non-infringement.{' '}
       </li>
       <li>
-        If you use the Safe App via web browser, the strict liability of CC for damages (sec. 536a German Civil Code)
-        for defects existing at the time of conclusion of the contract is precluded.{' '}
+        If you use the {'Safe{Wallet}'} App via web browser, the strict liability of CC for damages (sec. 536a German
+        Civil Code) for defects existing at the time of conclusion of the contract is precluded.{' '}
       </li>
       <li>The foregoing provisions will not limit CC&rsquo;s liability as defined in Clause 18. </li>
       <li>
@@ -487,21 +489,21 @@ const SafeTerms = () => (
     <h3>18. What about our liability to you?</h3>
     <ol>
       <li>
-        If the Safe App or Services are provided to the User free of charge (please note, in this context, that any
-        service, network, and/or transaction fees may be charged by third parties via the Blockchain and not necessarily
-        by us), CC shall be liable only in cases of intent, gross negligence, or if CC has fraudulently concealed a
-        possible material or legal defect of the Safe App or Services.
+        If the {'Safe{Wallet}'} App or Services are provided to the User free of charge (please note, in this context,
+        that any service, network, and/or transaction fees may be charged by third parties via the Blockchain and not
+        necessarily by us), CC shall be liable only in cases of intent, gross negligence, or if CC has fraudulently
+        concealed a possible material or legal defect of the {'Safe{Wallet}'} App or Services.
       </li>
       <li>
-        If the Safe App or Services are not provided to the User free of charge, CC shall be liable only (i) in cases
-        pursuant to Clause 18.1 as well as (ii) in cases of simple negligence for damages resulting from the breach of
-        an essential contractual duty, a duty, the performance of which enables the proper execution of this Agreement
-        in the first place and on the compliance of which the User regularly relies and may rely, whereby CC&apos;s
-        liability shall be limited to the compensation of the foreseeable, typically occurring damage. The Parties agree
-        that the typical foreseeable damage equals the sum of the annual Fees paid or agreed to be paid by the User to
-        CC during the course of the calendar year in which the event giving rise to the damage claim occurred. Liability
-        in cases of simple negligence for damages resulting from the breach of a non-essential contractual duty are
-        excluded.{' '}
+        If the {'Safe{Wallet}'} App or Services are not provided to the User free of charge, CC shall be liable only (i)
+        in cases pursuant to Clause 18.1 as well as (ii) in cases of simple negligence for damages resulting from the
+        breach of an essential contractual duty, a duty, the performance of which enables the proper execution of this
+        Agreement in the first place and on the compliance of which the User regularly relies and may rely, whereby
+        CC&apos;s liability shall be limited to the compensation of the foreseeable, typically occurring damage. The
+        Parties agree that the typical foreseeable damage equals the sum of the annual Fees paid or agreed to be paid by
+        the User to CC during the course of the calendar year in which the event giving rise to the damage claim
+        occurred. Liability in cases of simple negligence for damages resulting from the breach of a non-essential
+        contractual duty are excluded.{' '}
       </li>
       <li>
         The limitations of liability according to Clause 18.1 and Clause 18.2 do not apply (i) to damages resulting from
