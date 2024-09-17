@@ -109,7 +109,6 @@ const safeTxWithNativeData = {
     data: '0x',
   },
 }
-console.log(safeTxWithNativeData)
 describe('ConfirmationView', () => {
   it('should display a confirmation screen for a SETTINGS_CHANGE transaction', () => {
     const { container, getByTestId } = render(

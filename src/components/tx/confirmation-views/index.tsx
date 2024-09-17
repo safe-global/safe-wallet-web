@@ -10,7 +10,7 @@ import type { NarrowConfirmationViewProps } from './types'
 import SettingsChange from './SettingsChange'
 
 type ConfirmationViewProps = {
-  txDetails: TransactionDetails
+  txDetails?: TransactionDetails
   safeTx?: SafeTransaction
   txId?: string
   isBatch?: boolean
@@ -26,22 +26,25 @@ const getConfirmationViewComponent = (txType: TransactionInfoType, props: Narrow
 }
 
 const ConfirmationView = (props: ConfirmationViewProps) => {
-  const { txInfo, txId } = props.txDetails
+  const { txId } = props.txDetails || {}
   const [decodedData] = useDecodeTx(props.safeTx)
 
   const ConfirmationViewComponent = useMemo(
     () =>
-      getConfirmationViewComponent(txInfo.type, {
-        txDetails: props.txDetails,
-        txInfo,
-      }),
-    [props.txDetails, txInfo],
+      props.txDetails
+        ? getConfirmationViewComponent(props.txDetails.txInfo.type, {
+            txDetails: props.txDetails,
+            txInfo: props.txDetails.txInfo,
+          })
+        : undefined,
+    [props.txDetails],
   )
   const showTxDetails = txId && !props.isCreation && props.txDetails && !isCustomTxInfo(props.txDetails.txInfo)
 
   return (
     <>
-      {ConfirmationViewComponent || (showTxDetails && <TxData txDetails={props.txDetails} imitation={false} trusted />)}
+      {ConfirmationViewComponent ||
+        (showTxDetails && props.txDetails && <TxData txDetails={props.txDetails} imitation={false} trusted />)}
 
       {decodedData && <ConfirmationOrder decodedData={decodedData} toAddress={props.safeTx?.data.to ?? ''} />}
 
