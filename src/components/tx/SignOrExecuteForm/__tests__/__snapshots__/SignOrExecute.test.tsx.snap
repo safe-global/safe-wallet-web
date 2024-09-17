@@ -263,53 +263,50 @@ exports[`SignOrExecute should display an error screen 1`] = `
       class="MuiCardContent-root cardContent css-46bh2p-MuiCardContent-root"
     >
       <div
-        class="MuiBox-root css-17luq05"
+        class="container"
       >
         <div
-          class="box MuiBox-root css-0"
+          class="wrapper"
         >
-          <div
-            class="rect rectTl"
-          />
-          <div
-            class="rect rectTr"
-          />
-          <div
-            class="rect rectBl"
-          />
-          <div
-            class="rect rectBr"
-          />
-          <div
-            class="rect rectCenter"
-          />
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
+          <h3
+            class="MuiTypography-root MuiTypography-h3 css-mv4yuw-MuiTypography-root"
           >
-            <defs>
-              <filter
-                id="gooey"
-              >
-                <fegaussianblur
-                  in="SourceGraphic"
-                  result="blur"
-                  stdDeviation="3"
-                />
-                <fecolormatrix
-                  in="blur"
-                  mode="matrix"
-                  result="goo"
-                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
-                />
-                <fecomposite
-                  in="SourceGraphic"
-                  in2="goo"
-                  operator="atop"
-                />
-              </filter>
-            </defs>
-          </svg>
+            Something went wrong,
+            <br />
+            please try again.
+          </h3>
+          <span
+            class="MuiBadge-root badge css-1c32n2y-MuiBadge-root"
+          >
+            <div
+              class="circle MuiBox-root css-1ngw63v"
+            >
+              <mock-icon
+                aria-hidden="true"
+                classname="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-82oui0-MuiSvgIcon-root"
+                focusable="false"
+              />
+            </div>
+            <span
+              class="MuiBadge-badge MuiBadge-dot MuiBadge-anchorOriginBottomRight MuiBadge-anchorOriginBottomRightCircular MuiBadge-overlapCircular MuiBadge-colorWarning css-harjv7-MuiBadge-badge"
+            />
+          </span>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-97ibp6-MuiTypography-root"
+          >
+            Error: This is a mock error message
+          </p>
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-97ibp6-MuiTypography-root"
+          >
+            SignOrExecuteForm/index
+          </p>
+          <a
+            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1su57z-MuiTypography-root-MuiLink-root"
+            href="/welcome"
+          >
+            Go home
+          </a>
         </div>
       </div>
     </div>
