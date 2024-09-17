@@ -125,9 +125,9 @@ const ReplaySafeDialog = ({
               <Typography variant="body2">Loading Safe data</Typography>
             </Stack>
           ) : isUnsupportedSafeCreationVersion ? (
-            <Typography>
+            <ErrorMessage>
               This account was created from an outdated mastercopy. Adding another network is not possible.
-            </Typography>
+            </ErrorMessage>
           ) : (
             <FormProvider {...formMethods}>
               <Stack spacing={2}>
@@ -200,7 +200,10 @@ export const CreateSafeOnNewChain = ({
   const safeCreationResult = useSafeCreationData(safeAddress, deployedChains)
   const allCompatibleChains = useCompatibleNetworks(safeCreationResult[0])
   const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
-  const replayableChains = allCompatibleChains?.filter((config) => !deployedChainIds.includes(config.chainId)) || []
+  const replayableChains = useMemo(
+    () => allCompatibleChains?.filter((config) => !deployedChainIds.includes(config.chainId)) || [],
+    [allCompatibleChains, deployedChainIds],
+  )
 
   return (
     <ReplaySafeDialog
