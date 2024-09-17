@@ -109,50 +109,56 @@ const ReplaySafeDialog = ({
   const submitDisabled =
     isUnsupportedSafeCreationVersion || !!safeCreationDataError || safeCreationDataLoading || !formState.isValid
 
+  const noChainsAvailable = !chain && safeCreationData && replayableChains && replayableChains.length === 0
+
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} onClick={(e) => e.stopPropagation()}>
       <form onSubmit={onFormSubmit} id="recreate-safe">
         <DialogTitle fontWeight={700}>Add another network</DialogTitle>
         <Divider />
         <DialogContent>
-          {safeCreationDataError ? (
-            <ErrorMessage error={safeCreationDataError} level="error">
-              Could not determine the Safe creation parameters.
-            </ErrorMessage>
-          ) : safeCreationDataLoading ? (
-            <Stack direction="column" alignItems="center" gap={1}>
-              <CircularProgress />
-              <Typography variant="body2">Loading Safe data</Typography>
-            </Stack>
-          ) : isUnsupportedSafeCreationVersion ? (
-            <ErrorMessage>
-              This account was created from an outdated mastercopy. Adding another network is not possible.
-            </ErrorMessage>
-          ) : (
-            <FormProvider {...formMethods}>
-              <Stack spacing={2}>
-                <Typography>This action re-deploys a Safe to another network with the same address.</Typography>
-                <ErrorMessage level="info">
-                  The Safe will use the initial setup of the copied Safe. Any changes to owners, threshold, modules or
-                  the Safe&apos;s version will not be reflected in the copy.
+          <FormProvider {...formMethods}>
+            <Stack spacing={2}>
+              <Typography>This action re-deploys a Safe to another network with the same address.</Typography>
+              <ErrorMessage level="info">
+                The Safe will use the initial setup of the copied Safe. Any changes to owners, threshold, modules or the
+                Safe&apos;s version will not be reflected in the copy.
+              </ErrorMessage>
+
+              {safeCreationDataLoading ? (
+                <Stack direction="column" alignItems="center" gap={1}>
+                  <CircularProgress />
+                  <Typography variant="body2">Loading Safe data</Typography>
+                </Stack>
+              ) : safeCreationDataError ? (
+                <ErrorMessage error={safeCreationDataError} level="error">
+                  Could not determine the Safe creation parameters.
                 </ErrorMessage>
+              ) : isUnsupportedSafeCreationVersion ? (
+                <ErrorMessage>
+                  This account was created from an outdated mastercopy. Adding another network is not possible.
+                </ErrorMessage>
+              ) : noChainsAvailable ? (
+                <ErrorMessage level="error">This Safe cannot be replayed on any chains.</ErrorMessage>
+              ) : (
+                <>
+                  <NameInput name="name" label="Name" />
 
-                <NameInput name="name" label="Name" />
+                  {chain ? (
+                    <ChainIndicator chainId={chain.chainId} />
+                  ) : (
+                    <NetworkInput required name="chainId" chainConfigs={replayableChains ?? []} />
+                  )}
+                </>
+              )}
 
-                {chain ? (
-                  <ChainIndicator chainId={chain.chainId} />
-                ) : (
-                  <NetworkInput required name="chainId" chainConfigs={replayableChains ?? []} />
-                )}
-
-                {creationError && (
-                  <ErrorMessage error={creationError} level="error">
-                    The Safe could not be created with the same address.
-                  </ErrorMessage>
-                )}
-              </Stack>
-            </FormProvider>
-          )}
+              {creationError && (
+                <ErrorMessage error={creationError} level="error">
+                  The Safe could not be created with the same address.
+                </ErrorMessage>
+              )}
+            </Stack>
+          </FormProvider>
         </DialogContent>
         <Divider />
         <DialogActions sx={{ m: 2 }}>
