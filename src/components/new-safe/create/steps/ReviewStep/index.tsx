@@ -27,7 +27,7 @@ import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { gtmSetSafeAddress } from '@/services/analytics/gtm'
+import { gtmSetChainId, gtmSetSafeAddress } from '@/services/analytics/gtm'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -223,6 +223,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         createSafe(network, props, safeAddress, nextAvailableNonce)
       }
 
+      gtmSetChainId(chain.chainId)
+
       if (isCounterfactualEnabled && payMethod === PayMethod.PayLater) {
         router?.push({
           pathname: AppRoutes.home,
@@ -243,6 +245,8 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const createSafe = async (chain: ChainInfo, props: DeploySafeProps, safeAddress: string, saltNonce: string) => {
     if (!wallet) return
+
+    gtmSetChainId(chain.chainId)
 
     try {
       if (isCounterfactualEnabled && payMethod === PayMethod.PayLater) {

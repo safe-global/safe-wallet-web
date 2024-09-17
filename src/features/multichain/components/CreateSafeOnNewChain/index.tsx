@@ -1,16 +1,8 @@
+import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Typography,
-} from '@mui/material'
+import { Button, CircularProgress, DialogActions, DialogContent, Stack, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSafeCreationData } from '../../hooks/useSafeCreationData'
 import { useReplayableNetworks } from '../../hooks/useReplayableNetworks'
@@ -55,7 +47,7 @@ const ReplaySafeDialog = ({
     mode: 'all',
     defaultValues: {
       name: currentName,
-      chainId: chain?.chainId,
+      chainId: chain?.chainId || '',
     },
   })
 
@@ -105,9 +97,8 @@ const ReplaySafeDialog = ({
   const submitDisabled = !!safeCreationDataError || safeCreationDataLoading || !formMethods.formState.isValid
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <ModalDialog open={open} onClose={onClose} dialogTitle="Add another network" hideChainIndicator>
       <form onSubmit={onFormSubmit} id="recreate-safe">
-        <DialogTitle fontWeight={700}>Add another network</DialogTitle>
         <DialogContent>
           {safeCreationDataError ? (
             <ErrorMessage error={safeCreationDataError} level="error">
@@ -123,7 +114,7 @@ const ReplaySafeDialog = ({
                 </ErrorMessage>
 
                 {safeCreationDataLoading ? (
-                  <Stack direction="column" alignItems="center" gap={1}>
+                  <Stack direction="column" alignItems="center" gap={1} py="35px">
                     <CircularProgress />
                     <Typography variant="body2">Loading Safe data</Typography>
                   </Stack>
@@ -148,16 +139,18 @@ const ReplaySafeDialog = ({
             </FormProvider>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit" variant="contained" disabled={submitDisabled}>
-            Submit
-          </Button>
+        <DialogActions sx={{ p: 3 }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="space-between" width={1}>
+            <Button variant="outlined" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" disabled={submitDisabled}>
+              Submit
+            </Button>
+          </Stack>
         </DialogActions>
       </form>
-    </Dialog>
+    </ModalDialog>
   )
 }
 
