@@ -1,5 +1,5 @@
 import { renderHook } from '@/tests/test-utils'
-import { useReplayableNetworks } from '../useReplayableNetworks'
+import { useCompatibleNetworks } from '../useCompatibleNetworks'
 import { type ReplayedSafeProps } from '@/store/slices'
 import { faker } from '@faker-js/faker'
 import { Safe__factory } from '@/types/contracts'
@@ -38,8 +38,9 @@ describe('useReplayableNetworks', () => {
       ],
     })
   })
+
   it('should return empty list without any creation data', () => {
-    const { result } = renderHook(() => useReplayableNetworks(undefined, []))
+    const { result } = renderHook(() => useCompatibleNetworks(undefined))
     expect(result.current).toHaveLength(0)
   })
 
@@ -72,7 +73,7 @@ describe('useReplayableNetworks', () => {
       saltNonce: '0',
       setupData,
     }
-    const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+    const { result } = renderHook(() => useCompatibleNetworks(creationData))
     expect(result.current).toHaveLength(0)
   })
 
@@ -105,7 +106,7 @@ describe('useReplayableNetworks', () => {
       saltNonce: '0',
       setupData,
     }
-    const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+    const { result } = renderHook(() => useCompatibleNetworks(creationData))
     expect(result.current).toHaveLength(0)
   })
 
@@ -138,7 +139,7 @@ describe('useReplayableNetworks', () => {
       saltNonce: '0',
       setupData,
     }
-    const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+    const { result } = renderHook(() => useCompatibleNetworks(creationData))
     expect(result.current).toHaveLength(0)
   })
 
@@ -153,7 +154,6 @@ describe('useReplayableNetworks', () => {
       payment: 0,
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     }
-
     const setupData = safeInterface.encodeFunctionData('setup', [
       callData.owners,
       callData.threshold,
@@ -164,7 +164,6 @@ describe('useReplayableNetworks', () => {
       callData.payment,
       callData.paymentReceiver,
     ])
-
     {
       const creationData: ReplayedSafeProps = {
         factoryAddress: PROXY_FACTORY_141_DEPLOYMENTS?.canonical?.address!,
@@ -172,7 +171,7 @@ describe('useReplayableNetworks', () => {
         saltNonce: '0',
         setupData,
       }
-      const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+      const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(4)
       expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
     }
@@ -184,55 +183,7 @@ describe('useReplayableNetworks', () => {
         saltNonce: '0',
         setupData,
       }
-      const { result } = renderHook(() => useReplayableNetworks(creationData, []))
-      expect(result.current).toHaveLength(4)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
-    }
-  })
-
-  it('should remove already deployed chains from result', () => {
-    const callData = {
-      owners: [faker.finance.ethereumAddress()],
-      threshold: 1,
-      to: ZERO_ADDRESS,
-      data: EMPTY_DATA,
-      fallbackHandler: faker.finance.ethereumAddress(),
-      paymentToken: ZERO_ADDRESS,
-      payment: 0,
-      paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-    }
-
-    const setupData = safeInterface.encodeFunctionData('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
-
-    {
-      const creationData: ReplayedSafeProps = {
-        factoryAddress: PROXY_FACTORY_141_DEPLOYMENTS?.canonical?.address!,
-        masterCopy: L1_141_MASTERCOPY_DEPLOYMENTS?.canonical?.address!,
-        saltNonce: '0',
-        setupData,
-      }
-      const { result } = renderHook(() => useReplayableNetworks(creationData, ['10', '100']))
-      expect(result.current).toHaveLength(2)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '480'])
-    }
-
-    {
-      const creationData: ReplayedSafeProps = {
-        factoryAddress: PROXY_FACTORY_141_DEPLOYMENTS?.canonical?.address!,
-        masterCopy: L2_141_MASTERCOPY_DEPLOYMENTS?.canonical?.address!,
-        saltNonce: '0',
-        setupData,
-      }
-      const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+      const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(4)
       expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
     }
@@ -269,7 +220,7 @@ describe('useReplayableNetworks', () => {
         saltNonce: '0',
         setupData,
       }
-      const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+      const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(4)
       expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
     }
@@ -282,7 +233,7 @@ describe('useReplayableNetworks', () => {
         saltNonce: '0',
         setupData,
       }
-      const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+      const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(4)
       expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '480'])
     }
@@ -295,7 +246,7 @@ describe('useReplayableNetworks', () => {
         saltNonce: '0',
         setupData,
       }
-      const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+      const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(3)
       expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100'])
     }
@@ -308,13 +259,13 @@ describe('useReplayableNetworks', () => {
         saltNonce: '0',
         setupData,
       }
-      const { result } = renderHook(() => useReplayableNetworks(creationData, []))
+      const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(3)
       expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100'])
     }
   })
 
-  it('should return correct chains for 1.1.1 Safes', () => {
+  it('should return empty list for 1.1.1 Safes', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -343,8 +294,7 @@ describe('useReplayableNetworks', () => {
       saltNonce: '0',
       setupData,
     }
-    const { result } = renderHook(() => useReplayableNetworks(creationData, []))
-    expect(result.current).toHaveLength(2)
-    expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '100'])
+    const { result } = renderHook(() => useCompatibleNetworks(creationData))
+    expect(result.current).toHaveLength(0)
   })
 })
