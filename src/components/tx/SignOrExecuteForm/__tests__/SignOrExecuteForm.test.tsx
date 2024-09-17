@@ -22,6 +22,7 @@ describe('SignOrExecute', () => {
   it('should display a safeTxError', () => {
     const { getByText } = render(
       <SignOrExecuteForm
+        txId="0x012312"
         onSubmit={jest.fn()}
         safeTxError={new Error('Safe transaction error')}
         safeTx={safeTxBuilder().build()}
@@ -40,6 +41,7 @@ describe('SignOrExecute', () => {
 
       const { getByText } = render(
         <SignOrExecuteForm
+          txId="0x012312"
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
           safeTxError={undefined}
@@ -59,6 +61,7 @@ describe('SignOrExecute', () => {
 
       const { getByText } = render(
         <SignOrExecuteForm
+          txId="0x012312"
           safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
@@ -77,6 +80,7 @@ describe('SignOrExecute', () => {
 
       const { queryByTestId } = render(
         <SignOrExecuteForm
+          txId="0x012312"
           safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
@@ -97,6 +101,7 @@ describe('SignOrExecute', () => {
 
       const { queryByTestId } = render(
         <SignOrExecuteForm
+          txId="0x012312"
           safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
@@ -117,6 +122,7 @@ describe('SignOrExecute', () => {
 
       const { queryByTestId } = render(
         <SignOrExecuteForm
+          txId="0x012312"
           safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
@@ -135,6 +141,7 @@ describe('SignOrExecute', () => {
 
       const { queryByTestId } = render(
         <SignOrExecuteForm
+          txId="0x012312"
           safeTxError={undefined}
           safeTx={safeTxBuilder().build()}
           onSubmit={jest.fn()}
@@ -153,6 +160,7 @@ describe('SignOrExecute', () => {
 
     const { queryByText } = render(
       <SignOrExecuteForm
+        txId="0x012312"
         safeTxError={undefined}
         safeTx={safeTxBuilder().build()}
         onSubmit={jest.fn()}
@@ -168,10 +176,10 @@ describe('SignOrExecute', () => {
 
     const { getByTestId, getByText } = render(
       <SignOrExecuteForm
+        txId="0x012312"
         safeTxError={undefined}
         safeTx={safeTxBuilder().build()}
         onSubmit={jest.fn()}
-        txId="someid"
         isExecutable={true}
         chainId="1"
       />,
@@ -195,7 +203,13 @@ describe('SignOrExecute', () => {
 
   it('should not display safeTxError message for valid transactions', () => {
     const { queryByText } = render(
-      <SignOrExecuteForm safeTxError={undefined} safeTx={safeTxBuilder().build()} onSubmit={jest.fn()} chainId="1" />,
+      <SignOrExecuteForm
+        txId="0x012312"
+        safeTxError={undefined}
+        safeTx={safeTxBuilder().build()}
+        onSubmit={jest.fn()}
+        chainId="1"
+      />,
     )
 
     expect(

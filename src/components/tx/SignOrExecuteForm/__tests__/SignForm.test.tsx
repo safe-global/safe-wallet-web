@@ -24,6 +24,7 @@ describe('SignForm', () => {
 
   const defaultProps = {
     onSubmit: jest.fn(),
+    txId: '0x01231',
     isOwner: true,
     txActions: {
       proposeTx: jest.fn(),

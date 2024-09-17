@@ -49,7 +49,7 @@ export const useProposeTx = (safeTx?: SafeTransaction, txId?: string, origin?: s
 
       return proposeTx(safeTx, txId, origin)
     },
-    [safeTx, txId, origin, proposeTx],
+    [safeTx, txId, origin, safe.chainId, proposeTx],
     false,
   )
 }
