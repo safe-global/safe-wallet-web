@@ -12,7 +12,7 @@ export const ChangeSignerSetupWarning = () => {
   return (
     <Box mt={1} mb={1}>
       <ErrorMessage level="warning">
-        {`Signers are not consistent across networks on this account. Changing signers will only affect the account on ${currentChain}`}
+        {`Signers are not consistent across networks on this account. Changing signers will only affect the account on ${currentChain?.chainName}`}
       </ErrorMessage>
     </Box>
   )

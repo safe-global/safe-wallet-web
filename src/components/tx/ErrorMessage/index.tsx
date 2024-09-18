@@ -31,7 +31,7 @@ const ErrorMessage = ({
         <SvgIcon
           component={level === 'info' ? InfoIcon : WarningIcon}
           inheritViewBox
-          fontSize="small"
+          fontSize="medium"
           sx={{ color: ({ palette }) => `${palette[level].main} !important` }}
         />
 
