@@ -142,13 +142,7 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        <ConfirmationView
-          isCreation={isCreation}
-          txDetails={props.txDetails}
-          safeTx={safeTx}
-          isBatch={props.isBatch}
-          showMethodCall={props.showMethodCall}
-        />
+        <ConfirmationView isCreation={isCreation} txDetails={props.txDetails} safeTx={safeTx} isBatch={props.isBatch} />
 
         {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>
