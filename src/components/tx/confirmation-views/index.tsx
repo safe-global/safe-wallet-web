@@ -16,6 +16,7 @@ type ConfirmationViewProps = {
   isBatch?: boolean
   isApproval?: boolean
   isCreation?: boolean
+  showMethodCall?: boolean
 }
 
 const getConfirmationViewComponent = (txType: TransactionInfoType, props: NarrowConfirmationViewProps) => {
@@ -54,7 +55,11 @@ const ConfirmationView = (props: ConfirmationViewProps) => {
         decodedData={decodedData}
         showMultisend={!props.isBatch}
         showMethodCall={
-          !ConfirmationViewComponent && !showTxDetails && !props.isApproval && isGenericConfirmation(decodedData)
+          props.showMethodCall &&
+          !showTxDetails &&
+          !props.isApproval &&
+          isGenericConfirmation(decodedData) &&
+          !ConfirmationViewComponent
         }
       />
     </>

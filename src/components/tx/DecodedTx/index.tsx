@@ -1,5 +1,5 @@
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
-import { isCustomTxInfo } from '@/utils/transaction-guards'
+import { isCustomTxInfo, isNativeTokenTransfer, isTransferTxInfo } from '@/utils/transaction-guards'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -37,7 +37,7 @@ const DecodedTx = ({
   showMultisend = true,
   showMethodCall = false,
 }: DecodedTxProps): ReactElement => {
-  const isMultisend = decodedData?.parameters
+  const isMultisend = !!decodedData?.parameters[0]?.valueDecoded
   const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
@@ -86,7 +86,10 @@ const DecodedTx = ({
             <HelpToolTip />
             <Box flexGrow={1} />
             {isMethodCallInAdvanced && decodedData?.method}
-            {!showMethodCall && !decodedData?.method && Number(tx?.data.value) > 0 && 'native transfer'}
+            {txDetails &&
+              isTransferTxInfo(txDetails.txInfo) &&
+              isNativeTokenTransfer(txDetails.txInfo.transferInfo) &&
+              'native transfer'}
           </AccordionSummary>
           <AccordionDetails data-testid="decoded-tx-details">
             {showDecodedData && (

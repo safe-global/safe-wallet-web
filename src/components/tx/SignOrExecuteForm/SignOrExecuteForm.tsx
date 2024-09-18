@@ -49,6 +49,7 @@ export type SignOrExecuteProps = {
   onlyExecute?: boolean
   disableSubmit?: boolean
   origin?: string
+  showMethodCall?: boolean
 }
 
 const trackTxEvents = (
@@ -141,7 +142,13 @@ export const SignOrExecuteForm = ({
           </ErrorBoundary>
         )}
 
-        <ConfirmationView isCreation={isCreation} txDetails={props.txDetails} safeTx={safeTx} />
+        <ConfirmationView
+          isCreation={isCreation}
+          txDetails={props.txDetails}
+          safeTx={safeTx}
+          isBatch={props.isBatch}
+          showMethodCall={props.showMethodCall}
+        />
 
         {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>
