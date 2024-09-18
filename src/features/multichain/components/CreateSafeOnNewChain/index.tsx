@@ -109,7 +109,8 @@ const ReplaySafeDialog = ({
   const submitDisabled =
     isUnsupportedSafeCreationVersion || !!safeCreationDataError || safeCreationDataLoading || !formState.isValid
 
-  const noChainsAvailable = !chain && safeCreationData && replayableChains && replayableChains.length === 0
+  const noChainsAvailable =
+    !chain && safeCreationData && replayableChains && replayableChains.filter((chain) => chain.available).length === 0
 
   return (
     <Dialog open={open} onClose={onClose} onClick={(e) => e.stopPropagation()}>
