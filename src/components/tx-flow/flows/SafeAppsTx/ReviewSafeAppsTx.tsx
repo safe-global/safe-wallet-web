@@ -64,7 +64,7 @@ const ReviewSafeAppsTx = ({
   const error = !isTxValid(txs)
 
   return (
-    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin}>
+    <SignOrExecuteForm onSubmit={handleSubmit} origin={origin} showMethodCall>
       {error ? (
         <ErrorMessage error={safeTxError}>
           This Safe App initiated a transaction which cannot be processed. Please get in touch with the developer of
