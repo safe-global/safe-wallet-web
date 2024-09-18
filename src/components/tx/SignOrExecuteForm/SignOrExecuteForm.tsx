@@ -96,6 +96,8 @@ export const SignOrExecuteForm = ({
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
 
+  console.log(isApproval)
+
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
@@ -148,6 +150,7 @@ export const SignOrExecuteForm = ({
           safeTx={safeTx}
           isBatch={props.isBatch}
           showMethodCall={props.showMethodCall}
+          isApproval={isApproval}
         />
 
         {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}

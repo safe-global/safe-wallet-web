@@ -59,9 +59,7 @@ const ConfirmationView = (props: ConfirmationViewProps) => {
           !ConfirmationViewComponent &&
           !showTxDetails &&
           !props.isApproval &&
-          isGenericConfirmation(decodedData) &&
-          decodedData?.method !== '' &&
-          decodedData?.method !== 'approve'
+          isGenericConfirmation(decodedData)
         }
       />
     </>
