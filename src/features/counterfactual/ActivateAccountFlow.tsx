@@ -190,7 +190,7 @@ const ActivateAccountFlow = () => {
         <SafeSetupOverview
           owners={owners.map((owner) => ({ name: '', address: owner }))}
           threshold={threshold}
-          networks={[]}
+          networks={chain ? [chain] : []}
         />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
