@@ -7,7 +7,12 @@ import { useForm } from 'react-hook-form'
 import { metadata } from '@/markdown/terms/terms.md'
 
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectCookies, CookieAndTermType, saveCookieAndTermConsent } from '@/store/cookiesAndTermsSlice'
+import {
+  selectCookies,
+  CookieAndTermType,
+  saveCookieAndTermConsent,
+  hasAcceptedTerms,
+} from '@/store/cookiesAndTermsSlice'
 import { selectCookieBanner, openCookieBanner, closeCookieBanner } from '@/store/popupSlice'
 
 import css from './styles.module.css'
@@ -19,7 +24,6 @@ const COOKIE_AND_TERM_WARNING: Record<CookieAndTermType, string> = {
   [CookieAndTermType.NECESSARY]: '',
   [CookieAndTermType.UPDATES]: `You attempted to open the "What's new" section but need to accept the "Beamer" cookies first.`,
   [CookieAndTermType.ANALYTICS]: '',
-  [CookieAndTermType.VERSION]: '',
 }
 
 const CookieCheckbox = ({
@@ -49,13 +53,18 @@ export const CookieAndTermBanner = ({
       [CookieAndTermType.NECESSARY]: true,
       [CookieAndTermType.UPDATES]: cookies[CookieAndTermType.UPDATES] ?? false,
       [CookieAndTermType.ANALYTICS]: cookies[CookieAndTermType.ANALYTICS] ?? false,
-      [CookieAndTermType.VERSION]: metadata.version,
       ...(warningKey ? { [warningKey]: true } : {}),
     },
   })
 
   const handleAccept = () => {
-    dispatch(saveCookieAndTermConsent(getValues()))
+    const values = getValues()
+    dispatch(
+      saveCookieAndTermConsent({
+        ...values,
+        termsVersion: metadata.version,
+      }),
+    )
     dispatch(closeCookieBanner())
   }
 
@@ -143,8 +152,8 @@ const CookieBannerPopup = (): ReactElement | null => {
   const cookies = useAppSelector(selectCookies)
   const dispatch = useAppDispatch()
 
-  // Open the banner if cookie preferences haven't been set
-  const shouldOpen = cookies[CookieAndTermType.VERSION] !== metadata.version
+  const hasAccepted = useAppSelector(hasAcceptedTerms)
+  const shouldOpen = !hasAccepted
 
   useEffect(() => {
     if (shouldOpen) {
@@ -160,5 +169,4 @@ const CookieBannerPopup = (): ReactElement | null => {
     </div>
   ) : null
 }
-
 export default CookieBannerPopup
