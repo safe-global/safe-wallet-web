@@ -37,7 +37,7 @@ const DecodedTx = ({
   showMultisend = true,
   showMethodCall = false,
 }: DecodedTxProps): ReactElement => {
-  const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
+  const isMultisend = decodedData?.parameters
   const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
@@ -63,6 +63,7 @@ const DecodedTx = ({
   }
 
   const decodedDataBlock = <DecodedData txData={txData} toInfo={toInfo} />
+  const showDecodedData = isMethodCallInAdvanced && decodedData?.method
 
   return (
     <Stack spacing={2}>
@@ -87,16 +88,15 @@ const DecodedTx = ({
             {isMethodCallInAdvanced && decodedData?.method}
             {!showMethodCall && !decodedData?.method && Number(tx?.data.value) > 0 && 'native transfer'}
           </AccordionSummary>
-
           <AccordionDetails data-testid="decoded-tx-details">
-            {isMethodCallInAdvanced && decodedData?.method && (
+            {showDecodedData && (
               <>
                 {decodedDataBlock}
                 <Divider />
               </>
             )}
 
-            {txDetails ? (
+            {txDetails && !showDecodedData ? (
               <Summary
                 txDetails={txDetails}
                 defaultExpanded

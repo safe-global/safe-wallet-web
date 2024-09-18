@@ -105,6 +105,7 @@ describe('DecodedTx', () => {
     const result = render(
       <DecodedTx
         txDetails={txDetails}
+        showMultisend={false}
         tx={
           {
             data: {
@@ -193,6 +194,8 @@ describe('DecodedTx', () => {
     const result = render(
       <DecodedTx
         txDetails={txDetails}
+        showMethodCall
+        showMultisend={false}
         tx={
           {
             data: {
@@ -224,7 +227,6 @@ describe('DecodedTx', () => {
             },
           ],
         }}
-        showMethodCall
       />,
     )
 
@@ -353,6 +355,7 @@ describe('DecodedTx', () => {
             },
           } as SafeTransaction
         }
+        showMultisend={false}
         decodedData={{
           method: 'deposit',
           parameters: [],
