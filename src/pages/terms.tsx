@@ -26,7 +26,6 @@ const overrideComponents: MDXComponents = {
   a: CustomLink,
 }
 
-
 const Terms: NextPage = () => {
   return (
     <>

@@ -16,7 +16,7 @@ import {
 } from '@/services/analytics/gtm'
 import { spindlInit, spindlAttribute } from './spindl'
 import { useAppSelector } from '@/store'
-import { CookieAndTermType, hasConsentFor, selectCookies } from '@/store/cookiesAndTermsSlice'
+import { CookieAndTermType, hasConsentFor } from '@/store/cookiesAndTermsSlice'
 import useChainId from '@/hooks/useChainId'
 import { useRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'

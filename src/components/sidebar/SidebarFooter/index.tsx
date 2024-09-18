@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import {
   SidebarList,
@@ -9,7 +9,7 @@ import {
 } from '@/components/sidebar/SidebarList'
 import { BEAMER_SELECTOR, loadBeamer } from '@/services/beamer'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { selectCookies, CookieAndTermType, hasConsentFor } from '@/store/cookiesAndTermsSlice'
+import { CookieAndTermType, hasConsentFor } from '@/store/cookiesAndTermsSlice'
 import { openCookieBanner } from '@/store/popupSlice'
 import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
 import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
@@ -24,7 +24,6 @@ const SidebarFooter = (): ReactElement => {
   const dispatch = useAppDispatch()
   const chain = useCurrentChain()
   const hasBeamerConsent = useAppSelector((state) => hasConsentFor(state, CookieAndTermType.UPDATES))
-
 
   useEffect(() => {
     // Initialise Beamer when consent was previously given
