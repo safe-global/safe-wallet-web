@@ -257,11 +257,15 @@ export function isRecoveryQueueItem(value: TransactionListItem | RecoveryQueueIt
 }
 
 // Narrows `Transaction`
-export const isMultisigExecutionInfo = (value?: ExecutionInfo): value is MultisigExecutionInfo =>
-  value?.type === DetailedExecutionInfoType.MULTISIG
+// TODO: Consolidate these types with the new sdk
+export const isMultisigExecutionInfo = (
+  value?: ExecutionInfo | DetailedExecutionInfo,
+): value is MultisigExecutionInfo => {
+  return value?.type === 'MULTISIG'
+}
 
-export const isModuleExecutionInfo = (value?: ExecutionInfo): value is ModuleExecutionInfo =>
-  value?.type === DetailedExecutionInfoType.MODULE
+export const isModuleExecutionInfo = (value?: ExecutionInfo | DetailedExecutionInfo): value is ModuleExecutionInfo =>
+  value?.type === 'MODULE'
 
 export const isSignableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
   const executionInfo = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo : undefined
