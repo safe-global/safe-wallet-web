@@ -32,10 +32,6 @@ const WelcomeLogin = () => {
     setShouldRedirect(true)
   }, [])
 
-  const onContinue = useCallback(() => {
-    redirect()
-  }, [redirect])
-
   useEffect(() => {
     if (!shouldRedirect) return
     redirect()
@@ -57,7 +53,7 @@ const WelcomeLogin = () => {
         </Typography>
 
         <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={OVERVIEW_LABELS.welcome_page}>
-          <WalletLogin onLogin={onLogin} onContinue={onContinue} />
+          <WalletLogin onLogin={onLogin} onContinue={redirect} />
         </Track>
 
         {!wallet && (
