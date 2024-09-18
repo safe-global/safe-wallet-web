@@ -1,17 +1,29 @@
 import { useMemo } from 'react'
-import AppFrame from '@/components/safe-apps/AppFrame'
-import { getEmptySafeApp } from '@/components/safe-apps/utils'
-import { useGetStakeWidgetUrl } from '@/features/stake/hooks/useGetStakeWidgetUrl'
-import { widgetAppData } from '@/features/stake/constants'
 import css from '@/components/dashboard/PendingTxs/styles.module.css'
 import { Typography } from '@mui/material'
 import { ViewAllLink } from '@/components/dashboard/styled'
 import { AppRoutes } from '@/config/routes'
 import { useRouter } from 'next/router'
+import useBalances from '@/hooks/useBalances'
+import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+
+const useNativeTokenBalance = () => {
+  const balance = useBalances()
+
+  return useMemo(() => {
+    if (!balance) {
+      return undefined
+    }
+
+    return balance.balances.items.find((item) => item.tokenInfo.type === TokenType.NATIVE_TOKEN)
+  }, [balance])
+}
 
 const StakingDashboardWidget = () => {
-  const url = useGetStakeWidgetUrl('', 'overview') + '&interactive=false&navigation=none&widget_width=full'
   const router = useRouter()
+
+  const nativeTokenBalance = useNativeTokenBalance()
+
   const stakeUrl = useMemo(
     () => ({
       pathname: AppRoutes.stake,
@@ -20,32 +32,25 @@ const StakingDashboardWidget = () => {
     [router.query.safe],
   )
 
-  const appData = useMemo(
-    () => ({
-      ...getEmptySafeApp(),
-      ...widgetAppData,
-      url,
-    }),
-    [url],
-  )
+  if (nativeTokenBalance?.balance && BigInt(nativeTokenBalance.balance) >= 32n * 10n ** 18n) {
+    return (
+      <>
+        <div className={css.title}>
+          <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
+            Stake
+          </Typography>
 
-  return (
-    <>
-      <div className={css.title}>
-        <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
-          Stake
+          <ViewAllLink url={stakeUrl} text="Go to staking" />
+        </div>
+
+        <Typography component="p" variant="body1" fontWeight={400} mb={2}>
+          You have enough ETH to stake. Stake your ETH to earn rewards.
         </Typography>
+      </>
+    )
+  }
 
-        <ViewAllLink url={stakeUrl} text="Go to staking" />
-      </div>
-      <AppFrame
-        appUrl={appData.url}
-        allowedFeaturesList="clipboard-read; clipboard-write"
-        safeAppFromManifest={appData}
-        isNativeEmbed
-      />
-    </>
-  )
+  return null
 }
 
 export default StakingDashboardWidget
