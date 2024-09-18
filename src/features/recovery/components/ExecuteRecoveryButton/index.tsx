@@ -1,19 +1,14 @@
-import useWallet from '@/hooks/wallets/useWallet'
 import { Button, Tooltip } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
 
 import CheckWallet from '@/components/common/CheckWallet'
-import { dispatchRecoveryExecution } from '@/features/recovery/services/recovery-sender'
-import useOnboard from '@/hooks/wallets/useOnboard'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
-import { Errors, trackError } from '@/services/exceptions'
-import { asError } from '@/services/exceptions/utils'
-import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { useCurrentChain } from '@/hooks/useChains'
+import { TxModalContext } from '@/components/tx-flow'
+import { RecoveryAttemptFlow } from '@/components/tx-flow/flows'
 
 export function ExecuteRecoveryButton({
   recovery,
@@ -22,37 +17,17 @@ export function ExecuteRecoveryButton({
   recovery: RecoveryQueueItem
   compact?: boolean
 }): ReactElement {
-  const { setSubmitError } = useContext(RecoveryListItemContext)
   const { isExecutable, isNext, isPending } = useRecoveryTxState(recovery)
-  const onboard = useOnboard()
-  const wallet = useWallet()
-  const { safe } = useSafeInfo()
   const isDisabled = !isExecutable || isPending
   const isWrongChain = useIsWrongChain()
   const chain = useCurrentChain()
+  const { setTxFlow } = useContext(TxModalContext)
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
     e.preventDefault()
 
-    if (!onboard || !wallet) {
-      return
-    }
-
-    try {
-      await dispatchRecoveryExecution({
-        provider: wallet.provider,
-        chainId: safe.chainId,
-        args: recovery.args,
-        delayModifierAddress: recovery.address,
-        signerAddress: wallet.address,
-      })
-    } catch (_err) {
-      const err = asError(_err)
-
-      trackError(Errors._812, e)
-      setSubmitError(err)
-    }
+    setTxFlow(<RecoveryAttemptFlow params={recovery} />)
   }
 
   return (
