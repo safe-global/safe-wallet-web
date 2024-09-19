@@ -1,10 +1,10 @@
-import { Typography, Stack, Alert, Tooltip, SvgIcon } from '@mui/material'
+import { Alert, Stack, Typography } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatDurationFromSeconds } from '@/utils/formatters'
 import { type NativeStakingValidatorsExitConfirmationView } from '@safe-global/safe-gateway-typescript-sdk/dist/types/decoded-data'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
-import InfoIcon from '@/public/images/notifications/info.svg'
+import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
 
 type StakingOrderConfirmationViewProps = {
   order: NativeStakingValidatorsExitConfirmationView | StakingTxExitInfo
@@ -36,7 +36,7 @@ const StakingConfirmationTxExit = ({ order }: StakingOrderConfirmationViewProps)
         title={
           <>
             Withdraw in
-            <Tooltip
+            <InfoTooltip
               title={
                 <>
                   Withdrawal time is the sum of:
@@ -46,22 +46,7 @@ const StakingConfirmationTxExit = ({ order }: StakingOrderConfirmationViewProps)
                   </ul>
                 </>
               }
-              arrow
-              placement="top"
-            >
-              <span>
-                <SvgIcon
-                  component={InfoIcon}
-                  inheritViewBox
-                  color="border"
-                  fontSize="small"
-                  sx={{
-                    verticalAlign: 'middle',
-                    ml: 0.5,
-                  }}
-                />
-              </span>
-            </Tooltip>
+            />
           </>
         }
       >
