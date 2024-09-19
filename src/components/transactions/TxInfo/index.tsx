@@ -22,11 +22,13 @@ import {
   isMigrateToL2TxInfo,
   isStakingTxDepositInfo,
   isStakingTxExitInfo,
+  isStakingTxWithdrawInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
 import StakingTxExitInfo from '@/features/stake/components/StakingTxExitInfo'
+import StakingTxWithdrawInfo from '@/features/stake/components/StakingTxWithdrawInfo'
 import { Box } from '@mui/material'
 import css from './styles.module.css'
 import StakingTxDepositInfo from '@/features/stake/components/StakingTxDepositInfo'
@@ -152,6 +154,10 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
 
   if (isStakingTxExitInfo(info)) {
     return <StakingTxExitInfo info={info} />
+  }
+
+  if (isStakingTxWithdrawInfo(info)) {
+    return <StakingTxWithdrawInfo info={info} />
   }
 
   if (isCustomTxInfo(info)) {

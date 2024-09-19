@@ -1,4 +1,5 @@
 import useChains from '@/hooks/useChains'
+import useSafeAddress from '@/hooks/useSafeAddress'
 import { useCallback, type ReactElement } from 'react'
 import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
@@ -7,10 +8,10 @@ import css from './styles.module.css'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { getNetworkLink } from '.'
-import useWallet from '@/hooks/wallets/useWallet'
 import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameStep'
-import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { getSafeSingletonDeployments } from '@safe-global/safe-deployments'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { hasCanonicalDeployment } from '@/services/contracts/deployments'
 
 const NetworkMultiSelector = ({
   name,
@@ -21,7 +22,7 @@ const NetworkMultiSelector = ({
 }): ReactElement => {
   const { configs } = useChains()
   const router = useRouter()
-  const isWalletConnected = !!useWallet()
+  const safeAddress = useSafeAddress()
 
   const {
     formState: { errors },
@@ -36,10 +37,10 @@ const NetworkMultiSelector = ({
     (chains: ChainInfo[]) => {
       if (chains.length !== 1) return
       const shortName = chains[0].shortName
-      const networkLink = getNetworkLink(router, shortName, isWalletConnected)
+      const networkLink = getNetworkLink(router, safeAddress, shortName)
       router.replace(networkLink)
     },
-    [isWalletConnected, router],
+    [router, safeAddress],
   )
 
   const handleDelete = useCallback(
@@ -60,17 +61,19 @@ const NetworkMultiSelector = ({
       // do not allow multi chain safes for advanced setup flow.
       if (isAdvancedFlow) return optionNetwork.chainId != firstSelectedNetwork.chainId
 
-      const optionHasCanonicalSingletonDeployment = Boolean(
-        getSafeSingletonDeployment({
+      const optionHasCanonicalSingletonDeployment = hasCanonicalDeployment(
+        getSafeSingletonDeployments({
           network: optionNetwork.chainId,
           version: getLatestSafeVersion(firstSelectedNetwork),
-        })?.deployments.canonical,
+        }),
+        optionNetwork.chainId,
       )
-      const selectedHasCanonicalSingletonDeployment = Boolean(
-        getSafeSingletonDeployment({
+      const selectedHasCanonicalSingletonDeployment = hasCanonicalDeployment(
+        getSafeSingletonDeployments({
           network: firstSelectedNetwork.chainId,
           version: getLatestSafeVersion(firstSelectedNetwork),
-        })?.deployments.canonical,
+        }),
+        firstSelectedNetwork.chainId,
       )
 
       // Only 1.4.1 safes with canonical deployment addresses can be deployed as part of a multichain group

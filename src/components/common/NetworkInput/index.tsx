@@ -5,21 +5,9 @@ import { FormControl, InputLabel, ListSubheader, MenuItem, Select } from '@mui/m
 import partition from 'lodash/partition'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import css from './styles.module.css'
-import { type ReactElement, useMemo } from 'react'
+import { type ReactElement, useCallback, useMemo } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-
-const NetworkMenuItem = ({ chainId, chainConfigs }: { chainId: string; chainConfigs: ChainInfo[] }) => {
-  const chain = useMemo(() => chainConfigs.find((chain) => chain.chainId === chainId), [chainConfigs, chainId])
-
-  if (!chain) return null
-
-  return (
-    <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
-      <ChainIndicator chainId={chain.chainId} />
-    </MenuItem>
-  )
-}
 
 const NetworkInput = ({
   name,
@@ -28,12 +16,30 @@ const NetworkInput = ({
 }: {
   name: string
   required?: boolean
-  chainConfigs: ChainInfo[]
+  chainConfigs: (ChainInfo & { available: boolean })[]
 }): ReactElement => {
   const isDarkMode = useDarkMode()
   const theme = useTheme()
   const [testNets, prodNets] = useMemo(() => partition(chainConfigs, (config) => config.isTestnet), [chainConfigs])
   const { control } = useFormContext() || {}
+
+  const renderMenuItem = useCallback(
+    (chainId: string, isDisabled: boolean) => {
+      const chain = chainConfigs.find((chain) => chain.chainId === chainId)
+      if (!chain) return null
+      return (
+        <MenuItem
+          disabled={isDisabled}
+          key={chainId}
+          value={chainId}
+          sx={{ '&:hover': { backgroundColor: 'inherit' } }}
+        >
+          <ChainIndicator chainId={chain.chainId} />
+        </MenuItem>
+      )
+    },
+    [chainConfigs],
+  )
 
   return (
     <Controller
@@ -50,7 +56,7 @@ const NetworkInput = ({
             fullWidth
             label="Network"
             IconComponent={ExpandMoreIcon}
-            renderValue={(value) => <NetworkMenuItem chainConfigs={chainConfigs} chainId={value} />}
+            renderValue={(value) => renderMenuItem(value, false)}
             MenuProps={{
               sx: {
                 '& .MuiPaper-root': {
@@ -66,15 +72,11 @@ const NetworkInput = ({
               },
             }}
           >
-            {prodNets.map((chain) => (
-              <NetworkMenuItem key={chain.chainId} chainConfigs={chainConfigs} chainId={chain.chainId} />
-            ))}
+            {prodNets.map((chain) => renderMenuItem(chain.chainId, !chain.available))}
 
             {testNets.length > 0 && <ListSubheader className={css.listSubHeader}>Testnets</ListSubheader>}
 
-            {testNets.map((chain) => (
-              <NetworkMenuItem key={chain.chainId} chainConfigs={chainConfigs} chainId={chain.chainId} />
-            ))}
+            {testNets.map((chain) => renderMenuItem(chain.chainId, !chain.available))}
           </Select>
         </FormControl>
       )}

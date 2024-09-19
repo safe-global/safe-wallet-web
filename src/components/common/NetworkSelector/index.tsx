@@ -1,11 +1,14 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import { useAppSelector } from '@/store'
+import { selectChains } from '@/store/chainsSlice'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import type { SelectChangeEvent } from '@mui/material'
 import {
   Box,
   ButtonBase,
+  CircularProgress,
   Collapse,
   Divider,
   ListSubheader,
@@ -22,7 +25,7 @@ import type { NextRouter } from 'next/router'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
-import { type ReactElement, useMemo, useState } from 'react'
+import { type ReactElement, useCallback, useMemo, useState } from 'react'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
 
 import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
@@ -30,30 +33,31 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import uniq from 'lodash/uniq'
 import useSafeOverviews from '@/components/welcome/MyAccounts/useSafeOverviews'
-import { useReplayableNetworks } from '@/features/multichain/hooks/useReplayableNetworks'
+import { useCompatibleNetworks } from '@/features/multichain/hooks/useCompatibleNetworks'
 import { useSafeCreationData } from '@/features/multichain/hooks/useSafeCreationData'
-import { type SafeOverview, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
-import { AppRoutes } from '@/config/routes'
-import useWallet from '@/hooks/wallets/useWallet'
 
-export const getNetworkLink = (router: NextRouter, networkShortName: string, isWalletConnected: boolean) => {
-  const shouldKeepPath = !router.query.safe
+export const getNetworkLink = (router: NextRouter, safeAddress: string, networkShortName: string) => {
+  const isSafeOpened = safeAddress !== ''
+
+  const query = (
+    isSafeOpened
+      ? {
+          safe: `${networkShortName}:${safeAddress}`,
+        }
+      : { chain: networkShortName }
+  ) as {
+    safe?: string
+    chain?: string
+    safeViewRedirectURL?: string
+  }
 
   const route = {
-    pathname: shouldKeepPath
-      ? router.pathname
-      : isWalletConnected
-      ? AppRoutes.welcome.accounts
-      : AppRoutes.welcome.index,
-    query: {
-      chain: networkShortName,
-    } as {
-      chain: string
-      safeViewRedirectURL?: string
-    },
+    pathname: router.pathname,
+    query,
   }
 
   if (router.query?.safeViewRedirectURL) {
@@ -64,25 +68,32 @@ export const getNetworkLink = (router: NextRouter, networkShortName: string, isW
 }
 
 const UndeployedNetworkMenuItem = ({
-  chainId,
-  chainConfigs,
+  chain,
   isSelected = false,
   onSelect,
 }: {
-  chainId: string
-  chainConfigs: ChainInfo[]
+  chain: ChainInfo & { available: boolean }
   isSelected?: boolean
   onSelect: (chain: ChainInfo) => void
 }) => {
-  const chain = useMemo(() => chainConfigs.find((chain) => chain.chainId === chainId), [chainConfigs, chainId])
-
-  if (!chain) return null
+  const isDisabled = !chain.available
 
   return (
-    <MenuItem value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }} onClick={() => onSelect(chain)}>
+    <MenuItem
+      value={chain.chainId}
+      sx={{ '&:hover': { backgroundColor: 'inherit' } }}
+      onClick={() => onSelect(chain)}
+      disabled={isDisabled}
+    >
       <Box className={css.item}>
         <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
-        <PlusIcon className={css.plusIcon} />
+        {isDisabled ? (
+          <Typography variant="caption" component="span" className={css.comingSoon}>
+            Not available
+          </Typography>
+        ) : (
+          <PlusIcon className={css.plusIcon} />
+        )}
       </Box>
     </MenuItem>
   )
@@ -125,24 +136,47 @@ const UndeployedNetworks = ({
     [chains, deployedChains],
   )
   const safeCreationResult = useSafeCreationData(safeAddress, deployedChainInfos)
-  const [safeCreationData, safeCreationDataError] = safeCreationResult
+  const [safeCreationData, safeCreationDataError, safeCreationLoading] = safeCreationResult
 
-  const availableNetworks = useReplayableNetworks(safeCreationData, deployedChains)
+  const allCompatibleChains = useCompatibleNetworks(safeCreationData)
+  const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
+
+  const availableNetworks = useMemo(
+    () => allCompatibleChains?.filter((config) => !deployedChains.includes(config.chainId)) || [],
+    [allCompatibleChains, deployedChains],
+  )
 
   const [testNets, prodNets] = useMemo(
     () => partition(availableNetworks, (config) => config.isTestnet),
     [availableNetworks],
   )
 
+  const noAvailableNetworks = useMemo(() => availableNetworks.every((config) => !config.available), [availableNetworks])
+
   const onSelect = (chain: ChainInfo) => {
     setReplayOnChain(chain)
   }
 
-  if (safeCreationDataError) {
+  if (safeCreationLoading) {
     return (
-      <Box p="0px 16px">
-        <Typography color="text.secondary" fontSize="14px">
-          Adding another network is not possible for this Safe
+      <Box display="flex" alignItems="center" justifyContent="center" my={1}>
+        <CircularProgress size={18} />
+      </Box>
+    )
+  }
+
+  const errorMessage =
+    safeCreationDataError || (safeCreationData && noAvailableNetworks)
+      ? 'Adding another network is not possible for this Safe.'
+      : isUnsupportedSafeCreationVersion
+      ? 'This account was created from an outdated mastercopy. Adding another network is not possible.'
+      : ''
+
+  if (errorMessage) {
+    return (
+      <Box px={2} py={1}>
+        <Typography color="text.secondary" fontSize="14px" maxWidth={300}>
+          {errorMessage}
         </Typography>
       </Box>
     )
@@ -172,21 +206,11 @@ const UndeployedNetworks = ({
         ) : (
           <>
             {prodNets.map((chain) => (
-              <UndeployedNetworkMenuItem
-                chainConfigs={chains}
-                chainId={chain.chainId}
-                onSelect={onSelect}
-                key={chain.chainId}
-              />
+              <UndeployedNetworkMenuItem chain={chain} onSelect={onSelect} key={chain.chainId} />
             ))}
             {testNets.length > 0 && <TestnetDivider />}
             {testNets.map((chain) => (
-              <UndeployedNetworkMenuItem
-                chainConfigs={chains}
-                chainId={chain.chainId}
-                onSelect={onSelect}
-                key={chain.chainId}
-              />
+              <UndeployedNetworkMenuItem chain={chain} onSelect={onSelect} key={chain.chainId} />
             ))}
           </>
         )}
@@ -205,39 +229,6 @@ const UndeployedNetworks = ({
   )
 }
 
-const DeployedNetworkMenuItem = ({
-  chainId,
-  chainConfigs,
-  isSelected = false,
-  onClick,
-  safeOverviews,
-}: {
-  chainId: string
-  chainConfigs: ChainInfo[]
-  isSelected?: boolean
-  onClick?: () => void
-  safeOverviews?: SafeOverview[]
-}) => {
-  const chain = chainConfigs.find((chain) => chain.chainId === chainId)
-  const safeOverview = safeOverviews?.find((overview) => chainId === overview.chainId)
-  const isWalletConnected = !!useWallet()
-  const router = useRouter()
-
-  if (!chain) return null
-  return (
-    <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
-      <Link href={getNetworkLink(router, chain.shortName, isWalletConnected)} onClick={onClick} className={css.item}>
-        <ChainIndicator
-          responsive={isSelected}
-          chainId={chain.chainId}
-          fiatValue={safeOverview ? safeOverview.fiatTotal : undefined}
-          inline
-        />
-      </Link>
-    </MenuItem>
-  )
-}
-
 const NetworkSelector = ({
   onChainSelect,
   offerSafeCreation = false,
@@ -251,7 +242,7 @@ const NetworkSelector = ({
   const chainId = useChainId()
   const router = useRouter()
   const safeAddress = useSafeAddress()
-  const isWalletConnected = !!useWallet()
+  const chains = useAppSelector(selectChains)
 
   const isSafeOpened = safeAddress !== ''
 
@@ -292,10 +283,37 @@ const NetworkSelector = ({
 
     if (shortName) {
       trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: newChainId })
-      const networkLink = getNetworkLink(router, shortName, isWalletConnected)
+      const networkLink = getNetworkLink(router, safeAddress, shortName)
       router.push(networkLink)
     }
   }
+
+  const renderMenuItem = useCallback(
+    (chainId: string, isSelected: boolean) => {
+      const chain = chains.data.find((chain) => chain.chainId === chainId)
+      const safeOverview = safeOverviews?.find((overview) => chainId === overview.chainId)
+
+      if (!chain) return null
+
+      return (
+        <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
+          <Link
+            href={getNetworkLink(router, safeAddress, chain.shortName)}
+            onClick={onChainSelect}
+            className={css.item}
+          >
+            <ChainIndicator
+              responsive={isSelected}
+              chainId={chain.chainId}
+              fiatValue={safeOverview ? safeOverview.fiatTotal : undefined}
+              inline
+            />
+          </Link>
+        </MenuItem>
+      )
+    },
+    [chains.data, onChainSelect, router, safeAddress, safeOverviews],
+  )
 
   return configs.length ? (
     <Select
@@ -305,15 +323,7 @@ const NetworkSelector = ({
       className={css.select}
       variant="standard"
       IconComponent={ExpandMoreIcon}
-      renderValue={(value) => (
-        <DeployedNetworkMenuItem
-          chainConfigs={configs}
-          chainId={value}
-          onClick={onChainSelect}
-          safeOverviews={safeOverviews}
-          isSelected
-        />
-      )}
+      renderValue={(value) => renderMenuItem(value, true)}
       MenuProps={{
         transitionDuration: 0,
         sx: {
@@ -336,27 +346,11 @@ const NetworkSelector = ({
         },
       }}
     >
-      {prodNets.map((chain) => (
-        <DeployedNetworkMenuItem
-          key={chain.chainId}
-          chainConfigs={configs}
-          chainId={chain.chainId}
-          onClick={onChainSelect}
-          safeOverviews={safeOverviews}
-        />
-      ))}
+      {prodNets.map((chain) => renderMenuItem(chain.chainId, false))}
 
       {testNets.length > 0 && <TestnetDivider />}
 
-      {testNets.map((chain) => (
-        <DeployedNetworkMenuItem
-          key={chain.chainId}
-          chainConfigs={configs}
-          chainId={chain.chainId}
-          onClick={onChainSelect}
-          safeOverviews={safeOverviews}
-        />
-      ))}
+      {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
 
       {offerSafeCreation && isSafeOpened && (
         <UndeployedNetworks chains={configs} deployedChains={availableChainIds} safeAddress={safeAddress} />

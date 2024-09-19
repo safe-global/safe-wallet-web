@@ -210,7 +210,7 @@ const ActivateAccountFlow = () => {
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
         <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
-          <CheckWallet checkNetwork={!submitDisabled}>
+          <CheckWallet checkNetwork={!submitDisabled} allowNonOwner>
             {(isOk) => (
               <Button
                 data-testid="activate-account-btn"
