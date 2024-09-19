@@ -139,6 +139,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const [isCreating, setIsCreating] = useState<boolean>(false)
   const [submitError, setSubmitError] = useState<string>()
   const isCounterfactualEnabled = useHasFeature(FEATURES.COUNTERFACTUAL)
+  const isMultiChainDeploymentEnabled = useHasFeature(FEATURES.MULTI_CHAIN_SAFE_CREATION)
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
 
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
@@ -159,7 +160,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               owners: data.owners.map((owner) => owner.address),
               threshold: data.threshold,
             },
-            chain.chainId,
+            chain,
           )
         : undefined,
     [chain, data.owners, data.safeVersion, data.threshold],

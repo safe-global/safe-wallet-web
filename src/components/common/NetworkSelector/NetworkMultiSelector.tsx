@@ -67,7 +67,7 @@ const NetworkMultiSelector = ({
       if (isAdvancedFlow) return optionNetwork.chainId != firstSelectedNetwork.chainId
 
       // Check required feature toggles
-      if (!hasMultiChainCreationFeatures(optionNetwork)) {
+      if (!hasMultiChainCreationFeatures(optionNetwork) || !hasMultiChainCreationFeatures(firstSelectedNetwork)) {
         return true
       }
 

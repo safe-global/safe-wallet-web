@@ -25,6 +25,7 @@ import { activateReplayedSafe, isPredictedSafeProps } from '@/features/counterfa
 import { getSafeContractDeployment } from '@/services/contracts/deployments'
 import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
 import { createWeb3 } from '@/hooks/wallets/web3'
+import { hasMultiChainCreationFeatures } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 
 export type SafeCreationProps = {
   owners: string[]
@@ -202,36 +203,41 @@ export type UndeployedSafeWithoutSalt = Omit<ReplayedSafeProps, 'saltNonce'>
 export const createNewUndeployedSafeWithoutSalt = (
   safeVersion: SafeVersion,
   safeAccountConfig: Pick<ReplayedSafeProps['safeAccountConfig'], 'owners' | 'threshold'>,
-  chainId: string,
+  chain: ChainInfo,
 ): UndeployedSafeWithoutSalt => {
   // Create universal deployment Data across chains:
   const fallbackHandlerDeployment = getCompatibilityFallbackHandlerDeployment({
     version: safeVersion,
-    network: chainId,
+    network: chain.chainId,
   })
   const fallbackHandlerAddress = fallbackHandlerDeployment?.defaultAddress
-  const safeL2Deployment = getSafeL2SingletonDeployment({ version: safeVersion, network: chainId })
+  const safeL2Deployment = getSafeL2SingletonDeployment({ version: safeVersion, network: chain.chainId })
   const safeL2Address = safeL2Deployment?.defaultAddress
 
-  const safeL1Deployment = getSafeSingletonDeployment({ version: safeVersion, network: chainId })
+  const safeL1Deployment = getSafeSingletonDeployment({ version: safeVersion, network: chain.chainId })
   const safeL1Address = safeL1Deployment?.defaultAddress
 
-  const safeFactoryDeployment = getProxyFactoryDeployment({ version: safeVersion, network: chainId })
+  const safeFactoryDeployment = getProxyFactoryDeployment({ version: safeVersion, network: chain.chainId })
   const safeFactoryAddress = safeFactoryDeployment?.defaultAddress
 
   if (!safeL2Address || !safeL1Address || !safeFactoryAddress || !fallbackHandlerAddress) {
     throw new Error('No Safe deployment found')
   }
 
+  // Only do migration if the chain supports multiChain deployments.
+  const includeMigration = hasMultiChainCreationFeatures(chain)
+
+  const masterCopy = includeMigration ? safeL1Address : chain.l2 ? safeL2Address : safeL1Address
+
   const replayedSafe: Omit<ReplayedSafeProps, 'saltNonce'> = {
     factoryAddress: safeFactoryAddress,
-    masterCopy: safeL1Address,
+    masterCopy,
     safeAccountConfig: {
       threshold: safeAccountConfig.threshold,
       owners: safeAccountConfig.owners,
       fallbackHandler: fallbackHandlerAddress,
-      to: SAFE_TO_L2_SETUP_ADDRESS,
-      data: SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [safeL2Address]),
+      to: includeMigration ? SAFE_TO_L2_SETUP_ADDRESS : ZERO_ADDRESS,
+      data: includeMigration ? SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [safeL2Address]) : EMPTY_DATA,
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     },
     safeVersion,
