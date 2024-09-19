@@ -1,12 +1,13 @@
-import { Typography, Stack, Box } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { StakingTxDepositInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
   type NativeStakingDepositConfirmationView,
+  NativeStakingStatus,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
-import { formatVisualAmount, formatDurationFromSeconds } from '@/utils/formatters'
+import { formatDurationFromSeconds, formatVisualAmount } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import StakingStatus from '@/features/stake/components/StakingStatus'
 
@@ -68,8 +69,11 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
           <FieldsGrid title="Validators">{order.numValidators}</FieldsGrid>
         )}
 
-        <FieldsGrid title="Active in">{formatDurationFromSeconds(order.estimatedEntryTime)}</FieldsGrid>
-        <FieldsGrid title="Rewards">Approx. every 5 days after 4 days from activation</FieldsGrid>
+        {!isOrder && order.status === NativeStakingStatus.VALIDATION_STARTED ? null : (
+          <FieldsGrid title="Active in">{formatDurationFromSeconds(order.estimatedEntryTime)}</FieldsGrid>
+        )}
+
+        <FieldsGrid title="Rewards">Approx. every 5 days after activation</FieldsGrid>
 
         {!isOrder && (
           <FieldsGrid title="Status">
