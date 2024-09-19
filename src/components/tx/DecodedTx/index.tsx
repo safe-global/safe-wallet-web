@@ -1,5 +1,10 @@
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
-import { isCustomTxInfo, isNativeTokenTransfer, isTransferTxInfo } from '@/utils/transaction-guards'
+import {
+  isCustomTxInfo,
+  isMultisigDetailedExecutionInfo,
+  isNativeTokenTransfer,
+  isTransferTxInfo,
+} from '@/utils/transaction-guards'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -45,6 +50,11 @@ const DecodedTx = ({
   }
 
   const addressInfoIndex = txDetails?.txData?.addressInfoIndex
+
+  const isCreation =
+    txDetails &&
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
+    txDetails.detailedExecutionInfo.confirmations.length === 0
 
   const txData = {
     dataDecoded: decodedData,
@@ -99,7 +109,7 @@ const DecodedTx = ({
               </>
             )}
 
-            {txDetails && !showDecodedData ? (
+            {txDetails && !showDecodedData && !isCreation ? (
               <Summary txDetails={txDetails} defaultExpanded />
             ) : (
               tx && <PartialSummary safeTx={tx} />
