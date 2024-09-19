@@ -6,20 +6,19 @@ import { Errors, trackError } from '@/services/exceptions'
 import { dispatchRecoveryExecution } from '@/features/recovery/services/recovery-sender'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import FieldsGrid from '@/components/tx/FieldsGrid'
-import { TxModalContext } from '../..'
+import { TxModalContext } from '@/components/tx-flow'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { RecoveryValidationErrors } from '@/features/recovery/components/RecoveryValidationErrors'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
-export type RecoveryAttemptReviewProps = {
-  params: {
-    args: TransactionAddedEvent.Log['args']
-    address: string
-  }
+type RecoveryAttemptReviewProps = {
+  item: RecoveryQueueItem
 }
 
-const RecoveryAttemptReview = ({ params }: RecoveryAttemptReviewProps) => {
+const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
   const [isPending, setIsPending] = useState(false)
   const [error, setError] = useState<Error>()
   const wallet = useWallet()
@@ -39,8 +38,8 @@ const RecoveryAttemptReview = ({ params }: RecoveryAttemptReviewProps) => {
         await dispatchRecoveryExecution({
           provider: wallet.provider,
           chainId: safe.chainId,
-          args: params.args,
-          delayModifierAddress: params.address,
+          args: item.args,
+          delayModifierAddress: item.address,
           signerAddress: wallet.address,
         })
         setTxFlow(undefined)
@@ -51,19 +50,24 @@ const RecoveryAttemptReview = ({ params }: RecoveryAttemptReviewProps) => {
 
       setIsPending(false)
     },
-    [wallet, safe, params, setTxFlow],
+    [wallet, safe, item.address, item.args, setTxFlow],
   )
 
   return (
     <TxCard>
       <form onSubmit={onFormSubmit}>
         <Stack gap={3} mb={2}>
-          {params?.address && (
+          {item.address && (
             <FieldsGrid title="Initiated by">
-              <EthHashInfo address={params?.address} showAvatar hasExplorer showName />
+              <EthHashInfo address={item.address} showAvatar hasExplorer showName />
             </FieldsGrid>
           )}
           <Typography>Confirm or reject within the review time window.</Typography>
+
+          <NetworkWarning />
+
+          <RecoveryValidationErrors item={item} />
+
           {error && <ErrorMessage error={error}>Error submitting the transaction.</ErrorMessage>}
         </Stack>
 

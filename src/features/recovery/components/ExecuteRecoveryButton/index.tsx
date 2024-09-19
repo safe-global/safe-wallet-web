@@ -27,7 +27,7 @@ export function ExecuteRecoveryButton({
     e.stopPropagation()
     e.preventDefault()
 
-    setTxFlow(<RecoveryAttemptFlow params={recovery} />)
+    setTxFlow(<RecoveryAttemptFlow item={recovery} />)
   }
 
   return (

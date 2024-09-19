@@ -1,11 +1,12 @@
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import SaveAddressIcon from '@/public/images/common/save-address.svg'
-import RecoveryAttemptReview, { type RecoveryAttemptReviewProps } from './RecoveryAttemptReview'
+import RecoveryAttemptReview from './RecoveryAttemptReview'
+import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
-const RecoveryAttemptFlow = ({ params }: { params: RecoveryAttemptReviewProps['params'] }) => {
+const RecoveryAttemptFlow = ({ item }: { item: RecoveryQueueItem }) => {
   return (
     <TxLayout title="Recovery" subtitle="Confirm recovery" icon={SaveAddressIcon} step={0}>
-      <RecoveryAttemptReview params={params} />
+      <RecoveryAttemptReview item={item} />
     </TxLayout>
   )
 }
