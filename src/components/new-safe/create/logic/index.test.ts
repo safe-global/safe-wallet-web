@@ -250,6 +250,36 @@ describe('create/logic', () => {
       })
     })
 
+    it('should use l2 masterCopy and no migration on l2s with multichain feature but on old version', () => {
+      const safeSetup = {
+        owners: [faker.finance.ethereumAddress()],
+        threshold: 1,
+      }
+      expect(
+        createNewUndeployedSafeWithoutSalt(
+          '1.3.0',
+          safeSetup,
+          chainBuilder()
+            .with({ chainId: '137' })
+            // Multichain creation is toggled off
+            .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
+            .with({ l2: true })
+            .build(),
+        ),
+      ).toEqual({
+        safeAccountConfig: {
+          ...safeSetup,
+          fallbackHandler: getFallbackHandlerDeployment({ version: '1.3.0', network: '137' })?.defaultAddress,
+          to: ZERO_ADDRESS,
+          data: EMPTY_DATA,
+          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
+        },
+        safeVersion: '1.3.0',
+        masterCopy: getSafeL2SingletonDeployment({ version: '1.3.0', network: '137' })?.defaultAddress,
+        factoryAddress: getProxyFactoryDeployment({ version: '1.3.0', network: '137' })?.defaultAddress,
+      })
+    })
+
     it('should use l1 masterCopy and migration on l2s with multichain feature', () => {
       const safeSetup = {
         owners: [faker.finance.ethereumAddress()],
