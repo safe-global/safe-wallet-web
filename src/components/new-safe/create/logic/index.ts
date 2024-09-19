@@ -1,5 +1,6 @@
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { Interface, type Eip1193Provider, type Provider } from 'ethers'
+import semverSatisfies from 'semver/functions/satisfies'
 
 import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { getReadOnlyProxyFactoryContract } from '@/services/contracts/safeContracts'
@@ -225,7 +226,7 @@ export const createNewUndeployedSafeWithoutSalt = (
   }
 
   // Only do migration if the chain supports multiChain deployments.
-  const includeMigration = hasMultiChainCreationFeatures(chain)
+  const includeMigration = hasMultiChainCreationFeatures(chain) && semverSatisfies(safeVersion, '>=1.4.1')
 
   const masterCopy = includeMigration ? safeL1Address : chain.l2 ? safeL2Address : safeL1Address
 
