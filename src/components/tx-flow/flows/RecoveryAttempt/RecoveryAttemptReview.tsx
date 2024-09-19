@@ -1,4 +1,4 @@
-import { type SyntheticEvent, useState, useContext, useCallback } from 'react'
+import { type SyntheticEvent, useState, useContext, useCallback, useReducer } from 'react'
 import { CircularProgress, CardActions, Button, Typography, Stack, Divider } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import CheckWallet from '@/components/common/CheckWallet'
@@ -18,9 +18,35 @@ type RecoveryAttemptReviewProps = {
   item: RecoveryQueueItem
 }
 
-const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
-  const [isPending, setIsPending] = useState(false)
+function useAsyncDispatch<T extends (...args: any) => Promise<any>>(dispatchFn: T) {
+  const [isLoading, toggleIsLoading] = useReducer((isLoading: boolean) => !isLoading, false)
   const [error, setError] = useState<Error>()
+
+  const asyncDispatch = useCallback(
+    async (...args: Parameters<T>) => {
+      toggleIsLoading()
+      setError(undefined)
+
+      try {
+        const data = await dispatchFn(...args)
+
+        toggleIsLoading()
+
+        return data
+      } catch (e) {
+        trackError(Errors._812, e)
+        setError(e as Error)
+        toggleIsLoading()
+      }
+    },
+    [dispatchFn],
+  )
+
+  return { isLoading, error, asyncDispatch }
+}
+
+const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
+  const { asyncDispatch, isLoading, error } = useAsyncDispatch(dispatchRecoveryExecution)
   const wallet = useWallet()
   const { safe } = useSafeInfo()
   const { setTxFlow } = useContext(TxModalContext)
@@ -31,26 +57,15 @@ const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
 
       if (!wallet) return
 
-      setError(undefined)
-      setIsPending(true)
-
-      try {
-        await dispatchRecoveryExecution({
-          provider: wallet.provider,
-          chainId: safe.chainId,
-          args: item.args,
-          delayModifierAddress: item.address,
-          signerAddress: wallet.address,
-        })
-        setTxFlow(undefined)
-      } catch (err) {
-        trackError(Errors._812, err)
-        setError(err as Error)
-      }
-
-      setIsPending(false)
+      asyncDispatch({
+        provider: wallet.provider,
+        chainId: safe.chainId,
+        args: item.args,
+        delayModifierAddress: item.address,
+        signerAddress: wallet.address,
+      })
     },
-    [wallet, safe, item.address, item.args, setTxFlow],
+    [asyncDispatch, wallet, safe, item.address, item.args],
   )
 
   return (
@@ -81,10 +96,10 @@ const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
                 data-testid="execute-through-role-form-btn"
                 variant="contained"
                 type="submit"
-                disabled={!isOk || isPending}
+                disabled={!isOk || isLoading}
                 sx={{ minWidth: '112px' }}
               >
-                {isPending ? <CircularProgress size={20} /> : 'Execute'}
+                {isLoading ? <CircularProgress size={20} /> : 'Execute'}
               </Button>
             )}
           </CheckWallet>
