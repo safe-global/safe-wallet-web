@@ -95,9 +95,6 @@ export const SignOrExecuteForm = ({
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
-
-  console.log(isApproval)
-
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
