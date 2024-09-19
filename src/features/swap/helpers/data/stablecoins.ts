@@ -536,4 +536,9 @@ export const stableCoinAddresses: {
     symbol: 'EURE',
     chains: ['gnosis'],
   },
+  '0xdc035d45d973e3ec169d2276ddab16f1e407384f': {
+    name: 'Sky dollar',
+    symbol: 'USDS',
+    chains: ['ethereum'],
+  },
 }
