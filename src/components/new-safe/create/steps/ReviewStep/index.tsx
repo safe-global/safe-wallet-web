@@ -83,8 +83,6 @@ export const SafeSetupOverview = ({
   threshold: number
   networks: ChainInfo[]
 }) => {
-  const chain = useCurrentChain()
-
   return (
     <Grid container spacing={3}>
       <ReviewRow

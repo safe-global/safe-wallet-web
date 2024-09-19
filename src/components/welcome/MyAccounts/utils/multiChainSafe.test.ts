@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker/locale/af_ZA'
-import { getSharedSetup, isMultiChainSafeItem } from './multiChainSafe'
+import { getDeviatingSetups, getSafeSetups, getSharedSetup, isMultiChainSafeItem } from './multiChainSafe'
 import { PendingSafeStatus } from '@/store/slices'
 import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 
@@ -32,9 +32,211 @@ describe('multiChainSafe', () => {
   })
 
   describe('getSharedSetup', () => {
-    it('should return undefined if no setup infos available', () => {
+    it('should return undefined if no setup info is available', () => {
+      expect(getSharedSetup([])).toBeUndefined()
+      expect(getSharedSetup([undefined])).toBeUndefined()
+      expect(getSharedSetup([undefined, undefined])).toBeUndefined()
+    })
+
+    it('should return undefined if some of the setups are undefined', () => {
+      const safeSetups = [
+        {
+          owners: [faker.finance.ethereumAddress()],
+          threshold: 1,
+          chainId: '1',
+        },
+        undefined,
+      ]
+      expect(getSharedSetup(safeSetups)).toBeUndefined()
+    })
+
+    it('should return undefined if the owners do not match', () => {
+      // 2 Safes. One with 1 and one with 2 owners.
+      const owners1 = [faker.finance.ethereumAddress()]
+      const owners2 = [...owners1, faker.finance.ethereumAddress()]
+      const safeSetups = [
+        {
+          owners: owners1,
+          threshold: 1,
+          chainId: '1',
+        },
+        {
+          owners: owners2,
+          threshold: 1,
+          chainId: '100',
+        },
+      ]
+
+      expect(getSharedSetup(safeSetups)).toBeUndefined()
+    })
+    it('should return undefined if the threshold does not match', () => {
+      const owners = [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()]
+
+      const safeSetups = [
+        {
+          owners,
+          threshold: 1,
+          chainId: '1',
+        },
+        {
+          owners,
+          threshold: 2,
+          chainId: '100',
+        },
+      ]
+
+      expect(getSharedSetup(safeSetups)).toBeUndefined()
+    })
+
+    it('should return the shared setup if owners and threshold matches', () => {
+      const owners = [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()]
+
+      const safeSetups = [
+        {
+          owners,
+          threshold: 2,
+          chainId: '1',
+        },
+        {
+          owners,
+          threshold: 2,
+          chainId: '100',
+        },
+      ]
+
+      expect(getSharedSetup(safeSetups)).toEqual({ owners, threshold: 2 })
+    })
+  })
+
+  describe('getDeviatingSetups', () => {
+    it('should return empty array if not setup data is provided', () => {
+      expect(getDeviatingSetups([], '1')).toEqual([])
+    })
+
+    it('should return empty array if current chainId is not defined', () => {
+      const safeSetups = [
+        {
+          owners: [faker.finance.ethereumAddress()],
+          threshold: 1,
+          chainId: '1',
+        },
+      ]
+      expect(getDeviatingSetups(safeSetups, undefined)).toEqual([])
+    })
+
+    it('should return empty array if all setups are the same', () => {
+      const owner1 = faker.finance.ethereumAddress()
+      const owner2 = faker.finance.ethereumAddress()
+      // const owner3 = faker.finance.ethereumAddress()
+
+      const safeSetups = [
+        {
+          owners: [owner1, owner2],
+          threshold: 2,
+          chainId: '1',
+        },
+        {
+          owners: [owner1, owner2],
+          threshold: 2,
+          chainId: '5',
+        },
+        {
+          owners: [owner1, owner2],
+          threshold: 2,
+          chainId: '100',
+        },
+      ]
+      expect(getDeviatingSetups(safeSetups, '1')).toEqual([])
+    })
+
+    it('should return all setups that are different from the current one', () => {
+      const currentChainId = '1'
+      const owner1 = faker.finance.ethereumAddress()
+      const owner2 = faker.finance.ethereumAddress()
+      const owner3 = faker.finance.ethereumAddress()
+
+      const currentSetup = { owners: [owner1, owner2], threshold: 2 }
+      const differentOwnersSetup = { owners: [owner2, owner3], threshold: 2 }
+      const differentThresholdSetup = { owners: [owner1, owner2], threshold: 1 }
+      const differentOwnersAndThresholdSetup = { owners: [owner1], threshold: 1 }
+
+      const safeSetups = [
+        {
+          ...currentSetup,
+          chainId: currentChainId,
+        },
+        {
+          ...currentSetup,
+          chainId: '4',
+        },
+        {
+          ...differentOwnersSetup,
+          chainId: '5',
+        },
+        {
+          ...differentThresholdSetup,
+          chainId: '100',
+        },
+        {
+          ...differentOwnersAndThresholdSetup,
+          chainId: '11155111',
+        },
+      ]
+      expect(getDeviatingSetups(safeSetups, currentChainId)).toEqual([
+        {
+          ...differentOwnersSetup,
+          chainId: '5',
+        },
+        {
+          ...differentThresholdSetup,
+          chainId: '100',
+        },
+        {
+          ...differentOwnersAndThresholdSetup,
+          chainId: '11155111',
+        },
+      ])
+    })
+
+    it('should return empty array if setup data for current chain is not found', () => {
+      const currentChainId = '1'
+
+      const safeSetups = [
+        {
+          owners: [faker.finance.ethereumAddress()],
+          threshold: 1,
+          chainId: '10',
+        },
+        {
+          owners: [faker.finance.ethereumAddress()],
+          threshold: 1,
+          chainId: '5',
+        },
+        {
+          owners: [faker.finance.ethereumAddress()],
+          threshold: 1,
+          chainId: '100',
+        },
+      ]
+      expect(getDeviatingSetups(safeSetups, currentChainId)).toEqual([])
+    })
+  })
+
+  describe('getSafeSetups', () => {
+    it('should return an empty array if no setup infos available', () => {
+      const result = getSafeSetups(
+        [
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isWatchlist: false,
+          },
+        ],
+        [],
+        {},
+      )
       expect(
-        getSharedSetup(
+        getSafeSetups(
           [
             {
               address: faker.finance.ethereumAddress(),
@@ -43,219 +245,45 @@ describe('multiChainSafe', () => {
             },
           ],
           [],
-          undefined,
+          {},
         ),
-      ).toBeUndefined()
+      ).toEqual([])
     })
 
-    it('should return undefined if the owners do not match', () => {
-      const address = faker.finance.ethereumAddress()
-
-      // 2 Safes. One with 1 and one with 2 owners.
-      const owners1 = [
-        {
-          value: faker.finance.ethereumAddress(),
-        },
-      ]
-      const owners2 = [...owners1, { value: faker.finance.ethereumAddress() }]
-
-      expect(
-        getSharedSetup(
-          [
-            {
-              address,
-              chainId: '1',
-              isWatchlist: false,
-            },
-            {
-              address,
-              chainId: '100',
-              isWatchlist: false,
-            },
-          ],
-          [
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '1',
-              fiatTotal: '0',
-              owners: owners1,
-              queued: 0,
-              threshold: 1,
-            },
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '100',
-              fiatTotal: '0',
-              owners: owners2,
-              queued: 0,
-              threshold: 1,
-            },
-          ],
-          undefined,
-        ),
-      ).toBeUndefined()
-    })
-    it('should return undefined if the threshold does not match', () => {
-      const address = faker.finance.ethereumAddress()
-
-      const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
-
-      expect(
-        getSharedSetup(
-          [
-            {
-              address,
-              chainId: '1',
-              isWatchlist: false,
-            },
-            {
-              address,
-              chainId: '100',
-              isWatchlist: false,
-            },
-          ],
-          [
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '1',
-              fiatTotal: '0',
-              owners,
-              queued: 0,
-              threshold: 1,
-            },
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '100',
-              fiatTotal: '0',
-              owners,
-              queued: 0,
-              threshold: 2,
-            },
-          ],
-          undefined,
-        ),
-      ).toBeUndefined()
-    })
-
-    it('should return the shared setup if owners and threshold matches', () => {
-      const address = faker.finance.ethereumAddress()
-
-      const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
-
-      expect(
-        getSharedSetup(
-          [
-            {
-              address,
-              chainId: '1',
-              isWatchlist: false,
-            },
-            {
-              address,
-              chainId: '100',
-              isWatchlist: false,
-            },
-          ],
-          [
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '1',
-              fiatTotal: '0',
-              owners,
-              queued: 0,
-              threshold: 2,
-            },
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '100',
-              fiatTotal: '0',
-              owners,
-              queued: 0,
-              threshold: 2,
-            },
-          ],
-          undefined,
-        ),
-      ).toEqual({ owners: owners.map((owner) => owner.value), threshold: 2 })
-    })
-
-    it('should return undefined if owners do not match and some Safes are undeployed', () => {
-      const address = faker.finance.ethereumAddress()
-
-      const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
-
-      expect(
-        getSharedSetup(
-          [
-            {
-              address,
-              chainId: '1',
-              isWatchlist: false,
-            },
-            {
-              address,
-              chainId: '100',
-              isWatchlist: false,
-            },
-          ],
-          [
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '1',
-              fiatTotal: '0',
-              owners,
-              queued: 0,
-              threshold: 2,
-            },
-          ],
+    it('should return undefined if no setup infos available', () => {
+      const result = getSafeSetups(
+        [
           {
-            ['100']: {
-              [address]: {
-                props: {
-                  safeAccountConfig: {
-                    owners: owners.map((owner) => owner.value),
-                    threshold: 1,
-                  },
-                },
-                status: {
-                  status: PendingSafeStatus.AWAITING_EXECUTION,
-                  type: PayMethod.PayLater,
-                },
-              },
-            },
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isWatchlist: false,
           },
+        ],
+        [],
+        {},
+      )
+      expect(
+        getSafeSetups(
+          [
+            {
+              address: faker.finance.ethereumAddress(),
+              chainId: '1',
+              isWatchlist: false,
+            },
+          ],
+          [],
+          {},
         ),
-      ).toBeUndefined()
+      ).toEqual([])
     })
 
-    it('should return undefined if some owner data is missing', () => {
+    it('should return the setup data if deployed safes have setup data available', () => {
       const address = faker.finance.ethereumAddress()
-
-      const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
+      const ownerAddress1 = faker.finance.ethereumAddress()
+      const ownerAddress2 = faker.finance.ethereumAddress()
 
       expect(
-        getSharedSetup(
+        getSafeSetups(
           [
             {
               address,
@@ -276,127 +304,39 @@ describe('multiChainSafe', () => {
               awaitingConfirmation: null,
               chainId: '1',
               fiatTotal: '0',
-              owners,
+              owners: [{ value: ownerAddress1 }],
+              queued: 0,
+              threshold: 1,
+            },
+            {
+              address: {
+                value: address,
+              },
+              awaitingConfirmation: null,
+              chainId: '100',
+              fiatTotal: '0',
+              owners: [{ value: ownerAddress2 }],
               queued: 0,
               threshold: 2,
             },
           ],
           {},
         ),
-      ).toBeUndefined()
+      ).toEqual([
+        { owners: [ownerAddress1], threshold: 1, chainId: '1' },
+        { owners: [ownerAddress2], threshold: 2, chainId: '100' },
+      ])
     })
 
-    it('should return undefined if threshold does not match and some Safes are undeployed', () => {
+    it('should return the setup data if undeployed safes have setup data available', () => {
       const address = faker.finance.ethereumAddress()
 
-      const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
+      // const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
+      const ownerAddress1 = faker.finance.ethereumAddress()
+      const ownerAddress2 = faker.finance.ethereumAddress()
 
       expect(
-        getSharedSetup(
-          [
-            {
-              address,
-              chainId: '1',
-              isWatchlist: false,
-            },
-            {
-              address,
-              chainId: '100',
-              isWatchlist: false,
-            },
-          ],
-          [
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '1',
-              fiatTotal: '0',
-              owners: owners.slice(0, 1),
-              queued: 0,
-              threshold: 1,
-            },
-          ],
-          {
-            ['100']: {
-              [address]: {
-                props: {
-                  safeAccountConfig: {
-                    owners: owners.map((owner) => owner.value),
-                    threshold: 1,
-                  },
-                },
-                status: {
-                  status: PendingSafeStatus.AWAITING_EXECUTION,
-                  type: PayMethod.PayLater,
-                },
-              },
-            },
-          },
-        ),
-      ).toBeUndefined()
-    })
-
-    it('should return the shared setup if owners and threshold matches and some Safes are undeployed', () => {
-      const address = faker.finance.ethereumAddress()
-
-      const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
-
-      expect(
-        getSharedSetup(
-          [
-            {
-              address,
-              chainId: '1',
-              isWatchlist: false,
-            },
-            {
-              address,
-              chainId: '100',
-              isWatchlist: false,
-            },
-          ],
-          [
-            {
-              address: {
-                value: address,
-              },
-              awaitingConfirmation: null,
-              chainId: '1',
-              fiatTotal: '0',
-              owners,
-              queued: 0,
-              threshold: 2,
-            },
-          ],
-          {
-            ['100']: {
-              [address]: {
-                props: {
-                  safeAccountConfig: {
-                    owners: owners.map((owner) => owner.value),
-                    threshold: 2,
-                  },
-                },
-                status: {
-                  status: PendingSafeStatus.AWAITING_EXECUTION,
-                  type: PayMethod.PayLater,
-                },
-              },
-            },
-          },
-        ),
-      ).toEqual({ owners: owners.map((owner) => owner.value), threshold: 2 })
-    })
-
-    it('should return the shared setup if owners and threshold matches and all Safes are undeployed', () => {
-      const address = faker.finance.ethereumAddress()
-
-      const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
-
-      expect(
-        getSharedSetup(
+        getSafeSetups(
           [
             {
               address,
@@ -415,8 +355,8 @@ describe('multiChainSafe', () => {
               [address]: {
                 props: {
                   safeAccountConfig: {
-                    owners: owners.map((owner) => owner.value),
-                    threshold: 2,
+                    owners: [ownerAddress1],
+                    threshold: 1,
                   },
                 },
                 status: {
@@ -429,7 +369,7 @@ describe('multiChainSafe', () => {
               [address]: {
                 props: {
                   safeAccountConfig: {
-                    owners: owners.map((owner) => owner.value),
+                    owners: [ownerAddress2],
                     threshold: 2,
                   },
                 },
@@ -441,7 +381,129 @@ describe('multiChainSafe', () => {
             },
           },
         ),
-      ).toEqual({ owners: owners.map((owner) => owner.value), threshold: 2 })
+      ).toEqual([
+        { owners: [ownerAddress1], threshold: 1, chainId: '1' },
+        { owners: [ownerAddress2], threshold: 2, chainId: '100' },
+      ])
+    })
+
+    it('should only return setup data where if setup data is available', () => {
+      const address = faker.finance.ethereumAddress()
+
+      // const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
+      const ownerAddress1 = faker.finance.ethereumAddress()
+      const ownerAddress2 = faker.finance.ethereumAddress()
+
+      expect(
+        getSafeSetups(
+          [
+            {
+              address,
+              chainId: '1',
+              isWatchlist: false,
+            },
+            {
+              address,
+              chainId: '100',
+              isWatchlist: false,
+            },
+            {
+              address,
+              chainId: '5',
+              isWatchlist: false,
+            },
+          ],
+          [
+            {
+              address: {
+                value: address,
+              },
+              awaitingConfirmation: null,
+              chainId: '1',
+              fiatTotal: '0',
+              owners: [{ value: ownerAddress1 }],
+              queued: 0,
+              threshold: 1,
+            },
+          ],
+          {
+            ['100']: {
+              [address]: {
+                props: {
+                  safeAccountConfig: {
+                    owners: [ownerAddress2],
+                    threshold: 2,
+                  },
+                },
+                status: {
+                  status: PendingSafeStatus.AWAITING_EXECUTION,
+                  type: PayMethod.PayLater,
+                },
+              },
+            },
+          },
+        ),
+      ).toEqual([
+        { owners: [ownerAddress1], threshold: 1, chainId: '1' },
+        { owners: [ownerAddress2], threshold: 2, chainId: '100' },
+      ])
+    })
+
+    it('should return setup data for a mix of deployed and undeployed safes', () => {
+      const address = faker.finance.ethereumAddress()
+
+      // const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
+      const ownerAddress1 = faker.finance.ethereumAddress()
+      const ownerAddress2 = faker.finance.ethereumAddress()
+
+      expect(
+        getSafeSetups(
+          [
+            {
+              address,
+              chainId: '1',
+              isWatchlist: false,
+            },
+            {
+              address,
+              chainId: '100',
+              isWatchlist: false,
+            },
+          ],
+          [
+            {
+              address: {
+                value: address,
+              },
+              awaitingConfirmation: null,
+              chainId: '1',
+              fiatTotal: '0',
+              owners: [{ value: ownerAddress1 }],
+              queued: 0,
+              threshold: 1,
+            },
+          ],
+          {
+            ['100']: {
+              [address]: {
+                props: {
+                  safeAccountConfig: {
+                    owners: [ownerAddress2],
+                    threshold: 2,
+                  },
+                },
+                status: {
+                  status: PendingSafeStatus.AWAITING_EXECUTION,
+                  type: PayMethod.PayLater,
+                },
+              },
+            },
+          },
+        ),
+      ).toEqual([
+        { owners: [ownerAddress1], threshold: 1, chainId: '1' },
+        { owners: [ownerAddress2], threshold: 2, chainId: '100' },
+      ])
     })
   })
 })
