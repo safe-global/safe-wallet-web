@@ -9,9 +9,24 @@ import {
   getSignMessageLibDeployment,
   getCreateCallDeployment,
 } from '@safe-global/safe-deployments'
-import type { SingletonDeployment, DeploymentFilter } from '@safe-global/safe-deployments'
+import type { SingletonDeployment, DeploymentFilter, SingletonDeploymentV2 } from '@safe-global/safe-deployments'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { sameAddress } from '@/utils/addresses'
+
+const toNetworkAddressList = (addresses: string | string[]) => (Array.isArray(addresses) ? addresses : [addresses])
+
+export const hasCanonicalDeployment = (deployment: SingletonDeploymentV2 | undefined, chainId: string) => {
+  const canonicalAddress = deployment?.deployments.canonical?.address
+
+  if (!canonicalAddress) {
+    return false
+  }
+
+  const networkAddresses = toNetworkAddressList(deployment.networkAddresses[chainId])
+
+  return networkAddresses.some((networkAddress) => sameAddress(canonicalAddress, networkAddress))
+}
 
 export const _tryDeploymentVersions = (
   getDeployment: (filter?: DeploymentFilter) => SingletonDeployment | undefined,
