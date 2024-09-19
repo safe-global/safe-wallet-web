@@ -33,11 +33,10 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BrowserProvider, ContractTransactionResponse, Eip1193Provider, Provider } from 'ethers'
 import type { NextRouter } from 'next/router'
-import { Safe__factory } from '@/types/contracts'
-import { getCompatibilityFallbackHandlerDeployments } from '@safe-global/safe-deployments'
+import { getSafeL2SingletonDeployments, getSafeSingletonDeployments } from '@safe-global/safe-deployments'
 import { sameAddress } from '@/utils/addresses'
 
-import { getReadOnlyProxyFactoryContract } from '@/services/contracts/safeContracts'
+import { encodeSafeCreationTx } from '@/components/new-safe/create/logic'
 
 export const getUndeployedSafeInfo = (undeployedSafe: UndeployedSafe, address: string, chain: ChainInfo) => {
   const safeSetup = extractCounterfactualSafeSetup(undeployedSafe, chain.chainId)
@@ -369,29 +368,34 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, typ
   }, TIMEOUT_TIME)
 }
 
-export const isReplayedSafeProps = (props: UndeployedSafeProps): props is ReplayedSafeProps => {
-  if ('setupData' in props && 'masterCopy' in props && 'factoryAddress' in props && 'saltNonce' in props) {
-    return true
-  }
-  return false
-}
+export const isReplayedSafeProps = (props: UndeployedSafeProps): props is ReplayedSafeProps =>
+  'safeAccountConfig' in props && 'masterCopy' in props && 'factoryAddress' in props && 'saltNonce' in props
 
-export const isPredictedSafeProps = (props: UndeployedSafeProps): props is PredictedSafeProps => {
-  if ('safeAccountConfig' in props) {
-    return true
-  }
-  return false
-}
+export const isPredictedSafeProps = (props: UndeployedSafeProps): props is PredictedSafeProps =>
+  'safeAccountConfig' in props && !('masterCopy' in props)
 
-const determineFallbackHandlerVersion = (fallbackHandler: string, chainId: string): SafeVersion | undefined => {
+export const determineMasterCopyVersion = (masterCopy: string, chainId: string): SafeVersion | undefined => {
   const SAFE_VERSIONS: SafeVersion[] = ['1.4.1', '1.3.0', '1.2.0', '1.1.1', '1.0.0']
   return SAFE_VERSIONS.find((version) => {
-    const deployments = getCompatibilityFallbackHandlerDeployments({ version })?.networkAddresses[chainId]
+    const isL1Singleton = () => {
+      const deployments = getSafeSingletonDeployments({ version })?.networkAddresses[chainId]
 
-    if (Array.isArray(deployments)) {
-      return deployments.some((deployment) => sameAddress(fallbackHandler, deployment))
+      if (Array.isArray(deployments)) {
+        return deployments.some((deployment) => sameAddress(masterCopy, deployment))
+      }
+      return sameAddress(masterCopy, deployments)
     }
-    return sameAddress(fallbackHandler, deployments)
+
+    const isL2Singleton = () => {
+      const deployments = getSafeL2SingletonDeployments({ version })?.networkAddresses[chainId]
+
+      if (Array.isArray(deployments)) {
+        return deployments.some((deployment) => sameAddress(masterCopy, deployment))
+      }
+      return sameAddress(masterCopy, deployments)
+    }
+
+    return isL1Singleton() || isL2Singleton()
   })
 }
 
@@ -419,41 +423,20 @@ export const extractCounterfactualSafeSetup = (
       saltNonce: undeployedSafe.props.safeDeploymentConfig?.saltNonce,
     }
   } else {
-    if (!undeployedSafe.props.setupData) {
-      return undefined
-    }
-    const [owners, threshold, to, data, fallbackHandler, ...setupParams] =
-      Safe__factory.createInterface().decodeFunctionData('setup', undeployedSafe.props.setupData)
-
-    const safeVersion = determineFallbackHandlerVersion(fallbackHandler, chainId)
+    const { owners, threshold, fallbackHandler } = undeployedSafe.props.safeAccountConfig
 
     return {
       owners,
       threshold: Number(threshold),
       fallbackHandler,
-      safeVersion,
+      safeVersion: undeployedSafe.props.safeVersion,
       saltNonce: undeployedSafe.props.saltNonce,
     }
   }
 }
 
-export const activateReplayedSafe = async (
-  safeVersion: SafeVersion,
-  chain: ChainInfo,
-  props: ReplayedSafeProps,
-  provider: BrowserProvider,
-) => {
-  const usedSafeVersion = safeVersion ?? getLatestSafeVersion(chain)
-  const readOnlyProxyContract = await getReadOnlyProxyFactoryContract(usedSafeVersion, props.factoryAddress)
-
-  if (!props.masterCopy || !props.setupData) {
-    throw Error('Cannot replay Safe without deployment info')
-  }
-  const data = readOnlyProxyContract.encode('createProxyWithNonce', [
-    props.masterCopy,
-    props.setupData,
-    BigInt(props.saltNonce),
-  ])
+export const activateReplayedSafe = async (chain: ChainInfo, props: ReplayedSafeProps, provider: BrowserProvider) => {
+  const data = await encodeSafeCreationTx(props, chain)
 
   return (await provider.getSigner()).sendTransaction({
     to: props.factoryAddress,

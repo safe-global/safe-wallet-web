@@ -5,10 +5,9 @@ import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import {
-  computeNewSafeAddress,
   createNewSafe,
+  createNewUndeployedSafeWithoutSalt,
   relaySafeCreation,
-  SAFE_TO_L2_SETUP_INTERFACE,
 } from '@/components/new-safe/create/logic'
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
@@ -19,7 +18,7 @@ import ReviewRow from '@/components/new-safe/ReviewRow'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import PayNowPayLater, { PayMethod } from '@/features/counterfactual/PayNowPayLater'
-import { CF_TX_GROUP_KEY, createCounterfactualSafe } from '@/features/counterfactual/utils'
+import { CF_TX_GROUP_KEY, replayCounterfactualSafeDeployment } from '@/features/counterfactual/utils'
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import useGasPrice from '@/hooks/useGasPrice'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
@@ -28,7 +27,6 @@ import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { gtmSetSafeAddress } from '@/services/analytics/gtm'
-import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import { asError } from '@/services/exceptions/utils'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { FEATURES, hasFeature } from '@/utils/chains'
@@ -36,19 +34,20 @@ import { hasRemainingRelays } from '@/utils/relaying'
 import { isWalletRejection } from '@/utils/wallets'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
-import { type DeploySafeProps } from '@safe-global/protocol-kit'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { getSafeL2SingletonDeployment } from '@safe-global/safe-deployments'
-import { ECOSYSTEM_ID_ADDRESS, SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import NetworkWarning from '../../NetworkWarning'
 import useAllSafes from '@/components/welcome/MyAccounts/useAllSafes'
 import { uniq } from 'lodash'
 import { selectRpc } from '@/store/settingsSlice'
 import { AppRoutes } from '@/config/routes'
+import { type ReplayedSafeProps } from '@/store/slices'
+import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
+import { createWeb3 } from '@/hooks/wallets/web3'
+import { type DeploySafeProps } from '@safe-global/protocol-kit'
 
 export const NetworkFee = ({
   totalFee,
@@ -151,15 +150,26 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
-  const safeParams = useMemo(() => {
-    return {
-      owners: data.owners.map((owner) => owner.address),
-      threshold: data.threshold,
-      saltNonce: Date.now(), // This is not the final saltNonce but easier to use and will only result in a slightly higher gas estimation
-    }
-  }, [data.owners, data.threshold])
+  const newSafeProps = useMemo(
+    () =>
+      chain
+        ? createNewUndeployedSafeWithoutSalt(
+            data.safeVersion,
+            {
+              owners: data.owners.map((owner) => owner.address),
+              threshold: data.threshold,
+            },
+            chain.chainId,
+          )
+        : undefined,
+    [chain, data.owners, data.safeVersion, data.threshold],
+  )
 
-  const { gasLimit } = useEstimateSafeCreationGas(safeParams, data.safeVersion)
+  // We estimate with a random nonce as we'll just slightly overestimates like this
+  const { gasLimit } = useEstimateSafeCreationGas(
+    newSafeProps ? { ...newSafeProps, saltNonce: Date.now().toString() } : undefined,
+    data.safeVersion,
+  )
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -179,46 +189,24 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const handleCreateSafeClick = async () => {
     try {
-      if (!wallet || !chain) return
+      if (!wallet || !chain || !newSafeProps) return
 
       setIsCreating(true)
 
-      // Create universal deployment Data across chains:
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(data.safeVersion)
-      const safeL2Deployment = getSafeL2SingletonDeployment({ version: data.safeVersion, network: chain.chainId })
-      const safeL2Address = safeL2Deployment?.defaultAddress
-      if (!safeL2Address) {
-        throw new Error('No Safe deployment found')
-      }
-
-      const props: DeploySafeProps = {
-        safeAccountConfig: {
-          threshold: data.threshold,
-          owners: data.owners.map((owner) => owner.address),
-          fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
-          to: SAFE_TO_L2_SETUP_ADDRESS,
-          data: SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [safeL2Address]),
-          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-        },
-      }
       // Figure out the shared available nonce across chains
       const nextAvailableNonce = await getAvailableSaltNonce(
         customRPCs,
-        { ...props, saltNonce: data.saltNonce.toString() },
+        { ...newSafeProps, saltNonce: '0' },
         data.networks,
         knownAddresses,
-        data.safeVersion,
       )
 
-      const safeAddress = await computeNewSafeAddress(
-        wallet.provider,
-        { ...props, saltNonce: nextAvailableNonce },
-        chain,
-        data.safeVersion,
-      )
+      const replayedSafeWithNonce = { ...newSafeProps, saltNonce: nextAvailableNonce }
+
+      const safeAddress = await predictAddressBasedOnReplayData(replayedSafeWithNonce, createWeb3(wallet.provider))
 
       for (const network of data.networks) {
-        createSafe(network, props, safeAddress, nextAvailableNonce)
+        createSafe(network, replayedSafeWithNonce, safeAddress)
       }
 
       if (isCounterfactualEnabled && payMethod === PayMethod.PayLater) {
@@ -234,12 +222,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       }
     } catch (err) {
       console.error(err)
+      setSubmitError('Error creating the Safe Account. Please try again later.')
     } finally {
       setIsCreating(false)
     }
   }
 
-  const createSafe = async (chain: ChainInfo, props: DeploySafeProps, safeAddress: string, saltNonce: string) => {
+  const createSafe = async (chain: ChainInfo, props: ReplayedSafeProps, safeAddress: string) => {
     if (!wallet) return
 
     try {
@@ -247,7 +236,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
-        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayLater, router)
+        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch)
         trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
         return
       }
@@ -262,7 +251,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
         // Create a counterfactual Safe
-        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayNow)
+        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch)
 
         if (taskId) {
           safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
@@ -283,26 +272,17 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       }
 
       if (willRelay) {
-        const taskId = await relaySafeCreation(
-          chain,
-          props.safeAccountConfig.owners,
-          props.safeAccountConfig.threshold,
-          Number(saltNonce),
-          data.safeVersion,
-        )
+        const taskId = await relaySafeCreation(chain, props)
         onSubmitCallback(taskId)
       } else {
         await createNewSafe(
           wallet.provider,
-          {
-            safeAccountConfig: props.safeAccountConfig,
-            saltNonce,
-            options,
-            callback: (txHash) => {
-              onSubmitCallback(undefined, txHash)
-            },
-          },
+          props,
           data.safeVersion,
+          chain,
+          (txHash) => {
+            onSubmitCallback(undefined, txHash)
+          },
           true,
         )
       }

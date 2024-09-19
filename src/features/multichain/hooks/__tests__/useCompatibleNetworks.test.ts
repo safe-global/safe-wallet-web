@@ -44,39 +44,6 @@ describe('useCompatibleNetworks', () => {
     expect(result.current).toHaveLength(0)
   })
 
-  it('should return empty list for incomplete creation data', () => {
-    const callData = {
-      owners: [faker.finance.ethereumAddress()],
-      threshold: 1,
-      to: ZERO_ADDRESS,
-      data: EMPTY_DATA,
-      fallbackHandler: faker.finance.ethereumAddress(),
-      paymentToken: ZERO_ADDRESS,
-      payment: 0,
-      paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-    }
-
-    const setupData = safeInterface.encodeFunctionData('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
-
-    const creationData: ReplayedSafeProps = {
-      factoryAddress: faker.finance.ethereumAddress(),
-      masterCopy: null,
-      saltNonce: '0',
-      setupData,
-    }
-    const { result } = renderHook(() => useCompatibleNetworks(creationData))
-    expect(result.current).toHaveLength(0)
-  })
-
   it('should set available to false for unknown masterCopies', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
@@ -89,22 +56,12 @@ describe('useCompatibleNetworks', () => {
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     }
 
-    const setupData = safeInterface.encodeFunctionData('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
-
     const creationData: ReplayedSafeProps = {
       factoryAddress: faker.finance.ethereumAddress(),
       masterCopy: faker.finance.ethereumAddress(),
       saltNonce: '0',
-      setupData,
+      safeAccountConfig: callData,
+      safeVersion: '1.4.1',
     }
     const { result } = renderHook(() => useCompatibleNetworks(creationData))
     expect(result.current.every((config) => config.available)).toEqual(false)
@@ -121,22 +78,13 @@ describe('useCompatibleNetworks', () => {
       payment: 0,
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     }
-    const setupData = safeInterface.encodeFunctionData('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
     {
       const creationData: ReplayedSafeProps = {
         factoryAddress: PROXY_FACTORY_141_DEPLOYMENTS?.canonical?.address!,
         masterCopy: L1_141_MASTERCOPY_DEPLOYMENTS?.canonical?.address!,
         saltNonce: '0',
-        setupData,
+        safeAccountConfig: callData,
+        safeVersion: '1.4.1',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(5)
@@ -149,7 +97,8 @@ describe('useCompatibleNetworks', () => {
         factoryAddress: PROXY_FACTORY_141_DEPLOYMENTS?.canonical?.address!,
         masterCopy: L2_141_MASTERCOPY_DEPLOYMENTS?.canonical?.address!,
         saltNonce: '0',
-        setupData,
+        safeAccountConfig: callData,
+        safeVersion: '1.4.1',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(5)
@@ -170,24 +119,14 @@ describe('useCompatibleNetworks', () => {
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     }
 
-    const setupData = safeInterface.encodeFunctionData('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
-
     // 1.3.0, L1 and canonical
     {
       const creationData: ReplayedSafeProps = {
         factoryAddress: PROXY_FACTORY_130_DEPLOYMENTS?.canonical?.address!,
         masterCopy: L1_130_MASTERCOPY_DEPLOYMENTS?.canonical?.address!,
         saltNonce: '0',
-        setupData,
+        safeAccountConfig: callData,
+        safeVersion: '1.3.0',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(5)
@@ -201,7 +140,8 @@ describe('useCompatibleNetworks', () => {
         factoryAddress: PROXY_FACTORY_130_DEPLOYMENTS?.canonical?.address!,
         masterCopy: L2_130_MASTERCOPY_DEPLOYMENTS?.canonical?.address!,
         saltNonce: '0',
-        setupData,
+        safeAccountConfig: callData,
+        safeVersion: '1.3.0',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(5)
@@ -215,7 +155,8 @@ describe('useCompatibleNetworks', () => {
         factoryAddress: PROXY_FACTORY_130_DEPLOYMENTS?.eip155?.address!,
         masterCopy: L1_130_MASTERCOPY_DEPLOYMENTS?.eip155?.address!,
         saltNonce: '0',
-        setupData,
+        safeAccountConfig: callData,
+        safeVersion: '1.3.0',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(5)
@@ -229,7 +170,8 @@ describe('useCompatibleNetworks', () => {
         factoryAddress: PROXY_FACTORY_130_DEPLOYMENTS?.eip155?.address!,
         masterCopy: L2_130_MASTERCOPY_DEPLOYMENTS?.eip155?.address!,
         saltNonce: '0',
-        setupData,
+        safeAccountConfig: callData,
+        safeVersion: '1.3.0',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(5)
@@ -250,22 +192,12 @@ describe('useCompatibleNetworks', () => {
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     }
 
-    const setupData = safeInterface.encodeFunctionData('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
-
     const creationData: ReplayedSafeProps = {
       factoryAddress: PROXY_FACTORY_111_DEPLOYMENTS?.canonical?.address!,
       masterCopy: L1_111_MASTERCOPY_DEPLOYMENTS?.canonical?.address!,
       saltNonce: '0',
-      setupData,
+      safeAccountConfig: callData,
+      safeVersion: '1.1.1',
     }
     const { result } = renderHook(() => useCompatibleNetworks(creationData))
     expect(result.current).toHaveLength(5)
