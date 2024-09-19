@@ -62,6 +62,7 @@ export const ofacApi = createApi({
           return { error: { status: 'CUSTOM_ERROR', data: (error as Error).message } }
         }
       },
+      keepUnusedDataFor: 24 * 60 * 60, // 24 hours
     }),
   }),
 })
