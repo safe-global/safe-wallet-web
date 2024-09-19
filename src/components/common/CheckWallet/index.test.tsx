@@ -5,6 +5,10 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useWallet from '@/hooks/wallets/useWallet'
 import { chainBuilder } from '@/tests/builders/chains'
+import { useIsWalletDelegate } from '@/hooks/useDelegates'
+import { faker } from '@faker-js/faker'
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
+import useSafeInfo from '@/hooks/useSafeInfo'
 
 // mock useWallet
 jest.mock('@/hooks/wallets/useWallet', () => ({
@@ -36,6 +40,25 @@ jest.mock('@/hooks/useChains', () => ({
 jest.mock('@/hooks/useIsWrongChain', () => ({
   __esModule: true,
   default: jest.fn(() => false),
+}))
+
+jest.mock('@/hooks/useDelegates', () => ({
+  __esModule: true,
+  useIsWalletDelegate: jest.fn(() => false),
+}))
+
+jest.mock('@/hooks/useSafeInfo', () => ({
+  __esModule: true,
+  default: jest.fn(() => {
+    const safeAddress = faker.finance.ethereumAddress()
+    return {
+      safeAddress,
+      safe: extendedSafeInfoBuilder()
+        .with({ address: { value: safeAddress } })
+        .with({ deployed: true })
+        .build(),
+    }
+  }),
 }))
 
 const renderButton = () =>
@@ -108,6 +131,63 @@ describe('CheckWallet', () => {
     )
 
     expect(allowContainer.querySelector('button')).not.toBeDisabled()
+  })
+
+  it('should not disable the button for delegates', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
+    ;(useIsWalletDelegate as jest.MockedFunction<typeof useIsWalletDelegate>).mockReturnValueOnce(true)
+
+    const { container } = renderButton()
+
+    expect(container.querySelector('button')).not.toBeDisabled()
+  })
+
+  it('should disable the button for counterfactual Safes', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
+
+    const safeAddress = faker.finance.ethereumAddress()
+    const mockSafeInfo = {
+      safeAddress,
+      safe: extendedSafeInfoBuilder()
+        .with({ address: { value: safeAddress } })
+        .with({ deployed: false })
+        .build(),
+    }
+
+    ;(useSafeInfo as jest.MockedFunction<typeof useSafeInfo>).mockReturnValueOnce(
+      mockSafeInfo as unknown as ReturnType<typeof useSafeInfo>,
+    )
+
+    const { container } = renderButton()
+
+    expect(container.querySelector('button')).toBeDisabled()
+    expect(container.querySelector('span[aria-label]')).toHaveAttribute(
+      'aria-label',
+      'You need to activate the Safe before transacting',
+    )
+  })
+
+  it('should enable the button for counterfactual Safes if allowed', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
+
+    const safeAddress = faker.finance.ethereumAddress()
+    const mockSafeInfo = {
+      safeAddress,
+      safe: extendedSafeInfoBuilder()
+        .with({ address: { value: safeAddress } })
+        .with({ deployed: false })
+        .build(),
+    }
+
+    ;(useSafeInfo as jest.MockedFunction<typeof useSafeInfo>).mockReturnValueOnce(
+      mockSafeInfo as unknown as ReturnType<typeof useSafeInfo>,
+    )
+
+    const { container } = render(
+      <CheckWallet allowUndeployedSafe>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
+    )
+
+    expect(container.querySelector('button')).toBeEnabled()
   })
 
   it('should allow non-owners if specified', () => {
