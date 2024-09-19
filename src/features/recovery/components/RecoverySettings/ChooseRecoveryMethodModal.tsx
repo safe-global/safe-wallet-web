@@ -32,6 +32,7 @@ import CheckIcon from '@/public/images/common/check.svg'
 import { AppRoutes } from '@/config/routes'
 import { useSearchParams } from 'next/navigation'
 import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import TxStatusChip from '@/components/transactions/TxStatusChip'
 
 enum RecoveryMethod {
   SelfCustody = 'SelfCustody',
@@ -50,6 +51,7 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
   const { setTxFlow } = useContext(TxModalContext)
   const querySafe = useSearchParams().get('safe')
   const [matchingApps] = useRemoteSafeApps(SafeAppsTag.RECOVERY_SYGNUM)
+  const hasSygnumApp = Boolean(matchingApps?.length)
 
   const methods = useForm<Fields>({
     defaultValues: {
@@ -124,18 +126,10 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                 <FormControlLabel
                   value={RecoveryMethod.Sygnum}
                   control={<Radio />}
-                  disabled={!matchingApps?.length}
+                  disabled={!hasSygnumApp}
                   label={
                     <div className={css.method}>
-                      <Box display="flex" alignItems="center">
-                        <RecoverySygnumIcon style={{ display: 'block' }} />
-
-                        {!matchingApps?.length && (
-                          <Typography color="primary" variant="caption" flex={1} textAlign="right">
-                            not available on this network
-                          </Typography>
-                        )}
-                      </Box>
+                      <RecoverySygnumIcon style={{ display: 'block' }} />
 
                       <Typography fontWeight="bold" mb={1} mt={2}>
                         Sygnum Web3 Recovery
@@ -154,6 +148,12 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                           Regulated Swiss digital asset bank
                         </ListItem>
                       </List>
+
+                      {!hasSygnumApp && (
+                        <Box mt={2.5} sx={{ oopacity: 0.75 }}>
+                          <TxStatusChip color="primary">Not available on this network</TxStatusChip>
+                        </Box>
+                      )}
                     </div>
                   }
                 />
