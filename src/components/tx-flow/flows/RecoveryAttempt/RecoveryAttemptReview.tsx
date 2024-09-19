@@ -1,4 +1,4 @@
-import { type SyntheticEvent, useState, useContext, useCallback, useReducer } from 'react'
+import { type SyntheticEvent, useContext, useCallback } from 'react'
 import { CircularProgress, CardActions, Button, Typography, Stack, Divider } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import CheckWallet from '@/components/common/CheckWallet'
@@ -13,40 +13,14 @@ import { TxModalContext } from '@/components/tx-flow'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { RecoveryValidationErrors } from '@/features/recovery/components/RecoveryValidationErrors'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import { useAsyncCallback } from '@/hooks/useAsync'
 
 type RecoveryAttemptReviewProps = {
   item: RecoveryQueueItem
 }
 
-function useAsyncDispatch<T extends (...args: any) => Promise<any>>(dispatchFn: T) {
-  const [isLoading, toggleIsLoading] = useReducer((isLoading: boolean) => !isLoading, false)
-  const [error, setError] = useState<Error>()
-
-  const asyncDispatch = useCallback(
-    async (...args: Parameters<T>) => {
-      toggleIsLoading()
-      setError(undefined)
-
-      try {
-        const data = await dispatchFn(...args)
-
-        toggleIsLoading()
-
-        return data
-      } catch (e) {
-        trackError(Errors._812, e)
-        setError(e as Error)
-        toggleIsLoading()
-      }
-    },
-    [dispatchFn],
-  )
-
-  return { isLoading, error, asyncDispatch }
-}
-
 const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
-  const { asyncDispatch, isLoading, error } = useAsyncDispatch(dispatchRecoveryExecution)
+  const { asyncCallback, isLoading, error } = useAsyncCallback(dispatchRecoveryExecution)
   const wallet = useWallet()
   const { safe } = useSafeInfo()
   const { setTxFlow } = useContext(TxModalContext)
@@ -57,15 +31,20 @@ const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
 
       if (!wallet) return
 
-      asyncDispatch({
-        provider: wallet.provider,
-        chainId: safe.chainId,
-        args: item.args,
-        delayModifierAddress: item.address,
-        signerAddress: wallet.address,
-      })
+      try {
+        await asyncCallback({
+          provider: wallet.provider,
+          chainId: safe.chainId,
+          args: item.args,
+          delayModifierAddress: item.address,
+          signerAddress: wallet.address,
+        })
+        setTxFlow(undefined)
+      } catch (err) {
+        trackError(Errors._812, err)
+      }
     },
-    [asyncDispatch, wallet, safe, item.address, item.args],
+    [asyncCallback, setTxFlow, wallet, safe, item.address, item.args],
   )
 
   return (
