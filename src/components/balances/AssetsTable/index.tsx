@@ -1,6 +1,6 @@
 import CheckBalance from '@/features/counterfactual/CheckBalance'
 import { type ReactElement } from 'react'
-import { Tooltip, Typography, SvgIcon, IconButton, Box, Checkbox, Skeleton } from '@mui/material'
+import { Box, IconButton, Checkbox, Skeleton, SvgIcon, Tooltip, Typography } from '@mui/material'
 import type { TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import css from './styles.module.css'
@@ -21,6 +21,9 @@ import SwapButton from '@/features/swap/components/SwapButton'
 import { SWAP_LABELS } from '@/services/analytics/events/swaps'
 import SendButton from './SendButton'
 import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
+import useIsStakingFeatureEnabled from '@/features/stake/hooks/useIsSwapFeatureEnabled'
+import { STAKE_LABELS } from '@/services/analytics/events/stake'
+import StakeButton from '@/features/stake/components/StakeButton'
 
 const skeletonCells: EnhancedTableProps['rows'][0]['cells'] = {
   asset: {
@@ -97,6 +100,7 @@ const AssetsTable = ({
 }): ReactElement => {
   const { balances, loading } = useBalances()
   const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
+  const isStakingFeatureEnabled = useIsStakingFeatureEnabled()
 
   const { isAssetSelected, toggleAsset, hidingAsset, hideAsset, cancel, deselectAll, saveChanges } = useHideAssets(() =>
     setShowHiddenAssets(false),
@@ -129,6 +133,10 @@ const AssetsTable = ({
                   <TokenIcon logoUri={item.tokenInfo.logoUri} tokenSymbol={item.tokenInfo.symbol} />
 
                   <Typography>{item.tokenInfo.name}</Typography>
+
+                  {isStakingFeatureEnabled && item.tokenInfo.type === TokenType.NATIVE_TOKEN && (
+                    <StakeButton tokenInfo={item.tokenInfo} trackingLabel={STAKE_LABELS.asset} />
+                  )}
 
                   {!isNative && <TokenExplorerLink address={item.tokenInfo.address} />}
                 </div>

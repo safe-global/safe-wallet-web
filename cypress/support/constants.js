@@ -228,13 +228,15 @@ export const addresBookContacts = {
   },
 }
 
+export const CURRENT_COOKIE_TERMS_VERSION = Cypress.env('CURRENT_COOKIE_TERMS_VERSION')
+
 export const localStorageKeys = {
   SAFE_v2__addressBook: 'SAFE_v2__addressBook',
   SAFE_v2__batch: 'SAFE_v2__batch',
   SAFE_v2__settings: 'SAFE_v2__settings',
   SAFE_v2__addedSafes: 'SAFE_v2__addedSafes',
   SAFE_v2__safeApps: 'SAFE_v2__safeApps',
-  SAFE_v2_cookies_1_1: 'SAFE_v2__cookies_terms_v1.1',
+  SAFE_v2_cookies: 'SAFE_v2__cookies_terms',
   SAFE_v2__tokenlist_onboarding: 'SAFE_v2__tokenlist_onboarding',
   SAFE_v2__customSafeApps_11155111: 'SAFE_v2__customSafeApps-11155111',
   SAFE_v2__SafeApps__browserPermissions: 'SAFE_v2__SafeApps__browserPermissions',

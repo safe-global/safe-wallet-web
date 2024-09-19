@@ -19,7 +19,7 @@ describe('Tokens tests', () => {
   beforeEach(() => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
     cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
       main.addToLocalStorage(
         constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
         ls.cookies.acceptedTokenListOnboarding,

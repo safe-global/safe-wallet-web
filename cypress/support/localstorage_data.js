@@ -1,4 +1,15 @@
 /* eslint-disable */
+
+import { CURRENT_COOKIE_TERMS_VERSION } from './constants.js'
+
+const cookieState = {
+  necessary: true,
+  updates: true,
+  analytics: true,
+  terms: true,
+  termsVersion: CURRENT_COOKIE_TERMS_VERSION
+}
+
 export const batchData = {
   entry0: {
     11155111: {
@@ -379,7 +390,7 @@ export const addressBookData = {
       '0xc2F3645bfd395516d1a18CA6ad9298299d328C01': 'Safe 27',
     },
   },
-  cookies: { necessary: true, updates: true, analytics: true },
+  cookies: cookieState,
 }
 
 export const safeSettings = {
@@ -673,7 +684,7 @@ export const appPermissions = (url) => ({
 })
 
 export const cookies = {
-  acceptedCookies: { necessary: true, updates: true, analytics: true },
+  acceptedCookies: cookieState,
   acceptedTokenListOnboarding: true,
 }
 
