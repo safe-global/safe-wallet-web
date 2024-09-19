@@ -69,13 +69,17 @@ const ReplaySafeDialog = ({
   const customRpc = useAppSelector(selectRpc)
   const dispatch = useAppDispatch()
   const [creationError, setCreationError] = useState<Error>()
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false)
 
   // Load some data
   const [safeCreationData, safeCreationDataError, safeCreationDataLoading] = safeCreationResult
 
   const onFormSubmit = handleSubmit(async (data) => {
+    setIsSubmitDisabled(true)
+
     const selectedChain = chain ?? replayableChains?.find((config) => config.chainId === data.chainId)
     if (!safeCreationData || !selectedChain) {
+      setIsSubmitDisabled(false)
       return
     }
 
@@ -83,6 +87,7 @@ const ReplaySafeDialog = ({
     const customRpcUrl = selectedChain ? customRpc?.[selectedChain.chainId] : undefined
     const provider = createWeb3ReadOnly(selectedChain, customRpcUrl)
     if (!provider) {
+      setIsSubmitDisabled(false)
       return
     }
 
@@ -90,6 +95,7 @@ const ReplaySafeDialog = ({
     const predictedAddress = await predictAddressBasedOnReplayData(safeCreationData, provider)
     if (!sameAddress(safeAddress, predictedAddress)) {
       setCreationError(new Error('The replayed Safe leads to an unexpected address'))
+      setIsSubmitDisabled(false)
       return
     }
 
@@ -102,12 +108,18 @@ const ReplaySafeDialog = ({
       },
     })
 
+    setIsSubmitDisabled(false)
+
     // Close modal
     onClose()
   })
 
   const submitDisabled =
-    isUnsupportedSafeCreationVersion || !!safeCreationDataError || safeCreationDataLoading || !formState.isValid
+    isUnsupportedSafeCreationVersion ||
+    !!safeCreationDataError ||
+    safeCreationDataLoading ||
+    !formState.isValid ||
+    isSubmitDisabled
 
   const noChainsAvailable =
     !chain && safeCreationData && replayableChains && replayableChains.filter((chain) => chain.available).length === 0
