@@ -14,7 +14,7 @@ const typeDeleteAllowance = data.type.deleteSpendingLimit
 const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
 
-describe('Tx history tests 1', () => {
+describe('[PROD] Tx history tests 1', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })

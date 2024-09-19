@@ -9,7 +9,7 @@ let staticSafes = []
 
 const swapsHistory = swaps_data.type.history
 
-describe('Swaps history tests 2', () => {
+describe('[PROD] Swaps history tests 2', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
