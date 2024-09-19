@@ -368,19 +368,11 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, typ
   }, TIMEOUT_TIME)
 }
 
-export const isReplayedSafeProps = (props: UndeployedSafeProps): props is ReplayedSafeProps => {
-  if ('safeAccountConfig' in props && 'masterCopy' in props && 'factoryAddress' in props && 'saltNonce' in props) {
-    return true
-  }
-  return false
-}
+export const isReplayedSafeProps = (props: UndeployedSafeProps): props is ReplayedSafeProps =>
+  'safeAccountConfig' in props && 'masterCopy' in props && 'factoryAddress' in props && 'saltNonce' in props
 
-export const isPredictedSafeProps = (props: UndeployedSafeProps): props is PredictedSafeProps => {
-  if ('safeAccountConfig' in props && !('masterCopy' in props)) {
-    return true
-  }
-  return false
-}
+export const isPredictedSafeProps = (props: UndeployedSafeProps): props is PredictedSafeProps =>
+  'safeAccountConfig' in props && !('masterCopy' in props)
 
 export const determineMasterCopyVersion = (masterCopy: string, chainId: string): SafeVersion | undefined => {
   const SAFE_VERSIONS: SafeVersion[] = ['1.4.1', '1.3.0', '1.2.0', '1.1.1', '1.0.0']

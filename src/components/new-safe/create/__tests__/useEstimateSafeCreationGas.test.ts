@@ -39,7 +39,7 @@ describe('useEstimateSafeCreationGas', () => {
     jest
       .spyOn(safeContracts, 'getReadOnlyProxyFactoryContract')
       .mockResolvedValue({ getAddress: () => ZERO_ADDRESS } as unknown as SafeProxyFactoryContractImplementationType)
-    jest.spyOn(sender, 'encodeSafeCreationTx').mockReturnValue(Promise.resolve(EMPTY_DATA))
+    jest.spyOn(sender, 'encodeSafeCreationTx').mockReturnValue(EMPTY_DATA)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
   })
 

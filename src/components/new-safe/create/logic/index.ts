@@ -106,7 +106,7 @@ export const encodeSafeSetupCall = (safeAccountConfig: ReplayedSafeProps['safeAc
  * Encode a Safe creation transaction NOT using the Core SDK because it doesn't support that
  * This is used for gas estimation.
  */
-export const encodeSafeCreationTx = async (undeployedSafe: UndeployedSafeProps, chain: ChainInfo) => {
+export const encodeSafeCreationTx = (undeployedSafe: UndeployedSafeProps, chain: ChainInfo) => {
   const replayedSafeProps = assertNewUndeployedSafeProps(undeployedSafe, chain)
 
   return Safe_proxy_factory__factory.createInterface().encodeFunctionData('createProxyWithNonce', [
@@ -124,7 +124,7 @@ export const estimateSafeCreationGas = async (
   safeVersion?: SafeVersion,
 ): Promise<bigint> => {
   const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(safeVersion ?? getLatestSafeVersion(chain))
-  const encodedSafeCreationTx = await encodeSafeCreationTx(undeployedSafe, chain)
+  const encodedSafeCreationTx = encodeSafeCreationTx(undeployedSafe, chain)
 
   const gas = await provider.estimateGas({
     from,
@@ -179,7 +179,7 @@ export const getRedirect = (
 
 export const relaySafeCreation = async (chain: ChainInfo, undeployedSafeProps: UndeployedSafeProps) => {
   const replayedSafeProps = assertNewUndeployedSafeProps(undeployedSafeProps, chain)
-  const encodedSafeCreationTx = await encodeSafeCreationTx(replayedSafeProps, chain)
+  const encodedSafeCreationTx = encodeSafeCreationTx(replayedSafeProps, chain)
 
   const relayResponse = await relayTransaction(chain.chainId, {
     to: replayedSafeProps.factoryAddress,
@@ -193,7 +193,7 @@ export const relaySafeCreation = async (chain: ChainInfo, undeployedSafeProps: U
 export type UndeployedSafeWithoutSalt = Omit<ReplayedSafeProps, 'saltNonce'>
 
 /**
- * Creates a new undeployed Safe with out default config:
+ * Creates a new undeployed Safe without default config:
  *
  * Always use the L1 MasterCopy and add a migration to L2 in to the setup.
  * Use our ecosystem ID as paymentReceiver.

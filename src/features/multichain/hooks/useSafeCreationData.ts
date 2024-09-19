@@ -11,6 +11,14 @@ import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
 
+export const SAFE_CREATION_DATA_ERRORS = {
+  TX_NOT_FOUND: 'The Safe creation transaction could not be found. Please retry later.',
+  NO_CREATION_DATA: 'The Safe creation information for this Safe could not be found or is incomplete.',
+  UNSUPPORTED_SAFE_CREATION: 'The method this Safe was created with is not supported.',
+  NO_PROVIDER: 'The RPC provider for the origin network is not available.',
+  LEGACY_COUNTERFATUAL: 'This undeployed Safe cannot be replayed. Please activate the Safe first.',
+}
+
 export const decodeSetupData = (setupData: string): ReplayedSafeProps['safeAccountConfig'] => {
   const [owners, threshold, to, data, fallbackHandler, paymentToken, payment, paymentReceiver] =
     Safe__factory.createInterface().decodeFunctionData('setup', setupData)
@@ -29,7 +37,7 @@ export const decodeSetupData = (setupData: string): ReplayedSafeProps['safeAccou
 
 const getUndeployedSafeCreationData = async (undeployedSafe: UndeployedSafe): Promise<ReplayedSafeProps> => {
   if (isPredictedSafeProps(undeployedSafe.props)) {
-    throw new Error('Old counterfactual Safes do not support replaying. Please activate the Safe first.')
+    throw new Error(SAFE_CREATION_DATA_ERRORS.LEGACY_COUNTERFATUAL)
   }
 
   // We already have a replayed Safe. In this case we can return the identical data
@@ -38,13 +46,6 @@ const getUndeployedSafeCreationData = async (undeployedSafe: UndeployedSafe): Pr
 
 const proxyFactoryInterface = Safe_proxy_factory__factory.createInterface()
 const createProxySelector = proxyFactoryInterface.getFunction('createProxyWithNonce').selector
-
-export const SAFE_CREATION_DATA_ERRORS = {
-  TX_NOT_FOUND: 'The Safe creation transaction could not be found. Please retry later.',
-  NO_CREATION_DATA: 'The Safe creation information for this Safe could be found or is incomplete.',
-  UNSUPPORTED_SAFE_CREATION: 'The method this Safe was created with is not supported yet.',
-  NO_PROVIDER: 'The RPC provider for the origin network is not available.',
-}
 
 const getCreationDataForChain = async (
   chain: ChainInfo,
@@ -131,10 +132,7 @@ export const useSafeCreationData = (safeAddress: string, chains: ChainInfo[]): A
     try {
       for (const chain of chains) {
         const undeployedSafe = undeployedSafes[chain.chainId]?.[safeAddress]
-        if (undeployedSafe && isPredictedSafeProps(undeployedSafe.props)) {
-          // predicted Safe props are not supported
-          continue
-        }
+
         try {
           const creationData = await getCreationDataForChain(chain, undeployedSafe, safeAddress, customRpc)
           return creationData

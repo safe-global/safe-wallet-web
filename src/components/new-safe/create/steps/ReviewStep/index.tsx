@@ -224,6 +224,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       }
     } catch (err) {
       console.error(err)
+      setSubmitError('Error creating the Safe Account. Please try again later.')
     } finally {
       setIsCreating(false)
     }

@@ -74,7 +74,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should ignore old predictedSafes', async () => {
+  it('should throw error for legacy counterfactual Safes', async () => {
     const safeAddress = faker.finance.ethereumAddress()
     const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
     const undeployedSafe = {
@@ -106,7 +106,7 @@ describe('useSafeCreationData', () => {
 
     await waitFor(async () => {
       await Promise.resolve()
-      expect(result.current).toEqual([undefined, undefined, false])
+      expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.LEGACY_COUNTERFATUAL), false])
     })
   })
 
