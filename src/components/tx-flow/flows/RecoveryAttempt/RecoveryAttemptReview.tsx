@@ -1,6 +1,5 @@
 import { type SyntheticEvent, useContext, useCallback } from 'react'
 import { CircularProgress, CardActions, Button, Typography, Stack, Divider } from '@mui/material'
-import EthHashInfo from '@/components/common/EthHashInfo'
 import CheckWallet from '@/components/common/CheckWallet'
 import { Errors, trackError } from '@/services/exceptions'
 import { dispatchRecoveryExecution } from '@/features/recovery/services/recovery-sender'
@@ -8,12 +7,14 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import TxCard from '@/components/tx-flow/common/TxCard'
-import FieldsGrid from '@/components/tx/FieldsGrid'
 import { TxModalContext } from '@/components/tx-flow'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { RecoveryValidationErrors } from '@/features/recovery/components/RecoveryValidationErrors'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import { RecoveryDescription } from '@/features/recovery/components/RecoveryDescription'
 import { useAsyncCallback } from '@/hooks/useAsync'
+import FieldsGrid from '@/components/tx/FieldsGrid'
+import EthHashInfo from '@/components/common/EthHashInfo'
 
 type RecoveryAttemptReviewProps = {
   item: RecoveryQueueItem
@@ -51,12 +52,15 @@ const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
     <TxCard>
       <form onSubmit={onFormSubmit}>
         <Stack gap={3} mb={2}>
-          {item.address && (
-            <FieldsGrid title="Initiated by">
-              <EthHashInfo address={item.address} showAvatar hasExplorer showName />
-            </FieldsGrid>
-          )}
-          <Typography>Confirm or reject within the review time window.</Typography>
+          <Typography>Confirm this recovery attempt within the review time window.</Typography>
+
+          <FieldsGrid title="Initiator">
+            <EthHashInfo address={item.executor} showName showCopyButton hasExplorer />
+          </FieldsGrid>
+
+          <Divider sx={{ mx: -3 }} />
+
+          <RecoveryDescription item={item} />
 
           <NetworkWarning />
 
