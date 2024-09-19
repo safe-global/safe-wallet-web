@@ -32,7 +32,7 @@ export function safeTxBuilder(): IBuilder<SafeTransaction> {
     data: {
       to: faker.finance.ethereumAddress(),
       value: '0x0',
-      data: faker.string.hexadecimal({ length: faker.number.int({ max: 500 }) }),
+      data: faker.string.hexadecimal({ length: faker.number.int({ min: 0, max: 250 }) * 2 }),
       operation: 0,
       nonce: faker.number.int(),
       safeTxGas: faker.number.toString(),
