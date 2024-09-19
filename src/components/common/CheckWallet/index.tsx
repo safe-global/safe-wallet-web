@@ -46,11 +46,11 @@ const CheckWallet = ({
     if (!wallet) {
       return Message.WalletNotConnected
     }
-    if ((!allowNonOwner && !isSafeOwner && !isDelegate) || (isOnlySpendingLimit && !allowSpendingLimit)) {
-      return Message.NotSafeOwner
-    }
     if (isUndeployedSafe && !allowUndeployedSafe) {
       return Message.SafeNotActivated
+    }
+    if ((!allowNonOwner && !isSafeOwner && !isDelegate) || (isOnlySpendingLimit && !allowSpendingLimit)) {
+      return Message.NotSafeOwner
     }
   }, [
     allowNonOwner,

@@ -1,4 +1,4 @@
-import { render } from '@/tests/test-utils'
+import { getByLabelText, render } from '@/tests/test-utils'
 import CheckWallet from '.'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
@@ -85,7 +85,7 @@ describe('CheckWallet', () => {
     expect(container.querySelector('button')).toBeDisabled()
 
     // Check the tooltip text
-    expect(container.querySelector('span[aria-label]')).toHaveAttribute('aria-label', 'Please connect your wallet')
+    getByLabelText(container, 'Please connect your wallet')
   })
 
   it('should disable the button when the wallet is connected to the right chain but is not an owner', () => {
@@ -121,10 +121,7 @@ describe('CheckWallet', () => {
     const { container } = renderButton()
 
     expect(container.querySelector('button')).toBeDisabled()
-    expect(container.querySelector('span[aria-label]')).toHaveAttribute(
-      'aria-label',
-      'Your connected wallet is not a signer of this Safe Account',
-    )
+    getByLabelText(container, 'Your connected wallet is not a signer of this Safe Account')
 
     const { container: allowContainer } = render(
       <CheckWallet allowSpendingLimit>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
@@ -161,10 +158,7 @@ describe('CheckWallet', () => {
     const { container } = renderButton()
 
     expect(container.querySelector('button')).toBeDisabled()
-    expect(container.querySelector('span[aria-label]')).toHaveAttribute(
-      'aria-label',
-      'You need to activate the Safe before transacting',
-    )
+    getByLabelText(container, 'You need to activate the Safe before transacting')
   })
 
   it('should enable the button for counterfactual Safes if allowed', () => {
