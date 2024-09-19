@@ -49,7 +49,7 @@ function visit(url) {
 describe('Send funds with relay happy path tests', { defaultCommandTimeout: 300000 }, () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
       main.addToLocalStorage(
         constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
         ls.cookies.acceptedTokenListOnboarding,
