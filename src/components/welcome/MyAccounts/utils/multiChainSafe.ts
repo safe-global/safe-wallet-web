@@ -1,4 +1,4 @@
-import { type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SafeItem } from '../useAllSafes'
 import { type UndeployedSafesState, type UndeployedSafe, type ReplayedSafeProps } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
@@ -8,6 +8,7 @@ import { keccak256, ethers, solidityPacked, getCreate2Address, type Provider } f
 import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
 import { encodeSafeSetupCall } from '@/components/new-safe/create/logic'
 import { memoize } from 'lodash'
+import { FEATURES, hasFeature } from '@/utils/chains'
 
 export const isMultiChainSafeItem = (safe: SafeItem | MultiChainSafeItem): safe is MultiChainSafeItem => {
   if ('safes' in safe && 'address' in safe) {
@@ -125,4 +126,12 @@ export const predictAddressBasedOnReplayData = async (safeCreationData: Replayed
   const constructorData = safeCreationData.masterCopy
   const initCode = proxyCreationCode + solidityPacked(['uint256'], [constructorData]).slice(2)
   return getCreate2Address(safeCreationData.factoryAddress, salt, keccak256(initCode))
+}
+
+export const hasMultiChainCreationFeatures = (chain: ChainInfo): boolean => {
+  return (
+    hasFeature(chain, FEATURES.MULTI_CHAIN_SAFE_CREATION) &&
+    hasFeature(chain, FEATURES.COUNTERFACTUAL) &&
+    hasFeature(chain, FEATURES.SAFE_141)
+  )
 }

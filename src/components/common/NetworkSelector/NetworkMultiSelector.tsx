@@ -12,6 +12,7 @@ import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameSte
 import { getSafeSingletonDeployments } from '@safe-global/safe-deployments'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { hasCanonicalDeployment } from '@/services/contracts/deployments'
+import { hasMultiChainCreationFeatures } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 
 const NetworkMultiSelector = ({
   name,
@@ -55,12 +56,22 @@ const NetworkMultiSelector = ({
 
   const isOptionDisabled = useCallback(
     (optionNetwork: ChainInfo) => {
-      if (selectedNetworks.length === 0) return false
+      // Initially all networks are always available
+      if (selectedNetworks.length === 0) {
+        return false
+      }
+
       const firstSelectedNetwork = selectedNetworks[0]
 
       // do not allow multi chain safes for advanced setup flow.
       if (isAdvancedFlow) return optionNetwork.chainId != firstSelectedNetwork.chainId
 
+      // Check required feature toggles
+      if (!hasMultiChainCreationFeatures(optionNetwork) || !hasMultiChainCreationFeatures(firstSelectedNetwork)) {
+        return true
+      }
+
+      // Check if required deployments are available
       const optionHasCanonicalSingletonDeployment = hasCanonicalDeployment(
         getSafeSingletonDeployments({
           network: optionNetwork.chainId,
