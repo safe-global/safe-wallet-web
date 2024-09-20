@@ -15,6 +15,7 @@ import { OwnerList } from '../../common/OwnerList'
 import MinusIcon from '@/public/images/common/minus.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
@@ -73,6 +74,8 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
         </Paper>
       )}
       <OwnerList owners={[{ name: newOwner.name, value: newOwner.address }]} />
+      <ChangeSignerSetupWarning />
+
       <Divider className={commonCss.nestedDivider} />
       <Box>
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>

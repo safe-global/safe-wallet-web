@@ -27,7 +27,6 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { isCustomTxInfo, isGenericConfirmation, isMigrateToL2MultiSend } from '@/utils/transaction-guards'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
@@ -42,8 +41,6 @@ import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
-import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
-import { isChangingSignerSetup } from '@/features/multichain/helpers/utils'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
@@ -118,8 +115,6 @@ export const SignOrExecuteForm = ({
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
-  const isChangingFallbackHandler = isSettingTwapFallbackHandler(decodedData)
-  const isChangingSigners = isChangingSignerSetup(decodedData)
   const isMultiChainMigration = isMigrateToL2MultiSend(decodedData)
   const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(decodedData)
 
@@ -206,8 +201,6 @@ export const SignOrExecuteForm = ({
         )}
 
         <NetworkWarning />
-
-        {isChangingSigners && <ChangeSignerSetupWarning />}
 
         {!isMultiChainMigration && <UnknownContractError />}
 
