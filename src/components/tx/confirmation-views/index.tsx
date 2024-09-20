@@ -1,18 +1,17 @@
-import {
-  SettingsInfoType,
-  TransactionInfoType,
-  type TransactionDetails,
-} from '@safe-global/safe-gateway-typescript-sdk'
+import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import DecodedTx from '../DecodedTx'
 import ConfirmationOrder from '../ConfirmationOrder'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import type { NarrowConfirmationViewProps } from './types'
 import SettingsChange from './SettingsChange'
 import ChangeThreshold from './ChangeThreshold'
+import BatchTransactions from './BatchTransactions'
+import { TxModalContext } from '@/components/tx-flow'
+import { isSettingsChangeView, isChangeThresholdView, isConfirmBatchView } from './utils'
 
 type ConfirmationViewProps = {
   txDetails?: TransactionDetails
@@ -24,15 +23,16 @@ type ConfirmationViewProps = {
   showMethodCall?: boolean
 }
 
-const getConfirmationViewComponent = ({ txDetails, txInfo }: NarrowConfirmationViewProps) => {
-  const isChangeThresholdScreen =
-    txInfo.type === TransactionInfoType.SETTINGS_CHANGE &&
-    txInfo.settingsInfo?.type === SettingsInfoType.CHANGE_THRESHOLD
+const getConfirmationViewComponent = ({
+  txDetails,
+  txInfo,
+  txFlow,
+}: NarrowConfirmationViewProps & { txFlow?: JSX.Element }) => {
+  if (isChangeThresholdView(txInfo)) return <ChangeThreshold />
 
-  if (isChangeThresholdScreen) return <ChangeThreshold />
+  if (isConfirmBatchView(txFlow)) return <BatchTransactions />
 
-  if (txInfo.type === TransactionInfoType.SETTINGS_CHANGE)
-    return <SettingsChange txDetails={txDetails} txInfo={txInfo as SettingsChange} />
+  if (isSettingsChangeView(txInfo)) return <SettingsChange txDetails={txDetails} txInfo={txInfo as SettingsChange} />
 
   return null
 }
@@ -40,6 +40,7 @@ const getConfirmationViewComponent = ({ txDetails, txInfo }: NarrowConfirmationV
 const ConfirmationView = (props: ConfirmationViewProps) => {
   const { txId } = props.txDetails || {}
   const [decodedData] = useDecodeTx(props.safeTx)
+  const { txFlow } = useContext(TxModalContext)
 
   const ConfirmationViewComponent = useMemo(
     () =>
@@ -47,6 +48,7 @@ const ConfirmationView = (props: ConfirmationViewProps) => {
         ? getConfirmationViewComponent({
             txDetails: props.txDetails,
             txInfo: props.txDetails.txInfo,
+            txFlow,
           })
         : undefined,
     [props.txDetails],
