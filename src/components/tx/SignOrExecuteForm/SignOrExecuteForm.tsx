@@ -157,12 +157,6 @@ export const SignOrExecuteForm = ({
         {props.children}
         {isMultiChainMigration && <MigrateToL2Information variant="queue" newMasterCopy={multiChainMigrationTarget} />}
 
-        {!props.isRejection && (
-          <ErrorBoundary fallback={<div>Error parsing data</div>}>
-            {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
-          </ErrorBoundary>
-        )}
-
         <ConfirmationView
           isCreation={isCreation}
           txDetails={props.txDetails}
