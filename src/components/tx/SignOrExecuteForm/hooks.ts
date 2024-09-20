@@ -21,6 +21,8 @@ import useAsync from '@/hooks/useAsync'
 import { useUpdateBatch } from '@/hooks/useDraftBatch'
 import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCurrentChain } from '@/hooks/useChains'
+import directProposeTx from '@/services/tx/proposeTransaction'
+import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
 
 type TxActions = {
   addToBatch: (safeTx?: SafeTransaction, origin?: string) => Promise<string>
@@ -39,17 +41,19 @@ type TxActions = {
 type txDetails = AsyncResult<TransactionDetails>
 
 export const useProposeTx = (safeTx?: SafeTransaction, txId?: string, origin?: string): txDetails => {
-  const { proposeTx } = useTxActions()
   const { safe } = useSafeInfo()
+  const wallet = useWallet()
+  const sender = wallet?.address || safe.owners?.[0]?.value
 
   return useAsync(
-    () => {
+    async () => {
       if (txId) return getTransactionDetails(safe.chainId, txId)
-      if (!safeTx) return
-
-      return proposeTx(safeTx, txId, origin)
+      if (!safeTx || !sender) return
+      const safeSDK = getAndValidateSafeSDK()
+      const safeTxHash = await safeSDK.getTransactionHash(safeTx)
+      return directProposeTx(safe.chainId, safe.address.value, sender, safeTx, safeTxHash, origin)
     },
-    [safeTx, txId, origin, safe.chainId, proposeTx],
+    [safeTx, txId, origin, safe.chainId, safe.address.value, sender],
     false,
   )
 }

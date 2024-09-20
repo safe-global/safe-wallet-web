@@ -21,7 +21,7 @@ type ConfirmationViewProps = {
   isBatch?: boolean
   isApproval?: boolean
   isCreation?: boolean
-  showMethodCall?: boolean
+  showMethodCall?: boolean // @TODO: remove this prop when we migrate all tx types
   children?: ReactNode
 }
 
