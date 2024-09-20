@@ -38,6 +38,8 @@ import type {
   StakingTxDepositInfo,
   StakingTxWithdrawInfo,
   NativeStakingWithdrawConfirmationView,
+  NativeStakingValidatorsExitConfirmationView,
+  StakingTxInfo,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -54,7 +56,6 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
-import type { NativeStakingValidatorsExitConfirmationView } from '@safe-global/safe-gateway-typescript-sdk/dist/types/decoded-data'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -136,6 +137,10 @@ export const isStakingTxExitInfo = (value: TransactionInfo): value is StakingTxE
 
 export const isStakingTxWithdrawInfo = (value: TransactionInfo): value is StakingTxWithdrawInfo => {
   return value.type === TransactionInfoType.NATIVE_STAKING_WITHDRAW
+}
+
+export const isAnyStakingTxInfo = (value: TransactionInfo): value is StakingTxInfo => {
+  return isStakingTxDepositInfo(value) || isStakingTxExitInfo(value) || isStakingTxWithdrawInfo(value)
 }
 
 export const isTwapConfirmationViewOrder = (
