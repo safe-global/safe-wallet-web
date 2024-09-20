@@ -32,13 +32,34 @@ import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesG
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import uniq from 'lodash/uniq'
-import useSafeOverviews from '@/components/welcome/MyAccounts/useSafeOverviews'
 import { useCompatibleNetworks } from '@/features/multichain/hooks/useCompatibleNetworks'
 import { useSafeCreationData } from '@/features/multichain/hooks/useSafeCreationData'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
+import { useGetSafeOverviewQuery } from '@/store/safeOverviews'
+
+const ChainIndicatorWithFiatBalance = ({
+  isSelected,
+  chain,
+  safeAddress,
+}: {
+  isSelected: boolean
+  chain: ChainInfo
+  safeAddress: string
+}) => {
+  const { data: safeOverview } = useGetSafeOverviewQuery({ safeAddress, chainId: chain.chainId })
+
+  return (
+    <ChainIndicator
+      responsive={isSelected}
+      chainId={chain.chainId}
+      fiatValue={safeOverview ? safeOverview.fiatTotal : undefined}
+      inline
+    />
+  )
+}
 
 export const getNetworkLink = (router: NextRouter, safeAddress: string, networkShortName: string) => {
   const isSafeOpened = safeAddress !== ''
@@ -273,7 +294,6 @@ const NetworkSelector = ({
     () => availableChainIds.map((chain) => ({ address: safeAddress, chainId: chain })),
     [availableChainIds, safeAddress],
   )
-  const [safeOverviews] = useSafeOverviews(multiChainSafes)
 
   const onChange = (event: SelectChangeEvent) => {
     event.preventDefault() // Prevent the link click
@@ -290,9 +310,8 @@ const NetworkSelector = ({
 
   const renderMenuItem = useCallback(
     (chainId: string, isSelected: boolean) => {
+      useChainId
       const chain = chains.data.find((chain) => chain.chainId === chainId)
-      const safeOverview = safeOverviews?.find((overview) => chainId === overview.chainId)
-
       if (!chain) return null
 
       return (
@@ -302,17 +321,12 @@ const NetworkSelector = ({
             onClick={onChainSelect}
             className={css.item}
           >
-            <ChainIndicator
-              responsive={isSelected}
-              chainId={chain.chainId}
-              fiatValue={safeOverview ? safeOverview.fiatTotal : undefined}
-              inline
-            />
+            <ChainIndicatorWithFiatBalance chain={chain} safeAddress={safeAddress} isSelected={isSelected} />
           </Link>
         </MenuItem>
       )
     },
-    [chains.data, onChainSelect, router, safeAddress, safeOverviews],
+    [chains.data, onChainSelect, router, safeAddress],
   )
 
   return configs.length ? (

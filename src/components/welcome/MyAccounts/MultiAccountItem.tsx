@@ -1,6 +1,6 @@
 import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   ListItemButton,
   Box,
@@ -33,6 +33,9 @@ import { AddNetworkButton } from './AddNetworkButton'
 import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import MultiAccountContextMenu from '@/components/sidebar/SafeListContextMenu/MultiAccountContextMenu'
+import { useGetMultipleSafeOverviewsQuery } from '@/store/safeOverviews'
+import useWallet from '@/hooks/wallets/useWallet'
+import { selectCurrency } from '@/store/settingsSlice'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -62,7 +65,7 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
   )
 }
 
-const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: MultiAccountItemProps) => {
+const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountItemProps) => {
   const { address, safes } = multiSafeAccountItem
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const safeAddress = useSafeAddress()
@@ -90,6 +93,10 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
     return Object.values(allAddressBooks).find((ab) => ab[address] !== undefined)?.[address]
   }, [address, allAddressBooks])
 
+  const currency = useAppSelector(selectCurrency)
+  const { address: walletAddress } = useWallet() ?? {}
+  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ currency, walletAddress, safes })
+
   const sharedSetup = useMemo(
     () => getSharedSetup(safes, safeOverviews ?? [], undeployedSafes),
     [safeOverviews, safes, undeployedSafes],
@@ -110,11 +117,14 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
     [safes, undeployedSafes],
   )
 
-  const findOverview = (item: SafeItem) => {
-    return safeOverviews?.find(
-      (overview) => item.chainId === overview.chainId && sameAddress(overview.address.value, item.address),
-    )
-  }
+  const findOverview = useCallback(
+    (item: SafeItem) => {
+      return safeOverviews?.find(
+        (overview) => item.chainId === overview.chainId && sameAddress(overview.address.value, item.address),
+      )
+    },
+    [safeOverviews],
+  )
 
   return (
     <ListItemButton

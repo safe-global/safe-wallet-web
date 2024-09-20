@@ -26,6 +26,8 @@ import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import { useGetHref } from './useGetHref'
 import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
+import { useGetSafeOverviewQuery } from '@/store/safeOverviews'
+import useWallet from '@/hooks/wallets/useWallet'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -33,7 +35,7 @@ type AccountItemProps = {
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   const { chainId, address } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
@@ -42,6 +44,7 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const router = useRouter()
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
+  const { address: walletAddress } = useWallet() ?? {}
 
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
@@ -60,6 +63,14 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
     : undefined
 
   const isReplayable = !safeItem.isWatchlist && (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
+
+  const { data: safeOverview } = useGetSafeOverviewQuery({
+    chainId: safeItem.chainId,
+    safeAddress: safeItem.address,
+    walletAddress,
+  })
+
+  console.log('Resulting overview', safeOverview)
 
   return (
     <ListItemButton
