@@ -52,7 +52,7 @@ const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
     <TxCard>
       <form onSubmit={onFormSubmit}>
         <Stack gap={3} mb={2}>
-          <Typography>Confirm this recovery attempt within the review time window.</Typography>
+          <Typography>Execute this transaction to finalize the recovery.</Typography>
 
           <FieldsGrid title="Initiator">
             <EthHashInfo address={item.executor} showName showCopyButton hasExplorer />

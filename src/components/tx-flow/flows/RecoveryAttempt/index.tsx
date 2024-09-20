@@ -5,7 +5,7 @@ import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-st
 
 const RecoveryAttemptFlow = ({ item }: { item: RecoveryQueueItem }) => {
   return (
-    <TxLayout title="Recovery" subtitle="Confirm recovery" icon={SaveAddressIcon} step={0}>
+    <TxLayout title="Recovery" subtitle="Execute recovery" icon={SaveAddressIcon} step={0}>
       <RecoveryAttemptReview item={item} />
     </TxLayout>
   )
