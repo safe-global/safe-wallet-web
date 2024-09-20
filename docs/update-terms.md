@@ -1,4 +1,4 @@
-Update Terms & Conditions
+# How to update Terms & Conditions
 
 To update the terms and conditions, follow these steps:
 
