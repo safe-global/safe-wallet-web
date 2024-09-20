@@ -50,5 +50,5 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
   }
 
-  return <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit} />
+  return <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit} showMethodCall />
 }

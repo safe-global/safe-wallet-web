@@ -83,7 +83,10 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
     if (safeTx.data.nonce === finalNonce && safeTx.data.safeTxGas === finalSafeTxGas) return
 
     createTx({ ...safeTx.data, safeTxGas: String(finalSafeTxGas) }, finalNonce)
-      .then(setSafeTx)
+      .then((tx) => {
+        console.log('SafeTxProvider: Updated tx with nonce and safeTxGas', tx)
+        setSafeTx(tx)
+      })
       .catch(setSafeTxError)
   }, [isSigned, finalNonce, finalSafeTxGas, safeTx?.data])
 

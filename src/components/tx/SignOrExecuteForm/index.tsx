@@ -4,8 +4,6 @@ import type { SignOrExecuteProps, SubmitCallback } from './SignOrExecuteForm'
 import SignOrExecuteSkeleton from './SignOrExecuteSkeleton'
 import { useProposeTx } from './hooks'
 import { useContext } from 'react'
-import ErrorBoundary from '@/components/common/ErrorBoundary'
-import TxCard from '@/components/tx-flow/common/TxCard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
 type SignOrExecuteExtendedProps = Omit<SignOrExecuteProps, 'txId'> & {
@@ -26,16 +24,17 @@ type SignOrExecuteExtendedProps = Omit<SignOrExecuteProps, 'txId'> & {
 const SignOrExecute = (props: SignOrExecuteExtendedProps) => {
   const { safeTx } = useContext(SafeTxContext)
   const { safe } = useSafeInfo()
-  const [txDetails, error, isLoading] = useProposeTx(safe.deployed ? safeTx : undefined, props.txId, props.origin)
+  const [txDetails, error] = useProposeTx(safe.deployed ? safeTx : undefined, props.txId, props.origin)
 
-  return error ? (
-    <TxCard>
-      <ErrorBoundary error={error} componentStack="SignOrExecuteForm/index" />
-    </TxCard>
-  ) : isLoading || !safeTx || (!txDetails && safe.deployed) ? (
-    <SignOrExecuteSkeleton />
-  ) : (
-    <SignOrExecuteForm {...props} isCreation={!props.txId} txId={props.txId || txDetails?.txId} txDetails={txDetails} />
+  // Show the loader only the first time the tx is being loaded
+  if ((!txDetails && !error && safe.deployed) || !safeTx) {
+    return <SignOrExecuteSkeleton />
+  }
+
+  return (
+    <SignOrExecuteForm {...props} isCreation={!props.txId} txId={props.txId || txDetails?.txId} txDetails={txDetails}>
+      {props.children}
+    </SignOrExecuteForm>
   )
 }
 

@@ -27,7 +27,7 @@ const ReviewChangeThreshold = ({ params }: { params: ChangeThresholdFlowProps })
 
   return (
     <ChangeThresholdReviewContext.Provider value={{ newThreshold }}>
-      <SignOrExecuteForm onSubmit={onChangeThreshold} />
+      <SignOrExecuteForm onSubmit={onChangeThreshold} showMethodCall />
     </ChangeThresholdReviewContext.Provider>
   )
 }
