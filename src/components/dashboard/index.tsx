@@ -18,6 +18,7 @@ import css from './styles.module.css'
 import SwapWidget from '@/features/swap/components/SwapWidget'
 import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
 import { useSafeTokenEnabled } from '@/hooks/useSafeTokenEnabled'
+import { InconsistentSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/InconsistentSignerSetupWarning'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
@@ -35,6 +36,10 @@ const Dashboard = (): ReactElement => {
     <>
       <Grid container spacing={3}>
         {supportsRecovery && <RecoveryHeader />}
+
+        <Grid item xs={12}>
+          <InconsistentSignerSetupWarning />
+        </Grid>
 
         <Grid item xs={12}>
           <Overview />

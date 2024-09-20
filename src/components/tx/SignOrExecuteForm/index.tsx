@@ -42,9 +42,9 @@ import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
-import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
 import { isChangingSignerSetup } from '@/features/multichain/utils/utils'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
