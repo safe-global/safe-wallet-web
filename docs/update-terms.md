@@ -2,7 +2,7 @@
 
 To update the terms and conditions, follow these steps:
 
-1.	Export the terms and conditions from Google Docs as a Markdown file.
+1. Export the terms and conditions from Google Docs as a Markdown file.
 2. Replace the content of the src/markdown/terms/terms.md file with the exported content.
 3. Update the frontmatter of the file with the new version number and date.
 
