@@ -8,7 +8,7 @@ import ConfirmationOrder from '../ConfirmationOrder'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
-import { useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import type { NarrowConfirmationViewProps } from './types'
 import SettingsChange from './SettingsChange'
@@ -22,6 +22,7 @@ type ConfirmationViewProps = {
   isApproval?: boolean
   isCreation?: boolean
   showMethodCall?: boolean
+  children?: ReactNode
 }
 
 const getConfirmationViewComponent = ({ txDetails, txInfo }: NarrowConfirmationViewProps) => {
@@ -59,6 +60,8 @@ const ConfirmationView = (props: ConfirmationViewProps) => {
         (showTxDetails && props.txDetails && <TxData txDetails={props.txDetails} imitation={false} trusted />)}
 
       {decodedData && <ConfirmationOrder decodedData={decodedData} toAddress={props.safeTx?.data.to ?? ''} />}
+
+      {props.children}
 
       <DecodedTx
         tx={props.safeTx}
