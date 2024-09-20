@@ -109,7 +109,7 @@ describe('multiChainSafe', () => {
   })
 
   describe('getDeviatingSetups', () => {
-    it('should return empty array if not setup data is provided', () => {
+    it('should return empty array if no setup data is provided', () => {
       expect(getDeviatingSetups([], '1')).toEqual([])
     })
 
@@ -127,7 +127,6 @@ describe('multiChainSafe', () => {
     it('should return empty array if all setups are the same', () => {
       const owner1 = faker.finance.ethereumAddress()
       const owner2 = faker.finance.ethereumAddress()
-      // const owner3 = faker.finance.ethereumAddress()
 
       const safeSetups = [
         {
@@ -331,7 +330,6 @@ describe('multiChainSafe', () => {
     it('should return the setup data if undeployed safes have setup data available', () => {
       const address = faker.finance.ethereumAddress()
 
-      // const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
       const ownerAddress1 = faker.finance.ethereumAddress()
       const ownerAddress2 = faker.finance.ethereumAddress()
 
@@ -390,7 +388,6 @@ describe('multiChainSafe', () => {
     it('should only return setup data where if setup data is available', () => {
       const address = faker.finance.ethereumAddress()
 
-      // const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
       const ownerAddress1 = faker.finance.ethereumAddress()
       const ownerAddress2 = faker.finance.ethereumAddress()
 
@@ -452,7 +449,6 @@ describe('multiChainSafe', () => {
     it('should return setup data for a mix of deployed and undeployed safes', () => {
       const address = faker.finance.ethereumAddress()
 
-      // const owners = [{ value: faker.finance.ethereumAddress() }, { value: faker.finance.ethereumAddress() }]
       const ownerAddress1 = faker.finance.ethereumAddress()
       const ownerAddress2 = faker.finance.ethereumAddress()
 
