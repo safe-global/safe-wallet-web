@@ -52,87 +52,6 @@ export const getSafeSetups = (
   return safeSetups
 }
 
-// export const getSharedSetup_ = (
-//   safes: SafeItem[],
-//   safeOverviews: SafeOverview[],
-//   undeployedSafes: UndeployedSafesState | undefined,
-// ): { owners: string[]; threshold: number } | undefined => {
-//   // We fetch one example setup and check that all other Safes have the same threshold and owners
-//   let comparisonSetup: { threshold: number; owners: string[] } | undefined = undefined
-
-//   const undeployedSafesWithData = safes
-//     .map((safeItem) => ({
-//       chainId: safeItem.chainId,
-//       address: safeItem.address,
-//       undeployedSafe: undeployedSafes?.[safeItem.chainId]?.[safeItem.address],
-//     }))
-//     .filter((value) => Boolean(value.undeployedSafe)) as {
-//     chainId: string
-//     address: string
-//     undeployedSafe: UndeployedSafe
-//   }[]
-
-//   if (safeOverviews && safeOverviews.length > 0) {
-//     comparisonSetup = {
-//       threshold: safeOverviews[0].threshold,
-//       owners: safeOverviews[0].owners.map((owner) => owner.value),
-//     }
-//   } else if (undeployedSafesWithData.length > 0) {
-//     const undeployedSafe = undeployedSafesWithData[0].undeployedSafe
-//     const undeployedSafeSetup = extractCounterfactualSafeSetup(undeployedSafe, undeployedSafesWithData[0].chainId)
-//     // Use first undeployed Safe
-//     comparisonSetup = undeployedSafeSetup
-//       ? {
-//           threshold: undeployedSafeSetup.threshold,
-//           owners: undeployedSafeSetup.owners,
-//         }
-//       : undefined
-//   }
-//   if (!comparisonSetup) {
-//     return undefined
-//   }
-
-//   if (
-//     safes.every((safeItem) => {
-//       // Find overview or undeployed Safe
-//       const foundOverview = safeOverviews?.find(
-//         (overview) => overview.chainId === safeItem.chainId && sameAddress(overview.address.value, safeItem.address),
-//       )
-//       if (foundOverview) {
-//         return (
-//           areOwnersMatching(
-//             comparisonSetup.owners,
-//             foundOverview.owners.map((owner) => owner.value),
-//           ) && foundOverview.threshold === comparisonSetup.threshold
-//         )
-//       }
-//       // Check if the Safe is counterfactual
-//       const undeployedSafeItem = undeployedSafesWithData.find(
-//         (value) => value.chainId === safeItem.chainId && sameAddress(value.address, safeItem.address),
-//       )
-//       if (!undeployedSafeItem) {
-//         return false
-//       }
-
-//       const undeployedSafeSetup = extractCounterfactualSafeSetup(
-//         undeployedSafeItem.undeployedSafe,
-//         undeployedSafeItem.chainId,
-//       )
-//       if (!undeployedSafeSetup) {
-//         return false
-//       }
-
-//       return (
-//         areOwnersMatching(undeployedSafeSetup.owners, comparisonSetup.owners) &&
-//         undeployedSafeSetup.threshold === comparisonSetup.threshold
-//       )
-//     })
-//   ) {
-//     return comparisonSetup
-//   }
-//   return undefined
-// }
-
 export const getSharedSetup = (safeSetups: (SafeSetup | undefined)[]): Omit<SafeSetup, 'chainId'> | undefined => {
   const comparisonSetup = safeSetups[0]
 
@@ -150,15 +69,18 @@ export const getSharedSetup = (safeSetups: (SafeSetup | undefined)[]): Omit<Safe
 export const getDeviatingSetups = (
   safeSetups: (SafeSetup | undefined)[],
   currentChainId: string | undefined,
-): (SafeSetup | undefined)[] => {
+): SafeSetup[] => {
   const currentSafeSetup = safeSetups.find((setup) => setup?.chainId === currentChainId)
   if (!currentChainId || !currentSafeSetup) return []
 
-  const deviatingSetups = safeSetups.filter(
-    (setup) =>
-      setup &&
-      (!areOwnersMatching(setup.owners, currentSafeSetup.owners) || setup.threshold !== currentSafeSetup.threshold),
-  )
+  const deviatingSetups = safeSetups
+    .filter((setup): setup is SafeSetup => Boolean(setup))
+    .filter((setup) => {
+      return (
+        setup &&
+        (!areOwnersMatching(setup.owners, currentSafeSetup.owners) || setup.threshold !== currentSafeSetup.threshold)
+      )
+    })
   return deviatingSetups
 }
 

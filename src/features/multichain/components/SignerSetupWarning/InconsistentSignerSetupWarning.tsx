@@ -48,10 +48,7 @@ export const InconsistentSignerSetupWarning = () => {
     [multiChainGroup?.safes, safeOverviews, undeployedSafes],
   )
   const deviatingSetups = getDeviatingSetups(safeSetups, currentChain?.chainId)
-  // todo: remove filter. make sure undefineds make sense
-  const deviatingChainIds = deviatingSetups
-    .map((setup) => setup?.chainId)
-    .filter((setup): setup is string => Boolean(setup))
+  const deviatingChainIds = deviatingSetups.map((setup) => setup?.chainId)
 
   if (!isMultichainSafe || !deviatingChainIds.length) return
 
