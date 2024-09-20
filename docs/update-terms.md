@@ -11,7 +11,7 @@ That’s it!
 The updated terms and conditions will be displayed in the app with the correct version number and date. A popup banner
 will automatically appear for users who haven’t accepted the new terms.
 
-How does this work?
+## How does this work?
 
 We rely on the version number from the frontmatter. When the Redux store is rehydrated, we check the version stored in
 the store against the version in the frontmatter. If they differ, we reset the accepted terms, forcing the user to
