@@ -30,6 +30,7 @@ import { type SafeItem } from './useAllSafes'
 import SubAccountItem from './SubAccountItem'
 import { getSafeSetups, getSharedSetup } from './utils/multiChainSafe'
 import { AddNetworkButton } from './AddNetworkButton'
+import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import MultiAccountContextMenu from '@/components/sidebar/SafeListContextMenu/MultiAccountContextMenu'
 
@@ -100,6 +101,16 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
     [safeOverviews],
   )
 
+  const hasReplayableSafe = useMemo(
+    () =>
+      safes.some((safeItem) => {
+        const undeployedSafe = undeployedSafes[safeItem.chainId]?.[safeItem.address]
+        // We can only replay deployed Safes and new counterfactual Safes.
+        return !undeployedSafe || !isPredictedSafeProps(undeployedSafe.props)
+      }),
+    [safes, undeployedSafes],
+  )
+
   const findOverview = (item: SafeItem) => {
     return safeOverviews?.find(
       (overview) => item.chainId === overview.chainId && sameAddress(overview.address.value, item.address),
@@ -158,7 +169,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
               />
             ))}
           </Box>
-          {!isWatchlist && (
+          {!isWatchlist && hasReplayableSafe && (
             <>
               <Divider sx={{ ml: '-12px', mr: '-12px' }} />
               <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>

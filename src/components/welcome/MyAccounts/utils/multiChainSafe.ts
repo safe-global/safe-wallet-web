@@ -1,11 +1,14 @@
-import { type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo, type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { type SafeItem } from '../useAllSafes'
 import { type UndeployedSafesState, type ReplayedSafeProps } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
 import { type MultiChainSafeItem } from '../useAllSafesGrouped'
 import { Safe_proxy_factory__factory } from '@/types/contracts'
-import { keccak256, ethers, solidityPacked, getCreate2Address, type JsonRpcProvider } from 'ethers'
+import { keccak256, ethers, solidityPacked, getCreate2Address, type Provider } from 'ethers'
 import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
+import { encodeSafeSetupCall } from '@/components/new-safe/create/logic'
+import { memoize } from 'lodash'
+import { FEATURES, hasFeature } from '@/utils/chains'
 
 type SafeSetup = {
   owners: string[]
@@ -84,16 +87,18 @@ export const getDeviatingSetups = (
   return deviatingSetups
 }
 
-export const predictAddressBasedOnReplayData = async (
-  safeCreationData: ReplayedSafeProps,
-  provider: JsonRpcProvider,
-) => {
-  if (!safeCreationData.setupData) {
-    throw new Error('Cannot predict address without setupData')
-  }
+const memoizedGetProxyCreationCode = memoize(
+  async (factoryAddress: string, provider: Provider) => {
+    return Safe_proxy_factory__factory.connect(factoryAddress, provider).proxyCreationCode()
+  },
+  async (factoryAddress, provider) => `${factoryAddress}${(await provider.getNetwork()).chainId}`,
+)
+
+export const predictAddressBasedOnReplayData = async (safeCreationData: ReplayedSafeProps, provider: Provider) => {
+  const setupData = encodeSafeSetupCall(safeCreationData.safeAccountConfig)
 
   // Step 1: Hash the initializer
-  const initializerHash = keccak256(safeCreationData.setupData)
+  const initializerHash = keccak256(setupData)
 
   // Step 2: Encode the initializerHash and saltNonce using abi.encodePacked equivalent
   const encoded = ethers.concat([initializerHash, solidityPacked(['uint256'], [safeCreationData.saltNonce])])
@@ -102,12 +107,17 @@ export const predictAddressBasedOnReplayData = async (
   const salt = keccak256(encoded)
 
   // Get Proxy creation code
-  const proxyCreationCode = await Safe_proxy_factory__factory.connect(
-    safeCreationData.factoryAddress,
-    provider,
-  ).proxyCreationCode()
+  const proxyCreationCode = await memoizedGetProxyCreationCode(safeCreationData.factoryAddress, provider)
 
   const constructorData = safeCreationData.masterCopy
   const initCode = proxyCreationCode + solidityPacked(['uint256'], [constructorData]).slice(2)
   return getCreate2Address(safeCreationData.factoryAddress, salt, keccak256(initCode))
+}
+
+export const hasMultiChainCreationFeatures = (chain: ChainInfo): boolean => {
+  return (
+    hasFeature(chain, FEATURES.MULTI_CHAIN_SAFE_CREATION) &&
+    hasFeature(chain, FEATURES.COUNTERFACTUAL) &&
+    hasFeature(chain, FEATURES.SAFE_141)
+  )
 }

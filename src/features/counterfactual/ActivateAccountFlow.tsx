@@ -1,4 +1,4 @@
-import { createNewSafe, relayReplayedSafeCreation, relaySafeCreation } from '@/components/new-safe/create/logic'
+import { createNewSafe, relaySafeCreation } from '@/components/new-safe/create/logic'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'
@@ -8,12 +8,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import { selectUndeployedSafe, type UndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import {
-  activateReplayedSafe,
-  CF_TX_GROUP_KEY,
-  extractCounterfactualSafeSetup,
-  isPredictedSafeProps,
-} from '@/features/counterfactual/utils'
+import { CF_TX_GROUP_KEY, extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import useChainId from '@/hooks/useChainId'
 import { useCurrentChain } from '@/hooks/useChains'
 import useGasPrice, { getTotalFeeFormatted } from '@/hooks/useGasPrice'
@@ -36,30 +31,19 @@ import { sameAddress } from '@/utils/addresses'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
-import { createWeb3 } from '@/hooks/wallets/web3'
 import { SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
 import CheckWallet from '@/components/common/CheckWallet'
 
 const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
   const chain = useCurrentChain()
   const [gasPrice] = useGasPrice()
-  const deploymentProps = useMemo(
-    () =>
-      undeployedSafe && isPredictedSafeProps(undeployedSafe.props)
-        ? {
-            owners: undeployedSafe.props.safeAccountConfig.owners,
-            saltNonce: Number(undeployedSafe.props.safeDeploymentConfig?.saltNonce ?? 0),
-            threshold: undeployedSafe.props.safeAccountConfig.threshold,
-          }
-        : undefined,
-    [undeployedSafe],
-  )
-
   const safeVersion =
-    undeployedSafe && isPredictedSafeProps(undeployedSafe?.props)
+    undeployedSafe &&
+    (isPredictedSafeProps(undeployedSafe?.props)
       ? undeployedSafe?.props.safeDeploymentConfig?.safeVersion
-      : undefined
-  const { gasLimit } = useEstimateSafeCreationGas(deploymentProps, safeVersion)
+      : undeployedSafe?.props.safeVersion)
+
+  const { gasLimit } = useEstimateSafeCreationGas(undeployedSafe?.props, safeVersion)
 
   const isEIP1559 = chain && hasFeature(chain, FEATURES.EIP1559)
   const maxFeePerGas = gasPrice?.maxFeePerGas
@@ -134,38 +118,19 @@ const ActivateAccountFlow = () => {
 
     try {
       if (willRelay) {
-        let taskId: string
-        if (isPredictedSafeProps(undeployedSafe.props)) {
-          taskId = await relaySafeCreation(chain, owners, threshold, Number(saltNonce!), safeVersion)
-        } else {
-          taskId = await relayReplayedSafeCreation(chain, undeployedSafe.props, safeVersion)
-        }
+        const taskId = await relaySafeCreation(chain, undeployedSafe.props)
         safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
 
         onSubmit()
       } else {
-        if (isPredictedSafeProps(undeployedSafe.props)) {
-          await createNewSafe(
-            wallet.provider,
-            {
-              safeAccountConfig: undeployedSafe.props.safeAccountConfig,
-              saltNonce,
-              options,
-              callback: onSubmit,
-            },
-            safeVersion ?? getLatestSafeVersion(chain),
-            isMultichainSafe ? true : undefined,
-          )
-        } else {
-          // Deploy replayed Safe Creation
-          const txResponse = await activateReplayedSafe(
-            safeVersion ?? getLatestSafeVersion(chain),
-            chain,
-            undeployedSafe.props,
-            createWeb3(wallet.provider),
-          )
-          onSubmit(txResponse.hash)
-        }
+        await createNewSafe(
+          wallet.provider,
+          undeployedSafe.props,
+          safeVersion ?? getLatestSafeVersion(chain),
+          chain,
+          onSubmit,
+          isMultichainSafe ? true : undefined,
+        )
       }
     } catch (_err) {
       const err = asError(_err)
@@ -190,7 +155,7 @@ const ActivateAccountFlow = () => {
         <SafeSetupOverview
           owners={owners.map((owner) => ({ name: '', address: owner }))}
           threshold={threshold}
-          networks={[]}
+          networks={chain ? [chain] : []}
         />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
@@ -245,7 +210,7 @@ const ActivateAccountFlow = () => {
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
         <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
-          <CheckWallet checkNetwork={!submitDisabled} allowNonOwner>
+          <CheckWallet checkNetwork={!submitDisabled} allowNonOwner allowUndeployedSafe>
             {(isOk) => (
               <Button
                 data-testid="activate-account-btn"

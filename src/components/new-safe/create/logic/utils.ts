@@ -1,20 +1,18 @@
-import { computeNewSafeAddress } from '@/components/new-safe/create/logic/index'
 import { isSmartContract } from '@/utils/wallets'
-import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { sameAddress } from '@/utils/addresses'
 import { createWeb3ReadOnly, getRpcServiceUrl } from '@/hooks/wallets/web3'
+import { type ReplayedSafeProps } from '@/store/slices'
+import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 
 export const getAvailableSaltNonce = async (
   customRpcs: {
     [chainId: string]: string
   },
-  props: DeploySafeProps,
+  replayedSafe: ReplayedSafeProps,
   chains: ChainInfo[],
   // All addresses from the sidebar disregarding the chain. This is an optimization to reduce RPC calls
   knownSafeAddresses: string[],
-  safeVersion?: SafeVersion,
 ): Promise<string> => {
   let isAvailableOnAllChains = true
   const allRPCs = chains.map((chain) => {
@@ -31,9 +29,13 @@ export const getAvailableSaltNonce = async (
     if (!rpcUrl) {
       throw new Error(`No RPC available for  ${chain.chainName}`)
     }
-    const safeAddress = await computeNewSafeAddress(rpcUrl, props, chain, safeVersion)
+    const web3ReadOnly = createWeb3ReadOnly(chain, rpcUrl)
+    if (!web3ReadOnly) {
+      throw new Error('Could not initiate RPC')
+    }
+    const safeAddress = await predictAddressBasedOnReplayData(replayedSafe, web3ReadOnly)
     const isKnown = knownSafeAddresses.some((knownAddress) => sameAddress(knownAddress, safeAddress))
-    if (isKnown || (await isSmartContract(safeAddress, createWeb3ReadOnly(chain, rpcUrl)))) {
+    if (isKnown || (await isSmartContract(safeAddress, web3ReadOnly))) {
       // We found a chain where the nonce is used up
       isAvailableOnAllChains = false
       break
@@ -44,13 +46,11 @@ export const getAvailableSaltNonce = async (
   if (!isAvailableOnAllChains) {
     return getAvailableSaltNonce(
       customRpcs,
-      { ...props, saltNonce: (Number(props.saltNonce) + 1).toString() },
+      { ...replayedSafe, saltNonce: (Number(replayedSafe.saltNonce) + 1).toString() },
       chains,
       knownSafeAddresses,
-      safeVersion,
     )
   }
 
-  // We know that there will be a saltNonce but the type has it as optional
-  return props.saltNonce!
+  return replayedSafe.saltNonce
 }
