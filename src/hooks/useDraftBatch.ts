@@ -1,3 +1,4 @@
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
 import useChainId from './useChainId'
@@ -24,7 +25,9 @@ export const useUpdateBatch = () => {
         }),
       )
 
-      txDispatch(TxEvent.BATCH_ADD, { txId: txDetails.txId })
+      if (isMultisigExecutionInfo(txDetails.detailedExecutionInfo)) {
+        txDispatch(TxEvent.BATCH_ADD, { txId: txDetails.txId, nonce: txDetails.detailedExecutionInfo.nonce })
+      }
 
       trackEvent({ ...BATCH_EVENTS.BATCH_TX_APPENDED, label: txDetails.txInfo.type })
     },

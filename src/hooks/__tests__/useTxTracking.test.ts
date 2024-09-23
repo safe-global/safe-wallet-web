@@ -25,6 +25,7 @@ describe('useTxTracking', () => {
     renderHook(() => useTxTracking())
 
     txDispatch(TxEvent.PROCESSING, {
+      nonce: 1,
       txId: '123',
       txHash: '0x123',
       signerAddress: faker.finance.ethereumAddress(),
@@ -66,6 +67,7 @@ describe('useTxTracking', () => {
     renderHook(() => useTxTracking())
 
     txDispatch(TxEvent.PROCESSING, {
+      nonce: 1,
       txId: '0x123',
       txHash: '0x234',
       signerAddress: faker.finance.ethereumAddress(),

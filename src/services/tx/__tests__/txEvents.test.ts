@@ -11,6 +11,7 @@ describe('txEvents', () => {
     const event = TxEvent.PROCESSING
 
     const detail = {
+      nonce: 1,
       txId: '123',
       txHash: '0x123',
       signerAddress: faker.finance.ethereumAddress(),
@@ -28,6 +29,7 @@ describe('txEvents', () => {
     expect(callback).toHaveBeenCalledWith(detail)
 
     const detail2 = {
+      nonce: 1,
       txId: '123',
       txHash: '0x456',
       signerAddress: faker.finance.ethereumAddress(),
@@ -52,6 +54,7 @@ describe('txEvents', () => {
     const event = TxEvent.FAILED
 
     const detail = {
+      nonce: 1,
       txId: '0x123',
       tx,
       error: new Error('Tx failed'),

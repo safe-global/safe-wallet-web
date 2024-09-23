@@ -22,6 +22,7 @@ const ActivePendingStates = [PendingStatus.RELAYING, PendingStatus.INDEXING, Pen
 export type PendingTxCommonProps = {
   chainId: string
   safeAddress: string
+  nonce: number
   groupKey?: string
 }
 

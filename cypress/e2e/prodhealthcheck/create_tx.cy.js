@@ -18,7 +18,7 @@ function happyPathToStepTwo() {
   createtx.clickOnNextBtn()
 }
 
-describe.skip('Create transactions tests', () => {
+describe.skip('[PROD] Create transactions tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })

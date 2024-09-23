@@ -8,7 +8,7 @@ let staticSafes = []
 
 const typeMessagesOnchain = msg_data.type.onChain
 
-describe('Onchain Messages tests', () => {
+describe('[PROD] Onchain Messages tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })

@@ -1,5 +1,6 @@
 import { Box } from '@mui/material'
 import type { StakingTxExitInfo, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import { NativeStakingExitStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import TokenAmount from '@/components/common/TokenAmount'
 import StakingStatus from '@/features/stake/components/StakingStatus'
@@ -22,7 +23,9 @@ const StakingTxExitDetails = ({ info }: { info: StakingTxExitInfo; txData?: Tran
         {info.numValidators} Validator{info.numValidators > 1 ? 's' : ''}
       </FieldsGrid>
 
-      <FieldsGrid title="Est. exit time">Up to {withdrawIn}</FieldsGrid>
+      {info.status !== NativeStakingExitStatus.READY_TO_WITHDRAW && (
+        <FieldsGrid title="Est. exit time">Up to {withdrawIn}</FieldsGrid>
+      )}
 
       <FieldsGrid title="Exit">
         <StakingStatus status={info.status} />

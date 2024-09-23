@@ -13,8 +13,6 @@ export function Chip({ color = 'primary', label = 'New' }: ChipProps) {
       sx={{
         backgroundColor: `${color}.background`,
         color: `${color}.light`,
-        position: 'absolute',
-        right: 0,
         mt: '-2px',
       }}
       label={
