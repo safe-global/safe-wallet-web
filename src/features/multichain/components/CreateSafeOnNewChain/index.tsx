@@ -69,49 +69,50 @@ const ReplaySafeDialog = ({
   const customRpc = useAppSelector(selectRpc)
   const dispatch = useAppDispatch()
   const [creationError, setCreationError] = useState<Error>()
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   // Load some data
   const [safeCreationData, safeCreationDataError, safeCreationDataLoading] = safeCreationResult
 
   const onFormSubmit = handleSubmit(async (data) => {
-    setIsSubmitDisabled(true)
+    setIsSubmitting(true)
 
-    const selectedChain = chain ?? replayableChains?.find((config) => config.chainId === data.chainId)
-    if (!safeCreationData || !selectedChain) {
-      setIsSubmitDisabled(false)
-      return
+    try {
+      const selectedChain = chain ?? replayableChains?.find((config) => config.chainId === data.chainId)
+      if (!safeCreationData || !selectedChain) {
+        return
+      }
+
+      // We need to create a readOnly provider of the deployed chain
+      const customRpcUrl = selectedChain ? customRpc?.[selectedChain.chainId] : undefined
+      const provider = createWeb3ReadOnly(selectedChain, customRpcUrl)
+      if (!provider) {
+        return
+      }
+
+      // 1. Double check that the creation Data will lead to the correct address
+      const predictedAddress = await predictAddressBasedOnReplayData(safeCreationData, provider)
+      if (!sameAddress(safeAddress, predictedAddress)) {
+        setCreationError(new Error('The replayed Safe leads to an unexpected address'))
+        return
+      }
+
+      // 2. Replay Safe creation and add it to the counterfactual Safes
+      replayCounterfactualSafeDeployment(selectedChain.chainId, safeAddress, safeCreationData, data.name, dispatch)
+
+      router.push({
+        query: {
+          safe: `${selectedChain.shortName}:${safeAddress}`,
+        },
+      })
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsSubmitting(false)
+
+      // Close modal
+      onClose()
     }
-
-    // We need to create a readOnly provider of the deployed chain
-    const customRpcUrl = selectedChain ? customRpc?.[selectedChain.chainId] : undefined
-    const provider = createWeb3ReadOnly(selectedChain, customRpcUrl)
-    if (!provider) {
-      setIsSubmitDisabled(false)
-      return
-    }
-
-    // 1. Double check that the creation Data will lead to the correct address
-    const predictedAddress = await predictAddressBasedOnReplayData(safeCreationData, provider)
-    if (!sameAddress(safeAddress, predictedAddress)) {
-      setCreationError(new Error('The replayed Safe leads to an unexpected address'))
-      setIsSubmitDisabled(false)
-      return
-    }
-
-    // 2. Replay Safe creation and add it to the counterfactual Safes
-    replayCounterfactualSafeDeployment(selectedChain.chainId, safeAddress, safeCreationData, data.name, dispatch)
-
-    router.push({
-      query: {
-        safe: `${selectedChain.shortName}:${safeAddress}`,
-      },
-    })
-
-    setIsSubmitDisabled(false)
-
-    // Close modal
-    onClose()
   })
 
   const submitDisabled =
@@ -119,7 +120,7 @@ const ReplaySafeDialog = ({
     !!safeCreationDataError ||
     safeCreationDataLoading ||
     !formState.isValid ||
-    isSubmitDisabled
+    isSubmitting
 
   const noChainsAvailable =
     !chain && safeCreationData && replayableChains && replayableChains.filter((chain) => chain.available).length === 0
