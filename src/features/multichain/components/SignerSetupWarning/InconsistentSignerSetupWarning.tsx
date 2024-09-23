@@ -40,12 +40,15 @@ export const InconsistentSignerSetupWarning = () => {
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const { allMultiChainSafes } = useAllSafesGrouped()
 
-  const multiChainGroup = allMultiChainSafes?.find((account) => sameAddress(safeAddress, account.safes[0].address))
-  const [safeOverviews] = useSafeOverviews(multiChainGroup?.safes ?? [])
+  const multiChainGroupSafes = useMemo(
+    () => allMultiChainSafes?.find((account) => sameAddress(safeAddress, account.safes[0].address))?.safes ?? [],
+    [allMultiChainSafes, safeAddress],
+  )
+  const [safeOverviews] = useSafeOverviews(multiChainGroupSafes)
 
   const safeSetups = useMemo(
-    () => getSafeSetups(multiChainGroup?.safes ?? [], safeOverviews ?? [], undeployedSafes),
-    [multiChainGroup?.safes, safeOverviews, undeployedSafes],
+    () => getSafeSetups(multiChainGroupSafes, safeOverviews ?? [], undeployedSafes),
+    [multiChainGroupSafes, safeOverviews, undeployedSafes],
   )
   const deviatingSetups = getDeviatingSetups(safeSetups, currentChain?.chainId)
   const deviatingChainIds = deviatingSetups.map((setup) => setup?.chainId)
