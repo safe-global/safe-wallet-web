@@ -53,15 +53,16 @@ export const createNewSafe = async (
   undeployedSafeProps: UndeployedSafeProps,
   safeVersion: SafeVersion,
   chain: ChainInfo,
+  options: DeploySafeProps['options'],
   callback: (txHash: string) => void,
   isL1SafeSingleton?: boolean,
 ): Promise<void> => {
   const safeFactory = await getSafeFactory(provider, safeVersion, isL1SafeSingleton)
 
   if (isPredictedSafeProps(undeployedSafeProps)) {
-    await safeFactory.deploySafe({ ...undeployedSafeProps, callback })
+    await safeFactory.deploySafe({ ...undeployedSafeProps, options, callback })
   } else {
-    const txResponse = await activateReplayedSafe(chain, undeployedSafeProps, createWeb3(provider))
+    const txResponse = await activateReplayedSafe(chain, undeployedSafeProps, createWeb3(provider), options)
     callback(txResponse.hash)
   }
 }
