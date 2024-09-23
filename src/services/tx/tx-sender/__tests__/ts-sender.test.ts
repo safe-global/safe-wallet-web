@@ -72,7 +72,7 @@ const mockSafeSDK = {
     signatures: new Map(),
     addSignature: jest.fn(),
     data: {
-      nonce: '1',
+      nonce: 1,
     },
   })),
   createRejectionTransaction: jest.fn(() => ({
@@ -210,7 +210,7 @@ describe('txSender', () => {
       expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890', undefined)
       expect(proposedTx).toEqual({ txId: '123' })
 
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSED', { txId: '123' })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSED', { txId: '123', nonce: 0 })
     })
 
     it('should dispatch a SIGNATURE_PROPOSED event if tx has signatures and an id', async () => {
@@ -231,7 +231,11 @@ describe('txSender', () => {
       expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890', undefined)
       expect(proposedTx).toEqual({ txId: '123' })
 
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSED', { txId: '123', signerAddress: '0x456' })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSED', {
+        txId: '123',
+        signerAddress: '0x456',
+        nonce: 0,
+      })
     })
 
     it('should fail to propose a signature', async () => {
@@ -445,8 +449,9 @@ describe('txSender', () => {
       await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, safeAddress, false)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId, nonce: 1 })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', {
+        nonce: 1,
         txId,
         signerAddress: SIGNER_ADDRESS,
         signerNonce: 1,
@@ -454,7 +459,6 @@ describe('txSender', () => {
         gasLimit: undefined,
         txType: 'SafeTx',
       })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSED', { txId, safeAddress, txHash: TX_HASH })
     })
 
     it('should fail executing a tx', async () => {
@@ -475,7 +479,7 @@ describe('txSender', () => {
       )
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error') })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error'), nonce: 1 })
     })
 
     it('should revert a tx', async () => {
@@ -494,18 +498,15 @@ describe('txSender', () => {
       await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, '0x123', false)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId, nonce: 1 })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', {
+        nonce: 1,
         txId,
         signerAddress: SIGNER_ADDRESS,
         signerNonce: 1,
         txHash: TX_HASH,
         txType: 'SafeTx',
         gasLimit: undefined,
-      })
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('REVERTED', {
-        txId,
-        error: new Error('Transaction reverted by EVM.'),
       })
     })
   })
@@ -517,10 +518,16 @@ describe('txSender', () => {
 
       const txDetails1 = {
         txId: 'multisig_0x01',
+        detailedExecutionInfo: {
+          type: 'MULTISIG',
+        },
       } as TransactionDetails
 
       const txDetails2 = {
         txId: 'multisig_0x02',
+        detailedExecutionInfo: {
+          type: 'MULTISIG',
+        },
       } as TransactionDetails
 
       const txs = [txDetails1, txDetails2]

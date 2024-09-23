@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { Button, Tooltip } from '@mui/material'
 import { useContext } from 'react'
 import type { SyntheticEvent, ReactElement } from 'react'
@@ -13,6 +12,8 @@ import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export function ExecuteRecoveryButton({
   recovery,
@@ -26,6 +27,9 @@ export function ExecuteRecoveryButton({
   const onboard = useOnboard()
   const wallet = useWallet()
   const { safe } = useSafeInfo()
+  const isDisabled = !isExecutable || isPending
+  const isWrongChain = useIsWrongChain()
+  const chain = useCurrentChain()
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -36,8 +40,6 @@ export function ExecuteRecoveryButton({
     }
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
-
       await dispatchRecoveryExecution({
         provider: wallet.provider,
         chainId: safe.chainId,
@@ -54,15 +56,15 @@ export function ExecuteRecoveryButton({
   }
 
   return (
-    <CheckWallet allowNonOwner>
+    <CheckWallet allowNonOwner checkNetwork={!isDisabled}>
       {(isOk) => {
-        const isDisabled = !isOk || !isExecutable || isPending
-
         return (
           <Tooltip
             title={
-              isDisabled
-                ? isNext
+              !isOk || isDisabled
+                ? isWrongChain
+                  ? `Switch your wallet network to ${chain?.chainName} to execute this transaction`
+                  : isNext
                   ? 'You can execute the recovery after the specified review window'
                   : 'Previous recovery proposals must be executed or cancelled first'
                 : null
@@ -73,7 +75,7 @@ export function ExecuteRecoveryButton({
                 data-testid="execute-btn"
                 onClick={onClick}
                 variant="contained"
-                disabled={isDisabled}
+                disabled={!isOk || isDisabled}
                 sx={{ minWidth: '106.5px', py: compact ? 0.8 : undefined }}
                 size={compact ? 'small' : 'stretched'}
               >

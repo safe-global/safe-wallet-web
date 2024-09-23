@@ -10,7 +10,7 @@ const confirmTx = 'Confirm transaction'
 describe('Transaction modal tests', () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
       main.addToLocalStorage(
         constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
         ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,

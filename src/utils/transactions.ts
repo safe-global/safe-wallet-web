@@ -10,7 +10,7 @@ import type {
   TransactionListPage,
   TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import { ConflictType, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
+import { ConflictType, getTransactionDetails, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isERC20Transfer,
   isModuleDetailedExecutionInfo,
@@ -34,6 +34,7 @@ import { toBeHex, AbiCoder } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
+import { getOriginPath } from './url'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -186,7 +187,7 @@ export const getTxOrigin = (app?: Partial<SafeAppData>): string | undefined => {
   try {
     // Must include empty string to avoid including the length of `undefined`
     const maxUrlLength = MAX_ORIGIN_LENGTH - JSON.stringify({ url: '', name: '' }).length
-    const trimmedUrl = url.slice(0, maxUrlLength)
+    const trimmedUrl = getOriginPath(url).slice(0, maxUrlLength)
 
     const maxNameLength = Math.max(0, maxUrlLength - trimmedUrl.length)
     const trimmedName = name.slice(0, maxNameLength)
@@ -294,4 +295,14 @@ export const isTrustedTx = (tx: TransactionSummary) => {
 
 export const isImitation = ({ txInfo }: TransactionSummary): boolean => {
   return isTransferTxInfo(txInfo) && isERC20Transfer(txInfo.transferInfo) && Boolean(txInfo.transferInfo.imitation)
+}
+
+export const getSafeTransaction = async (safeTxHash: string, chainId: string, safeAddress: string) => {
+  const txId = `multisig_${safeAddress}_${safeTxHash}`
+
+  try {
+    return await getTransactionDetails(chainId, txId)
+  } catch (e) {
+    return undefined
+  }
 }

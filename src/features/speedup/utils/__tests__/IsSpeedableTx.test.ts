@@ -1,19 +1,14 @@
-import { isSpeedableTx } from '../IsSpeedableTx'
 import { PendingStatus, type PendingTx, PendingTxType } from '@/store/pendingTxsSlice'
-import { faker } from '@faker-js/faker'
+import { pendingTxBuilder } from '@/tests/builders/pendingTx'
+import { isSpeedableTx } from '../IsSpeedableTx'
 
 describe('isSpeedableTx', () => {
   it('returns true when all conditions are met', () => {
     const pendingTx: PendingTx = {
-      status: PendingStatus.PROCESSING,
+      ...pendingTxBuilder().with({ status: PendingStatus.PROCESSING }).build(),
       txHash: '0x123',
       signerAddress: '0xabc',
-      chainId: '1',
-      safeAddress: '0xdef',
       txType: PendingTxType.SAFE_TX,
-      signerNonce: 0,
-      submittedAt: Date.now(),
-      gasLimit: 45_000,
     }
 
     const isSmartContract = false
@@ -26,16 +21,10 @@ describe('isSpeedableTx', () => {
 
   it('returns false when one of the conditions is not met', () => {
     const pendingTx: PendingTx = {
-      status: PendingStatus.PROCESSING,
+      ...pendingTxBuilder().with({ status: PendingStatus.PROCESSING }).build(),
       txHash: '0x123',
       signerAddress: '0xabc',
-      chainId: '1',
-      safeAddress: '0xdef',
-      txType: PendingTxType.CUSTOM_TX,
-      signerNonce: 0,
-      submittedAt: Date.now(),
-      data: '0x1234',
-      to: faker.finance.ethereumAddress(),
+      txType: PendingTxType.SAFE_TX,
     }
 
     const isSmartContract = true

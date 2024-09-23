@@ -108,7 +108,7 @@
   /* Height of transaction type title */
   margin-top: 46px;
 }
-@media (max-width: 1199.95px) {
+@media (max-width: 1199px) {
   .backButton {
     left: 50%;
     transform: translateX(-50%);

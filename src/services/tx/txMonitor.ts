@@ -4,6 +4,7 @@ import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
 import { POLLING_INTERVAL } from '@/config/constants'
 import { Errors, logError } from '@/services/exceptions'
+import { getSafeTransaction } from '@/utils/transactions'
 import { asError } from '../exceptions/utils'
 import { type JsonRpcProvider, type TransactionReceipt } from 'ethers'
 import { SimpleTxWatcher } from '@/utils/SimpleTxWatcher'
@@ -23,11 +24,14 @@ export const waitForTx = async (
   safeAddress: string,
   walletAddress: string,
   walletNonce: number,
+  nonce: number,
+  chainId: string,
 ) => {
   const processReceipt = (receipt: TransactionReceipt | null, txIds: string[]) => {
     if (receipt === null) {
       txIds.forEach((txId) => {
         txDispatch(TxEvent.FAILED, {
+          nonce,
           txId,
           error: new Error(`Transaction not found. It might have been replaced or cancelled in the connected wallet.`),
         })
@@ -35,6 +39,7 @@ export const waitForTx = async (
     } else if (didRevert(receipt)) {
       txIds.forEach((txId) => {
         txDispatch(TxEvent.REVERTED, {
+          nonce,
           txId,
           error: new Error('Transaction reverted by EVM.'),
         })
@@ -42,6 +47,7 @@ export const waitForTx = async (
     } else {
       txIds.forEach((txId) => {
         txDispatch(TxEvent.PROCESSED, {
+          nonce,
           txId,
           safeAddress,
           txHash,
@@ -55,6 +61,7 @@ export const waitForTx = async (
 
     txIds.forEach((txId) => {
       txDispatch(TxEvent.FAILED, {
+        nonce,
         txId,
         error: asError(error),
       })
@@ -62,8 +69,27 @@ export const waitForTx = async (
   }
 
   try {
-    const receipt = await SimpleTxWatcher.getInstance().watchTxHash(txHash, walletAddress, walletNonce, provider)
-    processReceipt(receipt, txIds)
+    const isSafeTx = !!(await getSafeTransaction(txHash, chainId, safeAddress))
+    if (isSafeTx) {
+      // Poll for the transaction until it has a transactionHash and start the watcher
+      const interval = setInterval(async () => {
+        const safeTx = await getSafeTransaction(txHash, chainId, safeAddress)
+        if (!safeTx?.txHash) return
+
+        clearInterval(interval)
+
+        const receipt = await SimpleTxWatcher.getInstance().watchTxHash(
+          safeTx.txHash,
+          walletAddress,
+          walletNonce,
+          provider,
+        )
+        processReceipt(receipt, txIds)
+      }, POLLING_INTERVAL)
+    } else {
+      const receipt = await SimpleTxWatcher.getInstance().watchTxHash(txHash, walletAddress, walletNonce, provider)
+      processReceipt(receipt, txIds)
+    }
   } catch (error) {
     processError(error, txIds)
   }
@@ -121,7 +147,13 @@ export const getRelayTxStatus = async (taskId: string): Promise<{ task: Transact
 
 const WAIT_FOR_RELAY_TIMEOUT = 3 * 60_000 // 3 minutes
 
-export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: string, groupKey?: string): void => {
+export const waitForRelayedTx = (
+  taskId: string,
+  txIds: string[],
+  safeAddress: string,
+  nonce: number,
+  groupKey?: string,
+): void => {
   let intervalId: NodeJS.Timeout
   let failAfterTimeoutId: NodeJS.Timeout
 
@@ -137,6 +169,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: s
       case TaskState.ExecSuccess:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.PROCESSED, {
+            nonce,
             txId,
             groupKey,
             safeAddress,
@@ -146,6 +179,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: s
       case TaskState.ExecReverted:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.REVERTED, {
+            nonce,
             txId,
             error: new Error(`Relayed transaction reverted by EVM.`),
             groupKey,
@@ -155,6 +189,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: s
       case TaskState.Blacklisted:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.FAILED, {
+            nonce,
             txId,
             error: new Error(`Relayed transaction was blacklisted by relay provider.`),
             groupKey,
@@ -164,6 +199,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: s
       case TaskState.Cancelled:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.FAILED, {
+            nonce,
             txId,
             error: new Error(`Relayed transaction was cancelled by relay provider.`),
             groupKey,
@@ -173,6 +209,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: s
       case TaskState.NotFound:
         txIds.forEach((txId) =>
           txDispatch(TxEvent.FAILED, {
+            nonce,
             txId,
             error: new Error(`Relayed transaction was not found.`),
             groupKey,
@@ -191,6 +228,7 @@ export const waitForRelayedTx = (taskId: string, txIds: string[], safeAddress: s
   failAfterTimeoutId = setTimeout(() => {
     txIds.forEach((txId) =>
       txDispatch(TxEvent.FAILED, {
+        nonce,
         txId,
         error: new Error(
           `Transaction not relayed in ${

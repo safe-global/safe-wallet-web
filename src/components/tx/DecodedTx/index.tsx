@@ -41,9 +41,9 @@ const DecodedTx = ({
   showMultisend = true,
   showMethodCall = false,
 }: DecodedTxProps): ReactElement => {
-  const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
   const chainId = useChainId()
-  const isMethodCallInAdvanced = !showMethodCall || isMultisend
+  const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
+  const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
 
   const {
     data: txDetails,

@@ -19,10 +19,18 @@ import {
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
   isTransferTxInfo,
+  isStakingTxDepositInfo,
+  isStakingTxExitInfo,
+  isStakingTxWithdrawInfo,
 } from '@/utils/transaction-guards'
 import { ellipsis, shortenAddress } from '@/utils/formatters'
 import { useCurrentChain } from '@/hooks/useChains'
 import { SwapTx } from '@/features/swap/components/SwapTxInfo/SwapTx'
+import StakingTxExitInfo from '@/features/stake/components/StakingTxExitInfo'
+import StakingTxWithdrawInfo from '@/features/stake/components/StakingTxWithdrawInfo'
+import { Box } from '@mui/material'
+import css from './styles.module.css'
+import StakingTxDepositInfo from '@/features/stake/components/StakingTxDepositInfo'
 
 export const TransferTx = ({
   info,
@@ -90,18 +98,18 @@ export const TransferTx = ({
 }
 
 const CustomTx = ({ info }: { info: Custom }): ReactElement => {
-  return <>{info.methodName}</>
+  return <Box className={css.txInfo}>{info.methodName}</Box>
 }
 
 const CreationTx = ({ info }: { info: Creation }): ReactElement => {
-  return <>Created by {shortenAddress(info.creator.value)}</>
+  return <Box className={css.txInfo}>Created by {shortenAddress(info.creator.value)}</Box>
 }
 
 const MultiSendTx = ({ info }: { info: MultiSend }): ReactElement => {
   return (
-    <>
+    <Box className={css.txInfo}>
       {info.actionCount} {`action${info.actionCount > 1 ? 's' : ''}`}
-    </>
+    </Box>
   )
 }
 
@@ -110,9 +118,8 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
     info.settingsInfo?.type === SettingsInfoType.ENABLE_MODULE ||
     info.settingsInfo?.type === SettingsInfoType.DISABLE_MODULE
   ) {
-    return <>{info.settingsInfo.module.name}</>
+    return <Box className={css.txInfo}>{info.settingsInfo.module.name}</Box>
   }
-
   return <></>
 }
 
@@ -129,16 +136,28 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
     return <TransferTx info={info} {...rest} truncateText />
   }
 
-  if (isCustomTxInfo(info)) {
-    return <CustomTx info={info} />
-  }
-
   if (isCreationTxInfo(info)) {
     return <CreationTx info={info} />
   }
 
   if (isOrderTxInfo(info)) {
     return <SwapTx info={info} />
+  }
+
+  if (isStakingTxDepositInfo(info)) {
+    return <StakingTxDepositInfo info={info} />
+  }
+
+  if (isStakingTxExitInfo(info)) {
+    return <StakingTxExitInfo info={info} />
+  }
+
+  if (isStakingTxWithdrawInfo(info)) {
+    return <StakingTxWithdrawInfo info={info} />
+  }
+
+  if (isCustomTxInfo(info)) {
+    return <CustomTx info={info} />
   }
 
   return <></>

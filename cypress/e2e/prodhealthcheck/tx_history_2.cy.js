@@ -17,7 +17,7 @@ const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
 const typeUntrustedToken = data.type.untrustedReceivedToken
 
-describe('Tx history tests 2', () => {
+describe('[PROD] Tx history tests 2', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -30,7 +30,7 @@ describe('Tx history tests 2', () => {
         constants.stagingCGWSafes
       }${staticSafes.SEP_STATIC_SAFE_7.substring(4)}/transactions/history**`,
       (req) => {
-        req.url = `https://safe-client.safe.global/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone_offset=7200000&trusted=false&cursor=limit=100&offset=1`
+        req.url = `https://safe-client.safe.global/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone=Europe/Berlin&trusted=false&cursor=limit=100&offset=1`
         req.continue()
       },
     ).as('allTransactions')

@@ -15,7 +15,7 @@ type AdvancedParamsFormProps = {
   onSubmit: (params: AdvancedParameters) => void
   recommendedGasLimit?: AdvancedParameters['gasLimit']
   isExecution: boolean
-  isEIP1559: boolean
+  isEIP1559?: boolean
   willRelay?: boolean
 }
 

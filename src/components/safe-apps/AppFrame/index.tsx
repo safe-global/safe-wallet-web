@@ -29,15 +29,14 @@ import css from './styles.module.css'
 import SafeAppIframe from './SafeAppIframe'
 import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunicator'
 
-const UNKNOWN_APP_NAME = 'Unknown Safe App'
-
 type AppFrameProps = {
   appUrl: string
   allowedFeaturesList: string
   safeAppFromManifest: SafeAppDataWithPermissions
+  isNativeEmbed?: boolean
 }
 
-const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrameProps): ReactElement => {
+const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEmbed }: AppFrameProps): ReactElement => {
   const { safe, safeLoaded } = useSafeInfo()
   const addressBook = useAddressBook()
   const chainId = useChainId()
@@ -98,11 +97,14 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
     }
 
     setAppIsLoading(false)
-    gtmTrackPageview(`${router.pathname}?appUrl=${router.query.appUrl}`, router.asPath)
-  }, [appUrl, iframeRef, setAppIsLoading, router])
+
+    if (!isNativeEmbed) {
+      gtmTrackPageview(`${router.pathname}?appUrl=${router.query.appUrl}`, router.asPath)
+    }
+  }, [appUrl, iframeRef, setAppIsLoading, router, isNativeEmbed])
 
   useEffect(() => {
-    if (!appIsLoading && !isBackendAppsLoading) {
+    if (!isNativeEmbed && !appIsLoading && !isBackendAppsLoading) {
       trackSafeAppEvent(
         {
           ...SAFE_APPS_EVENTS.OPEN_APP,
@@ -110,7 +112,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
         appName,
       )
     }
-  }, [appIsLoading, isBackendAppsLoading, appName])
+  }, [appIsLoading, isBackendAppsLoading, appName, isNativeEmbed])
 
   if (!safeLoaded) {
     return <div />
@@ -118,9 +120,11 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
 
   return (
     <>
-      <Head>
-        <title>{`Safe Apps - Viewer - ${remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}`}</title>
-      </Head>
+      {!isNativeEmbed && (
+        <Head>
+          <title>{`Safe{Wallet} - Safe Apps${remoteApp ? ' - ' + remoteApp.name : ''}`}</title>
+        </Head>
+      )}
 
       <div className={css.wrapper}>
         {thirdPartyCookiesDisabled && <ThirdPartyCookiesWarning onClose={() => setThirdPartyCookiesDisabled(false)} />}
@@ -160,7 +164,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest }: AppFrame
           transactions={transactions}
         />
 
-        {permissionsRequest && (
+        {!isNativeEmbed && permissionsRequest && (
           <PermissionsPrompt
             isOpen
             origin={permissionsRequest.origin}

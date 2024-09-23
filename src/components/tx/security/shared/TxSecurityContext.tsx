@@ -1,16 +1,20 @@
-import { type RedefineModuleResponse } from '@/services/security/modules/RedefineModule'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { createContext, type Dispatch, type SetStateAction, useContext, useMemo, useState } from 'react'
-import { useRedefine } from '../redefine/useRedefine'
+import type { BlockaidModuleResponse } from '@/services/security/modules/BlockaidModule'
+import { useBlockaid } from '../blockaid/useBlockaid'
 
 export const defaultSecurityContextValues = {
-  warnings: [],
-  simulationUuid: undefined,
-  balanceChange: undefined,
-  severity: SecuritySeverity.NONE,
-  isLoading: false,
-  error: undefined,
+  blockaidResponse: {
+    warnings: [],
+    description: undefined,
+    classification: undefined,
+    reason: undefined,
+    balanceChange: undefined,
+    severity: SecuritySeverity.NONE,
+    isLoading: false,
+    error: undefined,
+  },
   needsRiskConfirmation: false,
   isRiskConfirmed: false,
   setIsRiskConfirmed: () => {},
@@ -18,41 +22,54 @@ export const defaultSecurityContextValues = {
   setIsRiskIgnored: () => {},
 }
 
-export const TxSecurityContext = createContext<{
-  warnings: NonNullable<RedefineModuleResponse['issues']>
-  simulationUuid: string | undefined
-  balanceChange: RedefineModuleResponse['balanceChange']
-  severity: SecuritySeverity | undefined
-  isLoading: boolean
-  error: Error | undefined
+export type TxSecurityContextProps = {
+  blockaidResponse:
+    | {
+        description: BlockaidModuleResponse['description']
+        classification: BlockaidModuleResponse['classification']
+        reason: BlockaidModuleResponse['reason']
+        warnings: NonNullable<BlockaidModuleResponse['issues']>
+        balanceChange: BlockaidModuleResponse['balanceChange'] | undefined
+        severity: SecuritySeverity | undefined
+        isLoading: boolean
+        error: Error | undefined
+      }
+    | undefined
   needsRiskConfirmation: boolean
   isRiskConfirmed: boolean
   setIsRiskConfirmed: Dispatch<SetStateAction<boolean>>
   isRiskIgnored: boolean
   setIsRiskIgnored: Dispatch<SetStateAction<boolean>>
-}>(defaultSecurityContextValues)
+}
+
+export const TxSecurityContext = createContext<TxSecurityContextProps>(defaultSecurityContextValues)
 
 export const TxSecurityProvider = ({ children }: { children: JSX.Element }) => {
   const { safeTx, safeMessage } = useContext(SafeTxContext)
-  const [redefineResponse, redefineError, redefineLoading] = useRedefine(safeTx ?? safeMessage)
+  const [blockaidResponse, blockaidError, blockaidLoading] = useBlockaid(safeTx ?? safeMessage)
+
   const [isRiskConfirmed, setIsRiskConfirmed] = useState(false)
   const [isRiskIgnored, setIsRiskIgnored] = useState(false)
 
   const providedValue = useMemo(
     () => ({
-      severity: redefineResponse?.severity,
-      simulationUuid: redefineResponse?.payload?.simulation?.uuid,
-      warnings: redefineResponse?.payload?.issues || [],
-      balanceChange: redefineResponse?.payload?.balanceChange,
-      error: redefineError,
-      isLoading: redefineLoading,
-      needsRiskConfirmation: !!redefineResponse && redefineResponse.severity >= SecuritySeverity.HIGH,
+      blockaidResponse: {
+        description: blockaidResponse?.payload?.description,
+        reason: blockaidResponse?.payload?.reason,
+        classification: blockaidResponse?.payload?.classification,
+        severity: blockaidResponse?.severity,
+        warnings: blockaidResponse?.payload?.issues || [],
+        balanceChange: blockaidResponse?.payload?.balanceChange,
+        error: blockaidError,
+        isLoading: blockaidLoading,
+      },
+      needsRiskConfirmation: !!blockaidResponse && blockaidResponse.severity >= SecuritySeverity.HIGH,
       isRiskConfirmed,
       setIsRiskConfirmed,
       isRiskIgnored: isRiskIgnored && !isRiskConfirmed,
       setIsRiskIgnored,
     }),
-    [isRiskConfirmed, isRiskIgnored, redefineError, redefineLoading, redefineResponse],
+    [blockaidError, blockaidLoading, blockaidResponse, isRiskConfirmed, isRiskIgnored],
   )
 
   return <TxSecurityContext.Provider value={providedValue}>{children}</TxSecurityContext.Provider>

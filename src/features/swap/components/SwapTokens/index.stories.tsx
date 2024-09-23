@@ -28,16 +28,22 @@ export const Default: Story = {
     first: {
       value: '100',
       label: 'Sell',
-      logoUri:
-        'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0x0625aFB445C3B6B7B929342a04A22599fd5dBB59.png',
-      tokenSymbol: 'COW',
+      tokenInfo: {
+        decimals: 18,
+        logoUri:
+          'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0x0625aFB445C3B6B7B929342a04A22599fd5dBB59.png',
+        symbol: 'COW',
+      },
     },
     second: {
       value: '86',
       label: 'For at least',
-      logoUri:
-        'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984.png',
-      tokenSymbol: 'UNI',
+      tokenInfo: {
+        decimals: 18,
+        logoUri:
+          'https://safe-transaction-assets.staging.5afe.dev/tokens/logos/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984.png',
+        symbol: 'UNI',
+      },
     },
   },
 }

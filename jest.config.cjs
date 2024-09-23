@@ -13,6 +13,7 @@ const customJestConfig = {
     // Handle module aliases (this will be automatically configured for you soon)
     '^@/(.*)$': '<rootDir>/src/$1',
     '^.+\\.(svg)$': '<rootDir>/mocks/svg.js',
+    '^.+/markdown/terms/terms\\.md$': '<rootDir>/mocks/terms.md.js',
     isows: '<rootDir>/node_modules/isows/_cjs/index.js',
   },
   testEnvironment: 'jest-environment-jsdom',

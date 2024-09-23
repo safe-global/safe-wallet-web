@@ -1,5 +1,4 @@
 import { createNewSafe, relaySafeCreation } from '@/components/new-safe/create/logic'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { NetworkFee, SafeSetupOverview } from '@/components/new-safe/create/steps/ReviewStep'
 import ReviewRow from '@/components/new-safe/ReviewRow'
 import { TxModalContext } from '@/components/tx-flow'
@@ -30,7 +29,9 @@ import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/m
 import type { DeploySafeProps } from '@safe-global/protocol-kit'
 import { FEATURES } from '@/utils/chains'
 import React, { useContext, useState } from 'react'
+import CheckWallet from '@/components/common/CheckWallet'
 import { getLatestSafeVersion } from '@/utils/chains'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 const useActivateAccount = () => {
   const chain = useCurrentChain()
@@ -162,11 +163,13 @@ const ActivateAccountFlow = () => {
               name="Est. network fee"
               value={
                 <>
-                  <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
+                  <NetworkFee totalFee={totalFee} isWaived={willRelay || isWrongChain} chain={chain} />
 
                   {!willRelay && (
                     <Typography variant="body2" color="text.secondary" mt={1}>
-                      You will have to confirm a transaction with your connected wallet.
+                      {isWrongChain
+                        ? `Switch your connected wallet to ${chain?.chainName} to see the correct estimated network fee`
+                        : 'You will have to confirm a transaction with your connected wallet.'}
                     </Typography>
                   )}
                 </>
@@ -180,7 +183,7 @@ const ActivateAccountFlow = () => {
             </Box>
           )}
 
-          {isWrongChain && <NetworkWarning />}
+          <NetworkWarning />
 
           {!walletCanPay && !willRelay && (
             <ErrorMessage>
@@ -192,15 +195,19 @@ const ActivateAccountFlow = () => {
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
         <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
-          <Button
-            data-testid="activate-account-btn"
-            onClick={createSafe}
-            variant="contained"
-            size="stretched"
-            disabled={submitDisabled}
-          >
-            {!isSubmittable ? <CircularProgress size={20} /> : 'Activate'}
-          </Button>
+          <CheckWallet checkNetwork={!submitDisabled}>
+            {(isOk) => (
+              <Button
+                data-testid="activate-account-btn"
+                onClick={createSafe}
+                variant="contained"
+                size="stretched"
+                disabled={!isOk || submitDisabled}
+              >
+                {!isSubmittable ? <CircularProgress size={20} /> : 'Activate'}
+              </Button>
+            )}
+          </CheckWallet>
         </Box>
       </TxCard>
     </TxLayout>

@@ -43,17 +43,17 @@ import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 export const NetworkFee = ({
   totalFee,
   chain,
-  willRelay,
+  isWaived,
   inline = false,
 }: {
   totalFee: string
   chain: ChainInfo | undefined
-  willRelay: boolean
+  isWaived: boolean
   inline?: boolean
 }) => {
   return (
     <Box className={classnames(css.networkFee, { [css.networkFeeInline]: inline })}>
-      <Typography className={classnames({ [css.sponsoredFee]: willRelay })}>
+      <Typography className={classnames({ [css.strikethrough]: isWaived })}>
         <b>
           &asymp; {totalFee} {chain?.nativeCurrency.symbol}
         </b>
@@ -288,7 +288,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               <Grid item>
                 <Typography component="div" mt={2}>
                   You will have to confirm a transaction and pay an estimated fee of{' '}
-                  <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} inline /> with your connected
+                  <NetworkFee totalFee={totalFee} isWaived={willRelay} chain={chain} inline /> with your connected
                   wallet
                 </Typography>
               </Grid>
@@ -321,7 +321,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
                 name="Est. network fee"
                 value={
                   <>
-                    <NetworkFee totalFee={totalFee} willRelay={willRelay} chain={chain} />
+                    <NetworkFee totalFee={totalFee} isWaived={willRelay} chain={chain} />
 
                     {!willRelay && (
                       <Typography variant="body2" color="text.secondary" mt={1}>
@@ -333,7 +333,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               />
             </Grid>
 
-            {isWrongChain && <NetworkWarning />}
+            <NetworkWarning action="create a Safe Account" />
 
             {!walletCanPay && !willRelay && (
               <ErrorMessage>

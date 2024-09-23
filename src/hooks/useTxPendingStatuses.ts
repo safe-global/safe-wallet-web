@@ -19,7 +19,7 @@ import { SimpleTxWatcher } from '@/utils/SimpleTxWatcher'
 
 const FINAL_PENDING_STATUSES = [TxEvent.SIGNATURE_INDEXED, TxEvent.SUCCESS, TxEvent.REVERTED, TxEvent.FAILED]
 
-const useTxMonitor = (): void => {
+export const useTxMonitor = (): void => {
   const chainId = useChainId()
   const pendingTxs = useAppSelector(selectPendingTxs)
   const pendingTxEntriesOnChain = Object.entries(pendingTxs).filter(([, pendingTx]) => pendingTx.chainId === chainId)
@@ -53,17 +53,19 @@ const useTxMonitor = (): void => {
           pendingTx.safeAddress,
           pendingTx.signerAddress,
           pendingTx.signerNonce,
+          pendingTx.nonce,
+          chainId,
         )
         continue
       }
 
       if (isRelaying) {
-        waitForRelayedTx(pendingTx.taskId, [txId], pendingTx.safeAddress)
+        waitForRelayedTx(pendingTx.taskId, [txId], pendingTx.safeAddress, pendingTx.nonce)
       }
     }
     // `provider` is updated when switching chains, re-running this effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider])
+  }, [pendingTxEntriesOnChain.length, provider])
 }
 
 const useTxPendingStatuses = (): void => {
@@ -82,7 +84,9 @@ const useTxPendingStatuses = (): void => {
     const unsubSignatureProposing = txSubscribe(TxEvent.SIGNATURE_PROPOSED, (detail) => {
       // All pending txns should have a txId
       const txId = 'txId' in detail && detail.txId
-      if (!txId) return
+      const nonce = 'nonce' in detail ? detail.nonce : undefined
+
+      if (!txId || nonce === undefined) return
 
       // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
       // @see https://github.com/safe-global/safe-wallet-web/issues/1754
@@ -94,6 +98,7 @@ const useTxPendingStatuses = (): void => {
       // Update pendingTx
       dispatch(
         setPendingTx({
+          nonce,
           chainId,
           safeAddress,
           txId,
@@ -106,7 +111,9 @@ const useTxPendingStatuses = (): void => {
     const unsubProcessing = txSubscribe(TxEvent.PROCESSING, (detail) => {
       // All pending txns should have a txId
       const txId = 'txId' in detail && detail.txId
-      if (!txId) return
+      const nonce = 'nonce' in detail ? detail.nonce : undefined
+
+      if (!txId || nonce === undefined) return
 
       // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
       // @see https://github.com/safe-global/safe-wallet-web/issues/1754
@@ -118,6 +125,7 @@ const useTxPendingStatuses = (): void => {
       const pendingTx: PendingProcessingTx & { txId: string } =
         detail.txType === 'Custom'
           ? {
+              nonce,
               chainId,
               safeAddress,
               txId,
@@ -131,6 +139,7 @@ const useTxPendingStatuses = (): void => {
               to: detail.to,
             }
           : {
+              nonce,
               chainId,
               safeAddress,
               txId,
@@ -148,7 +157,9 @@ const useTxPendingStatuses = (): void => {
     const unsubExecuting = txSubscribe(TxEvent.EXECUTING, (detail) => {
       // All pending txns should have a txId
       const txId = 'txId' in detail && detail.txId
-      if (!txId) return
+      const nonce = 'nonce' in detail ? detail.nonce : undefined
+
+      if (!txId || nonce === undefined) return
 
       // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
       // @see https://github.com/safe-global/safe-wallet-web/issues/1754
@@ -160,6 +171,7 @@ const useTxPendingStatuses = (): void => {
       // Update pendingTx
       dispatch(
         setPendingTx({
+          nonce,
           chainId,
           safeAddress,
           txId,
@@ -171,7 +183,9 @@ const useTxPendingStatuses = (): void => {
     const unsubProcessed = txSubscribe(TxEvent.PROCESSED, (detail) => {
       // All pending txns should have a txId
       const txId = 'txId' in detail && detail.txId
-      if (!txId) return
+      const nonce = 'nonce' in detail ? detail.nonce : undefined
+
+      if (!txId || nonce === undefined) return
 
       // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
       // @see https://github.com/safe-global/safe-wallet-web/issues/1754
@@ -183,6 +197,7 @@ const useTxPendingStatuses = (): void => {
       // Update pendingTx
       dispatch(
         setPendingTx({
+          nonce,
           chainId,
           safeAddress,
           txId,
@@ -194,7 +209,9 @@ const useTxPendingStatuses = (): void => {
     const unsubRelaying = txSubscribe(TxEvent.RELAYING, (detail) => {
       // All pending txns should have a txId
       const txId = 'txId' in detail && detail.txId
-      if (!txId) return
+      const nonce = 'nonce' in detail ? detail.nonce : undefined
+
+      if (!txId || nonce === undefined) return
 
       // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
       // @see https://github.com/safe-global/safe-wallet-web/issues/1754
@@ -206,6 +223,7 @@ const useTxPendingStatuses = (): void => {
       // Update pendingTx
       dispatch(
         setPendingTx({
+          nonce,
           chainId,
           safeAddress,
           txId,
