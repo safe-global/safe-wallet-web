@@ -35,6 +35,14 @@ export const OVERVIEW_EVENTS = {
     action: 'Add new network',
     category: OVERVIEW_CATEGORY,
   },
+  SUBMIT_ADD_NEW_NETWORK: {
+    action: 'Submit add new network',
+    category: OVERVIEW_CATEGORY,
+  },
+  CANCEL_ADD_NEW_NETWORK: {
+    action: 'Cancel add new network',
+    category: OVERVIEW_CATEGORY,
+  },
   DELETED_FROM_WATCHLIST: {
     action: 'Deleted from watchlist',
     category: OVERVIEW_CATEGORY,

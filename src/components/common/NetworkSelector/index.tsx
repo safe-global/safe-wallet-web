@@ -1,4 +1,5 @@
 import ChainIndicator from '@/components/common/ChainIndicator'
+import Track from '@/components/common/Track'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { useAppSelector } from '@/store'
 import { selectChains } from '@/store/chainsSlice'
@@ -26,7 +27,7 @@ import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
 import { type ReactElement, useCallback, useMemo, useState } from 'react'
-import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
+import { trackEvent, OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 
 import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -79,23 +80,25 @@ const UndeployedNetworkMenuItem = ({
   const isDisabled = !chain.available
 
   return (
-    <MenuItem
-      value={chain.chainId}
-      sx={{ '&:hover': { backgroundColor: 'inherit' } }}
-      onClick={() => onSelect(chain)}
-      disabled={isDisabled}
-    >
-      <Box className={css.item}>
-        <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
-        {isDisabled ? (
-          <Typography variant="caption" component="span" className={css.comingSoon}>
-            Not available
-          </Typography>
-        ) : (
-          <PlusIcon className={css.plusIcon} />
-        )}
-      </Box>
-    </MenuItem>
+    <Track {...OVERVIEW_EVENTS.ADD_NEW_NETWORK} label={OVERVIEW_LABELS.top_bar}>
+      <MenuItem
+        value={chain.chainId}
+        sx={{ '&:hover': { backgroundColor: 'inherit' } }}
+        onClick={() => onSelect(chain)}
+        disabled={isDisabled}
+      >
+        <Box className={css.item}>
+          <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
+          {isDisabled ? (
+            <Typography variant="caption" component="span" className={css.comingSoon}>
+              Not available
+            </Typography>
+          ) : (
+            <PlusIcon className={css.plusIcon} />
+          )}
+        </Box>
+      </MenuItem>
+    </Track>
   )
 }
 

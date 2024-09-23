@@ -2,6 +2,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { Box, Button, CircularProgress, DialogActions, DialogContent, Divider, Stack, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSafeCreationData } from '../../hooks/useSafeCreationData'
@@ -63,6 +64,11 @@ const ReplaySafeDialog = ({
   // Load some data
   const [safeCreationData, safeCreationDataError, safeCreationDataLoading] = safeCreationResult
 
+  const onCancel = () => {
+    trackEvent({ ...OVERVIEW_EVENTS.CANCEL_ADD_NEW_NETWORK })
+    onClose()
+  }
+
   const onFormSubmit = handleSubmit(async (data) => {
     const selectedChain = chain ?? replayableChains?.find((config) => config.chainId === data.chainId)
     if (!safeCreationData || !selectedChain) {
@@ -82,6 +88,8 @@ const ReplaySafeDialog = ({
       setCreationError(new Error('The replayed Safe leads to an unexpected address'))
       return
     }
+
+    trackEvent({ ...OVERVIEW_EVENTS.SUBMIT_ADD_NEW_NETWORK, label: selectedChain.chainName })
 
     // 2. Replay Safe creation and add it to the counterfactual Safes
     replayCounterfactualSafeDeployment(selectedChain.chainId, safeAddress, safeCreationData, data.name, dispatch)
@@ -162,7 +170,7 @@ const ReplaySafeDialog = ({
             </Box>
           ) : (
             <>
-              <Button variant="outlined" onClick={onClose}>
+              <Button variant="outlined" onClick={onCancel}>
                 Cancel
               </Button>
               <Button type="submit" variant="contained" disabled={submitDisabled}>
