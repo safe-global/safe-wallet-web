@@ -67,8 +67,9 @@ const NetworkMultiSelector = ({
       if (isAdvancedFlow) return optionNetwork.chainId != firstSelectedNetwork.chainId
 
       // Check required feature toggles
+      const optionIsSelectedNetwork = firstSelectedNetwork.chainId === optionNetwork.chainId
       if (!hasMultiChainCreationFeatures(optionNetwork) || !hasMultiChainCreationFeatures(firstSelectedNetwork)) {
-        return true
+        return !optionIsSelectedNetwork
       }
 
       // Check if required deployments are available
@@ -88,7 +89,7 @@ const NetworkMultiSelector = ({
       )
 
       // Only 1.4.1 safes with canonical deployment addresses can be deployed as part of a multichain group
-      if (!selectedHasCanonicalSingletonDeployment) return firstSelectedNetwork.chainId !== optionNetwork.chainId
+      if (!selectedHasCanonicalSingletonDeployment) return !optionIsSelectedNetwork
       return !optionHasCanonicalSingletonDeployment
     },
     [isAdvancedFlow, selectedNetworks],
