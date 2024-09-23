@@ -29,8 +29,6 @@ export const useCompatibleNetworks = (
 
   const { fallbackHandler } = safeAccountConfig
 
-  console.log('Fallbackhandler', fallbackHandler)
-
   return configs.map((config) => {
     return {
       ...config,
