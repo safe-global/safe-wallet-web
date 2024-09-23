@@ -3,7 +3,7 @@ import { type RootState } from '@/store'
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 import { selectChainIdAndSafeAddress, selectSafeAddress } from '@/store/common'
-import { type CreationTransaction } from 'safe-client-gateway-sdk'
+import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 
 export enum PendingSafeStatus {
   AWAITING_EXECUTION = 'AWAITING_EXECUTION',
@@ -22,8 +22,21 @@ type UndeployedSafeStatus = {
   signerNonce?: number | null
 }
 
-export type ReplayedSafeProps = Pick<CreationTransaction, 'factoryAddress' | 'masterCopy' | 'setupData'> & {
+export type ReplayedSafeProps = {
+  factoryAddress: string
+  masterCopy: string
+  safeAccountConfig: {
+    threshold: number
+    owners: string[]
+    fallbackHandler: string
+    to: string
+    data: string
+    paymentToken?: string
+    payment?: number
+    paymentReceiver: string
+  }
   saltNonce: string
+  safeVersion: SafeVersion
 }
 
 export type UndeployedSafeProps = PredictedSafeProps | ReplayedSafeProps

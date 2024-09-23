@@ -35,6 +35,7 @@ export enum FEATURES {
   ZODIAC_ROLES = 'ZODIAC_ROLES',
   SAFE_141 = 'SAFE_141',
   STAKING = 'STAKING',
+  MULTI_CHAIN_SAFE_CREATION = 'MULTI_CHAIN_SAFE_CREATION',
 }
 
 export const FeatureRoutes = {

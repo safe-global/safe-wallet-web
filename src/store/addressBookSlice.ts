@@ -33,6 +33,20 @@ export const addressBookSlice = createSlice({
       state[chainId][address] = name
     },
 
+    upsertMultichainAddressBookEntry: (
+      state,
+      action: PayloadAction<{ chainIds: string[]; address: string; name: string }>,
+    ) => {
+      const { chainIds, address, name } = action.payload
+      if (name.trim() === '') {
+        return
+      }
+      chainIds.forEach((chainId) => {
+        if (!state[chainId]) state[chainId] = {}
+        state[chainId][address] = name
+      })
+    },
+
     removeAddressBookEntry: (state, action: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = action.payload
       if (!state[chainId]) return state
@@ -43,7 +57,8 @@ export const addressBookSlice = createSlice({
   },
 })
 
-export const { setAddressBook, upsertAddressBookEntry, removeAddressBookEntry } = addressBookSlice.actions
+export const { setAddressBook, upsertAddressBookEntry, upsertMultichainAddressBookEntry, removeAddressBookEntry } =
+  addressBookSlice.actions
 
 export const selectAllAddressBooks = (state: RootState): AddressBookState => {
   return state[addressBookSlice.name]
