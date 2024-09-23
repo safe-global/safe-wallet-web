@@ -165,11 +165,17 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     [chain, data.owners, data.safeVersion, data.threshold],
   )
 
+  const safePropsForGasEstimation = useMemo(() => {
+    return newSafeProps
+      ? {
+          ...newSafeProps,
+          saltNonce: Date.now().toString(),
+        }
+      : undefined
+  }, [newSafeProps])
+
   // We estimate with a random nonce as we'll just slightly overestimates like this
-  const { gasLimit } = useEstimateSafeCreationGas(
-    newSafeProps ? { ...newSafeProps, saltNonce: Date.now().toString() } : undefined,
-    data.safeVersion,
-  )
+  const { gasLimit } = useEstimateSafeCreationGas(safePropsForGasEstimation, data.safeVersion)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
