@@ -12,11 +12,6 @@ concurrency:
 
 jobs:
   test:
-    permissions:
-      checks: write
-      pull-requests: read
-      statuses: write
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
