@@ -47,7 +47,7 @@ export const InconsistentSignerSetupWarning = () => {
   const [safeOverviews] = useSafeOverviews(multiChainGroupSafes)
 
   const safeSetups = useMemo(
-    () => getSafeSetups(multiChainGroupSafes ?? [], safeOverviews ?? [], undeployedSafes),
+    () => getSafeSetups(multiChainGroupSafes, safeOverviews ?? [], undeployedSafes),
     [multiChainGroupSafes, safeOverviews, undeployedSafes],
   )
   const deviatingSetups = getDeviatingSetups(safeSetups, currentChain?.chainId)
