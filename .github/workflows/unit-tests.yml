@@ -19,6 +19,6 @@ jobs:
       - uses: ./.github/workflows/yarn
 
       - name: Annotations and coverage report
-        uses: mattallty/jest-github-action@v1
+        uses: willcaul/jest-github-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
