@@ -24,10 +24,6 @@ jobs:
       - uses: ./.github/workflows/yarn
 
       - name: Annotations and coverage report
-        uses: ArtiomTr/jest-coverage-report-action@v2
-        with:
-          skip-step: install
-          annotations: failed-tests
-          package-manager: yarn
-          test-script: yarn test:ci
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        uses: mattallty/jest-github-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
