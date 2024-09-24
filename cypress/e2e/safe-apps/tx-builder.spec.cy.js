@@ -24,7 +24,7 @@ describe.skip('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () 
     cy.clearLocalStorage()
     cy.clearCookies()
     cy.window().then((win) => {
-      win.localStorage.setItem(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      win.localStorage.setItem(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
       win.localStorage.setItem(
         constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
         ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,

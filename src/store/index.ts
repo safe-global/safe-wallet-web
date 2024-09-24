@@ -14,6 +14,8 @@ import { IS_PRODUCTION } from '@/config/constants'
 import { getPreloadedState, persistState } from './persistStore'
 import { broadcastState, listenToBroadcast } from './broadcast'
 import {
+  cookiesAndTermsSlice,
+  cookiesAndTermsInitialState,
   safeMessagesListener,
   swapOrderListener,
   swapOrderStatusListener,
@@ -24,6 +26,7 @@ import * as slices from './slices'
 import * as hydrate from './useHydrateStore'
 import { ofacApi } from '@/store/ofac'
 import { safePassApi } from './safePass'
+import { metadata } from '@/markdown/terms/terms.md'
 
 const rootReducer = combineReducers({
   [slices.chainsSlice.name]: slices.chainsSlice.reducer,
@@ -93,7 +96,20 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
      *
      * @see https://lodash.com/docs/4.17.15#merge
      */
-    return merge({}, state, action.payload) as RootState
+    const nextState = merge({}, state, action.payload) as RootState
+
+    // Check if termsVersion matches
+    if (
+      nextState[cookiesAndTermsSlice.name] &&
+      nextState[cookiesAndTermsSlice.name].termsVersion !== metadata.version
+    ) {
+      // Reset consent
+      nextState[cookiesAndTermsSlice.name] = {
+        ...cookiesAndTermsInitialState,
+      }
+    }
+
+    return nextState
   }
   return rootReducer(state, action) as RootState
 }

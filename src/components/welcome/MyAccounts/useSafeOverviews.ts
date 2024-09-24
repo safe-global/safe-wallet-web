@@ -26,6 +26,9 @@ function useSafeOverviews(safes: Array<SafeParams>): AsyncResult<SafeOverview[]>
   const safesIds = useMemo(() => safes.filter(validateSafeParams).map(makeSafeId), [safes])
 
   const [data, error, isLoading] = useAsync(async () => {
+    if (safesIds.length === 0) {
+      return []
+    }
     return await getSafeOverviews(safesIds, {
       trusted: true,
       exclude_spam: excludeSpam,

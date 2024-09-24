@@ -151,7 +151,46 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if RPC could not be created', async () => {
+  it('should throw error if outdated masterCopy is being used', async () => {
+    const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
+      [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
+      1,
+      faker.finance.ethereumAddress(),
+      faker.string.hexadecimal({ length: 64 }),
+      faker.finance.ethereumAddress(),
+      faker.finance.ethereumAddress(),
+      0,
+      faker.finance.ethereumAddress(),
+    ])
+
+    jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
+      data: {
+        created: new Date(Date.now()).toISOString(),
+        creator: faker.finance.ethereumAddress(),
+        factoryAddress: faker.finance.ethereumAddress(),
+        transactionHash: faker.string.hexadecimal({ length: 64 }),
+        masterCopy: getSafeSingletonDeployment({ version: '1.1.1' })?.defaultAddress,
+        setupData,
+      },
+      response: new Response(),
+    })
+
+    const safeAddress = faker.finance.ethereumAddress()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
+
+    // Run hook
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
+
+    await waitFor(() => {
+      expect(result.current).toEqual([
+        undefined,
+        new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_IMPLEMENTATION),
+        false,
+      ])
+    })
+  })
+
+  it('should throw error if unknown masterCopy is being used', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
@@ -170,6 +209,80 @@ describe('useSafeCreationData', () => {
         factoryAddress: faker.finance.ethereumAddress(),
         transactionHash: faker.string.hexadecimal({ length: 64 }),
         masterCopy: faker.finance.ethereumAddress(),
+        setupData,
+      },
+      response: new Response(),
+    })
+
+    const safeAddress = faker.finance.ethereumAddress()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
+
+    // Run hook
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
+
+    await waitFor(() => {
+      expect(result.current).toEqual([
+        undefined,
+        new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_IMPLEMENTATION),
+        false,
+      ])
+    })
+  })
+
+  it('should throw error if the Safe creation uses reimbursement', async () => {
+    const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
+      [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
+      1,
+      faker.finance.ethereumAddress(),
+      faker.string.hexadecimal({ length: 64 }),
+      faker.finance.ethereumAddress(),
+      faker.finance.ethereumAddress(),
+      420,
+      faker.finance.ethereumAddress(),
+    ])
+
+    jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
+      data: {
+        created: new Date(Date.now()).toISOString(),
+        creator: faker.finance.ethereumAddress(),
+        factoryAddress: faker.finance.ethereumAddress(),
+        transactionHash: faker.string.hexadecimal({ length: 64 }),
+        masterCopy: getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress,
+        setupData,
+      },
+      response: new Response(),
+    })
+
+    const safeAddress = faker.finance.ethereumAddress()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
+
+    // Run hook
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
+
+    await waitFor(() => {
+      expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.PAYMENT_SAFE), false])
+    })
+  })
+
+  it('should throw error if RPC could not be created', async () => {
+    const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
+      [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
+      1,
+      faker.finance.ethereumAddress(),
+      faker.string.hexadecimal({ length: 64 }),
+      faker.finance.ethereumAddress(),
+      ZERO_ADDRESS,
+      0,
+      faker.finance.ethereumAddress(),
+    ])
+
+    jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
+      data: {
+        created: new Date(Date.now()).toISOString(),
+        creator: faker.finance.ethereumAddress(),
+        factoryAddress: faker.finance.ethereumAddress(),
+        transactionHash: faker.string.hexadecimal({ length: 64 }),
+        masterCopy: getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress,
         setupData,
       },
       response: new Response(),
@@ -195,14 +308,15 @@ describe('useSafeCreationData', () => {
       faker.finance.ethereumAddress(),
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
-      faker.finance.ethereumAddress(),
+      ZERO_ADDRESS,
       0,
       faker.finance.ethereumAddress(),
     ])
 
     const mockTxHash = faker.string.hexadecimal({ length: 64 })
     const mockFactoryAddress = faker.finance.ethereumAddress()
-    const mockMasterCopyAddress = faker.finance.ethereumAddress()
+    const mockMasterCopyAddress = getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress
+
     jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
       data: {
         created: new Date(Date.now()).toISOString(),
@@ -237,14 +351,14 @@ describe('useSafeCreationData', () => {
       faker.finance.ethereumAddress(),
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
-      faker.finance.ethereumAddress(),
+      ZERO_ADDRESS,
       0,
       faker.finance.ethereumAddress(),
     ])
 
     const mockTxHash = faker.string.hexadecimal({ length: 64 })
     const mockFactoryAddress = faker.finance.ethereumAddress()
-    const mockMasterCopyAddress = faker.finance.ethereumAddress()
+    const mockMasterCopyAddress = getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress!
     jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
       data: {
         created: new Date(Date.now()).toISOString(),
@@ -291,7 +405,7 @@ describe('useSafeCreationData', () => {
       faker.finance.ethereumAddress(),
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
-      faker.finance.ethereumAddress(),
+      ZERO_ADDRESS,
       0,
       faker.finance.ethereumAddress(),
     ])
@@ -309,7 +423,7 @@ describe('useSafeCreationData', () => {
 
     const mockTxHash = faker.string.hexadecimal({ length: 64 })
     const mockFactoryAddress = faker.finance.ethereumAddress()
-    const mockMasterCopyAddress = faker.finance.ethereumAddress()
+    const mockMasterCopyAddress = getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress!
     jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
       data: {
         created: new Date(Date.now()).toISOString(),
@@ -356,14 +470,14 @@ describe('useSafeCreationData', () => {
       faker.finance.ethereumAddress(),
       faker.string.hexadecimal({ length: 64, casing: 'lower' }),
       faker.finance.ethereumAddress(),
-      faker.finance.ethereumAddress(),
+      ZERO_ADDRESS,
       0,
       faker.finance.ethereumAddress(),
     ])
 
     const mockTxHash = faker.string.hexadecimal({ length: 64 })
     const mockFactoryAddress = faker.finance.ethereumAddress()
-    const mockMasterCopyAddress = faker.finance.ethereumAddress()
+    const mockMasterCopyAddress = getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress!
     jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
       data: {
         created: new Date(Date.now()).toISOString(),

@@ -1,5 +1,5 @@
 import Track from '@/components/common/Track'
-import { RECOVERY_FEEDBACK_FORM, HelpCenterArticle } from '@/config/constants'
+import { RECOVERY_FEEDBACK_FORM, HelpCenterArticle, SafeAppsTag } from '@/config/constants'
 import { trackEvent } from '@/services/analytics'
 import { RECOVERY_EVENTS } from '@/services/analytics/events/recovery'
 import { type ChangeEvent, type ReactElement, useContext } from 'react'
@@ -26,18 +26,17 @@ import { UpsertRecoveryFlow } from '@/components/tx-flow/flows'
 import ExternalLink from '@/components/common/ExternalLink'
 import RecoveryCustomIcon from '@/public/images/common/recovery_custom.svg'
 import RecoverySygnumIcon from '@/public/images/common/recovery_sygnum.svg'
-import RecoveryCoincoverIcon from '@/public/images/common/recovery_coincover.svg'
 import { TxModalContext } from '@/components/tx-flow'
 import css from './styles.module.css'
 import CheckIcon from '@/public/images/common/check.svg'
-
-const SYGNUM_WAITLIST_LINK = 'https://wn2n6ocviur.typeform.com/to/cJbJW0KR'
-const COINCOVER_WAITLIST_LINK = 'https://wn2n6ocviur.typeform.com/to/ijqSzOkr'
+import { AppRoutes } from '@/config/routes'
+import { useSearchParams } from 'next/navigation'
+import { useRemoteSafeApps } from '@/hooks/safe-apps/useRemoteSafeApps'
+import TxStatusChip from '@/components/transactions/TxStatusChip'
 
 enum RecoveryMethod {
   SelfCustody = 'SelfCustody',
   Sygnum = 'Sygnum',
-  Coincover = 'Coincover',
 }
 
 enum FieldNames {
@@ -50,6 +49,9 @@ type Fields = {
 
 export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; onClose: () => void }): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
+  const querySafe = useSearchParams().get('safe')
+  const [matchingApps] = useRemoteSafeApps(SafeAppsTag.RECOVERY_SYGNUM)
+  const hasSygnumApp = Boolean(matchingApps?.length)
 
   const methods = useForm<Fields>({
     defaultValues: {
@@ -124,53 +126,34 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                 <FormControlLabel
                   value={RecoveryMethod.Sygnum}
                   control={<Radio />}
+                  disabled={!hasSygnumApp}
                   label={
                     <div className={css.method}>
                       <RecoverySygnumIcon style={{ display: 'block' }} />
+
                       <Typography fontWeight="bold" mb={1} mt={2}>
-                        Sygnum
+                        Sygnum Web3 Recovery
                       </Typography>
                       <List className={css.checkList}>
+                        <ListItem>
+                          <CheckIcon />
+                          Your key. Your crypto. Your recovery
+                        </ListItem>
+                        <ListItem>
+                          <CheckIcon />
+                          Account recovery by your identity
+                        </ListItem>
                         <ListItem>
                           <CheckIcon />
                           Regulated Swiss digital asset bank
                         </ListItem>
-                        <ListItem>
-                          <CheckIcon />
-                          Ensure you (and only you) can recover
-                        </ListItem>
-                        <ListItem>
-                          <CheckIcon />
-                          Simple and efficient
-                        </ListItem>
                       </List>
-                    </div>
-                  }
-                />
 
-                <FormControlLabel
-                  value={RecoveryMethod.Coincover}
-                  control={<Radio />}
-                  label={
-                    <div className={css.method}>
-                      <RecoveryCoincoverIcon style={{ display: 'block' }} />
-                      <Typography fontWeight="bold" mb={1} mt={2}>
-                        Coincover
-                      </Typography>
-                      <List className={css.checkList}>
-                        <ListItem>
-                          <CheckIcon />
-                          World&apos;s #1 Recovery Solution
-                        </ListItem>
-                        <ListItem>
-                          <CheckIcon />
-                          Protected by Biometrics
-                        </ListItem>
-                        <ListItem>
-                          <CheckIcon />
-                          Lloyd’s of London Backed Tech
-                        </ListItem>
-                      </List>
+                      {!hasSygnumApp && (
+                        <Box mt={2.5} sx={{ oopacity: 0.75 }}>
+                          <TxStatusChip color="primary">Not available on this network</TxStatusChip>
+                        </Box>
+                      )}
                     </div>
                   }
                 />
@@ -199,13 +182,18 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
               </Button>
             </Track>
           ) : (
-            <Track {...RECOVERY_EVENTS.CONTINUE_TO_WAITLIST} label={currentType}>
+            <Track {...RECOVERY_EVENTS.SYGNUM_APP} label={currentType}>
               <Link
-                href={currentType === RecoveryMethod.Sygnum ? SYGNUM_WAITLIST_LINK : COINCOVER_WAITLIST_LINK}
-                target="_blank"
+                href={{
+                  pathname: AppRoutes.apps.open,
+                  query: {
+                    safe: querySafe,
+                    appUrl: matchingApps?.[0]?.url,
+                  },
+                }}
                 passHref
               >
-                <Button variant="contained">Join waitlist</Button>
+                <Button variant="contained">Open App</Button>
               </Link>
             </Track>
           )}

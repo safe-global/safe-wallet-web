@@ -16,7 +16,7 @@ let nftsSafes,
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
-describe.skip('NFTs tests', () => {
+describe.skip('[PROD] NFTs tests', () => {
   before(() => {
     getSafes(CATEGORIES.nfts)
       .then((nfts) => {
