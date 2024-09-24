@@ -7,12 +7,21 @@ concurrency:
 
 jobs:
   eslint:
+    permissions:
+      checks: write
+      pull-requests: read
+      statuses: write
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: ./.github/workflows/yarn
 
-      - uses: Maggi64/eslint-plus-action@master
+      - uses: CatChen/eslint-suggestion-action@v2
         with:
-          npmInstall: false
+          request-changes: true # optional
+          fail-check: true # optional
+          github-token: ${{ secrets.GITHUB_TOKEN }} # optional
+          directory: './' # optional
+          targets: 'src' # optional

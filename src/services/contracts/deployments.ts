@@ -13,6 +13,7 @@ import type { SingletonDeployment, DeploymentFilter, SingletonDeploymentV2 } fro
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { sameAddress } from '@/utils/addresses'
+import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 
 const toNetworkAddressList = (addresses: string | string[]) => (Array.isArray(addresses) ? addresses : [addresses])
 
@@ -26,6 +27,31 @@ export const hasCanonicalDeployment = (deployment: SingletonDeploymentV2 | undef
   const networkAddresses = toNetworkAddressList(deployment.networkAddresses[chainId])
 
   return networkAddresses.some((networkAddress) => sameAddress(canonicalAddress, networkAddress))
+}
+
+/**
+ * Checks if any of the deployments returned by the `getDeployments` function for the given `network` and `versions` contain a deployment for the `contractAddress`
+ *
+ * @param getDeployments function to get the contract deployments
+ * @param contractAddress address that should be included in the deployments
+ * @param network chainId that is getting checked
+ * @param versions supported Safe versions
+ * @returns true if a matching deployment was found
+ */
+export const hasMatchingDeployment = (
+  getDeployments: (filter?: DeploymentFilter) => SingletonDeploymentV2 | undefined,
+  contractAddress: string,
+  network: string,
+  versions: SafeVersion[],
+): boolean => {
+  return versions.some((version) => {
+    const deployments = getDeployments({ version, network })
+    if (!deployments) {
+      return false
+    }
+    const deployedAddresses = toNetworkAddressList(deployments.networkAddresses[network] ?? [])
+    return deployedAddresses.some((deployedAddress) => sameAddress(deployedAddress, contractAddress))
+  })
 }
 
 export const _tryDeploymentVersions = (

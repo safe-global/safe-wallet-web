@@ -94,8 +94,7 @@ const ActivateAccountFlow = () => {
 
   if (!undeployedSafe || !undeployedSafeSetup) return null
 
-  const { owners, threshold } = undeployedSafeSetup
-  const { saltNonce, safeVersion } = undeployedSafeSetup
+  const { owners, threshold, safeVersion } = undeployedSafeSetup
 
   const onSubmit = (txHash?: string) => {
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_without_tx })
@@ -128,6 +127,7 @@ const ActivateAccountFlow = () => {
           undeployedSafe.props,
           safeVersion ?? getLatestSafeVersion(chain),
           chain,
+          options,
           onSubmit,
           isMultichainSafe ? true : undefined,
         )
