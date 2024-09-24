@@ -15,7 +15,7 @@ import { OwnerList } from '../../common/OwnerList'
 import MinusIcon from '@/public/images/common/minus.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()

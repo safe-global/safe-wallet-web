@@ -129,8 +129,16 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
           )}
         </>
       ) : (
-        <Typography variant="body2" color="text.secondary" textAlign="center" py={3} mx="auto" width={250}>
-          {safes ? noSafesMessage : 'Loading...'}
+        <Typography
+          component="div"
+          variant="body2"
+          color="text.secondary"
+          textAlign="center"
+          py={3}
+          mx="auto"
+          width={250}
+        >
+          {noSafesMessage}
         </Typography>
       )}
     </Paper>

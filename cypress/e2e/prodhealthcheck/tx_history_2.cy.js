@@ -17,7 +17,7 @@ const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
 const typeUntrustedToken = data.type.untrustedReceivedToken
 
-describe('Tx history tests 2', () => {
+describe('[PROD] Tx history tests 2', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })

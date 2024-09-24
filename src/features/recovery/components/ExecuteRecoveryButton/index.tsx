@@ -12,6 +12,8 @@ import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
 import { RecoveryListItemContext } from '../RecoveryListItem/RecoveryListItemContext'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
+import useIsWrongChain from '@/hooks/useIsWrongChain'
+import { useCurrentChain } from '@/hooks/useChains'
 
 export function ExecuteRecoveryButton({
   recovery,
@@ -26,6 +28,8 @@ export function ExecuteRecoveryButton({
   const wallet = useWallet()
   const { safe } = useSafeInfo()
   const isDisabled = !isExecutable || isPending
+  const isWrongChain = useIsWrongChain()
+  const chain = useCurrentChain()
 
   const onClick = async (e: SyntheticEvent) => {
     e.stopPropagation()
@@ -58,7 +62,9 @@ export function ExecuteRecoveryButton({
           <Tooltip
             title={
               !isOk || isDisabled
-                ? isNext
+                ? isWrongChain
+                  ? `Switch your wallet network to ${chain?.chainName} to execute this transaction`
+                  : isNext
                   ? 'You can execute the recovery after the specified review window'
                   : 'Previous recovery proposals must be executed or cancelled first'
                 : null

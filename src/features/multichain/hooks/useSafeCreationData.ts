@@ -1,66 +1,48 @@
 import useAsync, { type AsyncResult } from '@/hooks/useAsync'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type UndeployedSafe, selectRpc, type ReplayedSafeProps, selectUndeployedSafes } from '@/store/slices'
-import { Safe_proxy_factory__factory } from '@/types/contracts'
+import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
 import { sameAddress } from '@/utils/addresses'
 import { getCreationTransaction } from 'safe-client-gateway-sdk'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
-import { isPredictedSafeProps } from '@/features/counterfactual/utils'
-import {
-  getReadOnlyGnosisSafeContract,
-  getReadOnlyProxyFactoryContract,
-  getReadOnlyFallbackHandlerContract,
-} from '@/services/contracts/safeContracts'
-import { getLatestSafeVersion } from '@/utils/chains'
-import { ZERO_ADDRESS, EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { determineMasterCopyVersion, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
+import semverSatisfies from 'semver/functions/satisfies'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
-const getUndeployedSafeCreationData = async (
-  undeployedSafe: UndeployedSafe,
-  chain: ChainInfo,
-): Promise<ReplayedSafeProps> => {
+export const SAFE_CREATION_DATA_ERRORS = {
+  TX_NOT_FOUND: 'The Safe creation transaction could not be found. Please retry later.',
+  NO_CREATION_DATA: 'The Safe creation information for this Safe could not be found or is incomplete.',
+  UNSUPPORTED_SAFE_CREATION: 'The method this Safe was created with is not supported.',
+  NO_PROVIDER: 'The RPC provider for the origin network is not available.',
+  LEGACY_COUNTERFATUAL: 'This undeployed Safe cannot be replayed. Please activate the Safe first.',
+  PAYMENT_SAFE: 'The Safe creation used reimbursement. Adding networks to such Safes is not supported.',
+  UNSUPPORTED_IMPLEMENTATION:
+    'The Safe was created using an unsupported or outdated implementation. Adding networks to this Safe is not possible.',
+}
+
+export const decodeSetupData = (setupData: string): ReplayedSafeProps['safeAccountConfig'] => {
+  const [owners, threshold, to, data, fallbackHandler, paymentToken, payment, paymentReceiver] =
+    Safe__factory.createInterface().decodeFunctionData('setup', setupData)
+
+  return {
+    owners: [...owners],
+    threshold: Number(threshold),
+    to,
+    data,
+    fallbackHandler,
+    paymentToken,
+    payment: Number(payment),
+    paymentReceiver,
+  }
+}
+
+const getUndeployedSafeCreationData = async (undeployedSafe: UndeployedSafe): Promise<ReplayedSafeProps> => {
   if (isPredictedSafeProps(undeployedSafe.props)) {
-    // Copy predicted safe
-    // Encode Safe creation and determine the addresses the Safe creation would use
-    const { owners, threshold, to, data, fallbackHandler, paymentToken, payment, paymentReceiver } =
-      undeployedSafe.props.safeAccountConfig
-    const usedSafeVersion = undeployedSafe.props.safeDeploymentConfig?.safeVersion ?? getLatestSafeVersion(chain)
-    const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, usedSafeVersion)
-    const readOnlyProxyFactoryContract = await getReadOnlyProxyFactoryContract(usedSafeVersion)
-    const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(usedSafeVersion)
-
-    const callData = {
-      owners,
-      threshold,
-      to: to ?? ZERO_ADDRESS,
-      data: data ?? EMPTY_DATA,
-      fallbackHandler: fallbackHandler ?? (await readOnlyFallbackHandlerContract.getAddress()),
-      paymentToken: paymentToken ?? ZERO_ADDRESS,
-      payment: payment ?? 0,
-      paymentReceiver: paymentReceiver ?? ZERO_ADDRESS,
-    }
-
-    // @ts-ignore union type is too complex
-    const setupData = readOnlySafeContract.encode('setup', [
-      callData.owners,
-      callData.threshold,
-      callData.to,
-      callData.data,
-      callData.fallbackHandler,
-      callData.paymentToken,
-      callData.payment,
-      callData.paymentReceiver,
-    ])
-
-    return {
-      factoryAddress: await readOnlyProxyFactoryContract.getAddress(),
-      masterCopy: await readOnlySafeContract.getAddress(),
-      saltNonce: undeployedSafe.props.safeDeploymentConfig?.saltNonce ?? '0',
-      setupData,
-    }
+    throw new Error(SAFE_CREATION_DATA_ERRORS.LEGACY_COUNTERFATUAL)
   }
 
   // We already have a replayed Safe. In this case we can return the identical data
@@ -70,13 +52,12 @@ const getUndeployedSafeCreationData = async (
 const proxyFactoryInterface = Safe_proxy_factory__factory.createInterface()
 const createProxySelector = proxyFactoryInterface.getFunction('createProxyWithNonce').selector
 
-export const SAFE_CREATION_DATA_ERRORS = {
-  TX_NOT_FOUND: 'The Safe creation transaction could not be found. Please retry later.',
-  NO_CREATION_DATA: 'The Safe creation information for this Safe could be found or is incomplete.',
-  UNSUPPORTED_SAFE_CREATION: 'The method this Safe was created with is not supported yet.',
-  NO_PROVIDER: 'The RPC provider for the origin network is not available.',
-}
-
+/**
+ * Loads the creation data from the CGW or infers it from an undeployed Safe.
+ *
+ * Throws errors for the reasons in {@link SAFE_CREATION_DATA_ERRORS}.
+ * Checking the cheap cases not requiring RPC calls first.
+ */
 const getCreationDataForChain = async (
   chain: ChainInfo,
   undeployedSafe: UndeployedSafe,
@@ -85,7 +66,7 @@ const getCreationDataForChain = async (
 ): Promise<ReplayedSafeProps> => {
   // 1. The safe is counterfactual
   if (undeployedSafe) {
-    return getUndeployedSafeCreationData(undeployedSafe, chain)
+    return getUndeployedSafeCreationData(undeployedSafe)
   }
 
   const { data: creation } = await getCreationTransaction({
@@ -97,6 +78,19 @@ const getCreationDataForChain = async (
 
   if (!creation || !creation.masterCopy || !creation.setupData) {
     throw new Error(SAFE_CREATION_DATA_ERRORS.NO_CREATION_DATA)
+  }
+
+  // Safes that were deployed with an unknown mastercopy or < 1.3.0 are not supported.
+  const safeVersion = determineMasterCopyVersion(creation.masterCopy, chain.chainId)
+  if (!safeVersion || semverSatisfies(safeVersion, '<1.3.0')) {
+    throw new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_IMPLEMENTATION)
+  }
+
+  const safeAccountConfig = decodeSetupData(creation.setupData)
+
+  // Safes that used the reimbursement logic are not supported
+  if ((safeAccountConfig.payment && safeAccountConfig.payment > 0) || safeAccountConfig.paymentToken !== ZERO_ADDRESS) {
+    throw new Error(SAFE_CREATION_DATA_ERRORS.PAYMENT_SAFE)
   }
 
   // We need to create a readOnly provider of the deployed chain
@@ -119,7 +113,6 @@ const getCreationDataForChain = async (
   }
 
   // decode tx
-
   const [masterCopy, initializer, saltNonce] = proxyFactoryInterface.decodeFunctionData(
     'createProxyWithNonce',
     `0x${txData.slice(startOfTx)}`,
@@ -137,8 +130,9 @@ const getCreationDataForChain = async (
   return {
     factoryAddress: creation.factoryAddress,
     masterCopy: creation.masterCopy,
-    setupData: creation.setupData,
+    safeAccountConfig,
     saltNonce: saltNonce.toString(),
+    safeVersion,
   }
 }
 
@@ -156,6 +150,7 @@ export const useSafeCreationData = (safeAddress: string, chains: ChainInfo[]): A
     try {
       for (const chain of chains) {
         const undeployedSafe = undeployedSafes[chain.chainId]?.[safeAddress]
+
         try {
           const creationData = await getCreationDataForChain(chain, undeployedSafe, safeAddress, customRpc)
           return creationData

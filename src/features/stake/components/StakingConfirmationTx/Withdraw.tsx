@@ -16,7 +16,7 @@ const StakingConfirmationTxWithdraw = ({ order }: StakingOrderConfirmationViewPr
       <FieldsGrid title="Receive">
         {' '}
         <TokenAmount
-          value={order.rewards}
+          value={order.value}
           tokenSymbol={order.tokenInfo.symbol}
           decimals={order.tokenInfo.decimals}
           logoUri={order.tokenInfo.logoUri}

@@ -34,6 +34,7 @@ describe('txQueueSlice', () => {
     const state = {
       pendingTxs: {
         '0x123': {
+          nonce: 1,
           chainId: '5',
           safeAddress: '0x0000000000000000000000000000000000000000',
           status: PendingStatus.SIGNING,
@@ -74,6 +75,7 @@ describe('txQueueSlice', () => {
     const state = {
       pendingTxs: {
         '0x123': {
+          nonce: 1,
           chainId: '5',
           safeAddress: '0x0000000000000000000000000000000000000000',
           status: PendingStatus.SIGNING,
@@ -101,6 +103,7 @@ describe('txQueueSlice', () => {
     const state = {
       pendingTxs: {
         '0x123': {
+          nonce: 1,
           chainId: '5',
           safeAddress: '0x0000000000000000000000000000000000000000',
           status: PendingStatus.SIGNING,
@@ -145,6 +148,7 @@ describe('txQueueSlice', () => {
     const state = {
       pendingTxs: {
         '0x123': {
+          nonce: 1,
           chainId: '5',
           safeAddress: '0x0000000000000000000000000000000000000000',
           status: PendingStatus.SIGNING,

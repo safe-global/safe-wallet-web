@@ -38,6 +38,10 @@ import type {
   StakingTxDepositInfo,
   StakingTxWithdrawInfo,
   NativeStakingWithdrawConfirmationView,
+  NativeStakingValidatorsExitConfirmationView,
+  StakingTxInfo,
+  TransactionData,
+  DecodedDataResponse,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -54,12 +58,7 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
-import { type TransactionData } from '@safe-global/safe-apps-sdk'
 import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
-import type {
-  DecodedDataResponse,
-  NativeStakingValidatorsExitConfirmationView,
-} from '@safe-global/safe-gateway-typescript-sdk/dist/types/decoded-data'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -171,6 +170,10 @@ export const isStakingTxExitInfo = (value: TransactionInfo): value is StakingTxE
 
 export const isStakingTxWithdrawInfo = (value: TransactionInfo): value is StakingTxWithdrawInfo => {
   return value.type === TransactionInfoType.NATIVE_STAKING_WITHDRAW
+}
+
+export const isAnyStakingTxInfo = (value: TransactionInfo): value is StakingTxInfo => {
+  return isStakingTxDepositInfo(value) || isStakingTxExitInfo(value) || isStakingTxWithdrawInfo(value)
 }
 
 export const isTwapConfirmationViewOrder = (
@@ -292,11 +295,15 @@ export function isRecoveryQueueItem(value: TransactionListItem | RecoveryQueueIt
 }
 
 // Narrows `Transaction`
-export const isMultisigExecutionInfo = (value?: ExecutionInfo): value is MultisigExecutionInfo =>
-  value?.type === DetailedExecutionInfoType.MULTISIG
+// TODO: Consolidate these types with the new sdk
+export const isMultisigExecutionInfo = (
+  value?: ExecutionInfo | DetailedExecutionInfo,
+): value is MultisigExecutionInfo => {
+  return value?.type === 'MULTISIG'
+}
 
-export const isModuleExecutionInfo = (value?: ExecutionInfo): value is ModuleExecutionInfo =>
-  value?.type === DetailedExecutionInfoType.MODULE
+export const isModuleExecutionInfo = (value?: ExecutionInfo | DetailedExecutionInfo): value is ModuleExecutionInfo =>
+  value?.type === 'MODULE'
 
 export const isSignableBy = (txSummary: TransactionSummary, walletAddress: string): boolean => {
   const executionInfo = isMultisigExecutionInfo(txSummary.executionInfo) ? txSummary.executionInfo : undefined

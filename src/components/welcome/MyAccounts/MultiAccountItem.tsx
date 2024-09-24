@@ -28,8 +28,9 @@ import MultiChainIcon from '@/public/images/sidebar/multichain-account.svg'
 import { shortenAddress } from '@/utils/formatters'
 import { type SafeItem } from './useAllSafes'
 import SubAccountItem from './SubAccountItem'
-import { getSharedSetup } from './utils/multiChainSafe'
+import { getSafeSetups, getSharedSetup } from './utils/multiChainSafe'
 import { AddNetworkButton } from './AddNetworkButton'
+import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import MultiAccountContextMenu from '@/components/sidebar/SafeListContextMenu/MultiAccountContextMenu'
 
@@ -89,14 +90,25 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
     return Object.values(allAddressBooks).find((ab) => ab[address] !== undefined)?.[address]
   }, [address, allAddressBooks])
 
-  const sharedSetup = useMemo(
-    () => getSharedSetup(safes, safeOverviews ?? [], undeployedSafes),
+  const safeSetups = useMemo(
+    () => getSafeSetups(safes, safeOverviews ?? [], undeployedSafes),
     [safeOverviews, safes, undeployedSafes],
   )
+  const sharedSetup = getSharedSetup(safeSetups)
 
   const totalFiatValue = useMemo(
     () => safeOverviews?.reduce((prev, current) => prev + Number(current.fiatTotal), 0),
     [safeOverviews],
+  )
+
+  const hasReplayableSafe = useMemo(
+    () =>
+      safes.some((safeItem) => {
+        const undeployedSafe = undeployedSafes[safeItem.chainId]?.[safeItem.address]
+        // We can only replay deployed Safes and new counterfactual Safes.
+        return !undeployedSafe || !isPredictedSafeProps(undeployedSafe.props)
+      }),
+    [safes, undeployedSafes],
   )
 
   const findOverview = (item: SafeItem) => {
@@ -157,7 +169,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, safeOverviews }: 
               />
             ))}
           </Box>
-          {!isWatchlist && (
+          {!isWatchlist && hasReplayableSafe && (
             <>
               <Divider sx={{ ml: '-12px', mr: '-12px' }} />
               <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>

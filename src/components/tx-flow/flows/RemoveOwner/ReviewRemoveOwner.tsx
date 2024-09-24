@@ -13,7 +13,7 @@ import type { RemoveOwnerFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import { ChangeSignerSetupWarning } from '@/features/multichain/components/ChangeOwnerSetupWarning/ChangeOwnerSetupWarning'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
 
 export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }): ReactElement => {
   const addressBook = useAddressBook()

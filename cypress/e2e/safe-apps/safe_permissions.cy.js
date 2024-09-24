@@ -6,7 +6,7 @@ import * as ls from '../../support/localstorage_data.js'
 describe('Safe permissions system tests', () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
     })
   })
 

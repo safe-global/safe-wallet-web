@@ -12,7 +12,7 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 const signer1 = walletCredentials.OWNER_1_PRIVATE_KEY
 const signer2 = walletCredentials.OWNER_3_PRIVATE_KEY
 
-describe.skip('Sidebar tests 3', () => {
+describe.skip('[PROD] Sidebar tests 3', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
