@@ -19,12 +19,18 @@ import { isRouteEnabled } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
+import { STAKE_EVENTS, STAKE_LABELS } from '@/services/analytics/events/stake'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
 }
 
 const geoBlockedRoutes = [AppRoutes.swap, AppRoutes.stake]
+
+const customSidebarEvents: { [key: string]: { event: any; label: string } } = {
+  [AppRoutes.swap]: { event: SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar },
+  [AppRoutes.stake]: { event: STAKE_EVENTS.OPEN_STAKE, label: STAKE_LABELS.sidebar },
+}
 
 const Navigation = (): ReactElement => {
   const chain = useCurrentChain()
@@ -60,8 +66,9 @@ const Navigation = (): ReactElement => {
   }
 
   const handleNavigationClick = (href: string) => {
-    if (href === AppRoutes.swap) {
-      trackEvent({ ...SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar })
+    const eventInfo = customSidebarEvents[href]
+    if (eventInfo) {
+      trackEvent({ ...eventInfo.event, label: eventInfo.label })
     }
   }
 
