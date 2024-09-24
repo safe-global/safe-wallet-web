@@ -21,6 +21,9 @@ import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useSafeSetupHints } from '../OwnerPolicyStep/useSafeSetupHints'
 import type { CreateSafeInfoItem } from '../../CreateSafeInfos'
 import NetworkMultiSelector from '@/components/common/NetworkSelector/NetworkMultiSelector'
+import { useAppSelector } from '@/store'
+import { selectChainById } from '@/store/chainsSlice'
+import useWallet from '@/hooks/wallets/useWallet'
 
 type SetNameStepForm = {
   name: string
@@ -51,8 +54,10 @@ function SetNameStep({
 }) {
   const router = useRouter()
   const currentChain = useCurrentChain()
+  const wallet = useWallet()
+  const walletChain = useAppSelector((state) => selectChainById(state, wallet?.chainId || ''))
 
-  const initialState = data.networks.length > 1 ? data.networks : currentChain ? [currentChain] : []
+  const initialState = data.networks.length ? data.networks : walletChain ? [walletChain] : []
   const formMethods = useForm<SetNameStepForm>({
     mode: 'all',
     defaultValues: {

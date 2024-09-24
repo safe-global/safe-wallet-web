@@ -1,6 +1,6 @@
-import useChains from '@/hooks/useChains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import { useCallback, type ReactElement } from 'react'
+import { useCallback, useEffect, type ReactElement } from 'react'
 import { Checkbox, Autocomplete, TextField, Chip } from '@mui/material'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import ChainIndicator from '../ChainIndicator'
@@ -24,6 +24,7 @@ const NetworkMultiSelector = ({
   const { configs } = useChains()
   const router = useRouter()
   const safeAddress = useSafeAddress()
+  const currentChain = useCurrentChain()
 
   const {
     formState: { errors },
@@ -34,7 +35,7 @@ const NetworkMultiSelector = ({
 
   const selectedNetworks: ChainInfo[] = useWatch({ control, name: SetNameStepFields.networks })
 
-  const updateSelectedNetwork = useCallback(
+  const updateCurrentNetwork = useCallback(
     (chains: ChainInfo[]) => {
       if (chains.length !== 1) return
       const shortName = chains[0].shortName
@@ -48,10 +49,10 @@ const NetworkMultiSelector = ({
     (deletedChainId: string) => {
       const currentValues: ChainInfo[] = getValues(name) || []
       const updatedValues = currentValues.filter((chain) => chain.chainId !== deletedChainId)
-      updateSelectedNetwork(updatedValues)
+      updateCurrentNetwork(updatedValues)
       setValue(name, updatedValues)
     },
-    [getValues, name, setValue, updateSelectedNetwork],
+    [getValues, name, setValue, updateCurrentNetwork],
   )
 
   const isOptionDisabled = useCallback(
@@ -94,6 +95,12 @@ const NetworkMultiSelector = ({
     },
     [isAdvancedFlow, selectedNetworks],
   )
+
+  useEffect(() => {
+    if (selectedNetworks.length === 1 && selectedNetworks[0].chainId !== currentChain?.chainId) {
+      updateCurrentNetwork([selectedNetworks[0]])
+    }
+  }, [selectedNetworks, currentChain, updateCurrentNetwork])
 
   return (
     <>
@@ -140,7 +147,7 @@ const NetworkMultiSelector = ({
             }
             isOptionEqualToValue={(option, value) => option.chainId === value.chainId}
             onChange={(_, data) => {
-              updateSelectedNetwork(data)
+              updateCurrentNetwork(data)
               return field.onChange(data)
             }}
           />
