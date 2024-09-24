@@ -23,7 +23,7 @@ describe('Address book import validation', () => {
         size: 1_000_000_000,
       } as File
 
-      expect(abCsvReaderValidator(file)).toEqual(['FALSE ASSERTION Address book cannot be larger than 1MB'])
+      expect(abCsvReaderValidator(file)).toEqual(['Address book cannot be larger than 1MB'])
     })
   })
   describe('hasValidAbHeader', () => {
