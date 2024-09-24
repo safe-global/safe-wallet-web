@@ -55,7 +55,12 @@ function EntryDialog({
   }
 
   return (
-    <ModalDialog open onClose={handleClose} dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}>
+    <ModalDialog
+      open
+      onClose={handleClose}
+      dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}
+      hideChainIndicator={Boolean(chainIds)}
+    >
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
           <DialogContent>
