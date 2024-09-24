@@ -3,7 +3,7 @@ import NameInput from '@/components/common/NameInput'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { Box, Button, CircularProgress, DialogActions, DialogContent, Divider, Stack, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, DialogActions, DialogContent, Stack, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSafeCreationData } from '../../hooks/useSafeCreationData'
 import { replayCounterfactualSafeDeployment } from '@/features/counterfactual/utils'
@@ -170,8 +170,7 @@ const ReplaySafeDialog = ({
             </Stack>
           </FormProvider>
         </DialogContent>
-        <Divider />
-        <DialogActions sx={{ m: 2 }}>
+        <DialogActions>
           {isUnsupportedSafeCreationVersion ? (
             <Box display="flex" width="100%" alignItems="center" justifyContent="space-between">
               <ExternalLink sx={{ flexGrow: 1 }} href="https://safe.global">
@@ -187,7 +186,7 @@ const ReplaySafeDialog = ({
                 Cancel
               </Button>
               <Button type="submit" variant="contained" disabled={submitDisabled}>
-                Add network
+                {isSubmitting ? <CircularProgress size={20} /> : 'Add network'}
               </Button>
             </>
           )}
