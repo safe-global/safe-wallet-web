@@ -12,8 +12,8 @@ import useAllAddressBooks from '@/hooks/useAllAddressBooks'
 const CounterfactualSuccessScreen = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [safeAddress, setSafeAddress] = useState<string>()
-  const [networks, setNetworks] = useState<ChainInfo[]>([])
   const chain = useCurrentChain()
+  const [networks, setNetworks] = useState<ChainInfo[]>([])
   const addressBooks = useAllAddressBooks()
   const safeName = safeAddress && chain ? addressBooks?.[chain.chainId]?.[safeAddress] : ''
   const isCFCreation = !!networks.length
@@ -84,7 +84,7 @@ const CounterfactualSuccessScreen = () => {
 
         {safeAddress && (
           <Box p={2} bgcolor="background.main" borderRadius={1} fontSize={14}>
-            <NetworkLogosList networks={networks} />
+            <NetworkLogosList networks={networks.length > 0 ? networks : chain ? [chain] : []} />
             <Typography variant="h5" mt={2}>
               {safeName}
             </Typography>
