@@ -13,6 +13,7 @@ import type { RemoveOwnerFlowProps } from '.'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
 
 export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }): ReactElement => {
   const addressBook = useAddressBook()
@@ -46,6 +47,8 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
           hasExplorer
         />
       </Paper>
+      <ChangeSignerSetupWarning />
+
       <Divider className={commonCss.nestedDivider} />
       <Box m={1}>
         <Typography variant="body2" color="text.secondary" mb={0.5}>

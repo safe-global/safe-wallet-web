@@ -1,6 +1,5 @@
-import { Box } from '@mui/material'
+import { Alert } from '@mui/material'
 import { useIsMultichainSafe } from '../../hooks/useIsMultichainSafe'
-import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useCurrentChain } from '@/hooks/useChains'
 
 export const ChangeSignerSetupWarning = () => {
@@ -10,10 +9,8 @@ export const ChangeSignerSetupWarning = () => {
   if (!isMultichainSafe) return
 
   return (
-    <Box mt={1} mb={1}>
-      <ErrorMessage level="warning">
-        {`Signers are not consistent across networks on this account. Changing signers will only affect the account on ${currentChain}`}
-      </ErrorMessage>
-    </Box>
+    <Alert severity="info" sx={{ border: 'none', mt: 0, mb: 0 }}>
+      {`Signers are not consistent across networks on this account. Changing signers will only affect the account on ${currentChain?.chainName}`}
+    </Alert>
   )
 }
