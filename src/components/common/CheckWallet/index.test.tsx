@@ -82,7 +82,7 @@ describe('CheckWallet', () => {
     ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
 
     const renderButtonWithNetworkCheck = () =>
-      render(<CheckWallet checkNetwork={true}>{() => <button disabled={true}></button>}</CheckWallet>)
+      render(<CheckWallet checkNetwork={true}>{(isOk) => <button disabled={!isOk}></button>}</CheckWallet>)
 
     const { container } = renderButtonWithNetworkCheck()
 
