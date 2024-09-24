@@ -1,9 +1,8 @@
 name: Unit tests
 on:
-  pull_request:
-
-  push:
+  pull_request_target:
     branches:
+      - dev
       - main
 
 concurrency:
