@@ -40,7 +40,7 @@ const usePendingSafeMonitor = (): void => {
 
   // Monitor pending safe creation mining/validating progress
   useEffect(() => {
-    Object.entries(undeployedSafesByChain).forEach(([chainId, undeployedSafes]) => {
+    Object.entries(undeployedSafesByChain).forEach(([, undeployedSafes]) => {
       Object.entries(undeployedSafes).forEach(([safeAddress, undeployedSafe]) => {
         if (undeployedSafe?.status.status === PendingSafeStatus.AWAITING_EXECUTION) {
           monitoredSafes.current[safeAddress] = false

@@ -7,7 +7,7 @@ const tabId = Math.random().toString(32).slice(2)
 let broadcast: BroadcastChannel | undefined
 
 export const broadcastState = <K extends keyof RootState>(sliceNames: K[]): Middleware<{}, RootState> => {
-  return (_) => (next) => (action: unknown) => {
+  return () => (next) => (action: unknown) => {
     const result = next(action)
 
     // Broadcast actions that aren't being already broadcasted

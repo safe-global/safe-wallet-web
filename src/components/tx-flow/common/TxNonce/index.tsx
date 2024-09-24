@@ -33,11 +33,10 @@ import classNames from 'classnames'
 
 const CustomPopper = function ({
   // Don't set width of Popper to that of the field
-  style: _,
   className,
   ...props
 }: PopperProps) {
-  return <Popper {...props} className={classNames(className, css.popper)} placement="bottom-start" />
+  return <Popper {...props} className={classNames(className, css.popper)} style={undefined} placement="bottom-start" />
 }
 
 const NonceFormHeader = memo(function NonceFormSubheader({ children, ...props }: ListSubheaderProps) {

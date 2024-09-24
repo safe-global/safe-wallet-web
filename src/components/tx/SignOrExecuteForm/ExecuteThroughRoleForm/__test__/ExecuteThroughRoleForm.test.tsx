@@ -202,8 +202,6 @@ const SAFE_INFO = extendedSafeInfoBuilder().build()
 SAFE_INFO.modules = [{ value: ROLES_MOD_ADDRESS }]
 SAFE_INFO.chainId = '1'
 
-const lowercaseSafeAddress = SAFE_INFO.address.value.toLowerCase()
-
 const WETH_ADDRESS = '0xfff9976782d46cc05630d1f6ebab18b2324d6b14'
 
 const TEST_ROLE_OK: hooksModule.Role = {

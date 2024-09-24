@@ -31,7 +31,7 @@ const useCategoryFilter = ({
   }, [router.isReady, router.query.categories, safeAppsList, selectedCategories.length, setSelectedCategories])
 
   const onSelectCategories = async (selectedCategories: string[]) => {
-    const { categories, ...restProps } = router.query
+    const { categories: _, ...restProps } = router.query
 
     await router.push(
       {

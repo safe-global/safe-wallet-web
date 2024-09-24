@@ -8,13 +8,13 @@ describe('useWalletCanPay', () => {
   })
 
   it('should return true if gasLimit is missing', () => {
-    const { result } = renderHook(() => useWalletCanPay({ maxFeePerGas: BigInt(1), maxPriorityFeePerGas: BigInt(1) }))
+    const { result } = renderHook(() => useWalletCanPay({ maxFeePerGas: BigInt(1) }))
 
     expect(result.current).toEqual(true)
   })
 
   it('should return true if maxFeePerGas is missing', () => {
-    const { result } = renderHook(() => useWalletCanPay({ gasLimit: BigInt(21000), maxPriorityFeePerGas: BigInt(1) }))
+    const { result } = renderHook(() => useWalletCanPay({ gasLimit: BigInt(21000) }))
 
     expect(result.current).toEqual(true)
   })
@@ -66,7 +66,6 @@ describe('useWalletCanPay', () => {
       useWalletCanPay({
         gasLimit: BigInt(21000),
         maxFeePerGas: BigInt(1),
-        maxPriorityFeePerGas: BigInt(1),
       }),
     )
 

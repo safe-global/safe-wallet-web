@@ -6,6 +6,9 @@
     "plugin:storybook/recommended"
   ],
   "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": ["./tsconfig.json"]
+  },
   "rules": {
     "@next/next/no-img-element": "off",
     "@next/next/google-font-display": "off",
@@ -13,7 +16,9 @@
     "@next/next/no-page-custom-font": "off",
     "unused-imports/no-unused-imports-ts": "error",
     "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/await-thenable": "error",
     "no-constant-condition": "warn",
+    "no-unused-vars": ["error", { "varsIgnorePattern": "^_" }],
     "react-hooks/exhaustive-deps": [
       "warn",
       {
@@ -28,7 +33,9 @@
   "ignorePatterns": [
     "node_modules/",
     ".next/",
-    ".github/"
+    ".github/",
+    "cypress/",
+    "src/types/contracts/"
   ],
   "plugins": [
     "unused-imports",

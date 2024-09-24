@@ -8,7 +8,6 @@ import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
 import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useHighlightHiddenTab from '@/hooks/useHighlightHiddenTab'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { isTxValid } from '@/components/safe-apps/utils'
@@ -24,7 +23,6 @@ const ReviewSafeAppsTx = ({
   safeAppsTx: { txs, requestId, params, appId, app },
   onSubmit,
 }: ReviewSafeAppsTxProps): ReactElement => {
-  const { safe } = useSafeInfo()
   const onboard = useOnboard()
   const wallet = useWallet()
   const { safeTx, setSafeTx, safeTxError, setSafeTxError } = useContext(SafeTxContext)

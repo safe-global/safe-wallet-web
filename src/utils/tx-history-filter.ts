@@ -31,7 +31,7 @@ export type TxFilter = {
 
 export const _omitNullish = (data: { [key: string]: any }) => {
   return Object.fromEntries(
-    Object.entries(data).filter(([_, value]) => {
+    Object.entries(data).filter(([, value]) => {
       return value !== '' && value != null
     }),
   )

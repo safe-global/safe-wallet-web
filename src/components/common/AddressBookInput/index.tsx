@@ -62,7 +62,7 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
       <Controller
         name={name}
         control={control}
-        render={({ field: { ref, ...field }, fieldState: { error } }) => (
+        render={({ field: { ...field } }) => (
           <Autocomplete
             {...field}
             className={inputCss.input}

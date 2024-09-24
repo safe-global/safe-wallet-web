@@ -278,7 +278,7 @@ describe('recovery-state', () => {
         blockHash: faker.string.alphanumeric(),
       } as TransactionReceipt
 
-      global.fetch = jest.fn().mockImplementation((_url: string) => {
+      global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
@@ -308,7 +308,7 @@ describe('recovery-state', () => {
         blockHash: faker.string.alphanumeric(),
       } as TransactionReceipt
 
-      global.fetch = jest.fn().mockImplementation((_url: string) => {
+      global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
@@ -336,7 +336,7 @@ describe('recovery-state', () => {
       const transactionService = faker.internet.url({ appendSlash: false })
       const safeAddress = faker.finance.ethereumAddress()
 
-      global.fetch = jest.fn().mockImplementation((_url: string) => {
+      global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           status: 500,
           ok: false,
@@ -376,7 +376,7 @@ describe('recovery-state', () => {
           .mockResolvedValue(transactionAddedReceipt),
       } as unknown as JsonRpcProvider
 
-      global.fetch = jest.fn().mockImplementation((_url: string) => {
+      global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
