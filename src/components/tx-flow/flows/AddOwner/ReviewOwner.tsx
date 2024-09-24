@@ -7,7 +7,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createSwapOwnerTx, createAddOwnerTx } from '@/services/tx/tx-sender'
 import { useAppDispatch } from '@/store'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { AddOwnerFlowProps } from '.'
 import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
@@ -43,8 +43,8 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
   const addAddressBookEntryAndSubmit = () => {
     if (typeof newOwner.name !== 'undefined') {
       dispatch(
-        upsertAddressBookEntry({
-          chainId,
+        upsertAddressBookEntries({
+          chainIds: [chainId],
           address: newOwner.address,
           name: newOwner.name,
         }),

@@ -7,8 +7,8 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import useChainId from '@/hooks/useChainId'
 import { useAppDispatch } from '@/store'
-import { upsertAddressBookEntry, upsertMultichainAddressBookEntry } from '@/store/addressBookSlice'
 import madProps from '@/utils/mad-props'
+import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 
 export type AddressEntry = {
   name: string
@@ -42,9 +42,9 @@ function EntryDialog({
 
   const submitCallback = handleSubmit((data: AddressEntry) => {
     if (chainIds) {
-      dispatch(upsertMultichainAddressBookEntry({ ...data, chainIds }))
+      dispatch(upsertAddressBookEntries({ ...data, chainIds }))
     } else {
-      dispatch(upsertAddressBookEntry({ ...data, chainId: currentChainId }))
+      dispatch(upsertAddressBookEntries({ ...data, chainIds: [currentChainId] }))
     }
     handleClose()
   })
@@ -59,7 +59,7 @@ function EntryDialog({
       open
       onClose={handleClose}
       dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}
-      hideChainIndicator={Boolean(chainIds)}
+      hideChainIndicator={chainIds && chainIds.length > 1}
     >
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>

@@ -1,6 +1,6 @@
 import type { AppThunk } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 
@@ -13,8 +13,8 @@ export const updateAddressBook = (
 ): AppThunk => {
   return (dispatch) => {
     dispatch(
-      upsertAddressBookEntry({
-        chainId,
+      upsertAddressBookEntries({
+        chainIds: [chainId],
         address,
         name,
       }),
@@ -23,7 +23,7 @@ export const updateAddressBook = (
     owners.forEach((owner) => {
       const entryName = owner.name || owner.ens
       if (entryName) {
-        dispatch(upsertAddressBookEntry({ chainId, address: owner.address, name: entryName }))
+        dispatch(upsertAddressBookEntries({ chainIds: [chainId], address: owner.address, name: entryName }))
       }
     })
 

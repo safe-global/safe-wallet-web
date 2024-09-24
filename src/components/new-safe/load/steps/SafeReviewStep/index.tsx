@@ -13,10 +13,10 @@ import { useAppDispatch } from '@/store'
 import { useRouter } from 'next/router'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
 import { LOAD_SAFE_EVENTS, OPEN_SAFE_LABELS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import ReviewRow from '@/components/new-safe/ReviewRow'
+import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 
 const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => {
   const chain = useCurrentChain()
@@ -44,8 +44,8 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
     )
 
     dispatch(
-      upsertAddressBookEntry({
-        chainId,
+      upsertAddressBookEntries({
+        chainIds: [chainId],
         address: safeAddress,
         name: safeName,
       }),
@@ -59,8 +59,8 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
       }
 
       dispatch(
-        upsertAddressBookEntry({
-          chainId,
+        upsertAddressBookEntries({
+          chainIds: [chainId],
           address,
           name: entryName,
         }),
