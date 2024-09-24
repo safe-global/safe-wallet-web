@@ -16,8 +16,8 @@ type SafeOverviewQueueItem = {
   callback: (result: { data: SafeOverview | undefined; error?: never } | { data?: never; error: string }) => void
 }
 
-const BATCH_SIZE = 5
-const FETCH_TIMEOUT = 200
+export const _BATCH_SIZE = 10
+export const _FETCH_TIMEOUT = 100
 
 const makeSafeId = (chainId: string, address: string) => `${chainId}:${address}` as `${number}:0x${string}`
 
@@ -45,8 +45,8 @@ class SafeOverviewFetcher {
 
   private async processQueuedItems() {
     // Dequeue the first BATCH_SIZE items
-    const nextBatch = this.requestQueue.slice(0, BATCH_SIZE)
-    this.requestQueue = this.requestQueue.slice(BATCH_SIZE)
+    const nextBatch = this.requestQueue.slice(0, _BATCH_SIZE)
+    this.requestQueue = this.requestQueue.slice(_BATCH_SIZE)
 
     console.log('[SafeOverviewFetcher] processing Queued Items', nextBatch, [...this.requestQueue])
 
@@ -78,7 +78,7 @@ class SafeOverviewFetcher {
 
     this.requestQueue.push(item)
 
-    if (this.requestQueue.length >= BATCH_SIZE) {
+    if (this.requestQueue.length >= _BATCH_SIZE) {
       this.processQueuedItems()
     }
 
@@ -87,7 +87,7 @@ class SafeOverviewFetcher {
       this.fetchTimeout = setTimeout(() => {
         console.log('Timeout triggered')
         this.processQueuedItems()
-      }, FETCH_TIMEOUT)
+      }, _FETCH_TIMEOUT)
     }
   }
 
