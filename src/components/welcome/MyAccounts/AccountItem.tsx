@@ -28,6 +28,7 @@ import { useGetHref } from './useGetHref'
 import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import { useGetSafeOverviewQuery } from '@/store/safeOverviews'
 import useWallet from '@/hooks/wallets/useWallet'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -64,13 +65,15 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
 
   const isReplayable = !safeItem.isWatchlist && (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
-  const { data: safeOverview } = useGetSafeOverviewQuery({
-    chainId: safeItem.chainId,
-    safeAddress: safeItem.address,
-    walletAddress,
-  })
-
-  console.log('Resulting overview', safeOverview)
+  const { data: safeOverview } = useGetSafeOverviewQuery(
+    undeployedSafe
+      ? skipToken
+      : {
+          chainId: safeItem.chainId,
+          safeAddress: safeItem.address,
+          walletAddress,
+        },
+  )
 
   return (
     <ListItemButton

@@ -293,11 +293,6 @@ const NetworkSelector = ({
     [availableChainIds, configs],
   )
 
-  const multiChainSafes = useMemo(
-    () => availableChainIds.map((chain) => ({ address: safeAddress, chainId: chain })),
-    [availableChainIds, safeAddress],
-  )
-
   const onChange = (event: SelectChangeEvent) => {
     event.preventDefault() // Prevent the link click
 

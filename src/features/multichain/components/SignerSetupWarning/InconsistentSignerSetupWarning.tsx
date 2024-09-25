@@ -44,7 +44,11 @@ export const InconsistentSignerSetupWarning = () => {
     () => allMultiChainSafes?.find((account) => sameAddress(safeAddress, account.safes[0].address))?.safes ?? [],
     [allMultiChainSafes, safeAddress],
   )
-  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ safes: multiChainGroupSafes, currency })
+  const deployedSafes = useMemo(
+    () => multiChainGroupSafes.filter((safe) => undeployedSafes[safe.chainId]?.[safe.address] === undefined),
+    [multiChainGroupSafes, undeployedSafes],
+  )
+  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ safes: deployedSafes, currency })
 
   const safeSetups = useMemo(
     () => getSafeSetups(multiChainGroupSafes, safeOverviews ?? [], undeployedSafes),

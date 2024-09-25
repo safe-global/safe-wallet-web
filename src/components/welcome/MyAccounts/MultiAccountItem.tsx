@@ -95,7 +95,11 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
 
   const currency = useAppSelector(selectCurrency)
   const { address: walletAddress } = useWallet() ?? {}
-  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ currency, walletAddress, safes })
+  const deployedSafes = useMemo(
+    () => safes.filter((safe) => undeployedSafes[safe.chainId]?.[safe.address] === undefined),
+    [safes, undeployedSafes],
+  )
+  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ currency, walletAddress, safes: deployedSafes })
 
   const safeSetups = useMemo(
     () => getSafeSetups(safes, safeOverviews ?? [], undeployedSafes),

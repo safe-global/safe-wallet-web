@@ -54,7 +54,7 @@ class SafeOverviewFetcher {
       this.fetchTimeout = null
 
       if (nextBatch.length === 0) {
-        // If for some reason the queue was already processed we are done
+        // Nothing to process
         return
       }
 
