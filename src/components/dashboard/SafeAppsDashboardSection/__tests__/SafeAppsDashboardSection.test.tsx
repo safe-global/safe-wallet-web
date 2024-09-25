@@ -6,7 +6,7 @@ import { LS_NAMESPACE } from '@/config/constants'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
-  getSafeApps: (chainId: string): Promise<SafeAppData[]> =>
+  getSafeApps: (): Promise<SafeAppData[]> =>
     Promise.resolve([
       {
         id: 13,

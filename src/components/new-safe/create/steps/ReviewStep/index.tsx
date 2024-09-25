@@ -180,7 +180,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
 
-  const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
+  const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas })
 
   const totalFee = getTotalFeeFormatted(maxFeePerGas, gasLimit, chain)
 
@@ -212,7 +212,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const safeAddress = await predictAddressBasedOnReplayData(replayedSafeWithNonce, createWeb3(wallet.provider))
 
       for (const network of data.networks) {
-        createSafe(network, replayedSafeWithNonce, safeAddress)
+        await createSafe(network, replayedSafeWithNonce, safeAddress)
       }
 
       gtmSetChainId(chain.chainId)

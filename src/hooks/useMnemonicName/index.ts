@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 import { useCurrentChain } from '@/hooks/useChains'
-import { animalsDict, adjectivesDict } from './dict'
+import { adjectivesDict } from './dict'
 
-const animals: string[] = animalsDict.trim().split(/\s+/)
 const adjectives: string[] = adjectivesDict.trim().split(/\s+/)
 
 export const capitalize = (word: string) => (word.length > 0 ? `${word.charAt(0).toUpperCase()}${word.slice(1)}` : word)

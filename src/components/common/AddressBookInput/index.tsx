@@ -62,7 +62,8 @@ const AddressBookInput = ({ name, canAdd, ...props }: AddressInputProps & { canA
       <Controller
         name={name}
         control={control}
-        render={({ field: { ref, ...field }, fieldState: { error } }) => (
+        // eslint-disable-next-line
+        render={({ field: { ref, ...field } }) => (
           <Autocomplete
             {...field}
             className={inputCss.input}

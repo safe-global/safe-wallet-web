@@ -10,7 +10,6 @@ import TxInfo from '@/components/transactions/TxInfo'
 import TxType from '@/components/transactions/TxType'
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import TxConfirmations from '@/components/transactions/TxConfirmations'
 
 type PendingTxType = {
@@ -20,7 +19,6 @@ type PendingTxType = {
 const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
   const router = useRouter()
   const { id } = transaction
-  const { safe } = useSafeInfo()
 
   const url = useMemo(
     () => ({

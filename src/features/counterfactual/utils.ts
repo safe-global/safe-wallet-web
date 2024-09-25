@@ -1,4 +1,3 @@
-import type { NewSafeFormData } from '@/components/new-safe/create'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
 import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
@@ -18,7 +17,7 @@ import { getSafeSDKWithSigner, getUncheckedSigner, tryOffChainTxSigning } from '
 import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
@@ -32,7 +31,6 @@ import {
   TokenType,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BrowserProvider, ContractTransactionResponse, Eip1193Provider, Provider } from 'ethers'
-import type { NextRouter } from 'next/router'
 import { getSafeL2SingletonDeployments, getSafeSingletonDeployments } from '@safe-global/safe-deployments'
 import { sameAddress } from '@/utils/addresses'
 
@@ -147,47 +145,6 @@ export const getCounterfactualBalance = async (
   }
 }
 
-export const createCounterfactualSafe = (
-  chain: ChainInfo,
-  safeAddress: string,
-  saltNonce: string,
-  data: NewSafeFormData,
-  dispatch: AppDispatch,
-  props: DeploySafeProps,
-  payMethod: PayMethod,
-  router?: NextRouter,
-) => {
-  const undeployedSafe = {
-    chainId: chain.chainId,
-    address: safeAddress,
-    type: payMethod,
-    safeProps: {
-      safeAccountConfig: props.safeAccountConfig,
-      safeDeploymentConfig: {
-        saltNonce,
-        safeVersion: data.safeVersion,
-      },
-    },
-  }
-
-  dispatch(addUndeployedSafe(undeployedSafe))
-  dispatch(upsertAddressBookEntry({ chainId: chain.chainId, address: safeAddress, name: data.name }))
-  dispatch(
-    addOrUpdateSafe({
-      safe: {
-        ...defaultSafeInfo,
-        address: { value: safeAddress, name: data.name },
-        threshold: data.threshold,
-        owners: data.owners.map((owner) => ({
-          value: owner.address,
-          name: owner.name || owner.ens,
-        })),
-        chainId: chain.chainId,
-      },
-    }),
-  )
-}
-
 export const replayCounterfactualSafeDeployment = (
   chainId: string,
   safeAddress: string,
@@ -217,7 +174,7 @@ export const replayCounterfactualSafeDeployment = (
   }
 
   dispatch(addUndeployedSafe(undeployedSafe))
-  dispatch(upsertAddressBookEntry({ chainId, address: safeAddress, name }))
+  dispatch(upsertAddressBookEntries({ chainIds: [chainId], address: safeAddress, name }))
   dispatch(
     addOrUpdateSafe({
       safe: {

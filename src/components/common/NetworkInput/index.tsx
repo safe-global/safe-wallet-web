@@ -46,7 +46,8 @@ const NetworkInput = ({
       name={name}
       rules={{ required }}
       control={control}
-      render={({ field: { ref, ...field }, fieldState: { error } }) => (
+      // eslint-disable-next-line
+      render={({ field: { ref, ...field } }) => (
         <FormControl fullWidth>
           <InputLabel id="network-input-label">Network</InputLabel>
           <Select

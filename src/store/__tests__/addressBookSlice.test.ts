@@ -2,10 +2,9 @@ import { faker } from '@faker-js/faker'
 import {
   addressBookSlice,
   setAddressBook,
-  upsertAddressBookEntry,
   removeAddressBookEntry,
   selectAddressBookByChain,
-  upsertMultichainAddressBookEntry,
+  upsertAddressBookEntries,
 } from '../addressBookSlice'
 
 const initialState = {
@@ -22,8 +21,8 @@ describe('addressBookSlice', () => {
   it('should insert an entry in the address book', () => {
     const state = addressBookSlice.reducer(
       initialState,
-      upsertAddressBookEntry({
-        chainId: '1',
+      upsertAddressBookEntries({
+        chainIds: ['1'],
         address: '0x2',
         name: 'Fred',
       }),
@@ -37,8 +36,8 @@ describe('addressBookSlice', () => {
   it('should ignore empty names in the address book', () => {
     const state = addressBookSlice.reducer(
       initialState,
-      upsertAddressBookEntry({
-        chainId: '1',
+      upsertAddressBookEntries({
+        chainIds: ['1'],
         address: '0x2',
         name: '',
       }),
@@ -49,8 +48,8 @@ describe('addressBookSlice', () => {
   it('should edit an entry in the address book', () => {
     const state = addressBookSlice.reducer(
       initialState,
-      upsertAddressBookEntry({
-        chainId: '1',
+      upsertAddressBookEntries({
+        chainIds: ['1'],
         address: '0x0',
         name: 'Alice in Wonderland',
       }),
@@ -65,7 +64,7 @@ describe('addressBookSlice', () => {
     const address = faker.finance.ethereumAddress()
     const state = addressBookSlice.reducer(
       initialState,
-      upsertMultichainAddressBookEntry({
+      upsertAddressBookEntries({
         chainIds: ['1', '10', '100', '137'],
         address,
         name: 'Max',
@@ -84,7 +83,7 @@ describe('addressBookSlice', () => {
     const address = faker.finance.ethereumAddress()
     const state = addressBookSlice.reducer(
       initialState,
-      upsertMultichainAddressBookEntry({
+      upsertAddressBookEntries({
         chainIds: ['1', '10', '100', '137'],
         address,
         name: '',
