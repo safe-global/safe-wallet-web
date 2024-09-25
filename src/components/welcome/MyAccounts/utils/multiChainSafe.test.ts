@@ -223,17 +223,6 @@ describe('multiChainSafe', () => {
 
   describe('getSafeSetups', () => {
     it('should return an empty array if no setup infos available', () => {
-      const result = getSafeSetups(
-        [
-          {
-            address: faker.finance.ethereumAddress(),
-            chainId: '1',
-            isWatchlist: false,
-          },
-        ],
-        [],
-        {},
-      )
       expect(
         getSafeSetups(
           [
@@ -250,17 +239,6 @@ describe('multiChainSafe', () => {
     })
 
     it('should return undefined if no setup infos available', () => {
-      const result = getSafeSetups(
-        [
-          {
-            address: faker.finance.ethereumAddress(),
-            chainId: '1',
-            isWatchlist: false,
-          },
-        ],
-        [],
-        {},
-      )
       expect(
         getSafeSetups(
           [

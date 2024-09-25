@@ -357,7 +357,6 @@ export const prependSafeToL2Migration = (
   const txData = safeTx.data.data
 
   let internalTxs: MetaTransactionData[]
-  let firstTx: MetaTransactionData
   if (isMultiSendCalldata(txData)) {
     // Check if the first tx is already a call to the migration contract
     internalTxs = decodeMultiSendData(txData)

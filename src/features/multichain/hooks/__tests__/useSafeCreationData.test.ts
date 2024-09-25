@@ -330,8 +330,8 @@ describe('useSafeCreationData', () => {
     })
 
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue({
-      getTransaction: (txHash: string) => Promise.resolve(null),
-    } as JsonRpcProvider)
+      getTransaction: () => Promise.resolve(null),
+    } as unknown as JsonRpcProvider)
 
     const safeAddress = faker.finance.ethereumAddress()
     const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
