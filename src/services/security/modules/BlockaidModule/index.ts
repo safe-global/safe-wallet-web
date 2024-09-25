@@ -90,7 +90,7 @@ export class BlockaidModule implements SecurityModule<BlockaidModuleRequest, Blo
       throw new Error('Security check CLIENT_ID not configured')
     }
 
-    const { chainId, safeAddress, data } = request
+    const { chainId, safeAddress } = request
 
     if (!API_CHAINS[chainId]) {
       throw new Error('Security checks are not available on the current chain.')

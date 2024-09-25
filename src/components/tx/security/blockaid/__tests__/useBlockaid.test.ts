@@ -13,7 +13,7 @@ import { safeInfoBuilder } from '@/tests/builders/safe'
 import { CLASSIFICATION_MAPPING, REASON_MAPPING } from '..'
 import { renderHook, waitFor } from '@/tests/test-utils'
 
-const setupFetchStub = (data: any) => (_url: string) => {
+const setupFetchStub = (data: any) => () => {
   return Promise.resolve({
     json: () => Promise.resolve(data),
     status: 200,

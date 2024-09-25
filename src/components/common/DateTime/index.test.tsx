@@ -70,13 +70,11 @@ describe('DateTime', () => {
 
     date.setDate(date.getDate() - days)
 
-    const { queryByText } = render(<DateTime value={date.getTime()} />, {
+    const { getByText } = render(<DateTime value={date.getTime()} />, {
       routerProps: { pathname: '/transactions/history' },
     })
 
-    const expected = formatDateTime(date.getTime())
-
-    expect(queryByText('3 days ago')).toBeInTheDocument()
+    expect(getByText('3 days ago')).toBeInTheDocument()
   })
 
   it('should render the full date and time after threshold on the filter', () => {

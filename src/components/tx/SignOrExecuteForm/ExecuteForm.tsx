@@ -116,7 +116,6 @@ export const ExecuteForm = ({
   const walletCanPay = useWalletCanPay({
     gasLimit,
     maxFeePerGas: advancedParams.maxFeePerGas,
-    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
   })
 
   const cannotPropose = !isOwner && !onlyExecute

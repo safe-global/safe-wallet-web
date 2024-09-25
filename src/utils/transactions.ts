@@ -5,7 +5,6 @@ import type {
   MultisigExecutionDetails,
   MultisigExecutionInfo,
   SafeAppData,
-  SafeInfo,
   Transaction,
   TransactionDetails,
   TransactionListPage,
@@ -103,9 +102,9 @@ export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction =>
 
 const getSignatures = (confirmations: Record<string, string>) => {
   return Object.entries(confirmations)
-    .filter(([_, signature]) => Boolean(signature))
+    .filter(([, signature]) => Boolean(signature))
     .sort(([signerA], [signerB]) => signerA.toLowerCase().localeCompare(signerB.toLowerCase()))
-    .reduce((prev, [_, signature]) => {
+    .reduce((prev, [, signature]) => {
       return prev + signature.slice(2)
     }, '0x')
 }
@@ -207,8 +206,6 @@ export const getTxOrigin = (app?: Partial<SafeAppData>): string | undefined => {
 
   return origin
 }
-
-export const hasEnoughSignatures = (tx: SafeTransaction, safe: SafeInfo) => tx.signatures.size >= safe.threshold
 
 const multiSendInterface = Multi_send__factory.createInterface()
 

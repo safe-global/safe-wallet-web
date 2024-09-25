@@ -167,7 +167,7 @@ describe('SimpleTxWatcher', () => {
       off: jest.fn(),
     } as unknown as JsonRpcProvider
     const txHash = `0x${faker.number.hex()}`
-    const result = watcher.watchTxHash(txHash, faker.finance.ethereumAddress(), 0, mockProvider).catch((error) => error)
+    watcher.watchTxHash(txHash, faker.finance.ethereumAddress(), 0, mockProvider).catch((error) => error)
 
     expect(mockProvider.on).toHaveBeenCalledTimes(1)
     expect(mockProvider.getTransactionReceipt).not.toHaveBeenCalled()

@@ -58,7 +58,7 @@ const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
     : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
 
   const totalFee = getTotalFeeFormatted(maxFeePerGas, gasLimit, chain)
-  const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas, maxPriorityFeePerGas })
+  const walletCanPay = useWalletCanPay({ gasLimit, maxFeePerGas })
 
   return { options, totalFee, walletCanPay }
 }
