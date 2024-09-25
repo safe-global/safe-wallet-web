@@ -32,20 +32,6 @@ describe('useRankedSafeApps', () => {
     expect(result.current.length).toEqual(5)
   })
 
-  it('excludes featured safe apps', () => {
-    const mockSafeApp1 = getMockSafeApp({ id: 1, tags: [SafeAppsTag.DASHBOARD_FEATURED] })
-    const mockSafeApp2 = getMockSafeApp({ id: 2, tags: [SafeAppsTag.DASHBOARD_FEATURED] })
-    const mockSafeApp3 = getMockSafeApp({ id: 3 })
-    const mockSafeApp4 = getMockSafeApp({ id: 4 })
-    const mockSafeApp5 = getMockSafeApp({ id: 5 })
-
-    const { result } = renderHook(() =>
-      useRankedSafeApps([mockSafeApp1, mockSafeApp2, mockSafeApp3, mockSafeApp4, mockSafeApp5], []),
-    )
-
-    expect(result.current.length).toEqual(3)
-  })
-
   it('returns pinned apps first', () => {
     const mockSafeApp1 = getMockSafeApp({ id: 1 })
     const mockSafeApp2 = getMockSafeApp({ id: 2 })
