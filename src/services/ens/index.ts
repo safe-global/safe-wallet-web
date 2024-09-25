@@ -14,11 +14,6 @@ export function isDomain(domain: string): boolean {
 }
 
 export const resolveName = async (rpcProvider: Provider, name: string): Promise<string | undefined> => {
-  let chainId = ''
-  try {
-    chainId = (await rpcProvider.getNetwork()).chainId.toString()
-  } catch {}
-
   try {
     return (await rpcProvider.resolveName(name)) || undefined
   } catch (e) {

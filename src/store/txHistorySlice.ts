@@ -37,7 +37,7 @@ export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareI
           continue
         }
 
-        const pendingTxByNonce = Object.entries(pendingTxs).find(([txId, pendingTx]) =>
+        const pendingTxByNonce = Object.entries(pendingTxs).find(([, pendingTx]) =>
           isMultisigExecutionInfo(result.transaction.executionInfo)
             ? pendingTx.nonce === result.transaction.executionInfo.nonce
             : false,

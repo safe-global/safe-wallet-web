@@ -86,7 +86,7 @@ describe('useDecodeTx', () => {
       value: '1000000',
     })
 
-    const { result } = renderHook(() => useDecodeTx(safeTx))
+    renderHook(() => useDecodeTx(safeTx))
 
     await waitFor(async () => {
       expect(getConfirmationView).toHaveBeenCalledTimes(1)

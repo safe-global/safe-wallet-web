@@ -26,7 +26,7 @@ import * as safeContracts from '@/services/contracts/safeContracts'
 
 import * as web3 from '@/hooks/wallets/web3'
 
-const setupFetchStub = (data: any) => (_url: string) => {
+const setupFetchStub = (data: any) => () => {
   return Promise.resolve({
     json: () => Promise.resolve(data),
     status: 200,
@@ -102,7 +102,7 @@ describe('txSender', () => {
     const mockBrowserProvider = new BrowserProvider(MockEip1193Provider)
 
     jest.spyOn(mockBrowserProvider, 'getSigner').mockImplementation(
-      async (address?: string | number | undefined) =>
+      async () =>
         Promise.resolve({
           getAddress: jest.fn(() => Promise.resolve('0x0000000000000000000000000000000000000123')),
           provider: MockEip1193Provider,
