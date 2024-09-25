@@ -1,6 +1,6 @@
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
-import { useGetDelegatesQuery } from '@/store/gateway'
+import { useGetDelegatesQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 
 const useDelegates = () => {

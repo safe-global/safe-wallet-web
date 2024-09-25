@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { useGetMultipleSafeOverviewsQuery, useGetSafeOverviewQuery } from '../safeOverviews'
+import { useGetMultipleSafeOverviewsQuery, useGetSafeOverviewQuery } from '../api/gateway'
 import { faker } from '@faker-js/faker'
 import { getSafeOverviews } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -246,6 +246,76 @@ describe('safeOverviews', () => {
         expect(result.current.data).toBeUndefined()
         expect(result.current.isLoading).toBeFalsy()
       })
+    })
+
+    it('Should split big batches into multiple requests', async () => {
+      // Requests overviews for 15 Safes at once
+      const request = {
+        currency: 'usd',
+        safes: [
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+        ],
+      }
+
+      const firstBatchOverviews = request.safes.slice(0, 10).map((safe) => ({
+        address: { value: safe.address },
+        chainId: '1',
+        awaitingConfirmation: null,
+        fiatTotal: faker.string.numeric({ length: { min: 1, max: 6 } }),
+        owners: [{ value: faker.finance.ethereumAddress() }],
+        threshold: 1,
+        queued: 0,
+      }))
+
+      const secondBatchOverviews = request.safes.slice(10).map((safe) => ({
+        address: { value: safe.address },
+        chainId: '1',
+        awaitingConfirmation: null,
+        fiatTotal: faker.string.numeric({ length: { min: 1, max: 6 } }),
+        owners: [{ value: faker.finance.ethereumAddress() }],
+        threshold: 1,
+        queued: 0,
+      }))
+
+      // Mock two fetch requests for the 2 batches
+      mockedGetSafeOverviews.mockResolvedValueOnce(firstBatchOverviews).mockResolvedValueOnce(secondBatchOverviews)
+
+      const { result } = renderHook(() => useGetMultipleSafeOverviewsQuery(request))
+
+      // Request should get queued and remain loading for the queue seconds
+      expect(result.current.isLoading).toBeTruthy()
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBeFalsy()
+        expect(result.current.error).toBeUndefined()
+        expect(result.current.data).toEqual([...firstBatchOverviews, ...secondBatchOverviews])
+      })
+
+      // Expect that the correct requests were sent
+      expect(mockedGetSafeOverviews).toHaveBeenCalledTimes(2)
+      expect(mockedGetSafeOverviews).toHaveBeenCalledWith(
+        request.safes.slice(0, 10).map((safe) => `1:${safe.address}`),
+        { currency: 'usd', exclude_spam: true, trusted: true },
+      )
+
+      expect(mockedGetSafeOverviews).toHaveBeenCalledWith(
+        request.safes.slice(10).map((safe) => `1:${safe.address}`),
+        { currency: 'usd', exclude_spam: true, trusted: true },
+      )
     })
   })
 })

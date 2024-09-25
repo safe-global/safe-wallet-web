@@ -13,7 +13,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import accordionCss from '@/styles/accordion.module.css'
 import HelpToolTip from './HelpTooltip'
-import { useGetTransactionDetailsQuery } from '@/store/gateway'
+import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { asError } from '@/services/exceptions/utils'
 

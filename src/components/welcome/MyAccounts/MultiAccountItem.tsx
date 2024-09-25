@@ -33,7 +33,7 @@ import { AddNetworkButton } from './AddNetworkButton'
 import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import MultiAccountContextMenu from '@/components/sidebar/SafeListContextMenu/MultiAccountContextMenu'
-import { useGetMultipleSafeOverviewsQuery } from '@/store/safeOverviews'
+import { useGetMultipleSafeOverviewsQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectCurrency } from '@/store/settingsSlice'
 

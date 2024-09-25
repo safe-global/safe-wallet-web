@@ -26,7 +26,7 @@ import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import { useGetHref } from './useGetHref'
 import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
-import { useGetSafeOverviewQuery } from '@/store/safeOverviews'
+import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
 import { skipToken } from '@reduxjs/toolkit/query'
 

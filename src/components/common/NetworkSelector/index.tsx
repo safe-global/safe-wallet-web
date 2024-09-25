@@ -39,7 +39,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
-import { useGetSafeOverviewQuery } from '@/store/safeOverviews'
+import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 
 const ChainIndicatorWithFiatBalance = ({
   isSelected,

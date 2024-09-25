@@ -1,12 +1,10 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { type BaseQueryFn, type FetchBaseQueryError, type EndpointBuilder } from '@reduxjs/toolkit/query/react'
 
 import { type SafeOverview, getSafeOverviews } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
-import type { RootState } from '.'
-import { selectCurrency } from './settingsSlice'
+import type { RootState } from '../..'
+import { selectCurrency } from '../../settingsSlice'
 import { type SafeItem } from '@/components/welcome/MyAccounts/useAllSafes'
-
-const noopBaseQuery = async () => ({ data: null })
 
 type SafeOverviewQueueItem = {
   safeAddress: string
@@ -114,50 +112,53 @@ type MultiOverviewQueryParams = {
   safes: SafeItem[]
 }
 
-export const safeOverviewApi = createApi({
-  reducerPath: 'safeOverviewApi',
-  baseQuery: noopBaseQuery,
-  endpoints: (builder) => ({
-    getSafeOverview: builder.query<
-      SafeOverview | undefined,
-      { safeAddress: string; walletAddress?: string; chainId: string }
-    >({
-      async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {
-        const state = getState()
-        const currency = selectCurrency(state as RootState)
+export const safeOverviewEndpoints = (
+  builder: EndpointBuilder<
+    BaseQueryFn<
+      unknown, // QueryArg type
+      unknown, // ResultType
+      FetchBaseQueryError, // ErrorType
+      {}, // DefinitionExtraOptions
+      {} // Meta
+    >,
+    never,
+    'gatewayApi'
+  >,
+) => ({
+  getSafeOverview: builder.query<
+    SafeOverview | undefined,
+    { safeAddress: string; walletAddress?: string; chainId: string }
+  >({
+    async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {
+      const state = getState()
+      const currency = selectCurrency(state as RootState)
 
-        try {
-          const safeOverview = await batchedFetcher.getOverview({ chainId, currency, walletAddress, safeAddress })
-          return { data: safeOverview }
-        } catch (error) {
-          return { error: { status: 'CUSTOM_ERROR', data: (error as Error).message } }
-        }
-      },
-    }),
-    getMultipleSafeOverviews: builder.query<SafeOverview[], MultiOverviewQueryParams>({
-      async queryFn(params) {
-        const { safes, walletAddress, currency } = params
+      try {
+        const safeOverview = await batchedFetcher.getOverview({ chainId, currency, walletAddress, safeAddress })
+        return { data: safeOverview }
+      } catch (error) {
+        return { error: { status: 'CUSTOM_ERROR', error: (error as Error).message } }
+      }
+    },
+  }),
+  getMultipleSafeOverviews: builder.query<SafeOverview[], MultiOverviewQueryParams>({
+    async queryFn(params) {
+      const { safes, walletAddress, currency } = params
 
-        try {
-          const promisedSafeOverviews = safes.map((safe) =>
-            batchedFetcher.getOverview({
-              chainId: safe.chainId,
-              safeAddress: safe.address,
-              currency,
-              walletAddress,
-            }),
-          )
-          const safeOverviews = await Promise.all(promisedSafeOverviews)
-          return { data: safeOverviews.filter(Boolean) as SafeOverview[] }
-        } catch (error) {
-          return { error: { status: 'CUSTOM_ERROR', data: (error as Error).message } }
-        }
-      },
-    }),
+      try {
+        const promisedSafeOverviews = safes.map((safe) =>
+          batchedFetcher.getOverview({
+            chainId: safe.chainId,
+            safeAddress: safe.address,
+            currency,
+            walletAddress,
+          }),
+        )
+        const safeOverviews = await Promise.all(promisedSafeOverviews)
+        return { data: safeOverviews.filter(Boolean) as SafeOverview[] }
+      } catch (error) {
+        return { error: { status: 'CUSTOM_ERROR', error: (error as Error).message } }
+      }
+    },
   }),
 })
-
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetSafeOverviewQuery, useLazyGetSafeOverviewQuery, useGetMultipleSafeOverviewsQuery } =
-  safeOverviewApi
