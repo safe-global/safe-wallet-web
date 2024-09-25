@@ -118,7 +118,7 @@ export const SafeSetupOverview = ({
         name="Threshold"
         value={
           <Typography>
-            {threshold} out of {owners.length} signer(s)
+            {threshold} out of {owners.length} {owners.length > 1 ? 'signers' : 'signer'}
           </Typography>
         }
       />
