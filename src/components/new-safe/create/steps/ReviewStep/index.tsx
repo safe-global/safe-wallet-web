@@ -439,7 +439,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             size="stretched"
             disabled={isDisabled}
           >
-            {isCreating ? <CircularProgress size={18} /> : 'Create'}
+            {isCreating ? <CircularProgress size={18} /> : 'Create Account'}
           </Button>
         </Box>
       </Box>
