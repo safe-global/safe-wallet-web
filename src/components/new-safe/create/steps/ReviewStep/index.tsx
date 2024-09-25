@@ -118,7 +118,7 @@ export const SafeSetupOverview = ({
         name="Threshold"
         value={
           <Typography>
-            {threshold} out of {owners.length} signer(s)
+            {threshold} out of {owners.length} {owners.length > 1 ? 'signers' : 'signer'}
           </Typography>
         }
       />
@@ -439,7 +439,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             size="stretched"
             disabled={isDisabled}
           >
-            {isCreating ? <CircularProgress size={18} /> : 'Create'}
+            {isCreating ? <CircularProgress size={18} /> : 'Create Account'}
           </Button>
         </Box>
       </Box>
