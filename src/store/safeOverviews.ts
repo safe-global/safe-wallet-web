@@ -16,8 +16,8 @@ type SafeOverviewQueueItem = {
   callback: (result: { data: SafeOverview | undefined; error?: never } | { data?: never; error: string }) => void
 }
 
-export const _BATCH_SIZE = 10
-export const _FETCH_TIMEOUT = 100
+const _BATCH_SIZE = 10
+const _FETCH_TIMEOUT = 50
 
 const makeSafeId = (chainId: string, address: string) => `${chainId}:${address}` as `${number}:0x${string}`
 
@@ -48,12 +48,15 @@ class SafeOverviewFetcher {
     const nextBatch = this.requestQueue.slice(0, _BATCH_SIZE)
     this.requestQueue = this.requestQueue.slice(_BATCH_SIZE)
 
-    console.log('[SafeOverviewFetcher] processing Queued Items', nextBatch, [...this.requestQueue])
-
     let overviews: SafeOverview[]
     try {
       this.fetchTimeout && clearTimeout(this.fetchTimeout)
       this.fetchTimeout = null
+
+      if (nextBatch.length === 0) {
+        // If for some reason the queue was already processed we are done
+        return
+      }
 
       const safeIds = nextBatch.map((request) => makeSafeId(request.chainId, request.safeAddress))
       const { walletAddress, currency } = nextBatch[0]
@@ -74,8 +77,6 @@ class SafeOverviewFetcher {
   }
 
   private enqueueRequest(item: SafeOverviewQueueItem) {
-    console.log('[SafeOverviewFetcher] Enqueueing Request', item)
-
     this.requestQueue.push(item)
 
     if (this.requestQueue.length >= _BATCH_SIZE) {
@@ -85,7 +86,6 @@ class SafeOverviewFetcher {
     // If no timer is running start a timer
     if (this.fetchTimeout === null) {
       this.fetchTimeout = setTimeout(() => {
-        console.log('Timeout triggered')
         this.processQueuedItems()
       }, _FETCH_TIMEOUT)
     }
@@ -96,7 +96,6 @@ class SafeOverviewFetcher {
       this.enqueueRequest({
         ...item,
         callback: (result) => {
-          console.log('[SafeOverviewFetcher] GetOverview Callback triggered', item, result)
           if ('data' in result) {
             resolve(result.data)
           }

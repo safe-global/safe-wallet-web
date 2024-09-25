@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@/tests/test-utils'
-import { _FETCH_TIMEOUT, useGetSafeOverviewQuery } from '../safeOverviews'
+import { useGetMultipleSafeOverviewsQuery, useGetSafeOverviewQuery } from '../safeOverviews'
 import { faker } from '@faker-js/faker'
 import { getSafeOverviews } from '@safe-global/safe-gateway-typescript-sdk'
 
@@ -8,28 +8,20 @@ jest.mock('@safe-global/safe-gateway-typescript-sdk')
 describe('safeOverviews', () => {
   const mockedGetSafeOverviews = getSafeOverviews as jest.MockedFunction<typeof getSafeOverviews>
 
-  beforeAll(() => {
-    jest.useFakeTimers()
-  })
-
   beforeEach(() => {
     jest.resetAllMocks()
   })
 
-  afterAll(() => {
-    jest.useRealTimers()
-  })
   describe('useGetSafeOverviewQuery', () => {
     it('should return an error if fetching fails', async () => {
       const request = { chainId: '1', safeAddress: faker.finance.ethereumAddress() }
-      mockedGetSafeOverviews.mockRejectedValue('Service unavailable')
+      mockedGetSafeOverviews.mockRejectedValueOnce('Service unavailable')
 
       const { result } = renderHook(() => useGetSafeOverviewQuery(request))
 
       // Request should get queued and remain loading for the queue seconds
       expect(result.current.isLoading).toBeTruthy()
 
-      jest.advanceTimersByTime(_FETCH_TIMEOUT)
       await waitFor(() => {
         expect(result.current.isLoading).toBeFalsy()
         expect(result.current.error).toBeDefined()
@@ -55,8 +47,6 @@ describe('safeOverviews', () => {
 
       // Request should get queued and remain loading for the queue seconds
       expect(result.current.isLoading).toBeTruthy()
-
-      jest.advanceTimersByTime(_FETCH_TIMEOUT)
 
       await Promise.resolve()
 
@@ -165,6 +155,96 @@ describe('safeOverviews', () => {
         expect(result7.current.data).toEqual(mockOverviews[7])
         expect(result8.current.data).toEqual(mockOverviews[8])
         expect(result9.current.data).toEqual(mockOverviews[9])
+      })
+    })
+  })
+
+  describe('useGetMultipleSafeOverviewsQuery', () => {
+    it('Should return empty list for empty list of Safes', async () => {
+      const request = { currency: 'usd', safes: [] }
+
+      const { result } = renderHook(() => useGetMultipleSafeOverviewsQuery(request))
+
+      // Request should get queued and remain loading for the queue seconds
+      expect(result.current.isLoading).toBeTruthy()
+
+      await Promise.resolve()
+      await Promise.resolve()
+
+      await Promise.resolve()
+      await Promise.resolve()
+
+      await waitFor(() => {
+        expect(result.current.error).toBeUndefined()
+        expect(result.current.data).toEqual([])
+        expect(result.current.isLoading).toBeFalsy()
+      })
+    })
+
+    it('Should return a response for non-empty list', async () => {
+      const request = {
+        currency: 'usd',
+        safes: [
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '10', isWatchlist: false },
+        ],
+      }
+
+      const mockOverview1 = {
+        address: { value: request.safes[0].address },
+        chainId: '1',
+        awaitingConfirmation: null,
+        fiatTotal: '100',
+        owners: [{ value: faker.finance.ethereumAddress() }],
+        threshold: 1,
+        queued: 0,
+      }
+
+      const mockOverview2 = {
+        address: { value: request.safes[1].address },
+        chainId: '10',
+        awaitingConfirmation: null,
+        fiatTotal: '200',
+        owners: [{ value: faker.finance.ethereumAddress() }],
+        threshold: 1,
+        queued: 4,
+      }
+
+      mockedGetSafeOverviews.mockResolvedValueOnce([mockOverview1, mockOverview2])
+
+      const { result } = renderHook(() => useGetMultipleSafeOverviewsQuery(request))
+
+      // Request should get queued and remain loading for the queue seconds
+      expect(result.current.isLoading).toBeTruthy()
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBeFalsy()
+        expect(result.current.error).toBeUndefined()
+        expect(result.current.data).toEqual([mockOverview1, mockOverview2])
+      })
+    })
+
+    it('Should return an error if fetching fails', async () => {
+      const request = {
+        currency: 'usd',
+        safes: [
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '10', isWatchlist: false },
+        ],
+      }
+
+      mockedGetSafeOverviews.mockRejectedValueOnce('Not available')
+
+      const { result } = renderHook(() => useGetMultipleSafeOverviewsQuery(request))
+
+      // Request should get queued and remain loading for the queue seconds
+      expect(result.current.isLoading).toBeTruthy()
+
+      await waitFor(async () => {
+        await Promise.resolve()
+        expect(result.current.error).toBeDefined()
+        expect(result.current.data).toBeUndefined()
+        expect(result.current.isLoading).toBeFalsy()
       })
     })
   })
