@@ -2,6 +2,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { showNotification } from '@/store/notificationsSlice'
 import { Box, Button, CircularProgress, DialogActions, DialogContent, Stack, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSafeCreationData } from '../../hooks/useSafeCreationData'
@@ -106,6 +107,16 @@ const ReplaySafeDialog = ({
           safe: `${selectedChain.shortName}:${safeAddress}`,
         },
       })
+
+      trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: selectedChain.chainId })
+
+      dispatch(
+        showNotification({
+          variant: 'success',
+          groupKey: 'replay-safe-success',
+          message: `Successfully added your account on ${selectedChain.chainName}`,
+        }),
+      )
     } catch (err) {
       console.error(err)
     } finally {

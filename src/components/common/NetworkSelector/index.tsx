@@ -5,14 +5,12 @@ import { useAppSelector } from '@/store'
 import { selectChains } from '@/store/chainsSlice'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
-import type { SelectChangeEvent } from '@mui/material'
 import {
   Box,
   ButtonBase,
   CircularProgress,
   Collapse,
   Divider,
-  ListSubheader,
   MenuItem,
   Select,
   Skeleton,
@@ -27,7 +25,7 @@ import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
 import { type ReactElement, useCallback, useMemo, useState } from 'react'
-import { trackEvent, OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 
 import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -125,10 +123,12 @@ const UndeployedNetworks = ({
   deployedChains,
   chains,
   safeAddress,
+  closeNetworkSelect,
 }: {
   deployedChains: string[]
   chains: ChainInfo[]
   safeAddress: string
+  closeNetworkSelect: () => void
 }) => {
   const [open, setOpen] = useState(false)
   const [replayOnChain, setReplayOnChain] = useState<ChainInfo>()
@@ -185,21 +185,24 @@ const UndeployedNetworks = ({
     )
   }
 
+  const onFormClose = () => {
+    setReplayOnChain(undefined)
+    closeNetworkSelect()
+  }
+
   return (
     <>
-      <ListSubheader className={css.undeployedNetworksHeader}>
-        <ButtonBase className={css.listSubHeader} onClick={() => setOpen((prev) => !prev)}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <div>Show all networks</div>
-            <ExpandMoreIcon
-              fontSize="small"
-              sx={{
-                transform: open ? 'rotate(180deg)' : undefined,
-              }}
-            />
-          </Stack>
-        </ButtonBase>
-      </ListSubheader>
+      <ButtonBase className={css.listSubHeader} onClick={() => setOpen((prev) => !prev)} tabIndex={-1}>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <div>Show all networks</div>
+          <ExpandMoreIcon
+            fontSize="small"
+            sx={{
+              transform: open ? 'rotate(180deg)' : undefined,
+            }}
+          />
+        </Stack>
+      </ButtonBase>
       <Collapse in={open} timeout="auto" unmountOnExit>
         {!safeCreationData ? (
           <Box p="0px 16px">
@@ -223,7 +226,7 @@ const UndeployedNetworks = ({
           chain={replayOnChain}
           safeAddress={safeAddress}
           open
-          onClose={() => setReplayOnChain(undefined)}
+          onClose={onFormClose}
           currentName={safeName ?? ''}
           safeCreationResult={safeCreationResult}
         />
@@ -239,6 +242,7 @@ const NetworkSelector = ({
   onChainSelect?: () => void
   offerSafeCreation?: boolean
 }): ReactElement => {
+  const [open, setOpen] = useState<boolean>(false)
   const isDarkMode = useDarkMode()
   const theme = useTheme()
   const { configs } = useChains()
@@ -278,19 +282,6 @@ const NetworkSelector = ({
   )
   const [safeOverviews] = useSafeOverviews(multiChainSafes)
 
-  const onChange = (event: SelectChangeEvent) => {
-    event.preventDefault() // Prevent the link click
-
-    const newChainId = event.target.value
-    const shortName = configs.find((item) => item.chainId === newChainId)?.shortName
-
-    if (shortName) {
-      trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: newChainId })
-      const networkLink = getNetworkLink(router, safeAddress, shortName)
-      router.push(networkLink)
-    }
-  }
-
   const renderMenuItem = useCallback(
     (chainId: string, isSelected: boolean) => {
       const chain = chains.data.find((chain) => chain.chainId === chainId)
@@ -299,7 +290,12 @@ const NetworkSelector = ({
       if (!chain) return null
 
       return (
-        <MenuItem key={chainId} value={chainId} sx={{ '&:hover': { backgroundColor: 'inherit' } }}>
+        <MenuItem
+          key={chainId}
+          value={chainId}
+          sx={{ '&:hover': { backgroundColor: isSelected ? 'transparent' : 'inherit' } }}
+          disableRipple={isSelected}
+        >
           <Link
             href={getNetworkLink(router, safeAddress, chain.shortName)}
             onClick={onChainSelect}
@@ -318,10 +314,20 @@ const NetworkSelector = ({
     [chains.data, onChainSelect, router, safeAddress, safeOverviews],
   )
 
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
   return configs.length ? (
     <Select
+      open={open}
+      onClose={handleClose}
+      onOpen={handleOpen}
       value={chainId}
-      onChange={onChange}
       size="small"
       className={css.select}
       variant="standard"
@@ -356,7 +362,12 @@ const NetworkSelector = ({
       {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
 
       {offerSafeCreation && isSafeOpened && (
-        <UndeployedNetworks chains={configs} deployedChains={availableChainIds} safeAddress={safeAddress} />
+        <UndeployedNetworks
+          chains={configs}
+          deployedChains={availableChainIds}
+          safeAddress={safeAddress}
+          closeNetworkSelect={handleClose}
+        />
       )}
     </Select>
   ) : (
