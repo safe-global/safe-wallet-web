@@ -32,7 +32,7 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
             },
             {
               value: order.annualNrr.toFixed(3) + '%',
-              label: 'Earn (after fees)',
+              label: 'Rewards rate (after fees)',
             },
           ]}
         />
