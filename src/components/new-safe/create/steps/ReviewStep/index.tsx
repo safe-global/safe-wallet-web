@@ -212,7 +212,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const safeAddress = await predictAddressBasedOnReplayData(replayedSafeWithNonce, createWeb3(wallet.provider))
 
       for (const network of data.networks) {
-        createSafe(network, replayedSafeWithNonce, safeAddress)
+        await createSafe(network, replayedSafeWithNonce, safeAddress)
       }
 
       gtmSetChainId(chain.chainId)
