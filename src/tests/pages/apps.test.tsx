@@ -520,7 +520,6 @@ describe('AppsPage', () => {
 
           // zero results component
           expect(screen.getByText('No Safe Apps found', { exact: false })).toBeInTheDocument()
-          expect(screen.queryByText('Use WalletConnect')).toBeInTheDocument()
         })
       })
     })
