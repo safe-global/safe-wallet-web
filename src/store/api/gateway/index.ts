@@ -5,8 +5,9 @@ import type { BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import type { DelegateResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
+import { safeOverviewEndpoints } from './safeOverviews'
 
-const noopBaseQuery: BaseQueryFn<
+export const noopBaseQuery: BaseQueryFn<
   unknown, // QueryArg type
   unknown, // ResultType
   FetchBaseQueryError, // ErrorType
@@ -48,6 +49,7 @@ export const gatewayApi = createApi({
         }
       },
     }),
+    ...safeOverviewEndpoints(builder),
   }),
 })
 
@@ -56,4 +58,6 @@ export const {
   useGetMultipleTransactionDetailsQuery,
   useLazyGetTransactionDetailsQuery,
   useGetDelegatesQuery,
+  useGetSafeOverviewQuery,
+  useGetMultipleSafeOverviewsQuery,
 } = gatewayApi

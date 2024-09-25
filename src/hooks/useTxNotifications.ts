@@ -14,7 +14,7 @@ import useSafeAddress from './useSafeAddress'
 import { getExplorerLink } from '@/utils/gateway'
 import { isWalletRejection } from '@/utils/wallets'
 import { getTxLink } from '@/utils/tx-link'
-import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import { useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 
 const TxNotifications = {
   [TxEvent.SIGN_FAILED]: 'Failed to sign. Please try again.',

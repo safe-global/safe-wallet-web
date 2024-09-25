@@ -3,8 +3,6 @@ import { Paper, Typography } from '@mui/material'
 import AccountItem from './AccountItem'
 import { type SafeItem } from './useAllSafes'
 import css from './styles.module.css'
-import useSafeOverviews from './useSafeOverviews'
-import { sameAddress } from '@/utils/addresses'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
 import { type MultiChainSafeItem } from './useAllSafesGrouped'
 import MultiAccountItem from './MultiAccountItem'
@@ -26,35 +24,13 @@ type SafeListPageProps = {
 const DEFAULT_PAGE_SIZE = 10
 
 export const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
-  const flattenedSafes = useMemo(
-    () => safes.flatMap((safe) => (isMultiChainSafeItem(safe) ? safe.safes : safe)),
-    [safes],
-  )
-  const [overviews] = useSafeOverviews(flattenedSafes)
-
-  const findOverview = (item: SafeItem) => {
-    return overviews?.find(
-      (overview) => item.chainId === overview.chainId && sameAddress(overview.address.value, item.address),
-    )
-  }
-
   return (
     <>
       {safes.map((item) =>
         isMultiChainSafeItem(item) ? (
-          <MultiAccountItem
-            onLinkClick={onLinkClick}
-            key={item.address}
-            multiSafeAccountItem={item}
-            safeOverviews={overviews?.filter((overview) => sameAddress(overview.address.value, item.address))}
-          />
+          <MultiAccountItem onLinkClick={onLinkClick} key={item.address} multiSafeAccountItem={item} />
         ) : (
-          <AccountItem
-            onLinkClick={onLinkClick}
-            safeItem={item}
-            safeOverview={findOverview(item)}
-            key={item.chainId + item.address}
-          />
+          <AccountItem onLinkClick={onLinkClick} safeItem={item} key={item.chainId + item.address} />
         ),
       )}
     </>
