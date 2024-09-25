@@ -12,22 +12,22 @@ export const RECOVERY_EVENTS = {
   SETUP_RECOVERY: {
     action: 'Start recovery setup',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   SELECT_RECOVERY_METHOD: {
     action: 'Select recovery method',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   CONTINUE_WITH_RECOVERY: {
     action: 'Continue with recovery method',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   CONTINUE_TO_WAITLIST: {
     action: 'Continue to waitlist',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
+  },
+  SYGNUM_APP: {
+    action: 'Go to Sygnum app',
+    category: RECOVERY_CATEGORY,
   },
   RECOVERY_SETTINGS: {
     action: 'Recovery settings',
@@ -37,42 +37,34 @@ export const RECOVERY_EVENTS = {
   EDIT_RECOVERY: {
     action: 'Start edit recovery',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   REMOVE_RECOVERY: {
     action: 'Start recovery removal',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   START_RECOVERY: {
     action: 'Start recovery proposal',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   CANCEL_RECOVERY: {
     action: 'Start recovery cancellation',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   SHOW_ADVANCED: {
     action: 'Show advanced recovery settings',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   DISMISS_PROPOSAL_CARD: {
     action: 'Dismiss recovery proposal card',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   LEARN_MORE: {
     action: 'Recovery info click',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   GO_BACK: {
     action: 'Recovery cancellation back',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   GIVE_US_FEEDBACK: {
     action: 'Recovery feedback click',
@@ -82,7 +74,6 @@ export const RECOVERY_EVENTS = {
   CHECK_RECOVERY_PROPOSAL: {
     action: 'Check recovery proposal',
     category: RECOVERY_CATEGORY,
-    event: EventType.CLICK,
   },
   SUBMIT_RECOVERY_CREATE: {
     action: 'Submit recovery setup',

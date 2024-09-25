@@ -1,18 +1,9 @@
+import ModalDialog from '@/components/common/ModalDialog'
 import NameInput from '@/components/common/NameInput'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  Stack,
-  Typography,
-} from '@mui/material'
+import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { Box, Button, CircularProgress, DialogActions, DialogContent, Divider, Stack, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSafeCreationData } from '../../hooks/useSafeCreationData'
 import { replayCounterfactualSafeDeployment } from '@/features/counterfactual/utils'
@@ -60,7 +51,7 @@ const ReplaySafeDialog = ({
     mode: 'all',
     defaultValues: {
       name: currentName,
-      chainId: chain?.chainId,
+      chainId: chain?.chainId || '',
     },
   })
   const { handleSubmit, formState } = formMethods
@@ -69,54 +60,72 @@ const ReplaySafeDialog = ({
   const customRpc = useAppSelector(selectRpc)
   const dispatch = useAppDispatch()
   const [creationError, setCreationError] = useState<Error>()
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   // Load some data
   const [safeCreationData, safeCreationDataError, safeCreationDataLoading] = safeCreationResult
 
-  const onFormSubmit = handleSubmit(async (data) => {
-    const selectedChain = chain ?? replayableChains?.find((config) => config.chainId === data.chainId)
-    if (!safeCreationData || !selectedChain) {
-      return
-    }
-
-    // We need to create a readOnly provider of the deployed chain
-    const customRpcUrl = selectedChain ? customRpc?.[selectedChain.chainId] : undefined
-    const provider = createWeb3ReadOnly(selectedChain, customRpcUrl)
-    if (!provider) {
-      return
-    }
-
-    // 1. Double check that the creation Data will lead to the correct address
-    const predictedAddress = await predictAddressBasedOnReplayData(safeCreationData, provider)
-    if (!sameAddress(safeAddress, predictedAddress)) {
-      setCreationError(new Error('The replayed Safe leads to an unexpected address'))
-      return
-    }
-
-    // 2. Replay Safe creation and add it to the counterfactual Safes
-    replayCounterfactualSafeDeployment(selectedChain.chainId, safeAddress, safeCreationData, data.name, dispatch)
-
-    router.push({
-      query: {
-        safe: `${selectedChain.shortName}:${safeAddress}`,
-      },
-    })
-
-    // Close modal
+  const onCancel = () => {
+    trackEvent({ ...OVERVIEW_EVENTS.CANCEL_ADD_NEW_NETWORK })
     onClose()
+  }
+
+  const onFormSubmit = handleSubmit(async (data) => {
+    setIsSubmitting(true)
+
+    try {
+      const selectedChain = chain ?? replayableChains?.find((config) => config.chainId === data.chainId)
+      if (!safeCreationData || !selectedChain) {
+        return
+      }
+
+      // We need to create a readOnly provider of the deployed chain
+      const customRpcUrl = selectedChain ? customRpc?.[selectedChain.chainId] : undefined
+      const provider = createWeb3ReadOnly(selectedChain, customRpcUrl)
+      if (!provider) {
+        return
+      }
+
+      // 1. Double check that the creation Data will lead to the correct address
+      const predictedAddress = await predictAddressBasedOnReplayData(safeCreationData, provider)
+      if (!sameAddress(safeAddress, predictedAddress)) {
+        setCreationError(new Error('The replayed Safe leads to an unexpected address'))
+        return
+      }
+
+      trackEvent({ ...OVERVIEW_EVENTS.SUBMIT_ADD_NEW_NETWORK, label: selectedChain.chainName })
+
+      // 2. Replay Safe creation and add it to the counterfactual Safes
+      replayCounterfactualSafeDeployment(selectedChain.chainId, safeAddress, safeCreationData, data.name, dispatch)
+
+      router.push({
+        query: {
+          safe: `${selectedChain.shortName}:${safeAddress}`,
+        },
+      })
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsSubmitting(false)
+
+      // Close modal
+      onClose()
+    }
   })
 
   const submitDisabled =
-    isUnsupportedSafeCreationVersion || !!safeCreationDataError || safeCreationDataLoading || !formState.isValid
+    isUnsupportedSafeCreationVersion ||
+    !!safeCreationDataError ||
+    safeCreationDataLoading ||
+    !formState.isValid ||
+    isSubmitting
 
   const noChainsAvailable =
     !chain && safeCreationData && replayableChains && replayableChains.filter((chain) => chain.available).length === 0
 
   return (
-    <Dialog open={open} onClose={onClose} onClick={(e) => e.stopPropagation()}>
+    <ModalDialog open={open} onClose={onClose} dialogTitle="Add another network" hideChainIndicator>
       <form onSubmit={onFormSubmit} id="recreate-safe">
-        <DialogTitle fontWeight={700}>Add another network</DialogTitle>
-        <Divider />
         <DialogContent>
           <FormProvider {...formMethods}>
             <Stack spacing={2}>
@@ -174,7 +183,7 @@ const ReplaySafeDialog = ({
             </Box>
           ) : (
             <>
-              <Button variant="outlined" onClick={onClose}>
+              <Button variant="outlined" onClick={onCancel}>
                 Cancel
               </Button>
               <Button type="submit" variant="contained" disabled={submitDisabled}>
@@ -184,7 +193,7 @@ const ReplaySafeDialog = ({
           )}
         </DialogActions>
       </form>
-    </Dialog>
+    </ModalDialog>
   )
 }
 

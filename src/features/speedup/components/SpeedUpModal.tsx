@@ -101,6 +101,7 @@ export const SpeedUpModal = ({
           chainInfo.chainId,
           wallet.address,
           safeAddress,
+          safeTx.data.nonce,
         )
         const { data: details } = await trigger({ chainId: chainInfo.chainId, txId })
         const txType = getTransactionTrackingType(details)
@@ -114,6 +115,7 @@ export const SpeedUpModal = ({
           wallet.provider,
           wallet.address,
           safeAddress,
+          pendingTx.nonce,
         )
         // Currently all custom txs are batch executes
         trackEvent({ ...TX_EVENTS.SPEED_UP, label: 'batch' })

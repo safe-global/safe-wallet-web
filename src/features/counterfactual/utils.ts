@@ -435,10 +435,16 @@ export const extractCounterfactualSafeSetup = (
   }
 }
 
-export const activateReplayedSafe = async (chain: ChainInfo, props: ReplayedSafeProps, provider: BrowserProvider) => {
-  const data = await encodeSafeCreationTx(props, chain)
+export const activateReplayedSafe = async (
+  chain: ChainInfo,
+  props: ReplayedSafeProps,
+  provider: BrowserProvider,
+  options: DeploySafeProps['options'],
+) => {
+  const data = encodeSafeCreationTx(props, chain)
 
   return (await provider.getSigner()).sendTransaction({
+    ...options,
     to: props.factoryAddress,
     data,
     value: '0',

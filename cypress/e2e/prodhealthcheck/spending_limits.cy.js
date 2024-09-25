@@ -15,7 +15,7 @@ const tokenAmount = 0.1
 const newTokenAmount = 0.001
 const spendingLimitBalance = '(0.15 ETH)'
 
-describe('Spending limits tests', () => {
+describe('[PROD] Spending limits tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })

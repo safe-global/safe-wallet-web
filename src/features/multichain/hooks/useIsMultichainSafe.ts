@@ -8,11 +8,7 @@ export const useIsMultichainSafe = () => {
   const { allMultiChainSafes } = useAllSafesGrouped()
 
   return useMemo(
-    () =>
-      allMultiChainSafes?.some(
-        (account) => sameAddress(safeAddress, account.safes[0].address),
-        [allMultiChainSafes, safeAddress],
-      ),
+    () => allMultiChainSafes?.some((account) => sameAddress(safeAddress, account.safes[0].address)),
     [allMultiChainSafes, safeAddress],
   )
 }

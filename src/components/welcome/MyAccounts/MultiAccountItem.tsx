@@ -28,7 +28,7 @@ import MultiChainIcon from '@/public/images/sidebar/multichain-account.svg'
 import { shortenAddress } from '@/utils/formatters'
 import { type SafeItem } from './useAllSafes'
 import SubAccountItem from './SubAccountItem'
-import { getSharedSetup } from './utils/multiChainSafe'
+import { getSafeSetups, getSharedSetup } from './utils/multiChainSafe'
 import { AddNetworkButton } from './AddNetworkButton'
 import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 import ChainIndicator from '@/components/common/ChainIndicator'
@@ -97,10 +97,11 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
   const { address: walletAddress } = useWallet() ?? {}
   const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ currency, walletAddress, safes })
 
-  const sharedSetup = useMemo(
-    () => getSharedSetup(safes, safeOverviews ?? [], undeployedSafes),
+  const safeSetups = useMemo(
+    () => getSafeSetups(safes, safeOverviews ?? [], undeployedSafes),
     [safeOverviews, safes, undeployedSafes],
   )
+  const sharedSetup = getSharedSetup(safeSetups)
 
   const totalFiatValue = useMemo(
     () => safeOverviews?.reduce((prev, current) => prev + Number(current.fiatTotal), 0),

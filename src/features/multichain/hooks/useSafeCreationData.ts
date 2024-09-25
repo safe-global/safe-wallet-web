@@ -10,6 +10,8 @@ import { determineMasterCopyVersion, isPredictedSafeProps } from '@/features/cou
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
+import semverSatisfies from 'semver/functions/satisfies'
+import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 
 export const SAFE_CREATION_DATA_ERRORS = {
   TX_NOT_FOUND: 'The Safe creation transaction could not be found. Please retry later.',
@@ -17,6 +19,9 @@ export const SAFE_CREATION_DATA_ERRORS = {
   UNSUPPORTED_SAFE_CREATION: 'The method this Safe was created with is not supported.',
   NO_PROVIDER: 'The RPC provider for the origin network is not available.',
   LEGACY_COUNTERFATUAL: 'This undeployed Safe cannot be replayed. Please activate the Safe first.',
+  PAYMENT_SAFE: 'The Safe creation used reimbursement. Adding networks to such Safes is not supported.',
+  UNSUPPORTED_IMPLEMENTATION:
+    'The Safe was created using an unsupported or outdated implementation. Adding networks to this Safe is not possible.',
 }
 
 export const decodeSetupData = (setupData: string): ReplayedSafeProps['safeAccountConfig'] => {
@@ -47,6 +52,12 @@ const getUndeployedSafeCreationData = async (undeployedSafe: UndeployedSafe): Pr
 const proxyFactoryInterface = Safe_proxy_factory__factory.createInterface()
 const createProxySelector = proxyFactoryInterface.getFunction('createProxyWithNonce').selector
 
+/**
+ * Loads the creation data from the CGW or infers it from an undeployed Safe.
+ *
+ * Throws errors for the reasons in {@link SAFE_CREATION_DATA_ERRORS}.
+ * Checking the cheap cases not requiring RPC calls first.
+ */
 const getCreationDataForChain = async (
   chain: ChainInfo,
   undeployedSafe: UndeployedSafe,
@@ -67,6 +78,19 @@ const getCreationDataForChain = async (
 
   if (!creation || !creation.masterCopy || !creation.setupData) {
     throw new Error(SAFE_CREATION_DATA_ERRORS.NO_CREATION_DATA)
+  }
+
+  // Safes that were deployed with an unknown mastercopy or < 1.3.0 are not supported.
+  const safeVersion = determineMasterCopyVersion(creation.masterCopy, chain.chainId)
+  if (!safeVersion || semverSatisfies(safeVersion, '<1.3.0')) {
+    throw new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_IMPLEMENTATION)
+  }
+
+  const safeAccountConfig = decodeSetupData(creation.setupData)
+
+  // Safes that used the reimbursement logic are not supported
+  if ((safeAccountConfig.payment && safeAccountConfig.payment > 0) || safeAccountConfig.paymentToken !== ZERO_ADDRESS) {
+    throw new Error(SAFE_CREATION_DATA_ERRORS.PAYMENT_SAFE)
   }
 
   // We need to create a readOnly provider of the deployed chain
@@ -101,12 +125,6 @@ const getCreationDataForChain = async (
   if (!txMatches) {
     // We found the wrong tx. This tx seems to deploy multiple Safes at once. This is not supported yet.
     throw new Error(SAFE_CREATION_DATA_ERRORS.UNSUPPORTED_SAFE_CREATION)
-  }
-  const safeAccountConfig = decodeSetupData(creation.setupData)
-  const safeVersion = determineMasterCopyVersion(creation.masterCopy, chain.chainId)
-
-  if (!safeVersion) {
-    throw new Error('Could not determine Safe version of used master copy')
   }
 
   return {
