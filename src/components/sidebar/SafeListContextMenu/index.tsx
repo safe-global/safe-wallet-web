@@ -34,11 +34,13 @@ const SafeListContextMenu = ({
   address,
   chainId,
   addNetwork,
+  rename,
 }: {
   name: string
   address: string
   chainId: string
   addNetwork: boolean
+  rename: boolean
 }): ReactElement => {
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
@@ -78,12 +80,14 @@ const SafeListContextMenu = ({
         <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
-        <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
-          <ListItemIcon>
-            <SvgIcon component={EditIcon} inheritViewBox fontSize="small" color="success" />
-          </ListItemIcon>
-          <ListItemText data-testid="rename-btn">{hasName ? 'Rename' : 'Give name'}</ListItemText>
-        </MenuItem>
+        {rename && (
+          <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
+            <ListItemIcon>
+              <SvgIcon component={EditIcon} inheritViewBox fontSize="small" color="success" />
+            </ListItemIcon>
+            <ListItemText data-testid="rename-btn">{hasName ? 'Rename' : 'Give name'}</ListItemText>
+          </MenuItem>
+        )}
 
         {isAdded && (
           <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.REMOVE_FROM_WATCHLIST)}>

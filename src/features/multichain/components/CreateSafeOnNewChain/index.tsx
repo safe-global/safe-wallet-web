@@ -1,5 +1,4 @@
 import ModalDialog from '@/components/common/ModalDialog'
-import NameInput from '@/components/common/NameInput'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
@@ -22,7 +21,6 @@ import { useMemo, useState } from 'react'
 import { useCompatibleNetworks } from '../../hooks/useCompatibleNetworks'
 
 type CreateSafeOnNewChainForm = {
-  name: string
   chainId: string
 }
 
@@ -50,7 +48,6 @@ const ReplaySafeDialog = ({
   const formMethods = useForm<CreateSafeOnNewChainForm>({
     mode: 'all',
     defaultValues: {
-      name: currentName,
       chainId: chain?.chainId || '',
     },
   })
@@ -96,7 +93,13 @@ const ReplaySafeDialog = ({
       trackEvent({ ...OVERVIEW_EVENTS.SUBMIT_ADD_NEW_NETWORK, label: selectedChain.chainName })
 
       // 2. Replay Safe creation and add it to the counterfactual Safes
-      replayCounterfactualSafeDeployment(selectedChain.chainId, safeAddress, safeCreationData, data.name, dispatch)
+      replayCounterfactualSafeDeployment(
+        selectedChain.chainId,
+        safeAddress,
+        safeCreationData,
+        currentName || '',
+        dispatch,
+      )
 
       router.push({
         query: {
@@ -152,8 +155,6 @@ const ReplaySafeDialog = ({
                 <ErrorMessage level="error">This Safe cannot be replayed on any chains.</ErrorMessage>
               ) : (
                 <>
-                  <NameInput name="name" label="Name" />
-
                   {chain ? (
                     <ChainIndicator chainId={chain.chainId} />
                   ) : (

@@ -18,7 +18,7 @@ import { getSafeSDKWithSigner, getUncheckedSigner, tryOffChainTxSigning } from '
 import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
 import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
@@ -171,7 +171,7 @@ export const createCounterfactualSafe = (
   }
 
   dispatch(addUndeployedSafe(undeployedSafe))
-  dispatch(upsertAddressBookEntry({ chainId: chain.chainId, address: safeAddress, name: data.name }))
+  dispatch(upsertAddressBookEntries({ chainIds: [chain.chainId], address: safeAddress, name: data.name }))
   dispatch(
     addOrUpdateSafe({
       safe: {
@@ -217,7 +217,7 @@ export const replayCounterfactualSafeDeployment = (
   }
 
   dispatch(addUndeployedSafe(undeployedSafe))
-  dispatch(upsertAddressBookEntry({ chainId, address: safeAddress, name }))
+  dispatch(upsertAddressBookEntries({ chainIds: [chainId], address: safeAddress, name }))
   dispatch(
     addOrUpdateSafe({
       safe: {
