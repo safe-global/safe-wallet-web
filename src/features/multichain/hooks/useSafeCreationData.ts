@@ -76,7 +76,7 @@ const getCreationDataForChain = async (
     },
   })
 
-  if (!creation || !creation.masterCopy || !creation.setupData) {
+  if (!creation || !creation.masterCopy || !creation.setupData || creation.setupData === '0x') {
     throw new Error(SAFE_CREATION_DATA_ERRORS.NO_CREATION_DATA)
   }
 
