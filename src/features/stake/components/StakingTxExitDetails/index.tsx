@@ -4,10 +4,13 @@ import { NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import TokenAmount from '@/components/common/TokenAmount'
 import StakingStatus from '@/features/stake/components/StakingStatus'
-import { formatDurationFromSeconds } from '@/utils/formatters'
+import { formatDurationFromMilliseconds } from '@/utils/formatters'
 
-const StakingTxExitDetails = ({ info }: { info: StakingTxExitInfo; txData?: TransactionData }) => {
-  const withdrawIn = formatDurationFromSeconds(info.estimatedExitTime + info.estimatedWithdrawalTime, ['days', 'hours'])
+const StakingTxExitDetails = ({ info, txData }: { info: StakingTxExitInfo; txData?: TransactionData }) => {
+  const withdrawIn = formatDurationFromMilliseconds(info.estimatedExitTime + info.estimatedWithdrawalTime, [
+    'days',
+    'hours',
+  ])
 
   console.log('staking tx exit details', info.status, NativeStakingStatus.EXITED)
   return (

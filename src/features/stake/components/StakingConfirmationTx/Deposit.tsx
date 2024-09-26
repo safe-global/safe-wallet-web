@@ -6,7 +6,7 @@ import {
   type NativeStakingDepositConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
-import { formatDurationFromSeconds, formatVisualAmount } from '@/utils/formatters'
+import { formatDurationFromMilliseconds, formatVisualAmount } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import StakingStatus from '@/features/stake/components/StakingStatus'
 import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
@@ -78,7 +78,7 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
           <FieldsGrid title="Validators">{order.numValidators}</FieldsGrid>
         )}
 
-        <FieldsGrid title="Activation time">{formatDurationFromSeconds(order.estimatedEntryTime)}</FieldsGrid>
+        <FieldsGrid title="Activation time">{formatDurationFromMilliseconds(order.estimatedEntryTime)}</FieldsGrid>
 
         <FieldsGrid title="Rewards">Approx. every 5 days after activation</FieldsGrid>
 
