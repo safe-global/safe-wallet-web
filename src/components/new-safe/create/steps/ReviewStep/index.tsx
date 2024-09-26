@@ -118,7 +118,7 @@ export const SafeSetupOverview = ({
         name="Threshold"
         value={
           <Typography>
-            {threshold} out of {owners.length} signer(s)
+            {threshold} out of {owners.length} {owners.length > 1 ? 'signers' : 'signer'}
           </Typography>
         }
       />
@@ -246,7 +246,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
-        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch)
+        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch, payMethod)
         trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
         return
       }
@@ -261,7 +261,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
         // Create a counterfactual Safe
-        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch)
+        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch, payMethod)
 
         if (taskId) {
           safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
@@ -439,7 +439,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             size="stretched"
             disabled={isDisabled}
           >
-            {isCreating ? <CircularProgress size={18} /> : 'Create'}
+            {isCreating ? <CircularProgress size={18} /> : 'Create Account'}
           </Button>
         </Box>
       </Box>

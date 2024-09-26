@@ -1,6 +1,6 @@
 import { getLatestSafeVersion } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
-import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
+import type { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
 import {
   addUndeployedSafe,
@@ -151,11 +151,12 @@ export const replayCounterfactualSafeDeployment = (
   replayedSafeProps: ReplayedSafeProps,
   name: string,
   dispatch: AppDispatch,
+  payMethod: PayMethod,
 ) => {
   const undeployedSafe = {
     chainId,
     address: safeAddress,
-    type: PayMethod.PayLater,
+    type: payMethod,
     safeProps: replayedSafeProps,
   }
 
@@ -164,7 +165,7 @@ export const replayCounterfactualSafeDeployment = (
       props: replayedSafeProps,
       status: {
         status: PendingSafeStatus.AWAITING_EXECUTION,
-        type: PayMethod.PayLater,
+        type: payMethod,
       },
     },
     chainId,

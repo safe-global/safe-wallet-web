@@ -20,6 +20,7 @@ import ChainIndicator from '@/components/common/ChainIndicator'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo, useState } from 'react'
 import { useCompatibleNetworks } from '../../hooks/useCompatibleNetworks'
+import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 
 type CreateSafeOnNewChainForm = {
   chainId: string
@@ -100,6 +101,7 @@ const ReplaySafeDialog = ({
         safeCreationData,
         currentName || '',
         dispatch,
+        PayMethod.PayLater,
       )
 
       router.push({

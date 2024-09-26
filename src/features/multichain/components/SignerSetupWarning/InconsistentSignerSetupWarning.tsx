@@ -3,10 +3,9 @@ import useChains, { useCurrentChain } from '@/hooks/useChains'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { useAppSelector } from '@/store'
-import { selectUndeployedSafes } from '@/store/slices'
+import { selectCurrency, selectUndeployedSafes, useGetMultipleSafeOverviewsQuery } from '@/store/slices'
 import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
 import { sameAddress } from '@/utils/addresses'
-import useSafeOverviews from '@/components/welcome/MyAccounts/useSafeOverviews'
 import { useMemo } from 'react'
 import { getDeviatingSetups, getSafeSetups } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 import { Box, Typography } from '@mui/material'
@@ -37,6 +36,7 @@ export const InconsistentSignerSetupWarning = () => {
   const isMultichainSafe = useIsMultichainSafe()
   const safeAddress = useSafeAddress()
   const currentChain = useCurrentChain()
+  const currency = useAppSelector(selectCurrency)
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const { allMultiChainSafes } = useAllSafesGrouped()
 
@@ -44,7 +44,11 @@ export const InconsistentSignerSetupWarning = () => {
     () => allMultiChainSafes?.find((account) => sameAddress(safeAddress, account.safes[0].address))?.safes ?? [],
     [allMultiChainSafes, safeAddress],
   )
-  const [safeOverviews] = useSafeOverviews(multiChainGroupSafes)
+  const deployedSafes = useMemo(
+    () => multiChainGroupSafes.filter((safe) => undeployedSafes[safe.chainId]?.[safe.address] === undefined),
+    [multiChainGroupSafes, undeployedSafes],
+  )
+  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ safes: deployedSafes, currency })
 
   const safeSetups = useMemo(
     () => getSafeSetups(multiChainGroupSafes, safeOverviews ?? [], undeployedSafes),

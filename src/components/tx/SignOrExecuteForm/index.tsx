@@ -39,7 +39,7 @@ import { MigrateToL2Information } from './MigrateToL2Information'
 import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
