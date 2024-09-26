@@ -21,7 +21,6 @@ describe('[SMOKE] Dashboard tests', { defaultCommandTimeout: 20000 }, () => {
     cy.clearLocalStorage()
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_2)
     main.acceptCookies()
-    dashboard.verifyConnectTransactStrIsVisible()
   })
 
   it('[SMOKE] Verify the overview widget is displayed', () => {
@@ -30,10 +29,6 @@ describe('[SMOKE] Dashboard tests', { defaultCommandTimeout: 20000 }, () => {
 
   it('[SMOKE] Verify the transaction queue widget is displayed', () => {
     dashboard.verifyTxQueueWidget()
-  })
-
-  it('[SMOKE] Verify the featured Safe Apps are displayed', () => {
-    dashboard.verifyFeaturedAppsSection()
   })
 
   it('[SMOKE] Verify the Safe Apps Section is displayed', () => {

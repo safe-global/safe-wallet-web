@@ -165,9 +165,8 @@ export const Blockaid = () => {
 }
 
 const BlockaidWarning = () => {
-  const { blockaidResponse, setIsRiskConfirmed, needsRiskConfirmation, isRiskConfirmed, isRiskIgnored } =
-    useContext(TxSecurityContext)
-  const { severity, warnings, isLoading, error } = blockaidResponse ?? {}
+  const { blockaidResponse, setIsRiskConfirmed, needsRiskConfirmation, isRiskConfirmed } = useContext(TxSecurityContext)
+  const { severity, isLoading, error } = blockaidResponse ?? {}
 
   const { safeTx } = useContext(SafeTxContext)
 
@@ -217,11 +216,7 @@ export const BlockaidMessage = () => {
   return (
     <Box display="flex" flexDirection="column" gap={1}>
       {sortedSeverities.map((key) => (
-        <BlockaidHint
-          key={key}
-          severity={Number(key)}
-          warnings={groupedShownWarnings[key].map((warning) => warning.description)}
-        />
+        <BlockaidHint key={key} warnings={groupedShownWarnings[key].map((warning) => warning.description)} />
       ))}
     </Box>
   )

@@ -1,7 +1,8 @@
 import { blo } from 'blo'
+import { act } from 'react'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-import { act, fireEvent, render, waitFor } from '@/tests/test-utils'
+import { fireEvent, render, waitFor } from '@/tests/test-utils'
 import * as useAllAddressBooks from '@/hooks/useAllAddressBooks'
 import * as useChainId from '@/hooks/useChainId'
 import * as store from '@/store'
@@ -258,7 +259,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
+      act(() => {
         fireEvent.click(button!)
       })
 
@@ -288,7 +289,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
+      act(() => {
         fireEvent.click(button!)
       })
 
@@ -320,7 +321,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
+      act(() => {
         fireEvent.click(button!)
       })
 
@@ -349,7 +350,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
+      act(() => {
         fireEvent.click(button!)
       })
 
@@ -375,7 +376,7 @@ describe('EthHashInfo', () => {
 
       const button = container.querySelector('button')
 
-      await act(() => {
+      act(() => {
         fireEvent.click(button!)
       })
 

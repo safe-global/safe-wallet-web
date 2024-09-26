@@ -17,7 +17,7 @@ export const WalletConnectContext = createContext<WalletConnectContextType>({
   error: null,
   setError: () => {},
   open: false,
-  setOpen: (_open: boolean) => {},
+  setOpen: () => {},
   isLoading: undefined,
   setIsLoading: () => {},
 })

@@ -60,7 +60,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
     reset,
   } = useForm<CustomAppFormData>({ defaultValues: { riskAcknowledgement: false }, mode: 'onChange' })
 
-  const onSubmit: SubmitHandler<CustomAppFormData> = (_, __) => {
+  const onSubmit: SubmitHandler<CustomAppFormData> = () => {
     if (safeApp) {
       onSave(safeApp)
       trackSafeAppEvent(SAFE_APPS_EVENTS.ADD_CUSTOM_APP, safeApp.url)

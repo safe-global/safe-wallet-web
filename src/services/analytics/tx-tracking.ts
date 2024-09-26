@@ -8,6 +8,7 @@ import {
   isCustomTxInfo,
   isCancellationTxInfo,
   isSwapOrderTxInfo,
+  isAnyStakingTxInfo,
 } from '@/utils/transaction-guards'
 
 export const getTransactionTrackingType = (details: TransactionDetails | undefined): string => {
@@ -26,6 +27,10 @@ export const getTransactionTrackingType = (details: TransactionDetails | undefin
 
   if (isSwapOrderTxInfo(txInfo)) {
     return TX_TYPES.native_swap
+  }
+
+  if (isAnyStakingTxInfo(txInfo)) {
+    return txInfo.type
   }
 
   if (isSettingsChangeTxInfo(txInfo)) {
