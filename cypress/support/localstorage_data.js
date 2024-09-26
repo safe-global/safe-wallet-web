@@ -7,7 +7,7 @@ const cookieState = {
   updates: true,
   analytics: true,
   terms: true,
-  termsVersion: CURRENT_COOKIE_TERMS_VERSION
+  termsVersion: CURRENT_COOKIE_TERMS_VERSION,
 }
 
 export const batchData = {
