@@ -18,7 +18,7 @@ const ColorIcons: Record<
   [NativeStakingStatus.NOT_STAKED]: {
     color: 'warning',
     icon: SignatureIcon,
-    text: 'Signature needed',
+    text: 'Inactive',
   },
   [NativeStakingStatus.ACTIVATING]: {
     color: 'info',
@@ -33,7 +33,7 @@ const ColorIcons: Record<
   [NativeStakingStatus.ACTIVE]: {
     color: 'success',
     icon: CheckIcon,
-    text: 'Validation started',
+    text: 'Validating',
   },
   [NativeStakingStatus.EXIT_REQUESTED]: {
     color: 'info',

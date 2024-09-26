@@ -83,7 +83,7 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
         <FieldsGrid title="Rewards">Approx. every 5 days after activation</FieldsGrid>
 
         {!isOrder && (
-          <FieldsGrid title="Status">
+          <FieldsGrid title="Validator status">
             <StakingStatus status={order.status} />
           </FieldsGrid>
         )}
