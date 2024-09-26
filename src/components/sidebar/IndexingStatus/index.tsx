@@ -1,4 +1,5 @@
-import { Stack, Box, Typography } from '@mui/material'
+import { Stack, Box, Typography, Tooltip } from '@mui/material'
+import { formatDistanceToNow } from 'date-fns'
 import { getIndexingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
@@ -43,16 +44,20 @@ const IndexingStatus = () => {
     ? STATUSES.slow
     : STATUSES.outOfSync
 
+  const time = formatDistanceToNow(data.lastSync, { addSuffix: true })
+
   return (
-    <Stack direction="row" spacing={2} alignItems="center" px={3} py={1.5}>
-      <Box width={10} height={10} borderRadius="50%" border={`2px solid var(--color-${status.color}-main)`} />
+    <Tooltip title={`Last synced with the blockchain ${time}`} placement="right" arrow>
+      <Stack direction="row" spacing={2} alignItems="center" px={3} py={1.5}>
+        <Box width={10} height={10} borderRadius="50%" border={`2px solid var(--color-${status.color}-main)`} />
 
-      <ExternalLink href={STATUS_PAGE} noIcon flex={1}>
-        <Typography variant="body2">{status.text}</Typography>
-      </ExternalLink>
+        <ExternalLink href={STATUS_PAGE} noIcon flex={1}>
+          <Typography variant="body2">{status.text}</Typography>
+        </ExternalLink>
 
-      <ExternalLink href={STATUS_PAGE} sx={{ color: 'text.secondary', transform: 'translateY(2px)' }} />
-    </Stack>
+        <ExternalLink href={STATUS_PAGE} sx={{ color: 'text.secondary', transform: 'translateY(3px)' }} />
+      </Stack>
+    </Tooltip>
   )
 }
 
