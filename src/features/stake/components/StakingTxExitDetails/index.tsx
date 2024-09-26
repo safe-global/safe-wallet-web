@@ -1,33 +1,30 @@
-import { Box } from '@mui/material'
-import type { StakingTxExitInfo, TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
+import { Box, Link } from '@mui/material'
+import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import FieldsGrid from '@/components/tx/FieldsGrid'
-import TokenAmount from '@/components/common/TokenAmount'
 import StakingStatus from '@/features/stake/components/StakingStatus'
 import { formatDurationFromMilliseconds } from '@/utils/formatters'
+import { BEACON_CHAIN_EXPLORERS } from '@/features/stake/constants'
+import useChainId from '@/hooks/useChainId'
 
-const StakingTxExitDetails = ({ info, txData }: { info: StakingTxExitInfo; txData?: TransactionData }) => {
+const StakingTxExitDetails = ({ info }: { info: StakingTxExitInfo }) => {
   const withdrawIn = formatDurationFromMilliseconds(info.estimatedExitTime + info.estimatedWithdrawalTime, [
     'days',
     'hours',
   ])
 
-  console.log('staking tx exit details', info.status, NativeStakingStatus.EXITED)
   return (
-    <Box pl={1} pr={5} display="flex" flexDirection="column" gap={1}>
-      <FieldsGrid title="Receive">
-        <TokenAmount
-          value={info.value}
-          tokenSymbol={info.tokenInfo.symbol}
-          decimals={info.tokenInfo.decimals}
-          logoUri={info.tokenInfo.logoUri}
-        />
-      </FieldsGrid>
-
+    <Box pr={5} display="flex" flexDirection="column" gap={1}>
       <FieldsGrid title="Exit">
-        {info.numValidators} Validator{info.numValidators > 1 ? 's' : ''}
+        {info.validators.map((validator: string, index: number) => {
+          return (
+            <>
+              <BeaconChainLink name={`Validator ${index + 1}`} validator={validator} key={index} />
+              {index < info.validators.length - 1 && ' | '}
+            </>
+          )
+        })}
       </FieldsGrid>
-
       {info.status !== NativeStakingStatus.EXITED && <FieldsGrid title="Est. exit time">Up to {withdrawIn}</FieldsGrid>}
 
       <FieldsGrid title="Validator status">
@@ -37,4 +34,18 @@ const StakingTxExitDetails = ({ info, txData }: { info: StakingTxExitInfo; txDat
   )
 }
 
+export const BeaconChainLink = ({ validator, name }: { validator: string; name: string }) => {
+  const chainId = useChainId()
+  return (
+    <Link
+      variant="body1"
+      target="_blank"
+      href={`${
+        BEACON_CHAIN_EXPLORERS[chainId as keyof typeof BEACON_CHAIN_EXPLORERS] ?? 'https://beaconcha.in'
+      }/validator/${validator}`}
+    >
+      {name}
+    </Link>
+  )
+}
 export default StakingTxExitDetails
