@@ -50,7 +50,7 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
   const avatar = addressInfo?.logoUri || toInfo?.logoUri || txData.to.logoUri
 
   let decodedData = <></>
-  if (txData.dataDecoded) {
+  if (txData.dataDecoded && (method || (!method && txData.dataDecoded.parameters))) {
     decodedData = <MethodDetails data={txData.dataDecoded} addressInfoIndex={txData.addressInfoIndex} />
   } else if (txData.hexData) {
     // When no decoded data, display raw hex data
