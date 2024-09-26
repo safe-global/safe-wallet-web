@@ -1,4 +1,4 @@
-import { type SyntheticEvent, useContext, useCallback } from 'react'
+import { type SyntheticEvent, useContext, useCallback, useEffect } from 'react'
 import { CircularProgress, CardActions, Button, Typography, Stack, Divider } from '@mui/material'
 import CheckWallet from '@/components/common/CheckWallet'
 import { Errors, trackError } from '@/services/exceptions'
@@ -15,6 +15,7 @@ import { RecoveryDescription } from '@/features/recovery/components/RecoveryDesc
 import { useAsyncCallback } from '@/hooks/useAsync'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import EthHashInfo from '@/components/common/EthHashInfo'
+import { SafeTxContext } from '../../SafeTxProvider'
 
 type RecoveryAttemptReviewProps = {
   item: RecoveryQueueItem
@@ -25,6 +26,7 @@ const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
   const wallet = useWallet()
   const { safe } = useSafeInfo()
   const { setTxFlow } = useContext(TxModalContext)
+  const { setNonceNeeded } = useContext(SafeTxContext)
 
   const onFormSubmit = useCallback(
     async (e: SyntheticEvent) => {
@@ -47,6 +49,10 @@ const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
     },
     [asyncCallback, setTxFlow, wallet, safe, item.address, item.args],
   )
+
+  useEffect(() => {
+    setNonceNeeded(false)
+  }, [setNonceNeeded])
 
   return (
     <TxCard>
