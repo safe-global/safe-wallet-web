@@ -1,4 +1,4 @@
-import { JsonRpcProvider } from 'ethers'
+import { Interface, JsonRpcProvider } from 'ethers'
 import * as contracts from '@/services/contracts/safeContracts'
 import type { SafeProvider } from '@safe-global/protocol-kit'
 import type { CompatibilityFallbackHandlerContractImplementationType } from '@safe-global/protocol-kit/dist/src/types'
@@ -9,7 +9,6 @@ import {
   relaySafeCreation,
   getRedirect,
   createNewUndeployedSafeWithoutSalt,
-  SAFE_TO_L2_SETUP_INTERFACE,
 } from '@/components/new-safe/create/logic/index'
 import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
@@ -28,7 +27,7 @@ import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-type
 import { chainBuilder } from '@/tests/builders/chains'
 import { type ReplayedSafeProps } from '@/store/slices'
 import { faker } from '@faker-js/faker'
-import { ECOSYSTEM_ID_ADDRESS, SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 import {
   getFallbackHandlerDeployment,
   getProxyFactoryDeployment,
@@ -43,6 +42,9 @@ const latestSafeVersion = getLatestSafeVersion(
     .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
     .build(),
 )
+
+const SAFE_TO_L2_SETUP_ADDRESS = '0xBD89A1CE4DDe368FFAB0eC35506eEcE0b1fFdc54'
+const SAFE_TO_L2_SETUP_INTERFACE = new Interface(['function setupToL2(address l2Singleton)'])
 
 describe('create/logic', () => {
   describe('createNewSafeViaRelayer', () => {

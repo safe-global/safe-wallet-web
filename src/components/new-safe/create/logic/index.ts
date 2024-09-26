@@ -19,8 +19,9 @@ import {
   getProxyFactoryDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
+  getSafeToL2SetupDeployment,
 } from '@safe-global/safe-deployments'
-import { ECOSYSTEM_ID_ADDRESS, SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 import type { ReplayedSafeProps, UndeployedSafeProps } from '@/store/slices'
 import { activateReplayedSafe, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import { getSafeContractDeployment } from '@/services/contracts/deployments'
@@ -89,8 +90,6 @@ export const computeNewSafeAddress = async (
     isL1SafeSingleton: true,
   })
 }
-
-export const SAFE_TO_L2_SETUP_INTERFACE = new Interface(['function setupToL2(address l2Singleton)'])
 
 export const encodeSafeSetupCall = (safeAccountConfig: ReplayedSafeProps['safeAccountConfig']) => {
   return Safe__factory.createInterface().encodeFunctionData('setup', [
@@ -226,6 +225,10 @@ export const createNewUndeployedSafeWithoutSalt = (
     throw new Error('No Safe deployment found')
   }
 
+  const safeToL2SetupDeployment = getSafeToL2SetupDeployment({ version: safeVersion, network: chain.chainId })
+  const safeToL2SetupAddress = safeToL2SetupDeployment?.defaultAddress
+  const safeToL2SetupInterface = safeToL2SetupDeployment && new Interface(safeToL2SetupDeployment?.abi)
+
   // Only do migration if the chain supports multiChain deployments.
   const includeMigration = hasMultiChainCreationFeatures(chain) && semverSatisfies(safeVersion, '>=1.4.1')
 
@@ -238,8 +241,11 @@ export const createNewUndeployedSafeWithoutSalt = (
       threshold: safeAccountConfig.threshold,
       owners: safeAccountConfig.owners,
       fallbackHandler: fallbackHandlerAddress,
-      to: includeMigration ? SAFE_TO_L2_SETUP_ADDRESS : ZERO_ADDRESS,
-      data: includeMigration ? SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [safeL2Address]) : EMPTY_DATA,
+      to: includeMigration && safeToL2SetupAddress ? safeToL2SetupAddress : ZERO_ADDRESS,
+      data:
+        includeMigration && safeToL2SetupInterface
+          ? safeToL2SetupInterface.encodeFunctionData('setupToL2', [safeL2Address])
+          : EMPTY_DATA,
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     },
     safeVersion,

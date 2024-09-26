@@ -31,8 +31,8 @@ import { sameAddress } from '@/utils/addresses'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
-import { SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
 import CheckWallet from '@/components/common/CheckWallet'
+import { getSafeToL2SetupDeployment } from '@safe-global/safe-deployments'
 
 const useActivateAccount = (undeployedSafe: UndeployedSafe | undefined) => {
   const chain = useCurrentChain()
@@ -84,7 +84,7 @@ const ActivateAccountFlow = () => {
 
   const safeAccountConfig =
     undeployedSafe && isPredictedSafeProps(undeployedSafe?.props) ? undeployedSafe?.props.safeAccountConfig : undefined
-  const isMultichainSafe = sameAddress(safeAccountConfig?.to, SAFE_TO_L2_SETUP_ADDRESS)
+
   const ownerAddresses = undeployedSafeSetup?.owners || []
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
@@ -95,6 +95,10 @@ const ActivateAccountFlow = () => {
   if (!undeployedSafe || !undeployedSafeSetup) return null
 
   const { owners, threshold, safeVersion } = undeployedSafeSetup
+
+  const safeToL2SetupDeployment = getSafeToL2SetupDeployment({ version: safeVersion, network: chain?.chainId })
+  const safeToL2SetupAddress = safeToL2SetupDeployment?.defaultAddress
+  const isMultichainSafe = sameAddress(safeAccountConfig?.to, safeToL2SetupAddress)
 
   const onSubmit = (txHash?: string) => {
     trackEvent({ ...TX_EVENTS.CREATE, label: TX_TYPES.activate_without_tx })

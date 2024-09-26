@@ -8,7 +8,7 @@ import accordionCss from '@/styles/accordion.module.css'
 import CodeIcon from '@mui/icons-material/Code'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import { sameAddress } from '@/utils/addresses'
-import { SAFE_TO_L2_MIGRATION_ADDRESS } from '@/config/constants'
+import { getSafeToL2MigrationDeployment } from '@safe-global/safe-deployments'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction
@@ -26,6 +26,9 @@ export const SingleTxDecoded = ({ tx, txData, actionTitle, variant, expanded, on
   const addressInfo = txData.addressInfoIndex?.[tx.to]
   const name = addressInfo?.name
 
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
+
   const singleTxData = {
     to: { value: tx.to },
     value: tx.value,
@@ -33,7 +36,7 @@ export const SingleTxDecoded = ({ tx, txData, actionTitle, variant, expanded, on
     dataDecoded: tx.dataDecoded,
     hexData: tx.data ?? undefined,
     addressInfoIndex: txData.addressInfoIndex,
-    trustedDelegateCallTarget: sameAddress(tx.to, SAFE_TO_L2_MIGRATION_ADDRESS), // We only trusted a nested Migration
+    trustedDelegateCallTarget: sameAddress(tx.to, safeToL2MigrationAddress), // We only trusted a nested Migration
   }
 
   return (

@@ -22,11 +22,14 @@ import { encodeMultiSendData } from '@safe-global/protocol-kit'
 import { Multi_send__factory } from '@/types/contracts'
 import { faker } from '@faker-js/faker'
 import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
+import { Interface } from 'ethers'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { checksumAddress } from '../addresses'
-import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
 
 jest.mock('@/services/tx/tx-sender/sdk')
+
+export const SAFE_TO_L2_MIGRATION_ADDRESS = '0xfF83F6335d8930cBad1c0D439A841f01888D9f69'
+export const SAFE_TO_L2_INTERFACE = new Interface(['function migrateToL2(address l2Singleton)'])
 
 describe('transactions', () => {
   const mockGetAndValidateSdk = getAndValidateSafeSDK as jest.MockedFunction<typeof getAndValidateSafeSDK>
@@ -325,7 +328,6 @@ describe('transactions', () => {
             .build(),
         })
         .build()
-
       const safeInfo = extendedSafeInfoBuilder()
         .with({
           implementationVersionState: ImplementationVersionState.UNKNOWN,
@@ -335,11 +337,9 @@ describe('transactions', () => {
           },
         })
         .build()
-
       expect(
         prependSafeToL2Migration(safeTx, safeInfo, chainBuilder().with({ l2: true, chainId: '10' }).build()),
       ).resolves.toEqual(safeTx)
-
       const multiSendSafeTx = safeTxBuilder()
         .with({
           data: safeTxDataBuilder()
@@ -362,7 +362,6 @@ describe('transactions', () => {
             .build(),
         })
         .build()
-
       expect(
         prependSafeToL2Migration(multiSendSafeTx, safeInfo, chainBuilder().with({ l2: true, chainId: '10' }).build()),
       ).resolves.toEqual(multiSendSafeTx)
