@@ -33,6 +33,7 @@
 }
 
 .listSubHeader {
+  background-color: var(--color-background-main);
   text-transform: uppercase;
   font-size: 11px;
   font-weight: bold;
@@ -40,18 +41,11 @@
   text-align: center;
   letter-spacing: 1px;
   width: 100%;
+  margin-top: var(--space-1);
 }
 
 [data-theme='dark'] .undeployedNetworksHeader {
   background-color: var(--color-secondary-background);
-}
-
-.undeployedNetworksHeader {
-  background-color: var(--color-background-main);
-  text-align: center;
-  line-height: 32px;
-  padding: 0;
-  margin-top: var(--space-1);
 }
 
 .plusIcon {
