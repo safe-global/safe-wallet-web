@@ -1,6 +1,5 @@
 import type { ReactElement, ReactNode } from 'react'
-import { Typography } from '@mui/material'
-import css from './styles.module.css'
+import FieldsGrid from '@/components/tx/FieldsGrid'
 
 type DataRowProps = {
   datatestid?: String
@@ -10,19 +9,10 @@ type DataRowProps = {
 
 export const DataRow = ({ datatestid, title, children }: DataRowProps): ReactElement | null => {
   if (children == undefined) return null
-  return (
-    <div data-testid={datatestid} className={css.gridRow}>
-      <div data-testid="tx-row-title" className={css.title}>
-        {title}
-      </div>
 
-      {typeof children === 'string' ? (
-        <Typography component="div" data-testid="tx-data-row">
-          {children}
-        </Typography>
-      ) : (
-        children
-      )}
-    </div>
+  return (
+    <FieldsGrid data-testid={datatestid} title={title}>
+      {children}
+    </FieldsGrid>
   )
 }

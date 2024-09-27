@@ -6,7 +6,8 @@ exports[`HexEncodedData should not cut the text in case the limit option is high
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-f2z333-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-658w1k-MuiGrid-root"
+      data-testid="tx-row-title"
     >
       <p
         class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
@@ -16,6 +17,7 @@ exports[`HexEncodedData should not cut the text in case the limit option is high
     </div>
     <div
       class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
     >
       <div
         class="encodedData MuiBox-root css-0"
@@ -65,7 +67,8 @@ exports[`HexEncodedData should not highlight the data if highlight option is fal
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-f2z333-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-658w1k-MuiGrid-root"
+      data-testid="tx-row-title"
     >
       <p
         class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
@@ -75,6 +78,7 @@ exports[`HexEncodedData should not highlight the data if highlight option is fal
     </div>
     <div
       class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
     >
       <div
         class="encodedData MuiBox-root css-0"
@@ -125,7 +129,8 @@ exports[`HexEncodedData should render the default component markup 1`] = `
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-f2z333-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-658w1k-MuiGrid-root"
+      data-testid="tx-row-title"
     >
       <p
         class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
@@ -135,6 +140,7 @@ exports[`HexEncodedData should render the default component markup 1`] = `
     </div>
     <div
       class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
     >
       <div
         class="encodedData MuiBox-root css-0"

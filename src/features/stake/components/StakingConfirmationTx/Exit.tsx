@@ -1,17 +1,16 @@
 import { Alert, Stack, Typography } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
-import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { formatDurationFromSeconds } from '@/utils/formatters'
+import { formatDurationFromMilliseconds } from '@/utils/formatters'
 import { type NativeStakingValidatorsExitConfirmationView } from '@safe-global/safe-gateway-typescript-sdk/dist/types/decoded-data'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
 import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
 
 type StakingOrderConfirmationViewProps = {
-  order: NativeStakingValidatorsExitConfirmationView | StakingTxExitInfo
+  order: NativeStakingValidatorsExitConfirmationView
 }
 
 const StakingConfirmationTxExit = ({ order }: StakingOrderConfirmationViewProps) => {
-  const withdrawIn = formatDurationFromSeconds(order.estimatedExitTime + order.estimatedWithdrawalTime, [
+  const withdrawIn = formatDurationFromMilliseconds(order.estimatedExitTime + order.estimatedWithdrawalTime, [
     'days',
     'hours',
   ])

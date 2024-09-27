@@ -51,3 +51,43 @@ const useAsync = <T>(
 }
 
 export default useAsync
+
+export const useAsyncCallback = <T extends (...args: any) => Promise<any>>(
+  callback: T,
+): {
+  asyncCallback: (...args: Parameters<T>) => Promise<ReturnType<T>> | undefined
+  error: Error | undefined
+  isLoading: boolean
+} => {
+  const [error, setError] = useState<Error>()
+  const [isLoading, setLoading] = useState<boolean>(false)
+
+  const asyncCallback = useCallback(
+    async (...args: Parameters<T>) => {
+      setError(undefined)
+
+      const result = callback(...args)
+
+      // Not a promise, exit early
+      if (!result) {
+        setLoading(false)
+        return result
+      }
+
+      setLoading(true)
+
+      result
+        .catch((err) => {
+          setError(asError(err))
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+
+      return result
+    },
+    [callback],
+  )
+
+  return { asyncCallback, error, isLoading }
+}

@@ -1,4 +1,5 @@
 import { registerDevice, unregisterDevice, unregisterSafe } from '@safe-global/safe-gateway-typescript-sdk'
+import isEmpty from 'lodash/isEmpty'
 
 import { useAppDispatch } from '@/store'
 import { showNotification } from '@/store/notificationsSlice'
@@ -19,7 +20,7 @@ const registrationFlow = async (registrationFn: Promise<unknown>, callback: () =
 
     // Gateway will return 200 with an empty payload if the device was (un-)registered successfully
     // @see https://github.com/safe-global/safe-client-gateway-nest/blob/27b6b3846b4ecbf938cdf5d0595ca464c10e556b/src/routes/notifications/notifications.service.ts#L29
-    success = response == null
+    success = isEmpty(response)
   } catch (e) {
     logError(ErrorCodes._633, e)
   }
