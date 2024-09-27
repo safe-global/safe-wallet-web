@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback, useContext } from 'react'
 import OrderId from '@/features/swap/components/OrderId'
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import SwapProgress from '@/features/swap/components/SwapProgress'
@@ -19,6 +19,7 @@ import css from './styles.module.css'
 import { Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import {
+  calculateSingleOrderHash,
   getExecutionPrice,
   getLimitPrice,
   getOrderClass,
@@ -35,6 +36,8 @@ import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDura
 import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
 import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
 import { SurplusFee } from '@/features/swap/components/SwapOrder/rows/SurplusFee'
+import { TxModalContext } from '@/components/tx-flow'
+import CancelCowOrderFlow from '@/components/tx-flow/flows/CancelCoWOrder'
 
 type SwapOrderProps = {
   txData?: TransactionData
@@ -213,7 +216,7 @@ export const SellOrder = ({ order }: { order: SwapOrderType }) => {
   )
 }
 
-export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
+export const TwapOrder = ({ order, txData }: { order: SwapTwapOrder; txData: TransactionData | undefined }) => {
   const { kind, validUntil, status, numberOfParts } = order
 
   const isPartiallyFilled = isOrderPartiallyFilled(order)
@@ -221,60 +224,73 @@ export const TwapOrder = ({ order }: { order: SwapTwapOrder }) => {
   const now = new Date()
   const orderKindLabel = capitalize(kind)
 
+  const { setTxFlow } = useContext(TxModalContext)
+
+  const cancelOrder = useCallback(() => {
+    const hash = calculateSingleOrderHash(txData)
+    if (!hash) {
+      return
+    }
+    setTxFlow(<CancelCowOrderFlow singleOrderHash={hash} />)
+  }, [txData, setTxFlow])
+
   const isStatusKnown = Number(numberOfParts) <= TWAP_PARTS_STATUS_THRESHOLD
   return (
-    <DataTable
-      header={`${orderKindLabel} order`}
-      rows={[
-        <AmountRow order={order} key="amount-row" />,
-        <PriceRow order={order} key="price-row" />,
-        <SurplusRow order={order} key="surplus-row" />,
-        <RecipientRow order={order} key="recipient-row" />,
-        <SurplusFee order={order} key="fee-row" />,
-        <EmptyRow key="spacer-0" />,
-        <DataRow title="No of parts" key="n_of_parts">
-          {numberOfParts}
-        </DataRow>,
-        <PartSellAmount order={order} key="part_sell_amount" />,
-        <PartBuyAmount order={order} key="part_buy_amount" />,
-        order.executedSellAmount !== null && order.executedBuyAmount !== null ? (
-          <FilledRow order={order} key="filled-row" />
-        ) : (
-          <Fragment key="filled-row" />
-        ),
-        <PartDuration order={order} key="part_duration" />,
-        <EmptyRow key="spacer-1" />,
-        status !== 'fulfilled' && compareAsc(now, expires) !== 1 ? (
-          <DataRow key="Expiry" title="Expiry">
-            <Typography>
-              <Typography fontWeight={700} component="span">
-                {formatTimeInWords(validUntil * 1000)}
-              </Typography>{' '}
-              ({formatDateTime(validUntil * 1000)})
-            </Typography>
-          </DataRow>
-        ) : (
-          <DataRow key="Expired" title="Expired">
-            {formatDateTime(validUntil * 1000)}
-          </DataRow>
-        ),
-        isStatusKnown ? (
-          <DataRow key="Status" title="Status">
-            <StatusLabel status={isPartiallyFilled ? 'partiallyFilled' : status} />
-          </DataRow>
-        ) : (
-          <Fragment key="status" />
-        ),
-      ]}
-    />
+    <>
+      <button onClick={cancelOrder}>cancel order</button>
+      <DataTable
+        header={`${orderKindLabel} order`}
+        rows={[
+          <AmountRow order={order} key="amount-row" />,
+          <PriceRow order={order} key="price-row" />,
+          <SurplusRow order={order} key="surplus-row" />,
+          <RecipientRow order={order} key="recipient-row" />,
+          <SurplusFee order={order} key="fee-row" />,
+          <EmptyRow key="spacer-0" />,
+          <DataRow title="No of parts" key="n_of_parts">
+            {numberOfParts}
+          </DataRow>,
+          <PartSellAmount order={order} key="part_sell_amount" />,
+          <PartBuyAmount order={order} key="part_buy_amount" />,
+          order.executedSellAmount !== null && order.executedBuyAmount !== null ? (
+            <FilledRow order={order} key="filled-row" />
+          ) : (
+            <Fragment key="filled-row" />
+          ),
+          <PartDuration order={order} key="part_duration" />,
+          <EmptyRow key="spacer-1" />,
+          status !== 'fulfilled' && compareAsc(now, expires) !== 1 ? (
+            <DataRow key="Expiry" title="Expiry">
+              <Typography>
+                <Typography fontWeight={700} component="span">
+                  {formatTimeInWords(validUntil * 1000)}
+                </Typography>{' '}
+                ({formatDateTime(validUntil * 1000)})
+              </Typography>
+            </DataRow>
+          ) : (
+            <DataRow key="Expired" title="Expired">
+              {formatDateTime(validUntil * 1000)}
+            </DataRow>
+          ),
+          isStatusKnown ? (
+            <DataRow key="Status" title="Status">
+              <StatusLabel status={isPartiallyFilled ? 'partiallyFilled' : status} />
+            </DataRow>
+          ) : (
+            <Fragment key="status" />
+          ),
+        ]}
+      />
+    </>
   )
 }
 
-export const SwapOrder = ({ txInfo }: SwapOrderProps): ReactElement | null => {
+export const SwapOrder = ({ txInfo, txData }: SwapOrderProps): ReactElement | null => {
   if (!txInfo) return null
 
   if (isTwapOrderTxInfo(txInfo)) {
-    return <TwapOrder order={txInfo} />
+    return <TwapOrder order={txInfo} txData={txData} />
   }
 
   if (isSwapOrderTxInfo(txInfo) || isSwapTransferOrderTxInfo(txInfo)) {
