@@ -20,6 +20,8 @@ const CURRENCY = 'USD'
 const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewProps) => {
   const isOrder = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
 
+  // the fee is returned in decimal format, so we multiply by 100 to get the percentage
+  const fee = (order.fee * 100).toFixed(2)
   return (
     <Stack gap={isOrder ? 2 : 1}>
       {isOrder && (
@@ -58,7 +60,7 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
           </>
         }
       >
-        {order.fee}%
+        {fee} %
       </FieldsGrid>
 
       <Stack
