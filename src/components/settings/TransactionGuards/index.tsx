@@ -26,7 +26,7 @@ const GuardDisplay = ({ guardAddress, chainId }: { guardAddress: string; chainId
 
   return (
     <Box className={css.guardDisplay}>
-      <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton chainId={chainId} />
+      <EthHashInfo shortAddress={false} address={guardAddress} showCopyButton hasExplorer chainId={chainId} />
       <CheckWallet>
         {(isOk) => (
           <IconButton
