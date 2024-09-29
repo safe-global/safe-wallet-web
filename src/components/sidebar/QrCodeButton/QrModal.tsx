@@ -17,7 +17,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   const qrCode = `${qrPrefix}${safeAddress}`
   const chainName = chain?.chainName || ''
   const nativeToken = chain?.nativeCurrency.symbol || ''
-
+  
   return (
     <ModalDialog open dialogTitle="Receive assets" onClose={onClose} hideChainIndicator>
       <DialogContent>
@@ -47,7 +47,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
           />
 
           <Box mt={2}>
-            <EthHashInfo address={safeAddress} shortAddress={false} hasExplorer showCopyButton />
+            <EthHashInfo address={safeAddress} shortAddress={false} prefix={qrPrefix} hasExplorer showCopyButton />
           </Box>
         </Box>
       </DialogContent>
