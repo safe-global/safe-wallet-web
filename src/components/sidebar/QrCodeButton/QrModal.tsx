@@ -17,7 +17,7 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   const qrCode = `${qrPrefix}${safeAddress}`
   const chainName = chain?.chainName || ''
   const nativeToken = chain?.nativeCurrency.symbol || ''
-  
+
   return (
     <ModalDialog open dialogTitle="Receive assets" onClose={onClose} hideChainIndicator>
       <DialogContent>
