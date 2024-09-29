@@ -62,7 +62,7 @@ const SrcEthHashInfo = ({
 
   const addressElement = (
     <>
-      {showPrefix && shouldPrefix && prefix && <b>{prefix}</b>}
+      {showPrefix && shouldPrefix && prefix && <b>{prefix}:</b>}
       <span>{shortAddress || isMobile ? shortenAddress(address) : address}</span>
     </>
   )
