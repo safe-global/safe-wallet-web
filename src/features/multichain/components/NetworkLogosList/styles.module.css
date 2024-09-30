@@ -6,7 +6,7 @@
 
 .networks img {
   margin-left: -6px;
-  outline: 2px solid var(--color-background-main);
+  outline: 2px solid var(--color-background-paper);
   border-radius: 50%;
 }
 
