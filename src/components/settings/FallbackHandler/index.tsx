@@ -1,4 +1,4 @@
-import { TWAP_FALLBACK_HANDLER } from '@/features/swap/helpers/utils'
+import { TWAP_FALLBACK_HANDLER, TWAP_FALLBACK_HANDLER_NETWORKS } from '@/features/swap/helpers/utils'
 import { getCompatibilityFallbackHandlerDeployments } from '@safe-global/safe-deployments'
 import NextLink from 'next/link'
 import { Typography, Box, Grid, Paper, Link, Alert } from '@mui/material'
@@ -38,7 +38,8 @@ export const FallbackHandler = (): ReactElement | null => {
   const isOfficial =
     safe.fallbackHandler &&
     fallbackHandlerDeployments?.networkAddresses[safe.chainId].includes(safe.fallbackHandler.value)
-  const isTWAPFallbackHandler = safe.fallbackHandler?.value === TWAP_FALLBACK_HANDLER
+  const isTWAPFallbackHandler =
+    safe.fallbackHandler?.value === TWAP_FALLBACK_HANDLER && TWAP_FALLBACK_HANDLER_NETWORKS.includes(safe.chainId)
 
   const warning = !hasFallbackHandler ? (
     <>
