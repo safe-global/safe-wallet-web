@@ -6,11 +6,12 @@ exports[`HexEncodedData should not cut the text in case the limit option is high
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-658w1k-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
       data-testid="tx-row-title"
+      style="word-break: break-word;"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
       >
         Data (hex-encoded)
       </p>
@@ -67,11 +68,12 @@ exports[`HexEncodedData should not highlight the data if highlight option is fal
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-658w1k-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
       data-testid="tx-row-title"
+      style="word-break: break-word;"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
       >
         Some arbitrary data
       </p>
@@ -129,11 +131,12 @@ exports[`HexEncodedData should render the default component markup 1`] = `
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-658w1k-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
       data-testid="tx-row-title"
+      style="word-break: break-word;"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
       >
         Data (hex-encoded)
       </p>
