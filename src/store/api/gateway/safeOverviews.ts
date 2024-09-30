@@ -125,22 +125,25 @@ export const safeOverviewEndpoints = (
     'gatewayApi'
   >,
 ) => ({
-  getSafeOverview: builder.query<
-    SafeOverview | undefined,
-    { safeAddress: string; walletAddress?: string; chainId: string }
-  >({
-    async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {
-      const state = getState()
-      const currency = selectCurrency(state as RootState)
+  getSafeOverview: builder.query<SafeOverview | null, { safeAddress: string; walletAddress?: string; chainId: string }>(
+    {
+      async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {
+        const state = getState()
+        const currency = selectCurrency(state as RootState)
 
-      try {
-        const safeOverview = await batchedFetcher.getOverview({ chainId, currency, walletAddress, safeAddress })
-        return { data: safeOverview }
-      } catch (error) {
-        return { error: { status: 'CUSTOM_ERROR', error: (error as Error).message } }
-      }
+        if (!safeAddress) {
+          return { data: null }
+        }
+
+        try {
+          const safeOverview = await batchedFetcher.getOverview({ chainId, currency, walletAddress, safeAddress })
+          return { data: safeOverview ?? null }
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', error: (error as Error).message } }
+        }
+      },
     },
-  }),
+  ),
   getMultipleSafeOverviews: builder.query<SafeOverview[], MultiOverviewQueryParams>({
     async queryFn(params) {
       const { safes, walletAddress, currency } = params
