@@ -145,7 +145,14 @@ const ReplaySafeDialog = ({
         <DialogContent>
           <FormProvider {...formMethods}>
             <Stack spacing={2}>
-              <Typography>This action re-deploys a Safe to another network with the same address.</Typography>
+              <Typography>Add this Safe to another network with the same address.</Typography>
+
+              {chain && (
+                <Box p={2} sx={{ backgroundColor: 'background.main', borderRadius: '6px' }}>
+                  <ChainIndicator chainId={chain.chainId} />
+                </Box>
+              )}
+
               <ErrorMessage level="info">
                 The Safe will use the initial setup of the copied Safe. Any changes to owners, threshold, modules or the
                 Safe&apos;s version will not be reflected in the copy.
@@ -167,13 +174,7 @@ const ReplaySafeDialog = ({
               ) : noChainsAvailable ? (
                 <ErrorMessage level="error">This Safe cannot be replayed on any chains.</ErrorMessage>
               ) : (
-                <>
-                  {chain ? (
-                    <ChainIndicator chainId={chain.chainId} />
-                  ) : (
-                    <NetworkInput required name="chainId" chainConfigs={replayableChains ?? []} />
-                  )}
-                </>
+                <>{!chain && <NetworkInput required name="chainId" chainConfigs={replayableChains ?? []} />}</>
               )}
 
               {creationError && (
@@ -196,9 +197,7 @@ const ReplaySafeDialog = ({
             </Box>
           ) : (
             <>
-              <Button variant="outlined" onClick={onCancel}>
-                Cancel
-              </Button>
+              <Button onClick={onCancel}>Cancel</Button>
               <Button type="submit" variant="contained" disabled={submitDisabled}>
                 {isSubmitting ? <CircularProgress size={20} /> : 'Add network'}
               </Button>
