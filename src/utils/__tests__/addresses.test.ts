@@ -1,4 +1,4 @@
-import { checksumAddress, isChecksummedAddress, parsePrefixedAddress, sameAddress } from '../addresses'
+import { checksumAddress, cleanInputValue, isChecksummedAddress, parsePrefixedAddress, sameAddress } from '../addresses'
 
 describe('Addresses', () => {
   describe('checksumAddress', () => {
@@ -97,6 +97,99 @@ describe('Addresses', () => {
       const { prefix, address } = parsePrefixedAddress('sdfgsdfg')
       expect(prefix).toBeUndefined()
       expect(address).toBe('sdfgsdfg')
+    })
+  })
+
+  describe('cleanInputValue', () => {
+    it('should return the address when input is a valid address without prefix', () => {
+      const input = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the address with prefix when input has a valid prefix', () => {
+      const input = 'prefix:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('prefix:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the matched address when input contains text before the match', () => {
+      const input = 'some text prefix:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('prefix:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the matched address when input contains text after the match', () => {
+      const input = 'prefix:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd some text'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('prefix:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the original value when input does not match the regex', () => {
+      const input = 'invalid input'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('invalid input')
+    })
+
+    it('should handle prefixes with hyphens', () => {
+      const input = 'uh-huh:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('uh-huh:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the address when input has uppercase letters', () => {
+      const input = '0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD')
+    })
+
+    it('should return the original value when Ethereum address is invalid (too short)', () => {
+      const input = '0x123'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('0x123')
+    })
+
+    it('should trim spaces and return the address when input has leading and trailing spaces', () => {
+      const input = '  0xabcdefabcdefabcdefabcdefabcdefabcdefabcd  '
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the first matched address when input contains multiple addresses', () => {
+      const input = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd 0x1234567890abcdef1234567890abcdef12345678'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the address with numeric prefix', () => {
+      const input = '12345:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('12345:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the address when prefix is missing colon', () => {
+      const input = 'prefix0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe('0xabcdefabcdefabcdefabcdefabcdefabcdefabcd')
+    })
+
+    it('should return the original value when prefix contains invalid characters', () => {
+      const input = 'invalid!prefix:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      const output = cleanInputValue(input)
+
+      expect(output).toBe(input)
     })
   })
 })
