@@ -39,6 +39,7 @@ import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 import { useGetSafeOverviewQuery } from '@/store/api/gateway'
+import { hasMultiChainAddNetworkFeature } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 
 const ChainIndicatorWithFiatBalance = ({
   isSelected,
@@ -97,7 +98,7 @@ const UndeployedNetworkMenuItem = ({
   isSelected?: boolean
   onSelect: (chain: ChainInfo) => void
 }) => {
-  const isDisabled = !chain.available
+  const isDisabled = !chain.available || !hasMultiChainAddNetworkFeature(chain)
 
   return (
     <Track {...OVERVIEW_EVENTS.ADD_NEW_NETWORK} label={OVERVIEW_LABELS.top_bar}>

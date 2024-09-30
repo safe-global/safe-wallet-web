@@ -12,6 +12,7 @@ import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
 import semverSatisfies from 'semver/functions/satisfies'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { hasMultiChainAddNetworkFeature } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 
 export const SAFE_CREATION_DATA_ERRORS = {
   TX_NOT_FOUND: 'The Safe creation transaction could not be found. Please retry later.',
@@ -22,6 +23,7 @@ export const SAFE_CREATION_DATA_ERRORS = {
   PAYMENT_SAFE: 'The Safe creation used reimbursement. Adding networks to such Safes is not supported.',
   UNSUPPORTED_IMPLEMENTATION:
     'The Safe was created using an unsupported or outdated implementation. Adding networks to this Safe is not possible.',
+  FEATURE_NOT_ENABLED: 'This safe is deployed on a network that does not support adding additional networks.',
 }
 
 export const decodeSetupData = (setupData: string): ReplayedSafeProps['safeAccountConfig'] => {
@@ -75,6 +77,10 @@ const getCreationDataForChain = async (
       safeAddress,
     },
   })
+
+  if (!hasMultiChainAddNetworkFeature(chain)) {
+    throw new Error(SAFE_CREATION_DATA_ERRORS.FEATURE_NOT_ENABLED)
+  }
 
   if (!creation || !creation.masterCopy || !creation.setupData || creation.setupData === '0x') {
     throw new Error(SAFE_CREATION_DATA_ERRORS.NO_CREATION_DATA)
