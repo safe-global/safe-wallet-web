@@ -16,17 +16,21 @@ import {
   getMultiSendDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
+  getSafeToL2MigrationDeployment,
 } from '@safe-global/safe-deployments'
 import type Safe from '@safe-global/protocol-kit'
 import { encodeMultiSendData } from '@safe-global/protocol-kit'
-import { Multi_send__factory } from '@/types/contracts'
+import { Multi_send__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
 import { faker } from '@faker-js/faker'
 import { getAndValidateSafeSDK } from '@/services/tx/tx-sender/sdk'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { checksumAddress } from '../addresses'
-import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
 
 jest.mock('@/services/tx/tx-sender/sdk')
+
+const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
+const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
 
 describe('transactions', () => {
   const mockGetAndValidateSdk = getAndValidateSafeSDK as jest.MockedFunction<typeof getAndValidateSafeSDK>
@@ -312,20 +316,21 @@ describe('transactions', () => {
     })
 
     it('should not modify tx if the tx already migrates', () => {
+      const safeL2SingletonDeployment = getSafeL2SingletonDeployment()?.defaultAddress
+
       const safeTx = safeTxBuilder()
         .with({
           data: safeTxDataBuilder()
             .with({
               nonce: 0,
-              to: SAFE_TO_L2_MIGRATION_ADDRESS,
-              data: SAFE_TO_L2_INTERFACE.encodeFunctionData('migrateToL2', [
-                getSafeL2SingletonDeployment()?.defaultAddress,
-              ]),
+              to: safeToL2MigrationAddress,
+              data:
+                safeL2SingletonDeployment &&
+                safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [safeL2SingletonDeployment]),
             })
             .build(),
         })
         .build()
-
       const safeInfo = extendedSafeInfoBuilder()
         .with({
           implementationVersionState: ImplementationVersionState.UNKNOWN,
@@ -335,34 +340,32 @@ describe('transactions', () => {
           },
         })
         .build()
-
       expect(
         prependSafeToL2Migration(safeTx, safeInfo, chainBuilder().with({ l2: true, chainId: '10' }).build()),
       ).resolves.toEqual(safeTx)
-
       const multiSendSafeTx = safeTxBuilder()
         .with({
           data: safeTxDataBuilder()
             .with({
               nonce: 0,
               to: getMultiSendDeployment()?.defaultAddress,
-              data: Multi_send__factory.createInterface().encodeFunctionData('multiSend', [
-                encodeMultiSendData([
-                  {
-                    value: '0',
-                    operation: 1,
-                    to: SAFE_TO_L2_MIGRATION_ADDRESS,
-                    data: SAFE_TO_L2_INTERFACE.encodeFunctionData('migrateToL2', [
-                      getSafeL2SingletonDeployment()?.defaultAddress,
-                    ]),
-                  },
+              data:
+                safeToL2MigrationAddress &&
+                safeL2SingletonDeployment &&
+                Multi_send__factory.createInterface().encodeFunctionData('multiSend', [
+                  encodeMultiSendData([
+                    {
+                      value: '0',
+                      operation: 1,
+                      to: safeToL2MigrationAddress,
+                      data: safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [safeL2SingletonDeployment]),
+                    },
+                  ]),
                 ]),
-              ]),
             })
             .build(),
         })
         .build()
-
       expect(
         prependSafeToL2Migration(multiSendSafeTx, safeInfo, chainBuilder().with({ l2: true, chainId: '10' }).build()),
       ).resolves.toEqual(multiSendSafeTx)
@@ -402,14 +405,16 @@ describe('transactions', () => {
       expect(modifiedTx?.data.to).toEqual(getMultiSendDeployment()?.defaultAddress)
       const decodedMultiSend = decodeMultiSendData(modifiedTx!.data.data)
       expect(decodedMultiSend).toHaveLength(2)
+      const safeL2SingletonDeployment = getSafeL2SingletonDeployment()?.defaultAddress
+
       expect(decodedMultiSend).toEqual([
         {
-          to: SAFE_TO_L2_MIGRATION_ADDRESS,
+          to: safeToL2MigrationAddress,
           value: '0',
           operation: 1,
-          data: SAFE_TO_L2_INTERFACE.encodeFunctionData('migrateToL2', [
-            getSafeL2SingletonDeployment()?.defaultAddress,
-          ]),
+          data:
+            safeL2SingletonDeployment &&
+            safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [safeL2SingletonDeployment]),
         },
         {
           to: checksumAddress(safeTx.data.to),

@@ -4,10 +4,9 @@ import type { StakingTxDepositInfo } from '@safe-global/safe-gateway-typescript-
 import {
   ConfirmationViewTypes,
   type NativeStakingDepositConfirmationView,
-  NativeStakingStatus,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
-import { formatDurationFromSeconds, formatVisualAmount } from '@/utils/formatters'
+import { formatDurationFromMilliseconds, formatVisualAmount } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import StakingStatus from '@/features/stake/components/StakingStatus'
 import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
@@ -21,6 +20,8 @@ const CURRENCY = 'USD'
 const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewProps) => {
   const isOrder = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
 
+  // the fee is returned in decimal format, so we multiply by 100 to get the percentage
+  const fee = (order.fee * 100).toFixed(2)
   return (
     <Stack gap={isOrder ? 2 : 1}>
       {isOrder && (
@@ -33,7 +34,7 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
             },
             {
               value: order.annualNrr.toFixed(3) + '%',
-              label: 'Earn (after fees)',
+              label: 'Rewards rate (after fees)',
             },
           ]}
         />
@@ -59,7 +60,7 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
           </>
         }
       >
-        {order.fee}%
+        {fee} %
       </FieldsGrid>
 
       <Stack
@@ -79,14 +80,12 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
           <FieldsGrid title="Validators">{order.numValidators}</FieldsGrid>
         )}
 
-        {!isOrder && order.status === NativeStakingStatus.VALIDATION_STARTED ? null : (
-          <FieldsGrid title="Active in">{formatDurationFromSeconds(order.estimatedEntryTime)}</FieldsGrid>
-        )}
+        <FieldsGrid title="Activation time">{formatDurationFromMilliseconds(order.estimatedEntryTime)}</FieldsGrid>
 
         <FieldsGrid title="Rewards">Approx. every 5 days after activation</FieldsGrid>
 
         {!isOrder && (
-          <FieldsGrid title="Status">
+          <FieldsGrid title="Validator status">
             <StakingStatus status={order.status} />
           </FieldsGrid>
         )}

@@ -15,6 +15,7 @@ import {
   Select,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import partition from 'lodash/partition'
@@ -100,23 +101,25 @@ const UndeployedNetworkMenuItem = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.ADD_NEW_NETWORK} label={OVERVIEW_LABELS.top_bar}>
-      <MenuItem
-        value={chain.chainId}
-        sx={{ '&:hover': { backgroundColor: 'inherit' } }}
-        onClick={() => onSelect(chain)}
-        disabled={isDisabled}
-      >
-        <Box className={css.item}>
-          <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
-          {isDisabled ? (
-            <Typography variant="caption" component="span" className={css.comingSoon}>
-              Not available
-            </Typography>
-          ) : (
-            <PlusIcon className={css.plusIcon} />
-          )}
-        </Box>
-      </MenuItem>
+      <Tooltip title="Add network" arrow placement="left">
+        <MenuItem
+          value={chain.chainId}
+          sx={{ '&:hover': { backgroundColor: 'inherit' } }}
+          onClick={() => onSelect(chain)}
+          disabled={isDisabled}
+        >
+          <Box className={css.item}>
+            <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
+            {isDisabled ? (
+              <Typography variant="caption" component="span" className={css.comingSoon}>
+                Not available
+              </Typography>
+            ) : (
+              <PlusIcon className={css.plusIcon} />
+            )}
+          </Box>
+        </MenuItem>
+      </Tooltip>
     </Track>
   )
 }

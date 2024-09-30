@@ -9,7 +9,6 @@ import {
   relaySafeCreation,
   getRedirect,
   createNewUndeployedSafeWithoutSalt,
-  SAFE_TO_L2_SETUP_INTERFACE,
 } from '@/components/new-safe/create/logic/index'
 import { relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { toBeHex } from 'ethers'
@@ -28,13 +27,15 @@ import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-type
 import { chainBuilder } from '@/tests/builders/chains'
 import { type ReplayedSafeProps } from '@/store/slices'
 import { faker } from '@faker-js/faker'
-import { ECOSYSTEM_ID_ADDRESS, SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 import {
   getFallbackHandlerDeployment,
   getProxyFactoryDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
+  getSafeToL2SetupDeployment,
 } from '@safe-global/safe-deployments'
+import { Safe_to_l2_setup__factory } from '@/types/contracts'
 
 const provider = new JsonRpcProvider(undefined, { name: 'ethereum', chainId: 1 })
 
@@ -43,6 +44,10 @@ const latestSafeVersion = getLatestSafeVersion(
     .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
     .build(),
 )
+
+const safeToL2SetupDeployment = getSafeToL2SetupDeployment()
+const safeToL2SetupAddress = safeToL2SetupDeployment?.defaultAddress
+const safeToL2SetupInterface = Safe_to_l2_setup__factory.createInterface()
 
 describe('create/logic', () => {
   describe('createNewSafeViaRelayer', () => {
@@ -285,6 +290,10 @@ describe('create/logic', () => {
         owners: [faker.finance.ethereumAddress()],
         threshold: 1,
       }
+      const safeL2SingletonDeployment = getSafeL2SingletonDeployment({
+        version: '1.4.1',
+        network: '137',
+      })?.defaultAddress
       expect(
         createNewUndeployedSafeWithoutSalt(
           '1.4.1',
@@ -300,10 +309,10 @@ describe('create/logic', () => {
         safeAccountConfig: {
           ...safeSetup,
           fallbackHandler: getFallbackHandlerDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
-          to: SAFE_TO_L2_SETUP_ADDRESS,
-          data: SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [
-            getSafeL2SingletonDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
-          ]),
+          to: safeToL2SetupAddress,
+          data:
+            safeL2SingletonDeployment &&
+            safeToL2SetupInterface.encodeFunctionData('setupToL2', [safeL2SingletonDeployment]),
           paymentReceiver: ECOSYSTEM_ID_ADDRESS,
         },
         safeVersion: '1.4.1',

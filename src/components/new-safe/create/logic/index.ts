@@ -1,5 +1,5 @@
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { Interface, type Eip1193Provider, type Provider } from 'ethers'
+import { type Eip1193Provider, type Provider } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 
 import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
@@ -19,12 +19,13 @@ import {
   getProxyFactoryDeployment,
   getSafeL2SingletonDeployment,
   getSafeSingletonDeployment,
+  getSafeToL2SetupDeployment,
 } from '@safe-global/safe-deployments'
-import { ECOSYSTEM_ID_ADDRESS, SAFE_TO_L2_SETUP_ADDRESS } from '@/config/constants'
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 import type { ReplayedSafeProps, UndeployedSafeProps } from '@/store/slices'
 import { activateReplayedSafe, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import { getSafeContractDeployment } from '@/services/contracts/deployments'
-import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
+import { Safe__factory, Safe_proxy_factory__factory, Safe_to_l2_setup__factory } from '@/types/contracts'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { hasMultiChainCreationFeatures } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 
@@ -89,8 +90,6 @@ export const computeNewSafeAddress = async (
     isL1SafeSingleton: true,
   })
 }
-
-export const SAFE_TO_L2_SETUP_INTERFACE = new Interface(['function setupToL2(address l2Singleton)'])
 
 export const encodeSafeSetupCall = (safeAccountConfig: ReplayedSafeProps['safeAccountConfig']) => {
   return Safe__factory.createInterface().encodeFunctionData('setup', [
@@ -226,6 +225,10 @@ export const createNewUndeployedSafeWithoutSalt = (
     throw new Error('No Safe deployment found')
   }
 
+  const safeToL2SetupDeployment = getSafeToL2SetupDeployment({ version: '1.4.1', network: chain.chainId })
+  const safeToL2SetupAddress = safeToL2SetupDeployment?.networkAddresses[chain.chainId]
+  const safeToL2SetupInterface = Safe_to_l2_setup__factory.createInterface()
+
   // Only do migration if the chain supports multiChain deployments.
   const includeMigration = hasMultiChainCreationFeatures(chain) && semverSatisfies(safeVersion, '>=1.4.1')
 
@@ -238,8 +241,8 @@ export const createNewUndeployedSafeWithoutSalt = (
       threshold: safeAccountConfig.threshold,
       owners: safeAccountConfig.owners,
       fallbackHandler: fallbackHandlerAddress,
-      to: includeMigration ? SAFE_TO_L2_SETUP_ADDRESS : ZERO_ADDRESS,
-      data: includeMigration ? SAFE_TO_L2_SETUP_INTERFACE.encodeFunctionData('setupToL2', [safeL2Address]) : EMPTY_DATA,
+      to: includeMigration && safeToL2SetupAddress ? safeToL2SetupAddress : ZERO_ADDRESS,
+      data: includeMigration ? safeToL2SetupInterface.encodeFunctionData('setupToL2', [safeL2Address]) : EMPTY_DATA,
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     },
     safeVersion,

@@ -29,7 +29,7 @@ import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core
 import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
-import { Multi_send__factory } from '@/types/contracts'
+import { Multi_send__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
 import { toBeHex, AbiCoder } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers'
@@ -40,8 +40,8 @@ import { sameAddress } from './addresses'
 import { isMultiSendCalldata } from './transaction-calldata'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 import { __unsafe_createMultiSendTx } from '@/services/tx/tx-sender'
-import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
 import { getOriginPath } from './url'
+import { getSafeToL2MigrationDeployment } from '@safe-global/safe-deployments'
 
 export const makeTxFromDetails = (txDetails: TransactionDetails): Transaction => {
   const getMissingSigners = ({
@@ -342,10 +342,18 @@ export const prependSafeToL2Migration = (
 
   const safeL2Deployment = getSafeContractDeployment(chain, safe.version)
   const safeL2DeploymentAddress = safeL2Deployment?.networkAddresses[chain.chainId]
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment({ network: chain?.chainId })
 
   if (!safeL2DeploymentAddress) {
     throw new Error('No L2 MasterCopy found')
   }
+
+  if (!safeToL2MigrationDeployment) {
+    throw new Error('No safe to L2 migration contract found')
+  }
+
+  const safeToL2MigrationAddress = safeToL2MigrationDeployment.defaultAddress
+  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
 
   if (sameAddress(safe.implementation.value, safeL2DeploymentAddress)) {
     // Safe already has the correct L2 masterCopy
@@ -364,7 +372,7 @@ export const prependSafeToL2Migration = (
     internalTxs = [{ to: safeTx.data.to, operation: safeTx.data.operation, value: safeTx.data.value, data: txData }]
   }
 
-  if (sameAddress(internalTxs[0]?.to, SAFE_TO_L2_MIGRATION_ADDRESS)) {
+  if (sameAddress(internalTxs[0]?.to, safeToL2MigrationAddress)) {
     // We already migrate. Nothing to do.
     return Promise.resolve(safeTx)
   }
@@ -373,8 +381,8 @@ export const prependSafeToL2Migration = (
   const newTxs: MetaTransactionData[] = [
     {
       operation: 1, // DELEGATE CALL REQUIRED
-      data: SAFE_TO_L2_INTERFACE.encodeFunctionData('migrateToL2', [safeL2DeploymentAddress]),
-      to: SAFE_TO_L2_MIGRATION_ADDRESS,
+      data: safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [safeL2DeploymentAddress]),
+      to: safeToL2MigrationAddress,
       value: '0',
     },
     ...internalTxs,
