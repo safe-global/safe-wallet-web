@@ -6,7 +6,7 @@ import { useRecommendedNonce, useSafeTxGas } from '../tx/SignOrExecuteForm/hooks
 import { Errors, logError } from '@/services/exceptions'
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 
-export const SafeTxContext = createContext<{
+export type SafeTxContextParams = {
   safeTx?: SafeTransaction
   setSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>>
 
@@ -25,7 +25,9 @@ export const SafeTxContext = createContext<{
   setSafeTxGas: Dispatch<SetStateAction<string | undefined>>
 
   recommendedNonce?: number
-}>({
+}
+
+export const SafeTxContext = createContext<SafeTxContextParams>({
   setSafeTx: () => {},
   setSafeMessage: () => {},
   setSafeTxError: () => {},
@@ -59,7 +61,10 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
     if (safeTx.data.nonce === finalNonce && safeTx.data.safeTxGas === finalSafeTxGas) return
 
     createTx({ ...safeTx.data, safeTxGas: String(finalSafeTxGas) }, finalNonce)
-      .then(setSafeTx)
+      .then((tx) => {
+        console.log('SafeTxProvider: Updated tx with nonce and safeTxGas', tx)
+        setSafeTx(tx)
+      })
       .catch(setSafeTxError)
   }, [isSigned, finalNonce, finalSafeTxGas, safeTx?.data])
 

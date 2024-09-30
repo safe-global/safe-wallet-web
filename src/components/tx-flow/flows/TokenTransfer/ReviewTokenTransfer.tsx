@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo } from 'react'
 import useBalances from '@/hooks/useBalances'
-import SignOrExecuteForm, { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import SendAmountBlock from '@/components/tx-flow/flows/TokenTransfer/SendAmountBlock'
 import SendToBlock from '@/components/tx/SendToBlock'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
@@ -8,6 +8,7 @@ import { createTx } from '@/services/tx/tx-sender'
 import type { TokenTransferParams } from '.'
 import { SafeTxContext } from '../../SafeTxProvider'
 import { safeParseUnits } from '@/utils/formatters'
+import type { SubmitCallback } from '@/components/tx/SignOrExecuteForm/SignOrExecuteForm'
 
 const ReviewTokenTransfer = ({
   params,
