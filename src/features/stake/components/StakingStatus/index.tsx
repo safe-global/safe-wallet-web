@@ -1,12 +1,13 @@
-import { NativeStakingExitStatus, NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { NativeStakingStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import { SvgIcon } from '@mui/material'
 import CheckIcon from '@/public/images/common/circle-check.svg'
 import ClockIcon from '@/public/images/common/clock.svg'
+import SlashShield from '@/public/images/common/shield-off.svg'
 import SignatureIcon from '@/public/images/common/document_signature.svg'
 import TxStatusChip, { type TxStatusChipProps } from '@/components/transactions/TxStatusChip'
 
 const ColorIcons: Record<
-  NativeStakingStatus | NativeStakingExitStatus,
+  NativeStakingStatus,
   | {
       color: TxStatusChipProps['color']
       icon?: React.ComponentType
@@ -14,47 +15,46 @@ const ColorIcons: Record<
     }
   | undefined
 > = {
-  [NativeStakingStatus.AWAITING_ENTRY]: {
+  [NativeStakingStatus.NOT_STAKED]: {
+    color: 'warning',
+    icon: SignatureIcon,
+    text: 'Inactive',
+  },
+  [NativeStakingStatus.ACTIVATING]: {
     color: 'info',
     icon: ClockIcon,
     text: 'Activating',
   },
-  [NativeStakingStatus.REQUESTED_EXIT]: {
+  [NativeStakingStatus.DEPOSIT_IN_PROGRESS]: {
+    color: 'info',
+    icon: ClockIcon,
+    text: 'Awaiting entry',
+  },
+  [NativeStakingStatus.ACTIVE]: {
+    color: 'success',
+    icon: CheckIcon,
+    text: 'Validating',
+  },
+  [NativeStakingStatus.EXIT_REQUESTED]: {
     color: 'info',
     icon: ClockIcon,
     text: 'Requested exit',
   },
-  [NativeStakingStatus.SIGNATURE_NEEDED]: {
-    color: 'warning',
-    icon: SignatureIcon,
-    text: 'Signature needed',
-  },
-  [NativeStakingStatus.AWAITING_EXECUTION]: {
-    color: 'warning',
-    icon: ClockIcon,
-    text: 'Awaiting execution',
-  },
-  [NativeStakingStatus.VALIDATION_STARTED]: {
-    color: 'success',
-    icon: CheckIcon,
-    text: 'Validation started',
-  },
-  [NativeStakingStatus.WITHDRAWN]: {
-    color: 'success',
-    icon: CheckIcon,
-    text: 'Withdrawn',
-  },
-  [NativeStakingExitStatus.READY_TO_WITHDRAW]: {
-    color: 'success',
-    icon: CheckIcon,
-    text: 'Ready to withdraw',
-  },
-  [NativeStakingExitStatus.REQUEST_PENDING]: {
+  [NativeStakingStatus.EXITING]: {
     color: 'info',
     icon: ClockIcon,
     text: 'Request pending',
   },
-  [NativeStakingStatus.UNKNOWN]: undefined,
+  [NativeStakingStatus.EXITED]: {
+    color: 'success',
+    icon: CheckIcon,
+    text: 'Withdrawn',
+  },
+  [NativeStakingStatus.SLASHED]: {
+    color: 'warning',
+    icon: SlashShield,
+    text: 'Slashed',
+  },
 }
 
 const capitalizedStatus = (status: string) =>
@@ -63,7 +63,7 @@ const capitalizedStatus = (status: string) =>
     .replace(/_/g, ' ')
     .replace(/^\w/g, (l) => l.toUpperCase())
 
-const StakingStatus = ({ status }: { status: NativeStakingStatus | NativeStakingExitStatus }) => {
+const StakingStatus = ({ status }: { status: NativeStakingStatus }) => {
   const config = ColorIcons[status]
 
   return (

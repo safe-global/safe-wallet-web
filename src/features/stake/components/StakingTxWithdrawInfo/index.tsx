@@ -5,7 +5,7 @@ const StakingTxWithdrawInfo = ({ info }: { info: StakingTxWithdrawInfo }) => {
   return (
     <>
       <TokenAmount
-        value={info.rewards}
+        value={info.value}
         tokenSymbol={info.tokenInfo.symbol}
         decimals={info.tokenInfo.decimals}
         logoUri={info.tokenInfo.logoUri}

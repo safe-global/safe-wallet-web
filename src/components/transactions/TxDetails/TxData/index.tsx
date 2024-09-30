@@ -49,7 +49,7 @@ const TxData = ({
   }
 
   if (isStakingTxExitInfo(txDetails.txInfo)) {
-    return <StakingTxExitDetails txData={txDetails.txData} info={txDetails.txInfo} />
+    return <StakingTxExitDetails info={txDetails.txInfo} />
   }
 
   if (isStakingTxWithdrawInfo(txDetails.txInfo)) {

@@ -64,7 +64,6 @@ function UpsertRecoveryFlow({ delayModifier }: { delayModifier?: RecoveryState[n
       onBack={prevStep}
       hideNonce={isIntro}
       hideProgress={isIntro}
-      isRecovery={!isIntro}
     >
       {steps}
     </TxLayout>
