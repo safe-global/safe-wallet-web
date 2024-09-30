@@ -1,5 +1,5 @@
 import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { Interface, type Eip1193Provider, type Provider } from 'ethers'
+import { type Eip1193Provider, type Provider } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 
 import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
@@ -25,7 +25,7 @@ import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 import type { ReplayedSafeProps, UndeployedSafeProps } from '@/store/slices'
 import { activateReplayedSafe, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import { getSafeContractDeployment } from '@/services/contracts/deployments'
-import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
+import { Safe__factory, Safe_proxy_factory__factory, Safe_to_l2_setup__factory } from '@/types/contracts'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { hasMultiChainCreationFeatures } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 
@@ -225,9 +225,9 @@ export const createNewUndeployedSafeWithoutSalt = (
     throw new Error('No Safe deployment found')
   }
 
-  const safeToL2SetupDeployment = getSafeToL2SetupDeployment({ version: safeVersion, network: chain.chainId })
-  const safeToL2SetupAddress = safeToL2SetupDeployment?.defaultAddress
-  const safeToL2SetupInterface = safeToL2SetupDeployment && new Interface(safeToL2SetupDeployment?.abi)
+  const safeToL2SetupDeployment = getSafeToL2SetupDeployment({ version: '1.4.1', network: chain.chainId })
+  const safeToL2SetupAddress = safeToL2SetupDeployment?.networkAddresses[chain.chainId]
+  const safeToL2SetupInterface = Safe_to_l2_setup__factory.createInterface()
 
   // Only do migration if the chain supports multiChain deployments.
   const includeMigration = hasMultiChainCreationFeatures(chain) && semverSatisfies(safeVersion, '>=1.4.1')

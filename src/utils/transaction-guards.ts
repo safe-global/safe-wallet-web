@@ -57,8 +57,9 @@ import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimi
 import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
-import { ethers, Interface } from 'ethers'
+import { ethers } from 'ethers'
 import { getSafeToL2MigrationDeployment } from '@safe-global/safe-deployments'
+import { Safe_to_l2_migration__factory } from '@/types/contracts'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -90,12 +91,10 @@ export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): va
 export const isMigrateToL2TxData = (value: TransactionData | undefined): boolean => {
   const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
   const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
-  const safeToL2SetupInterface = safeToL2MigrationDeployment
-    ? new Interface(safeToL2MigrationDeployment?.abi)
-    : undefined
+  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
 
   if (sameAddress(value?.to.value, safeToL2MigrationAddress)) {
-    const migrateToL2Selector = safeToL2SetupInterface?.getFunction('migrateToL2')?.selector
+    const migrateToL2Selector = safeToL2MigrationInterface?.getFunction('migrateToL2')?.selector
     return migrateToL2Selector && value?.hexData ? value.hexData?.startsWith(migrateToL2Selector) : false
   }
   return false

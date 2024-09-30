@@ -29,8 +29,8 @@ import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core
 import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
-import { Multi_send__factory } from '@/types/contracts'
-import { toBeHex, AbiCoder, Interface } from 'ethers'
+import { Multi_send__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
+import { toBeHex, AbiCoder } from 'ethers'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
@@ -353,7 +353,7 @@ export const prependSafeToL2Migration = (
   }
 
   const safeToL2MigrationAddress = safeToL2MigrationDeployment.defaultAddress
-  const safeToL2SetupInterface = new Interface(safeToL2MigrationDeployment.abi)
+  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
 
   if (sameAddress(safe.implementation.value, safeL2DeploymentAddress)) {
     // Safe already has the correct L2 masterCopy
@@ -381,7 +381,7 @@ export const prependSafeToL2Migration = (
   const newTxs: MetaTransactionData[] = [
     {
       operation: 1, // DELEGATE CALL REQUIRED
-      data: safeToL2SetupInterface.encodeFunctionData('migrateToL2', [safeL2DeploymentAddress]),
+      data: safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [safeL2DeploymentAddress]),
       to: safeToL2MigrationAddress,
       value: '0',
     },
