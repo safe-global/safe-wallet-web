@@ -1,4 +1,3 @@
-import { Interface } from 'ethers'
 import chains from './chains'
 
 export const IS_PRODUCTION = process.env.NEXT_PUBLIC_IS_PRODUCTION === 'true'
@@ -110,11 +109,5 @@ export const REDEFINE_ARTICLE = 'https://safe.mirror.xyz/rInLWZwD_sf7enjoFerj6FI
 
 export const CHAINALYSIS_OFAC_CONTRACT = '0x40c57923924b5c5c5455c48d93317139addac8fb'
 
-// TODO: Get from safe-deployments once available
-export const SAFE_TO_L2_MIGRATION_ADDRESS = '0x7Baec386CAF8e02B0BB4AFc98b4F9381EEeE283C'
-export const SAFE_TO_L2_INTERFACE = new Interface(['function migrateToL2(address l2Singleton)'])
-
 export const ECOSYSTEM_ID_ADDRESS =
   process.env.NEXT_PUBLIC_ECOSYSTEM_ID_ADDRESS || '0x0000000000000000000000000000000000000000'
-
-export const SAFE_TO_L2_SETUP_ADDRESS = '0x80E0d1577aD3d982BF2F49aAB00BfA161AA763c4'

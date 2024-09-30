@@ -4279,7 +4279,14 @@
   dependencies:
     abitype "^1.0.2"
 
-"@safe-global/safe-deployments@^1.37.3", "@safe-global/safe-deployments@^1.37.8":
+"@safe-global/safe-deployments@^1.37.10":
+  version "1.37.10"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.10.tgz#2f61a25bd479332821ba2e91a575237d77406ec3"
+  integrity sha512-lcxX9CV+xdcLs4dF6Cx18zDww5JyqaX6RdcvU0o/34IgJ4Wjo3J/RNzJAoMhurCAfTGr+0vyJ9V13Qo50AR6JA==
+  dependencies:
+    semver "^7.6.2"
+
+"@safe-global/safe-deployments@^1.37.3":
   version "1.37.8"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.8.tgz#5d51a57e4c3a9274ce09d8fe7fbe1265a1aaf4c4"
   integrity sha512-BT34eqSJ1K+4xJgJVY3/Yxg8TRTEvFppkt4wcirIPGCgR4/j06HptHPyDdmmqTuvih8wi8OpFHi0ncP+cGlXWA==

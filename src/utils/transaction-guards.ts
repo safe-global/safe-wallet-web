@@ -58,7 +58,8 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
-import { SAFE_TO_L2_MIGRATION_ADDRESS, SAFE_TO_L2_INTERFACE } from '@/config/constants'
+import { getSafeToL2MigrationDeployment } from '@safe-global/safe-deployments'
+import { Safe_to_l2_migration__factory } from '@/types/contracts'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -88,8 +89,12 @@ export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): va
 }
 
 export const isMigrateToL2TxData = (value: TransactionData | undefined): boolean => {
-  if (sameAddress(value?.to.value, SAFE_TO_L2_MIGRATION_ADDRESS)) {
-    const migrateToL2Selector = SAFE_TO_L2_INTERFACE.getFunction('migrateToL2')?.selector
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
+  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
+
+  if (sameAddress(value?.to.value, safeToL2MigrationAddress)) {
+    const migrateToL2Selector = safeToL2MigrationInterface?.getFunction('migrateToL2')?.selector
     return migrateToL2Selector && value?.hexData ? value.hexData?.startsWith(migrateToL2Selector) : false
   }
   return false
@@ -100,12 +105,15 @@ export const isMigrateToL2MultiSend = (decodedData: DecodedDataResponse | undefi
     const innerTxs = decodedData.parameters[0].valueDecoded
     const firstInnerTx = innerTxs[0]
     if (firstInnerTx) {
+      const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+      const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
+
       return (
         firstInnerTx.dataDecoded?.method === 'migrateToL2' &&
         firstInnerTx.dataDecoded.parameters.length === 1 &&
         firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address' &&
         typeof firstInnerTx.dataDecoded?.parameters[0].value === 'string' &&
-        sameAddress(firstInnerTx.to, SAFE_TO_L2_MIGRATION_ADDRESS)
+        sameAddress(firstInnerTx.to, safeToL2MigrationAddress)
       )
     }
   }
@@ -149,7 +157,10 @@ export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
 }
 
 export const isMigrateToL2TxInfo = (value: TransactionInfo): value is Custom => {
-  return isCustomTxInfo(value) && sameAddress(value.to.value, SAFE_TO_L2_MIGRATION_ADDRESS)
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
+
+  return isCustomTxInfo(value) && sameAddress(value.to.value, safeToL2MigrationAddress)
 }
 
 export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
