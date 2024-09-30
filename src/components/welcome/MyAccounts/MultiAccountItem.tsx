@@ -1,4 +1,5 @@
 import { selectUndeployedSafes } from '@/features/counterfactual/store/undeployedSafesSlice'
+import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useCallback, useMemo, useState } from 'react'
 import {
@@ -24,7 +25,6 @@ import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import FiatValue from '@/components/common/FiatValue'
 import { type MultiChainSafeItem } from './useAllSafesGrouped'
-import MultiChainIcon from '@/public/images/sidebar/multichain-account.svg'
 import { shortenAddress } from '@/utils/formatters'
 import { type SafeItem } from './useAllSafes'
 import SubAccountItem from './SubAccountItem'
@@ -58,8 +58,8 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
       }
       arrow
     >
-      <Box height="26px">
-        <MultiChainIcon />
+      <Box className={css.multiChains}>
+        <NetworkLogosList networks={safes} showHasMore />
       </Box>
     </Tooltip>
   )
@@ -143,7 +143,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
           onClick={toggleExpand}
           sx={{
             pl: 0,
-            '& .MuiAccordionSummary-content': { m: 0, alignItems: 'center' },
+            '& .MuiAccordionSummary-content': { m: '0 !important', alignItems: 'center' },
             '&.Mui-expanded': { backgroundColor: 'transparent !important' },
           }}
         >
@@ -161,14 +161,14 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
                 {shortenAddress(address)}
               </Typography>
             </Typography>
-            <Typography variant="body2" fontWeight="bold" textAlign="right" pr={4}>
+            <MultichainIndicator safes={safes} />
+            <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
               {totalFiatValue !== undefined ? (
                 <FiatValue value={totalFiatValue} />
               ) : (
                 <Skeleton variant="text" sx={{ ml: 'auto' }} />
               )}
             </Typography>
-            <MultichainIndicator safes={safes} />
           </Box>
           <MultiAccountContextMenu name={name ?? ''} address={address} chainIds={deployedChains} />
         </AccordionSummary>

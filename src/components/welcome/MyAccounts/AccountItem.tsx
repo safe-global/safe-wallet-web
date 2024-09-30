@@ -122,15 +122,15 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
             )}
           </Typography>
 
-          <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
+          <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
+
+          <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
             {safeOverview ? (
               <FiatValue value={safeOverview.fiatTotal} />
             ) : undeployedSafe ? null : (
-              <Skeleton variant="text" />
+              <Skeleton variant="text" sx={{ ml: 'auto' }} />
             )}
           </Typography>
-
-          <ChainIndicator chainId={chainId} responsive />
         </Link>
       </Track>
 
