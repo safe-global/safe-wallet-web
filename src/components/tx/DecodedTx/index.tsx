@@ -45,7 +45,6 @@ const DecodedTx = ({
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
   const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
 
-  console.log('DecodedTx', tx, txId, decodedData, isMultisend, showMultisend, showMethodCall, isMethodCallInAdvanced)
   const {
     data: txDetails,
     error: txDetailsError,
