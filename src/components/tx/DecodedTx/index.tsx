@@ -45,6 +45,7 @@ const DecodedTx = ({
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
   const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
 
+  console.log('DecodedTx', tx, txId, decodedData, isMultisend, showMultisend, showMethodCall, isMethodCallInAdvanced)
   const {
     data: txDetails,
     error: txDetailsError,
@@ -114,7 +115,15 @@ const DecodedTx = ({
               </>
             )}
 
-            {txDetails ? <Summary txDetails={txDetails} defaultExpanded /> : tx && <PartialSummary safeTx={tx} />}
+            {txDetails ? (
+              <Summary
+                txDetails={txDetails}
+                defaultExpanded
+                hideDecodedData={isMethodCallInAdvanced && !!decodedData?.method}
+              />
+            ) : (
+              tx && <PartialSummary safeTx={tx} />
+            )}
 
             {txDetailsLoading && <Skeleton />}
 
