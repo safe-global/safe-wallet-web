@@ -74,7 +74,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error for legacy counterfactual Safes', async () => {
+  it('should throw an error for legacy counterfactual Safes', async () => {
     const safeAddress = faker.finance.ethereumAddress()
     const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
     const undeployedSafe = {
@@ -110,7 +110,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if creation data cannot be found', async () => {
+  it('should throw an error if creation data cannot be found', async () => {
     jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
       response: new Response(),
       data: undefined,
@@ -127,7 +127,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if Safe creation data is incomplete', async () => {
+  it('should throw an error if Safe creation data is incomplete', async () => {
     jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
       data: {
         created: new Date(Date.now()).toISOString(),
@@ -151,7 +151,31 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if outdated masterCopy is being used', async () => {
+  it('should throw an error if Safe setupData is empty', async () => {
+    jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
+      data: {
+        created: new Date(Date.now()).toISOString(),
+        creator: faker.finance.ethereumAddress(),
+        factoryAddress: faker.finance.ethereumAddress(),
+        transactionHash: faker.string.hexadecimal({ length: 64 }),
+        masterCopy: faker.finance.ethereumAddress(),
+        setupData: '0x',
+      },
+      response: new Response(),
+    })
+
+    const safeAddress = faker.finance.ethereumAddress()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
+
+    // Run hook
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
+
+    await waitFor(() => {
+      expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.NO_CREATION_DATA), false])
+    })
+  })
+
+  it('should throw an error if outdated masterCopy is being used', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
@@ -190,7 +214,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if unknown masterCopy is being used', async () => {
+  it('should throw an error if unknown masterCopy is being used', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
@@ -229,7 +253,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if the Safe creation uses reimbursement', async () => {
+  it('should throw an error if the Safe creation uses reimbursement', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
@@ -264,7 +288,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if RPC could not be created', async () => {
+  it('should throw an error if RPC could not be created', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
@@ -301,7 +325,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if RPC cannot find the tx hash', async () => {
+  it('should throw an error if RPC cannot find the tx hash', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
@@ -398,7 +422,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if the setup data does not match', async () => {
+  it('should throw an error if the setup data does not match', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
@@ -463,7 +487,7 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw error if the masterCopies do not match', async () => {
+  it('should throw an error if the masterCopies do not match', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
