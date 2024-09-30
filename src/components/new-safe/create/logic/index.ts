@@ -242,10 +242,7 @@ export const createNewUndeployedSafeWithoutSalt = (
       owners: safeAccountConfig.owners,
       fallbackHandler: fallbackHandlerAddress,
       to: includeMigration && safeToL2SetupAddress ? safeToL2SetupAddress : ZERO_ADDRESS,
-      data:
-        includeMigration && safeToL2SetupInterface
-          ? safeToL2SetupInterface.encodeFunctionData('setupToL2', [safeL2Address])
-          : EMPTY_DATA,
+      data: includeMigration ? safeToL2SetupInterface.encodeFunctionData('setupToL2', [safeL2Address]) : EMPTY_DATA,
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     },
     safeVersion,
