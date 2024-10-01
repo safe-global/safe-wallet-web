@@ -49,19 +49,19 @@ export const MigrationToL2TxData = ({ txDetails }: { txDetails: TransactionDetai
       }
       return createTx({
         to: execTxArgs[0],
-        value: execTxArgs[1],
+        value: execTxArgs[1].toString(),
         data: execTxArgs[2],
-        operation: execTxArgs[3],
-        safeTxGas: execTxArgs[4],
-        baseGas: execTxArgs[5],
-        gasPrice: execTxArgs[6],
-        gasToken: execTxArgs[7],
+        operation: Number(execTxArgs[3]),
+        safeTxGas: execTxArgs[4].toString(),
+        baseGas: execTxArgs[5].toString(),
+        gasPrice: execTxArgs[6].toString(),
+        gasToken: execTxArgs[7].toString(),
         refundReceiver: execTxArgs[8],
       })
     }
   }, [readOnlyProvider, txDetails.txHash, chain, safe.version, sdk])
 
-  const [decodedRealTx] = useDecodeTx(realSafeTx)
+  const [decodedRealTx, decodedRealTxError] = useDecodeTx(realSafeTx)
 
   const decodedDataUnavailable = !realSafeTx && !realSafeTxLoading
 
@@ -70,6 +70,8 @@ export const MigrationToL2TxData = ({ txDetails }: { txDetails: TransactionDetai
       <MigrateToL2Information variant="history" />
       {realSafeTxError ? (
         <ErrorMessage>{realSafeTxError.message}</ErrorMessage>
+      ) : decodedRealTxError ? (
+        <ErrorMessage>{decodedRealTxError.message}</ErrorMessage>
       ) : decodedDataUnavailable ? (
         <DecodedData txData={txDetails.txData} />
       ) : (
