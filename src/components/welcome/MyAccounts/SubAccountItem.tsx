@@ -62,7 +62,7 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
       className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe }, css.subItem)}
     >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
-        <Link onClick={onLinkClick} href={href} className={css.safeLink}>
+        <Link onClick={onLinkClick} href={href} className={css.safeSubLink}>
           <Box pr={2.5}>
             <SafeIcon
               address={address}
