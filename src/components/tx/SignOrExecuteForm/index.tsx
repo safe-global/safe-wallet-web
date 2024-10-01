@@ -27,7 +27,7 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isCustomTxInfo, isGenericConfirmation, isMigrateToL2MultiSend } from '@/utils/transaction-guards'
+import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
 import { Blockaid } from '../security/blockaid'
@@ -115,8 +115,8 @@ export const SignOrExecuteForm = ({
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
-  const isMultiChainMigration = isMigrateToL2MultiSend(decodedData)
-  const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(decodedData)
+  const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(safeTx)
+  const isMultiChainMigration = !!multiChainMigrationTarget
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
   const roles = useRoles(
