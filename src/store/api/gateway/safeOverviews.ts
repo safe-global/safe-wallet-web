@@ -5,6 +5,7 @@ import { sameAddress } from '@/utils/addresses'
 import type { RootState } from '../..'
 import { selectCurrency } from '../../settingsSlice'
 import { type SafeItem } from '@/components/welcome/MyAccounts/useAllSafes'
+import { asError } from '@/services/exceptions/utils'
 
 type SafeOverviewQueueItem = {
   safeAddress: string
@@ -125,22 +126,25 @@ export const safeOverviewEndpoints = (
     'gatewayApi'
   >,
 ) => ({
-  getSafeOverview: builder.query<
-    SafeOverview | undefined,
-    { safeAddress: string; walletAddress?: string; chainId: string }
-  >({
-    async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {
-      const state = getState()
-      const currency = selectCurrency(state as RootState)
+  getSafeOverview: builder.query<SafeOverview | null, { safeAddress: string; walletAddress?: string; chainId: string }>(
+    {
+      async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {
+        const state = getState() as RootState
+        const currency = selectCurrency(state)
 
-      try {
-        const safeOverview = await batchedFetcher.getOverview({ chainId, currency, walletAddress, safeAddress })
-        return { data: safeOverview }
-      } catch (error) {
-        return { error: { status: 'CUSTOM_ERROR', error: (error as Error).message } }
-      }
+        if (!safeAddress) {
+          return { data: null }
+        }
+
+        try {
+          const safeOverview = await batchedFetcher.getOverview({ chainId, currency, walletAddress, safeAddress })
+          return { data: safeOverview ?? null }
+        } catch (error) {
+          return { error: { status: 'CUSTOM_ERROR', error: asError(error).message } }
+        }
+      },
     },
-  }),
+  ),
   getMultipleSafeOverviews: builder.query<SafeOverview[], MultiOverviewQueryParams>({
     async queryFn(params) {
       const { safes, walletAddress, currency } = params

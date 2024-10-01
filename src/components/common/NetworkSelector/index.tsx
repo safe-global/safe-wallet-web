@@ -40,6 +40,8 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import { hasMultiChainAddNetworkFeature } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
+import { selectUndeployedSafe } from '@/store/slices'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 const ChainIndicatorWithFiatBalance = ({
   isSelected,
@@ -50,7 +52,10 @@ const ChainIndicatorWithFiatBalance = ({
   chain: ChainInfo
   safeAddress: string
 }) => {
-  const { data: safeOverview } = useGetSafeOverviewQuery({ safeAddress, chainId: chain.chainId })
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chain.chainId, safeAddress))
+  const { data: safeOverview } = useGetSafeOverviewQuery(
+    undeployedSafe ? skipToken : { safeAddress, chainId: chain.chainId },
+  )
 
   return (
     <ChainIndicator
