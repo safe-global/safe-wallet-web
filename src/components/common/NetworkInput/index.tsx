@@ -8,7 +8,6 @@ import css from './styles.module.css'
 import { type ReactElement, useCallback, useMemo } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { hasMultiChainAddNetworkFeature } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 
 const NetworkInput = ({
   name,
@@ -27,11 +26,10 @@ const NetworkInput = ({
   const renderMenuItem = useCallback(
     (chainId: string, isDisabled: boolean) => {
       const chain = chainConfigs.find((chain) => chain.chainId === chainId)
-      const addNetworkFeatureDisabled = chain && !hasMultiChainAddNetworkFeature(chain)
       if (!chain) return null
       return (
         <MenuItem
-          disabled={isDisabled || addNetworkFeatureDisabled}
+          disabled={isDisabled}
           key={chainId}
           value={chainId}
           sx={{ '&:hover': { backgroundColor: 'inherit' } }}

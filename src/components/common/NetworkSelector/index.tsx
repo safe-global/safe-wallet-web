@@ -103,7 +103,7 @@ const UndeployedNetworkMenuItem = ({
   isSelected?: boolean
   onSelect: (chain: ChainInfo) => void
 }) => {
-  const isDisabled = !chain.available || !hasMultiChainAddNetworkFeature(chain)
+  const isDisabled = !chain.available
 
   return (
     <Track {...OVERVIEW_EVENTS.ADD_NEW_NETWORK} label={OVERVIEW_LABELS.top_bar}>
@@ -175,7 +175,10 @@ const UndeployedNetworks = ({
   const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
 
   const availableNetworks = useMemo(
-    () => allCompatibleChains?.filter((config) => !deployedChains.includes(config.chainId)) || [],
+    () =>
+      allCompatibleChains?.filter(
+        (config) => !deployedChains.includes(config.chainId) && hasMultiChainAddNetworkFeature(config),
+      ) || [],
     [allCompatibleChains, deployedChains],
   )
 
