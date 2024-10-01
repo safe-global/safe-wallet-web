@@ -196,7 +196,7 @@ const UndeployedNetworks = ({
       <Stack direction="row" spacing={1} alignItems="center">
         {safeCreationDataError?.message && (
           <Tooltip title={safeCreationDataError?.message}>
-            <InfoOutlined color="info" fontSize="small" />
+            <InfoOutlined color="info" fontSize="medium" />
           </Tooltip>
         )}
         <Typography>Adding another network is not possible for this Safe. </Typography>
