@@ -64,9 +64,11 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
     : undefined
 
-  const multichainEnabled = hasMultiChainAddNetworkFeature(chain)
+  const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
   const isReplayable =
-    multichainEnabled && !safeItem.isWatchlist && (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
+    addNetworkFeatureEnabled &&
+    !safeItem.isWatchlist &&
+    (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
   const { data: safeOverview } = useGetSafeOverviewQuery(
     undeployedSafe
