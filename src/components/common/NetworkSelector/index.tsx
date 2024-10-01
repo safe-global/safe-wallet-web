@@ -20,7 +20,7 @@ import {
 } from '@mui/material'
 import partition from 'lodash/partition'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useChains from '@/hooks/useChains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
 import type { NextRouter } from 'next/router'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
@@ -169,8 +169,6 @@ const UndeployedNetworks = ({
   const allCompatibleChains = useCompatibleNetworks(safeCreationData)
   const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
 
-  const multichainDisabled = deployedChainInfos.length === 1 && !hasMultiChainAddNetworkFeature(deployedChainInfos[0])
-
   const availableNetworks = useMemo(
     () => allCompatibleChains?.filter((config) => !deployedChains.includes(config.chainId)) || [],
     [allCompatibleChains, deployedChains],
@@ -196,7 +194,7 @@ const UndeployedNetworks = ({
   }
 
   const errorMessage =
-    safeCreationDataError || (safeCreationData && noAvailableNetworks) || multichainDisabled
+    safeCreationDataError || (safeCreationData && noAvailableNetworks)
       ? 'Adding another network is not possible for this Safe.'
       : isUnsupportedSafeCreationVersion
       ? 'This account was created from an outdated mastercopy. Adding another network is not possible.'
@@ -276,9 +274,12 @@ const NetworkSelector = ({
   const chainId = useChainId()
   const router = useRouter()
   const safeAddress = useSafeAddress()
+  const currentChain = useCurrentChain()
   const chains = useAppSelector(selectChains)
 
   const isSafeOpened = safeAddress !== ''
+
+  const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(currentChain)
 
   const safesGrouped = useAllSafesGrouped()
   const availableChainIds = useMemo(() => {
@@ -375,7 +376,7 @@ const NetworkSelector = ({
 
       {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
 
-      {offerSafeCreation && isSafeOpened && (
+      {offerSafeCreation && isSafeOpened && addNetworkFeatureEnabled && (
         <UndeployedNetworks
           chains={configs}
           deployedChains={availableChainIds}
