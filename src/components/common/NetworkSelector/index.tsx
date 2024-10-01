@@ -40,6 +40,8 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import { InfoOutlined } from '@mui/icons-material'
+import { selectUndeployedSafe } from '@/store/slices'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 const ChainIndicatorWithFiatBalance = ({
   isSelected,
@@ -50,7 +52,10 @@ const ChainIndicatorWithFiatBalance = ({
   chain: ChainInfo
   safeAddress: string
 }) => {
-  const { data: safeOverview } = useGetSafeOverviewQuery({ safeAddress, chainId: chain.chainId })
+  const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chain.chainId, safeAddress))
+  const { data: safeOverview } = useGetSafeOverviewQuery(
+    undeployedSafe ? skipToken : { safeAddress, chainId: chain.chainId },
+  )
 
   return (
     <ChainIndicator
@@ -102,23 +107,25 @@ const UndeployedNetworkMenuItem = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.ADD_NEW_NETWORK} label={OVERVIEW_LABELS.top_bar}>
-      <MenuItem
-        value={chain.chainId}
-        sx={{ '&:hover': { backgroundColor: 'inherit' } }}
-        onClick={() => onSelect(chain)}
-        disabled={isDisabled}
-      >
-        <Box className={css.item}>
-          <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
-          {isDisabled ? (
-            <Typography variant="caption" component="span" className={css.comingSoon}>
-              Not available
-            </Typography>
-          ) : (
-            <PlusIcon className={css.plusIcon} />
-          )}
-        </Box>
-      </MenuItem>
+      <Tooltip title="Add network" arrow placement="left">
+        <MenuItem
+          value={chain.chainId}
+          sx={{ '&:hover': { backgroundColor: 'inherit' } }}
+          onClick={() => onSelect(chain)}
+          disabled={isDisabled}
+        >
+          <Box className={css.item}>
+            <ChainIndicator responsive={isSelected} chainId={chain.chainId} inline />
+            {isDisabled ? (
+              <Typography variant="caption" component="span" className={css.comingSoon}>
+                Not available
+              </Typography>
+            ) : (
+              <PlusIcon className={css.plusIcon} />
+            )}
+          </Box>
+        </MenuItem>
+      </Tooltip>
     </Track>
   )
 }

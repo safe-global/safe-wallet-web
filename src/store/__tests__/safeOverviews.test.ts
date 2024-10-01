@@ -13,6 +13,22 @@ describe('safeOverviews', () => {
   })
 
   describe('useGetSafeOverviewQuery', () => {
+    it('should return null for empty safe Address', async () => {
+      const request = { chainId: '1', safeAddress: '' }
+      const { result } = renderHook(() => useGetSafeOverviewQuery(request))
+
+      // Request should get queued and remain loading for the queue seconds
+      expect(result.current.isLoading).toBeTruthy()
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBeFalsy()
+        expect(result.current.error).toBeUndefined()
+        expect(result.current.data).toBeNull()
+      })
+
+      expect(mockedGetSafeOverviews).not.toHaveBeenCalled()
+    })
+
     it('should return an error if fetching fails', async () => {
       const request = { chainId: '1', safeAddress: faker.finance.ethereumAddress() }
       mockedGetSafeOverviews.mockRejectedValueOnce('Service unavailable')
@@ -26,6 +42,25 @@ describe('safeOverviews', () => {
         expect(result.current.isLoading).toBeFalsy()
         expect(result.current.error).toBeDefined()
         expect(result.current.data).toBeUndefined()
+      })
+    })
+
+    it('should return null if safeOverview is not found for a given Safe', async () => {
+      const request = { chainId: '1', safeAddress: faker.finance.ethereumAddress() }
+      mockedGetSafeOverviews.mockResolvedValueOnce([])
+
+      const { result } = renderHook(() => useGetSafeOverviewQuery(request))
+
+      // Request should get queued and remain loading for the queue seconds
+      expect(result.current.isLoading).toBeTruthy()
+
+      await Promise.resolve()
+
+      await waitFor(() => {
+        expect(mockedGetSafeOverviews).toHaveBeenCalled()
+        expect(result.current.isLoading).toBeFalsy()
+        expect(result.current.error).toBeUndefined()
+        expect(result.current.data).toEqual(null)
       })
     })
 
