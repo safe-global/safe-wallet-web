@@ -169,6 +169,8 @@ const UndeployedNetworks = ({
   const allCompatibleChains = useCompatibleNetworks(safeCreationData)
   const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
 
+  const multichainDisabled = deployedChainInfos.length === 1 && !hasMultiChainAddNetworkFeature(deployedChainInfos[0])
+
   const availableNetworks = useMemo(
     () => allCompatibleChains?.filter((config) => !deployedChains.includes(config.chainId)) || [],
     [allCompatibleChains, deployedChains],
@@ -194,7 +196,7 @@ const UndeployedNetworks = ({
   }
 
   const errorMessage =
-    safeCreationDataError || (safeCreationData && noAvailableNetworks)
+    safeCreationDataError || (safeCreationData && noAvailableNetworks) || multichainDisabled
       ? 'Adding another network is not possible for this Safe.'
       : isUnsupportedSafeCreationVersion
       ? 'This account was created from an outdated mastercopy. Adding another network is not possible.'
