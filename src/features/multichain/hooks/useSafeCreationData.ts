@@ -12,6 +12,7 @@ import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { asError } from '@/services/exceptions/utils'
 import semverSatisfies from 'semver/functions/satisfies'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { getSafeToL2SetupDeployment } from '@safe-global/safe-deployments'
 
 export const SAFE_CREATION_DATA_ERRORS = {
   TX_NOT_FOUND: 'The Safe creation transaction could not be found. Please retry later.',
@@ -22,6 +23,7 @@ export const SAFE_CREATION_DATA_ERRORS = {
   PAYMENT_SAFE: 'The Safe creation used reimbursement. Adding networks to such Safes is not supported.',
   UNSUPPORTED_IMPLEMENTATION:
     'The Safe was created using an unsupported or outdated implementation. Adding networks to this Safe is not possible.',
+  UNKNOWN_SETUP_MODULES: 'The Safe creation is using an unknown internal call',
 }
 
 export const decodeSetupData = (setupData: string): ReplayedSafeProps['safeAccountConfig'] => {
@@ -91,6 +93,12 @@ const getCreationDataForChain = async (
   // Safes that used the reimbursement logic are not supported
   if ((safeAccountConfig.payment && safeAccountConfig.payment > 0) || safeAccountConfig.paymentToken !== ZERO_ADDRESS) {
     throw new Error(SAFE_CREATION_DATA_ERRORS.PAYMENT_SAFE)
+  }
+
+  const setupToL2Address = getSafeToL2SetupDeployment({ version: '1.4.1' })?.defaultAddress
+  if (safeAccountConfig.to !== ZERO_ADDRESS && !sameAddress(safeAccountConfig.to, setupToL2Address)) {
+    // Unknown setupModules calls cannot be replayed as the target contract is likely not deployed across chains
+    throw new Error(SAFE_CREATION_DATA_ERRORS.UNKNOWN_SETUP_MODULES)
   }
 
   // We need to create a readOnly provider of the deployed chain

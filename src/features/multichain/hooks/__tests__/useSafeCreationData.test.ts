@@ -12,8 +12,10 @@ import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
 import { type JsonRpcProvider } from 'ethers'
 import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
+import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
+import { getSafeSingletonDeployment, getSafeToL2SetupDeployment } from '@safe-global/safe-deployments'
+
+const setupToL2Address = getSafeToL2SetupDeployment({ version: '1.4.1' })?.defaultAddress!
 
 describe('useSafeCreationData', () => {
   beforeAll(() => {
@@ -46,7 +48,7 @@ describe('useSafeCreationData', () => {
           owners: [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
           threshold: 1,
           data: faker.string.hexadecimal({ length: 64 }),
-          to: faker.finance.ethereumAddress(),
+          to: setupToL2Address,
           fallbackHandler: faker.finance.ethereumAddress(),
           payment: 0,
           paymentToken: ZERO_ADDRESS,
@@ -179,7 +181,7 @@ describe('useSafeCreationData', () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
-      faker.finance.ethereumAddress(),
+      setupToL2Address,
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
       faker.finance.ethereumAddress(),
@@ -218,8 +220,8 @@ describe('useSafeCreationData', () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
-      faker.finance.ethereumAddress(),
-      faker.string.hexadecimal({ length: 64 }),
+      ZERO_ADDRESS,
+      EMPTY_DATA,
       faker.finance.ethereumAddress(),
       faker.finance.ethereumAddress(),
       0,
@@ -257,7 +259,7 @@ describe('useSafeCreationData', () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
-      faker.finance.ethereumAddress(),
+      setupToL2Address,
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
       faker.finance.ethereumAddress(),
@@ -288,11 +290,46 @@ describe('useSafeCreationData', () => {
     })
   })
 
-  it('should throw an error if RPC could not be created', async () => {
+  it('should throw an error if the Safe creation uses an unknown setupModules call', async () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
       faker.finance.ethereumAddress(),
+      faker.string.hexadecimal({ length: 64 }),
+      faker.finance.ethereumAddress(),
+      ZERO_ADDRESS,
+      0,
+      faker.finance.ethereumAddress(),
+    ])
+
+    jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
+      data: {
+        created: new Date(Date.now()).toISOString(),
+        creator: faker.finance.ethereumAddress(),
+        factoryAddress: faker.finance.ethereumAddress(),
+        transactionHash: faker.string.hexadecimal({ length: 64 }),
+        masterCopy: getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress,
+        setupData,
+      },
+      response: new Response(),
+    })
+
+    const safeAddress = faker.finance.ethereumAddress()
+    const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
+
+    // Run hook
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
+
+    await waitFor(() => {
+      expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.UNKNOWN_SETUP_MODULES), false])
+    })
+  })
+
+  it('should throw an error if RPC could not be created', async () => {
+    const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
+      [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
+      1,
+      setupToL2Address,
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
       ZERO_ADDRESS,
@@ -329,7 +366,7 @@ describe('useSafeCreationData', () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
-      faker.finance.ethereumAddress(),
+      setupToL2Address,
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
       ZERO_ADDRESS,
@@ -372,7 +409,7 @@ describe('useSafeCreationData', () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
-      faker.finance.ethereumAddress(),
+      setupToL2Address,
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
       ZERO_ADDRESS,
@@ -426,7 +463,7 @@ describe('useSafeCreationData', () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
-      faker.finance.ethereumAddress(),
+      setupToL2Address,
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
       ZERO_ADDRESS,
@@ -437,7 +474,7 @@ describe('useSafeCreationData', () => {
     const nonMatchingSetupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
-      faker.finance.ethereumAddress(),
+      setupToL2Address,
       faker.string.hexadecimal({ length: 64 }),
       faker.finance.ethereumAddress(),
       faker.finance.ethereumAddress(),
@@ -491,7 +528,7 @@ describe('useSafeCreationData', () => {
     const setupData = Safe__factory.createInterface().encodeFunctionData('setup', [
       [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
       1,
-      faker.finance.ethereumAddress(),
+      setupToL2Address,
       faker.string.hexadecimal({ length: 64, casing: 'lower' }),
       faker.finance.ethereumAddress(),
       ZERO_ADDRESS,
@@ -545,7 +582,7 @@ describe('useSafeCreationData', () => {
     const safeProps = {
       owners: [fakerChecksummedAddress(), fakerChecksummedAddress()],
       threshold: 1,
-      to: fakerChecksummedAddress(),
+      to: setupToL2Address,
       data: faker.string.hexadecimal({ length: 64, casing: 'lower' }),
       fallbackHandler: fakerChecksummedAddress(),
       paymentToken: ZERO_ADDRESS,
@@ -619,7 +656,7 @@ describe('useSafeCreationData', () => {
     const safeProps = {
       owners: [fakerChecksummedAddress(), fakerChecksummedAddress()],
       threshold: 1,
-      to: fakerChecksummedAddress(),
+      to: setupToL2Address,
       data: faker.string.hexadecimal({ length: 64, casing: 'lower' }),
       fallbackHandler: fakerChecksummedAddress(),
       paymentToken: ZERO_ADDRESS,
