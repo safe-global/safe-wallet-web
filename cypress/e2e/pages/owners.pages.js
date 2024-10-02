@@ -125,8 +125,8 @@ export function getAddressToBeRemoved() {
   return removedAddress
 }
 
-export function openReplaceOwnerWindow() {
-  cy.get(replaceOwnerBtn).click({ force: true })
+export function openReplaceOwnerWindow(index) {
+  cy.get(replaceOwnerBtn).eq(index).click({ force: true })
   cy.get(newOwnerName).should('be.visible')
   cy.get(newOwnerAddress).should('be.visible')
 }

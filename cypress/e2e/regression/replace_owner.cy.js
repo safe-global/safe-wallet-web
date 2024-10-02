@@ -85,17 +85,17 @@ describe('Replace Owners tests', () => {
         eventCategory: events.txCreatedSwapOwner.category,
         eventAction: events.txCreatedSwapOwner.action,
         event: events.txCreatedSwapOwner.eventName,
-        safeAddress: staticSafes.SEP_STATIC_SAFE_4.slice(6),
+        safeAddress: staticSafes.SEP_STATIC_SAFE_25.slice(6),
       },
     ]
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_25)
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(1)
     cy.wait(1000)
     owner.typeOwnerName(ownerName)
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
-    createTx.changeNonce(2)
+    createTx.changeNonce(0)
     owner.clickOnNextBtn()
     createTx.clickOnSignTransactionBtn()
     createTx.clickViewTransaction()
