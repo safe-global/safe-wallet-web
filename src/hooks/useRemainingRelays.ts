@@ -6,16 +6,13 @@ import { getRelayCount } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const MAX_HOUR_RELAYS = 5
 
-export const useRelaysBySafe = (txOrigin?: string) => {
+export const useRelaysBySafe = () => {
   const chain = useCurrentChain()
   const { safe, safeAddress } = useSafeInfo()
 
   return useAsync(() => {
     if (!safeAddress || !chain) return
-    if (
-      hasFeature(chain, FEATURES.RELAYING) ||
-      (hasFeature(chain, FEATURES.RELAY_NATIVE_SWAPS) && txOrigin && JSON.parse(txOrigin).name === 'Safe Swap')
-    ) {
+    if (hasFeature(chain, FEATURES.RELAYING)) {
       return getRelayCount(chain.chainId, safeAddress)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
