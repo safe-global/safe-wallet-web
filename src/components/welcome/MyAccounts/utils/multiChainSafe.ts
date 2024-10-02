@@ -121,3 +121,8 @@ export const hasMultiChainCreationFeatures = (chain: ChainInfo): boolean => {
     hasFeature(chain, FEATURES.SAFE_141)
   )
 }
+
+export const hasMultiChainAddNetworkFeature = (chain: ChainInfo | undefined): boolean => {
+  if (!chain) return false
+  return hasFeature(chain, FEATURES.MULTI_CHAIN_SAFE_ADD_NETWORK) && hasFeature(chain, FEATURES.COUNTERFACTUAL)
+}

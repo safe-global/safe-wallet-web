@@ -28,7 +28,7 @@ import { type MultiChainSafeItem } from './useAllSafesGrouped'
 import { shortenAddress } from '@/utils/formatters'
 import { type SafeItem } from './useAllSafes'
 import SubAccountItem from './SubAccountItem'
-import { getSafeSetups, getSharedSetup } from './utils/multiChainSafe'
+import { getSafeSetups, getSharedSetup, hasMultiChainAddNetworkFeature } from './utils/multiChainSafe'
 import { AddNetworkButton } from './AddNetworkButton'
 import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 import ChainIndicator from '@/components/common/ChainIndicator'
@@ -36,6 +36,7 @@ import MultiAccountContextMenu from '@/components/sidebar/SafeListContextMenu/Mu
 import { useGetMultipleSafeOverviewsQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectCurrency } from '@/store/settingsSlice'
+import { selectChains } from '@/store/chainsSlice'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -73,8 +74,9 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
   const isCurrentSafe = sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const [expanded, setExpanded] = useState(isCurrentSafe)
+  const chains = useAppSelector(selectChains)
 
-  const deployedChains = useMemo(() => safes.map((safe) => safe.chainId), [safes])
+  const deployedChainIds = useMemo(() => safes.map((safe) => safe.chainId), [safes])
 
   const isWatchlist = useMemo(
     () => multiSafeAccountItem.safes.every((safe) => safe.isWatchlist),
@@ -116,10 +118,13 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     () =>
       safes.some((safeItem) => {
         const undeployedSafe = undeployedSafes[safeItem.chainId]?.[safeItem.address]
+        const chain = chains.data.find((chain) => chain.chainId === safeItem.chainId)
+        const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
+
         // We can only replay deployed Safes and new counterfactual Safes.
-        return !undeployedSafe || !isPredictedSafeProps(undeployedSafe.props)
+        return (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props)) && addNetworkFeatureEnabled
       }),
-    [safes, undeployedSafes],
+    [chains.data, safes, undeployedSafes],
   )
 
   const findOverview = useCallback(
@@ -170,7 +175,12 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               )}
             </Typography>
           </Box>
-          <MultiAccountContextMenu name={name ?? ''} address={address} chainIds={deployedChains} />
+          <MultiAccountContextMenu
+            name={name ?? ''}
+            address={address}
+            chainIds={deployedChainIds}
+            addNetwork={hasReplayableSafe}
+          />
         </AccordionSummary>
         <AccordionDetails sx={{ padding: '0px 12px' }}>
           <Box>

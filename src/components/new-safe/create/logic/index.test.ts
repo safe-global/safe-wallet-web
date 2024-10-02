@@ -266,7 +266,7 @@ describe('create/logic', () => {
           safeSetup,
           chainBuilder()
             .with({ chainId: '137' })
-            // Multichain creation is toggled off
+            // Multichain creation is toggled on
             .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
             .with({ l2: true })
             .build(),
@@ -300,7 +300,7 @@ describe('create/logic', () => {
           safeSetup,
           chainBuilder()
             .with({ chainId: '137' })
-            // Multichain creation is toggled off
+            // Multichain creation is toggled on
             .with({ features: [FEATURES.SAFE_141, FEATURES.COUNTERFACTUAL, FEATURES.MULTI_CHAIN_SAFE_CREATION] as any })
             .with({ l2: true })
             .build(),

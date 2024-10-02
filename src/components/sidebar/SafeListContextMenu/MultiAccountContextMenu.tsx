@@ -27,10 +27,12 @@ const MultiAccountContextMenu = ({
   name,
   address,
   chainIds,
+  addNetwork,
 }: {
   name: string
   address: string
   chainIds: string[]
+  addNetwork: boolean
 }): ReactElement => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
@@ -72,13 +74,14 @@ const MultiAccountContextMenu = ({
           </ListItemIcon>
           <ListItemText data-testid="rename-btn">Rename</ListItemText>
         </MenuItem>
-
-        <MenuItem onClick={handleOpenModal(ModalType.ADD_CHAIN, OVERVIEW_EVENTS.ADD_NEW_NETWORK)}>
-          <ListItemIcon>
-            <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" color="primary" />
-          </ListItemIcon>
-          <ListItemText data-testid="add-chain-btn">Add another network</ListItemText>
-        </MenuItem>
+        {addNetwork && (
+          <MenuItem onClick={handleOpenModal(ModalType.ADD_CHAIN, OVERVIEW_EVENTS.ADD_NEW_NETWORK)}>
+            <ListItemIcon>
+              <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" color="primary" />
+            </ListItemIcon>
+            <ListItemText data-testid="add-chain-btn">Add another network</ListItemText>
+          </MenuItem>
+        )}
       </ContextMenu>
 
       {open[ModalType.RENAME] && (

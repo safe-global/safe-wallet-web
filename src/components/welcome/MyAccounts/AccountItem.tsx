@@ -29,6 +29,7 @@ import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features
 import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
 import { skipToken } from '@reduxjs/toolkit/query'
+import { hasMultiChainAddNetworkFeature } from './utils/multiChainSafe'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -63,7 +64,11 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
     : undefined
 
-  const isReplayable = !safeItem.isWatchlist && (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
+  const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
+  const isReplayable =
+    addNetworkFeatureEnabled &&
+    !safeItem.isWatchlist &&
+    (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
   const { data: safeOverview } = useGetSafeOverviewQuery(
     undeployedSafe

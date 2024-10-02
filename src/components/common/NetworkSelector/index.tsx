@@ -20,7 +20,7 @@ import {
 } from '@mui/material'
 import partition from 'lodash/partition'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import useChains from '@/hooks/useChains'
+import useChains, { useCurrentChain } from '@/hooks/useChains'
 import type { NextRouter } from 'next/router'
 import { useRouter } from 'next/router'
 import css from './styles.module.css'
@@ -39,6 +39,7 @@ import PlusIcon from '@/public/images/common/plus.svg'
 import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 import { useGetSafeOverviewQuery } from '@/store/api/gateway'
+import { hasMultiChainAddNetworkFeature } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 import { InfoOutlined } from '@mui/icons-material'
 import { selectUndeployedSafe } from '@/store/slices'
 import { skipToken } from '@reduxjs/toolkit/query'
@@ -175,7 +176,10 @@ const UndeployedNetworks = ({
   const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
 
   const availableNetworks = useMemo(
-    () => allCompatibleChains?.filter((config) => !deployedChains.includes(config.chainId)) || [],
+    () =>
+      allCompatibleChains?.filter(
+        (config) => !deployedChains.includes(config.chainId) && hasMultiChainAddNetworkFeature(config),
+      ) || [],
     [allCompatibleChains, deployedChains],
   )
 
@@ -288,9 +292,12 @@ const NetworkSelector = ({
   const chainId = useChainId()
   const router = useRouter()
   const safeAddress = useSafeAddress()
+  const currentChain = useCurrentChain()
   const chains = useAppSelector(selectChains)
 
   const isSafeOpened = safeAddress !== ''
+
+  const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(currentChain)
 
   const safesGrouped = useAllSafesGrouped()
   const availableChainIds = useMemo(() => {
@@ -387,7 +394,7 @@ const NetworkSelector = ({
 
       {testNets.map((chain) => renderMenuItem(chain.chainId, false))}
 
-      {offerSafeCreation && isSafeOpened && (
+      {offerSafeCreation && isSafeOpened && addNetworkFeatureEnabled && (
         <UndeployedNetworks
           chains={configs}
           deployedChains={availableChainIds}

@@ -12,7 +12,10 @@ import useChains from '@/hooks/useChains'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
+import {
+  hasMultiChainAddNetworkFeature,
+  predictAddressBasedOnReplayData,
+} from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 import { sameAddress } from '@/utils/addresses'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useRouter } from 'next/router'
@@ -229,7 +232,10 @@ export const CreateSafeOnNewChain = ({
   const allCompatibleChains = useCompatibleNetworks(safeCreationResult[0])
   const isUnsupportedSafeCreationVersion = Boolean(!allCompatibleChains?.length)
   const replayableChains = useMemo(
-    () => allCompatibleChains?.filter((config) => !deployedChainIds.includes(config.chainId)) || [],
+    () =>
+      allCompatibleChains?.filter(
+        (config) => !deployedChainIds.includes(config.chainId) && hasMultiChainAddNetworkFeature(config),
+      ) || [],
     [allCompatibleChains, deployedChainIds],
   )
 
