@@ -5,6 +5,7 @@ import type { RootState } from '.'
 
 export enum PopupType {
   COOKIES = 'cookies',
+  OUTREACH = 'outreach',
 }
 
 type PopupState = {
@@ -12,10 +13,16 @@ type PopupState = {
     open: boolean
     warningKey?: CookieAndTermType
   }
+  [PopupType.OUTREACH]: {
+    open: boolean
+  }
 }
 
 const initialState: PopupState = {
   [PopupType.COOKIES]: {
+    open: false,
+  },
+  [PopupType.OUTREACH]: {
     open: false,
   },
 }
@@ -33,9 +40,16 @@ export const popupSlice = createSlice({
     closeCookieBanner: (state) => {
       state[PopupType.COOKIES] = { open: false }
     },
+    openOutreachBanner: (state) => {
+      state[PopupType.OUTREACH] = { open: true }
+    },
+    closeOutreachBanner: (state) => {
+      state[PopupType.OUTREACH] = { open: false }
+    },
   },
 })
 
-export const { openCookieBanner, closeCookieBanner } = popupSlice.actions
+export const { openCookieBanner, closeCookieBanner, openOutreachBanner, closeOutreachBanner } = popupSlice.actions
 
 export const selectCookieBanner = (state: RootState) => state[popupSlice.name][PopupType.COOKIES]
+export const selectOutreachBanner = (state: RootState) => state[popupSlice.name][PopupType.OUTREACH]
