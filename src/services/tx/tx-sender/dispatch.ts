@@ -253,6 +253,7 @@ export const dispatchCustomTxSpeedUp = async (
     to,
     groupKey: result?.hash,
     txType: 'Custom',
+    nonce,
   })
 
   return result.hash
@@ -320,6 +321,7 @@ export const dispatchBatchExecution = async (
   signerAddress: string,
   safeAddress: string,
   overrides: Omit<Overrides, 'nonce'> & { nonce: number },
+  nonce: number,
 ) => {
   const groupKey = multiSendTxData
 
@@ -337,11 +339,11 @@ export const dispatchBatchExecution = async (
     result = await multiSendContract.contract.connect(signer).multiSend(multiSendTxData, overrides)
 
     txIds.forEach((txId) => {
-      txDispatch(TxEvent.EXECUTING, { txId, groupKey })
+      txDispatch(TxEvent.EXECUTING, { txId, groupKey, nonce })
     })
   } catch (err) {
     txIds.forEach((txId) => {
-      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
+      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey, nonce })
     })
     throw err
   }
@@ -357,6 +359,7 @@ export const dispatchBatchExecution = async (
       txType: 'Custom',
       data: txData,
       to: txTo,
+      nonce,
     })
   })
 
