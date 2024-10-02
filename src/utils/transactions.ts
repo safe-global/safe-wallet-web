@@ -261,33 +261,28 @@ export const prependSafeToL2Migration = (
     throw new Error('No Network information available')
   }
 
+  const safeL2Deployment = getSafeContractDeployment(chain, safe.version)
+  const safeL2DeploymentAddress = safeL2Deployment?.networkAddresses[chain.chainId]
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment({ network: chain.chainId })
+  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.networkAddresses[chain.chainId]
+
   if (
     !safeTx ||
     safeTx.signatures.size > 0 ||
     !chain.l2 ||
     safeTx.data.nonce > 0 ||
-    isValidMasterCopy(safe.implementationVersionState)
+    isValidMasterCopy(safe.implementationVersionState) ||
+    !safeToL2MigrationAddress ||
+    !safeL2DeploymentAddress
   ) {
     // We do not migrate on L1s
     // We cannot migrate if the nonce is > 0
     // We do not modify already signed txs
     // We do not modify supported masterCopies
+    // We cannot migrate if no migration contract or L2 contract exists
     return Promise.resolve(safeTx)
   }
 
-  const safeL2Deployment = getSafeContractDeployment(chain, safe.version)
-  const safeL2DeploymentAddress = safeL2Deployment?.networkAddresses[chain.chainId]
-  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment({ network: chain?.chainId })
-
-  if (!safeL2DeploymentAddress) {
-    throw new Error('No L2 MasterCopy found')
-  }
-
-  if (!safeToL2MigrationDeployment) {
-    throw new Error('No safe to L2 migration contract found')
-  }
-
-  const safeToL2MigrationAddress = safeToL2MigrationDeployment.defaultAddress
   const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
 
   if (sameAddress(safe.implementation.value, safeL2DeploymentAddress)) {
