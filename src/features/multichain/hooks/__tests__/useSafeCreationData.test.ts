@@ -76,6 +76,57 @@ describe('useSafeCreationData', () => {
     })
   })
 
+  it('should return undefined without chain info', async () => {
+    const safeAddress = faker.finance.ethereumAddress()
+    const chainInfos: ChainInfo[] = []
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos))
+    await waitFor(async () => {
+      await Promise.resolve()
+      expect(result.current).toEqual([undefined, undefined, false])
+    })
+  })
+
+  it('should throw an error for replayed Safe it uses a unknown to address', async () => {
+    const safeAddress = faker.finance.ethereumAddress()
+    const chainInfos = [chainBuilder().with({ chainId: '1' }).build()]
+    const undeployedSafe: UndeployedSafe = {
+      props: {
+        factoryAddress: faker.finance.ethereumAddress(),
+        saltNonce: '420',
+        masterCopy: faker.finance.ethereumAddress(),
+        safeVersion: '1.3.0',
+        safeAccountConfig: {
+          owners: [faker.finance.ethereumAddress(), faker.finance.ethereumAddress()],
+          threshold: 1,
+          data: faker.string.hexadecimal({ length: 64 }),
+          to: faker.finance.ethereumAddress(),
+          fallbackHandler: faker.finance.ethereumAddress(),
+          payment: 0,
+          paymentToken: ZERO_ADDRESS,
+          paymentReceiver: ZERO_ADDRESS,
+        },
+      },
+      status: {
+        status: PendingSafeStatus.AWAITING_EXECUTION,
+        type: PayMethod.PayLater,
+      },
+    }
+
+    const { result } = renderHook(() => useSafeCreationData(safeAddress, chainInfos), {
+      initialReduxState: {
+        undeployedSafes: {
+          '1': {
+            [safeAddress]: undeployedSafe,
+          },
+        },
+      },
+    })
+    await waitFor(async () => {
+      await Promise.resolve()
+      expect(result.current).toEqual([undefined, new Error(SAFE_CREATION_DATA_ERRORS.UNKNOWN_SETUP_MODULES), false])
+    })
+  })
+
   it('should throw an error for legacy counterfactual Safes', async () => {
     const safeAddress = faker.finance.ethereumAddress()
     const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
