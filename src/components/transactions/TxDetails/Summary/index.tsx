@@ -14,9 +14,10 @@ import DecodedData from '../TxData/DecodedData'
 interface Props {
   txDetails: TransactionDetails
   defaultExpanded?: boolean
+  hideDecodedData?: boolean
 }
 
-const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement => {
+const Summary = ({ txDetails, defaultExpanded = false, hideDecodedData = false }: Props): ReactElement => {
   const [expanded, setExpanded] = useState<boolean>(defaultExpanded)
 
   const toggleExpanded = () => {
@@ -70,7 +71,7 @@ const Summary = ({ txDetails, defaultExpanded = false }: Props): ReactElement =>
 
           {expanded && (
             <Box mt={1}>
-              {!isCustom && (
+              {!isCustom && !hideDecodedData && (
                 <Box borderBottom="1px solid" borderColor="border.light" p={2} mt={1} mb={2} mx={-2}>
                   <DecodedData txData={txDetails.txData} toInfo={txDetails.txData?.to} />
                 </Box>

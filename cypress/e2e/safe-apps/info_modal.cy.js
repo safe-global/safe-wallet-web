@@ -24,7 +24,7 @@ describe('Info modal tests', () => {
     safeapps.verifyDisclaimerIsDisplayed()
   })
 
-  it('Verify info modal consent is stored when accepted', () => {
+  it('Verify info modal consent is stored when accepted', { defaultCommandTimeout: 20000 }, () => {
     safeapps.clickOnApp(safeapps.transactionBuilderStr)
     safeapps.clickOnOpenSafeAppBtn()
     safeapps.verifyDisclaimerIsDisplayed()

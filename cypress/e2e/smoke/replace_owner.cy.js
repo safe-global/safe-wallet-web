@@ -33,6 +33,6 @@ describe('[SMOKE] Replace Owners tests', () => {
   it('[SMOKE] Verify that the owner replacement form is opened', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
   })
 })
