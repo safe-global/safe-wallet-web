@@ -41,7 +41,6 @@ import type {
   NativeStakingValidatorsExitConfirmationView,
   StakingTxInfo,
   TransactionData,
-  DecodedDataResponse,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -97,27 +96,6 @@ export const isMigrateToL2TxData = (value: TransactionData | undefined): boolean
     const migrateToL2Selector = safeToL2MigrationInterface?.getFunction('migrateToL2')?.selector
     return migrateToL2Selector && value?.hexData ? value.hexData?.startsWith(migrateToL2Selector) : false
   }
-  return false
-}
-
-export const isMigrateToL2MultiSend = (decodedData: DecodedDataResponse | undefined) => {
-  if (decodedData?.method === 'multiSend' && Array.isArray(decodedData.parameters[0].valueDecoded)) {
-    const innerTxs = decodedData.parameters[0].valueDecoded
-    const firstInnerTx = innerTxs[0]
-    if (firstInnerTx) {
-      const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
-      const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
-
-      return (
-        firstInnerTx.dataDecoded?.method === 'migrateToL2' &&
-        firstInnerTx.dataDecoded.parameters.length === 1 &&
-        firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address' &&
-        typeof firstInnerTx.dataDecoded?.parameters[0].value === 'string' &&
-        sameAddress(firstInnerTx.to, safeToL2MigrationAddress)
-      )
-    }
-  }
-
   return false
 }
 

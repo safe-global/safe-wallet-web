@@ -7,7 +7,12 @@ import type {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { TransactionInfoType, ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { isMultiSendTxInfo } from '../transaction-guards'
-import { getQueuedTransactionCount, getTxOrigin, prependSafeToL2Migration } from '../transactions'
+import {
+  extractMigrationL2MasterCopyAddress,
+  getQueuedTransactionCount,
+  getTxOrigin,
+  prependSafeToL2Migration,
+} from '../transactions'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { chainBuilder } from '@/tests/builders/chains'
 import { safeSignatureBuilder, safeTxBuilder, safeTxDataBuilder } from '@/tests/builders/safeTx'
@@ -31,6 +36,8 @@ jest.mock('@/services/tx/tx-sender/sdk')
 const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
 const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
 const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
+
+const multisendInterface = Multi_send__factory.createInterface()
 
 describe('transactions', () => {
   const mockGetAndValidateSdk = getAndValidateSafeSDK as jest.MockedFunction<typeof getAndValidateSafeSDK>
@@ -423,6 +430,79 @@ describe('transactions', () => {
           data: safeTx.data.data.toLowerCase(),
         },
       ])
+    })
+  })
+
+  describe('extractMigrationL2MasterCopyAddress', () => {
+    it('should return undefined for undefined safeTx', () => {
+      expect(extractMigrationL2MasterCopyAddress(undefined)).toBeUndefined()
+    })
+
+    it('should return undefined for non multisend safeTx', () => {
+      expect(extractMigrationL2MasterCopyAddress(safeTxBuilder().build())).toBeUndefined()
+    })
+
+    it('should return undefined for multisend without migration', () => {
+      expect(
+        extractMigrationL2MasterCopyAddress(
+          safeTxBuilder()
+            .with({
+              data: safeTxDataBuilder()
+                .with({
+                  data: multisendInterface.encodeFunctionData('multiSend', [
+                    encodeMultiSendData([
+                      {
+                        to: faker.finance.ethereumAddress(),
+                        data: faker.string.hexadecimal({ length: 64 }),
+                        value: '0',
+                        operation: 0,
+                      },
+                      {
+                        to: faker.finance.ethereumAddress(),
+                        data: faker.string.hexadecimal({ length: 64 }),
+                        value: '0',
+                        operation: 0,
+                      },
+                    ]),
+                  ]),
+                })
+                .build(),
+            })
+            .build(),
+        ),
+      ).toBeUndefined()
+    })
+
+    it('should return migration address for multisend with migration as first tx', () => {
+      const l2SingletonAddress = getSafeL2SingletonDeployment()?.defaultAddress!
+      expect(
+        extractMigrationL2MasterCopyAddress(
+          safeTxBuilder()
+            .with({
+              data: safeTxDataBuilder()
+                .with({
+                  data: multisendInterface.encodeFunctionData('multiSend', [
+                    encodeMultiSendData([
+                      {
+                        to: safeToL2MigrationAddress!,
+                        data: safeToL2MigrationInterface.encodeFunctionData('migrateToL2', [l2SingletonAddress]),
+                        value: '0',
+                        operation: 1,
+                      },
+                      {
+                        to: faker.finance.ethereumAddress(),
+                        data: faker.string.hexadecimal({ length: 64 }),
+                        value: '0',
+                        operation: 0,
+                      },
+                    ]),
+                  ]),
+                })
+                .build(),
+            })
+            .build(),
+        ),
+      ).toEqual(l2SingletonAddress)
     })
   })
 })
