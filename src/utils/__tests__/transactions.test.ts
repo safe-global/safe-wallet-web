@@ -322,6 +322,20 @@ describe('transactions', () => {
       )
     })
 
+    it('should not modify tx if the chain has no migration lib deployed', () => {
+      const safeTx = safeTxBuilder()
+        .with({ data: safeTxDataBuilder().with({ nonce: 0 }).build() })
+        .build()
+
+      const safeInfo = extendedSafeInfoBuilder()
+        .with({ implementationVersionState: ImplementationVersionState.UNKNOWN })
+        .build()
+
+      expect(
+        prependSafeToL2Migration(safeTx, safeInfo, chainBuilder().with({ l2: true, chainId: '69420' }).build()),
+      ).resolves.toEqual(safeTx)
+    })
+
     it('should not modify tx if the tx already migrates', () => {
       const safeL2SingletonDeployment = getSafeL2SingletonDeployment()?.defaultAddress
 
