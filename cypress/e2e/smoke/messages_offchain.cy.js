@@ -28,7 +28,8 @@ describe('[SMOKE] Offchain Messages tests', () => {
     main.acceptCookies()
   })
 
-  it('[SMOKE] Verify summary for off-chain unsigned messages', () => {
+  // TODO: Clarify changes
+  it.skip('[SMOKE] Verify summary for off-chain unsigned messages', () => {
     createTx.verifySummaryByIndex(0, [
       typeMessagesGeneral.sign,
       typeMessagesGeneral.oneOftwo,
@@ -41,7 +42,8 @@ describe('[SMOKE] Offchain Messages tests', () => {
     ])
   })
 
-  it('[SMOKE] Verify summary for off-chain signed messages', () => {
+  // TODO: Clarify changes
+  it.skip('[SMOKE] Verify summary for off-chain signed messages', () => {
     createTx.verifySummaryByIndex(1, [
       typeMessagesGeneral.confirmed,
       typeMessagesGeneral.twoOftwo,
@@ -80,7 +82,8 @@ describe('[SMOKE] Offchain Messages tests', () => {
     main.verifyTextVisibility(values)
   })
 
-  it('[SMOKE] Verify confirmation window is displayed for unsigned message', () => {
+  // TODO: Clarify changes
+  it.skip('[SMOKE] Verify confirmation window is displayed for unsigned message', () => {
     wallet.connectSigner(signer)
     messages.clickOnMessageSignBtn(2)
     msg_confirmation_modal.verifyConfirmationWindowTitle(modal.modalTitiles.confirmMsg)

@@ -34,7 +34,7 @@ describe('Replace Owners tests', () => {
   it('Verify max characters in name field', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
     owner.typeOwnerName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
@@ -44,7 +44,7 @@ describe('Replace Owners tests', () => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
     owner.typeOwnerAddress(constants.addresBookContacts.user1.address)
     owner.verifyNewOwnerName(constants.addresBookContacts.user1.name)
   })
@@ -52,7 +52,7 @@ describe('Replace Owners tests', () => {
   it('Verify that Name field not mandatory. Verify confirmation for owner replacement is displayed', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()
@@ -61,7 +61,7 @@ describe('Replace Owners tests', () => {
   it('Verify relevant error messages are displayed in Address input', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
     owner.typeOwnerAddress(main.generateRandomString(10))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidFormat)
 
@@ -85,17 +85,17 @@ describe('Replace Owners tests', () => {
         eventCategory: events.txCreatedSwapOwner.category,
         eventAction: events.txCreatedSwapOwner.action,
         event: events.txCreatedSwapOwner.eventName,
-        safeAddress: staticSafes.SEP_STATIC_SAFE_4.slice(6),
+        safeAddress: staticSafes.SEP_STATIC_SAFE_25.slice(6),
       },
     ]
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_25)
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(1)
     cy.wait(1000)
     owner.typeOwnerName(ownerName)
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
-    createTx.changeNonce(2)
+    createTx.changeNonce(0)
     owner.clickOnNextBtn()
     createTx.clickOnSignTransactionBtn()
     createTx.clickViewTransaction()
