@@ -4,7 +4,7 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getRelayCount } from '@safe-global/safe-gateway-typescript-sdk'
 
-export const MAX_HOUR_RELAYS = 5
+export const MAX_DAY_RELAYS = 5
 
 export const useRelaysBySafe = (txOrigin?: string) => {
   const chain = useCurrentChain()
@@ -35,7 +35,7 @@ export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
         return result.find((r) => r.remaining === min)
       })
       .catch(() => {
-        return { remaining: 0, limit: MAX_HOUR_RELAYS }
+        return { remaining: 0, limit: MAX_DAY_RELAYS }
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain, ownerAddresses, safe.txHistoryTag])
