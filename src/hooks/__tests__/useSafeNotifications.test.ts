@@ -134,7 +134,7 @@ describe('useSafeNotifications', () => {
           address: {
             value: '0x1',
           },
-          chainId: '5',
+          chainId: '10',
         },
       })
 
@@ -165,7 +165,7 @@ describe('useSafeNotifications', () => {
           address: {
             value: '0x1',
           },
-          chainId: '5',
+          chainId: '10',
         },
       })
 
@@ -191,7 +191,7 @@ describe('useSafeNotifications', () => {
           address: {
             value: '0x1',
           },
-          chainId: '5',
+          chainId: '10',
         },
       })
 
