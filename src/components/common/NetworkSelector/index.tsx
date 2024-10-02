@@ -40,6 +40,7 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import { hasMultiChainAddNetworkFeature } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
+import { InfoOutlined } from '@mui/icons-material'
 import { selectUndeployedSafe } from '@/store/slices'
 import { skipToken } from '@reduxjs/toolkit/query'
 
@@ -202,11 +203,20 @@ const UndeployedNetworks = ({
   }
 
   const errorMessage =
-    safeCreationDataError || (safeCreationData && noAvailableNetworks)
-      ? 'Adding another network is not possible for this Safe.'
-      : isUnsupportedSafeCreationVersion
-      ? 'This account was created from an outdated mastercopy. Adding another network is not possible.'
-      : ''
+    safeCreationDataError || (safeCreationData && noAvailableNetworks) ? (
+      <Stack direction="row" spacing={1} alignItems="center">
+        {safeCreationDataError?.message && (
+          <Tooltip title={safeCreationDataError?.message}>
+            <InfoOutlined color="info" fontSize="medium" />
+          </Tooltip>
+        )}
+        <Typography>Adding another network is not possible for this Safe. </Typography>
+      </Stack>
+    ) : isUnsupportedSafeCreationVersion ? (
+      'This account was created from an outdated mastercopy. Adding another network is not possible.'
+    ) : (
+      ''
+    )
 
   if (errorMessage) {
     return (

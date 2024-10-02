@@ -1,6 +1,5 @@
 import type {
   ChainInfo,
-  DecodedDataResponse,
   ExecutionInfo,
   MultisigExecutionDetails,
   MultisigExecutionInfo,
@@ -29,10 +28,8 @@ import type { SafeTransaction, TransactionOptions } from '@safe-global/safe-core
 import { FEATURES, hasFeature } from '@/utils/chains'
 import uniqBy from 'lodash/uniqBy'
 import { Errors, logError } from '@/services/exceptions'
-import { Multi_send__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
-import { toBeHex, AbiCoder } from 'ethers'
+import { Safe_to_l2_migration__factory } from '@/types/contracts'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
-import { id } from 'ethers'
 import { isEmptyHexData } from '@/utils/hex'
 import { type ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { getSafeContractDeployment } from '@/services/contracts/deployments'
@@ -207,17 +204,11 @@ export const getTxOrigin = (app?: Partial<SafeAppData>): string | undefined => {
   return origin
 }
 
-const multiSendInterface = Multi_send__factory.createInterface()
-
-const multiSendFragment = multiSendInterface.getFunction('multiSend')
-
-const MULTISEND_SIGNATURE_HASH = id('multiSend(bytes)').slice(0, 10)
-
 export const decodeSafeTxToBaseTransactions = (safeTx: SafeTransaction): BaseTransaction[] => {
   const txs: BaseTransaction[] = []
   const safeTxData = safeTx.data.data
-  if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
-    txs.push(...decodeMultiSendTxs(safeTxData))
+  if (isMultiSendCalldata(safeTxData)) {
+    txs.push(...decodeMultiSendData(safeTxData))
   } else {
     txs.push({
       data: safeTxData,
@@ -225,62 +216,6 @@ export const decodeSafeTxToBaseTransactions = (safeTx: SafeTransaction): BaseTra
       to: safeTx.data.to,
     })
   }
-  return txs
-}
-
-/**
- * TODO: Use core-sdk
- * Decodes the transactions contained in `multiSend` call data
- *
- * @param encodedMultiSendData `multiSend` call data
- * @returns array of individual transaction data
- */
-export const decodeMultiSendTxs = (encodedMultiSendData: string): BaseTransaction[] => {
-  // uint8 operation, address to, uint256 value, uint256 dataLength
-  const INDIVIDUAL_TX_DATA_LENGTH = 2 + 40 + 64 + 64
-
-  const [decodedMultiSendData] = multiSendInterface.decodeFunctionData(multiSendFragment, encodedMultiSendData)
-
-  const txs: BaseTransaction[] = []
-
-  // Decode after 0x
-  let index = 2
-
-  while (index < decodedMultiSendData.length) {
-    const txDataEncoded = `0x${decodedMultiSendData.slice(
-      index,
-      // Traverse next transaction
-      (index += INDIVIDUAL_TX_DATA_LENGTH),
-    )}`
-
-    // Decode operation, to, value, dataLength
-    let txTo, txValue, txDataBytesLength
-    try {
-      ;[, txTo, txValue, txDataBytesLength] = AbiCoder.defaultAbiCoder().decode(
-        ['uint8', 'address', 'uint256', 'uint256'],
-        toBeHex(txDataEncoded, 32 * 4),
-      )
-    } catch (e) {
-      logError(Errors._809, e)
-      continue
-    }
-
-    // Each byte is represented by two characters
-    const dataLength = Number(txDataBytesLength) * 2
-
-    const txData = `0x${decodedMultiSendData.slice(
-      index,
-      // Traverse data length
-      (index += dataLength),
-    )}`
-
-    txs.push({
-      to: txTo,
-      value: txValue.toString(),
-      data: txData,
-    })
-  }
-
   return txs
 }
 
@@ -391,19 +326,31 @@ export const prependSafeToL2Migration = (
   return __unsafe_createMultiSendTx(newTxs)
 }
 
-export const extractMigrationL2MasterCopyAddress = (
-  decodedData: DecodedDataResponse | undefined,
-): string | undefined => {
-  if (decodedData?.method === 'multiSend' && Array.isArray(decodedData.parameters[0].valueDecoded)) {
-    const innerTxs = decodedData.parameters[0].valueDecoded
-    const firstInnerTx = innerTxs[0]
-    if (firstInnerTx) {
-      return firstInnerTx.dataDecoded?.method === 'migrateToL2' &&
-        firstInnerTx.dataDecoded.parameters.length === 1 &&
-        firstInnerTx.dataDecoded?.parameters?.[0]?.type === 'address'
-        ? firstInnerTx.dataDecoded.parameters?.[0].value.toString()
-        : undefined
-    }
+export const extractMigrationL2MasterCopyAddress = (safeTx: SafeTransaction | undefined): string | undefined => {
+  if (!safeTx) {
+    return undefined
+  }
+
+  if (!isMultiSendCalldata(safeTx.data.data)) {
+    return undefined
+  }
+
+  const innerTxs = decodeMultiSendData(safeTx.data.data)
+  const firstInnerTx = innerTxs[0]
+  if (!firstInnerTx) {
+    return undefined
+  }
+
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
+  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
+
+  if (
+    firstInnerTx.data.startsWith(safeToL2MigrationInterface.getFunction('migrateToL2').selector) &&
+    sameAddress(firstInnerTx.to, safeToL2MigrationAddress)
+  ) {
+    const callParams = safeToL2MigrationInterface.decodeFunctionData('migrateToL2', firstInnerTx.data)
+    return callParams[0]
   }
 
   return undefined
