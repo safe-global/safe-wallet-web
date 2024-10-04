@@ -40,7 +40,7 @@ const usePendingSafeMonitor = (): void => {
 
   // Monitor pending safe creation mining/validating progress
   useEffect(() => {
-    Object.entries(undeployedSafesByChain).forEach(([, undeployedSafes]) => {
+    Object.entries(undeployedSafesByChain).forEach(([chainId, undeployedSafes]) => {
       Object.entries(undeployedSafes).forEach(([safeAddress, undeployedSafe]) => {
         if (undeployedSafe?.status.status === PendingSafeStatus.AWAITING_EXECUTION) {
           monitoredSafes.current[safeAddress] = false
@@ -64,11 +64,11 @@ const usePendingSafeMonitor = (): void => {
           monitoredSafes.current[safeAddress] = true
 
           if (isProcessing) {
-            checkSafeActivation(provider, txHash, safeAddress, type, startBlock)
+            checkSafeActivation(provider, txHash, safeAddress, type, chainId, startBlock)
           }
 
           if (isRelaying) {
-            checkSafeActionViaRelay(taskId, safeAddress, type)
+            checkSafeActionViaRelay(taskId, safeAddress, type, chainId)
           }
         }
 
@@ -109,6 +109,8 @@ const usePendingSafeStatus = (): void => {
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event, status]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
+        const creationChainId = 'chainId' in detail ? detail.chainId : chainId
+
         if (event === SafeCreationEvent.SUCCESS) {
           gtmSetSafeAddress(detail.safeAddress)
 
@@ -120,23 +122,24 @@ const usePendingSafeStatus = (): void => {
             trackEvent(CREATE_SAFE_EVENTS.CREATED_SAFE)
           }
 
-          pollSafeInfo(chainId, detail.safeAddress).finally(() => {
+          pollSafeInfo(creationChainId, detail.safeAddress).finally(() => {
             safeCreationDispatch(SafeCreationEvent.INDEXED, {
               groupKey: detail.groupKey,
               safeAddress: detail.safeAddress,
+              chainId: creationChainId,
             })
           })
           return
         }
 
         if (event === SafeCreationEvent.INDEXED) {
-          dispatch(removeUndeployedSafe({ chainId, address: detail.safeAddress }))
+          dispatch(removeUndeployedSafe({ chainId: creationChainId, address: detail.safeAddress }))
         }
 
         if (status === null) {
           dispatch(
             updateUndeployedSafeStatus({
-              chainId,
+              chainId: creationChainId,
               address: detail.safeAddress,
               status: {
                 status: PendingSafeStatus.AWAITING_EXECUTION,
@@ -151,7 +154,7 @@ const usePendingSafeStatus = (): void => {
 
         dispatch(
           updateUndeployedSafeStatus({
-            chainId,
+            chainId: creationChainId,
             address: detail.safeAddress,
             status: {
               status,
