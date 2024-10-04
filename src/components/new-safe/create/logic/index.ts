@@ -213,13 +213,13 @@ export const createNewUndeployedSafeWithoutSalt = (
   })
   const fallbackHandlerAddress = fallbackHandlerDeployment?.defaultAddress
   const safeL2Deployment = getSafeL2SingletonDeployment({ version: safeVersion, network: chain.chainId })
-  const safeL2Address = safeL2Deployment?.defaultAddress
+  const safeL2Address = safeL2Deployment?.networkAddresses[chain.chainId]
 
   const safeL1Deployment = getSafeSingletonDeployment({ version: safeVersion, network: chain.chainId })
-  const safeL1Address = safeL1Deployment?.defaultAddress
+  const safeL1Address = safeL1Deployment?.networkAddresses[chain.chainId]
 
   const safeFactoryDeployment = getProxyFactoryDeployment({ version: safeVersion, network: chain.chainId })
-  const safeFactoryAddress = safeFactoryDeployment?.defaultAddress
+  const safeFactoryAddress = safeFactoryDeployment?.networkAddresses[chain.chainId]
 
   if (!safeL2Address || !safeL1Address || !safeFactoryAddress || !fallbackHandlerAddress) {
     throw new Error('No Safe deployment found')
