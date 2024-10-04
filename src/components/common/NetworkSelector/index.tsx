@@ -26,7 +26,7 @@ import { useRouter } from 'next/router'
 import css from './styles.module.css'
 import { useChainId } from '@/hooks/useChainId'
 import { type ReactElement, useCallback, useMemo, useState } from 'react'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 
 import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -327,12 +327,17 @@ const NetworkSelector = ({
       const chain = chains.data.find((chain) => chain.chainId === chainId)
       if (!chain) return null
 
+      const onSwitchNetwork = () => {
+        trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: chainId })
+      }
+
       return (
         <MenuItem
           key={chainId}
           value={chainId}
           sx={{ '&:hover': { backgroundColor: isSelected ? 'transparent' : 'inherit' } }}
           disableRipple={isSelected}
+          onClick={onSwitchNetwork}
         >
           <Link
             href={getNetworkLink(router, safeAddress, chain.shortName)}
@@ -353,6 +358,7 @@ const NetworkSelector = ({
 
   const handleOpen = () => {
     setOpen(true)
+    offerSafeCreation && trackEvent({ ...OVERVIEW_EVENTS.EXPAND_MULTI_SAFE, label: OVERVIEW_LABELS.top_bar })
   }
 
   return configs.length ? (

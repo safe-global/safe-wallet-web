@@ -6,7 +6,7 @@ import { ListItemButton, Box, Typography, Chip, Skeleton } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import { useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
@@ -55,11 +55,16 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
 
   const cfSafeSetup = extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
 
+  const onSwitchSafe = () => {
+    trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: chainId })
+  }
+
   return (
     <ListItemButton
       data-testid="safe-list-item"
       selected={isCurrentSafe}
       className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe }, css.subItem)}
+      onClick={onSwitchSafe}
     >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
         <Link onClick={onLinkClick} href={href} className={css.safeSubLink}>

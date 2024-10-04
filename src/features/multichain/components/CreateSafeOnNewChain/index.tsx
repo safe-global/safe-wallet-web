@@ -1,7 +1,7 @@
 import ModalDialog from '@/components/common/ModalDialog'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { showNotification } from '@/store/notificationsSlice'
 import { Box, Button, CircularProgress, DialogActions, DialogContent, Stack, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -95,7 +95,7 @@ const ReplaySafeDialog = ({
         return
       }
 
-      trackEvent({ ...OVERVIEW_EVENTS.SUBMIT_ADD_NEW_NETWORK, label: selectedChain.chainName })
+      trackEvent({ ...OVERVIEW_EVENTS.SUBMIT_ADD_NEW_NETWORK, label: selectedChain.chainId })
 
       // 2. Replay Safe creation and add it to the counterfactual Safes
       replayCounterfactualSafeDeployment(
@@ -106,6 +106,9 @@ const ReplaySafeDialog = ({
         dispatch,
         PayMethod.PayLater,
       )
+
+      trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
+      trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
 
       router.push({
         query: {
