@@ -114,6 +114,7 @@ yarn cypress:open
 ```
 
 You can then choose which e2e tests to run.
+Some tests will require signer private keys, please include them in your .env file
 
 ## Component template
 
