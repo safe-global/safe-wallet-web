@@ -25,7 +25,7 @@ describe('Sidebar tests', () => {
   })
 
   // TODO: Added to prod
-  it.only('Verify current safe details', () => {
+  it('Verify current safe details', () => {
     sideBar.verifySafeHeaderDetails(sideBar.testSafeHeaderDetails)
   })
 

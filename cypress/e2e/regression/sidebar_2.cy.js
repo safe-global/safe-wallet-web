@@ -11,7 +11,7 @@ const newSafeName = 'Added safe 3'
 const addedSafe900 = 'Added safe 900'
 const staticSafe200 = 'Added safe 200'
 
-describe('Sidebar tests', () => {
+describe('Sidebar added sidebar tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -30,7 +30,7 @@ describe('Sidebar tests', () => {
     sideBar.verifyAddedSafesExist(sideBar.addedSafesSepolia)
   })
 
-  it.only('Verify a safe can be renamed', () => {
+  it('Verify a safe can be renamed', () => {
     sideBar.openSidebar()
     sideBar.renameSafeItem(addedSafe900, newSafeName)
     sideBar.clickOnSaveBtn()

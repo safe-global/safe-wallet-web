@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1]
+        containers: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
 
@@ -25,8 +25,10 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           spec: |
-            cypress/e2e/regression/sidebar.cy.js
-            cypress/e2e/regression/sidebar_2.cy.js
+            cypress/e2e/regression/*.cy.js
+            cypress/e2e/safe-apps/*.cy.js
+            cypress/e2e/smoke/*.cy.js
+            cypress/e2e/prodhealthcheck/*.cy.js
           group: 'Regression on demand tests'
           tag: 'regression'
 
