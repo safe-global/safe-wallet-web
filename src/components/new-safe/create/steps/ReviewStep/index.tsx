@@ -1,6 +1,7 @@
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
+import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
@@ -33,7 +34,7 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { isWalletRejection } from '@/utils/wallets'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, Grid, Tooltip, Typography } from '@mui/material'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
@@ -87,11 +88,22 @@ export const SafeSetupOverview = ({
       <ReviewRow
         name={networks.length > 1 ? 'Networks' : 'Network'}
         value={
-          <Box display="flex" flexWrap="wrap" gap={1}>
-            {networks.map((network) => (
-              <ChainIndicator inline key={network.chainId} chainId={network.chainId} showUnknown={false} />
-            ))}
-          </Box>
+          <Tooltip
+            title={
+              <Box>
+                {networks.map((safeItem) => (
+                  <Box p="4px 0px" key={safeItem.chainId}>
+                    <ChainIndicator chainId={safeItem.chainId} />
+                  </Box>
+                ))}
+              </Box>
+            }
+            arrow
+          >
+            <Box display="inline-block">
+              <NetworkLogosList networks={networks} />
+            </Box>
+          </Tooltip>
         }
       />
       {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
