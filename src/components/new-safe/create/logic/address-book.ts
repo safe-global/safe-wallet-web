@@ -5,7 +5,7 @@ import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 
 export const updateAddressBook = (
-  chainId: string,
+  chainIds: string[],
   address: string,
   name: string,
   owners: NamedAddress[],
@@ -14,7 +14,7 @@ export const updateAddressBook = (
   return (dispatch) => {
     dispatch(
       upsertAddressBookEntries({
-        chainIds: [chainId],
+        chainIds,
         address,
         name,
       }),
@@ -23,24 +23,26 @@ export const updateAddressBook = (
     owners.forEach((owner) => {
       const entryName = owner.name || owner.ens
       if (entryName) {
-        dispatch(upsertAddressBookEntries({ chainIds: [chainId], address: owner.address, name: entryName }))
+        dispatch(upsertAddressBookEntries({ chainIds, address: owner.address, name: entryName }))
       }
     })
 
-    dispatch(
-      addOrUpdateSafe({
-        safe: {
-          ...defaultSafeInfo,
-          address: { value: address, name },
-          threshold,
-          owners: owners.map((owner) => ({
-            value: owner.address,
-            name: owner.name || owner.ens,
-          })),
-          chainId,
-          nonce: 0,
-        },
-      }),
-    )
+    chainIds.forEach((chainId) => {
+      dispatch(
+        addOrUpdateSafe({
+          safe: {
+            ...defaultSafeInfo,
+            address: { value: address, name },
+            threshold,
+            owners: owners.map((owner) => ({
+              value: owner.address,
+              name: owner.name || owner.ens,
+            })),
+            chainId,
+            nonce: 0,
+          },
+        }),
+      )
+    })
   }
 }
