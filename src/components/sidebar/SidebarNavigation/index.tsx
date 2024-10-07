@@ -56,7 +56,7 @@ const Navigation = (): ReactElement => {
   const enabledNavItems = useMemo(() => {
     return safe.deployed
       ? visibleNavItems
-      : visibleNavItems.filter((item) => undeployedSafeBlockedRoutes.includes(item.href))
+      : visibleNavItems.filter((item) => !undeployedSafeBlockedRoutes.includes(item.href))
   }, [safe.deployed, visibleNavItems])
 
   const getBadge = (item: NavItem) => {
