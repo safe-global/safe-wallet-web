@@ -79,7 +79,7 @@ describe('Add Owners tests', () => {
     owner.waitForConnectionStatus()
     owner.openAddOwnerWindow()
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
-    createTx.changeNonce(2)
+    createTx.changeNonce(1)
     owner.clickOnNextBtn()
     createTx.clickOnSignTransactionBtn()
     createTx.clickViewTransaction()

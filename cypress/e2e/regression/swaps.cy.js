@@ -145,7 +145,7 @@ describe('Swaps tests', () => {
       swaps.setSlippage('0.30')
       swaps.setExpiry('2')
       swaps.clickOnSettingsBtn()
-      swaps.setInputValue(20)
+      swaps.setInputValue(200)
       swaps.selectOutputCurrency(swaps.swapTokens.dai)
       swaps.checkSwapBtnIsVisible()
       swaps.isInputGreaterZero(swaps.outputCurrencyInput).then((isGreaterThanZero) => {
@@ -177,7 +177,7 @@ describe('Swaps tests', () => {
       main.getIframeBody(iframeSelector).then(($frame) => {
         cy.wrap($frame).within(() => {
           swaps.selectInputCurrency(swaps.swapTokens.cow)
-          swaps.setInputValue(20)
+          swaps.setInputValue(200)
           swaps.selectOutputCurrency(swaps.swapTokens.dai)
           swaps.checkSwapBtnIsVisible()
           swaps.clickOnSettingsBtn()
