@@ -28,6 +28,9 @@ import './safe-apps-commands'
 const { addCompareSnapshotCommand } = require('cypress-visual-regression/dist/command')
 addCompareSnapshotCommand()
 
+const beamer = JSON.parse(Cypress.env('BEAMER_DATA_E2E'))
+const productID = beamer.PRODUCT_ID
+
 before(() => {
   Cypress.on('uncaught:exception', (err, runnable) => {
     return false
@@ -48,4 +51,11 @@ before(() => {
 beforeEach(() => {
   cy.setupInterceptors()
   cy.clearAllSessionStorage()
+  cy.window().then((window) => {
+    const getDate = () => new Date().toISOString()
+    const beamerKey1 = `_BEAMER_FIRST_VISIT_${productID}`
+    const beamerKey2 = `_BEAMER_BOOSTED_ANNOUNCEMENT_DATE_${productID}`
+    window.localStorage.setItem(beamerKey1, getDate())
+    window.localStorage.setItem(beamerKey2, getDate())
+  })
 })
