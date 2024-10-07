@@ -54,13 +54,9 @@ const Navigation = (): ReactElement => {
   }, [chain, isBlockedCountry])
 
   const enabledNavItems = useMemo(() => {
-    return visibleNavItems.filter((item) => {
-      if (!safe.deployed && undeployedSafeBlockedRoutes.includes(item.href)) {
-        return false
-      }
-
-      return true
-    })
+    return safe.deployed
+      ? visibleNavItems
+      : visibleNavItems.filter((item) => undeployedSafeBlockedRoutes.includes(item.href))
   }, [safe.deployed, visibleNavItems])
 
   const getBadge = (item: NavItem) => {
