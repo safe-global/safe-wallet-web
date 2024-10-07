@@ -2,7 +2,6 @@ import { useCounter } from '@/components/common/Notifications/useCounter'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import { getRedirect } from '@/components/new-safe/create/logic'
-import { updateAddressBook } from '@/components/new-safe/create/logic/address-book'
 import StatusMessage from '@/components/new-safe/create/steps/StatusStep/StatusMessage'
 import useUndeployedSafe from '@/components/new-safe/create/steps/StatusStep/useUndeployedSafe'
 import lightPalette from '@/components/theme/lightPalette'
@@ -54,7 +53,6 @@ export const CreateSafeStatus = ({
     if (!chain || !safeAddress) return
 
     if (status === SafeCreationEvent.SUCCESS) {
-      dispatch(updateAddressBook(chain.chainId, safeAddress, data.name, data.owners, data.threshold))
       const redirect = getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL)
       if (typeof redirect !== 'string' || redirect.startsWith('/')) {
         router.push(redirect)

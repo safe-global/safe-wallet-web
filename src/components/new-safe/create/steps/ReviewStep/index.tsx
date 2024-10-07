@@ -49,6 +49,7 @@ import { type ReplayedSafeProps } from '@/store/slices'
 import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { type DeploySafeProps } from '@safe-global/protocol-kit'
+import { updateAddressBook } from '../../logic/address-book'
 
 export const NetworkFee = ({
   totalFee,
@@ -226,6 +227,17 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       for (const network of data.networks) {
         await createSafe(network, replayedSafeWithNonce, safeAddress)
       }
+
+      // Update addressbook with owners and Safe on all chosen networks
+      dispatch(
+        updateAddressBook(
+          data.networks.map((network) => network.chainId),
+          safeAddress,
+          data.name,
+          data.owners,
+          data.threshold,
+        ),
+      )
 
       gtmSetChainId(chain.chainId)
 

@@ -16,8 +16,6 @@ import ExternalStore from '@/services/ExternalStore'
 import { getSafeSDKWithSigner, getUncheckedSigner, tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
 import { getRelayTxStatus, TaskState } from '@/services/tx/txMonitor'
 import type { AppDispatch } from '@/store'
-import { addOrUpdateSafe } from '@/store/addedSafesSlice'
-import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
@@ -175,21 +173,6 @@ export const replayCounterfactualSafeDeployment = (
   }
 
   dispatch(addUndeployedSafe(undeployedSafe))
-  dispatch(upsertAddressBookEntries({ chainIds: [chainId], address: safeAddress, name }))
-  dispatch(
-    addOrUpdateSafe({
-      safe: {
-        ...defaultSafeInfo,
-        address: { value: safeAddress, name },
-        threshold: setup.threshold,
-        owners: setup.owners.map((owner) => ({
-          value: owner,
-          name: undefined,
-        })),
-        chainId,
-      },
-    }),
-  )
 }
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
