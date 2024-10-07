@@ -32,10 +32,12 @@ export interface SafeCreationEvents {
     groupKey: string
     safeAddress: string
     type: PayMethod
+    chainId: string
   }
   [SafeCreationEvent.INDEXED]: {
     groupKey: string
     safeAddress: string
+    chainId: string
   }
   [SafeCreationEvent.FAILED]: {
     groupKey: string

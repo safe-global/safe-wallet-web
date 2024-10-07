@@ -117,6 +117,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       wallet.address,
       safe.address.value,
       overrides as Overrides & { nonce: number },
+      safe.nonce,
     )
   }
 

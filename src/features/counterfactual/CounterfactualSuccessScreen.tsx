@@ -1,7 +1,7 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
-import { useCurrentChain } from '@/hooks/useChains'
+import { useChain, useCurrentChain } from '@/hooks/useChains'
 import { useEffect, useState } from 'react'
 import { Box, Button, Dialog, DialogContent, Typography } from '@mui/material'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
@@ -12,7 +12,9 @@ import useAllAddressBooks from '@/hooks/useAllAddressBooks'
 const CounterfactualSuccessScreen = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [safeAddress, setSafeAddress] = useState<string>()
-  const chain = useCurrentChain()
+  const [chainId, setChainId] = useState<string>()
+  const currentChain = useCurrentChain()
+  const chain = useChain(chainId || currentChain?.chainId || '')
   const [networks, setNetworks] = useState<ChainInfo[]>([])
   const addressBooks = useAllAddressBooks()
   const safeName = safeAddress && chain ? addressBooks?.[chain.chainId]?.[safeAddress] : ''
@@ -24,6 +26,10 @@ const CounterfactualSuccessScreen = () => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
         if (event === SafeCreationEvent.INDEXED) {
+          if ('chainId' in detail) {
+            setChainId(detail.chainId)
+          }
+
           setSafeAddress(detail.safeAddress)
           setOpen(true)
         }

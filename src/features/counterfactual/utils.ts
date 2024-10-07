@@ -185,7 +185,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
  * @param txHash
  * @param maxAttempts
  */
-async function retryGetTransaction(provider: Provider, txHash: string, maxAttempts = 6) {
+async function retryGetTransaction(provider: Provider, txHash: string, maxAttempts = 8) {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const txResponse = await provider.getTransaction(txHash)
     if (txResponse !== null) {
@@ -204,6 +204,7 @@ export const checkSafeActivation = async (
   txHash: string,
   safeAddress: string,
   type: PayMethod,
+  chainId: string,
   startBlock?: number,
 ) => {
   try {
@@ -229,6 +230,7 @@ export const checkSafeActivation = async (
       groupKey: CF_TX_GROUP_KEY,
       safeAddress,
       type,
+      chainId,
     })
   } catch (err) {
     const _err = err as EthersError
@@ -238,6 +240,7 @@ export const checkSafeActivation = async (
         groupKey: CF_TX_GROUP_KEY,
         safeAddress,
         type,
+        chainId,
       })
       return
     }
@@ -259,7 +262,7 @@ export const checkSafeActivation = async (
   }
 }
 
-export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, type: PayMethod) => {
+export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, type: PayMethod, chainId: string) => {
   const TIMEOUT_TIME = 2 * 60 * 1000 // 2 minutes
 
   let intervalId: NodeJS.Timeout
@@ -277,6 +280,7 @@ export const checkSafeActionViaRelay = (taskId: string, safeAddress: string, typ
           groupKey: CF_TX_GROUP_KEY,
           safeAddress,
           type,
+          chainId,
         })
         break
       case TaskState.ExecReverted:
