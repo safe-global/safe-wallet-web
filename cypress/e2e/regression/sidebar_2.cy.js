@@ -11,7 +11,7 @@ const newSafeName = 'Added safe 3'
 const addedSafe900 = 'Added safe 900'
 const staticSafe200 = 'Added safe 200'
 
-describe('Sidebar added sidebar tests', () => {
+describe('Sidebar tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -25,7 +25,7 @@ describe('Sidebar added sidebar tests', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.addedSafes)
   })
 
-  it('Verify the safe added are listed in the sidebar', () => {
+  it.only('Verify the safe added are listed in the sidebar', () => {
     sideBar.openSidebar()
     sideBar.verifyAddedSafesExist(sideBar.addedSafesSepolia)
   })

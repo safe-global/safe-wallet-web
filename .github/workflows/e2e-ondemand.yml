@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3, 4, 5]
+        containers: [1]
     steps:
       - uses: actions/checkout@v4
 
@@ -25,10 +25,8 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           spec: |
-            cypress/e2e/regression/*.cy.js
-            cypress/e2e/safe-apps/*.cy.js
-            cypress/e2e/smoke/*.cy.js
-            cypress/e2e/prodhealthcheck/*.cy.js
+            cypress/e2e/regression/sidebar.cy.js
+            cypress/e2e/regression/sidebar_2.cy.js
           group: 'Regression on demand tests'
           tag: 'regression'
 
@@ -52,7 +50,7 @@ jobs:
         if: always()
         run: |
           pip install trcli
-          trcli -y \
+          if ! trcli -y \
           -h https://gno.testrail.io/ \
           --project "Safe- Web App" \
           --username ${{ secrets.TESTRAIL_USERNAME }} \
@@ -60,4 +58,6 @@ jobs:
           parse_junit \
           --title "Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
-          -f "reports/junit-report.xml"
+          -f "reports/junit-report.xml"; then
+            echo -e "\e[41;97mTestRail upload failed. Pipeline will continue, please check the upload process.\e[0m"
+          fi

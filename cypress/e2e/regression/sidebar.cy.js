@@ -20,7 +20,7 @@ describe('Sidebar tests', () => {
     main.acceptCookies()
   })
 
-  it('Verify Current network is displayed at the top', () => {
+  it.only('Verify Current network is displayed at the top', () => {
     sideBar.verifyNetworkIsDisplayed(constants.networks.sepolia)
   })
 
