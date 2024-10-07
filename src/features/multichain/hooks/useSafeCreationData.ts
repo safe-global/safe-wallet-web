@@ -13,6 +13,7 @@ import { asError } from '@/services/exceptions/utils'
 import semverSatisfies from 'semver/functions/satisfies'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getSafeToL2SetupDeployment } from '@safe-global/safe-deployments'
+import { type SafeAccountConfig } from '@safe-global/protocol-kit'
 
 export const SAFE_CREATION_DATA_ERRORS = {
   TX_NOT_FOUND: 'The Safe creation transaction could not be found. Please retry later.',
@@ -51,6 +52,19 @@ const getUndeployedSafeCreationData = async (undeployedSafe: UndeployedSafe): Pr
   return undeployedSafe.props
 }
 
+const validateAccountConfig = (safeAccountConfig: SafeAccountConfig) => {
+  // Safes that used the reimbursement logic are not supported
+  if ((safeAccountConfig.payment && safeAccountConfig.payment > 0) || safeAccountConfig.paymentToken !== ZERO_ADDRESS) {
+    throw new Error(SAFE_CREATION_DATA_ERRORS.PAYMENT_SAFE)
+  }
+
+  const setupToL2Address = getSafeToL2SetupDeployment({ version: '1.4.1' })?.defaultAddress
+  if (safeAccountConfig.to !== ZERO_ADDRESS && !sameAddress(safeAccountConfig.to, setupToL2Address)) {
+    // Unknown setupModules calls cannot be replayed as the target contract is likely not deployed across chains
+    throw new Error(SAFE_CREATION_DATA_ERRORS.UNKNOWN_SETUP_MODULES)
+  }
+}
+
 const proxyFactoryInterface = Safe_proxy_factory__factory.createInterface()
 const createProxySelector = proxyFactoryInterface.getFunction('createProxyWithNonce').selector
 
@@ -68,7 +82,10 @@ const getCreationDataForChain = async (
 ): Promise<ReplayedSafeProps> => {
   // 1. The safe is counterfactual
   if (undeployedSafe) {
-    return getUndeployedSafeCreationData(undeployedSafe)
+    const undeployedCreationData = await getUndeployedSafeCreationData(undeployedSafe)
+    validateAccountConfig(undeployedCreationData.safeAccountConfig)
+
+    return undeployedCreationData
   }
 
   const { data: creation } = await getCreationTransaction({
@@ -90,16 +107,7 @@ const getCreationDataForChain = async (
 
   const safeAccountConfig = decodeSetupData(creation.setupData)
 
-  // Safes that used the reimbursement logic are not supported
-  if ((safeAccountConfig.payment && safeAccountConfig.payment > 0) || safeAccountConfig.paymentToken !== ZERO_ADDRESS) {
-    throw new Error(SAFE_CREATION_DATA_ERRORS.PAYMENT_SAFE)
-  }
-
-  const setupToL2Address = getSafeToL2SetupDeployment({ version: '1.4.1' })?.defaultAddress
-  if (safeAccountConfig.to !== ZERO_ADDRESS && !sameAddress(safeAccountConfig.to, setupToL2Address)) {
-    // Unknown setupModules calls cannot be replayed as the target contract is likely not deployed across chains
-    throw new Error(SAFE_CREATION_DATA_ERRORS.UNKNOWN_SETUP_MODULES)
-  }
+  validateAccountConfig(safeAccountConfig)
 
   // We need to create a readOnly provider of the deployed chain
   const customRpcUrl = chain ? customRpc?.[chain.chainId] : undefined
