@@ -20,12 +20,12 @@ describe('Sidebar tests', () => {
     main.acceptCookies()
   })
 
-  it.only('Verify Current network is displayed at the top', () => {
+  it('Verify Current network is displayed at the top', () => {
     sideBar.verifyNetworkIsDisplayed(constants.networks.sepolia)
   })
 
   // TODO: Added to prod
-  it('Verify current safe details', () => {
+  it.only('Verify current safe details', () => {
     sideBar.verifySafeHeaderDetails(sideBar.testSafeHeaderDetails)
   })
 

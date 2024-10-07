@@ -25,12 +25,12 @@ describe('Sidebar tests', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.addedSafes)
   })
 
-  it.only('Verify the safe added are listed in the sidebar', () => {
+  it('Verify the safe added are listed in the sidebar', () => {
     sideBar.openSidebar()
     sideBar.verifyAddedSafesExist(sideBar.addedSafesSepolia)
   })
 
-  it('Verify a safe can be renamed', () => {
+  it.only('Verify a safe can be renamed', () => {
     sideBar.openSidebar()
     sideBar.renameSafeItem(addedSafe900, newSafeName)
     sideBar.clickOnSaveBtn()
