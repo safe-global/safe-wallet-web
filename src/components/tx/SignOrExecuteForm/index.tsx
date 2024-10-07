@@ -27,7 +27,7 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
+import { isAnyStakingTxInfo, isCustomTxInfo, isGenericConfirmation, isOrderTxInfo } from '@/utils/transaction-guards'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
 import { Blockaid } from '../security/blockaid'
@@ -104,7 +104,12 @@ export const SignOrExecuteForm = ({
         }
       : skipToken,
   )
-  const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const showTxDetails =
+    props.txId &&
+    txDetails &&
+    !isCustomTxInfo(txDetails.txInfo) &&
+    !isAnyStakingTxInfo(txDetails.txInfo) &&
+    !isOrderTxInfo(txDetails.txInfo)
   const isDelegate = useIsWalletDelegate()
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
