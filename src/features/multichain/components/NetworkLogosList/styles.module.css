@@ -2,6 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   margin-left: 6px;
+  row-gap: 4px;
 }
 
 .networks img {
