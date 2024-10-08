@@ -11,6 +11,8 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import { POLLING_INTERVAL } from '@/config/constants'
 import useIntervalCounter from '../useIntervalCounter'
 import useSafeInfo from '../useSafeInfo'
+import { useGetSafeNetConfigQuery, useLazyGetSafeNetBalanceQuery } from '@/store/safenet'
+import { SafenetChainType, convertSafeNetBalanceToSafeClientGatewayBalance, isSupportedChain } from '@/utils/safenet'
 
 export const useTokenListSetting = (): boolean | undefined => {
   const chain = useCurrentChain()
@@ -24,14 +26,36 @@ export const useTokenListSetting = (): boolean | undefined => {
   return isTrustedTokenList
 }
 
+const mergeBalances = (balance1: SafeBalanceResponse, balance2: SafeBalanceResponse): SafeBalanceResponse => {
+  return {
+    fiatTotal: balance1.fiatTotal + balance2.fiatTotal,
+    items: [...balance1.items, ...balance2.items],
+  }
+}
+
 export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
   const [pollCount, resetPolling] = useIntervalCounter(POLLING_INTERVAL)
+  const {
+    data: safeNetConfig,
+    isSuccess: isSafeNetConfigSuccess,
+    isLoading: isSafeNetConfigLoading,
+  } = useGetSafeNetConfigQuery()
   const currency = useAppSelector(selectCurrency)
   const isTrustedTokenList = useTokenListSetting()
   const { safe, safeAddress } = useSafeInfo()
   const web3 = useWeb3()
   const chain = useCurrentChain()
   const chainId = safe.chainId
+  const chainSupportedBySafeNet =
+    isSafeNetConfigSuccess && isSupportedChain(Number(chainId), safeNetConfig, SafenetChainType.DESTINATION)
+  const [triggerSafeNetBalanceQuery, { data: safeNetBalance, isLoading: isSafeNetBalanceLoading }] =
+    useLazyGetSafeNetBalanceQuery()
+
+  useEffect(() => {
+    if (chainSupportedBySafeNet) {
+      triggerSafeNetBalanceQuery({ chainId, safeAddress }, false)
+    }
+  }, [chainSupportedBySafeNet, chainId, safeAddress, triggerSafeNetBalanceQuery])
 
   // Re-fetch assets when the entire SafeInfo updates
   const [data, error, loading] = useAsync<SafeBalanceResponse | undefined>(
@@ -51,6 +75,17 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
     false, // don't clear data between polls
   )
 
+  const withSafeNetBalance = useMemo(() => {
+    if (!chainSupportedBySafeNet) return data
+    if (!safeNetBalance) return data
+    if (!data) return convertSafeNetBalanceToSafeClientGatewayBalance(safeNetBalance, safeNetConfig, Number(chainId))
+
+    return mergeBalances(
+      data,
+      convertSafeNetBalanceToSafeClientGatewayBalance(safeNetBalance, safeNetConfig, Number(chainId)),
+    )
+  }, [chainSupportedBySafeNet, safeNetBalance, safeNetConfig, chainId, data])
+
   // Reset the counter when safe address/chainId changes
   useEffect(() => {
     resetPolling()
@@ -63,7 +98,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
     }
   }, [error])
 
-  return [data, error, loading]
+  return [withSafeNetBalance, error, loading || isSafeNetBalanceLoading || isSafeNetConfigLoading]
 }
 
 export default useLoadBalances
