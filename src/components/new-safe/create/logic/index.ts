@@ -87,7 +87,6 @@ export const computeNewSafeAddress = async (
       saltNonce: props.saltNonce,
       safeVersion: safeVersion ?? getLatestSafeVersion(chain),
     },
-    isL1SafeSingleton: true,
   })
 }
 
@@ -211,7 +210,7 @@ export const createNewUndeployedSafeWithoutSalt = (
     version: safeVersion,
     network: chain.chainId,
   })
-  const fallbackHandlerAddress = fallbackHandlerDeployment?.defaultAddress
+  const fallbackHandlerAddress = fallbackHandlerDeployment?.networkAddresses[chain.chainId]
   const safeL2Deployment = getSafeL2SingletonDeployment({ version: safeVersion, network: chain.chainId })
   const safeL2Address = safeL2Deployment?.networkAddresses[chain.chainId]
 

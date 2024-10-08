@@ -320,5 +320,35 @@ describe('create/logic', () => {
         factoryAddress: getProxyFactoryDeployment({ version: '1.4.1', network: '137' })?.defaultAddress,
       })
     })
+
+    it('should use l2 masterCopy and no migration on zkSync', () => {
+      const safeSetup = {
+        owners: [faker.finance.ethereumAddress()],
+        threshold: 1,
+      }
+      expect(
+        createNewUndeployedSafeWithoutSalt(
+          '1.3.0',
+          safeSetup,
+          chainBuilder()
+            .with({ chainId: '324' })
+            // Multichain and 1.4.1 creation is toggled off
+            .with({ features: [FEATURES.COUNTERFACTUAL] as any })
+            .with({ l2: true })
+            .build(),
+        ),
+      ).toEqual({
+        safeAccountConfig: {
+          ...safeSetup,
+          fallbackHandler: getFallbackHandlerDeployment({ version: '1.3.0', network: '324' })?.networkAddresses['324'],
+          to: ZERO_ADDRESS,
+          data: EMPTY_DATA,
+          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
+        },
+        safeVersion: '1.3.0',
+        masterCopy: getSafeL2SingletonDeployment({ version: '1.3.0', network: '324' })?.networkAddresses['324'],
+        factoryAddress: getProxyFactoryDeployment({ version: '1.3.0', network: '324' })?.networkAddresses['324'],
+      })
+    })
   })
 })
