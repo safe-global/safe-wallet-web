@@ -73,7 +73,7 @@ const TxData = ({
     return <SpendingLimits txData={txDetails.txData} txInfo={txInfo} type={method} />
   }
 
-  if (isMigrateToL2TxData(txDetails.txData)) {
+  if (isMigrateToL2TxData(txDetails.txData, chainId)) {
     return <MigrationToL2TxData txDetails={txDetails} />
   }
   return <DecodedData txData={txDetails.txData} toInfo={toInfo} />
