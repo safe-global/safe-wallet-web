@@ -7,7 +7,7 @@ import type { NewSafeFormData } from '@/components/new-safe/create'
 import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { type SafeVersion } from '@safe-global/types-kit'
 import NumberField from '@/components/common/NumberField'
 import { useCurrentChain } from '@/hooks/useChains'
 import useAsync from '@/hooks/useAsync'
@@ -58,15 +58,15 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
     return computeNewSafeAddress(
       wallet.provider,
       {
-        safeAccountConfig: {
-          owners: data.owners.map((owner) => owner.address),
-          threshold: data.threshold,
-          fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
-        },
+        owners: data.owners.map((owner) => owner.address),
+        threshold: data.threshold,
+        fallbackHandler: readOnlyFallbackHandlerContract.getAddress(),
+      },
+      {
         saltNonce: selectedSaltNonce.toString(),
+        safeVersion: selectedSafeVersion,
       },
       chain,
-      selectedSafeVersion,
     )
   }, [
     chain,

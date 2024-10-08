@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@/tests/test-utils'
-import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type SafeTransaction } from '@safe-global/types-kit'
 import DecodedTx from '.'
 import { waitFor } from '@testing-library/react'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'

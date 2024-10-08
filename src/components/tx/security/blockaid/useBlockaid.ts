@@ -5,7 +5,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import type { SecurityResponse } from '@/services/security/modules/types'
 import { FEATURES } from '@/utils/chains'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/types-kit'
 import { useEffect, useMemo } from 'react'
 
 import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'

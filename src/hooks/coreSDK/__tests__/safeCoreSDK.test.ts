@@ -1,10 +1,6 @@
 import { Gnosis_safe__factory } from '@/types/contracts'
 import { JsonRpcProvider, toBeHex } from 'ethers'
 import Safe from '@safe-global/protocol-kit'
-import {
-  getProxyFactoryContract,
-  getSafeContract,
-} from '@safe-global/protocol-kit/dist/src/contracts/safeDeploymentContracts'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 import { initSafeSDK, isValidSafeVersion } from '../safeCoreSDK'
 
@@ -73,36 +69,6 @@ describe('safeCoreSDK', () => {
   describe('initSafeSDK', () => {
     const MAINNET_MASTER_COPY = '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552' // L1
     const POLYGON_MASTER_COPY = '0x3E5c63644E683549055b9Be8653de26E0B4CD36E' // L2
-
-    ;(getProxyFactoryContract as jest.Mock).mockImplementation(async () => {
-      return await Promise.resolve({
-        getAddress: jest.fn(),
-        proxyCreationCode: jest.fn(),
-        createProxy: jest.fn(),
-        encode: jest.fn(),
-        estimateGas: jest.fn(),
-      })
-    })
-    ;(getSafeContract as jest.Mock).mockImplementation(async () => {
-      return await Promise.resolve({
-        setup: jest.fn(),
-        getVersion: jest.fn(),
-        getAddress: jest.fn(),
-        getNonce: jest.fn(),
-        getThreshold: jest.fn(),
-        getOwners: jest.fn(),
-        isOwner: jest.fn(),
-        getTransactionHash: jest.fn(),
-        approvedHashes: jest.fn(),
-        approveHash: jest.fn(),
-        getModules: jest.fn(),
-        isModuleEnabled: jest.fn(),
-        isValidTransaction: jest.fn(),
-        execTransaction: jest.fn(),
-        encode: jest.fn(),
-        estimateGas: jest.fn(),
-      })
-    })
 
     describe('Supported contracts', () => {
       it('should return an SDK instance', async () => {

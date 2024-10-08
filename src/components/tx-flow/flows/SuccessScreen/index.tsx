@@ -16,7 +16,7 @@ import { IndexingStatus } from '@/components/tx-flow/flows/SuccessScreen/statuse
 import { DefaultStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/DefaultStatus'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/types-kit'
 import { getTxLink } from '@/utils/tx-link'
 
 interface Props {

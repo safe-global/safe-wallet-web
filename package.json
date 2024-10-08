@@ -37,7 +37,7 @@
     "node": ">=16"
   },
   "resolutions": {
-    "@safe-global/safe-core-sdk-types/**/ethers": "^6.11.1",
+    "@safe-global/types-kit/**/ethers": "^6.11.1",
     "@safe-global/protocol-kit/**/ethers": "^6.11.1",
     "@safe-global/api-kit/**/ethers": "^6.11.1",
     "@gnosis.pm/zodiac/**/ethers": "^6.11.1"
@@ -54,8 +54,8 @@
     "@mui/material": "^5.14.20",
     "@mui/x-date-pickers": "^5.0.20",
     "@reduxjs/toolkit": "^2.2.6",
-    "@safe-global/api-kit": "^2.4.6",
-    "@safe-global/protocol-kit": "^4.1.1",
+    "@safe-global/api-kit": "^2.5.0",
+    "@safe-global/protocol-kit": "^5.0.0",
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@safe-global/safe-deployments": "^1.37.10",
     "@safe-global/safe-gateway-typescript-sdk": "3.22.3-beta.15",
@@ -104,7 +104,7 @@
     "@next/bundle-analyzer": "^13.5.6",
     "@next/mdx": "^14.2.11",
     "@openzeppelin/contracts": "^4.9.6",
-    "@safe-global/safe-core-sdk-types": "^5.0.1",
+    "@safe-global/types-kit": "^1.0.0",
     "@sentry/types": "^7.74.0",
     "@storybook/addon-designs": "^8.0.3",
     "@storybook/addon-essentials": "^8.0.6",

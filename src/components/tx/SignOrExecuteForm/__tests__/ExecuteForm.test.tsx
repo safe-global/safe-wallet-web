@@ -1,7 +1,7 @@
 import { defaultSecurityContextValues } from '@/components/tx/security/shared/TxSecurityContext'
 import { type AsyncResult } from '@/hooks/useAsync'
 import { createMockSafeTransaction } from '@/tests/transactions'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
+import { OperationType } from '@safe-global/types-kit'
 import { type ReactElement } from 'react'
 import { ExecuteForm } from '@/components/tx/SignOrExecuteForm/ExecuteForm'
 import * as useGasLimit from '@/hooks/useGasLimit'

@@ -122,13 +122,7 @@ const SafeListContextMenu = ({
       )}
 
       {open[ModalType.ADD_CHAIN] && (
-        <CreateSafeOnNewChain
-          onClose={handleCloseModal}
-          currentName={name}
-          deployedChainIds={[chainId]}
-          open
-          safeAddress={address}
-        />
+        <CreateSafeOnNewChain onClose={handleCloseModal} deployedChainIds={[chainId]} open safeAddress={address} />
       )}
     </>
   )

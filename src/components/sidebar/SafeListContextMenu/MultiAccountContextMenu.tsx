@@ -94,13 +94,7 @@ const MultiAccountContextMenu = ({
       )}
 
       {open[ModalType.ADD_CHAIN] && (
-        <CreateSafeOnNewChain
-          onClose={handleCloseModal}
-          currentName={name}
-          deployedChainIds={chainIds}
-          open
-          safeAddress={address}
-        />
+        <CreateSafeOnNewChain onClose={handleCloseModal} deployedChainIds={chainIds} open safeAddress={address} />
       )}
     </>
   )

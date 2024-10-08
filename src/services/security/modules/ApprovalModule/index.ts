@@ -4,7 +4,7 @@ import {
 } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { ERC20__factory } from '@/types/contracts'
 import { normalizeTypedData } from '@/utils/web3'
-import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type SafeTransaction } from '@safe-global/types-kit'
 import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { id } from 'ethers'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'

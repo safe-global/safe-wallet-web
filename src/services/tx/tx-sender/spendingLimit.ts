@@ -1,7 +1,7 @@
 import type { SpendingLimitState } from '@/store/spendingLimitsSlice'
 import { getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimitContracts'
-import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/types-kit'
 import {
   createAddDelegateTx,
   createEnableModuleTx,
@@ -41,7 +41,7 @@ export const createNewSpendingLimitTx = async (
     const enableModuleTx = await createEnableModuleTx(
       chain,
       await sdk.getAddress(),
-      await sdk.getContractVersion(),
+      sdk.getContractVersion(),
       spendingLimitAddress,
     )
 

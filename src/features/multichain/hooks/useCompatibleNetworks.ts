@@ -1,7 +1,7 @@
 import { type ReplayedSafeProps } from '@/features/counterfactual/store/undeployedSafesSlice'
 import useChains from '@/hooks/useChains'
 import { hasMatchingDeployment } from '@/services/contracts/deployments'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { type SafeVersion } from '@safe-global/types-kit'
 import {
   getCompatibilityFallbackHandlerDeployments,
   getProxyFactoryDeployments,

@@ -197,11 +197,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             <>
               <Divider sx={{ ml: '-12px', mr: '-12px' }} />
               <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>
-                <AddNetworkButton
-                  currentName={name}
-                  safeAddress={address}
-                  deployedChains={safes.map((safe) => safe.chainId)}
-                />
+                <AddNetworkButton safeAddress={address} deployedChains={safes.map((safe) => safe.chainId)} />
               </Box>
             </>
           )}

@@ -1,7 +1,7 @@
 import { AppRoutes } from '@/config/routes'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getExplorerLink } from './gateway'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { type SafeVersion } from '@safe-global/types-kit'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 import semverSatisfies from 'semver/functions/satisfies'
 import { LATEST_SAFE_VERSION } from '@/config/constants'

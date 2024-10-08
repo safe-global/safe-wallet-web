@@ -13,7 +13,7 @@ import type { SingletonDeployment, DeploymentFilter, SingletonDeploymentV2 } fro
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { sameAddress } from '@/utils/addresses'
-import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { type SafeVersion } from '@safe-global/types-kit'
 
 const toNetworkAddressList = (addresses: string | string[]) => (Array.isArray(addresses) ? addresses : [addresses])
 

@@ -8,7 +8,7 @@ import {
 } from '@safe-global/protocol-kit/dist/src/utils'
 import type { Eip1193Provider, JsonRpcSigner } from 'ethers'
 import { isWalletRejection, isHardwareWallet, isWalletConnect } from '@/utils/wallets'
-import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { OperationType, type SafeTransaction } from '@safe-global/types-kit'
 import { getChainConfig, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils/safeVersions'
 import { hasSafeFeature } from '@/utils/safe-versions'

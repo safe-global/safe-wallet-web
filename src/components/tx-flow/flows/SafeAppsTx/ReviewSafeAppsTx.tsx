@@ -1,7 +1,7 @@
 import useWallet from '@/hooks/wallets/useWallet'
 import { useContext, useEffect, useMemo } from 'react'
 import type { ReactElement } from 'react'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/types-kit'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import type { SafeAppsTxParams } from '.'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'

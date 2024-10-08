@@ -19,9 +19,9 @@ import type { AppDispatch } from '@/store'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { didRevert, type EthersError } from '@/utils/ethers-utils'
 import { assertProvider, assertTx, assertWallet } from '@/utils/helpers'
-import { type DeploySafeProps, type PredictedSafeProps } from '@safe-global/protocol-kit'
+import { type PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction, SafeVersion, TransactionOptions } from '@safe-global/types-kit'
 import {
   type ChainInfo,
   ImplementationVersionState,
@@ -69,7 +69,7 @@ export const dispatchTxExecutionAndDeploySafe = async (
 
   let result: ContractTransactionResponse | undefined
   try {
-    const signedTx = await tryOffChainTxSigning(safeTx, await sdk.getContractVersion(), sdk)
+    const signedTx = await tryOffChainTxSigning(safeTx, sdk.getContractVersion(), sdk)
     const signer = await getUncheckedSigner(provider)
 
     const deploymentTx = await sdk.wrapSafeTransactionIntoDeploymentBatch(signedTx, txOptions)
@@ -147,7 +147,6 @@ export const replayCounterfactualSafeDeployment = (
   chainId: string,
   safeAddress: string,
   replayedSafeProps: ReplayedSafeProps,
-  name: string,
   dispatch: AppDispatch,
   payMethod: PayMethod,
 ) => {
@@ -384,7 +383,7 @@ export const activateReplayedSafe = async (
   chain: ChainInfo,
   props: ReplayedSafeProps,
   provider: BrowserProvider,
-  options: DeploySafeProps['options'],
+  options: TransactionOptions,
 ) => {
   const data = encodeSafeCreationTx(props, chain)
 

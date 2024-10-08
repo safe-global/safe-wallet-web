@@ -9,7 +9,7 @@ import {
   UNLIMITED_APPROVAL_AMOUNT,
   UNLIMITED_PERMIT2_AMOUNT,
 } from '@/utils/tokens'
-import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type SafeTransaction } from '@safe-global/types-kit'
 import { type EIP712TypedData, type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
 import { useMemo } from 'react'

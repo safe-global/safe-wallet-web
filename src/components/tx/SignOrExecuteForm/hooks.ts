@@ -1,6 +1,6 @@
 import { assertTx, assertWallet, assertOnboard, assertChainInfo } from '@/utils/helpers'
 import { useMemo } from 'react'
-import { type TransactionOptions, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type TransactionOptions, type SafeTransaction } from '@safe-global/types-kit'
 import { sameString } from '@safe-global/protocol-kit/dist/src/utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -135,7 +135,7 @@ export const useTxActions = (): TxActions => {
 
       // Relay or execute the tx via connected wallet
       if (isRelayed) {
-        await dispatchTxRelay(safeTx, safe, txId, chain, txOptions.gasLimit)
+        await dispatchTxRelay(safeTx, safe, txId, chain, txOptions.gasLimit?.toString())
       } else {
         const isSmartAccount = await isSmartContractWallet(wallet.chainId, wallet.address)
 

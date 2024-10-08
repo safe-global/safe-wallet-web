@@ -4,7 +4,7 @@ import {
   getNonces as fetchNonces,
   type SafeTransactionEstimation,
 } from '@safe-global/safe-gateway-typescript-sdk'
-import type { MetaTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData, SafeTransactionDataPartial } from '@safe-global/types-kit'
 import { isLegacyVersion } from '@/hooks/coreSDK/safeCoreSDK'
 import { Errors, logError } from '@/services/exceptions'
 

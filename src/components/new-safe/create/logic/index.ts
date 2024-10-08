@@ -1,5 +1,5 @@
-import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
-import { type Eip1193Provider, type Provider } from 'ethers'
+import type { SafeVersion, TransactionOptions } from '@safe-global/types-kit'
+import { BrowserProvider, type TransactionResponse, type Eip1193Provider, type Provider } from 'ethers'
 import semverSatisfies from 'semver/functions/satisfies'
 
 import { getSafeInfo, type SafeInfo, type ChainInfo, relayTransaction } from '@safe-global/safe-gateway-typescript-sdk'
@@ -7,9 +7,8 @@ import { getReadOnlyProxyFactoryContract } from '@/services/contracts/safeContra
 import type { UrlObject } from 'url'
 import { AppRoutes } from '@/config/routes'
 import { SAFE_APPS_EVENTS, trackEvent } from '@/services/analytics'
-import { predictSafeAddress, SafeFactory, SafeProvider } from '@safe-global/protocol-kit'
-import type { DeploySafeProps, PredictedSafeProps } from '@safe-global/protocol-kit'
-import { isValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
+import Safe, { predictSafeAddress, SafeProvider } from '@safe-global/protocol-kit'
+import type { PredictedSafeProps, SafeAccountConfig, SafeDeploymentConfig } from '@safe-global/protocol-kit'
 
 import { backOff } from 'exponential-backoff'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
@@ -35,37 +34,32 @@ export type SafeCreationProps = {
   saltNonce: number
 }
 
-const getSafeFactory = async (
-  provider: Eip1193Provider,
-  safeVersion: SafeVersion,
-  isL1SafeSingleton?: boolean,
-): Promise<SafeFactory> => {
-  if (!isValidSafeVersion(safeVersion)) {
-    throw new Error('Invalid Safe version')
-  }
-  return SafeFactory.init({ provider, safeVersion, isL1SafeSingleton })
-}
-
 /**
  * Create a Safe creation transaction via Core SDK and submits it to the wallet
  */
 export const createNewSafe = async (
   provider: Eip1193Provider,
   undeployedSafeProps: UndeployedSafeProps,
-  safeVersion: SafeVersion,
   chain: ChainInfo,
-  options: DeploySafeProps['options'],
+  options: TransactionOptions,
   callback: (txHash: string) => void,
   isL1SafeSingleton?: boolean,
 ): Promise<void> => {
-  const safeFactory = await getSafeFactory(provider, safeVersion, isL1SafeSingleton)
+  let txResponse: TransactionResponse | undefined
 
   if (isPredictedSafeProps(undeployedSafeProps)) {
-    await safeFactory.deploySafe({ ...undeployedSafeProps, options, callback })
+    const safe = await Safe.init({ predictedSafe: undeployedSafeProps, provider, isL1SafeSingleton })
+    const deploymentTx = await safe.createSafeDeploymentTransaction()
+    txResponse = await (
+      await new BrowserProvider(provider).getSigner()
+    ).sendTransaction({
+      ...options,
+      ...deploymentTx,
+    })
   } else {
-    const txResponse = await activateReplayedSafe(chain, undeployedSafeProps, createWeb3(provider), options)
-    callback(txResponse.hash)
+    txResponse = await activateReplayedSafe(chain, undeployedSafeProps, createWeb3(provider), options)
   }
+  callback(txResponse.hash)
 }
 
 /**
@@ -73,21 +67,20 @@ export const createNewSafe = async (
  */
 export const computeNewSafeAddress = async (
   provider: Eip1193Provider | string,
-  props: DeploySafeProps,
+  safeAccountConfig: SafeAccountConfig,
+  safeDeploymentConfig: SafeDeploymentConfig,
   chain: ChainInfo,
-  safeVersion?: SafeVersion,
 ): Promise<string> => {
   const safeProvider = new SafeProvider({ provider })
 
   return predictSafeAddress({
     safeProvider,
     chainId: BigInt(chain.chainId),
-    safeAccountConfig: props.safeAccountConfig,
+    safeAccountConfig,
     safeDeploymentConfig: {
-      saltNonce: props.saltNonce,
-      safeVersion: safeVersion ?? getLatestSafeVersion(chain),
+      ...safeDeploymentConfig,
+      safeVersion: safeDeploymentConfig.safeVersion ?? getLatestSafeVersion(chain),
     },
-    isL1SafeSingleton: true,
   })
 }
 
@@ -130,7 +123,7 @@ export const estimateSafeCreationGas = async (
 
   const gas = await provider.estimateGas({
     from,
-    to: await readOnlyProxyFactoryContract.getAddress(),
+    to: readOnlyProxyFactoryContract.getAddress(),
     data: encodedSafeCreationTx,
   })
 

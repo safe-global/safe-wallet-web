@@ -2,7 +2,7 @@ import { SafeProvider } from '@safe-global/protocol-kit'
 import { useEffect } from 'react'
 import type Safe from '@safe-global/protocol-kit'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction } from '@safe-global/types-kit'
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
@@ -88,7 +88,7 @@ const getGasLimitForZkSync = async (
   // https://github.com/zkSync-Community-Hub/zksync-developers/discussions/144
   const fakeEOAFromAddress = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
   const customContracts = safeSDK.getContractManager().contractNetworks?.[safe.chainId]
-  const safeVersion = await safeSDK.getContractVersion()
+  const safeVersion = safeSDK.getContractVersion()
   const safeProvider = new SafeProvider({ provider: web3._getConnection().url })
   const fallbackHandlerContract = await getCompatibilityFallbackHandlerContract({
     safeProvider,
@@ -103,16 +103,16 @@ const getGasLimitForZkSync = async (
   })
 
   // 2. Add a simulate call to the predicted SafeProxy as second transaction
-  const transactionDataToEstimate: string = simulateTxAccessorContract.encode('simulate', [
+  const transactionDataToEstimate = simulateTxAccessorContract.encode('simulate', [
     safeTx.data.to,
     // @ts-ignore
     safeTx.data.value,
-    safeTx.data.data,
+    safeTx.data.data as `0x${string}`,
     safeTx.data.operation,
-  ])
+  ]) as `0x${string}`
 
   const safeFunctionToEstimate: string = fallbackHandlerContract.encode('simulate', [
-    await simulateTxAccessorContract.getAddress(),
+    simulateTxAccessorContract.getAddress(),
     transactionDataToEstimate,
   ])
 

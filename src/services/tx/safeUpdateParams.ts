@@ -1,6 +1,6 @@
 import type { SafeContractImplementationType } from '@safe-global/protocol-kit/dist/src/types/contracts'
-import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
-import { OperationType } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/types-kit'
+import { OperationType } from '@safe-global/types-kit'
 import type { ChainInfo, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getReadOnlyFallbackHandlerContract, getReadOnlyGnosisSafeContract } from '@/services/contracts/safeContracts'
 import { assertValidSafeVersion } from '@/hooks/coreSDK/safeCoreSDK'
@@ -17,9 +17,7 @@ const getChangeFallbackHandlerCallData = async (
     return '0x'
   }
 
-  const fallbackHandlerAddress = await (
-    await getReadOnlyFallbackHandlerContract(getLatestSafeVersion(chain))
-  ).getAddress()
+  const fallbackHandlerAddress = (await getReadOnlyFallbackHandlerContract(getLatestSafeVersion(chain))).getAddress()
   // @ts-ignore
   return safeContractInstance.encode('setFallbackHandler', [fallbackHandlerAddress])
 }
@@ -33,9 +31,7 @@ const getChangeFallbackHandlerCallData = async (
 export const createUpdateSafeTxs = async (safe: SafeInfo, chain: ChainInfo): Promise<MetaTransactionData[]> => {
   assertValidSafeVersion(safe.version)
 
-  const latestMasterCopyAddress = await (
-    await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain))
-  ).getAddress()
+  const latestMasterCopyAddress = (await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain))).getAddress()
   const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safe.version)
 
   // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions

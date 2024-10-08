@@ -1,4 +1,4 @@
-import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { type SafeTransaction } from '@safe-global/types-kit'
 import { getConfirmationView, type AnyConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { getNativeTransferData } from '@/services/tx/tokenTransferParams'
 import { isEmptyHexData } from '@/utils/hex'

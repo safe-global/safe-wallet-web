@@ -6,7 +6,7 @@ import { getSafeSDKWithSigner } from '@/services/tx/tx-sender/sdk'
 import { estimateSafeDeploymentGas, estimateTxBaseGas } from '@safe-global/protocol-kit'
 import type Safe from '@safe-global/protocol-kit'
 
-import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { OperationType, type SafeTransaction } from '@safe-global/types-kit'
 import {
   getCompatibilityFallbackHandlerContract,
   getSimulateTxAccessorContract,
@@ -65,7 +65,7 @@ export const estimateBatchDeploymentTransaction = async (
   chainId: string,
 ) => {
   const customContracts = sdk.getContractManager().contractNetworks?.[chainId]
-  const safeVersion = await sdk.getContractVersion()
+  const safeVersion = sdk.getContractVersion()
   const safeProvider = sdk.getSafeProvider()
   const fallbackHandlerContract = await getCompatibilityFallbackHandlerContract({
     safeProvider,
@@ -89,15 +89,15 @@ export const estimateBatchDeploymentTransaction = async (
   }
 
   // 2. Add a simulate call to the predicted SafeProxy as second transaction
-  const transactionDataToEstimate: string = simulateTxAccessorContract.encode('simulate', [
+  const transactionDataToEstimate = simulateTxAccessorContract.encode('simulate', [
     safeTransaction.data.to,
     BigInt(safeTransaction.data.value),
-    safeTransaction.data.data,
+    safeTransaction.data.data as `0x${string}`,
     safeTransaction.data.operation,
-  ])
+  ]) as `0x${string}`
 
   const safeFunctionToEstimate: string = fallbackHandlerContract.encode('simulate', [
-    await simulateTxAccessorContract.getAddress(),
+    simulateTxAccessorContract.getAddress(),
     transactionDataToEstimate,
   ])
 

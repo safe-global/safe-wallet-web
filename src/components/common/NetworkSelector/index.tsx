@@ -36,7 +36,6 @@ import { useCompatibleNetworks } from '@/features/multichain/hooks/useCompatible
 import { useSafeCreationData } from '@/features/multichain/hooks/useSafeCreationData'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import PlusIcon from '@/public/images/common/plus.svg'
-import useAddressBook from '@/hooks/useAddressBook'
 import { CreateSafeOnSpecificChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import { hasMultiChainAddNetworkFeature } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
@@ -163,8 +162,6 @@ const UndeployedNetworks = ({
 }) => {
   const [open, setOpen] = useState(false)
   const [replayOnChain, setReplayOnChain] = useState<ChainInfo>()
-  const addressBook = useAddressBook()
-  const safeName = addressBook[safeAddress]
   const deployedChainInfos = useMemo(
     () => chains.filter((chain) => deployedChains.includes(chain.chainId)),
     [chains, deployedChains],
@@ -270,7 +267,6 @@ const UndeployedNetworks = ({
           safeAddress={safeAddress}
           open
           onClose={onFormClose}
-          currentName={safeName ?? ''}
           safeCreationResult={safeCreationResult}
         />
       )}

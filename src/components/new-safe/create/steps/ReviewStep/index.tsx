@@ -48,8 +48,8 @@ import { AppRoutes } from '@/config/routes'
 import { type ReplayedSafeProps } from '@/store/slices'
 import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { type DeploySafeProps } from '@safe-global/protocol-kit'
 import { updateAddressBook } from '../../logic/address-book'
+import { type TransactionOptions } from '@safe-global/types-kit'
 
 export const NetworkFee = ({
   totalFee,
@@ -275,12 +275,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
-        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch, payMethod)
+        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, dispatch, payMethod)
         trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
         return
       }
 
-      const options: DeploySafeProps['options'] = isEIP1559
+      const options: TransactionOptions = isEIP1559
         ? {
             maxFeePerGas: maxFeePerGas?.toString(),
             maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
@@ -290,7 +290,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
         // Create a counterfactual Safe
-        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch, payMethod)
+        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, dispatch, payMethod)
 
         if (taskId) {
           safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
@@ -317,7 +317,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         await createNewSafe(
           wallet.provider,
           props,
-          data.safeVersion,
           chain,
           options,
           (txHash) => {

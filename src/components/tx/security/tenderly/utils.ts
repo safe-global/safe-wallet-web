@@ -2,7 +2,7 @@ import { generatePreValidatedSignature } from '@safe-global/protocol-kit/dist/sr
 import EthSafeTransaction from '@safe-global/protocol-kit/dist/src/utils/transactions/SafeTransaction'
 import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
 import { type SafeInfo, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData, SafeTransaction } from '@safe-global/types-kit'
 
 import {
   getReadOnlyMultiSendCallOnlyContract,
@@ -112,7 +112,7 @@ export const _getSingleTransactionPayload = async (
   ])
 
   return {
-    to: await readOnlySafeContract.getAddress(),
+    to: readOnlySafeContract.getAddress(),
     input,
   }
 }
@@ -120,11 +120,11 @@ export const _getSingleTransactionPayload = async (
 export const _getMultiSendCallOnlyPayload = async (
   params: MultiSendTransactionSimulationParams,
 ): Promise<Pick<TenderlySimulatePayload, 'to' | 'input'>> => {
-  const data = encodeMultiSendData(params.transactions)
+  const data = encodeMultiSendData(params.transactions) as `0x${string}`
   const readOnlyMultiSendContract = await getReadOnlyMultiSendCallOnlyContract(params.safe.version)
 
   return {
-    to: await readOnlyMultiSendContract.getAddress(),
+    to: readOnlyMultiSendContract.getAddress(),
     input: readOnlyMultiSendContract.encode('multiSend', [data]),
   }
 }

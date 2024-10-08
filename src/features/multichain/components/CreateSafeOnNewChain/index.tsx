@@ -34,7 +34,6 @@ type ReplaySafeDialogProps = {
   safeCreationResult: ReturnType<typeof useSafeCreationData>
   replayableChains?: ReturnType<typeof useCompatibleNetworks>
   chain?: ChainInfo
-  currentName: string | undefined
   open: boolean
   onClose: () => void
   isUnsupportedSafeCreationVersion?: boolean
@@ -43,7 +42,6 @@ type ReplaySafeDialogProps = {
 const ReplaySafeDialog = ({
   safeAddress,
   chain,
-  currentName,
   open,
   onClose,
   safeCreationResult,
@@ -102,10 +100,11 @@ const ReplaySafeDialog = ({
         selectedChain.chainId,
         safeAddress,
         safeCreationData,
-        currentName || '',
         dispatch,
         PayMethod.PayLater,
       )
+
+      // TODO: Dispatch addressbook update: add owners and safe to the target chain
 
       trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
       trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
