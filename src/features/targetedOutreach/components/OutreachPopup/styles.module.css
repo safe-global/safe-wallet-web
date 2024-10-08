@@ -12,18 +12,12 @@
   background: linear-gradient(180deg, #b0ffc9 0%, #d7f6ff 99.5%);
 }
 
-.container label,
-.container input {
-  user-select: none;
-}
-
 .close {
   position: absolute;
   right: var(--space-1);
   top: var(--space-1);
   z-index: 1;
   padding: var(--space-1);
-  /* color: var(--color-border-main); */
 }
 
 @media (max-width: 599.95px) {

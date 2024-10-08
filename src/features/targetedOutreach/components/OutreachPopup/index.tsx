@@ -1,6 +1,6 @@
-import { useCallback, useEffect, type ReactElement } from 'react'
+import { useEffect, type ReactElement } from 'react'
 import classnames from 'classnames'
-import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, IconButton, Paper, Stack, Typography } from '@mui/material'
 import { Close } from '@mui/icons-material'
 
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -9,8 +9,9 @@ import css from './styles.module.css'
 import { closeOutreachBanner, openOutreachBanner, selectOutreachBanner } from '@/store/popupSlice'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useShowOutreachPopup } from '../../hooks/useShowOutreachPopup'
-
-const OUTREACH_POPUP = 'outreachPopup_v1'
+import { getUpdatedUserActivity } from '../../utils/getUpdatedUserActivity'
+import Link from 'next/link'
+import { ACTIVE_OUTREACH, OUTREACH_LS_KEY } from '../../constants'
 
 export type OutreachPopupState = {
   isClosed?: boolean
@@ -21,7 +22,7 @@ export type OutreachPopupState = {
 const OutreachPopup = (): ReactElement | null => {
   const dispatch = useAppDispatch()
   const outreachPopup = useAppSelector(selectOutreachBanner)
-  const [outreachPopupState, setOutreachPopupState] = useLocalStorage<OutreachPopupState>(OUTREACH_POPUP)
+  const [outreachPopupState, setOutreachPopupState] = useLocalStorage<OutreachPopupState>(OUTREACH_LS_KEY)
   const shouldOpen = useShowOutreachPopup(outreachPopupState)
 
   const handleClose = () => {
@@ -34,43 +35,18 @@ const OutreachPopup = (): ReactElement | null => {
     dispatch(closeOutreachBanner())
   }
 
-  const getUpdatedUserActivity = useCallback(() => {
-    const currentTime = new Date().getTime()
-    const activityTimestamps = outreachPopupState?.activityTimestamps
-
-    if (!activityTimestamps) {
-      return [currentTime]
-    }
-
-    const lastTimestamp = activityTimestamps[activityTimestamps.length - 1]
-    const timeSinceLastVisit = currentTime - lastTimestamp
-    // 1 hour
-    // if (timeSinceLastVisit < 60 * 60 * 1000) {
-    //   return activityTimestamps
-    // }
-    // 1 sec
-    if (timeSinceLastVisit < 1000) {
-      return activityTimestamps
-    }
-
-    return [...activityTimestamps, currentTime]
-  }, [outreachPopupState?.activityTimestamps])
-
-  const handleAccept = () => {}
-
-  // const shouldOpen = isTargetedSafe && isSigner && !outreachPopupState?.isClosed
-
+  // Log activity in LS to flag frequent users.
   useEffect(() => {
     if (outreachPopupState?.askAgainLater && !shouldOpen) {
-      console.log('------------------------>')
-      const updatedUserActivity = getUpdatedUserActivity()
+      const updatedUserActivity = getUpdatedUserActivity(outreachPopupState?.activityTimestamps)
       setOutreachPopupState({
         askAgainLater: true,
         activityTimestamps: updatedUserActivity,
       })
     }
-  }, [getUpdatedUserActivity, outreachPopupState?.askAgainLater, setOutreachPopupState, shouldOpen])
+  }, [outreachPopupState?.activityTimestamps, outreachPopupState?.askAgainLater, setOutreachPopupState, shouldOpen])
 
+  // Decide whether to show the popup.
   useEffect(() => {
     if (shouldOpen) {
       dispatch(openOutreachBanner())
@@ -85,6 +61,27 @@ const OutreachPopup = (): ReactElement | null => {
     <Box className={css.popup}>
       <Paper className={classnames(css.container, { [css.inverted]: false })}>
         <Stack gap={2}>
+          <Box display="flex">
+            <Avatar alt="Clem Bihorel" src="/images/common/outreach-popup-avatar.png" />
+            <Box ml={1}>
+              <Typography variant="body2">Clem Bihorel</Typography>
+              <Typography variant="body2" color="primary.light">
+                Product Lead
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box>
+            <Chip
+              size="small"
+              sx={{ backgroundColor: 'text.primary', color: 'background.paper', mt: '-2px' }}
+              label={
+                <Typography fontWeight={700} variant="overline">
+                  EARN REWARDS
+                </Typography>
+              }
+            />
+          </Box>
           <Typography variant="h4" fontWeight={700}>
             You&apos;re invited!
           </Typography>
@@ -92,9 +89,11 @@ const OutreachPopup = (): ReactElement | null => {
             As one of our top users, we&apos;d love to hear your feedback on how we can enhance Safe. Share your contact
             info, and we&apos;ll reach out for a short interview.
           </Typography>
-          <Button fullWidth variant="contained" onClick={handleAccept}>
-            Get Involved
-          </Button>
+          <Link rel="noreferrer noopener" target="_blank" href={ACTIVE_OUTREACH.url}>
+            <Button fullWidth variant="contained">
+              Get Involved
+            </Button>
+          </Link>
           <Button fullWidth variant="text" onClick={handleAskAgainLater}>
             Ask me later
           </Button>
