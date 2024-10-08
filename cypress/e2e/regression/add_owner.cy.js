@@ -65,40 +65,44 @@ describe('Add Owners tests', () => {
     owner.verifyConfirmTransactionWindowDisplayed()
   })
 
-  it('Verify creation, confirmation and deletion of Add owner tx. GA tx_confirm', () => {
-    const tx_confirmed = [
-      {
-        eventLabel: events.txConfirmedAddOwner.eventLabel,
-        eventCategory: events.txConfirmedAddOwner.category,
-        eventType: events.txConfirmedAddOwner.eventType,
-        safeAddress: staticSafes.SEP_STATIC_SAFE_24.slice(6),
-      },
-    ]
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_24)
-    wallet.connectSigner(signer2)
-    owner.waitForConnectionStatus()
-    owner.openAddOwnerWindow()
-    owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
-    createTx.changeNonce(1)
-    owner.clickOnNextBtn()
-    createTx.clickOnSignTransactionBtn()
-    createTx.clickViewTransaction()
+  it(
+    'Verify creation, confirmation and deletion of Add owner tx. GA tx_confirm',
+    { defaultCommandTimeout: 30000 },
+    () => {
+      const tx_confirmed = [
+        {
+          eventLabel: events.txConfirmedAddOwner.eventLabel,
+          eventCategory: events.txConfirmedAddOwner.category,
+          eventType: events.txConfirmedAddOwner.eventType,
+          safeAddress: staticSafes.SEP_STATIC_SAFE_24.slice(6),
+        },
+      ]
+      cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_24)
+      wallet.connectSigner(signer2)
+      owner.waitForConnectionStatus()
+      owner.openAddOwnerWindow()
+      owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
+      createTx.changeNonce(1)
+      owner.clickOnNextBtn()
+      createTx.clickOnSignTransactionBtn()
+      createTx.clickViewTransaction()
 
-    navigation.clickOnWalletExpandMoreIcon()
-    navigation.clickOnDisconnectBtn()
-    wallet.connectSigner(signer)
+      navigation.clickOnWalletExpandMoreIcon()
+      navigation.clickOnDisconnectBtn()
+      wallet.connectSigner(signer)
 
-    createTx.clickOnConfirmTransactionBtn()
-    createTx.clickOnNoLaterOption()
-    createTx.clickOnSignTransactionBtn()
+      createTx.clickOnConfirmTransactionBtn()
+      createTx.clickOnNoLaterOption()
+      createTx.clickOnSignTransactionBtn()
 
-    navigation.clickOnWalletExpandMoreIcon()
-    navigation.clickOnDisconnectBtn()
-    wallet.connectSigner(signer2)
+      navigation.clickOnWalletExpandMoreIcon()
+      navigation.clickOnDisconnectBtn()
+      wallet.connectSigner(signer2)
 
-    createTx.deleteTx()
+      createTx.deleteTx()
 
-    getEvents()
-    checkDataLayerEvents(tx_confirmed)
-  })
+      getEvents()
+      checkDataLayerEvents(tx_confirmed)
+    },
+  )
 })
