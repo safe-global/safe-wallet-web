@@ -16,24 +16,15 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 describe('Drain Account tests', () => {
   before(async () => {
     safeAppSafes = await getSafes(CATEGORIES.safeapps)
-    cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
-      main.addToLocalStorage(
-        constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-        ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-      )
-    })
   })
 
   beforeEach(() => {
     const appUrl = constants.drainAccount_url
     iframeSelector = `iframe[id="iframe-${appUrl}"]`
     const visitUrl = `/apps/open?safe=${safeAppSafes.SEP_SAFEAPP_SAFE_1}&appUrl=${encodeURIComponent(appUrl)}`
-
     cy.intercept(`**//v1/chains/11155111/safes/${safeAppSafes.SEP_SAFEAPP_SAFE_1.substring(4)}/balances/**`, {
       fixture: 'balances.json',
     })
-
     cy.visit(visitUrl)
   })
 

@@ -17,6 +17,8 @@
 import '@testing-library/cypress/add-commands'
 import './commands'
 import './safe-apps-commands'
+import * as constants from './constants'
+import * as ls from './localstorage_data'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
@@ -51,11 +53,19 @@ before(() => {
 beforeEach(() => {
   cy.setupInterceptors()
   cy.clearAllSessionStorage()
+  cy.clearLocalStorage()
+  cy.clearCookies()
   cy.window().then((window) => {
     const getDate = () => new Date().toISOString()
     const beamerKey1 = `_BEAMER_FIRST_VISIT_${productID}`
     const beamerKey2 = `_BEAMER_BOOSTED_ANNOUNCEMENT_DATE_${productID}`
+    const cookiesKey = 'SAFE_v2__cookies_terms'
     window.localStorage.setItem(beamerKey1, getDate())
     window.localStorage.setItem(beamerKey2, getDate())
+    window.localStorage.setItem(cookiesKey, ls.cookies.acceptedCookies)
+    window.localStorage.setItem(
+      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
+      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
+    )
   })
 })

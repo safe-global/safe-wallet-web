@@ -23,9 +23,7 @@ describe('[SMOKE] Offchain Messages tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.transactionsMessagesUrl + staticSafes.SEP_STATIC_SAFE_10)
-    main.acceptCookies()
   })
 
   // TODO: Clarify changes

@@ -24,8 +24,6 @@ describe('Address book tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_4)
-    cy.clearLocalStorage()
-    main.acceptCookies()
   })
 
   it('Verify owners name can be edited', () => {

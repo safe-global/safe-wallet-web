@@ -16,8 +16,6 @@ describe('[SMOKE] Spending limits tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_8)
-    cy.clearLocalStorage()
-    main.acceptCookies()
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')

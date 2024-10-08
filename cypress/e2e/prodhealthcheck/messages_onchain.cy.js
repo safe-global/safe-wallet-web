@@ -14,9 +14,7 @@ describe('[PROD] Onchain Messages tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.prodbaseUrl + constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_10)
-    main.acceptCookies()
   })
 
   // TODO: Added to prod

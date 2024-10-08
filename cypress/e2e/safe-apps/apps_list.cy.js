@@ -15,9 +15,6 @@ describe('Safe Apps list tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
-    })
     cy.visit(`${constants.appsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_1}`, {
       failOnStatusCode: false,
     })
