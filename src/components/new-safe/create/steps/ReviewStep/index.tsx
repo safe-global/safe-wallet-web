@@ -6,6 +6,7 @@ import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
 import {
+  computeNewSafeAddress,
   createNewSafe,
   createNewUndeployedSafeWithoutSalt,
   relaySafeCreation,
@@ -47,9 +48,10 @@ import { selectRpc } from '@/store/settingsSlice'
 import { AppRoutes } from '@/config/routes'
 import { type ReplayedSafeProps } from '@/store/slices'
 import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
-import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { createWeb3ReadOnly, getRpcServiceUrl } from '@/hooks/wallets/web3'
 import { type DeploySafeProps } from '@safe-global/protocol-kit'
 import { updateAddressBook } from '../../logic/address-book'
+import chains from '@/config/chains'
 
 export const NetworkFee = ({
   totalFee,
@@ -227,7 +229,21 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       const provider = createWeb3ReadOnly(chain, customRpcUrl)
       if (!provider) return
 
-      const safeAddress = await predictAddressBasedOnReplayData(replayedSafeWithNonce, provider)
+      let safeAddress: string
+
+      if (chain.chainId === chains['zksync']) {
+        safeAddress = await computeNewSafeAddress(
+          customRpcUrl || getRpcServiceUrl(chain.rpcUri),
+          {
+            safeAccountConfig: replayedSafeWithNonce.safeAccountConfig,
+            saltNonce: nextAvailableNonce,
+          },
+          chain,
+          replayedSafeWithNonce.safeVersion,
+        )
+      } else {
+        safeAddress = await predictAddressBasedOnReplayData(replayedSafeWithNonce, provider)
+      }
 
       for (const network of data.networks) {
         await createSafe(network, replayedSafeWithNonce, safeAddress)
