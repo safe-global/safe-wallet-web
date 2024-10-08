@@ -1,6 +1,6 @@
 import { useEffect, type ReactElement } from 'react'
 import classnames from 'classnames'
-import { Avatar, Box, Button, Chip, IconButton, Paper, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, IconButton, Link, Paper, Stack, Typography } from '@mui/material'
 import { Close } from '@mui/icons-material'
 
 import { useAppDispatch, useAppSelector } from '@/store'
@@ -8,10 +8,9 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import css from './styles.module.css'
 import { closeOutreachBanner, openOutreachBanner, selectOutreachBanner } from '@/store/popupSlice'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { useShowOutreachPopup } from '../../hooks/useShowOutreachPopup'
-import { getUpdatedUserActivity } from '../../utils/getUpdatedUserActivity'
-import Link from 'next/link'
-import { ACTIVE_OUTREACH, OUTREACH_LS_KEY } from '../../constants'
+import { useShowOutreachPopup } from '@/features/targetedOutreach/hooks/useShowOutreachPopup'
+import { getUpdatedUserActivity } from '@/features/targetedOutreach/utils'
+import { ACTIVE_OUTREACH, OUTREACH_LS_KEY } from '@/features/targetedOutreach/constants'
 
 export type OutreachPopupState = {
   isClosed?: boolean
@@ -70,7 +69,6 @@ const OutreachPopup = (): ReactElement | null => {
               </Typography>
             </Box>
           </Box>
-
           <Box>
             <Chip
               size="small"

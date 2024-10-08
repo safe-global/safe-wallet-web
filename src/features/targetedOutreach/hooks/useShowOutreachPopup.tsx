@@ -1,7 +1,7 @@
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import type { OutreachPopupState } from '../components/OutreachPopup'
-import { MAX_ASK_AGAIN_DELAY, MIN_ASK_AGAIN_DELAY } from '../constants'
+import type { OutreachPopupState } from '@/features/targetedOutreach/components/OutreachPopup'
+import { MAX_ASK_AGAIN_DELAY, MIN_ASK_AGAIN_DELAY } from '@/features/targetedOutreach/constants'
 
 const isTargetedSafeAddress = (safeAddress: string): boolean => {
   // Todo: needs targeted safes list
@@ -15,14 +15,11 @@ export const useShowOutreachPopup = (outreachPopupState: OutreachPopupState | un
 
   const firstDismissed = outreachPopupState?.activityTimestamps && outreachPopupState?.activityTimestamps[0]
   const currentTime = Date.now()
-  const isFrequentUser = outreachPopupState?.activityTimestamps && outreachPopupState.activityTimestamps.length >= 5
+  const isFrequentUser = !!outreachPopupState?.activityTimestamps && outreachPopupState.activityTimestamps.length >= 5
 
-  if (outreachPopupState?.isClosed) return false
+  if (outreachPopupState?.isClosed || !isSigner || !isTargetedSafe) return false
 
-  // Check if both isSigner and isTargetedSafe are true
-  if (!isSigner || !isTargetedSafe) return false
-
-  // Handle "ask again later" logic
+  // "Ask again later" logic
   if (outreachPopupState?.askAgainLater && firstDismissed) {
     const timeSinceFirstDismissed = currentTime - firstDismissed
     if (timeSinceFirstDismissed < MIN_ASK_AGAIN_DELAY) {
