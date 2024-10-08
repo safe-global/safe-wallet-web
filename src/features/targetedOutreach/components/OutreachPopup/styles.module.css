@@ -20,8 +20,8 @@
   padding: var(--space-1);
 }
 
-@media (max-width: 599.95px) {
-  .container {
+@media (max-width: 599.99px) {
+  .popup {
     right: 0;
     bottom: 0;
   }
