@@ -11,11 +11,9 @@ describe('Info modal tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(`${constants.appsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_2}`, {
       failOnStatusCode: false,
     })
-    main.acceptCookies()
   })
 
   it('Verify the disclaimer is displayed when a Safe App is opened', () => {

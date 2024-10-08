@@ -17,9 +17,7 @@ describe('[PROD] Swaps token tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_1)
-    main.acceptCookies()
   })
 
   // TODO: Added to prod

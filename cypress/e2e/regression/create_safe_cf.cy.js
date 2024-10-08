@@ -28,9 +28,7 @@ describe('CF Safe regression tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_0)
-    main.acceptCookies()
   })
 
   it('Verify Add native assets and Create tx modals can be opened', () => {

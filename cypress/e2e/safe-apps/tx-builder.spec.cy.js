@@ -22,16 +22,6 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
-    cy.clearCookies()
-    cy.window().then((win) => {
-      win.localStorage.setItem(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
-      win.localStorage.setItem(
-        constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-        ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-      )
-    })
-
     const appUrl = constants.TX_Builder_url
     iframeSelector = `iframe[id="iframe-${appUrl}"]`
     const visitUrl = `/apps/open?safe=${safeAppSafes.SEP_SAFEAPP_SAFE_1}&appUrl=${encodeURIComponent(appUrl)}`

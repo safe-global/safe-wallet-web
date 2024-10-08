@@ -25,8 +25,6 @@ describe('[SMOKE] Import Export Data tests 2', () => {
 
   beforeEach(() => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_13)
-    cy.clearLocalStorage()
-    main.acceptCookies()
   })
 
   it('[SMOKE] Verify that the Sidebar Import button opens an import modal', () => {

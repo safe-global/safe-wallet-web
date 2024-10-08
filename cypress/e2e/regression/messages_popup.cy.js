@@ -18,9 +18,7 @@ describe('Messages popup window tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.appsCustomUrl + staticSafes.SEP_STATIC_SAFE_10)
-    main.acceptCookies()
     iframeSelector = `iframe[id="iframe-${constants.safeTestAppurl}"]`
   })
 

@@ -27,9 +27,7 @@ describe('[PROD] Load Safe tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.prodbaseUrl + constants.loadNewSafeSepoliaUrl)
-    main.acceptCookies()
     cy.wait(2000)
   })
 

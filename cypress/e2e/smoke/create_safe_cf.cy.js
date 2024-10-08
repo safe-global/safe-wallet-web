@@ -12,8 +12,6 @@ const signer = walletCredentials.OWNER_2_PRIVATE_KEY
 describe('[SMOKE] CF Safe creation tests', () => {
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
-    cy.clearLocalStorage()
-    main.acceptCookies()
     getEvents()
   })
 

@@ -29,9 +29,7 @@ describe.skip('[PROD] NFTs tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.prodbaseUrl + constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
-    main.acceptCookies()
     wallet.connectSigner(signer)
     nfts.waitForNftItems(2)
   })

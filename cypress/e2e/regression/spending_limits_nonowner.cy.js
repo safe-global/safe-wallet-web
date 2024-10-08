@@ -12,8 +12,6 @@ describe('Spending limits non-owner tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_3)
-    cy.clearLocalStorage()
-    main.acceptCookies()
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')
   })
 
