@@ -135,6 +135,10 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
     //label: OPEN_SAFE_LABELS
   },
+  SHOW_ALL_NETWORKS: {
+    action: 'Show all networks',
+    category: OVERVIEW_CATEGORY,
+  },
   // Track actual Safe views
   SAFE_VIEWED: {
     event: EventType.SAFE_OPENED,

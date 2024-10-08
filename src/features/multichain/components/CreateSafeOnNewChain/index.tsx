@@ -2,6 +2,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NetworkInput from '@/components/common/NetworkInput'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
+import { gtmSetChainId } from '@/services/analytics/gtm'
 import { showNotification } from '@/store/notificationsSlice'
 import { Box, Button, CircularProgress, DialogActions, DialogContent, Stack, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -94,6 +95,8 @@ const ReplaySafeDialog = ({
         setCreationError(new Error('The replayed Safe leads to an unexpected address'))
         return
       }
+
+      gtmSetChainId(selectedChain.chainId)
 
       trackEvent({ ...OVERVIEW_EVENTS.SUBMIT_ADD_NEW_NETWORK, label: selectedChain.chainId })
 
