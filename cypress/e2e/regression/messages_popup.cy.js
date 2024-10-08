@@ -31,10 +31,6 @@ describe('Messages popup window tests', () => {
       constants.localStorageKeys.SAFE_v2__SafeApps__browserPermissions,
       ls.appPermissions(constants.safeTestAppurl).grantedPermissions,
     )
-    main.addToLocalStorage(
-      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-    )
     cy.reload()
     apps.clickOnApp(safeApp)
     apps.clickOnOpenSafeAppBtn()
@@ -54,10 +50,7 @@ describe('Messages popup window tests', () => {
       constants.localStorageKeys.SAFE_v2__SafeApps__browserPermissions,
       ls.appPermissions(constants.safeTestAppurl).grantedPermissions,
     )
-    main.addToLocalStorage(
-      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-    )
+
     cy.reload()
     apps.clickOnApp(safeApp)
     apps.clickOnOpenSafeAppBtn()

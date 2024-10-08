@@ -122,10 +122,6 @@ describe('CF Safe regression tests', () => {
   it('Verify "Custom transaction" takes to the tx builder app ', () => {
     const iframeSelector = `iframe[id="iframe-${constants.TX_Builder_url}"]`
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__undeployedSafes, ls.undeployedSafe.safe1)
-    main.addToLocalStorage(
-      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-    )
     cy.reload()
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
