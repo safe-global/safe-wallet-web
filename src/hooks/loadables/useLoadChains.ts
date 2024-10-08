@@ -1,11 +1,30 @@
 import { useEffect } from 'react'
-import { getChainsConfig, type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import useAsync, { type AsyncResult } from '../useAsync'
 import { logError, Errors } from '@/services/exceptions'
+import { GATEWAY_URL } from '@/pages/_app'
 
-const getConfigs = async (): Promise<ChainInfo[]> => {
-  const data = await getChainsConfig()
-  return data.results || []
+export const getConfigs = async (): Promise<ChainInfo[]> => {
+  let allResults: ChainInfo[] = []
+  let url = `${GATEWAY_URL}/v1/chains`
+
+  while (url) {
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data = await response.json()
+      const results = data.results || []
+      allResults = allResults.concat(results)
+      url = data.next
+    } catch (error) {
+      console.error('Network error:', error)
+      break
+    }
+  }
+
+  return allResults
 }
 
 export const useLoadChains = (): AsyncResult<ChainInfo[]> => {
