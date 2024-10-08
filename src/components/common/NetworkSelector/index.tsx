@@ -233,9 +233,14 @@ const UndeployedNetworks = ({
     closeNetworkSelect()
   }
 
+  const onShowAllNetworks = () => {
+    !open && trackEvent(OVERVIEW_EVENTS.SHOW_ALL_NETWORKS)
+    setOpen((prev) => !prev)
+  }
+
   return (
     <>
-      <ButtonBase className={css.listSubHeader} onClick={() => setOpen((prev) => !prev)} tabIndex={-1}>
+      <ButtonBase className={css.listSubHeader} onClick={onShowAllNetworks} tabIndex={-1}>
         <Stack direction="row" spacing={1} alignItems="center">
           <div>Show all networks</div>
           <ExpandMoreIcon
