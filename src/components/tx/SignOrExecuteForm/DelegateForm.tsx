@@ -21,6 +21,7 @@ export const DelegateForm = ({
   disableSubmit = false,
   txActions,
   txSecurity,
+  onSubmit,
 }: SignOrExecuteProps & {
   txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
@@ -51,7 +52,8 @@ export const DelegateForm = ({
     setIsRejectedByUser(false)
 
     try {
-      await signDelegateTx(safeTx)
+      const txId = await signDelegateTx(safeTx)
+      onSubmit?.(txId)
     } catch (_err) {
       const err = asError(_err)
       if (isWalletRejection(err)) {
