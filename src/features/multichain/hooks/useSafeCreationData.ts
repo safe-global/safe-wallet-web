@@ -54,7 +54,10 @@ const getUndeployedSafeCreationData = async (undeployedSafe: UndeployedSafe): Pr
 
 const validateAccountConfig = (safeAccountConfig: SafeAccountConfig) => {
   // Safes that used the reimbursement logic are not supported
-  if ((safeAccountConfig.payment && safeAccountConfig.payment > 0) || safeAccountConfig.paymentToken !== ZERO_ADDRESS) {
+  if (
+    (safeAccountConfig.payment && safeAccountConfig.payment > 0) ||
+    (safeAccountConfig.paymentToken && safeAccountConfig.paymentToken !== ZERO_ADDRESS)
+  ) {
     throw new Error(SAFE_CREATION_DATA_ERRORS.PAYMENT_SAFE)
   }
 
