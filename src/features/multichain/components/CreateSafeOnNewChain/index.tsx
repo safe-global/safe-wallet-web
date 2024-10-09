@@ -1,5 +1,6 @@
 import ModalDialog from '@/components/common/ModalDialog'
 import NetworkInput from '@/components/common/NetworkInput'
+import { updateAddressBook } from '@/components/new-safe/create/logic/address-book'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { gtmSetChainId } from '@/services/analytics/gtm'
@@ -120,6 +121,16 @@ const ReplaySafeDialog = ({
       })
 
       trackEvent({ ...OVERVIEW_EVENTS.SWITCH_NETWORK, label: selectedChain.chainId })
+
+      dispatch(
+        updateAddressBook(
+          [selectedChain.chainId],
+          safeAddress,
+          currentName || '',
+          safeCreationData.safeAccountConfig.owners.map((owner) => ({ address: owner, name: '' })),
+          safeCreationData.safeAccountConfig.threshold,
+        ),
+      )
 
       dispatch(
         showNotification({
