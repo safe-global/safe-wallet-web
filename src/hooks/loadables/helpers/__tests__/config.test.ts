@@ -9,38 +9,12 @@ import { chainBuilder } from '@/tests/builders/chains'
 
 // Mock data for testing
 const mockDataPage1 = {
-  results: [
-    chainBuilder()
-      .with({
-        chainId: '0x1',
-        chainName: 'Chain 1',
-      })
-      .build(),
-    chainBuilder()
-      .with({
-        chainId: '0x2',
-        chainName: 'Chain 2',
-      })
-      .build(),
-  ],
+  results: [chainBuilder().build(), chainBuilder().build()],
   next: 'https://safe-client.safe.global/v1/chains?cursor=limit%3D2%26offset%3D20',
 }
 
 const mockDataPage2 = {
-  results: [
-    chainBuilder()
-      .with({
-        chainId: '0x3',
-        chainName: 'Chain 3',
-      })
-      .build(),
-    chainBuilder()
-      .with({
-        chainId: '0x4',
-        chainName: 'Chain 4',
-      })
-      .build(),
-  ],
+  results: [chainBuilder().build(), chainBuilder().build()],
   next: null,
 }
 
@@ -82,14 +56,14 @@ describe('getConfigs', () => {
     global.fetch = jest.fn().mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        results: [{ id: 1, name: 'Chain 1' }],
+        results: [mockDataPage1.results[0]],
         next: null,
       }),
     })
 
     const results = await getConfigs()
 
-    expect(results).toEqual([{ id: 1, name: 'Chain 1' }])
+    expect(results).toEqual([mockDataPage1.results[0]])
 
     // Ensure fetch was called once
     expect(fetch).toHaveBeenCalledTimes(1)
