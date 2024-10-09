@@ -160,7 +160,7 @@
     "typechain": "^8.3.2",
     "typescript": "^5.4.5",
     "typescript-plugin-css-modules": "^4.2.2",
-    "webpack": "^5.94.0"
+    "webpack": "^5.95.0"
   },
   "nextBundleAnalysis": {
     "budget": null,
