@@ -122,11 +122,13 @@ const useAppCommunicator = (
   }, [app, iframeRef])
 
   useEffect(() => {
+    const id = Math.random().toString(36).slice(2)
+
     communicator?.send(
       {
         darkMode: isDarkMode,
       },
-      'tx-builder',
+      id,
     )
   }, [communicator, isDarkMode])
 
