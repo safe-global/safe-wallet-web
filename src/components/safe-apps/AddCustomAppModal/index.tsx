@@ -22,7 +22,7 @@ import useAsync from '@/hooks/useAsync'
 import useDebounce from '@/hooks/useDebounce'
 import { fetchSafeAppFromManifest } from '@/services/safe-apps/manifest'
 import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
-import { isSameUrl, trimTrailingSlash } from '@/utils/url'
+import { isSameUrl } from '@/utils/url'
 import CustomAppPlaceholder from './CustomAppPlaceholder'
 import CustomApp from './CustomApp'
 import { useShareSafeAppUrl } from '@/components/safe-apps/hooks/useShareSafeAppUrl'
@@ -70,7 +70,7 @@ export const AddCustomAppModal = ({ open, onClose, onSave, safeAppsList }: Props
   }
 
   const appUrl = watch('appUrl')
-  const debouncedUrl = useDebounce(trimTrailingSlash(appUrl || ''), 300)
+  const debouncedUrl = useDebounce(appUrl || '', 300)
 
   const [safeApp, manifestError] = useAsync<SafeAppData | undefined>(() => {
     if (!isValidURL(debouncedUrl)) return
