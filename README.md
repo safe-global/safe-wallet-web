@@ -1,6 +1,4 @@
-# Welcome to your Expo app 👋
-
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# Safe Mobile App 👋
 
 ## Get started
 
@@ -16,35 +14,49 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
     npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## How to run the e2e tests
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+We're using DETOX for e2e. Before run the tests script, you shuold first install DETOX by following this steps bellow:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 1. install DETOX cli:
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```sh
+npm install detox-cli --global
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. [MacOS Only] applesimutils
 
-## Learn more
+This tool is required by Detox to work with iOS simulators. The recommended way to install applesimutils is via Homebrew:
 
-To learn more about developing your project with Expo, look at the following resources:
+```sh
+brew tap wix/brew
+brew install applesimutils
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 3. Build the detox configs
 
-## Join the community
+for IOS:
 
-Join our community of developers creating universal apps.
+```sh
+detox build --configuration ios.sim.debug
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+or for Android:
+
+```sh
+detox build --configuration android.emu.debug
+```
+
+### 4. Run the tests
+
+Since this is a debug configuration, you need to have React Native packager running in parallel before you start Detox tests:
+
+```sh
+npx expo start
+```
+
+in another terminal, you can run:
+
+```sh
+detox test --configuration ios.sim.debug
+```
