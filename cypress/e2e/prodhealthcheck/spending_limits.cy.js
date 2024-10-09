@@ -22,8 +22,6 @@ describe('[PROD] Spending limits tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_8)
-    cy.clearLocalStorage()
-    main.acceptCookies()
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')
   })
 

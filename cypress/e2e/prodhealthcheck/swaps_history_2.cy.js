@@ -14,17 +14,11 @@ describe('[PROD] Swaps history tests 2', () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  beforeEach(() => {
-    cy.clearLocalStorage()
-  })
-
   // TODO: Added to prod
   it('Verify swap buy operation with 2 actions: approve & swap', { defaultCommandTimeout: 30000 }, () => {
     cy.visit(
       constants.prodbaseUrl + constants.transactionUrl + staticSafes.SEP_STATIC_SAFE_1 + swaps.swapTxs.buy2actions,
     )
-    main.acceptCookies()
-
     const eq = swaps.createRegex(swapsHistory.oneGNOFull, 'COW')
     const atMost = swaps.createRegex(swapsHistory.forAtMostCow, 'COW')
 
@@ -52,7 +46,6 @@ describe('[PROD] Swaps history tests 2', () => {
           staticSafes.SEP_STATIC_SAFE_1 +
           swaps.swapTxs.safeAppSwapOrder,
       )
-      main.acceptCookies()
       main.verifyValuesDoNotExist('div', [
         swapsHistory.actionApproveG,
         swapsHistory.actionDepositG,

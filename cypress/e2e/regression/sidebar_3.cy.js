@@ -19,10 +19,6 @@ describe('Sidebar tests 3', () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  beforeEach(() => {
-    cy.clearLocalStorage()
-  })
-
   it('Verify that users with no accounts see the empty state in "My accounts" block', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     main.acceptCookies()

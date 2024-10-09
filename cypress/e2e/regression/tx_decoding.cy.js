@@ -9,9 +9,7 @@ const decodedTx =
 //TODO: Check file error
 describe('Tx decoding tests', () => {
   it.skip('Check visual tx', () => {
-    cy.clearLocalStorage()
     cy.visit(constants.transactionUrl + safe + decodedTx)
-    main.acceptCookies()
     createTx.clickOnExpandAllActionsBtn()
     cy.wait(1000)
     cy.compareSnapshot('tx_decoding', { errorThreshold: 0, failSilently: false })

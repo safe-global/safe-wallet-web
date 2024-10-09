@@ -20,9 +20,7 @@ describe('[SMOKE] Tx history tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
-    main.acceptCookies()
   })
 
   // Token receipt

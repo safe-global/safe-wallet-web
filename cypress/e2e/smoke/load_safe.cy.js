@@ -16,9 +16,7 @@ describe('[SMOKE] Load Safe tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.loadNewSafeSepoliaUrl)
-    main.acceptCookies()
     cy.wait(2000)
   })
 
