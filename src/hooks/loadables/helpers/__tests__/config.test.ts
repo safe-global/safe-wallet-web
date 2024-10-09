@@ -1,10 +1,11 @@
+import { getConfigs } from '@/hooks/loadables/helpers/config'
+
 jest.mock('@/pages/_app', () => ({
   ...jest.requireActual('@/pages/_app'),
   GATEWAY_URL: 'https://safe-client.safe.global',
   __esModule: true,
 }))
 import { chainBuilder } from '@/tests/builders/chains'
-import { getConfigs } from '@/hooks/loadables/useLoadChains'
 
 // Mock data for testing
 const mockDataPage1 = {
