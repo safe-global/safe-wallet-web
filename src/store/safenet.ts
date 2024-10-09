@@ -30,10 +30,11 @@ export const getSafeNetBalances = async (chainId: string, safeAddress: string): 
 export const safenetApi = createApi({
   reducerPath: 'safenetApi',
   baseQuery: fetchBaseQuery({ baseUrl: `${SAFENET_API_URL}/safenet` }),
-  tagTypes: ['SafeNetOffchainStatus', 'SafeNetBalance'],
+  tagTypes: ['SafeNetConfig', 'SafeNetOffchainStatus', 'SafeNetBalance'],
   endpoints: (builder) => ({
     getSafeNetConfig: builder.query<SafeNetConfigEntity, void>({
       query: () => `/config/`,
+      providesTags: ['SafeNetConfig'],
     }),
     getSafeNetOffchainStatus: builder.query<SafeNetSafeEntity, { chainId: string; safeAddress: string }>({
       query: ({ chainId, safeAddress }) => `/safes/${chainId}/${safeAddress}`,

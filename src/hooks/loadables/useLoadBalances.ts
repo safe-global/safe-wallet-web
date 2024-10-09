@@ -65,7 +65,7 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
         }),
       ]
 
-      if (chainSupportedBySafeNet) {
+      if (isSafeNetConfigSuccess && chainSupportedBySafeNet) {
         balanceQueries.push(
           getSafeNetBalances(chainId, safeAddress)
             .then((safenetBalances) =>
@@ -90,6 +90,8 @@ export const useLoadBalances = (): AsyncResult<SafeBalanceResponse> => {
       safe.deployed,
       web3,
       chain,
+      safeNetConfig,
+      isSafeNetConfigSuccess,
       isSafeNetConfigLoading,
       chainSupportedBySafeNet,
     ],
