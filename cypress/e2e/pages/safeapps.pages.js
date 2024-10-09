@@ -252,7 +252,7 @@ export function verifyInfoModalAcceptance() {
     return cy
       .findByRole('button', { name: continueBtnStr })
       .click()
-      .wait(500)
+      .wait(2000)
       .should(() => {
         const storedInfoModal = JSON.parse(
           localStorage.getItem(constants.localStorageKeys.SAFE_v2__SafeApps__infoModal),
