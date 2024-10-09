@@ -21,6 +21,12 @@ export type SafeNetBalanceEntity = {
   [tokenSymbol: string]: string
 }
 
+export const getSafeNetBalances = async (chainId: string, safeAddress: string): Promise<SafeNetBalanceEntity> => {
+  const response = await fetch(`${SAFENET_API_URL}/safenet/balances/${chainId}/${safeAddress}`)
+  const data = await response.json()
+  return data
+}
+
 export const safenetApi = createApi({
   reducerPath: 'safenetApi',
   baseQuery: fetchBaseQuery({ baseUrl: `${SAFENET_API_URL}/safenet` }),
