@@ -1,4 +1,4 @@
-package com.safemobile
+package com.global.safe.mobileapp
 
 import android.app.Application
 import android.content.res.Configuration

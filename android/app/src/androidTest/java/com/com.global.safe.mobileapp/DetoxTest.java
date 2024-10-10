@@ -1,5 +1,4 @@
-// Replace "com.example" here and below with your app's package name from the top of MainActivity.java
-package com.safemobile;
+package com.global.safe.mobileapp;
 
 import com.wix.detox.Detox;
 import com.wix.detox.config.DetoxConfig;

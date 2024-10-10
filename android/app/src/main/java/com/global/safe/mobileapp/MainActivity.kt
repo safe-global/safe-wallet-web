@@ -1,4 +1,4 @@
-package com.safemobile
+package com.global.safe.mobileapp
 
 import android.os.Build
 import android.os.Bundle
