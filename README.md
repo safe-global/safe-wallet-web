@@ -57,6 +57,14 @@ npx expo start
 
 in another terminal, you can run:
 
+for ios:
+
 ```sh
 detox test --configuration ios.sim.debug
+```
+
+or for android:
+
+```sh
+detox test --configuration android.emu.debug
 ```
