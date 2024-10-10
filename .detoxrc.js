@@ -12,13 +12,13 @@ module.exports = {
   apps: {
     'ios.debug': {
       type: 'ios.app',
-      binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/safemobile.app',
-      build: 'xcodebuild -workspace ios/safemobile.xcworkspace -scheme safemobile -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build'
+      binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/safemobileapp.app',
+      build: 'xcodebuild -workspace ios/safemobileapp.xcworkspace -scheme safemobileapp -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build'
     },
     'ios.release': {
       type: 'ios.app',
-      binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/safemobile.app',
-      build: 'xcodebuild -workspace ios/safemobile.xcworkspace -scheme safemobile -configuration Release -sdk iphonesimulator -derivedDataPath ios/build'
+      binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/safemobileapp.app',
+      build: 'xcodebuild -workspace ios/safemobileapp.xcworkspace -scheme safemobileapp -configuration Release -sdk iphonesimulator -derivedDataPath ios/build'
     },
     'android.debug': {
       type: 'android.apk',
