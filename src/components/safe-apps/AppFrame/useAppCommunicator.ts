@@ -33,6 +33,7 @@ import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -73,6 +74,7 @@ const useAppCommunicator = (
 ): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
   const customRpc = useAppSelector(selectRpc)
+  const isDarkMode = useDarkMode()
 
   const safeAppWeb3Provider = useMemo(() => {
     if (!chain) {
@@ -118,6 +120,17 @@ const useAppCommunicator = (
       communicatorInstance?.clear()
     }
   }, [app, iframeRef])
+
+  useEffect(() => {
+    const id = Math.random().toString(36).slice(2)
+
+    communicator?.send(
+      {
+        darkMode: isDarkMode,
+      },
+      id,
+    )
+  }, [communicator, isDarkMode])
 
   // Adding communicator logic for the required SDK Methods
   // We don't need to unsubscribe from the events because there can be just one subscription
@@ -205,7 +218,17 @@ const useAppCommunicator = (
     communicator?.on(Methods.requestAddressBook, (msg) => {
       return handlers.onRequestAddressBook(msg.origin)
     })
-  }, [safeAppWeb3Provider, handlers, chain, communicator])
+
+    // TODO: it will be moved to safe-apps-sdk soon
+    communicator?.on('getCurrentTheme' as Methods, (msg) => {
+      communicator.send(
+        {
+          darkMode: isDarkMode,
+        },
+        msg.data.id,
+      )
+    })
+  }, [safeAppWeb3Provider, handlers, chain, communicator, isDarkMode])
 
   return communicator
 }
