@@ -8,6 +8,7 @@ import {
   type TransactionSummary,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapIcon from '@/public/images/common/swap.svg'
+import StakeIcon from '@/public/images/common/stake.svg'
 
 import {
   isCancellationTxInfo,
@@ -84,25 +85,25 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
     }
     case TransactionInfoType.TWAP_ORDER: {
       return {
-        icon: '/images/common/swap.svg',
+        icon: <SvgIcon component={SwapIcon} inheritViewBox fontSize="small" alt="Twap Order" />,
         text: TWAP_ORDER_TITLE,
       }
     }
     case TransactionInfoType.NATIVE_STAKING_DEPOSIT: {
       return {
-        icon: '/images/common/stake.svg',
+        icon: <SvgIcon component={StakeIcon} inheritViewBox fontSize="small" alt="Stake" />,
         text: 'Stake',
       }
     }
     case TransactionInfoType.NATIVE_STAKING_VALIDATORS_EXIT: {
       return {
-        icon: '/images/common/stake.svg',
+        icon: <StakeIcon component={StakeIcon} inheritViewBox fontSize="small" alt="Withdraw request" />,
         text: 'Withdraw request',
       }
     }
     case TransactionInfoType.NATIVE_STAKING_WITHDRAW: {
       return {
-        icon: '/images/common/stake.svg',
+        icon: <StakeIcon component={StakeIcon} inheritViewBox fontSize="small" alt="Claim" />,
         text: 'Claim',
       }
     }
