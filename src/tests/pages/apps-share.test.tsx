@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '../test-utils'
 import ShareSafeApp from '@/pages/share/safe-app'
 import { CONFIG_SERVICE_CHAINS } from '@/tests/mocks/chains'
 import * as useWalletHook from '@/hooks/wallets/useWallet'
-import * as useOwnedSafesHook from '@/hooks/useOwnedSafes'
+import * as useAllOwnedSafesHook from '@/components/welcome/MyAccounts/useAllOwnedSafes'
 import * as manifest from '@/services/safe-apps/manifest'
 import * as sdk from '@safe-global/safe-gateway-typescript-sdk'
 import crypto from 'crypto'
@@ -214,9 +214,13 @@ describe('Share Safe App Page', () => {
       label: 'Metamask',
       chainId: '1',
     }))
-    jest.spyOn(useOwnedSafesHook, 'default').mockImplementation(() => ({
-      '1': [safeAddress],
-    }))
+    jest.spyOn(useAllOwnedSafesHook, 'default').mockImplementation(() => [
+      {
+        '1': [safeAddress],
+      },
+      undefined,
+      false,
+    ])
 
     render(<ShareSafeApp />, {
       routerProps: {

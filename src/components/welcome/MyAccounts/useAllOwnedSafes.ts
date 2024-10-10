@@ -1,40 +1,14 @@
-import type { AllOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
-import { getAllOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
-import type { AsyncResult } from '@/hooks/useAsync'
-import useAsync from '@/hooks/useAsync'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
-import { useEffect } from 'react'
+import { asError } from '@/services/exceptions/utils'
+import { useGetAllOwnedSafesQuery } from '@/store/gateway'
+import { skipToken } from '@reduxjs/toolkit/query'
+import { type AllOwnedSafes } from '@safe-global/safe-gateway-typescript-sdk'
+import { useMemo } from 'react'
 
-const CACHE_KEY = 'ownedSafesCache_'
+const useAllOwnedSafes = (address: string | undefined): [AllOwnedSafes, Error | undefined, boolean] => {
+  const { data, error, isLoading } = useGetAllOwnedSafesQuery(address ? { address } : skipToken)
 
-type OwnedSafesPerAddress = {
-  address: string | undefined
-  ownedSafes: AllOwnedSafes
-}
-
-const useAllOwnedSafes = (address: string): AsyncResult<AllOwnedSafes> => {
-  const [cache, setCache] = useLocalStorage<AllOwnedSafes>(CACHE_KEY + address)
-
-  const [data, error, isLoading] = useAsync<OwnedSafesPerAddress>(async () => {
-    if (!address)
-      return {
-        ownedSafes: {},
-        address: undefined,
-      }
-    const ownedSafes = await getAllOwnedSafes(address)
-    return {
-      ownedSafes,
-      address,
-    }
-  }, [address])
-
-  useEffect(() => {
-    if (data?.ownedSafes != undefined && data.address === address) {
-      setCache(data.ownedSafes)
-    }
-  }, [address, cache, data, setCache])
-
-  return [cache, error, isLoading]
+  const wrappedError = useMemo(() => (error ? asError(error) : undefined), [error])
+  return [data ?? {}, wrappedError, isLoading]
 }
 
 export default useAllOwnedSafes
