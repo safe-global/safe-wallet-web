@@ -75,7 +75,6 @@ const ReplaySafeDialog = ({
     trackEvent({ ...OVERVIEW_EVENTS.CANCEL_ADD_NEW_NETWORK })
     onClose()
   }
-  console.log(addressBook)
 
   const onFormSubmit = handleSubmit(async (data) => {
     setIsSubmitting(true)
