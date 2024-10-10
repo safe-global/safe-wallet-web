@@ -2,6 +2,7 @@ import ModalDialog from '@/components/common/ModalDialog'
 import NetworkInput from '@/components/common/NetworkInput'
 import { updateAddressBook } from '@/components/new-safe/create/logic/address-book'
 import ErrorMessage from '@/components/tx/ErrorMessage'
+import useAddressBook from '@/hooks/useAddressBook'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import { gtmSetChainId } from '@/services/analytics/gtm'
 import { showNotification } from '@/store/notificationsSlice'
@@ -60,6 +61,7 @@ const ReplaySafeDialog = ({
   })
   const { handleSubmit, formState } = formMethods
   const router = useRouter()
+  const addressBook = useAddressBook()
 
   const customRpc = useAppSelector(selectRpc)
   const dispatch = useAppDispatch()
@@ -127,7 +129,10 @@ const ReplaySafeDialog = ({
           [selectedChain.chainId],
           safeAddress,
           currentName || '',
-          safeCreationData.safeAccountConfig.owners.map((owner) => ({ address: owner, name: '' })),
+          safeCreationData.safeAccountConfig.owners.map((owner) => ({
+            address: owner,
+            name: addressBook[owner] || '',
+          })),
           safeCreationData.safeAccountConfig.threshold,
         ),
       )
