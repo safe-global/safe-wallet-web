@@ -53,7 +53,7 @@ const DatePickerInput = ({
             inputFormat="dd/MM/yyyy"
             {...field}
             disableFuture={disableFuture}
-            renderInput={({ label, error: _, ...params }) => (
+            renderInput={({ label, ...params }) => (
               <TextField label={fieldState.error?.message || label} {...params} fullWidth error={!!fieldState.error} />
             )}
             PaperProps={{

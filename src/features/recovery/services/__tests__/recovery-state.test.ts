@@ -15,17 +15,24 @@ import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { encodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils/transactions/utils'
 import { getMultiSendCallOnlyDeployment, getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 import { Interface } from 'ethers'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { FEATURES, getLatestSafeVersion } from '@/utils/chains'
+import { type FEATURES as GatewayFeatures } from '@safe-global/safe-gateway-typescript-sdk'
+import { chainBuilder } from '@/tests/builders/chains'
 
 jest.mock('@/hooks/wallets/web3')
 
 const mockUseWeb3ReadOnly = useWeb3ReadOnly as jest.MockedFunction<typeof useWeb3ReadOnly>
 
+const latestSafeVersion = getLatestSafeVersion(
+  chainBuilder()
+    .with({ chainId: '1', features: [FEATURES.SAFE_141 as unknown as GatewayFeatures] })
+    .build(),
+)
 const PRE_MULTI_SEND_CALL_ONLY_VERSIONS = ['1.0.0', '1.1.1']
 const SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS = [
   '1.3.0',
   // '1.4.1', TODO: Uncomment when safe-deployments is updated >1.25.0
-  LATEST_SAFE_VERSION,
+  latestSafeVersion,
 ]
 
 describe('recovery-state', () => {
@@ -37,8 +44,8 @@ describe('recovery-state', () => {
   describe('isMaliciousRecovery', () => {
     describe('non-MultiSend', () => {
       it('should return true if the transaction is not calling the Safe itself', () => {
-        const chainId = '5'
-        const version = LATEST_SAFE_VERSION
+        const chainId = '1'
+        const version = latestSafeVersion
         const safeAddress = faker.finance.ethereumAddress()
 
         const transaction = {
@@ -50,8 +57,8 @@ describe('recovery-state', () => {
       })
 
       it('should return false if the transaction is calling the Safe itself', () => {
-        const chainId = '5'
-        const version = LATEST_SAFE_VERSION
+        const chainId = '1'
+        const version = latestSafeVersion
         const safeAddress = faker.finance.ethereumAddress()
 
         const transaction = {
@@ -66,7 +73,7 @@ describe('recovery-state', () => {
     describe('MultiSend', () => {
       ;[...PRE_MULTI_SEND_CALL_ONLY_VERSIONS, ...SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS].forEach((version) => {
         it(`should return true if the transaction is not an official MultiSend address for Safe version ${version}`, () => {
-          const chainId = '5'
+          const chainId = '1'
           const safeAddress = faker.finance.ethereumAddress()
 
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
@@ -102,8 +109,8 @@ describe('recovery-state', () => {
       })
       ;[...PRE_MULTI_SEND_CALL_ONLY_VERSIONS, ...SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS].forEach((version) => {
         it(`should return true if the transaction is an official MultiSend call and not every transaction in the batch calls the Safe itself for Safe version ${version}`, () => {
-          const chainId = '5'
-          const version = LATEST_SAFE_VERSION
+          const chainId = '1'
+          const version = latestSafeVersion
           const safeAddress = faker.finance.ethereumAddress()
 
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
@@ -140,7 +147,7 @@ describe('recovery-state', () => {
 
       SUPPORTED_MULTI_SEND_CALL_ONLY_VERSIONS.forEach((version) => {
         it(`should return false if the transaction is an official MultiSend call and every transaction in the batch calls the Safe itself for Safe version ${version}`, () => {
-          const chainId = '5'
+          const chainId = '1'
           const safeAddress = faker.finance.ethereumAddress()
 
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
@@ -175,7 +182,7 @@ describe('recovery-state', () => {
 
       PRE_MULTI_SEND_CALL_ONLY_VERSIONS.forEach((version) => {
         it(`should return false if the transaction is an official MultiSend call for Safe version ${version} (below the initial MultiSend contract version)`, () => {
-          const chainId = '5'
+          const chainId = '1'
           const safeAddress = faker.finance.ethereumAddress()
 
           const safeAbi = getSafeSingletonDeployment({ network: chainId, version })!.abi
@@ -271,7 +278,7 @@ describe('recovery-state', () => {
         blockHash: faker.string.alphanumeric(),
       } as TransactionReceipt
 
-      global.fetch = jest.fn().mockImplementation((_url: string) => {
+      global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
@@ -301,7 +308,7 @@ describe('recovery-state', () => {
         blockHash: faker.string.alphanumeric(),
       } as TransactionReceipt
 
-      global.fetch = jest.fn().mockImplementation((_url: string) => {
+      global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
@@ -329,7 +336,7 @@ describe('recovery-state', () => {
       const transactionService = faker.internet.url({ appendSlash: false })
       const safeAddress = faker.finance.ethereumAddress()
 
-      global.fetch = jest.fn().mockImplementation((_url: string) => {
+      global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           status: 500,
           ok: false,
@@ -352,7 +359,7 @@ describe('recovery-state', () => {
   describe('getRecoveryState', () => {
     it('should return the recovery state from the Safe creation block', async () => {
       const safeAddress = faker.finance.ethereumAddress()
-      const chainId = '5'
+      const chainId = '1'
       const version = '1.3.0'
       const transactionService = faker.internet.url({ appendSlash: false })
       const transactionHash = `0x${faker.string.hexadecimal()}`
@@ -369,7 +376,7 @@ describe('recovery-state', () => {
           .mockResolvedValue(transactionAddedReceipt),
       } as unknown as JsonRpcProvider
 
-      global.fetch = jest.fn().mockImplementation((_url: string) => {
+      global.fetch = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           json: () => Promise.resolve({ transactionHash }),
           status: 200,
@@ -477,7 +484,7 @@ describe('recovery-state', () => {
 
     it('should not query data if the queueNonce equals the txNonce', async () => {
       const safeAddress = faker.finance.ethereumAddress()
-      const chainId = '5'
+      const chainId = '1'
       const version = '1.3.0'
       const transactionService = faker.internet.url({ appendSlash: true })
       const provider = {} as unknown as JsonRpcProvider

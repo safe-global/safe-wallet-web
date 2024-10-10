@@ -1,4 +1,5 @@
-import React from 'react'
+import { userEvent } from '@testing-library/user-event'
+import React, { act } from 'react'
 import * as safeAppsGatewaySDK from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeAppFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
@@ -8,7 +9,6 @@ import {
   screen,
   waitFor,
   fireEvent,
-  act,
   getByRole,
   getByText,
   waitForElementToBeRemoved,
@@ -22,7 +22,7 @@ import * as chainHooks from '@/hooks/useChains'
 
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
   ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
-  getSafeApps: (chainId: string) => Promise.resolve(mockedSafeApps),
+  getSafeApps: () => Promise.resolve(mockedSafeApps),
 }))
 
 jest.mock('next/navigation', () => ({
@@ -201,7 +201,7 @@ describe('AppsPage', () => {
       // Add custom app modal is not present
       expect(screen.queryByRole('presentation')).not.toBeInTheDocument()
 
-      await act(() => {
+      act(() => {
         fireEvent.click(screen.getByRole('button', { name: 'Add custom Safe App' }))
       })
 
@@ -258,7 +258,7 @@ describe('AppsPage', () => {
           }),
         ).toBeInTheDocument(),
       )
-      await act(() => {
+      act(() => {
         fireEvent.click(screen.getByText('Add'))
       })
 
@@ -298,7 +298,7 @@ describe('AppsPage', () => {
       })
       await waitFor(() => expect(screen.getByText('Add custom Safe App')).toBeInTheDocument())
       const addCustomAppButton = screen.getByText('Add custom Safe App')
-      await act(() => {
+      act(() => {
         fireEvent.click(addCustomAppButton)
       })
       await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument(), { timeout: 3000 })
@@ -336,23 +336,22 @@ describe('AppsPage', () => {
         },
       })
       await waitFor(() => expect(screen.getByText('Add custom Safe App')).toBeInTheDocument())
+
       const addCustomAppButton = screen.getByText('Add custom Safe App')
-      await act(() => {
-        fireEvent.click(addCustomAppButton)
-      })
+      await userEvent.click(addCustomAppButton)
+
       await waitFor(() => expect(screen.getByLabelText(/Safe App URL/)).toBeInTheDocument(), { timeout: 3000 })
+
       const appURLInput = screen.getByLabelText(/Safe App URL/)
-      fireEvent.change(appURLInput, { target: { value: APP_URL } })
+      await userEvent.type(appURLInput, APP_URL)
+
       const riskCheckbox = await screen.findByText(
         /This Safe App is not part of Safe{Wallet} and I agree to use it at my own risk\./,
       )
-      await act(() => {
-        fireEvent.click(riskCheckbox)
-      })
-      await act(() => {
-        fireEvent.click(riskCheckbox)
-      })
-      fireEvent.click(screen.getByText('Add'))
+
+      await userEvent.click(riskCheckbox)
+      await userEvent.click(riskCheckbox)
+
       await waitFor(() => expect(screen.getByText('Accepting the disclaimer is mandatory')).toBeInTheDocument())
     })
 
@@ -399,7 +398,7 @@ describe('AppsPage', () => {
           }),
         ).toBeInTheDocument(),
       )
-      await act(() => {
+      act(() => {
         fireEvent.click(screen.getByText('Add'))
       })
 
@@ -408,14 +407,14 @@ describe('AppsPage', () => {
 
       const removeCustomSafeAppButton = screen.getByLabelText('Delete Custom test Safe app')
 
-      await act(() => {
+      act(() => {
         fireEvent.click(removeCustomSafeAppButton)
       })
 
       await waitFor(() => expect(screen.getByText('Confirm Safe App removal')).toBeInTheDocument())
 
       const confirmRemovalButton = screen.getByRole('button', { name: 'Remove' })
-      await act(() => {
+      act(() => {
         fireEvent.click(confirmRemovalButton)
       })
 
@@ -511,7 +510,7 @@ describe('AppsPage', () => {
 
         const searchInput = screen.getByPlaceholderText('Search by name or category')
 
-        await act(() => fireEvent.change(searchInput, { target: { value: query } }))
+        act(() => fireEvent.change(searchInput, { target: { value: query } }))
 
         await waitFor(() => {
           expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
@@ -521,7 +520,6 @@ describe('AppsPage', () => {
 
           // zero results component
           expect(screen.getByText('No Safe Apps found', { exact: false })).toBeInTheDocument()
-          expect(screen.queryByText('Use WalletConnect')).toBeInTheDocument()
         })
       })
     })
@@ -546,7 +544,7 @@ describe('AppsPage', () => {
 
         const categorySelector = screen.getByText('Select category')
 
-        await act(() => fireEvent.mouseDown(categorySelector))
+        act(() => fireEvent.mouseDown(categorySelector))
 
         const categoriesDropdown = within(screen.getByRole('listbox'))
 
@@ -557,22 +555,23 @@ describe('AppsPage', () => {
         await waitFor(() => expect(categoriesDropdown.queryByText('transaction-builder')).not.toBeInTheDocument())
 
         // filter by Infrastructure category
-        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
+        act(() => {
+          fireEvent.click(categoriesDropdown.getByText('Infrastructure'))
+        })
 
         // close the dropdown
-        await act(() =>
+        act(() => {
           fireEvent.keyDown(screen.getByRole('listbox'), {
             key: 'Escape',
             code: 'Escape',
             keyCode: 27,
             charCode: 27,
-          }),
-        )
-
-        // 1 categories selected label
-        expect(screen.queryByText('1 categories selected')).toBeInTheDocument()
+          })
+        })
 
         await waitFor(() => {
+          // 1 categories selected label
+          expect(screen.queryByText('1 categories selected')).toBeInTheDocument()
           expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
           expect(screen.queryByText('ENS App', { selector: 'h5' })).not.toBeInTheDocument()
           expect(screen.queryByText('Transaction Builder', { selector: 'h5' })).toBeInTheDocument()
@@ -599,12 +598,12 @@ describe('AppsPage', () => {
 
         const categorySelector = screen.getByText('Select category')
 
-        await act(() => fireEvent.mouseDown(categorySelector))
+        act(() => fireEvent.mouseDown(categorySelector))
 
         const categoriesDropdown = within(screen.getByRole('listbox'))
 
         // filter by Infrastructure category
-        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
+        act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
 
         await waitFor(() => {
           expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
@@ -614,10 +613,10 @@ describe('AppsPage', () => {
         })
 
         // clear active Infrastructure filter
-        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
+        act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
 
         // close the dropdown
-        await act(() =>
+        act(() =>
           fireEvent.keyDown(screen.getByRole('listbox'), {
             key: 'Escape',
             code: 'Escape',
@@ -654,12 +653,12 @@ describe('AppsPage', () => {
 
         const categorySelector = screen.getByText('Select category')
 
-        await act(() => fireEvent.mouseDown(categorySelector))
+        act(() => fireEvent.mouseDown(categorySelector))
 
         const categoriesDropdown = within(screen.getByRole('listbox'))
 
         // filter by Infrastructure category
-        await act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
+        act(() => fireEvent.click(categoriesDropdown.getByText('Infrastructure')))
 
         await waitFor(() => {
           expect(screen.queryByText('Compound', { selector: 'h5' })).not.toBeInTheDocument()
@@ -669,7 +668,7 @@ describe('AppsPage', () => {
         })
 
         // close the dropdown
-        await act(() =>
+        act(() =>
           fireEvent.keyDown(screen.getByRole('listbox'), {
             key: 'Escape',
             code: 'Escape',
@@ -679,7 +678,7 @@ describe('AppsPage', () => {
         )
 
         // clear all selected filters
-        await act(() => fireEvent.click(screen.getByLabelText('clear selected categories')))
+        act(() => fireEvent.click(screen.getByLabelText('clear selected categories')))
 
         // show all safe apps again
         await waitFor(() => {
@@ -710,7 +709,7 @@ describe('AppsPage', () => {
         })
 
         // filter by optimized for batch transactions
-        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: false })))
+        act(() => fireEvent.click(screen.getByRole('checkbox', { checked: false })))
 
         // show only transaction builder safe app
         await waitFor(() => {
@@ -739,10 +738,10 @@ describe('AppsPage', () => {
         })
 
         // filter by optimized for batch transactions
-        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: false })))
+        act(() => fireEvent.click(screen.getByRole('checkbox', { checked: false })))
 
         // clears the optimized for batch transactions filter
-        await act(() => fireEvent.click(screen.getByRole('checkbox', { checked: true })))
+        act(() => fireEvent.click(screen.getByRole('checkbox', { checked: true })))
 
         // show all safe apps
         await waitFor(() => {

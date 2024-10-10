@@ -6,9 +6,8 @@ import { DataTable } from '@/components/common/Table/DataTable'
 import { compareAsc } from 'date-fns'
 import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
-import { formatVisualAmount } from '@/utils/formatters'
 import { getLimitPrice, getOrderClass, getSlippageInPercent } from '@/features/swap/helpers/utils'
-import type { OrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AnySwapOrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
 import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
@@ -20,13 +19,15 @@ import { PartDuration } from '@/features/swap/components/SwapOrder/rows/PartDura
 import { PartSellAmount } from '@/features/swap/components/SwapOrder/rows/PartSellAmount'
 import { PartBuyAmount } from '@/features/swap/components/SwapOrder/rows/PartBuyAmount'
 import { OrderFeeConfirmationView } from '@/features/swap/components/SwapOrderConfirmationView/OrderFeeConfirmationView'
+import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
+import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 
 type SwapOrderProps = {
-  order: OrderConfirmationView
+  order: AnySwapOrderConfirmationView
   settlementContract: string
 }
 
-export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrderProps): ReactElement => {
+export const SwapOrderConfirmation = ({ order, settlementContract }: SwapOrderProps): ReactElement => {
   const { owner, kind, validUntil, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
   const isTwapOrder = order.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
@@ -38,25 +39,26 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
 
   const slippage = getSlippageInPercent(order)
   const isSellOrder = kind === 'sell'
+  const isChangingFallbackHandler = isSettingTwapFallbackHandler(order)
 
   return (
-    <div className={css.tableWrapper}>
+    <>
+      {isChangingFallbackHandler && <TwapFallbackHandlerWarning />}
+
       <DataTable
         header="Order details"
         rows={[
           <div key="amount" className={css.amount}>
             <SwapTokens
               first={{
-                value: formatVisualAmount(sellAmount, sellToken.decimals),
+                value: sellAmount,
                 label: isSellOrder ? 'Sell' : 'For at most',
-                logoUri: sellToken.logoUri as string,
-                tokenSymbol: sellToken.symbol,
+                tokenInfo: sellToken,
               }}
               second={{
-                value: formatVisualAmount(buyAmount, buyToken.decimals),
+                value: buyAmount,
                 label: isSellOrder ? 'For at least' : 'Buy exactly',
-                logoUri: buyToken.logoUri as string,
-                tokenSymbol: buyToken.symbol,
+                tokenInfo: buyToken,
               }}
             />
           </div>,
@@ -143,8 +145,8 @@ export const SwapOrderConfirmationView = ({ order, settlementContract }: SwapOrd
           />
         </div>
       )}
-    </div>
+    </>
   )
 }
 
-export default SwapOrderConfirmationView
+export default SwapOrderConfirmation

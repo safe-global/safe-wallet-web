@@ -14,10 +14,6 @@ describe('Swaps history tests 2', () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  beforeEach(() => {
-    cy.clearLocalStorage()
-  })
-
   it('Verify swap sell order with one action', { defaultCommandTimeout: 30000 }, () => {
     cy.visit(constants.transactionUrl + staticSafes.SEP_STATIC_SAFE_1 + swaps.swapTxs.sell1Action)
     main.acceptCookies()
@@ -25,16 +21,10 @@ describe('Swaps history tests 2', () => {
     const dai = swaps.createRegex(swapsHistory.forAtLeastFullDai, 'DAI')
     const eq = swaps.createRegex(swapsHistory.DAIeqCOW, 'COW')
 
-    create_tx.verifyExpandedDetails([
-      swapsHistory.sellFull,
-      dai,
-      eq,
-      swapsHistory.dai,
-      swapsHistory.filled,
-      swapsHistory.gGpV2,
-    ])
+    create_tx.verifyExpandedDetails([swapsHistory.sellFull, dai, eq, swapsHistory.dai, swapsHistory.filled])
   })
 
+  // TODO: Added to prod
   it('Verify swap buy operation with 2 actions: approve & swap', { defaultCommandTimeout: 30000 }, () => {
     cy.visit(constants.transactionUrl + staticSafes.SEP_STATIC_SAFE_1 + swaps.swapTxs.buy2actions)
     main.acceptCookies()
@@ -69,7 +59,6 @@ describe('Swaps history tests 2', () => {
       eq,
       swapsHistory.cow,
       swapsHistory.cancelled,
-      swapsHistory.gGpV2,
     ])
   })
 
@@ -112,6 +101,7 @@ describe('Swaps history tests 2', () => {
     create_tx.verifyExpandedDetails([swapsHistory.sellOrder, swapsHistory.sell, usdc, eq, swapsHistory.filled])
   })
 
+  // TODO: Added to prod
   it(
     'Verify no decoding if tx was created using CowSwap safe-app in the history',
     { defaultCommandTimeout: 30000 },
@@ -131,7 +121,7 @@ describe('Swaps history tests 2', () => {
         swapsHistory.forAtMost,
       ])
       main.verifyValuesDoNotExist(create_tx.transactionItem, [swapsHistory.title, swapsHistory.cow, swapsHistory.dai])
-      main.verifyValuesExist(create_tx.transactionItem, [swapsHistory.actionPreSignatureG, swapsHistory.safeAppTitile])
+      main.verifyValuesExist(create_tx.transactionItem, [swapsHistory.actionPreSignatureG, swapsHistory.gGpV2])
     },
   )
 

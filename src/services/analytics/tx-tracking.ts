@@ -1,5 +1,4 @@
 import { TX_TYPES } from '@/services/analytics/events/transactions'
-import { getTxDetails } from '@/services/transactions'
 import { SettingsInfoType, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isERC721Transfer,
@@ -9,14 +8,11 @@ import {
   isCustomTxInfo,
   isCancellationTxInfo,
   isSwapOrderTxInfo,
+  isAnyStakingTxInfo,
 } from '@/utils/transaction-guards'
 
-export const getTransactionTrackingType = async (chainId: string, txId: string): Promise<string> => {
-  let details: TransactionDetails
-
-  try {
-    details = await getTxDetails(chainId, txId)
-  } catch {
+export const getTransactionTrackingType = (details: TransactionDetails | undefined): string => {
+  if (!details) {
     return TX_TYPES.custom
   }
 
@@ -31,6 +27,10 @@ export const getTransactionTrackingType = async (chainId: string, txId: string):
 
   if (isSwapOrderTxInfo(txInfo)) {
     return TX_TYPES.native_swap
+  }
+
+  if (isAnyStakingTxInfo(txInfo)) {
+    return txInfo.type
   }
 
   if (isSettingsChangeTxInfo(txInfo)) {

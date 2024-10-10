@@ -23,7 +23,7 @@ export function connectSigner(signer) {
   function handlePkConnect() {
     cy.get('body').then(($body) => {
       if ($body.find(pkConnectBtn).length > 0) {
-        cy.get(pkInput).find('input').clear().type(signer)
+        cy.get(pkInput).find('input').clear().type(signer, { log: false, force: true })
         cy.get(pkConnectBtn).click()
       }
     })
@@ -32,6 +32,7 @@ export function connectSigner(signer) {
   function enterPrivateKey() {
     cy.wait(1000)
     cy.get(connectWalletBtn)
+      .eq(0)
       .should('be.enabled')
       .and('be.visible')
       .click()

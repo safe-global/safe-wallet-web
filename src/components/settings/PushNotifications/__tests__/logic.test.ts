@@ -123,7 +123,7 @@ describe('Notifications', () => {
 
       const mockProvider = new BrowserProvider(MockEip1193Provider)
 
-      jest.spyOn(mockProvider, 'getSigner').mockImplementation((address?: string | number | undefined) =>
+      jest.spyOn(mockProvider, 'getSigner').mockImplementation(() =>
         Promise.resolve({
           signMessage: jest.fn().mockResolvedValueOnce(MM_SIGNATURE),
         } as unknown as JsonRpcSigner),

@@ -11,8 +11,6 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 describe('Safe creation tests', () => {
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
-    cy.clearLocalStorage()
-    main.acceptCookies()
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
   })
@@ -134,8 +132,7 @@ describe('Safe creation tests', () => {
         main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sameOwnerName),
       )
       .then(() => {
-        createwallet.clickOnContinueWithWalletBtn()
-        createwallet.clickOnCreateNewSafeBtn()
+        createwallet.waitForConnectionMsgDisappear()
         createwallet.clickOnNextBtn()
         createwallet.clickOnAddNewOwnerBtn()
         createwallet.clickOnSignerAddressInput(1)

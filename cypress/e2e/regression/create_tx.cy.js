@@ -24,21 +24,19 @@ describe('Create transactions tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_6)
-    main.acceptCookies()
     wallet.connectSigner(signer)
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
   })
 
+  // TODO: Added to prod
   it('Verify submitting a tx and that clicking on notification shows the transaction in queue', () => {
     happyPathToStepTwo()
     createtx.verifySubmitBtnIsEnabled()
     createtx.changeNonce(14)
     cy.wait(1000)
     createtx.clickOnSignTransactionBtn()
-    createtx.waitForProposeRequest()
     createtx.clickViewTransaction()
     createtx.verifySingleTxPage()
     createtx.verifyQueueLabel()

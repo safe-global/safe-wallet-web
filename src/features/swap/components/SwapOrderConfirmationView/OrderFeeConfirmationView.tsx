@@ -1,11 +1,15 @@
-import type { OrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
+import type { SwapOrderConfirmationView, TwapOrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { getOrderFeeBps } from '@/features/swap/helpers/utils'
 import { DataRow } from '@/components/common/Table/DataRow'
 import { HelpCenterArticle } from '@/config/constants'
 import { HelpIconTooltip } from '@/features/swap/components/HelpIconTooltip'
 import MUILink from '@mui/material/Link'
 
-export const OrderFeeConfirmationView = ({ order }: { order: Pick<OrderConfirmationView, 'fullAppData'> }) => {
+export const OrderFeeConfirmationView = ({
+  order,
+}: {
+  order: Pick<SwapOrderConfirmationView | TwapOrderConfirmationView, 'fullAppData'>
+}) => {
   const bps = getOrderFeeBps(order)
 
   if (Number(bps) === 0) {

@@ -1,8 +1,9 @@
+import { waitFor } from '@testing-library/react'
+import { act } from 'react'
 import { _getRemainingTimeout } from '@/services/tx/txMonitor'
 import * as txEvents from '@/services/tx/txEvents'
 import * as txMonitor from '@/services/tx/txMonitor'
 
-import { act } from '@testing-library/react'
 import { toBeHex } from 'ethers'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
 import { BrowserProvider, type JsonRpcProvider, type TransactionReceipt } from 'ethers'
@@ -13,7 +14,7 @@ const { waitForTx, waitForRelayedTx } = txMonitor
 
 const provider = new BrowserProvider(MockEip1193Provider) as unknown as JsonRpcProvider
 
-const setupFetchStub = (data: any) => (_url: string) => {
+const setupFetchStub = (data: any) => () => {
   return Promise.resolve({
     json: () => Promise.resolve(data),
     status: 200,
@@ -25,7 +26,6 @@ describe('txMonitor', () => {
   const simpleTxWatcherInstance = SimpleTxWatcher.getInstance()
 
   let txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
-  let waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
   // let simpleWatcherSpy = jest.spyOn(SimpleTxWatcher, 'getInstance')
   const safeAddress = toBeHex('0x123', 20)
 
@@ -36,7 +36,7 @@ describe('txMonitor', () => {
     jest.resetAllMocks()
 
     txDispatchSpy = jest.spyOn(txEvents, 'txDispatch')
-    waitForTxSpy = jest.spyOn(provider, 'waitForTransaction')
+    jest.spyOn(provider, 'waitForTransaction')
     watchTxHashSpy = jest.spyOn(simpleTxWatcherInstance, 'watchTxHash')
   })
 
@@ -47,9 +47,9 @@ describe('txMonitor', () => {
       // https://docs.ethers.io/v5/single-page/#/v5/api/providers/provider/-%23-Provider-waitForTransaction
       const receipt = null as unknown as TransactionReceipt
       watchTxHashSpy.mockImplementation(() => Promise.resolve(receipt))
-      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1, 1, '11155111')
 
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error) })
+      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: expect.any(Error), nonce: 1 })
     })
 
     it('emits a REVERTED event if the tx reverted', async () => {
@@ -58,9 +58,10 @@ describe('txMonitor', () => {
       } as TransactionReceipt
 
       watchTxHashSpy.mockImplementation(() => Promise.resolve(receipt))
-      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1, 1, '11155111')
 
       expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
+        nonce: 1,
         txId: '0x0',
         error: new Error('Transaction reverted by EVM.'),
       })
@@ -68,9 +69,9 @@ describe('txMonitor', () => {
 
     it('emits a FAILED event if waitForTransaction throws', async () => {
       watchTxHashSpy.mockImplementation(() => Promise.reject(new Error('Test error.')))
-      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1)
+      await waitForTx(provider, ['0x0'], '0x0', safeAddress, faker.finance.ethereumAddress(), 1, 1, '11155111')
 
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: new Error('Test error.') })
+      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', { txId: '0x0', error: new Error('Test error.'), nonce: 1 })
     })
   })
 
@@ -85,18 +86,20 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'], safeAddress)
+      waitForRelayedTx('0x1', ['0x2'], safeAddress, 1)
 
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(15_000 + 1)
       })
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2', safeAddress })
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('PROCESSED', { txId: '0x2', safeAddress, nonce: 1 })
+      })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(3 * 60_000 + 1)
       })
       expect(txDispatchSpy).not.toHaveBeenCalled()
@@ -112,21 +115,24 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'], safeAddress)
+      waitForRelayedTx('0x1', ['0x2'], safeAddress, 1)
 
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(15_000 + 1)
       })
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
-        txId: '0x2',
-        error: new Error(`Relayed transaction reverted by EVM.`),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('REVERTED', {
+          nonce: 1,
+          txId: '0x2',
+          error: new Error(`Relayed transaction reverted by EVM.`),
+        })
       })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(3 * 60_000 + 1)
       })
       expect(txDispatchSpy).not.toHaveBeenCalled()
@@ -142,21 +148,24 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'], safeAddress)
+      waitForRelayedTx('0x1', ['0x2'], safeAddress, 1)
 
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(15_000 + 1)
       })
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
-        txId: '0x2',
-        error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+          nonce: 1,
+          txId: '0x2',
+          error: new Error(`Relayed transaction was blacklisted by relay provider.`),
+        })
       })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(3 * 60_000 + 1)
       })
       expect(txDispatchSpy).not.toHaveBeenCalled()
@@ -172,21 +181,24 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'], safeAddress)
+      waitForRelayedTx('0x1', ['0x2'], safeAddress, 1)
 
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(15_000 + 1)
       })
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
-        txId: '0x2',
-        error: new Error(`Relayed transaction was cancelled by relay provider.`),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+          nonce: 1,
+          txId: '0x2',
+          error: new Error(`Relayed transaction was cancelled by relay provider.`),
+        })
       })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(3 * 60_000 + 1)
       })
       expect(txDispatchSpy).not.toHaveBeenCalled()
@@ -202,21 +214,24 @@ describe('txMonitor', () => {
 
       const mockFetch = jest.spyOn(global, 'fetch')
 
-      waitForRelayedTx('0x1', ['0x2'], safeAddress)
+      waitForRelayedTx('0x1', ['0x2'], safeAddress, 1)
 
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(15_000 + 1)
       })
 
-      expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
-        txId: '0x2',
-        error: new Error(`Relayed transaction was not found.`),
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(1)
+        expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+          nonce: 1,
+          txId: '0x2',
+          error: new Error(`Relayed transaction was not found.`),
+        })
       })
 
       // The relay timeout should have been cancelled
       txDispatchSpy.mockClear()
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(3 * 60_000 + 1)
       })
       expect(txDispatchSpy).not.toHaveBeenCalled()
@@ -230,13 +245,14 @@ describe('txMonitor', () => {
       }
       global.fetch = jest.fn().mockImplementation(setupFetchStub(mockData))
 
-      waitForRelayedTx('0x1', ['0x2'], safeAddress)
+      waitForRelayedTx('0x1', ['0x2'], safeAddress, 1)
 
-      await act(() => {
+      act(() => {
         jest.advanceTimersByTime(3 * 60_000 + 1)
       })
 
       expect(txDispatchSpy).toHaveBeenCalledWith('FAILED', {
+        nonce: 1,
         txId: '0x2',
         error: new Error('Transaction not relayed in 3 minutes. Be aware that it might still be relayed.'),
       })

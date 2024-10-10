@@ -23,15 +23,11 @@ import { TxSecurityContext } from '../../security/shared/TxSecurityContext'
 
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { pollModuleTransactionId, useExecuteThroughRole, useGasLimit, useMetaTransactions, type Role } from './hooks'
-import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
-import { trackEvent } from '@/services/analytics'
-import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { decodeBytes32String } from 'ethers'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { assertOnboard, assertWallet } from '@/utils/helpers'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import { dispatchModuleTxExecution } from '@/services/tx/tx-sender'
 import { Status } from 'zodiac-roles-deployments'
 
@@ -96,8 +92,6 @@ export const ExecuteThroughRoleForm = ({
     assertWallet(wallet)
     assertOnboard(onboard)
 
-    await assertWalletChain(onboard, chainId)
-
     setIsRejectedByUser(false)
     setIsPending(true)
     setSubmitError(undefined)
@@ -135,10 +129,6 @@ export const ExecuteThroughRoleForm = ({
     const txId = await pollModuleTransactionId(chainId, safe.address.value, txHash)
     onSubmit?.(txId, true)
 
-    // Track tx event
-    const txType = await getTransactionTrackingType(chainId, txId)
-    trackEvent({ ...TX_EVENTS.EXECUTE_THROUGH_ROLE, label: txType })
-
     // Update the success screen so it shows a link to the transaction
     setTxFlow(<SuccessScreenFlow txId={txId} />, undefined, false)
   }
@@ -146,7 +136,6 @@ export const ExecuteThroughRoleForm = ({
   const walletCanPay = useWalletCanPay({
     gasLimit,
     maxFeePerGas: advancedParams.maxFeePerGas,
-    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
   })
 
   const submitDisabled = !txThroughRole || isPending || disableSubmit || (needsRiskConfirmation && !isRiskConfirmed)
@@ -234,7 +223,7 @@ export const ExecuteThroughRoleForm = ({
 
         <CardActions>
           {/* Submit button, also available to non-owner role members */}
-          <CheckWallet allowNonOwner>
+          <CheckWallet allowNonOwner checkNetwork={!submitDisabled}>
             {(isOk) => (
               <Button
                 data-testid="execute-through-role-form-btn"

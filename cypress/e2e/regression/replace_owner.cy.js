@@ -5,10 +5,12 @@ import * as createTx from '../pages/create_tx.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as ls from '../../support/localstorage_data.js'
+import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
+const signer2 = walletCredentials.OWNER_1_PRIVATE_KEY
 
 const ownerName = 'Replacement Signer Name'
 
@@ -19,8 +21,6 @@ describe('Replace Owners tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
-    cy.clearLocalStorage()
-    main.acceptCookies()
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 
@@ -32,7 +32,7 @@ describe('Replace Owners tests', () => {
   it('Verify max characters in name field', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
     owner.typeOwnerName(main.generateRandomString(51))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.exceedChars)
   })
@@ -42,7 +42,7 @@ describe('Replace Owners tests', () => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
     owner.typeOwnerAddress(constants.addresBookContacts.user1.address)
     owner.verifyNewOwnerName(constants.addresBookContacts.user1.name)
   })
@@ -50,7 +50,7 @@ describe('Replace Owners tests', () => {
   it('Verify that Name field not mandatory. Verify confirmation for owner replacement is displayed', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
     owner.clickOnNextBtn()
     owner.verifyConfirmTransactionWindowDisplayed()
@@ -59,7 +59,7 @@ describe('Replace Owners tests', () => {
   it('Verify relevant error messages are displayed in Address input', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(0)
     owner.typeOwnerAddress(main.generateRandomString(10))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidFormat)
 
@@ -76,19 +76,29 @@ describe('Replace Owners tests', () => {
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.alreadyAdded)
   })
 
-  it("Verify 'Replace' tx is created", () => {
-    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
+  it("Verify 'Replace' tx is created. GA tx_created", () => {
+    const tx_created = [
+      {
+        eventLabel: events.txCreatedSwapOwner.eventLabel,
+        eventCategory: events.txCreatedSwapOwner.category,
+        eventAction: events.txCreatedSwapOwner.action,
+        event: events.txCreatedSwapOwner.eventName,
+        safeAddress: staticSafes.SEP_STATIC_SAFE_25.slice(6),
+      },
+    ]
+    cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_25)
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-    owner.openReplaceOwnerWindow()
+    owner.openReplaceOwnerWindow(1)
     cy.wait(1000)
     owner.typeOwnerName(ownerName)
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
-    createTx.changeNonce(2)
+    createTx.changeNonce(0)
     owner.clickOnNextBtn()
     createTx.clickOnSignTransactionBtn()
-    createTx.waitForProposeRequest()
     createTx.clickViewTransaction()
     createTx.verifyReplacedSigner(ownerName)
+    getEvents()
+    checkDataLayerEvents(tx_created)
   })
 })

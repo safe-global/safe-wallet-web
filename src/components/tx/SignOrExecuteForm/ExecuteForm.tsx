@@ -116,7 +116,6 @@ export const ExecuteForm = ({
   const walletCanPay = useWalletCanPay({
     gasLimit,
     maxFeePerGas: advancedParams.maxFeePerGas,
-    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
   })
 
   const cannotPropose = !isOwner && !onlyExecute
@@ -188,14 +187,14 @@ export const ExecuteForm = ({
 
         <CardActions>
           {/* Submit button */}
-          <CheckWallet allowNonOwner={onlyExecute}>
+          <CheckWallet allowNonOwner={onlyExecute} checkNetwork={!submitDisabled}>
             {(isOk) => (
               <Button
                 data-testid="execute-form-btn"
                 variant="contained"
                 type="submit"
                 disabled={!isOk || submitDisabled}
-                sx={{ minWidth: '112px' }}
+                sx={{ minWidth: '112px', width: ['100%', '100%', '100%', 'auto'] }}
               >
                 {!isSubmittable ? <CircularProgress size={20} /> : 'Execute'}
               </Button>

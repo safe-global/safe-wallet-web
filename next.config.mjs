@@ -1,6 +1,11 @@
 import path from 'path'
 import withBundleAnalyzer from '@next/bundle-analyzer'
 import withPWAInit from '@ducanh2912/next-pwa'
+import remarkGfm from 'remark-gfm'
+import remarkHeadingId from 'remark-heading-id'
+import createMDX from '@next/mdx'
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 
 const SERVICE_WORKERS_PATH = './src/service-workers'
 
@@ -26,13 +31,21 @@ const nextConfig = {
     unoptimized: true,
   },
 
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   reactStrictMode: false,
   productionBrowserSourceMaps: true,
   eslint: {
     dirs: ['src', 'cypress'],
   },
   experimental: {
-    optimizePackageImports: ['@mui/material', '@mui/icons-material', 'lodash', 'date-fns', '@sentry/react', '@gnosis.pm/zodiac'],
+    optimizePackageImports: [
+      '@mui/material',
+      '@mui/icons-material',
+      'lodash',
+      'date-fns',
+      '@sentry/react',
+      '@gnosis.pm/zodiac',
+    ],
   },
   webpack(config) {
     config.module.rules.push({
@@ -69,7 +82,19 @@ const nextConfig = {
     return config
   },
 }
+const withMDX = createMDX({
+  extension: /\.(md|mdx)?$/,
+  jsx: true,
+  options: {
+    remarkPlugins: [
+      remarkFrontmatter,
+      [remarkMdxFrontmatter, { name: 'metadata' }],
+      remarkHeadingId, remarkGfm],
+    rehypePlugins: [],
+  },
+})
+
 
 export default withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
-})(withPWA(nextConfig))
+})(withPWA(withMDX(nextConfig)))

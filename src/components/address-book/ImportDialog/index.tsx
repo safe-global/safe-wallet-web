@@ -114,7 +114,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
           }}
         >
           {/* https://github.com/Bunlong/react-papaparse/blob/master/src/useCSVReader.tsx */}
-          {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps, Remove }: any) => {
+          {({ getRootProps, acceptedFile, getRemoveFileProps }: any) => {
             const { onClick } = getRemoveFileProps()
 
             const onRemove = (e: MouseEvent<HTMLSpanElement>) => {

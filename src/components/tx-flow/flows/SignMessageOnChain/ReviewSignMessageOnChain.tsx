@@ -1,5 +1,4 @@
 import useWallet from '@/hooks/wallets/useWallet'
-import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import type { ReactElement } from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { useMemo } from 'react'
@@ -14,7 +13,6 @@ import SendFromBlock from '@/components/tx/SendFromBlock'
 import { InfoDetails } from '@/components/transactions/InfoDetails'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
-import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { getReadOnlySignMessageLibContract } from '@/services/contracts/safeContracts'
 import { DecodedMsg } from '@/components/safe-messages/DecodedMsg'
 import CopyButton from '@/components/common/CopyButton'
@@ -30,6 +28,7 @@ import { isEIP712TypedData } from '@/utils/safe-messages'
 import ApprovalEditor from '@/components/tx/ApprovalEditor'
 import { ErrorBoundary } from '@sentry/react'
 import useAsync from '@/hooks/useAsync'
+import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 
 export type SignMessageOnChainProps = {
   app?: SafeAppData
@@ -112,7 +111,6 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
     if (!safeTx || !onboard || !wallet) return
 
     try {
-      await assertWalletChain(onboard, safe.chainId)
       await dispatchSafeAppsTx(safeTx, requestId, wallet.provider)
     } catch (error) {
       setSafeTxError(asError(error))
@@ -135,10 +133,7 @@ const ReviewSignMessageOnChain = ({ message, method, requestId }: SignMessageOnC
 
       {safeTx && (
         <Box pb={1}>
-          <Typography mt={2} color="primary.light">
-            Data (hex encoded)
-          </Typography>
-          {generateDataRowValue(safeTx.data.data, 'rawData')}
+          <HexEncodedData title="Data (hex-encoded)" hexData={safeTx.data.data} />
         </Box>
       )}
 

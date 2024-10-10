@@ -83,13 +83,14 @@ describe('useDecodeTx', () => {
     const safeTx = createMockSafeTransaction({
       data: '0x1234567890abcdef', // non-empty data
       to: faker.finance.ethereumAddress(),
+      value: '1000000',
     })
 
-    const { result } = renderHook(() => useDecodeTx(safeTx))
+    renderHook(() => useDecodeTx(safeTx))
 
     await waitFor(async () => {
       expect(getConfirmationView).toHaveBeenCalledTimes(1)
-      expect(getConfirmationView).toHaveBeenCalledWith('5', '0x789', '0x1234567890abcdef', safeTx.data.to)
+      expect(getConfirmationView).toHaveBeenCalledWith('5', '0x789', '0x1234567890abcdef', safeTx.data.to, '1000000')
     })
   })
 

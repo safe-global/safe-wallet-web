@@ -12,7 +12,7 @@ import { startOfDay, endOfDay } from 'date-fns'
 
 import type { TxFilterFormState } from '@/components/transactions/TxFilterForm'
 import { safeFormatUnits, safeParseUnits } from '@/utils/formatters'
-import { getTimezoneOffset } from '@/services/transactions'
+import { getTimezone } from '@/services/transactions'
 
 type IncomingTxFilter = NonNullable<operations['incoming_transfers']['parameters']['query']>
 type MultisigTxFilter = NonNullable<operations['multisig_transactions']['parameters']['query']>
@@ -31,7 +31,7 @@ export type TxFilter = {
 
 export const _omitNullish = (data: { [key: string]: any }) => {
   return Object.fromEntries(
-    Object.entries(data).filter(([_, value]) => {
+    Object.entries(data).filter(([, value]) => {
       return value !== '' && value != null
     }),
   )
@@ -119,15 +119,16 @@ export const fetchFilteredTxHistory = async (
   chainId: string,
   safeAddress: string,
   filterData: TxFilter,
-  onlyTrusted: boolean,
+  hideUntrustedTxs: boolean,
+  hideImitationTxs: boolean,
   pageUrl?: string,
 ): Promise<TransactionListPage> => {
   const fetchPage = () => {
     const query = {
       ...filterData.filter,
-      timezone_offset: getTimezoneOffset(),
-      trusted: onlyTrusted ?? false,
-      imitation: onlyTrusted ?? false,
+      timezone: getTimezone(),
+      trusted: hideUntrustedTxs,
+      imitation: !hideImitationTxs,
       executed: filterData.type === TxFilterType.MULTISIG ? 'true' : undefined,
     }
 

@@ -135,7 +135,7 @@ describe('useRoles', () => {
       operation: OperationType.Call,
     })
 
-    const { result, rerender } = renderHook(() => useRoles(safeTxOk))
+    const { result } = renderHook(() => useRoles(safeTxOk))
 
     // wait for the Roles mod to be fetched & and the cache state update to be propagated
     await waitFor(() => {

@@ -1,0 +1,196 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HexEncodedData should not cut the text in case the limit option is higher than the provided hexData 1`] = `
+<div>
+  <div
+    class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
+  >
+    <div
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
+      data-testid="tx-row-title"
+      style="word-break: break-word;"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
+      >
+        Data (hex-encoded)
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
+    >
+      <div
+        class="encodedData MuiBox-root css-0"
+        data-testid="tx-hexData"
+      >
+        <span
+          aria-label="Copy to clipboard"
+          class=""
+          data-mui-internal-clone-element="true"
+          style="cursor: pointer;"
+        >
+          <button
+            aria-label="Copy to clipboard"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-nmr6e8-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <mock-icon
+              aria-hidden="true"
+              classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+              data-testid="copy-btn-icon"
+              focusable="false"
+            />
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </span>
+        <b
+          aria-label="The first 4 bytes determine the contract method that is being called"
+          class=""
+          data-mui-internal-clone-element="true"
+        >
+          0xed2ad31e
+        </b>
+        d00088fc64d00c49774b2fe3fb7fd7db1c2a714700892607b9f77dc1
+         
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`HexEncodedData should not highlight the data if highlight option is false 1`] = `
+<div>
+  <div
+    class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
+  >
+    <div
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
+      data-testid="tx-row-title"
+      style="word-break: break-word;"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
+      >
+        Some arbitrary data
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
+    >
+      <div
+        class="encodedData MuiBox-root css-0"
+        data-testid="tx-hexData"
+      >
+        <span
+          aria-label="Copy to clipboard"
+          class=""
+          data-mui-internal-clone-element="true"
+          style="cursor: pointer;"
+        >
+          <button
+            aria-label="Copy to clipboard"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-nmr6e8-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <mock-icon
+              aria-hidden="true"
+              classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+              data-testid="copy-btn-icon"
+              focusable="false"
+            />
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </span>
+        0x10238476...
+         
+        <button
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiLink-button css-fl9gtn-MuiTypography-root-MuiLink-root"
+          data-testid="show-more"
+          type="button"
+        >
+          Show 
+          more
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`HexEncodedData should render the default component markup 1`] = `
+<div>
+  <div
+    class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
+  >
+    <div
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
+      data-testid="tx-row-title"
+      style="word-break: break-word;"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
+      >
+        Data (hex-encoded)
+      </p>
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
+    >
+      <div
+        class="encodedData MuiBox-root css-0"
+        data-testid="tx-hexData"
+      >
+        <span
+          aria-label="Copy to clipboard"
+          class=""
+          data-mui-internal-clone-element="true"
+          style="cursor: pointer;"
+        >
+          <button
+            aria-label="Copy to clipboard"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-nmr6e8-MuiButtonBase-root-MuiIconButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <mock-icon
+              aria-hidden="true"
+              classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+              data-testid="copy-btn-icon"
+              focusable="false"
+            />
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </span>
+        <b
+          aria-label="The first 4 bytes determine the contract method that is being called"
+          class=""
+          data-mui-internal-clone-element="true"
+        >
+          0xed2ad31e
+        </b>
+        d00088fc64...
+         
+        <button
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiLink-button css-fl9gtn-MuiTypography-root-MuiLink-root"
+          data-testid="show-more"
+          type="button"
+        >
+          Show 
+          more
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

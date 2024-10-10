@@ -65,3 +65,4 @@ runs:
         GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
         CYPRESS_PROJECT_ID: ${{ inputs.project_id }}
         CYPRESS_WALLET_CREDENTIALS: ${{ fromJSON(inputs.secrets).CYPRESS_WALLET_CREDENTIALS }}
+        BEAMER_DATA_E2E: ${{ fromJSON(inputs.secrets).BEAMER_DATA_E2E }}

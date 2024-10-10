@@ -19,9 +19,17 @@ import { isRouteEnabled } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
+import { STAKE_EVENTS, STAKE_LABELS } from '@/services/analytics/events/stake'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
+}
+
+const geoBlockedRoutes = [AppRoutes.swap, AppRoutes.stake]
+
+const customSidebarEvents: { [key: string]: { event: any; label: string } } = {
+  [AppRoutes.swap]: { event: SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar },
+  [AppRoutes.stake]: { event: STAKE_EVENTS.OPEN_STAKE, label: STAKE_LABELS.sidebar },
 }
 
 const Navigation = (): ReactElement => {
@@ -31,14 +39,14 @@ const Navigation = (): ReactElement => {
   const currentSubdirectory = getSubdirectory(router.pathname)
   const queueSize = useQueuedTxsLength()
   const isBlockedCountry = useContext(GeoblockingContext)
+
   const enabledNavItems = useMemo(() => {
     return navItems.filter((item) => {
-      const enabled = isRouteEnabled(item.href, chain)
-
-      if (item.href === AppRoutes.swap && isBlockedCountry) {
+      if (isBlockedCountry && geoBlockedRoutes.includes(item.href)) {
         return false
       }
-      return enabled
+
+      return isRouteEnabled(item.href, chain)
     })
   }, [chain, isBlockedCountry])
 
@@ -58,8 +66,9 @@ const Navigation = (): ReactElement => {
   }
 
   const handleNavigationClick = (href: string) => {
-    if (href === AppRoutes.swap) {
-      trackEvent({ ...SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar })
+    const eventInfo = customSidebarEvents[href]
+    if (eventInfo) {
+      trackEvent({ ...eventInfo.event, label: eventInfo.label })
     }
   }
 
@@ -76,14 +85,15 @@ const Navigation = (): ReactElement => {
 
         return (
           <ListItem
-            key={item.href}
             disablePadding
             selected={isSelected}
             onClick={() => handleNavigationClick(item.href)}
+            key={item.href}
           >
             <SidebarListItemButton
               selected={isSelected}
-              href={{ pathname: getRoute(item.href), query: { safe: router.query.safe } }}
+              href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
+              disabled={item.disabled}
             >
               {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
 

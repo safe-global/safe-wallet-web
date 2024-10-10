@@ -22,6 +22,10 @@ import * as recommendedNonce from '@/services/tx/tx-sender/recommendedNonce'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
 import { type SignerWallet } from '@/components/common/WalletProvider'
+import { chainBuilder } from '@/tests/builders/chains'
+import * as useChains from '@/hooks/useChains'
+
+const chainInfo = chainBuilder().with({ chainId: '1' }).build()
 
 describe('SignOrExecute hooks', () => {
   const extendedSafeInfo = extendedSafeInfoBuilder().build()
@@ -52,6 +56,8 @@ describe('SignOrExecute hooks', () => {
       address: '0x1234567890000000000000000000000000000000',
       provider: MockEip1193Provider,
     })
+
+    jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainInfo)
   })
 
   describe('useValidateNonce', () => {

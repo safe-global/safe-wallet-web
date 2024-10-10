@@ -8,7 +8,6 @@ import { Countdown } from '@/components/common/Countdown'
 import { ExecuteRecoveryButton } from '../ExecuteRecoveryButton'
 import { CancelRecoveryButton } from '../CancelRecoveryButton'
 import { useRecoveryTxState } from '@/features/recovery/hooks/useRecoveryTxState'
-import { RecoveryValidationErrors } from '../RecoveryValidationErrors'
 import { formatDateTime } from '@/utils/date'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
@@ -69,8 +68,6 @@ export function RecoverySigners({ item }: { item: RecoveryQueueItem }): ReactEle
 
         {isNext && <Countdown seconds={remainingSeconds} />}
       </Box>
-
-      <RecoveryValidationErrors item={item} />
 
       <Box display="flex" alignItems="center" justifyContent="center" gap={1} mt={2}>
         <ExecuteRecoveryButton recovery={item} />

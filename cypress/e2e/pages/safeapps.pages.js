@@ -27,7 +27,7 @@ const acceptBtnStr = /accept/i
 const clearAllBtnStr = /clear all/i
 const allowAllPermissions = /allow all/i
 export const enterAddressStr = /enter address or ens name/i
-export const addTransactionStr = /add transaction/i
+export const addTransactionStr = /add new transaction/i
 export const createBatchStr = /create batch/i
 export const sendBatchStr = /send batch/i
 export const transactionDetailsStr = /transaction details/i
@@ -218,12 +218,10 @@ export function verifyAppDescription(descr) {
 
 export function clickOnOpenSafeAppBtn() {
   cy.get(openSafeAppBtn).click()
-  cy.wait(2000)
 }
 
 export function verifyDisclaimerIsDisplayed() {
   verifyDisclaimerIsVisible()
-  cy.wait(500)
 }
 
 function verifyDisclaimerIsVisible() {
@@ -249,20 +247,17 @@ export function verifyMicrofoneCheckBoxExists() {
   return cy.findByRole('checkbox', { name: microfoneCheckBoxStr }).should('exist')
 }
 
-export function storeAndVerifyPermissions() {
+export function verifyInfoModalAcceptance() {
   cy.waitForSelector(() => {
     return cy
       .findByRole('button', { name: continueBtnStr })
       .click()
-      .wait(500)
+      .wait(2000)
       .should(() => {
-        const storedBrowserPermissions = JSON.parse(localStorage.getItem(constants.BROWSER_PERMISSIONS_KEY))
-        const browserPermissions = Object.values(storedBrowserPermissions)[0][0]
-        const storedInfoModal = JSON.parse(localStorage.getItem(constants.INFO_MODAL_KEY))
-
-        expect(browserPermissions.feature).to.eq('camera')
-        expect(browserPermissions.status).to.eq('granted')
-        expect(storedInfoModal['11155111'].consentsAccepted).to.eq(true)
+        const storedInfoModal = JSON.parse(
+          localStorage.getItem(constants.localStorageKeys.SAFE_v2__SafeApps__infoModal),
+        )
+        expect(storedInfoModal[constants.networkKeys.sepolia].consentsAccepted).to.eq(true)
       })
   })
 }

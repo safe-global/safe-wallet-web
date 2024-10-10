@@ -10,7 +10,6 @@ import TxInfo from '@/components/transactions/TxInfo'
 import TxType from '@/components/transactions/TxType'
 import css from './styles.module.css'
 import { AppRoutes } from '@/config/routes'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import TxConfirmations from '@/components/transactions/TxConfirmations'
 
 type PendingTxType = {
@@ -20,7 +19,6 @@ type PendingTxType = {
 const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
   const router = useRouter()
   const { id } = transaction
-  const { safe } = useSafeInfo()
 
   const url = useMemo(
     () => ({
@@ -36,17 +34,21 @@ const PendingTx = ({ transaction }: PendingTxType): ReactElement => {
   return (
     <NextLink data-testid="tx-pending-item" href={url} passHref>
       <Box className={css.container}>
-        <Box minWidth={30}>{isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}</Box>
+        <Box className={css.innerContainer}>
+          <Box minWidth={30}>
+            {isMultisigExecutionInfo(transaction.executionInfo) && transaction.executionInfo.nonce}
+          </Box>
 
-        <Box minWidth={62}>
-          <TxType tx={transaction} />
+          <Box minWidth={62}>
+            <TxType tx={transaction} />
+          </Box>
+
+          <Box minWidth={0} flexGrow={1}>
+            <TxInfo info={transaction.txInfo} />
+          </Box>
         </Box>
 
-        <TxInfo info={transaction.txInfo} />
-
-        <Box flexGrow={1} />
-
-        <Box alignSelf="flex-end" display="flex" flexWrap="nowrap" alignItems="center" gap={1.5}>
+        <Box alignSelf="flex-start" display="flex" flexWrap="nowrap" alignItems="center" gap={1.5}>
           {isMultisigExecutionInfo(transaction.executionInfo) && (
             <TxConfirmations
               submittedConfirmations={transaction.executionInfo.confirmationsSubmitted}

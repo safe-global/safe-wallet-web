@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import ExternalStore from '@/services/ExternalStore'
 import { type Eip1193Provider } from 'ethers'
 
-const { getStore, setStore, useStore } = new ExternalStore<string | null>(null)
+const { setStore, useStore } = new ExternalStore<string | null>(null)
 
 export const setNestedSafeAddress = setStore
 export const useNestedSafeAddress = useStore
@@ -48,6 +48,7 @@ const WalletProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
     const walletSubscription = onboard.state.select('wallets').subscribe((wallets) => {
       const newWallet = getConnectedWallet(wallets)
+
       setWallet(newWallet)
     })
 
@@ -57,11 +58,11 @@ const WalletProvider = ({ children }: { children: ReactNode }): ReactElement => 
   }, [onboard])
 
   const nestedWallet = useMemo(() => {
-    if (wallet && nestedSafeInfo && web3ReadOnly) {
-      return getNestedWallet(wallet, nestedSafeInfo, web3ReadOnly, router)
+    if (wallet && nestedSafeInfo && web3ReadOnly && currentChain) {
+      return getNestedWallet(wallet, nestedSafeInfo, web3ReadOnly, router, currentChain)
     }
     return wallet
-  }, [wallet, nestedSafeInfo, web3ReadOnly, router])
+  }, [wallet, nestedSafeInfo, web3ReadOnly, router, currentChain])
 
   console.log('Wallet Provider Signer ASD', nestedWallet)
 

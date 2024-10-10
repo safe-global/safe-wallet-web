@@ -27,9 +27,7 @@ describe('Load Safe tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.loadNewSafeSepoliaUrl)
-    main.acceptCookies()
     cy.wait(2000)
   })
 
@@ -40,6 +38,7 @@ describe('Load Safe tests', () => {
     safe.clickOnNextBtn()
   })
 
+  // TODO: Added to prod
   it('Verify Safe and owner names are displayed in the Review step', () => {
     safe.inputNameAndAddress(testSafeName, staticSafes.SEP_STATIC_SAFE_4)
     safe.clickOnNextBtn()

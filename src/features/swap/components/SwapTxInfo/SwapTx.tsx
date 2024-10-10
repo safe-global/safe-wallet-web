@@ -33,7 +33,15 @@ export const SwapTx = ({ info }: { info: Order }): ReactElement => {
   }
 
   return (
-    <Typography component="div" display="flex" alignItems="center" fontWeight="bold">
+    <Typography
+      component="div"
+      display="flex"
+      alignItems="center"
+      fontWeight="bold"
+      whiteSpace="nowrap"
+      overflow="hidden"
+      textOverflow="ellipsis"
+    >
       {from}
       <Typography component="span" mx={0.5}>
         &nbsp;to&nbsp;

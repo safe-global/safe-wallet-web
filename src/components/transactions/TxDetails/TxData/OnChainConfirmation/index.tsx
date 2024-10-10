@@ -12,7 +12,7 @@ import SendToBlock from '@/components/tx/SendToBlock'
 
 export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
   const chainId = useChainId()
-  const [nestedTxDetails, txDetailsError, txDetailsLoading] = useAsync(async () => {
+  const [nestedTxDetails, txDetailsError] = useAsync(async () => {
     const safeInterface = Safe__factory.createInterface()
     const params = data?.hexData ? safeInterface.decodeFunctionData('approveHash', data?.hexData) : undefined
     if (!params || params.length !== 1) {

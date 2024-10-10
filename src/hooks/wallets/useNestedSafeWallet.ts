@@ -1,11 +1,10 @@
 import { type ConnectedWallet } from './useOnboard'
-import { BrowserProvider, type Eip1193Provider, Interface, getAddress, type JsonRpcProvider } from 'ethers'
-import { type AppInfo, SafeWalletProvider, type WalletSDK } from '@/services/safe-wallet-provider'
-import { getTransactionDetails, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { type Eip1193Provider, Interface, getAddress, type JsonRpcProvider } from 'ethers'
+import { SafeWalletProvider, type WalletSDK } from '@/services/safe-wallet-provider'
+import { type ChainInfo, getTransactionDetails, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { getCreateCallContractDeployment } from '@/services/contracts/deployments'
 import { type NextRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
-import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 import { initSafeSDK } from '../coreSDK/safeCoreSDK'
 import proposeTx from '@/services/tx/proposeTransaction'
 import { isSmartContractWallet } from '@/utils/wallets'
@@ -22,16 +21,17 @@ export const getNestedWallet = (
   safeInfo: SafeInfo,
   web3ReadOnly: JsonRpcProvider,
   router: NextRouter,
+  chain: ChainInfo,
 ): NestedWallet => {
   const nestedSafeSdk: WalletSDK = {
     getBySafeTxHash(safeTxHash) {
       return getTransactionDetails(safeInfo.chainId, safeTxHash)
     },
-    async switchChain(hexChainId, appInfo) {
+    async switchChain() {
       return Promise.reject('Switching chains is not supported yet')
     },
     getCreateCallTransaction(data) {
-      const createCallDeployment = getCreateCallContractDeployment(safeInfo.chainId, safeInfo.version)
+      const createCallDeployment = getCreateCallContractDeployment(chain, safeInfo.version)
       if (!createCallDeployment) {
         throw new Error('No CreateCall deployment found for chain and safe version')
       }
@@ -47,7 +47,7 @@ export const getNestedWallet = (
       }
     },
 
-    async signMessage(message: string, appInfo: AppInfo): Promise<{ signature: string }> {
+    async signMessage(): Promise<{ signature: string }> {
       return Promise.reject('signMessage is not supported yet')
     },
 
@@ -55,12 +55,7 @@ export const getNestedWallet = (
       return web3ReadOnly?.send(method, params ?? [])
     },
 
-    async send(params, appInfo) {
-      const uncheckedJsonRpcSigner = new UncheckedJsonRpcSigner(
-        new BrowserProvider(actualWallet.provider),
-        actualWallet.address,
-      )
-
+    async send(params) {
       const safeCoreSDK = await initSafeSDK({
         provider: web3ReadOnly,
         chainId: safeInfo.chainId,
@@ -95,7 +90,6 @@ export const getNestedWallet = (
       const safeTxHash = await connectedSDK.getTransactionHash(safeTx)
 
       try {
-        debugger
         if (await isSmartContractWallet(safeInfo.chainId, actualWallet.address)) {
           // With the unchecked signer, the contract call resolves once the tx
           // has been submitted in the wallet not when it has been executed
@@ -144,7 +138,7 @@ export const getNestedWallet = (
       }
     },
 
-    setSafeSettings(safeSettings) {
+    setSafeSettings() {
       throw new Error('setSafeSettings is not supported yet')
     },
 
@@ -158,7 +152,7 @@ export const getNestedWallet = (
       })
     },
 
-    async signTypedMessage(typedData, appInfo) {
+    async signTypedMessage() {
       return Promise.reject('signTypedMessage is not supported yet')
     },
   }

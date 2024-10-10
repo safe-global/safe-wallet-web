@@ -11,7 +11,7 @@ export const GATEWAY_URL_STAGING = process.env.NEXT_PUBLIC_GATEWAY_URL_STAGING |
 export const POLLING_INTERVAL = 15_000
 export const BASE_TX_GAS = 21_000
 export const LS_NAMESPACE = 'SAFE_v2__'
-export const LATEST_SAFE_VERSION = process.env.NEXT_PUBLIC_SAFE_VERSION || '1.3.0'
+export const LATEST_SAFE_VERSION = process.env.NEXT_PUBLIC_SAFE_VERSION || '1.4.1'
 
 // Access keys
 export const INFURA_TOKEN = process.env.NEXT_PUBLIC_INFURA_TOKEN || ''
@@ -59,10 +59,9 @@ export const TENDERLY_ORG_NAME = process.env.NEXT_PUBLIC_TENDERLY_ORG_NAME || ''
 export enum SafeAppsTag {
   NFT = 'nft',
   TX_BUILDER = 'transaction-builder',
-  DASHBOARD_FEATURED = 'dashboard-widgets',
   SAFE_GOVERNANCE_APP = 'safe-governance-app',
-  WALLET_CONNECT = 'wallet-connect',
   ONRAMP = 'onramp',
+  RECOVERY_SYGNUM = 'recovery-sygnum',
 }
 
 // Help Center
@@ -101,9 +100,12 @@ export const TWITTER_URL = 'https://twitter.com/safe'
 // Legal
 export const IS_OFFICIAL_HOST = process.env.NEXT_PUBLIC_IS_OFFICIAL_HOST === 'true'
 
-// Risk mitigation (Redefine)
-export const REDEFINE_SIMULATION_URL = 'https://dashboard.redefine.net/reports/'
-export const REDEFINE_API = process.env.NEXT_PUBLIC_REDEFINE_API
+// Risk mitigation (Blockaid)
+export const BLOCKAID_API = 'https://client.blockaid.io'
+export const BLOCKAID_CLIENT_ID = process.env.NEXT_PUBLIC_BLOCKAID_CLIENT_ID
 export const REDEFINE_ARTICLE = 'https://safe.mirror.xyz/rInLWZwD_sf7enjoFerj6FIzCYmVMGrrV8Nhg4THdwI'
 
 export const CHAINALYSIS_OFAC_CONTRACT = '0x40c57923924b5c5c5455c48d93317139addac8fb'
+
+export const ECOSYSTEM_ID_ADDRESS =
+  process.env.NEXT_PUBLIC_ECOSYSTEM_ID_ADDRESS || '0x0000000000000000000000000000000000000000'

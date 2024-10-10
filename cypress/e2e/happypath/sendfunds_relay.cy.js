@@ -11,8 +11,8 @@ import SafeApiKit from '@safe-global/api-kit'
 import { createSigners } from '../../support/api/utils_ether'
 import { createSafes } from '../../support/api/utils_protocolkit'
 import { contracts, abi_qtrust, abi_nft_pc2 } from '../../support/api/contracts'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
+import * as fundSafes from '../../fixtures/safes/funds.json'
 
 const transferAmount = '1'
 
@@ -49,13 +49,13 @@ function visit(url) {
 describe('Send funds with relay happy path tests', { defaultCommandTimeout: 300000 }, () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
       main.addToLocalStorage(
         constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
         ls.cookies.acceptedTokenListOnboarding,
       )
     })
-    safesData = await getSafes(CATEGORIES.funds)
+    safesData = fundSafes
     apiKit = new SafeApiKit({
       chainId: BigInt(1),
       txServiceUrl: constants.stagingTxServiceUrl,
@@ -99,7 +99,6 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
             throw new Error(main.noRelayAttemptsError)
           }
           executeTransactionFlow(originatingSafe, walletAddress.toString(), transferAmount).then(async () => {
-            main.checkTokenBalanceIsNull(network_pref + originatingSafe, constants.tokenAbbreviation.tpcc)
             const contractWithWallet = nftContract.connect(owner1Signer)
             const tx = await contractWithWallet.safeTransferFrom(walletAddress.toString(), originatingSafe, 2, {
               gasLimit: 200000,

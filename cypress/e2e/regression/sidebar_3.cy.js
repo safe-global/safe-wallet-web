@@ -19,10 +19,6 @@ describe('Sidebar tests 3', () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  beforeEach(() => {
-    cy.clearLocalStorage()
-  })
-
   it('Verify that users with no accounts see the empty state in "My accounts" block', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     main.acceptCookies()
@@ -89,6 +85,7 @@ describe('Sidebar tests 3', () => {
     main.checkButtonByTextExists(sideBar.exportBtnStr)
   })
 
+  // TODO: Added to prod
   it('Verify the "My accounts" counter at the top is counting all safes the user owns', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     main.acceptCookies()
@@ -118,6 +115,7 @@ describe('Sidebar tests 3', () => {
     sideBar.verifyAddedSafesExist([sideBar.sideBarSafes.safe3short])
   })
 
+  // TODO: Added to prod
   it('Verify pending signature is displayed in sidebar for unsigned tx', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
     main.acceptCookies()
@@ -141,6 +139,7 @@ describe('Sidebar tests 3', () => {
     sideBar.checkTxToConfirm(1)
   })
 
+  // TODO: Added to prod
   it('Verify balance exists in a tx in sidebar', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
     main.acceptCookies()

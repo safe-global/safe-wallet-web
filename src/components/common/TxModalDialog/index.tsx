@@ -4,20 +4,13 @@ import type { ReactElement } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import css from './styles.module.css'
 
-interface ModalDialogProps extends DialogProps {
-  dialogTitle?: React.ReactNode
-  hideChainIndicator?: boolean
-}
-
 const TxModalDialog = ({
-  dialogTitle,
-  hideChainIndicator,
   children,
   onClose,
   fullScreen = false,
   fullWidth = false,
   ...restProps
-}: ModalDialogProps): ReactElement => {
+}: DialogProps): ReactElement => {
   return (
     <Dialog
       {...restProps}

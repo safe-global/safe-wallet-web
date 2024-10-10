@@ -17,7 +17,7 @@ import { Alert, AlertTitle, Box, Button, Paper, Stack, SvgIcon, Typography } fro
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import useSyncSafeCreationStep from '../../useSyncSafeCreationStep'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 const SPEED_UP_THRESHOLD_IN_SECONDS = 15
 
@@ -37,8 +37,6 @@ export const CreateSafeStatus = ({
 
   const isError = status === SafeCreationEvent.FAILED || status === SafeCreationEvent.REVERTED
 
-  useSyncSafeCreationStep(setStep)
-
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async () => {
@@ -56,7 +54,10 @@ export const CreateSafeStatus = ({
 
     if (status === SafeCreationEvent.SUCCESS) {
       dispatch(updateAddressBook(chain.chainId, safeAddress, data.name, data.owners, data.threshold))
-      router.push(getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL))
+      const redirect = getRedirect(chain.shortName, safeAddress, router.query?.safeViewRedirectURL)
+      if (typeof redirect !== 'string' || redirect.startsWith('/')) {
+        router.push(redirect)
+      }
     }
   }, [dispatch, chain, data.name, data.owners, data.threshold, router, safeAddress, status])
 
@@ -86,6 +87,7 @@ export const CreateSafeStatus = ({
       threshold: pendingSafe.props.safeAccountConfig.threshold,
       saltNonce: Number(pendingSafe.props.safeDeploymentConfig?.saltNonce),
       safeAddress,
+      safeVersion: pendingSafe.props.safeDeploymentConfig?.safeVersion ?? getLatestSafeVersion(chain),
     })
   }
 

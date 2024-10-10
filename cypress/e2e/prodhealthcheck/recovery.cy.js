@@ -6,7 +6,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 let recoverySafes,
   staticSafes = []
 
-describe('Production recovery health check tests', { defaultCommandTimeout: 50000 }, () => {
+describe('[PROD] Production recovery health check tests', { defaultCommandTimeout: 50000 }, () => {
   before(() => {
     getSafes(CATEGORIES.recovery)
       .then((recoveries) => {

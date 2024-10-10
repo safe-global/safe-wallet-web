@@ -30,13 +30,12 @@ describe('NFTs tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
-    main.acceptCookies()
     wallet.connectSigner(signer)
     nfts.waitForNftItems(2)
   })
 
+  // TODO: Added to prod
   // TODO: Add Sign action
   it('Verify multipls NFTs can be selected and reviewed', () => {
     nfts.verifyInitialNFTData()
@@ -59,6 +58,7 @@ describe('NFTs tests', () => {
     nfts.verifyCountOfActions(0)
   })
 
+  // TODO: Added to prod
   it('Verify that when 2 NFTs are selected, actions and tx details are correct in Review step', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(2)
@@ -71,6 +71,7 @@ describe('NFTs tests', () => {
     nfts.verifyActionName(1, multipleNFTAction)
   })
 
+  // TODO: Added to prod
   it('Verify Send button is disabled for non-owner', () => {
     cy.visit(constants.balanceNftsUrl + nftsSafes.SEP_NFT_SAFE_2)
     nfts.verifyInitialNFTData()
@@ -85,6 +86,7 @@ describe('NFTs tests', () => {
     nfts.verifySendNFTBtnDisabled()
   })
 
+  // TODO: Added to prod
   it('Verify Send NFT transaction has been created', () => {
     cy.visit(constants.balanceNftsUrl + nftsSafes.SEP_NFT_SAFE_1)
     nfts.verifyInitialNFTData()

@@ -8,6 +8,8 @@ import ReviewStep, { NetworkFee } from '@/components/new-safe/create/steps/Revie
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { act, fireEvent, screen } from '@testing-library/react'
+import { LATEST_SAFE_VERSION } from '@/config/constants'
+import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 
 const mockChainInfo = {
   chainId: '100',
@@ -22,7 +24,7 @@ describe('NetworkFee', () => {
   it('should display the total fee', () => {
     jest.spyOn(useWallet, 'default').mockReturnValue({ label: 'MetaMask' } as unknown as ConnectedWallet)
     const mockTotalFee = '0.0123'
-    const result = render(<NetworkFee totalFee={mockTotalFee} chain={mockChainInfo} willRelay={true} />)
+    const result = render(<NetworkFee totalFee={mockTotalFee} chain={mockChainInfo} isWaived={true} />)
 
     expect(result.getByText(`≈ ${mockTotalFee} ${mockChainInfo.nativeCurrency.symbol}`)).toBeInTheDocument()
   })
@@ -39,6 +41,7 @@ describe('ReviewStep', () => {
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
+      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -55,6 +58,7 @@ describe('ReviewStep', () => {
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
+      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -70,6 +74,7 @@ describe('ReviewStep', () => {
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
+      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -86,6 +91,7 @@ describe('ReviewStep', () => {
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
+      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -102,6 +108,7 @@ describe('ReviewStep', () => {
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
+      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
 
@@ -124,6 +131,7 @@ describe('ReviewStep', () => {
       threshold: 1,
       owners: [{ name: '', address: '0x1' }],
       saltNonce: 0,
+      safeVersion: LATEST_SAFE_VERSION as SafeVersion,
     }
     jest.spyOn(useChains, 'useHasFeature').mockReturnValue(true)
     jest.spyOn(relay, 'hasRemainingRelays').mockReturnValue(true)

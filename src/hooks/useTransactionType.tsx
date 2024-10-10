@@ -9,7 +9,13 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapIcon from '@/public/images/common/swap.svg'
 
-import { isCancellationTxInfo, isModuleExecutionInfo, isOutgoingTransfer, isTxQueued } from '@/utils/transaction-guards'
+import {
+  isCancellationTxInfo,
+  isModuleExecutionInfo,
+  isMultiSendTxInfo,
+  isOutgoingTransfer,
+  isTxQueued,
+} from '@/utils/transaction-guards'
 import useAddressBook from './useAddressBook'
 import type { AddressBook } from '@/store/addressBookSlice'
 import { TWAP_ORDER_TITLE } from '@/features/swap/constants'
@@ -82,7 +88,32 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         text: TWAP_ORDER_TITLE,
       }
     }
+    case TransactionInfoType.NATIVE_STAKING_DEPOSIT: {
+      return {
+        icon: '/images/common/stake.svg',
+        text: 'Stake',
+      }
+    }
+    case TransactionInfoType.NATIVE_STAKING_VALIDATORS_EXIT: {
+      return {
+        icon: '/images/common/stake.svg',
+        text: 'Withdraw request',
+      }
+    }
+    case TransactionInfoType.NATIVE_STAKING_WITHDRAW: {
+      return {
+        icon: '/images/common/stake.svg',
+        text: 'Claim',
+      }
+    }
     case TransactionInfoType.CUSTOM: {
+      if (isMultiSendTxInfo(tx.txInfo) && !tx.safeAppInfo) {
+        return {
+          icon: '/images/common/multisend.svg',
+          text: 'Batch',
+        }
+      }
+
       if (isModuleExecutionInfo(tx.executionInfo)) {
         return {
           icon: toAddress?.logoUri || '/images/transactions/custom.svg',
@@ -97,6 +128,12 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         }
       }
 
+      return {
+        icon: toAddress?.logoUri || '/images/transactions/custom.svg',
+        text: addressBookName || toAddress?.name || 'Contract interaction',
+      }
+    }
+    default: {
       if (tx.safeAppInfo) {
         return {
           icon: tx.safeAppInfo.logoUri,
@@ -104,12 +141,6 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         }
       }
 
-      return {
-        icon: toAddress?.logoUri || '/images/transactions/custom.svg',
-        text: addressBookName || toAddress?.name || 'Contract interaction',
-      }
-    }
-    default: {
       return {
         icon: '/images/transactions/custom.svg',
         text: addressBookName || 'Contract interaction',

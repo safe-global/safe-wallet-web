@@ -4,20 +4,16 @@ import * as main from './main.page.js'
 import * as createtx from './create_tx.pages.js'
 import staticSafes from '../../fixtures/safes/static.json'
 
-const connectAndTransactStr = 'Connect & transact'
 const transactionQueueStr = 'Pending transactions'
 const noTransactionStr = 'This Safe has no queued transactions'
 const overviewStr = 'Total asset value'
 const sendStr = 'Send'
 const receiveStr = 'Receive'
 const viewAllStr = 'View all'
-const transactionBuilderStr = 'Use Transaction Builder'
 const safeAppStr = 'Safe Apps'
 const exploreSafeApps = 'Explore Safe Apps'
 export const copiedAppUrl = 'share/safe-app?appUrl'
 
-const txBuilder = 'a[href*="tx-builder"]'
-const safeSpecificLink = 'a[href*="&appUrl=http"]'
 const copyShareBtn = '[data-testid="copy-btn-icon"]'
 const exploreAppsBtn = '[data-testid="explore-apps-btn"]'
 const viewAllLink = '[data-testid="view-all-link"][href^="/transactions/queue"]'
@@ -108,10 +104,6 @@ export function verifyShareBtnWorks(index, data) {
     )
 }
 
-export function verifyConnectTransactStrIsVisible() {
-  cy.contains(connectAndTransactStr).should('be.visible')
-}
-
 export function verifyOverviewWidgetData() {
   // Alias for the Overview section
   cy.contains('div', overviewStr).parents('section').as('overviewSection')
@@ -141,21 +133,6 @@ export function verifyTxQueueWidget() {
       `a[href="${constants.transactionQueueUrl}${encodeURIComponent(staticSafes.SEP_STATIC_SAFE_2)}"]`,
       viewAllStr,
     )
-  })
-}
-
-export function verifyFeaturedAppsSection() {
-  // Alias for the featured Safe Apps section
-  cy.contains('h2', connectAndTransactStr).parents('section').as('featuredSafeAppsSection')
-
-  // Tx Builder app
-  cy.get('@featuredSafeAppsSection').within(() => {
-    // Transaction Builder
-    cy.contains(transactionBuilderStr)
-    cy.get(txBuilder).should('exist')
-
-    // Featured apps have a Safe-specific link
-    cy.get(safeSpecificLink).should('have.length', 1)
   })
 }
 

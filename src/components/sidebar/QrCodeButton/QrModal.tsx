@@ -47,7 +47,13 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
           />
 
           <Box mt={2}>
-            <EthHashInfo address={safeAddress} shortAddress={false} hasExplorer showCopyButton />
+            <EthHashInfo
+              address={safeAddress}
+              shortAddress={false}
+              showPrefix={qrPrefix.length > 0}
+              hasExplorer
+              showCopyButton
+            />
           </Box>
         </Box>
       </DialogContent>

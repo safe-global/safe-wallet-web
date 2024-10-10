@@ -21,9 +21,6 @@ describe('Address book tests - 2', () => {
 
   beforeEach(() => {
     cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_4)
-    cy.clearLocalStorage()
-    cy.wait(1000)
-    main.acceptCookies()
   })
 
   it('Verify Name and Address columns sorting works', () => {
@@ -65,14 +62,6 @@ describe('Address book tests - 2', () => {
     addressBook.verifyNameWasChanged(owner1, onwer3)
     cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_7)
     addressBook.verifyNameWasChanged(owner1, onwer3)
-  })
-
-  it.skip('Verify copy to clipboard/Etherscan work as expected', () => {
-    main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.sepoliaAddress1)
-    cy.wait(1000)
-    cy.reload()
-    createtx.verifyCopyIconWorks(0, constants.RECIPIENT_ADDRESS)
-    createtx.verifyNumberOfExternalLinks(1)
   })
 
   it('Verify by default there 25 rows shown per page', () => {

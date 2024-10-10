@@ -15,9 +15,7 @@ describe('[SMOKE] NFTs tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
-    main.acceptCookies()
     nfts.waitForNftItems(2)
   })
 

@@ -241,6 +241,8 @@ export function checkHiddenTokenBtnCounter(value) {
 }
 
 export function verifyEachRowHasCheckbox(state) {
+  const tokens = [currencyTestTokenB, currencyTestTokenA]
+  main.verifyTextVisibility(tokens)
   cy.get(tokenListTable).within(() => {
     cy.get('tbody').within(() => {
       cy.get('tr').each(($row) => {

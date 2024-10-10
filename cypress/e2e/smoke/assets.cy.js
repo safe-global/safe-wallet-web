@@ -18,8 +18,6 @@ describe('[SMOKE] Assets tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
-    cy.clearLocalStorage()
-    main.acceptCookies()
   })
 
   it('[SMOKE] Verify that the native token is visible', () => {

@@ -5,7 +5,6 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import NetworkSelector from '@/components/common/NetworkSelector'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import useSyncSafeCreationStep from '@/components/new-safe/create/useSyncSafeCreationStep'
 
 import css from '@/components/new-safe/create/steps/SetNameStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
@@ -17,13 +16,20 @@ import { AppRoutes } from '@/config/routes'
 import MUILink from '@mui/material/Link'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import NoWalletConnectedWarning from '../../NoWalletConnectedWarning'
+import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
+import { useCurrentChain } from '@/hooks/useChains'
+import { useEffect } from 'react'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 type SetNameStepForm = {
   name: string
+  safeVersion: SafeVersion
 }
 
 enum SetNameStepFields {
   name = 'name',
+  safeVersion = 'safeVersion',
 }
 
 const SET_NAME_STEP_FORM_ID = 'create-safe-set-name-step-form'
@@ -31,23 +37,22 @@ const SET_NAME_STEP_FORM_ID = 'create-safe-set-name-step-form'
 function SetNameStep({
   data,
   onSubmit,
-  setStep,
   setSafeName,
 }: StepRenderProps<NewSafeFormData> & { setSafeName: (name: string) => void }) {
   const router = useRouter()
   const fallbackName = useMnemonicSafeName()
   const isWrongChain = useIsWrongChain()
-  useSyncSafeCreationStep(setStep)
+
+  const chain = useCurrentChain()
 
   const formMethods = useForm<SetNameStepForm>({
     mode: 'all',
-    defaultValues: {
-      [SetNameStepFields.name]: data.name,
-    },
+    defaultValues: data,
   })
 
   const {
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = formMethods
 
@@ -65,6 +70,11 @@ function SetNameStep({
     trackEvent(CREATE_SAFE_EVENTS.CANCEL_CREATE_SAFE_FORM)
     router.push(AppRoutes.welcome.index)
   }
+
+  // whenever the chain switches we need to update the latest Safe version
+  useEffect(() => {
+    setValue(SetNameStepFields.safeVersion, getLatestSafeVersion(chain))
+  }, [chain, setValue])
 
   const isDisabled = isWrongChain || !isValid
 
@@ -112,7 +122,11 @@ function SetNameStep({
             .
           </Typography>
 
-          {isWrongChain && <NetworkWarning />}
+          <Box sx={{ '&:not(:empty)': { mt: 3 } }}>
+            <NetworkWarning action="create a Safe Account" />
+          </Box>
+
+          <NoWalletConnectedWarning />
         </Box>
         <Divider />
         <Box className={layoutCss.row}>

@@ -7,18 +7,15 @@ export const delegateCallWarning = '[data-testid="delegate-call-warning"]'
 export const policyChangeWarning = '[data-testid="threshold-warning"]'
 const newTransactionBtnStr = 'New transaction'
 const recepientInput = 'input[name="recipient"]'
-const sendTokensBtnStr = 'Send tokens'
 const tokenAddressInput = 'input[name="tokenAddress"]'
 const amountInput = 'input[name="amount"]'
 const nonceInput = 'input[name="nonce"]'
-const nonceTxValue = '[data-testid="nonce"]'
 const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
 export const transactionItem = '[data-testid="transaction-item"]'
 export const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
 const addToBatchBtn = '[data-track="batching: Add to batch"]'
 const accordionDetails = '[data-testid="accordion-details"]'
-const accordionMessageDetails = '[data-testid="accordion-msg-details"]'
 const copyIcon = '[data-testid="copy-btn-icon"]'
 const transactionSideList = '[data-testid="transaction-actions-list"]'
 const confirmationVisibilityBtn = '[data-testid="confirmation-visibility-btn"]'
@@ -54,7 +51,7 @@ const transactionsPerHrStr = 'free transactions left this hour'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
-const nativeTokenTransferStr = 'Native token transfer'
+const nativeTokenTransferStr = 'ETH'
 const yesStr = 'Yes, '
 const estimatedFeeStr = 'Estimated fee'
 const executeStr = 'Execute'
@@ -62,6 +59,7 @@ const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
 const signBtnStr = 'Sign'
+const confirmBtnStr = 'Confirm'
 const expandAllBtnStr = 'Expand all'
 const collapseAllBtnStr = 'Collapse all'
 export const messageNestedStr = `"nestedString": "Test message 3 off-chain"`
@@ -73,8 +71,7 @@ const bulkConfirmationText = (tx) =>
 
 const disabledBultExecuteBtnTooltip =
   'Batch execution is only available for transactions that have been fully signed and are strictly sequential in Safe Account nonce'
-const enabledBulkExecuteBtnTooltip =
-  'All transactions highlighted in light green will be included in the batch execution'
+const enabledBulkExecuteBtnTooltip = 'All highlighted transactions will be included in the batch execution'
 
 const bulkExecuteBtnStr = 'Bulk execute'
 
@@ -488,7 +485,6 @@ export function openExecutionParamsModal() {
 
 export function verifyAndSubmitExecutionParams() {
   cy.contains(executionParamsStr).parents('form').as('Paramsform')
-
   const arrayNames = ['Wallet nonce', 'Max priority fee (Gwei)', 'Max fee (Gwei)', 'Gas limit']
   arrayNames.forEach((element) => {
     cy.get('@Paramsform').find('label').contains(`${element}`).next().find('input').should('not.be.disabled')
@@ -507,6 +503,10 @@ export function clickOnNoLaterOption() {
 
 export function clickOnSignTransactionBtn() {
   cy.get('button').contains(signBtnStr).click()
+}
+
+export function clickOnConfirmTransactionBtn() {
+  cy.get('button').contains(confirmBtnStr).click()
 }
 
 export function waitForProposeRequest() {

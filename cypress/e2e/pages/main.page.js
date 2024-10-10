@@ -19,7 +19,7 @@ export function clickOnSideMenuItem(item) {
 
 export function waitForHistoryCallToComplete() {
   cy.intercept('GET', constants.transactionHistoryEndpoint).as('History')
-  cy.wait('@History')
+  cy.wait('@History', { timeout: 20000 })
 }
 
 export const fetchSafeData = (safeAddress) => {
@@ -102,10 +102,32 @@ export const getRelayRemainingAttempts = (safeAddress) => {
     })
 }
 
-export function verifyNonceChange(safeAddress, expectedNonce) {
-  fetchCurrentNonce(safeAddress).then((newNonce) => {
-    expect(newNonce).to.equal(expectedNonce)
-  })
+export function verifyNonceChange(safeAddress, expectedNonce, retries = 30, delay = 10000) {
+  let attempts = 0
+
+  function checkNonce() {
+    return fetchCurrentNonce(safeAddress).then((newNonce) => {
+      console.log(`Attempt ${attempts + 1}: newNonce = ${newNonce}, expectedNonce = ${expectedNonce}`)
+
+      if (newNonce === expectedNonce) {
+        console.log('Nonce matches the expected value')
+        expect(newNonce).to.equal(expectedNonce)
+        return
+      }
+
+      attempts += 1
+      if (attempts < retries) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, delay)
+        }).then(checkNonce)
+      } else {
+        console.error(`Nonce did not change to expected value after ${retries} attempts`)
+        return Promise.reject(new Error(`Nonce did not change to expected value after ${retries} attempts`))
+      }
+    })
+  }
+
+  return checkNonce()
 }
 
 export function checkTokenBalance(safeAddress, tokenSymbol, expectedBalance) {
@@ -139,13 +161,13 @@ export function checkTokenBalanceIsNull(safeAddress, tokenSymbol) {
       if (targetToken === undefined) {
         console.log('Token is undefined as expected. Stopping polling.')
         return true
-      } else if (pollCount < 9) {
+      } else if (pollCount < 10) {
         pollCount++
         console.log('Token is not undefined, retrying...')
-        cy.wait(1000)
+        cy.wait(5000)
         poll()
       } else {
-        throw new Error('Failed to validate token status -undefined- within the allowed polling attempts.')
+        throw new Error('Failed to validate token status within the allowed polling attempts.')
       }
     })
   }
@@ -332,4 +354,13 @@ export function getIframeBody(iframe) {
 
 export const checkButtonByTextExists = (buttonText) => {
   cy.get('button').contains(buttonText).should('exist')
+}
+
+export function getAddedSafeAddressFromLocalStorage(chainId, index) {
+  return cy.window().then((win) => {
+    const addedSafes = win.localStorage.getItem(constants.localStorageKeys.SAFE_v2__addedSafes)
+    const addedSafesObj = JSON.parse(addedSafes)
+    const safeAddress = Object.keys(addedSafesObj[chainId])[index]
+    return safeAddress
+  })
 }

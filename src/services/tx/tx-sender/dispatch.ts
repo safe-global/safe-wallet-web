@@ -1,7 +1,15 @@
-import { isSmartContractWallet } from '@/utils/wallets'
+import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
+import { isHardwareWallet, isSmartContractWallet } from '@/utils/wallets'
 import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
-import { relayTransaction, type SafeInfo, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type ChainInfo,
+  relayTransaction,
+  type SafeInfo,
+  type TransactionDetails,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import type {
+  SafeSignature,
   SafeTransaction,
   Transaction,
   TransactionOptions,
@@ -14,7 +22,7 @@ import type { ContractTransactionResponse, Eip1193Provider, Overrides, Transacti
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 import proposeTx from '../proposeTransaction'
 import { txDispatch, TxEvent } from '../txEvents'
-import { waitForRelayedTx, waitForTx } from '@/services/tx/txMonitor'
+import { waitForRelayedTx } from '@/services/tx/txMonitor'
 import { getReadOnlyCurrentGnosisSafeContract } from '@/services/contracts/safeContracts'
 import {
   getAndValidateSafeSDK,
@@ -24,11 +32,11 @@ import {
   prepareTxExecution,
   prepareApproveTxHash,
 } from './sdk'
-import { createWeb3, getUserNonce, getWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { createWeb3, getUserNonce } from '@/hooks/wallets/web3'
 import { asError } from '@/services/exceptions/utils'
 import chains from '@/config/chains'
-import { LATEST_SAFE_VERSION } from '@/config/constants'
 import { createExistingTx } from './create'
+import { getLatestSafeVersion } from '@/utils/chains'
 
 /**
  * Propose a transaction
@@ -70,6 +78,7 @@ export const dispatchTxProposal = async ({
     txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
       txId: proposedTx.txId,
       signerAddress: txId ? sender : undefined,
+      nonce: safeTx.data.nonce,
     })
   }
 
@@ -103,6 +112,23 @@ export const dispatchTxSigning = async (
   return signedTx
 }
 
+// We have to manually sign because sdk.signTransaction doesn't support delegates
+export const dispatchDelegateTxSigning = async (safeTx: SafeTransaction, wallet: ConnectedWallet) => {
+  const sdk = await getSafeSDKWithSigner(wallet.provider)
+
+  let signature: SafeSignature
+  if (isHardwareWallet(wallet)) {
+    const txHash = await sdk.getTransactionHash(safeTx)
+    signature = await sdk.signHash(txHash)
+  } else {
+    signature = await sdk.signTypedData(safeTx)
+  }
+
+  safeTx.addSignature(signature)
+
+  return safeTx
+}
+
 const ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT = 4_500_000
 
 /**
@@ -118,7 +144,7 @@ export const dispatchOnChainSigning = async (
 ) => {
   const sdk = await getSafeSDKWithSigner(provider)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
-  const eventParams = { txId }
+  const eventParams = { txId, nonce: safeTx.data.nonce }
 
   const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
 
@@ -150,9 +176,10 @@ export const dispatchSafeTxSpeedUp = async (
   chainId: SafeInfo['chainId'],
   signerAddress: string,
   safeAddress: string,
+  nonce: number,
 ) => {
   const sdk = await getSafeSDKWithSigner(provider)
-  const eventParams = { txId }
+  const eventParams = { txId, nonce }
   const signerNonce = txOptions.nonce
   const isSmartAccount = await isSmartContractWallet(chainId, signerAddress)
 
@@ -191,13 +218,6 @@ export const dispatchSafeTxSpeedUp = async (
     txType: 'SafeTx',
   })
 
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
-
   return result.hash
 }
 
@@ -209,8 +229,9 @@ export const dispatchCustomTxSpeedUp = async (
   provider: Eip1193Provider,
   signerAddress: string,
   safeAddress: string,
+  nonce: number,
 ) => {
-  const eventParams = { txId }
+  const eventParams = { txId, nonce }
   const signerNonce = txOptions.nonce
 
   // Execute the tx
@@ -232,14 +253,8 @@ export const dispatchCustomTxSpeedUp = async (
     to,
     groupKey: result?.hash,
     txType: 'Custom',
+    nonce,
   })
-
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
 
   return result.hash
 }
@@ -257,7 +272,7 @@ export const dispatchTxExecution = async (
   isSmartAccount: boolean,
 ): Promise<string> => {
   const sdk = await getSafeSDKWithSigner(provider)
-  const eventParams = { txId }
+  const eventParams = { txId, nonce: safeTx.data.nonce }
 
   const signerNonce = txOptions.nonce ?? (await getUserNonce(signerAddress))
 
@@ -279,7 +294,7 @@ export const dispatchTxExecution = async (
     } else {
       result = await sdk.executeTransaction(safeTx, txOptions)
     }
-    txDispatch(TxEvent.EXECUTING, eventParams)
+    txDispatch(TxEvent.EXECUTING, { ...eventParams })
   } catch (error) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
     throw error
@@ -287,20 +302,13 @@ export const dispatchTxExecution = async (
 
   txDispatch(TxEvent.PROCESSING, {
     ...eventParams,
+    nonce: safeTx.data.nonce,
     txHash: result.hash,
     signerAddress,
     signerNonce,
     gasLimit: txOptions.gasLimit,
     txType: 'SafeTx',
   })
-
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  // Asynchronously watch the tx to be mined/validated
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, [txId], result.hash, safeAddress, signerAddress, signerNonce)
-  }
 
   return result.hash
 }
@@ -313,6 +321,7 @@ export const dispatchBatchExecution = async (
   signerAddress: string,
   safeAddress: string,
   overrides: Omit<Overrides, 'nonce'> & { nonce: number },
+  nonce: number,
 ) => {
   const groupKey = multiSendTxData
 
@@ -330,11 +339,11 @@ export const dispatchBatchExecution = async (
     result = await multiSendContract.contract.connect(signer).multiSend(multiSendTxData, overrides)
 
     txIds.forEach((txId) => {
-      txDispatch(TxEvent.EXECUTING, { txId, groupKey })
+      txDispatch(TxEvent.EXECUTING, { txId, groupKey, nonce })
     })
   } catch (err) {
     txIds.forEach((txId) => {
-      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
+      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey, nonce })
     })
     throw err
   }
@@ -350,15 +359,9 @@ export const dispatchBatchExecution = async (
       txType: 'Custom',
       data: txData,
       to: txTo,
+      nonce,
     })
   })
-
-  const readOnlyProvider = getWeb3ReadOnly()
-
-  if (readOnlyProvider) {
-    // don't await as we don't want to block
-    waitForTx(readOnlyProvider, txIds, result.hash, safeAddress, signerAddress, signerNonce)
-  }
 
   return result!.hash
 }
@@ -484,6 +487,7 @@ export const dispatchTxRelay = async (
   safeTx: SafeTransaction,
   safe: SafeInfo,
   txId: string,
+  chain: ChainInfo,
   gasLimit?: string | number,
 ) => {
   const readOnlySafeContract = await getReadOnlyCurrentGnosisSafeContract(safe)
@@ -507,7 +511,7 @@ export const dispatchTxRelay = async (
       to: safe.address.value,
       data,
       gasLimit: gasLimit?.toString(),
-      version: safe.version ?? LATEST_SAFE_VERSION,
+      version: safe.version ?? getLatestSafeVersion(chain),
     })
     const taskId = relayResponse.taskId
 
@@ -515,12 +519,12 @@ export const dispatchTxRelay = async (
       throw new Error('Transaction could not be relayed')
     }
 
-    txDispatch(TxEvent.RELAYING, { taskId, txId })
+    txDispatch(TxEvent.RELAYING, { taskId, txId, nonce: safeTx.data.nonce })
 
     // Monitor relay tx
-    waitForRelayedTx(taskId, [txId], safe.address.value)
+    waitForRelayedTx(taskId, [txId], safe.address.value, safeTx.data.nonce)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: asError(error) })
+    txDispatch(TxEvent.FAILED, { txId, error: asError(error), nonce: safeTx.data.nonce })
     throw error
   }
 }
@@ -556,8 +560,10 @@ export const dispatchBatchExecutionRelay = async (
   }
 
   const taskId = relayResponse.taskId
-  txs.forEach(({ txId }) => {
-    txDispatch(TxEvent.RELAYING, { taskId, txId, groupKey })
+  txs.forEach(({ txId, detailedExecutionInfo }) => {
+    if (isMultisigExecutionInfo(detailedExecutionInfo)) {
+      txDispatch(TxEvent.RELAYING, { taskId, txId, groupKey, nonce: detailedExecutionInfo.nonce })
+    }
   })
 
   // Monitor relay tx
@@ -565,6 +571,7 @@ export const dispatchBatchExecutionRelay = async (
     taskId,
     txs.map((tx) => tx.txId),
     safeAddress,
+    isMultisigExecutionInfo(txs[0].detailedExecutionInfo) ? txs[0].detailedExecutionInfo.nonce : 0,
     groupKey,
   )
 }

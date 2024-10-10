@@ -15,9 +15,7 @@ describe('[SMOKE] Import Export Data tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.dataSettingsUrl).then(() => {
-      main.acceptCookies()
       createwallet.selectNetwork(constants.networks.sepolia)
     })
   })

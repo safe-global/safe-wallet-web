@@ -23,26 +23,25 @@ describe('Tx history tests 2', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.intercept(
       'GET',
       `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
         constants.stagingCGWSafes
       }${staticSafes.SEP_STATIC_SAFE_7.substring(4)}/transactions/history**`,
       (req) => {
-        req.url = `https://safe-client.staging.5afe.dev/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone_offset=7200000&trusted=false&cursor=limit=100&offset=1`
+        req.url = `https://safe-client.staging.5afe.dev/v1/chains/11155111/safes/0x5912f6616c84024cD1aff0D5b55bb36F5180fFdb/transactions/history?timezone=Europe/Berlin&trusted=false&cursor=limit=100&offset=1`
         req.continue()
       },
     ).as('allTransactions')
 
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
-    main.acceptCookies()
   })
 
   it('Verify number of transactions is correct', () => {
     createTx.verifyNumberOfTransactions(20)
   })
 
+  // TODO: Added to prod
   // On-chain rejection
   it('Verify exapanded details for on-chain rejection', () => {
     createTx.clickOnTransactionItemByName(typeOnchainRejection.title)
@@ -58,22 +57,18 @@ describe('Tx history tests 2', () => {
     ])
   })
 
+  // TODO: Added to prod
   // Batch transaction
   it('Verify exapanded details for batch', () => {
     createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
-      [
-        typeBatch.description,
-        typeBatch.contractTitle,
-        typeBatch.contractAddress,
-        typeBatch.transactionHash,
-        typeBatch.safeTxHash,
-      ],
+      [typeBatch.contractTitle, typeBatch.transactionHash, typeBatch.safeTxHash],
       createTx.delegateCallWarning,
     )
     createTx.verifyActions([typeBatch.nativeTransfer.title])
   })
 
+  // TODO: Added to prod
   // Add owner
   it('Verify summary for adding owner', () => {
     createTx.verifySummaryByName(typeAddOwner.title, [typeGeneral.statusOk], typeAddOwner.altImage)
@@ -93,11 +88,13 @@ describe('Tx history tests 2', () => {
     )
   })
 
+  // TODO: Added to prod
   // Change owner
   it('Verify summary for changing owner', () => {
     createTx.verifySummaryByName(typeChangeOwner.title, [typeGeneral.statusOk], typeChangeOwner.altImage)
   })
 
+  // TODO: Added to prod
   it('Verify exapanded details for changing owner', () => {
     createTx.clickOnTransactionItemByName(typeChangeOwner.title)
     createTx.verifyExpandedDetails([
@@ -112,6 +109,7 @@ describe('Tx history tests 2', () => {
     ])
   })
 
+  // TODO: Added to prod
   // Remove owner
   it('Verify summary for removing owner', () => {
     createTx.verifySummaryByName(typeRemoveOwner.title, [typeGeneral.statusOk], typeRemoveOwner.altImage)
@@ -132,6 +130,7 @@ describe('Tx history tests 2', () => {
     createTx.checkRequiredThreshold(1)
   })
 
+  // TODO: Added to prod
   // Disbale module
   it('Verify summary for disable module', () => {
     createTx.verifySummaryByName(typeDisableOwner.title, [typeGeneral.statusOk], typeDisableOwner.altImage)
@@ -147,6 +146,7 @@ describe('Tx history tests 2', () => {
     ])
   })
 
+  // TODO: Added to prod
   // Change threshold
   it('Verify summary for changing threshold', () => {
     createTx.verifySummaryByName(
@@ -156,6 +156,7 @@ describe('Tx history tests 2', () => {
     )
   })
 
+  // TODO: Added to prod
   it('Verify exapanded details for changing threshold', () => {
     createTx.clickOnTransactionItemByName(typeChangeThreshold.title)
     createTx.verifyExpandedDetails(
@@ -169,6 +170,7 @@ describe('Tx history tests 2', () => {
     createTx.checkRequiredThreshold(2)
   })
 
+  // TODO: Added to prod
   it('Verify that sender address of untrusted token will not be copied until agreed in warning popup', () => {
     createTx.clickOnTransactionItemByName(typeUntrustedToken.summaryTitle, typeUntrustedToken.summaryTxInfo)
     createTx.verifyAddressNotCopied(0, typeUntrustedToken.senderAddress)

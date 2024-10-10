@@ -2,6 +2,7 @@ import * as constants from '../../support/constants'
 import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import * as ls from '../../support/localstorage_data.js'
 
 let staticSafes = []
 
@@ -11,11 +12,9 @@ describe('Preview drawer tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(`${constants.appsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_2}`, {
       failOnStatusCode: false,
     })
-    main.acceptCookies()
   })
 
   it('Verify the preview drawer is displayed when opening a Safe App from the app list', () => {
