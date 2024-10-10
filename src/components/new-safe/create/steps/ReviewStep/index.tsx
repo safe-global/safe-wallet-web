@@ -263,7 +263,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       gtmSetChainId(chain.chainId)
 
       if (isCounterfactualEnabled && payMethod === PayMethod.PayLater) {
-        router?.push({
+        await router?.push({
           pathname: AppRoutes.home,
           query: { safe: `${data.networks[0].shortName}:${safeAddress}` },
         })
