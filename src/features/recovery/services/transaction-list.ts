@@ -6,11 +6,11 @@ import {
   isChangeThresholdCalldata,
   isMultiSendCalldata,
 } from '@/utils/transaction-calldata'
-import { decodeMultiSendTxs } from '@/utils/transactions'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 import { Interface } from 'ethers'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 
 function decodeOwnerManagementTransaction(safe: SafeInfo, transaction: BaseTransaction): SafeInfo {
   const safeDeployment = getSafeSingletonDeployment({ network: safe.chainId, version: safe.version ?? undefined })
@@ -54,7 +54,7 @@ function decodeOwnerManagementTransaction(safe: SafeInfo, transaction: BaseTrans
 }
 
 export function getRecoveredSafeInfo(safe: SafeInfo, transaction: BaseTransaction): SafeInfo {
-  const transactions = isMultiSendCalldata(transaction.data) ? decodeMultiSendTxs(transaction.data) : [transaction]
+  const transactions = isMultiSendCalldata(transaction.data) ? decodeMultiSendData(transaction.data) : [transaction]
 
   return transactions.reduce((acc, cur) => {
     return decodeOwnerManagementTransaction(acc, cur)

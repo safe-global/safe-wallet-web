@@ -22,6 +22,7 @@ import { isSmartContract } from '@/utils/wallets'
 import { gtmSetSafeAddress } from '@/services/analytics/gtm'
 
 export const safeCreationPendingStatuses: Partial<Record<SafeCreationEvent, PendingSafeStatus | null>> = {
+  [SafeCreationEvent.AWAITING_EXECUTION]: PendingSafeStatus.AWAITING_EXECUTION,
   [SafeCreationEvent.PROCESSING]: PendingSafeStatus.PROCESSING,
   [SafeCreationEvent.RELAYING]: PendingSafeStatus.RELAYING,
   [SafeCreationEvent.SUCCESS]: null,

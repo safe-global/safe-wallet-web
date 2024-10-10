@@ -32,7 +32,7 @@ const ADVANCED_OPTIONS_STEP_FORM_ID = 'create-safe-advanced-options-step-form'
 
 const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
   const wallet = useWallet()
-  useSyncSafeCreationStep(setStep)
+  useSyncSafeCreationStep(setStep, data.networks)
   const chain = useCurrentChain()
 
   const formMethods = useForm<AdvancedOptionsStepForm>({
@@ -54,6 +54,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
     if (!chain || !readOnlyFallbackHandlerContract || !wallet) {
       return undefined
     }
+
     return computeNewSafeAddress(
       wallet.provider,
       {

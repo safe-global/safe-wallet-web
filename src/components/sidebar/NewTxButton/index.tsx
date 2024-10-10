@@ -1,3 +1,5 @@
+import ActivateAccountButton from '@/features/counterfactual/ActivateAccountButton'
+import useIsCounterfactualSafe from '@/features/counterfactual/hooks/useIsCounterfactualSafe'
 import { type ReactElement, useContext } from 'react'
 import Button from '@mui/material/Button'
 import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
@@ -8,10 +10,15 @@ import WatchlistAddButton from '../WatchlistAddButton'
 
 const NewTxButton = (): ReactElement => {
   const { setTxFlow } = useContext(TxModalContext)
+  const isCounterfactualSafe = useIsCounterfactualSafe()
 
   const onClick = () => {
     setTxFlow(<NewTxFlow />, undefined, false)
     trackEvent({ ...OVERVIEW_EVENTS.NEW_TRANSACTION, label: 'sidebar' })
+  }
+
+  if (isCounterfactualSafe) {
+    return <ActivateAccountButton />
   }
 
   return (

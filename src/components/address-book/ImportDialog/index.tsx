@@ -7,7 +7,7 @@ import type { ParseResult } from 'papaparse'
 import { type ReactElement, useState, type MouseEvent, useMemo } from 'react'
 
 import ModalDialog from '@/components/common/ModalDialog'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { useAppDispatch } from '@/store'
 
 import css from './styles.module.css'
@@ -60,7 +60,7 @@ const ImportDialog = ({ handleClose }: { handleClose: () => void }): ReactElemen
 
     for (const entry of entries) {
       const [address, name, chainId] = entry
-      dispatch(upsertAddressBookEntry({ address, name, chainId: chainId.trim() }))
+      dispatch(upsertAddressBookEntries({ address, name, chainIds: [chainId.trim()] }))
     }
 
     trackEvent({ ...ADDRESS_BOOK_EVENTS.IMPORT, label: entries.length })

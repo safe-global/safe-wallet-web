@@ -37,7 +37,7 @@ import {
 import { calculateFeePercentageInBps } from '@/features/swap/helpers/fee'
 import { UiOrderTypeToOrderType } from '@/features/swap/helpers/utils'
 import { FEATURES } from '@/utils/chains'
-import { useGetIsSanctionedQuery } from '@/store/ofac'
+import { useGetIsSanctionedQuery } from '@/store/api/ofac'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { getKeyWithTrueValue } from '@/utils/helpers'
 

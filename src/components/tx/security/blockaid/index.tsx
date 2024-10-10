@@ -14,7 +14,6 @@ import BlockaidIcon from '@/public/images/transactions/blockaid-icon.svg'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { type SecurityWarningProps, mapSecuritySeverity } from '../utils'
 import { BlockaidHint } from './BlockaidHint'
-import Warning from '@/public/images/notifications/alert.svg'
 import { SecuritySeverity } from '@/services/security/modules/types'
 
 export const REASON_MAPPING: Record<string, string> = {
@@ -65,7 +64,6 @@ const BlockaidResultWarning = ({
         <>
           <Alert
             severity={severityProps?.color}
-            icon={<Warning />}
             className={css.customAlert}
             sx={
               needsRiskConfirmation
@@ -136,7 +134,7 @@ const ResultDescription = ({
 
 const BlockaidError = () => {
   return (
-    <Alert severity="warning" icon={<Warning />} className={css.customAlert}>
+    <Alert severity="warning" className={css.customAlert}>
       <AlertTitle>
         <Typography fontWeight={700} variant="subtitle1">
           Proceed with caution

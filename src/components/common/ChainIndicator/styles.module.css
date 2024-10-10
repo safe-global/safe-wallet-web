@@ -26,6 +26,10 @@
   justify-content: flex-start;
 }
 
+.onlyLogo {
+  min-width: 0;
+}
+
 @media (max-width: 899.95px) {
   .indicator {
     min-width: 35px;

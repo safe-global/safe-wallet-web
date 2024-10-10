@@ -14,7 +14,7 @@ import css from './styles.module.css'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useDarkMode } from '@/hooks/useDarkMode'
-import { useGetOwnGlobalCampaignRankQuery } from '@/store/safePass'
+import { useGetOwnGlobalCampaignRankQuery } from '@/store/api/safePass'
 import { formatAmount } from '@/utils/formatNumber'
 
 const TOKEN_DECIMALS = 18

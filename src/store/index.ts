@@ -24,8 +24,8 @@ import {
 } from './slices'
 import * as slices from './slices'
 import * as hydrate from './useHydrateStore'
-import { ofacApi } from '@/store/ofac'
-import { safePassApi } from './safePass'
+import { ofacApi } from '@/store/api/ofac'
+import { safePassApi } from './api/safePass'
 import { metadata } from '@/markdown/terms/terms.md'
 
 const rootReducer = combineReducers({

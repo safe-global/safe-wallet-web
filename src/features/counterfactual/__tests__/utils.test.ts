@@ -11,11 +11,13 @@ import type { PredictedSafeProps } from '@safe-global/protocol-kit'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import { type BrowserProvider, type JsonRpcProvider } from 'ethers'
+import { PendingSafeStatus } from '../store/undeployedSafesSlice'
+import { PayMethod } from '../PayNowPayLater'
 
 describe('Counterfactual utils', () => {
   describe('getUndeployedSafeInfo', () => {
     it('should return undeployed safe info', () => {
-      const undeployedSafe: PredictedSafeProps = {
+      const undeployedSafeProps: PredictedSafeProps = {
         safeAccountConfig: {
           owners: [faker.finance.ethereumAddress()],
           threshold: 1,
@@ -25,14 +27,21 @@ describe('Counterfactual utils', () => {
       const mockAddress = faker.finance.ethereumAddress()
       const mockChainId = '1'
 
-      const result = getUndeployedSafeInfo(undeployedSafe, mockAddress, chainBuilder().with({ chainId: '1' }).build())
+      const result = getUndeployedSafeInfo(
+        {
+          props: undeployedSafeProps,
+          status: { status: PendingSafeStatus.AWAITING_EXECUTION, type: PayMethod.PayLater },
+        },
+        mockAddress,
+        chainBuilder().with({ chainId: '1' }).build(),
+      )
 
       expect(result.nonce).toEqual(0)
       expect(result.deployed).toEqual(false)
       expect(result.address.value).toEqual(mockAddress)
       expect(result.chainId).toEqual(mockChainId)
-      expect(result.threshold).toEqual(undeployedSafe.safeAccountConfig.threshold)
-      expect(result.owners[0].value).toEqual(undeployedSafe.safeAccountConfig.owners[0])
+      expect(result.threshold).toEqual(undeployedSafeProps.safeAccountConfig.threshold)
+      expect(result.owners[0].value).toEqual(undeployedSafeProps.safeAccountConfig.owners[0])
     })
   })
 

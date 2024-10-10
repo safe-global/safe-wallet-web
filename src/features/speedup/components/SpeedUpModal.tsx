@@ -27,7 +27,7 @@ import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
 import { trackError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import CheckWallet from '@/components/common/CheckWallet'
-import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import { useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 type Props = {

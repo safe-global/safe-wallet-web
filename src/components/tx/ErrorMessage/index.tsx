@@ -1,5 +1,5 @@
 import { type ReactElement, type ReactNode, type SyntheticEvent, useState } from 'react'
-import { Link, Typography, SvgIcon } from '@mui/material'
+import { Link, Typography, SvgIcon, AlertTitle } from '@mui/material'
 import classNames from 'classnames'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import InfoIcon from '@/public/images/notifications/info.svg'
@@ -12,11 +12,13 @@ const ErrorMessage = ({
   error,
   className,
   level = 'error',
+  title,
 }: {
   children: ReactNode
   error?: Error & { reason?: string }
   className?: string
   level?: 'error' | 'warning' | 'info'
+  title?: string
 }): ReactElement => {
   const [showDetails, setShowDetails] = useState<boolean>(false)
 
@@ -31,12 +33,19 @@ const ErrorMessage = ({
         <SvgIcon
           component={level === 'info' ? InfoIcon : WarningIcon}
           inheritViewBox
-          fontSize="small"
+          fontSize="medium"
           sx={{ color: ({ palette }) => `${palette[level].main} !important` }}
         />
 
         <div>
           <Typography variant="body2" component="span">
+            {title && (
+              <AlertTitle>
+                <Typography fontWeight={700} variant="subtitle1">
+                  {title}
+                </Typography>
+              </AlertTitle>
+            )}
             {children}
 
             {error && (

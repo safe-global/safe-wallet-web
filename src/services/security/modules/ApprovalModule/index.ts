@@ -3,12 +3,12 @@ import {
   INCREASE_ALLOWANCE_SIGNATURE_HASH,
 } from '@/components/tx/ApprovalEditor/utils/approvals'
 import { ERC20__factory } from '@/types/contracts'
-import { decodeMultiSendTxs } from '@/utils/transactions'
 import { normalizeTypedData } from '@/utils/web3'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import { id } from 'ethers'
 import { type SecurityResponse, type SecurityModule, SecuritySeverity } from '../types'
+import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 
 export type ApprovalModuleResponse = Approval[]
 
@@ -120,7 +120,7 @@ export class ApprovalModule implements SecurityModule<ApprovalModuleRequest, App
     const approvalInfos: Approval[] = []
     const safeTxData = safeTransaction.data.data
     if (safeTxData.startsWith(MULTISEND_SIGNATURE_HASH)) {
-      const innerTxs = decodeMultiSendTxs(safeTxData)
+      const innerTxs = decodeMultiSendData(safeTxData)
       approvalInfos.push(...innerTxs.flatMap((tx, index) => ApprovalModule.scanInnerTransaction(tx, index)))
     } else {
       approvalInfos.push(...ApprovalModule.scanInnerTransaction({ to: safeTransaction.data.to, data: safeTxData }, 0))

@@ -33,7 +33,7 @@ import useIsPending from '@/hooks/useIsPending'
 import { isImitation, isTrustedTx } from '@/utils/transactions'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import { useGetTransactionDetailsQuery } from '@/store/gateway'
+import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { asError } from '@/services/exceptions/utils'
 import { POLLING_INTERVAL } from '@/config/constants'
 

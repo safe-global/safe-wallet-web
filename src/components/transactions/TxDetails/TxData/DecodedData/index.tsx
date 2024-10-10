@@ -12,6 +12,7 @@ import MethodCall from './MethodCall'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import { DelegateCallWarning } from '@/components/transactions/Warning'
+import { isMigrateToL2TxData } from '@/utils/transaction-guards'
 
 interface Props {
   txData: TransactionDetails['txData']
@@ -58,9 +59,11 @@ export const DecodedData = ({ txData, toInfo }: Props): ReactElement | null => {
     decodedData = <HexEncodedData title="Data (hex-encoded)" hexData={txData.hexData} />
   }
 
+  const isL2Migration = isMigrateToL2TxData(txData, chainInfo?.chainId)
+
   return (
     <Stack spacing={2}>
-      {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget} />}
+      {isDelegateCall && <DelegateCallWarning showWarning={!txData.trustedDelegateCallTarget && !isL2Migration} />}
 
       {method ? (
         <MethodCall contractAddress={toAddress} contractName={name} contractLogo={avatar} method={method} />

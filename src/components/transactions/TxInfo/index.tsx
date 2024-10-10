@@ -19,6 +19,7 @@ import {
   isNativeTokenTransfer,
   isSettingsChangeTxInfo,
   isTransferTxInfo,
+  isMigrateToL2TxInfo,
   isStakingTxDepositInfo,
   isStakingTxExitInfo,
   isStakingTxWithdrawInfo,
@@ -118,6 +119,10 @@ const SettingsChangeTx = ({ info }: { info: SettingsChange }): ReactElement => {
   return <></>
 }
 
+const MigrationToL2Tx = (): ReactElement => {
+  return <>Migrate base contract</>
+}
+
 const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; withLogo?: boolean }): ReactElement => {
   if (isSettingsChangeTxInfo(info)) {
     return <SettingsChangeTx info={info} />
@@ -129,6 +134,10 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
 
   if (isTransferTxInfo(info)) {
     return <TransferTx info={info} {...rest} />
+  }
+
+  if (isMigrateToL2TxInfo(info)) {
+    return <MigrationToL2Tx />
   }
 
   if (isCreationTxInfo(info)) {

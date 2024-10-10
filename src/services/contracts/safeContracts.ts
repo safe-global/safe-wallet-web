@@ -15,12 +15,20 @@ import type { SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { assertValidSafeVersion, getSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import semver from 'semver'
 import { getLatestSafeVersion } from '@/utils/chains'
+import { getSafeToL2MigrationDeployment } from '@safe-global/safe-deployments'
 
 // `UNKNOWN` is returned if the mastercopy does not match supported ones
 // @see https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/handlers/safes.rs#L28-L31
 //      https://github.com/safe-global/safe-client-gateway/blob/main/src/routes/safes/converters.rs#L77-L79
 export const isValidMasterCopy = (implementationVersionState: SafeInfo['implementationVersionState']): boolean => {
   return implementationVersionState !== ImplementationVersionState.UNKNOWN
+}
+
+export const isMigrationToL2Possible = (safe: SafeInfo): boolean => {
+  return (
+    safe.nonce === 0 &&
+    Boolean(getSafeToL2MigrationDeployment({ network: safe.chainId })?.networkAddresses[safe.chainId])
+  )
 }
 
 export const _getValidatedGetContractProps = (
@@ -64,12 +72,16 @@ export const getCurrentGnosisSafeContract = async (safe: SafeInfo, provider: str
   return getGnosisSafeContract(safe, safeProvider)
 }
 
-export const getReadOnlyGnosisSafeContract = async (chain: ChainInfo, safeVersion: SafeInfo['version']) => {
+export const getReadOnlyGnosisSafeContract = async (
+  chain: ChainInfo,
+  safeVersion: SafeInfo['version'],
+  isL1?: boolean,
+) => {
   const version = safeVersion ?? getLatestSafeVersion(chain)
 
   const safeProvider = getSafeProvider()
 
-  const isL1SafeSingleton = !_isL2(chain, _getValidatedGetContractProps(version).safeVersion)
+  const isL1SafeSingleton = isL1 ?? !_isL2(chain, _getValidatedGetContractProps(version).safeVersion)
 
   return getSafeContractInstance(
     _getValidatedGetContractProps(version).safeVersion,
@@ -105,13 +117,14 @@ export const getReadOnlyMultiSendCallOnlyContract = async (safeVersion: SafeInfo
 
 // GnosisSafeProxyFactory
 
-export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['version']) => {
+export const getReadOnlyProxyFactoryContract = async (safeVersion: SafeInfo['version'], contractAddress?: string) => {
   const safeProvider = getSafeProvider()
 
   return getSafeProxyFactoryContractInstance(
     _getValidatedGetContractProps(safeVersion).safeVersion,
     safeProvider,
     safeProvider.getExternalProvider(),
+    contractAddress,
   )
 }
 

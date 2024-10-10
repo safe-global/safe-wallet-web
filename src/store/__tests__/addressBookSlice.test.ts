@@ -1,9 +1,10 @@
+import { faker } from '@faker-js/faker'
 import {
   addressBookSlice,
   setAddressBook,
-  upsertAddressBookEntry,
   removeAddressBookEntry,
   selectAddressBookByChain,
+  upsertAddressBookEntries,
 } from '../addressBookSlice'
 
 const initialState = {
@@ -20,8 +21,8 @@ describe('addressBookSlice', () => {
   it('should insert an entry in the address book', () => {
     const state = addressBookSlice.reducer(
       initialState,
-      upsertAddressBookEntry({
-        chainId: '1',
+      upsertAddressBookEntries({
+        chainIds: ['1'],
         address: '0x2',
         name: 'Fred',
       }),
@@ -35,8 +36,8 @@ describe('addressBookSlice', () => {
   it('should ignore empty names in the address book', () => {
     const state = addressBookSlice.reducer(
       initialState,
-      upsertAddressBookEntry({
-        chainId: '1',
+      upsertAddressBookEntries({
+        chainIds: ['1'],
         address: '0x2',
         name: '',
       }),
@@ -47,8 +48,8 @@ describe('addressBookSlice', () => {
   it('should edit an entry in the address book', () => {
     const state = addressBookSlice.reducer(
       initialState,
-      upsertAddressBookEntry({
-        chainId: '1',
+      upsertAddressBookEntries({
+        chainIds: ['1'],
         address: '0x0',
         name: 'Alice in Wonderland',
       }),
@@ -57,6 +58,38 @@ describe('addressBookSlice', () => {
       '1': { '0x0': 'Alice in Wonderland', '0x1': 'Bob' },
       '4': { '0x0': 'Charlie', '0x1': 'Dave' },
     })
+  })
+
+  it('should insert an multichain entry in the address book', () => {
+    const address = faker.finance.ethereumAddress()
+    const state = addressBookSlice.reducer(
+      initialState,
+      upsertAddressBookEntries({
+        chainIds: ['1', '10', '100', '137'],
+        address,
+        name: 'Max',
+      }),
+    )
+    expect(state).toEqual({
+      '1': { '0x0': 'Alice', '0x1': 'Bob', [address]: 'Max' },
+      '4': { '0x0': 'Charlie', '0x1': 'Dave' },
+      '10': { [address]: 'Max' },
+      '100': { [address]: 'Max' },
+      '137': { [address]: 'Max' },
+    })
+  })
+
+  it('should ignore empty names for multichain entries', () => {
+    const address = faker.finance.ethereumAddress()
+    const state = addressBookSlice.reducer(
+      initialState,
+      upsertAddressBookEntries({
+        chainIds: ['1', '10', '100', '137'],
+        address,
+        name: '',
+      }),
+    )
+    expect(state).toEqual(initialState)
   })
 
   it('should remove an entry from the address book', () => {

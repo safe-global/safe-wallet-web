@@ -9,6 +9,11 @@ import FailedIcon from '@/public/images/common/tx-failed.svg'
 
 const getStep = (status: SafeCreationEvent) => {
   switch (status) {
+    case SafeCreationEvent.AWAITING_EXECUTION:
+      return {
+        description: 'Your account is awaiting activation',
+        instruction: 'Activate the account to unlock all features of your smart wallet',
+      }
     case SafeCreationEvent.PROCESSING:
     case SafeCreationEvent.RELAYING:
       return {

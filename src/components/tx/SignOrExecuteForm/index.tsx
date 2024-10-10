@@ -35,9 +35,11 @@ import { Blockaid } from '../security/blockaid'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
 import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
+import { MigrateToL2Information } from './MigrateToL2Information'
+import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
@@ -123,6 +125,8 @@ export const SignOrExecuteForm = ({
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
+  const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(safeTx)
+  const isMultiChainMigration = !!multiChainMigrationTarget
 
   // Check if a Zodiac Roles mod is enabled and if the user is a member of any role that allows the transaction
   const roles = useRoles(
@@ -164,6 +168,8 @@ export const SignOrExecuteForm = ({
     <>
       <TxCard>
         {props.children}
+
+        {isMultiChainMigration && <MigrateToL2Information variant="queue" newMasterCopy={multiChainMigrationTarget} />}
 
         {decodedData && (
           <ErrorBoundary fallback={<></>}>
@@ -211,7 +217,7 @@ export const SignOrExecuteForm = ({
 
         <NetworkWarning />
 
-        <UnknownContractError />
+        {!isMultiChainMigration && <UnknownContractError />}
 
         <Blockaid />
 

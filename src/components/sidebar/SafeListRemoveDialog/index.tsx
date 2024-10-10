@@ -12,6 +12,7 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import router from 'next/router'
+import { removeAddressBookEntry } from '@/store/addressBookSlice'
 
 const SafeListRemoveDialog = ({
   handleClose,
@@ -31,6 +32,7 @@ const SafeListRemoveDialog = ({
 
   const handleConfirm = () => {
     dispatch(removeSafe({ chainId, address }))
+    dispatch(removeAddressBookEntry({ chainId, address }))
     handleClose()
   }
 

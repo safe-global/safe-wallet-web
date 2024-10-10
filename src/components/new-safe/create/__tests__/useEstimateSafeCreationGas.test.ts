@@ -12,11 +12,22 @@ import { JsonRpcProvider } from 'ethers'
 import { EMPTY_DATA, ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { waitFor } from '@testing-library/react'
 import { type EIP1193Provider } from '@web3-onboard/core'
+import { type ReplayedSafeProps } from '@/store/slices'
+import { faker } from '@faker-js/faker'
 
-const mockProps = {
-  owners: [],
-  threshold: 1,
-  saltNonce: 1,
+const mockProps: ReplayedSafeProps = {
+  safeAccountConfig: {
+    owners: [faker.finance.ethereumAddress()],
+    threshold: 1,
+    data: EMPTY_DATA,
+    to: ZERO_ADDRESS,
+    fallbackHandler: faker.finance.ethereumAddress(),
+    paymentReceiver: ZERO_ADDRESS,
+  },
+  factoryAddress: faker.finance.ethereumAddress(),
+  masterCopy: faker.finance.ethereumAddress(),
+  saltNonce: '0',
+  safeVersion: '1.3.0',
 }
 
 describe('useEstimateSafeCreationGas', () => {
@@ -28,7 +39,7 @@ describe('useEstimateSafeCreationGas', () => {
     jest
       .spyOn(safeContracts, 'getReadOnlyProxyFactoryContract')
       .mockResolvedValue({ getAddress: () => ZERO_ADDRESS } as unknown as SafeProxyFactoryContractImplementationType)
-    jest.spyOn(sender, 'encodeSafeCreationTx').mockReturnValue(Promise.resolve(EMPTY_DATA))
+    jest.spyOn(sender, 'encodeSafeCreationTx').mockReturnValue(EMPTY_DATA)
     jest.spyOn(wallet, 'default').mockReturnValue({} as ConnectedWallet)
   })
 
