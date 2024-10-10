@@ -20,6 +20,7 @@ import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
 import { SafenetChainType, isSupportedChain } from '@/utils/safenet'
+import { getRTKErrorMessage } from '@/utils/redux-toolkit-query'
 
 const getSafeNetTokensByChain = (chainId: number, safeNetConfig: SafeNetConfigEntity): string[] => {
   const tokenSymbols = Object.keys(safeNetConfig.tokens)
@@ -69,7 +70,7 @@ const SafeNetContent = ({ safeNetConfig, safe }: { safeNetConfig: SafeNetConfigE
   )
 
   if (error) {
-    throw error
+    throw getRTKErrorMessage(error)
   }
 
   useEffect(() => {
