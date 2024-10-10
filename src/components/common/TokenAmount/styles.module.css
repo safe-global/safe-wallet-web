@@ -4,7 +4,15 @@
   gap: var(--space-1);
   color: var(--color-text-primary);
 }
+.w100{
+  width: 100%;
+}
 
 .verticalAlign {
   vertical-align: middle;
+}
+
+.ellipsisText {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

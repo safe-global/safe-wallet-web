@@ -37,11 +37,13 @@ export const TransferTx = ({
   omitSign = false,
   withLogo = true,
   preciseAmount = false,
+  truncateText = false,
 }: {
   info: Transfer
   omitSign?: boolean
   withLogo?: boolean
   preciseAmount?: boolean
+  truncateText?: boolean
 }): ReactElement => {
   const chainConfig = useCurrentChain()
   const { nativeCurrency } = chainConfig || {}
@@ -57,6 +59,7 @@ export const TransferTx = ({
         tokenSymbol={nativeCurrency?.symbol}
         logoUri={withLogo ? nativeCurrency?.logoUri : undefined}
         preciseAmount={preciseAmount}
+        truncateText={truncateText}
       />
     )
   }
@@ -68,6 +71,7 @@ export const TransferTx = ({
         direction={direction}
         logoUri={withLogo ? transfer?.logoUri : undefined}
         preciseAmount={preciseAmount}
+        truncateText={truncateText}
       />
     )
   }
@@ -85,6 +89,7 @@ export const TransferTx = ({
         direction={undefined}
         logoUri={withLogo ? transfer?.logoUri : undefined}
         fallbackSrc="/images/common/nft-placeholder.png"
+        truncateText={truncateText}
       />
     )
   }
@@ -128,7 +133,7 @@ const TxInfo = ({ info, ...rest }: { info: TransactionInfo; omitSign?: boolean; 
   }
 
   if (isTransferTxInfo(info)) {
-    return <TransferTx info={info} {...rest} />
+    return <TransferTx info={info} {...rest} truncateText />
   }
 
   if (isCreationTxInfo(info)) {
