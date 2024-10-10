@@ -1,18 +1,34 @@
 # Safe Mobile App 👋
 
-## Get started
+## Setup the project
 
-1. Install dependencies
+It is pretty straight
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
-2. Start the app
+## Running the App
 
-   ```bash
-    npx expo start
-   ```
+```bash
+   npx expo run:ios --device
+```
+
+or for android
+
+```bash
+   npx expo run:android --device
+```
+
+## Running the storybook
+
+1. run the storybook command on your terminal
+
+```bash
+   npm run storybook
+```
+
+2. press `i` for ios or `a` for android
 
 ## How to run the e2e tests
 
@@ -20,7 +36,7 @@ We're using DETOX for e2e. Before run the tests script, you shuold first install
 
 ### 1. install DETOX cli:
 
-```sh
+```bash
 npm install detox-cli --global
 ```
 
@@ -28,7 +44,7 @@ npm install detox-cli --global
 
 This tool is required by Detox to work with iOS simulators. The recommended way to install applesimutils is via Homebrew:
 
-```sh
+```bash
 brew tap wix/brew
 brew install applesimutils
 ```
@@ -37,13 +53,13 @@ brew install applesimutils
 
 for IOS:
 
-```sh
+```bash
 detox build --configuration ios.sim.debug
 ```
 
 or for Android:
 
-```sh
+```bash
 detox build --configuration android.emu.debug
 ```
 
@@ -51,7 +67,7 @@ detox build --configuration android.emu.debug
 
 Since this is a debug configuration, you need to have React Native packager running in parallel before you start Detox tests:
 
-```sh
+```bash
 npx expo start
 ```
 
@@ -59,12 +75,12 @@ in another terminal, you can run:
 
 for ios:
 
-```sh
+```bash
 detox test --configuration ios.sim.debug
 ```
 
 or for android:
 
-```sh
+```bash
 detox test --configuration android.emu.debug
 ```
