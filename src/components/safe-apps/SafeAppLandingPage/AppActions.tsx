@@ -1,5 +1,5 @@
 import { Box, Button, MenuItem, Select, Typography, Grid, FormControl, InputLabel } from '@mui/material'
-import type { ChainInfo, SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
+import type { AllOwnedSafes, ChainInfo, SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import type { UrlObject } from 'url'
@@ -12,9 +12,9 @@ import { parsePrefixedAddress } from '@/utils/addresses'
 import SafeIcon from '@/components/common/SafeIcon'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { AppRoutes } from '@/config/routes'
-import useOwnedSafes from '@/hooks/useOwnedSafes'
 import { CTA_BUTTON_WIDTH, CTA_HEIGHT } from '@/components/safe-apps/SafeAppLandingPage/constants'
 import CreateNewSafeSVG from '@/public/images/open/safe-creation.svg'
+import useAllOwnedSafes from '@/components/welcome/MyAccounts/useAllOwnedSafes'
 
 type Props = {
   appUrl: string
@@ -28,7 +28,7 @@ type CompatibleSafesType = { address: string; chainId: string; shortName?: strin
 
 const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): React.ReactElement => {
   const lastUsedSafe = useLastSafe()
-  const ownedSafes = useOwnedSafes()
+  const [ownedSafes] = useAllOwnedSafes(wallet?.address)
   const addressBook = useAppSelector(selectAllAddressBooks)
   const chains = useAppSelector(selectChains)
   const compatibleChains = app.chainIds
@@ -150,7 +150,7 @@ const AppActions = ({ wallet, onConnectWallet, chain, appUrl, app }: Props): Rea
 export { AppActions }
 
 const getCompatibleSafes = (
-  ownedSafes: { [chainId: string]: string[] },
+  ownedSafes: AllOwnedSafes,
   compatibleChains: string[],
   chainsData: ChainInfo[],
 ): CompatibleSafesType[] => {
@@ -159,7 +159,7 @@ const getCompatibleSafes = (
 
     return [
       ...safes,
-      ...(ownedSafes[chainId] || []).map((address) => ({
+      ...(ownedSafes[chainId] ?? []).map((address) => ({
         address,
         chainId,
         shortName: chainData?.shortName,

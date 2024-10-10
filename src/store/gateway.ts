@@ -1,6 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 
-import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type AllOwnedSafes,
+  type OwnedSafes,
+  getAllOwnedSafes,
+  getOwnedSafes,
+  getTransactionDetails,
+  type TransactionDetails,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import type { BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
@@ -48,6 +55,26 @@ export const gatewayApi = createApi({
         }
       },
     }),
+    getOwnedSafes: builder.query<OwnedSafes, { chainId: string; address: string }>({
+      async queryFn({ chainId, address }) {
+        try {
+          const ownedSafes = await getOwnedSafes(chainId, address)
+          return { data: ownedSafes }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
+        }
+      },
+    }),
+    getAllOwnedSafes: builder.query<AllOwnedSafes, { address: string }>({
+      async queryFn({ address }) {
+        try {
+          const ownedSafes = await getAllOwnedSafes(address)
+          return { data: ownedSafes }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
+        }
+      },
+    }),
   }),
 })
 
@@ -56,4 +83,6 @@ export const {
   useGetMultipleTransactionDetailsQuery,
   useLazyGetTransactionDetailsQuery,
   useGetDelegatesQuery,
+  useGetAllOwnedSafesQuery,
+  useGetOwnedSafesQuery,
 } = gatewayApi
