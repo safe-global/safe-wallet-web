@@ -11,8 +11,6 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 describe('Safe creation tests', () => {
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
-    cy.clearLocalStorage()
-    main.acceptCookies()
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
   })

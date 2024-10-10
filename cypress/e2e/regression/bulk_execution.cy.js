@@ -24,10 +24,6 @@ describe('Bulk execution', () => {
       })
   })
 
-  beforeEach(() => {
-    cy.clearLocalStorage()
-  })
-
   it('Verify that Bulk Execution is available for a few fully signed txs located one by one', () => {
     cy.visit(constants.transactionQueueUrl + fundsSafes.SEP_FUNDS_SAFE_14)
     main.acceptCookies()

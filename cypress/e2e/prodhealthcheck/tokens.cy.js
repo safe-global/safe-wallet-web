@@ -17,8 +17,6 @@ describe('[PROD] Prod tokens tests', () => {
   })
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
-    cy.clearLocalStorage()
-    main.acceptCookies()
   })
 
   // TODO: Added to prod

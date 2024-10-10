@@ -13,7 +13,6 @@ describe.skip('Permissions settings tests', () => {
   before(() => {
     getSafes(CATEGORIES.static).then((statics) => {
       staticSafes = statics
-      cy.clearLocalStorage()
       cy.on('window:before:load', (window) => {
         window.localStorage.setItem(
           constants.BROWSER_PERMISSIONS_KEY,
@@ -52,7 +51,6 @@ describe.skip('Permissions settings tests', () => {
       cy.visit(`${constants.appSettingsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_2}`, {
         failOnStatusCode: false,
       })
-      main.acceptCookies()
     })
   })
 

@@ -1,18 +1,17 @@
-import { Typography, Chip as MuiChip } from '@mui/material'
+import { Typography, Chip as MuiChip, type ChipProps } from '@mui/material'
 
-type ChipProps = {
+type Props = {
   label?: string
-  color?: 'primary' | 'secondary' | 'info' | 'warning' | 'success' | 'error'
+  sx?: ChipProps['sx']
 }
 
-export function Chip({ color = 'primary', label = 'New' }: ChipProps) {
+export function Chip({ sx, label = 'New' }: Props) {
   return (
     <MuiChip
       size="small"
       component="span"
       sx={{
-        backgroundColor: `${color}.background`,
-        color: `${color}.light`,
+        ...sx,
         mt: '-2px',
       }}
       label={

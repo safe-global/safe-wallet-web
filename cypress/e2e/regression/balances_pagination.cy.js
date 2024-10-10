@@ -6,9 +6,7 @@ const ASSETS_LENGTH = 8
 
 describe('Balance pagination tests', () => {
   before(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + constants.SEPOLIA_TEST_SAFE_6)
-    main.acceptCookies()
     assets.selectTokenList(assets.tokenListOptions.allTokens)
   })
 

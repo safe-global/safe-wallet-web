@@ -19,7 +19,7 @@ export function clickOnSideMenuItem(item) {
 
 export function waitForHistoryCallToComplete() {
   cy.intercept('GET', constants.transactionHistoryEndpoint).as('History')
-  cy.wait('@History')
+  cy.wait('@History', { timeout: 20000 })
 }
 
 export const fetchSafeData = (safeAddress) => {

@@ -16,8 +16,6 @@ describe('[PROD] Sidebar tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.homeUrl + staticSafes.SEP_STATIC_SAFE_9)
-    cy.clearLocalStorage()
-    main.acceptCookies()
   })
 
   // TODO: Added to prod

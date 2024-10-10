@@ -18,9 +18,7 @@ describe('[SMOKE] Dashboard tests', { defaultCommandTimeout: 20000 }, () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_2)
-    main.acceptCookies()
   })
 
   it('[SMOKE] Verify the overview widget is displayed', () => {

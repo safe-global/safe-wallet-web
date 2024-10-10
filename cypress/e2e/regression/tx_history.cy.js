@@ -20,7 +20,6 @@ describe('Tx history tests 1', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.intercept(
       'GET',
       `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
@@ -34,7 +33,6 @@ describe('Tx history tests 1', () => {
 
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     cy.wait('@allTransactions')
-    main.acceptCookies()
   })
 
   // TODO: Added to prod

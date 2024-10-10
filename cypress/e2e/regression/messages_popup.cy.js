@@ -18,9 +18,7 @@ describe('Messages popup window tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.appsCustomUrl + staticSafes.SEP_STATIC_SAFE_10)
-    main.acceptCookies()
     iframeSelector = `iframe[id="iframe-${constants.safeTestAppurl}"]`
   })
 
@@ -32,10 +30,6 @@ describe('Messages popup window tests', () => {
     main.addToLocalStorage(
       constants.localStorageKeys.SAFE_v2__SafeApps__browserPermissions,
       ls.appPermissions(constants.safeTestAppurl).grantedPermissions,
-    )
-    main.addToLocalStorage(
-      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
     )
     cy.reload()
     apps.clickOnApp(safeApp)
@@ -56,10 +50,7 @@ describe('Messages popup window tests', () => {
       constants.localStorageKeys.SAFE_v2__SafeApps__browserPermissions,
       ls.appPermissions(constants.safeTestAppurl).grantedPermissions,
     )
-    main.addToLocalStorage(
-      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-    )
+
     cy.reload()
     apps.clickOnApp(safeApp)
     apps.clickOnOpenSafeAppBtn()
