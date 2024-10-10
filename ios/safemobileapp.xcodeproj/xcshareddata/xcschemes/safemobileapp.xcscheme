@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "safemobile.app"
-               BlueprintName = "safemobile"
-               ReferencedContainer = "container:safemobile.xcodeproj">
+               BuildableName = "safemobileapp.app"
+               BlueprintName = "safemobileapp"
+               ReferencedContainer = "container:safemobileapp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "safemobileTests.xctest"
-               BlueprintName = "safemobileTests"
-               ReferencedContainer = "container:safemobile.xcodeproj">
+               BuildableName = "safemobileappTests.xctest"
+               BlueprintName = "safemobileappTests"
+               ReferencedContainer = "container:safemobileapp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "safemobile.app"
-            BlueprintName = "safemobile"
-            ReferencedContainer = "container:safemobile.xcodeproj">
+            BuildableName = "safemobileapp.app"
+            BlueprintName = "safemobileapp"
+            ReferencedContainer = "container:safemobileapp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "safemobile.app"
-            BlueprintName = "safemobile"
-            ReferencedContainer = "container:safemobile.xcodeproj">
+            BuildableName = "safemobileapp.app"
+            BlueprintName = "safemobileapp"
+            ReferencedContainer = "container:safemobileapp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
