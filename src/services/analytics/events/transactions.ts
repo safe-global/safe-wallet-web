@@ -48,6 +48,11 @@ export const TX_EVENTS = {
     action: 'Create via spending limit',
     category: TX_CATEGORY,
   },
+  CREATE_VIA_DELEGATE: {
+    event: EventType.TX_CREATED,
+    action: 'Create via delegate',
+    category: TX_CATEGORY,
+  },
   CONFIRM: {
     event: EventType.TX_CONFIRMED,
     action: 'Confirm transaction',

@@ -20,9 +20,7 @@ describe('[SMOKE] Batch transaction tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
-    main.acceptCookies()
   })
 
   it('[SMOKE] Verify empty batch list can be opened', () => {

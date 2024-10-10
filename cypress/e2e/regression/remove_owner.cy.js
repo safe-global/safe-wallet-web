@@ -18,8 +18,6 @@ describe('Remove Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_13)
     main.waitForHistoryCallToComplete()
-    cy.clearLocalStorage()
-    main.acceptCookies()
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 

@@ -15,8 +15,6 @@ describe('[SMOKE] Replace Owners tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
-    cy.clearLocalStorage()
-    main.acceptCookies()
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 

@@ -27,7 +27,7 @@ const acceptBtnStr = /accept/i
 const clearAllBtnStr = /clear all/i
 const allowAllPermissions = /allow all/i
 export const enterAddressStr = /enter address or ens name/i
-export const addTransactionStr = /add transaction/i
+export const addTransactionStr = /add new transaction/i
 export const createBatchStr = /create batch/i
 export const sendBatchStr = /send batch/i
 export const transactionDetailsStr = /transaction details/i
@@ -252,7 +252,7 @@ export function verifyInfoModalAcceptance() {
     return cy
       .findByRole('button', { name: continueBtnStr })
       .click()
-      .wait(500)
+      .wait(2000)
       .should(() => {
         const storedInfoModal = JSON.parse(
           localStorage.getItem(constants.localStorageKeys.SAFE_v2__SafeApps__infoModal),

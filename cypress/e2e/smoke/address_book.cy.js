@@ -25,9 +25,7 @@ describe('[SMOKE] Address book tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_4)
-    cy.clearLocalStorage()
     main.waitForHistoryCallToComplete()
-    main.acceptCookies()
   })
 
   it('[SMOKE] Verify entry can be added', () => {

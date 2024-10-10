@@ -17,9 +17,7 @@ describe('Swaps history tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_1)
-    main.acceptCookies()
   })
 
   it('Verify swap selling operation with one action', { defaultCommandTimeout: 30000 }, () => {
