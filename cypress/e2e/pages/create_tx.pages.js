@@ -47,7 +47,7 @@ const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
 const TransactionSummary = 'Send '
-const transactionsPerHrStr = 'free transactions left this hour'
+const transactionsPerHrStr = 'free transactions left today'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
