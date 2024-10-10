@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "safemobile",
-    "slug": "safemobile",
+    "name": "safe.mobileapp",
+    "slug": "safe.mobileapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "safemobile"
+      "bundleIdentifier": "global.safe.mobileapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.safemobile"
+      "package": "com.global.safe.mobileapp"
     },
     "web": {
       "bundler": "metro",
