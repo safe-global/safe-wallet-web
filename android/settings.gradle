@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'safemobile'
+rootProject.name = 'safe.mobileapp'
 
 dependencyResolutionManagement {
   versionCatalogs {

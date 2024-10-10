@@ -34,7 +34,7 @@ install! 'cocoapods',
 
 prepare_react_native_project!
 
-target 'safemobile' do
+target 'safemobileapp' do
   use_expo_modules!
   config = use_native_modules!
 
