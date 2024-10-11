@@ -27,6 +27,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo, useState } from 'react'
 import { useCompatibleNetworks } from '../../hooks/useCompatibleNetworks'
 import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
+import { MULTICHAIN_HELP_ARTICLE } from '@/config/constants'
 
 type CreateSafeOnNewChainForm = {
   chainId: string
@@ -213,7 +214,7 @@ const ReplaySafeDialog = ({
         <DialogActions>
           {isUnsupportedSafeCreationVersion ? (
             <Box display="flex" width="100%" alignItems="center" justifyContent="space-between">
-              <ExternalLink sx={{ flexGrow: 1 }} href="https://safe.global">
+              <ExternalLink sx={{ flexGrow: 1 }} href={MULTICHAIN_HELP_ARTICLE}>
                 Read more
               </ExternalLink>
               <Button variant="contained" onClick={onClose}>
