@@ -52,6 +52,7 @@ export const selectAllRowsChbxStr = /Select All Rows checkbox/i
 export const selectRowChbxStr = /Select Row checkbox/i
 export const recipientStr = /recipient/i
 export const validRecipientAddressStr = /please enter a valid recipient address/i
+export const contractMethodSelector = 'input[id="contract-method-selector"]'
 export const testAddressValue2 = 'testAddressValue'
 export const testBooleanValue = 'testBooleanValue'
 export const testFallback = 'fallback'
@@ -103,6 +104,7 @@ export const transactiobUilderHeadlinePreview = 'Transaction Builder'
 export const availableNetworksPreview = 'Available networks'
 export const connecttextPreview = 'Compose custom contract interactions and batch them into a single transaction'
 const warningDefaultAppStr = 'The application you are trying to access is not in the default Safe Apps list'
+export const AddressEmptyCodeStr = 'AddressEmptyCode'
 export const localStorageItem =
   '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}'
 export const gridItem = 'main .MuiPaper-root > .MuiGrid-item'
@@ -111,7 +113,7 @@ export const linkNames = {
   txBuilderLogo: /Transaction Builder logo/i,
 }
 export const abi =
-  '[{{}"inputs":[{{}"internalType":"address","name":"_singleton","type":"address"{}}],"stateMutability":"nonpayable","type":"constructor"{}},{{}"stateMutability":"payable","type":"fallback"{}}]'
+  '[{"inputs":[{"internalType":"address","name":"_singleton","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"stateMutability":"payable","type":"fallback"},{"inputs":[{"internalType":"address","name":"target","type":"address"}],"name":"AddressEmptyCode","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]'
 
 export const permissionCheckboxes = {
   camera: 'input[name="camera"]',

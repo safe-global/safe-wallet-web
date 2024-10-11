@@ -20,7 +20,6 @@ describe('[PROD] Swaps token tests', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_1)
   })
 
-  // TODO: Added to prod
   it.skip(
     'Verify that clicking the swap from assets tab, autofills that token automatically in the form',
     { defaultCommandTimeout: 30000 },
@@ -37,7 +36,6 @@ describe('[PROD] Swaps token tests', () => {
     },
   )
 
-  // TODO: Added to prod
   // TODO: Check why expected number of buttons not displayed sometimes
   it.skip('Verify swap button are displayed in assets table and dashboard', () => {
     assets.selectTokenList(assets.tokenListOptions.allTokens)

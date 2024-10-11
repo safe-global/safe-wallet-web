@@ -52,7 +52,9 @@
       "partiallyFilled": "Partially filled",
       "gGpV2": "GPv2Settlement",
       "safeAppTitile": "CowSwap",
-      "title": "Swap order"
+      "title": "Swap order",
+      "multiSend": "multiSend",
+      "multiSendCallOnly1_3_0": "Safe: MultiSendCallOnly 1.3.0"
     }
   }
 }
