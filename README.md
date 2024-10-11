@@ -84,3 +84,25 @@ or for android:
 ```bash
 detox test --configuration android.emu.debug
 ```
+
+## Unit tests
+
+We use (Vitest)[https://vitest.dev/] for running our unit/component/hook tests and [React Native Testing Library](https://callstack.github.io/react-native-testing-library/) to manipulate them.
+
+To run the tests you can just type in your terminal:
+
+```bash
+npm run test
+```
+
+#### Running in watch mode
+
+```bash
+npm run test:watch
+```
+
+#### checking the coverage and ui
+
+```bash
+npm run test:ui
+```
