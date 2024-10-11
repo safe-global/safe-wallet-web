@@ -10,6 +10,9 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# Auto generated storybook file
+.storybook/storybook.requires.ts
+
 # macOS
 .DS_Store
 
