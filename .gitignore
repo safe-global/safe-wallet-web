@@ -13,6 +13,9 @@ web-build/
 # Auto generated storybook file
 .storybook/storybook.requires.ts
 
+# From vitest:ui
+html
+
 # macOS
 .DS_Store
 
