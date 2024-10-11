@@ -106,3 +106,13 @@ npm run test:watch
 ```bash
 npm run test:ui
 ```
+
+## Running Eslint & Prettier
+
+This project uses eslint + prettier + tsconfig. To run lint you can paste the following command on your terminal:
+
+```bash
+npm run lint
+```
+
+this will not only validate the files with tslint, but also validate them with eslint and prettier configs.
