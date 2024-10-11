@@ -37,11 +37,15 @@ class AppCommunicator {
     const sentFromIframe = this.iframeRef.current?.contentWindow === msg.source
     const knownMethod = Object.values(Methods).includes(msg.data.method)
 
-    return sentFromIframe && knownMethod
+    // TODO: move it to safe-app Methods types
+    const isThemeInfoMethod = (msg.data.method as string) === 'getCurrentTheme'
+
+    return sentFromIframe && (knownMethod || isThemeInfoMethod)
   }
 
   private canHandleMessage = (msg: SDKMessageEvent): boolean => {
     if (!msg.data) return false
+
     return Boolean(this.handlers.get(msg.data.method))
   }
 
