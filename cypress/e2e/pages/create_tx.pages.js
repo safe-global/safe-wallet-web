@@ -263,6 +263,10 @@ export function verifyExpandedDetails(data, warning) {
   if (warning) cy.get(warning).should('be.visible')
 }
 
+export function verifyAdvancedDetails(data) {
+  main.checkTextsExistWithinElement(accordionDetails, data)
+}
+
 export function verifyActions(data) {
   main.checkTextsExistWithinElement(accordionDetails, data)
 }
@@ -273,7 +277,7 @@ export function clickOnExpandableAction(data) {
   })
 }
 
-function clickOnAdvancedDetails() {
+export function clickOnAdvancedDetails() {
   cy.get(advancedDetails).click()
 }
 

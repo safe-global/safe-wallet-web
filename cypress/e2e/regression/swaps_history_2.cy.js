@@ -22,6 +22,8 @@ describe('Swaps history tests 2', () => {
     const eq = swaps.createRegex(swapsHistory.DAIeqCOW, 'COW')
 
     create_tx.verifyExpandedDetails([swapsHistory.sellFull, dai, eq, swapsHistory.dai, swapsHistory.filled])
+    create_tx.clickOnAdvancedDetails()
+    create_tx.verifyAdvancedDetails([swapsHistory.gGpV2, swapsHistory.actionPreSignatureG])
   })
 
   // TODO: Added to prod
@@ -42,6 +44,8 @@ describe('Swaps history tests 2', () => {
       swapsHistory.actionApprove,
       swapsHistory.actionPreSignature,
     ])
+    create_tx.clickOnAdvancedDetails()
+    create_tx.verifyAdvancedDetails([swapsHistory.multiSend, swapsHistory.multiSendCallOnly1_3_0])
   })
 
   it('Verify "Cancelled" status for manually cancelled limit orders', { defaultCommandTimeout: 30000 }, () => {
@@ -60,6 +64,8 @@ describe('Swaps history tests 2', () => {
       swapsHistory.cow,
       swapsHistory.cancelled,
     ])
+    create_tx.clickOnAdvancedDetails()
+    create_tx.verifyAdvancedDetails([swapsHistory.gGpV2, swapsHistory.actionPreSignatureG])
   })
 
   it('Verify swap operation with 3 actions: wrap & approve & swap', { defaultCommandTimeout: 30000 }, () => {
@@ -79,6 +85,8 @@ describe('Swaps history tests 2', () => {
       swapsHistory.actionPreSignature,
       swapsHistory.actionDepositEth,
     ])
+    create_tx.clickOnAdvancedDetails()
+    create_tx.verifyAdvancedDetails([swapsHistory.multiSend, swapsHistory.multiSendCallOnly1_3_0])
   })
 
   it('Verify "Expired" field in the tx details for limit orders', { defaultCommandTimeout: 30000 }, () => {
@@ -89,6 +97,8 @@ describe('Swaps history tests 2', () => {
     const eq = swaps.createRegex(swapsHistory.DAIeqCOW, 'COW')
 
     create_tx.verifyExpandedDetails([swapsHistory.sellOrder, swapsHistory.sell, dai, eq, swapsHistory.expired])
+    create_tx.clickOnAdvancedDetails()
+    create_tx.verifyAdvancedDetails([swapsHistory.gGpV2, swapsHistory.actionPreSignatureG])
   })
 
   it('Verify "Filled" field in the tx details for limit orders', { defaultCommandTimeout: 30000 }, () => {
@@ -99,6 +109,8 @@ describe('Swaps history tests 2', () => {
     const eq = swaps.createRegex(swapsHistory.USDTeqUSDC, 'USDC')
 
     create_tx.verifyExpandedDetails([swapsHistory.sellOrder, swapsHistory.sell, usdc, eq, swapsHistory.filled])
+    create_tx.clickOnAdvancedDetails()
+    create_tx.verifyAdvancedDetails([swapsHistory.gGpV2, swapsHistory.actionPreSignatureG])
   })
 
   // TODO: Added to prod

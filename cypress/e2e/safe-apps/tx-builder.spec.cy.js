@@ -225,4 +225,12 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
         })
     })
   })
+
+  it('Verify that error types are not displayed in ABI methods', () => {
+    cy.enter(iframeSelector).then((getBody) => {
+      getBody().findByLabelText(safeapps.enterABIStr).type(safeapps.abi, { parseSpecialCharSequences: false })
+      getBody().find(safeapps.contractMethodSelector).click()
+      getBody().find(safeapps.AddressEmptyCodeStr).should('not.exist')
+    })
+  })
 })
