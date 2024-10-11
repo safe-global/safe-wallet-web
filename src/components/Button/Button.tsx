@@ -1,9 +1,9 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
-export type SafeButtonProps = {
+export interface SafeButtonProps {
   onPress?: () => void;
   text: string;
-};
+}
 
 export const SafeButton = ({ onPress, text }: SafeButtonProps) => {
   return (

@@ -1,9 +1,3 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { ThemeProvider as EmotionThemeProvider } from "@emotion/react";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -11,13 +5,14 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import Constants from "expo-constants";
 import SafeThemeProvider from "@/src/providers/SafeThemeProvider";
+import SpaceMono from "../assets/fonts/SpaceMono-Regular.ttf";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
   const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    SpaceMono,
   });
 
   useEffect(() => {

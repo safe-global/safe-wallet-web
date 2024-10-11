@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, Image, Platform, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import ParallaxScrollView from "@/src/components/ParallaxScrollView";
 import { Text } from "react-native-paper";
