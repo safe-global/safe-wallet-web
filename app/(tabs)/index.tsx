@@ -3,6 +3,7 @@ import { Image, StyleSheet, View } from "react-native";
 import ParallaxScrollView from "@/src/components/ParallaxScrollView";
 import { Button, Text } from "react-native-paper";
 import styled from "@emotion/native";
+import icon from "@/assets/images/partial-react-logo.png";
 
 const StyledText = styled(Text)`
   color: ${({ theme }) => theme.colors?.primary};
@@ -12,12 +13,7 @@ export default function HomeScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
+      headerImage={<Image source={icon} style={styles.reactLogo} />}
     >
       <View style={styles.titleContainer}>
         <Text variant="titleLarge" testID="welcome-title">

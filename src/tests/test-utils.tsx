@@ -4,7 +4,7 @@ import SafeThemeProvider from "../providers/SafeThemeProvider";
 // Add in any providers here if necessary:
 // (ReduxProvider, ThemeProvider, etc)
 const getProviders: () => React.FC<{ children: React.ReactElement }> = () =>
-  function ProviderComponent({ children }) {
+  function ProviderComponent({ children }: { children: React.ReactNode }) {
     return <SafeThemeProvider>{children}</SafeThemeProvider>;
   };
 
