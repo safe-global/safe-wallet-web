@@ -39,6 +39,7 @@ const getSafeNetTokensByChain = (chainId: number, safeNetConfig: SafeNetConfigEn
 const SafeNetContent = ({ safeNetConfig, safe }: { safeNetConfig: SafeNetConfigEntity; safe: ExtendedSafeInfo }) => {
   const isVersionWithGuards = hasSafeFeature(SAFE_FEATURES.SAFE_TX_GUARDS, safe.version)
   const safeNetGuardAddress = safeNetConfig.guards[safe.chainId]
+  const safeNetProcessorAddress = safeNetConfig.processors[safe.chainId]
   const isSafeNetGuardEnabled = isVersionWithGuards && sameAddress(safe.guard?.value, safeNetGuardAddress)
   const chainSupported = isSupportedChain(Number(safe.chainId), safeNetConfig, SafenetChainType.SOURCE)
   const { setTxFlow } = useContext(TxModalContext)
@@ -105,7 +106,11 @@ const SafeNetContent = ({ safeNetConfig, safe }: { safeNetConfig: SafeNetConfigE
             variant="contained"
             onClick={() =>
               setTxFlow(
-                <EnableSafenetFlow guardAddress={safeNetGuardAddress} tokensForPresetAllowances={safeNetAssets} />,
+                <EnableSafenetFlow
+                  guardAddress={safeNetGuardAddress}
+                  tokensForPresetAllowances={safeNetAssets}
+                  allowanceSpender={safeNetProcessorAddress}
+                />,
               )
             }
             sx={{ mt: 2 }}
