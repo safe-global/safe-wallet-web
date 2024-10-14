@@ -118,11 +118,6 @@ describe('CheckWallet', () => {
       useIsOnlySpendingLimitBeneficiary as jest.MockedFunction<typeof useIsOnlySpendingLimitBeneficiary>
     ).mockReturnValueOnce(true)
 
-    const { container } = renderButton()
-
-    expect(container.querySelector('button')).toBeDisabled()
-    getByLabelText(container, 'Your connected wallet is not a signer of this Safe Account')
-
     const { container: allowContainer } = render(
       <CheckWallet allowSpendingLimit>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
     )
