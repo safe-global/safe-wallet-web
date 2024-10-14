@@ -1,18 +1,18 @@
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from 'react-native'
 
-import ParallaxScrollView from "@/src/components/ParallaxScrollView";
-import { Button, Text } from "react-native-paper";
-import styled from "@emotion/native";
-import icon from "@/assets/images/partial-react-logo.png";
+import ParallaxScrollView from '@/src/components/ParallaxScrollView'
+import { Button, Text } from 'react-native-paper'
+import styled from '@emotion/native'
+import icon from '@/assets/images/partial-react-logo.png'
 
 const StyledText = styled(Text)`
   color: ${({ theme }) => theme.colors?.primary};
-`;
+`
 
 export default function HomeScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={<Image source={icon} style={styles.reactLogo} />}
     >
       <View style={styles.titleContainer}>
@@ -25,13 +25,13 @@ export default function HomeScreen() {
 
       <StyledText>Here is my styled component</StyledText>
     </ParallaxScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   stepContainer: {
@@ -43,6 +43,6 @@ const styles = StyleSheet.create({
     width: 290,
     bottom: 0,
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
-});
+})

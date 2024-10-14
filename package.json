@@ -14,6 +14,7 @@
     "test:ui": "vitest --ui",
     "test:snapshots": "vitest -u",
     "lint": "eslint src/* app/*",
+    "lint:fix": "npm run lint -- --fix",
     "storybook-generate": "sb-rn-get-stories"
   },
   "jest": {

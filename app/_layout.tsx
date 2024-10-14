@@ -1,28 +1,28 @@
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "react-native-reanimated";
-import Constants from "expo-constants";
-import SafeThemeProvider from "@/src/providers/SafeThemeProvider";
-import SpaceMono from "../assets/fonts/SpaceMono-Regular.ttf";
+import { useFonts } from 'expo-font'
+import { Stack } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
+import { useEffect } from 'react'
+import 'react-native-reanimated'
+import Constants from 'expo-constants'
+import SafeThemeProvider from '@/src/providers/SafeThemeProvider'
+import SpaceMono from '../assets/fonts/SpaceMono-Regular.ttf'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync()
 
 function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono,
-  });
+  })
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync()
     }
-  }, [loaded]);
+  }, [loaded])
 
   if (!loaded) {
-    return null;
+    return null
   }
 
   return (
@@ -32,13 +32,13 @@ function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
     </SafeThemeProvider>
-  );
+  )
 }
 
-let AppEntryPoint = RootLayout;
+let AppEntryPoint = RootLayout
 
-if (Constants?.expoConfig?.extra?.storybookEnabled === "true") {
-  AppEntryPoint = require("../.storybook").default;
+if (Constants?.expoConfig?.extra?.storybookEnabled === 'true') {
+  AppEntryPoint = require('../.storybook').default
 }
 
-export default AppEntryPoint;
+export default AppEntryPoint
