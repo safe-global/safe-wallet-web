@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker/locale/af_ZA'
-import { getDeviatingSetups, getSafeSetups, getSharedSetup, isMultiChainSafeItem } from './multiChainSafe'
+import { getDeviatingSetups, getSafeSetups, getSharedSetup, isMultiChainSafeItem } from './utils'
 import { PendingSafeStatus } from '@/store/slices'
 import { PayMethod } from '@/features/counterfactual/PayNowPayLater'
 
-describe('multiChainSafe', () => {
+describe('multiChain/utils', () => {
   describe('isMultiChainSafeItem', () => {
     it('should return true for MultiChainSafeIem', () => {
       expect(

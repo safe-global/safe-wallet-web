@@ -29,8 +29,7 @@ import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features
 import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
 import { skipToken } from '@reduxjs/toolkit/query'
-import { hasMultiChainAddNetworkFeature } from './utils/multiChainSafe'
-
+import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 type AccountItemProps = {
   safeItem: SafeItem
   safeOverview?: SafeOverview

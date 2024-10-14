@@ -3,7 +3,7 @@ import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
 import { createWeb3ReadOnly, getRpcServiceUrl } from '@/hooks/wallets/web3'
 import { type ReplayedSafeProps } from '@/store/slices'
-import { predictAddressBasedOnReplayData } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
+import { predictAddressBasedOnReplayData } from '@/features/multichain/utils/utils'
 import chains from '@/config/chains'
 import { computeNewSafeAddress } from '.'
 
