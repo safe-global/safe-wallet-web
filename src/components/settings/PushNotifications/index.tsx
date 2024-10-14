@@ -29,7 +29,6 @@ import { PUSH_NOTIFICATION_EVENTS } from '@/services/analytics/events/push-notif
 import { AppRoutes } from '@/config/routes'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsMac } from '@/hooks/useIsMac'
-import useOnboard from '@/hooks/wallets/useOnboard'
 import ExternalLink from '@/components/common/ExternalLink'
 
 import css from './styles.module.css'
@@ -41,7 +40,6 @@ export const PushNotifications = (): ReactElement => {
   const isMac = useIsMac()
   const [isRegistering, setIsRegistering] = useState(false)
   const [isUpdatingIndexedDb, setIsUpdatingIndexedDb] = useState(false)
-  const onboard = useOnboard()
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'))
 

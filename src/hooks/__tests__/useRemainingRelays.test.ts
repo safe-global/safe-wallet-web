@@ -52,53 +52,13 @@ describe('fetch remaining relays hooks', () => {
 
       expect(mockFetch).toHaveBeenCalledTimes(2)
     })
-
-    it('should not do a network request if only swaps are supported but the tx is not a swap', () => {
-      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(
-        chainBuilder()
-          // @ts-expect-error - using local FEATURES enum
-          .with({ features: [FEATURES.RELAY_NATIVE_SWAPS] })
-          .build(),
-      )
-
-      const mockFetch = jest.spyOn(gateway, 'getRelayCount')
-
-      renderHook(() => useRelaysBySafe(JSON.stringify({ url: 'https://some.url', name: 'Some app' })))
-      expect(mockFetch).toHaveBeenCalledTimes(0)
-    })
-
-    it('should do a network request if only swaps are supported and the tx is a swap', async () => {
-      jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(
-        chainBuilder()
-          // @ts-expect-error - using local FEATURES enum
-          .with({ features: [FEATURES.RELAY_NATIVE_SWAPS] })
-          .build(),
-      )
-
-      const mockFetch = jest.spyOn(gateway, 'getRelayCount').mockResolvedValue({
-        limit: 5,
-        remaining: 3,
-      })
-
-      const { result } = renderHook(() =>
-        useRelaysBySafe(JSON.stringify({ url: 'https://some.url', name: 'Safe Swap' })),
-      )
-
-      await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledTimes(1)
-        expect(result.current[0]).toEqual({
-          limit: 5,
-          remaining: 3,
-        })
-      })
-    })
   })
 
   describe('useLeastRemainingRelays hook', () => {
     const ownerAddresses = ['0x00', '0x01', '0x02']
 
     it('should return 0 if one of the owners has no remaining relays', async () => {
-      const mockFetch = jest
+      jest
         .spyOn(gateway, 'getRelayCount')
         .mockResolvedValue({ limit: 5, remaining: 3 })
         .mockResolvedValueOnce({ limit: 5, remaining: 0 })
@@ -112,7 +72,7 @@ describe('fetch remaining relays hooks', () => {
     })
 
     it('should return the minimum number of relays amongst owners', async () => {
-      const mockFetch = jest
+      jest
         .spyOn(gateway, 'getRelayCount')
         .mockResolvedValue({ limit: 5, remaining: 3 })
         .mockResolvedValueOnce({ limit: 5, remaining: 2 })
@@ -126,7 +86,7 @@ describe('fetch remaining relays hooks', () => {
     })
 
     it('should return 0 if there is an error fetching the remaining relays', async () => {
-      const mockFetch = jest
+      jest
         .spyOn(gateway, 'getRelayCount')
         .mockResolvedValue({ limit: 5, remaining: 3 })
         .mockRejectedValueOnce('Failed to fetch')

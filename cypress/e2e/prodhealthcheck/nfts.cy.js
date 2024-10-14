@@ -16,7 +16,7 @@ let nftsSafes,
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
-describe.skip('NFTs tests', () => {
+describe.skip('[PROD] NFTs tests', () => {
   before(() => {
     getSafes(CATEGORIES.nfts)
       .then((nfts) => {
@@ -29,9 +29,7 @@ describe.skip('NFTs tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.prodbaseUrl + constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
-    main.acceptCookies()
     wallet.connectSigner(signer)
     nfts.waitForNftItems(2)
   })

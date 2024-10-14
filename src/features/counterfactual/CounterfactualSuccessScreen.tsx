@@ -1,7 +1,7 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationPendingStatuses } from '@/features/counterfactual/hooks/usePendingSafeStatuses'
 import { SafeCreationEvent, safeCreationSubscribe } from '@/features/counterfactual/services/safeCreationEvents'
-import { useCurrentChain } from '@/hooks/useChains'
+import { useChain, useCurrentChain } from '@/hooks/useChains'
 import { useEffect, useState } from 'react'
 import { Box, Button, Dialog, DialogContent, Typography } from '@mui/material'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
@@ -9,12 +9,18 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 const CounterfactualSuccessScreen = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [safeAddress, setSafeAddress] = useState<string>()
-  const chain = useCurrentChain()
+  const [chainId, setChainId] = useState<string>()
+  const currentChain = useCurrentChain()
+  const chain = useChain(chainId || currentChain?.chainId || '')
 
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
         if (event === SafeCreationEvent.INDEXED) {
+          if ('chainId' in detail) {
+            setChainId(detail.chainId)
+          }
+
           setSafeAddress(detail.safeAddress)
           setOpen(true)
         }
@@ -60,7 +66,7 @@ const CounterfactualSuccessScreen = () => {
 
         {safeAddress && (
           <Box p={2} bgcolor="background.main" borderRadius={1} fontSize={14}>
-            <EthHashInfo address={safeAddress} shortAddress={false} showCopyButton avatarSize={32} />
+            <EthHashInfo address={safeAddress} chainId={chainId} shortAddress={false} showCopyButton avatarSize={32} />
           </Box>
         )}
 

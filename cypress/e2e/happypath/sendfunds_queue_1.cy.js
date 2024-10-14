@@ -10,6 +10,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as ls from '../../support/localstorage_data.js'
 import * as navigation from '../pages/navigation.page.js'
+import * as fundSafes from '../../fixtures/safes/funds.json'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const receiver = walletCredentials.OWNER_2_WALLET_ADDRESS
@@ -54,14 +55,14 @@ function executeTransactionFlow(fromSafe) {
 describe('Send funds from queue happy path tests 1', () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
+      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
       main.addToLocalStorage(
         constants.localStorageKeys.SAFE_v2__tokenlist_onboarding,
         ls.cookies.acceptedTokenListOnboarding,
       )
     })
 
-    safesData = await getSafes(CATEGORIES.funds)
+    safesData = fundSafes
     apiKit = new SafeApiKit({
       chainId: BigInt(1),
       txServiceUrl: constants.stagingTxServiceUrl,

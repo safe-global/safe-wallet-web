@@ -1,15 +1,9 @@
-import type { StakingTxInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import TokenAmount from '@/components/common/TokenAmount'
+import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-const StakingTxExitInfo = ({ info }: { info: StakingTxInfo }) => {
+const StakingTxExitInfo = ({ info }: { info: StakingTxExitInfo }) => {
   return (
     <>
-      <TokenAmount
-        value={info.value}
-        tokenSymbol={info.tokenInfo.symbol}
-        decimals={info.tokenInfo.decimals}
-        logoUri={info.tokenInfo.logoUri}
-      />
+      {info.numValidators} Validator{info.numValidators > 1 ? 's' : ''}
     </>
   )
 }

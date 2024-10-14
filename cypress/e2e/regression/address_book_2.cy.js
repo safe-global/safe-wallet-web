@@ -21,9 +21,6 @@ describe('Address book tests - 2', () => {
 
   beforeEach(() => {
     cy.visit(constants.addressBookUrl + staticSafes.SEP_STATIC_SAFE_4)
-    cy.clearLocalStorage()
-    cy.wait(1000)
-    main.acceptCookies()
   })
 
   it('Verify Name and Address columns sorting works', () => {

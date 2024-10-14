@@ -17,11 +17,10 @@ export enum PendingTxType {
   SAFE_TX = 'SAFE_TX',
 }
 
-const ActivePendingStates = [PendingStatus.RELAYING, PendingStatus.INDEXING, PendingStatus.PROCESSING]
-
 export type PendingTxCommonProps = {
   chainId: string
   safeAddress: string
+  nonce: number
   groupKey?: string
 }
 

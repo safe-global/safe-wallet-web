@@ -136,7 +136,6 @@ export const ExecuteThroughRoleForm = ({
   const walletCanPay = useWalletCanPay({
     gasLimit,
     maxFeePerGas: advancedParams.maxFeePerGas,
-    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
   })
 
   const submitDisabled = !txThroughRole || isPending || disableSubmit || (needsRiskConfirmation && !isRiskConfirmed)

@@ -111,7 +111,9 @@ const ActivityRewardsSection = () => {
               <Step title="Get activity points" active />
               <Step title="Receive rewards" active={false} />
             </div>
-            <ExternalLink href="https://safe.global/pass">Learn more</ExternalLink>
+            <ExternalLink onClick={onLearnMore} href="https://safe.global/pass">
+              Learn more
+            </ExternalLink>
           </Grid>
           <Grid item xs={12}>
             <Box className={css.links} gap={2}>

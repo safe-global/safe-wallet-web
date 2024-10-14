@@ -14,13 +14,12 @@ const typeDeleteAllowance = data.type.deleteSpendingLimit
 const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
 
-describe('Tx history tests 1', () => {
+describe('[PROD] Tx history tests 1', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.intercept(
       'GET',
       `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
@@ -34,10 +33,8 @@ describe('Tx history tests 1', () => {
 
     cy.visit(constants.prodbaseUrl + constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
     cy.wait('@allTransactions')
-    main.acceptCookies()
   })
 
-  // TODO: Added to prod
   // Account creation
   it('Verify summary for account creation', () => {
     createTx.verifySummaryByName(
@@ -47,7 +44,6 @@ describe('Tx history tests 1', () => {
     )
   })
 
-  // TODO: Added to prod
   it('Verify exapanded details for account creation', () => {
     createTx.clickOnTransactionItemByName(typeCreateAccount.title)
     createTx.verifyExpandedDetails([
@@ -63,7 +59,6 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  // TODO: Added to prod
   // Token send
   it('Verify exapanded details for token send', () => {
     createTx.clickOnTransactionItemByName(typeSend.title, typeSend.summaryTxInfo)
@@ -75,7 +70,6 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  // TODO: Added to prod
   // Spending limits
   // TODO: Unskip after next release due to design tx
   it.skip('Verify summary for setting spend limits', () => {
@@ -87,7 +81,6 @@ describe('Tx history tests 1', () => {
     )
   })
 
-  // TODO: Added to prod
   // TODO: Unskip after next release due to design tx
   it.skip('Verify exapanded details for initial spending limits setup', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
@@ -102,7 +95,6 @@ describe('Tx history tests 1', () => {
     )
   })
 
-  // TODO: Added to prod
   // TODO: Unskip after next release due to design tx
   it.skip('Verify that 3 actions exist in initial spending limits setup', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
@@ -127,7 +119,6 @@ describe('Tx history tests 1', () => {
     ])
   })
 
-  // TODO: Added to prod
   it('Verify advanced details displayed in exapanded details for allowance deletion', () => {
     createTx.clickOnTransactionItemByName(typeDeleteAllowance.title, typeDeleteAllowance.summaryTxInfo)
     createTx.expandAdvancedDetails([typeDeleteAllowance.baseGas])

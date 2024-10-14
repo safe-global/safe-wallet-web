@@ -4,7 +4,6 @@ import * as safeapps from '../pages/safeapps.pages'
 
 describe('Browser permissions tests', () => {
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.fixture('safe-app').then((html) => {
       cy.intercept('GET', `${constants.testAppUrl}/*`, html)
       cy.intercept('GET', `*/manifest.json`, {
@@ -15,7 +14,6 @@ describe('Browser permissions tests', () => {
       })
     })
     cy.visitSafeApp(`${constants.testAppUrl}/app`)
-    main.acceptCookies()
   })
 
   // @TODO: unknown apps don't have permissions

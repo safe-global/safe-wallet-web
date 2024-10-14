@@ -21,8 +21,6 @@ describe('Sidebar non-owner tests', () => {
   beforeEach(() => {
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_11)
     cy.wait(2000)
-    cy.clearLocalStorage()
-    main.acceptCookies()
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set3)
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.addedSafes)
   })

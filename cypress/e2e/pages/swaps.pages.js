@@ -274,18 +274,19 @@ export function verifyOrderIDUrl() {
   cy.get(create_tx.txRowTitle)
     .contains(orderIdStr)
     .parent()
+    .parent()
     .within(() => {
       cy.get(explorerBtn).should('have.attr', 'href').and('include', cowOrdersUrl)
     })
 }
 
 export function verifyOrderDetails(limitPrice, expiry, slippage, interactWith, oderID, widgetFee) {
-  cy.get(limitPriceFld).contains(limitPrice)
-  cy.get(expiryFld).contains(expiry)
-  cy.get(slippageFld).contains(slippage)
-  cy.get(orderIDFld).contains(oderID)
-  cy.get(widgetFeeFld).contains(widgetFee)
-  cy.get(interactWithFld).contains(interactWith)
+  cy.contains(limitPrice)
+  cy.contains(expiry)
+  cy.contains(slippage)
+  cy.contains(oderID)
+  cy.contains(widgetFee)
+  cy.contains(interactWith)
 }
 
 export function verifyRecipientAlertIsDisplayed() {

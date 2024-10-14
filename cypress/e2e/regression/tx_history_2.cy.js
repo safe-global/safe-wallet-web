@@ -23,7 +23,6 @@ describe('Tx history tests 2', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.intercept(
       'GET',
       `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
@@ -36,7 +35,6 @@ describe('Tx history tests 2', () => {
     ).as('allTransactions')
 
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
-    main.acceptCookies()
   })
 
   it('Verify number of transactions is correct', () => {

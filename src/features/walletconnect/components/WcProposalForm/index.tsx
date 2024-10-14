@@ -146,8 +146,8 @@ const WcProposalForm = ({ proposal, setProposal, onApprove }: ProposalFormProps)
         />
       )}
 
-      {isSafePass && Boolean(sanctionedAddress) && (
-        <BlockedAddress address={sanctionedAddress} featureName="Safe{Pass}" onClose={onReject} />
+      {isSafePass && sanctionedAddress && (
+        <BlockedAddress address={sanctionedAddress} featureTitle="Safe{Pass}" onClose={onReject} />
       )}
 
       <Divider flexItem className={css.divider} />

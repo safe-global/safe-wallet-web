@@ -6,16 +6,19 @@ exports[`HexEncodedData should not cut the text in case the limit option is high
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-f2z333-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
+      data-testid="tx-row-title"
+      style="word-break: break-word;"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
       >
         Data (hex-encoded)
       </p>
     </div>
     <div
       class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
     >
       <div
         class="encodedData MuiBox-root css-0"
@@ -65,16 +68,19 @@ exports[`HexEncodedData should not highlight the data if highlight option is fal
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-f2z333-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
+      data-testid="tx-row-title"
+      style="word-break: break-word;"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
       >
         Some arbitrary data
       </p>
     </div>
     <div
       class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
     >
       <div
         class="encodedData MuiBox-root css-0"
@@ -125,16 +131,19 @@ exports[`HexEncodedData should render the default component markup 1`] = `
     class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-f2z333-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
+      data-testid="tx-row-title"
+      style="word-break: break-word;"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-s5yue5-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
       >
         Data (hex-encoded)
       </p>
     </div>
     <div
       class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+      data-testid="tx-data-row"
     >
       <div
         class="encodedData MuiBox-root css-0"

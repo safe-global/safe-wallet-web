@@ -6,10 +6,8 @@ import { Grid } from '@mui/material'
 import PendingTxsList from '@/components/dashboard/PendingTxs/PendingTxsList'
 import AssetsWidget from '@/components/dashboard/Assets'
 import Overview from '@/components/dashboard/Overview/Overview'
-import { FeaturedApps } from '@/components/dashboard/FeaturedApps/FeaturedApps'
 import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
 import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
-import useRecovery from '@/features/recovery/hooks/useRecovery'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSection'
 import { useHasFeature } from '@/hooks/useChains'
@@ -28,8 +26,6 @@ const Dashboard = (): ReactElement => {
   const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER) && isSafeTokenEnabled
   const supportsRecovery = useIsRecoverySupported()
-  const [recovery] = useRecovery()
-  const showRecoveryWidget = supportsRecovery && !recovery
 
   return (
     <>
@@ -67,12 +63,6 @@ const Dashboard = (): ReactElement => {
             <Grid item xs={12} lg={6}>
               <PendingTxsList />
             </Grid>
-
-            {showSafeApps && (
-              <Grid item xs={12} lg={showRecoveryWidget ? 12 : 6}>
-                <FeaturedApps stackedLayout={!showRecoveryWidget} />
-              </Grid>
-            )}
 
             {showSafeApps && (
               <Grid item xs={12}>

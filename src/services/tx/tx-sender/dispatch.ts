@@ -1,4 +1,5 @@
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { isMultisigExecutionInfo } from '@/utils/transaction-guards'
 import { isHardwareWallet, isSmartContractWallet } from '@/utils/wallets'
 import type { MultiSendCallOnlyContractImplementationType } from '@safe-global/protocol-kit'
 import {
@@ -77,6 +78,7 @@ export const dispatchTxProposal = async ({
     txDispatch(txId ? TxEvent.SIGNATURE_PROPOSED : TxEvent.PROPOSED, {
       txId: proposedTx.txId,
       signerAddress: txId ? sender : undefined,
+      nonce: safeTx.data.nonce,
     })
   }
 
@@ -142,7 +144,7 @@ export const dispatchOnChainSigning = async (
 ) => {
   const sdk = await getSafeSDKWithSigner(provider)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
-  const eventParams = { txId }
+  const eventParams = { txId, nonce: safeTx.data.nonce }
 
   const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
 
@@ -174,9 +176,10 @@ export const dispatchSafeTxSpeedUp = async (
   chainId: SafeInfo['chainId'],
   signerAddress: string,
   safeAddress: string,
+  nonce: number,
 ) => {
   const sdk = await getSafeSDKWithSigner(provider)
-  const eventParams = { txId }
+  const eventParams = { txId, nonce }
   const signerNonce = txOptions.nonce
   const isSmartAccount = await isSmartContractWallet(chainId, signerAddress)
 
@@ -226,8 +229,9 @@ export const dispatchCustomTxSpeedUp = async (
   provider: Eip1193Provider,
   signerAddress: string,
   safeAddress: string,
+  nonce: number,
 ) => {
-  const eventParams = { txId }
+  const eventParams = { txId, nonce }
   const signerNonce = txOptions.nonce
 
   // Execute the tx
@@ -249,6 +253,7 @@ export const dispatchCustomTxSpeedUp = async (
     to,
     groupKey: result?.hash,
     txType: 'Custom',
+    nonce,
   })
 
   return result.hash
@@ -267,7 +272,7 @@ export const dispatchTxExecution = async (
   isSmartAccount: boolean,
 ): Promise<string> => {
   const sdk = await getSafeSDKWithSigner(provider)
-  const eventParams = { txId }
+  const eventParams = { txId, nonce: safeTx.data.nonce }
 
   const signerNonce = txOptions.nonce ?? (await getUserNonce(signerAddress))
 
@@ -289,7 +294,7 @@ export const dispatchTxExecution = async (
     } else {
       result = await sdk.executeTransaction(safeTx, txOptions)
     }
-    txDispatch(TxEvent.EXECUTING, eventParams)
+    txDispatch(TxEvent.EXECUTING, { ...eventParams })
   } catch (error) {
     txDispatch(TxEvent.FAILED, { ...eventParams, error: asError(error) })
     throw error
@@ -297,6 +302,7 @@ export const dispatchTxExecution = async (
 
   txDispatch(TxEvent.PROCESSING, {
     ...eventParams,
+    nonce: safeTx.data.nonce,
     txHash: result.hash,
     signerAddress,
     signerNonce,
@@ -315,6 +321,7 @@ export const dispatchBatchExecution = async (
   signerAddress: string,
   safeAddress: string,
   overrides: Omit<Overrides, 'nonce'> & { nonce: number },
+  nonce: number,
 ) => {
   const groupKey = multiSendTxData
 
@@ -332,11 +339,11 @@ export const dispatchBatchExecution = async (
     result = await multiSendContract.contract.connect(signer).multiSend(multiSendTxData, overrides)
 
     txIds.forEach((txId) => {
-      txDispatch(TxEvent.EXECUTING, { txId, groupKey })
+      txDispatch(TxEvent.EXECUTING, { txId, groupKey, nonce })
     })
   } catch (err) {
     txIds.forEach((txId) => {
-      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey })
+      txDispatch(TxEvent.FAILED, { txId, error: asError(err), groupKey, nonce })
     })
     throw err
   }
@@ -352,6 +359,7 @@ export const dispatchBatchExecution = async (
       txType: 'Custom',
       data: txData,
       to: txTo,
+      nonce,
     })
   })
 
@@ -511,12 +519,12 @@ export const dispatchTxRelay = async (
       throw new Error('Transaction could not be relayed')
     }
 
-    txDispatch(TxEvent.RELAYING, { taskId, txId })
+    txDispatch(TxEvent.RELAYING, { taskId, txId, nonce: safeTx.data.nonce })
 
     // Monitor relay tx
-    waitForRelayedTx(taskId, [txId], safe.address.value)
+    waitForRelayedTx(taskId, [txId], safe.address.value, safeTx.data.nonce)
   } catch (error) {
-    txDispatch(TxEvent.FAILED, { txId, error: asError(error) })
+    txDispatch(TxEvent.FAILED, { txId, error: asError(error), nonce: safeTx.data.nonce })
     throw error
   }
 }
@@ -552,8 +560,10 @@ export const dispatchBatchExecutionRelay = async (
   }
 
   const taskId = relayResponse.taskId
-  txs.forEach(({ txId }) => {
-    txDispatch(TxEvent.RELAYING, { taskId, txId, groupKey })
+  txs.forEach(({ txId, detailedExecutionInfo }) => {
+    if (isMultisigExecutionInfo(detailedExecutionInfo)) {
+      txDispatch(TxEvent.RELAYING, { taskId, txId, groupKey, nonce: detailedExecutionInfo.nonce })
+    }
   })
 
   // Monitor relay tx
@@ -561,6 +571,7 @@ export const dispatchBatchExecutionRelay = async (
     taskId,
     txs.map((tx) => tx.txId),
     safeAddress,
+    isMultisigExecutionInfo(txs[0].detailedExecutionInfo) ? txs[0].detailedExecutionInfo.nonce : 0,
     groupKey,
   )
 }

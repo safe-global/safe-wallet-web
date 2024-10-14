@@ -12,7 +12,7 @@ import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants
 
 const setupFetchStub =
   (data: any, status: number = 200) =>
-  (_url: string) => {
+  () => {
     return Promise.resolve({
       json: () => Promise.resolve(data),
       status,
@@ -32,8 +32,8 @@ describe('_getRedeemDeadline', () => {
     jest.clearAllMocks()
   })
 
-  it('should should only call the provider once per address on a chain', async () => {
-    for await (const _ of Array.from({ length: 10 })) {
+  it('should only call the provider once per address on a chain', async () => {
+    for (let i = 0; i < 10; i++) {
       await _getRedeemDeadline({ chainId: 1, contract: toBeHex('0x1', 20) } as VestingData, mockProvider)
     }
 

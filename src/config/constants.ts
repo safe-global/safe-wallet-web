@@ -59,10 +59,9 @@ export const TENDERLY_ORG_NAME = process.env.NEXT_PUBLIC_TENDERLY_ORG_NAME || ''
 export enum SafeAppsTag {
   NFT = 'nft',
   TX_BUILDER = 'transaction-builder',
-  DASHBOARD_FEATURED = 'dashboard-widgets',
   SAFE_GOVERNANCE_APP = 'safe-governance-app',
-  WALLET_CONNECT = 'wallet-connect',
   ONRAMP = 'onramp',
+  RECOVERY_SYGNUM = 'recovery-sygnum',
 }
 
 // Help Center

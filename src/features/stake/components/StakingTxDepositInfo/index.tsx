@@ -1,7 +1,7 @@
-import type { StakingTxInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import type { StakingTxDepositInfo as StakingTxDepositInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import TokenAmount from '@/components/common/TokenAmount'
 
-export const StakingTxDepositInfo = ({ info }: { info: StakingTxInfo }) => {
+export const StakingTxDepositInfo = ({ info }: { info: StakingTxDepositInfoType }) => {
   return (
     <>
       <TokenAmount

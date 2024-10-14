@@ -16,8 +16,6 @@ describe('Sidebar tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_9)
-    cy.clearLocalStorage()
-    main.acceptCookies()
   })
 
   it('Verify Current network is displayed at the top', () => {

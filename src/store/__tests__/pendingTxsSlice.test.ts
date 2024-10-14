@@ -4,11 +4,13 @@ import { selectPendingTxIdsBySafe } from '../pendingTxsSlice'
 
 const pendingTxs: PendingTxsState = {
   '123': {
+    nonce: 1,
     chainId: '5',
     safeAddress: '0x123',
     status: PendingStatus.INDEXING,
   },
   '456': {
+    nonce: 1,
     chainId: '5',
     safeAddress: '0x456',
     status: PendingStatus.INDEXING,
@@ -30,6 +32,7 @@ describe('pendingTxsSlice', () => {
 
   it('should select a pending tx by id', () => {
     expect(selectPendingTxById({ pendingTxs } as unknown as RootState, '456')).toEqual({
+      nonce: 1,
       chainId: '5',
       safeAddress: '0x456',
       status: PendingStatus.INDEXING,

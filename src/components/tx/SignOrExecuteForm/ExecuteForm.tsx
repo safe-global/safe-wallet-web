@@ -66,7 +66,7 @@ export const ExecuteForm = ({
 
   // SC wallets can relay fully signed transactions
   const [walletCanRelay] = useWalletCanRelay(safeTx)
-  const relays = useRelaysBySafe(origin)
+  const relays = useRelaysBySafe()
   // The transaction can/will be relayed
   const canRelay = walletCanRelay && hasRemainingRelays(relays[0])
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
@@ -116,7 +116,6 @@ export const ExecuteForm = ({
   const walletCanPay = useWalletCanPay({
     gasLimit,
     maxFeePerGas: advancedParams.maxFeePerGas,
-    maxPriorityFeePerGas: advancedParams.maxPriorityFeePerGas,
   })
 
   const cannotPropose = !isOwner && !onlyExecute

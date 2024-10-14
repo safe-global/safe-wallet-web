@@ -26,7 +26,7 @@ import * as safeContracts from '@/services/contracts/safeContracts'
 
 import * as web3 from '@/hooks/wallets/web3'
 
-const setupFetchStub = (data: any) => (_url: string) => {
+const setupFetchStub = (data: any) => () => {
   return Promise.resolve({
     json: () => Promise.resolve(data),
     status: 200,
@@ -72,7 +72,7 @@ const mockSafeSDK = {
     signatures: new Map(),
     addSignature: jest.fn(),
     data: {
-      nonce: '1',
+      nonce: 1,
     },
   })),
   createRejectionTransaction: jest.fn(() => ({
@@ -102,7 +102,7 @@ describe('txSender', () => {
     const mockBrowserProvider = new BrowserProvider(MockEip1193Provider)
 
     jest.spyOn(mockBrowserProvider, 'getSigner').mockImplementation(
-      async (address?: string | number | undefined) =>
+      async () =>
         Promise.resolve({
           getAddress: jest.fn(() => Promise.resolve('0x0000000000000000000000000000000000000123')),
           provider: MockEip1193Provider,
@@ -210,7 +210,7 @@ describe('txSender', () => {
       expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890', undefined)
       expect(proposedTx).toEqual({ txId: '123' })
 
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSED', { txId: '123' })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('PROPOSED', { txId: '123', nonce: 0 })
     })
 
     it('should dispatch a SIGNATURE_PROPOSED event if tx has signatures and an id', async () => {
@@ -231,7 +231,11 @@ describe('txSender', () => {
       expect(proposeTx).toHaveBeenCalledWith('4', '0x123', '0x456', tx, '0x1234567890', undefined)
       expect(proposedTx).toEqual({ txId: '123' })
 
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSED', { txId: '123', signerAddress: '0x456' })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('SIGNATURE_PROPOSED', {
+        txId: '123',
+        signerAddress: '0x456',
+        nonce: 0,
+      })
     })
 
     it('should fail to propose a signature', async () => {
@@ -445,8 +449,9 @@ describe('txSender', () => {
       await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, safeAddress, false)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId, nonce: 1 })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', {
+        nonce: 1,
         txId,
         signerAddress: SIGNER_ADDRESS,
         signerNonce: 1,
@@ -474,7 +479,7 @@ describe('txSender', () => {
       )
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error') })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('FAILED', { txId, error: new Error('error'), nonce: 1 })
     })
 
     it('should revert a tx', async () => {
@@ -493,8 +498,9 @@ describe('txSender', () => {
       await dispatchTxExecution(safeTx, { nonce: 1 }, txId, MockEip1193Provider, SIGNER_ADDRESS, '0x123', false)
 
       expect(mockSafeSDK.executeTransaction).toHaveBeenCalled()
-      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId })
+      expect(txEvents.txDispatch).toHaveBeenCalledWith('EXECUTING', { txId, nonce: 1 })
       expect(txEvents.txDispatch).toHaveBeenCalledWith('PROCESSING', {
+        nonce: 1,
         txId,
         signerAddress: SIGNER_ADDRESS,
         signerNonce: 1,
@@ -512,10 +518,16 @@ describe('txSender', () => {
 
       const txDetails1 = {
         txId: 'multisig_0x01',
+        detailedExecutionInfo: {
+          type: 'MULTISIG',
+        },
       } as TransactionDetails
 
       const txDetails2 = {
         txId: 'multisig_0x02',
+        detailedExecutionInfo: {
+          type: 'MULTISIG',
+        },
       } as TransactionDetails
 
       const txs = [txDetails1, txDetails2]

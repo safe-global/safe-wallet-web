@@ -1,20 +1,18 @@
-import { getChainsConfig } from '@safe-global/safe-gateway-typescript-sdk'
 import useLoadChains from '@/hooks/loadables/useLoadChains'
 import { act, renderHook } from '@/tests/test-utils'
+import { getConfigs } from '@/hooks/loadables/helpers/config'
 
 // Mock getChainsConfig
-jest.mock('@safe-global/safe-gateway-typescript-sdk', () => {
+jest.mock('@/hooks/loadables/helpers/config.ts', () => {
   return {
-    getChainsConfig: jest.fn(() => {
+    getConfigs: jest.fn(() => {
       return new Promise((resolve) => {
         setTimeout(() => {
-          resolve({
-            results: [
-              {
-                chainId: '4',
-              },
-            ],
-          })
+          resolve([
+            {
+              chainId: '4',
+            },
+          ])
         }, 100)
       })
     }),
@@ -61,7 +59,7 @@ describe('useLoadChains hook', () => {
 
   it('should set the error state when the promise rejects', async () => {
     // Change the getChainsConfig mock to reject
-    ;(getChainsConfig as jest.Mock).mockImplementation(() => Promise.reject(new Error('Something went wrong')))
+    ;(getConfigs as jest.Mock).mockImplementation(() => Promise.reject(new Error('Something went wrong')))
 
     const { result } = renderHook(() => useLoadChains())
 

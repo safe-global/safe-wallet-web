@@ -9,9 +9,6 @@ let staticSafes = []
 describe('Preview drawer tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
-    cy.clearLocalStorage().then(() => {
-      main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies_1_1, ls.cookies.acceptedCookies)
-    })
   })
 
   beforeEach(() => {

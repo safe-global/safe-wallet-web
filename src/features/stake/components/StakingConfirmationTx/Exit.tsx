@@ -1,16 +1,16 @@
-import { Typography, Stack, Alert } from '@mui/material'
+import { Alert, Stack, Typography } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
-import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { formatDurationFromSeconds } from '@/utils/formatters'
+import { formatDurationFromMilliseconds } from '@/utils/formatters'
 import { type NativeStakingValidatorsExitConfirmationView } from '@safe-global/safe-gateway-typescript-sdk/dist/types/decoded-data'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
+import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
 
 type StakingOrderConfirmationViewProps = {
-  order: NativeStakingValidatorsExitConfirmationView | StakingTxExitInfo
+  order: NativeStakingValidatorsExitConfirmationView
 }
 
 const StakingConfirmationTxExit = ({ order }: StakingOrderConfirmationViewProps) => {
-  const withdrawIn = formatDurationFromSeconds(order.estimatedExitTime + order.estimatedWithdrawalTime, [
+  const withdrawIn = formatDurationFromMilliseconds(order.estimatedExitTime + order.estimatedWithdrawalTime, [
     'days',
     'hours',
   ])
@@ -31,7 +31,26 @@ const StakingConfirmationTxExit = ({ order }: StakingOrderConfirmationViewProps)
         ]}
       />
 
-      <FieldsGrid title="Withdraw in">Up to {withdrawIn}</FieldsGrid>
+      <FieldsGrid
+        title={
+          <>
+            Withdraw in
+            <InfoTooltip
+              title={
+                <>
+                  Withdrawal time is the sum of:
+                  <ul>
+                    <li>Time until your validator is successfully exited after the withdraw request</li>
+                    <li>Time for a stake to receive Consensus rewards on the execution layer</li>
+                  </ul>
+                </>
+              }
+            />
+          </>
+        }
+      >
+        Up to {withdrawIn}
+      </FieldsGrid>
 
       <Typography variant="body2" color="text.secondary" mt={2}>
         The selected amount and any rewards will be withdrawn from Dedicated Staking for ETH after the validator exit.

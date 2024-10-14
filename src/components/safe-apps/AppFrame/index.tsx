@@ -125,14 +125,14 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
     return <div />
   }
 
-  if (Boolean(sanctionedAddress) && isSafePass) {
+  if (sanctionedAddress && isSafePass) {
     return (
       <>
         <Head>
           <title>{`Safe Apps - Viewer - ${remoteApp ? remoteApp.name : UNKNOWN_APP_NAME}`}</title>
         </Head>
         <Box p={2}>
-          <BlockedAddress address={sanctionedAddress} featureName="Safe{Pass} Safe app" />
+          <BlockedAddress address={sanctionedAddress} featureTitle="Safe{Pass} Safe app" />
         </Box>
       </>
     )

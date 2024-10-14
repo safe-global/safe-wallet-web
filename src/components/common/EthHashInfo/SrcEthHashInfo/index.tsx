@@ -82,7 +82,7 @@ const SrcEthHashInfo = ({
         </div>
       )}
 
-      <Box overflow="hidden" className={onlyName ? css.inline : undefined}>
+      <Box overflow="hidden" className={onlyName ? css.inline : undefined} gap={0.5}>
         {name && (
           <Box title={name} display="flex" alignItems="center" gap={0.5}>
             <Box overflow="hidden" textOverflow="ellipsis">

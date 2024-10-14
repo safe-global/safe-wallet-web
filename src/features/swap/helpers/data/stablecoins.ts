@@ -506,4 +506,39 @@ export const stableCoinAddresses: {
     symbol: 'USDT',
     chains: ['sepolia'],
   },
+  '0xaf204776c7245bf4147c2612bf6e5972ee483701': {
+    name: 'Savings xDai',
+    symbol: 'SDAI',
+    chains: ['gnosis'],
+  },
+  '0x83f20f44975d03b1b09e64809b757c47f942beea': {
+    name: 'Savings xDai',
+    symbol: 'SDAI',
+    chains: ['ethereum'],
+  },
+  '0x4c612e3b15b96ff9a6faed838f8d07d479a8dd4c': {
+    name: 'Aave v3 sDai',
+    symbol: 'ASDAI',
+    chains: ['ethereum'],
+  },
+  '0x7a5c3860a77a8dc1b225bd46d0fb2ac1c6d191bc': {
+    name: 'Aave v3 sDai',
+    symbol: 'ASDAI',
+    chains: ['gnosis'],
+  },
+  '0x2a22f9c3b484c3629090feed35f17ff8f88f76f0': {
+    name: 'Gnosis xDAI Bridged USDC',
+    symbol: 'USDC.e',
+    chains: ['gnosis'],
+  },
+  '0xcb444e90d8198415266c6a2724b7900fb12fc56e': {
+    name: 'Monerium EUR emoney',
+    symbol: 'EURE',
+    chains: ['gnosis'],
+  },
+  '0xdc035d45d973e3ec169d2276ddab16f1e407384f': {
+    name: 'Sky dollar',
+    symbol: 'USDS',
+    chains: ['ethereum'],
+  },
 }

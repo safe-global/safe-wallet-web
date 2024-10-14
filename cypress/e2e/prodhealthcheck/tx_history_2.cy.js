@@ -17,13 +17,12 @@ const typeSideActions = data.type.sideActions
 const typeGeneral = data.type.general
 const typeUntrustedToken = data.type.untrustedReceivedToken
 
-describe('Tx history tests 2', () => {
+describe('[PROD] Tx history tests 2', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.intercept(
       'GET',
       `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
@@ -36,7 +35,6 @@ describe('Tx history tests 2', () => {
     ).as('allTransactions')
 
     cy.visit(constants.prodbaseUrl + constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
-    main.acceptCookies()
   })
 
   it('Verify number of transactions is correct', () => {

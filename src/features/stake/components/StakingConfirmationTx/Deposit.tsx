@@ -1,4 +1,4 @@
-import { Typography, Stack, Box } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { StakingTxDepositInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
@@ -6,9 +6,10 @@ import {
   type NativeStakingDepositConfirmationView,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
-import { formatVisualAmount, formatDurationFromSeconds } from '@/utils/formatters'
+import { formatDurationFromMilliseconds, formatVisualAmount } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import StakingStatus from '@/features/stake/components/StakingStatus'
+import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
 
 type StakingOrderConfirmationViewProps = {
   order: NativeStakingDepositConfirmationView | StakingTxDepositInfo
@@ -19,6 +20,8 @@ const CURRENCY = 'USD'
 const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewProps) => {
   const isOrder = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
 
+  // the fee is returned in decimal format, so we multiply by 100 to get the percentage
+  const fee = (order.fee * 100).toFixed(2)
   return (
     <Stack gap={isOrder ? 2 : 1}>
       {isOrder && (
@@ -31,7 +34,7 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
             },
             {
               value: order.annualNrr.toFixed(3) + '%',
-              label: 'Earn (after fees)',
+              label: 'Rewards rate (after fees)',
             },
           ]}
         />
@@ -49,7 +52,16 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
         {formatCurrency(order.expectedFiatMonthlyReward, CURRENCY)})
       </FieldsGrid>
 
-      <FieldsGrid title="Fee">{order.fee}%</FieldsGrid>
+      <FieldsGrid
+        title={
+          <>
+            Fee
+            <InfoTooltip title="The widget fee incurred here is charged by Kiln for the operation of this widget. The fee is calculated automatically. Part of the fee will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor Safe{Wallet} operates the Kiln Widget and/or Kiln." />
+          </>
+        }
+      >
+        {fee} %
+      </FieldsGrid>
 
       <Stack
         {...{ [isOrder ? 'border' : 'borderTop']: '1px solid' }}
@@ -68,11 +80,12 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
           <FieldsGrid title="Validators">{order.numValidators}</FieldsGrid>
         )}
 
-        <FieldsGrid title="Active in">{formatDurationFromSeconds(order.estimatedEntryTime)}</FieldsGrid>
-        <FieldsGrid title="Rewards">Approx. every 5 days after 4 days from activation</FieldsGrid>
+        <FieldsGrid title="Activation time">{formatDurationFromMilliseconds(order.estimatedEntryTime)}</FieldsGrid>
+
+        <FieldsGrid title="Rewards">Approx. every 5 days after activation</FieldsGrid>
 
         {!isOrder && (
-          <FieldsGrid title="Status">
+          <FieldsGrid title="Validator status">
             <StakingStatus status={order.status} />
           </FieldsGrid>
         )}

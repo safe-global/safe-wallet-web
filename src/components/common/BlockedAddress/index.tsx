@@ -7,11 +7,11 @@ import { AppRoutes } from '@/config/routes'
 
 export const BlockedAddress = ({
   address,
-  featureName,
+  featureTitle,
   onClose,
 }: {
-  address?: string
-  featureName: string
+  address: string
+  featureTitle: string
   onClose?: () => void
 }): ReactElement => {
   const theme = useTheme()
@@ -27,7 +27,7 @@ export const BlockedAddress = ({
     <Disclaimer
       title="Blocked address"
       subtitle={displayAddress}
-      content={`The above address is part of the OFAC SDN list and the ${featureName} is unavailable for sanctioned addresses.`}
+      content={`The above address is part of the OFAC SDN list and the ${featureTitle} is unavailable for sanctioned addresses.`}
       onAccept={onClose ?? handleAccept}
     />
   )

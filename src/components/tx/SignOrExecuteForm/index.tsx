@@ -27,7 +27,7 @@ import { trackEvent } from '@/services/analytics'
 import useChainId from '@/hooks/useChainId'
 import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
 import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isCustomTxInfo, isGenericConfirmation } from '@/utils/transaction-guards'
+import { isAnyStakingTxInfo, isCustomTxInfo, isGenericConfirmation, isOrderTxInfo } from '@/utils/transaction-guards'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
 import { Blockaid } from '../security/blockaid'
@@ -63,8 +63,13 @@ const trackTxEvents = (
   isCreation: boolean,
   isExecuted: boolean,
   isRoleExecution: boolean,
+  isDelegateCreation: boolean,
 ) => {
-  const creationEvent = isRoleExecution ? TX_EVENTS.CREATE_VIA_ROLE : TX_EVENTS.CREATE
+  const creationEvent = isRoleExecution
+    ? TX_EVENTS.CREATE_VIA_ROLE
+    : isDelegateCreation
+    ? TX_EVENTS.CREATE_VIA_DELEGATE
+    : TX_EVENTS.CREATE
   const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
   const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
   const txType = getTransactionTrackingType(details)
@@ -104,7 +109,12 @@ export const SignOrExecuteForm = ({
         }
       : skipToken,
   )
-  const showTxDetails = props.txId && txDetails && !isCustomTxInfo(txDetails.txInfo)
+  const showTxDetails =
+    props.txId &&
+    txDetails &&
+    !isCustomTxInfo(txDetails.txInfo) &&
+    !isAnyStakingTxInfo(txDetails.txInfo) &&
+    !isOrderTxInfo(txDetails.txInfo)
   const isDelegate = useIsWalletDelegate()
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
@@ -130,18 +140,23 @@ export const SignOrExecuteForm = ({
     (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
 
   const onFormSubmit = useCallback(
-    async (txId: string, isExecuted = false, isRoleExecution = false) => {
+    async (txId: string, isExecuted = false, isRoleExecution = false, isDelegateCreation = false) => {
       onSubmit?.(txId, isExecuted)
 
       const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(details, isCreation, isExecuted, isRoleExecution)
+      trackTxEvents(details, isCreation, isExecuted, isRoleExecution, isDelegateCreation)
     },
     [chainId, isCreation, onSubmit, trigger],
   )
 
   const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(
     (txId, isExecuted) => onFormSubmit(txId, isExecuted, true),
+    [onFormSubmit],
+  )
+
+  const onDelegateFormSubmit = useCallback<typeof onFormSubmit>(
+    (txId, isExecuted) => onFormSubmit(txId, isExecuted, false, true),
     [onFormSubmit],
   )
 
@@ -225,7 +240,7 @@ export const SignOrExecuteForm = ({
           />
         )}
 
-        {isDelegate && <DelegateForm {...props} safeTx={safeTx} onSubmit={onFormSubmit} />}
+        {isDelegate && <DelegateForm {...props} safeTx={safeTx} onSubmit={onDelegateFormSubmit} />}
       </TxCard>
     </>
   )

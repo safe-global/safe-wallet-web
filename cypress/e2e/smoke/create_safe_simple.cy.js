@@ -10,8 +10,6 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 describe('[SMOKE] Safe creation tests', () => {
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
-    cy.clearLocalStorage()
-    main.acceptCookies()
   })
   it('[SMOKE] Verify a Wallet can be connected', () => {
     wallet.connectSigner(signer)
