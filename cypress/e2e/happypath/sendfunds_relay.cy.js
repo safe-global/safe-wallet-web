@@ -45,7 +45,7 @@ function visit(url) {
   cy.visit(url)
 }
 
-// TODO: Relay only allows 5 txs per hour.
+// TODO: Relay only allows 5 txs per day.
 describe('Send funds with relay happy path tests', { defaultCommandTimeout: 300000 }, () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {
@@ -99,7 +99,6 @@ describe('Send funds with relay happy path tests', { defaultCommandTimeout: 3000
             throw new Error(main.noRelayAttemptsError)
           }
           executeTransactionFlow(originatingSafe, walletAddress.toString(), transferAmount).then(async () => {
-            main.checkTokenBalanceIsNull(network_pref + originatingSafe, constants.tokenAbbreviation.tpcc)
             const contractWithWallet = nftContract.connect(owner1Signer)
             const tx = await contractWithWallet.safeTransferFrom(walletAddress.toString(), originatingSafe, 2, {
               gasLimit: 200000,

@@ -44,7 +44,7 @@ export const ofacApi = createApi({
   reducerPath: 'ofacApi',
   baseQuery: noopBaseQuery,
   endpoints: (builder) => ({
-    getIsSanctioned: builder.query({
+    getIsSanctioned: builder.query<boolean, string>({
       async queryFn(address, { getState }) {
         const state = getState()
         const chain = selectChainById(state as RootState, chains.eth)
@@ -59,7 +59,7 @@ export const ofacApi = createApi({
           const isAddressBlocked: boolean = await contract['isSanctioned'](address)
           return { data: isAddressBlocked }
         } catch (error) {
-          return { error: { status: 'CUSTOM_ERROR', data: (error as Error).message } }
+          return { error }
         }
       },
       keepUnusedDataFor: 24 * 60 * 60, // 24 hours

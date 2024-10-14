@@ -47,7 +47,7 @@ const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
 const TransactionSummary = 'Send '
-const transactionsPerHrStr = 'free transactions left this hour'
+const transactionsPerHrStr = 'free transactions left today'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
@@ -263,6 +263,10 @@ export function verifyExpandedDetails(data, warning) {
   if (warning) cy.get(warning).should('be.visible')
 }
 
+export function verifyAdvancedDetails(data) {
+  main.checkTextsExistWithinElement(accordionDetails, data)
+}
+
 export function verifyActions(data) {
   main.checkTextsExistWithinElement(accordionDetails, data)
 }
@@ -273,7 +277,7 @@ export function clickOnExpandableAction(data) {
   })
 }
 
-function clickOnAdvancedDetails() {
+export function clickOnAdvancedDetails() {
   cy.get(advancedDetails).click()
 }
 

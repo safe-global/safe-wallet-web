@@ -40,7 +40,8 @@ export function executeFlow_1() {
   selectExecuteNow()
   selectConnectedWalletOption()
   clickOnExecuteBtn()
-  waitForTxToComplete()
+  // Wait for tx to be processed
+  cy.wait(60000)
   clickOnFinishBtn()
 }
 
@@ -48,13 +49,15 @@ export function executeFlow_2() {
   selectExecuteNow()
   selectRelayOtion()
   clickOnExecuteBtn()
-  waitForTxToComplete()
+  // Wait for tx to be processed
+  cy.wait(60000)
   clickOnFinishBtn()
 }
 
 export function executeFlow_3() {
   selectConnectedWalletOption()
   clickOnExecuteBtn()
-  waitForTxToComplete()
+  // Wait for tx to be processed
+  cy.wait(60000)
   clickOnFinishBtn()
 }

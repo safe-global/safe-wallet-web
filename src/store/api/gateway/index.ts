@@ -1,52 +1,36 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import type { BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
+import { asError } from '@/services/exceptions/utils'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import type { DelegateResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
 import { safeOverviewEndpoints } from './safeOverviews'
 
-export const noopBaseQuery: BaseQueryFn<
-  unknown, // QueryArg type
-  unknown, // ResultType
-  FetchBaseQueryError, // ErrorType
-  {}, // DefinitionExtraOptions
-  {} // Meta
-> = async () => ({ data: null })
+async function buildQueryFn<T>(fn: () => Promise<T>) {
+  try {
+    return { data: await fn() }
+  } catch (error) {
+    return { error: asError(error) }
+  }
+}
 
 export const gatewayApi = createApi({
   reducerPath: 'gatewayApi',
-  baseQuery: noopBaseQuery,
+  baseQuery: fakeBaseQuery<Error>(),
   endpoints: (builder) => ({
     getTransactionDetails: builder.query<TransactionDetails, { chainId: string; txId: string }>({
-      async queryFn({ chainId, txId }) {
-        try {
-          const txDetails = await getTransactionDetails(chainId, txId)
-          return { data: txDetails }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
+      queryFn({ chainId, txId }) {
+        return buildQueryFn(() => getTransactionDetails(chainId, txId))
       },
     }),
     getMultipleTransactionDetails: builder.query<TransactionDetails[], { chainId: string; txIds: string[] }>({
-      async queryFn({ chainId, txIds }) {
-        try {
-          const txDetails = await Promise.all(txIds.map((txId) => getTransactionDetails(chainId, txId)))
-          return { data: txDetails }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
+      queryFn({ chainId, txIds }) {
+        return buildQueryFn(() => Promise.all(txIds.map((txId) => getTransactionDetails(chainId, txId))))
       },
     }),
     getDelegates: builder.query<DelegateResponse, { chainId: string; safeAddress: string }>({
-      async queryFn({ chainId, safeAddress }) {
-        try {
-          const delegates = await getDelegates(chainId, { safe: safeAddress })
-          return { data: delegates }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
+      queryFn({ chainId, safeAddress }) {
+        return buildQueryFn(() => getDelegates(chainId, { safe: safeAddress }))
       },
     }),
     ...safeOverviewEndpoints(builder),

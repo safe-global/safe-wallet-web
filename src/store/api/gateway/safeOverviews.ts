@@ -1,4 +1,4 @@
-import { type BaseQueryFn, type FetchBaseQueryError, type EndpointBuilder } from '@reduxjs/toolkit/query/react'
+import { type EndpointBuilder } from '@reduxjs/toolkit/query/react'
 
 import { type SafeOverview, getSafeOverviews } from '@safe-global/safe-gateway-typescript-sdk'
 import { sameAddress } from '@/utils/addresses'
@@ -113,19 +113,7 @@ type MultiOverviewQueryParams = {
   safes: SafeItem[]
 }
 
-export const safeOverviewEndpoints = (
-  builder: EndpointBuilder<
-    BaseQueryFn<
-      unknown, // QueryArg type
-      unknown, // ResultType
-      FetchBaseQueryError, // ErrorType
-      {}, // DefinitionExtraOptions
-      {} // Meta
-    >,
-    never,
-    'gatewayApi'
-  >,
-) => ({
+export const safeOverviewEndpoints = (builder: EndpointBuilder<any, never, 'gatewayApi'>) => ({
   getSafeOverview: builder.query<SafeOverview | null, { safeAddress: string; walletAddress?: string; chainId: string }>(
     {
       async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {
