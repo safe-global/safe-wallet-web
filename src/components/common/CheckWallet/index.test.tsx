@@ -188,4 +188,17 @@ describe('CheckWallet', () => {
 
     expect(container.querySelector('button')).not.toBeDisabled()
   })
+
+  it('should not allow non-owners that have a spending limit without allowing spending limits', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
+    ;(
+      useIsOnlySpendingLimitBeneficiary as jest.MockedFunction<typeof useIsOnlySpendingLimitBeneficiary>
+    ).mockReturnValueOnce(true)
+
+    const { container: allowContainer } = render(
+      <CheckWallet>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
+    )
+
+    expect(allowContainer.querySelector('button')).toBeDisabled()
+  })
 })

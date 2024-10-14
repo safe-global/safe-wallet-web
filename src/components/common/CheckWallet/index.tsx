@@ -50,7 +50,7 @@ const CheckWallet = ({
       return Message.SafeNotActivated
     }
 
-    if (!allowNonOwner && !isSafeOwner && !isDelegate && !isOnlySpendingLimit && !allowSpendingLimit) {
+    if (!allowNonOwner && !isSafeOwner && !isDelegate && (!isOnlySpendingLimit || !allowSpendingLimit)) {
       return Message.NotSafeOwner
     }
   }, [
