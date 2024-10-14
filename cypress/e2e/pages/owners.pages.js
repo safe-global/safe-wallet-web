@@ -16,7 +16,7 @@ const newOwnerNonceInput = 'input[name="nonce"]'
 const thresholdInput = 'input[name="threshold"]'
 const thresHoldDropDownIcon = 'svg[data-testid="ArrowDropDownIcon"]'
 const thresholdList = 'ul[role="listbox"]'
-const thresholdDropdown = 'div[aria-haspopup="listbox"]'
+const thresholdDropdown = '[data-testid="threshold-selector"]'
 const thresholdOption = 'li[role="option"]'
 const existingOwnerAddressInput = (index) => `input[name="owners.${index}.address"]`
 const existingOwnerNameInput = (index) => `input[name="owners.${index}.name"]`

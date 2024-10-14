@@ -129,7 +129,7 @@ const NetworkMultiSelector = ({
             }
             renderOption={(props, chain, { selected }) => (
               <li key={chain.chainId} {...props}>
-                <Checkbox size="small" checked={selected} />
+                <Checkbox data-testid="network-checkbox" size="small" checked={selected} />
                 <ChainIndicator chainId={chain.chainId} inline />
               </li>
             )}

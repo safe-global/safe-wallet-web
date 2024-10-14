@@ -28,7 +28,6 @@ jobs:
             cypress/e2e/regression/*.cy.js
             cypress/e2e/safe-apps/*.cy.js
             cypress/e2e/smoke/*.cy.js
-            cypress/e2e/prodhealthcheck/*.cy.js
           group: 'Regression on demand tests'
           tag: 'regression'
 
