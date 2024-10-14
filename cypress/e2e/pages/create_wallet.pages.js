@@ -37,6 +37,7 @@ export const activateAccountBtn = '[data-testid="activate-account-btn-cf"]'
 const notificationsSwitch = '[data-testid="notifications-switch"]'
 export const addFundsSection = '[data-testid="add-funds-section"]'
 export const noTokensAlert = '[data-testid="no-tokens-alert"]'
+const networkCheckbox = '[data-testid="network-checkbox"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -62,8 +63,8 @@ export function checkNotificationsSwitchIs(status) {
   cy.get(notificationsSwitch).find('input').should(`be.${status}`)
 }
 
-export function clickOnActivateAccountBtn() {
-  cy.get(activateAccountBtn).click()
+export function clickOnActivateAccountBtn(index) {
+  cy.get(activateAccountBtn).eq(index).click()
 }
 
 export function clickOnQRCodeSwitch() {
@@ -189,6 +190,12 @@ export function selectNetwork(network) {
   cy.wait(1000)
   let regex = new RegExp(`^${network}$`)
   cy.get('li').parents('ul').contains(regex).click()
+}
+
+export function selectMultiNetwork(index, network) {
+  cy.get('input').eq(index).click()
+  cy.get('input').eq(index).type(network)
+  cy.get(networkCheckbox).eq(0).click()
 }
 
 export function clickOnNextBtn() {

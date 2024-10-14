@@ -14,9 +14,7 @@ describe('[SMOKE] Import Export Data tests', () => {
   })
 
   beforeEach(() => {
-    cy.visit(constants.dataSettingsUrl).then(() => {
-      createwallet.selectNetwork(constants.networks.sepolia)
-    })
+    cy.visit(constants.dataSettingsUrl)
   })
 
   it('[SMOKE] Verify Safe can be accessed after test file upload', () => {
