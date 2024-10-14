@@ -28,6 +28,7 @@ const CounterfactualSuccessScreen = () => {
         if (event === SafeCreationEvent.INDEXED) {
           if ('chainId' in detail) {
             setChainId(detail.chainId)
+            setNetworks((prev) => prev.filter((network) => network.chainId === detail.chainId))
           }
 
           setSafeAddress(detail.safeAddress)
