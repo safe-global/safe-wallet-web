@@ -1,3 +1,4 @@
+import { TWAP_FALLBACK_HANDLER } from '@/features/swap/helpers/utils'
 import { chainBuilder } from '@/tests/builders/chains'
 import { render, waitFor } from '@/tests/test-utils'
 
@@ -237,5 +238,51 @@ describe('FallbackHandler', () => {
     const fbHandler = render(<FallbackHandler />)
 
     expect(fbHandler.container).toBeEmptyDOMElement()
+  })
+
+  it('should display a message in case it is a TWAP fallback handler', () => {
+    jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
+      () =>
+        ({
+          safe: {
+            version: '1.3.0',
+            chainId: '1',
+            fallbackHandler: {
+              value: TWAP_FALLBACK_HANDLER,
+            },
+          },
+        } as unknown as ReturnType<typeof useSafeInfoHook.default>),
+    )
+
+    const { getByText } = render(<FallbackHandler />)
+
+    expect(
+      getByText(
+        "This is CoW's fallback handler. It is needed for this Safe to be able to use the TWAP feature for Swaps.",
+      ),
+    ).toBeInTheDocument()
+  })
+
+  it('should not display a message in case it is a TWAP fallback handler on an unsupported network', () => {
+    jest.spyOn(useSafeInfoHook, 'default').mockImplementation(
+      () =>
+        ({
+          safe: {
+            version: '1.3.0',
+            chainId: '10',
+            fallbackHandler: {
+              value: TWAP_FALLBACK_HANDLER,
+            },
+          },
+        } as unknown as ReturnType<typeof useSafeInfoHook.default>),
+    )
+
+    const { queryByText } = render(<FallbackHandler />)
+
+    expect(
+      queryByText(
+        "This is CoW's fallback handler. It is needed for this Safe to be able to use the TWAP feature for Swaps.",
+      ),
+    ).not.toBeInTheDocument()
   })
 })

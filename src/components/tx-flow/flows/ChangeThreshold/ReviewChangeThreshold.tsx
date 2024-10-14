@@ -10,6 +10,7 @@ import { ChangeThresholdFlowFieldNames } from '@/components/tx-flow/flows/Change
 import type { ChangeThresholdFlowProps } from '@/components/tx-flow/flows/ChangeThreshold'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
 
 const ReviewChangeThreshold = ({ params }: { params: ChangeThresholdFlowProps }) => {
   const { safe } = useSafeInfo()
@@ -28,6 +29,8 @@ const ReviewChangeThreshold = ({ params }: { params: ChangeThresholdFlowProps })
 
   return (
     <SignOrExecuteForm onSubmit={onChangeThreshold}>
+      <ChangeSignerSetupWarning />
+      <Divider className={commonCss.nestedDivider} />
       <div>
         <Typography variant="body2" color="text.secondary" mb={0.5}>
           Any transaction will require the confirmation of:

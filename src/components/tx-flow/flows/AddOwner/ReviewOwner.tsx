@@ -7,7 +7,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { createSwapOwnerTx, createAddOwnerTx } from '@/services/tx/tx-sender'
 import { useAppDispatch } from '@/store'
-import { upsertAddressBookEntry } from '@/store/addressBookSlice'
+import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { AddOwnerFlowProps } from '.'
 import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
@@ -15,6 +15,7 @@ import { OwnerList } from '../../common/OwnerList'
 import MinusIcon from '@/public/images/common/minus.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
@@ -43,8 +44,8 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
   const addAddressBookEntryAndSubmit = () => {
     if (typeof newOwner.name !== 'undefined') {
       dispatch(
-        upsertAddressBookEntry({
-          chainId,
+        upsertAddressBookEntries({
+          chainIds: [chainId],
           address: newOwner.address,
           name: newOwner.name,
         }),
@@ -73,6 +74,8 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
         </Paper>
       )}
       <OwnerList owners={[{ name: newOwner.name, value: newOwner.address }]} />
+      <ChangeSignerSetupWarning />
+
       <Divider className={commonCss.nestedDivider} />
       <Box>
         <Typography variant="body2">Any transaction requires the confirmation of:</Typography>

@@ -25,6 +25,7 @@ const NameInput = ({
       fullWidth
       required={required}
       className={inputCss.input}
+      onKeyDown={(e) => e.stopPropagation()}
       {...register(name, { maxLength: 50, required })}
     />
   )

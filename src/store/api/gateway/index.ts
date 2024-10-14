@@ -4,6 +4,7 @@ import { getTransactionDetails, type TransactionDetails } from '@safe-global/saf
 import { asError } from '@/services/exceptions/utils'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import type { DelegateResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
+import { safeOverviewEndpoints } from './safeOverviews'
 
 async function buildQueryFn<T>(fn: () => Promise<T>) {
   try {
@@ -32,6 +33,7 @@ export const gatewayApi = createApi({
         return buildQueryFn(() => getDelegates(chainId, { safe: safeAddress }))
       },
     }),
+    ...safeOverviewEndpoints(builder),
   }),
 })
 
@@ -40,4 +42,6 @@ export const {
   useGetMultipleTransactionDetailsQuery,
   useLazyGetTransactionDetailsQuery,
   useGetDelegatesQuery,
+  useGetSafeOverviewQuery,
+  useGetMultipleSafeOverviewsQuery,
 } = gatewayApi

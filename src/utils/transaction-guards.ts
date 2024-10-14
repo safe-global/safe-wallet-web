@@ -40,6 +40,7 @@ import type {
   NativeStakingWithdrawConfirmationView,
   NativeStakingValidatorsExitConfirmationView,
   StakingTxInfo,
+  TransactionData,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -56,6 +57,12 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
+import { getSafeToL2MigrationDeployment, getMultiSendDeployments } from '@safe-global/safe-deployments'
+import { Safe_to_l2_migration__factory } from '@/types/contracts'
+import { hasMatchingDeployment } from '@/services/contracts/deployments'
+import { isMultiSendCalldata } from './transaction-calldata'
+import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
+import { OperationType } from '@safe-global/safe-core-sdk-types'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
@@ -82,6 +89,50 @@ export const isMultisigDetailedExecutionInfo = (value?: DetailedExecutionInfo): 
 
 export const isModuleDetailedExecutionInfo = (value?: DetailedExecutionInfo): value is ModuleExecutionDetails => {
   return value?.type === DetailedExecutionInfoType.MODULE
+}
+
+const isMigrateToL2CallData = (value: {
+  to: string
+  data: string | undefined
+  operation?: OperationType | undefined
+}) => {
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
+  const safeToL2MigrationInterface = Safe_to_l2_migration__factory.createInterface()
+
+  if (value.operation === OperationType.DelegateCall && sameAddress(value.to, safeToL2MigrationAddress)) {
+    const migrateToL2Selector = safeToL2MigrationInterface?.getFunction('migrateToL2')?.selector
+    return migrateToL2Selector && value.data ? value.data.startsWith(migrateToL2Selector) : false
+  }
+  return false
+}
+
+export const isMigrateToL2TxData = (value: TransactionData | undefined, chainId: string | undefined): boolean => {
+  if (!value) {
+    return false
+  }
+
+  if (
+    chainId &&
+    value?.hexData &&
+    isMultiSendCalldata(value?.hexData) &&
+    hasMatchingDeployment(getMultiSendDeployments, value.to.value, chainId, ['1.3.0', '1.4.1'])
+  ) {
+    // Its a multiSend to the MultiSend contract (not CallOnly)
+    const decodedMultiSend = decodeMultiSendData(value.hexData)
+    const firstTx = decodedMultiSend[0]
+
+    // We only trust the tx if the first tx is the only delegateCall
+    const hasMoreDelegateCalls = decodedMultiSend
+      .slice(1)
+      .some((value) => value.operation === OperationType.DelegateCall)
+
+    if (!hasMoreDelegateCalls && firstTx && isMigrateToL2CallData(firstTx)) {
+      return true
+    }
+  }
+
+  return isMigrateToL2CallData({ to: value.to.value, data: value.hexData, operation: value.operation as 0 | 1 })
 }
 
 // TransactionInfo type guards
@@ -117,6 +168,13 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
 
 export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
   return isSwapOrderTxInfo(value) || isTwapOrderTxInfo(value)
+}
+
+export const isMigrateToL2TxInfo = (value: TransactionInfo): value is Custom => {
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+  const safeToL2MigrationAddress = safeToL2MigrationDeployment?.defaultAddress
+
+  return isCustomTxInfo(value) && sameAddress(value.to.value, safeToL2MigrationAddress)
 }
 
 export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {

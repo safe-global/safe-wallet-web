@@ -1,4 +1,4 @@
-import { useGetIsSanctionedQuery } from '@/store/ofac'
+import { useGetIsSanctionedQuery } from '@/store/api/ofac'
 import useSafeAddress from './useSafeAddress'
 import useWallet from './wallets/useWallet'
 import { skipToken } from '@reduxjs/toolkit/query/react'

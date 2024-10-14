@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { selectChainById } from '@/store/chainsSlice'
 import { Contract } from 'ethers'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
-import type { RootState } from '.'
+import type { RootState } from '..'
 import { CHAINALYSIS_OFAC_CONTRACT } from '@/config/constants'
 import chains from '@/config/chains'
 

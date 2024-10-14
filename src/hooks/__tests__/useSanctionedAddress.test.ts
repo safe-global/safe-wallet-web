@@ -4,7 +4,7 @@ import useSafeAddress from '../useSafeAddress'
 import useWallet from '../wallets/useWallet'
 import { faker } from '@faker-js/faker'
 import { connectedWalletBuilder } from '@/tests/builders/wallet'
-import * as ofac from '@/store/ofac'
+import * as ofac from '@/store/api/ofac'
 import { skipToken } from '@reduxjs/toolkit/query'
 
 jest.mock('@/hooks/useSafeAddress')

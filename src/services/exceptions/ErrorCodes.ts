@@ -69,6 +69,7 @@ enum ErrorCodes {
   _813 = '813: Failed to cancel recovery',
   _814 = '814: Failed to speed up transaction',
   _815 = '815: Error executing a transaction through a role',
+  _816 = '816: Error computing replay Safe creation data',
 
   _900 = '900: Error loading Safe App',
   _901 = '901: Error processing Safe Apps SDK request',
