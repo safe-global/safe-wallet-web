@@ -5,7 +5,15 @@ import { useRouter } from 'next/router'
 import Disclaimer from '@/components/common/Disclaimer'
 import { AppRoutes } from '@/config/routes'
 
-export const BlockedAddress = ({ address, featureTitle }: { address: string; featureTitle: string }): ReactElement => {
+export const BlockedAddress = ({
+  address,
+  featureTitle,
+  onClose,
+}: {
+  address: string
+  featureTitle: string
+  onClose?: () => void
+}): ReactElement => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const displayAddress = address && isMobile ? shortenAddress(address) : address
@@ -20,7 +28,7 @@ export const BlockedAddress = ({ address, featureTitle }: { address: string; fea
       title="Blocked address"
       subtitle={displayAddress}
       content={`The above address is part of the OFAC SDN list and the ${featureTitle} is unavailable for sanctioned addresses.`}
-      onAccept={handleAccept}
+      onAccept={onClose ?? handleAccept}
     />
   )
 }
