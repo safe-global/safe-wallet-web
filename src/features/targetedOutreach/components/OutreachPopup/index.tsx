@@ -11,6 +11,7 @@ import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import { useShowOutreachPopup } from '@/features/targetedOutreach/hooks/useShowOutreachPopup'
 import { getUpdatedUserActivity } from '@/features/targetedOutreach/utils'
 import { ACTIVE_OUTREACH, OUTREACH_LS_KEY } from '@/features/targetedOutreach/constants'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 export type OutreachPopupState = {
   isClosed?: boolean
@@ -23,6 +24,7 @@ const OutreachPopup = (): ReactElement | null => {
   const outreachPopup = useAppSelector(selectOutreachBanner)
   const [outreachPopupState, setOutreachPopupState] = useLocalStorage<OutreachPopupState>(OUTREACH_LS_KEY)
   const shouldOpen = useShowOutreachPopup(outreachPopupState)
+  const isDarkMode = useDarkMode()
 
   const handleClose = () => {
     setOutreachPopupState({ isClosed: true, askAgainLater: false })
@@ -57,8 +59,9 @@ const OutreachPopup = (): ReactElement | null => {
   if (!outreachPopup.open) return null
 
   return (
+    // <Box className={css.popup} >
     <Box className={css.popup}>
-      <Paper className={classnames(css.container, { [css.inverted]: false })}>
+      <Paper className={classnames(css.container, { [css.gradient]: !isDarkMode })}>
         <Stack gap={2}>
           <Box display="flex">
             <Avatar alt="Clem Bihorel" src="/images/common/outreach-popup-avatar.png" />
