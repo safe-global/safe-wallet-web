@@ -6,7 +6,7 @@ import css from './styles.module.css'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
 import { type MultiChainSafeItem } from './useAllSafesGrouped'
 import MultiAccountItem from './MultiAccountItem'
-import { isMultiChainSafeItem } from './utils/multiChainSafe'
+import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
 
 type PaginatedSafeListProps = {
   safes?: (SafeItem | MultiChainSafeItem)[]

@@ -15,10 +15,7 @@ import useChains from '@/hooks/useChains'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
 import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
-import {
-  hasMultiChainAddNetworkFeature,
-  predictAddressBasedOnReplayData,
-} from '@/components/welcome/MyAccounts/utils/multiChainSafe'
+import { hasMultiChainAddNetworkFeature, predictAddressBasedOnReplayData } from '@/features/multichain/utils/utils'
 import { sameAddress } from '@/utils/addresses'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useRouter } from 'next/router'

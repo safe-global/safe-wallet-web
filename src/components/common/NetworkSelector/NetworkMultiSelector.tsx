@@ -12,7 +12,7 @@ import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameSte
 import { getSafeSingletonDeployments } from '@safe-global/safe-deployments'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { hasCanonicalDeployment } from '@/services/contracts/deployments'
-import { hasMultiChainCreationFeatures } from '@/components/welcome/MyAccounts/utils/multiChainSafe'
+import { hasMultiChainCreationFeatures } from '@/features/multichain/utils/utils'
 
 const NetworkMultiSelector = ({
   name,

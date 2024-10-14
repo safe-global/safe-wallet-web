@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { type SafeItem } from './useAllSafes'
 import { type MultiChainSafeItem } from './useAllSafesGrouped'
-import { isMultiChainSafeItem } from './utils/multiChainSafe'
+import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
 
 let isOwnedSafesTracked = false
 let isWatchlistTracked = false
