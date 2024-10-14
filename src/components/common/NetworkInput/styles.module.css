@@ -52,3 +52,11 @@
   align-items: center;
   gap: var(--space-1);
 }
+
+.disabledChip {
+  background-color: var(--color-border-light);
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  padding: 4px 8px;
+  margin-left: auto;
+}
