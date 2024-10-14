@@ -74,7 +74,7 @@ describe('Safe creation tests', () => {
     createwallet.verifyOwnerAddressInSummaryStep(constants.DEFAULT_OWNER_ADDRESS)
     createwallet.verifyOwnerAddressInSummaryStep(constants.DEFAULT_OWNER_ADDRESS)
     createwallet.verifyThresholdStringInSummaryStep(1, 2)
-    createwallet.verifySafeNameInSummaryStep(constants.networks.sepolia.toLowerCase())
+    createwallet.verifySafeNetworkNameInSummaryStep(constants.networks.sepolia.toLowerCase())
     createwallet.clickOnBackBtn()
     createwallet.clickOnBackBtn()
     cy.wait(1000)
@@ -85,7 +85,7 @@ describe('Safe creation tests', () => {
     createwallet.verifyOwnerAddressInSummaryStep(constants.DEFAULT_OWNER_ADDRESS)
     createwallet.verifyOwnerAddressInSummaryStep(constants.DEFAULT_OWNER_ADDRESS)
     createwallet.verifyThresholdStringInSummaryStep(1, 2)
-    createwallet.verifySafeNameInSummaryStep(constants.networks.sepolia.toLowerCase())
+    createwallet.verifySafeNetworkNameInSummaryStep(constants.networks.sepolia.toLowerCase())
   })
 
   it('Verify tip is displayed on right side for threshold 1/1', () => {
