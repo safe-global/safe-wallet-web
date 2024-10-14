@@ -130,4 +130,13 @@ describe('Safe creation tests', () => {
         owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.ownerAdded)
       })
   })
+
+  // Unskip when the bug is fixed
+  it.skip('Verify Next button is disabled until switching to network is done', () => {
+    createwallet.clickOnContinueWithWalletBtn()
+    createwallet.clickOnCreateNewSafeBtn()
+    createwallet.verifyNextBtnIsEnabled()
+    createwallet.clearNetworkInput(1)
+    createwallet.verifyNextBtnIsDisabled()
+  })
 })

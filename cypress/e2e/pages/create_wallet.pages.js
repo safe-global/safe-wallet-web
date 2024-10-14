@@ -38,6 +38,7 @@ const notificationsSwitch = '[data-testid="notifications-switch"]'
 export const addFundsSection = '[data-testid="add-funds-section"]'
 export const noTokensAlert = '[data-testid="no-tokens-alert"]'
 const networkCheckbox = '[data-testid="network-checkbox"]'
+const cancelIcon = '[data-testid="CancelIcon"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -196,6 +197,11 @@ export function selectMultiNetwork(index, network) {
   cy.get('input').eq(index).click()
   cy.get('input').eq(index).type(network)
   cy.get(networkCheckbox).eq(0).click()
+}
+
+export function clearNetworkInput(index) {
+  cy.get('input').eq(index).click()
+  cy.get(cancelIcon).click()
 }
 
 export function clickOnNextBtn() {
