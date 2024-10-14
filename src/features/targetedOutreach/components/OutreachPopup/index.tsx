@@ -12,6 +12,8 @@ import { useShowOutreachPopup } from '@/features/targetedOutreach/hooks/useShowO
 import { getUpdatedUserActivity } from '@/features/targetedOutreach/utils'
 import { ACTIVE_OUTREACH, OUTREACH_LS_KEY } from '@/features/targetedOutreach/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
+import Track from '@/components/common/Track'
+import { OUTREACH_EVENTS } from '@/services/analytics/events/outreach'
 
 export type OutreachPopupState = {
   isClosed?: boolean
@@ -59,7 +61,6 @@ const OutreachPopup = (): ReactElement | null => {
   if (!outreachPopup.open) return null
 
   return (
-    // <Box className={css.popup} >
     <Box className={css.popup}>
       <Paper className={classnames(css.container, { [css.gradient]: !isDarkMode })}>
         <Stack gap={2}>
@@ -90,21 +91,26 @@ const OutreachPopup = (): ReactElement | null => {
             As one of our top users, we&apos;d love to hear your feedback on how we can enhance Safe. Share your contact
             info, and we&apos;ll reach out for a short interview.
           </Typography>
-          <Link rel="noreferrer noopener" target="_blank" href={ACTIVE_OUTREACH.url}>
-            <Button fullWidth variant="contained">
-              Get Involved
+          <Track {...OUTREACH_EVENTS.OPEN_SURVEY}>
+            <Link rel="noreferrer noopener" target="_blank" href={ACTIVE_OUTREACH.url}>
+              <Button fullWidth variant="contained">
+                Get Involved
+              </Button>
+            </Link>
+          </Track>
+          <Track {...OUTREACH_EVENTS.ASK_AGAIN_LATER}>
+            <Button fullWidth variant="text" onClick={handleAskAgainLater}>
+              Ask me later
             </Button>
-          </Link>
-          <Button fullWidth variant="text" onClick={handleAskAgainLater}>
-            Ask me later
-          </Button>
+          </Track>
           <Typography variant="body2" color="primary.light" mx="auto">
             It&apos;ll only take 2 minutes.
           </Typography>
-
-          <IconButton className={css.close} aria-label="close" onClick={handleClose}>
-            <Close />
-          </IconButton>
+          <Track {...OUTREACH_EVENTS.CLOSE_POPUP}>
+            <IconButton className={css.close} aria-label="close" onClick={handleClose}>
+              <Close />
+            </IconButton>
+          </Track>
         </Stack>
       </Paper>
     </Box>
