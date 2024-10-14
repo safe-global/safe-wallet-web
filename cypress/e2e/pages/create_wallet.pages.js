@@ -277,7 +277,7 @@ export function verifyThresholdStringInSummaryStep(startThreshold, endThreshold)
   cy.contains(`${startThreshold} out of ${endThreshold}`)
 }
 
-export function verifySafeNameInSummaryStep(name) {
+export function verifySafeNetworkNameInSummaryStep(name) {
   cy.get('div').contains('Name').parent().parent().contains(name)
 }
 
