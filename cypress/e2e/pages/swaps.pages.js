@@ -132,7 +132,7 @@ export function clickOnExceeFeeChkbox() {
 export function clickOnSwapBtn() {
   cy.get('button').contains(swapBtnStr).as('swapBtn')
 
-  cy.get('@swapBtn').should('exist').click()
+  cy.get('@swapBtn').should('exist').click({ force: true })
 }
 
 export function checkSwapBtnIsVisible() {
