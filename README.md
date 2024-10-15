@@ -2,10 +2,16 @@
 
 ## Setup the project
 
-It is pretty straight
+1. install the npm dependencies
 
 ```bash
 npm install
+```
+
+2. run expo install to make sure no package is missing
+
+```bash
+npx expo install
 ```
 
 ## Running the App
