@@ -20,7 +20,7 @@ describe('[PROD] Spending limits tests', () => {
     cy.get(spendinglimit.spendingLimitsSection).should('be.visible')
   })
 
-  it.skip('Verify that the Review step shows beneficiary, amount allowed, reset time', () => {
+  it('Verify that the Review step shows beneficiary, amount allowed, reset time', () => {
     //Assume that default reset time is set to One time
     wallet.connectSigner(signer)
     spendinglimit.clickOnNewSpendingLimitBtn()
@@ -38,7 +38,7 @@ describe('[PROD] Spending limits tests', () => {
     spendinglimit.verifyBeneficiaryTable()
   })
 
-  it.skip('Verify Spending limit option is available when selecting the corresponding token', () => {
+  it('Verify Spending limit option is available when selecting the corresponding token', () => {
     wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
     tx.clickOnSendTokensBtn()

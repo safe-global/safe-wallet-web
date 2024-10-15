@@ -71,8 +71,7 @@ describe('[PROD] Tx history tests 1', () => {
   })
 
   // Spending limits
-  // TODO: Unskip after next release due to design tx
-  it.skip('Verify summary for setting spend limits', () => {
+  it('Verify summary for setting spend limits', () => {
     createTx.verifySummaryByName(
       typeSpendingLimits.title,
       typeSpendingLimits.summaryTxInfo,
@@ -81,8 +80,7 @@ describe('[PROD] Tx history tests 1', () => {
     )
   })
 
-  // TODO: Unskip after next release due to design tx
-  it.skip('Verify exapanded details for initial spending limits setup', () => {
+  it('Verify exapanded details for initial spending limits setup', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [
@@ -95,8 +93,7 @@ describe('[PROD] Tx history tests 1', () => {
     )
   })
 
-  // TODO: Unskip after next release due to design tx
-  it.skip('Verify that 3 actions exist in initial spending limits setup', () => {
+  it('Verify that 3 actions exist in initial spending limits setup', () => {
     createTx.clickOnTransactionItemByName(typeSpendingLimits.title, typeSpendingLimits.summaryTxInfo)
     createTx.verifyActions([
       typeSpendingLimits.enableModule.title,

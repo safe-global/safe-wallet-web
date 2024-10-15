@@ -47,7 +47,7 @@ describe('Spending limits tests', () => {
     spendinglimit.verifyDecodedTxSummary([spendinglimit.actionNames.setAllowance])
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify that the Review step shows beneficiary, amount allowed, reset time', () => {
     //Assume that default reset time is set to One time
     wallet.connectSigner(signer)
@@ -62,12 +62,12 @@ describe('Spending limits tests', () => {
     )
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify values and trash icons are displayed in Beneficiary table', () => {
     spendinglimit.verifyBeneficiaryTable()
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify Spending limit option is available when selecting the corresponding token', () => {
     wallet.connectSigner(signer)
     navigation.clickOnNewTxBtn()
