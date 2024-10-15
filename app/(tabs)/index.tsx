@@ -4,6 +4,7 @@ import ParallaxScrollView from '@/src/components/ParallaxScrollView'
 import { Button, Text } from 'react-native-paper'
 import styled from '@emotion/native'
 import icon from '@/assets/images/partial-react-logo.png'
+import TxHistory from '@/src/features/TxHistory'
 
 const StyledText = styled(Text)`
   color: ${({ theme }) => theme.colors?.primary};
@@ -22,6 +23,8 @@ export default function HomeScreen() {
 
         <Button icon="camera">Press me</Button>
       </View>
+
+      <TxHistory />
 
       <StyledText>Here is my styled component</StyledText>
     </ParallaxScrollView>

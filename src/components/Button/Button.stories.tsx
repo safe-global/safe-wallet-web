@@ -1,11 +1,11 @@
 import React from 'react'
 import { View } from 'react-native'
 import type { Meta, StoryObj } from '@storybook/react'
-import { MyButton } from './Button'
+import { SafeButton } from './Button'
 
 const meta = {
-  title: 'MyButton',
-  component: MyButton,
+  title: 'SafeButton',
+  component: SafeButton,
   argTypes: {
     onPress: { action: 'pressed the button' },
   },
@@ -19,7 +19,7 @@ const meta = {
       </View>
     ),
   ],
-} satisfies Meta<typeof MyButton>
+} satisfies Meta<typeof SafeButton>
 
 export default meta
 
