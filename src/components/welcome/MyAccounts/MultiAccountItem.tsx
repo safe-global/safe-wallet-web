@@ -16,7 +16,7 @@ import {
 import SafeIcon from '@/components/common/SafeIcon'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import css from './styles.module.css'
 import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import useSafeAddress from '@/hooks/useSafeAddress'
@@ -75,6 +75,10 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const [expanded, setExpanded] = useState(isCurrentSafe)
   const chains = useAppSelector(selectChains)
+
+  // const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
+  // const isAdded = !!addedSafes?.[address]
+  const dispatch = useAppDispatch()
 
   const deployedChainIds = useMemo(() => safes.map((safe) => safe.chainId), [safes])
 
@@ -136,6 +140,29 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     [safeOverviews],
   )
 
+  // const addToPinnedList = () => {
+  //   if (!isAdded && safeOverview) {
+  //     dispatch(
+  //       // Adding a safe will make it pinned by default
+  //       addOrUpdateSafe({
+  //         safe: {
+  //           ...defaultSafeInfo,
+  //           chainId,
+  //           address: { value: address },
+  //           owners: safeOverview?.owners,
+  //           threshold: safeOverview?.threshold,
+  //         },
+  //       }),
+  //     )
+  //   } else {
+  //     dispatch(pinSafe({ chainId, address }))
+  //   }
+  // }
+
+  // const removeFromPinnedList = () => {
+  //   dispatch(unpinSafe({ chainId, address }))
+  // }
+
   return (
     <ListItemButton
       data-testid="safe-list-item"
@@ -175,6 +202,21 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               )}
             </Typography>
           </Box>
+          {/* <Tooltip placement="top" arrow title="Pin this account">
+            <IconButton
+              edge="end"
+              size="medium"
+              sx={{ mx: 1 }}
+              onClick={isPinned ? removeFromPinnedList : addToPinnedList}
+            >
+              <SvgIcon
+                component={isPinned ? BookmarkedIcon : BookmarkIcon}
+                inheritViewBox
+                color={isPinned ? 'primary' : undefined}
+                fontSize="small"
+              />
+            </IconButton>
+          </Tooltip> */}
           <MultiAccountContextMenu
             name={name ?? ''}
             address={address}

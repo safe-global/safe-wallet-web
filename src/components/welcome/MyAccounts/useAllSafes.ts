@@ -12,6 +12,7 @@ export type SafeItem = {
   chainId: string
   address: string
   isWatchlist: boolean
+  isPinned: boolean
 }
 
 export type SafeItems = SafeItem[]
@@ -57,12 +58,14 @@ const useAllSafes = (): SafeItems | undefined => {
       return uniqueAddresses.map((address) => {
         const owners = allAdded?.[chainId]?.[address]?.owners
         const isOwner = owners?.some(({ value }) => sameAddress(walletAddress, value))
-        const isUndeployed = undeployedOnChain.includes(address)
         const isOwned = (ownedOnChain || []).includes(address) || isOwner
+        const isUndeployed = undeployedOnChain.includes(address)
+        const isPinned = Boolean(allAdded?.[chainId]?.[address]?.pinned)
         return {
           address,
           chainId,
           isWatchlist: !isOwned && !isUndeployed,
+          isPinned,
         }
       })
     })

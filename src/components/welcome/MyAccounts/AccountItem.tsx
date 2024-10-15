@@ -2,13 +2,13 @@ import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo } from 'react'
-import { ListItemButton, Box, Typography, Chip, Skeleton } from '@mui/material'
+import { ListItemButton, Box, Typography, Chip, Skeleton, Tooltip, IconButton, SvgIcon } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import css from './styles.module.css'
@@ -30,6 +30,10 @@ import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
+import BookmarkIcon from '@/public/images/apps/bookmark.svg'
+import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
+import { addOrUpdateSafe, pinSafe, selectAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
+import { defaultSafeInfo } from '@/store/safeInfoSlice'
 type AccountItemProps = {
   safeItem: SafeItem
   safeOverview?: SafeOverview
@@ -37,7 +41,7 @@ type AccountItemProps = {
 }
 
 const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
-  const { chainId, address } = safeItem
+  const { chainId, address, isPinned } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
   const safeAddress = useSafeAddress()
@@ -46,6 +50,10 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const { address: walletAddress } = useWallet() ?? {}
+  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
+  const isAdded = !!addedSafes?.[address]
+
+  const dispatch = useAppDispatch()
 
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
@@ -78,6 +86,32 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           walletAddress,
         },
   )
+
+  // const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold
+  // const safeOwners = safeOverview?.owners ?? counterfactualSetup?.owners
+
+  const addToPinnedList = () => {
+    if (!isAdded && safeOverview) {
+      dispatch(
+        // Adding a safe will make it pinned by default
+        addOrUpdateSafe({
+          safe: {
+            ...defaultSafeInfo,
+            chainId,
+            address: { value: address },
+            owners: safeOverview?.owners,
+            threshold: safeOverview?.threshold,
+          },
+        }),
+      )
+    } else {
+      dispatch(pinSafe({ chainId, address }))
+    }
+  }
+
+  const removeFromPinnedList = () => {
+    dispatch(unpinSafe({ chainId, address }))
+  }
 
   return (
     <ListItemButton
@@ -138,6 +172,16 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
         </Link>
       </Track>
 
+      <Tooltip placement="top" arrow title="Pin this account">
+        <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={isPinned ? removeFromPinnedList : addToPinnedList}>
+          <SvgIcon
+            component={isPinned ? BookmarkedIcon : BookmarkIcon}
+            inheritViewBox
+            color={isPinned ? 'primary' : undefined}
+            fontSize="small"
+          />
+        </IconButton>
+      </Tooltip>
       <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
 
       <QueueActions
