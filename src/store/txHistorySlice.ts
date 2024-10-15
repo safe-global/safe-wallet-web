@@ -4,7 +4,7 @@ import { RootState } from '.'
 
 const initialState: TransactionItemPage = { results: [] }
 
-const txHistory = createSlice({
+const txHistorySlice = createSlice({
   name: 'txHistory',
   initialState,
   reducers: {
@@ -16,8 +16,8 @@ const txHistory = createSlice({
   },
 })
 
-export const { addTx } = txHistory.actions
+export const { addTx } = txHistorySlice.actions
 
 export const txHistorySelector = (state: RootState) => state.txHistory
 
-export default txHistory.reducer
+export default txHistorySlice.reducer

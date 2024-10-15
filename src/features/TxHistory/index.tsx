@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/src/store/hooks'
-import { addTx, txHistorySelector } from '@/src/store/txHistory'
+import { addTx, txHistorySelector } from '@/src/store/txHistorySlice'
 import React from 'react'
 import { View } from 'react-native'
 import { Text } from 'react-native-paper'

@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import { isProduction } from '../config/constants'
 import { reduxStorage } from './storage'
-import txHistory from './txHistory'
+import txHistory from './txHistorySlice'
 
 const persistConfig = {
   key: 'root',
