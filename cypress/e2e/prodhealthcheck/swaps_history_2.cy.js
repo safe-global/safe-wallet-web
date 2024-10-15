@@ -33,8 +33,7 @@ describe('[PROD] Swaps history tests 2', () => {
     ])
   })
 
-  // TODO: Unskip after next release due to changes in design tx
-  it.skip(
+  it(
     'Verify no decoding if tx was created using CowSwap safe-app in the history',
     { defaultCommandTimeout: 30000 },
     () => {
@@ -57,7 +56,7 @@ describe('[PROD] Swaps history tests 2', () => {
         swapsHistory.forAtMost,
       ])
       main.verifyValuesDoNotExist(create_tx.transactionItem, [swapsHistory.title, swapsHistory.cow, swapsHistory.dai])
-      main.verifyValuesExist(create_tx.transactionItem, [swapsHistory.actionPreSignatureG, swapsHistory.safeAppTitile])
+      main.verifyValuesExist(create_tx.transactionItem, [swapsHistory.actionPreSignatureG, swapsHistory.gGpV2])
     },
   )
 })

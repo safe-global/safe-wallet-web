@@ -24,7 +24,7 @@ describe('Tokens tests', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify that non-native tokens are present and have balance', () => {
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     assets.verifyBalance(assets.currencyDaiCap, TOKEN_AMOUNT_COLUMN, assets.currencyDaiAlttext)
@@ -174,15 +174,7 @@ describe('Tokens tests', () => {
     assets.verifyTokenBalanceOrder('descending')
   })
 
-  // TODO: Added to prod
-  //Include in smoke.
-  it('Verify that when owner is disconnected, Send button is disabled', () => {
-    assets.selectTokenList(assets.tokenListOptions.allTokens)
-    assets.showSendBtn(0)
-    assets.VerifySendButtonIsDisabled()
-  })
-
-  // TODO: Added to prod
+  // Added to prod
   it('Verify that when connected user is not owner, Send button is disabled', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_3)
     assets.selectTokenList(assets.tokenListOptions.allTokens)
