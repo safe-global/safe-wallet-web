@@ -27,10 +27,7 @@ export const getERC20TokenInfoOnChain = async (
     .catch((error) => parseBytes32String(error.value)) // Some older contracts use bytes32 instead of string
     .finally(() => '')
 
-  const decimals = await erc20
-    .decimals()
-    .then((decimals) => decimals)
-    .catch(() => BigInt(18))
+  const decimals = await erc20.decimals()
 
   return {
     address,
