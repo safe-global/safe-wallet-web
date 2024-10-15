@@ -18,7 +18,7 @@ const CounterfactualSuccessScreen = () => {
   const [networks, setNetworks] = useState<ChainInfo[]>([])
   const addressBooks = useAllAddressBooks()
   const safeName = safeAddress && chain ? addressBooks?.[chain.chainId]?.[safeAddress] : ''
-  const isCFCreation = !!networks.length
+  const isCFCreation = !!networks.length && !chainId
   const isMultiChain = networks.length > 1
   const chainName = isMultiChain ? '' : isCFCreation ? networks[0].chainName : chain?.chainName
 
@@ -46,6 +46,11 @@ const CounterfactualSuccessScreen = () => {
       unsubFns.forEach((unsub) => unsub())
     }
   }, [])
+
+  const onClose = () => {
+    setChainId(undefined)
+    setOpen(false)
+  }
 
   return (
     <Dialog open={open}>
@@ -106,7 +111,7 @@ const CounterfactualSuccessScreen = () => {
           </Box>
         )}
 
-        <Button variant="contained" onClick={() => setOpen(false)} data-testid="cf-creation-lets-go-btn">
+        <Button variant="contained" onClick={onClose} data-testid="cf-creation-lets-go-btn">
           Let&apos;s go
         </Button>
       </DialogContent>
