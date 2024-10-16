@@ -39,6 +39,7 @@ describe('[PROD] Swaps token tests', () => {
 
   it('Verify swap button are displayed in assets table and dashboard', () => {
     assets.selectTokenList(assets.tokenListOptions.allTokens)
+    cy.wait(3000)
     main.verifyElementsCount(swaps.assetsSwapBtn, 4)
     cy.window().then((window) => {
       window.localStorage.setItem(
@@ -47,6 +48,7 @@ describe('[PROD] Swaps token tests', () => {
       )
     })
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_1)
+    cy.wait(3000)
     main.verifyElementsCount(swaps.assetsSwapBtn, 4)
     main.verifyElementsCount(swaps.dashboardSwapBtn, 1)
   })

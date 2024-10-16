@@ -200,8 +200,11 @@ describe('Swaps tests', () => {
       navigation.clickOnWalletExpandMoreIcon()
       navigation.clickOnDisconnectBtn()
       wallet.connectSigner(signer3)
+
+      create_tx.verifyConfirmTransactionBtnIsVisible()
       create_tx.clickOnConfirmTransactionBtn()
       create_tx.clickOnNoLaterOption()
+
       create_tx.clickOnSignTransactionBtn()
       navigation.clickOnWalletExpandMoreIcon()
       navigation.clickOnDisconnectBtn()

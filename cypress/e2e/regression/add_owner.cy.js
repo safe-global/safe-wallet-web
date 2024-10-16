@@ -75,32 +75,58 @@ describe('Add Owners tests', () => {
           safeAddress: staticSafes.SEP_STATIC_SAFE_24.slice(6),
         },
       ]
-      cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_24)
-      wallet.connectSigner(signer2)
-      owner.waitForConnectionStatus()
-      owner.openAddOwnerWindow()
-      owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
-      createTx.changeNonce(1)
-      owner.clickOnNextBtn()
-      createTx.clickOnSignTransactionBtn()
-      createTx.clickViewTransaction()
+      function step1() {
+        cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_24)
+        wallet.connectSigner(signer2)
+        owner.waitForConnectionStatus()
+        owner.openAddOwnerWindow()
+        owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
+        createTx.changeNonce(1)
+        owner.clickOnNextBtn()
+        createTx.clickOnSignTransactionBtn()
+        createTx.clickViewTransaction()
 
-      navigation.clickOnWalletExpandMoreIcon()
-      navigation.clickOnDisconnectBtn()
-      wallet.connectSigner(signer)
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
+        wallet.connectSigner(signer)
+      }
 
-      createTx.clickOnConfirmTransactionBtn()
-      createTx.clickOnNoLaterOption()
-      createTx.clickOnSignTransactionBtn()
+      function step2() {
+        createTx.clickOnConfirmTransactionBtn()
+        createTx.clickOnNoLaterOption()
+        createTx.clickOnSignTransactionBtn()
 
-      navigation.clickOnWalletExpandMoreIcon()
-      navigation.clickOnDisconnectBtn()
-      wallet.connectSigner(signer2)
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
+        getEvents()
+        checkDataLayerEvents(tx_confirmed)
+        wallet.connectSigner(signer2)
+        createTx.deleteTx()
+      }
 
-      createTx.deleteTx()
+      step1()
+      cy.get('body').then(($body) => {
+        if ($body.find(`button:contains("${createTx.executeStr}")`).length > 0) {
+          navigation.clickOnWalletExpandMoreIcon()
+          navigation.clickOnDisconnectBtn()
+          wallet.connectSigner(signer2)
+          createTx.deleteTx()
+          cy.wait(5000)
+          step1()
+          step2()
+        } else {
+          createTx.clickOnConfirmTransactionBtn()
+          createTx.clickOnNoLaterOption()
+          createTx.clickOnSignTransactionBtn()
 
-      getEvents()
-      checkDataLayerEvents(tx_confirmed)
+          navigation.clickOnWalletExpandMoreIcon()
+          navigation.clickOnDisconnectBtn()
+          getEvents()
+          checkDataLayerEvents(tx_confirmed)
+          wallet.connectSigner(signer2)
+          createTx.deleteTx()
+        }
+      })
     },
   )
 })

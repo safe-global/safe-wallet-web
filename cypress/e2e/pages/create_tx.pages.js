@@ -54,7 +54,7 @@ const nextBtnStr = 'Next'
 const nativeTokenTransferStr = 'ETH'
 const yesStr = 'Yes, '
 const estimatedFeeStr = 'Estimated fee'
-const executeStr = 'Execute'
+export const executeStr = 'Execute'
 const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
@@ -511,6 +511,10 @@ export function clickOnSignTransactionBtn() {
 
 export function clickOnConfirmTransactionBtn() {
   cy.get('button').contains(confirmBtnStr).click()
+}
+
+export function verifyConfirmTransactionBtnIsVisible() {
+  cy.get('button').contains(confirmBtnStr).should('be.visible')
 }
 
 export function waitForProposeRequest() {
