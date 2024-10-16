@@ -14,7 +14,6 @@ describe('[PROD] Swaps history tests 2', () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  // TODO: Added to prod
   it('Verify swap buy operation with 2 actions: approve & swap', { defaultCommandTimeout: 30000 }, () => {
     cy.visit(
       constants.prodbaseUrl + constants.transactionUrl + staticSafes.SEP_STATIC_SAFE_1 + swaps.swapTxs.buy2actions,
@@ -34,9 +33,7 @@ describe('[PROD] Swaps history tests 2', () => {
     ])
   })
 
-  // TODO: Added to prod
-  // TODO: Unskip after next release due to changes in design tx
-  it.skip(
+  it(
     'Verify no decoding if tx was created using CowSwap safe-app in the history',
     { defaultCommandTimeout: 30000 },
     () => {
@@ -59,7 +56,7 @@ describe('[PROD] Swaps history tests 2', () => {
         swapsHistory.forAtMost,
       ])
       main.verifyValuesDoNotExist(create_tx.transactionItem, [swapsHistory.title, swapsHistory.cow, swapsHistory.dai])
-      main.verifyValuesExist(create_tx.transactionItem, [swapsHistory.actionPreSignatureG, swapsHistory.safeAppTitile])
+      main.verifyValuesExist(create_tx.transactionItem, [swapsHistory.actionPreSignatureG, swapsHistory.gGpV2])
     },
   )
 })

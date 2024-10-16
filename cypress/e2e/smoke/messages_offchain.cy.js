@@ -26,8 +26,7 @@ describe('[SMOKE] Offchain Messages tests', () => {
     cy.visit(constants.transactionsMessagesUrl + staticSafes.SEP_STATIC_SAFE_10)
   })
 
-  // TODO: Clarify changes
-  it.skip('[SMOKE] Verify summary for off-chain unsigned messages', () => {
+  it('[SMOKE] Verify summary for off-chain unsigned messages', () => {
     createTx.verifySummaryByIndex(0, [
       typeMessagesGeneral.sign,
       typeMessagesGeneral.oneOftwo,
@@ -40,16 +39,15 @@ describe('[SMOKE] Offchain Messages tests', () => {
     ])
   })
 
-  // TODO: Clarify changes
-  it.skip('[SMOKE] Verify summary for off-chain signed messages', () => {
+  it('[SMOKE] Verify summary for off-chain signed messages', () => {
     createTx.verifySummaryByIndex(1, [
-      typeMessagesGeneral.confirmed,
-      typeMessagesGeneral.twoOftwo,
+      typeMessagesGeneral.sign,
+      typeMessagesGeneral.oneOftwo,
       typeMessagesOffchain.name,
     ])
     createTx.verifySummaryByIndex(3, [
-      typeMessagesGeneral.confirmed,
-      typeMessagesGeneral.twoOftwo,
+      typeMessagesGeneral.sign,
+      typeMessagesGeneral.oneOftwo,
       typeMessagesOffchain.testMessage3,
     ])
   })

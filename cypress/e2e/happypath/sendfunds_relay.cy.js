@@ -45,7 +45,7 @@ function visit(url) {
   cy.visit(url)
 }
 
-// TODO: Relay only allows 5 txs per hour.
+// TODO: Relay only allows 5 txs per day.
 describe('Send funds with relay happy path tests', { defaultCommandTimeout: 300000 }, () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {

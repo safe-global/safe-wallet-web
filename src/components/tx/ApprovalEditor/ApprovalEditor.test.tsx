@@ -229,6 +229,7 @@ describe('ApprovalEditor', () => {
           to: tokenAddress,
           data: ERC20_INTERFACE.encodeFunctionData('transfer', [spenderAddress, '25']),
           value: '0',
+          operation: OperationType.Call,
         },
         {
           to: tokenAddress,
@@ -336,6 +337,7 @@ describe('ApprovalEditor', () => {
           to: tokenAddress,
           data: ERC20_INTERFACE.encodeFunctionData('transfer', [spenderAddress, '25']),
           value: '0',
+          operation: OperationType.Call,
         },
         {
           to: tokenAddress,

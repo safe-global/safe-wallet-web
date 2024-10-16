@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants'
-import * as main from '../../e2e/pages/main.page'
 import * as createtx from '../../e2e/pages/create_tx.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
@@ -18,7 +17,7 @@ function happyPathToStepTwo() {
   createtx.clickOnNextBtn()
 }
 
-describe.skip('[PROD] Create transactions tests', () => {
+describe('[PROD] Create transactions tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -30,7 +29,6 @@ describe.skip('[PROD] Create transactions tests', () => {
     createtx.clickOnSendTokensBtn()
   })
 
-  // TODO: Added to prod
   it('Verify submitting a tx and that clicking on notification shows the transaction in queue', () => {
     happyPathToStepTwo()
     createtx.verifySubmitBtnIsEnabled()

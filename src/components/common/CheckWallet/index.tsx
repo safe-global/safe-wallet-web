@@ -1,5 +1,5 @@
 import { useIsWalletDelegate } from '@/hooks/useDelegates'
-import { type ReactElement } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -15,12 +15,13 @@ type CheckWalletProps = {
   allowNonOwner?: boolean
   noTooltip?: boolean
   checkNetwork?: boolean
+  allowUndeployedSafe?: boolean
 }
 
 enum Message {
   WalletNotConnected = 'Please connect your wallet',
   NotSafeOwner = 'Your connected wallet is not a signer of this Safe Account',
-  CounterfactualMultisig = 'You need to activate the Safe before transacting',
+  SafeNotActivated = 'You need to activate the Safe before transacting',
 }
 
 const CheckWallet = ({
@@ -29,34 +30,50 @@ const CheckWallet = ({
   allowNonOwner,
   noTooltip,
   checkNetwork = false,
+  allowUndeployedSafe = false,
 }: CheckWalletProps): ReactElement => {
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()
-  const isSpendingLimit = useIsOnlySpendingLimitBeneficiary()
+  const isOnlySpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
   const isWrongChain = useIsWrongChain()
   const isDelegate = useIsWalletDelegate()
 
   const { safe } = useSafeInfo()
 
-  const isCounterfactualMultiSig = !allowNonOwner && !safe.deployed && safe.threshold > 1
-
+  const isUndeployedSafe = !safe.deployed
   const nestedOwners = useNestedSafeOwners()
 
-  const message =
-    wallet &&
-    (isSafeOwner ||
-      allowNonOwner ||
-      (isSpendingLimit && allowSpendingLimit) ||
-      isDelegate ||
-      (nestedOwners && nestedOwners.length > 0)) &&
-    !isCounterfactualMultiSig
-      ? ''
-      : !wallet
-      ? Message.WalletNotConnected
-      : isCounterfactualMultiSig
-      ? Message.CounterfactualMultisig
-      : Message.NotSafeOwner
+  const message = useMemo(() => {
+    if (!wallet) {
+      return Message.WalletNotConnected
+    }
+    if (isUndeployedSafe && !allowUndeployedSafe) {
+      return Message.SafeNotActivated
+    }
+
+    const isNestedOwner = nestedOwners && nestedOwners.length > 0
+
+    if (
+      !allowNonOwner &&
+      !isSafeOwner &&
+      !isDelegate &&
+      !isNestedOwner &&
+      (!isOnlySpendingLimit || !allowSpendingLimit)
+    ) {
+      return Message.NotSafeOwner
+    }
+  }, [
+    allowNonOwner,
+    allowSpendingLimit,
+    allowUndeployedSafe,
+    isDelegate,
+    isOnlySpendingLimit,
+    isSafeOwner,
+    isUndeployedSafe,
+    wallet,
+    nestedOwners,
+  ])
 
   if (checkNetwork && isWrongChain) return children(false)
   if (!message) return children(true)

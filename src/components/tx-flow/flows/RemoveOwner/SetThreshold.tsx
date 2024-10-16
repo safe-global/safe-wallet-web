@@ -65,7 +65,7 @@ export const SetThreshold = ({
           <Typography>Any transaction requires the confirmation of:</Typography>
           <Grid container direction="row" alignItems="center" gap={1} mt={2}>
             <Grid item xs={1.5}>
-              <Select value={selectedThreshold} onChange={handleChange} fullWidth>
+              <Select data-testid="threshold-selector" value={selectedThreshold} onChange={handleChange} fullWidth>
                 {safe.owners.slice(1).map((_, idx) => (
                   <MenuItem key={idx + 1} value={idx + 1}>
                     {idx + 1}

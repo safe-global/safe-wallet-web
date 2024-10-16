@@ -5,6 +5,7 @@ import { isStakingTxExitInfo } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
   isCustomTxInfo,
+  isMigrateToL2TxData,
   isMultisigDetailedExecutionInfo,
   isOnChainConfirmation,
   isOrderTxInfo,
@@ -21,6 +22,7 @@ import RejectionTxInfo from '@/components/transactions/TxDetails/TxData/Rejectio
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import TransferTxInfo from '@/components/transactions/TxDetails/TxData/Transfer'
 import useChainId from '@/hooks/useChainId'
+import { MigrationToL2TxData } from './MigrationToL2TxData'
 import SwapOrder from '@/features/swap/components/SwapOrder'
 import StakingTxDepositDetails from '@/features/stake/components/StakingTxDepositDetails'
 import StakingTxExitDetails from '@/features/stake/components/StakingTxExitDetails'
@@ -79,6 +81,11 @@ const TxData = ({
   if (isOnChainConfirmation(safeAddress, txDetails?.txData)) {
     return <OnChainConfirmation data={txDetails?.txData} />
   }
+
+  if (isMigrateToL2TxData(txDetails.txData, chainId)) {
+    return <MigrationToL2TxData txDetails={txDetails} />
+  }
+
   return <DecodedData txData={txDetails.txData} toInfo={toInfo} />
 }
 

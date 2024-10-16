@@ -1,9 +1,7 @@
 import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
 import * as assets from '../pages/assets.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
-const ASSET_NAME_COLUMN = 0
 const TOKEN_AMOUNT_COLUMN = 1
 const FIAT_AMOUNT_COLUMN = 2
 
@@ -19,7 +17,6 @@ describe('[PROD] Prod tokens tests', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
   })
 
-  // TODO: Added to prod
   it('Verify that non-native tokens are present and have balance', () => {
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     assets.verifyBalance(assets.currencyDaiCap, TOKEN_AMOUNT_COLUMN, assets.currencyDaiAlttext)
@@ -77,15 +74,12 @@ describe('[PROD] Prod tokens tests', () => {
     )
   })
 
-  // TODO: Added to prod
-  //Include in smoke.
   it('Verify that when owner is disconnected, Send button is disabled', () => {
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     assets.showSendBtn(0)
     assets.VerifySendButtonIsDisabled()
   })
 
-  // TODO: Added to prod
   it('Verify that when connected user is not owner, Send button is disabled', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_3)
     assets.selectTokenList(assets.tokenListOptions.allTokens)

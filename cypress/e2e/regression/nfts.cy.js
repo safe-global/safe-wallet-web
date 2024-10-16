@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
 import * as nfts from '../pages/nfts.pages'
 import * as navigation from '../pages/navigation.page'
 import * as createTx from '../pages/create_tx.pages'
@@ -35,7 +34,7 @@ describe('NFTs tests', () => {
     nfts.waitForNftItems(2)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   // TODO: Add Sign action
   it('Verify multipls NFTs can be selected and reviewed', () => {
     nfts.verifyInitialNFTData()
@@ -58,7 +57,7 @@ describe('NFTs tests', () => {
     nfts.verifyCountOfActions(0)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify that when 2 NFTs are selected, actions and tx details are correct in Review step', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(2)
@@ -71,7 +70,7 @@ describe('NFTs tests', () => {
     nfts.verifyActionName(1, multipleNFTAction)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify Send button is disabled for non-owner', () => {
     cy.visit(constants.balanceNftsUrl + nftsSafes.SEP_NFT_SAFE_2)
     nfts.verifyInitialNFTData()
@@ -86,9 +85,10 @@ describe('NFTs tests', () => {
     nfts.verifySendNFTBtnDisabled()
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify Send NFT transaction has been created', () => {
     cy.visit(constants.balanceNftsUrl + nftsSafes.SEP_NFT_SAFE_1)
+    wallet.connectSigner(signer)
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(1)
     nfts.sendNFT()

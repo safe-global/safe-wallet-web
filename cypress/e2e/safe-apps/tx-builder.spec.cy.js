@@ -28,8 +28,7 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     cy.visit(visitUrl)
   })
 
-  // TODO: Check if we still need this test as we now create complete flow of creating, signing and deleting a tx
-  it.skip('Verify a simple batch can be created', () => {
+  it('Verify a simple batch can be created', () => {
     cy.enter(iframeSelector).then((getBody) => {
       getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SAFE_APP_ADDRESS)
       getBody().find(safeapps.contractMethodIndex).parent().click()
@@ -41,11 +40,10 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
       getBody().findByText(safeapps.createBatchStr).click()
       getBody().findByText(safeapps.sendBatchStr).click()
     })
+
     cy.get('h4').contains(safeapps.transactionBuilderStr).should('be.visible')
-    createtx.clickOnNoLaterOption()
-    createtx.verifyAddToBatchBtnIsEnabled().click()
+    navigation.clickOnModalCloseBtn(0)
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByText(safeapps.reviewConfirmStr).should('exist')
       getBody().findAllByText(constants.SEPOLIA_CONTRACT_SHORT).should('have.length', 1)
       getBody().findByText(safeapps.testAddressValueStr).should('exist')
     })
@@ -100,16 +98,15 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
     cy.findByText(safeapps.thresholdStr2).should('exist')
   })
 
-  it.skip('Verify a batch can be created from an ABI', () => {
+  it('Verify a batch can be created from an ABI', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.enterABIStr).type(safeapps.abi)
+      getBody().findByLabelText(safeapps.enterABIStr).type(safeapps.abi, { parseSpecialCharSequences: false })
       getBody().findByLabelText(safeapps.toAddressStr).type(safeAppSafes.SEP_SAFEAPP_SAFE_2)
       getBody().findByLabelText(safeapps.tokenAmount).type('0')
       getBody().findByText(safeapps.addTransactionStr).click()
 
       getBody().findAllByText(constants.SEPOLIA_RECIPIENT_ADDR_SHORT).should('have.length', 1)
-      // TODO: Need data-testid for this
-      getBody().findAllByText(safeapps.testFallback).should('have.length', 2)
+      getBody().findAllByText(safeapps.testFallback).should('have.length', 1)
 
       getBody().findByText(safeapps.createBatchStr).click()
       getBody().findByText(safeapps.sendBatchStr).click()
@@ -223,6 +220,14 @@ describe('Transaction Builder tests', { defaultCommandTimeout: 20000 }, () => {
           const color = $element.css('color')
           expect(utils.isInRedRange(color), 'Element color is ').to.be.true
         })
+    })
+  })
+
+  it('Verify that error types are not displayed in ABI methods', () => {
+    cy.enter(iframeSelector).then((getBody) => {
+      getBody().findByLabelText(safeapps.enterABIStr).type(safeapps.abi, { parseSpecialCharSequences: false })
+      getBody().find(safeapps.contractMethodSelector).click()
+      getBody().find(safeapps.AddressEmptyCodeStr).should('not.exist')
     })
   })
 })
