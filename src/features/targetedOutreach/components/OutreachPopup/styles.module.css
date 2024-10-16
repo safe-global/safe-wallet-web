@@ -9,9 +9,6 @@
 .container {
   padding: var(--space-2);
   border-radius: var(--space-2);
-}
-
-.gradient {
   background: linear-gradient(180deg, #b0ffc9 0%, #d7f6ff 99.5%);
 }
 
