@@ -13,18 +13,21 @@ const CounterfactualSuccessScreen = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [safeAddress, setSafeAddress] = useState<string>()
   const [chainId, setChainId] = useState<string>()
+  const [event, setEvent] = useState<SafeCreationEvent>()
   const currentChain = useCurrentChain()
   const chain = useChain(chainId || currentChain?.chainId || '')
   const [networks, setNetworks] = useState<ChainInfo[]>([])
   const addressBooks = useAllAddressBooks()
   const safeName = safeAddress && chain ? addressBooks?.[chain.chainId]?.[safeAddress] : ''
-  const isCFCreation = !!networks.length && !chainId
+  const isCFCreation = event === SafeCreationEvent.AWAITING_EXECUTION
   const isMultiChain = networks.length > 1
   const chainName = isMultiChain ? '' : isCFCreation ? networks[0].chainName : chain?.chainName
 
   useEffect(() => {
     const unsubFns = Object.entries(safeCreationPendingStatuses).map(([event]) =>
       safeCreationSubscribe(event as SafeCreationEvent, async (detail) => {
+        setEvent(event as SafeCreationEvent)
+
         if (event === SafeCreationEvent.INDEXED) {
           if ('chainId' in detail) {
             setChainId(detail.chainId)
