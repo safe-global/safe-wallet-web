@@ -3,7 +3,7 @@ import useAllSafes, { type SafeItem, type SafeItems } from './useAllSafes'
 import { useMemo } from 'react'
 import { sameAddress } from '@/utils/addresses'
 
-export type MultiChainSafeItem = { address: string; safes: SafeItem[] }
+export type MultiChainSafeItem = { address: string; safes: SafeItem[]; isPinned: boolean }
 
 export type AllSafesGrouped = {
   allSingleSafes: SafeItems | undefined
@@ -12,9 +12,10 @@ export type AllSafesGrouped = {
 
 const getMultiChainAccounts = (safes: SafeItems): MultiChainSafeItem[] => {
   const groupedByAddress = groupBy(safes, (safe) => safe.address)
+  const isPinned = safes.some((safe) => safe.isPinned)
   const multiChainSafeItems = Object.entries(groupedByAddress)
     .filter((entry) => entry[1].length > 1)
-    .map((entry): MultiChainSafeItem => ({ address: entry[0], safes: entry[1] }))
+    .map((entry): MultiChainSafeItem => ({ address: entry[0], safes: entry[1], isPinned }))
 
   return multiChainSafeItems
 }

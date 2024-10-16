@@ -12,6 +12,8 @@ import {
   AccordionSummary,
   Divider,
   Tooltip,
+  SvgIcon,
+  IconButton,
 } from '@mui/material'
 import SafeIcon from '@/components/common/SafeIcon'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
@@ -37,6 +39,10 @@ import { useGetMultipleSafeOverviewsQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectCurrency } from '@/store/settingsSlice'
 import { selectChains } from '@/store/chainsSlice'
+import BookmarkIcon from '@/public/images/apps/bookmark.svg'
+import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
+import { addOrUpdateSafe, pinSafe, selectAllAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
+import { defaultSafeInfo } from '@/store/safeInfoSlice'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -67,7 +73,7 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
 }
 
 const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountItemProps) => {
-  const { address, safes } = multiSafeAccountItem
+  const { address, safes, isPinned } = multiSafeAccountItem
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const safeAddress = useSafeAddress()
   const router = useRouter()
@@ -76,7 +82,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
   const [expanded, setExpanded] = useState(isCurrentSafe)
   const chains = useAppSelector(selectChains)
 
-  // const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
+  const allAddedSafes = useAppSelector((state) => selectAllAddedSafes(state))
   // const isAdded = !!addedSafes?.[address]
   const dispatch = useAppDispatch()
 
@@ -140,28 +146,39 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     [safeOverviews],
   )
 
-  // const addToPinnedList = () => {
-  //   if (!isAdded && safeOverview) {
-  //     dispatch(
-  //       // Adding a safe will make it pinned by default
-  //       addOrUpdateSafe({
-  //         safe: {
-  //           ...defaultSafeInfo,
-  //           chainId,
-  //           address: { value: address },
-  //           owners: safeOverview?.owners,
-  //           threshold: safeOverview?.threshold,
-  //         },
-  //       }),
-  //     )
-  //   } else {
-  //     dispatch(pinSafe({ chainId, address }))
-  //   }
-  // }
+  const addToPinnedList = () => {
+    const isGroupAdded = safes.every((safe) => allAddedSafes[safe.chainId]?.[safe.address])
+    if (isGroupAdded) {
+      for (const safe of safes) {
+        dispatch(pinSafe({ chainId: safe.chainId, address: safe.address }))
+      }
+    }
 
-  // const removeFromPinnedList = () => {
-  //   dispatch(unpinSafe({ chainId, address }))
-  // }
+    for (const safe of safes) {
+      const overview = findOverview(safe)
+      if (!overview) {
+        continue
+      }
+      // Adding a safe will make it pinned by default
+      dispatch(
+        addOrUpdateSafe({
+          safe: {
+            ...defaultSafeInfo,
+            chainId: safe.chainId,
+            address: { value: address },
+            owners: overview.owners,
+            threshold: overview.threshold,
+          },
+        }),
+      )
+    }
+  }
+
+  const removeFromPinnedList = () => {
+    for (const safe of safes) {
+      dispatch(unpinSafe({ chainId: safe.chainId, address: safe.address }))
+    }
+  }
 
   return (
     <ListItemButton
@@ -202,7 +219,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               )}
             </Typography>
           </Box>
-          {/* <Tooltip placement="top" arrow title="Pin this account">
+          <Tooltip placement="top" arrow title="Pin this account">
             <IconButton
               edge="end"
               size="medium"
@@ -216,7 +233,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
                 fontSize="small"
               />
             </IconButton>
-          </Tooltip> */}
+          </Tooltip>
           <MultiAccountContextMenu
             name={name ?? ''}
             address={address}

@@ -99,8 +99,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
             ...defaultSafeInfo,
             chainId,
             address: { value: address },
-            owners: safeOverview?.owners,
-            threshold: safeOverview?.threshold,
+            owners: safeOverview.owners,
+            threshold: safeOverview.threshold,
           },
         }),
       )
