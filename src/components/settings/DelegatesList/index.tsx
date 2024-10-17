@@ -1,14 +1,75 @@
+import CheckWallet from '@/components/common/CheckWallet'
+import EnhancedTable from '@/components/common/EnhancedTable'
+import Track from '@/components/common/Track'
+import DeleteProposer from '@/features/proposers/components/DeleteProposer'
 import useDelegates from '@/hooks/useDelegates'
-import { Box, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import DeleteIcon from '@/public/images/common/delete.svg'
+import { SETTINGS_EVENTS } from '@/services/analytics'
+import { Box, Grid, IconButton, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
+import { useMemo, useState } from 'react'
+
+const headCells = [
+  { id: 'delegate', label: 'Delegate' },
+  { id: 'actions', label: '', sticky: true },
+]
 
 const DelegatesList = () => {
+  const [deleteProposer, setDeleteProposer] = useState<string>()
   const delegates = useDelegates()
 
+  const rows = useMemo(() => {
+    if (!delegates.data) return []
+
+    return delegates.data.results.map((delegate) => {
+      return {
+        cells: {
+          delegate: {
+            rawValue: delegate.delegate,
+            content: (
+              <EthHashInfo
+                address={delegate.delegate}
+                showCopyButton
+                hasExplorer
+                name={delegate.label || undefined}
+                shortAddress={false}
+              />
+            ),
+          },
+          actions: {
+            rawValue: '',
+            sticky: true,
+            content: (
+              <CheckWallet>
+                {(isOk) => (
+                  <Track {...SETTINGS_EVENTS.PROPOSERS.REMOVE_PROPOSER}>
+                    <IconButton
+                      data-testid="delete-btn"
+                      onClick={() => onDelete(delegate.delegate)}
+                      color="error"
+                      size="small"
+                      disabled={!isOk}
+                    >
+                      <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                    </IconButton>
+                  </Track>
+                )}
+              </CheckWallet>
+            ),
+          },
+        },
+      }
+    })
+  }, [delegates.data?.results])
+
   if (!delegates.data?.results) return null
+
+  const onDelete = async (proposerAddress: string) => {
+    setDeleteProposer(proposerAddress)
+  }
 
   return (
     <Paper sx={{ p: 4, mt: 2 }}>
@@ -40,24 +101,17 @@ const DelegatesList = () => {
           </Grid>
 
           <Grid item xs>
-            <ul style={{ padding: 0, margin: 0 }}>
-              {delegates.data.results.map((item) => (
-                <li
-                  key={item.delegate}
-                  style={{ listStyleType: 'none', marginBottom: '1em' }}
-                  title={`Delegated by ${item.delegator}`}
-                >
-                  <EthHashInfo
-                    address={item.delegate}
-                    showCopyButton
-                    hasExplorer
-                    name={item.label || undefined}
-                    shortAddress={false}
-                  />
-                </li>
-              ))}
-            </ul>
+            Delegated accounts can propose transactions.
+            <EnhancedTable rows={rows} headCells={headCells} />
           </Grid>
+
+          {deleteProposer && (
+            <DeleteProposer
+              delegateAddress={deleteProposer}
+              onClose={() => setDeleteProposer(undefined)}
+              onSuccess={() => setDeleteProposer(undefined)}
+            />
+          )}
         </Grid>
       </Box>
     </Paper>
