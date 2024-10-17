@@ -5,46 +5,31 @@ import type { Theme } from '@mui/material/styles'
 import { useAppDispatch, useAppSelector } from '@/store'
 import css from './styles.module.css'
 import { closeOutreachBanner, openOutreachBanner, selectOutreachBanner } from '@/store/popupSlice'
-import useLocalStorage from '@/services/local-storage/useLocalStorage'
+import useLocalStorage, { useSessionStorage } from '@/services/local-storage/useLocalStorage'
 import { useShowOutreachPopup } from '@/features/targetedOutreach/hooks/useShowOutreachPopup'
-import { getUpdatedUserActivity } from '@/features/targetedOutreach/utils/getUpdatedUserActivity'
-import { ACTIVE_OUTREACH, OUTREACH_LS_KEY } from '@/features/targetedOutreach/constants'
+import { ACTIVE_OUTREACH, OUTREACH_LS_KEY, OUTREACH_SS_KEY } from '@/features/targetedOutreach/constants'
 import Track from '@/components/common/Track'
 import { OUTREACH_EVENTS } from '@/services/analytics/events/outreach'
 import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 
-export type OutreachPopupState = {
-  isClosed?: boolean
-  askAgainLater?: boolean
-  activityTimestamps?: number[]
-}
-
 const OutreachPopup = (): ReactElement | null => {
   const dispatch = useAppDispatch()
   const outreachPopup = useAppSelector(selectOutreachBanner)
-  const [outreachPopupState, setOutreachPopupState] = useLocalStorage<OutreachPopupState>(OUTREACH_LS_KEY)
-  const shouldOpen = useShowOutreachPopup(outreachPopupState)
+  const [isClosed, setIsClosed] = useLocalStorage<boolean>(OUTREACH_LS_KEY)
+
+  const [askAgainLaterTimestamp, setAskAgainLaterTimestamp] = useSessionStorage<number>(OUTREACH_SS_KEY)
+
+  const shouldOpen = useShowOutreachPopup(isClosed, askAgainLaterTimestamp)
 
   const handleClose = () => {
-    setOutreachPopupState({ isClosed: true, askAgainLater: false })
+    setIsClosed(true)
     dispatch(closeOutreachBanner())
   }
 
   const handleAskAgainLater = () => {
-    setOutreachPopupState({ askAgainLater: true, activityTimestamps: [Date.now()] })
+    setAskAgainLaterTimestamp(Date.now())
     dispatch(closeOutreachBanner())
   }
-
-  // Log activity in LS to flag frequent users.
-  useEffect(() => {
-    if (outreachPopupState?.askAgainLater && !shouldOpen) {
-      const updatedUserActivity = getUpdatedUserActivity(outreachPopupState?.activityTimestamps)
-      setOutreachPopupState({
-        askAgainLater: true,
-        activityTimestamps: updatedUserActivity,
-      })
-    }
-  }, [outreachPopupState?.activityTimestamps, outreachPopupState?.askAgainLater, setOutreachPopupState, shouldOpen])
 
   // Decide whether to show the popup.
   useEffect(() => {
