@@ -17,9 +17,11 @@ import {
   useRecommendedNonce,
   useTxActions,
   useValidateNonce,
-} from './hooks'
+} from '../hooks'
 import * as recommendedNonce from '@/services/tx/tx-sender/recommendedNonce'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { MockEip1193Provider } from '@/tests/mocks/providers'
+import { type SignerWallet } from '@/components/common/WalletProvider'
 import { chainBuilder } from '@/tests/builders/chains'
 import * as useChains from '@/hooks/useChains'
 
@@ -49,11 +51,11 @@ describe('SignOrExecute hooks', () => {
     } as unknown as OnboardAPI)
 
     // Wallet
-    jest.spyOn(wallet, 'default').mockReturnValue({
+    jest.spyOn(wallet, 'useSigner').mockReturnValue({
       chainId: '1',
-      label: 'MetaMask',
       address: '0x1234567890000000000000000000000000000000',
-    } as unknown as ConnectedWallet)
+      provider: MockEip1193Provider,
+    })
 
     jest.spyOn(useChains, 'useCurrentChain').mockReturnValue(chainInfo)
   })
@@ -564,11 +566,11 @@ describe('SignOrExecute hooks', () => {
   describe('useAlreadySigned', () => {
     it('should return true if wallet already signed a tx', () => {
       // Wallet
-      jest.spyOn(wallet, 'default').mockReturnValue({
+      jest.spyOn(wallet, 'useSigner').mockReturnValue({
         chainId: '1',
-        label: 'MetaMask',
         address: '0x1234567890000000000000000000000000000000',
-      } as unknown as ConnectedWallet)
+        provider: MockEip1193Provider,
+      } as SignerWallet)
 
       const tx = createSafeTx()
       tx.addSignature({
@@ -584,11 +586,11 @@ describe('SignOrExecute hooks', () => {
 
     it('should return false if wallet has not signed a tx yet', () => {
       // Wallet
-      jest.spyOn(wallet, 'default').mockReturnValue({
+      jest.spyOn(wallet, 'useSigner').mockReturnValue({
         chainId: '1',
-        label: 'MetaMask',
         address: '0x1234567890000000000000000000000000000000',
-      } as unknown as ConnectedWallet)
+        provider: MockEip1193Provider,
+      } as SignerWallet)
 
       const tx = createSafeTx()
       tx.addSignature({

@@ -4,6 +4,7 @@ import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBen
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useWallet from '@/hooks/wallets/useWallet'
 import useConnectWallet from '../ConnectWallet/useConnectWallet'
+import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { Tooltip } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -41,6 +42,7 @@ const CheckWallet = ({
   const { safe } = useSafeInfo()
 
   const isUndeployedSafe = !safe.deployed
+  const nestedOwners = useNestedSafeOwners()
 
   const message = useMemo(() => {
     if (!wallet) {
@@ -50,7 +52,15 @@ const CheckWallet = ({
       return Message.SafeNotActivated
     }
 
-    if (!allowNonOwner && !isSafeOwner && !isDelegate && (!isOnlySpendingLimit || !allowSpendingLimit)) {
+    const isNestedOwner = nestedOwners && nestedOwners.length > 0
+
+    if (
+      !allowNonOwner &&
+      !isSafeOwner &&
+      !isDelegate &&
+      !isNestedOwner &&
+      (!isOnlySpendingLimit || !allowSpendingLimit)
+    ) {
       return Message.NotSafeOwner
     }
   }, [
@@ -62,6 +72,7 @@ const CheckWallet = ({
     isSafeOwner,
     isUndeployedSafe,
     wallet,
+    nestedOwners,
   ])
 
   if (checkNetwork && isWrongChain) return children(false)

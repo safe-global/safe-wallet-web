@@ -30,7 +30,9 @@ describe('useGasLimit', () => {
       getContractManager: () => contractManager,
     } as unknown as Safe)
 
-    jest.spyOn(useWallet, 'default').mockReturnValue(connectedWalletBuilder().with({ address: walletAddress }).build())
+    jest
+      .spyOn(useWallet, 'useSigner')
+      .mockReturnValue(connectedWalletBuilder().with({ address: walletAddress }).build())
     jest.spyOn(useSafeInfo, 'default').mockReturnValue({
       safe: { ...safeInfo, deployed: true },
       safeAddress: safeInfo.address.value,
@@ -49,7 +51,7 @@ describe('useGasLimit', () => {
   })
 
   it('should return undefined if no owner is connected', async () => {
-    jest.spyOn(useWallet, 'default').mockReturnValue(
+    jest.spyOn(useWallet, 'useSigner').mockReturnValue(
       connectedWalletBuilder()
         .with({
           address: undefined,
