@@ -17,7 +17,7 @@
 }
 
 @media (max-width: 599.95px) {
-  .container {
+  .popup {
     right: 0;
     bottom: 0;
   }
