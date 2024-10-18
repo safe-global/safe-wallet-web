@@ -29,11 +29,11 @@ export const SafeTxHashDataRow = ({
       <TxDataRow datatestid="tx-safe-hash" title="safeTxHash:">
         {generateDataRowValue(safeTxHash, 'hash')}
       </TxDataRow>
-      <TxDataRow datatestid="tx-safe-hash" title="Domain hash:">
+      <TxDataRow datatestid="tx-domain-hash" title="Domain hash:">
         {generateDataRowValue(domainHash, 'hash')}
       </TxDataRow>
       {messageHash && (
-        <TxDataRow datatestid="tx-safe-hash" title="Message hash:">
+        <TxDataRow datatestid="tx-message-hash" title="Message hash:">
           {generateDataRowValue(messageHash, 'hash')}
         </TxDataRow>
       )}
