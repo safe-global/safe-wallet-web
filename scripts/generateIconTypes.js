@@ -17,7 +17,10 @@ const iconNames = selection.icons.map((icon) => icon.icon.tags[0]).filter(Boolea
 // Create TypeScript union type
 const typeDef = `export type IconName =\n  ${iconNames.map((name) => `| '${name}'`).join('\n  ')}\n`
 
-// Write the type definition to a file
-fs.writeFileSync(path.join(__dirname, '../src/types/iconTypes.ts'), typeDef)
+// Create an array of icon names
+const arrayDef = `export const iconNames: IconName[] = [\n  ${iconNames.map((name) => `'${name}'`).join(',\n  ')},\n]`
 
-console.log('Icon type generated:', typeDef)
+// Write the type definition to a file
+fs.writeFileSync(path.join(__dirname, '../src/types/iconTypes.ts'), `${typeDef}\n${arrayDef}\n`)
+
+console.log('Icon type and Icon names generated')
