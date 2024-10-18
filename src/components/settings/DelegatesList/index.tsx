@@ -1,11 +1,13 @@
 import CheckWallet from '@/components/common/CheckWallet'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import Track from '@/components/common/Track'
+import AddProposer from '@/features/proposers/components/AddProposer'
 import DeleteProposer from '@/features/proposers/components/DeleteProposer'
 import useDelegates from '@/hooks/useDelegates'
+import AddIcon from '@/public/images/common/add.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { SETTINGS_EVENTS } from '@/services/analytics'
-import { Box, Grid, IconButton, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Grid, IconButton, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -19,6 +21,7 @@ const headCells = [
 
 const DelegatesList = () => {
   const [deleteProposer, setDeleteProposer] = useState<string>()
+  const [addProposer, setAddProposer] = useState<boolean>()
   const delegates = useDelegates()
 
   const rows = useMemo(() => {
@@ -67,8 +70,12 @@ const DelegatesList = () => {
 
   if (!delegates.data?.results) return null
 
-  const onDelete = async (proposerAddress: string) => {
+  const onDelete = (proposerAddress: string) => {
     setDeleteProposer(proposerAddress)
+  }
+
+  const onAdd = () => {
+    setAddProposer(true)
   }
 
   return (
@@ -103,6 +110,21 @@ const DelegatesList = () => {
           <Grid item xs>
             Delegated accounts can propose transactions.
             <EnhancedTable rows={rows} headCells={headCells} />
+            <CheckWallet>
+              {(isOk) => (
+                <Track {...SETTINGS_EVENTS.PROPOSERS.ADD_PROPOSER}>
+                  <Button
+                    data-testid="add-owner-btn"
+                    onClick={onAdd}
+                    variant="text"
+                    startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+                    disabled={!isOk}
+                  >
+                    Add new delegate
+                  </Button>
+                </Track>
+              )}
+            </CheckWallet>
           </Grid>
 
           {deleteProposer && (
@@ -112,6 +134,8 @@ const DelegatesList = () => {
               onSuccess={() => setDeleteProposer(undefined)}
             />
           )}
+
+          {addProposer && <AddProposer onClose={() => setAddProposer(false)} onSuccess={() => setAddProposer(false)} />}
         </Grid>
       </Box>
     </Paper>

@@ -20,7 +20,7 @@ import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { deleteDelegateV2 } from 'safe-client-gateway-sdk'
+import { deleteDelegateV2 } from '@safe-global/safe-client-gateway-sdk'
 
 type DeleteProposerProps = {
   onClose: () => void
@@ -57,8 +57,7 @@ const _DeleteProposer = ({
       const typedData = getDelegateTypedData(chainId, delegateAddress)
 
       const signature = await signTypedData(signer, typedData)
-      // @ts-ignore Type issue will be fixed with the upcoming gateway sdk release
-      await deleteDelegateV2({ path: { chainId, delegateAddress } }, { safe: safeAddress, signature })
+      await deleteDelegateV2({ params: { path: { chainId, delegateAddress } }, body: { safe: safeAddress, signature } })
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)
@@ -76,7 +75,7 @@ const _DeleteProposer = ({
   return (
     <Dialog open onClose={onClose}>
       <DialogTitle>
-        <Box data-testid="untrusted-token-warning" display="flex" alignItems="center">
+        <Box display="flex" alignItems="center">
           <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             Delete this delegate?
           </Typography>
@@ -109,7 +108,6 @@ const _DeleteProposer = ({
         </Button>
 
         <Button
-          data-testid="delete-tx-btn"
           size="small"
           variant="contained"
           color="primary"
