@@ -3,7 +3,7 @@ import { createWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { type UndeployedSafe, selectRpc, type ReplayedSafeProps, selectUndeployedSafes } from '@/store/slices'
 import { Safe__factory, Safe_proxy_factory__factory } from '@/types/contracts'
 import { sameAddress } from '@/utils/addresses'
-import { getCreationTransaction } from 'safe-client-gateway-sdk'
+import { getCreationTransaction } from '@safe-global/safe-client-gateway-sdk'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useAppSelector } from '@/store'
 import { determineMasterCopyVersion, isPredictedSafeProps } from '@/features/counterfactual/utils'
@@ -91,10 +91,12 @@ const getCreationDataForChain = async (
     return undeployedCreationData
   }
 
-  const { data: creation } = await getCreationTransaction({
-    path: {
-      chainId: chain.chainId,
-      safeAddress,
+  const creation = await getCreationTransaction({
+    params: {
+      path: {
+        chainId: chain.chainId,
+        safeAddress,
+      },
     },
   })
 
@@ -172,6 +174,7 @@ export const useSafeCreationData = (safeAddress: string, chains: ChainInfo[]): A
 
         try {
           const creationData = await getCreationDataForChain(chain, undeployedSafe, safeAddress, customRpc)
+          console.log({ creationData })
           return creationData
         } catch (err) {
           lastError = asError(err)
