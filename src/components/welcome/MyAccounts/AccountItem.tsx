@@ -2,9 +2,8 @@ import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo } from 'react'
-import { ListItemButton, Box, Typography, Chip, Skeleton, Tooltip, IconButton, SvgIcon } from '@mui/material'
+import { ListItemButton, Box, Typography, Chip, Tooltip, IconButton, SvgIcon } from '@mui/material'
 import Link from 'next/link'
-import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
@@ -22,17 +21,14 @@ import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
-import FiatValue from '@/components/common/FiatValue'
-import QueueActions from './QueueActions'
 import { useGetHref } from './useGetHref'
 import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
-import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
-import { skipToken } from '@reduxjs/toolkit/query'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import { addOrUpdateSafe, pinSafe, selectAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
+import SafeIcon from '@/components/common/SafeIcon'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
 type AccountItemProps = {
   safeItem: SafeItem
@@ -41,7 +37,7 @@ type AccountItemProps = {
 }
 
 const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
-  const { chainId, address, isPinned } = safeItem
+  const { chainId, address, isPinned, isWatchlist } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
   const safeAddress = useSafeAddress()
@@ -77,22 +73,21 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     !safeItem.isWatchlist &&
     (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
-  const { data: safeOverview } = useGetSafeOverviewQuery(
-    undeployedSafe
-      ? skipToken
-      : {
-          chainId: safeItem.chainId,
-          safeAddress: safeItem.address,
-          walletAddress,
-        },
-  )
+  // const { data: safeOverview } = useGetSafeOverviewQuery(
+  //   undeployedSafe
+  //     ? skipToken
+  //     : {
+  //         chainId: safeItem.chainId,
+  //         safeAddress: safeItem.address,
+  //         walletAddress,
+  //       },
+  // )
 
   // const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold
   // const safeOwners = safeOverview?.owners ?? counterfactualSetup?.owners
 
   const addToPinnedList = () => {
-    dispatch(pinSafe({ chainId, address }))
-    if (!isAdded && safeOverview) {
+    if (!isAdded) {
       dispatch(
         // Adding a safe will make it pinned by default
         addOrUpdateSafe({
@@ -100,8 +95,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
             ...defaultSafeInfo,
             chainId,
             address: { value: address },
-            owners: safeOverview.owners,
-            threshold: safeOverview.threshold,
+            // owners: safeOverview.owners,
+            // threshold: safeOverview.threshold,
           },
         }),
       )
@@ -125,8 +120,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           <Box pr={2.5}>
             <SafeIcon
               address={address}
-              owners={safeOverview?.owners.length ?? counterfactualSetup?.owners.length}
-              threshold={safeOverview?.threshold ?? counterfactualSetup?.threshold}
+              // owners={safeOverview?.owners.length ?? counterfactualSetup?.owners.length}
+              // threshold={safeOverview?.threshold ?? counterfactualSetup?.threshold}
               chainId={chainId}
             />
           </Box>
@@ -159,21 +154,23 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
                 />
               </div>
             )}
+            {isWatchlist && <Typography fontSize="inherit">Readonly</Typography>}
           </Typography>
 
           <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
-            {safeOverview ? (
+            {/* {safeOverview ? (
               <FiatValue value={safeOverview.fiatTotal} />
             ) : undeployedSafe ? null : (
               <Skeleton variant="text" sx={{ ml: 'auto' }} />
-            )}
+            )} */}
           </Typography>
         </Link>
       </Track>
 
       <Tooltip placement="top" arrow title="Pin this account">
+        {/* <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={() => {}}> */}
         <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={isPinned ? removeFromPinnedList : addToPinnedList}>
           <SvgIcon
             component={isPinned ? BookmarkedIcon : BookmarkIcon}
@@ -185,12 +182,12 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
       </Tooltip>
       <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
 
-      <QueueActions
+      {/* <QueueActions
         queued={safeOverview?.queued || 0}
         awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
         safeAddress={address}
         chainShortName={chain?.shortName || ''}
-      />
+      /> */}
     </ListItemButton>
   )
 }
