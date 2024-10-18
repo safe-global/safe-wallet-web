@@ -29,6 +29,7 @@ export const generateDataRowValue = (
           customAvatar={customAvatar}
           showAvatar={!!customAvatar}
           hasExplorer={hasExplorer}
+          shortAddress={type === 'address'}
           showCopyButton
         />
       )

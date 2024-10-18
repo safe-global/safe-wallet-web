@@ -7,7 +7,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import { dateString } from '@/utils/formatters'
 import css from './styles.module.css'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { SafeTransaction, SafeTransactionData, SafeVersion } from '@safe-global/safe-core-sdk-types'
 import SafeTxGasForm from '../SafeTxGasForm'
 import DecodedData from '../TxData/DecodedData'
 import { calculateSafeTransactionHash } from '@safe-global/protocol-kit/dist/src/utils'
@@ -21,6 +21,7 @@ interface Props {
 }
 
 const Summary = ({ txDetails, defaultExpanded = false, hideDecodedData = false }: Props): ReactElement => {
+  const { safe } = useSafeInfo()
   const [expanded, setExpanded] = useState<boolean>(defaultExpanded)
 
   const toggleExpanded = () => {
@@ -29,10 +30,25 @@ const Summary = ({ txDetails, defaultExpanded = false, hideDecodedData = false }
 
   const { txHash, detailedExecutionInfo, executedAt, txData } = txDetails
 
-  let submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, refundReceiver, safeTxGas
+  let safeTxData: SafeTransactionData | undefined = undefined
+  let submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, refundReceiver, safeTxGas, nonce
   if (isMultisigDetailedExecutionInfo(detailedExecutionInfo)) {
-    ;({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas } = detailedExecutionInfo)
+    ;({ submittedAt, confirmations, safeTxHash, baseGas, gasPrice, gasToken, safeTxGas, nonce } = detailedExecutionInfo)
     refundReceiver = detailedExecutionInfo.refundReceiver?.value
+    if (txData) {
+      safeTxData = {
+        to: txData.to.value,
+        data: txData.hexData ?? '0x',
+        value: txData.value ?? '0',
+        operation: txData.operation as number,
+        baseGas,
+        gasPrice,
+        gasToken,
+        nonce,
+        refundReceiver,
+        safeTxGas,
+      }
+    }
   }
 
   const isCustom = isCustomTxInfo(txDetails.txInfo)
@@ -44,7 +60,9 @@ const Summary = ({ txDetails, defaultExpanded = false, hideDecodedData = false }
           {generateDataRowValue(txHash, 'hash', true)}{' '}
         </TxDataRow>
       )}
-      {safeTxHash && <SafeTxHashDataRow safeTxHash={safeTxHash} />}
+      {safeTxHash && (
+        <SafeTxHashDataRow safeTxHash={safeTxHash} safeTxData={safeTxData} safeVersion={safe.version as SafeVersion} />
+      )}
       <TxDataRow datatestid="tx-created-at" title="Created:">
         {submittedAt ? dateString(submittedAt) : null}
       </TxDataRow>
@@ -122,7 +140,9 @@ export const PartialSummary = ({ safeTx }: { safeTx: SafeTransaction }) => {
   }, [safe.chainId, safe.version, safeAddress, safeTx.data])
   return (
     <>
-      {safeTxHash && <SafeTxHashDataRow safeTxHash={safeTxHash} />}
+      {safeTxHash && (
+        <SafeTxHashDataRow safeTxHash={safeTxHash} safeTxData={safeTx.data} safeVersion={safe.version as SafeVersion} />
+      )}
       <TxDataRow datatestid="tx-executed-at" title="safeTxGas:">
         <SafeTxGasForm />
       </TxDataRow>
