@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Box, Button, Link, SvgIcon, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
 import Track from '@/components/common/Track'
@@ -7,8 +7,6 @@ import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
 import PaginatedSafeList from './PaginatedSafeList'
-import { VisibilityOutlined } from '@mui/icons-material'
-import AddIcon from '@/public/images/common/add.svg'
 import { AppRoutes } from '@/config/routes'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -70,7 +68,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
         </Box>
 
         <PaginatedSafeList
-          title="My accounts"
+          title="All accounts"
           safes={ownedSafes}
           onLinkClick={onLinkClick}
           noSafesMessage={
@@ -87,7 +85,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           }
         />
 
-        <PaginatedSafeList
+        {/* <PaginatedSafeList
           title={
             <>
               <VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: '10px' }} fontSize="small" />
@@ -111,7 +109,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           }
           noSafesMessage={NO_WATCHED_MESSAGE}
           onLinkClick={onLinkClick}
-        />
+        /> */}
 
         <DataWidget />
       </Box>

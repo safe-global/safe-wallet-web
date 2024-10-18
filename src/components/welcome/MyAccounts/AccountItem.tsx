@@ -91,6 +91,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   // const safeOwners = safeOverview?.owners ?? counterfactualSetup?.owners
 
   const addToPinnedList = () => {
+    dispatch(pinSafe({ chainId, address }))
     if (!isAdded && safeOverview) {
       dispatch(
         // Adding a safe will make it pinned by default
