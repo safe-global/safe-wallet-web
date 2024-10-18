@@ -13,7 +13,7 @@ jest.mock('@web3-onboard/keystone/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/ledger/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/trezor', () => jest.fn())
 jest.mock('@web3-onboard/walletconnect', () => jest.fn())
-jest.mock('safe-client-gateway-sdk')
+jest.mock('@safe-global/safe-client-gateway-sdk')
 
 const mockOnboardState = {
   chains: [],
