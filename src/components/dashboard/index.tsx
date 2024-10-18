@@ -10,6 +10,7 @@ import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSe
 import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
 import ActivityRewardsSection from '@/components/dashboard/ActivityRewardsSection'
+import StakingBanner from '@/components/dashboard/StakingBanner'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import css from './styles.module.css'
@@ -17,6 +18,7 @@ import SwapWidget from '@/features/swap/components/SwapWidget'
 import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
 import { useSafeTokenEnabled } from '@/hooks/useSafeTokenEnabled'
 import { InconsistentSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/InconsistentSignerSetupWarning'
+import useIsStakingFeatureEnabled from '@/features/stake/hooks/useIsSwapFeatureEnabled'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
@@ -26,6 +28,7 @@ const Dashboard = (): ReactElement => {
   const isSafeTokenEnabled = useSafeTokenEnabled()
   const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER) && isSafeTokenEnabled
+  const isStakingFeatureEnabled = useIsStakingFeatureEnabled()
   const supportsRecovery = useIsRecoverySupported()
 
   return (
@@ -56,6 +59,12 @@ const Dashboard = (): ReactElement => {
             {isSAPBannerEnabled && (
               <Grid item xs className={css.hideIfEmpty}>
                 <ActivityRewardsSection />
+              </Grid>
+            )}
+
+            {isStakingFeatureEnabled && (
+              <Grid item xs={12} className={css.hideIfEmpty}>
+                <StakingBanner />
               </Grid>
             )}
 
