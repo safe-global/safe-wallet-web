@@ -201,6 +201,7 @@ describe('Swaps tests', () => {
       navigation.clickOnDisconnectBtn()
       wallet.connectSigner(signer3)
 
+      cy.wait(5000)
       create_tx.verifyConfirmTransactionBtnIsVisible()
       create_tx.clickOnConfirmTransactionBtn()
       create_tx.clickOnNoLaterOption()

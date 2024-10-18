@@ -5,7 +5,7 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
 import { TextEncoder, TextDecoder } from 'util'
-import { Headers, Request, Response } from 'node-fetch'
+import { Request } from 'node-fetch'
 
 jest.mock('@web3-onboard/coinbase', () => jest.fn())
 jest.mock('@web3-onboard/injected-wallets', () => ({ ProviderLabel: { MetaMask: 'MetaMask' } }))
@@ -13,7 +13,7 @@ jest.mock('@web3-onboard/keystone/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/ledger/dist/index', () => jest.fn())
 jest.mock('@web3-onboard/trezor', () => jest.fn())
 jest.mock('@web3-onboard/walletconnect', () => jest.fn())
-jest.mock('safe-client-gateway-sdk')
+jest.mock('@safe-global/safe-client-gateway-sdk')
 
 const mockOnboardState = {
   chains: [],
@@ -71,7 +71,5 @@ Object.defineProperty(Uint8Array, Symbol.hasInstance, {
   },
 })
 
-// These are required for safe-client-gateway-sdk
+// These are required for @safe-global/safe-client-gateway-sdk
 globalThis.Request = Request
-globalThis.Response = Response
-globalThis.Headers = Headers

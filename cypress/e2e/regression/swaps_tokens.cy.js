@@ -38,7 +38,6 @@ describe('[SMOKE] Swaps token tests', () => {
     },
   )
 
-  // Added to prod
   it('Verify swap button are displayed in assets table and dashboard', () => {
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     main.verifyElementsCount(swaps.assetsSwapBtn, 4)

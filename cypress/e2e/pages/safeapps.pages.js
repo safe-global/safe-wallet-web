@@ -10,6 +10,7 @@ export const deleteBatchBtn = 'button[title="Delete Batch"]'
 const appModal = '[data-testid="app-info-modal"]'
 export const safeAppsList = '[data-testid="apps-list"]'
 const openSafeAppBtn = '[data-testid="open-safe-app-btn"]'
+const appMessageInput = 'input[placeholder="Message"]'
 
 const addBtnStr = /add/i
 const noAppsStr = /no Safe Apps found/i
@@ -90,6 +91,10 @@ export const warningStr = 'Warning'
 export const transferStr = 'Transfer'
 export const successStr = 'Success'
 export const failedStr = 'Failed'
+const blindSigningStr = 'This request involves blind signing'
+const enableBlindSigningStr = 'Enable blind signing'
+const blindSigningStr2 = 'blind signing'
+const signBtnStr = 'Sign'
 
 export const dummyTxStr = 'Trigger dummy tx (safe.txs.send)'
 export const signOnchainMsgStr = 'Sign message (on-chain)'
@@ -133,6 +138,31 @@ export const permissionCheckboxNames = {
 
 export function triggetOffChainTx() {
   cy.contains(dummyTxStr).click()
+}
+
+export function verifyBlindSigningEnabled(option) {
+  if (option) {
+    cy.contains(blindSigningStr).should('be.visible')
+  } else {
+    cy.contains(blindSigningStr).should('not.exist')
+  }
+}
+
+export function clickOnBlindSigningOption() {
+  cy.contains(blindSigningStr2).click()
+  cy.contains(enableBlindSigningStr).click()
+}
+
+export function triggetSignMsg() {
+  cy.contains(signOnchainMsgStr).click()
+}
+
+export function enterMessage(msg) {
+  cy.get(appMessageInput).type(msg)
+}
+
+export function verifySignBtnDisabled() {
+  cy.get('button').contains(signBtnStr).should('be.disabled')
 }
 
 export function triggetOnChainTx() {
