@@ -32,7 +32,15 @@ module.exports = {
       output: 'static',
       favicon: './assets/images/favicon.png',
     },
-    plugins: ['expo-router'],
+    plugins: [
+      'expo-router',
+      [
+        'expo-font',
+        {
+          fonts: ['./assets/fonts/safe-icons/safe-icons.ttf'],
+        },
+      ],
+    ],
     experiments: {
       typedRoutes: true,
     },
