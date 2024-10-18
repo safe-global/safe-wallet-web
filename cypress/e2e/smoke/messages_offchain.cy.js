@@ -16,6 +16,7 @@ const typeMessagesOffchain = msg_data.type.offChain
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
+const signer2 = walletCredentials.OWNER_1_PRIVATE_KEY
 
 describe('[SMOKE] Offchain Messages tests', () => {
   before(async () => {
@@ -23,9 +24,7 @@ describe('[SMOKE] Offchain Messages tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.transactionsMessagesUrl + staticSafes.SEP_STATIC_SAFE_10)
-    main.acceptCookies()
   })
 
   it('[SMOKE] Verify summary for off-chain unsigned messages', () => {
@@ -43,13 +42,13 @@ describe('[SMOKE] Offchain Messages tests', () => {
 
   it('[SMOKE] Verify summary for off-chain signed messages', () => {
     createTx.verifySummaryByIndex(1, [
-      typeMessagesGeneral.confirmed,
-      typeMessagesGeneral.twoOftwo,
+      typeMessagesGeneral.sign,
+      typeMessagesGeneral.oneOftwo,
       typeMessagesOffchain.name,
     ])
     createTx.verifySummaryByIndex(3, [
-      typeMessagesGeneral.confirmed,
-      typeMessagesGeneral.twoOftwo,
+      typeMessagesGeneral.sign,
+      typeMessagesGeneral.oneOftwo,
       typeMessagesOffchain.testMessage3,
     ])
   })
@@ -81,8 +80,9 @@ describe('[SMOKE] Offchain Messages tests', () => {
   })
 
   it('[SMOKE] Verify confirmation window is displayed for unsigned message', () => {
-    wallet.connectSigner(signer)
-    messages.clickOnMessageSignBtn(2)
+    cy.visit(constants.transactionsMessagesUrl + staticSafes.SEP_STATIC_SAFE_26)
+    wallet.connectSigner(signer2)
+    messages.clickOnMessageSignBtn(0)
     msg_confirmation_modal.verifyConfirmationWindowTitle(modal.modalTitiles.confirmMsg)
     msg_confirmation_modal.verifyMessagePresent(offchainMessage)
     msg_confirmation_modal.clickOnMessageDetails()

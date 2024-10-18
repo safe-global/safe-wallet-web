@@ -16,15 +16,13 @@ describe('Sidebar tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_9)
-    cy.clearLocalStorage()
-    main.acceptCookies()
   })
 
   it('Verify Current network is displayed at the top', () => {
     sideBar.verifyNetworkIsDisplayed(constants.networks.sepolia)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify current safe details', () => {
     sideBar.verifySafeHeaderDetails(sideBar.testSafeHeaderDetails)
   })
@@ -38,20 +36,20 @@ describe('Sidebar tests', () => {
     sideBar.verifyEtherscanLinkExists()
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify New transaction button enabled for owners', () => {
     wallet.connectSigner(signer)
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify New transaction button enabled for beneficiaries who are non-owners', () => {
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_11)
     wallet.connectSigner(signer)
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify New Transaction button disabled for non-owners', () => {
     main.verifyElementsCount(navigation.newTxBtn, 0)
   })

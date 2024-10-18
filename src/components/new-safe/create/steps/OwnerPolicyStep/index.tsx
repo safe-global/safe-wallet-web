@@ -1,4 +1,3 @@
-import CounterfactualHint from '@/features/counterfactual/CounterfactualHint'
 import useAddressBook from '@/hooks/useAddressBook'
 import useWallet from '@/hooks/wallets/useWallet'
 import { Button, SvgIcon, MenuItem, Tooltip, Typography, Divider, Box, Grid, TextField } from '@mui/material'
@@ -46,7 +45,7 @@ const OwnerPolicyStep = ({
     name: defaultOwnerAddressBookName || wallet?.ens || '',
     address: wallet?.address || '',
   }
-  useSyncSafeCreationStep(setStep)
+  useSyncSafeCreationStep(setStep, data.networks)
 
   const formMethods = useForm<OwnerPolicyStepForm>({
     mode: 'onChange',
@@ -75,11 +74,11 @@ const OwnerPolicyStep = ({
 
   const isDisabled = !formState.isValid
 
-  useSafeSetupHints(threshold, ownerFields.length, setDynamicHint)
+  useSafeSetupHints(setDynamicHint, threshold, ownerFields.length)
 
   const handleBack = () => {
     const formData = getValues()
-    onBack(formData)
+    onBack({ ...data, ...formData })
   }
 
   const onFormSubmit = handleSubmit((data) => {
@@ -143,7 +142,7 @@ const OwnerPolicyStep = ({
                 control={control}
                 name="threshold"
                 render={({ field }) => (
-                  <TextField select {...field}>
+                  <TextField data-testid="threshold-selector" select {...field}>
                     {ownerFields.map((_, idx) => (
                       <MenuItem key={idx + 1} value={idx + 1}>
                         {idx + 1}
@@ -157,8 +156,6 @@ const OwnerPolicyStep = ({
               <Typography>out of {ownerFields.length} signer(s)</Typography>
             </Grid>
           </Grid>
-
-          {ownerFields.length > 1 && <CounterfactualHint />}
         </Box>
         <Divider />
         <Box className={layoutCss.row}>

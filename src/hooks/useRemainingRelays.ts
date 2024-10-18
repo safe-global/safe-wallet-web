@@ -4,18 +4,15 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import { useCurrentChain } from '@/hooks/useChains'
 import { getRelayCount } from '@safe-global/safe-gateway-typescript-sdk'
 
-export const MAX_HOUR_RELAYS = 5
+export const MAX_DAY_RELAYS = 5
 
-export const useRelaysBySafe = (txOrigin?: string) => {
+export const useRelaysBySafe = () => {
   const chain = useCurrentChain()
   const { safe, safeAddress } = useSafeInfo()
 
   return useAsync(() => {
     if (!safeAddress || !chain) return
-    if (
-      hasFeature(chain, FEATURES.RELAYING) ||
-      (hasFeature(chain, FEATURES.RELAY_NATIVE_SWAPS) && txOrigin && JSON.parse(txOrigin).name === 'Safe Swap')
-    ) {
+    if (hasFeature(chain, FEATURES.RELAYING)) {
       return getRelayCount(chain.chainId, safeAddress)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +32,7 @@ export const useLeastRemainingRelays = (ownerAddresses: string[]) => {
         return result.find((r) => r.remaining === min)
       })
       .catch(() => {
-        return { remaining: 0, limit: MAX_HOUR_RELAYS }
+        return { remaining: 0, limit: MAX_DAY_RELAYS }
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain, ownerAddresses, safe.txHistoryTag])

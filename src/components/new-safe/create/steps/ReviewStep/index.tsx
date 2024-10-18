@@ -1,13 +1,17 @@
-import ChainIndicator from '@/components/common/ChainIndicator'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { safeCreationDispatch, SafeCreationEvent } from '@/features/counterfactual/services/safeCreationEvents'
+import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
 import { getTotalFeeFormatted } from '@/hooks/useGasPrice'
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
-import { computeNewSafeAddress, createNewSafe, relaySafeCreation } from '@/components/new-safe/create/logic'
+import {
+  computeNewSafeAddress,
+  createNewSafe,
+  createNewUndeployedSafeWithoutSalt,
+  relaySafeCreation,
+} from '@/components/new-safe/create/logic'
 import { getAvailableSaltNonce } from '@/components/new-safe/create/logic/utils'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import css from '@/components/new-safe/create/steps/ReviewStep/styles.module.css'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { useEstimateSafeCreationGas } from '@/components/new-safe/create/useEstimateSafeCreationGas'
@@ -16,7 +20,7 @@ import ReviewRow from '@/components/new-safe/ReviewRow'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { ExecutionMethod, ExecutionMethodSelector } from '@/components/tx/ExecutionMethodSelector'
 import PayNowPayLater, { PayMethod } from '@/features/counterfactual/PayNowPayLater'
-import { CF_TX_GROUP_KEY, createCounterfactualSafe } from '@/features/counterfactual/utils'
+import { CF_TX_GROUP_KEY, replayCounterfactualSafeDeployment } from '@/features/counterfactual/utils'
 import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
 import useGasPrice from '@/hooks/useGasPrice'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
@@ -24,21 +28,30 @@ import { useLeastRemainingRelays } from '@/hooks/useRemainingRelays'
 import useWalletCanPay from '@/hooks/useWalletCanPay'
 import useWallet from '@/hooks/wallets/useWallet'
 import { CREATE_SAFE_CATEGORY, CREATE_SAFE_EVENTS, OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
-import { gtmSetSafeAddress } from '@/services/analytics/gtm'
-import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
+import { gtmSetChainId, gtmSetSafeAddress } from '@/services/analytics/gtm'
 import { asError } from '@/services/exceptions/utils'
-import { useAppDispatch } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { hasRemainingRelays } from '@/utils/relaying'
 import { isWalletRejection } from '@/utils/wallets'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
-import { type DeploySafeProps } from '@safe-global/protocol-kit'
+import { Box, Button, CircularProgress, Divider, Grid, Tooltip, Typography } from '@mui/material'
 import { type ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
+import ChainIndicator from '@/components/common/ChainIndicator'
+import NetworkWarning from '../../NetworkWarning'
+import useAllSafes from '@/components/welcome/MyAccounts/useAllSafes'
+import { uniq } from 'lodash'
+import { selectRpc } from '@/store/settingsSlice'
+import { AppRoutes } from '@/config/routes'
+import { type ReplayedSafeProps } from '@/store/slices'
+import { predictAddressBasedOnReplayData } from '@/features/multichain/utils/utils'
+import { createWeb3ReadOnly, getRpcServiceUrl } from '@/hooks/wallets/web3'
+import { type DeploySafeProps } from '@safe-global/protocol-kit'
+import { updateAddressBook } from '../../logic/address-book'
+import chains from '@/config/chains'
 
 export const NetworkFee = ({
   totalFee,
@@ -66,16 +79,36 @@ export const SafeSetupOverview = ({
   name,
   owners,
   threshold,
+  networks,
 }: {
   name?: string
   owners: NamedAddress[]
   threshold: number
+  networks: ChainInfo[]
 }) => {
-  const chain = useCurrentChain()
-
   return (
     <Grid container spacing={3}>
-      <ReviewRow name="Network" value={<ChainIndicator chainId={chain?.chainId} inline />} />
+      <ReviewRow
+        name={networks.length > 1 ? 'Networks' : 'Network'}
+        value={
+          <Tooltip
+            title={
+              <Box>
+                {networks.map((safeItem) => (
+                  <Box p="4px 0px" key={safeItem.chainId}>
+                    <ChainIndicator chainId={safeItem.chainId} />
+                  </Box>
+                ))}
+              </Box>
+            }
+            arrow
+          >
+            <Box display="inline-block">
+              <NetworkLogosList networks={networks} />
+            </Box>
+          </Tooltip>
+        }
+      />
       {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
       <ReviewRow
         name="Signers"
@@ -100,7 +133,7 @@ export const SafeSetupOverview = ({
         name="Threshold"
         value={
           <Typography>
-            {threshold} out of {owners.length} signer(s)
+            {threshold} out of {owners.length} {owners.length > 1 ? 'signers' : 'signer'}
           </Typography>
         }
       />
@@ -110,12 +143,13 @@ export const SafeSetupOverview = ({
 
 const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafeFormData>) => {
   const isWrongChain = useIsWrongChain()
-  useSyncSafeCreationStep(setStep)
+  useSyncSafeCreationStep(setStep, data.networks)
   const chain = useCurrentChain()
   const wallet = useWallet()
   const dispatch = useAppDispatch()
   const router = useRouter()
   const [gasPrice] = useGasPrice()
+  const customRpc = useAppSelector(selectRpc)
   const [payMethod, setPayMethod] = useState(PayMethod.PayLater)
   const [executionMethod, setExecutionMethod] = useState(ExecutionMethod.RELAY)
   const [isCreating, setIsCreating] = useState<boolean>(false)
@@ -126,19 +160,38 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const ownerAddresses = useMemo(() => data.owners.map((owner) => owner.address), [data.owners])
   const [minRelays] = useLeastRemainingRelays(ownerAddresses)
 
+  const isMultiChainDeployment = data.networks.length > 1
+
   // Every owner has remaining relays and relay method is selected
   const canRelay = hasRemainingRelays(minRelays)
   const willRelay = canRelay && executionMethod === ExecutionMethod.RELAY
 
-  const safeParams = useMemo(() => {
-    return {
-      owners: data.owners.map((owner) => owner.address),
-      threshold: data.threshold,
-      saltNonce: Date.now(), // This is not the final saltNonce but easier to use and will only result in a slightly higher gas estimation
-    }
-  }, [data.owners, data.threshold])
+  const newSafeProps = useMemo(
+    () =>
+      chain
+        ? createNewUndeployedSafeWithoutSalt(
+            data.safeVersion,
+            {
+              owners: data.owners.map((owner) => owner.address),
+              threshold: data.threshold,
+            },
+            chain,
+          )
+        : undefined,
+    [chain, data.owners, data.safeVersion, data.threshold],
+  )
 
-  const { gasLimit } = useEstimateSafeCreationGas(safeParams, data.safeVersion)
+  const safePropsForGasEstimation = useMemo(() => {
+    return newSafeProps
+      ? {
+          ...newSafeProps,
+          saltNonce: Date.now().toString(),
+        }
+      : undefined
+  }, [newSafeProps])
+
+  // We estimate with a random nonce as we'll just slightly overestimates like this
+  const { gasLimit } = useEstimateSafeCreationGas(safePropsForGasEstimation, data.safeVersion)
 
   const maxFeePerGas = gasPrice?.maxFeePerGas
   const maxPriorityFeePerGas = gasPrice?.maxPriorityFeePerGas
@@ -147,43 +200,98 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   const totalFee = getTotalFeeFormatted(maxFeePerGas, gasLimit, chain)
 
-  // Only 1 out of 1 safe setups are supported for now
-  const isCounterfactual = data.threshold === 1 && data.owners.length === 1 && isCounterfactualEnabled
+  const allSafes = useAllSafes()
+  const knownAddresses = useMemo(() => uniq(allSafes?.map((safe) => safe.address)), [allSafes])
+
+  const customRPCs = useAppSelector(selectRpc)
 
   const handleBack = () => {
     onBack(data)
   }
 
-  const createSafe = async () => {
-    if (!wallet || !chain) return
-
-    setIsCreating(true)
-
+  const handleCreateSafeClick = async () => {
     try {
-      const readOnlyFallbackHandlerContract = await getReadOnlyFallbackHandlerContract(data.safeVersion)
+      if (!wallet || !chain || !newSafeProps) return
 
-      const props: DeploySafeProps = {
-        safeAccountConfig: {
-          threshold: data.threshold,
-          owners: data.owners.map((owner) => owner.address),
-          fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
-          paymentReceiver: ECOSYSTEM_ID_ADDRESS,
-        },
+      setIsCreating(true)
+
+      // Figure out the shared available nonce across chains
+      const nextAvailableNonce = await getAvailableSaltNonce(
+        customRPCs,
+        { ...newSafeProps, saltNonce: '0' },
+        data.networks,
+        knownAddresses,
+      )
+
+      const replayedSafeWithNonce = { ...newSafeProps, saltNonce: nextAvailableNonce }
+
+      const customRpcUrl = customRpc[chain.chainId]
+      const provider = createWeb3ReadOnly(chain, customRpcUrl)
+      if (!provider) return
+
+      let safeAddress: string
+
+      if (chain.chainId === chains['zksync']) {
+        safeAddress = await computeNewSafeAddress(
+          customRpcUrl || getRpcServiceUrl(chain.rpcUri),
+          {
+            safeAccountConfig: replayedSafeWithNonce.safeAccountConfig,
+            saltNonce: nextAvailableNonce,
+          },
+          chain,
+          replayedSafeWithNonce.safeVersion,
+        )
+      } else {
+        safeAddress = await predictAddressBasedOnReplayData(replayedSafeWithNonce, provider)
       }
 
-      const saltNonce = await getAvailableSaltNonce(
-        wallet.provider,
-        { ...props, saltNonce: '0' },
-        chain,
-        data.safeVersion,
-      )
-      const safeAddress = await computeNewSafeAddress(wallet.provider, { ...props, saltNonce }, chain, data.safeVersion)
+      for (const network of data.networks) {
+        await createSafe(network, replayedSafeWithNonce, safeAddress)
+      }
 
-      if (isCounterfactual && payMethod === PayMethod.PayLater) {
+      // Update addressbook with owners and Safe on all chosen networks
+      dispatch(
+        updateAddressBook(
+          data.networks.map((network) => network.chainId),
+          safeAddress,
+          data.name,
+          data.owners,
+          data.threshold,
+        ),
+      )
+
+      gtmSetChainId(chain.chainId)
+
+      if (isCounterfactualEnabled && payMethod === PayMethod.PayLater) {
+        await router?.push({
+          pathname: AppRoutes.home,
+          query: { safe: `${data.networks[0].shortName}:${safeAddress}` },
+        })
+        safeCreationDispatch(SafeCreationEvent.AWAITING_EXECUTION, {
+          groupKey: CF_TX_GROUP_KEY,
+          safeAddress,
+          networks: data.networks,
+        })
+      }
+    } catch (err) {
+      console.error(err)
+      setSubmitError('Error creating the Safe Account. Please try again later.')
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  const createSafe = async (chain: ChainInfo, props: ReplayedSafeProps, safeAddress: string) => {
+    if (!wallet) return
+
+    gtmSetChainId(chain.chainId)
+
+    try {
+      if (isCounterfactualEnabled && payMethod === PayMethod.PayLater) {
         gtmSetSafeAddress(safeAddress)
 
         trackEvent({ ...OVERVIEW_EVENTS.PROCEED_WITH_TX, label: 'counterfactual', category: CREATE_SAFE_CATEGORY })
-        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayLater, router)
+        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch, payMethod)
         trackEvent({ ...CREATE_SAFE_EVENTS.CREATED_SAFE, label: 'counterfactual' })
         return
       }
@@ -198,7 +306,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
         // Create a counterfactual Safe
-        createCounterfactualSafe(chain, safeAddress, saltNonce, data, dispatch, props, PayMethod.PayNow)
+        replayCounterfactualSafeDeployment(chain.chainId, safeAddress, props, data.name, dispatch, payMethod)
 
         if (taskId) {
           safeCreationDispatch(SafeCreationEvent.RELAYING, { groupKey: CF_TX_GROUP_KEY, taskId, safeAddress })
@@ -219,26 +327,19 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       }
 
       if (willRelay) {
-        const taskId = await relaySafeCreation(
-          chain,
-          props.safeAccountConfig.owners,
-          props.safeAccountConfig.threshold,
-          Number(saltNonce),
-          data.safeVersion,
-        )
+        const taskId = await relaySafeCreation(chain, props)
         onSubmitCallback(taskId)
       } else {
         await createNewSafe(
           wallet.provider,
-          {
-            safeAccountConfig: props.safeAccountConfig,
-            saltNonce,
-            options,
-            callback: (txHash) => {
-              onSubmitCallback(undefined, txHash)
-            },
-          },
+          props,
           data.safeVersion,
+          chain,
+          options,
+          (txHash) => {
+            onSubmitCallback(undefined, txHash)
+          },
+          true,
         )
       }
     } catch (_err) {
@@ -256,32 +357,50 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     setIsCreating(false)
   }
 
-  const isDisabled = isWrongChain || isCreating
+  const showNetworkWarning =
+    (isWrongChain && payMethod === PayMethod.PayNow && !willRelay && !isMultiChainDeployment) ||
+    (isWrongChain && !isCounterfactualEnabled && !isMultiChainDeployment)
+
+  const isDisabled = showNetworkWarning || isCreating
 
   return (
     <>
       <Box className={layoutCss.row}>
-        <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} />
+        <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} networks={data.networks} />
       </Box>
 
-      {isCounterfactual && (
+      {isCounterfactualEnabled && (
         <>
           <Divider />
           <Box className={layoutCss.row}>
-            <PayNowPayLater totalFee={totalFee} canRelay={canRelay} payMethod={payMethod} setPayMethod={setPayMethod} />
+            <PayNowPayLater
+              totalFee={totalFee}
+              isMultiChain={isMultiChainDeployment}
+              canRelay={canRelay}
+              payMethod={payMethod}
+              setPayMethod={setPayMethod}
+            />
 
             {canRelay && payMethod === PayMethod.PayNow && (
-              <Grid container spacing={3} pt={2}>
-                <ReviewRow
-                  value={
-                    <ExecutionMethodSelector
-                      executionMethod={executionMethod}
-                      setExecutionMethod={setExecutionMethod}
-                      relays={minRelays}
-                    />
-                  }
-                />
-              </Grid>
+              <>
+                <Grid container spacing={3} pt={2}>
+                  <ReviewRow
+                    value={
+                      <ExecutionMethodSelector
+                        executionMethod={executionMethod}
+                        setExecutionMethod={setExecutionMethod}
+                        relays={minRelays}
+                      />
+                    }
+                  />
+                </Grid>
+              </>
+            )}
+
+            {showNetworkWarning && (
+              <Box sx={{ '&:not(:empty)': { mt: 3 } }}>
+                <NetworkWarning action="create a Safe Account" />
+              </Box>
             )}
 
             {payMethod === PayMethod.PayNow && (
@@ -297,7 +416,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
         </>
       )}
 
-      {!isCounterfactual && (
+      {!isCounterfactualEnabled && (
         <>
           <Divider />
           <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
@@ -333,7 +452,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
               />
             </Grid>
 
-            <NetworkWarning action="create a Safe Account" />
+            {showNetworkWarning && <NetworkWarning action="create a Safe Account" />}
 
             {!walletCanPay && !willRelay && (
               <ErrorMessage>
@@ -360,12 +479,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           </Button>
           <Button
             data-testid="review-step-next-btn"
-            onClick={createSafe}
+            onClick={handleCreateSafeClick}
             variant="contained"
             size="stretched"
             disabled={isDisabled}
           >
-            {isCreating ? <CircularProgress size={18} /> : 'Create'}
+            {isCreating ? <CircularProgress size={18} /> : 'Create Account'}
           </Button>
         </Box>
       </Box>

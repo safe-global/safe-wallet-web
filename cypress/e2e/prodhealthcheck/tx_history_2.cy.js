@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
 import * as createTx from '../pages/create_tx.pages'
 import * as data from '../../fixtures/txhistory_data_data.json'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
@@ -23,7 +22,6 @@ describe('[PROD] Tx history tests 2', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.intercept(
       'GET',
       `**${constants.stagingCGWChains}${constants.networkKeys.sepolia}/${
@@ -36,14 +34,12 @@ describe('[PROD] Tx history tests 2', () => {
     ).as('allTransactions')
 
     cy.visit(constants.prodbaseUrl + constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_7)
-    main.acceptCookies()
   })
 
   it('Verify number of transactions is correct', () => {
     createTx.verifyNumberOfTransactions(20)
   })
 
-  // TODO: Added to prod
   // On-chain rejection
   it('Verify exapanded details for on-chain rejection', () => {
     createTx.clickOnTransactionItemByName(typeOnchainRejection.title)
@@ -59,10 +55,8 @@ describe('[PROD] Tx history tests 2', () => {
     ])
   })
 
-  // TODO: Added to prod
   // Batch transaction
-  // TODO: Unskip after next release due to design tx
-  it.skip('Verify exapanded details for batch', () => {
+  it('Verify exapanded details for batch', () => {
     createTx.clickOnTransactionItemByName(typeBatch.title, typeBatch.summaryTxInfo)
     createTx.verifyExpandedDetails(
       [typeBatch.contractTitle, typeBatch.transactionHash, typeBatch.safeTxHash],
@@ -71,19 +65,16 @@ describe('[PROD] Tx history tests 2', () => {
     createTx.verifyActions([typeBatch.nativeTransfer.title])
   })
 
-  // TODO: Added to prod
   // Add owner
   it('Verify summary for adding owner', () => {
     createTx.verifySummaryByName(typeAddOwner.title, [typeGeneral.statusOk], typeAddOwner.altImage)
   })
 
-  // TODO: Added to prod
   // Change owner
   it('Verify summary for changing owner', () => {
     createTx.verifySummaryByName(typeChangeOwner.title, [typeGeneral.statusOk], typeChangeOwner.altImage)
   })
 
-  // TODO: Added to prod
   it('Verify exapanded details for changing owner', () => {
     createTx.clickOnTransactionItemByName(typeChangeOwner.title)
     createTx.verifyExpandedDetails([
@@ -98,19 +89,16 @@ describe('[PROD] Tx history tests 2', () => {
     ])
   })
 
-  // TODO: Added to prod
   // Remove owner
   it('Verify summary for removing owner', () => {
     createTx.verifySummaryByName(typeRemoveOwner.title, [typeGeneral.statusOk], typeRemoveOwner.altImage)
   })
 
-  // TODO: Added to prod
   // Disbale module
   it('Verify summary for disable module', () => {
     createTx.verifySummaryByName(typeDisableOwner.title, [typeGeneral.statusOk], typeDisableOwner.altImage)
   })
 
-  // TODO: Added to prod
   // Change threshold
   it('Verify summary for changing threshold', () => {
     createTx.verifySummaryByName(
@@ -120,7 +108,6 @@ describe('[PROD] Tx history tests 2', () => {
     )
   })
 
-  // TODO: Added to prod
   it('Verify exapanded details for changing threshold', () => {
     createTx.clickOnTransactionItemByName(typeChangeThreshold.title)
     createTx.verifyExpandedDetails(
@@ -134,7 +121,6 @@ describe('[PROD] Tx history tests 2', () => {
     createTx.checkRequiredThreshold(2)
   })
 
-  // TODO: Added to prod
   it('Verify that sender address of untrusted token will not be copied until agreed in warning popup', () => {
     createTx.clickOnTransactionItemByName(typeUntrustedToken.summaryTitle, typeUntrustedToken.summaryTxInfo)
     createTx.verifyAddressNotCopied(0, typeUntrustedToken.senderAddress)

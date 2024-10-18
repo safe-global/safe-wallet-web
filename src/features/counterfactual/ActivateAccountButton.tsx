@@ -25,12 +25,13 @@ const ActivateAccountButton = () => {
   return (
     <Tooltip title={isProcessing ? 'The safe activation is already in process' : undefined}>
       <span>
-        <CheckWallet allowNonOwner>
+        <CheckWallet allowNonOwner allowUndeployedSafe>
           {(isOk) => (
             <Button
               data-testid="activate-account-btn-cf"
               variant="contained"
               size="small"
+              fullWidth
               onClick={activateAccount}
               disabled={isProcessing || !isOk}
               sx={{ minHeight: '40px' }}

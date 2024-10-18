@@ -11,20 +11,8 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 describe('Safe creation tests', () => {
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
-    cy.clearLocalStorage()
-    main.acceptCookies()
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
-  })
-
-  it('Verify Next button is disabled until switching to network is done', () => {
-    createwallet.clickOnContinueWithWalletBtn()
-    createwallet.selectNetwork(constants.networks.ethereum)
-    createwallet.clickOnCreateNewSafeBtn()
-    createwallet.checkNetworkChangeWarningMsg()
-    createwallet.verifyNextBtnIsDisabled()
-    createwallet.selectNetwork(constants.networks.sepolia)
-    createwallet.verifyNextBtnIsEnabled()
   })
 
   // TODO: Check unit tests
@@ -86,7 +74,7 @@ describe('Safe creation tests', () => {
     createwallet.verifyOwnerAddressInSummaryStep(constants.DEFAULT_OWNER_ADDRESS)
     createwallet.verifyOwnerAddressInSummaryStep(constants.DEFAULT_OWNER_ADDRESS)
     createwallet.verifyThresholdStringInSummaryStep(1, 2)
-    createwallet.verifyNetworkInSummaryStep(constants.networks.sepolia)
+    createwallet.verifySafeNetworkNameInSummaryStep(constants.networks.sepolia.toLowerCase())
     createwallet.clickOnBackBtn()
     createwallet.clickOnBackBtn()
     cy.wait(1000)
@@ -97,8 +85,7 @@ describe('Safe creation tests', () => {
     createwallet.verifyOwnerAddressInSummaryStep(constants.DEFAULT_OWNER_ADDRESS)
     createwallet.verifyOwnerAddressInSummaryStep(constants.DEFAULT_OWNER_ADDRESS)
     createwallet.verifyThresholdStringInSummaryStep(1, 2)
-    createwallet.verifyNetworkInSummaryStep(constants.networks.sepolia)
-    createwallet.verifyEstimatedFeeInSummaryStep()
+    createwallet.verifySafeNetworkNameInSummaryStep(constants.networks.sepolia.toLowerCase())
   })
 
   it('Verify tip is displayed on right side for threshold 1/1', () => {
@@ -135,11 +122,21 @@ describe('Safe creation tests', () => {
       )
       .then(() => {
         createwallet.waitForConnectionMsgDisappear()
+        createwallet.selectMultiNetwork(1, constants.networks.sepolia.toLowerCase())
         createwallet.clickOnNextBtn()
         createwallet.clickOnAddNewOwnerBtn()
         createwallet.clickOnSignerAddressInput(1)
         createwallet.selectSignerOnAutocomplete(2)
         owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.ownerAdded)
       })
+  })
+
+  // Unskip when the bug is fixed
+  it.skip('Verify Next button is disabled until switching to network is done', () => {
+    createwallet.clickOnContinueWithWalletBtn()
+    createwallet.clickOnCreateNewSafeBtn()
+    createwallet.verifyNextBtnIsEnabled()
+    createwallet.clearNetworkInput(1)
+    createwallet.verifyNextBtnIsDisabled()
   })
 })

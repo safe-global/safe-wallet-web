@@ -2,7 +2,7 @@ import { trackEvent, WALLET_EVENTS } from '@/services/analytics'
 import { TxEvent, txSubscribe } from '@/services/tx/txEvents'
 import { useEffect } from 'react'
 import useChainId from './useChainId'
-import { useLazyGetTransactionDetailsQuery } from '@/store/gateway'
+import { useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 
 const events = {
   [TxEvent.SIGNED]: WALLET_EVENTS.OFFCHAIN_SIGNATURE,

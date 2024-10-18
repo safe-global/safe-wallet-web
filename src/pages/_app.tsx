@@ -8,6 +8,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import type { Theme } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
 import { setBaseUrl as setGatewayBaseUrl } from '@safe-global/safe-gateway-typescript-sdk'
+import { setBaseUrl as setNewGatewayBaseUrl } from 'safe-client-gateway-sdk'
 import { CacheProvider, type EmotionCache } from '@emotion/react'
 import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 import '@/styles/globals.css'
@@ -46,12 +47,13 @@ import PkModulePopup from '@/services/private-key-module/PkModulePopup'
 import GeoblockingProvider from '@/components/common/GeoblockingProvider'
 import OutreachPopup from '@/features/targetedOutreach/components/OutreachPopup'
 
-const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
+export const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
 
 const reduxStore = makeStore()
 
 const InitApp = (): null => {
   setGatewayBaseUrl(GATEWAY_URL)
+  setNewGatewayBaseUrl(GATEWAY_URL)
   useHydrateStore(reduxStore)
   useAdjustUrl()
   useGtm()

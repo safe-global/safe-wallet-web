@@ -5,8 +5,8 @@ import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { Multi_send__factory } from '@/types/contracts/factories/@safe-global/safe-deployments/dist/assets/v1.3.0'
 import { ERC20__factory } from '@/types/contracts/factories/@openzeppelin/contracts/build/contracts/ERC20__factory'
 import { ERC721__factory } from '@/types/contracts/factories/@openzeppelin/contracts/build/contracts/ERC721__factory'
-import { decodeMultiSendTxs } from '@/utils/transactions'
 import { Safe__factory } from '@/types/contracts'
+import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 
 export const isCalldata = (data: string, fragment: FunctionFragment): boolean => {
   const signature = fragment.format()
@@ -93,7 +93,7 @@ export const getTransactionRecipients = ({ data, to }: BaseTransaction): Array<s
 
   // multiSend
   if (isMultiSendCalldata(data)) {
-    return decodeMultiSendTxs(data).flatMap(getTransactionRecipients)
+    return decodeMultiSendData(data).flatMap(getTransactionRecipients)
   }
 
   // Other (e.g. native transfer)

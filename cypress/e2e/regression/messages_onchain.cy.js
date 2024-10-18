@@ -14,9 +14,7 @@ describe('Onchain Messages tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.transactionsHistoryUrl + staticSafes.SEP_STATIC_SAFE_10)
-    main.acceptCookies()
   })
 
   it('Verify exapanded details for signed on-chain message', () => {
@@ -39,7 +37,7 @@ describe('Onchain Messages tests', () => {
     )
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify summary for signed on-chain message', () => {
     createTx.verifySummaryByName(
       typeMessagesOnchain.contractName,

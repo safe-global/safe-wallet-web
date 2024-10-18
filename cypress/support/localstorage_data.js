@@ -673,6 +673,13 @@ export const customApps = (url) => ({
   },
 })
 
+const infoModalAccepted = {
+  11155111: {
+    consentsAccepted: true,
+    warningCheckedCustomApps: [],
+  },
+}
+
 export const appPermissions = (url) => ({
   grantedPermissions: {
     [url]: [
@@ -680,11 +687,11 @@ export const appPermissions = (url) => ({
       { feature: 'microphone', status: 'granted' },
     ],
   },
-  infoModalAccepted: { 11155111: { consentsAccepted: true, warningCheckedCustomApps: [] } },
+  infoModalAccepted: JSON.stringify(infoModalAccepted),
 })
 
 export const cookies = {
-  acceptedCookies: cookieState,
+  acceptedCookies: JSON.stringify(cookieState),
   acceptedTokenListOnboarding: true,
 }
 

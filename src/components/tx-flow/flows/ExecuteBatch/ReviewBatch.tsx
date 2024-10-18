@@ -36,7 +36,7 @@ import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletReject
 import useUserNonce from '@/components/tx/AdvancedParams/useUserNonce'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
-import { useGetMultipleTransactionDetailsQuery } from '@/store/gateway'
+import { useGetMultipleTransactionDetailsQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
@@ -117,6 +117,7 @@ export const ReviewBatch = ({ params }: { params: ExecuteBatchFlowProps }) => {
       wallet.address,
       safe.address.value,
       overrides as Overrides & { nonce: number },
+      safe.nonce,
     )
   }
 

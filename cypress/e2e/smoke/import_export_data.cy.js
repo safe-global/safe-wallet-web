@@ -3,7 +3,6 @@ import * as file from '../pages/import_export.pages'
 import * as main from '../pages/main.page'
 import * as constants from '../../support/constants'
 import * as ls from '../../support/localstorage_data.js'
-import * as createwallet from '../pages/create_wallet.pages'
 import * as sideBar from '../pages/sidebar.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 
@@ -15,11 +14,7 @@ describe('[SMOKE] Import Export Data tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
-    cy.visit(constants.dataSettingsUrl).then(() => {
-      main.acceptCookies()
-      createwallet.selectNetwork(constants.networks.sepolia)
-    })
+    cy.visit(constants.dataSettingsUrl)
   })
 
   it('[SMOKE] Verify Safe can be accessed after test file upload', () => {

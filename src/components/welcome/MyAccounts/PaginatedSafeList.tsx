@@ -1,14 +1,15 @@
-import { type ReactElement, type ReactNode, useState, useCallback, useEffect } from 'react'
+import { type ReactElement, type ReactNode, useState, useCallback, useEffect, useMemo } from 'react'
 import { Paper, Typography } from '@mui/material'
 import AccountItem from './AccountItem'
 import { type SafeItem } from './useAllSafes'
 import css from './styles.module.css'
-import useSafeOverviews from './useSafeOverviews'
-import { sameAddress } from '@/utils/addresses'
 import InfiniteScroll from '@/components/common/InfiniteScroll'
+import { type MultiChainSafeItem } from './useAllSafesGrouped'
+import MultiAccountItem from './MultiAccountItem'
+import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
 
 type PaginatedSafeListProps = {
-  safes?: SafeItem[]
+  safes?: (SafeItem | MultiChainSafeItem)[]
   title: ReactNode
   noSafesMessage?: ReactNode
   action?: ReactElement
@@ -16,50 +17,47 @@ type PaginatedSafeListProps = {
 }
 
 type SafeListPageProps = {
-  safes: SafeItem[]
+  safes: (SafeItem | MultiChainSafeItem)[]
   onLinkClick: PaginatedSafeListProps['onLinkClick']
 }
 
-const PAGE_SIZE = 10
+const DEFAULT_PAGE_SIZE = 10
 
-const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
-  const [overviews] = useSafeOverviews(safes)
-
-  const findOverview = (item: SafeItem) => {
-    return overviews?.find(
-      (overview) => item.chainId === overview.chainId && sameAddress(overview.address.value, item.address),
-    )
-  }
-
+export const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
   return (
     <>
-      {safes.map((item) => (
-        <AccountItem
-          onLinkClick={onLinkClick}
-          safeItem={item}
-          safeOverview={findOverview(item)}
-          key={item.chainId + item.address}
-        />
-      ))}
+      {safes.map((item) =>
+        isMultiChainSafeItem(item) ? (
+          <MultiAccountItem onLinkClick={onLinkClick} key={item.address} multiSafeAccountItem={item} />
+        ) : (
+          <AccountItem onLinkClick={onLinkClick} safeItem={item} key={item.chainId + item.address} />
+        ),
+      )}
     </>
   )
 }
 
-const AllSafeListPages = ({ safes, onLinkClick }: SafeListPageProps) => {
-  const totalPages = Math.ceil(safes.length / PAGE_SIZE)
-  const [pages, setPages] = useState<SafeItem[][]>([])
+const AllSafeListPages = ({
+  safes,
+  onLinkClick,
+  pageSize = DEFAULT_PAGE_SIZE,
+}: SafeListPageProps & { pageSize?: number }) => {
+  const totalPages = Math.ceil(safes.length / pageSize)
+  const [pages, setPages] = useState<(SafeItem | MultiChainSafeItem)[][]>([])
 
   const onNextPage = useCallback(() => {
     setPages((prev) => {
       const pageIndex = prev.length
-      const nextPage = safes.slice(pageIndex * PAGE_SIZE, (pageIndex + 1) * PAGE_SIZE)
+      const nextPage = safes.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
       return prev.concat([nextPage])
     })
-  }, [safes])
+  }, [safes, pageSize])
 
   useEffect(() => {
-    setPages([safes.slice(0, PAGE_SIZE)])
-  }, [safes])
+    if (safes.length > 0) {
+      setPages([safes.slice(0, pageSize)])
+    }
+  }, [safes, pageSize])
 
   return (
     <>
@@ -73,6 +71,13 @@ const AllSafeListPages = ({ safes, onLinkClick }: SafeListPageProps) => {
 }
 
 const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }: PaginatedSafeListProps) => {
+  const multiChainSafes = useMemo(() => safes?.filter(isMultiChainSafeItem), [safes])
+  const singleChainSafes = useMemo(() => safes?.filter((safe) => !isMultiChainSafeItem(safe)), [safes])
+
+  const totalMultiChainSafes = multiChainSafes?.length ?? 0
+  const totalSingleChainSafes = singleChainSafes?.length ?? 0
+  const totalSafes = totalMultiChainSafes + totalSingleChainSafes
+
   return (
     <Paper className={css.safeList}>
       <div className={css.listHeader}>
@@ -90,11 +95,26 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
         {action}
       </div>
 
-      {safes && safes.length > 0 ? (
-        <AllSafeListPages safes={safes} onLinkClick={onLinkClick} />
+      {totalSafes > 0 ? (
+        <>
+          {multiChainSafes && multiChainSafes.length > 0 && (
+            <AllSafeListPages safes={multiChainSafes} onLinkClick={onLinkClick} pageSize={1} />
+          )}
+          {singleChainSafes && singleChainSafes.length > 0 && (
+            <AllSafeListPages safes={singleChainSafes} onLinkClick={onLinkClick} pageSize={10} />
+          )}
+        </>
       ) : (
-        <Typography variant="body2" color="text.secondary" textAlign="center" py={3} mx="auto" width={250}>
-          {safes ? noSafesMessage : 'Loading...'}
+        <Typography
+          component="div"
+          variant="body2"
+          color="text.secondary"
+          textAlign="center"
+          py={3}
+          mx="auto"
+          width={250}
+        >
+          {noSafesMessage}
         </Typography>
       )}
     </Paper>

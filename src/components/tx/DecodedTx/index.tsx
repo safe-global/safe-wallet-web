@@ -13,7 +13,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import accordionCss from '@/styles/accordion.module.css'
 import HelpToolTip from './HelpTooltip'
-import { useGetTransactionDetailsQuery } from '@/store/gateway'
+import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { asError } from '@/services/exceptions/utils'
 
@@ -61,13 +61,13 @@ const DecodedTx = ({
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
-
   const addressInfoIndex = txDetails?.txData?.addressInfoIndex
 
   const txData = {
     dataDecoded: decodedData,
     to: { value: tx?.data.to || '' },
     value: tx?.data.value,
+    hexData: tx?.data.data,
     operation: tx?.data.operation === OperationType.DelegateCall ? Operation.DELEGATE : Operation.CALL,
     trustedDelegateCallTarget: txDetails?.txData?.trustedDelegateCallTarget ?? true,
     addressInfoIndex,

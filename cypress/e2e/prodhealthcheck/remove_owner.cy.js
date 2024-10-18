@@ -18,13 +18,10 @@ describe('[PROD] Remove Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_13)
     main.waitForHistoryCallToComplete()
-    cy.clearLocalStorage()
-    main.acceptCookies()
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
   })
 
-  // TODO: Added to prod
-  it.skip('Verify owner deletion transaction has been created', () => {
+  it('Verify owner deletion transaction has been created', () => {
     wallet.connectSigner(signer)
     owner.waitForConnectionStatus()
     owner.openRemoveOwnerWindow(1)

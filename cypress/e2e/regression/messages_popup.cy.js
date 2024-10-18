@@ -18,9 +18,7 @@ describe('Messages popup window tests', () => {
   })
 
   beforeEach(() => {
-    cy.clearLocalStorage()
     cy.visit(constants.appsCustomUrl + staticSafes.SEP_STATIC_SAFE_10)
-    main.acceptCookies()
     iframeSelector = `iframe[id="iframe-${constants.safeTestAppurl}"]`
   })
 
@@ -32,10 +30,6 @@ describe('Messages popup window tests', () => {
     main.addToLocalStorage(
       constants.localStorageKeys.SAFE_v2__SafeApps__browserPermissions,
       ls.appPermissions(constants.safeTestAppurl).grantedPermissions,
-    )
-    main.addToLocalStorage(
-      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
     )
     cy.reload()
     apps.clickOnApp(safeApp)
@@ -56,10 +50,7 @@ describe('Messages popup window tests', () => {
       constants.localStorageKeys.SAFE_v2__SafeApps__browserPermissions,
       ls.appPermissions(constants.safeTestAppurl).grantedPermissions,
     )
-    main.addToLocalStorage(
-      constants.localStorageKeys.SAFE_v2__SafeApps__infoModal,
-      ls.appPermissions(constants.safeTestAppurl).infoModalAccepted,
-    )
+
     cy.reload()
     apps.clickOnApp(safeApp)
     apps.clickOnOpenSafeAppBtn()
@@ -70,5 +61,35 @@ describe('Messages popup window tests', () => {
     msg_confirmation_modal.verifyConfirmationWindowTitle(modal.modalTitiles.confirmMsg)
     msg_confirmation_modal.verifySafeAppInPopupWindow(safeApp)
     msg_confirmation_modal.verifyMessagePresent(onchainMessage)
+  })
+
+  it('Verify warning message is displayed when 0x0000000 is used as a message', () => {
+    const msgHash = '0x0000000'
+    main.addToLocalStorage(
+      constants.localStorageKeys.SAFE_v2__customSafeApps_11155111,
+      ls.customApps(constants.safeTestAppurl).safeTestApp,
+    )
+    main.addToLocalStorage(
+      constants.localStorageKeys.SAFE_v2__SafeApps__browserPermissions,
+      ls.appPermissions(constants.safeTestAppurl).grantedPermissions,
+    )
+    cy.reload()
+    apps.clickOnApp(safeApp)
+    apps.clickOnOpenSafeAppBtn()
+    main.getIframeBody(iframeSelector).within(() => {
+      apps.enterMessage(msgHash)
+      apps.triggetSignMsg()
+    })
+    apps.verifyBlindSigningEnabled(true)
+    apps.clickOnBlindSigningOption()
+    cy.visit(constants.appsCustomUrl + staticSafes.SEP_STATIC_SAFE_10)
+    apps.clickOnApp(safeApp)
+    apps.clickOnOpenSafeAppBtn()
+    main.getIframeBody(iframeSelector).within(() => {
+      apps.enterMessage(msgHash)
+      apps.triggetSignMsg()
+    })
+    apps.verifyBlindSigningEnabled(false)
+    apps.verifySignBtnDisabled()
   })
 })

@@ -1,7 +1,7 @@
 import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import type { ChainInfo, SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
-import { useCallback, useMemo } from 'react'
+import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
+import { useMemo } from 'react'
 import { ListItemButton, Box, Typography, Chip, Skeleton } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
@@ -24,14 +24,19 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
 import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
-
+import { useGetHref } from './useGetHref'
+import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
+import { useGetSafeOverviewQuery } from '@/store/api/gateway'
+import useWallet from '@/hooks/wallets/useWallet'
+import { skipToken } from '@reduxjs/toolkit/query'
+import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 type AccountItemProps = {
   safeItem: SafeItem
   safeOverview?: SafeOverview
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   const { chainId, address } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
@@ -40,24 +45,11 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const router = useRouter()
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
-  const isSingleTxPage = router.pathname === AppRoutes.transactions.tx
+  const { address: walletAddress } = useWallet() ?? {}
 
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
-  /**
-   * Navigate to the dashboard when selecting a safe on the welcome page,
-   * navigate to the history when selecting a safe on a single tx page,
-   * otherwise keep the current route
-   */
-  const getHref = useCallback(
-    (chain: ChainInfo, address: string) => {
-      return {
-        pathname: isWelcomePage ? AppRoutes.home : isSingleTxPage ? AppRoutes.transactions.history : router.pathname,
-        query: { ...router.query, safe: `${chain.shortName}:${address}` },
-      }
-    },
-    [isWelcomePage, isSingleTxPage, router.pathname, router.query],
-  )
+  const getHref = useGetHref(router)
 
   const href = useMemo(() => {
     return chain ? getHref(chain, address) : ''
@@ -66,6 +58,26 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
   const name = useAppSelector(selectAllAddressBooks)[chainId]?.[address]
 
   const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
+
+  const counterfactualSetup = undeployedSafe
+    ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
+    : undefined
+
+  const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
+  const isReplayable =
+    addNetworkFeatureEnabled &&
+    !safeItem.isWatchlist &&
+    (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
+
+  const { data: safeOverview } = useGetSafeOverviewQuery(
+    undeployedSafe
+      ? skipToken
+      : {
+          chainId: safeItem.chainId,
+          safeAddress: safeItem.address,
+          walletAddress,
+        },
+  )
 
   return (
     <ListItemButton
@@ -76,7 +88,12 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
         <Link onClick={onLinkClick} href={href} className={css.safeLink}>
           <Box pr={2.5}>
-            <SafeIcon address={address} owners={safeOverview?.owners.length} threshold={safeOverview?.threshold} />
+            <SafeIcon
+              address={address}
+              owners={safeOverview?.owners.length ?? counterfactualSetup?.owners.length}
+              threshold={safeOverview?.threshold ?? counterfactualSetup?.threshold}
+              chainId={chainId}
+            />
           </Box>
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
@@ -109,19 +126,19 @@ const AccountItem = ({ onLinkClick, safeItem, safeOverview }: AccountItemProps) 
             )}
           </Typography>
 
-          <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
+          <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
+
+          <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
             {safeOverview ? (
               <FiatValue value={safeOverview.fiatTotal} />
             ) : undeployedSafe ? null : (
-              <Skeleton variant="text" />
+              <Skeleton variant="text" sx={{ ml: 'auto' }} />
             )}
           </Typography>
-
-          <ChainIndicator chainId={chainId} responsive />
         </Link>
       </Track>
 
-      <SafeListContextMenu name={name} address={address} chainId={chainId} />
+      <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
 
       <QueueActions
         queued={safeOverview?.queued || 0}

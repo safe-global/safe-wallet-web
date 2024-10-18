@@ -3,6 +3,7 @@
     "general": {
       "confirmed": "Confirmed",
       "sign": "Sign",
+      "zeroOftwo": "0 out of 2",
       "oneOftwo": "1 out of 2",
       "twoOftwo": "2 out of 2"
     },

@@ -20,12 +20,15 @@ import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
 import { STAKE_EVENTS, STAKE_LABELS } from '@/services/analytics/events/stake'
+import { Tooltip } from '@mui/material'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
 }
 
 const geoBlockedRoutes = [AppRoutes.swap, AppRoutes.stake]
+
+const undeployedSafeBlockedRoutes = [AppRoutes.swap, AppRoutes.stake, AppRoutes.apps.index]
 
 const customSidebarEvents: { [key: string]: { event: any; label: string } } = {
   [AppRoutes.swap]: { event: SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar },
@@ -40,7 +43,7 @@ const Navigation = (): ReactElement => {
   const queueSize = useQueuedTxsLength()
   const isBlockedCountry = useContext(GeoblockingContext)
 
-  const enabledNavItems = useMemo(() => {
+  const visibleNavItems = useMemo(() => {
     return navItems.filter((item) => {
       if (isBlockedCountry && geoBlockedRoutes.includes(item.href)) {
         return false
@@ -49,6 +52,12 @@ const Navigation = (): ReactElement => {
       return isRouteEnabled(item.href, chain)
     })
   }, [chain, isBlockedCountry])
+
+  const enabledNavItems = useMemo(() => {
+    return safe.deployed
+      ? visibleNavItems
+      : visibleNavItems.filter((item) => !undeployedSafeBlockedRoutes.includes(item.href))
+  }, [safe.deployed, visibleNavItems])
 
   const getBadge = (item: NavItem) => {
     // Indicate whether the current Safe needs an upgrade
@@ -74,9 +83,9 @@ const Navigation = (): ReactElement => {
 
   return (
     <SidebarList>
-      {enabledNavItems.map((item) => {
+      {visibleNavItems.map((item) => {
         const isSelected = currentSubdirectory === getSubdirectory(item.href)
-
+        const isDisabled = item.disabled || !enabledNavItems.includes(item)
         let ItemTag = item.tag ? item.tag : null
 
         if (item.href === AppRoutes.transactions.history) {
@@ -84,26 +93,34 @@ const Navigation = (): ReactElement => {
         }
 
         return (
-          <ListItem
-            disablePadding
-            selected={isSelected}
-            onClick={() => handleNavigationClick(item.href)}
+          <Tooltip
+            title={isDisabled ? 'You need to activate your Safe first.' : ''}
+            placement="right"
             key={item.href}
+            arrow
           >
-            <SidebarListItemButton
+            <ListItem
+              disablePadding
+              disabled={isDisabled}
               selected={isSelected}
-              href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
-              disabled={item.disabled}
+              onClick={isDisabled ? undefined : () => handleNavigationClick(item.href)}
+              key={item.href}
             >
-              {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
+              <SidebarListItemButton
+                selected={isSelected}
+                href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
+                disabled={isDisabled}
+              >
+                {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
 
-              <SidebarListItemText data-testid="sidebar-list-item" bold>
-                {item.label}
+                <SidebarListItemText data-testid="sidebar-list-item" bold>
+                  {item.label}
 
-                {ItemTag}
-              </SidebarListItemText>
-            </SidebarListItemButton>
-          </ListItem>
+                  {ItemTag}
+                </SidebarListItemText>
+              </SidebarListItemButton>
+            </ListItem>
+          </Tooltip>
         )
       })}
     </SidebarList>
