@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Link, Box } from '@mui/material'
 import { generateDataRowValue, TxDataRow } from '@/components/transactions/TxDetails/Summary/TxDataRow'
 import { isCustomTxInfo, isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
@@ -10,6 +10,9 @@ import css from './styles.module.css'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import SafeTxGasForm from '../SafeTxGasForm'
 import DecodedData from '../TxData/DecodedData'
+import { calculateSafeTransactionHash } from '@safe-global/protocol-kit/dist/src/utils'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { SafeTxHashDataRow } from './SafeTxHashDataRow'
 
 interface Props {
   txDetails: TransactionDetails
@@ -41,9 +44,7 @@ const Summary = ({ txDetails, defaultExpanded = false, hideDecodedData = false }
           {generateDataRowValue(txHash, 'hash', true)}{' '}
         </TxDataRow>
       )}
-      <TxDataRow datatestid="tx-safe-hash" title="safeTxHash:">
-        {generateDataRowValue(safeTxHash, 'hash')}
-      </TxDataRow>
+      {safeTxHash && <SafeTxHashDataRow safeTxHash={safeTxHash} />}
       <TxDataRow datatestid="tx-created-at" title="Created:">
         {submittedAt ? dateString(submittedAt) : null}
       </TxDataRow>
@@ -115,8 +116,13 @@ export default Summary
 
 export const PartialSummary = ({ safeTx }: { safeTx: SafeTransaction }) => {
   const txData = safeTx.data
+  const { safeAddress, safe } = useSafeInfo()
+  const safeTxHash = useMemo(() => {
+    return safe.version && calculateSafeTransactionHash(safeAddress, safeTx.data, safe.version, BigInt(safe.chainId))
+  }, [safe.chainId, safe.version, safeAddress, safeTx.data])
   return (
     <>
+      {safeTxHash && <SafeTxHashDataRow safeTxHash={safeTxHash} />}
       <TxDataRow datatestid="tx-executed-at" title="safeTxGas:">
         <SafeTxGasForm />
       </TxDataRow>
