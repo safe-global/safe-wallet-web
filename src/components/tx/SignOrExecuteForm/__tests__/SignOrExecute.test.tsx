@@ -13,6 +13,12 @@ jest.mock('@/hooks/useIsSafeOwner', () => ({
   default: jest.fn(() => isSafeOwner),
 }))
 
+// Mock proposeTx
+jest.mock('@/services/tx/proposeTransaction', () => ({
+  __esModule: true,
+  default: jest.fn(() => Promise.resolve({ txId: '123' })),
+}))
+
 describe('SignOrExecute', () => {
   beforeEach(() => {
     isSafeOwner = true

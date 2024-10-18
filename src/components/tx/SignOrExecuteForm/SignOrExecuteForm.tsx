@@ -135,12 +135,6 @@ export const SignOrExecuteForm = ({
       <TxCard>
         {props.children}
 
-        {!props.isRejection && (
-          <ErrorBoundary fallback={<div>Error parsing data</div>}>
-            {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
-          </ErrorBoundary>
-        )}
-
         <ConfirmationView
           isCreation={isCreation}
           txDetails={props.txDetails}
@@ -148,7 +142,13 @@ export const SignOrExecuteForm = ({
           isBatch={props.isBatch}
           showMethodCall={props.showMethodCall}
           isApproval={isApproval}
-        />
+        >
+          {!props.isRejection && (
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              {isApproval && <ApprovalEditor safeTransaction={safeTx} />}
+            </ErrorBoundary>
+          )}
+        </ConfirmationView>
 
         {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>
