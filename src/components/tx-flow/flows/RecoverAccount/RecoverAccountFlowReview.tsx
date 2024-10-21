@@ -34,7 +34,7 @@ import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletReject
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { BlockaidBalanceChanges } from '@/components/tx/security/blockaid/BlockaidBalanceChange'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
-import { useGetTransactionDetailsQuery } from '@/store/gateway'
+import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query'
 
 export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlowProps }): ReactElement | null {
