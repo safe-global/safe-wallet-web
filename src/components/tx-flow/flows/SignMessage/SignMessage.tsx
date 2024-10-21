@@ -57,6 +57,7 @@ import LinkIcon from '@/public/images/messages/link.svg'
 import { Blockaid } from '@/components/tx/security/blockaid'
 import CheckWallet from '@/components/common/CheckWallet'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { capitalizeHash } from '@/utils/web3'
 
 const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   return {
@@ -86,7 +87,8 @@ const MessageHashField = ({
   hashValue: string
   capitalize?: boolean
 }) => {
-  const hash = capitalize ? `0x${hashValue.slice(2).toUpperCase()}` : hashValue
+  // We capitalize domain and message hash as it is displayed capitalized in many HW wallets.
+  const hash = capitalize ? capitalizeHash(hashValue) : hashValue
   return (
     <>
       <Typography variant="body2" fontWeight={700} mt={2}>
