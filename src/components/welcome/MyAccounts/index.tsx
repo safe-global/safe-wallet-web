@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Paper, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Paper, SvgIcon, Typography } from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
 import Track from '@/components/common/Track'
@@ -15,9 +15,9 @@ import useTrackSafesCount from './useTrackedSafesCount'
 import { type AllSafesGrouped, useAllSafesGrouped, type MultiChainSafeItem } from './useAllSafesGrouped'
 import { type SafeItem } from './useAllSafes'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 
 const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
-const NO_WATCHED_MESSAGE = 'Watch any Safe Account to keep an eye on its activity'
 
 type AccountsListProps = {
   safes: AllSafesGrouped
@@ -51,6 +51,13 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
     ],
     [safes, watchlistMultiChainSafes],
   )
+  const pinnedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
+    () => [
+      ...(safes.allSingleSafes?.filter(({ isPinned }) => isPinned) ?? []),
+      ...(safes.allMultiChainSafes?.filter(({ isPinned }) => isPinned) ?? []),
+    ],
+    [safes],
+  )
 
   useTrackSafesCount(ownedSafes, watchlistSafes, wallet)
 
@@ -70,11 +77,28 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
         </Box>
 
         <Paper className={css.safeList}>
-          <Accordion className={css.allAccountsAccordion}>
+          {/* Pinned Accounts */}
+          <Box mb={3} sx={{ minHeight: '200px' }}>
+            <div className={css.listHeader}>
+              <SvgIcon
+                component={BookmarkIcon}
+                inheritViewBox
+                fontSize="small"
+                sx={{ mt: '2px', mr: 1, fontWeight: 900, strokeWidth: 2 }}
+              />
+              <Typography variant="h5" fontWeight={700} mb={2}>
+                Pinned
+              </Typography>
+            </div>
+            <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
+          </Box>
+
+          {/* All Accounts */}
+          <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon fontSize="small" />}>
               <div className={css.listHeader}>
                 <Typography variant="h5" fontWeight={700} mb={2} className={css.listTitle}>
-                  All Accounts
+                  Accounts
                   {allSafes && allSafes.length > 0 && (
                     <Typography
                       component="span"

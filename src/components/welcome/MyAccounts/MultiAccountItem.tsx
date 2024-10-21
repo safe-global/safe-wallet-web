@@ -146,39 +146,36 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     [safeOverviews],
   )
 
-  const addToPinnedList = () => {
+  const addToPinnedList = useCallback(() => {
     const isGroupAdded = safes.every((safe) => allAddedSafes[safe.chainId]?.[safe.address])
     if (isGroupAdded) {
       for (const safe of safes) {
-        dispatch(pinSafe({ chainId: safe.chainId, address: safe.address }))
+        dispatch(pinSafe({ chainId: safe.chainId, address: safe.address, removeOnUnpin: false }))
+      }
+    } else {
+      for (const safe of safes) {
+        const overview = findOverview(safe)
+        dispatch(
+          addOrUpdateSafe({
+            safe: {
+              ...defaultSafeInfo,
+              chainId: safe.chainId,
+              address: { value: address },
+              owners: overview ? overview.owners : defaultSafeInfo.owners,
+              threshold: overview ? overview.threshold : defaultSafeInfo.threshold,
+            },
+          }),
+          dispatch(pinSafe({ chainId: safe.chainId, address: safe.address, removeOnUnpin: true })),
+        )
       }
     }
+  }, [safes, allAddedSafes, dispatch, findOverview, address])
 
-    for (const safe of safes) {
-      const overview = findOverview(safe)
-      if (!overview) {
-        continue
-      }
-      // Adding a safe will make it pinned by default
-      dispatch(
-        addOrUpdateSafe({
-          safe: {
-            ...defaultSafeInfo,
-            chainId: safe.chainId,
-            address: { value: address },
-            owners: overview.owners,
-            threshold: overview.threshold,
-          },
-        }),
-      )
-    }
-  }
-
-  const removeFromPinnedList = () => {
+  const removeFromPinnedList = useCallback(() => {
     for (const safe of safes) {
       dispatch(unpinSafe({ chainId: safe.chainId, address: safe.address }))
     }
-  }
+  }, [safes, dispatch])
 
   return (
     <ListItemButton
@@ -224,7 +221,10 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               edge="end"
               size="medium"
               sx={{ mx: 1 }}
-              onClick={isPinned ? removeFromPinnedList : addToPinnedList}
+              onClick={(event) => {
+                event.stopPropagation()
+                isPinned ? removeFromPinnedList() : addToPinnedList()
+              }}
             >
               <SvgIcon
                 component={isPinned ? BookmarkedIcon : BookmarkIcon}

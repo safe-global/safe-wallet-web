@@ -100,13 +100,8 @@
 }
 
 .listHeader {
-  /* padding-bottom: var(--space-1); */
   display: flex;
-  justify-content: space-between;
-}
-
-.listTitle {
-  margin: auto 0;
+  margin-bottom: var(--space-1);
 }
 
 .card {

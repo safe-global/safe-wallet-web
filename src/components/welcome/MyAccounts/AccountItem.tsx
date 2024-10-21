@@ -22,17 +22,16 @@ import { useRouter } from 'next/router'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
 import { useGetHref } from './useGetHref'
-import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
+import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import { addOrUpdateSafe, pinSafe, selectAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
 import SafeIcon from '@/components/common/SafeIcon'
-import { defaultSafeInfo } from '@/store/safeInfoSlice'
 import useOnceVisible from '@/hooks/useOnceVisible'
 import { skipToken } from '@reduxjs/toolkit/query'
-import { useGetSafeOverviewQuery } from '@/store/slices'
+import { defaultSafeInfo, useGetSafeOverviewQuery } from '@/store/slices'
 import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 type AccountItemProps = {
@@ -70,9 +69,9 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
 
   const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
-  const counterfactualSetup = undeployedSafe
-    ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
-    : undefined
+  // const counterfactualSetup = undeployedSafe
+  //   ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
+  //   : undefined
 
   const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
   const isReplayable =
@@ -90,8 +89,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
         },
   )
 
-  const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold
-  const safeOwners = safeOverview?.owners ?? counterfactualSetup?.owners
+  // const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold
+  // const safeOwners = safeOverview?.owners ?? counterfactualSetup?.owners
 
   const addToPinnedList = () => {
     if (!isAdded && !undeployedSafe) {

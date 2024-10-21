@@ -54,8 +54,11 @@ export const addedSafesSlice = createSlice({
     pinSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string; removeOnUnpin: boolean }>) => {
       const { chainId, address, removeOnUnpin } = payload
       state[chainId] ??= {}
-      state[chainId][address].pinned = true
-      state[chainId][address].removeOnUnpin = removeOnUnpin
+      state[chainId][address] = {
+        ...(state[chainId][address] ?? {}),
+        pinned: true,
+        removeOnUnpin,
+      }
     },
     unpinSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = payload
@@ -67,7 +70,10 @@ export const addedSafesSlice = createSlice({
           delete state[chainId]
         }
       } else {
-        state[chainId][address].pinned = false
+        state[chainId][address] = {
+          ...(state[chainId][address] ?? {}),
+          pinned: false,
+        }
       }
     },
   },
