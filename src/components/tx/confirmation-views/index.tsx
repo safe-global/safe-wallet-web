@@ -52,7 +52,7 @@ const ConfirmationView = (props: ConfirmationViewProps) => {
             txFlow,
           })
         : undefined,
-    [props.txDetails],
+    [props.txDetails, txFlow],
   )
   const showTxDetails = txId && !props.isCreation && props.txDetails && !isCustomTxInfo(props.txDetails.txInfo)
 
