@@ -52,9 +52,13 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
   const isUnsigned =
     isMultisigExecutionInfo(txSummary.executionInfo) && txSummary.executionInfo.confirmationsSubmitted === 0
 
-  const isUntrusted =
+  const isTxFromProposer =
     isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
-    txDetails.detailedExecutionInfo.trusted === false
+    txDetails.detailedExecutionInfo.trusted &&
+    isUnsigned
+
+  const isUntrusted =
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) && !txDetails.detailedExecutionInfo.trusted
 
   // If we have no token list we always trust the transfer
   const isTrustedTransfer = !hasDefaultTokenlist || isTrustedTx(txSummary)
@@ -117,7 +121,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
       </div>
 
       {/* Signers */}
-      {!isUnsigned && (
+      {(!isUnsigned || isTxFromProposer) && (
         <div className={css.txSigners}>
           <TxSigners txDetails={txDetails} txSummary={txSummary} />
 
