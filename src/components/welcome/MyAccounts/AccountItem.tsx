@@ -22,7 +22,7 @@ import { useRouter } from 'next/router'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
 import { useGetHref } from './useGetHref'
-import { isPredictedSafeProps } from '@/features/counterfactual/utils'
+import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
@@ -55,17 +55,6 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   const isAdded = !!addedSafes?.[address]
   const elementRef = useRef<HTMLDivElement>(null)
   const isVisible = useOnceVisible(elementRef)
-  // const [safeOverview, setSafeOverview] = useState<SafeOverview | null>(null)
-
-  // useEffect(() => {
-  //   if (isVisible && !undeployedSafe) {
-  //     const fetchSafeOverview = async () => {
-  //       const safeInfo = await getSafeInfo(chainId, safeAddress)
-  //       setSafeOverview(safeInfo)
-  //     }
-  //     fetchSafeOverview()
-  //   }
-  // }, [chainId, isVisible, safeAddress, undeployedSafe])
 
   const dispatch = useAppDispatch()
 
@@ -81,9 +70,9 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
 
   const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
-  // const counterfactualSetup = undeployedSafe
-  //   ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
-  //   : undefined
+  const counterfactualSetup = undeployedSafe
+    ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
+    : undefined
 
   const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
   const isReplayable =
@@ -101,8 +90,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
         },
   )
 
-  // const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold
-  // const safeOwners = safeOverview?.owners ?? counterfactualSetup?.owners
+  const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold
+  const safeOwners = safeOverview?.owners ?? counterfactualSetup?.owners
 
   const addToPinnedList = () => {
     if (!isAdded && !undeployedSafe) {
@@ -118,8 +107,9 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           },
         }),
       )
+      dispatch(pinSafe({ chainId, address, removeOnUnpin: true }))
     } else {
-      dispatch(pinSafe({ chainId, address }))
+      dispatch(pinSafe({ chainId, address, removeOnUnpin: false }))
     }
   }
 
