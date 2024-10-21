@@ -29,6 +29,16 @@ export const normalizeTypedData = (typedData: EIP712TypedData): EIP712Normalized
   return payload
 }
 
+export const getTypedDataMessageHash = (name: string, typedData: EIP712TypedData): string => {
+  // `ethers` doesn't require `EIP712Domain` and otherwise throws
+  const { EIP712Domain: _, ...types } = typedData.types
+  return TypedDataEncoder.hashStruct(name, types, typedData.message)
+}
+
+export const getTypedDataDomainHash = (typedData: EIP712TypedData): string => {
+  return TypedDataEncoder.hashDomain(typedData.domain as TypedDataDomain)
+}
+
 // Fall back to `eth_signTypedData` for Ledger that doesn't support `eth_signTypedData_v4`
 const signTypedDataFallback = async (signer: JsonRpcSigner, typedData: EIP712TypedData): Promise<string> => {
   return await signer.provider.send('eth_signTypedData', [

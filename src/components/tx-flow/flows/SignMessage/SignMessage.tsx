@@ -77,16 +77,27 @@ const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
   }
 }
 
-const MessageHashField = ({ label, hashValue }: { label: string; hashValue: string }) => (
-  <>
-    <Typography variant="body2" fontWeight={700} mt={2}>
-      {label}:
-    </Typography>
-    <Typography data-testid="message-hash" variant="body2" component="div">
-      <EthHashInfo address={hashValue} showAvatar={false} shortAddress={false} showCopyButton />
-    </Typography>
-  </>
-)
+const MessageHashField = ({
+  label,
+  hashValue,
+  capitalize,
+}: {
+  label: string
+  hashValue: string
+  capitalize?: boolean
+}) => {
+  const hash = capitalize ? `0x${hashValue.slice(2).toUpperCase()}` : hashValue
+  return (
+    <>
+      <Typography variant="body2" fontWeight={700} mt={2}>
+        {label}:
+      </Typography>
+      <Typography data-testid="message-hash" variant="body2" component="div">
+        <EthHashInfo address={hash} showAvatar={false} shortAddress={false} showCopyButton />
+      </Typography>
+    </>
+  )
+}
 
 const DialogHeader = ({ threshold }: { threshold: number }) => (
   <>
@@ -231,7 +242,10 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
   const wallet = useWallet()
   useHighlightHiddenTab()
 
-  const { decodedMessage, safeMessageMessage, safeMessageHash } = useDecodedSafeMessage(message, safe)
+  const { decodedMessage, safeMessageMessage, safeMessageHash, messageHash, domainHash } = useDecodedSafeMessage(
+    message,
+    safe,
+  )
   const [safeMessage, setSafeMessage] = useSafeMessage(safeMessageHash)
   const isPlainTextMessage = typeof decodedMessage === 'string'
   const decodedMessageAsString = isPlainTextMessage ? decodedMessage : JSON.stringify(decodedMessage, null, 2)
@@ -313,6 +327,8 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
             <AccordionDetails>
               <MessageHashField label="SafeMessage" hashValue={safeMessageMessage} />
               <MessageHashField label="SafeMessage hash" hashValue={safeMessageHash} />
+              <MessageHashField label="Domain hash" hashValue={domainHash} capitalize />
+              <MessageHashField label="Message hash" hashValue={messageHash} capitalize />
             </AccordionDetails>
           </Accordion>
 

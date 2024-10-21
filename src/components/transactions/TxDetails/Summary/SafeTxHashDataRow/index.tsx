@@ -16,12 +16,16 @@ export const SafeTxHashDataRow = ({
 }) => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
-  const domainHash = TypedDataEncoder.hashDomain({
+  const domainHash = `0x${TypedDataEncoder.hashDomain({
     chainId,
     verifyingContract: safeAddress,
   })
+    .slice(2)
+    .toUpperCase()}`
   const messageHash = safeTxData
-    ? TypedDataEncoder.hashStruct('SafeTx', { SafeTx: getEip712TxTypes(safeVersion).SafeTx }, safeTxData)
+    ? `0x${TypedDataEncoder.hashStruct('SafeTx', { SafeTx: getEip712TxTypes(safeVersion).SafeTx }, safeTxData)
+        .slice(2)
+        .toUpperCase()}`
     : undefined
 
   return (
