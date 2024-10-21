@@ -66,7 +66,7 @@ const DelegatesList = () => {
         },
       }
     })
-  }, [delegates.data?.results])
+  }, [delegates.data])
 
   if (!delegates.data?.results) return null
 

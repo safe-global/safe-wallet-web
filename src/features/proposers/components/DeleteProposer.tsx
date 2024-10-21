@@ -1,5 +1,6 @@
 import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useWallet from '@/hooks/wallets/useWallet'
+import { useDeleteDelegateMutation } from '@/store/api/gateway'
 import { signTypedData } from '@/utils/web3'
 import { useState } from 'react'
 import {
@@ -20,7 +21,6 @@ import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { deleteDelegateV2 } from '@safe-global/safe-client-gateway-sdk'
 
 type DeleteProposerProps = {
   onClose: () => void
@@ -41,6 +41,7 @@ const _DeleteProposer = ({
 }: DeleteProposerProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [deleteDelegate] = useDeleteDelegateMutation()
 
   const onConfirm = async () => {
     setError(undefined)
@@ -57,7 +58,7 @@ const _DeleteProposer = ({
       const typedData = getDelegateTypedData(chainId, delegateAddress)
 
       const signature = await signTypedData(signer, typedData)
-      await deleteDelegateV2({ params: { path: { chainId, delegateAddress } }, body: { safe: safeAddress, signature } })
+      await deleteDelegate({ chainId, delegateAddress, safeAddress, signature })
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)
@@ -95,7 +96,7 @@ const _DeleteProposer = ({
 
         {error && (
           <Box mt={2}>
-            <ErrorMessage error={error}>Error deleting proposer</ErrorMessage>
+            <ErrorMessage error={error}>Error deleting delegate</ErrorMessage>
           </Box>
         )}
       </DialogContent>

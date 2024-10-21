@@ -6,6 +6,7 @@ import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
+import { useAddDelegateMutation } from '@/store/api/gateway'
 import { signTypedData } from '@/utils/web3'
 import { Close } from '@mui/icons-material'
 import {
@@ -22,28 +23,6 @@ import {
 } from '@mui/material'
 import { type BaseSyntheticEvent, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { getClient } from '@safe-global/safe-client-gateway-sdk'
-
-// TODO: Replace once ready from the gateway-sdk
-const postDelegate = (
-  chainId: string,
-  safeAddress: string,
-  delegate: string,
-  delegator: string,
-  signature: string,
-  label: string,
-) => {
-  return getClient().POST('/v2/chains/{chainId}/delegates', {
-    params: { path: { chainId } },
-    body: {
-      safe: safeAddress,
-      delegate,
-      delegator,
-      signature,
-      label,
-    },
-  })
-}
 
 type AddProposerProps = {
   onClose: () => void
@@ -58,6 +37,7 @@ type DelegateEntry = {
 const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [addDelegate] = useAddDelegateMutation()
 
   const chainId = useChainId()
   const wallet = useWallet()
@@ -80,7 +60,14 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
       const typedData = getDelegateTypedData(chainId, data.address)
 
       const signature = await signTypedData(signer, typedData)
-      await postDelegate(chainId, safeAddress, data.address, wallet.address, signature, data.name)
+      await addDelegate({
+        chainId,
+        delegator: wallet.address,
+        signature,
+        label: data.name,
+        delegate: data.address,
+        safeAddress,
+      })
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)
@@ -130,7 +117,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
 
             {error && (
               <Box mt={2}>
-                <ErrorMessage error={error}>Error deleting proposer</ErrorMessage>
+                <ErrorMessage error={error}>Error adding delegate</ErrorMessage>
               </Box>
             )}
           </DialogContent>
