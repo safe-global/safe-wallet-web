@@ -14,16 +14,22 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name={'wallet'} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="transactions"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
+          title: 'Transactions',
+          tabBarIcon: ({ color }) => <TabBarIcon name={'transactions'} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <TabBarIcon name={'settings'} color={color} />,
         }}
       />
     </Tabs>

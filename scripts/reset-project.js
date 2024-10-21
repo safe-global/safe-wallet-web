@@ -2,7 +2,7 @@
 
 /**
  * This script is used to reset the project to a blank state.
- * It moves the /app directory to /app-example and creates a new /app directory with an index.tsx and _layout.tsx file.
+ * It moves the /app directory to /app-example and creates a new /app directory with an SafeFontIcon.tsx and _layout.tsx file.
  * You can remove the `reset-project` script from package.json and safely delete this file after running it.
  */
 
@@ -54,12 +54,12 @@ fs.rename(oldDirPath, newDirPath, (error) => {
     }
     console.log('New /app directory created.');
 
-    const indexPath = path.join(newAppDirPath, 'index.tsx');
+    const indexPath = path.join(newAppDirPath, 'SafeFontIcon.tsx');
     fs.writeFile(indexPath, indexContent, (error) => {
       if (error) {
         return console.error(`Error creating index.tsx: ${error}`);
       }
-      console.log('app/index.tsx created.');
+      console.log('app/SafeFontIcon.tsx created.');
 
       const layoutPath = path.join(newAppDirPath, '_layout.tsx');
       fs.writeFile(layoutPath, layoutContent, (error) => {
