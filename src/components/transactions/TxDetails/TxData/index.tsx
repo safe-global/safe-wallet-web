@@ -1,6 +1,6 @@
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
-import { isStakingTxWithdrawInfo } from '@/utils/transaction-guards'
+import { isOnChainConfirmation, isStakingTxWithdrawInfo } from '@/utils/transaction-guards'
 import { isStakingTxExitInfo } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
@@ -26,6 +26,7 @@ import SwapOrder from '@/features/swap/components/SwapOrder'
 import StakingTxDepositDetails from '@/features/stake/components/StakingTxDepositDetails'
 import StakingTxExitDetails from '@/features/stake/components/StakingTxExitDetails'
 import StakingTxWithdrawDetails from '@/features/stake/components/StakingTxWithdrawDetails'
+import { OnChainConfirmation } from './OnChainConfirmation'
 
 const TxData = ({
   txDetails,
@@ -76,6 +77,11 @@ const TxData = ({
   if (isMigrateToL2TxData(txDetails.txData, chainId)) {
     return <MigrationToL2TxData txDetails={txDetails} />
   }
+
+  if (isOnChainConfirmation(txDetails.txData)) {
+    return <OnChainConfirmation data={txDetails.txData} />
+  }
+
   return <DecodedData txData={txDetails.txData} toInfo={toInfo} />
 }
 
