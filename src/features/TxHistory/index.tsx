@@ -1,33 +1,31 @@
-import { useAppDispatch, useAppSelector } from '@/src/store/hooks'
-import { addTx, txHistorySelector } from '@/src/store/txHistorySlice'
-import React from 'react'
-import { View } from 'react-native'
-import { Text } from 'react-native-paper'
-import { TransactionItem } from 'safe-client-gateway-sdk'
+import { useGetTransactionsHistoryQuery } from '@/src/store/gateway'
+import React, { useEffect, useState } from 'react'
+import TxHistoryList from './TxHistoryList'
+import { TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 
 function TxHistory() {
-  const txHistory = useAppSelector(txHistorySelector)
-  const dispatch = useAppDispatch()
+  const [pageUrl, setPageUrl] = useState<string>()
+  const [list, setList] = useState<TransactionListItem[]>([])
+  const { data, refetch, isFetching, isUninitialized } = useGetTransactionsHistoryQuery({
+    chainId: '1',
+    safeAddress: '0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6',
+    pageUrl,
+  })
 
-  // TODO: will be removed in the next PR
-  // it is just for easy test purposes
-  console.log(txHistory)
+  useEffect(() => {
+    if (!data?.results) return
 
-  const createTx = () => {
-    dispatch(
-      addTx({
-        item: {} as TransactionItem,
-      }),
-    )
+    setList((prev) => [...prev, ...data.results])
+  }, [data])
+
+  const onEndReached = () => {
+    if (!data?.next) return
+
+    setPageUrl(data.next)
+    refetch()
   }
 
-  return (
-    <View>
-      <Text onPress={createTx} variant="titleLarge">
-        CLick for creating a tx
-      </Text>
-    </View>
-  )
+  return <TxHistoryList transactions={list} onEndReached={onEndReached} isLoading={isFetching || isUninitialized} />
 }
 
 export default TxHistory
