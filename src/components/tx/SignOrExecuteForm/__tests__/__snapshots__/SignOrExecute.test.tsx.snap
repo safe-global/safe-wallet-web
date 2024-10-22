@@ -15,17 +15,17 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
           class="MuiBox-root css-0"
         >
           <div
-            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-11at38v-MuiPaper-root-MuiAccordion-root"
+            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1x8l8fd-MuiPaper-root-MuiAccordion-root"
           >
             <div
               aria-expanded="false"
-              class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-1gi6o5u-MuiButtonBase-root-MuiAccordionSummary-root"
+              class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-knbc2d-MuiButtonBase-root-MuiAccordionSummary-root"
               data-testid="decoded-tx-summary"
               role="button"
               tabindex="0"
             >
               <div
-                class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-c1i83b-MuiAccordionSummary-content"
+                class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-6nefnh-MuiAccordionSummary-content"
               >
                 Advanced details
                 <span
@@ -137,7 +137,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
                 data-track="batching: Add to batch"
               >
                 <button
-                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-fj99we-MuiButtonBase-root-MuiButton-root"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-fj99we-MuiButtonBase-root-MuiButton-root"
                   tabindex="0"
                   type="button"
                 >
@@ -158,7 +158,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
             >
                
               <div
-                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren css-7zcts1-MuiDivider-root"
+                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren css-crkpmc-MuiDivider-root"
                 role="separator"
               >
                 <span
@@ -174,7 +174,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
               data-mui-internal-clone-element="true"
             >
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1mhjei7-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-1mhjei7-MuiButtonBase-root-MuiButton-root"
                 data-testid="sign-btn"
                 disabled=""
                 tabindex="-1"
@@ -269,17 +269,17 @@ exports[`SignOrExecute should display an error screen 1`] = `
           class="MuiBox-root css-0"
         >
           <div
-            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-11at38v-MuiPaper-root-MuiAccordion-root"
+            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1x8l8fd-MuiPaper-root-MuiAccordion-root"
           >
             <div
               aria-expanded="false"
-              class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-1gi6o5u-MuiButtonBase-root-MuiAccordionSummary-root"
+              class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-knbc2d-MuiButtonBase-root-MuiAccordionSummary-root"
               data-testid="decoded-tx-summary"
               role="button"
               tabindex="0"
             >
               <div
-                class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-c1i83b-MuiAccordionSummary-content"
+                class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-6nefnh-MuiAccordionSummary-content"
               >
                 Advanced details
                 <span
@@ -469,7 +469,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
                 data-track="batching: Add to batch"
               >
                 <button
-                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-fj99we-MuiButtonBase-root-MuiButton-root"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-fj99we-MuiButtonBase-root-MuiButton-root"
                   tabindex="0"
                   type="button"
                 >
@@ -490,7 +490,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
             >
                
               <div
-                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren css-7zcts1-MuiDivider-root"
+                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren css-crkpmc-MuiDivider-root"
                 role="separator"
               >
                 <span
@@ -506,7 +506,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
               data-mui-internal-clone-element="true"
             >
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-1mhjei7-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-1mhjei7-MuiButtonBase-root-MuiButton-root"
                 data-testid="sign-btn"
                 disabled=""
                 tabindex="-1"

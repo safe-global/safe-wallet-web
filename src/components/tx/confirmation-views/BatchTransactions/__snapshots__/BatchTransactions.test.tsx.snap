@@ -14,16 +14,16 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
         1
       </div>
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1qub31g-MuiPaper-root-MuiAccordion-root"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1b8drg8-MuiPaper-root-MuiAccordion-root"
       >
         <div
           aria-expanded="false"
-          class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-1gi6o5u-MuiButtonBase-root-MuiAccordionSummary-root"
+          class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-knbc2d-MuiButtonBase-root-MuiAccordionSummary-root"
           role="button"
           tabindex="0"
         >
           <div
-            class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-c1i83b-MuiAccordionSummary-content"
+            class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-6nefnh-MuiAccordionSummary-content"
           >
             <div
               class="MuiBox-root css-mvjamn"

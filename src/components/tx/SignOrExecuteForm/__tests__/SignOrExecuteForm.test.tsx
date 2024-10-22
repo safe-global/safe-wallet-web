@@ -15,6 +15,11 @@ jest.mock('@/hooks/useIsSafeOwner', () => ({
   default: jest.fn(() => isSafeOwner),
 }))
 
+jest.mock('@/hooks/useSafeAddress', () => ({
+  __esModule: true,
+  default: jest.fn(() => '0xE20CcFf2c38Ef3b64109361D7b7691ff2c7D5f67'),
+}))
+
 const txDetails = {
   safeAddress: '0xE20CcFf2c38Ef3b64109361D7b7691ff2c7D5f67',
   txId: 'multisig_0xE20CcFf2c38Ef3b64109361D7b7691ff2c7D5f67_0x938635afdeab5ab17b377896f10dbe161fcc44d488296bc0000b733623d57c80',
