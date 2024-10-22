@@ -1,5 +1,6 @@
 import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useWallet from '@/hooks/wallets/useWallet'
+import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import { useDeleteDelegateMutation } from '@/store/api/gateway'
 import { signTypedData } from '@/utils/web3'
 import { useState } from 'react'
@@ -59,6 +60,7 @@ const _DeleteProposer = ({
 
       const signature = await signTypedData(signer, typedData)
       await deleteDelegate({ chainId, delegateAddress, safeAddress, signature })
+      trackEvent(SETTINGS_EVENTS.PROPOSERS.SUBMIT_REMOVE_PROPOSER)
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)
@@ -70,11 +72,12 @@ const _DeleteProposer = ({
   }
 
   const onCancel = () => {
+    trackEvent(SETTINGS_EVENTS.PROPOSERS.CANCEL_REMOVE_PROPOSER)
     onClose()
   }
 
   return (
-    <Dialog open onClose={onClose}>
+    <Dialog open onClose={onCancel}>
       <DialogTitle>
         <Box display="flex" alignItems="center">
           <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -83,7 +86,7 @@ const _DeleteProposer = ({
 
           <Box flexGrow={1} />
 
-          <IconButton aria-label="close" onClick={onClose} sx={{ marginLeft: 'auto' }}>
+          <IconButton aria-label="close" onClick={onCancel} sx={{ marginLeft: 'auto' }}>
             <Close />
           </IconButton>
         </Box>

@@ -5,6 +5,7 @@ import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
+import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 import { useAddDelegateMutation } from '@/store/api/gateway'
 import { signTypedData } from '@/utils/web3'
@@ -29,9 +30,14 @@ type AddProposerProps = {
   onSuccess: () => void
 }
 
+enum DelegateEntryFields {
+  address = 'address',
+  name = 'name',
+}
+
 type DelegateEntry = {
-  name: string
-  address: string
+  [DelegateEntryFields.name]: string
+  [DelegateEntryFields.address]: string
 }
 
 const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
@@ -44,6 +50,10 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
   const safeAddress = useSafeAddress()
 
   const methods = useForm<DelegateEntry>({
+    defaultValues: {
+      [DelegateEntryFields.address]: '',
+      [DelegateEntryFields.name]: '',
+    },
     mode: 'onChange',
   })
 
@@ -68,6 +78,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
         delegate: data.address,
         safeAddress,
       })
+      trackEvent(SETTINGS_EVENTS.PROPOSERS.SUBMIT_ADD_PROPOSER)
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)
@@ -83,8 +94,13 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
     onConfirm(e)
   }
 
+  const onCancel = () => {
+    trackEvent(SETTINGS_EVENTS.PROPOSERS.CANCEL_ADD_PROPOSER)
+    onClose()
+  }
+
   return (
-    <Dialog open onClose={onClose}>
+    <Dialog open onClose={onCancel}>
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
           <DialogTitle>
@@ -95,7 +111,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
 
               <Box flexGrow={1} />
 
-              <IconButton aria-label="close" onClick={onClose} sx={{ marginLeft: 'auto' }}>
+              <IconButton aria-label="close" onClick={onCancel} sx={{ marginLeft: 'auto' }}>
                 <Close />
               </IconButton>
             </Box>
@@ -110,7 +126,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
             </Box>
 
             <Box my={2}>
-              <NameInput label="Name" autoFocus name="name" required />
+              <NameInput name="name" label="Name" autoFocus required />
             </Box>
 
             <AddressInput name="address" label="Delegate" variant="outlined" fullWidth required />
@@ -125,7 +141,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
           <Divider />
 
           <DialogActions sx={{ padding: 3, justifyContent: 'space-between' }}>
-            <Button size="small" variant="text" onClick={onClose}>
+            <Button size="small" variant="text" onClick={onCancel}>
               Cancel
             </Button>
 
