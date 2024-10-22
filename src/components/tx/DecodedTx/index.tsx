@@ -42,7 +42,7 @@ const DecodedTx = ({
   showMultisend = true,
   showMethodCall = false,
 }: DecodedTxProps): ReactElement => {
-  const isMultisend = !!decodedData?.parameters[0]?.valueDecoded
+  const isMultisend = decodedData?.parameters && !!decodedData?.parameters[0]?.valueDecoded
   const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {

@@ -6,12 +6,7 @@ import { render } from '@/tests/test-utils'
 import { fireEvent } from '@testing-library/react'
 import { encodeBytes32String } from 'ethers'
 import { Status } from 'zodiac-roles-deployments'
-import {
-  DetailedExecutionInfoType,
-  SettingsInfoType,
-  TransactionInfoType,
-} from '@safe-global/safe-gateway-typescript-sdk'
-import { createMockTransactionDetails } from '@/tests/transactions'
+import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 
 let isSafeOwner = true
 // mock useIsSafeOwner
@@ -20,9 +15,13 @@ jest.mock('@/hooks/useIsSafeOwner', () => ({
   default: jest.fn(() => isSafeOwner),
 }))
 
-const txDetails = createMockTransactionDetails({
+const txDetails = {
+  safeAddress: '0xE20CcFf2c38Ef3b64109361D7b7691ff2c7D5f67',
+  txId: 'multisig_0xE20CcFf2c38Ef3b64109361D7b7691ff2c7D5f67_0x938635afdeab5ab17b377896f10dbe161fcc44d488296bc0000b733623d57c80',
+  executedAt: null,
+  txStatus: 'AWAITING_EXECUTION',
   txInfo: {
-    type: TransactionInfoType.SETTINGS_CHANGE,
+    type: 'SettingsChange',
     humanDescription: 'Add new owner 0xd8dA...6045 with threshold 1',
     dataDecoded: {
       method: 'addOwnerWithThreshold',
@@ -31,20 +30,22 @@ const txDetails = createMockTransactionDetails({
           name: 'owner',
           type: 'address',
           value: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+          valueDecoded: null,
         },
         {
           name: '_threshold',
           type: 'uint256',
           value: '1',
+          valueDecoded: null,
         },
       ],
     },
     settingsInfo: {
-      type: SettingsInfoType.ADD_OWNER,
+      type: 'ADD_OWNER',
       owner: {
         value: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-        name: 'Nevinha',
-        logoUri: 'http://something.com',
+        name: null,
+        logoUri: null,
       },
       threshold: 1,
     },
@@ -59,32 +60,31 @@ const txDetails = createMockTransactionDetails({
           name: 'owner',
           type: 'address',
           value: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+          valueDecoded: null,
         },
         {
           name: '_threshold',
           type: 'uint256',
           value: '1',
+          valueDecoded: null,
         },
       ],
     },
     to: {
       value: '0xE20CcFf2c38Ef3b64109361D7b7691ff2c7D5f67',
-      name: '',
+      name: 'SafeProxy',
+      logoUri: null,
     },
     value: '0',
     operation: 0,
-    trustedDelegateCallTarget: false,
-    addressInfoIndex: {
-      '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045': {
-        value: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-        name: 'MetaMultiSigWallet',
-      },
-    },
+    trustedDelegateCallTarget: null,
+    addressInfoIndex: null,
   },
+  txHash: null,
   detailedExecutionInfo: {
-    type: DetailedExecutionInfoType.MULTISIG,
-    submittedAt: 1726064794013,
-    nonce: 4,
+    type: 'MULTISIG',
+    submittedAt: 1726497729356,
+    nonce: 8,
     safeTxGas: '0',
     baseGas: '0',
     gasPrice: '0',
@@ -92,24 +92,42 @@ const txDetails = createMockTransactionDetails({
     refundReceiver: {
       value: '0x0000000000000000000000000000000000000000',
       name: 'MetaMultiSigWallet',
+      logoUri: null,
     },
-    safeTxHash: '0x96a96c11b8d013ff5d7a6ce960b22e961046cfa42eff422ac71c1daf6adef2e0',
+    safeTxHash: '0x938635afdeab5ab17b377896f10dbe161fcc44d488296bc0000b733623d57c80',
+    executor: null,
     signers: [
       {
         value: '0xDa5e9FA404881Ff36DDa97b41Da402dF6430EE6b',
-        name: '',
+        name: null,
+        logoUri: null,
       },
     ],
     confirmationsRequired: 1,
-    confirmations: [],
+    confirmations: [
+      {
+        signer: {
+          value: '0xDa5e9FA404881Ff36DDa97b41Da402dF6430EE6b',
+          name: null,
+          logoUri: null,
+        },
+        signature:
+          '0xd91721922d38384a4d40b20d923c49cefb56f60bfe0b357de11a4a044483d670075842d7bba26cf4aa84788ab0bd85137ad09c7f9cd84154db00d456b15e42dc1b',
+        submittedAt: 1726497740521,
+      },
+    ],
     rejectors: [],
-    trusted: false,
+    gasTokenInfo: null,
+    trusted: true,
     proposer: {
       value: '0xDa5e9FA404881Ff36DDa97b41Da402dF6430EE6b',
-      name: '',
+      name: null,
+      logoUri: null,
     },
   },
-})
+  safeAppInfo: null,
+} as unknown as TransactionDetails
+
 describe('SignOrExecute', () => {
   beforeEach(() => {
     isSafeOwner = true

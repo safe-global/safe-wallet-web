@@ -331,62 +331,80 @@ exports[`SignOrExecute should display an error screen 1`] = `
                       data-testid="decoded-tx-details"
                     >
                       <div
-                        class="gridRow"
-                        data-testid="tx-executed-at"
+                        class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
                       >
                         <div
-                          class="title"
+                          class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
                           data-testid="tx-row-title"
+                          style="word-break: break-word;"
                         >
-                          safeTxGas:
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
+                          >
+                            safeTxGas:
+                          </p>
                         </div>
                         <div
-                          class="MuiBox-root css-rurw5h"
+                          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
+                          data-testid="tx-data-row"
                         >
-                          0
+                          <div
+                            class="MuiBox-root css-rurw5h"
+                          >
+                            0
+                          </div>
                         </div>
                       </div>
                       <div
-                        class="gridRow"
-                        data-testid="tx-executed-at"
+                        class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
                       >
                         <div
-                          class="title"
+                          class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
                           data-testid="tx-row-title"
+                          style="word-break: break-word;"
                         >
-                          Raw data:
+                          <p
+                            class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
+                          >
+                            Raw data:
+                          </p>
                         </div>
                         <div
-                          class="MuiBox-root css-70qvj9"
+                          class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-true css-1vd824g-MuiGrid-root"
                           data-testid="tx-data-row"
                         >
-                          <div>
-                            0
-                             bytes
-                          </div>
-                          <span
-                            aria-label="Copy to clipboard"
-                            class=""
-                            data-mui-internal-clone-element="true"
-                            style="cursor: pointer;"
+                          <div
+                            class="MuiBox-root css-70qvj9"
+                            data-testid="tx-data-row"
                           >
-                            <button
+                            <div>
+                              0
+                               bytes
+                            </div>
+                            <span
                               aria-label="Copy to clipboard"
-                              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-nmr6e8-MuiButtonBase-root-MuiIconButton-root"
-                              tabindex="0"
-                              type="button"
+                              class=""
+                              data-mui-internal-clone-element="true"
+                              style="cursor: pointer;"
                             >
-                              <mock-icon
-                                aria-hidden="true"
-                                classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
-                                data-testid="copy-btn-icon"
-                                focusable="false"
-                              />
-                              <span
-                                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                              />
-                            </button>
-                          </span>
+                              <button
+                                aria-label="Copy to clipboard"
+                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-nmr6e8-MuiButtonBase-root-MuiIconButton-root"
+                                tabindex="0"
+                                type="button"
+                              >
+                                <mock-icon
+                                  aria-hidden="true"
+                                  classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                                  data-testid="copy-btn-icon"
+                                  focusable="false"
+                                />
+                                <span
+                                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                                />
+                              </button>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
