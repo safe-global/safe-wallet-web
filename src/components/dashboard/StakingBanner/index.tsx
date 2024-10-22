@@ -57,7 +57,7 @@ const StakingBanner = () => {
     <>
       <Card className={css.widgetWrapper}>
         <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'relative' }} mr={{ sm: -8, md: -4, lg: 0 }}>
-          <Box className={classNames(css.gradiantBackground, { [css.gradiantBackgroundDarkMode]: isDarkMode })} />
+          <Box className={classNames(css.gradientBackground, { [css.gradientBackgroundDarkMode]: isDarkMode })} />
           <SvgIcon
             component={isDarkMode ? StakeIllustrationLight : StakeIllustrationDark}
             inheritViewBox

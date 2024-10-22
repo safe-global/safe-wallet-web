@@ -12,7 +12,7 @@
   right: 0;
 }
 
-.gradiantBackground {
+.gradientBackground {
   width: 400px;
   height: 243px;
   background: linear-gradient(#b0ffc9, #5fddff);
@@ -23,7 +23,7 @@
   border-radius: 50%;
 }
 
-.gradiantBackgroundDarkMode {
+.gradientBackgroundDarkMode {
   background: linear-gradient(#04491a, #087796);
 }
 
