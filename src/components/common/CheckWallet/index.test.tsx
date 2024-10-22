@@ -61,6 +61,11 @@ jest.mock('@/hooks/useSafeInfo', () => ({
   }),
 }))
 
+jest.mock('@/hooks/coreSDK/safeCoreSDK', () => ({
+  __esModule: true,
+  useSafeSDK: jest.fn(() => ({})),
+}))
+
 const renderButton = () =>
   render(<CheckWallet checkNetwork={false}>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>)
 
