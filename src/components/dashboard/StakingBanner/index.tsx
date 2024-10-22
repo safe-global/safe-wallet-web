@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Typography, Card, SvgIcon, Grid, Button, Box, Stack } from '@mui/material'
 import css from './styles.module.css'
 import Kiln from '@/public/images/common/kiln.svg'
@@ -26,7 +27,10 @@ const StakingBanner = () => {
   const router = useRouter()
   const { balances } = useBalances()
 
-  const nativeTokenBalance = balances.items.find((balance) => balance.tokenInfo.type === TokenType.NATIVE_TOKEN)
+  const nativeTokenBalance = useMemo(
+    () => balances.items.find((balance) => balance.tokenInfo.type === TokenType.NATIVE_TOKEN),
+    [balances.items],
+  )
 
   const hasSufficientFunds =
     nativeTokenBalance != null &&
