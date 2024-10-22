@@ -178,7 +178,6 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
       </Track>
 
       <Tooltip placement="top" arrow title="Pin this account">
-        {/* <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={() => {}}> */}
         <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={isPinned ? removeFromPinnedList : addToPinnedList}>
           <SvgIcon
             component={isPinned ? BookmarkedIcon : BookmarkIcon}

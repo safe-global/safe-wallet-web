@@ -1,7 +1,18 @@
 import { useMemo } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Paper, SvgIcon, Typography } from '@mui/material'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Link,
+  Paper,
+  SvgIcon,
+  Typography,
+} from '@mui/material'
 import madProps from '@/utils/mad-props'
 import CreateButton from './CreateButton'
+import AddIcon from '@/public/images/common/add.svg'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
@@ -69,8 +80,23 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
       <Box className={css.myAccounts}>
         <Box className={css.header}>
           <Typography variant="h1" fontWeight={700} className={css.title}>
-            Safe accounts
+            My accounts
           </Typography>
+          <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
+            <Link href={AppRoutes.newSafe.load}>
+              <Button
+                disableElevation
+                variant="outlined"
+                size="small"
+                onClick={onLinkClick}
+                startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+                sx={{ height: '36px' }}
+              >
+                Add
+              </Button>
+            </Link>
+          </Track>
+
           <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
             <CreateButton isPrimary={!!wallet} />
           </Track>
@@ -94,10 +120,14 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
           </Box>
 
           {/* All Accounts */}
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon fontSize="small" />}>
+
+          <Accordion sx={{ border: 'none' }}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              sx={{ padding: 0, '& .MuiAccordionSummary-content': { margin: '0 !important', mb: 1, flexGrow: 0 } }}
+            >
               <div className={css.listHeader}>
-                <Typography variant="h5" fontWeight={700} mb={2} className={css.listTitle}>
+                <Typography variant="h5" fontWeight={700}>
                   Accounts
                   {allSafes && allSafes.length > 0 && (
                     <Typography
@@ -114,7 +144,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
                 </Typography>
               </div>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ padding: 0 }}>
               <Box mt={1}>
                 <SafesList
                   safes={allSafes}

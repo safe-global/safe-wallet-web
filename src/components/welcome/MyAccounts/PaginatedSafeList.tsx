@@ -1,10 +1,12 @@
 import { type ReactNode } from 'react'
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import AccountItem from './AccountItem'
 import { type SafeItem } from './useAllSafes'
 import { type MultiChainSafeItem } from './useAllSafesGrouped'
 import MultiAccountItem from './MultiAccountItem'
 import { isMultiChainSafeItem } from '@/features/multichain/utils/utils'
+import { TransitionGroup } from 'react-transition-group'
+import Collapse from '@mui/material/Collapse'
 
 type SafeListProps = {
   safes?: (SafeItem | MultiChainSafeItem)[]
@@ -126,18 +128,21 @@ type SafeListProps = {
 
 export const SafesList = ({ safes, noSafesMessage, onLinkClick }: SafeListProps) => {
   return (
-    // <Paper className={css.safeList}>
-    <>
+    <Box>
       {safes && safes.length > 0 ? (
-        <>
+        <TransitionGroup>
           {safes.map((item) =>
             isMultiChainSafeItem(item) ? (
-              <MultiAccountItem onLinkClick={onLinkClick} key={item.address} multiSafeAccountItem={item} />
+              <Collapse key={item.address}>
+                <MultiAccountItem onLinkClick={onLinkClick} multiSafeAccountItem={item} />
+              </Collapse>
             ) : (
-              <AccountItem onLinkClick={onLinkClick} safeItem={item} key={item.chainId + item.address} />
+              <Collapse key={item.address}>
+                <AccountItem onLinkClick={onLinkClick} safeItem={item} key={item.chainId + item.address} />
+              </Collapse>
             ),
           )}
-        </>
+        </TransitionGroup>
       ) : (
         <Typography
           component="div"
@@ -151,7 +156,7 @@ export const SafesList = ({ safes, noSafesMessage, onLinkClick }: SafeListProps)
           {noSafesMessage}
         </Typography>
       )}
-    </>
+    </Box>
     // </Paper>
   )
 }
