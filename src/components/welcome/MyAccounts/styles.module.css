@@ -6,14 +6,14 @@
 }
 
 .myAccounts {
-  width: 100%;
+  width: 100vw;
   max-width: 750px;
   margin: var(--space-2);
 }
 
 .safeList {
   padding: var(--space-2);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-1);
 }
 
 .header {
@@ -25,6 +25,15 @@
 
 .title {
   flex-grow: 1;
+}
+
+.noPinnedSafesMessage {
+  display: flex;
+  justify-content: center;
+  border: 1px solid var(--color-border-light);
+  padding: var(--space-3);
+  border-radius: var(--space-1);
+  border-style: dashed;
 }
 
 .listItem {
@@ -102,6 +111,10 @@
   display: flex;
 }
 
+.listHeader path {
+  stroke: var(--color-text-primary);
+}
+
 .card {
   margin: auto;
   padding: var(--space-3);
@@ -169,7 +182,7 @@
 }
 
 .safeList :global .MuiAccordionSummary-root {
-  background: white !important;
+  background: var(--color-background-paper) !important;
   padding-left: 0;
   min-height: 0;
   justify-content: left;

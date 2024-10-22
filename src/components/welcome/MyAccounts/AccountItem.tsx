@@ -2,7 +2,7 @@ import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo, useRef } from 'react'
-import { ListItemButton, Box, Typography, Chip, Tooltip, IconButton, SvgIcon, Skeleton } from '@mui/material'
+import { ListItemButton, Box, Typography, Chip, IconButton, SvgIcon, Skeleton } from '@mui/material'
 import Link from 'next/link'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
@@ -177,16 +177,14 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
         </Link>
       </Track>
 
-      <Tooltip placement="top" arrow title="Pin this account">
-        <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={isPinned ? removeFromPinnedList : addToPinnedList}>
-          <SvgIcon
-            component={isPinned ? BookmarkedIcon : BookmarkIcon}
-            inheritViewBox
-            color={isPinned ? 'primary' : undefined}
-            fontSize="small"
-          />
-        </IconButton>
-      </Tooltip>
+      <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={isPinned ? removeFromPinnedList : addToPinnedList}>
+        <SvgIcon
+          component={isPinned ? BookmarkedIcon : BookmarkIcon}
+          inheritViewBox
+          color={isPinned ? 'primary' : undefined}
+          fontSize="small"
+        />
+      </IconButton>
       <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
 
       {isVisible && (

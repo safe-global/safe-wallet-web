@@ -19,7 +19,6 @@ import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
 import { SafesList } from './PaginatedSafeList'
 import { AppRoutes } from '@/config/routes'
-import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
 import useTrackSafesCount from './useTrackedSafesCount'
@@ -27,8 +26,6 @@ import { type AllSafesGrouped, useAllSafesGrouped, type MultiChainSafeItem } fro
 import { type SafeItem } from './useAllSafes'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
-
-const NO_SAFES_MESSAGE = "You don't have any Safe Accounts yet"
 
 type AccountsListProps = {
   safes: AllSafesGrouped
@@ -104,39 +101,47 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
 
         <Paper className={css.safeList}>
           {/* Pinned Accounts */}
-          <Box mb={3} sx={{ minHeight: '200px' }}>
+          <Box mb={2} minHeight="170px">
             <div className={css.listHeader}>
               <SvgIcon
                 component={BookmarkIcon}
                 inheritViewBox
                 fontSize="small"
-                sx={{ mt: '2px', mr: 1, fontWeight: 900, strokeWidth: 2 }}
+                sx={{ mt: '2px', mr: 1, strokeWidth: 2 }}
               />
               <Typography variant="h5" fontWeight={700} mb={2}>
                 Pinned
               </Typography>
             </div>
-            <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
+            {pinnedSafes.length > 0 ? (
+              <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
+            ) : (
+              <Box className={css.noPinnedSafesMessage}>
+                <Typography color="text.secondary" maxWidth="350px" textAlign="center" fontSize="14px">
+                  Personalize your account list by clicking the
+                  <SvgIcon
+                    component={BookmarkIcon}
+                    inheritViewBox
+                    fontSize="small"
+                    sx={{ mx: '4px', color: 'text.secondary', position: 'relative', top: '2px' }}
+                  />
+                  icon on the accounts most important to you.
+                </Typography>
+              </Box>
+            )}
           </Box>
 
           {/* All Accounts */}
-
           <Accordion sx={{ border: 'none' }}>
             <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
+              expandIcon={<ExpandMoreIcon sx={{ '& path': { fill: 'var(--color-text-secondary)' } }} />}
               sx={{ padding: 0, '& .MuiAccordionSummary-content': { margin: '0 !important', mb: 1, flexGrow: 0 } }}
             >
               <div className={css.listHeader}>
                 <Typography variant="h5" fontWeight={700}>
                   Accounts
                   {allSafes && allSafes.length > 0 && (
-                    <Typography
-                      component="span"
-                      color="var(--color-primary-light)"
-                      fontSize="inherit"
-                      fontWeight="normal"
-                      mr={1}
-                    >
+                    <Typography component="span" color="text.secondary" fontSize="inherit" fontWeight="normal" mr={1}>
                       {' '}
                       ({allSafes.length})
                     </Typography>
@@ -146,52 +151,10 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
               <Box mt={1}>
-                <SafesList
-                  safes={allSafes}
-                  onLinkClick={onLinkClick}
-                  noSafesMessage={
-                    wallet ? (
-                      NO_SAFES_MESSAGE
-                    ) : (
-                      <>
-                        <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
-                        <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={trackingLabel}>
-                          <ConnectWalletButton text="Connect a wallet" contained />
-                        </Track>
-                      </>
-                    )
-                  }
-                />
+                <SafesList safes={allSafes} onLinkClick={onLinkClick} />
               </Box>
             </AccordionDetails>
           </Accordion>
-
-          {/* <PaginatedSafeList
-          title={
-            <>
-              <VisibilityOutlined sx={{ verticalAlign: 'middle', marginRight: '10px' }} fontSize="small" />
-              Watchlist
-            </>
-          }
-          safes={watchlistSafes || []}
-          action={
-            <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
-              <Link href={AppRoutes.newSafe.load}>
-                <Button
-                  disableElevation
-                  size="small"
-                  onClick={onLinkClick}
-                  startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-                >
-                  Add
-                </Button>
-              </Link>
-            </Track>
-          }
-          noSafesMessage={NO_WATCHED_MESSAGE}
-          onLinkClick={onLinkClick}
-        /> */}
-
           <DataWidget />
         </Paper>
       </Box>

@@ -216,24 +216,22 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               )}
             </Typography>
           </Box>
-          <Tooltip placement="top" arrow title="Pin this account">
-            <IconButton
-              edge="end"
-              size="medium"
-              sx={{ mx: 1 }}
-              onClick={(event) => {
-                event.stopPropagation()
-                isPinned ? removeFromPinnedList() : addToPinnedList()
-              }}
-            >
-              <SvgIcon
-                component={isPinned ? BookmarkedIcon : BookmarkIcon}
-                inheritViewBox
-                color={isPinned ? 'primary' : undefined}
-                fontSize="small"
-              />
-            </IconButton>
-          </Tooltip>
+          <IconButton
+            edge="end"
+            size="medium"
+            sx={{ mx: 1 }}
+            onClick={(event) => {
+              event.stopPropagation()
+              isPinned ? removeFromPinnedList() : addToPinnedList()
+            }}
+          >
+            <SvgIcon
+              component={isPinned ? BookmarkedIcon : BookmarkIcon}
+              inheritViewBox
+              color={isPinned ? 'primary' : undefined}
+              fontSize="small"
+            />
+          </IconButton>
           <MultiAccountContextMenu
             name={name ?? ''}
             address={address}

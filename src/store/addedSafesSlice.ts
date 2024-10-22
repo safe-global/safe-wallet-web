@@ -62,7 +62,7 @@ export const addedSafesSlice = createSlice({
     },
     unpinSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = payload
-      const { removeOnUnpin } = state[chainId]?.[address]
+      const removeOnUnpin = state[chainId]?.[address]?.removeOnUnpin
 
       if (removeOnUnpin) {
         delete state[chainId]?.[address]
