@@ -18,7 +18,8 @@
     "web": "expo start --web",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui",
+    "test:ui": "vitest --ui --coverage.enabled=true",
+    "test:coverage": "vitest --coverage",
     "test:snapshots": "vitest -u",
     "lint": "eslint src/* app/*",
     "lint:fix": "npm run lint -- --fix",
@@ -30,11 +31,14 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@cowprotocol/app-data": "^2.3.0",
     "@emotion/native": "^11.11.0",
     "@emotion/react": "^11.13.3",
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.8",
+    "@safe-global/safe-gateway-typescript-sdk": "^3.22.2",
+    "date-fns": "^4.1.0",
     "deepmerge": "^4.3.1",
     "expo": "~51.0.28",
     "expo-constants": "~16.0.2",
@@ -56,8 +60,7 @@
     "react-native-screens": "3.31.1",
     "react-native-web": "~0.19.10",
     "react-redux": "^9.1.2",
-    "redux-persist": "^6.0.0",
-    "safe-client-gateway-sdk": "git+https://github.com/safe-global/safe-client-gateway-sdk.git#v1.54.0-next-5b02a33"
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -76,6 +79,7 @@
     "@types/react": "~18.2.45",
     "@types/react-test-renderer": "^18.0.7",
     "@vitejs/plugin-react": "^4.3.2",
+    "@vitest/coverage-v8": "^2.1.2",
     "@vitest/ui": "^2.1.2",
     "babel-loader": "^8.4.1",
     "detox": "^20.27.2",

@@ -15,6 +15,7 @@ web-build/
 
 # From vitest:ui
 html
+coverage
 
 # macOS
 .DS_Store
