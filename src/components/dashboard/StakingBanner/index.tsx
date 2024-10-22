@@ -19,7 +19,7 @@ import { formatUnits } from 'ethers'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 
 const LOCAL_STORAGE_KEY_HIDE_WIDGET = 'hideStakingBanner'
-const LEARN_MORE_LINK = ''
+const LEARN_MORE_LINK = 'https://help.safe.global/en/articles/222615-safe-staking'
 const MIN_NATIVE_TOKEN_BALANCE = 32
 
 const StakingBanner = () => {
