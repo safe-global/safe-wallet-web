@@ -50,7 +50,7 @@ const NetworkMultiSelector = ({
       const currentValues: ChainInfo[] = getValues(name) || []
       const updatedValues = currentValues.filter((chain) => chain.chainId !== deletedChainId)
       updateCurrentNetwork(updatedValues)
-      setValue(name, updatedValues)
+      setValue(name, updatedValues, { shouldValidate: true })
     },
     [getValues, name, setValue, updateCurrentNetwork],
   )
@@ -128,7 +128,7 @@ const NetworkMultiSelector = ({
               ))
             }
             renderOption={(props, chain, { selected }) => (
-              <li key={chain.chainId} {...props}>
+              <li {...props} key={chain.chainId}>
                 <Checkbox data-testid="network-checkbox" size="small" checked={selected} />
                 <ChainIndicator chainId={chain.chainId} inline />
               </li>
