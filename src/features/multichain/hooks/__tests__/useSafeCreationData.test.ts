@@ -210,10 +210,7 @@ describe('useSafeCreationData', () => {
   })
 
   it('should throw an error if creation data cannot be found', async () => {
-    jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue({
-      response: new Response(),
-      data: undefined,
-    } as any)
+    jest.spyOn(cgwSdk, 'getCreationTransaction').mockResolvedValue(undefined as any)
 
     const safeAddress = faker.finance.ethereumAddress()
     const chainInfos = [chainBuilder().with({ chainId: '1', l2: false }).build()]
@@ -234,7 +231,7 @@ describe('useSafeCreationData', () => {
       transactionHash: faker.string.hexadecimal({ length: 64 }),
       masterCopy: null,
       setupData: null,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     const safeAddress = faker.finance.ethereumAddress()
@@ -256,7 +253,7 @@ describe('useSafeCreationData', () => {
       transactionHash: faker.string.hexadecimal({ length: 64 }),
       masterCopy: faker.finance.ethereumAddress(),
       setupData: '0x',
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     const safeAddress = faker.finance.ethereumAddress()
@@ -289,7 +286,7 @@ describe('useSafeCreationData', () => {
       transactionHash: faker.string.hexadecimal({ length: 64 }),
       masterCopy: getSafeSingletonDeployment({ version: '1.1.1' })?.defaultAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     const safeAddress = faker.finance.ethereumAddress()
@@ -326,7 +323,7 @@ describe('useSafeCreationData', () => {
       transactionHash: faker.string.hexadecimal({ length: 64 }),
       masterCopy: faker.finance.ethereumAddress(),
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     const safeAddress = faker.finance.ethereumAddress()
@@ -363,7 +360,7 @@ describe('useSafeCreationData', () => {
       transactionHash: faker.string.hexadecimal({ length: 64 }),
       masterCopy: getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     const safeAddress = faker.finance.ethereumAddress()
@@ -396,7 +393,7 @@ describe('useSafeCreationData', () => {
       transactionHash: faker.string.hexadecimal({ length: 64 }),
       masterCopy: getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     const safeAddress = faker.finance.ethereumAddress()
@@ -429,7 +426,7 @@ describe('useSafeCreationData', () => {
       transactionHash: faker.string.hexadecimal({ length: 64 }),
       masterCopy: getSafeSingletonDeployment({ version: '1.3.0' })?.defaultAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue(undefined)
@@ -468,7 +465,7 @@ describe('useSafeCreationData', () => {
       transactionHash: mockTxHash,
       masterCopy: mockMasterCopyAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue({
@@ -508,7 +505,7 @@ describe('useSafeCreationData', () => {
       transactionHash: mockTxHash,
       masterCopy: mockMasterCopyAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue({
@@ -571,7 +568,7 @@ describe('useSafeCreationData', () => {
       transactionHash: mockTxHash,
       masterCopy: mockMasterCopyAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue({
@@ -623,7 +620,7 @@ describe('useSafeCreationData', () => {
       transactionHash: mockTxHash,
       masterCopy: mockMasterCopyAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue({
@@ -685,7 +682,7 @@ describe('useSafeCreationData', () => {
       transactionHash: mockTxHash,
       masterCopy: mockMasterCopyAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue({
@@ -759,7 +756,7 @@ describe('useSafeCreationData', () => {
       transactionHash: mockTxHash,
       masterCopy: mockMasterCopyAddress,
       setupData,
-      saltNonce: faker.string.numeric(),
+      saltNonce: faker.string.hexadecimal({ length: 64 }),
     })
 
     jest.spyOn(web3, 'createWeb3ReadOnly').mockReturnValue({
