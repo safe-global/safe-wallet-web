@@ -14,11 +14,9 @@ import StakingBanner from '@/components/dashboard/StakingBanner'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import css from './styles.module.css'
-import SwapWidget from '@/features/swap/components/SwapWidget'
-import useIsSwapFeatureEnabled from '@/features/swap/hooks/useIsSwapFeatureEnabled'
 import { useSafeTokenEnabled } from '@/hooks/useSafeTokenEnabled'
 import { InconsistentSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/InconsistentSignerSetupWarning'
-import useIsStakingFeatureEnabled from '@/features/stake/hooks/useIsSwapFeatureEnabled'
+import useIsStakingBannerEnabled from '@/features/stake/hooks/useIsStakingBannerEnabled'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
@@ -26,9 +24,8 @@ const Dashboard = (): ReactElement => {
   const { safe } = useSafeInfo()
   const showSafeApps = useHasFeature(FEATURES.SAFE_APPS)
   const isSafeTokenEnabled = useSafeTokenEnabled()
-  const isSwapFeatureEnabled = useIsSwapFeatureEnabled()
   const isSAPBannerEnabled = useHasFeature(FEATURES.SAP_BANNER) && isSafeTokenEnabled
-  const isStakingFeatureEnabled = useIsStakingFeatureEnabled()
+  const isStakingBannerEnabled = useIsStakingBannerEnabled()
   const supportsRecovery = useIsRecoverySupported()
 
   return (
@@ -50,21 +47,15 @@ const Dashboard = (): ReactElement => {
 
         {safe.deployed && (
           <>
-            {isSwapFeatureEnabled && (
+            {isStakingBannerEnabled && (
               <Grid item xs={12} xl={isSAPBannerEnabled ? 6 : 12} className={css.hideIfEmpty}>
-                <SwapWidget />
+                <StakingBanner />
               </Grid>
             )}
 
             {isSAPBannerEnabled && (
               <Grid item xs className={css.hideIfEmpty}>
                 <ActivityRewardsSection />
-              </Grid>
-            )}
-
-            {isStakingFeatureEnabled && (
-              <Grid item xs={12} className={css.hideIfEmpty}>
-                <StakingBanner />
               </Grid>
             )}
 

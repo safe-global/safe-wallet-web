@@ -12,11 +12,11 @@ import { OVERVIEW_EVENTS, trackEvent } from '@/services/analytics'
 import useLocalStorage from '@/services/local-storage/useLocalStorage'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
-import useIsStakingFeatureEnabled from '@/features/stake/hooks/useIsSwapFeatureEnabled'
 import { AppRoutes } from '@/config/routes'
 import useBalances from '@/hooks/useBalances'
 import { formatUnits } from 'ethers'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
+import useIsStakingBannerEnabled from '@/features/stake/hooks/useIsStakingBannerEnabled'
 
 const LOCAL_STORAGE_KEY_HIDE_WIDGET = 'hideStakingBanner'
 const LEARN_MORE_LINK = 'https://help.safe.global/en/articles/222615-safe-staking'
@@ -38,11 +38,11 @@ const StakingBanner = () => {
 
   const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>(LOCAL_STORAGE_KEY_HIDE_WIDGET)
 
-  const isStakingFeatureEnabled = useIsStakingFeatureEnabled()
+  const isStakingBannerEnabled = useIsStakingBannerEnabled()
 
-  const sanctionedAddress = useSanctionedAddress(isStakingFeatureEnabled && !widgetHidden)
+  const sanctionedAddress = useSanctionedAddress(isStakingBannerEnabled && !widgetHidden)
 
-  if (!isStakingFeatureEnabled || widgetHidden || Boolean(sanctionedAddress) || !hasSufficientFunds) return null
+  if (!isStakingBannerEnabled || widgetHidden || Boolean(sanctionedAddress) || !hasSufficientFunds) return null
 
   const onClick = () => {
     trackEvent(OVERVIEW_EVENTS.OPEN_STAKING_WIDGET)
