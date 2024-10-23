@@ -1,7 +1,11 @@
-.widgetWrapper {
+.bannerWrapper {
   position: relative;
   border: none;
   margin: 0;
+  padding: var(--space-2);
+}
+
+.bannerWrapperLarge {
   padding: var(--space-4);
 }
 
@@ -12,7 +16,7 @@
   right: 0;
 }
 
-.gradientBackground {
+.gradientShadow {
   width: 400px;
   height: 243px;
   background: linear-gradient(#b0ffc9, #5fddff);
@@ -23,8 +27,17 @@
   border-radius: 50%;
 }
 
-.gradientBackgroundDarkMode {
+.gradientShadowDarkMode {
   background: linear-gradient(#04491a, #087796);
+}
+
+.gradientBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(225deg, #D7F6FF, #B0FFC9);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .kilnIcon {

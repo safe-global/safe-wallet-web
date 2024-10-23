@@ -49,7 +49,7 @@ const Dashboard = (): ReactElement => {
           <>
             {isStakingBannerEnabled && (
               <Grid item xs={12} xl={isSAPBannerEnabled ? 6 : 12} className={css.hideIfEmpty}>
-                <StakingBanner />
+                <StakingBanner large />
               </Grid>
             )}
 
