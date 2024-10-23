@@ -220,8 +220,8 @@ describe('safeOverviews', () => {
       const request = {
         currency: 'usd',
         safes: [
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '10', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '10', isWatchlist: false, isPinned: false },
         ],
       }
 
@@ -263,8 +263,8 @@ describe('safeOverviews', () => {
       const request = {
         currency: 'usd',
         safes: [
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '10', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '10', isWatchlist: false, isPinned: false },
         ],
       }
 
@@ -288,21 +288,21 @@ describe('safeOverviews', () => {
       const request = {
         currency: 'usd',
         safes: [
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
+          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false, isPinned: false },
         ],
       }
 
