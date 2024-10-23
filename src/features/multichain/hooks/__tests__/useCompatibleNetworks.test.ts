@@ -163,7 +163,7 @@ describe('useCompatibleNetworks', () => {
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(6)
       expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true, false])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, false, false])
     }
 
     // 1.3.0, L2 and EIP155
@@ -178,7 +178,7 @@ describe('useCompatibleNetworks', () => {
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(6)
       expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true, false])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, false, false])
     }
   })
 
