@@ -64,7 +64,7 @@ export const useCompatibleNetworks = (
     const includesSetupToL2 = to !== ZERO_ADDRESS
 
     // If the creation includes the setupToL2 call, the contract needs to be deployed on the chain
-    const setupToL2ContractExists =
+    const areSetupToL2ConditionsMet =
       !includesSetupToL2 ||
       hasCanonicalDeployment(getSafeToL2SetupDeployments({ network: config.chainId, version: '1.4.1' }), config.chainId)
 
@@ -82,7 +82,7 @@ export const useCompatibleNetworks = (
         masterCopyExists &&
         proxyFactoryExists &&
         fallbackHandlerExists &&
-        setupToL2ContractExists &&
+        areSetupToL2ConditionsMet &&
         areMigrationConditionsMet,
     }
   })
