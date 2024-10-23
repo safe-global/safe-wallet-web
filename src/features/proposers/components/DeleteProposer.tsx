@@ -1,7 +1,10 @@
 import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
+import { useAppDispatch } from '@/store'
 import { useDeleteDelegateMutation } from '@/store/api/gateway'
+import { showNotification } from '@/store/notificationsSlice'
+import { shortenAddress } from '@/utils/formatters'
 import { signTypedData } from '@/utils/web3'
 import { useState } from 'react'
 import {
@@ -43,6 +46,7 @@ const _DeleteProposer = ({
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [deleteDelegate] = useDeleteDelegateMutation()
+  const dispatch = useAppDispatch()
 
   const onConfirm = async () => {
     setError(undefined)
@@ -57,10 +61,20 @@ const _DeleteProposer = ({
     try {
       const signer = await getAssertedChainSigner(wallet.provider)
       const typedData = getDelegateTypedData(chainId, delegateAddress)
-
       const signature = await signTypedData(signer, typedData)
+
       await deleteDelegate({ chainId, delegateAddress, safeAddress, signature })
+
       trackEvent(SETTINGS_EVENTS.PROPOSERS.SUBMIT_REMOVE_PROPOSER)
+
+      dispatch(
+        showNotification({
+          variant: 'success',
+          groupKey: 'delete-proposer-success',
+          title: 'Proposer deleted successfully!',
+          message: `${shortenAddress(delegateAddress)} can not suggest transactions anymore.`,
+        }),
+      )
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)

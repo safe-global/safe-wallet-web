@@ -9,7 +9,10 @@ import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
+import { useAppDispatch } from '@/store'
 import { useAddDelegateMutation } from '@/store/api/gateway'
+import { showNotification } from '@/store/notificationsSlice'
+import { shortenAddress } from '@/utils/formatters'
 import { signTypedData } from '@/utils/web3'
 import { Close } from '@mui/icons-material'
 import {
@@ -47,6 +50,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [addDelegate] = useAddDelegateMutation()
+  const dispatch = useAppDispatch()
 
   const chainId = useChainId()
   const wallet = useWallet()
@@ -71,8 +75,8 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
     try {
       const signer = await getAssertedChainSigner(wallet.provider)
       const typedData = getDelegateTypedData(chainId, data.address)
-
       const signature = await signTypedData(signer, typedData)
+
       await addDelegate({
         chainId,
         delegator: wallet.address,
@@ -81,7 +85,17 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
         delegate: data.address,
         safeAddress,
       })
+
       trackEvent(SETTINGS_EVENTS.PROPOSERS.SUBMIT_ADD_PROPOSER)
+
+      dispatch(
+        showNotification({
+          variant: 'success',
+          groupKey: 'add-proposer-success',
+          title: 'Proposer added successfully!',
+          message: `${shortenAddress(data.address)} can now suggest transactions for this account.`,
+        }),
+      )
     } catch (error) {
       setIsLoading(false)
       setError(error as Error)
@@ -137,7 +151,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
             </Box>
 
             <Box>
-              <NameInput name="name" label="Name" autoFocus required />
+              <NameInput name="name" label="Name" required />
             </Box>
 
             {error && (
