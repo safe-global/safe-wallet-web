@@ -69,14 +69,12 @@ export const useCompatibleNetworks = (
       hasCanonicalDeployment(getSafeToL2SetupDeployments({ network: config.chainId, version: '1.4.1' }), config.chainId)
 
     // If the masterCopy is L1 on a L2 chain, includes the setupToL2 Call or the Migration contract exists
-    const migrationContractExists =
-      !isL1MasterCopy ||
-      includesSetupToL2 ||
-      !config.l2 ||
-      hasCanonicalDeployment(
-        getSafeToL2MigrationDeployments({ network: config.chainId, version: '1.4.1' }),
-        config.chainId,
-      )
+    const isMigrationRequired = isL1MasterCopy && !includesSetupToL2 && config.l2
+    const isMigrationPossible = hasCanonicalDeployment(
+      getSafeToL2MigrationDeployments({ network: config.chainId, version: '1.4.1' }),
+      config.chainId,
+    )
+    const areMigrationConditionsMet = !isMigrationRequired || isMigrationPossible
 
     return {
       ...config,
@@ -85,7 +83,7 @@ export const useCompatibleNetworks = (
         proxyFactoryExists &&
         fallbackHandlerExists &&
         setupToL2ContractExists &&
-        migrationContractExists,
+        areMigrationConditionsMet,
     }
   })
 }
