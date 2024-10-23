@@ -9,7 +9,7 @@ import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { getNetworkLink } from '.'
 import { SetNameStepFields } from '@/components/new-safe/create/steps/SetNameStep'
-import { getSafeSingletonDeployments } from '@safe-global/safe-deployments'
+import { getSafeSingletonDeployments, getSafeToL2SetupDeployments } from '@safe-global/safe-deployments'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { hasCanonicalDeployment } from '@/services/contracts/deployments'
 import { hasMultiChainCreationFeatures } from '@/features/multichain/utils/utils'
@@ -74,22 +74,33 @@ const NetworkMultiSelector = ({
       }
 
       // Check if required deployments are available
-      const optionHasCanonicalSingletonDeployment = hasCanonicalDeployment(
-        getSafeSingletonDeployments({
-          network: optionNetwork.chainId,
-          version: getLatestSafeVersion(firstSelectedNetwork),
-        }),
-        optionNetwork.chainId,
-      )
-      const selectedHasCanonicalSingletonDeployment = hasCanonicalDeployment(
-        getSafeSingletonDeployments({
-          network: firstSelectedNetwork.chainId,
-          version: getLatestSafeVersion(firstSelectedNetwork),
-        }),
-        firstSelectedNetwork.chainId,
-      )
+      const optionHasCanonicalSingletonDeployment =
+        hasCanonicalDeployment(
+          getSafeSingletonDeployments({
+            network: optionNetwork.chainId,
+            version: getLatestSafeVersion(firstSelectedNetwork),
+          }),
+          optionNetwork.chainId,
+        ) &&
+        hasCanonicalDeployment(
+          getSafeToL2SetupDeployments({ network: optionNetwork.chainId, version: '1.4.1' }),
+          optionNetwork.chainId,
+        )
 
-      // Only 1.4.1 safes with canonical deployment addresses can be deployed as part of a multichain group
+      const selectedHasCanonicalSingletonDeployment =
+        hasCanonicalDeployment(
+          getSafeSingletonDeployments({
+            network: firstSelectedNetwork.chainId,
+            version: getLatestSafeVersion(firstSelectedNetwork),
+          }),
+          firstSelectedNetwork.chainId,
+        ) &&
+        hasCanonicalDeployment(
+          getSafeToL2SetupDeployments({ network: firstSelectedNetwork.chainId, version: '1.4.1' }),
+          firstSelectedNetwork.chainId,
+        )
+
+      // Only 1.4.1 safes with canonical deployment addresses and SafeToL2Setup can be deployed as part of a multichain group
       if (!selectedHasCanonicalSingletonDeployment) return !optionIsSelectedNetwork
       return !optionHasCanonicalSingletonDeployment
     },
@@ -128,7 +139,7 @@ const NetworkMultiSelector = ({
               ))
             }
             renderOption={(props, chain, { selected }) => (
-              <li key={chain.chainId} {...props}>
+              <li {...props} key={chain.chainId}>
                 <Checkbox data-testid="network-checkbox" size="small" checked={selected} />
                 <ChainIndicator chainId={chain.chainId} inline />
               </li>

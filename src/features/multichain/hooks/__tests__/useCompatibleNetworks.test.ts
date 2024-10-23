@@ -36,6 +36,7 @@ describe('useCompatibleNetworks', () => {
         chainBuilder().with({ chainId: '100' }).build(), // This has the canonical and then the eip155 addresses
         chainBuilder().with({ chainId: '324' }).build(), // ZkSync has different addresses for all versions
         chainBuilder().with({ chainId: '480' }).build(), // Worldchain has 1.4.1 but not 1.1.1
+        chainBuilder().with({ chainId: '10200' }).build(), // Gnosis Chiado has no migration contracts
       ],
     })
   })
@@ -68,7 +69,7 @@ describe('useCompatibleNetworks', () => {
     expect(result.current.every((config) => config.available)).toEqual(false)
   })
 
-  it('should set everything to available except zkSync for 1.4.1 Safes', () => {
+  it('should set everything to available except zkSync and GnosisChain Chiado for 1.4.1 Safes', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -89,8 +90,8 @@ describe('useCompatibleNetworks', () => {
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(5)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true, false])
     }
 
     {
@@ -103,8 +104,8 @@ describe('useCompatibleNetworks', () => {
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
       expect(result.current).toHaveLength(5)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true, false])
     }
   })
 

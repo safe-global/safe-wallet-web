@@ -228,8 +228,9 @@ export const createNewUndeployedSafeWithoutSalt = (
   const safeToL2SetupAddress = safeToL2SetupDeployment?.networkAddresses[chain.chainId]
   const safeToL2SetupInterface = Safe_to_l2_setup__factory.createInterface()
 
-  // Only do migration if the chain supports multiChain deployments.
-  const includeMigration = hasMultiChainCreationFeatures(chain) && semverSatisfies(safeVersion, '>=1.4.1')
+  // Only do migration if the chain supports multiChain deployments and has a SafeToL2Setup deployment
+  const includeMigration =
+    hasMultiChainCreationFeatures(chain) && semverSatisfies(safeVersion, '>=1.4.1') && Boolean(safeToL2SetupAddress)
 
   const masterCopy = includeMigration ? safeL1Address : chain.l2 ? safeL2Address : safeL1Address
 
