@@ -4216,10 +4216,10 @@
   dependencies:
     abitype "^1.0.2"
 
-"@safe-global/safe-deployments@^1.37.12":
-  version "1.37.13"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.13.tgz#9965d6c5669db526a472a0576828063aa50234df"
-  integrity sha512-DXDbyW+pSK5W+eyrT7I2VHgHjCUhiXgcmSjekCzwmzrRXB5sW36DLLDwfC5c1gvo26ix6NcIGRSk2sf68BHdeg==
+"@safe-global/safe-deployments@1.37.12":
+  version "1.37.12"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-deployments/-/safe-deployments-1.37.12.tgz#c01b0a272991ae0e63a37d506024a809de53c370"
+  integrity sha512-6UM5wS6b0h4Uu2BCK6sWLNC5UYFBd1Xu4YsuZpoSjlo/6UDbbK6lzYVEgtqbsy8p1z2ZO+Z73WgRo3mlh7awig==
   dependencies:
     semver "^7.6.2"
 

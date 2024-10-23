@@ -57,7 +57,7 @@
     "@safe-global/api-kit": "^2.4.6",
     "@safe-global/protocol-kit": "^4.1.1",
     "@safe-global/safe-apps-sdk": "^9.1.0",
-    "@safe-global/safe-deployments": "^1.37.12",
+    "@safe-global/safe-deployments": "1.37.12",
     "@safe-global/safe-client-gateway-sdk": "1.58.0-next-25bba61",
     "@safe-global/safe-gateway-typescript-sdk": "3.22.3-beta.15",
     "@safe-global/safe-modules-deployments": "^2.2.1",
