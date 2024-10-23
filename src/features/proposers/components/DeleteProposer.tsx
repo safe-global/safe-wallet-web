@@ -81,7 +81,7 @@ const _DeleteProposer = ({
       <DialogTitle>
         <Box display="flex" alignItems="center">
           <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            Delete this delegate?
+            Delete this proposer?
           </Typography>
 
           <Box flexGrow={1} />
@@ -95,11 +95,19 @@ const _DeleteProposer = ({
       <Divider />
 
       <DialogContent>
-        <Box>Are you sure you want to delete this delegate?</Box>
+        <Box>
+          <Typography>
+            Deleting this proposer will permanently remove the address, and it won&apos;t be able to suggest
+            transactions anymore.
+            <br />
+            <br />
+            To complete this action, confirm it with your connected wallet signature.
+          </Typography>
+        </Box>
 
         {error && (
           <Box mt={2}>
-            <ErrorMessage error={error}>Error deleting delegate</ErrorMessage>
+            <ErrorMessage error={error}>Error deleting proposer</ErrorMessage>
           </Box>
         )}
       </DialogContent>
@@ -108,16 +116,18 @@ const _DeleteProposer = ({
 
       <DialogActions sx={{ padding: 3, justifyContent: 'space-between' }}>
         <Button size="small" variant="text" onClick={onCancel}>
-          Cancel
+          No, keep it
         </Button>
 
         <Button
           size="small"
-          variant="contained"
-          color="primary"
+          variant="danger"
           onClick={onConfirm}
           disabled={isLoading}
-          sx={{ minWidth: '122px', minHeight: '36px' }}
+          sx={{
+            minWidth: '122px',
+            minHeight: '36px',
+          }}
         >
           {isLoading ? <CircularProgress size={20} /> : 'Yes, delete'}
         </Button>

@@ -1,5 +1,7 @@
 import AddressInput from '@/components/common/AddressInput'
+import CheckWallet from '@/components/common/CheckWallet'
 import NameInput from '@/components/common/NameInput'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useChainId from '@/hooks/useChainId'
@@ -11,6 +13,7 @@ import { useAddDelegateMutation } from '@/store/api/gateway'
 import { signTypedData } from '@/utils/web3'
 import { Close } from '@mui/icons-material'
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -106,7 +109,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
           <DialogTitle>
             <Box data-testid="untrusted-token-warning" display="flex" alignItems="center">
               <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                Add delegate
+                Add proposer
               </Typography>
 
               <Box flexGrow={1} />
@@ -120,22 +123,30 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
           <Divider />
 
           <DialogContent>
-            <Box>
-              This will add a delegate to your Safe. The delegate will be able to propose transactions but not sign
-              them. A name for the delegate is required. This name will be publicly accessible.
+            <Box mb={2}>
+              <Typography variant="body2">
+                You&apos;re about to grant this address the ability to propose transactions. To complete the setup,
+                confirm with a signature from your connected wallet.
+              </Typography>
             </Box>
 
+            <Alert severity="info">Proposer’s name and address will be publicly visible.</Alert>
+
             <Box my={2}>
+              <AddressInput name="address" label="Address" variant="outlined" fullWidth required />
+            </Box>
+
+            <Box>
               <NameInput name="name" label="Name" autoFocus required />
             </Box>
 
-            <AddressInput name="address" label="Delegate" variant="outlined" fullWidth required />
-
             {error && (
               <Box mt={2}>
-                <ErrorMessage error={error}>Error adding delegate</ErrorMessage>
+                <ErrorMessage error={error}>Error adding proposer</ErrorMessage>
               </Box>
             )}
+
+            <NetworkWarning action="sign" />
           </DialogContent>
 
           <Divider />
@@ -145,16 +156,20 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
               Cancel
             </Button>
 
-            <Button
-              size="small"
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={isLoading}
-              sx={{ minWidth: '122px', minHeight: '36px' }}
-            >
-              {isLoading ? <CircularProgress size={20} /> : 'Submit'}
-            </Button>
+            <CheckWallet checkNetwork={!isLoading}>
+              {(isOk) => (
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={!isOk || isLoading}
+                  sx={{ minWidth: '122px', minHeight: '36px' }}
+                >
+                  {isLoading ? <CircularProgress size={20} /> : 'Continue'}
+                </Button>
+              )}
+            </CheckWallet>
           </DialogActions>
         </form>
       </FormProvider>

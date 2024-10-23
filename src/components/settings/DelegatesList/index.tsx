@@ -1,4 +1,5 @@
 import CheckWallet from '@/components/common/CheckWallet'
+import { Chip } from '@/components/common/Chip'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import Track from '@/components/common/Track'
 import AddProposer from '@/features/proposers/components/AddProposer'
@@ -7,17 +8,11 @@ import useDelegates from '@/hooks/useDelegates'
 import AddIcon from '@/public/images/common/add.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { SETTINGS_EVENTS } from '@/services/analytics'
-import { Box, Button, Grid, IconButton, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Grid, IconButton, Paper, SvgIcon, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
-import InfoIcon from '@/public/images/notifications/info.svg'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
-import { useMemo, useState } from 'react'
-
-const headCells = [
-  { id: 'delegate', label: 'Delegate' },
-  { id: 'actions', label: '', sticky: true },
-]
+import React, { useMemo, useState } from 'react'
 
 const DelegatesList = () => {
   const [deleteProposer, setDeleteProposer] = useState<string>()
@@ -79,52 +74,42 @@ const DelegatesList = () => {
   }
 
   return (
-    <Paper sx={{ p: 4, mt: 2 }}>
+    <Paper sx={{ mt: 2 }}>
       <Box display="flex" flexDirection="column" gap={2}>
         <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
-            <Typography variant="h4" fontWeight={700}>
-              <Tooltip
-                placement="top"
-                title={
-                  <>
-                    What are delegated accounts?{' '}
-                    <ExternalLink href={HelpCenterArticle.DELEGATES}>Learn more</ExternalLink>
-                  </>
-                }
-              >
-                <span>
-                  Delegated accounts
-                  <SvgIcon
-                    component={InfoIcon}
-                    inheritViewBox
-                    fontSize="small"
-                    color="border"
-                    sx={{ verticalAlign: 'middle', ml: 0.5 }}
-                  />
-                </span>
-              </Tooltip>
-            </Typography>
+            <Typography variant="h4" fontWeight={700}></Typography>
           </Grid>
 
           <Grid item xs>
-            Delegated accounts can propose transactions.
-            <EnhancedTable rows={rows} headCells={headCells} />
-            <CheckWallet>
-              {(isOk) => (
-                <Track {...SETTINGS_EVENTS.PROPOSERS.ADD_PROPOSER}>
-                  <Button
-                    data-testid="add-owner-btn"
-                    onClick={onAdd}
-                    variant="text"
-                    startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-                    disabled={!isOk}
-                  >
-                    Add new delegate
-                  </Button>
-                </Track>
-              )}
-            </CheckWallet>
+            <Typography fontWeight="bold" mb={2}>
+              Proposers <Chip label="New" sx={{ backgroundColor: 'secondary.light', color: 'static.main' }} />
+            </Typography>
+            <Typography mb={2}>
+              Proposers can suggest transactions but cannot approve or execute them. Signers should review and approve
+              transactions first. <ExternalLink href={HelpCenterArticle.DELEGATES}>Learn more</ExternalLink>
+            </Typography>
+
+            <Box mb={2}>
+              <CheckWallet>
+                {(isOk) => (
+                  <Track {...SETTINGS_EVENTS.PROPOSERS.ADD_PROPOSER}>
+                    <Button
+                      data-testid="add-owner-btn"
+                      onClick={onAdd}
+                      variant="text"
+                      startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+                      disabled={!isOk}
+                      size="compact"
+                    >
+                      Add proposer
+                    </Button>
+                  </Track>
+                )}
+              </CheckWallet>
+            </Box>
+
+            <EnhancedTable rows={rows} headCells={[]} />
           </Grid>
 
           {deleteProposer && (

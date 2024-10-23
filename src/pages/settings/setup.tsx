@@ -61,12 +61,12 @@ const Setup: NextPage = () => {
         <Paper sx={{ p: 4, mb: 2 }}>
           <OwnerList />
 
+          <DelegatesList />
+
           <RequiredConfirmation threshold={threshold} owners={ownerLength} />
         </Paper>
 
         <SpendingLimits />
-
-        <DelegatesList />
       </main>
     </>
   )
