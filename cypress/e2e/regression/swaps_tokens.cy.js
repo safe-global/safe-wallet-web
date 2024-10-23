@@ -4,6 +4,7 @@ import * as swaps from '../pages/swaps.pages.js'
 import * as assets from '../pages/assets.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
+import * as ls from '../../support/localstorage_data.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -20,7 +21,7 @@ describe('[SMOKE] Swaps token tests', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_1)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it(
     'Verify that clicking the swap from assets tab, autofills that token automatically in the form',
     { defaultCommandTimeout: 30000 },
@@ -37,10 +38,15 @@ describe('[SMOKE] Swaps token tests', () => {
     },
   )
 
-  // TODO: Added to prod
   it('Verify swap button are displayed in assets table and dashboard', () => {
     assets.selectTokenList(assets.tokenListOptions.allTokens)
     main.verifyElementsCount(swaps.assetsSwapBtn, 4)
+    cy.window().then((window) => {
+      window.localStorage.setItem(
+        constants.localStorageKeys.SAFE_v2__settings,
+        JSON.stringify(ls.safeSettings.slimitSettings),
+      )
+    })
     cy.visit(constants.homeUrl + staticSafes.SEP_STATIC_SAFE_1)
     main.verifyElementsCount(swaps.assetsSwapBtn, 4)
     main.verifyElementsCount(swaps.dashboardSwapBtn, 1)

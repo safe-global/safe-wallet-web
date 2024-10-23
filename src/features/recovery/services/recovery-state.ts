@@ -8,7 +8,7 @@ import { toBeHex, type JsonRpcProvider, type TransactionReceipt } from 'ethers'
 import { trimTrailingSlash } from '@/utils/url'
 import { sameAddress } from '@/utils/addresses'
 import { isMultiSendCalldata } from '@/utils/transaction-calldata'
-import { decodeMultiSendTxs } from '@/utils/transactions'
+import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
 
 export const MAX_RECOVERER_PAGE_SIZE = 100
 
@@ -47,7 +47,7 @@ export function _isMaliciousRecovery({
   const BASE_MULTI_SEND_CALL_ONLY_VERSION = '1.3.0'
 
   const isMultiSend = isMultiSendCalldata(transaction.data)
-  const transactions = isMultiSend ? decodeMultiSendTxs(transaction.data) : [transaction]
+  const transactions = isMultiSend ? decodeMultiSendData(transaction.data) : [transaction]
 
   if (!isMultiSend) {
     // Calling the Safe itself

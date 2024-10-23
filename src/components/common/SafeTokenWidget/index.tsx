@@ -11,10 +11,11 @@ import Track from '../Track'
 import SafeTokenIcon from '@/public/images/common/safe-token.svg'
 import SafePassStar from '@/public/images/common/safe-pass-star.svg'
 import css from './styles.module.css'
+import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useDarkMode } from '@/hooks/useDarkMode'
-import { useGetOwnGlobalCampaignRankQuery } from '@/store/safePass'
+import { useGetOwnGlobalCampaignRankQuery } from '@/store/api/safePass'
 import { formatAmount } from '@/utils/formatNumber'
 
 const TOKEN_DECIMALS = 18
@@ -43,13 +44,14 @@ const SafeTokenWidget = () => {
   const [allocationData, , allocationDataLoading] = useSafeTokenAllocation()
   const [allocation, , allocationLoading] = useSafeVotingPower(allocationData)
 
+  const sanctionedAddress = useSanctionedAddress()
   const { data: ownGlobalRank, isLoading: ownGlobalRankLoading } = useGetOwnGlobalCampaignRankQuery(
     chainId !== '1' && chainId !== '11155111' ? skipToken : { chainId, safeAddress },
     { refetchOnFocus: false },
   )
 
   const tokenAddress = getSafeTokenAddress(chainId)
-  if (!tokenAddress) {
+  if (!tokenAddress || Boolean(sanctionedAddress)) {
     return null
   }
 

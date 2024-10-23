@@ -7,6 +7,9 @@ import css from './styles.module.css'
 import accordionCss from '@/styles/accordion.module.css'
 import CodeIcon from '@mui/icons-material/Code'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
+import { sameAddress } from '@/utils/addresses'
+import { getSafeToL2MigrationDeployment } from '@safe-global/safe-deployments'
+import { useCurrentChain } from '@/hooks/useChains'
 
 type SingleTxDecodedProps = {
   tx: InternalTransaction
@@ -18,11 +21,15 @@ type SingleTxDecodedProps = {
 }
 
 export const SingleTxDecoded = ({ tx, txData, actionTitle, variant, expanded, onChange }: SingleTxDecodedProps) => {
+  const chain = useCurrentChain()
   const isNativeTransfer = tx.value !== '0' && (!tx.data || isEmptyHexData(tx.data))
   const method = tx.dataDecoded?.method || (isNativeTransfer ? 'native transfer' : 'contract interaction')
 
   const addressInfo = txData.addressInfoIndex?.[tx.to]
   const name = addressInfo?.name
+
+  const safeToL2MigrationDeployment = getSafeToL2MigrationDeployment()
+  const safeToL2MigrationAddress = chain && safeToL2MigrationDeployment?.networkAddresses[chain.chainId]
 
   const singleTxData = {
     to: { value: tx.to },
@@ -31,7 +38,7 @@ export const SingleTxDecoded = ({ tx, txData, actionTitle, variant, expanded, on
     dataDecoded: tx.dataDecoded,
     hexData: tx.data ?? undefined,
     addressInfoIndex: txData.addressInfoIndex,
-    trustedDelegateCallTarget: false, // Nested delegate calls are always untrusted
+    trustedDelegateCallTarget: sameAddress(tx.to, safeToL2MigrationAddress), // We only trusted a nested Migration
   }
 
   return (

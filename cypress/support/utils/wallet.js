@@ -31,17 +31,19 @@ export function connectSigner(signer) {
 
   function enterPrivateKey() {
     cy.wait(1000)
-    cy.get(connectWalletBtn)
-      .eq(0)
-      .should('be.enabled')
-      .and('be.visible')
-      .click()
-      .then(() => {
-        cy.get('body').then(($body) => {
-          const actionKey = $body.find(onboardv2).length > 0 ? 'privateKey' : 'retry'
-          actions[actionKey]()
-        })
-      })
+    cy.get('body').then(($body) => {
+      if ($body.find(connectWalletBtn).length > 0) {
+        cy.get(connectWalletBtn)
+          .eq(0)
+          .should('be.enabled')
+          .and('be.visible')
+          .click()
+          .then(() => {
+            const actionKey = $body.find(onboardv2).length > 0 ? 'privateKey' : 'retry'
+            actions[actionKey]()
+          })
+      }
+    })
   }
 
   enterPrivateKey()

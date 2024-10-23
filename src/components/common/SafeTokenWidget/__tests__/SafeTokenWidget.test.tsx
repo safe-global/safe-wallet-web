@@ -5,8 +5,8 @@ import SafeTokenWidget from '..'
 import { toBeHex } from 'ethers'
 import { AppRoutes } from '@/config/routes'
 import useSafeTokenAllocation, { useSafeVotingPower } from '@/hooks/useSafeTokenAllocation'
-import * as safePass from '@/store/safePass'
-import type { CampaignLeaderboardEntry } from '@/store/safePass'
+import * as safePass from '@/store/api/safePass'
+import type { CampaignLeaderboardEntry } from '@/store/api/safePass'
 
 jest.mock('@/hooks/useChainId')
 

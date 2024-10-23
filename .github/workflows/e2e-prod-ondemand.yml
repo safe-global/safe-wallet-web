@@ -48,7 +48,7 @@ jobs:
         if: always()
         run: |
           pip install trcli
-          trcli -y \
+          if ! trcli -y \
           -h https://gno.testrail.io/ \
           --project "Safe- Web App" \
           --username ${{ secrets.TESTRAIL_USERNAME }} \
@@ -56,4 +56,6 @@ jobs:
           parse_junit \
           --title "Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
-          -f "reports/junit-report.xml"
+          -f "reports/junit-report.xml"; then
+            echo -e "\e[41;32mTestRail upload failed. Pipeline will continue, please check the upload process.\e[0m"
+          fi

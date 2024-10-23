@@ -33,7 +33,16 @@ const AdvancedCreateSafe = () => {
       title: 'Select network and name of your Safe Account',
       subtitle: 'Select the network on which to create your Safe Account',
       render: (data, onSubmit, onBack, setStep) => (
-        <SetNameStep setSafeName={setSafeName} data={data} onSubmit={onSubmit} onBack={onBack} setStep={setStep} />
+        <SetNameStep
+          isAdvancedFlow
+          setSafeName={setSafeName}
+          data={data}
+          onSubmit={onSubmit}
+          onBack={onBack}
+          setStep={setStep}
+          setOverviewNetworks={() => {}}
+          setDynamicHint={() => {}}
+        />
       ),
     },
     {
@@ -84,6 +93,7 @@ const AdvancedCreateSafe = () => {
   const initialStep = 0
   const initialData: NewSafeFormData = {
     name: '',
+    networks: [],
     owners: [],
     threshold: 1,
     saltNonce: 0,
@@ -115,7 +125,7 @@ const AdvancedCreateSafe = () => {
 
         <Grid item xs={12} md={4} mb={[3, null, 0]} order={[0, null, 1]}>
           <Grid container spacing={3}>
-            {activeStep < 2 && <OverviewWidget safeName={safeName} />}
+            {activeStep < 2 && <OverviewWidget safeName={safeName} networks={[]} />}
             {wallet?.address && <CreateSafeInfos dynamicHint={dynamicHint} />}
           </Grid>
         </Grid>

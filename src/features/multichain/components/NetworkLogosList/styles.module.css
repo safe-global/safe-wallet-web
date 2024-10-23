@@ -1,0 +1,25 @@
+.networks {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 6px;
+  row-gap: 4px;
+}
+
+.networks img {
+  margin-left: -6px;
+  outline: 2px solid var(--color-background-paper);
+  border-radius: 50%;
+}
+
+.moreChainsIndicator {
+  margin-left: -5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--color-border-light);
+  outline: 2px solid var(--color-background-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}

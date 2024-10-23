@@ -1,5 +1,6 @@
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { ERC20__factory, ERC721__factory } from '@/types/contracts'
+import { parseBytes32String } from '@ethersproject/strings'
 import { type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const UNLIMITED_APPROVAL_AMOUNT = 2n ** 256n - 1n
@@ -19,7 +20,15 @@ export const getERC20TokenInfoOnChain = async (
   if (!web3) return
 
   const erc20 = ERC20__factory.connect(address, web3)
-  const [symbol, decimals] = await Promise.all([erc20.symbol(), erc20.decimals()])
+
+  const symbol = await erc20
+    .symbol()
+    .then((symbol) => symbol)
+    .catch((error) => parseBytes32String(error.value)) // Some older contracts use bytes32 instead of string
+    .finally(() => '')
+
+  const decimals = await erc20.decimals()
+
   return {
     address,
     symbol,

@@ -4,6 +4,7 @@ import {
   getPeerName,
   getSupportedChainIds,
   isBlockedBridge,
+  isSafePassApp,
   isWarnedBridge,
 } from '@/features/walletconnect/services/utils'
 import { WalletConnectContext } from '@/features/walletconnect/WalletConnectContext'
@@ -20,6 +21,8 @@ import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect,
 import { CompatibilityWarning } from './CompatibilityWarning'
 import ProposalVerification from './ProposalVerification'
 import css from './styles.module.css'
+import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
+import BlockedAddress from '@/components/common/BlockedAddress'
 
 type ProposalFormProps = {
   proposal: Web3WalletTypes.SessionProposal
@@ -38,13 +41,22 @@ const WcProposalForm = ({ proposal, setProposal, onApprove }: ProposalFormProps)
   const { isScam, origin } = proposal.verifyContext.verified
   const url = proposer.metadata.url || origin
 
+  const isSafePass = isSafePassApp(origin)
+  const sanctionedAddress = useSanctionedAddress(isSafePass)
+
   const chainIds = useMemo(() => getSupportedChainIds(configs, proposal.params), [configs, proposal.params])
   const isUnsupportedChain = !chainIds.includes(chainId)
 
   const name = getPeerName(proposer) || 'Unknown dApp'
   const isHighRisk = proposal.verifyContext.verified.validation === 'INVALID' || isWarnedBridge(origin, name)
   const isBlocked = isScam || isBlockedBridge(origin)
-  const disabled = !safeLoaded || isUnsupportedChain || isBlocked || (isHighRisk && !understandsRisk) || !!isLoading
+  const disabled =
+    !safeLoaded ||
+    isUnsupportedChain ||
+    isBlocked ||
+    (isHighRisk && !understandsRisk) ||
+    !!isLoading ||
+    (Boolean(sanctionedAddress) && isSafePass)
 
   // On session reject
   const onReject = useCallback(async () => {
@@ -132,6 +144,10 @@ const WcProposalForm = ({ proposal, setProposal, onApprove }: ProposalFormProps)
           control={<Checkbox checked={understandsRisk} onChange={onCheckboxClick} />}
           label="I understand the risks associated with interacting with this dApp and would like to continue."
         />
+      )}
+
+      {isSafePass && sanctionedAddress && (
+        <BlockedAddress address={sanctionedAddress} featureTitle="Safe{Pass}" onClose={onReject} />
       )}
 
       <Divider flexItem className={css.divider} />

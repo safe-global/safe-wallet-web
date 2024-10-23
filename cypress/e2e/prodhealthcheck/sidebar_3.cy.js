@@ -1,5 +1,4 @@
 import * as constants from '../../support/constants.js'
-import * as main from '../pages/main.page.js'
 import * as sideBar from '../pages/sidebar.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
@@ -9,15 +8,13 @@ import * as owner from '../pages/owners.pages.js'
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
-const signer1 = walletCredentials.OWNER_1_PRIVATE_KEY
 const signer2 = walletCredentials.OWNER_3_PRIVATE_KEY
 
-describe.skip('[PROD] Sidebar tests 3', () => {
+describe('[PROD] Sidebar tests 3', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  // TODO: Added to prod
   it('Verify the "My accounts" counter at the top is counting all safes the user owns', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     cy.intercept('GET', constants.safeListEndpoint, {
@@ -28,7 +25,6 @@ describe.skip('[PROD] Sidebar tests 3', () => {
     sideBar.checkMyAccountCounter(2)
   })
 
-  // TODO: Added to prod
   it('Verify pending signature is displayed in sidebar for unsigned tx', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
     wallet.connectSigner(signer)
@@ -49,7 +45,6 @@ describe.skip('[PROD] Sidebar tests 3', () => {
     sideBar.checkTxToConfirm(1)
   })
 
-  // TODO: Added to prod
   it('Verify balance exists in a tx in sidebar', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
     wallet.connectSigner(signer)

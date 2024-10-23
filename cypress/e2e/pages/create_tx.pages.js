@@ -47,14 +47,14 @@ const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
 const QueueLabel = 'needs to be executed first'
 const TransactionSummary = 'Send '
-const transactionsPerHrStr = 'free transactions left this hour'
+const transactionsPerHrStr = 'free transactions left today'
 
 const maxAmountBtnStr = 'Max'
 const nextBtnStr = 'Next'
 const nativeTokenTransferStr = 'ETH'
 const yesStr = 'Yes, '
 const estimatedFeeStr = 'Estimated fee'
-const executeStr = 'Execute'
+export const executeStr = 'Execute'
 const editBtnStr = 'Edit'
 const executionParamsStr = 'Execution parameters'
 const noLaterStr = 'No, later'
@@ -263,6 +263,10 @@ export function verifyExpandedDetails(data, warning) {
   if (warning) cy.get(warning).should('be.visible')
 }
 
+export function verifyAdvancedDetails(data) {
+  main.checkTextsExistWithinElement(accordionDetails, data)
+}
+
 export function verifyActions(data) {
   main.checkTextsExistWithinElement(accordionDetails, data)
 }
@@ -273,7 +277,7 @@ export function clickOnExpandableAction(data) {
   })
 }
 
-function clickOnAdvancedDetails() {
+export function clickOnAdvancedDetails() {
   cy.get(advancedDetails).click()
 }
 
@@ -507,6 +511,10 @@ export function clickOnSignTransactionBtn() {
 
 export function clickOnConfirmTransactionBtn() {
   cy.get('button').contains(confirmBtnStr).click()
+}
+
+export function verifyConfirmTransactionBtnIsVisible() {
+  cy.get('button').contains(confirmBtnStr).should('be.visible')
 }
 
 export function waitForProposeRequest() {

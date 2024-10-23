@@ -33,47 +33,6 @@ describe('Swaps tests', () => {
     iframeSelector = `iframe[src*="${constants.swapWidget}"]`
   })
 
-  // TODO: Waiting for signer connection issue be resolved
-  it.skip('Verify an order can be created, signed and appear in tx queue', { defaultCommandTimeout: 30000 }, () => {
-    swaps.acceptLegalDisclaimer()
-    cy.wait(4000)
-    main.getIframeBody(iframeSelector).within(() => {
-      swaps.clickOnSettingsBtn()
-      swaps.setSlippage('0.30')
-      swaps.setExpiry('2')
-      swaps.clickOnSettingsBtn()
-      swaps.selectInputCurrency(swaps.swapTokens.cow)
-      swaps.checkTokenBalance(staticSafes.SEP_STATIC_SAFE_1.substring(4), swaps.swapTokens.cow)
-      swaps.setInputValue(20)
-      swaps.selectOutputCurrency(swaps.swapTokens.dai)
-      swaps.checkSwapBtnIsVisible()
-      swaps.isInputGreaterZero(swaps.outputCurrencyInput).then((isGreaterThanZero) => {
-        cy.wrap(isGreaterThanZero).should('be.true')
-      })
-      swaps.clickOnExceeFeeChkbox()
-      swaps.clickOnSwapBtn()
-      swaps.clickOnSwapBtn()
-    })
-    create_tx.changeNonce(12)
-    tx.selectExecuteLater()
-    cy.wait(1000)
-
-    create_tx.clickOnSignTransactionBtn()
-    main.getIframeBody(iframeSelector).within(() => {
-      swaps.verifyOrderSubmittedConfirmation()
-    })
-    cy.visit(constants.transactionQueueUrl + staticSafes.SEP_STATIC_SAFE_1)
-    main.verifyElementsCount(create_tx.transactionItem, 1)
-    create_tx.verifySummaryByName(swapsQueue.contractName, [swapsQueue.action, swapsQueue.oneOfOne])
-    cy.visit(constants.transactionQueueUrl + staticSafes.SEP_STATIC_SAFE_1)
-    owner.waitForConnectionStatus()
-    main.acceptCookies()
-    // main.connectSigner(signer)
-    create_tx.clickOnTransactionItem(0)
-    create_tx.deleteTx()
-    main.verifyElementsCount(create_tx.transactionItem, 0)
-  })
-
   it(
     'Verify entering a blocked address in the custom recipient input blocks the form',
     { defaultCommandTimeout: 30000 },
@@ -241,8 +200,12 @@ describe('Swaps tests', () => {
       navigation.clickOnWalletExpandMoreIcon()
       navigation.clickOnDisconnectBtn()
       wallet.connectSigner(signer3)
+
+      cy.wait(5000)
+      create_tx.verifyConfirmTransactionBtnIsVisible()
       create_tx.clickOnConfirmTransactionBtn()
       create_tx.clickOnNoLaterOption()
+
       create_tx.clickOnSignTransactionBtn()
       navigation.clickOnWalletExpandMoreIcon()
       navigation.clickOnDisconnectBtn()

@@ -18,25 +18,21 @@ describe('[PROD] Sidebar tests', () => {
     cy.visit(constants.prodbaseUrl + constants.homeUrl + staticSafes.SEP_STATIC_SAFE_9)
   })
 
-  // TODO: Added to prod
   it('Verify current safe details', () => {
     sideBar.verifySafeHeaderDetails(sideBar.testSafeHeaderDetails)
   })
 
-  // TODO: Added to prod
-  it.skip('Verify New transaction button enabled for owners', () => {
+  it('Verify New transaction button enabled for owners', () => {
     wallet.connectSigner(signer)
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
 
-  // TODO: Added to prod
-  it.skip('Verify New transaction button enabled for beneficiaries who are non-owners', () => {
+  it('Verify New transaction button enabled for beneficiaries who are non-owners', () => {
     cy.visit(constants.prodbaseUrl + constants.homeUrl + staticSafes.SEP_STATIC_SAFE_11)
     wallet.connectSigner(signer)
     sideBar.verifyNewTxBtnStatus(constants.enabledStates.enabled)
   })
 
-  // TODO: Added to prod
   it('Verify New Transaction button disabled for non-owners', () => {
     main.verifyElementsCount(navigation.newTxBtn, 0)
   })

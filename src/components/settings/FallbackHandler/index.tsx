@@ -1,4 +1,5 @@
-import { TWAP_FALLBACK_HANDLER } from '@/features/swap/helpers/utils'
+import { TWAP_FALLBACK_HANDLER, TWAP_FALLBACK_HANDLER_NETWORKS } from '@/features/swap/helpers/utils'
+import { getCompatibilityFallbackHandlerDeployments } from '@safe-global/safe-deployments'
 import NextLink from 'next/link'
 import { Typography, Box, Grid, Paper, Link, Alert } from '@mui/material'
 import semverSatisfies from 'semver/functions/satisfies'
@@ -7,7 +8,6 @@ import type { ReactElement } from 'react'
 
 import EthHashInfo from '@/components/common/EthHashInfo'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { getFallbackHandlerContractDeployment } from '@/services/contracts/deployments'
 import { HelpCenterArticle } from '@/config/constants'
 import ExternalLink from '@/components/common/ExternalLink'
 import { useTxBuilderApp } from '@/hooks/safe-apps/useTxBuilderApp'
@@ -22,11 +22,12 @@ export const FallbackHandler = (): ReactElement | null => {
 
   const supportsFallbackHandler = !!safe.version && semverSatisfies(safe.version, FALLBACK_HANDLER_VERSION)
 
-  const fallbackHandlerDeployment = useMemo(() => {
-    if (!chain) {
+  const fallbackHandlerDeployments = useMemo(() => {
+    if (!chain || !safe.version) {
       return undefined
     }
-    return getFallbackHandlerContractDeployment(chain, safe.version)
+
+    return getCompatibilityFallbackHandlerDeployments({ network: chain?.chainId, version: safe.version })
   }, [safe.version, chain])
 
   if (!supportsFallbackHandler) {
@@ -35,8 +36,10 @@ export const FallbackHandler = (): ReactElement | null => {
 
   const hasFallbackHandler = !!safe.fallbackHandler
   const isOfficial =
-    hasFallbackHandler && safe.fallbackHandler?.value === fallbackHandlerDeployment?.networkAddresses[safe.chainId]
-  const isTWAPFallbackHandler = safe.fallbackHandler?.value === TWAP_FALLBACK_HANDLER
+    safe.fallbackHandler &&
+    fallbackHandlerDeployments?.networkAddresses[safe.chainId].includes(safe.fallbackHandler.value)
+  const isTWAPFallbackHandler =
+    safe.fallbackHandler?.value === TWAP_FALLBACK_HANDLER && TWAP_FALLBACK_HANDLER_NETWORKS.includes(safe.chainId)
 
   const warning = !hasFallbackHandler ? (
     <>
@@ -101,7 +104,7 @@ export const FallbackHandler = (): ReactElement | null => {
               {safe.fallbackHandler && (
                 <EthHashInfo
                   shortAddress={false}
-                  name={safe.fallbackHandler.name || fallbackHandlerDeployment?.contractName}
+                  name={safe.fallbackHandler.name || fallbackHandlerDeployments?.contractName}
                   address={safe.fallbackHandler.value}
                   customAvatar={safe.fallbackHandler.logoUri}
                   showCopyButton

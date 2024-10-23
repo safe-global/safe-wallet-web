@@ -10,6 +10,7 @@ export const deleteBatchBtn = 'button[title="Delete Batch"]'
 const appModal = '[data-testid="app-info-modal"]'
 export const safeAppsList = '[data-testid="apps-list"]'
 const openSafeAppBtn = '[data-testid="open-safe-app-btn"]'
+const appMessageInput = 'input[placeholder="Message"]'
 
 const addBtnStr = /add/i
 const noAppsStr = /no Safe Apps found/i
@@ -52,6 +53,7 @@ export const selectAllRowsChbxStr = /Select All Rows checkbox/i
 export const selectRowChbxStr = /Select Row checkbox/i
 export const recipientStr = /recipient/i
 export const validRecipientAddressStr = /please enter a valid recipient address/i
+export const contractMethodSelector = 'input[id="contract-method-selector"]'
 export const testAddressValue2 = 'testAddressValue'
 export const testBooleanValue = 'testBooleanValue'
 export const testFallback = 'fallback'
@@ -89,6 +91,10 @@ export const warningStr = 'Warning'
 export const transferStr = 'Transfer'
 export const successStr = 'Success'
 export const failedStr = 'Failed'
+const blindSigningStr = 'This request involves blind signing'
+const enableBlindSigningStr = 'Enable blind signing'
+const blindSigningStr2 = 'blind signing'
+const signBtnStr = 'Sign'
 
 export const dummyTxStr = 'Trigger dummy tx (safe.txs.send)'
 export const signOnchainMsgStr = 'Sign message (on-chain)'
@@ -103,6 +109,7 @@ export const transactiobUilderHeadlinePreview = 'Transaction Builder'
 export const availableNetworksPreview = 'Available networks'
 export const connecttextPreview = 'Compose custom contract interactions and batch them into a single transaction'
 const warningDefaultAppStr = 'The application you are trying to access is not in the default Safe Apps list'
+export const AddressEmptyCodeStr = 'AddressEmptyCode'
 export const localStorageItem =
   '{"https://safe-test-app.com":[{"feature":"camera","status":"granted"},{"feature":"microphone","status":"denied"}]}'
 export const gridItem = 'main .MuiPaper-root > .MuiGrid-item'
@@ -111,7 +118,7 @@ export const linkNames = {
   txBuilderLogo: /Transaction Builder logo/i,
 }
 export const abi =
-  '[{{}"inputs":[{{}"internalType":"address","name":"_singleton","type":"address"{}}],"stateMutability":"nonpayable","type":"constructor"{}},{{}"stateMutability":"payable","type":"fallback"{}}]'
+  '[{"inputs":[{"internalType":"address","name":"_singleton","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"stateMutability":"payable","type":"fallback"},{"inputs":[{"internalType":"address","name":"target","type":"address"}],"name":"AddressEmptyCode","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]'
 
 export const permissionCheckboxes = {
   camera: 'input[name="camera"]',
@@ -131,6 +138,31 @@ export const permissionCheckboxNames = {
 
 export function triggetOffChainTx() {
   cy.contains(dummyTxStr).click()
+}
+
+export function verifyBlindSigningEnabled(option) {
+  if (option) {
+    cy.contains(blindSigningStr).should('be.visible')
+  } else {
+    cy.contains(blindSigningStr).should('not.exist')
+  }
+}
+
+export function clickOnBlindSigningOption() {
+  cy.contains(blindSigningStr2).click()
+  cy.contains(enableBlindSigningStr).click()
+}
+
+export function triggetSignMsg() {
+  cy.contains(signOnchainMsgStr).click()
+}
+
+export function enterMessage(msg) {
+  cy.get(appMessageInput).type(msg)
+}
+
+export function verifySignBtnDisabled() {
+  cy.get('button').contains(signBtnStr).should('be.disabled')
 }
 
 export function triggetOnChainTx() {

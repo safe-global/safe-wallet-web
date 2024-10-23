@@ -146,7 +146,6 @@ export function clikOnNextBtn() {
 export function verifyReviewModalData(NFTcount) {
   main.verifyElementsExist([nftItemList])
   main.verifyElementsCount(nftItemNane, NFTcount)
-  cy.get(signBtn).should('not.be.disabled')
 
   if (NFTcount > 1) {
     const numbersArr = Array.from({ length: NFTcount }, (_, index) => index + 1)

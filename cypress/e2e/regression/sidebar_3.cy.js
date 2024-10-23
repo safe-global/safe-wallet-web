@@ -21,7 +21,6 @@ describe('Sidebar tests 3', () => {
 
   it('Verify that users with no accounts see the empty state in "My accounts" block', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
     cy.intercept('GET', constants.safeListEndpoint, { 1: [], 100: [], 137: [], 11155111: [] })
     wallet.connectSigner(signer)
     sideBar.openSidebar()
@@ -30,7 +29,6 @@ describe('Sidebar tests 3', () => {
 
   it('Verify empty state of the Watchlist', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
     cy.intercept('GET', constants.safeListEndpoint, {})
     wallet.connectSigner(signer)
     sideBar.openSidebar()
@@ -39,7 +37,6 @@ describe('Sidebar tests 3', () => {
 
   it('Verify connected user is redirected from welcome page to accounts page', () => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
-    main.acceptCookies()
     wallet.connectSigner(signer)
     create_wallet.clickOnContinueWithWalletBtn()
 
@@ -50,7 +47,6 @@ describe('Sidebar tests 3', () => {
 
   it('Verify that the user see safes that he owns in the list', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],
     })
@@ -63,7 +59,6 @@ describe('Sidebar tests 3', () => {
 
   it('Verify there is an option to name an unnamed safe', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],
     })
@@ -75,7 +70,6 @@ describe('Sidebar tests 3', () => {
   it('Verify Import/export buttons are present', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.addedSafes)
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],
     })
@@ -85,10 +79,9 @@ describe('Sidebar tests 3', () => {
     main.checkButtonByTextExists(sideBar.exportBtnStr)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify the "My accounts" counter at the top is counting all safes the user owns', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],
     })
@@ -100,7 +93,6 @@ describe('Sidebar tests 3', () => {
   it('Verify that safes the user do not owns show in the watchlist after adding them', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set4)
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
     wallet.connectSigner(signer1)
     sideBar.openSidebar()
     sideBar.verifyAddedSafesExist([sideBar.sideBarSafes.safe3short])
@@ -109,16 +101,14 @@ describe('Sidebar tests 3', () => {
   it('Verify that safes that the user owns do show in the watchlist after adding them', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set4)
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
-    main.acceptCookies()
     wallet.connectSigner(signer1)
     sideBar.openSidebar()
     sideBar.verifyAddedSafesExist([sideBar.sideBarSafes.safe3short])
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify pending signature is displayed in sidebar for unsigned tx', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
-    main.acceptCookies()
     wallet.connectSigner(signer)
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafesPendingActions.safe1],
@@ -139,10 +129,9 @@ describe('Sidebar tests 3', () => {
     sideBar.checkTxToConfirm(1)
   })
 
-  // TODO: Added to prod
+  // Added to prod
   it('Verify balance exists in a tx in sidebar', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
-    main.acceptCookies()
     wallet.connectSigner(signer)
     owner.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()

@@ -37,6 +37,7 @@ import { useGetSafeNetConfigQuery } from '@/store/safenet'
 import { QueryStatus } from '@reduxjs/toolkit/query'
 import { SafenetChainType, isSupportedChain } from '@/utils/safenet'
 import { SAFENET_API_URL } from '@/config/constants'
+import { useDarkMode } from '@/hooks/useDarkMode'
 
 export enum CommunicatorMessages {
   REJECT_TRANSACTION_MESSAGE = 'Transaction was rejected',
@@ -83,6 +84,7 @@ const useAppCommunicator = (
     chain &&
     safeNetConfig &&
     isSupportedChain(Number(chain.chainId), safeNetConfig, SafenetChainType.DESTINATION)
+  const isDarkMode = useDarkMode()
 
   const safeAppWeb3Provider = useMemo(() => {
     if (!chain) {
@@ -132,6 +134,17 @@ const useAppCommunicator = (
       communicatorInstance?.clear()
     }
   }, [app, iframeRef])
+
+  useEffect(() => {
+    const id = Math.random().toString(36).slice(2)
+
+    communicator?.send(
+      {
+        darkMode: isDarkMode,
+      },
+      id,
+    )
+  }, [communicator, isDarkMode])
 
   // Adding communicator logic for the required SDK Methods
   // We don't need to unsubscribe from the events because there can be just one subscription
@@ -219,7 +232,17 @@ const useAppCommunicator = (
     communicator?.on(Methods.requestAddressBook, (msg) => {
       return handlers.onRequestAddressBook(msg.origin)
     })
-  }, [safeAppWeb3Provider, handlers, chain, communicator, shouldUseSafeNetRpc])
+
+    // TODO: it will be moved to safe-apps-sdk soon
+    communicator?.on('getCurrentTheme' as Methods, (msg) => {
+      communicator.send(
+        {
+          darkMode: isDarkMode,
+        },
+        msg.data.id,
+      )
+    })
+  }, [safeAppWeb3Provider, handlers, chain, communicator, isDarkMode, shouldUseSafeNetRpc])
 
   return communicator
 }
