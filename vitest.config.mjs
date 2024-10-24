@@ -9,13 +9,20 @@ export default defineConfig({
   plugins: [reactNative(), react()],
   test: {
     reporters: ['default', 'html'],
+    globals: true,
+    server: {
+      deps: {
+        inline: ['redux', '@reduxjs/toolkit'],
+      },
+    },
     coverage: {
       include: ['src'],
-      exclude: ['src/**/*.stories.tsx', 'src/tests/*'],
+      exclude: ['src/**/*.stories.tsx', 'src/tests/*', 'src/types'],
       enabled: true,
       reporter: ['json', 'html'],
     },
-    exclude: ['./node_modules', './e2e'],
+    setupFiles: ['src/tests/vitest.setup.mjs'],
+    exclude: ['node_modules', './e2e'],
   },
   resolve: {
     alias: {

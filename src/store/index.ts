@@ -11,23 +11,26 @@ const persistConfig = {
   storage: reduxStorage,
   blacklist: [gatewayApi.reducerPath],
 }
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   txHistory,
   [gatewayApi.reducerPath]: gatewayApi.reducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
-export const store = configureStore({
-  reducer: persistedReducer,
-  devTools: isProduction,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }).concat(gatewayApi.middleware),
-})
+export const makeStore = () =>
+  configureStore({
+    reducer: persistedReducer,
+    devTools: isProduction,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      }).concat(gatewayApi.middleware),
+  })
+
+export const store = makeStore()
 
 export const persistor = persistStore(store)
 

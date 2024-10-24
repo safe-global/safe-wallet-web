@@ -18,7 +18,6 @@ export default [
         version: 'detect', // Automatically detect the react version
       },
     },
-
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/no-unescaped-entities': 'off',

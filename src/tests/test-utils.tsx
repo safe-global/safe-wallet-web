@@ -1,11 +1,17 @@
 import { render, renderHook } from '@testing-library/react-native'
 import SafeThemeProvider from '../providers/SafeThemeProvider'
+import { Provider } from 'react-redux'
+import { makeStore } from '../store'
 
-// Add in any providers here if necessary:
-// (ReduxProvider, ThemeProvider, etc)
 const getProviders: () => React.FC<{ children: React.ReactElement }> = () =>
   function ProviderComponent({ children }: { children: React.ReactNode }) {
-    return <SafeThemeProvider>{children}</SafeThemeProvider>
+    const store = makeStore()
+
+    return (
+      <Provider store={store}>
+        <SafeThemeProvider>{children}</SafeThemeProvider>
+      </Provider>
+    )
   }
 
 const customRender = (ui: React.ReactElement) => {
