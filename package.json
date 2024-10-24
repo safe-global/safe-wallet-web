@@ -60,6 +60,7 @@
     "react-native-screens": "3.31.1",
     "react-native-web": "~0.19.10",
     "react-redux": "^9.1.2",
+    "redux-devtools-expo-dev-plugin": "^0.2.1",
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {
