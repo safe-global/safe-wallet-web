@@ -1,6 +1,6 @@
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import { Backdrop, Typography, Box, IconButton, Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
-import { ClickAwayListener } from '@mui/base'
+import { ClickAwayListener } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 

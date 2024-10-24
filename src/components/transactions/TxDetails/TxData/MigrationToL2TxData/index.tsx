@@ -14,6 +14,7 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { MigrateToL2Information } from '@/components/tx/SignOrExecuteForm/MigrateToL2Information'
 import { Box } from '@mui/material'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
 export const MigrationToL2TxData = ({ txDetails }: { txDetails: TransactionDetails }) => {
   const readOnlyProvider = useWeb3ReadOnly()
@@ -47,19 +48,24 @@ export const MigrationToL2TxData = ({ txDetails }: { txDetails: TransactionDetai
       if (!execTxArgs || execTxArgs.length < 10) {
         return undefined
       }
-      return createTx({
-        to: execTxArgs[0],
-        value: execTxArgs[1].toString(),
-        data: execTxArgs[2],
-        operation: Number(execTxArgs[3]),
-        safeTxGas: execTxArgs[4].toString(),
-        baseGas: execTxArgs[5].toString(),
-        gasPrice: execTxArgs[6].toString(),
-        gasToken: execTxArgs[7].toString(),
-        refundReceiver: execTxArgs[8],
-      })
+      return createTx(
+        {
+          to: execTxArgs[0],
+          value: execTxArgs[1].toString(),
+          data: execTxArgs[2],
+          operation: Number(execTxArgs[3]),
+          safeTxGas: execTxArgs[4].toString(),
+          baseGas: execTxArgs[5].toString(),
+          gasPrice: execTxArgs[6].toString(),
+          gasToken: execTxArgs[7].toString(),
+          refundReceiver: execTxArgs[8],
+        },
+        isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo)
+          ? txDetails.detailedExecutionInfo.nonce
+          : undefined,
+      )
     }
-  }, [readOnlyProvider, txDetails.txHash, chain, safe.version, sdk])
+  }, [txDetails.txHash, txDetails.detailedExecutionInfo, chain, sdk, readOnlyProvider, safe.version])
 
   const [decodedRealTx, decodedRealTxError] = useDecodeTx(realSafeTx)
 
