@@ -148,7 +148,11 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
             <Typography variant="body2">
               <strong>Stake ETH and earn rewards up to 5% APY.</strong> Lock 32 ETH to become a validator via the Kiln
               widget. You can also{' '}
-              <NextLink href={{ pathname: AppRoutes.apps.index, query: router.query }} passHref type="link">
+              <NextLink
+                href={{ pathname: AppRoutes.apps.index, query: { ...router.query, categories: ['Staking'] } }}
+                passHref
+                type="link"
+              >
                 <Link>explore Safe Apps</Link>
               </NextLink>{' '}
               and home staking for other options. Staking involves risks like slashing.
