@@ -45,7 +45,7 @@ const Dashboard = (): ReactElement => {
           <>
             {isStakingBannerEnabled && (
               <Grid item xs={12} className={css.hideIfEmpty}>
-                <StakingBanner large />
+                <StakingBanner hideLocalStorageKey="hideStakingBannerDashboard" large />
               </Grid>
             )}
 
