@@ -1,5 +1,10 @@
 import { getDecodedMessage } from '@/components/safe-apps/utils'
-import { generateSafeMessageMessage, generateSafeMessageHash } from '@/utils/safe-messages'
+import {
+  generateSafeMessageMessage,
+  generateSafeMessageHash,
+  generateSafeMessageTypedData,
+} from '@/utils/safe-messages'
+import { getTypedDataDomainHash, getTypedDataMessageHash } from '@/utils/web3'
 import type { EIP712TypedData, SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo } from 'react'
 
@@ -18,7 +23,13 @@ import { useMemo } from 'react'
 const useDecodedSafeMessage = (
   message: string | EIP712TypedData,
   safe: SafeInfo,
-): { decodedMessage: string | EIP712TypedData; safeMessageMessage: string; safeMessageHash: string } => {
+): {
+  decodedMessage: string | EIP712TypedData
+  safeMessageMessage: string
+  safeMessageHash: string
+  messageHash: string
+  domainHash: string
+} => {
   // Decode message if UTF-8 encoded
   const decodedMessage = useMemo(() => {
     return typeof message === 'string' ? getDecodedMessage(message) : message
@@ -34,10 +45,22 @@ const useDecodedSafeMessage = (
     return generateSafeMessageHash(safe, decodedMessage)
   }, [safe, decodedMessage])
 
+  const messageHash = useMemo(() => {
+    const typedData = generateSafeMessageTypedData(safe, message)
+    return getTypedDataMessageHash('SafeMessage', typedData)
+  }, [message, safe])
+
+  const domainHash = useMemo(() => {
+    const typedData = generateSafeMessageTypedData(safe, message)
+    return getTypedDataDomainHash(typedData)
+  }, [message, safe])
+
   return {
     decodedMessage,
     safeMessageMessage,
     safeMessageHash,
+    messageHash,
+    domainHash,
   }
 }
 
