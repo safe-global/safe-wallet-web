@@ -9,12 +9,14 @@ import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import { faker } from '@faker-js/faker'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
 
+const mockWalletAddress = faker.finance.ethereumAddress()
 // mock useWallet
 jest.mock('@/hooks/wallets/useWallet', () => ({
   __esModule: true,
   default: jest.fn(() => ({
-    address: '0x1234567890',
+    address: mockWalletAddress,
   })),
 }))
 
@@ -61,12 +63,17 @@ jest.mock('@/hooks/useSafeInfo', () => ({
   }),
 }))
 
+jest.mock('@/hooks/useNestedSafeOwners')
+
+const mockUseNestedSafeOwners = useNestedSafeOwners as jest.MockedFunction<typeof useNestedSafeOwners>
+
 const renderButton = () =>
   render(<CheckWallet checkNetwork={false}>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>)
 
 describe('CheckWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockUseNestedSafeOwners.mockReturnValue([])
   })
 
   it('renders correctly when the wallet is connected to the right chain and is an owner', () => {
@@ -200,5 +207,18 @@ describe('CheckWallet', () => {
     )
 
     expect(allowContainer.querySelector('button')).toBeDisabled()
+  })
+  it('should allow nested Safe owners', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
+    mockUseNestedSafeOwners.mockReturnValue([
+      {
+        address: faker.finance.ethereumAddress(),
+        chainId: '1',
+        isWatchlist: false,
+      },
+    ])
+
+    const { container } = render(<CheckWallet>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>)
+    expect(container.querySelector('button')).not.toBeDisabled()
   })
 })

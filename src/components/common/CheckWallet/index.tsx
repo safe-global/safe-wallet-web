@@ -7,6 +7,7 @@ import useConnectWallet from '../ConnectWallet/useConnectWallet'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import { Tooltip } from '@mui/material'
 import useSafeInfo from '@/hooks/useSafeInfo'
+import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
 
 type CheckWalletProps = {
   children: (ok: boolean) => ReactElement
@@ -40,7 +41,11 @@ const CheckWallet = ({
 
   const { safe } = useSafeInfo()
 
+  const nestedOwners = useNestedSafeOwners()
+
   const isUndeployedSafe = !safe.deployed
+
+  const isNestedSafeOwner = useMemo(() => nestedOwners && nestedOwners.length > 0, [nestedOwners])
 
   const message = useMemo(() => {
     if (!wallet) {
@@ -50,7 +55,13 @@ const CheckWallet = ({
       return Message.SafeNotActivated
     }
 
-    if (!allowNonOwner && !isSafeOwner && !isDelegate && (!isOnlySpendingLimit || !allowSpendingLimit)) {
+    if (
+      !allowNonOwner &&
+      !isSafeOwner &&
+      !isDelegate &&
+      !isNestedSafeOwner &&
+      (!isOnlySpendingLimit || !allowSpendingLimit)
+    ) {
       return Message.NotSafeOwner
     }
   }, [
@@ -58,6 +69,7 @@ const CheckWallet = ({
     allowSpendingLimit,
     allowUndeployedSafe,
     isDelegate,
+    isNestedSafeOwner,
     isOnlySpendingLimit,
     isSafeOwner,
     isUndeployedSafe,
