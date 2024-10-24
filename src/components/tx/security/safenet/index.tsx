@@ -68,7 +68,7 @@ function _getSafeTxHash({ safe, chainId, safeTx }: Required<SafeNetTxSimulationP
 
 const SafeNetTxTxSimulationSummary = ({ simulation }: { simulation: SafeNetSimulationResponse }): ReactElement => {
   if (simulation.results.length === 0) {
-    return <p>No SafeNet checks enabled...</p>
+    return <Typography>No SafeNet checks enabled...</Typography>
   }
 
   const guarantees = _groupResultGuarantees(simulation)
