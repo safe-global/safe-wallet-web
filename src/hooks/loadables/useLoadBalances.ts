@@ -28,7 +28,6 @@ export const useTokenListSetting = (): boolean | undefined => {
 }
 
 const mergeBalances = (cgw: SafeBalanceResponse, sn: SafeBalanceResponse): SafeBalanceResponse => {
-  console.log({ cgw, sn })
   // Create a Map using token addresses as keys
   const uniqueBalances = new Map(
     // Process SafeNet items last so they take precedence by overwriting the CGW items
