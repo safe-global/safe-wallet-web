@@ -16,7 +16,7 @@ import React, { useMemo, useState } from 'react'
 
 const ProposersList = () => {
   const [deleteProposer, setDeleteProposer] = useState<string>()
-  const [addProposer, setAddProposer] = useState<boolean>()
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>()
   const proposers = useProposers()
 
   const rows = useMemo(() => {
@@ -70,7 +70,7 @@ const ProposersList = () => {
   }
 
   const onAdd = () => {
-    setAddProposer(true)
+    setIsAddDialogOpen(true)
   }
 
   return (
@@ -120,7 +120,9 @@ const ProposersList = () => {
             />
           )}
 
-          {addProposer && <AddProposer onClose={() => setAddProposer(false)} onSuccess={() => setAddProposer(false)} />}
+          {isAddDialogOpen && (
+            <AddProposer onClose={() => setIsAddDialogOpen(false)} onSuccess={() => setIsAddDialogOpen(false)} />
+          )}
         </Grid>
       </Box>
     </Paper>
