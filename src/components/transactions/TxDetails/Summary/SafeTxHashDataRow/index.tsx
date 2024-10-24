@@ -16,6 +16,7 @@ export const SafeTxHashDataRow = ({
 }) => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
+
   const domainHash = TypedDataEncoder.hashDomain({
     chainId,
     verifyingContract: safeAddress,
