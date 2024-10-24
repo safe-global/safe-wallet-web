@@ -14,7 +14,8 @@ import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
-import { createSubmission } from '@safe-global/safe-client-gateway-sdk'
+import { createSubmission, getSubmission } from '@safe-global/safe-client-gateway-sdk'
+import useAsync from '@/hooks/useAsync'
 
 const OutreachPopup = (): ReactElement | null => {
   const dispatch = useAppDispatch()
@@ -26,7 +27,16 @@ const OutreachPopup = (): ReactElement | null => {
 
   const [askAgainLaterTimestamp, setAskAgainLaterTimestamp] = useSessionStorage<number>(OUTREACH_SS_KEY)
 
-  const shouldOpen = useShowOutreachPopup(isClosed, askAgainLaterTimestamp)
+  const [submission] = useAsync(() => {
+    if (!wallet) return
+    return getSubmission({
+      params: {
+        path: { outreachId: ACTIVE_OUTREACH.id, chainId: currentChainId, safeAddress, signerAddress: wallet.address },
+      },
+    })
+  }, [currentChainId, safeAddress, wallet])
+
+  const shouldOpen = useShowOutreachPopup(isClosed, askAgainLaterTimestamp, submission)
 
   const handleClose = () => {
     setIsClosed(true)
