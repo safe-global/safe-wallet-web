@@ -9,16 +9,19 @@ import Overview from '@/components/dashboard/Overview/Overview'
 import SafeAppsDashboardSection from '@/components/dashboard/SafeAppsDashboardSection/SafeAppsDashboardSection'
 import GovernanceSection from '@/components/dashboard/GovernanceSection/GovernanceSection'
 import { useIsRecoverySupported } from '@/features/recovery/hooks/useIsRecoverySupported'
+import StakingBanner from '@/components/dashboard/StakingBanner'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
 import css from './styles.module.css'
 import { InconsistentSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/InconsistentSignerSetupWarning'
+import useIsStakingBannerEnabled from '@/features/stake/hooks/useIsStakingBannerEnabled'
 
 const RecoveryHeader = dynamic(() => import('@/features/recovery/components/RecoveryHeader'))
 
 const Dashboard = (): ReactElement => {
   const { safe } = useSafeInfo()
   const showSafeApps = useHasFeature(FEATURES.SAFE_APPS)
+  const isStakingBannerEnabled = useIsStakingBannerEnabled()
   const supportsRecovery = useIsRecoverySupported()
 
   return (
@@ -40,6 +43,14 @@ const Dashboard = (): ReactElement => {
 
         {safe.deployed && (
           <>
+            {isStakingBannerEnabled && (
+              <Grid item xs={12} className={css.hideIfEmpty}>
+                <StakingBanner large />
+              </Grid>
+            )}
+
+            <Grid item xs={12} />
+
             <Grid item xs={12} lg={6}>
               <AssetsWidget />
             </Grid>

@@ -162,6 +162,18 @@ export const OVERVIEW_EVENTS = {
     action: 'Proceed with transaction',
     category: OVERVIEW_CATEGORY,
   },
+  OPEN_STAKING_WIDGET: {
+    action: 'Open staking widget from banner',
+    category: OVERVIEW_CATEGORY,
+  },
+  HIDE_STAKING_BANNER: {
+    action: 'Hide staking banner',
+    category: OVERVIEW_CATEGORY,
+  },
+  OPEN_LEARN_MORE_STAKING_BANNER: {
+    action: 'Staking banner learn more',
+    category: OVERVIEW_CATEGORY,
+  },
 }
 
 export enum OPEN_SAFE_LABELS {
