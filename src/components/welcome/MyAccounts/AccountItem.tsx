@@ -22,7 +22,7 @@ import { useRouter } from 'next/router'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
 import { useGetHref } from './useGetHref'
-import { isPredictedSafeProps } from '@/features/counterfactual/utils'
+import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
@@ -37,10 +37,11 @@ import QueueActions from './QueueActions'
 type AccountItemProps = {
   safeItem: SafeItem
   safeOverview?: SafeOverview
+  loadOverview: boolean
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, safeItem, loadOverview }: AccountItemProps) => {
   const { chainId, address, isPinned, isWatchlist } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
@@ -69,9 +70,9 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
 
   const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
-  // const counterfactualSetup = undeployedSafe
-  //   ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
-  //   : undefined
+  const counterfactualSetup = undeployedSafe
+    ? extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
+    : undefined
 
   const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
   const isReplayable =
@@ -80,7 +81,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
   const { data: safeOverview } = useGetSafeOverviewQuery(
-    undeployedSafe || !isVisible
+    undeployedSafe || !isVisible || !loadOverview
       ? skipToken
       : {
           chainId: safeItem.chainId,
@@ -89,20 +90,20 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
         },
   )
 
-  // const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold
-  // const safeOwners = safeOverview?.owners ?? counterfactualSetup?.owners
+  const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold ?? defaultSafeInfo.threshold
+  const safeOwners =
+    safeOverview?.owners ?? counterfactualSetup?.owners.map((address) => ({ value: address })) ?? defaultSafeInfo.owners
 
   const addToPinnedList = () => {
     if (!isAdded && !undeployedSafe) {
       dispatch(
-        // Adding a safe will make it pinned by default
         addOrUpdateSafe({
           safe: {
             ...defaultSafeInfo,
             chainId,
             address: { value: address },
-            owners: safeOverview?.owners || defaultSafeInfo.owners,
-            threshold: safeOverview?.threshold || defaultSafeInfo.threshold,
+            owners: safeOwners,
+            threshold: safeThreshold,
           },
         }),
       )
@@ -128,8 +129,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           <Box pr={2.5}>
             <SafeIcon
               address={address}
-              owners={safeOverview?.owners.length ?? undefined}
-              threshold={safeOverview?.threshold ?? undefined}
+              owners={safeOwners.length ?? undefined}
+              threshold={safeThreshold ?? undefined}
               chainId={chainId}
             />
           </Box>
@@ -170,7 +171,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
             {safeOverview && isVisible ? (
               <FiatValue value={safeOverview.fiatTotal} />
-            ) : undeployedSafe ? null : (
+            ) : undeployedSafe || !loadOverview ? null : (
               <Skeleton variant="text" sx={{ ml: 'auto' }} />
             )}
           </Typography>

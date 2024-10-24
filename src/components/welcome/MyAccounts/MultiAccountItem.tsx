@@ -43,11 +43,13 @@ import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import { addOrUpdateSafe, pinSafe, selectAllAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
   safeOverviews?: SafeOverview[]
   onLinkClick?: () => void
+  loadOverview: boolean
 }
 
 const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
@@ -72,7 +74,7 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
   )
 }
 
-const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountItemProps) => {
+const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, loadOverview }: MultiAccountItemProps) => {
   const { address, safes, isPinned } = multiSafeAccountItem
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const safeAddress = useSafeAddress()
@@ -83,7 +85,6 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
   const chains = useAppSelector(selectChains)
 
   const allAddedSafes = useAppSelector((state) => selectAllAddedSafes(state))
-  // const isAdded = !!addedSafes?.[address]
   const dispatch = useAppDispatch()
 
   const deployedChainIds = useMemo(() => safes.map((safe) => safe.chainId), [safes])
@@ -111,7 +112,9 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     () => safes.filter((safe) => undeployedSafes[safe.chainId]?.[safe.address] === undefined),
     [safes, undeployedSafes],
   )
-  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ currency, walletAddress, safes: deployedSafes })
+  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery(
+    loadOverview ? { currency, walletAddress, safes: deployedSafes } : skipToken,
+  )
 
   const safeSetups = useMemo(
     () => getSafeSetups(safes, safeOverviews ?? [], undeployedSafes),
@@ -209,7 +212,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             </Typography>
             <MultichainIndicator safes={safes} />
             <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
-              {totalFiatValue !== undefined ? (
+              {!loadOverview ? null : totalFiatValue !== undefined ? (
                 <FiatValue value={totalFiatValue} />
               ) : (
                 <Skeleton variant="text" sx={{ ml: 'auto' }} />

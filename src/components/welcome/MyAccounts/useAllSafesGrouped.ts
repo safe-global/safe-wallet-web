@@ -12,7 +12,6 @@ export type AllSafesGrouped = {
 
 const getMultiChainAccounts = (safes: SafeItems): MultiChainSafeItem[] => {
   const groupedByAddress = groupBy(safes, (safe) => safe.address)
-  // loop through the groupedByAddress and check if any of the safes is pinned
   const multiChainSafeItems = Object.entries(groupedByAddress)
     .filter((entry) => entry[1].length > 1)
     .map((entry) => {

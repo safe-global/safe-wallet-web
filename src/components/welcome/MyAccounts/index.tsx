@@ -17,7 +17,7 @@ import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
 import css from './styles.module.css'
-import { SafesList } from './PaginatedSafeList'
+import { SafesList } from './SafesList'
 import { AppRoutes } from '@/config/routes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
@@ -114,7 +114,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               </Typography>
             </div>
             {pinnedSafes.length > 0 ? (
-              <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
+              <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} loadOverviews={true} />
             ) : (
               <Box className={css.noPinnedSafesMessage}>
                 <Typography color="text.secondary" maxWidth="350px" textAlign="center" fontSize="14px">
@@ -151,7 +151,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
               <Box mt={1}>
-                <SafesList safes={allSafes} onLinkClick={onLinkClick} />
+                <SafesList safes={allSafes} onLinkClick={onLinkClick} loadOverviews={false} />
               </Box>
             </AccordionDetails>
           </Accordion>
