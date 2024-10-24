@@ -194,7 +194,7 @@ describe('Swaps tests', () => {
         swaps.clickOnSwapBtn()
         swaps.clickOnSwapBtn()
       })
-      create_tx.changeNonce(22)
+      create_tx.changeNonce(24)
       create_tx.clickOnSignTransactionBtn()
       create_tx.clickViewTransaction()
       navigation.clickOnWalletExpandMoreIcon()
