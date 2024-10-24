@@ -1,3 +1,4 @@
+import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import { useMemo, type ReactElement } from 'react'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
@@ -19,6 +20,7 @@ type CheckWalletProps = {
 
 enum Message {
   WalletNotConnected = 'Please connect your wallet',
+  SDKNotInitialized = 'SDK is not initialized yet',
   NotSafeOwner = 'Your connected wallet is not a signer of this Safe Account',
   SafeNotActivated = 'You need to activate the Safe before transacting',
 }
@@ -37,6 +39,7 @@ const CheckWallet = ({
   const connectWallet = useConnectWallet()
   const isWrongChain = useIsWrongChain()
   const isDelegate = useIsWalletDelegate()
+  const sdk = useSafeSDK()
 
   const { safe } = useSafeInfo()
 
@@ -45,6 +48,9 @@ const CheckWallet = ({
   const message = useMemo(() => {
     if (!wallet) {
       return Message.WalletNotConnected
+    }
+    if (!sdk) {
+      return Message.SDKNotInitialized
     }
     if (isUndeployedSafe && !allowUndeployedSafe) {
       return Message.SafeNotActivated
@@ -61,6 +67,7 @@ const CheckWallet = ({
     isOnlySpendingLimit,
     isSafeOwner,
     isUndeployedSafe,
+    sdk,
     wallet,
   ])
 

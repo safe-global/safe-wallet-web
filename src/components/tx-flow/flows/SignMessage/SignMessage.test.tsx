@@ -1,3 +1,4 @@
+import type Safe from '@safe-global/protocol-kit'
 import { act } from 'react'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { hexlify, zeroPadValue, toUtf8Bytes } from 'ethers'
@@ -13,6 +14,7 @@ import * as useChainsHook from '@/hooks/useChains'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
 import * as useSafeMessage from '@/hooks/messages/useSafeMessage'
+import * as sdk from '@/hooks/coreSDK/safeCoreSDK'
 import { render, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { EIP1193Provider, WalletState, AppState, OnboardAPI } from '@web3-onboard/core'
@@ -102,6 +104,8 @@ describe('SignMessage', () => {
     }))
 
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
+
+    jest.spyOn(sdk, 'useSafeSDK').mockReturnValue({} as unknown as Safe)
   })
 
   describe('EIP-191 messages', () => {
