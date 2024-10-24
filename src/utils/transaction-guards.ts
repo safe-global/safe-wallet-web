@@ -58,7 +58,7 @@ import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
 import { getSafeToL2MigrationDeployment, getMultiSendDeployments } from '@safe-global/safe-deployments'
-import { Safe_to_l2_migration__factory } from '@/types/contracts'
+import { Safe__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
 import { hasMatchingDeployment } from '@/services/contracts/deployments'
 import { isMultiSendCalldata } from './transaction-calldata'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
@@ -411,4 +411,13 @@ export const isERC20Transfer = (value: TransferInfo): value is Erc20Transfer => 
 
 export const isERC721Transfer = (value: TransferInfo): value is Erc721Transfer => {
   return value.type === TransactionTokenType.ERC721
+}
+
+/**
+ * True if the tx calls `approveHash`
+ */
+export const isOnChainConfirmation = (data?: TransactionData): boolean => {
+  const approveHashSelector = Safe__factory.createInterface().getFunction('approveHash').selector
+
+  return Boolean(data && data.hexData?.startsWith(approveHashSelector))
 }
