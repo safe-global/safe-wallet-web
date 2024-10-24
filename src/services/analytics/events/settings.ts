@@ -74,6 +74,32 @@ export const SETTINGS_EVENTS = {
       category: SETTINGS_CATEGORY,
     },
   },
+  PROPOSERS: {
+    ADD_PROPOSER: {
+      action: 'Add safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
+    REMOVE_PROPOSER: {
+      action: 'Remove safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
+    SUBMIT_ADD_PROPOSER: {
+      action: 'Submit add safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
+    SUBMIT_REMOVE_PROPOSER: {
+      action: 'Submit remove safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
+    CANCEL_ADD_PROPOSER: {
+      action: 'Cancel add safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
+    CANCEL_REMOVE_PROPOSER: {
+      action: 'Cancel remove safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
+  },
   DATA: {
     IMPORT_ADDRESS_BOOK: {
       action: 'Imported address book via Import all',

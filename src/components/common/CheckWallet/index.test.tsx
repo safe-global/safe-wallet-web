@@ -5,7 +5,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useWallet from '@/hooks/wallets/useWallet'
 import { chainBuilder } from '@/tests/builders/chains'
-import { useIsWalletDelegate } from '@/hooks/useDelegates'
+import { useIsWalletProposer } from '@/hooks/useProposers'
 import { faker } from '@faker-js/faker'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -42,9 +42,9 @@ jest.mock('@/hooks/useIsWrongChain', () => ({
   default: jest.fn(() => false),
 }))
 
-jest.mock('@/hooks/useDelegates', () => ({
+jest.mock('@/hooks/useProposers', () => ({
   __esModule: true,
-  useIsWalletDelegate: jest.fn(() => false),
+  useIsWalletProposer: jest.fn(() => false),
 }))
 
 jest.mock('@/hooks/useSafeInfo', () => ({
@@ -127,7 +127,7 @@ describe('CheckWallet', () => {
 
   it('should not disable the button for delegates', () => {
     ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
-    ;(useIsWalletDelegate as jest.MockedFunction<typeof useIsWalletDelegate>).mockReturnValueOnce(true)
+    ;(useIsWalletProposer as jest.MockedFunction<typeof useIsWalletProposer>).mockReturnValueOnce(true)
 
     const { container } = renderButton()
 

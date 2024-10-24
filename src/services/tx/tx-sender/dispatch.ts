@@ -112,8 +112,8 @@ export const dispatchTxSigning = async (
   return signedTx
 }
 
-// We have to manually sign because sdk.signTransaction doesn't support delegates
-export const dispatchDelegateTxSigning = async (safeTx: SafeTransaction, wallet: ConnectedWallet) => {
+// We have to manually sign because sdk.signTransaction doesn't support proposers
+export const dispatchProposerTxSigning = async (safeTx: SafeTransaction, wallet: ConnectedWallet) => {
   const sdk = await getSafeSDKWithSigner(wallet.provider)
 
   let signature: SafeSignature

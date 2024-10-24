@@ -44,6 +44,7 @@ const SpendingLimits = () => {
                       sx={{ mt: 2 }}
                       variant="contained"
                       disabled={!isOk}
+                      size="small"
                     >
                       New spending limit
                     </Button>
