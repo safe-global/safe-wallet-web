@@ -182,9 +182,7 @@ export const isDelegateCall = (safeTx: SafeTransaction): boolean => {
 }
 
 // TODO: This is a workaround and a duplication of sdk.executeTransaction but it returns the encoded tx instead of executing it.
-export const prepareTxExecution = async (safeTransaction: SafeTransaction, provider: Eip1193Provider) => {
-  const sdk = await getSafeSDKWithSigner(provider)
-
+export const prepareTxExecution = async (safeTransaction: SafeTransaction, sdk: Safe) => {
   if (!sdk.getContractManager().safeContract) {
     throw new Error('Safe is not deployed')
   }

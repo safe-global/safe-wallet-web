@@ -57,6 +57,7 @@ import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
+import { Safe__factory } from '@/types/contracts'
 import { getSafeToL2MigrationDeployment, getMultiSendDeployments } from '@safe-global/safe-deployments'
 import { Safe_to_l2_migration__factory } from '@/types/contracts'
 import { hasMatchingDeployment } from '@/services/contracts/deployments'
@@ -377,6 +378,15 @@ export const isDeleteAllowance = (method?: string): method is SpendingLimitMetho
 
 export const isSpendingLimitMethod = (method?: string): boolean => {
   return isSetAllowance(method) || isDeleteAllowance(method)
+}
+
+/**
+ * True if the tx calls `approveHash` on the Safe itself.
+ */
+export const isOnChainConfirmation = (safeAddress: string, data?: TransactionData): boolean => {
+  const approveHashSelector = Safe__factory.createInterface().getFunction('approveHash').selector
+
+  return Boolean(data && data.hexData?.startsWith(approveHashSelector))
 }
 
 export const isSupportedSpendingLimitAddress = (txInfo: TransactionInfo, chainId: string): boolean => {

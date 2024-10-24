@@ -43,12 +43,14 @@ const SIGNER_ADDRESS = '0x1234567890123456789012345678901234567890'
 const TX_HASH = '0x1234567890'
 // Mock getTransactionDetails
 jest.mock('@safe-global/safe-gateway-typescript-sdk', () => ({
+  ...jest.requireActual('@safe-global/safe-gateway-typescript-sdk'),
   getTransactionDetails: jest.fn(),
   postSafeGasEstimation: jest.fn(() => Promise.resolve({ safeTxGas: 60000, recommendedNonce: 17 })),
   Operation: {
     CALL: 0,
   },
   relayTransaction: jest.fn(() => Promise.resolve({ taskId: '0xdead1' })),
+  __esModule: true,
 }))
 
 // Mock extractTxInfo

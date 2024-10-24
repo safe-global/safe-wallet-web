@@ -5,25 +5,25 @@ import { render, screen } from '@/tests/test-utils'
 import * as execThroughRoleHooks from '@/components/tx/SignOrExecuteForm/ExecuteThroughRoleForm/hooks'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import ReviewSignMessageOnChain from '@/components/tx-flow/flows/SignMessageOnChain/ReviewSignMessageOnChain'
-import { JsonRpcProvider, zeroPadValue } from 'ethers'
+import { JsonRpcProvider } from 'ethers'
 import { act } from '@testing-library/react'
+import { faker } from '@faker-js/faker'
+import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 
 jest.spyOn(execThroughRoleHooks, 'useRoles').mockReturnValue([])
 
 describe('ReviewSignMessageOnChain', () => {
   test('can handle messages with EIP712Domain type in the JSON-RPC payload', async () => {
     jest.spyOn(web3, 'getWeb3ReadOnly').mockImplementation(() => new JsonRpcProvider())
-    jest.spyOn(useSafeInfo, 'default').mockImplementation(
-      () =>
-        ({
-          safe: {
-            address: {
-              value: zeroPadValue('0x01', 20),
-            },
-            version: '1.3.0',
-          } as ReturnType<typeof useSafeInfo.default>['safe'],
-        } as ReturnType<typeof useSafeInfo.default>),
-    )
+    const safeAddress = faker.finance.ethereumAddress()
+    jest.spyOn(useSafeInfo, 'default').mockReturnValue({
+      safeAddress,
+      safe: extendedSafeInfoBuilder()
+        .with({ address: { value: safeAddress } })
+        .build(),
+      safeLoaded: true,
+      safeLoading: false,
+    })
 
     await act(async () => {
       render(

@@ -7,6 +7,7 @@ import {
   isCustomTxInfo,
   isMigrateToL2TxData,
   isMultisigDetailedExecutionInfo,
+  isOnChainConfirmation,
   isOrderTxInfo,
   isSettingsChangeTxInfo,
   isSpendingLimitMethod,
@@ -26,6 +27,8 @@ import SwapOrder from '@/features/swap/components/SwapOrder'
 import StakingTxDepositDetails from '@/features/stake/components/StakingTxDepositDetails'
 import StakingTxExitDetails from '@/features/stake/components/StakingTxExitDetails'
 import StakingTxWithdrawDetails from '@/features/stake/components/StakingTxWithdrawDetails'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import { OnChainConfirmation } from './OnChainConfirmation'
 
 const TxData = ({
   txDetails,
@@ -38,6 +41,8 @@ const TxData = ({
 }): ReactElement => {
   const chainId = useChainId()
   const txInfo = txDetails.txInfo
+
+  const safeAddress = useSafeAddress()
   const toInfo = isCustomTxInfo(txDetails.txInfo) ? txDetails.txInfo.to : undefined
 
   if (isOrderTxInfo(txDetails.txInfo)) {
@@ -73,9 +78,14 @@ const TxData = ({
     return <SpendingLimits txData={txDetails.txData} txInfo={txInfo} type={method} />
   }
 
+  if (isOnChainConfirmation(safeAddress, txDetails?.txData)) {
+    return <OnChainConfirmation data={txDetails?.txData} />
+  }
+
   if (isMigrateToL2TxData(txDetails.txData, chainId)) {
     return <MigrationToL2TxData txDetails={txDetails} />
   }
+
   return <DecodedData txData={txDetails.txData} toInfo={toInfo} />
 }
 

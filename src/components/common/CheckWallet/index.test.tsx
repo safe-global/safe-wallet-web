@@ -5,16 +5,18 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useWallet from '@/hooks/wallets/useWallet'
 import { chainBuilder } from '@/tests/builders/chains'
+import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
 import { useIsWalletDelegate } from '@/hooks/useDelegates'
 import { faker } from '@faker-js/faker'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import useSafeInfo from '@/hooks/useSafeInfo'
 
+const mockWalletAddress = faker.finance.ethereumAddress()
 // mock useWallet
 jest.mock('@/hooks/wallets/useWallet', () => ({
   __esModule: true,
   default: jest.fn(() => ({
-    address: '0x1234567890',
+    address: mockWalletAddress,
   })),
 }))
 
@@ -42,6 +44,9 @@ jest.mock('@/hooks/useIsWrongChain', () => ({
   default: jest.fn(() => false),
 }))
 
+jest.mock('@/hooks/useNestedSafeOwners')
+
+const mockUseNestedSafeOwners = useNestedSafeOwners as jest.MockedFunction<typeof useNestedSafeOwners>
 jest.mock('@/hooks/useDelegates', () => ({
   __esModule: true,
   useIsWalletDelegate: jest.fn(() => false),
@@ -67,6 +72,7 @@ const renderButton = () =>
 describe('CheckWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockUseNestedSafeOwners.mockReturnValue([])
   })
 
   it('renders correctly when the wallet is connected to the right chain and is an owner', () => {
@@ -189,6 +195,19 @@ describe('CheckWallet', () => {
     expect(container.querySelector('button')).not.toBeDisabled()
   })
 
+  it('should allow nested Safe owners', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
+    mockUseNestedSafeOwners.mockReturnValue([
+      {
+        address: faker.finance.ethereumAddress(),
+        chainId: '1',
+        isWatchlist: false,
+      },
+    ])
+
+    const { container } = render(<CheckWallet>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>)
+    expect(container.querySelector('button')).not.toBeDisabled()
+  })
   it('should not allow non-owners that have a spending limit without allowing spending limits', () => {
     ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
     ;(
