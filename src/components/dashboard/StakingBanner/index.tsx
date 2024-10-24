@@ -19,11 +19,13 @@ import { formatUnits } from 'ethers'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsStakingBannerEnabled from '@/features/stake/hooks/useIsStakingBannerEnabled'
 
-const LOCAL_STORAGE_KEY_HIDE_WIDGET = 'hideStakingBanner'
 const LEARN_MORE_LINK = 'https://help.safe.global/en/articles/222615-safe-staking'
 const MIN_NATIVE_TOKEN_BALANCE = 32
 
-const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
+const StakingBanner = ({
+  large = false,
+  hideLocalStorageKey = 'hideStakingBanner',
+}: { large?: boolean; hideLocalStorageKey?: string } = {}) => {
   const isDarkMode = useDarkMode()
   const router = useRouter()
   const { balances } = useBalances()
@@ -37,7 +39,7 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
     nativeTokenBalance != null &&
     Number(formatUnits(nativeTokenBalance.balance, nativeTokenBalance.tokenInfo.decimals)) >= MIN_NATIVE_TOKEN_BALANCE
 
-  const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>(LOCAL_STORAGE_KEY_HIDE_WIDGET)
+  const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>(hideLocalStorageKey)
 
   const isStakingBannerEnabled = useIsStakingBannerEnabled()
 
