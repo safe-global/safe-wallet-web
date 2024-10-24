@@ -60,6 +60,10 @@
   padding-right: var(--space-8);
 }
 
+.stakeButton {
+  width: 100%;
+}
+
 @media (max-width: 899.99px) {
   .header {
     padding: 0;

@@ -108,8 +108,8 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
               )}
             </Grid>
 
-            <Grid item xs={12}>
-              <Stack direction="row" spacing={2}>
+            <Grid item container xs={12} spacing={2} textAlign="center">
+              <Grid item xs={12} md="auto">
                 <NextLink
                   href={AppRoutes.stake && { pathname: AppRoutes.stake, query: { safe: router.query.safe } }}
                   passHref
@@ -120,10 +120,12 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
                     Stake ETH
                   </Button>
                 </NextLink>
+              </Grid>
+              <Grid item xs={12} md="auto">
                 <Button variant="text" onClick={onHide}>
                   Don&apos;t show again
                 </Button>
-              </Stack>
+              </Grid>
             </Grid>
           </Grid>
         </Card>
@@ -138,7 +140,7 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
 
         <Stack
           direction={{ xs: 'column', md: 'row' }}
-          spacing={{ xs: 2, md: 0 }}
+          spacing={2}
           alignItems={{ xs: 'initial', md: 'center' }}
           justifyContent="space-between"
         >
@@ -167,7 +169,7 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
             </Typography>
           </Stack>
 
-          <Stack direction="row" spacing={1} alignItems="flex-end">
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ xs: 'center', md: 'flex-end' }}>
             <Button variant="text" onClick={onHide} size="small" sx={{ whiteSpace: 'nowrap' }}>
               Don&apos;t show again
             </Button>
@@ -176,6 +178,7 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
               passHref
               rel="noreferrer"
               onClick={onClick}
+              className={classNames(css.stakeButton)}
             >
               <Button fullWidth size="small" variant="contained">
                 Stake
