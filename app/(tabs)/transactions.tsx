@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { StyleSheet, View } from 'react-native'
 
 import ParallaxScrollView from '@/src/components/ParallaxScrollView'
-import { Text } from 'react-native-paper'
+import { Text } from 'tamagui'
 
 export default function TransactionsScreen() {
   return (

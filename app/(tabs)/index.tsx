@@ -1,13 +1,14 @@
 import { StyleSheet } from 'react-native'
 
-import { Text } from 'react-native-paper'
 import TxHistory from '@/src/features/TxHistory'
+
+import { Text } from 'tamagui'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.content}>
-      <Text variant="titleLarge" testID="welcome-title">
+      <Text testID="welcome-title" paddingHorizontal={20}>
         Transactions History
       </Text>
 
@@ -22,6 +23,5 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     width: '100%',
     rowGap: 20,
-    paddingLeft: 20,
   },
 })
