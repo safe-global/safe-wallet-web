@@ -6,26 +6,34 @@
 }
 
 .myAccounts {
-  width: 100%;
-  max-width: 600px;
+  width: 100vw;
+  max-width: 750px;
   margin: var(--space-2);
 }
 
 .safeList {
-  padding: var(--space-3);
-  margin-bottom: var(--space-3);
-}
-
-.safeList :last-child {
-  margin-bottom: 0;
+  padding: var(--space-2);
+  margin-bottom: var(--space-1);
 }
 
 .header {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   padding: var(--space-3) 0;
   gap: var(--space-1);
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.noPinnedSafesMessage {
+  display: flex;
+  justify-content: center;
+  border: 1px solid var(--color-border-light);
+  padding: var(--space-3);
+  border-radius: var(--space-1);
+  border-style: dashed;
 }
 
 .listItem {
@@ -81,7 +89,7 @@
 .safeLink {
   display: grid;
   padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
-  grid-template-columns: 60px 3fr 3fr minmax(auto, 2fr);
+  grid-template-columns: 60px 4fr 6fr minmax(auto, 1fr);
   align-items: center;
 }
 
@@ -100,13 +108,11 @@
 }
 
 .listHeader {
-  padding-bottom: var(--space-1);
   display: flex;
-  justify-content: space-between;
 }
 
-.listTitle {
-  margin: auto 0;
+.listHeader path {
+  stroke: var(--color-text-primary);
 }
 
 .card {
@@ -175,6 +181,14 @@
   }
 }
 
+.safeList :global .MuiAccordionSummary-root {
+  background: var(--color-background-paper) !important;
+  padding-left: 0;
+  min-height: 0;
+  justify-content: left;
+  vertical-align: middle;
+}
+
 @media (max-width: 599.95px) {
   .safeLink {
     grid-template-columns: auto 1fr auto;
@@ -200,6 +214,10 @@
   .multiChains {
     justify-content: flex-start;
   }
+
+  .chainIndicator {
+    justify-content: flex-start;
+  }
 }
 
 @container my-accounts-container (max-width: 500px) {
@@ -208,7 +226,7 @@
   }
 
   .header {
-    padding: var(--space-3);
+    padding: var(--space-2);
     border-bottom: 1px solid var(--color-border-light);
   }
 
@@ -219,9 +237,5 @@
 
   .title {
     font-size: 20px;
-  }
-
-  .card {
-    border-top: 1px solid var(--color-border-light);
   }
 }

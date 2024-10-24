@@ -12,6 +12,7 @@ export type SafeItem = {
   chainId: string
   address: string
   isWatchlist: boolean
+  isPinned: boolean
 }
 
 export type SafeItems = SafeItem[]
@@ -45,7 +46,9 @@ const useAllSafes = (): SafeItems | undefined => {
     if (walletAddress && (allOwned === undefined || allOwnedLoading)) {
       return undefined
     }
-    const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned || {})))
+    const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded)))
+    // sort chains by chainId
+    chains.sort((a, b) => parseInt(a) - parseInt(b))
 
     return chains.flatMap((chainId) => {
       if (!configs.some((item) => item.chainId === chainId)) return []
@@ -53,16 +56,20 @@ const useAllSafes = (): SafeItems | undefined => {
       const ownedOnChain = (allOwned || {})[chainId]
       const undeployedOnChain = Object.keys(undeployedSafes[chainId] || {})
       const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
+      // sort addresses by address
+      uniqueAddresses.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 
       return uniqueAddresses.map((address) => {
         const owners = allAdded?.[chainId]?.[address]?.owners
         const isOwner = owners?.some(({ value }) => sameAddress(walletAddress, value))
-        const isUndeployed = undeployedOnChain.includes(address)
         const isOwned = (ownedOnChain || []).includes(address) || isOwner
+        const isUndeployed = undeployedOnChain.includes(address)
+        const isPinned = Boolean(allAdded?.[chainId]?.[address]?.pinned)
         return {
           address,
           chainId,
           isWatchlist: !isOwned && !isUndeployed,
+          isPinned,
         }
       })
     })
