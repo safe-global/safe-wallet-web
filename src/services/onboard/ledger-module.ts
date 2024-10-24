@@ -1,6 +1,10 @@
 import type { DeviceActionState } from '@ledgerhq/device-management-kit'
-import type { SignTransactionDAOutput, SignTypedDataDAOutput, TypedData } from '@ledgerhq/device-signer-kit-ethereum'
-import type { GetAddressCommandResponse } from '@ledgerhq/device-signer-kit-ethereum/api/app-binder/GetAddressCommandTypes.js'
+import type {
+  GetAddressDAOutput,
+  SignTransactionDAOutput,
+  SignTypedDataDAOutput,
+  TypedData,
+} from '@ledgerhq/device-signer-kit-ethereum'
 import type { Chain, WalletInit, WalletInterface } from '@web3-onboard/common'
 import type { Account, Asset, BasePath, DerivationPath, ScanAccountsOptions } from '@web3-onboard/hw-common'
 import type { Transaction } from 'ethers-v6'
@@ -176,14 +180,14 @@ export function ledgerModule(): WalletInit {
               const signature = await ledgerSdk.signTypedData(getAssertedDerivationPath(), typedData)
               return Signature.from(signature).serialized
             },
-            // @ts-expect-error createEIP1193Provider does not allow overriding eth_signTypedData_v3
-            eth_signTypedData_v3: async (args) => {
-              return await eip1193Provider.request({ method: 'eth_signTypedData', params: args.params })
-            },
-            // @ts-expect-error createEIP1193Provider does not allow overriding eth_signTypedData_v4
-            eth_signTypedData_v4: async (args) => {
-              return await eip1193Provider.request({ method: 'eth_signTypedData', params: args.params })
-            },
+            // // @ts-expect-error createEIP1193Provider does not allow overriding eth_signTypedData_v3
+            // eth_signTypedData_v3: async (args) => {
+            //   return await eip1193Provider.request({ method: 'eth_signTypedData', params: args.params })
+            // },
+            // // @ts-expect-error createEIP1193Provider does not allow overriding eth_signTypedData_v4
+            // eth_signTypedData_v4: async (args) => {
+            //   return await eip1193Provider.request({ method: 'eth_signTypedData', params: args.params })
+            // },
             wallet_switchEthereumChain: async (args) => {
               const chainId = args.params[0].chainId
               setCurrentChain(chainId)
@@ -329,7 +333,7 @@ async function getLedgerSdk() {
     disconnect: async () => {
       return sdk.disconnect({ sessionId })
     },
-    getAddress: async (derivationPath: string): Promise<GetAddressCommandResponse> => {
+    getAddress: async (derivationPath: string): Promise<GetAddressDAOutput> => {
       const actionState = await lastValueFrom(kering.getAddress(derivationPath, { checkOnDevice: false }).observable)
       return mapOutput(actionState)
     },
