@@ -1,5 +1,4 @@
 import { vi } from 'vitest'
-
 import { render, userEvent } from '@/src/tests/test-utils'
 import { SafeButton } from './Button'
 

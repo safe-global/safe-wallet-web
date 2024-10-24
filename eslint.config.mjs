@@ -18,11 +18,12 @@ export default [
         version: 'detect', // Automatically detect the react version
       },
     },
-
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/no-unescaped-entities': 'off',
       '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
 ]
