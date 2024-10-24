@@ -1,9 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
-import { isProduction } from '../config/constants'
 import { reduxStorage } from './storage'
 import txHistory from './txHistorySlice'
 import { gatewayApi } from './gateway'
+import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
+import { isTestingEnv } from '../config/constants'
 
 const persistConfig = {
   key: 'root',
@@ -21,13 +22,20 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 export const makeStore = () =>
   configureStore({
     reducer: persistedReducer,
-    devTools: isProduction,
+    devTools: false,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
       }).concat(gatewayApi.middleware),
+    enhancers: (getDefaultEnhancers) => {
+      if (isTestingEnv) {
+        return getDefaultEnhancers()
+      }
+
+      return getDefaultEnhancers().concat(devToolsEnhancer())
+    },
   })
 
 export const store = makeStore()

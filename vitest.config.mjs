@@ -12,7 +12,7 @@ export default defineConfig({
     globals: true,
     server: {
       deps: {
-        inline: ['redux', '@reduxjs/toolkit'],
+        inline: ['redux', '@reduxjs/toolkit', 'redux-devtools-expo-dev-plugin'],
       },
     },
     coverage: {

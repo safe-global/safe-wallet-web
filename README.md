@@ -26,6 +26,11 @@ or for android
    npx expo run:android --device
 ```
 
+### How to open custom devtools menu
+
+currently our app have redux, rtk-query and react devtools support. To run one of them is pretty straightforward, you just need to run the app, and then in the terminal where expo server is runnig, you press `shift + m` and the devtools options will apper for you.
+Then select one of them and happy debugging 👨‍💻👩‍💻
+
 ## Running the storybook
 
 1. run the storybook command on your terminal
