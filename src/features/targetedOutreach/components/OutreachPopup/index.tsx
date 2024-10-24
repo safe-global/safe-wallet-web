@@ -11,15 +11,32 @@ import { ACTIVE_OUTREACH, OUTREACH_LS_KEY, OUTREACH_SS_KEY } from '@/features/ta
 import Track from '@/components/common/Track'
 import { OUTREACH_EVENTS } from '@/services/analytics/events/outreach'
 import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
+import useChainId from '@/hooks/useChainId'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import useWallet from '@/hooks/wallets/useWallet'
+import { createSubmission, getSubmission } from '@safe-global/safe-client-gateway-sdk'
+import useAsync from '@/hooks/useAsync'
 
 const OutreachPopup = (): ReactElement | null => {
   const dispatch = useAppDispatch()
   const outreachPopup = useAppSelector(selectOutreachBanner)
   const [isClosed, setIsClosed] = useLocalStorage<boolean>(OUTREACH_LS_KEY)
+  const currentChainId = useChainId()
+  const safeAddress = useSafeAddress()
+  const wallet = useWallet()
 
   const [askAgainLaterTimestamp, setAskAgainLaterTimestamp] = useSessionStorage<number>(OUTREACH_SS_KEY)
 
-  const shouldOpen = useShowOutreachPopup(isClosed, askAgainLaterTimestamp)
+  const [submission] = useAsync(() => {
+    if (!wallet) return
+    return getSubmission({
+      params: {
+        path: { outreachId: ACTIVE_OUTREACH.id, chainId: currentChainId, safeAddress, signerAddress: wallet.address },
+      },
+    })
+  }, [currentChainId, safeAddress, wallet])
+
+  const shouldOpen = useShowOutreachPopup(isClosed, askAgainLaterTimestamp, submission)
 
   const handleClose = () => {
     setIsClosed(true)
@@ -42,7 +59,20 @@ const OutreachPopup = (): ReactElement | null => {
 
   if (!outreachPopup.open) return null
 
+  const handleOpenSurvey = async () => {
+    if (wallet) {
+      await createSubmission({
+        params: {
+          path: { outreachId: ACTIVE_OUTREACH.id, chainId: currentChainId, safeAddress, signerAddress: wallet.address },
+        },
+        body: { completed: true },
+      })
+    }
+    dispatch(closeOutreachBanner())
+  }
+
   return (
+    // Enforce light theme for the popup
     <SafeThemeProvider mode="light">
       {(safeTheme: Theme) => (
         <ThemeProvider theme={safeTheme}>
@@ -78,7 +108,7 @@ const OutreachPopup = (): ReactElement | null => {
                 </Typography>
                 <Track {...OUTREACH_EVENTS.OPEN_SURVEY}>
                   <Link rel="noreferrer noopener" target="_blank" href={ACTIVE_OUTREACH.url}>
-                    <Button fullWidth variant="contained">
+                    <Button fullWidth variant="contained" onClick={handleOpenSurvey}>
                       Get Involved
                     </Button>
                   </Link>
