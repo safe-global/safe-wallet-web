@@ -9,3 +9,7 @@ vi.mock('react-native-mmkv', () => ({
     this.set = vi.fn()
   },
 }))
+
+vi.mock('redux-devtools-expo-dev-plugin', () => ({
+  default: () => vi.fn(),
+}))
