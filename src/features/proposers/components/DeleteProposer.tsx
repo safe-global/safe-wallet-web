@@ -2,7 +2,7 @@ import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import { useAppDispatch } from '@/store'
-import { useDeleteDelegateMutation } from '@/store/api/gateway'
+import { useDeleteProposerMutation } from '@/store/api/gateway'
 import { showNotification } from '@/store/notificationsSlice'
 import { shortenAddress } from '@/utils/formatters'
 import { signTypedData } from '@/utils/web3'
@@ -32,7 +32,7 @@ type DeleteProposerProps = {
   wallet: ReturnType<typeof useWallet>
   chainId: ReturnType<typeof useChainId>
   safeAddress: ReturnType<typeof useSafeAddress>
-  delegateAddress: string
+  proposerAddress: string
 }
 
 const _DeleteProposer = ({
@@ -41,11 +41,11 @@ const _DeleteProposer = ({
   wallet,
   safeAddress,
   chainId,
-  delegateAddress,
+  proposerAddress,
 }: DeleteProposerProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [deleteDelegate] = useDeleteDelegateMutation()
+  const [deleteProposer] = useDeleteProposerMutation()
   const dispatch = useAppDispatch()
 
   const onConfirm = async () => {
@@ -60,10 +60,10 @@ const _DeleteProposer = ({
 
     try {
       const signer = await getAssertedChainSigner(wallet.provider)
-      const typedData = getDelegateTypedData(chainId, delegateAddress)
+      const typedData = getDelegateTypedData(chainId, proposerAddress)
       const signature = await signTypedData(signer, typedData)
 
-      await deleteDelegate({ chainId, delegateAddress, safeAddress, signature })
+      await deleteProposer({ chainId, delegateAddress: proposerAddress, safeAddress, signature })
 
       trackEvent(SETTINGS_EVENTS.PROPOSERS.SUBMIT_REMOVE_PROPOSER)
 
@@ -72,7 +72,7 @@ const _DeleteProposer = ({
           variant: 'success',
           groupKey: 'delete-proposer-success',
           title: 'Proposer deleted successfully!',
-          message: `${shortenAddress(delegateAddress)} can not suggest transactions anymore.`,
+          message: `${shortenAddress(proposerAddress)} can not suggest transactions anymore.`,
         }),
       )
     } catch (error) {

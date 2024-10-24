@@ -1,5 +1,4 @@
 import AddressBookInput from '@/components/common/AddressBookInput'
-import AddressInput from '@/components/common/AddressInput'
 import CheckWallet from '@/components/common/CheckWallet'
 import NameInput from '@/components/common/NameInput'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
@@ -12,7 +11,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
 import { useAppDispatch } from '@/store'
-import { useAddDelegateMutation } from '@/store/api/gateway'
+import { useAddProposerMutation } from '@/store/api/gateway'
 import { showNotification } from '@/store/notificationsSlice'
 import { shortenAddress } from '@/utils/formatters'
 import { addressIsNotCurrentSafe, addressIsNotOwner } from '@/utils/validation'
@@ -52,7 +51,7 @@ type DelegateEntry = {
 const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [addDelegate] = useAddDelegateMutation()
+  const [addProposer] = useAddProposerMutation()
   const dispatch = useAppDispatch()
   const { safe } = useSafeInfo()
 
@@ -86,7 +85,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
       const typedData = getDelegateTypedData(chainId, data.address)
       const signature = await signTypedData(signer, typedData)
 
-      await addDelegate({
+      await addProposer({
         chainId,
         delegator: wallet.address,
         signature,

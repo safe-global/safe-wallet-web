@@ -4,7 +4,7 @@ import EnhancedTable from '@/components/common/EnhancedTable'
 import Track from '@/components/common/Track'
 import AddProposer from '@/features/proposers/components/AddProposer'
 import DeleteProposer from '@/features/proposers/components/DeleteProposer'
-import useDelegates from '@/hooks/useDelegates'
+import useProposers from '@/hooks/useProposers'
 import AddIcon from '@/public/images/common/add.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { SETTINGS_EVENTS } from '@/services/analytics'
@@ -14,25 +14,25 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 import React, { useMemo, useState } from 'react'
 
-const DelegatesList = () => {
+const ProposersList = () => {
   const [deleteProposer, setDeleteProposer] = useState<string>()
   const [addProposer, setAddProposer] = useState<boolean>()
-  const delegates = useDelegates()
+  const proposers = useProposers()
 
   const rows = useMemo(() => {
-    if (!delegates.data) return []
+    if (!proposers.data) return []
 
-    return delegates.data.results.map((delegate) => {
+    return proposers.data.results.map((proposer) => {
       return {
         cells: {
-          delegate: {
-            rawValue: delegate.delegate,
+          proposer: {
+            rawValue: proposer.delegate,
             content: (
               <EthHashInfo
-                address={delegate.delegate}
+                address={proposer.delegate}
                 showCopyButton
                 hasExplorer
-                name={delegate.label || undefined}
+                name={proposer.label || undefined}
                 shortAddress={false}
               />
             ),
@@ -46,7 +46,7 @@ const DelegatesList = () => {
                   <Track {...SETTINGS_EVENTS.PROPOSERS.REMOVE_PROPOSER}>
                     <IconButton
                       data-testid="delete-btn"
-                      onClick={() => onDelete(delegate.delegate)}
+                      onClick={() => onDelete(proposer.delegate)}
                       color="error"
                       size="small"
                       disabled={!isOk}
@@ -61,9 +61,9 @@ const DelegatesList = () => {
         },
       }
     })
-  }, [delegates.data])
+  }, [proposers.data])
 
-  if (!delegates.data?.results) return null
+  if (!proposers.data?.results) return null
 
   const onDelete = (proposerAddress: string) => {
     setDeleteProposer(proposerAddress)
@@ -114,7 +114,7 @@ const DelegatesList = () => {
 
           {deleteProposer && (
             <DeleteProposer
-              delegateAddress={deleteProposer}
+              proposerAddress={deleteProposer}
               onClose={() => setDeleteProposer(undefined)}
               onSuccess={() => setDeleteProposer(undefined)}
             />
@@ -127,4 +127,4 @@ const DelegatesList = () => {
   )
 }
 
-export default DelegatesList
+export default ProposersList

@@ -16,7 +16,7 @@ import { asError } from '@/services/exceptions/utils'
 import madProps from '@/utils/mad-props'
 import Stack from '@mui/system/Stack'
 
-export const DelegateForm = ({
+export const ProposerForm = ({
   safeTx,
   disableSubmit = false,
   txActions,
@@ -33,7 +33,7 @@ export const DelegateForm = ({
 
   // Hooks
   const wallet = useWallet()
-  const { signDelegateTx } = txActions
+  const { signProposerTx } = txActions
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
 
@@ -52,7 +52,7 @@ export const DelegateForm = ({
     setIsRejectedByUser(false)
 
     try {
-      const txId = await signDelegateTx(safeTx)
+      const txId = await signProposerTx(safeTx)
       onSubmit?.(txId)
     } catch (_err) {
       const err = asError(_err)
@@ -115,7 +115,7 @@ export const DelegateForm = ({
 
 const useTxSecurityContext = () => useContext(TxSecurityContext)
 
-export default madProps(DelegateForm, {
+export default madProps(ProposerForm, {
   txActions: useTxActions,
   txSecurity: useTxSecurityContext,
 })

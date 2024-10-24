@@ -1,4 +1,4 @@
-import { delegateEndpoints } from '@/store/api/gateway/delegates'
+import { proposerEndpoints } from '@/store/api/gateway/proposers'
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
@@ -27,7 +27,7 @@ export const gatewayApi = createApi({
         return buildQueryFn(() => Promise.all(txIds.map((txId) => getTransactionDetails(chainId, txId))))
       },
     }),
-    ...delegateEndpoints(builder),
+    ...proposerEndpoints(builder),
     ...safeOverviewEndpoints(builder),
   }),
 })
@@ -36,9 +36,9 @@ export const {
   useGetTransactionDetailsQuery,
   useGetMultipleTransactionDetailsQuery,
   useLazyGetTransactionDetailsQuery,
-  useGetDelegatesQuery,
-  useDeleteDelegateMutation,
-  useAddDelegateMutation,
+  useGetProposersQuery,
+  useDeleteProposerMutation,
+  useAddProposerMutation,
   useGetSafeOverviewQuery,
   useGetMultipleSafeOverviewsQuery,
 } = gatewayApi

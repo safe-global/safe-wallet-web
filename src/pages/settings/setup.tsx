@@ -7,7 +7,7 @@ import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
-import DelegatesList from '@/components/settings/DelegatesList'
+import ProposersList from 'src/components/settings/ProposersList'
 import SpendingLimits from '@/components/settings/SpendingLimits'
 
 const Setup: NextPage = () => {
@@ -61,7 +61,7 @@ const Setup: NextPage = () => {
         <Paper sx={{ p: 4, mb: 2 }}>
           <OwnerList />
 
-          <DelegatesList />
+          <ProposersList />
 
           <RequiredConfirmation threshold={threshold} owners={ownerLength} />
         </Paper>

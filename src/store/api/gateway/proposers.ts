@@ -5,15 +5,15 @@ import { deleteDelegateV2, postDelegateV2 } from '@safe-global/safe-client-gatew
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Delegate, DelegateResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
 
-export const delegateEndpoints = (
+export const proposerEndpoints = (
   builder: EndpointBuilder<ReturnType<typeof fakeBaseQuery<Error>>, never, 'gatewayApi'>,
 ) => ({
-  getDelegates: builder.query<DelegateResponse, { chainId: string; safeAddress: string }>({
+  getProposers: builder.query<DelegateResponse, { chainId: string; safeAddress: string }>({
     queryFn({ chainId, safeAddress }) {
       return buildQueryFn(() => getDelegates(chainId, { safe: safeAddress }))
     },
   }),
-  deleteDelegate: builder.mutation<
+  deleteProposer: builder.mutation<
     void,
     { chainId: string; safeAddress: string; delegateAddress: string; signature: string }
   >({
@@ -25,7 +25,7 @@ export const delegateEndpoints = (
     // Optimistically update the cache and roll back in case the mutation fails
     async onQueryStarted({ chainId, safeAddress, delegateAddress }, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
-        gatewayApi.util.updateQueryData('getDelegates', { chainId, safeAddress }, (draft) => {
+        gatewayApi.util.updateQueryData('getProposers', { chainId, safeAddress }, (draft) => {
           draft.results = draft.results.filter((delegate: Delegate) => delegate.delegate !== delegateAddress)
         }),
       )
@@ -36,7 +36,7 @@ export const delegateEndpoints = (
       }
     },
   }),
-  addDelegate: builder.mutation<
+  addProposer: builder.mutation<
     Delegate,
     { chainId: string; safeAddress: string; delegate: string; delegator: string; label: string; signature: string }
   >({
@@ -51,7 +51,7 @@ export const delegateEndpoints = (
     // Optimistically update the cache and roll back in case the mutation fails
     async onQueryStarted({ chainId, safeAddress, delegate, delegator, label }, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
-        gatewayApi.util.updateQueryData('getDelegates', { chainId, safeAddress }, (draft) => {
+        gatewayApi.util.updateQueryData('getProposers', { chainId, safeAddress }, (draft) => {
           draft.results.push({ delegate, delegator, label, safe: safeAddress })
         }),
       )
