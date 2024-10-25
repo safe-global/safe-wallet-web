@@ -10,7 +10,7 @@ jest.mock('@/store')
 
 beforeEach(() => {
   jest.mock('@/hooks/useSafeAddress', () => ({
-    default: jest.fn(() => '0x1234567890abcdef1234567890abcdef12345678'),
+    default: jest.fn(() => faker.finance.ethereumAddress()),
   }))
 })
 
@@ -26,7 +26,7 @@ describe('useShowOutreachPopup', () => {
     const submission = {
       outreachId: 1,
       targetedSafeId: 1,
-      signerAddress: '0x5Cd167cd2D246B19834726904FA3247362182f6F',
+      signerAddress: faker.finance.ethereumAddress(),
       completionDate: null,
     }
 
@@ -41,7 +41,7 @@ describe('useShowOutreachPopup', () => {
     const submission = {
       outreachId: 1,
       targetedSafeId: 1,
-      signerAddress: '0x5Cd167cd2D246B19834726904FA3247362182f6F',
+      signerAddress: faker.finance.ethereumAddress(),
       completionDate: faker.date.recent().getTime().toString(),
     }
     const { result } = renderHook(() => useShowOutreachPopup(false, undefined, submission))
@@ -65,7 +65,7 @@ describe('useShowOutreachPopup', () => {
     const submission = {
       outreachId: 1,
       targetedSafeId: 1,
-      signerAddress: '0x5Cd167cd2D246B19834726904FA3247362182f6F',
+      signerAddress: faker.finance.ethereumAddress(),
       completionDate: null,
     }
 
@@ -80,7 +80,7 @@ describe('useShowOutreachPopup', () => {
     const submission = {
       outreachId: 1,
       targetedSafeId: 1,
-      signerAddress: '0x5Cd167cd2D246B19834726904FA3247362182f6F',
+      signerAddress: faker.finance.ethereumAddress(),
       completionDate: null,
     }
 
@@ -95,7 +95,7 @@ describe('useShowOutreachPopup', () => {
     const submission = {
       outreachId: 1,
       targetedSafeId: 1,
-      signerAddress: '0x5Cd167cd2D246B19834726904FA3247362182f6F',
+      signerAddress: faker.finance.ethereumAddress(),
       completionDate: null,
     }
 
@@ -110,7 +110,7 @@ describe('useShowOutreachPopup', () => {
     const submission = {
       outreachId: 1,
       targetedSafeId: 1,
-      signerAddress: '0x5Cd167cd2D246B19834726904FA3247362182f6F',
+      signerAddress: faker.finance.ethereumAddress(),
       completionDate: null,
     }
 
