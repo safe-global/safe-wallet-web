@@ -33,7 +33,7 @@ import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import { useAppSelector } from '@/store'
 import { selectRpc } from '@/store/settingsSlice'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
-import { useGetSafeNetConfigQuery } from '@/store/safenet'
+import { useGetSafenetConfigQuery } from '@/store/safenet'
 import { QueryStatus } from '@reduxjs/toolkit/query'
 import { SafenetChainType, isSupportedChain } from '@/utils/safenet'
 import { SAFENET_API_URL } from '@/config/constants'
@@ -78,12 +78,12 @@ const useAppCommunicator = (
 ): AppCommunicator | undefined => {
   const [communicator, setCommunicator] = useState<AppCommunicator | undefined>(undefined)
   const customRpc = useAppSelector(selectRpc)
-  const { data: safeNetConfig, status: safeNetConfigStatus } = useGetSafeNetConfigQuery()
-  const shouldUseSafeNetRpc =
-    safeNetConfigStatus === QueryStatus.fulfilled &&
+  const { data: safenetConfig, status: safenetConfigStatus } = useGetSafenetConfigQuery()
+  const shouldUseSafenetRpc =
+    safenetConfigStatus === QueryStatus.fulfilled &&
     chain &&
-    safeNetConfig &&
-    isSupportedChain(Number(chain.chainId), safeNetConfig, SafenetChainType.DESTINATION)
+    safenetConfig &&
+    isSupportedChain(Number(chain.chainId), safenetConfig, SafenetChainType.DESTINATION)
   const isDarkMode = useDarkMode()
 
   const safeAppWeb3Provider = useMemo(() => {
@@ -91,12 +91,12 @@ const useAppCommunicator = (
       return
     }
 
-    if (shouldUseSafeNetRpc) {
+    if (shouldUseSafenetRpc) {
       return createSafeAppsWeb3Provider(chain, SAFENET_API_URL + `/jsonrpc/${chain.chainId}/`)
     }
 
     return createSafeAppsWeb3Provider(chain, customRpc?.[chain.chainId])
-  }, [chain, customRpc, shouldUseSafeNetRpc])
+  }, [chain, customRpc, shouldUseSafenetRpc])
 
   useEffect(() => {
     let communicatorInstance: AppCommunicator
@@ -242,7 +242,7 @@ const useAppCommunicator = (
         msg.data.id,
       )
     })
-  }, [safeAppWeb3Provider, handlers, chain, communicator, isDarkMode, shouldUseSafeNetRpc])
+  }, [safeAppWeb3Provider, handlers, chain, communicator, isDarkMode, shouldUseSafenetRpc])
 
   return communicator
 }
