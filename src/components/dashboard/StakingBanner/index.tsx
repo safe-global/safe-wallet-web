@@ -172,9 +172,11 @@ const StakingBanner = ({
           </Stack>
 
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ xs: 'center', md: 'flex-end' }}>
-            <Button variant="text" onClick={onHide} size="small" sx={{ whiteSpace: 'nowrap' }}>
-              Don&apos;t show again
-            </Button>
+            <Box>
+              <Button variant="text" onClick={onHide} size="small" sx={{ whiteSpace: 'nowrap' }}>
+                Don&apos;t show again
+              </Button>
+            </Box>
             <NextLink
               href={AppRoutes.stake && { pathname: AppRoutes.stake, query: { safe: router.query.safe } }}
               passHref
