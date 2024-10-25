@@ -123,7 +123,7 @@ const TxDetailsBlock = ({ txSummary, txDetails }: TxDetailsProps): ReactElement 
       {/* Signers */}
       {(!isUnsigned || isTxFromProposer) && (
         <div className={css.txSigners}>
-          <TxSigners txDetails={txDetails} txSummary={txSummary} />
+          <TxSigners txDetails={txDetails} txSummary={txSummary} isTxFromProposer={isTxFromProposer} />
 
           {isQueue && (
             <Box className={css.buttons}>

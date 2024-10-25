@@ -105,9 +105,10 @@ const shouldHideConfirmations = (detailedExecutionInfo?: DetailedExecutionInfo):
 type TxSignersProps = {
   txDetails: TransactionDetails
   txSummary: TransactionSummary
+  isTxFromProposer: boolean
 }
 
-export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElement | null => {
+export const TxSigners = ({ txDetails, txSummary, isTxFromProposer }: TxSignersProps): ReactElement | null => {
   const { detailedExecutionInfo, txInfo, txId } = txDetails
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
   const isPending = useIsPending(txId)
@@ -186,13 +187,23 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
             </ListItemText>
           </ListItem>
         )}
-        <ListItem>
+        <ListItem sx={{ alignItems: 'flex-start' }}>
           <StyledListItemIcon $state={executor ? StepState.CONFIRMED : StepState.DISABLED}>
             {executor ? <Check /> : <MissingConfirmation />}
           </StyledListItemIcon>
-          <ListItemText data-testid="tx-action-status" primaryTypographyProps={{ fontWeight: 700 }}>
-            {executor ? 'Executed' : isPending ? txStatus : 'Can be executed'}
-          </ListItemText>
+          <ListItemText
+            primary={
+              executor ? 'Executed' : isPending ? txStatus : isTxFromProposer ? 'Signer review' : 'Can be executed'
+            }
+            secondary={
+              isTxFromProposer
+                ? 'This transaction was created by a Proposer. Please review and either confirm or reject it. Once confirmed, it can be finalized and executed.'
+                : undefined
+            }
+            data-testid="tx-action-status"
+            primaryTypographyProps={{ fontWeight: 700 }}
+            secondaryTypographyProps={{ mt: 1 }}
+          />
         </ListItem>
       </List>
       {executor ? (
