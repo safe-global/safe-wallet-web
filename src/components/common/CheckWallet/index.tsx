@@ -1,4 +1,4 @@
-import { useIsWalletDelegate } from '@/hooks/useDelegates'
+import { useIsWalletProposer } from '@/hooks/useProposers'
 import { useMemo, type ReactElement } from 'react'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
@@ -36,7 +36,7 @@ const CheckWallet = ({
   const isOnlySpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
   const isWrongChain = useIsWrongChain()
-  const isDelegate = useIsWalletDelegate()
+  const isProposer = useIsWalletProposer()
 
   const { safe } = useSafeInfo()
 
@@ -50,14 +50,14 @@ const CheckWallet = ({
       return Message.SafeNotActivated
     }
 
-    if (!allowNonOwner && !isSafeOwner && !isDelegate && (!isOnlySpendingLimit || !allowSpendingLimit)) {
+    if (!allowNonOwner && !isSafeOwner && !isProposer && (!isOnlySpendingLimit || !allowSpendingLimit)) {
       return Message.NotSafeOwner
     }
   }, [
     allowNonOwner,
     allowSpendingLimit,
     allowUndeployedSafe,
-    isDelegate,
+    isProposer,
     isOnlySpendingLimit,
     isSafeOwner,
     isUndeployedSafe,
