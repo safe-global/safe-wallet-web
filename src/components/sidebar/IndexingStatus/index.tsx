@@ -31,6 +31,18 @@ const STATUSES = {
   },
 }
 
+const getStatus = (synced: boolean, lastSync: number) => {
+  let status = STATUSES.outOfSync
+
+  if (synced) {
+    status = STATUSES.synced
+  } else if (Date.now() - lastSync > MAX_SYNC_DELAY) {
+    status = STATUSES.slow
+  }
+
+  return status
+}
+
 const IndexingStatus = () => {
   const [data] = useIndexingStatus()
 
@@ -38,11 +50,7 @@ const IndexingStatus = () => {
     return null
   }
 
-  const status = data.synced
-    ? STATUSES.synced
-    : Date.now() - data.lastSync > MAX_SYNC_DELAY
-    ? STATUSES.slow
-    : STATUSES.outOfSync
+  const status = getStatus(data.synced, data.lastSync)
 
   const time = formatDistanceToNow(data.lastSync, { addSuffix: true })
 
