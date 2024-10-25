@@ -1,16 +1,20 @@
 import useAsync from '@/hooks/useAsync'
 import useChainId from '@/hooks/useChainId'
 import { Safe__factory } from '@/types/contracts'
-import { Skeleton, Stack, Typography } from '@mui/material'
+import { Link as MuiLink, Skeleton, Stack, Typography } from '@mui/material'
 import { type TransactionData, getTransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import TxData from '..'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { MethodDetails } from '../DecodedData/MethodDetails'
 
-import css from './styles.module.css'
 import MethodCall from '../DecodedData/MethodCall'
+import { Divider } from '@/components/tx/DecodedTx'
+import Link from 'next/link'
+import { useCurrentChain } from '@/hooks/useChains'
+import { AppRoutes } from '@/config/routes'
 
 export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
+  const chain = useCurrentChain()
   const chainId = useChainId()
   const [nestedTxDetails, txDetailsError] = useAsync(async () => {
     const safeInterface = Safe__factory.createInterface()
@@ -27,13 +31,33 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
 
   return (
     <Stack spacing={2}>
-      <Typography mr={2}>This is a on-chain confirmation of a transaction in a nested Safe</Typography>
       {data?.dataDecoded && <MethodCall contractAddress={data?.to.value} method={data.dataDecoded?.method} />}
+
       {data?.dataDecoded && <MethodDetails data={data.dataDecoded} addressInfoIndex={data.addressInfoIndex} />}
-      <Stack className={css.nestedTx} spacing={2}>
-        <Typography variant="h5">Nested Transaction decoded</Typography>
+
+      <Divider />
+
+      <Stack spacing={2}>
+        <Typography variant="h5">Nested transaction:</Typography>
         {nestedTxDetails ? (
-          <TxData txDetails={nestedTxDetails} trusted imitation={false} />
+          <>
+            <TxData txDetails={nestedTxDetails} trusted imitation={false} />
+
+            {chain && data && (
+              <Link
+                href={{
+                  pathname: AppRoutes.transactions.tx,
+                  query: {
+                    safe: `${chain?.shortName}:${data?.to.value}`,
+                    id: nestedTxDetails.txId,
+                  },
+                }}
+                passHref
+              >
+                <MuiLink>Open nested transaction</MuiLink>
+              </Link>
+            )}
+          </>
         ) : txDetailsError ? (
           <ErrorMessage>Could not load details on hash to approve.</ErrorMessage>
         ) : (

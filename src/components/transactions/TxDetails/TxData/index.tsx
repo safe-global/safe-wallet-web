@@ -1,6 +1,6 @@
 import SettingsChangeTxInfo from '@/components/transactions/TxDetails/TxData/SettingsChange'
 import type { SpendingLimitMethods } from '@/utils/transaction-guards'
-import { isOnChainConfirmation, isStakingTxWithdrawInfo } from '@/utils/transaction-guards'
+import { isOnChainConfirmationTxData, isStakingTxWithdrawInfo } from '@/utils/transaction-guards'
 import { isStakingTxExitInfo } from '@/utils/transaction-guards'
 import {
   isCancellationTxInfo,
@@ -78,7 +78,7 @@ const TxData = ({
     return <MigrationToL2TxData txDetails={txDetails} />
   }
 
-  if (isOnChainConfirmation(txDetails.txData)) {
+  if (isOnChainConfirmationTxData(txDetails.txData)) {
     return <OnChainConfirmation data={txDetails.txData} />
   }
 

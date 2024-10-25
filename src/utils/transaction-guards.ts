@@ -416,8 +416,15 @@ export const isERC721Transfer = (value: TransferInfo): value is Erc721Transfer =
 /**
  * True if the tx calls `approveHash`
  */
-export const isOnChainConfirmation = (data?: TransactionData): boolean => {
+export const isOnChainConfirmationTxData = (data?: TransactionData): boolean => {
   const approveHashSelector = Safe__factory.createInterface().getFunction('approveHash').selector
 
   return Boolean(data && data.hexData?.startsWith(approveHashSelector))
+}
+
+export const isOnChainConfirmationTxInfo = (info: TransactionInfo): info is Custom => {
+  if (isCustomTxInfo(info)) {
+    return info.methodName === 'approveHash' && info.dataSize === '36'
+  }
+  return false
 }
