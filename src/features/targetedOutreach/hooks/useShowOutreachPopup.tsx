@@ -4,17 +4,18 @@ import { useAppSelector } from '@/store'
 import { selectCookieBanner } from '@/store/popupSlice'
 import type { getSubmission } from '@safe-global/safe-client-gateway-sdk'
 
-export const useShowOutreachPopup = (
+const useShowOutreachPopup = (
   isDismissed: boolean | undefined,
   askAgainLaterTimestamp: number | undefined,
-  submission: Awaited<ReturnType<typeof getSubmission>> | undefined,
+  submission: getSubmission | undefined,
 ) => {
   const cookiesPopup = useAppSelector(selectCookieBanner)
   const isSigner = useIsSafeOwner()
 
-  const isTargetedSafe = submission?.targetedSafeId && !submission.completionDate
+  const isTargetedSafe = !!submission
+  const hasCompletedSurvey = !!submission?.completionDate
 
-  if (cookiesPopup?.open || isDismissed || !isSigner || !isTargetedSafe) {
+  if (cookiesPopup?.open || isDismissed || !isSigner || !isTargetedSafe || hasCompletedSurvey) {
     return false
   }
 
@@ -24,3 +25,5 @@ export const useShowOutreachPopup = (
 
   return true
 }
+
+export default useShowOutreachPopup

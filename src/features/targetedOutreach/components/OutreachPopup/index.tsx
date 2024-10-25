@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/store'
 import css from './styles.module.css'
 import { closeOutreachBanner, openOutreachBanner, selectOutreachBanner } from '@/store/popupSlice'
 import useLocalStorage, { useSessionStorage } from '@/services/local-storage/useLocalStorage'
-import { useShowOutreachPopup } from '@/features/targetedOutreach/hooks/useShowOutreachPopup'
+import useShowOutreachPopup from '@/features/targetedOutreach/hooks/useShowOutreachPopup'
 import { ACTIVE_OUTREACH, OUTREACH_LS_KEY, OUTREACH_SS_KEY } from '@/features/targetedOutreach/constants'
 import Track from '@/components/common/Track'
 import { OUTREACH_EVENTS } from '@/services/analytics/events/outreach'
@@ -14,8 +14,8 @@ import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
-import { createSubmission, getSubmission } from '@safe-global/safe-client-gateway-sdk'
-import useAsync from '@/hooks/useAsync'
+import { createSubmission } from '@safe-global/safe-client-gateway-sdk'
+import useSubmission from '@/features/targetedOutreach/hooks/useSubmission'
 
 const OutreachPopup = (): ReactElement | null => {
   const dispatch = useAppDispatch()
@@ -24,17 +24,9 @@ const OutreachPopup = (): ReactElement | null => {
   const currentChainId = useChainId()
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
+  const submission = useSubmission()
 
   const [askAgainLaterTimestamp, setAskAgainLaterTimestamp] = useSessionStorage<number>(OUTREACH_SS_KEY)
-
-  const [submission] = useAsync(() => {
-    if (!wallet) return
-    return getSubmission({
-      params: {
-        path: { outreachId: ACTIVE_OUTREACH.id, chainId: currentChainId, safeAddress, signerAddress: wallet.address },
-      },
-    })
-  }, [currentChainId, safeAddress, wallet])
 
   const shouldOpen = useShowOutreachPopup(isClosed, askAgainLaterTimestamp, submission)
 

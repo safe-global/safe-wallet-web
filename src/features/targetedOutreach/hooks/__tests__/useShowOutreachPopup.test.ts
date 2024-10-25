@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react'
-import { useShowOutreachPopup } from '../useShowOutreachPopup'
+import useShowOutreachPopup from '../useShowOutreachPopup'
 import * as useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import * as store from '@/store'
 import { HOUR_IN_MS } from '../../constants'
