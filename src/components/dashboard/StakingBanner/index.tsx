@@ -19,11 +19,13 @@ import { formatUnits } from 'ethers'
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsStakingBannerEnabled from '@/features/stake/hooks/useIsStakingBannerEnabled'
 
-const LOCAL_STORAGE_KEY_HIDE_WIDGET = 'hideStakingBanner'
 const LEARN_MORE_LINK = 'https://help.safe.global/en/articles/222615-safe-staking'
 const MIN_NATIVE_TOKEN_BALANCE = 32
 
-const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
+const StakingBanner = ({
+  large = false,
+  hideLocalStorageKey = 'hideStakingBanner',
+}: { large?: boolean; hideLocalStorageKey?: string } = {}) => {
   const isDarkMode = useDarkMode()
   const router = useRouter()
   const { balances } = useBalances()
@@ -37,7 +39,7 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
     nativeTokenBalance != null &&
     Number(formatUnits(nativeTokenBalance.balance, nativeTokenBalance.tokenInfo.decimals)) >= MIN_NATIVE_TOKEN_BALANCE
 
-  const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>(LOCAL_STORAGE_KEY_HIDE_WIDGET)
+  const [widgetHidden = false, setWidgetHidden] = useLocalStorage<boolean>(hideLocalStorageKey)
 
   const isStakingBannerEnabled = useIsStakingBannerEnabled()
 
@@ -108,8 +110,8 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
               )}
             </Grid>
 
-            <Grid item xs={12}>
-              <Stack direction="row" spacing={2}>
+            <Grid item container xs={12} spacing={2} textAlign="center">
+              <Grid item xs={12} md="auto">
                 <NextLink
                   href={AppRoutes.stake && { pathname: AppRoutes.stake, query: { safe: router.query.safe } }}
                   passHref
@@ -120,10 +122,12 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
                     Stake ETH
                   </Button>
                 </NextLink>
+              </Grid>
+              <Grid item xs={12} md="auto">
                 <Button variant="text" onClick={onHide}>
                   Don&apos;t show again
                 </Button>
-              </Stack>
+              </Grid>
             </Grid>
           </Grid>
         </Card>
@@ -138,7 +142,7 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
 
         <Stack
           direction={{ xs: 'column', md: 'row' }}
-          spacing={{ xs: 2, md: 0 }}
+          spacing={2}
           alignItems={{ xs: 'initial', md: 'center' }}
           justifyContent="space-between"
         >
@@ -148,7 +152,11 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
             <Typography variant="body2">
               <strong>Stake ETH and earn rewards up to 5% APY.</strong> Lock 32 ETH to become a validator via the Kiln
               widget. You can also{' '}
-              <NextLink href={{ pathname: AppRoutes.apps.index, query: router.query }} passHref type="link">
+              <NextLink
+                href={{ pathname: AppRoutes.apps.index, query: { ...router.query, categories: ['Staking'] } }}
+                passHref
+                type="link"
+              >
                 <Link>explore Safe Apps</Link>
               </NextLink>{' '}
               and home staking for other options. Staking involves risks like slashing.
@@ -163,15 +171,18 @@ const StakingBanner = ({ large = false }: { large?: boolean } = {}) => {
             </Typography>
           </Stack>
 
-          <Stack direction="row" spacing={1} alignItems="flex-end">
-            <Button variant="text" onClick={onHide} size="small" sx={{ whiteSpace: 'nowrap' }}>
-              Don&apos;t show again
-            </Button>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ xs: 'center', md: 'flex-end' }}>
+            <Box>
+              <Button variant="text" onClick={onHide} size="small" sx={{ whiteSpace: 'nowrap' }}>
+                Don&apos;t show again
+              </Button>
+            </Box>
             <NextLink
               href={AppRoutes.stake && { pathname: AppRoutes.stake, query: { safe: router.query.safe } }}
               passHref
               rel="noreferrer"
               onClick={onClick}
+              className={classNames(css.stakeButton)}
             >
               <Button fullWidth size="small" variant="contained">
                 Stake
