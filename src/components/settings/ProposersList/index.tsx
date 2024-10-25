@@ -1,6 +1,7 @@
 import CheckWallet from '@/components/common/CheckWallet'
 import { Chip } from '@/components/common/Chip'
 import EnhancedTable from '@/components/common/EnhancedTable'
+import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import Track from '@/components/common/Track'
 import AddProposer from '@/features/proposers/components/AddProposer'
 import DeleteProposer from '@/features/proposers/components/DeleteProposer'
@@ -41,21 +42,23 @@ const ProposersList = () => {
             rawValue: '',
             sticky: true,
             content: (
-              <CheckWallet>
-                {(isOk) => (
-                  <Track {...SETTINGS_EVENTS.PROPOSERS.REMOVE_PROPOSER}>
-                    <IconButton
-                      data-testid="delete-btn"
-                      onClick={() => onDelete(proposer.delegate)}
-                      color="error"
-                      size="small"
-                      disabled={!isOk}
-                    >
-                      <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                    </IconButton>
-                  </Track>
-                )}
-              </CheckWallet>
+              <div className={tableCss.actions}>
+                <CheckWallet>
+                  {(isOk) => (
+                    <Track {...SETTINGS_EVENTS.PROPOSERS.REMOVE_PROPOSER}>
+                      <IconButton
+                        data-testid="delete-btn"
+                        onClick={() => onDelete(proposer.delegate)}
+                        color="error"
+                        size="small"
+                        disabled={!isOk}
+                      >
+                        <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                      </IconButton>
+                    </Track>
+                  )}
+                </CheckWallet>
+              </div>
             ),
           },
         },
