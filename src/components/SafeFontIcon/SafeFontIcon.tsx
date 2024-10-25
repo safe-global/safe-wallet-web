@@ -2,6 +2,7 @@ import React from 'react'
 import createIconSetFromIcoMoon from '@expo/vector-icons/createIconSetFromIcoMoon'
 import { useFonts } from 'expo-font'
 import { IconName } from '@/src/types/iconTypes'
+import { getVariable, useTheme } from 'tamagui'
 
 export const SafeIcon = createIconSetFromIcoMoon(
   require('@/assets/fonts/safe-icons/selection.json'),
@@ -16,6 +17,8 @@ export interface IconProps {
 }
 
 export const SafeFontIcon = ({ name, size = 24, color, ...rest }: IconProps) => {
+  const theme = useTheme()
+  const iconColor = color ? theme[color]?.get() || getVariable(color, 'color') : theme.color?.get()
   const [fontsLoaded] = useFonts({
     SafeIcons: require('@/assets/fonts/safe-icons/safe-icons.ttf'),
   })
@@ -24,5 +27,5 @@ export const SafeFontIcon = ({ name, size = 24, color, ...rest }: IconProps) => 
     return null
   }
 
-  return <SafeIcon name={name} size={size} color={color} {...rest} />
+  return <SafeIcon name={name} size={size} color={iconColor} {...rest} />
 }

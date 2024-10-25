@@ -1,16 +1,16 @@
 import { Link, Stack } from 'expo-router'
 import { StyleSheet, View } from 'react-native'
 
-import { Text } from 'react-native-paper'
+import { Text, H1 } from 'tamagui'
 
 export default function NotFoundScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />
       <View style={styles.container}>
-        <Text variant="titleLarge">This screen doesn't exist.</Text>
-        <Link href="/home" style={styles.link}>
-          <Text variant="titleLarge">Go to home screen!</Text>
+        <H1>This screen doesn't exist.</H1>
+        <Link href="/" style={styles.link}>
+          <Text>Go to home screen!</Text>
         </Link>
       </View>
     </>
