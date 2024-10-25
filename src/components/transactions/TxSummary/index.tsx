@@ -1,3 +1,4 @@
+import TxProposalChip from '@/features/proposers/components/TxProposalChip'
 import StatusLabel from '@/features/swap/components/StatusLabel'
 import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
 import { Box } from '@mui/material'
@@ -74,10 +75,14 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
 
       {isQueue && executionInfo && (
         <Box gridArea="confirmations">
-          <TxConfirmations
-            submittedConfirmations={executionInfo.confirmationsSubmitted}
-            requiredConfirmations={executionInfo.confirmationsRequired}
-          />
+          {executionInfo.confirmationsSubmitted > 0 ? (
+            <TxConfirmations
+              submittedConfirmations={executionInfo.confirmationsSubmitted}
+              requiredConfirmations={executionInfo.confirmationsRequired}
+            />
+          ) : (
+            <TxProposalChip />
+          )}
         </Box>
       )}
 
