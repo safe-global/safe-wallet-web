@@ -86,6 +86,7 @@ describe('[SMOKE] Tx history tests', () => {
   })
 
   it('[SMOKE] Verify that copying sender address of untrusted token shows warning popup', () => {
+    createTx.toggleUntrustedTxs()
     createTx.clickOnTransactionItemByName(typeUntrustedToken.summaryTitle, typeUntrustedToken.summaryTxInfo)
     createTx.clickOnCopyBtn(0)
     createTx.verifyWarningModalVisible()
