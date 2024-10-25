@@ -75,6 +75,7 @@ describe('[SMOKE] Tx history tests', () => {
   })
 
   it('[SMOKE] Verify summary for untrusted token', () => {
+    createTx.toggleUntrustedTxs()
     createTx.verifySummaryByName(
       typeUntrustedToken.summaryTitle,
       typeUntrustedToken.summaryTxInfo,
