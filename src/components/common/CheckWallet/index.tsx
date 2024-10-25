@@ -15,6 +15,7 @@ type CheckWalletProps = {
   noTooltip?: boolean
   checkNetwork?: boolean
   allowUndeployedSafe?: boolean
+  allowProposer?: boolean
 }
 
 enum Message {
@@ -30,6 +31,7 @@ const CheckWallet = ({
   noTooltip,
   checkNetwork = false,
   allowUndeployedSafe = false,
+  allowProposer = true,
 }: CheckWalletProps): ReactElement => {
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()
@@ -46,6 +48,7 @@ const CheckWallet = ({
     if (!wallet) {
       return Message.WalletNotConnected
     }
+
     if (isUndeployedSafe && !allowUndeployedSafe) {
       return Message.SafeNotActivated
     }
@@ -53,8 +56,13 @@ const CheckWallet = ({
     if (!allowNonOwner && !isSafeOwner && !isProposer && (!isOnlySpendingLimit || !allowSpendingLimit)) {
       return Message.NotSafeOwner
     }
+
+    if (!allowProposer && isProposer) {
+      return Message.NotSafeOwner
+    }
   }, [
     allowNonOwner,
+    allowProposer,
     allowSpendingLimit,
     allowUndeployedSafe,
     isProposer,
