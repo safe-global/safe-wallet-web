@@ -10,6 +10,7 @@ import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { SafeTxContext } from '../../SafeTxProvider'
 import type { AddOwnerFlowProps } from '.'
 import type { ReplaceOwnerFlowProps } from '../ReplaceOwner'
+import { SettingsChangeContext } from './context'
 
 export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwnerFlowProps }) => {
   const dispatch = useAppDispatch()
@@ -50,5 +51,9 @@ export const ReviewOwner = ({ params }: { params: AddOwnerFlowProps | ReplaceOwn
     trackEvent({ ...SETTINGS_EVENTS.SETUP.OWNERS, label: safe.owners.length })
   }
 
-  return <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit} showMethodCall />
+  return (
+    <SettingsChangeContext.Provider value={params}>
+      <SignOrExecuteForm onSubmit={addAddressBookEntryAndSubmit} showMethodCall />
+    </SettingsChangeContext.Provider>
+  )
 }

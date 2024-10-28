@@ -7,30 +7,32 @@ import commonCss from '@/components/tx-flow/common/styles.module.css'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { SettingsInfoType, type SettingsChange } from '@safe-global/safe-gateway-typescript-sdk'
 import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
+import { useContext } from 'react'
+import { SettingsChangeContext } from '@/components/tx-flow/flows/AddOwner/context'
 
 export interface SettingsChangeProps extends NarrowConfirmationViewProps {
   txInfo: SettingsChange
 }
 
-const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo }) => {
+const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo: { settingsInfo } }) => {
   const { safe } = useSafeInfo()
-  const params = txInfo.settingsInfo
+  const params = useContext(SettingsChangeContext)
 
-  if (!params || params.type === SettingsInfoType.REMOVE_OWNER) return null
+  if (!settingsInfo || settingsInfo.type === SettingsInfoType.REMOVE_OWNER) return null
 
-  const shouldShowChangeSigner = 'owner' in params || 'newOwner' in params
+  const shouldShowChangeSigner = 'owner' in settingsInfo || 'newOwner' in params
 
   return (
     <>
-      {'oldOwner' in params && (
+      {'oldOwner' in settingsInfo && (
         <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: 2 }}>
           <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
             <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
             Previous signer
           </Typography>
           <EthHashInfo
-            name={params.oldOwner.name}
-            address={params.oldOwner.value}
+            name={settingsInfo.oldOwner.name}
+            address={settingsInfo.oldOwner.value}
             shortAddress={false}
             showCopyButton
             hasExplorer
@@ -38,19 +40,20 @@ const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo }) => {
         </Paper>
       )}
 
-      {'owner' in params && <OwnerList owners={[params.owner]} />}
-      {'newOwner' in params && <OwnerList owners={[params.newOwner]} />}
+      {'owner' in settingsInfo && <OwnerList owners={[settingsInfo.owner]} />}
+      {'newOwner' in params && <OwnerList owners={[{ name: params.newOwner.name, value: params.newOwner.address }]} />}
 
       {shouldShowChangeSigner && <ChangeSignerSetupWarning />}
 
-      {'threshold' in params && (
+      {'threshold' in settingsInfo && (
         <>
           <Divider className={commonCss.nestedDivider} />
 
           <Box>
             <Typography variant="body2">Any transaction requires the confirmation of:</Typography>
             <Typography>
-              <b>{params.threshold}</b> out of <b>{safe.owners.length + ('removedOwner' in params ? 0 : 1)} signers</b>
+              <b>{settingsInfo.threshold}</b> out of{' '}
+              <b>{safe.owners.length + ('removedOwner' in settingsInfo ? 0 : 1)} signers</b>
             </Typography>
           </Box>
         </>

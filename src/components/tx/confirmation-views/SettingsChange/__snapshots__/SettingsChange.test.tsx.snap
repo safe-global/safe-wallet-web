@@ -345,7 +345,8 @@ exports[`SettingsChange should display the SettingsChange component with owner d
       <b>
         1
       </b>
-       out of 
+       out of
+       
       <b>
         1
          signers
