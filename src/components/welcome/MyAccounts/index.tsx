@@ -26,12 +26,14 @@ import { type AllSafesGrouped, useAllSafesGrouped, type MultiChainSafeItem } fro
 import { type SafeItem } from './useAllSafes'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
+import classNames from 'classnames'
 
 type AccountsListProps = {
   safes: AllSafesGrouped
+  isSidebar?: boolean
   onLinkClick?: () => void
 }
-const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
+const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListProps) => {
   const wallet = useWallet()
   const router = useRouter()
   const allSafes = [...(safes.allMultiChainSafes ?? []), ...(safes.allSingleSafes ?? [])]
@@ -74,29 +76,30 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
 
   return (
     <Box data-testid="sidebar-safe-container" className={css.container}>
-      <Box className={css.myAccounts}>
-        <Box className={css.header}>
+      <Box className={classNames(css.myAccounts, { [css.sidebarAccounts]: isSidebar })}>
+        <Box className={classNames(css.header, { [css.sidebarHeader]: isSidebar })}>
           <Typography variant="h1" fontWeight={700} className={css.title}>
             My accounts
           </Typography>
-          <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
-            <Link href={AppRoutes.newSafe.load}>
-              <Button
-                disableElevation
-                variant="outlined"
-                size="small"
-                onClick={onLinkClick}
-                startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-                sx={{ height: '36px' }}
-              >
-                Add
-              </Button>
-            </Link>
-          </Track>
-
-          <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
-            <CreateButton isPrimary={!!wallet} />
-          </Track>
+          <Box className={css.headerButtons}>
+            <Track {...OVERVIEW_EVENTS.ADD_TO_WATCHLIST} label={trackingLabel}>
+              <Link href={AppRoutes.newSafe.load}>
+                <Button
+                  disableElevation
+                  variant="outlined"
+                  size="small"
+                  onClick={onLinkClick}
+                  startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+                  sx={{ height: '36px', width: '100%', px: 2 }}
+                >
+                  Add
+                </Button>
+              </Link>
+            </Track>
+            <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
+              <CreateButton isPrimary={!!wallet} />
+            </Track>
+          </Box>
         </Box>
 
         <Paper className={css.safeList}>
@@ -114,7 +117,7 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               </Typography>
             </div>
             {pinnedSafes.length > 0 ? (
-              <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} loadOverviews={true} />
+              <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} loadBalances={true} />
             ) : (
               <Box className={css.noPinnedSafesMessage}>
                 <Typography color="text.secondary" maxWidth="350px" textAlign="center" fontSize="14px">
@@ -151,12 +154,12 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
               <Box mt={1}>
-                <SafesList safes={allSafes} onLinkClick={onLinkClick} loadOverviews={false} />
+                <SafesList safes={allSafes} onLinkClick={onLinkClick} loadBalances={false} />
               </Box>
             </AccordionDetails>
           </Accordion>
-          <DataWidget />
         </Paper>
+        <DataWidget />
       </Box>
     </Box>
   )

@@ -34,14 +34,16 @@ import { skipToken } from '@reduxjs/toolkit/query'
 import { defaultSafeInfo, useGetSafeOverviewQuery } from '@/store/slices'
 import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+
 type AccountItemProps = {
   safeItem: SafeItem
   safeOverview?: SafeOverview
-  loadOverview: boolean
+  loadBalances: boolean
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, safeItem, loadOverview }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, safeItem, loadBalances }: AccountItemProps) => {
   const { chainId, address, isPinned, isWatchlist } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
@@ -81,7 +83,7 @@ const AccountItem = ({ onLinkClick, safeItem, loadOverview }: AccountItemProps) 
     (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
   const { data: safeOverview } = useGetSafeOverviewQuery(
-    undeployedSafe || !isVisible || !loadOverview
+    undeployedSafe || !isVisible
       ? skipToken
       : {
           chainId: safeItem.chainId,
@@ -145,33 +147,14 @@ const AccountItem = ({ onLinkClick, safeItem, loadOverview }: AccountItemProps) 
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
             </Typography>
-            {undeployedSafe && (
-              <div>
-                <Chip
-                  size="small"
-                  label={isActivating ? 'Activating account' : 'Not activated'}
-                  icon={
-                    isActivating ? (
-                      <LoopIcon fontSize="small" className={css.pendingLoopIcon} sx={{ mr: '-4px', ml: '4px' }} />
-                    ) : (
-                      <ErrorOutlineIcon fontSize="small" color="warning" />
-                    )
-                  }
-                  className={classnames(css.chip, {
-                    [css.pendingAccount]: isActivating,
-                  })}
-                />
-              </div>
-            )}
-            {isWatchlist && <Typography fontSize="inherit">Readonly</Typography>}
           </Typography>
 
           <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
-            {safeOverview && isVisible ? (
+            {!loadBalances || undeployedSafe ? null : safeOverview && isVisible ? (
               <FiatValue value={safeOverview.fiatTotal} />
-            ) : undeployedSafe || !loadOverview ? null : (
+            ) : (
               <Skeleton variant="text" sx={{ ml: 'auto' }} />
             )}
           </Typography>
@@ -188,14 +171,51 @@ const AccountItem = ({ onLinkClick, safeItem, loadOverview }: AccountItemProps) 
       </IconButton>
       <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
 
-      {isVisible && (
-        <QueueActions
-          queued={safeOverview?.queued || 0}
-          awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
-          safeAddress={address}
-          chainShortName={chain?.shortName || ''}
-        />
-      )}
+      <Box width="100%">
+        {undeployedSafe ? (
+          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
+            <Link className={css.statusChip} onClick={onLinkClick} href={href}>
+              <Chip
+                size="small"
+                label={isActivating ? 'Activating account' : 'Not activated'}
+                icon={
+                  isActivating ? (
+                    <LoopIcon fontSize="small" className={css.pendingLoopIcon} sx={{ mr: '-4px', ml: '4px' }} />
+                  ) : (
+                    <ErrorOutlineIcon fontSize="small" color="warning" />
+                  )
+                }
+                className={classnames(css.chip, {
+                  [css.pendingAccount]: isActivating,
+                })}
+              />
+            </Link>
+          </Track>
+        ) : isWatchlist ? (
+          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
+            <Link className={css.statusChip} onClick={onLinkClick} href={href}>
+              <Chip
+                className={css.readOnlyChip}
+                variant="outlined"
+                size="small"
+                icon={<VisibilityIcon className={css.visibilityIcon} />}
+                label={
+                  <Typography variant="caption" display="flex" alignItems="center" gap={0.5}>
+                    Read-only
+                  </Typography>
+                }
+              />
+            </Link>
+          </Track>
+        ) : isVisible ? (
+          <QueueActions
+            queued={safeOverview?.queued || 0}
+            awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
+            safeAddress={address}
+            chainShortName={chain?.shortName || ''}
+          />
+        ) : null}
+      </Box>
     </ListItemButton>
   )
 }

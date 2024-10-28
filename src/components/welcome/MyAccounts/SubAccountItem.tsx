@@ -24,6 +24,7 @@ import FiatValue from '@/components/common/FiatValue'
 import QueueActions from './QueueActions'
 import { useGetHref } from './useGetHref'
 import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
 type SubAccountItem = {
   safeItem: SafeItem
@@ -111,6 +112,26 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
           </Typography>
         </Link>
       </Track>
+
+      {safeItem.isWatchlist && (
+        <Box width="100%">
+          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
+            <Link onClick={onLinkClick} href={href} className={classnames(css.safeSubLink, css.statusChip)}>
+              <Chip
+                className={css.readOnlyChip}
+                variant="outlined"
+                size="small"
+                icon={<VisibilityIcon className={css.visibilityIcon} />}
+                label={
+                  <Typography variant="caption" display="flex" alignItems="center" gap={0.5}>
+                    Read-only
+                  </Typography>
+                }
+              />
+            </Link>
+          </Track>
+        </Box>
+      )}
 
       {undeployedSafe && (
         <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={false} rename={false} />

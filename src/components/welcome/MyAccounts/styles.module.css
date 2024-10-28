@@ -11,20 +11,35 @@
   margin: var(--space-2);
 }
 
+.sidebarAccounts {
+  margin: 0 !important;
+}
+
 .safeList {
-  padding: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-3);
   margin-bottom: var(--space-1);
 }
 
 .header {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
   padding: var(--space-3) 0;
-  gap: var(--space-1);
+  gap: var(--space-2);
 }
 
-.title {
-  flex-grow: 1;
+.sidebarHeader {
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.sidebarHeader > h1 {
+  font-size: 24px;
+}
+
+.headerButtons {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-1);
 }
 
 .noPinnedSafesMessage {
@@ -77,6 +92,7 @@
   border-radius: 6px;
   border: 1px solid var(--color-border-light);
 }
+
 .subItem.currentListItem .borderLeft {
   border-left: 4px solid var(--color-secondary-light);
 }
@@ -89,7 +105,7 @@
 .safeLink {
   display: grid;
   padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
-  grid-template-columns: 60px 4fr 6fr minmax(auto, 1fr);
+  grid-template-columns: 60px 4fr 6fr minmax(auto, 3fr);
   align-items: center;
 }
 
@@ -107,11 +123,25 @@
   text-overflow: ellipsis;
 }
 
+.readOnlyChip {
+  border-radius: var(--space-2);
+  color: var(--color-primary-light);
+  border-color: var(--color-border-light);
+  font-size: 14px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.visibilityIcon {
+  font-size: 16px !important;
+  color: var(--color-border-main) !important;
+}
+
 .listHeader {
   display: flex;
 }
 
-.listHeader path {
+.listHeader svg path {
   stroke: var(--color-text-primary);
 }
 
@@ -143,7 +173,6 @@
 .chip {
   border-radius: 4px;
   background-color: var(--color-warning-background);
-  margin-top: 4px;
 }
 
 .pendingAccount {
@@ -152,6 +181,17 @@
 
 .pendingLoopIcon {
   color: var(--color-info-dark) !important;
+}
+
+.statusChip {
+  display: flex;
+  gap: var(--space-1);
+  padding: 0 var(--space-2) var(--space-2);
+  width: 100%;
+}
+
+.statusChips:empty {
+  display: none;
 }
 
 .multiChains {
@@ -218,24 +258,15 @@
   .chainIndicator {
     justify-content: flex-start;
   }
-}
-
-@container my-accounts-container (max-width: 500px) {
-  .myAccounts {
-    margin: 0;
-  }
-
   .header {
-    padding: var(--space-2);
-    border-bottom: 1px solid var(--color-border-light);
+    flex-direction: column;
   }
 
-  .safeList {
-    border-radius: 0;
-    margin-bottom: 0;
+  .headerButtons > span {
+    flex: 1;
   }
 
-  .title {
-    font-size: 20px;
+  .headerButtons > span > a {
+    width: 100%;
   }
 }

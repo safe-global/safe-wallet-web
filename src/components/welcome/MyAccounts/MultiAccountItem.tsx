@@ -43,13 +43,12 @@ import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import { addOrUpdateSafe, pinSafe, selectAllAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import { skipToken } from '@reduxjs/toolkit/query'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
   safeOverviews?: SafeOverview[]
   onLinkClick?: () => void
-  loadOverview: boolean
+  loadBalances: boolean
 }
 
 const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
@@ -74,7 +73,7 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
   )
 }
 
-const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, loadOverview }: MultiAccountItemProps) => {
+const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, loadBalances }: MultiAccountItemProps) => {
   const { address, safes, isPinned } = multiSafeAccountItem
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const safeAddress = useSafeAddress()
@@ -112,9 +111,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, loadOverview }: M
     () => safes.filter((safe) => undeployedSafes[safe.chainId]?.[safe.address] === undefined),
     [safes, undeployedSafes],
   )
-  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery(
-    loadOverview ? { currency, walletAddress, safes: deployedSafes } : skipToken,
-  )
+  const { data: safeOverviews } = useGetMultipleSafeOverviewsQuery({ currency, walletAddress, safes: deployedSafes })
 
   const safeSetups = useMemo(
     () => getSafeSetups(safes, safeOverviews ?? [], undeployedSafes),
@@ -212,7 +209,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, loadOverview }: M
             </Typography>
             <MultichainIndicator safes={safes} />
             <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
-              {!loadOverview ? null : totalFiatValue !== undefined ? (
+              {!loadBalances ? null : totalFiatValue !== undefined ? (
                 <FiatValue value={totalFiatValue} />
               ) : (
                 <Skeleton variant="text" sx={{ ml: 'auto' }} />

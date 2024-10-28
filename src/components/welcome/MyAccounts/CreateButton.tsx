@@ -2,7 +2,7 @@ import { Button } from '@mui/material'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 
-const buttonSx = { width: ['100%', 'auto'], height: '36px' }
+const buttonSx = { width: ['100%', 'auto'], height: '36px', px: 2 }
 
 const CreateButton = ({ isPrimary }: { isPrimary: boolean }) => {
   return (
