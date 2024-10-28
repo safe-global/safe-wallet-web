@@ -42,6 +42,7 @@ const addressItem = '[data-testid="address-item"]'
 const radioSelector = 'div[role="radiogroup"]'
 const rejectTxBtn = '[data-testid="reject-btn"]'
 const deleteTxModalBtn = '[data-testid="delete-tx-btn"]'
+const toggleUntrustedBtn = '[data-testid="toggle-untrusted"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -606,4 +607,8 @@ export function verifyBulkExecuteBtnIsDisabled() {
   cy.get('button').contains(bulkExecuteBtnStr).should('be.disabled')
   cy.get('button').contains(bulkExecuteBtnStr).trigger('mouseover', { force: true })
   cy.contains(disabledBultExecuteBtnTooltip).should('exist')
+}
+
+export function toggleUntrustedTxs() {
+  cy.get(toggleUntrustedBtn).click()
 }
