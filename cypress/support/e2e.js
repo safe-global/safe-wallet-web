@@ -30,7 +30,7 @@ import * as ls from './localstorage_data'
 const { addCompareSnapshotCommand } = require('cypress-visual-regression/dist/command')
 addCompareSnapshotCommand()
 
-const beamer = JSON.parse(Cypress.env('BEAMER_DATA_E2E'))
+const beamer = JSON.parse(Cypress.env('BEAMER_DATA_E2E') || '{}')
 const productID = beamer.PRODUCT_ID
 
 before(() => {
