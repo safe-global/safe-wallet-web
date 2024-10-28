@@ -1,5 +1,6 @@
 import AddressBookInput from '@/components/common/AddressBookInput'
 import CheckWallet from '@/components/common/CheckWallet'
+import EthHashInfo from '@/components/common/EthHashInfo'
 import NameInput from '@/components/common/NameInput'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -33,22 +34,24 @@ import {
 import { type BaseSyntheticEvent, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-type AddProposerProps = {
+type UpsertProposerProps = {
   onClose: () => void
   onSuccess: () => void
+  address?: string
+  name?: string
 }
 
-enum DelegateEntryFields {
+enum ProposerEntryFields {
   address = 'address',
   name = 'name',
 }
 
-type DelegateEntry = {
-  [DelegateEntryFields.name]: string
-  [DelegateEntryFields.address]: string
+type ProposerEntry = {
+  [ProposerEntryFields.name]: string
+  [ProposerEntryFields.address]: string
 }
 
-const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
+const UpsertProposer = ({ onClose, onSuccess, address, name }: UpsertProposerProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [addProposer] = useAddProposerMutation()
@@ -59,10 +62,10 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
   const wallet = useWallet()
   const safeAddress = useSafeAddress()
 
-  const methods = useForm<DelegateEntry>({
+  const methods = useForm<ProposerEntry>({
     defaultValues: {
-      [DelegateEntryFields.address]: '',
-      [DelegateEntryFields.name]: '',
+      [ProposerEntryFields.address]: address,
+      [ProposerEntryFields.name]: name,
     },
     mode: 'onChange',
   })
@@ -74,7 +77,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
 
   const { handleSubmit } = methods
 
-  const onConfirm = handleSubmit(async (data: DelegateEntry) => {
+  const onConfirm = handleSubmit(async (data: ProposerEntry) => {
     if (!wallet) return
 
     setError(undefined)
@@ -94,7 +97,9 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
         safeAddress,
       })
 
-      trackEvent(SETTINGS_EVENTS.PROPOSERS.SUBMIT_ADD_PROPOSER)
+      trackEvent(
+        isEditing ? SETTINGS_EVENTS.PROPOSERS.SUBMIT_EDIT_PROPOSER : SETTINGS_EVENTS.PROPOSERS.SUBMIT_ADD_PROPOSER,
+      )
 
       dispatch(
         showNotification({
@@ -120,9 +125,13 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
   }
 
   const onCancel = () => {
-    trackEvent(SETTINGS_EVENTS.PROPOSERS.CANCEL_ADD_PROPOSER)
+    trackEvent(
+      isEditing ? SETTINGS_EVENTS.PROPOSERS.CANCEL_EDIT_PROPOSER : SETTINGS_EVENTS.PROPOSERS.CANCEL_ADD_PROPOSER,
+    )
     onClose()
   }
+
+  const isEditing = address && name
 
   return (
     <Dialog open onClose={onCancel}>
@@ -131,7 +140,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
           <DialogTitle>
             <Box data-testid="untrusted-token-warning" display="flex" alignItems="center">
               <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                Add proposer
+                {isEditing ? 'Edit' : 'Add'} proposer
               </Typography>
 
               <Box flexGrow={1} />
@@ -152,17 +161,23 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
               </Typography>
             </Box>
 
-            <Alert severity="info">Proposer’s name and address will be publicly visible.</Alert>
+            <Alert severity="info">Proposer’s name and address are publicly visible.</Alert>
 
             <Box my={2}>
-              <AddressBookInput
-                name="address"
-                label="Address"
-                validate={combinedValidate}
-                variant="outlined"
-                fullWidth
-                required
-              />
+              {isEditing ? (
+                <Box mb={3}>
+                  <EthHashInfo address={address} showCopyButton hasExplorer shortAddress={false} />
+                </Box>
+              ) : (
+                <AddressBookInput
+                  name="address"
+                  label="Address"
+                  validate={combinedValidate}
+                  variant="outlined"
+                  fullWidth
+                  required
+                />
+              )}
             </Box>
 
             <Box mb={2}>
@@ -185,7 +200,7 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
               Cancel
             </Button>
 
-            <CheckWallet checkNetwork={!isLoading}>
+            <CheckWallet checkNetwork={!isLoading} allowProposer={false}>
               {(isOk) => (
                 <Button
                   size="small"
@@ -206,4 +221,4 @@ const AddProposer = ({ onClose, onSuccess }: AddProposerProps) => {
   )
 }
 
-export default AddProposer
+export default UpsertProposer

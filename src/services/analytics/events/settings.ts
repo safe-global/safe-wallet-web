@@ -83,6 +83,10 @@ export const SETTINGS_EVENTS = {
       action: 'Remove safe proposer',
       category: SETTINGS_CATEGORY,
     },
+    EDIT_PROPOSER: {
+      action: 'Edit safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
     SUBMIT_ADD_PROPOSER: {
       action: 'Submit add safe proposer',
       category: SETTINGS_CATEGORY,
@@ -91,12 +95,20 @@ export const SETTINGS_EVENTS = {
       action: 'Submit remove safe proposer',
       category: SETTINGS_CATEGORY,
     },
+    SUBMIT_EDIT_PROPOSER: {
+      action: 'Submit edit safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
     CANCEL_ADD_PROPOSER: {
       action: 'Cancel add safe proposer',
       category: SETTINGS_CATEGORY,
     },
     CANCEL_REMOVE_PROPOSER: {
       action: 'Cancel remove safe proposer',
+      category: SETTINGS_CATEGORY,
+    },
+    CANCEL_EDIT_PROPOSER: {
+      action: 'Cancel edit safe proposer',
       category: SETTINGS_CATEGORY,
     },
   },
