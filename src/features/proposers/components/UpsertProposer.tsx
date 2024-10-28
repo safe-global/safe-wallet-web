@@ -31,14 +31,14 @@ import {
   IconButton,
   Typography,
 } from '@mui/material'
+import type { Delegate } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
 import { type BaseSyntheticEvent, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 type UpsertProposerProps = {
   onClose: () => void
   onSuccess: () => void
-  address?: string
-  name?: string
+  proposer?: Delegate
 }
 
 enum ProposerEntryFields {
@@ -51,7 +51,7 @@ type ProposerEntry = {
   [ProposerEntryFields.address]: string
 }
 
-const UpsertProposer = ({ onClose, onSuccess, address, name }: UpsertProposerProps) => {
+const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [addProposer] = useAddProposerMutation()
@@ -64,8 +64,8 @@ const UpsertProposer = ({ onClose, onSuccess, address, name }: UpsertProposerPro
 
   const methods = useForm<ProposerEntry>({
     defaultValues: {
-      [ProposerEntryFields.address]: address,
-      [ProposerEntryFields.name]: name,
+      [ProposerEntryFields.address]: proposer?.delegate,
+      [ProposerEntryFields.name]: proposer?.label,
     },
     mode: 'onChange',
   })
@@ -131,7 +131,8 @@ const UpsertProposer = ({ onClose, onSuccess, address, name }: UpsertProposerPro
     onClose()
   }
 
-  const isEditing = address && name
+  const isEditing = !!proposer
+  const canEdit = wallet?.address === proposer?.delegator
 
   return (
     <Dialog open onClose={onCancel}>
@@ -166,7 +167,7 @@ const UpsertProposer = ({ onClose, onSuccess, address, name }: UpsertProposerPro
             <Box my={2}>
               {isEditing ? (
                 <Box mb={3}>
-                  <EthHashInfo address={address} showCopyButton hasExplorer shortAddress={false} />
+                  <EthHashInfo address={proposer?.delegate} showCopyButton hasExplorer shortAddress={false} />
                 </Box>
               ) : (
                 <AddressBookInput
@@ -207,7 +208,7 @@ const UpsertProposer = ({ onClose, onSuccess, address, name }: UpsertProposerPro
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disabled={!isOk || isLoading}
+                  disabled={!isOk || isLoading || !canEdit}
                   sx={{ minWidth: '122px', minHeight: '36px' }}
                 >
                   {isLoading ? <CircularProgress size={20} /> : 'Continue'}

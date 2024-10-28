@@ -23,6 +23,7 @@ import {
   Box,
   CircularProgress,
   SvgIcon,
+  Tooltip,
 } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import madProps from '@/utils/mad-props'
@@ -87,22 +88,34 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
     setOpen(false)
   }
 
-  const canEdit = wallet?.address === proposer.delegate || wallet?.address === proposer.delegator
+  const canDelete = wallet?.address === proposer.delegate || wallet?.address === proposer.delegator
 
   return (
     <>
       <CheckWallet>
         {(isOk) => (
           <Track {...SETTINGS_EVENTS.PROPOSERS.REMOVE_PROPOSER}>
-            <IconButton
-              data-testid="delete-proposer-btn"
-              onClick={() => setOpen(true)}
-              color="error"
-              size="small"
-              disabled={!isOk || !canEdit}
+            <Tooltip
+              title={
+                isOk && canDelete
+                  ? 'Delete proposer'
+                  : isOk && !canDelete
+                  ? 'Only the owner of this proposer or the proposer itself can delete them'
+                  : undefined
+              }
             >
-              <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-            </IconButton>
+              <span>
+                <IconButton
+                  data-testid="delete-proposer-btn"
+                  onClick={() => setOpen(true)}
+                  color="error"
+                  size="small"
+                  disabled={!isOk || !canDelete}
+                >
+                  <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
+                </IconButton>
+              </span>
+            </Tooltip>
           </Track>
         )}
       </CheckWallet>
@@ -153,7 +166,7 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
             size="small"
             variant="danger"
             onClick={onConfirm}
-            disabled={isLoading}
+            disabled={isLoading || !canDelete}
             sx={{
               minWidth: '122px',
               minHeight: '36px',
