@@ -125,13 +125,35 @@ describe('CheckWallet', () => {
     expect(allowContainer.querySelector('button')).not.toBeDisabled()
   })
 
-  it('should not disable the button for delegates', () => {
+  it('should not disable the button for proposers', () => {
     ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
     ;(useIsWalletProposer as jest.MockedFunction<typeof useIsWalletProposer>).mockReturnValueOnce(true)
 
     const { container } = renderButton()
 
     expect(container.querySelector('button')).not.toBeDisabled()
+  })
+
+  it('should disable the button for proposers if specified via flag', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
+    ;(useIsWalletProposer as jest.MockedFunction<typeof useIsWalletProposer>).mockReturnValueOnce(true)
+
+    const { getByText } = render(
+      <CheckWallet allowProposer={false}>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
+    )
+
+    expect(getByText('Continue')).toBeDisabled()
+  })
+
+  it('should not disable the button for proposers that are also owners', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
+    ;(useIsWalletProposer as jest.MockedFunction<typeof useIsWalletProposer>).mockReturnValueOnce(true)
+
+    const { getByText } = render(
+      <CheckWallet allowProposer={false}>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
+    )
+
+    expect(getByText('Continue')).not.toBeDisabled()
   })
 
   it('should disable the button for counterfactual Safes', () => {

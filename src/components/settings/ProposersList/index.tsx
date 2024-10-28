@@ -6,6 +6,7 @@ import Track from '@/components/common/Track'
 import AddProposer from '@/features/proposers/components/AddProposer'
 import DeleteProposer from '@/features/proposers/components/DeleteProposer'
 import useProposers from '@/hooks/useProposers'
+import useWallet from '@/hooks/wallets/useWallet'
 import AddIcon from '@/public/images/common/add.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { SETTINGS_EVENTS } from '@/services/analytics'
@@ -19,6 +20,7 @@ const ProposersList = () => {
   const [deleteProposer, setDeleteProposer] = useState<string>()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>()
   const proposers = useProposers()
+  const wallet = useWallet()
 
   const rows = useMemo(() => {
     if (!proposers.data) return []
@@ -51,7 +53,9 @@ const ProposersList = () => {
                         onClick={() => onDelete(proposer.delegate)}
                         color="error"
                         size="small"
-                        disabled={!isOk}
+                        disabled={
+                          !isOk || (wallet?.address !== proposer.delegate && wallet?.address !== proposer.delegator)
+                        }
                       >
                         <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
                       </IconButton>
@@ -64,7 +68,7 @@ const ProposersList = () => {
         },
       }
     })
-  }, [proposers.data])
+  }, [proposers.data, wallet?.address])
 
   if (!proposers.data?.results) return null
 
@@ -94,7 +98,7 @@ const ProposersList = () => {
             </Typography>
 
             <Box mb={2}>
-              <CheckWallet>
+              <CheckWallet allowProposer={false}>
                 {(isOk) => (
                   <Track {...SETTINGS_EVENTS.PROPOSERS.ADD_PROPOSER}>
                     <Button
