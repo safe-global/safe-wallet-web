@@ -35,7 +35,7 @@ import { selectRpc } from '@/store/settingsSlice'
 import { createSafeAppsWeb3Provider } from '@/hooks/wallets/web3'
 import { useGetSafeNetConfigQuery } from '@/store/safenet'
 import { QueryStatus } from '@reduxjs/toolkit/query'
-import { SafenetChainType, isSupportedChain } from '@/utils/safenet'
+import { isSupportedChain } from '@/utils/safenet'
 import { SAFENET_API_URL } from '@/config/constants'
 import { useDarkMode } from '@/hooks/useDarkMode'
 
@@ -83,7 +83,7 @@ const useAppCommunicator = (
     safeNetConfigStatus === QueryStatus.fulfilled &&
     chain &&
     safeNetConfig &&
-    isSupportedChain(Number(chain.chainId), safeNetConfig, SafenetChainType.DESTINATION)
+    isSupportedChain(Number(chain.chainId), safeNetConfig)
   const isDarkMode = useDarkMode()
 
   const safeAppWeb3Provider = useMemo(() => {

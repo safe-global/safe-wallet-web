@@ -19,7 +19,7 @@ import {
 import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
-import { SafenetChainType, isSupportedChain } from '@/utils/safenet'
+import { isSupportedChain } from '@/utils/safenet'
 import { getRTKErrorMessage } from '@/utils/redux-toolkit-query'
 
 const getSafeNetTokensByChain = (chainId: number, safeNetConfig: SafeNetConfigEntity): string[] => {
@@ -41,7 +41,7 @@ const SafeNetContent = ({ safeNetConfig, safe }: { safeNetConfig: SafeNetConfigE
   const safeNetGuardAddress = safeNetConfig.guards[safe.chainId]
   const safeNetProcessorAddress = safeNetConfig.processors[safe.chainId]
   const isSafeNetGuardEnabled = isVersionWithGuards && sameAddress(safe.guard?.value, safeNetGuardAddress)
-  const chainSupported = isSupportedChain(Number(safe.chainId), safeNetConfig, SafenetChainType.SOURCE)
+  const chainSupported = isSupportedChain(Number(safe.chainId), safeNetConfig)
   const { setTxFlow } = useContext(TxModalContext)
 
   // Lazy query because running it on unsupported chain throws an error
@@ -90,8 +90,7 @@ const SafeNetContent = ({ safeNetConfig, safe }: { safeNetConfig: SafeNetConfigE
     case !chainSupported:
       return (
         <Typography>
-          SafeNet is not supported on this chain. List of supported chains ids:{' '}
-          {safeNetConfig.chains.sources.join(', ')}
+          SafeNet is not supported on this chain. List of supported chains ids: {safeNetConfig.chains.join(', ')}
         </Typography>
       )
     case !isVersionWithGuards:

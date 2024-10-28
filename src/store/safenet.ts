@@ -9,10 +9,7 @@ export type SafeNetSafeEntity = {
 }
 
 export type SafeNetConfigEntity = {
-  chains: {
-    sources: number[]
-    destinations: number[]
-  }
+  chains: number[]
   guards: Record<string, string>
   tokens: Record<string, Record<string, string>>
   processors: Record<string, string>
