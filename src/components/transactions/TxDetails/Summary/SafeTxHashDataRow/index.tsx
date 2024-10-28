@@ -4,6 +4,7 @@ import { type SafeTransactionData, type SafeVersion } from '@safe-global/safe-co
 import { getEip712TxTypes } from '@safe-global/protocol-kit/dist/src/utils'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
+import { capitalizeHash } from '@/utils/web3'
 
 export const SafeTxHashDataRow = ({
   safeTxHash,
@@ -16,12 +17,19 @@ export const SafeTxHashDataRow = ({
 }) => {
   const chainId = useChainId()
   const safeAddress = useSafeAddress()
-  const domainHash = TypedDataEncoder.hashDomain({
-    chainId,
-    verifyingContract: safeAddress,
-  })
+
+  // We capitalize domain and message hash as it is displayed capitalized in many HW wallets.
+  const domainHash = capitalizeHash(
+    TypedDataEncoder.hashDomain({
+      chainId,
+      verifyingContract: safeAddress,
+    }),
+  )
+
   const messageHash = safeTxData
-    ? TypedDataEncoder.hashStruct('SafeTx', { SafeTx: getEip712TxTypes(safeVersion).SafeTx }, safeTxData)
+    ? capitalizeHash(
+        TypedDataEncoder.hashStruct('SafeTx', { SafeTx: getEip712TxTypes(safeVersion).SafeTx }, safeTxData),
+      )
     : undefined
 
   return (
