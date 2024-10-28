@@ -145,6 +145,17 @@ describe('CheckWallet', () => {
     expect(getByText('Continue')).toBeDisabled()
   })
 
+  it('should not disable the button for proposers that are also owners', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
+    ;(useIsWalletProposer as jest.MockedFunction<typeof useIsWalletProposer>).mockReturnValueOnce(true)
+
+    const { getByText } = render(
+      <CheckWallet allowProposer={false}>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
+    )
+
+    expect(getByText('Continue')).not.toBeDisabled()
+  })
+
   it('should disable the button for counterfactual Safes', () => {
     ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
 

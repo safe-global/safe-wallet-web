@@ -57,7 +57,7 @@ const CheckWallet = ({
       return Message.NotSafeOwner
     }
 
-    if (!allowProposer && isProposer) {
+    if (!allowProposer && isProposer && !isSafeOwner) {
       return Message.NotSafeOwner
     }
   }, [
