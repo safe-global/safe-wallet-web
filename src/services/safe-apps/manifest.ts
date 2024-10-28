@@ -55,8 +55,16 @@ const getAppLogoUrl = (appUrl: string, { icons = [], iconPath = '' }: AppManifes
   return `${appUrl}${isRelativeUrl(iconUrl) ? '' : '/'}${iconUrl}`
 }
 
+const ALLOWED_DOMAINS = ['example.com', 'another-safe-domain.com']; // Add your allowed domains here
+
 const fetchAppManifest = async (appUrl: string, timeout = 5000): Promise<unknown> => {
   const normalizedUrl = trimTrailingSlash(appUrl)
+  const urlObj = new URL(normalizedUrl)
+
+  if (!ALLOWED_DOMAINS.includes(urlObj.hostname)) {
+    throw new Error(`The domain ${urlObj.hostname} is not allowed`)
+  }
+
   const manifestUrl = `${normalizedUrl}/manifest.json`
 
   // A lot of apps are hosted on IPFS and IPFS never times out, so we add our own timeout
