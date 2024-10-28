@@ -50,7 +50,7 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@gnosis.pm/zodiac": "^4.0.3",
-    "@mui/icons-material": "^5.14.20",
+    "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/x-date-pickers": "^5.0.20",
     "@reduxjs/toolkit": "^2.2.6",
