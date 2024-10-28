@@ -200,6 +200,8 @@ export const SignOrExecuteForm = ({
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
 
+      <SignerForm />
+
       <TxCard>
         <ConfirmationTitle
           variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
@@ -220,8 +222,6 @@ export const SignOrExecuteForm = ({
         {!isMultiChainMigration && <UnknownContractError />}
 
         <Blockaid />
-
-        <SignerForm />
 
         {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
