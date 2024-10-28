@@ -90,8 +90,7 @@ const SafenetContent = ({ safenetConfig, safe }: { safenetConfig: SafenetConfigE
     case !chainSupported:
       return (
         <Typography>
-          Safenet is not supported on this chain. List of supported chains ids:{' '}
-          {safenetConfig.chains.join(', ')}
+          Safenet is not supported on this chain. List of supported chains ids: {safenetConfig.chains.join(', ')}
         </Typography>
       )
     case !isVersionWithGuards:
