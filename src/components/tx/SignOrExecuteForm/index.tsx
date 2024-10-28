@@ -43,6 +43,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import useIsSafenetEnabled from '@/hooks/useIsSafenetEnabled'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -124,6 +125,7 @@ export const SignOrExecuteForm = ({
   const isApproval = readableApprovals && readableApprovals.length > 0
 
   const { safe } = useSafeInfo()
+  const isSafenetEnabled = useIsSafenetEnabled()
   const isSafeOwner = useIsSafeOwner()
   const isCounterfactualSafe = !safe.deployed
   const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(safeTx)
@@ -139,7 +141,7 @@ export const SignOrExecuteForm = ({
   const preferThroughRole = canExecuteThroughRole && !isSafeOwner // execute through role if a non-owner role member wallet is connected
 
   // If checkbox is checked and the transaction is executable, execute it, otherwise sign it
-  const canExecute = isCorrectNonce && (props.isExecutable || isNewExecutableTx)
+  const canExecute = !isSafenetEnabled && isCorrectNonce && (props.isExecutable || isNewExecutableTx)
   const willExecute = (props.onlyExecute || shouldExecute) && canExecute && !preferThroughRole
   const willExecuteThroughRole =
     (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
