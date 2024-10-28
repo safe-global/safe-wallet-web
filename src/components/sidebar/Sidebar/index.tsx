@@ -52,7 +52,7 @@ const Sidebar = (): ReactElement => {
 
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
         <div className={css.drawer}>
-          <MyAccounts onLinkClick={closeDrawer} isSidebar={true}></MyAccounts>
+          <MyAccounts onLinkClick={closeDrawer} isSidebar></MyAccounts>
         </div>
       </Drawer>
     </div>

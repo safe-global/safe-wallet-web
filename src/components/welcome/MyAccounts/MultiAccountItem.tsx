@@ -48,7 +48,6 @@ type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
   safeOverviews?: SafeOverview[]
   onLinkClick?: () => void
-  loadBalances: boolean
 }
 
 const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
@@ -73,7 +72,7 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
   )
 }
 
-const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, loadBalances }: MultiAccountItemProps) => {
+const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountItemProps) => {
   const { address, safes, isPinned } = multiSafeAccountItem
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const safeAddress = useSafeAddress()
@@ -209,7 +208,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, loadBalances }: M
             </Typography>
             <MultichainIndicator safes={safes} />
             <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
-              {!loadBalances ? null : totalFiatValue !== undefined ? (
+              {totalFiatValue !== undefined ? (
                 <FiatValue value={totalFiatValue} />
               ) : (
                 <Skeleton variant="text" sx={{ ml: 'auto' }} />

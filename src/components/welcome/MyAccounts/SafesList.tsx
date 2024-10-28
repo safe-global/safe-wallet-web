@@ -9,10 +9,9 @@ import Collapse from '@mui/material/Collapse'
 type SafeListProps = {
   safes?: (SafeItem | MultiChainSafeItem)[]
   onLinkClick?: () => void
-  loadBalances: boolean
 }
 
-export const SafesList = ({ safes, onLinkClick, loadBalances }: SafeListProps) => {
+export const SafesList = ({ safes, onLinkClick }: SafeListProps) => {
   if (!safes || safes.length === 0) {
     return null
   }
@@ -22,16 +21,11 @@ export const SafesList = ({ safes, onLinkClick, loadBalances }: SafeListProps) =
       {safes.map((item) =>
         isMultiChainSafeItem(item) ? (
           <Collapse key={item.address} timeout={600}>
-            <MultiAccountItem onLinkClick={onLinkClick} multiSafeAccountItem={item} loadBalances={loadBalances} />
+            <MultiAccountItem onLinkClick={onLinkClick} multiSafeAccountItem={item} />
           </Collapse>
         ) : (
           <Collapse key={item.address} timeout={600}>
-            <AccountItem
-              onLinkClick={onLinkClick}
-              safeItem={item}
-              key={item.chainId + item.address}
-              loadBalances={loadBalances}
-            />
+            <AccountItem onLinkClick={onLinkClick} safeItem={item} key={item.chainId + item.address} />
           </Collapse>
         ),
       )}

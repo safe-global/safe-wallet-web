@@ -47,7 +47,7 @@ const useAllSafes = (): SafeItems | undefined => {
       return undefined
     }
     const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded)))
-    // sort chains by chainId
+    // todo: replace with sortBy logic
     chains.sort((a, b) => parseInt(a) - parseInt(b))
 
     return chains.flatMap((chainId) => {
@@ -56,7 +56,7 @@ const useAllSafes = (): SafeItems | undefined => {
       const ownedOnChain = (allOwned || {})[chainId]
       const undeployedOnChain = Object.keys(undeployedSafes[chainId] || {})
       const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
-      // sort addresses by address
+      // todo: replace with sortBy logic
       uniqueAddresses.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 
       return uniqueAddresses.map((address) => {

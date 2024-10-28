@@ -39,11 +39,10 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 type AccountItemProps = {
   safeItem: SafeItem
   safeOverview?: SafeOverview
-  loadBalances: boolean
   onLinkClick?: () => void
 }
 
-const AccountItem = ({ onLinkClick, safeItem, loadBalances }: AccountItemProps) => {
+const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   const { chainId, address, isPinned, isWatchlist } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
@@ -152,7 +151,7 @@ const AccountItem = ({ onLinkClick, safeItem, loadBalances }: AccountItemProps) 
           <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
-            {!loadBalances || undeployedSafe ? null : safeOverview && isVisible ? (
+            {undeployedSafe ? null : safeOverview ? (
               <FiatValue value={safeOverview.fiatTotal} />
             ) : (
               <Skeleton variant="text" sx={{ ml: 'auto' }} />

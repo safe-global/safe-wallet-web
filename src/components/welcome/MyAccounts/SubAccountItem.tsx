@@ -104,9 +104,9 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
           </Typography>
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
-            {safeOverview ? (
+            {undeployedSafe ? null : safeOverview ? (
               <FiatValue value={safeOverview.fiatTotal} />
-            ) : undeployedSafe ? null : (
+            ) : (
               <Skeleton variant="text" />
             )}
           </Typography>

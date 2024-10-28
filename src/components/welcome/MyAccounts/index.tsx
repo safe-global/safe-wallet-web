@@ -117,7 +117,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
               </Typography>
             </div>
             {pinnedSafes.length > 0 ? (
-              <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} loadBalances={true} />
+              <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
             ) : (
               <Box className={css.noPinnedSafesMessage}>
                 <Typography color="text.secondary" maxWidth="350px" textAlign="center" fontSize="14px">
@@ -154,7 +154,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
               <Box mt={1}>
-                <SafesList safes={allSafes} onLinkClick={onLinkClick} loadBalances={false} />
+                <SafesList safes={allSafes} onLinkClick={onLinkClick} />
               </Box>
             </AccordionDetails>
           </Accordion>
