@@ -210,13 +210,7 @@ describe('CheckWallet', () => {
   })
   it('should allow nested Safe owners', () => {
     ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
-    mockUseNestedSafeOwners.mockReturnValue([
-      {
-        address: faker.finance.ethereumAddress(),
-        chainId: '1',
-        isWatchlist: false,
-      },
-    ])
+    mockUseNestedSafeOwners.mockReturnValue([faker.finance.ethereumAddress()])
 
     const { container } = render(<CheckWallet>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>)
     expect(container.querySelector('button')).not.toBeDisabled()

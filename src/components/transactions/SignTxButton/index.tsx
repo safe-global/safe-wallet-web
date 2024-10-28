@@ -25,8 +25,7 @@ const SignTxButton = ({
   const wallet = useWallet()
   const nestedOwners = useNestedSafeOwners()
   const isSignable =
-    isSignableBy(txSummary, wallet?.address || '') ||
-    nestedOwners?.some((owner) => isSignableBy(txSummary, owner.address))
+    isSignableBy(txSummary, wallet?.address || '') || nestedOwners?.some((owner) => isSignableBy(txSummary, owner))
   const safeSDK = useSafeSDK()
   const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
   const isDisabled = !isSignable || !safeSDK || expiredSwap

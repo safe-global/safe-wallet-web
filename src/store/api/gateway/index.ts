@@ -1,6 +1,11 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type AllOwnedSafes,
+  getAllOwnedSafes,
+  getTransactionDetails,
+  type TransactionDetails,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import { asError } from '@/services/exceptions/utils'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import type { DelegateResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
@@ -33,6 +38,11 @@ export const gatewayApi = createApi({
         return buildQueryFn(() => getDelegates(chainId, { safe: safeAddress }))
       },
     }),
+    getAllOwnedSafes: builder.query<AllOwnedSafes, { walletAddress: string }>({
+      queryFn({ walletAddress }) {
+        return buildQueryFn(() => getAllOwnedSafes(walletAddress))
+      },
+    }),
     ...safeOverviewEndpoints(builder),
   }),
 })
@@ -44,4 +54,5 @@ export const {
   useGetDelegatesQuery,
   useGetSafeOverviewQuery,
   useGetMultipleSafeOverviewsQuery,
+  useGetAllOwnedSafesQuery,
 } = gatewayApi

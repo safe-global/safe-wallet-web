@@ -39,8 +39,8 @@ export const SignerForm = () => {
   const options = useMemo(
     () =>
       isOwner && wallet
-        ? [wallet.address, ...(nestedSafeOwners?.map((owner) => owner.address) ?? [])]
-        : nestedSafeOwners?.map((owner) => owner.address) ?? [],
+        ? [wallet.address, ...(nestedSafeOwners?.map((owner) => owner) ?? [])]
+        : nestedSafeOwners?.map((owner) => owner) ?? [],
     [isOwner, nestedSafeOwners, wallet],
   )
 
@@ -49,7 +49,7 @@ export const SignerForm = () => {
       return
     }
     if (!isOwner && nestedSafeOwners && nestedSafeOwners.length > 0) {
-      setNestedSafeAddress(nestedSafeOwners[0].address)
+      setNestedSafeAddress(nestedSafeOwners[0])
     }
     if (isOwner && (!nestedSafeOwners || nestedSafeOwners.length === 0)) {
       setNestedSafeAddress(undefined)

@@ -61,13 +61,7 @@ describe('SignerForm', () => {
       label: 'MetaMask',
       provider: {} as Eip1193Provider,
     })
-    mockUseNestedSafeOwners.mockReturnValue([
-      {
-        address: mockOwners[0].value,
-        chainId: '1',
-        isWatchlist: false,
-      },
-    ])
+    mockUseNestedSafeOwners.mockReturnValue([mockOwners[0].value])
     render(<SignerForm />)
   })
 })
