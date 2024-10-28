@@ -1152,10 +1152,10 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cowprotocol/app-data@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-2.1.0.tgz#55c95e7ffd3fb0dcfecd0fc64a4273955d1d63d1"
-  integrity sha512-gOlQxng7X5/aQoz2Eg27OegyKgpZVhOEdUQ9cUsc4OnSPal8F4tmLqefKQQWm4Ktaolk7zzh0kiL1vhWxvszmQ==
+"@cowprotocol/app-data@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-2.3.0.tgz#8c9a8ca934193eaba6cc6d67344f2f1f368e8e77"
+  integrity sha512-wClmhKUAEVEgt9o7+ZLvV5AT/LP2ySMfPwveyy1Nwd762m8djaIddZ5cbex6iBROyOHEmk+9x9rcn8sUHXQ4Ww==
   dependencies:
     ajv "^8.11.0"
     cross-fetch "^3.1.5"
