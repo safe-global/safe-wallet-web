@@ -3,24 +3,21 @@ import { Chip } from '@/components/common/Chip'
 import EnhancedTable from '@/components/common/EnhancedTable'
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import Track from '@/components/common/Track'
-import AddProposer from '@/features/proposers/components/AddProposer'
-import DeleteProposer from '@/features/proposers/components/DeleteProposer'
+import UpsertProposer from '@/features/proposers/components/UpsertProposer'
+import DeleteProposerDialog from '@/features/proposers/components/DeleteProposerDialog'
+import EditProposerDialog from '@/features/proposers/components/EditProposerDialog'
 import useProposers from '@/hooks/useProposers'
-import useWallet from '@/hooks/wallets/useWallet'
 import AddIcon from '@/public/images/common/add.svg'
-import DeleteIcon from '@/public/images/common/delete.svg'
 import { SETTINGS_EVENTS } from '@/services/analytics'
-import { Box, Button, Grid, IconButton, Paper, SvgIcon, Typography } from '@mui/material'
+import { Box, Button, Grid, Paper, SvgIcon, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 import React, { useMemo, useState } from 'react'
 
 const ProposersList = () => {
-  const [deleteProposer, setDeleteProposer] = useState<string>()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>()
   const proposers = useProposers()
-  const wallet = useWallet()
 
   const rows = useMemo(() => {
     if (!proposers.data) return []
@@ -45,36 +42,17 @@ const ProposersList = () => {
             sticky: true,
             content: (
               <div className={tableCss.actions}>
-                <CheckWallet>
-                  {(isOk) => (
-                    <Track {...SETTINGS_EVENTS.PROPOSERS.REMOVE_PROPOSER}>
-                      <IconButton
-                        data-testid="delete-btn"
-                        onClick={() => onDelete(proposer.delegate)}
-                        color="error"
-                        size="small"
-                        disabled={
-                          !isOk || (wallet?.address !== proposer.delegate && wallet?.address !== proposer.delegator)
-                        }
-                      >
-                        <SvgIcon component={DeleteIcon} inheritViewBox color="error" fontSize="small" />
-                      </IconButton>
-                    </Track>
-                  )}
-                </CheckWallet>
+                <EditProposerDialog proposer={proposer} />
+                <DeleteProposerDialog proposer={proposer} />
               </div>
             ),
           },
         },
       }
     })
-  }, [proposers.data, wallet?.address])
+  }, [proposers.data])
 
   if (!proposers.data?.results) return null
-
-  const onDelete = (proposerAddress: string) => {
-    setDeleteProposer(proposerAddress)
-  }
 
   const onAdd = () => {
     setIsAddDialogOpen(true)
@@ -119,16 +97,8 @@ const ProposersList = () => {
             <EnhancedTable rows={rows} headCells={[]} />
           </Grid>
 
-          {deleteProposer && (
-            <DeleteProposer
-              proposerAddress={deleteProposer}
-              onClose={() => setDeleteProposer(undefined)}
-              onSuccess={() => setDeleteProposer(undefined)}
-            />
-          )}
-
           {isAddDialogOpen && (
-            <AddProposer onClose={() => setIsAddDialogOpen(false)} onSuccess={() => setIsAddDialogOpen(false)} />
+            <UpsertProposer onClose={() => setIsAddDialogOpen(false)} onSuccess={() => setIsAddDialogOpen(false)} />
           )}
         </Grid>
       </Box>
