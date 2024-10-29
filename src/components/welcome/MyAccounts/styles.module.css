@@ -105,7 +105,7 @@
 .safeLink {
   display: grid;
   padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
-  grid-template-columns: 60px 4fr 6fr minmax(auto, 3fr);
+  grid-template-columns: 60px 6fr 10fr minmax(auto, 2fr);
   align-items: center;
 }
 
