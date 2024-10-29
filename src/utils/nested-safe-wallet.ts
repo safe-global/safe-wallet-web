@@ -1,12 +1,12 @@
-import { type ConnectedWallet } from './useOnboard'
 import { type Eip1193Provider, getAddress, type JsonRpcProvider } from 'ethers'
 import { SafeWalletProvider, type WalletSDK } from '@/services/safe-wallet-provider'
 import { getTransactionDetails, type SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type NextRouter } from 'next/router'
 import { AppRoutes } from '@/config/routes'
-import { initSafeSDK } from '../coreSDK/safeCoreSDK'
 import proposeTx from '@/services/tx/proposeTransaction'
 import { isSmartContractWallet } from '@/utils/wallets'
+import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
+import { initSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 
 export type NestedWallet = {
   address: string

@@ -12,7 +12,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSigner } from '@/hooks/wallets/useWallet'
 import { encodeSignatures } from '@/services/tx/encodeSignatures'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { type NestedWallet } from './wallets/useNestedSafeWallet'
+import { type NestedWallet } from '@/utils/nested-safe-wallet'
 import { assertProvider } from '@/utils/helpers'
 
 const isContractError = (error: EthersError) => {

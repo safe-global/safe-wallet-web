@@ -1,6 +1,5 @@
 import { createContext, type ReactElement, type ReactNode, useEffect, useState, useMemo } from 'react'
 import useOnboard, { type ConnectedWallet, getConnectedWallet } from '@/hooks/wallets/useOnboard'
-import { getNestedWallet } from '@/hooks/wallets/useNestedSafeWallet'
 import useAsync from '@/hooks/useAsync'
 import { getSafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
@@ -8,6 +7,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import ExternalStore from '@/services/ExternalStore'
 import { type Eip1193Provider } from 'ethers'
+import { getNestedWallet } from '@/utils/nested-safe-wallet'
 
 const { setStore, useStore } = new ExternalStore<string | null>(null)
 

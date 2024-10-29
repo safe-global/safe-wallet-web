@@ -24,7 +24,7 @@ import { chainBuilder } from '@/tests/builders/chains'
 import * as useChains from '@/hooks/useChains'
 import { MockEip1193Provider } from '@/tests/mocks/providers'
 import { type SignerWallet } from '@/components/common/WalletProvider'
-import { type NestedWallet } from '@/hooks/wallets/useNestedSafeWallet'
+import { type NestedWallet } from '@/utils/nested-safe-wallet'
 
 const chainInfo = chainBuilder().with({ chainId: '1' }).build()
 
