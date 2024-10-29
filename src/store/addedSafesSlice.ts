@@ -69,9 +69,9 @@ export const addedSafesSlice = createSlice({
         if (Object.keys(state[chainId]).length === 0) {
           delete state[chainId]
         }
-      } else {
+      } else if (state[chainId]?.[address]) {
         state[chainId][address] = {
-          ...(state[chainId][address] ?? {}),
+          ...state[chainId][address],
           pinned: false,
         }
       }

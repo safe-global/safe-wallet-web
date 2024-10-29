@@ -164,8 +164,8 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               threshold: overview ? overview.threshold : defaultSafeInfo.threshold,
             },
           }),
-          dispatch(pinSafe({ chainId: safe.chainId, address: safe.address, removeOnUnpin: true })),
         )
+        dispatch(pinSafe({ chainId: safe.chainId, address: safe.address, removeOnUnpin: true }))
       }
     }
   }, [safes, allAddedSafes, dispatch, findOverview, address])
