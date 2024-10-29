@@ -428,3 +428,18 @@ export const isOnChainConfirmationTxInfo = (info: TransactionInfo): info is Cust
   }
   return false
 }
+
+/**
+ * True if the tx calls `execTransaction`
+ */
+export const isExecTxData = (data?: TransactionData): boolean => {
+  const execTransactionSelector = Safe__factory.createInterface().getFunction('execTransaction').selector
+
+  return Boolean(data && data.hexData?.startsWith(execTransactionSelector))
+}
+export const isExecTxInfo = (info: TransactionInfo): info is Custom => {
+  if (isCustomTxInfo(info)) {
+    return info.methodName === 'execTransaction' && info.dataSize === '548'
+  }
+  return false
+}

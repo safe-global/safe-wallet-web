@@ -13,6 +13,7 @@ import NestedSafeIcon from '@/public/images/transactions/nestedTx.svg'
 
 import {
   isCancellationTxInfo,
+  isExecTxInfo,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
   isOnChainConfirmationTxInfo,
@@ -131,7 +132,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         }
       }
 
-      if (isOnChainConfirmationTxInfo(tx.txInfo)) {
+      if (isOnChainConfirmationTxInfo(tx.txInfo) || isExecTxInfo(tx.txInfo)) {
         return {
           icon: <SvgIcon component={NestedSafeIcon} inheritViewBox fontSize="small" alt="Nested Safe" />,
           text: `Nested Safe${addressBookName ? `: ${addressBookName}` : ''}`,
