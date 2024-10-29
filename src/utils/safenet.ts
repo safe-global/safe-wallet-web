@@ -1,10 +1,6 @@
 import type { SafenetBalanceEntity, SafenetConfigEntity } from '@/store/safenet'
 import { TokenType, type SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
 
-const isSupportedChain = (chainId: number, safenetConfig: SafenetConfigEntity) => {
-  return safenetConfig.chains.includes(chainId)
-}
-
 const convertSafenetBalanceToSafeClientGatewayBalance = (
   safenetBalance: SafenetBalanceEntity,
   safenetConfig: SafenetConfigEntity,
@@ -39,4 +35,4 @@ const convertSafenetBalanceToSafeClientGatewayBalance = (
   return balances
 }
 
-export { isSupportedChain, convertSafenetBalanceToSafeClientGatewayBalance }
+export { convertSafenetBalanceToSafeClientGatewayBalance }

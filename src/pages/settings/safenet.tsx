@@ -19,7 +19,6 @@ import {
 import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
-import { isSupportedChain } from '@/utils/safenet'
 import { getRTKErrorMessage } from '@/utils/redux-toolkit-query'
 
 const getSafenetTokensByChain = (chainId: number, safenetConfig: SafenetConfigEntity): string[] => {
@@ -41,7 +40,7 @@ const SafenetContent = ({ safenetConfig, safe }: { safenetConfig: SafenetConfigE
   const safenetGuardAddress = safenetConfig.guards[safe.chainId]
   const safenetProcessorAddress = safenetConfig.processors[safe.chainId]
   const isSafenetGuardEnabled = isVersionWithGuards && sameAddress(safe.guard?.value, safenetGuardAddress)
-  const chainSupported = isSupportedChain(Number(safe.chainId), safenetConfig)
+  const chainSupported = safenetConfig.chains.includes(Number(safe.chainId))
   const { setTxFlow } = useContext(TxModalContext)
 
   // Lazy query because running it on unsupported chain throws an error
