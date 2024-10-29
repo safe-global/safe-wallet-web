@@ -233,6 +233,32 @@ const useTxPendingStatuses = (): void => {
       )
     })
 
+    const unsubNestedTx = txSubscribe(TxEvent.NESTED_SAFE_TX_CREATED, (detail) => {
+      const txId = detail.txId
+      const nonce = detail.nonce
+
+      if (!txId || nonce === undefined) return
+
+      // If we have future issues with statuses, we should refactor `useTxPendingStatuses`
+      // @see https://github.com/safe-global/safe-wallet-web/issues/1754
+      const isIndexed = historicalTxs.some((tx) => tx.transaction.id === txId)
+      if (isIndexed) {
+        return
+      }
+
+      dispatch(
+        setPendingTx({
+          nonce,
+          chainId,
+          safeAddress,
+          txId,
+          status: PendingStatus.NESTED_SIGNING,
+          signerAddress: detail.parentSafeAddress,
+          signingSafeTxHash: detail.parentSafeTxHash,
+        }),
+      )
+    })
+
     // All final states stop the watcher and clear the pending state
     const unsubFns = FINAL_PENDING_STATUSES.map((event) =>
       txSubscribe(event, (detail) => {
@@ -249,7 +275,14 @@ const useTxPendingStatuses = (): void => {
       }),
     )
 
-    unsubFns.push(unsubProcessing, unsubSignatureProposing, unsubExecuting, unsubProcessed, unsubRelaying)
+    unsubFns.push(
+      unsubProcessing,
+      unsubSignatureProposing,
+      unsubExecuting,
+      unsubProcessed,
+      unsubRelaying,
+      unsubNestedTx,
+    )
 
     return () => {
       unsubFns.forEach((unsub) => unsub())

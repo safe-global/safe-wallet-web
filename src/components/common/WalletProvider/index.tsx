@@ -18,6 +18,7 @@ export type SignerWallet = {
   provider: Eip1193Provider | null
   address: string
   chainId: string
+  isSafe?: boolean
 }
 
 export type WalletContextType = {

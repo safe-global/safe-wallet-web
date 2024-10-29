@@ -141,18 +141,19 @@ export const dispatchOnChainSigning = async (
   chainId: SafeInfo['chainId'],
   signerAddress: string,
   safeAddress: string,
+  isNestedSafe: boolean,
 ) => {
   const sdk = await getSafeSDKWithSigner(provider)
   const safeTxHash = await sdk.getTransactionHash(safeTx)
   const eventParams = { txId, nonce: safeTx.data.nonce }
 
   const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
-
+  let txResponse: any
   try {
     // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
     const encodedApproveHashTx = await prepareApproveTxHash(safeTxHash, provider)
 
-    await provider.request({
+    txResponse = await provider.request({
       method: 'eth_sendTransaction',
       params: [{ from: signerAddress, to: safeAddress, data: encodedApproveHashTx, gas: options?.gasLimit }],
     })
@@ -164,6 +165,11 @@ export const dispatchOnChainSigning = async (
   }
 
   txDispatch(TxEvent.ONCHAIN_SIGNATURE_SUCCESS, eventParams)
+
+  if (isNestedSafe) {
+    const parentSafeTxHash: string = txResponse
+    txDispatch(TxEvent.NESTED_SAFE_TX_CREATED, { ...eventParams, parentSafeAddress: signerAddress, parentSafeTxHash })
+  }
 
   // Until the on-chain signature is/has been executed, the safeTx is not
   // signed so we don't return it

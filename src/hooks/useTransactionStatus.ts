@@ -22,6 +22,7 @@ export const STATUS_LABELS: Record<TxLocalStatus, string> = {
   [PendingStatus.RELAYING]: 'Relaying',
   [PendingStatus.INDEXING]: 'Indexing',
   [PendingStatus.SIGNING]: 'Signing',
+  [PendingStatus.NESTED_SIGNING]: 'Signing',
   [ReplacedStatus]: 'Transaction will be replaced',
 }
 

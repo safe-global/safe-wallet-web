@@ -6,6 +6,7 @@ import { selectChainIdAndSafeAddress } from '@/store/common'
 
 export enum PendingStatus {
   SIGNING = 'SIGNING',
+  NESTED_SIGNING = 'NESTED_SIGNING',
   SUBMITTING = 'SUBMITTING',
   PROCESSING = 'PROCESSING',
   RELAYING = 'RELAYING',
@@ -67,12 +68,19 @@ type PendingIndexingTx = PendingTxCommonProps & {
   txHash?: string
 }
 
+type PendingNestedSigningTx = PendingTxCommonProps & {
+  signerAddress: string
+  signingSafeTxHash: string
+  status: PendingStatus.NESTED_SIGNING
+}
+
 export type PendingTx =
   | PendingSigningTx
   | PendingSubmittingTx
   | PendingProcessingTx
   | PendingRelayingTx
   | PendingIndexingTx
+  | PendingNestedSigningTx
 
 export type PendingTxsState = {
   [txId: string]: PendingTx

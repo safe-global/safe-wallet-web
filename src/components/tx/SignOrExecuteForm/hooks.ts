@@ -88,7 +88,15 @@ export const useTxActions = (): TxActions => {
         // Otherwise the backend won't pick up the tx
         // The signature will be added once the on-chain signature is indexed
         const id = txId || (await proposeTx(signer.address, safeTx, txId, origin)).txId
-        await dispatchOnChainSigning(safeTx, id, signer.provider, chainId, signer.address, safeAddress)
+        await dispatchOnChainSigning(
+          safeTx,
+          id,
+          signer.provider,
+          chainId,
+          signer.address,
+          safeAddress,
+          Boolean(signer.isSafe),
+        )
         return id
       }
 
@@ -146,7 +154,7 @@ export const useTxActions = (): TxActions => {
     }
 
     return { addToBatch, signTx, executeTx, signDelegateTx }
-  }, [safe, signer?.provider, signer?.address, signer?.chainId, addTxToBatch, onboard, wallet, chain])
+  }, [safe, signer?.provider, signer?.address, signer?.chainId, signer?.isSafe, addTxToBatch, onboard, wallet, chain])
 }
 
 export const useValidateNonce = (safeTx: SafeTransaction | undefined): boolean => {
