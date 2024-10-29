@@ -20,11 +20,11 @@ export const SafesList = ({ safes, onLinkClick }: SafeListProps) => {
     <TransitionGroup>
       {safes.map((item) =>
         isMultiChainSafeItem(item) ? (
-          <Collapse key={item.address} timeout={600}>
+          <Collapse key={item.address} timeout="auto">
             <MultiAccountItem onLinkClick={onLinkClick} multiSafeAccountItem={item} />
           </Collapse>
         ) : (
-          <Collapse key={item.address} timeout={600}>
+          <Collapse key={item.address} timeout="auto">
             <AccountItem onLinkClick={onLinkClick} safeItem={item} key={item.chainId + item.address} />
           </Collapse>
         ),
