@@ -1,4 +1,3 @@
-import useChainId from '@/hooks/useChainId'
 import { Safe__factory } from '@/types/contracts'
 import { Link as MuiLink, Skeleton, Stack, Typography } from '@mui/material'
 import { type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
@@ -17,7 +16,6 @@ import { skipToken } from '@reduxjs/toolkit/query'
 
 export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
   const chain = useCurrentChain()
-  const chainId = useChainId()
   const signedHash = useMemo(() => {
     const safeInterface = Safe__factory.createInterface()
     const params = data?.hexData ? safeInterface.decodeFunctionData('approveHash', data?.hexData) : undefined
@@ -30,9 +28,9 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
   }, [data?.hexData])
 
   const { data: nestedTxDetails, error: txDetailsError } = useGetTransactionDetailsQuery(
-    signedHash
+    signedHash && chain
       ? {
-          chainId,
+          chainId: chain.chainId,
           txId: signedHash,
         }
       : skipToken,
