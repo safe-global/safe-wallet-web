@@ -130,8 +130,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           <Box pr={2.5}>
             <SafeIcon
               address={address}
-              owners={safeOwners.length ?? undefined}
-              threshold={safeThreshold ?? undefined}
+              owners={safeOwners.length > 0 ? safeOwners.length : undefined}
+              threshold={safeThreshold > 0 ? safeThreshold : undefined}
               chainId={chainId}
             />
           </Box>
