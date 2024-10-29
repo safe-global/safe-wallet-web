@@ -2,6 +2,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import { TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
 import type { TransactionReceipt } from 'ethers'
 import { numberToHex } from '@/utils/hex'
+import EventEmitter from 'events'
 
 type SafeInfo = {
   safeAddress: string
@@ -80,10 +81,15 @@ export class SafeWalletProvider {
   private readonly sdk: WalletSDK
   private submittedTxs = new Map<string, unknown>()
 
+  eventEmitter = new EventEmitter()
+
   constructor(safe: SafeInfo, sdk: WalletSDK) {
     this.safe = safe
     this.sdk = sdk
   }
+
+  on = this.eventEmitter.on.bind(this)
+  removeListener = this.eventEmitter.removeListener.bind(this)
 
   private async makeRequest(request: RpcRequest, appInfo: AppInfo): Promise<unknown> {
     const { method, params = [] } = request

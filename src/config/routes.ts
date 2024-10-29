@@ -5,6 +5,7 @@ export const AppRoutes = {
   terms: '/terms',
   swap: '/swap',
   stake: '/stake',
+  bridge: '/bridge',
   privacy: '/privacy',
   licenses: '/licenses',
   index: '/',
