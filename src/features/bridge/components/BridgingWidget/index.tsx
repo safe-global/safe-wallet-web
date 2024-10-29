@@ -1,7 +1,7 @@
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useSafeWalletProvider from '@/services/safe-wallet-provider/useSafeWalletProvider'
-import { LiFiWidget, WidgetConfig } from '@lifi/widget'
-import { Address } from 'viem'
+import { LiFiWidget, type WidgetConfig } from '@lifi/widget'
+import type { Address } from 'viem'
 import { http, createConfig, WagmiProvider, createConnector } from 'wagmi'
 import { gnosis, sepolia } from 'wagmi/chains'
 
@@ -55,13 +55,11 @@ const BridgingWidget = () => {
       //   return chain
       // },
       onAccountsChanged(accounts) {
-        console.log('🚀 ~ onAccountsChanged ~ accounts:', accounts)
         config.emitter.emit('change', {
           accounts: [safeInfo.safeAddress] as Address[],
         })
       },
       onChainChanged(chain) {
-        console.log('🚀 ~ onChainChanged ~ chain:', chain)
         const chainId = Number(chain)
         config.emitter.emit('change', { chainId })
       },
