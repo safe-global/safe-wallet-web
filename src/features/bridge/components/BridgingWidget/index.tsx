@@ -54,7 +54,7 @@ const BridgingWidget = () => {
       //   })
       //   return chain
       // },
-      onAccountsChanged(accounts) {
+      onAccountsChanged() {
         config.emitter.emit('change', {
           accounts: [safeInfo.safeAddress] as Address[],
         })
@@ -63,7 +63,7 @@ const BridgingWidget = () => {
         const chainId = Number(chain)
         config.emitter.emit('change', { chainId })
       },
-      async onDisconnect(_error) {},
+      async onDisconnect() {},
       async getProvider() {
         return walletProvider
       },
