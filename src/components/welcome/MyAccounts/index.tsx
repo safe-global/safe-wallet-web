@@ -120,7 +120,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
               <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
             ) : (
               <Box className={css.noPinnedSafesMessage}>
-                <Typography color="text.secondary" maxWidth="350px" textAlign="center" fontSize="14px">
+                <Typography color="text.secondary" variant="body2" maxWidth="350px" textAlign="center">
                   Personalize your account list by clicking the
                   <SvgIcon
                     component={BookmarkIcon}
@@ -135,7 +135,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
           </Box>
 
           {/* All Accounts */}
-          <Accordion sx={{ border: 'none' }}>
+          <Accordion expanded={pinnedSafes.length === 0} sx={{ border: 'none' }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon sx={{ '& path': { fill: 'var(--color-text-secondary)' } }} />}
               sx={{ padding: 0, '& .MuiAccordionSummary-content': { margin: '0 !important', mb: 1, flexGrow: 0 } }}
