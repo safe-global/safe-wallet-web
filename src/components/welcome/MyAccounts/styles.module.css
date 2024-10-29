@@ -6,26 +6,49 @@
 }
 
 .myAccounts {
-  width: 100%;
-  max-width: 600px;
+  width: 100vw;
+  max-width: 750px;
   margin: var(--space-2);
 }
 
-.safeList {
-  padding: var(--space-3);
-  margin-bottom: var(--space-3);
+.sidebarAccounts {
+  margin: 0 !important;
 }
 
-.safeList :last-child {
-  margin-bottom: 0;
+.safeList {
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  margin-bottom: var(--space-1);
 }
 
 .header {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   padding: var(--space-3) 0;
+  gap: var(--space-2);
+}
+
+.sidebarHeader {
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.sidebarHeader > h1 {
+  font-size: 24px;
+}
+
+.headerButtons {
+  display: flex;
+  flex-direction: row;
   gap: var(--space-1);
+}
+
+.noPinnedSafesMessage {
+  display: flex;
+  justify-content: center;
+  border: 1px solid var(--color-border-light);
+  padding: var(--space-3);
+  border-radius: var(--space-1);
+  border-style: dashed;
 }
 
 .listItem {
@@ -69,6 +92,7 @@
   border-radius: 6px;
   border: 1px solid var(--color-border-light);
 }
+
 .subItem.currentListItem .borderLeft {
   border-left: 4px solid var(--color-secondary-light);
 }
@@ -81,7 +105,7 @@
 .safeLink {
   display: grid;
   padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
-  grid-template-columns: 60px 3fr 3fr minmax(auto, 2fr);
+  grid-template-columns: 60px 6fr 10fr minmax(auto, 2fr);
   align-items: center;
 }
 
@@ -99,14 +123,26 @@
   text-overflow: ellipsis;
 }
 
-.listHeader {
-  padding-bottom: var(--space-1);
-  display: flex;
-  justify-content: space-between;
+.readOnlyChip {
+  border-radius: var(--space-2);
+  color: var(--color-primary-light);
+  border-color: var(--color-border-light);
+  font-size: 14px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
-.listTitle {
-  margin: auto 0;
+.visibilityIcon {
+  font-size: 16px !important;
+  color: var(--color-border-main) !important;
+}
+
+.listHeader {
+  display: flex;
+}
+
+.listHeader svg path {
+  stroke: var(--color-text-primary);
 }
 
 .card {
@@ -137,7 +173,6 @@
 .chip {
   border-radius: 4px;
   background-color: var(--color-warning-background);
-  margin-top: 4px;
 }
 
 .pendingAccount {
@@ -146,6 +181,17 @@
 
 .pendingLoopIcon {
   color: var(--color-info-dark) !important;
+}
+
+.statusChip {
+  display: flex;
+  gap: var(--space-1);
+  padding: 0 var(--space-2) var(--space-2);
+  width: 100%;
+}
+
+.statusChips:empty {
+  display: none;
 }
 
 .multiChains {
@@ -175,6 +221,14 @@
   }
 }
 
+.safeList :global .MuiAccordionSummary-root {
+  background: var(--color-background-paper) !important;
+  padding-left: 0;
+  min-height: 0;
+  justify-content: left;
+  vertical-align: middle;
+}
+
 @media (max-width: 599.95px) {
   .safeLink {
     grid-template-columns: auto 1fr auto;
@@ -200,28 +254,19 @@
   .multiChains {
     justify-content: flex-start;
   }
-}
 
-@container my-accounts-container (max-width: 500px) {
-  .myAccounts {
-    margin: 0;
+  .chainIndicator {
+    justify-content: flex-start;
   }
-
   .header {
-    padding: var(--space-3);
-    border-bottom: 1px solid var(--color-border-light);
+    flex-direction: column;
   }
 
-  .safeList {
-    border-radius: 0;
-    margin-bottom: 0;
+  .headerButtons > span {
+    flex: 1;
   }
 
-  .title {
-    font-size: 20px;
-  }
-
-  .card {
-    border-top: 1px solid var(--color-border-light);
+  .headerButtons > span > a {
+    width: 100%;
   }
 }

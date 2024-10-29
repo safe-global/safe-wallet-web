@@ -1,14 +1,13 @@
 import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
-import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
-import { useMemo } from 'react'
-import { ListItemButton, Box, Typography, Chip, Skeleton } from '@mui/material'
+import { type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
+import { useMemo, useRef } from 'react'
+import { ListItemButton, Box, Typography, Chip, IconButton, SvgIcon, Skeleton } from '@mui/material'
 import Link from 'next/link'
-import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import css from './styles.module.css'
@@ -22,14 +21,21 @@ import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from './useAllSafes'
-import FiatValue from '@/components/common/FiatValue'
-import QueueActions from './QueueActions'
 import { useGetHref } from './useGetHref'
 import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
-import { useGetSafeOverviewQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
-import { skipToken } from '@reduxjs/toolkit/query'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
+import BookmarkIcon from '@/public/images/apps/bookmark.svg'
+import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
+import { addOrUpdateSafe, pinSafe, selectAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
+import SafeIcon from '@/components/common/SafeIcon'
+import useOnceVisible from '@/hooks/useOnceVisible'
+import { skipToken } from '@reduxjs/toolkit/query'
+import { defaultSafeInfo, useGetSafeOverviewQuery } from '@/store/slices'
+import FiatValue from '@/components/common/FiatValue'
+import QueueActions from './QueueActions'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+
 type AccountItemProps = {
   safeItem: SafeItem
   safeOverview?: SafeOverview
@@ -37,7 +43,7 @@ type AccountItemProps = {
 }
 
 const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
-  const { chainId, address } = safeItem
+  const { chainId, address, isPinned, isWatchlist } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
   const safeAddress = useSafeAddress()
@@ -46,6 +52,12 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const { address: walletAddress } = useWallet() ?? {}
+  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
+  const isAdded = !!addedSafes?.[address]
+  const elementRef = useRef<HTMLDivElement>(null)
+  const isVisible = useOnceVisible(elementRef)
+
+  const dispatch = useAppDispatch()
 
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
 
@@ -70,7 +82,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
   const { data: safeOverview } = useGetSafeOverviewQuery(
-    undeployedSafe
+    undeployedSafe || !isVisible
       ? skipToken
       : {
           chainId: safeItem.chainId,
@@ -79,8 +91,36 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
         },
   )
 
+  const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold ?? defaultSafeInfo.threshold
+  const safeOwners =
+    safeOverview?.owners ?? counterfactualSetup?.owners.map((address) => ({ value: address })) ?? defaultSafeInfo.owners
+
+  const addToPinnedList = () => {
+    if (!isAdded && !undeployedSafe) {
+      dispatch(
+        addOrUpdateSafe({
+          safe: {
+            ...defaultSafeInfo,
+            chainId,
+            address: { value: address },
+            owners: safeOwners,
+            threshold: safeThreshold,
+          },
+        }),
+      )
+      dispatch(pinSafe({ chainId, address, removeOnUnpin: true }))
+    } else {
+      dispatch(pinSafe({ chainId, address, removeOnUnpin: false }))
+    }
+  }
+
+  const removeFromPinnedList = () => {
+    dispatch(unpinSafe({ chainId, address }))
+  }
+
   return (
     <ListItemButton
+      ref={elementRef}
       data-testid="safe-list-item"
       selected={isCurrentSafe}
       className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe })}
@@ -90,8 +130,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           <Box pr={2.5}>
             <SafeIcon
               address={address}
-              owners={safeOverview?.owners.length ?? counterfactualSetup?.owners.length}
-              threshold={safeOverview?.threshold ?? counterfactualSetup?.threshold}
+              owners={safeOwners.length > 0 ? safeOwners.length : undefined}
+              threshold={safeThreshold > 0 ? safeThreshold : undefined}
               chainId={chainId}
             />
           </Box>
@@ -106,46 +146,75 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
             </Typography>
-            {undeployedSafe && (
-              <div>
-                <Chip
-                  size="small"
-                  label={isActivating ? 'Activating account' : 'Not activated'}
-                  icon={
-                    isActivating ? (
-                      <LoopIcon fontSize="small" className={css.pendingLoopIcon} sx={{ mr: '-4px', ml: '4px' }} />
-                    ) : (
-                      <ErrorOutlineIcon fontSize="small" color="warning" />
-                    )
-                  }
-                  className={classnames(css.chip, {
-                    [css.pendingAccount]: isActivating,
-                  })}
-                />
-              </div>
-            )}
           </Typography>
 
           <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
-            {safeOverview ? (
+            {undeployedSafe ? null : safeOverview ? (
               <FiatValue value={safeOverview.fiatTotal} />
-            ) : undeployedSafe ? null : (
+            ) : (
               <Skeleton variant="text" sx={{ ml: 'auto' }} />
             )}
           </Typography>
         </Link>
       </Track>
 
+      <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={isPinned ? removeFromPinnedList : addToPinnedList}>
+        <SvgIcon
+          component={isPinned ? BookmarkedIcon : BookmarkIcon}
+          inheritViewBox
+          color={isPinned ? 'primary' : undefined}
+          fontSize="small"
+        />
+      </IconButton>
       <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
 
-      <QueueActions
-        queued={safeOverview?.queued || 0}
-        awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
-        safeAddress={address}
-        chainShortName={chain?.shortName || ''}
-      />
+      <Box width="100%">
+        {undeployedSafe ? (
+          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
+            <Link className={css.statusChip} onClick={onLinkClick} href={href}>
+              <Chip
+                size="small"
+                label={isActivating ? 'Activating account' : 'Not activated'}
+                icon={
+                  isActivating ? (
+                    <LoopIcon fontSize="small" className={css.pendingLoopIcon} sx={{ mr: '-4px', ml: '4px' }} />
+                  ) : (
+                    <ErrorOutlineIcon fontSize="small" color="warning" />
+                  )
+                }
+                className={classnames(css.chip, {
+                  [css.pendingAccount]: isActivating,
+                })}
+              />
+            </Link>
+          </Track>
+        ) : isWatchlist ? (
+          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
+            <Link className={css.statusChip} onClick={onLinkClick} href={href}>
+              <Chip
+                className={css.readOnlyChip}
+                variant="outlined"
+                size="small"
+                icon={<VisibilityIcon className={css.visibilityIcon} />}
+                label={
+                  <Typography variant="caption" display="flex" alignItems="center" gap={0.5}>
+                    Read-only
+                  </Typography>
+                }
+              />
+            </Link>
+          </Track>
+        ) : isVisible ? (
+          <QueueActions
+            queued={safeOverview?.queued || 0}
+            awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
+            safeAddress={address}
+            chainShortName={chain?.shortName || ''}
+          />
+        ) : null}
+      </Box>
     </ListItemButton>
   )
 }

@@ -14,8 +14,10 @@ describe('multiChain/utils', () => {
               address: faker.finance.ethereumAddress(),
               chainId: '1',
               isWatchlist: false,
+              isPinned: false,
             },
           ],
+          isPinned: false,
         }),
       ).toBeTruthy()
     })
@@ -26,6 +28,7 @@ describe('multiChain/utils', () => {
           address: faker.finance.ethereumAddress(),
           chainId: '1',
           isWatchlist: false,
+          isPinned: false,
         }),
       ).toBeFalsy()
     })
@@ -230,6 +233,7 @@ describe('multiChain/utils', () => {
               address: faker.finance.ethereumAddress(),
               chainId: '1',
               isWatchlist: false,
+              isPinned: false,
             },
           ],
           [],
@@ -246,6 +250,7 @@ describe('multiChain/utils', () => {
               address: faker.finance.ethereumAddress(),
               chainId: '1',
               isWatchlist: false,
+              isPinned: false,
             },
           ],
           [],
@@ -266,11 +271,13 @@ describe('multiChain/utils', () => {
               address,
               chainId: '1',
               isWatchlist: false,
+              isPinned: false,
             },
             {
               address,
               chainId: '100',
               isWatchlist: false,
+              isPinned: false,
             },
           ],
           [
@@ -318,11 +325,13 @@ describe('multiChain/utils', () => {
               address,
               chainId: '1',
               isWatchlist: false,
+              isPinned: false,
             },
             {
               address,
               chainId: '100',
               isWatchlist: false,
+              isPinned: false,
             },
           ],
           [],
@@ -376,16 +385,19 @@ describe('multiChain/utils', () => {
               address,
               chainId: '1',
               isWatchlist: false,
+              isPinned: false,
             },
             {
               address,
               chainId: '100',
               isWatchlist: false,
+              isPinned: false,
             },
             {
               address,
               chainId: '5',
               isWatchlist: false,
+              isPinned: false,
             },
           ],
           [
@@ -437,11 +449,13 @@ describe('multiChain/utils', () => {
               address,
               chainId: '1',
               isWatchlist: false,
+              isPinned: false,
             },
             {
               address,
               chainId: '100',
               isWatchlist: false,
+              isPinned: false,
             },
           ],
           [

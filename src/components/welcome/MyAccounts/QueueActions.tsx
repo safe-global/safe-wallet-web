@@ -44,27 +44,25 @@ const QueueActions = ({
   }
 
   return (
-    <Box width="100%">
-      <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
-        <NextLink href={queueLink}>
-          <Box px={2} pb={2} display="flex" gap={1} alignItems="center">
-            {queued > 0 && (
-              <ChipLink>
-                <SvgIcon component={TransactionsIcon} inheritViewBox fontSize="small" />
-                {queued} pending transaction{queued > 1 ? 's' : ''}
-              </ChipLink>
-            )}
+    <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
+      <NextLink href={queueLink}>
+        <Box px={2} pb={2} display="flex" gap={1} alignItems="center">
+          {queued > 0 && (
+            <ChipLink>
+              <SvgIcon component={TransactionsIcon} inheritViewBox fontSize="small" />
+              {queued} pending transaction{queued > 1 ? 's' : ''}
+            </ChipLink>
+          )}
 
-            {awaitingConfirmation > 0 && (
-              <ChipLink color="warning">
-                <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" color="warning" />
-                {awaitingConfirmation} to confirm
-              </ChipLink>
-            )}
-          </Box>
-        </NextLink>
-      </Track>
-    </Box>
+          {awaitingConfirmation > 0 && (
+            <ChipLink color="warning">
+              <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" color="warning" />
+              {awaitingConfirmation} to confirm
+            </ChipLink>
+          )}
+        </Box>
+      </NextLink>
+    </Track>
   )
 }
 

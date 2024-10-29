@@ -12,6 +12,7 @@ export type SafeItem = {
   chainId: string
   address: string
   isWatchlist: boolean
+  isPinned: boolean
 }
 
 export type SafeItems = SafeItem[]
@@ -36,16 +37,18 @@ export const useHasSafes = () => {
 
 const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
-  const [allOwned, , allOwnedLoading] = useAllOwnedSafes(walletAddress)
+  const [allOwned] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
   const { configs } = useChains()
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
-  return useMemo<SafeItems | undefined>(() => {
-    if (walletAddress && (allOwned === undefined || allOwnedLoading)) {
-      return undefined
+  return useMemo<SafeItems>(() => {
+    if (walletAddress && allOwned === undefined) {
+      return []
     }
-    const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned || {})))
+    const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded)))
+    // todo: replace with sortBy logic
+    chains.sort((a, b) => parseInt(a) - parseInt(b))
 
     return chains.flatMap((chainId) => {
       if (!configs.some((item) => item.chainId === chainId)) return []
@@ -53,20 +56,24 @@ const useAllSafes = (): SafeItems | undefined => {
       const ownedOnChain = (allOwned || {})[chainId]
       const undeployedOnChain = Object.keys(undeployedSafes[chainId] || {})
       const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
+      // todo: replace with sortBy logic
+      uniqueAddresses.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 
       return uniqueAddresses.map((address) => {
         const owners = allAdded?.[chainId]?.[address]?.owners
         const isOwner = owners?.some(({ value }) => sameAddress(walletAddress, value))
-        const isUndeployed = undeployedOnChain.includes(address)
         const isOwned = (ownedOnChain || []).includes(address) || isOwner
+        const isUndeployed = undeployedOnChain.includes(address)
+        const isPinned = Boolean(allAdded?.[chainId]?.[address]?.pinned)
         return {
           address,
           chainId,
           isWatchlist: !isOwned && !isUndeployed,
+          isPinned,
         }
       })
     })
-  }, [allAdded, allOwned, allOwnedLoading, configs, undeployedSafes, walletAddress])
+  }, [allAdded, allOwned, configs, undeployedSafes, walletAddress])
 }
 
 export default useAllSafes
