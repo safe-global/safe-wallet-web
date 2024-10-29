@@ -1,12 +1,11 @@
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { isWalletRejection } from '@/utils/wallets'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, CircularProgress, Divider } from '@mui/material'
+import { Box, Button, CardActions, CircularProgress, Divider, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import ErrorMessage from '@/components/tx/ErrorMessage'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { useTxActions } from '@/components/tx/SignOrExecuteForm/hooks'
 import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm/index'
@@ -72,10 +71,10 @@ export const ProposerForm = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <ErrorMessage level="info">
-        You are creating this transaction as a delegate. It will not have any signatures until it is confirmed by an
-        owner.
-      </ErrorMessage>
+      <Typography>
+        As a <strong>Proposer</strong>, you&apos;re creating this transaction without any signatures. It will need
+        approval from a signer before it becomes a valid transaction.
+      </Typography>
 
       {isRejectedByUser && (
         <Box mt={1}>

@@ -1,47 +1,47 @@
-import ProposerForm from '@/components/tx/SignOrExecuteForm/ProposerForm'
-import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
-import { useIsWalletProposer } from '@/hooks/useProposers'
-import useSafeInfo from '@/hooks/useSafeInfo'
-import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
-import madProps from '@/utils/mad-props'
-import DecodedTx from '../DecodedTx'
-import ExecuteCheckbox from '../ExecuteCheckbox'
-import { useImmediatelyExecutable, useValidateNonce } from './hooks'
-import ExecuteForm from './ExecuteForm'
-import SignForm from './SignForm'
-import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import ErrorMessage from '../ErrorMessage'
-import TxChecks from './TxChecks'
-import TxCard from '@/components/tx-flow/common/TxCard'
-import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
-import { useAppSelector } from '@/store'
-import { selectSettings } from '@/store/settingsSlice'
-import UnknownContractError from './UnknownContractError'
-import useDecodeTx from '@/hooks/useDecodeTx'
-import { ErrorBoundary } from '@sentry/react'
-import ApprovalEditor from '../ApprovalEditor'
-import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
-import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
-import { TX_EVENTS } from '@/services/analytics/events/transactions'
-import { trackEvent } from '@/services/analytics'
-import useChainId from '@/hooks/useChainId'
-import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
-import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
-import { isAnyStakingTxInfo, isCustomTxInfo, isGenericConfirmation, isOrderTxInfo } from '@/utils/transaction-guards'
-import useIsSafeOwner from '@/hooks/useIsSafeOwner'
-import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
-import { Blockaid } from '../security/blockaid'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 
 import TxData from '@/components/transactions/TxDetails/TxData'
+import TxCard from '@/components/tx-flow/common/TxCard'
+import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
-import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
-import { MigrateToL2Information } from './MigrateToL2Information'
+import ConfirmationTitle, { ConfirmationTitleTypes } from '@/components/tx/SignOrExecuteForm/ConfirmationTitle'
+import ProposerForm from '@/components/tx/SignOrExecuteForm/ProposerForm'
+import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
+import useChainId from '@/hooks/useChainId'
+import useDecodeTx from '@/hooks/useDecodeTx'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { useIsWalletProposer } from '@/hooks/useProposers'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import { trackEvent } from '@/services/analytics'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { getTransactionTrackingType } from '@/services/analytics/tx-tracking'
+import { isDelegateCall } from '@/services/tx/tx-sender/sdk'
+import { useAppSelector } from '@/store'
+import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
+import { selectSettings } from '@/store/settingsSlice'
+import madProps from '@/utils/mad-props'
+import { isAnyStakingTxInfo, isCustomTxInfo, isGenericConfirmation, isOrderTxInfo } from '@/utils/transaction-guards'
 import { extractMigrationL2MasterCopyAddress } from '@/utils/transactions'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
-import { useGetTransactionDetailsQuery, useLazyGetTransactionDetailsQuery } from '@/store/api/gateway'
-import { skipToken } from '@reduxjs/toolkit/query/react'
-import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { ErrorBoundary } from '@sentry/react'
+import { type ReactElement, type ReactNode, useCallback, useContext, useState } from 'react'
+import ApprovalEditor from '../ApprovalEditor'
+import { useApprovalInfos } from '../ApprovalEditor/hooks/useApprovalInfos'
+import DecodedTx from '../DecodedTx'
+import ErrorMessage from '../ErrorMessage'
+import ExecuteCheckbox from '../ExecuteCheckbox'
+import { Blockaid } from '../security/blockaid'
+import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
+import ExecuteForm from './ExecuteForm'
+import ExecuteThroughRoleForm from './ExecuteThroughRoleForm'
+import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThroughRoleForm/hooks'
+import { useImmediatelyExecutable, useValidateNonce } from './hooks'
+import { MigrateToL2Information } from './MigrateToL2Information'
+import SignForm from './SignForm'
+import TxChecks from './TxChecks'
+import UnknownContractError from './UnknownContractError'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -201,7 +201,13 @@ export const SignOrExecuteForm = ({
 
       <TxCard>
         <ConfirmationTitle
-          variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
+          variant={
+            willExecute
+              ? ConfirmationTitleTypes.execute
+              : isProposer
+              ? ConfirmationTitleTypes.propose
+              : ConfirmationTitleTypes.sign
+          }
           isCreation={isCreation}
         />
 
