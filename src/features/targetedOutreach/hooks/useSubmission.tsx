@@ -11,7 +11,7 @@ const useSubmission = () => {
   const wallet = useWallet()
 
   const { data } = useGetSubmissionQuery(
-    !wallet
+    !wallet || !safeAddress
       ? skipToken
       : {
           outreachId: ACTIVE_OUTREACH.id,
@@ -20,6 +20,7 @@ const useSubmission = () => {
           signerAddress: wallet?.address,
         },
   )
+
   return data
 }
 
