@@ -135,7 +135,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
           </Box>
 
           {/* All Accounts */}
-          <Accordion expanded={pinnedSafes.length === 0} sx={{ border: 'none' }}>
+          <Accordion defaultExpanded={pinnedSafes.length === 0} sx={{ border: 'none' }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon sx={{ '& path': { fill: 'var(--color-text-secondary)' } }} />}
               sx={{ padding: 0, '& .MuiAccordionSummary-content': { margin: '0 !important', mb: 1, flexGrow: 0 } }}

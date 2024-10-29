@@ -37,14 +37,14 @@ export const useHasSafes = () => {
 
 const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
-  const [allOwned, , allOwnedLoading] = useAllOwnedSafes(walletAddress)
+  const [allOwned] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
   const { configs } = useChains()
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
 
-  return useMemo<SafeItems | undefined>(() => {
-    if (walletAddress && (allOwned === undefined || allOwnedLoading)) {
-      return undefined
+  return useMemo<SafeItems>(() => {
+    if (walletAddress && allOwned === undefined) {
+      return []
     }
     const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded)))
     // todo: replace with sortBy logic
@@ -73,7 +73,7 @@ const useAllSafes = (): SafeItems | undefined => {
         }
       })
     })
-  }, [allAdded, allOwned, allOwnedLoading, configs, undeployedSafes, walletAddress])
+  }, [allAdded, allOwned, configs, undeployedSafes, walletAddress])
 }
 
 export default useAllSafes
