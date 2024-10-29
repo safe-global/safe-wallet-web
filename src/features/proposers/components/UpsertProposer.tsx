@@ -75,7 +75,7 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
   const notCurrentSafe = addressIsNotCurrentSafe(safeAddress, 'Cannot add Safe Account itself as proposer')
   const combinedValidate = (address: string) => notAlreadyOwner(address) || notCurrentSafe(address)
 
-  const { handleSubmit } = methods
+  const { handleSubmit, formState } = methods
 
   const onConfirm = handleSubmit(async (data: ProposerEntry) => {
     if (!wallet) return
@@ -208,7 +208,7 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disabled={!isOk || isLoading || !canEdit}
+                  disabled={!isOk || isLoading || (isEditing && !canEdit) || !formState.isValid}
                   sx={{ minWidth: '122px', minHeight: '36px' }}
                 >
                   {isLoading ? <CircularProgress size={20} /> : 'Continue'}
