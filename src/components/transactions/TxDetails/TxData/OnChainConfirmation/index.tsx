@@ -14,17 +14,17 @@ import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { useMemo } from 'react'
 import { skipToken } from '@reduxjs/toolkit/query'
 
+const safeInterface = Safe__factory.createInterface()
+
 export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
   const chain = useCurrentChain()
   const signedHash = useMemo(() => {
-    const safeInterface = Safe__factory.createInterface()
-    const params = data?.hexData ? safeInterface.decodeFunctionData('approveHash', data?.hexData) : undefined
-    if (!params || params.length !== 1) {
+    const params = data?.hexData ? safeInterface.decodeFunctionData('approveHash', data.hexData) : undefined
+    if (!params || params.length !== 1 || typeof params[0] !== 'string') {
       return
     }
 
-    const signedHash = params[0] as string
-    return signedHash
+    return params[0]
   }, [data?.hexData])
 
   const { data: nestedTxDetails, error: txDetailsError } = useGetTransactionDetailsQuery(
@@ -38,9 +38,12 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
 
   return (
     <Stack spacing={2}>
-      {data?.dataDecoded && <MethodCall contractAddress={data?.to.value} method={data.dataDecoded?.method} />}
-
-      {data?.dataDecoded && <MethodDetails data={data.dataDecoded} addressInfoIndex={data.addressInfoIndex} />}
+      {data?.dataDecoded && (
+        <>
+          <MethodCall contractAddress={data.to.value} method={data.dataDecoded.method} />
+          <MethodDetails data={data.dataDecoded} addressInfoIndex={data.addressInfoIndex} />
+        </>
+      )}
 
       <Divider />
 
@@ -55,7 +58,7 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
                 href={{
                   pathname: AppRoutes.transactions.tx,
                   query: {
-                    safe: `${chain?.shortName}:${data?.to.value}`,
+                    safe: `${chain.shortName}:${data.to.value}`,
                     id: nestedTxDetails.txId,
                   },
                 }}
@@ -66,7 +69,7 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
             )}
           </>
         ) : txDetailsError ? (
-          <ErrorMessage>Could not load details on hash to approve.</ErrorMessage>
+          <ErrorMessage>Could not load details of the hash to approve.</ErrorMessage>
         ) : (
           <Skeleton />
         )}
