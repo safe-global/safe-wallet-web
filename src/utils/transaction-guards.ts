@@ -439,7 +439,7 @@ export const isExecTxData = (data?: TransactionData): boolean => {
 }
 export const isExecTxInfo = (info: TransactionInfo): info is Custom => {
   if (isCustomTxInfo(info)) {
-    return info.methodName === 'execTransaction' && info.dataSize === '548'
+    return info.methodName === 'execTransaction'
   }
   return false
 }
