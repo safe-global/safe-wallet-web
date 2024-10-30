@@ -1,6 +1,6 @@
 import useChainId from '@/hooks/useChainId'
 import { Safe__factory } from '@/types/contracts'
-import { Link as MuiLink, Skeleton, Stack, SvgIcon, Typography } from '@mui/material'
+import { Skeleton, Stack, SvgIcon, Typography } from '@mui/material'
 import { type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import TxData from '..'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -15,6 +15,7 @@ import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { useMemo } from 'react'
 import { skipToken } from '@reduxjs/toolkit/query'
 import NestedTransactionIcon from '@/public/images/transactions/nestedTx.svg'
+import ExternalLink from '@/components/common/ExternalLink'
 
 export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
   const chain = useCurrentChain()
@@ -65,8 +66,9 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
                   },
                 }}
                 passHref
+                legacyBehavior
               >
-                <MuiLink>Open nested transaction</MuiLink>
+                <ExternalLink>Open nested transaction</ExternalLink>
               </Link>
             )}
           </>

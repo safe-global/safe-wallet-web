@@ -1,5 +1,5 @@
 import { Safe__factory } from '@/types/contracts'
-import { Link as MuiLink, Skeleton, Stack, SvgIcon, Typography } from '@mui/material'
+import { Skeleton, Stack, SvgIcon, Typography } from '@mui/material'
 import { getConfirmationView, type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import { MethodDetails } from '../DecodedData/MethodDetails'
@@ -12,6 +12,7 @@ import { useMemo } from 'react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
 import NestedTransactionIcon from '@/public/images/transactions/nestedTx.svg'
+import ExternalLink from '@/components/common/ExternalLink'
 
 const safeInterface = Safe__factory.createInterface()
 
@@ -88,8 +89,9 @@ export const ExecTransaction = ({ data }: { data?: TransactionData }) => {
                   query: { safe: `${chain.shortName}:${data.to.value}` },
                 }}
                 passHref
+                legacyBehavior
               >
-                <MuiLink>Open Safe</MuiLink>
+                <ExternalLink>Open Safe</ExternalLink>
               </Link>
             )}
           </>
