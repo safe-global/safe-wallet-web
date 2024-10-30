@@ -1,3 +1,4 @@
+import { POLLING_INTERVAL } from '@/config/constants'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useGetProposersQuery } from '@/store/api/gateway'
@@ -9,7 +10,9 @@ const useProposers = () => {
     safeAddress,
   } = useSafeInfo()
 
-  return useGetProposersQuery(chainId && safeAddress ? { chainId, safeAddress } : skipToken)
+  return useGetProposersQuery(chainId && safeAddress ? { chainId, safeAddress } : skipToken, {
+    pollingInterval: POLLING_INTERVAL,
+  })
 }
 
 export const useIsWalletProposer = () => {
