@@ -4,7 +4,7 @@ const tokenSelectorText = 'G(ö|oe)rli Ether'
 const noLaterString = 'No, later'
 const yesExecuteString = 'Yes, execute'
 export const newTransactionBtnStr = 'New transaction'
-const sendTokensButn = 'Send tokens'
+const sendTokensBtn = 'Send tokens'
 const nextBtn = 'Next'
 const executeBtn = 'Execute'
 export const addToBatchBtn = 'Add to batch'
@@ -72,7 +72,7 @@ export function openBatchtransactionsModal() {
 
 export function openNewTransactionModal() {
   cy.get(addNewTxBatch).click()
-  cy.contains(sendTokensButn).click()
+  cy.contains(sendTokensBtn).click()
 }
 
 export function addNewTransactionToBatch(EOA, currentNonce, funds_first_tx) {
