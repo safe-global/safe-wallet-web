@@ -13,29 +13,35 @@ import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import useAsync from '@/hooks/useAsync'
 import DecodedData from '../DecodedData'
 
+const safeInterface = Safe__factory.createInterface()
+
+const extractTransactionData = (data: string | undefined): MetaTransactionData | undefined => {
+  const params = data ? safeInterface.decodeFunctionData('execTransaction', data) : undefined
+  if (!params || params.length !== 10) {
+    return
+  }
+
+  return {
+    to: params[0],
+    value: params[1],
+    data: params[2],
+    operation: params[3] as number,
+  }
+}
+
 export const ExecTransaction = ({ data }: { data?: TransactionData }) => {
   const chain = useCurrentChain()
 
-  const childSafeTxData = useMemo<MetaTransactionData | undefined>(() => {
-    const safeInterface = Safe__factory.createInterface()
-    const params = data?.hexData ? safeInterface.decodeFunctionData('execTransaction', data?.hexData) : undefined
-    if (!params || params.length !== 10) {
-      return
-    }
-
-    return {
-      to: params[0],
-      value: params[1],
-      data: params[2],
-      operation: params[3] as number,
-    }
-  }, [data?.hexData])
+  const childSafeTxData = useMemo<MetaTransactionData | undefined>(
+    () => extractTransactionData(data?.hexData),
+    [data?.hexData],
+  )
 
   const [txData, error] = useAsync(async () => {
     if (chain?.chainId && data?.to.value && childSafeTxData) {
       const dataDecoded = await getConfirmationView(
         chain.chainId,
-        data?.to.value,
+        data.to.value,
         childSafeTxData.data,
         childSafeTxData.to,
         childSafeTxData.value.toString(),
@@ -57,9 +63,12 @@ export const ExecTransaction = ({ data }: { data?: TransactionData }) => {
 
   return (
     <Stack spacing={2}>
-      {data?.dataDecoded && <MethodCall contractAddress={data?.to.value} method={data.dataDecoded?.method} />}
-
-      {data?.dataDecoded && <MethodDetails data={data.dataDecoded} addressInfoIndex={data.addressInfoIndex} />}
+      {data?.dataDecoded && (
+        <>
+          <MethodCall contractAddress={data.to.value} method={data.dataDecoded.method} />
+          <MethodDetails data={data.dataDecoded} addressInfoIndex={data.addressInfoIndex} />
+        </>
+      )}
 
       <Divider />
 
@@ -73,11 +82,11 @@ export const ExecTransaction = ({ data }: { data?: TransactionData }) => {
               <Link
                 href={{
                   pathname: AppRoutes.transactions.history,
-                  query: { safe: `${chain?.shortName}:${data?.to.value}` },
+                  query: { safe: `${chain.shortName}:${data.to.value}` },
                 }}
                 passHref
               >
-                <MuiLink>Open nested transaction</MuiLink>
+                <MuiLink>Open Safe</MuiLink>
               </Link>
             )}
           </>
