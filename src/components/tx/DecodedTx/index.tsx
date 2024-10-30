@@ -23,6 +23,7 @@ type DecodedTxProps = {
   showMultisend?: boolean
   decodedData?: DecodedDataResponse
   showMethodCall?: boolean
+  showAdvancedDetails?: boolean
 }
 
 export const Divider = () => (
@@ -40,10 +41,11 @@ const DecodedTx = ({
   decodedData,
   showMultisend = true,
   showMethodCall = false,
+  showAdvancedDetails = true,
 }: DecodedTxProps): ReactElement => {
   const chainId = useChainId()
   const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
-  const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
+  const isMethodCallInAdvanced = showAdvancedDetails && (!showMethodCall || (isMultisend && showMultisend))
 
   const {
     data: txDetails,
@@ -92,46 +94,48 @@ const DecodedTx = ({
 
       {isMultisend && showMultisend && <Multisend txData={txDetails?.txData || txData} compact />}
 
-      <Box>
-        <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-          <AccordionSummary
-            data-testid="decoded-tx-summary"
-            expandIcon={<ExpandMoreIcon />}
-            className={accordionCss.accordion}
-          >
-            Advanced details
-            <HelpToolTip />
-            <Box flexGrow={1} />
-            {isMethodCallInAdvanced && decodedData?.method}
-            {!showMethodCall && !decodedData?.method && Number(tx?.data.value) > 0 && 'native transfer'}
-          </AccordionSummary>
+      {showAdvancedDetails && (
+        <Box>
+          <Accordion elevation={0} onChange={onChangeExpand}>
+            <AccordionSummary
+              data-testid="decoded-tx-summary"
+              expandIcon={<ExpandMoreIcon />}
+              className={accordionCss.accordion}
+            >
+              Advanced details
+              <HelpToolTip />
+              <Box flexGrow={1} />
+              {isMethodCallInAdvanced && decodedData?.method}
+              {!showMethodCall && !decodedData?.method && Number(tx?.data.value) > 0 && 'native transfer'}
+            </AccordionSummary>
 
-          <AccordionDetails data-testid="decoded-tx-details">
-            {isMethodCallInAdvanced && decodedData?.method && (
-              <>
-                {decodedDataBlock}
-                <Divider />
-              </>
-            )}
+            <AccordionDetails data-testid="decoded-tx-details">
+              {isMethodCallInAdvanced && decodedData?.method && (
+                <>
+                  {decodedDataBlock}
+                  <Divider />
+                </>
+              )}
 
-            {txDetails ? (
-              <Summary
-                txDetails={txDetails}
-                defaultExpanded
-                hideDecodedData={isMethodCallInAdvanced && !!decodedData?.method}
-              />
-            ) : (
-              tx && <PartialSummary safeTx={tx} />
-            )}
+              {txDetails ? (
+                <Summary
+                  txDetails={txDetails}
+                  defaultExpanded
+                  hideDecodedData={isMethodCallInAdvanced && !!decodedData?.method}
+                />
+              ) : (
+                tx && <PartialSummary safeTx={tx} />
+              )}
 
-            {txDetailsLoading && <Skeleton />}
+              {txDetailsLoading && <Skeleton />}
 
-            {txDetailsError && (
-              <ErrorMessage error={asError(txDetailsError)}>Failed loading all transaction details</ErrorMessage>
-            )}
-          </AccordionDetails>
-        </Accordion>
-      </Box>
+              {txDetailsError && (
+                <ErrorMessage error={asError(txDetailsError)}>Failed loading all transaction details</ErrorMessage>
+              )}
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      )}
     </Stack>
   )
 }

@@ -1,6 +1,6 @@
 import useChainId from '@/hooks/useChainId'
 import { Safe__factory } from '@/types/contracts'
-import { Link as MuiLink, Skeleton, Stack, Typography } from '@mui/material'
+import { Link as MuiLink, Skeleton, Stack, SvgIcon, Typography } from '@mui/material'
 import { type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
 import TxData from '..'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -14,6 +14,7 @@ import { AppRoutes } from '@/config/routes'
 import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
 import { useMemo } from 'react'
 import { skipToken } from '@reduxjs/toolkit/query'
+import NestedTransactionIcon from '@/public/images/transactions/nestedTx.svg'
 
 export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
   const chain = useCurrentChain()
@@ -47,7 +48,9 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
       <Divider />
 
       <Stack spacing={2}>
-        <Typography variant="h5">Nested transaction:</Typography>
+        <Typography variant="h5" display="flex" alignItems="center" gap={1}>
+          <SvgIcon component={NestedTransactionIcon} inheritViewBox fontSize="small" /> Nested transaction:
+        </Typography>{' '}
         {nestedTxDetails ? (
           <>
             <TxData txDetails={nestedTxDetails} trusted imitation={false} />
