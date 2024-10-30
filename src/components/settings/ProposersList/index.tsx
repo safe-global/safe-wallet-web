@@ -116,7 +116,7 @@ const ProposersList = () => {
               </CheckWallet>
             </Box>
 
-            <EnhancedTable rows={rows} headCells={[]} />
+            {rows.length > 0 && <EnhancedTable rows={rows} headCells={[]} />}
           </Grid>
 
           {deleteProposer && (

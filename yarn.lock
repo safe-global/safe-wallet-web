@@ -4195,10 +4195,10 @@
     "@safe-global/safe-gateway-typescript-sdk" "^3.5.3"
     viem "^2.1.1"
 
-"@safe-global/safe-client-gateway-sdk@1.58.0-next-88d97c1":
-  version "1.58.0-next-88d97c1"
-  resolved "https://registry.yarnpkg.com/@safe-global/safe-client-gateway-sdk/-/safe-client-gateway-sdk-1.58.0-next-88d97c1.tgz#8cec956eb1d6aec0225e0735b5e2fd43543c2b9c"
-  integrity sha512-7o7UVnmSuWc7A1IIQZyRNc3e4dkQwzTQxHG3hWEu8DQkkseGoePJ3wEVYn3wNi+iuYFvg+5hCoh6mGuD11vKOw==
+"@safe-global/safe-client-gateway-sdk@1.60.1-next-069fa2b":
+  version "1.60.1-next-069fa2b"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-client-gateway-sdk/-/safe-client-gateway-sdk-1.60.1-next-069fa2b.tgz#5a4ac69661713dd08b33bbcc15fa7d870339ed0a"
+  integrity sha512-gS+AcYuX1L6l79q87TA/A6vS34wovUgypRKS8lXzo4nDbHE333i/yp7JoOAcxKXFlJDHJXHIbPRkOKoMjdylEA==
   dependencies:
     openapi-fetch "0.10.5"
 
