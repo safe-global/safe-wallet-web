@@ -12,6 +12,7 @@ import {
   type ListItemIconProps,
 } from '@mui/material'
 import type {
+  AddressEx,
   DetailedExecutionInfo,
   TransactionDetails,
   TransactionSummary,
@@ -106,9 +107,15 @@ type TxSignersProps = {
   txDetails: TransactionDetails
   txSummary: TransactionSummary
   isTxFromProposer: boolean
+  proposer?: AddressEx
 }
 
-export const TxSigners = ({ txDetails, txSummary, isTxFromProposer }: TxSignersProps): ReactElement | null => {
+export const TxSigners = ({
+  txDetails,
+  txSummary,
+  isTxFromProposer,
+  proposer,
+}: TxSignersProps): ReactElement | null => {
   const { detailedExecutionInfo, txInfo, txId } = txDetails
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
   const isPending = useIsPending(txId)
@@ -155,15 +162,29 @@ export const TxSigners = ({ txDetails, txSummary, isTxFromProposer }: TxSignersP
           )}
         </ListItem>
 
-        <ListItem>
-          <StyledListItemIcon $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
-            {isConfirmed ? <Check /> : <MissingConfirmation />}
-          </StyledListItemIcon>
-          <ListItemText data-testid="confirmation-action" primaryTypographyProps={{ fontWeight: 700 }}>
-            Confirmations{' '}
-            <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
-          </ListItemText>
-        </ListItem>
+        {proposer && (
+          <ListItem key={proposer.value} sx={{ py: 0 }}>
+            <StyledListItemIcon $state={StepState.CONFIRMED}>
+              <Dot />
+            </StyledListItemIcon>
+            <ListItemText data-testid="signer">
+              <EthHashInfo address={proposer.value} hasExplorer showCopyButton />
+            </ListItemText>
+          </ListItem>
+        )}
+
+        {confirmations.length > 0 && (
+          <ListItem>
+            <StyledListItemIcon $state={isConfirmed ? StepState.CONFIRMED : StepState.ACTIVE}>
+              {isConfirmed ? <Check /> : <MissingConfirmation />}
+            </StyledListItemIcon>
+            <ListItemText data-testid="confirmation-action" primaryTypographyProps={{ fontWeight: 700 }}>
+              Confirmations{' '}
+              <Box className={css.confirmationsTotal}>({`${confirmationsCount} of ${confirmationsRequired}`})</Box>
+            </ListItemText>
+          </ListItem>
+        )}
+
         {!hideConfirmations &&
           confirmations.map(({ signer }) => (
             <ListItem key={signer.value} sx={{ py: 0 }}>
