@@ -17,6 +17,8 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useNestedSafeAddress, setNestedSafeAddress } from '@/components/common/WalletProvider'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import InfoIcon from '@/public/images/notifications/info.svg'
+import SignatureIcon from '@/public/images/transactions/signature.svg'
+
 import css from './styles.module.css'
 
 export const SignerForm = () => {
@@ -62,25 +64,15 @@ export const SignerForm = () => {
 
   return (
     <TxCard>
-      <Typography variant="h5">
-        Select signer
+      <Typography variant="h5" display="flex" gap={1} alignItems="center">
+        <SvgIcon component={SignatureIcon} inheritViewBox fontSize="small" />
+        Sign with
         <Tooltip
           title="Your connected wallet controls other Safe accounts, which can sign this transaction. You can select which account to sign with."
           arrow
           placement="top"
         >
-          <span>
-            <SvgIcon
-              component={InfoIcon}
-              inheritViewBox
-              color="border"
-              fontSize="small"
-              sx={{
-                verticalAlign: 'middle',
-                ml: 0.5,
-              }}
-            />
-          </span>
+          <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
         </Tooltip>
       </Typography>
 

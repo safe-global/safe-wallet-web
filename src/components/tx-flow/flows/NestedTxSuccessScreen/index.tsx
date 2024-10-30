@@ -1,5 +1,5 @@
 // Extract status handling into separate components
-import { Box, Button, Container, Paper, Stack, SvgIcon, Typography } from '@mui/material'
+import { Box, Container, Paper, Stack, SvgIcon, Typography } from '@mui/material'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -13,6 +13,7 @@ import { AppRoutes } from '@/config/routes'
 import { useGetTransactionDetailsQuery } from '@/store/slices'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { useAppSelector } from '@/store'
+import ExternalLink from '@/components/common/ExternalLink'
 
 type Props = {
   txId: string
@@ -101,8 +102,9 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
             },
           }}
           passHref
+          legacyBehavior
         >
-          <Button variant="outlined">Open the transaction</Button>
+          <ExternalLink variant="button">Open the transaction</ExternalLink>
         </Link>
       </Box>
     </Container>
