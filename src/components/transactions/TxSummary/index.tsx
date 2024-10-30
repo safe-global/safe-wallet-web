@@ -75,7 +75,7 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
 
       {isQueue && executionInfo && (
         <Box gridArea="confirmations">
-          {executionInfo.confirmationsSubmitted > 0 ? (
+          {executionInfo.confirmationsSubmitted > 0 || isPending ? (
             <TxConfirmations
               submittedConfirmations={executionInfo.confirmationsSubmitted}
               requiredConfirmations={executionInfo.confirmationsRequired}
