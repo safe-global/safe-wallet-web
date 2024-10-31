@@ -21,6 +21,7 @@ const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo: { settingsInfo 
   if (!settingsInfo || settingsInfo.type === SettingsInfoType.REMOVE_OWNER) return null
 
   const shouldShowChangeSigner = 'owner' in settingsInfo || 'newOwner' in params
+  const hasNewOwner = 'newOwner' in params
 
   return (
     <>
@@ -40,8 +41,8 @@ const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo: { settingsInfo 
         </Paper>
       )}
 
-      {'owner' in settingsInfo && <OwnerList owners={[settingsInfo.owner]} />}
-      {'newOwner' in params && <OwnerList owners={[{ name: params.newOwner.name, value: params.newOwner.address }]} />}
+      {'owner' in settingsInfo && !hasNewOwner && <OwnerList owners={[settingsInfo.owner]} />}
+      {hasNewOwner && <OwnerList owners={[{ name: params.newOwner.name, value: params.newOwner.address }]} />}
 
       {shouldShowChangeSigner && <ChangeSignerSetupWarning />}
 
