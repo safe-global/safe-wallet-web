@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material'
 import classNames from 'classnames'
+import { useMemo } from 'react'
 import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import type { FieldArrayWithId, UseFormReturn } from 'react-hook-form'
 
@@ -66,13 +67,13 @@ export function SetUpSubaccount({
     name: SetupSubaccountFormFields.assets,
   })
 
-  const assetsToFund = formMethods.watch(SetupSubaccountFormFields.assets)
-  const remainingFundableAssets = balances.items.filter((item) => {
-    return !assetsToFund.map((asset) => asset.tokenAddress).includes(item.tokenInfo.address)
+  const selectedAssets = formMethods.watch(SetupSubaccountFormFields.assets)
+  const nonSelectedAssets = balances.items.filter((item) => {
+    return !selectedAssets.map((asset) => asset.tokenAddress).includes(item.tokenInfo.address)
   })
   const defaultAsset: SetupSubaccountForm['assets'][number] = {
     // tokenAddress is "next" token that isn't selected to fund the subaccount
-    tokenAddress: remainingFundableAssets[0]?.tokenInfo.address,
+    tokenAddress: nonSelectedAssets[0]?.tokenInfo.address,
     amount: '',
   }
   const canFund = !!defaultAsset.tokenAddress
@@ -122,7 +123,7 @@ export function SetUpSubaccount({
                 field={field}
                 index={index}
                 balances={balances}
-                assets={assetsToFund}
+                selectedAssets={selectedAssets}
                 formMethods={formMethods}
                 remove={() => fieldArray.remove(index)}
               />
@@ -164,20 +165,20 @@ function AssetInputRow({
   field,
   index,
   balances,
-  assets,
+  selectedAssets,
   formMethods,
   remove,
 }: {
   field: FieldArrayWithId<SetupSubaccountForm, SetupSubaccountFormFields.assets, 'id'>
   index: number
   balances: ReturnType<typeof useVisibleBalances>['balances']
-  assets: Record<SetupSubaccountFormAssetFields, string>[]
+  selectedAssets: Record<SetupSubaccountFormAssetFields, string>[]
   formMethods: UseFormReturn<SetupSubaccountForm, any>
   remove: () => void
 }) {
   const element = `${SetupSubaccountFormFields.assets}.${index}` as const
 
-  const tokenAddress = assets[index][SetupSubaccountFormAssetFields.tokenAddress]
+  const tokenAddress = selectedAssets[index][SetupSubaccountFormAssetFields.tokenAddress]
   const token = balances.items.find((item) => item.tokenInfo.address === tokenAddress)
 
   const errors = formMethods.formState.errors?.[SetupSubaccountFormFields.assets]?.[index]
@@ -187,6 +188,14 @@ function AssetInputRow({
     errors?.[SetupSubaccountFormAssetFields.tokenAddress]?.message ||
     errors?.[SetupSubaccountFormAssetFields.amount]?.message ||
     'Amount'
+
+  const otherAssets = useMemo(() => {
+    return balances.items.filter((item) => {
+      return !selectedAssets.some((asset) => {
+        return asset.tokenAddress !== tokenAddress && asset.tokenAddress === item.tokenInfo.address
+      })
+    })
+  }, [balances.items, selectedAssets, index])
 
   return (
     <Box className={css.assetInput} key={field.id}>
@@ -263,11 +272,7 @@ function AssetInputRow({
                   required
                   {...field}
                 >
-                  {balances.items.map((item) => {
-                    // Tokens that are already selected to fund with
-                    if (assets.filter((asset) => asset.tokenAddress === item.tokenInfo.address).length > 1) {
-                      return null
-                    }
+                  {otherAssets.map((item) => {
                     return (
                       <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
                         <AutocompleteItem {...item} />
