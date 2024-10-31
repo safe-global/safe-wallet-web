@@ -5,6 +5,7 @@ import { asError } from '@/services/exceptions/utils'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import type { DelegateResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
 import { safeOverviewEndpoints } from './safeOverviews'
+import { getSubmission } from '@safe-global/safe-client-gateway-sdk'
 
 async function buildQueryFn<T>(fn: () => Promise<T>) {
   try {
@@ -33,6 +34,16 @@ export const gatewayApi = createApi({
         return buildQueryFn(() => getDelegates(chainId, { safe: safeAddress }))
       },
     }),
+    getSubmission: builder.query<
+      getSubmission,
+      { outreachId: number; chainId: string; safeAddress: string; signerAddress: string }
+    >({
+      queryFn({ outreachId, chainId, safeAddress, signerAddress }) {
+        return buildQueryFn(() =>
+          getSubmission({ params: { path: { outreachId, chainId, safeAddress, signerAddress } } }),
+        )
+      },
+    }),
     ...safeOverviewEndpoints(builder),
   }),
 })
@@ -42,6 +53,7 @@ export const {
   useGetMultipleTransactionDetailsQuery,
   useLazyGetTransactionDetailsQuery,
   useGetDelegatesQuery,
+  useGetSubmissionQuery,
   useGetSafeOverviewQuery,
   useGetMultipleSafeOverviewsQuery,
 } = gatewayApi

@@ -47,6 +47,12 @@ before(() => {
         app.document.head.appendChild(style)
       }
     }
+    const originalConsoleLog = console.log
+    console.log = (...args) => {
+      if (typeof args[0] === 'string' && !args[0].includes('Intercepted request with headers')) {
+        originalConsoleLog(...args)
+      }
+    }
   })
 })
 

@@ -179,6 +179,10 @@ describe('Swaps tests', () => {
           safeAddress: staticSafes.SEP_STATIC_SAFE_1.slice(6),
         },
       ]
+      // Clean txs in the queue
+      cy.visit(constants.transactionQueueUrl + staticSafes.SEP_STATIC_SAFE_1)
+      create_tx.deleteAllTx()
+
       swaps.acceptLegalDisclaimer()
       cy.wait(4000)
       main.getIframeBody(iframeSelector).within(() => {
