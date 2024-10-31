@@ -1,13 +1,16 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
   Button,
+  Divider,
+  InputAdornment,
   Link,
   Paper,
   SvgIcon,
+  TextField,
   Typography,
 } from '@mui/material'
 import madProps from '@/utils/mad-props'
@@ -27,16 +30,32 @@ import { type SafeItem } from './useAllSafes'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import classNames from 'classnames'
+import { getComparator } from './utils'
+import SortByButton from './SortByButton'
+import SearchIcon from '@/public/images/common/search.svg'
 
 type AccountsListProps = {
   safes: AllSafesGrouped
   isSidebar?: boolean
   onLinkClick?: () => void
 }
+
+enum SortBy {
+  NAME = 'name',
+  LAST_VISITED = 'lastVisited',
+  DEFAULT = 'default',
+}
+
 const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListProps) => {
   const wallet = useWallet()
   const router = useRouter()
-  const allSafes = [...(safes.allMultiChainSafes ?? []), ...(safes.allSingleSafes ?? [])]
+  const [sortBy, setSortBy] = useState<SortBy>(SortBy.NAME)
+  const sortComparator = getComparator(sortBy)
+
+  const allSafes = useMemo(
+    () => [...(safes.allMultiChainSafes ?? []), ...(safes.allSingleSafes ?? [])].sort(sortComparator),
+    [safes.allMultiChainSafes, safes.allSingleSafes, sortComparator],
+  )
 
   // We consider a multiChain account owned if at least one of the multiChain accounts is not on the watchlist
   const ownedMultiChainSafes = useMemo(
@@ -62,11 +81,8 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
     [safes, watchlistMultiChainSafes],
   )
   const pinnedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
-    () => [
-      ...(safes.allSingleSafes?.filter(({ isPinned }) => isPinned) ?? []),
-      ...(safes.allMultiChainSafes?.filter(({ isPinned }) => isPinned) ?? []),
-    ],
-    [safes],
+    () => [...(allSafes?.filter(({ isPinned }) => isPinned) ?? [])],
+    [allSafes],
   )
 
   useTrackSafesCount(ownedSafes, watchlistSafes, wallet)
@@ -102,62 +118,90 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
           </Box>
         </Box>
 
-        <Paper className={css.safeList}>
-          {/* Pinned Accounts */}
-          <Box mb={2} minHeight="170px">
-            <div className={css.listHeader}>
-              <SvgIcon
-                component={BookmarkIcon}
-                inheritViewBox
-                fontSize="small"
-                sx={{ mt: '2px', mr: 1, strokeWidth: 2 }}
+        <Paper sx={{ padding: 0 }}>
+          <Paper sx={{ px: 2, py: 1 }}>
+            <Box display="flex" justifyContent="space-between" width="100%" gap={1}>
+              <TextField
+                id="search-by-name"
+                placeholder="Search"
+                aria-label="Search Safe list by name"
+                variant="filled"
+                hiddenLabel
+                onChange={() => {}}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SvgIcon component={SearchIcon} inheritViewBox color="border" fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  disableUnderline: true,
+                }}
+                fullWidth
+                size="small"
               />
-              <Typography variant="h5" fontWeight={700} mb={2}>
-                Pinned
-              </Typography>
-            </div>
-            {pinnedSafes.length > 0 ? (
-              <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
-            ) : (
-              <Box className={css.noPinnedSafesMessage}>
-                <Typography color="text.secondary" variant="body2" maxWidth="350px" textAlign="center">
-                  Personalize your account list by clicking the
-                  <SvgIcon
-                    component={BookmarkIcon}
-                    inheritViewBox
-                    fontSize="small"
-                    sx={{ mx: '4px', color: 'text.secondary', position: 'relative', top: '2px' }}
-                  />
-                  icon on the accounts most important to you.
-                </Typography>
-              </Box>
-            )}
-          </Box>
+              <SortByButton sortBy={sortBy} onSortByChange={setSortBy} />
+            </Box>
+          </Paper>
 
-          {/* All Accounts */}
-          <Accordion defaultExpanded={pinnedSafes.length === 0} sx={{ border: 'none' }}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon sx={{ '& path': { fill: 'var(--color-text-secondary)' } }} />}
-              sx={{ padding: 0, '& .MuiAccordionSummary-content': { margin: '0 !important', mb: 1, flexGrow: 0 } }}
-            >
+          {isSidebar && <Divider />}
+
+          <Paper className={css.safeList}>
+            {/* Pinned Accounts */}
+            <Box mb={2} minHeight="170px">
               <div className={css.listHeader}>
-                <Typography variant="h5" fontWeight={700}>
-                  Accounts
-                  {allSafes && allSafes.length > 0 && (
-                    <Typography component="span" color="text.secondary" fontSize="inherit" fontWeight="normal" mr={1}>
-                      {' '}
-                      ({allSafes.length})
-                    </Typography>
-                  )}
+                <SvgIcon
+                  component={BookmarkIcon}
+                  inheritViewBox
+                  fontSize="small"
+                  sx={{ mt: '2px', mr: 1, strokeWidth: 2 }}
+                />
+                <Typography variant="h5" fontWeight={700} mb={2}>
+                  Pinned
                 </Typography>
               </div>
-            </AccordionSummary>
-            <AccordionDetails sx={{ padding: 0 }}>
-              <Box mt={1}>
-                <SafesList safes={allSafes} onLinkClick={onLinkClick} />
-              </Box>
-            </AccordionDetails>
-          </Accordion>
+              {pinnedSafes.length > 0 ? (
+                <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
+              ) : (
+                <Box className={css.noPinnedSafesMessage}>
+                  <Typography color="text.secondary" variant="body2" maxWidth="350px" textAlign="center">
+                    Personalize your account list by clicking the
+                    <SvgIcon
+                      component={BookmarkIcon}
+                      inheritViewBox
+                      fontSize="small"
+                      sx={{ mx: '4px', color: 'text.secondary', position: 'relative', top: '2px' }}
+                    />
+                    icon on the accounts most important to you.
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+
+            {/* All Accounts */}
+            <Accordion defaultExpanded={pinnedSafes.length === 0} sx={{ border: 'none' }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon sx={{ '& path': { fill: 'var(--color-text-secondary)' } }} />}
+                sx={{ padding: 0, '& .MuiAccordionSummary-content': { margin: '0 !important', mb: 1, flexGrow: 0 } }}
+              >
+                <div className={css.listHeader}>
+                  <Typography variant="h5" fontWeight={700}>
+                    Accounts
+                    {allSafes && allSafes.length > 0 && (
+                      <Typography component="span" color="text.secondary" fontSize="inherit" fontWeight="normal" mr={1}>
+                        {' '}
+                        ({allSafes.length})
+                      </Typography>
+                    )}
+                  </Typography>
+                </div>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0 }}>
+                <Box mt={1}>
+                  <SafesList safes={allSafes} onLinkClick={onLinkClick} />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          </Paper>
         </Paper>
         <DataWidget />
       </Box>

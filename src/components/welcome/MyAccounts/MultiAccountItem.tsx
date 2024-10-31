@@ -20,7 +20,6 @@ import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analyti
 import { AppRoutes } from '@/config/routes'
 import { useAppDispatch, useAppSelector } from '@/store'
 import css from './styles.module.css'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
@@ -99,10 +98,10 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     setExpanded((prev) => !prev)
   }
 
-  const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  const name = useMemo(() => {
-    return Object.values(allAddressBooks).find((ab) => ab[address] !== undefined)?.[address]
-  }, [address, allAddressBooks])
+  // const allAddressBooks = useAppSelector(selectAllAddressBooks)
+  // const name = useMemo(() => {
+  //   return Object.values(allAddressBooks).find((ab) => ab[address] !== undefined)?.[address]
+  // }, [address, allAddressBooks])
 
   const currency = useAppSelector(selectCurrency)
   const { address: walletAddress } = useWallet() ?? {}
@@ -197,9 +196,9 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
             </Box>
             <Typography variant="body2" component="div" className={css.safeAddress}>
-              {name && (
+              {multiSafeAccountItem.name && (
                 <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
-                  {name}
+                  {multiSafeAccountItem.name}
                 </Typography>
               )}
               <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
@@ -232,7 +231,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             />
           </IconButton>
           <MultiAccountContextMenu
-            name={name ?? ''}
+            name={multiSafeAccountItem.name ?? ''}
             address={address}
             chainIds={deployedChainIds}
             addNetwork={hasReplayableSafe}
@@ -254,7 +253,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               <Divider sx={{ ml: '-12px', mr: '-12px' }} />
               <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>
                 <AddNetworkButton
-                  currentName={name}
+                  currentName={multiSafeAccountItem.name ?? ''}
                   safeAddress={address}
                   deployedChains={safes.map((safe) => safe.chainId)}
                 />

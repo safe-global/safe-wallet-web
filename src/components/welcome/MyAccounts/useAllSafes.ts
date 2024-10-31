@@ -6,13 +6,15 @@ import { selectAllAddedSafes } from '@/store/addedSafesSlice'
 import useAllOwnedSafes from './useAllOwnedSafes'
 import useChains from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
-import { selectUndeployedSafes } from '@/store/slices'
+import { selectAllAddressBooks, selectAllVisitedSafes, selectUndeployedSafes } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
 export type SafeItem = {
   chainId: string
   address: string
   isWatchlist: boolean
   isPinned: boolean
+  lastVisited: number | undefined
+  name: string | undefined
 }
 
 export type SafeItems = SafeItem[]
@@ -39,8 +41,11 @@ const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
   const [allOwned] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
+  const allVisitedSafes = useAppSelector(selectAllVisitedSafes)
   const { configs } = useChains()
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
+  const allSafeNames = useAppSelector(selectAllAddressBooks)
+  // [chainId]?.[address]
 
   return useMemo<SafeItems>(() => {
     if (walletAddress && allOwned === undefined) {
@@ -65,15 +70,19 @@ const useAllSafes = (): SafeItems | undefined => {
         const isOwned = (ownedOnChain || []).includes(address) || isOwner
         const isUndeployed = undeployedOnChain.includes(address)
         const isPinned = Boolean(allAdded?.[chainId]?.[address]?.pinned)
+        const lastVisited = allVisitedSafes?.[chainId]?.[address]?.lastVisited || undefined
+        const name = allSafeNames?.[chainId]?.[address]
         return {
           address,
           chainId,
           isWatchlist: !isOwned && !isUndeployed,
           isPinned,
+          lastVisited,
+          name,
         }
       })
     })
-  }, [allAdded, allOwned, configs, undeployedSafes, walletAddress])
+  }, [allAdded, allOwned, configs, undeployedSafes, walletAddress, allVisitedSafes, allSafeNames])
 }
 
 export default useAllSafes
