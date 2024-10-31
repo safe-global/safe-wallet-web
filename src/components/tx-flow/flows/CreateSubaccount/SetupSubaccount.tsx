@@ -14,9 +14,7 @@ import {
   Typography,
 } from '@mui/material'
 import classNames from 'classnames'
-import { useMemo } from 'react'
-import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
-import type { FieldArrayWithId, UseFormReturn } from 'react-hook-form'
+import { Controller, FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form'
 
 import InfoIcon from '@/public/images/notifications/info.svg'
 import AddIcon from '@/public/images/common/add.svg'
@@ -56,27 +54,11 @@ export function SetUpSubaccount({
   params: SetupSubaccountForm
   onSubmit: (params: SetupSubaccountForm) => void
 }) {
-  const { balances } = useVisibleBalances()
   const fallbackName = useMnemonicSafeName()
   const formMethods = useForm<SetupSubaccountForm>({
     defaultValues: params,
     mode: 'onChange',
   })
-  const fieldArray = useFieldArray({
-    control: formMethods.control,
-    name: SetupSubaccountFormFields.assets,
-  })
-
-  const selectedAssets = formMethods.watch(SetupSubaccountFormFields.assets)
-  const nonSelectedAssets = balances.items.filter((item) => {
-    return !selectedAssets.map((asset) => asset.tokenAddress).includes(item.tokenInfo.address)
-  })
-  const defaultAsset: SetupSubaccountForm['assets'][number] = {
-    // tokenAddress is "next" token that isn't selected to fund the subaccount
-    tokenAddress: nonSelectedAssets[0]?.tokenInfo.address,
-    amount: '',
-  }
-  const canFund = !!defaultAsset.tokenAddress
 
   const onFormSubmit = (data: SetupSubaccountForm) => {
     onSubmit({
@@ -116,32 +98,7 @@ export function SetUpSubaccount({
             />
           </FormControl>
 
-          {fieldArray.fields.map((field, index) => {
-            return (
-              <AssetInputRow
-                key={field.id}
-                field={field}
-                index={index}
-                balances={balances}
-                selectedAssets={selectedAssets}
-                formMethods={formMethods}
-                remove={() => fieldArray.remove(index)}
-              />
-            )
-          })}
-
-          <Button
-            variant="text"
-            onClick={() => {
-              fieldArray.append(defaultAsset, { shouldFocus: true })
-            }}
-            startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-            size="large"
-            sx={{ my: 3 }}
-            disabled={!canFund}
-          >
-            Fund new asset
-          </Button>
+          <AssetInputs name={SetupSubaccountFormFields.assets} />
 
           <Divider className={commonCss.nestedDivider} />
 
@@ -161,134 +118,137 @@ export function SetUpSubaccount({
  * a field array. Adjusting the former was initially attempted but proved to be too complex.
  * We should consider refactoring both to be more "pure" to share easier across components.
  */
-function AssetInputRow({
-  field,
-  index,
-  balances,
-  selectedAssets,
-  formMethods,
-  remove,
-}: {
-  field: FieldArrayWithId<SetupSubaccountForm, SetupSubaccountFormFields.assets, 'id'>
-  index: number
-  balances: ReturnType<typeof useVisibleBalances>['balances']
-  selectedAssets: Record<SetupSubaccountFormAssetFields, string>[]
-  formMethods: UseFormReturn<SetupSubaccountForm, any>
-  remove: () => void
-}) {
-  const element = `${SetupSubaccountFormFields.assets}.${index}` as const
+function AssetInputs({ name }: { name: SetupSubaccountFormFields.assets }) {
+  const { balances } = useVisibleBalances()
 
-  const tokenAddress = selectedAssets[index][SetupSubaccountFormAssetFields.tokenAddress]
-  const token = balances.items.find((item) => item.tokenInfo.address === tokenAddress)
+  const formMethods = useFormContext<SetupSubaccountForm>()
+  const fieldArray = useFieldArray<SetupSubaccountForm>({ name })
 
-  const errors = formMethods.formState.errors?.[SetupSubaccountFormFields.assets]?.[index]
-  const isError = !!errors && Object.keys(errors).length > 0
-
-  const label =
-    errors?.[SetupSubaccountFormAssetFields.tokenAddress]?.message ||
-    errors?.[SetupSubaccountFormAssetFields.amount]?.message ||
-    'Amount'
-
-  const otherAssets = useMemo(() => {
-    return balances.items.filter((item) => {
-      return !selectedAssets.some((asset) => {
-        return asset.tokenAddress !== tokenAddress && asset.tokenAddress === item.tokenInfo.address
-      })
-    })
-  }, [balances.items, selectedAssets, tokenAddress])
+  const selectedAssets = formMethods.watch(name)
+  const nonSelectedAssets = balances.items.filter((item) => {
+    return !selectedAssets.map((asset) => asset.tokenAddress).includes(item.tokenInfo.address)
+  })
+  const defaultAsset: SetupSubaccountForm[typeof name][number] = {
+    tokenAddress: nonSelectedAssets[0]?.tokenInfo.address,
+    amount: '',
+  }
 
   return (
-    <Box className={css.assetInput} key={field.id}>
-      <FormControl className={classNames(tokenInputCss.outline, { [tokenInputCss.error]: isError })} fullWidth>
-        <InputLabel shrink required className={tokenInputCss.label}>
-          {label}
-        </InputLabel>
+    <>
+      {fieldArray.fields.map((field, index) => {
+        const errors = formMethods.formState.errors?.[name]?.[index]
+        const label =
+          errors?.[SetupSubaccountFormAssetFields.tokenAddress]?.message ||
+          errors?.[SetupSubaccountFormAssetFields.amount]?.message ||
+          'Amount'
+        const isError = !!errors && Object.keys(errors).length > 0
 
-        <div className={tokenInputCss.inputs}>
-          <Controller
-            key={field.amount}
-            name={`${element}.${SetupSubaccountFormAssetFields.amount}`}
-            rules={{
-              required: true,
-              validate: (value) => {
-                return (
-                  validateLimitedAmount(value, token?.tokenInfo.decimals, token?.balance) ||
-                  validateDecimalLength(value, token?.tokenInfo.decimals)
-                )
-              },
-            }}
-            render={({ field }) => {
-              const onClickMax = () => {
-                if (!token) {
-                  return
-                }
-                const name =
-                  `${SetupSubaccountFormFields.assets}.${index}.${SetupSubaccountFormAssetFields.amount}` as const
-                const maxAmount = safeFormatUnits(token.balance, token.tokenInfo.decimals)
-                formMethods.setValue(
-                  name,
-                  // @ts-expect-error - computed name does not return field typ
-                  maxAmount,
-                  {
-                    shouldValidate: true,
-                  },
-                )
-              }
-              return (
-                <NumberField
-                  variant="standard"
-                  InputProps={{
-                    disableUnderline: true,
-                    endAdornment: (
-                      <Button className={tokenInputCss.max} onClick={onClickMax}>
-                        Max
-                      </Button>
-                    ),
+        const thisAsset = balances.items.find((item) => {
+          return item.tokenInfo.address === selectedAssets[index][SetupSubaccountFormAssetFields.tokenAddress]
+        })
+        const thisAndNonSelectedAssets = balances.items.filter((item) => {
+          return (
+            item.tokenInfo.address === thisAsset?.tokenInfo.address ||
+            nonSelectedAssets.some((nonSelected) => item.tokenInfo.address === nonSelected.tokenInfo.address)
+          )
+        })
+        return (
+          <Box className={css.assetInput} key={field.id}>
+            <FormControl className={classNames(tokenInputCss.outline, { [tokenInputCss.error]: isError })} fullWidth>
+              <InputLabel shrink required className={tokenInputCss.label}>
+                {label}
+              </InputLabel>
+
+              <div className={tokenInputCss.inputs}>
+                <Controller
+                  name={`${name}.${index}.${SetupSubaccountFormAssetFields.amount}`}
+                  rules={{
+                    required: true,
+                    validate: (value) => {
+                      return (
+                        validateLimitedAmount(value, thisAsset?.tokenInfo.decimals, thisAsset?.balance) ||
+                        validateDecimalLength(value, thisAsset?.tokenInfo.decimals)
+                      )
+                    },
                   }}
-                  className={tokenInputCss.amount}
-                  required
-                  placeholder="0"
-                  {...field}
-                />
-              )
-            }}
-          />
-
-          <Divider orientation="vertical" flexItem />
-
-          <Controller
-            key={field.tokenAddress}
-            name={`${element}.${SetupSubaccountFormAssetFields.tokenAddress}`}
-            rules={{ required: true }}
-            render={({ field }) => {
-              return (
-                <TextField
-                  select
-                  variant="standard"
-                  InputProps={{
-                    disableUnderline: true,
-                  }}
-                  className={tokenInputCss.select}
-                  required
-                  {...field}
-                >
-                  {otherAssets.map((item) => {
+                  render={({ field }) => {
+                    const onClickMax = () => {
+                      if (thisAsset) {
+                        const maxAmount = safeFormatUnits(thisAsset.balance, thisAsset.tokenInfo.decimals)
+                        field.onChange(maxAmount)
+                      }
+                    }
                     return (
-                      <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
-                        <AutocompleteItem {...item} />
-                      </MenuItem>
+                      <NumberField
+                        variant="standard"
+                        InputProps={{
+                          disableUnderline: true,
+                          endAdornment: (
+                            <Button className={tokenInputCss.max} onClick={onClickMax}>
+                              Max
+                            </Button>
+                          ),
+                        }}
+                        className={tokenInputCss.amount}
+                        required
+                        placeholder="0"
+                        {...field}
+                      />
                     )
-                  })}
-                </TextField>
-              )
-            }}
-          />
-        </div>
-      </FormControl>
+                  }}
+                />
 
-      <IconButton onClick={remove}>
-        <SvgIcon component={DeleteIcon} inheritViewBox />
-      </IconButton>
-    </Box>
+                <Divider orientation="vertical" flexItem />
+
+                <Controller
+                  name={`${name}.${index}.${SetupSubaccountFormAssetFields.tokenAddress}`}
+                  rules={{ required: true }}
+                  render={({ field }) => {
+                    return (
+                      <TextField
+                        select
+                        variant="standard"
+                        InputProps={{
+                          disableUnderline: true,
+                        }}
+                        className={tokenInputCss.select}
+                        required
+                        sx={{ minWidth: '200px' }}
+                        {...field}
+                      >
+                        {thisAndNonSelectedAssets.map((item) => {
+                          return (
+                            <MenuItem key={item.tokenInfo.address} value={item.tokenInfo.address}>
+                              <AutocompleteItem {...item} />
+                            </MenuItem>
+                          )
+                        })}
+                      </TextField>
+                    )
+                  }}
+                />
+              </div>
+            </FormControl>
+
+            <IconButton onClick={() => fieldArray.remove(index)}>
+              <SvgIcon component={DeleteIcon} inheritViewBox />
+            </IconButton>
+          </Box>
+        )
+      })}
+
+      <Button
+        variant="text"
+        onClick={() => {
+          fieldArray.append(defaultAsset, { shouldFocus: true })
+        }}
+        startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+        size="large"
+        sx={{ my: 3 }}
+        disabled={nonSelectedAssets.length === 0}
+      >
+        Fund new asset
+      </Button>
+    </>
   )
 }
