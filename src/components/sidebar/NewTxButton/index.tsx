@@ -7,6 +7,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import { NewTxFlow } from '@/components/tx-flow/flows'
 import WatchlistAddButton from '../WatchlistAddButton'
+import { CreateSubaccount } from '@/components/tx-flow/flows/CreateSubaccount'
 
 const NewTxButton = (): ReactElement => {
   const { setTxFlow } = useContext(TxModalContext)
@@ -17,6 +18,10 @@ const NewTxButton = (): ReactElement => {
     trackEvent({ ...OVERVIEW_EVENTS.NEW_TRANSACTION, label: 'sidebar' })
   }
 
+  const onClickSubaccount = () => {
+    setTxFlow(<CreateSubaccount />)
+  }
+
   if (isCounterfactualSafe) {
     return <ActivateAccountButton />
   }
@@ -25,18 +30,32 @@ const NewTxButton = (): ReactElement => {
     <CheckWallet allowSpendingLimit noTooltip>
       {(isOk) =>
         isOk ? (
-          <Button
-            data-testid="new-tx-btn"
-            onClick={onClick}
-            variant="contained"
-            size="small"
-            disabled={!isOk}
-            fullWidth
-            disableElevation
-            sx={{ py: 1.3 }}
-          >
-            New transaction
-          </Button>
+          <>
+            <Button
+              data-testid="new-tx-btn"
+              onClick={onClick}
+              variant="contained"
+              size="small"
+              disabled={!isOk}
+              fullWidth
+              disableElevation
+              sx={{ py: 1.3 }}
+            >
+              New transaction
+            </Button>
+            {/* TODO: Locate according to designs */}
+            <Button
+              onClick={onClickSubaccount}
+              variant="outlined"
+              size="small"
+              disabled={!isOk}
+              fullWidth
+              disableElevation
+              sx={{ py: 1.3, mt: 1 }}
+            >
+              New Subaccount
+            </Button>
+          </>
         ) : (
           <WatchlistAddButton />
         )
