@@ -38,7 +38,7 @@ const GroupedTxListItems = ({
     title = getSettlementOrderTitle(groupedListItems[0].transaction.txInfo as Order)
   }
   return (
-    <Paper className={css.container}>
+    <Paper data-testid="grouped-items" className={css.container}>
       <Box gridArea="icon">
         <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
       </Box>

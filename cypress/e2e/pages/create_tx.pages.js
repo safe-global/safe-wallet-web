@@ -104,6 +104,19 @@ export function deleteTx() {
   cy.get(deleteTxModalBtn).click()
 }
 
+export function deleteAllTx() {
+  cy.get('body').then(($body) => {
+    if ($body.find(transactionItem).length > 0) {
+      cy.get(transactionItem).then(($items) => {
+        for (let i = $items.length - 1; i >= 0; i--) {
+          cy.wrap($items[i]).click({ force: true })
+          deleteTx()
+        }
+      })
+    }
+  })
+}
+
 export function setTxType(type) {
   cy.get(radioSelector).find('label').contains(type).click()
 }
