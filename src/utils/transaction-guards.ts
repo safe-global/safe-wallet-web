@@ -413,11 +413,12 @@ export const isERC721Transfer = (value: TransferInfo): value is Erc721Transfer =
   return value.type === TransactionTokenType.ERC721
 }
 
+const safeInterface = Safe__factory.createInterface()
 /**
  * True if the tx calls `approveHash`
  */
 export const isOnChainConfirmationTxData = (data?: TransactionData): boolean => {
-  const approveHashSelector = Safe__factory.createInterface().getFunction('approveHash').selector
+  const approveHashSelector = safeInterface.getFunction('approveHash').selector
 
   return Boolean(data && data.hexData?.startsWith(approveHashSelector))
 }
@@ -433,7 +434,7 @@ export const isOnChainConfirmationTxInfo = (info: TransactionInfo): info is Cust
  * True if the tx calls `execTransaction`
  */
 export const isExecTxData = (data?: TransactionData): boolean => {
-  const execTransactionSelector = Safe__factory.createInterface().getFunction('execTransaction').selector
+  const execTransactionSelector = safeInterface.getFunction('execTransaction').selector
 
   return Boolean(data && data.hexData?.startsWith(execTransactionSelector))
 }

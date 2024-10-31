@@ -26,8 +26,8 @@ import SwapOrder from '@/features/swap/components/SwapOrder'
 import StakingTxDepositDetails from '@/features/stake/components/StakingTxDepositDetails'
 import StakingTxExitDetails from '@/features/stake/components/StakingTxExitDetails'
 import StakingTxWithdrawDetails from '@/features/stake/components/StakingTxWithdrawDetails'
-import { OnChainConfirmation } from './OnChainConfirmation'
-import { ExecTransaction } from './ExecTransaction'
+import { OnChainConfirmation } from './NestedTransaction/OnChainConfirmation'
+import { ExecTransaction } from './NestedTransaction/ExecTransaction'
 
 const TxData = ({
   txDetails,
