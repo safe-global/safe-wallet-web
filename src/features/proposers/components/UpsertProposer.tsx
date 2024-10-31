@@ -7,7 +7,6 @@ import ErrorMessage from '@/components/tx/ErrorMessage'
 import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
-import useSafeInfo from '@/hooks/useSafeInfo'
 import useWallet from '@/hooks/wallets/useWallet'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
 import { getAssertedChainSigner } from '@/services/tx/tx-sender/sdk'
@@ -15,7 +14,7 @@ import { useAppDispatch } from '@/store'
 import { useAddProposerMutation } from '@/store/api/gateway'
 import { showNotification } from '@/store/notificationsSlice'
 import { shortenAddress } from '@/utils/formatters'
-import { addressIsNotCurrentSafe, addressIsNotOwner } from '@/utils/validation'
+import { addressIsNotCurrentSafe } from '@/utils/validation'
 import { signTypedData } from '@/utils/web3'
 import { Close } from '@mui/icons-material'
 import {
@@ -32,7 +31,7 @@ import {
   Typography,
 } from '@mui/material'
 import type { Delegate } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
-import { type BaseSyntheticEvent, useMemo, useState } from 'react'
+import { type BaseSyntheticEvent, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 type UpsertProposerProps = {
@@ -56,7 +55,6 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [addProposer] = useAddProposerMutation()
   const dispatch = useAppDispatch()
-  const { safe } = useSafeInfo()
 
   const chainId = useChainId()
   const wallet = useWallet()
@@ -70,10 +68,7 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
     mode: 'onChange',
   })
 
-  const owners = useMemo(() => safe.owners.map((owner) => owner.value), [safe.owners])
-  const notAlreadyOwner = addressIsNotOwner(owners, 'Cannot add Owner as proposer')
   const notCurrentSafe = addressIsNotCurrentSafe(safeAddress, 'Cannot add Safe Account itself as proposer')
-  const combinedValidate = (address: string) => notAlreadyOwner(address) || notCurrentSafe(address)
 
   const { handleSubmit, formState } = methods
 
@@ -173,7 +168,7 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
                 <AddressBookInput
                   name="address"
                   label="Address"
-                  validate={combinedValidate}
+                  validate={notCurrentSafe}
                   variant="outlined"
                   fullWidth
                   required

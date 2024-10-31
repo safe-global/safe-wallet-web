@@ -117,13 +117,14 @@ export const SignOrExecuteForm = ({
     !isCustomTxInfo(txDetails.txInfo) &&
     !isAnyStakingTxInfo(txDetails.txInfo) &&
     !isOrderTxInfo(txDetails.txInfo)
-  const isProposer = useIsWalletProposer()
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
-
   const { safe } = useSafeInfo()
+
   const isSafeOwner = useIsSafeOwner()
+  const isProposer = useIsWalletProposer()
+  const isProposing = isProposer && !isSafeOwner && isCreation
   const isCounterfactualSafe = !safe.deployed
   const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(safeTx)
   const isMultiChainMigration = !!multiChainMigrationTarget
@@ -204,7 +205,7 @@ export const SignOrExecuteForm = ({
           variant={
             willExecute
               ? ConfirmationTitleTypes.execute
-              : isProposer
+              : isProposing
               ? ConfirmationTitleTypes.propose
               : ConfirmationTitleTypes.sign
           }
@@ -217,7 +218,7 @@ export const SignOrExecuteForm = ({
           </ErrorMessage>
         )}
 
-        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && !isProposer && (
+        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && !isProposing && (
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
 
@@ -227,10 +228,10 @@ export const SignOrExecuteForm = ({
 
         <Blockaid />
 
-        {isCounterfactualSafe && !isProposer && (
+        {isCounterfactualSafe && !isProposing && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
         )}
-        {!isCounterfactualSafe && willExecute && !isProposer && (
+        {!isCounterfactualSafe && willExecute && !isProposing && (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         )}
         {!isCounterfactualSafe && willExecuteThroughRole && (
@@ -242,7 +243,7 @@ export const SignOrExecuteForm = ({
             role={(allowingRole || mostLikelyRole)!}
           />
         )}
-        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isProposer && (
+        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isProposing && (
           <SignForm
             {...props}
             safeTx={safeTx}
@@ -252,7 +253,7 @@ export const SignOrExecuteForm = ({
           />
         )}
 
-        {isProposer && <ProposerForm {...props} safeTx={safeTx} onSubmit={onProposerFormSubmit} />}
+        {isProposing && <ProposerForm {...props} safeTx={safeTx} onSubmit={onProposerFormSubmit} />}
       </TxCard>
     </>
   )
