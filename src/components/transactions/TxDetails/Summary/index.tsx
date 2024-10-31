@@ -13,6 +13,7 @@ import DecodedData from '../TxData/DecodedData'
 import { calculateSafeTransactionHash } from '@safe-global/protocol-kit/dist/src/utils'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { SafeTxHashDataRow } from './SafeTxHashDataRow'
+import SafenetTxChecks from '@/components/tx/SignOrExecuteForm/SafenetTxChecks'
 
 interface Props {
   txDetails: TransactionDetails
@@ -72,6 +73,16 @@ const Summary = ({ txDetails, defaultExpanded = false, hideDecodedData = false }
           {dateString(executedAt)}
         </TxDataRow>
       )}
+
+      <SafenetTxChecks
+        safeTx={{
+          data: safeTxData!,
+          signatures: new Map(),
+          getSignature: () => undefined,
+          addSignature: () => {},
+          encodedSignatures: () => '',
+        }}
+      />
 
       {/* Advanced TxData */}
       {txData && (

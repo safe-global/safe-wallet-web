@@ -6,11 +6,11 @@ import useIsSafenetEnabled from '@/hooks/useIsSafenetEnabled'
 import { Typography } from '@mui/material'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
+import { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-const SafenetTxChecks = (): ReactElement | null => {
+const SafenetTxChecks = ({ safeTx }: { safeTx?: SafeTransaction }): ReactElement | null => {
   const safe = useSafeAddress()
   const chainId = useChainId()
-  const { safeTx } = useContext(SafeTxContext)
   const isSafenetEnabled = useIsSafenetEnabled()
 
   if (!isSafenetEnabled) {
