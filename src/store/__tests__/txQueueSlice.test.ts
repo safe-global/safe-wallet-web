@@ -17,6 +17,7 @@ import { txQueueListener, txQueueSlice } from '../txQueueSlice'
 import type { PendingTxsState } from '../pendingTxsSlice'
 import { PendingStatus } from '../pendingTxsSlice'
 import type { RootState } from '..'
+import { faker } from '@faker-js/faker/.'
 
 describe('txQueueSlice', () => {
   const listenerMiddlewareInstance = createListenerMiddleware<RootState>()
@@ -39,6 +40,48 @@ describe('txQueueSlice', () => {
           safeAddress: '0x0000000000000000000000000000000000000000',
           status: PendingStatus.SIGNING,
           signerAddress: '0x456',
+        },
+      } as PendingTxsState,
+    } as RootState
+
+    const listenerApi = {
+      getState: jest.fn(() => state),
+      dispatch: jest.fn(),
+    }
+
+    const transaction = {
+      type: TransactionListItemType.TRANSACTION,
+      transaction: {
+        id: '0x123',
+        executionInfo: {
+          type: DetailedExecutionInfoType.MULTISIG,
+          missingSigners: [],
+        },
+      },
+    } as unknown as TransactionListItem
+
+    const action = txQueueSlice.actions.set({
+      loading: false,
+      data: {
+        results: [transaction],
+      },
+    })
+
+    listenerMiddlewareInstance.middleware(listenerApi)(jest.fn())(action)
+
+    expect(txDispatchSpy).toHaveBeenCalledWith(txEvents.TxEvent.SIGNATURE_INDEXED, { txId: '0x123' })
+  })
+
+  it('should dispatch SIGNATURE_INDEXED event for Nested Signing state', () => {
+    const state = {
+      pendingTxs: {
+        '0x123': {
+          nonce: 1,
+          chainId: '5',
+          safeAddress: '0x0000000000000000000000000000000000000000',
+          status: PendingStatus.NESTED_SIGNING,
+          signerAddress: '0x456',
+          signingSafeTxHash: faker.string.hexadecimal({ length: 64 }),
         },
       } as PendingTxsState,
     } as RootState

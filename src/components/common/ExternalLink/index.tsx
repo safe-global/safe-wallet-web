@@ -10,11 +10,11 @@ const ExternalLink = ({
   noIcon = false,
   children,
   href,
-  variant = 'button',
+  mode = 'link',
   ...props
-}: Omit<LinkProps, 'target' | 'rel' | 'variant'> & { noIcon?: boolean; variant?: 'button' | 'link' }): ReactElement => {
+}: Omit<LinkProps, 'target' | 'rel'> & { noIcon?: boolean; mode?: 'button' | 'link' }): ReactElement => {
   if (!href) return <>{children}</>
-  return variant === 'link' ? (
+  return mode === 'link' ? (
     <Link rel="noreferrer noopener" target="_blank" {...props}>
       <Box display="inline-flex" alignItems="center" gap={0.2} component="span">
         {children}

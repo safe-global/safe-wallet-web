@@ -104,7 +104,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
           passHref
           legacyBehavior
         >
-          <ExternalLink variant="button">Open the transaction</ExternalLink>
+          <ExternalLink mode="button">Open the transaction</ExternalLink>
         </Link>
       </Box>
     </Container>
