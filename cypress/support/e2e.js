@@ -49,7 +49,7 @@ before(() => {
     }
     const originalConsoleLog = console.log
     console.log = (...args) => {
-      if (!args[0].includes('Intercepted request with headers')) {
+      if (typeof args[0] === 'string' && !args[0].includes('Intercepted request with headers')) {
         originalConsoleLog(...args)
       }
     }
