@@ -80,7 +80,7 @@ const ProposersList = () => {
                 {(isOk) => (
                   <Track {...SETTINGS_EVENTS.PROPOSERS.ADD_PROPOSER}>
                     <Button
-                      data-testid="add-owner-btn"
+                      data-testid="add-proposer-btn"
                       onClick={onAdd}
                       variant="text"
                       startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
