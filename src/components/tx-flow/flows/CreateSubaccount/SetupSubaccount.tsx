@@ -195,7 +195,7 @@ function AssetInputRow({
         return asset.tokenAddress !== tokenAddress && asset.tokenAddress === item.tokenInfo.address
       })
     })
-  }, [balances.items, selectedAssets, index])
+  }, [balances.items, selectedAssets, tokenAddress])
 
   return (
     <Box className={css.assetInput} key={field.id}>
