@@ -93,7 +93,7 @@ export function executionInfoBuilder(): IBuilder<MultisigExecutionInfo> {
     type: DetailedExecutionInfoType.MULTISIG,
     confirmationsRequired: Math.max(num1, num2),
     confirmationsSubmitted: Math.min(num1, num2),
-    missingSigners: Array.from(new Array(Math.min(num1, num2))).map(() => ({
+    missingSigners: Array.from({ length: Math.min(num1, num2) }).map(() => ({
       value: faker.finance.ethereumAddress(),
     })),
   })

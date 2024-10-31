@@ -148,7 +148,7 @@ export const dispatchOnChainSigning = async (
   const eventParams = { txId, nonce: safeTx.data.nonce }
 
   const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
-  let txResponse: any
+  let txResponse: string
   try {
     // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
     const encodedApproveHashTx = await prepareApproveTxHash(safeTxHash, provider)
@@ -167,7 +167,7 @@ export const dispatchOnChainSigning = async (
   txDispatch(TxEvent.ONCHAIN_SIGNATURE_SUCCESS, eventParams)
 
   if (isNestedSafe) {
-    const parentSafeTxHash: string = txResponse
+    const parentSafeTxHash = txResponse
     txDispatch(TxEvent.NESTED_SAFE_TX_CREATED, { ...eventParams, parentSafeAddress: signerAddress, parentSafeTxHash })
   }
 

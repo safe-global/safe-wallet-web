@@ -7,6 +7,8 @@ import proposeTx from '@/services/tx/proposeTransaction'
 import { isSmartContractWallet } from '@/utils/wallets'
 import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { initSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { logError } from '@/services/exceptions'
+import ErrorCodes from '@/services/exceptions/ErrorCodes'
 
 export type NestedWallet = {
   address: string
@@ -21,6 +23,7 @@ export const getNestedWallet = (
   web3ReadOnly: JsonRpcProvider,
   router: NextRouter,
 ): NestedWallet => {
+  let requestId = 0
   const nestedSafeSdk: WalletSDK = {
     getBySafeTxHash(safeTxHash) {
       return getTransactionDetails(safeInfo.chainId, safeTxHash)
@@ -91,7 +94,7 @@ export const getNestedWallet = (
           }
         }
       } catch (err) {
-        console.error(err)
+        logError(ErrorCodes._817, err)
       }
 
       return {
@@ -129,7 +132,7 @@ export const getNestedWallet = (
   return {
     provider: {
       async request(request) {
-        const result = await nestedSafeProvider.request(69420, request, {
+        const result = await nestedSafeProvider.request(requestId++, request, {
           url: '',
           description: '',
           iconUrl: '',

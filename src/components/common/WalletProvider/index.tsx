@@ -40,7 +40,7 @@ const WalletProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
   const [nestedSafeInfo] = useAsync(() => {
     if (nestedSafeAddress && currentChain) {
-      return getSafeInfo(currentChain?.chainId, nestedSafeAddress)
+      return getSafeInfo(currentChain.chainId, nestedSafeAddress)
     }
   }, [currentChain, nestedSafeAddress])
 
@@ -58,20 +58,18 @@ const WalletProvider = ({ children }: { children: ReactNode }): ReactElement => 
     }
   }, [onboard])
 
-  const nestedWallet = useMemo(() => {
+  const signer = useMemo(() => {
     if (wallet && nestedSafeInfo && web3ReadOnly) {
       return getNestedWallet(wallet, nestedSafeInfo, web3ReadOnly, router)
     }
     return wallet
   }, [wallet, nestedSafeInfo, web3ReadOnly, router])
 
-  console.log('Wallet Provider Signer ASD', nestedWallet)
-
   return (
     <WalletContext.Provider
       value={{
         connectedWallet: wallet,
-        signer: nestedWallet,
+        signer,
       }}
     >
       {children}

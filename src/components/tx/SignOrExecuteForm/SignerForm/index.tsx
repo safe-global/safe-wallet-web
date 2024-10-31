@@ -20,6 +20,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import SignatureIcon from '@/public/images/transactions/signature.svg'
 
 import css from './styles.module.css'
+import { sameAddress } from '@/utils/addresses'
 
 export const SignerForm = () => {
   const wallet = useWallet()
@@ -40,10 +41,12 @@ export const SignerForm = () => {
 
   const options = useMemo(
     () =>
-      isOwner && wallet
-        ? [wallet.address, ...(nestedSafeOwners?.map((owner) => owner) ?? [])]
-        : nestedSafeOwners?.map((owner) => owner) ?? [],
-    [isOwner, nestedSafeOwners, wallet],
+      wallet
+        ? [wallet.address, ...(nestedSafeOwners ?? [])].filter((address) =>
+            safe.owners.some((owner) => sameAddress(owner.value, address)),
+          )
+        : [],
+    [nestedSafeOwners, safe.owners, wallet],
   )
 
   useEffect(() => {
@@ -68,7 +71,7 @@ export const SignerForm = () => {
         <SvgIcon component={SignatureIcon} inheritViewBox fontSize="small" />
         Sign with
         <Tooltip
-          title="Your connected wallet controls other Safe accounts, which can sign this transaction. You can select which account to sign with."
+          title="Your connected wallet controls other Safe Accounts, which can sign this transaction. You can select which Account to sign with."
           arrow
           placement="top"
         >
@@ -78,7 +81,7 @@ export const SignerForm = () => {
 
       <Box display="flex" alignItems="center" gap={1}>
         <FormControl fullWidth size="medium">
-          <InputLabel id="signer-label">Signer account</InputLabel>
+          <InputLabel id="signer-label">Signer Account</InputLabel>
           <Select
             className={css.signerForm}
             labelId="signer-label"
