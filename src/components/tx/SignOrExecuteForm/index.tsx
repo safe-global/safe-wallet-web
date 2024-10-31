@@ -124,7 +124,7 @@ export const SignOrExecuteForm = ({
 
   const isSafeOwner = useIsSafeOwner()
   const isProposer = useIsWalletProposer()
-  const isProposing = isProposer && !isSafeOwner
+  const isProposing = isProposer && !isSafeOwner && isCreation
   const isCounterfactualSafe = !safe.deployed
   const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(safeTx)
   const isMultiChainMigration = !!multiChainMigrationTarget
