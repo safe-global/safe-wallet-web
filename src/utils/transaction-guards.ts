@@ -419,7 +419,6 @@ const safeInterface = Safe__factory.createInterface()
  */
 export const isOnChainConfirmationTxData = (data?: TransactionData): boolean => {
   const approveHashSelector = safeInterface.getFunction('approveHash').selector
-
   return Boolean(data && data.hexData?.startsWith(approveHashSelector))
 }
 
@@ -435,9 +434,9 @@ export const isOnChainConfirmationTxInfo = (info: TransactionInfo): info is Cust
  */
 export const isExecTxData = (data?: TransactionData): boolean => {
   const execTransactionSelector = safeInterface.getFunction('execTransaction').selector
-
   return Boolean(data && data.hexData?.startsWith(execTransactionSelector))
 }
+
 export const isExecTxInfo = (info: TransactionInfo): info is Custom => {
   if (isCustomTxInfo(info)) {
     return info.methodName === 'execTransaction'

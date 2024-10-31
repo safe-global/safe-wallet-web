@@ -14,18 +14,18 @@ import { skipToken } from '@reduxjs/toolkit/query'
 import ExternalLink from '@/components/common/ExternalLink'
 import { NestedTransaction } from '../NestedTransaction'
 
+const safeInterface = Safe__factory.createInterface()
+
 export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
   const chain = useCurrentChain()
   const chainId = useChainId()
   const signedHash = useMemo(() => {
-    const safeInterface = Safe__factory.createInterface()
     const params = data?.hexData ? safeInterface.decodeFunctionData('approveHash', data?.hexData) : undefined
-    if (!params || params.length !== 1) {
+    if (!params || params.length !== 1 || typeof params[0] !== 'string') {
       return
     }
 
-    const signedHash = params[0] as string
-    return signedHash
+    return params[0]
   }, [data?.hexData])
 
   const { data: nestedTxDetails, error: txDetailsError } = useGetTransactionDetailsQuery(
