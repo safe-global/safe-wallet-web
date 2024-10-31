@@ -1,4 +1,3 @@
-import { Controller, FieldArrayWithId, FormProvider, useFieldArray, useForm, UseFormReturn } from 'react-hook-form'
 import {
   Box,
   Button,
@@ -15,6 +14,8 @@ import {
   Typography,
 } from '@mui/material'
 import classNames from 'classnames'
+import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import type { FieldArrayWithId, UseFormReturn } from 'react-hook-form'
 
 import InfoIcon from '@/public/images/notifications/info.svg'
 import AddIcon from '@/public/images/common/add.svg'
@@ -88,8 +89,8 @@ export function SetUpSubaccount({
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onFormSubmit)}>
           <Typography variant="body2" sx={{ mt: 1 }}>
-            It's possible to fund a Subaccount with multiple assets during deployment. You can select which assets you'd
-            like to fund the Subaccount with below, and they will be sent in the deployment transaction.
+            It&apos;s possible to fund a Subaccount with multiple assets during deployment. You can select which assets
+            you&apos;d like to fund the Subaccount with below, and they will be sent in the deployment transaction.
           </Typography>
 
           <FormControl fullWidth sx={{ mt: 3 }}>

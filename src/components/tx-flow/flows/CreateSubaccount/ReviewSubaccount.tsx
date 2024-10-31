@@ -7,13 +7,13 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
-import { SetupSubaccountForm } from '@/components/tx-flow/flows/CreateSubaccount/SetupSubaccount'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { getLatestSafeVersion } from '@/utils/chains'
 import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import useAsync from '@/hooks/useAsync'
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
+import type { SetupSubaccountForm } from '@/components/tx-flow/flows/CreateSubaccount/SetupSubaccount'
 
 export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
   const dispatch = useAppDispatch()
@@ -32,7 +32,7 @@ export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
       threshold: owners.length,
       fallbackHandler: fallbackHandler?.contractAddress,
     }
-  }, [safeVersion])
+  }, [safeVersion, safeAddress])
 
   const [predictedSafeAddress] = useAsync(async () => {
     if (!wallet?.provider || !safeAccountConfig || !chain || !safeVersion) {
@@ -61,7 +61,7 @@ export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
     })
       .then(setSafeTx)
       .catch(setSafeTxError)
-  }, [wallet?.provider, params.assets, safeAccountConfig, predictedSafeAddress, setSafeTx, setSafeTxError])
+  }, [wallet?.provider, params.assets, safeAccountConfig, predictedSafeAddress, balances, setSafeTx, setSafeTxError])
 
   const onSubmit = () => {
     if (!predictedSafeAddress) {

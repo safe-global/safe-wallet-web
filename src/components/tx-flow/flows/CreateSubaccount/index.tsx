@@ -1,8 +1,9 @@
 import CustomIcon from '@/public/images/transactions/custom.svg'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '@/components/tx-flow/useTxStepper'
-import { SetUpSubaccount, SetupSubaccountForm } from '@/components/tx-flow/flows/CreateSubaccount/SetupSubaccount'
 import { ReviewSubaccount } from '@/components/tx-flow/flows/CreateSubaccount/ReviewSubaccount'
+import { SetUpSubaccount } from '@/components/tx-flow/flows/CreateSubaccount/SetupSubaccount'
+import type { SetupSubaccountForm } from '@/components/tx-flow/flows/CreateSubaccount/SetupSubaccount'
 
 export function CreateSubaccount() {
   const { data, step, nextStep, prevStep } = useTxStepper<SetupSubaccountForm>({
