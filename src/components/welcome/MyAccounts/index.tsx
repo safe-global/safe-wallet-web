@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import {
   Accordion,
   AccordionDetails,
@@ -33,6 +33,9 @@ import classNames from 'classnames'
 import { getComparator } from './utils'
 import SortByButton from './SortByButton'
 import SearchIcon from '@/public/images/common/search.svg'
+import type { OrderByOption } from '@/store/orderByPreferenceSlice'
+import { selectOrderByPreference, setOrderByPreference } from '@/store/orderByPreferenceSlice'
+import { useAppDispatch, useAppSelector } from '@/store'
 
 type AccountsListProps = {
   safes: AllSafesGrouped
@@ -40,17 +43,12 @@ type AccountsListProps = {
   onLinkClick?: () => void
 }
 
-enum SortBy {
-  NAME = 'name',
-  LAST_VISITED = 'lastVisited',
-  DEFAULT = 'default',
-}
-
 const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListProps) => {
   const wallet = useWallet()
   const router = useRouter()
-  const [sortBy, setSortBy] = useState<SortBy>(SortBy.NAME)
-  const sortComparator = getComparator(sortBy)
+  const { orderBy } = useAppSelector(selectOrderByPreference)
+  const dispatch = useAppDispatch()
+  const sortComparator = getComparator(orderBy)
 
   const allSafes = useMemo(
     () => [...(safes.allMultiChainSafes ?? []), ...(safes.allSingleSafes ?? [])].sort(sortComparator),
@@ -84,6 +82,10 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
     () => [...(allSafes?.filter(({ isPinned }) => isPinned) ?? [])],
     [allSafes],
   )
+
+  const handleOrderByChange = (orderBy: OrderByOption) => {
+    dispatch(setOrderByPreference({ orderBy }))
+  }
 
   useTrackSafesCount(ownedSafes, watchlistSafes, wallet)
 
@@ -139,7 +141,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 fullWidth
                 size="small"
               />
-              <SortByButton sortBy={sortBy} onSortByChange={setSortBy} />
+              <SortByButton sortBy={orderBy} onSortByChange={handleOrderByChange} />
             </Box>
           </Paper>
 

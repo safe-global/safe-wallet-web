@@ -98,11 +98,6 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     setExpanded((prev) => !prev)
   }
 
-  // const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  // const name = useMemo(() => {
-  //   return Object.values(allAddressBooks).find((ab) => ab[address] !== undefined)?.[address]
-  // }, [address, allAddressBooks])
-
   const currency = useAppSelector(selectCurrency)
   const { address: walletAddress } = useWallet() ?? {}
   const deployedSafes = useMemo(

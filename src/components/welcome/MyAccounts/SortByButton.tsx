@@ -3,11 +3,11 @@ import { Button, ListItemText, MenuItem, SvgIcon } from '@mui/material'
 import ContextMenu from '@/components/common/ContextMenu'
 import TransactionsIcon from '@/public/images/transactions/transactions.svg'
 import CheckIcon from '@/public/images/common/check.svg'
-import { SortBy } from './utils'
+import { OrderByOption } from '@/store/orderByPreferenceSlice'
 
 type SortByButtonProps = {
-  sortBy: SortBy
-  onSortByChange: (sortBy: SortBy) => void
+  sortBy: OrderByOption
+  onSortByChange: (sortBy: OrderByOption) => void
 }
 
 const SortByButton = ({ sortBy, onSortByChange }: SortByButtonProps) => {
@@ -21,7 +21,7 @@ const SortByButton = ({ sortBy, onSortByChange }: SortByButtonProps) => {
     setAnchorEl(undefined)
   }
 
-  const handleSortChange = (newSortBy: SortBy) => {
+  const handleSortChange = (newSortBy: OrderByOption) => {
     onSortByChange(newSortBy)
     handleClose()
   }
@@ -53,15 +53,15 @@ const SortByButton = ({ sortBy, onSortByChange }: SortByButtonProps) => {
         </MenuItem>
         <MenuItem
           sx={{ borderRadius: 0 }}
-          onClick={() => handleSortChange(SortBy.LAST_VISITED)}
-          selected={sortBy === SortBy.LAST_VISITED}
+          onClick={() => handleSortChange(OrderByOption.LAST_VISITED)}
+          selected={sortBy === OrderByOption.LAST_VISITED}
         >
           <ListItemText sx={{ mr: 2 }}>Most recent</ListItemText>
-          {sortBy === SortBy.LAST_VISITED && <CheckIcon sx={{ ml: 1 }} />}
+          {sortBy === OrderByOption.LAST_VISITED && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
-        <MenuItem onClick={() => handleSortChange(SortBy.NAME)} selected={sortBy === SortBy.NAME}>
+        <MenuItem onClick={() => handleSortChange(OrderByOption.NAME)} selected={sortBy === OrderByOption.NAME}>
           <ListItemText>Name</ListItemText>
-          {sortBy === SortBy.NAME && <CheckIcon sx={{ ml: 1 }} />}
+          {sortBy === OrderByOption.NAME && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
       </ContextMenu>
     </>

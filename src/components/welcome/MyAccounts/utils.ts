@@ -1,11 +1,6 @@
+import { OrderByOption } from '@/store/orderByPreferenceSlice'
 import type { SafeItem } from './useAllSafes'
 import type { MultiChainSafeItem } from './useAllSafesGrouped'
-
-export enum SortBy {
-  NAME = 'name',
-  LAST_VISITED = 'lastVisited',
-  DEFAULT = 'default',
-}
 
 export const nameComparator = (a: SafeItem | MultiChainSafeItem, b: SafeItem | MultiChainSafeItem) => {
   // Put undefined names last
@@ -19,6 +14,6 @@ export const lastVisitedComparator = (a: SafeItem | MultiChainSafeItem, b: SafeI
   return b.lastVisited - a.lastVisited
 }
 
-export const getComparator = (sortBy: SortBy) => {
-  return sortBy === SortBy.NAME ? nameComparator : lastVisitedComparator
+export const getComparator = (orderBy: OrderByOption) => {
+  return orderBy === OrderByOption.NAME ? nameComparator : lastVisitedComparator
 }

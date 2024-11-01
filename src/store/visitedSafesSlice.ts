@@ -1,11 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '@/store'
-// Possible type names:
-// - VisitedSafesRecord - Emphasizes this tracks visited safes as a record/mapping
-// - SafeAccessHistory - Focuses on the timestamp/history aspect
-// - ChainSafeAccessMap - Describes the nested structure of chain->safe->access time
-// - LastAccessedSafes - Simple and direct about what it contains
+
 export type VisitedSafesState = {
   [chainId: string]: {
     [safeAddress: string]: {

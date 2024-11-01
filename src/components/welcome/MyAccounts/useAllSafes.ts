@@ -45,14 +45,12 @@ const useAllSafes = (): SafeItems | undefined => {
   const { configs } = useChains()
   const undeployedSafes = useAppSelector(selectUndeployedSafes)
   const allSafeNames = useAppSelector(selectAllAddressBooks)
-  // [chainId]?.[address]
 
   return useMemo<SafeItems>(() => {
     if (walletAddress && allOwned === undefined) {
       return []
     }
     const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded)))
-    // todo: replace with sortBy logic
     chains.sort((a, b) => parseInt(a) - parseInt(b))
 
     return chains.flatMap((chainId) => {
@@ -61,7 +59,6 @@ const useAllSafes = (): SafeItems | undefined => {
       const ownedOnChain = (allOwned || {})[chainId]
       const undeployedOnChain = Object.keys(undeployedSafes[chainId] || {})
       const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
-      // todo: replace with sortBy logic
       uniqueAddresses.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 
       return uniqueAddresses.map((address) => {
