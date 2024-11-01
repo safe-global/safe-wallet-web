@@ -5,6 +5,8 @@ import {
   getAllOwnedSafes,
   getTransactionDetails,
   type TransactionDetails,
+  type OwnedSafes,
+  getOwnedSafes,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { asError } from '@/services/exceptions/utils'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
@@ -43,6 +45,11 @@ export const gatewayApi = createApi({
         return buildQueryFn(() => getAllOwnedSafes(walletAddress))
       },
     }),
+    getOwnedSafes: builder.query<OwnedSafes, { chainId: string; walletAddress: string }>({
+      queryFn({ chainId, walletAddress }) {
+        return buildQueryFn(() => getOwnedSafes(chainId, walletAddress))
+      },
+    }),
     ...safeOverviewEndpoints(builder),
   }),
 })
@@ -55,4 +62,5 @@ export const {
   useGetSafeOverviewQuery,
   useGetMultipleSafeOverviewsQuery,
   useGetAllOwnedSafesQuery,
+  useGetOwnedSafesQuery,
 } = gatewayApi
