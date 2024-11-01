@@ -1,11 +1,14 @@
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
-import { isCustomTxInfo } from '@/utils/transaction-guards'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Stack } from '@mui/material'
+import {
+  isCustomTxInfo,
+  isMultisigDetailedExecutionInfo,
+  isNativeTokenTransfer,
+  isTransferTxInfo,
+} from '@/utils/transaction-guards'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
-import useChainId from '@/hooks/useChainId'
-import ErrorMessage from '../ErrorMessage'
 import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
 import Multisend from '@/components/transactions/TxDetails/TxData/DecodedData/Multisend'
@@ -13,13 +16,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DecodedData from '@/components/transactions/TxDetails/TxData/DecodedData'
 import accordionCss from '@/styles/accordion.module.css'
 import HelpToolTip from './HelpTooltip'
-import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
-import { skipToken } from '@reduxjs/toolkit/query/react'
-import { asError } from '@/services/exceptions/utils'
 
 type DecodedTxProps = {
   tx?: SafeTransaction
   txId?: string
+  txDetails?: TransactionDetails
   showMultisend?: boolean
   decodedData?: DecodedDataResponse
   showMethodCall?: boolean
@@ -37,33 +38,24 @@ export const Divider = () => (
 
 const DecodedTx = ({
   tx,
-  txId,
+  txDetails,
   decodedData,
   showMultisend = true,
   showMethodCall = false,
   showAdvancedDetails = true,
 }: DecodedTxProps): ReactElement => {
-  const chainId = useChainId()
-  const isMultisend = !!decodedData?.parameters?.[0]?.valueDecoded
+  const isMultisend = decodedData?.parameters && !!decodedData?.parameters[0]?.valueDecoded
   const isMethodCallInAdvanced = showAdvancedDetails && (!showMethodCall || (isMultisend && showMultisend))
-
-  const {
-    data: txDetails,
-    error: txDetailsError,
-    isLoading: txDetailsLoading,
-  } = useGetTransactionDetailsQuery(
-    chainId && txId
-      ? {
-          chainId,
-          txId,
-        }
-      : skipToken,
-  )
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
   }
   const addressInfoIndex = txDetails?.txData?.addressInfoIndex
+
+  const isCreation =
+    txDetails &&
+    isMultisigDetailedExecutionInfo(txDetails.detailedExecutionInfo) &&
+    txDetails.detailedExecutionInfo.confirmations.length === 0
 
   const txData = {
     dataDecoded: decodedData,
@@ -78,11 +70,12 @@ const DecodedTx = ({
   let toInfo = tx && {
     value: tx.data.to,
   }
-  if (txDetails && isCustomTxInfo(txDetails.txInfo)) {
-    toInfo = txDetails.txInfo.to
+  if (txDetails && isCustomTxInfo(txDetails?.txInfo)) {
+    toInfo = txDetails?.txInfo.to
   }
 
   const decodedDataBlock = <DecodedData txData={txData} toInfo={toInfo} />
+  const showDecodedData = isMethodCallInAdvanced && decodedData?.method
 
   return (
     <Stack spacing={2}>
@@ -96,7 +89,7 @@ const DecodedTx = ({
 
       {showAdvancedDetails && (
         <Box>
-          <Accordion elevation={0} onChange={onChangeExpand}>
+          <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
             <AccordionSummary
               data-testid="decoded-tx-summary"
               expandIcon={<ExpandMoreIcon />}
@@ -106,18 +99,20 @@ const DecodedTx = ({
               <HelpToolTip />
               <Box flexGrow={1} />
               {isMethodCallInAdvanced && decodedData?.method}
-              {!showMethodCall && !decodedData?.method && Number(tx?.data.value) > 0 && 'native transfer'}
+              {txDetails &&
+                isTransferTxInfo(txDetails.txInfo) &&
+                isNativeTokenTransfer(txDetails.txInfo.transferInfo) &&
+                'native transfer'}
             </AccordionSummary>
-
             <AccordionDetails data-testid="decoded-tx-details">
-              {isMethodCallInAdvanced && decodedData?.method && (
+              {showDecodedData && (
                 <>
                   {decodedDataBlock}
                   <Divider />
                 </>
               )}
 
-              {txDetails ? (
+              {txDetails && !showDecodedData && !isCreation ? (
                 <Summary
                   txDetails={txDetails}
                   defaultExpanded
@@ -125,12 +120,6 @@ const DecodedTx = ({
                 />
               ) : (
                 tx && <PartialSummary safeTx={tx} />
-              )}
-
-              {txDetailsLoading && <Skeleton />}
-
-              {txDetailsError && (
-                <ErrorMessage error={asError(txDetailsError)}>Failed loading all transaction details</ErrorMessage>
               )}
             </AccordionDetails>
           </Accordion>
