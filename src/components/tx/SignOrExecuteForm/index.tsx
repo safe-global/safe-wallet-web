@@ -203,10 +203,10 @@ export const SignOrExecuteForm = ({
       <TxCard>
         <ConfirmationTitle
           variant={
-            willExecute
-              ? ConfirmationTitleTypes.execute
-              : isProposing
+            isProposing
               ? ConfirmationTitleTypes.propose
+              : willExecute
+              ? ConfirmationTitleTypes.execute
               : ConfirmationTitleTypes.sign
           }
           isCreation={isCreation}
