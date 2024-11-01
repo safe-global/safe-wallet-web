@@ -1,4 +1,3 @@
-// Extract status handling into separate components
 import { Box, Container, Paper, Stack, SvgIcon, Typography } from '@mui/material'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -10,8 +9,6 @@ import ArrowDownIcon from '@/public/images/common/arrow-down.svg'
 import css from './styles.module.css'
 import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
-import { useGetTransactionDetailsQuery } from '@/store/slices'
-import { skipToken } from '@reduxjs/toolkit/query'
 import { useAppSelector } from '@/store'
 import ExternalLink from '@/components/common/ExternalLink'
 
@@ -22,15 +19,11 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
   const pendingTx = useAppSelector((state) => (txId ? selectPendingTxById(state, txId) : undefined))
   const addressBook = useAddressBook()
 
-  const { data: parentTxData } = useGetTransactionDetailsQuery(
-    pendingTx?.status === PendingStatus.NESTED_SIGNING
-      ? { chainId: pendingTx.chainId, txId: pendingTx.signingSafeTxHash }
-      : skipToken,
-  )
-  if (!pendingTx) {
-    return 'No tx found'
+  if (pendingTx?.status !== PendingStatus.NESTED_SIGNING) {
+    return <ErrorMessage>No transaction data found</ErrorMessage>
   }
-  return pendingTx.status === PendingStatus.NESTED_SIGNING ? (
+
+  return (
     <Container
       component={Paper}
       disableGutters
@@ -77,7 +70,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
                 whiteSpace: 'nowrap',
               }}
             >
-              {parentTxData?.txData?.dataDecoded?.method}
+              approveHash
             </Typography>
           </Stack>
           <Box display="flex" flexDirection="column" alignItems="start" gap={1}>
@@ -108,8 +101,6 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
         </Link>
       </Box>
     </Container>
-  ) : (
-    <ErrorMessage>No nested signing data found</ErrorMessage>
   )
 }
 
