@@ -14,8 +14,8 @@ export const useLoadTxHistory = (): AsyncResult<TransactionListPage> => {
   const { chainId, txHistoryTag } = safe
   const { hideSuspiciousTransactions } = useAppSelector(selectSettings)
   const hasDefaultTokenlist = useHasFeature(FEATURES.DEFAULT_TOKENLIST)
-  const hideUntrustedTxs = (hasDefaultTokenlist && hideSuspiciousTransactions) || false
-  const hideImitationTxs = hideSuspiciousTransactions || false
+  const hideUntrustedTxs = (hasDefaultTokenlist && hideSuspiciousTransactions) ?? true
+  const hideImitationTxs = hideSuspiciousTransactions ?? true
 
   // Re-fetch when chainId, address, hideSuspiciousTransactions, or txHistoryTag changes
   const [data, error, loading] = useAsync<TransactionListPage>(

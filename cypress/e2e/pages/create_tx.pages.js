@@ -42,6 +42,7 @@ const addressItem = '[data-testid="address-item"]'
 const radioSelector = 'div[role="radiogroup"]'
 const rejectTxBtn = '[data-testid="reject-btn"]'
 const deleteTxModalBtn = '[data-testid="delete-tx-btn"]'
+const toggleUntrustedBtn = '[data-testid="toggle-untrusted"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -101,6 +102,19 @@ export function deleteTx() {
   clickOnRejectBtn()
   cy.get(wallet.choiceBtn).contains(deleteFromQueueStr).click()
   cy.get(deleteTxModalBtn).click()
+}
+
+export function deleteAllTx() {
+  cy.get('body').then(($body) => {
+    if ($body.find(transactionItem).length > 0) {
+      cy.get(transactionItem).then(($items) => {
+        for (let i = $items.length - 1; i >= 0; i--) {
+          cy.wrap($items[i]).click({ force: true })
+          deleteTx()
+        }
+      })
+    }
+  })
 }
 
 export function setTxType(type) {
@@ -606,4 +620,8 @@ export function verifyBulkExecuteBtnIsDisabled() {
   cy.get('button').contains(bulkExecuteBtnStr).should('be.disabled')
   cy.get('button').contains(bulkExecuteBtnStr).trigger('mouseover', { force: true })
   cy.contains(disabledBultExecuteBtnTooltip).should('exist')
+}
+
+export function toggleUntrustedTxs() {
+  cy.get(toggleUntrustedBtn).click()
 }
