@@ -95,6 +95,7 @@ export const getNestedWallet = (
         }
       } catch (err) {
         logError(ErrorCodes._817, err)
+        throw err
       }
 
       return {
@@ -141,6 +142,10 @@ export const getNestedWallet = (
 
         if ('result' in result) {
           return result.result
+        }
+
+        if ('error' in result) {
+          throw new Error(result.error.message)
         }
       },
     },
