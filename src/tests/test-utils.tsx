@@ -1,4 +1,4 @@
-import { render, renderHook } from '@testing-library/react-native'
+import { render as nativeRender, renderHook } from '@testing-library/react-native'
 import SafeThemeProvider from '../providers/SafeThemeProvider'
 import { Provider } from 'react-redux'
 import { makeStore } from '../store'
@@ -17,7 +17,7 @@ const getProviders: () => React.FC<{ children: React.ReactElement }> = () =>
 const customRender = (ui: React.ReactElement) => {
   const wrapper = getProviders()
 
-  return render(ui, { wrapper })
+  return nativeRender(ui, { wrapper })
 }
 
 function customRenderHook<Result, Props>(render: (initialProps: Props) => Result) {

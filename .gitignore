@@ -13,7 +13,7 @@ web-build/
 # Auto generated storybook file
 .storybook/storybook.requires.ts
 
-# From vitest:ui
+# From jest
 html
 coverage
 
@@ -26,3 +26,5 @@ coverage
 expo-env.d.ts
 # @end expo-cli
 /.idea
+# Tamagui UI generates a lot of cache files
+.tamagui

@@ -1,11 +1,10 @@
-import { vi } from 'vitest'
 import { currentMinutes, formatDateTime, formatTime, getCountdown, getPeriod } from './date'
 
 const MOCKED_TIMESTAMP = 1729506116962
 
 describe('Date utils', () => {
   beforeAll(() => {
-    vi.spyOn(Date, 'now').mockImplementation(() => MOCKED_TIMESTAMP)
+    jest.spyOn(Date, 'now').mockImplementation(() => MOCKED_TIMESTAMP)
   })
 
   it('should show the date in minutes', () => {
@@ -20,7 +19,7 @@ describe('Date utils', () => {
     expect(formatDateTime(MOCKED_TIMESTAMP)).toBe('Oct 21, 2024 - 12:21:56 PM')
   })
 
-  it('shuold return a countdown object', () => {
+  it('should return a countdown object', () => {
     expect(getCountdown(20000)).toStrictEqual({
       days: 0,
       hours: 5,
@@ -28,15 +27,15 @@ describe('Date utils', () => {
     })
   })
 
-  it('shuold get the time period in hours from seconds', () => {
+  it('should get the time period in hours from seconds', () => {
     expect(getPeriod(20000)).toBe('5 hours')
   })
 
-  it('shuold get the time period in minutes from seconds', () => {
+  it('should get the time period in minutes from seconds', () => {
     expect(getPeriod(2000)).toBe('33 minutes')
   })
 
-  it('shuold get the time period in days from seconds', () => {
+  it('should get the time period in days from seconds', () => {
     expect(getPeriod(2000000)).toBe('23 days')
   })
 })
