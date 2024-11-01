@@ -10,11 +10,10 @@ import {
   type SelectChangeEvent,
 } from '@mui/material'
 import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
-import useWallet from '@/hooks/wallets/useWallet'
+import { useWalletContext } from '@/hooks/wallets/useWallet'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { useEffect, useMemo } from 'react'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import { useNestedSafeAddress, setNestedSafeAddress } from '@/components/common/WalletProvider'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import InfoIcon from '@/public/images/notifications/info.svg'
 import SignatureIcon from '@/public/images/transactions/signature.svg'
@@ -23,13 +22,13 @@ import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
 
 export const SignerForm = () => {
-  const wallet = useWallet()
+  const { signer, setSignerAddress, connectedWallet: wallet } = useWalletContext() ?? {}
   const nestedSafeOwners = useNestedSafeOwners()
-  const nestedSafeAddress = useNestedSafeAddress()
+  const signerAddress = signer?.address
   const { safe } = useSafeInfo()
 
   const onChange = (event: SelectChangeEvent<string>) => {
-    setNestedSafeAddress(event.target.value)
+    setSignerAddress?.(event.target.value)
   }
 
   const isOwner = useMemo(
@@ -50,16 +49,16 @@ export const SignerForm = () => {
   )
 
   useEffect(() => {
-    if (nestedSafeAddress) {
+    if (signerAddress) {
       return
     }
     if (!isOwner && nestedSafeOwners && nestedSafeOwners.length > 0) {
-      setNestedSafeAddress(nestedSafeOwners[0])
+      setSignerAddress?.(nestedSafeOwners[0])
     }
     if (isOwner && (!nestedSafeOwners || nestedSafeOwners.length === 0)) {
-      setNestedSafeAddress(undefined)
+      setSignerAddress?.(undefined)
     }
-  }, [isOwner, nestedSafeAddress, nestedSafeOwners])
+  }, [isOwner, nestedSafeOwners, setSignerAddress, signerAddress])
 
   if (!wallet || isNotNestedOwner) {
     return null
@@ -88,7 +87,7 @@ export const SignerForm = () => {
             label="Signer account"
             fullWidth
             onChange={onChange}
-            value={nestedSafeAddress ?? options[0]}
+            value={signerAddress ?? options[0]}
           >
             {options?.map((owner) => (
               <MenuItem key={owner} value={owner}>

@@ -10,4 +10,8 @@ export const useSigner = () => {
   return useContext(WalletContext)?.signer ?? null
 }
 
+export const useWalletContext = () => {
+  return useContext(WalletContext)
+}
+
 export default useWallet

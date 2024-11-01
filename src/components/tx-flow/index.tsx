@@ -4,7 +4,7 @@ import TxModalDialog from '@/components/common/TxModalDialog'
 import { SuccessScreenFlow, NestedTxSuccessScreenFlow } from './flows'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useChainId from '@/hooks/useChainId'
-import { setNestedSafeAddress } from '../common/WalletProvider'
+import { useWalletContext } from '@/hooks/wallets/useWallet'
 
 const noop = () => {}
 
@@ -34,6 +34,7 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
   const prevSafeId = useRef<string>(safeId ?? '')
   const pathname = usePathname()
   const prevPathname = useRef<string | null>(pathname)
+  const { setSignerAddress } = useWalletContext() ?? {}
 
   const handleModalClose = useCallback(() => {
     if (shouldWarn.current && !confirmClose()) {
@@ -43,8 +44,8 @@ export const TxModalProvider = ({ children }: { children: ReactNode }): ReactEle
     onClose.current = noop
     setFlow(undefined)
 
-    setNestedSafeAddress(undefined)
-  }, [])
+    setSignerAddress?.(undefined)
+  }, [setSignerAddress])
 
   // Open a new tx flow, close the previous one if any
   const setTxFlow = useCallback(
