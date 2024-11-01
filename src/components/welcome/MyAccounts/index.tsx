@@ -31,7 +31,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import classNames from 'classnames'
 import { getComparator } from './utils'
-import SortByButton from './SortByButton'
+import OrderByButton from './OrderByButton'
 import SearchIcon from '@/public/images/common/search.svg'
 import type { OrderByOption } from '@/store/orderByPreferenceSlice'
 import { selectOrderByPreference, setOrderByPreference } from '@/store/orderByPreferenceSlice'
@@ -141,7 +141,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 fullWidth
                 size="small"
               />
-              <SortByButton sortBy={orderBy} onSortByChange={handleOrderByChange} />
+              <OrderByButton orderBy={orderBy} onOrderByChange={handleOrderByChange} />
             </Box>
           </Paper>
 

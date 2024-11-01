@@ -5,12 +5,12 @@ import TransactionsIcon from '@/public/images/transactions/transactions.svg'
 import CheckIcon from '@/public/images/common/check.svg'
 import { OrderByOption } from '@/store/orderByPreferenceSlice'
 
-type SortByButtonProps = {
-  sortBy: OrderByOption
-  onSortByChange: (sortBy: OrderByOption) => void
+type OrderByButtonProps = {
+  orderBy: OrderByOption
+  onOrderByChange: (orderBy: OrderByOption) => void
 }
 
-const SortByButton = ({ sortBy, onSortByChange }: SortByButtonProps) => {
+const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: OrderByButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -21,8 +21,8 @@ const SortByButton = ({ sortBy, onSortByChange }: SortByButtonProps) => {
     setAnchorEl(undefined)
   }
 
-  const handleSortChange = (newSortBy: OrderByOption) => {
-    onSortByChange(newSortBy)
+  const handleOrderByChange = (newOrderBy: OrderByOption) => {
+    onOrderByChange(newOrderBy)
     handleClose()
   }
 
@@ -53,19 +53,19 @@ const SortByButton = ({ sortBy, onSortByChange }: SortByButtonProps) => {
         </MenuItem>
         <MenuItem
           sx={{ borderRadius: 0 }}
-          onClick={() => handleSortChange(OrderByOption.LAST_VISITED)}
-          selected={sortBy === OrderByOption.LAST_VISITED}
+          onClick={() => handleOrderByChange(OrderByOption.LAST_VISITED)}
+          selected={orderBy === OrderByOption.LAST_VISITED}
         >
           <ListItemText sx={{ mr: 2 }}>Most recent</ListItemText>
-          {sortBy === OrderByOption.LAST_VISITED && <CheckIcon sx={{ ml: 1 }} />}
+          {orderBy === OrderByOption.LAST_VISITED && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
-        <MenuItem onClick={() => handleSortChange(OrderByOption.NAME)} selected={sortBy === OrderByOption.NAME}>
+        <MenuItem onClick={() => handleOrderByChange(OrderByOption.NAME)} selected={orderBy === OrderByOption.NAME}>
           <ListItemText>Name</ListItemText>
-          {sortBy === OrderByOption.NAME && <CheckIcon sx={{ ml: 1 }} />}
+          {orderBy === OrderByOption.NAME && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
       </ContextMenu>
     </>
   )
 }
 
-export default SortByButton
+export default OrderByButton

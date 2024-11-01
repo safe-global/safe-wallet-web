@@ -42,6 +42,8 @@ import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import { addOrUpdateSafe, pinSafe, selectAllAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { getComparator } from './utils'
+import { selectOrderByPreference } from '@/store/orderByPreferenceSlice'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -80,6 +82,10 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const [expanded, setExpanded] = useState(isCurrentSafe)
   const chains = useAppSelector(selectChains)
+  const { orderBy } = useAppSelector(selectOrderByPreference)
+
+  const sortComparator = getComparator(orderBy)
+  const sortedSafes = useMemo(() => safes.sort(sortComparator), [safes, sortComparator])
 
   const allAddedSafes = useAppSelector((state) => selectAllAddedSafes(state))
   const dispatch = useAppDispatch()
@@ -234,7 +240,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
         </AccordionSummary>
         <AccordionDetails sx={{ padding: '0px 12px' }}>
           <Box>
-            {safes.map((safeItem) => (
+            {sortedSafes.map((safeItem) => (
               <SubAccountItem
                 onLinkClick={onLinkClick}
                 safeItem={safeItem}
