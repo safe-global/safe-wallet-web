@@ -7,6 +7,7 @@ import useChains from '@/hooks/useChains'
 import { FEATURES, hasFeature } from '@/utils/chains'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import type { SafeAppDataWithPermissions } from '@/components/safe-apps/types'
+import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 const BRIDGE_WIDGET_URL = 'https://iframe.jumper.exchange/'
 
@@ -15,21 +16,7 @@ export function BridgeWidget(): ReactElement {
   const { configs } = useChains()
 
   const appData = useMemo((): SafeAppDataWithPermissions => {
-    const chainIds = configs?.reduce<Array<string>>((acc, cur) => {
-      if (hasFeature(cur, FEATURES.BRIDGE)) {
-        acc.push(cur.chainId)
-      }
-      return acc
-    }, [])
-    const theme = isDarkMode ? 'dark' : 'light'
-
-    return {
-      ...getEmptySafeApp(),
-      name: 'Bridge',
-      iconUrl: '/images/common/bridge.svg',
-      chainIds,
-      url: `${BRIDGE_WIDGET_URL}?theme=${theme}`,
-    }
+    return _getAppData(isDarkMode, configs)
   }, [configs, isDarkMode])
 
   return (
@@ -40,4 +27,27 @@ export function BridgeWidget(): ReactElement {
       isNativeEmbed
     />
   )
+}
+
+export function _getAppData(isDarkMode: boolean, chains?: Array<ChainInfo>): SafeAppDataWithPermissions {
+  const theme = isDarkMode ? 'dark' : 'light'
+  return {
+    ...getEmptySafeApp(),
+    name: 'Bridge',
+    iconUrl: '/images/common/bridge.svg',
+    chainIds: getChainIds(chains),
+    url: `${BRIDGE_WIDGET_URL}?theme=${theme}`,
+  }
+}
+
+function getChainIds(chains?: Array<ChainInfo>): Array<string> {
+  if (!chains) {
+    return []
+  }
+  return chains.reduce<Array<string>>((acc, cur) => {
+    if (hasFeature(cur, FEATURES.BRIDGE)) {
+      acc.push(cur.chainId)
+    }
+    return acc
+  }, [])
 }

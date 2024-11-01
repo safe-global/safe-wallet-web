@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-export default function Navigate({ to, replace = false }: { to: string; replace?: boolean }): null {
+export function Navigate({ to, replace = false }: { to: string; replace?: boolean }): null {
   const router = useRouter()
 
   useEffect(() => {
