@@ -1,17 +1,18 @@
-import React, { ReactNode } from 'react'
-import { XStack, Text, Theme } from 'tamagui'
+import React from 'react'
+import { XStack, Text, Theme, XStackProps } from 'tamagui'
 
 interface Props {
-  children: ReactNode
+  children: string
 }
 
-export const DataRow: React.FC<Props> & {
+export const DataRow: React.FC<XStackProps> & {
   Label: React.FC<Props>
   Value: React.FC<Props>
   Header: React.FC<Props>
-} = ({ children }: Props) => {
+} = (props: XStackProps) => {
+  const { children, ...rest } = props
   return (
-    <XStack justifyContent="space-between" alignItems="center" padding="$2">
+    <XStack justifyContent="space-between" alignItems="center" padding="$2" {...rest}>
       {children}
     </XStack>
   )

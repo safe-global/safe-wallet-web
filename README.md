@@ -98,7 +98,7 @@ detox test --configuration android.emu.debug
 
 ## Unit tests
 
-We use (Vitest)[https://vitest.dev/] for running our unit/component/hook tests and [React Native Testing Library](https://callstack.github.io/react-native-testing-library/) to manipulate them.
+We use Jest for running our unit/component/hook tests and [React Native Testing Library](https://callstack.github.io/react-native-testing-library/) to manipulate them.
 
 To run the tests you can just type in your terminal:
 
@@ -112,11 +112,12 @@ npm run test
 npm run test:watch
 ```
 
-#### checking the coverage and ui
+#### checking the coverage
 
 ```bash
-npm run test:ui
+npm run test
 ```
+navigate inside the coverage folder and open the index.html file in your browser
 
 ## Running Eslint & Prettier
 
