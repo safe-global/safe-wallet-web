@@ -9,11 +9,10 @@ import { hasSafeFeature } from '@/utils/safe-versions'
 import { getLatestSafeVersion } from '@/utils/chains'
 
 const getChangeFallbackHandlerCallData = async (
-  safe: SafeInfo,
   safeContractInstance: SafeContractImplementationType,
   chain: ChainInfo,
 ): Promise<string> => {
-  if (!hasSafeFeature(SAFE_FEATURES.SAFE_FALLBACK_HANDLER, safe.version)) {
+  if (!hasSafeFeature(SAFE_FEATURES.SAFE_FALLBACK_HANDLER, getLatestSafeVersion(chain))) {
     return '0x'
   }
 
@@ -36,11 +35,13 @@ export const createUpdateSafeTxs = async (safe: SafeInfo, chain: ChainInfo): Pro
   const latestMasterCopyAddress = await (
     await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain))
   ).getAddress()
-  const readOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safe.version)
+  const currentReadOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, safe.version)
+
+  const updatedReadOnlySafeContract = await getReadOnlyGnosisSafeContract(chain, getLatestSafeVersion(chain))
 
   // @ts-expect-error this was removed in 1.3.0 but we need to support it for older safe versions
-  const changeMasterCopyCallData = readOnlySafeContract.encode('changeMasterCopy', [latestMasterCopyAddress])
-  const changeFallbackHandlerCallData = await getChangeFallbackHandlerCallData(safe, readOnlySafeContract, chain)
+  const changeMasterCopyCallData = currentReadOnlySafeContract.encode('changeMasterCopy', [latestMasterCopyAddress])
+  const changeFallbackHandlerCallData = await getChangeFallbackHandlerCallData(updatedReadOnlySafeContract, chain)
 
   const txs: MetaTransactionData[] = [
     {
