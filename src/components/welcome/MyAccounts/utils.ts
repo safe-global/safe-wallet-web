@@ -16,7 +16,7 @@ export const nameComparator = (a: SafeItem | MultiChainSafeItem, b: SafeItem | M
 }
 
 export const lastVisitedComparator = (a: SafeItem | MultiChainSafeItem, b: SafeItem | MultiChainSafeItem) => {
-  return (b.lastVisited ?? 0) - (a.lastVisited ?? 0)
+  return b.lastVisited - a.lastVisited
 }
 
 export const getComparator = (sortBy: SortBy) => {

@@ -13,7 +13,7 @@ export type SafeItem = {
   address: string
   isWatchlist: boolean
   isPinned: boolean
-  lastVisited: number | undefined
+  lastVisited: number
   name: string | undefined
 }
 
@@ -70,7 +70,7 @@ const useAllSafes = (): SafeItems | undefined => {
         const isOwned = (ownedOnChain || []).includes(address) || isOwner
         const isUndeployed = undeployedOnChain.includes(address)
         const isPinned = Boolean(allAdded?.[chainId]?.[address]?.pinned)
-        const lastVisited = allVisitedSafes?.[chainId]?.[address]?.lastVisited || undefined
+        const lastVisited = allVisitedSafes?.[chainId]?.[address]?.lastVisited || 0
         const name = allSafeNames?.[chainId]?.[address]
         return {
           address,
