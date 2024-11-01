@@ -12,7 +12,7 @@ const LazyBridgePage = dynamic(() => import('@/features/bridge/BridgePage'), { s
 const BridgePage: NextPage = () => {
   const isFeatureEnabled = useHasFeature(FEATURES.BRIDGE)
 
-  if (!isFeatureEnabled) {
+  if (isFeatureEnabled === false) {
     return <Navigate to={AppRoutes.home} replace />
   }
 
