@@ -7,7 +7,7 @@ import { trackError, Errors } from '@/services/exceptions'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useAlreadySigned, useTxActions } from './hooks'
-import type { SignOrExecuteProps } from '.'
+import type { SignOrExecuteProps } from './SignOrExecuteForm'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -36,6 +36,7 @@ export const SignForm = ({
   isOwner: ReturnType<typeof useIsSafeOwner>
   txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
+  isCreation?: boolean
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
