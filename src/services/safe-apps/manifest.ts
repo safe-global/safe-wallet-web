@@ -65,7 +65,7 @@ const fetchAppManifest = async (appUrl: string, timeout = 5000): Promise<unknown
     throw new Error(`The domain ${urlObj.hostname} is not allowed`)
   }
 
-  const manifestUrl = `${normalizedUrl}/manifest.json`
+  const manifestUrl = new URL('/manifest.json', normalizedUrl).toString()
 
   // A lot of apps are hosted on IPFS and IPFS never times out, so we add our own timeout
   const controller = new AbortController()
