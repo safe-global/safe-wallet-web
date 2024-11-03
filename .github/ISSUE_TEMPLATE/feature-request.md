@@ -1,6 +1,10 @@
 ---
 name: Feature request
 about: Create a feature request for the Safe UI
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 <!--
