@@ -1,3 +1,5 @@
+import { useCreateSubmissionMutation, useGetSubmissionQuery } from '@/store/api/gateway'
+import { skipToken } from '@reduxjs/toolkit/query'
 import { useEffect, type ReactElement } from 'react'
 import { Avatar, Box, Button, Chip, IconButton, Link, Paper, Stack, ThemeProvider, Typography } from '@mui/material'
 import { Close } from '@mui/icons-material'
@@ -14,8 +16,6 @@ import SafeThemeProvider from '@/components/theme/SafeThemeProvider'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
-import { createSubmission } from '@safe-global/safe-client-gateway-sdk'
-import useSubmission from '@/features/targetedOutreach/hooks/useSubmission'
 
 const OutreachPopup = (): ReactElement | null => {
   const dispatch = useAppDispatch()
@@ -24,7 +24,17 @@ const OutreachPopup = (): ReactElement | null => {
   const currentChainId = useChainId()
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
-  const { data: submission, refetch } = useSubmission()
+  const [createSubmission] = useCreateSubmissionMutation()
+  const { data: submission } = useGetSubmissionQuery(
+    !wallet || !safeAddress
+      ? skipToken
+      : {
+          outreachId: ACTIVE_OUTREACH.id,
+          chainId: currentChainId,
+          safeAddress,
+          signerAddress: wallet?.address,
+        },
+  )
 
   const [askAgainLaterTimestamp, setAskAgainLaterTimestamp] = useSessionStorage<number>(OUTREACH_SS_KEY)
 
@@ -54,14 +64,13 @@ const OutreachPopup = (): ReactElement | null => {
   const handleOpenSurvey = async () => {
     if (wallet) {
       await createSubmission({
-        params: {
-          path: { outreachId: ACTIVE_OUTREACH.id, chainId: currentChainId, safeAddress, signerAddress: wallet.address },
-        },
-        body: { completed: true },
+        outreachId: ACTIVE_OUTREACH.id,
+        chainId: currentChainId,
+        safeAddress,
+        signerAddress: wallet.address,
       })
     }
     dispatch(closeOutreachBanner())
-    refetch()
   }
 
   return (
