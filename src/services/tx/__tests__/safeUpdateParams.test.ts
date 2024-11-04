@@ -30,7 +30,7 @@ describe('safeUpgradeParams', () => {
 
   jest.spyOn(sdkHelpers, 'getSafeProvider').mockImplementation(() => getMockSafeProviderForChain(1))
 
-  it('Should add setFallbackHandler transaction data for older 1.0.0 Safes', async () => {
+  it('Should add setFallbackHandler transaction data for 1.0.0 Safes', async () => {
     const mockSafe = {
       address: {
         value: MOCK_SAFE_ADDRESS,
