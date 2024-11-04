@@ -29,7 +29,7 @@ const getConfirmationViewComponent = ({
   txInfo,
   txFlow,
 }: NarrowConfirmationViewProps & { txFlow?: JSX.Element }) => {
-  if (isChangeThresholdView(txInfo)) return <ChangeThreshold />
+  if (isChangeThresholdView(txInfo)) return <ChangeThreshold txDetails={txDetails} />
 
   if (isConfirmBatchView(txFlow)) return <BatchTransactions />
 
