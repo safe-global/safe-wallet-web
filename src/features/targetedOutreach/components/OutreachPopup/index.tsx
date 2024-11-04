@@ -72,9 +72,9 @@ const OutreachPopup = (): ReactElement | null => {
             <Paper className={css.container}>
               <Stack gap={2}>
                 <Box display="flex">
-                  <Avatar alt="Clem Bihorel" src="/images/common/outreach-popup-avatar.png" />
+                  <Avatar alt="Clem, product lead" src="/images/common/outreach-popup-avatar.png" />
                   <Box ml={1}>
-                    <Typography variant="body2">Clem Bihorel</Typography>
+                    <Typography variant="body2">Clem</Typography>
                     <Typography variant="body2" color="primary.light">
                       Product Lead
                     </Typography>
