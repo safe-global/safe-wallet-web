@@ -7,7 +7,7 @@ import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 
-const SafenetTxChecks = ({ safeTx }: { safeTx?: SafeTransaction }): ReactElement | null => {
+const SafenetTxChecks = ({ safeTx }: { safeTx: SafeTransaction }): ReactElement | null => {
   const safe = useSafeAddress()
   const chainId = useChainId()
   const isSafenetEnabled = useIsSafenetEnabled()
