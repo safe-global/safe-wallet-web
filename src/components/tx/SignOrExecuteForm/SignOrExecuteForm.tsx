@@ -96,14 +96,7 @@ export const SignOrExecuteForm = ({
   const [shouldExecute, setShouldExecute] = useState<boolean>(transactionExecution)
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
-
-  console.log(props.txDetails)
-
-  // TODO: move it to the confirmation view
-  // const showTxDetails =
-  //   !isAnyStakingTxInfo(txDetails.txInfo) &&
-  //   !isOrderTxInfo(txDetails.txInfo)
-
+  4
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
   const isDelegate = useIsWalletDelegate()
