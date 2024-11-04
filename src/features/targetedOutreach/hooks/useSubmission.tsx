@@ -10,7 +10,7 @@ const useSubmission = () => {
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
 
-  const { data } = useGetSubmissionQuery(
+  return useGetSubmissionQuery(
     !wallet || !safeAddress
       ? skipToken
       : {
@@ -20,8 +20,6 @@ const useSubmission = () => {
           signerAddress: wallet?.address,
         },
   )
-
-  return data
 }
 
 export default useSubmission

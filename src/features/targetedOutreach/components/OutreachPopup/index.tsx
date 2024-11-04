@@ -24,7 +24,7 @@ const OutreachPopup = (): ReactElement | null => {
   const currentChainId = useChainId()
   const safeAddress = useSafeAddress()
   const wallet = useWallet()
-  const submission = useSubmission()
+  const { data: submission, refetch } = useSubmission()
 
   const [askAgainLaterTimestamp, setAskAgainLaterTimestamp] = useSessionStorage<number>(OUTREACH_SS_KEY)
 
@@ -61,6 +61,7 @@ const OutreachPopup = (): ReactElement | null => {
       })
     }
     dispatch(closeOutreachBanner())
+    refetch()
   }
 
   return (
