@@ -23,6 +23,9 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
     return <ErrorMessage>No transaction data found</ErrorMessage>
   }
 
+  const currentSafeAddress = addressBook[pendingTx.safeAddress]
+  const parentSafeAddress = addressBook[pendingTx.signerAddress]
+
   return (
     <Container
       component={Paper}
@@ -50,8 +53,8 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
             </Typography>
             <EthHashInfo
               address={pendingTx.signerAddress}
-              name={addressBook[pendingTx.signerAddress]}
-              isAddressBookName={Boolean(addressBook[pendingTx.signerAddress])}
+              name={parentSafeAddress}
+              isAddressBookName={Boolean(parentSafeAddress)}
               shortAddress={false}
             />
           </Box>
@@ -79,8 +82,8 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
             </Typography>
             <EthHashInfo
               address={pendingTx.safeAddress}
-              name={addressBook[pendingTx.safeAddress]}
-              isAddressBookName={Boolean(addressBook[pendingTx.safeAddress])}
+              name={currentSafeAddress}
+              isAddressBookName={Boolean(currentSafeAddress)}
               shortAddress={false}
             />
           </Box>

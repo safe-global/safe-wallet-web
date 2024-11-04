@@ -14,19 +14,20 @@ const ExternalLink = ({
   ...props
 }: Omit<LinkProps, 'target' | 'rel'> & { noIcon?: boolean; mode?: 'button' | 'link' }): ReactElement => {
   if (!href) return <>{children}</>
+
+  const linkContent = (
+    <Box display="inline-flex" alignItems="center" gap={0.2} component="span">
+      {children}
+      {!noIcon && <OpenInNewRounded fontSize="small" />}
+    </Box>
+  )
   return mode === 'link' ? (
     <Link rel="noreferrer noopener" target="_blank" {...props}>
-      <Box display="inline-flex" alignItems="center" gap={0.2} component="span">
-        {children}
-        {!noIcon && <OpenInNewRounded fontSize="small" />}
-      </Box>
+      {linkContent}
     </Link>
   ) : (
     <Button variant="outlined" href={href} rel="noreferrer noopener" target="_blank" sx={props.sx}>
-      <Box display="inline-flex" alignItems="center" gap={0.2} component="span">
-        {children}
-        {!noIcon && <OpenInNewRounded fontSize="small" />}
-      </Box>
+      {linkContent}
     </Button>
   )
 }
