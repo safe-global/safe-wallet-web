@@ -71,7 +71,6 @@ export const Multisend = ({ txData, compact = false }: MultisendProps): ReactEle
   if (!multiSendTransactions) {
     return null
   }
-
   return (
     <>
       <MultisendActionsHeader setOpen={setOpenMap} amount={multiSendTransactions.length} compact={compact} />

@@ -31,9 +31,16 @@ describe('ExecuteForm', () => {
   const defaultProps = {
     onSubmit: jest.fn(),
     isOwner: true,
+    txId: '0x123123',
     isExecutionLoop: false,
     relays: [undefined, undefined, false] as AsyncResult<RelayCountResponse>,
-    txActions: { signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn(), signProposerTx: jest.fn() },
+    txActions: {
+      proposeTx: jest.fn(),
+      signTx: jest.fn(),
+      addToBatch: jest.fn(),
+      executeTx: jest.fn(),
+      signProposerTx: jest.fn(),
+    },
     txSecurity: defaultSecurityContextValues,
   }
 
@@ -107,7 +114,13 @@ describe('ExecuteForm', () => {
     const { getByText } = render(
       <ExecuteForm
         {...defaultProps}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: jest.fn(), signProposerTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: jest.fn(),
+          addToBatch: jest.fn(),
+          executeTx: jest.fn(),
+          signProposerTx: jest.fn(),
+        }}
       />,
     )
 
@@ -138,7 +151,13 @@ describe('ExecuteForm', () => {
         {...defaultProps}
         safeTx={safeTransaction}
         onSubmit={jest.fn()}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: mockExecuteTx, signProposerTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: jest.fn(),
+          addToBatch: jest.fn(),
+          executeTx: mockExecuteTx,
+          signProposerTx: jest.fn(),
+        }}
       />,
     )
 
@@ -158,7 +177,13 @@ describe('ExecuteForm', () => {
       <ExecuteForm
         {...defaultProps}
         safeTx={safeTransaction}
-        txActions={{ signTx: jest.fn(), addToBatch: jest.fn(), executeTx: mockExecuteTx, signProposerTx: jest.fn() }}
+        txActions={{
+          proposeTx: jest.fn(),
+          signTx: jest.fn(),
+          addToBatch: jest.fn(),
+          executeTx: mockExecuteTx,
+          signProposerTx: jest.fn(),
+        }}
       />,
     )
 
