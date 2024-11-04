@@ -2,7 +2,6 @@ import useChainId from '@/hooks/useChainId'
 import { Safe__factory } from '@/types/contracts'
 import { Skeleton } from '@mui/material'
 import { type TransactionData } from '@safe-global/safe-gateway-typescript-sdk'
-import TxData from '../..'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 
 import Link from 'next/link'
@@ -13,6 +12,7 @@ import { useMemo } from 'react'
 import { skipToken } from '@reduxjs/toolkit/query'
 import ExternalLink from '@/components/common/ExternalLink'
 import { NestedTransaction } from '../NestedTransaction'
+import DecodedTx from '@/components/tx/DecodedTx'
 
 const safeInterface = Safe__factory.createInterface()
 
@@ -41,7 +41,13 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
     <NestedTransaction txData={data}>
       {nestedTxDetails ? (
         <>
-          <TxData txDetails={nestedTxDetails} trusted imitation={false} />
+          <DecodedTx
+            showAdvancedDetails={false}
+            txDetails={nestedTxDetails}
+            decodedData={nestedTxDetails.txData?.dataDecoded}
+            txId={signedHash}
+            showMethodCall
+          />
 
           {chain && data && (
             <Link

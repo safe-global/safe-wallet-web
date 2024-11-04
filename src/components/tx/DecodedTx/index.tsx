@@ -7,7 +7,7 @@ import {
 } from '@/utils/transaction-guards'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DataDecoded, DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
@@ -22,7 +22,7 @@ type DecodedTxProps = {
   txId?: string
   txDetails?: TransactionDetails
   showMultisend?: boolean
-  decodedData?: DecodedDataResponse
+  decodedData?: DecodedDataResponse | DataDecoded
   showMethodCall?: boolean
   showAdvancedDetails?: boolean
 }
