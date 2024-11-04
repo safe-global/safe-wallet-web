@@ -61,7 +61,13 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
       const typedData = getDelegateTypedData(chainId, proposer.delegate)
       const signature = await signTypedData(signer, typedData)
 
-      await deleteProposer({ chainId, delegateAddress: proposer.delegate, safeAddress, signature })
+      await deleteProposer({
+        chainId,
+        delegateAddress: proposer.delegate,
+        delegator: wallet.address,
+        safeAddress,
+        signature,
+      })
 
       trackEvent(SETTINGS_EVENTS.PROPOSERS.SUBMIT_REMOVE_PROPOSER)
 

@@ -15,18 +15,29 @@ export const proposerEndpoints = (
   }),
   deleteProposer: builder.mutation<
     void,
-    { chainId: string; safeAddress: string; delegateAddress: string; signature: string }
+    {
+      chainId: string
+      safeAddress: string
+      delegateAddress: string
+      delegator: string
+      signature: string
+    }
   >({
-    queryFn({ chainId, safeAddress, delegateAddress, signature }) {
+    queryFn({ chainId, safeAddress, delegateAddress, delegator, signature }) {
       return buildQueryFn(() =>
-        deleteDelegateV2({ params: { path: { chainId, delegateAddress } }, body: { safe: safeAddress, signature } }),
+        deleteDelegateV2({
+          params: { path: { chainId, delegateAddress } },
+          body: { safe: safeAddress, signature, delegator },
+        }),
       )
     },
     // Optimistically update the cache and roll back in case the mutation fails
-    async onQueryStarted({ chainId, safeAddress, delegateAddress }, { dispatch, queryFulfilled }) {
+    async onQueryStarted({ chainId, safeAddress, delegateAddress, delegator }, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
         gatewayApi.util.updateQueryData('getProposers', { chainId, safeAddress }, (draft) => {
-          draft.results = draft.results.filter((delegate: Delegate) => delegate.delegate !== delegateAddress)
+          draft.results = draft.results.filter(
+            (delegate: Delegate) => delegate.delegate !== delegateAddress || delegate.delegator !== delegator,
+          )
         }),
       )
       try {
@@ -38,7 +49,14 @@ export const proposerEndpoints = (
   }),
   addProposer: builder.mutation<
     Delegate,
-    { chainId: string; safeAddress: string; delegate: string; delegator: string; label: string; signature: string }
+    {
+      chainId: string
+      safeAddress: string
+      delegate: string
+      delegator: string
+      label: string
+      signature: string
+    }
   >({
     queryFn({ chainId, safeAddress, delegate, delegator, label, signature }) {
       return buildQueryFn(() =>
@@ -52,7 +70,11 @@ export const proposerEndpoints = (
     async onQueryStarted({ chainId, safeAddress, delegate, delegator, label }, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
         gatewayApi.util.updateQueryData('getProposers', { chainId, safeAddress }, (draft) => {
-          const existingProposer = draft.results.findIndex((proposer: Delegate) => proposer.delegate === delegate)
+          const existingProposer = draft.results.findIndex(
+            (proposer: Delegate) => proposer.delegate === delegate && delegator === proposer.delegator,
+          )
+
+          console.log(existingProposer)
 
           if (existingProposer !== -1) {
             // Update the existing delegate's label
