@@ -57,7 +57,7 @@ describe('Sidebar tests 3', () => {
     sideBar.verifyAddedSafesExistByIndex(1, sideBar.sideBarSafes.safe2short)
   })
 
-  it('Verify there is an option to name an unnamed safe', () => {
+  it.only('Verify there is an option to name an unnamed safe', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],

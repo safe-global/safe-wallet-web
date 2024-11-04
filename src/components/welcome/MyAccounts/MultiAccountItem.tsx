@@ -145,6 +145,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     >
       <Accordion expanded={expanded} sx={{ border: 'none' }}>
         <AccordionSummary
+          data-testid="multichain-item-summary"
           onClick={toggleExpand}
           sx={{
             pl: 0,
@@ -183,7 +184,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
           />
         </AccordionSummary>
         <AccordionDetails sx={{ padding: '0px 12px' }}>
-          <Box>
+          <Box data-testid="subacounts-container">
             {safes.map((safeItem) => (
               <SubAccountItem
                 onLinkClick={onLinkClick}

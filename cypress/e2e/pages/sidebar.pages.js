@@ -20,8 +20,9 @@ const sideSafeListItem = '[data-testid="safe-list-item"]'
 const sidebarSafeHeader = '[data-testid="safe-header-info"]'
 const sidebarSafeContainer = '[data-testid="sidebar-safe-container"]'
 const safeItemOptionsBtn = '[data-testid="safe-options-btn"]'
-const safeItemOptionsRenameBtn = '[data-testid="rename-btn"]'
+export const safeItemOptionsRenameBtn = '[data-testid="rename-btn"]'
 const safeItemOptionsRemoveBtn = '[data-testid="remove-btn"]'
+export const safeItemOptionsAddChainBtn = '[data-testid="add-chain-btn"]'
 const nameInput = '[data-testid="name-input"]'
 const saveBtn = '[data-testid="save-btn"]'
 const cancelBtn = '[data-testid="cancel-btn"]'
@@ -34,6 +35,8 @@ const showMoreBtn = '[data-testid="show-more-btn" ]'
 const importBtn = '[data-testid="import-btn"]'
 export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
+const multichainItemSummary = '[data-testid="multichain-item-summary"]'
+const addChainDialog = "[data-testid='add-chain-dialog']"
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
 
@@ -59,6 +62,11 @@ const myAccountsStr = 'My accounts'
 const confirmTxStr = (number) => `${number} to confirm`
 const pedningTxStr = (n) => `${n} pending transaction`
 export const confirmGenStr = 'to confirm'
+
+export const multichainSafes = {
+  polygon: 'Multichain polygon',
+  sepolia: 'Multichain Sepolia',
+}
 
 export function verifyNumberOfPendingTxTag(tx) {
   cy.contains(pedningTxStr(tx))
@@ -206,8 +214,16 @@ export function verifyQueuedTx(safe) {
   return getSafeItemByName(safe).find(queuedTxInfo).should('exist')
 }
 
-function clickOnSafeItemOptionsBtn(name) {
+export function clickOnSafeItemOptionsBtn(name) {
   getSafeItemByName(name).find(safeItemOptionsBtn).click()
+}
+
+export function clickOnSafeItemOptionsBtnByIndex(index) {
+  cy.get(safeItemOptionsBtn).eq(index).click()
+}
+
+export function clickOnMultichainItemOptionsBtn(index) {
+  cy.get(multichainItemSummary).eq(index).find(safeItemOptionsBtn).click()
 }
 
 export function renameSafeItem(oldName, newName) {
@@ -297,4 +313,9 @@ export function verifyTxToConfirmDoesNotExist() {
 export function checkBalanceExists() {
   const balance = new RegExp(`\\s*\\d*\\.?\\d*\\s*`, 'i')
   const element = cy.get(chainLogo).prev().contains(balance)
+}
+
+export function checkAddChainDialogDisplayed() {
+  cy.get(safeItemOptionsAddChainBtn).click()
+  cy.get(addChainDialog).should('be.visible')
 }

@@ -364,3 +364,7 @@ export function getAddedSafeAddressFromLocalStorage(chainId, index) {
     return safeAddress
   })
 }
+
+export function changeSafeChainName(originalChain, newChain) {
+  return originalChain.replace(/^[^:]+:/, newChain + ':')
+}
