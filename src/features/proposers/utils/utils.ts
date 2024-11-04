@@ -1,4 +1,7 @@
-export const getDelegateTypedData = (chainId: string, delegateAddress: string) => {
+import { signTypedData } from '@/utils/web3'
+import type { JsonRpcSigner } from 'ethers'
+
+const getProposerDataV2 = (chainId: string, proposerAddress: string) => {
   const totp = Math.floor(Date.now() / 1000 / 3600)
 
   const domain = {
@@ -15,7 +18,7 @@ export const getDelegateTypedData = (chainId: string, delegateAddress: string) =
   }
 
   const message = {
-    delegateAddress,
+    delegateAddress: proposerAddress,
     totp,
   }
 
@@ -24,4 +27,21 @@ export const getDelegateTypedData = (chainId: string, delegateAddress: string) =
     types,
     message,
   }
+}
+
+export const signProposerTypedData = async (chainId: string, proposerAddress: string, signer: JsonRpcSigner) => {
+  const typedData = getProposerDataV2(chainId, proposerAddress)
+  return signTypedData(signer, typedData)
+}
+
+const getProposerDataV1 = (proposerAddress: string) => {
+  const totp = Math.floor(Date.now() / 1000 / 3600)
+
+  return `${proposerAddress}${totp}`
+}
+
+export const signProposerData = (proposerAddress: string, signer: JsonRpcSigner) => {
+  const data = getProposerDataV1(proposerAddress)
+
+  return signer.signMessage(data)
 }
