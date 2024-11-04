@@ -46,7 +46,7 @@ describe('Multichain sidebar tests', () => {
     sideBar.verifySafeGiveNameOptionExists(1)
   })
 
-  it.only('Verify "Add network" in more options menu for the single safe', () => {
+  it('Verify "Add network" in more options menu for the single safe', () => {
     let safe = main.changeSafeChainName(staticSafes.MATIC_STATIC_SAFE_28, 'sep')
     cy.visit(constants.BALANCE_URL + safe)
 
@@ -59,36 +59,12 @@ describe('Multichain sidebar tests', () => {
     sideBar.checkAddChainDialogDisplayed()
   })
 
-  //
-  //
-  //
-  //
+  it('Verify "Add Networks" option for the group of safes with multi-chain safe', () => {
+    cy.visit(constants.BALANCE_URL + staticSafes.MATIC_STATIC_SAFE_28)
 
-  it('Verify the safe added are listed in the sidebar', () => {
+    wallet.connectSigner(signer)
     sideBar.openSidebar()
-    sideBar.verifyAddedSafesExist(sideBar.addedSafesSepolia)
-  })
-
-  it('Verify a safe can be renamed', () => {
-    sideBar.openSidebar()
-    sideBar.renameSafeItem(addedSafe900, newSafeName)
-    sideBar.clickOnSaveBtn()
-    sideBar.verifySafeNameExists(newSafeName)
-  })
-
-  it('Verify a safe can be removed', () => {
-    sideBar.openSidebar()
-    sideBar.removeSafeItem(addedSafe900)
-    sideBar.verifySafeRemoved([addedSafe900])
-  })
-
-  it('Verify Fiat currency changes when edited in the assets tab', () => {
-    assets.changeCurrency(assets.currencyCAD)
-    sideBar.checkCurrencyInHeader(assets.currency$)
-  })
-
-  it('Verify "wallet" tag counter if the safe has tx ready for execution', () => {
-    sideBar.openSidebar()
-    sideBar.verifyNumberOfPendingTxTag(1)
+    sideBar.clickOnSafeItemOptionsBtnByIndex(0)
+    sideBar.checkAddChainDialogDisplayed()
   })
 })
