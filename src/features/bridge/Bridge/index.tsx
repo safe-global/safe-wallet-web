@@ -1,28 +1,25 @@
 import dynamic from 'next/dynamic'
-import type { ReactElement } from 'react'
 
-import { Navigate } from '@/components/common/Navigate'
 import { AppRoutes } from '@/config/routes'
-import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
-import madProps from '@/utils/mad-props'
+import { FeatureWrapper } from '@/components/wrappers/FeatureWrapper'
+import { SanctionWrapper } from '@/components/wrappers/SanctionWrapper'
+import { DisclaimerWrapper } from '@/components/wrappers/DisclaimerWrapper'
+
+const LOCAL_STORAGE_CONSENT_KEY = 'bridgeConsent'
 
 const BridgeWidget = dynamic(() => import('@/features/bridge/BridgeWidget').then((module) => module.BridgeWidget), {
   ssr: false,
 })
 
-export function _Bridge({ isFeatureEnabled }: { isFeatureEnabled: typeof useHasFeature }): ReactElement {
-  const isEnabled = isFeatureEnabled(FEATURES.BRIDGE)
-
-  if (isEnabled === false) {
-    return <Navigate to={AppRoutes.home} replace />
-  }
-
-  // TODO: Consent logic
-
-  return <BridgeWidget />
+export function Bridge() {
+  return (
+    <FeatureWrapper feature={FEATURES.BRIDGE} to={AppRoutes.home}>
+      <SanctionWrapper featureTitle="bridge feature with LI.FI">
+        <DisclaimerWrapper localStorageKey={LOCAL_STORAGE_CONSENT_KEY} widgetName="Bridging Widget by LI.FI">
+          <BridgeWidget />
+        </DisclaimerWrapper>
+      </SanctionWrapper>
+    </FeatureWrapper>
+  )
 }
-
-export const Bridge = madProps(_Bridge, {
-  isFeatureEnabled: () => useHasFeature,
-})
