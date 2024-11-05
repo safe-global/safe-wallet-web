@@ -1,7 +1,7 @@
 import { buildQueryFn, gatewayApi } from '@/store/api/gateway/index'
 import { type fakeBaseQuery } from '@reduxjs/toolkit/dist/query/react'
 import type { EndpointBuilder } from '@reduxjs/toolkit/dist/query/react'
-import { deleteDelegateV2, postDelegateV2 } from '@safe-global/safe-client-gateway-sdk'
+import { deleteDelegate, deleteDelegateV2, postDelegate, postDelegateV2 } from '@safe-global/safe-client-gateway-sdk'
 import { getDelegates } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Delegate, DelegateResponse } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
 
@@ -21,14 +21,18 @@ export const proposerEndpoints = (
       delegateAddress: string
       delegator: string
       signature: string
+      isHardwareWallet: boolean
     }
   >({
-    queryFn({ chainId, safeAddress, delegateAddress, delegator, signature }) {
+    queryFn({ chainId, safeAddress, delegateAddress, delegator, signature, isHardwareWallet }) {
+      const options = {
+        params: { path: { chainId, delegateAddress } },
+        body: { safe: safeAddress, signature, delegator },
+      }
       return buildQueryFn(() =>
-        deleteDelegateV2({
-          params: { path: { chainId, delegateAddress } },
-          body: { safe: safeAddress, signature, delegator },
-        }),
+        isHardwareWallet
+          ? deleteDelegate({ params: options.params, body: { ...options.body, delegate: delegateAddress } })
+          : deleteDelegateV2(options),
       )
     },
     // Optimistically update the cache and roll back in case the mutation fails
@@ -56,15 +60,16 @@ export const proposerEndpoints = (
       delegator: string
       label: string
       signature: string
+      isHardwareWallet: boolean
     }
   >({
-    queryFn({ chainId, safeAddress, delegate, delegator, label, signature }) {
-      return buildQueryFn(() =>
-        postDelegateV2({
-          params: { path: { chainId } },
-          body: { delegate, delegator, label, signature, safe: safeAddress },
-        }),
-      )
+    queryFn({ chainId, safeAddress, delegate, delegator, label, signature, isHardwareWallet }) {
+      const options = {
+        params: { path: { chainId } },
+        body: { delegate, delegator, label, signature, safe: safeAddress },
+      }
+
+      return buildQueryFn(() => (isHardwareWallet ? postDelegate(options) : postDelegateV2(options)))
     },
     // Optimistically update the cache and roll back in case the mutation fails
     async onQueryStarted({ chainId, safeAddress, delegate, delegator, label }, { dispatch, queryFulfilled }) {

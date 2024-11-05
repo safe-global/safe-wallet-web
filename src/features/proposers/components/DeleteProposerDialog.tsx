@@ -1,7 +1,7 @@
 import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
+import { signProposerData, signProposerTypedData } from '@/features/proposers/utils/utils'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
-import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import { SETTINGS_EVENTS, trackEvent } from '@/services/analytics'
@@ -9,7 +9,7 @@ import { useAppDispatch } from '@/store'
 import { useDeleteProposerMutation } from '@/store/api/gateway'
 import { showNotification } from '@/store/notificationsSlice'
 import { shortenAddress } from '@/utils/formatters'
-import { signTypedData } from '@/utils/web3'
+import { isHardwareWallet } from '@/utils/wallets'
 import type { Delegate } from '@safe-global/safe-gateway-typescript-sdk/dist/types/delegates'
 import React, { useState } from 'react'
 import {
@@ -58,9 +58,11 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
     }
 
     try {
+      const hardwareWallet = isHardwareWallet(wallet)
       const signer = await getAssertedChainSigner(wallet.provider)
-      const typedData = getDelegateTypedData(chainId, proposer.delegate)
-      const signature = await signTypedData(signer, typedData)
+      const signature = hardwareWallet
+        ? await signProposerData(proposer.delegate, signer)
+        : await signProposerTypedData(chainId, proposer.delegate, signer)
 
       await deleteProposer({
         chainId,
@@ -68,6 +70,7 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
         delegator: wallet.address,
         safeAddress,
         signature,
+        isHardwareWallet: hardwareWallet,
       })
 
       trackEvent(SETTINGS_EVENTS.PROPOSERS.SUBMIT_REMOVE_PROPOSER)

@@ -4,7 +4,7 @@ import EthHashInfo from '@/components/common/EthHashInfo'
 import NameInput from '@/components/common/NameInput'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import ErrorMessage from '@/components/tx/ErrorMessage'
-import { getDelegateTypedData } from '@/features/proposers/utils/utils'
+import { signProposerData, signProposerTypedData } from '@/features/proposers/utils/utils'
 import useChainId from '@/hooks/useChainId'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import useWallet from '@/hooks/wallets/useWallet'
@@ -15,7 +15,7 @@ import { useAddProposerMutation } from '@/store/api/gateway'
 import { showNotification } from '@/store/notificationsSlice'
 import { shortenAddress } from '@/utils/formatters'
 import { addressIsNotCurrentSafe } from '@/utils/validation'
-import { signTypedData } from '@/utils/web3'
+import { isHardwareWallet } from '@/utils/wallets'
 import { Close } from '@mui/icons-material'
 import {
   Alert,
@@ -79,9 +79,11 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
     setIsLoading(true)
 
     try {
+      const hardwareWallet = isHardwareWallet(wallet)
       const signer = await getAssertedChainSigner(wallet.provider)
-      const typedData = getDelegateTypedData(chainId, data.address)
-      const signature = await signTypedData(signer, typedData)
+      const signature = hardwareWallet
+        ? await signProposerData(data.address, signer)
+        : await signProposerTypedData(chainId, data.address, signer)
 
       await addProposer({
         chainId,
@@ -90,6 +92,7 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
         label: data.name,
         delegate: data.address,
         safeAddress,
+        isHardwareWallet: hardwareWallet,
       })
 
       trackEvent(
