@@ -9,14 +9,24 @@ import {
   DetailedExecutionInfoType,
   TransactionListItem,
   TransactionSummary,
+  AddressEx,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import { RichFragmentType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/human-description'
 
 export const fakeToken = {
   address: '0x1111111111',
   decimals: 18,
-  name: 'NevinhaToken',
-  symbol: 'NEV',
+  name: 'Ether',
+  logoUri: 'https://safe-transaction-assets.safe.global/chains/1/chain_logo.png',
+  symbol: 'ETH',
+  trusted: false,
+}
+export const fakeToken2 = {
+  address: '0x1111111111',
+  decimals: 18,
+  name: 'SafeToken',
+  logoUri: 'https://safe-transaction-assets.safe.global/tokens/logos/0x5aFE3855358E112B5647B952709E6165e1c1eEEe.png',
+  symbol: 'SAFE',
   trusted: false,
 }
 export const mockERC20Transfer: TransactionInfo = {
@@ -32,11 +42,35 @@ export const mockERC20Transfer: TransactionInfo = {
   transferInfo: {
     type: TransactionTokenType.ERC20,
     tokenAddress: '0x000000',
-    value: '100000',
+    value: '50000000000000000',
+    tokenName: 'Nevinha',
+    logoUri: 'https://safe-transaction-assets.safe.global/chains/1/chain_logo.png',
+    tokenSymbol: 'NEV',
     trusted: false,
+    decimals: 18,
     imitation: true,
   },
   direction: TransferDirection.INCOMING,
+  humanDescription: 'a simple incoming transaction',
+}
+export const mockNFTTransfer: TransactionInfo = {
+  type: TransactionInfoType.TRANSFER,
+  sender: {
+    value: '0x000000',
+    name: 'something',
+  },
+  recipient: {
+    value: '0x0ab',
+    name: 'something',
+  },
+  transferInfo: {
+    tokenId: '1',
+    type: TransactionTokenType.ERC721,
+    tokenAddress: '0x000000',
+    tokenName: 'My NFT',
+    tokenSymbol: 'NEV',
+  },
+  direction: TransferDirection.OUTGOING,
   humanDescription: 'a simple incoming transaction',
 }
 export const mockSwapTransfer: TransactionInfo = {
@@ -53,7 +87,7 @@ export const mockSwapTransfer: TransactionInfo = {
   transferInfo: {
     type: TransactionTokenType.ERC20,
     tokenAddress: '0x000000',
-    value: '100000',
+    value: '50000000000000000',
     trusted: false,
     imitation: true,
   },
@@ -71,11 +105,11 @@ export const mockSwapTransfer: TransactionInfo = {
   kind: 'buy',
   orderClass: 'limit',
   validUntil: 11902381293,
-  sellAmount: '100',
-  buyAmount: '1000000',
-  executedSellAmount: '100',
-  executedBuyAmount: '1000000',
-  sellToken: fakeToken,
+  sellAmount: '50000000000000000',
+  buyAmount: '50000000000000000',
+  executedSellAmount: '50000000000000000',
+  executedBuyAmount: '50000000000000000',
+  sellToken: fakeToken2,
   buyToken: fakeToken,
   explorerUrl: 'http://google.com',
   executedSurplusFee: '',
@@ -89,6 +123,8 @@ interface mockTransferWithInfoArgs {
   methodName?: string
   actionCount?: number
   isCancellation?: boolean
+  to?: AddressEx
+  creator?: AddressEx
 }
 
 export const mockTransferWithInfo = ({
@@ -97,6 +133,8 @@ export const mockTransferWithInfo = ({
   methodName,
   actionCount,
   isCancellation,
+  to,
+  creator,
 }: mockTransferWithInfoArgs): TransactionInfo =>
   ({
     type,
@@ -104,6 +142,8 @@ export const mockTransferWithInfo = ({
       value: '0x000000',
       name: 'something',
     },
+    to,
+    creator,
     methodName,
     actionCount,
     recipient: {

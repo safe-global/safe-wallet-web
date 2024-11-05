@@ -19,7 +19,16 @@ export const gatewayApi = createApi({
       { chainId: string; safeAddress: string; pageUrl?: string }
     >({
       queryFn({ chainId, safeAddress, pageUrl }) {
-        return buildQueryFn(() => getTransactionHistory(chainId, safeAddress, {}, pageUrl))
+        return buildQueryFn(() =>
+          getTransactionHistory(
+            chainId,
+            safeAddress,
+            {
+              trusted: false,
+            },
+            pageUrl,
+          ),
+        )
       },
     }),
   }),

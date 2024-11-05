@@ -18,10 +18,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name={'wallet'} color={color} />,
         }}
       />
+
       <Tabs.Screen
         name="transactions"
         options={{
           title: 'Transactions',
+          tabBarTestID: 'transactions',
           tabBarIcon: ({ color }) => <TabBarIcon name={'transactions'} color={color} />,
         }}
       />

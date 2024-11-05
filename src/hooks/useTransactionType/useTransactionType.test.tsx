@@ -7,7 +7,7 @@ describe('useTransactionType', () => {
   it('should be a Received transaction', () => {
     const { result } = renderHook(() => useTransactionType(mockTransactionSummary))
 
-    expect(result.current).toStrictEqual({ text: 'Received' })
+    expect(result.current.text).toBe('Received')
   })
 
   it('should be a Creation transaction', () => {
@@ -20,7 +20,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'Safe Account created' })
+    expect(result.current.text).toBe('Safe Account created')
   })
 
   it('should be a outgoing transfer transaction', () => {
@@ -34,7 +34,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'Sent' })
+    expect(result.current.text).toBe('Sent')
   })
 
   it('should be a outgoing transfer transaction awaiting for execution', () => {
@@ -49,7 +49,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'Send' })
+    expect(result.current.text).toBe('Send')
   })
 
   it('should return the type for a SETTINGS_CHANGE transaction', () => {
@@ -63,7 +63,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'mockMethod' })
+    expect(result.current.text).toBe('mockMethod')
   })
 
   it('should return the type for a SWAP_ORDER transaction', () => {
@@ -77,7 +77,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'Swap order' })
+    expect(result.current.text).toBe('Swap order')
   })
 
   it('should return the type for a TWAP_ORDER transaction', () => {
@@ -91,7 +91,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'TWAP order' })
+    expect(result.current.text).toBe('TWAP order')
   })
 
   it('should return the type for a CUSTOM transaction', () => {
@@ -105,7 +105,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'Contract interaction' })
+    expect(result.current.text).toBe('Contract interaction')
   })
 
   it('should return a `Batch` text for a CUSTOM batch transaction', () => {
@@ -122,7 +122,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'Batch' })
+    expect(result.current.text).toBe('Batch')
   })
 
   it('should return the default transaction information', () => {
@@ -137,7 +137,7 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'Contract interaction' })
+    expect(result.current.text).toBe('Contract interaction')
   })
 
   it('should return the default transaction information with safe information', () => {
@@ -156,6 +156,6 @@ describe('useTransactionType', () => {
       }),
     )
 
-    expect(result.current).toStrictEqual({ text: 'somename' })
+    expect(result.current.text).toBe('somename')
   })
 })
