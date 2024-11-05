@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - dev
-      - safenet
       - main
 
 concurrency:
@@ -61,7 +60,7 @@ jobs:
 
       # Dev
       - name: Deploy to the dev S3
-        if: startsWith(github.ref, 'refs/heads/dev') || startsWith(github.ref, 'refs/heads/safenet')
+        if: startsWith(github.ref, 'refs/heads/dev')
         env:
           BUCKET: s3://${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
         run: bash ./scripts/github/s3_upload.sh
