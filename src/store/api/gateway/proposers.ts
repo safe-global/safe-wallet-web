@@ -74,8 +74,6 @@ export const proposerEndpoints = (
             (proposer: Delegate) => proposer.delegate === delegate && delegator === proposer.delegator,
           )
 
-          console.log(existingProposer)
-
           if (existingProposer !== -1) {
             // Update the existing delegate's label
             draft.results[existingProposer] = {
