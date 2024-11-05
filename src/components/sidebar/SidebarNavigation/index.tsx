@@ -15,7 +15,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
 import { useQueuedTxsLength } from '@/hooks/useTxQueue'
 import { useCurrentChain } from '@/hooks/useChains'
-import { isRouteEnabled } from '@/utils/chains'
+import { FEATURES, isRouteEnabled } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
@@ -44,7 +44,8 @@ const Navigation = (): ReactElement => {
   const isBlockedCountry = useContext(GeoblockingContext)
 
   const visibleNavItems = useMemo(() => {
-    return navItems.filter((item) => {
+    const features = (chain?.features ?? []) as unknown as Array<FEATURES>
+    return navItems(features).filter((item) => {
       if (isBlockedCountry && geoBlockedRoutes.includes(item.href)) {
         return false
       }
