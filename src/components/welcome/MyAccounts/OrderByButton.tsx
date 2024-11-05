@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, ListItemText, MenuItem, SvgIcon } from '@mui/material'
+import { Box, Button, ListItemText, MenuItem, SvgIcon, Typography } from '@mui/material'
 import ContextMenu from '@/components/common/ContextMenu'
 import TransactionsIcon from '@/public/images/transactions/transactions.svg'
 import CheckIcon from '@/public/images/common/check.svg'
@@ -8,6 +8,11 @@ import { OrderByOption } from '@/store/orderByPreferenceSlice'
 type OrderByButtonProps = {
   orderBy: OrderByOption
   onOrderByChange: (orderBy: OrderByOption) => void
+}
+
+const orderByLabels = {
+  [OrderByOption.LAST_VISITED]: 'Most recent',
+  [OrderByOption.NAME]: 'Name',
 }
 
 const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: OrderByButtonProps) => {
@@ -27,14 +32,16 @@ const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: O
   }
 
   return (
-    <>
+    <Box display="flex">
       <Button
         onClick={handleClick}
         startIcon={<SvgIcon component={TransactionsIcon} inheritViewBox />}
-        sx={{ color: 'text.secondary' }}
+        sx={{ color: 'primary.light', fontWeight: 'normal' }}
         size="small"
       >
-        Sort
+        <Typography variant="body2" noWrap>
+          Sort by: {orderByLabels[orderBy]}
+        </Typography>
       </Button>
 
       <ContextMenu
@@ -56,15 +63,15 @@ const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: O
           onClick={() => handleOrderByChange(OrderByOption.LAST_VISITED)}
           selected={orderBy === OrderByOption.LAST_VISITED}
         >
-          <ListItemText sx={{ mr: 2 }}>Most recent</ListItemText>
+          <ListItemText sx={{ mr: 2 }}>{orderByLabels[OrderByOption.LAST_VISITED]}</ListItemText>
           {orderBy === OrderByOption.LAST_VISITED && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
         <MenuItem onClick={() => handleOrderByChange(OrderByOption.NAME)} selected={orderBy === OrderByOption.NAME}>
-          <ListItemText>Name</ListItemText>
+          <ListItemText>{orderByLabels[OrderByOption.NAME]}</ListItemText>
           {orderBy === OrderByOption.NAME && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
       </ContextMenu>
-    </>
+    </Box>
   )
 }
 

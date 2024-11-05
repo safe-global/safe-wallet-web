@@ -91,8 +91,12 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
     dispatch(setOrderByPreference({ orderBy }))
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSearch = useCallback(debounce(setSearchQuery, 300), [])
+  const handleSearch = useCallback((value: string) => {
+    const debouncedSearch = debounce((searchValue: string) => {
+      setSearchQuery(searchValue)
+    }, 300)
+    debouncedSearch(value)
+  }, [])
 
   useTrackSafesCount(ownedSafes, watchlistSafes, wallet)
 
@@ -142,7 +146,16 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <SvgIcon component={SearchIcon} inheritViewBox color="border" fontSize="small" />
+                      <SvgIcon
+                        component={SearchIcon}
+                        inheritViewBox
+                        fontWeight="bold"
+                        fontSize="small"
+                        sx={{
+                          color: 'var(--color-border-main)',
+                          '.MuiInputBase-root.Mui-focused &': { color: 'var(--color-text-primary)' },
+                        }}
+                      />
                     </InputAdornment>
                   ),
                   disableUnderline: true,
@@ -160,7 +173,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
             {/* Search results */}
             {searchQuery ? (
               <>
-                <Typography variant="h5" fontWeight={700} mb={2}>
+                <Typography variant="h5" fontWeight="normal" mb={1} color="primary.light">
                   Found {filteredSafes.length} result{filteredSafes.length === 1 ? '' : 's'}
                 </Typography>
                 <Box mt={1}>
