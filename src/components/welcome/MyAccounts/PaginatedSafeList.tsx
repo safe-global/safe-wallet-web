@@ -28,7 +28,12 @@ export const SafeListPage = ({ safes, onLinkClick }: SafeListPageProps) => {
     <>
       {safes.map((item) =>
         isMultiChainSafeItem(item) ? (
-          <MultiAccountItem onLinkClick={onLinkClick} key={item.address} multiSafeAccountItem={item} />
+          <MultiAccountItem
+            onLinkClick={onLinkClick}
+            key={item.address}
+            multiSafeAccountItem={item}
+            hasSafenetEnabled
+          />
         ) : (
           <AccountItem onLinkClick={onLinkClick} safeItem={item} key={item.chainId + item.address} />
         ),
