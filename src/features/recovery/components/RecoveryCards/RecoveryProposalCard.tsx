@@ -31,7 +31,12 @@ type Props =
       setTxFlow: TxModalContextType['setTxFlow']
     }
 
-export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe, setTxFlow }: Props): ReactElement {
+export function InternalRecoveryProposalCard({
+  orientation = 'vertical',
+  onClose,
+  safe,
+  setTxFlow,
+}: Props): ReactElement {
   const isDarkMode = useDarkMode()
 
   const onRecover = async () => {
@@ -134,10 +139,10 @@ export function _RecoveryProposalCard({ orientation = 'vertical', onClose, safe,
 }
 
 // Appease TypeScript
-const _useSafe = () => useSafeInfo().safe
-const _useSetTxFlow = () => useContext(TxModalContext).setTxFlow
+const InternalUseSafe = () => useSafeInfo().safe
+const InternalUseSetTxFlow = () => useContext(TxModalContext).setTxFlow
 
-export const RecoveryProposalCard = madProps(_RecoveryProposalCard, {
-  safe: _useSafe,
-  setTxFlow: _useSetTxFlow,
+export const RecoveryProposalCard = madProps(InternalRecoveryProposalCard, {
+  safe: InternalUseSafe,
+  setTxFlow: InternalUseSetTxFlow,
 })

@@ -68,7 +68,7 @@ const _BuyCryptoOptions = ({ rampLink }: { rampLink?: LinkProps['href'] }) => {
   )
 }
 
-const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePath: string }) => {
+const InternalBuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePath: string }) => {
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -94,7 +94,7 @@ const _BuyCryptoButton = ({ href, pagePath }: { href?: LinkProps['href']; pagePa
   )
 }
 
-const BuyCryptoButton = madProps(_BuyCryptoButton, {
+const BuyCryptoButton = madProps(InternalBuyCryptoButton, {
   href: useBuyCryptoHref,
   pagePath: usePathname,
 })
