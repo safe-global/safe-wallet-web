@@ -12,6 +12,7 @@ import { id } from 'ethers'
 import { Provider } from 'react-redux'
 import { checksumAddress } from '@/utils/addresses'
 import { faker } from '@faker-js/faker'
+import { act as ReactAct } from 'react'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',
@@ -144,4 +145,5 @@ export * from '@testing-library/react'
 // override render method
 export { customRender as render }
 export { customRenderHook as renderHook }
+export { ReactAct as act }
 export { mockWeb3Provider }

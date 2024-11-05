@@ -5,7 +5,7 @@ const APP_SLOW_LOADING_WARNING_TIMEOUT = 15_000
 const APP_LOAD_ERROR = 'There was an error loading the Safe App. There might be a problem with the Safe App provider.'
 
 type UseAppIsLoadingReturnType = {
-  iframeRef: React.RefObject<HTMLIFrameElement>
+  iframeRef: React.RefObject<HTMLIFrameElement | null>
   appIsLoading: boolean
   setAppIsLoading: (appIsLoading: boolean) => void
   isLoadingSlow: boolean
@@ -17,8 +17,8 @@ const useAppIsLoading = (): UseAppIsLoadingReturnType => {
   const [, setAppLoadError] = useState<boolean>(false)
 
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  const timer = useRef<number>()
-  const errorTimer = useRef<number>()
+  const timer = useRef<number>(0)
+  const errorTimer = useRef<number>(0)
 
   useEffect(() => {
     const clearTimeouts = () => {

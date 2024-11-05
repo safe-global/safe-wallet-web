@@ -22,7 +22,6 @@ const CustomLink: React.FC<
 }
 
 const overrideComponents: MDXComponents = {
-  // @ts-expect-error
   a: CustomLink,
 }
 

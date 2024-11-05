@@ -9,8 +9,8 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
       class="MuiTypography-root MuiTypography-body1 css-1ab5q2h-MuiTypography-root"
     >
       <mock-icon
-        aria-hidden="true"
-        classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
+        aria-hidden=""
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
         focusable="false"
       />
       New signer
@@ -70,8 +70,8 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
               type="button"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                 data-testid="copy-btn-icon"
                 focusable="false"
               />
@@ -88,15 +88,14 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
               class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1o2vr87-MuiButtonBase-root-MuiIconButton-root"
               data-mui-internal-clone-element="true"
               data-testid="explorer-btn"
-              href=""
               rel="noreferrer"
               tabindex="0"
               target="_blank"
               type="button"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
                 focusable="false"
               />
               <span
@@ -161,8 +160,8 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
               data-mui-internal-clone-element="true"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
                 focusable="false"
               />
             </span>
@@ -304,8 +303,8 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                                 type="button"
                               >
                                 <mock-icon
-                                  aria-hidden="true"
-                                  classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                                  aria-hidden=""
+                                  class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                                   data-testid="copy-btn-icon"
                                   focusable="false"
                                 />
@@ -322,15 +321,14 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                                 class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1o2vr87-MuiButtonBase-root-MuiIconButton-root"
                                 data-mui-internal-clone-element="true"
                                 data-testid="explorer-btn"
-                                href=""
                                 rel="noreferrer"
                                 tabindex="0"
                                 target="_blank"
                                 type="button"
                               >
                                 <mock-icon
-                                  aria-hidden="true"
-                                  classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+                                  aria-hidden=""
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
                                   focusable="false"
                                 />
                                 <span
@@ -382,8 +380,8 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
                             type="button"
                           >
                             <mock-icon
-                              aria-hidden="true"
-                              classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                              aria-hidden=""
+                              class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                               data-testid="copy-btn-icon"
                               focusable="false"
                             />
@@ -433,8 +431,8 @@ exports[`ConfirmationView should display a confirmation with method call when th
               data-mui-internal-clone-element="true"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
                 focusable="false"
               />
             </span>
@@ -576,8 +574,8 @@ exports[`ConfirmationView should display a confirmation with method call when th
                                 type="button"
                               >
                                 <mock-icon
-                                  aria-hidden="true"
-                                  classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                                  aria-hidden=""
+                                  class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                                   data-testid="copy-btn-icon"
                                   focusable="false"
                                 />
@@ -594,15 +592,14 @@ exports[`ConfirmationView should display a confirmation with method call when th
                                 class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1o2vr87-MuiButtonBase-root-MuiIconButton-root"
                                 data-mui-internal-clone-element="true"
                                 data-testid="explorer-btn"
-                                href=""
                                 rel="noreferrer"
                                 tabindex="0"
                                 target="_blank"
                                 type="button"
                               >
                                 <mock-icon
-                                  aria-hidden="true"
-                                  classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+                                  aria-hidden=""
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
                                   focusable="false"
                                 />
                                 <span
@@ -654,8 +651,8 @@ exports[`ConfirmationView should display a confirmation with method call when th
                             type="button"
                           >
                             <mock-icon
-                              aria-hidden="true"
-                              classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                              aria-hidden=""
+                              class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                               data-testid="copy-btn-icon"
                               focusable="false"
                             />
