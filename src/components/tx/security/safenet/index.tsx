@@ -1,5 +1,4 @@
-import { Loop } from '@mui/icons-material'
-import { CircularProgress, Link, List, ListItem, ListItemText, Paper, SvgIcon, Typography } from '@mui/material'
+import { Button, CircularProgress, List, ListItem, ListItemText, Paper, SvgIcon, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import CheckIcon from '@/public/images/common/check.svg'
@@ -70,7 +69,7 @@ function _getSafeTxHash({ safe, chainId, safeTx }: Required<SafenetTxSimulationP
   })
 }
 
-const StatusIcon = ({ status }: { status: string }): ReactElement => {
+const StatusAction = ({ status, link }: { status: string; link?: string }): ReactElement => {
   if (status === 'success') {
     return (
       <div>
@@ -84,8 +83,12 @@ const StatusIcon = ({ status }: { status: string }): ReactElement => {
         <span className={css.labelSuccess}>No issues found</span>
       </div>
     )
-  } else if (status === 'pending') {
-    return <SvgIcon component={Loop} inheritViewBox fontSize="small" className={css.safenetCheckIcon} />
+  } else if (status === 'pending' && link) {
+    return (
+      <Button variant="outlined" size="small" href={link} sx={{ width: '100%', py: 0.5 }}>
+        Share verification link
+      </Button>
+    )
   } else {
     return (
       <div>
@@ -113,19 +116,8 @@ const SafenetTxTxSimulationSummary = ({ simulation }: { simulation: SafenetSimul
 
       <List>
         {guarantees.map(({ display, status, link }) => (
-          <ListItem key={display} secondaryAction={<StatusIcon status={status} />}>
-            <ListItemText>
-              <div>{display}</div>
-              {status === 'pending' && link && (
-                <div className={css.pending}>
-                  Share this{' '}
-                  <Link href={link} target="_blank">
-                    link
-                  </Link>{' '}
-                  to the recipient to confirm the transfer
-                </div>
-              )}
-            </ListItemText>
+          <ListItem key={display} secondaryAction={<StatusAction status={status} link={link} />}>
+            <ListItemText>{display}</ListItemText>
           </ListItem>
         ))}
       </List>
