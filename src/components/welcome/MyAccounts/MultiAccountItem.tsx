@@ -20,7 +20,6 @@ import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analyti
 import { AppRoutes } from '@/config/routes'
 import { useAppDispatch, useAppSelector } from '@/store'
 import css from './styles.module.css'
-import { selectAllAddressBooks } from '@/store/addressBookSlice'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
@@ -43,6 +42,8 @@ import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import { addOrUpdateSafe, pinSafe, selectAllAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
+import { getComparator } from './utils'
+import { selectOrderByPreference } from '@/store/orderByPreferenceSlice'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -81,6 +82,10 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const [expanded, setExpanded] = useState(isCurrentSafe)
   const chains = useAppSelector(selectChains)
+  const { orderBy } = useAppSelector(selectOrderByPreference)
+
+  const sortComparator = getComparator(orderBy)
+  const sortedSafes = useMemo(() => safes.sort(sortComparator), [safes, sortComparator])
 
   const allAddedSafes = useAppSelector((state) => selectAllAddedSafes(state))
   const dispatch = useAppDispatch()
@@ -98,11 +103,6 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     !expanded && trackEvent({ ...OVERVIEW_EVENTS.EXPAND_MULTI_SAFE, label: trackingLabel })
     setExpanded((prev) => !prev)
   }
-
-  const allAddressBooks = useAppSelector(selectAllAddressBooks)
-  const name = useMemo(() => {
-    return Object.values(allAddressBooks).find((ab) => ab[address] !== undefined)?.[address]
-  }, [address, allAddressBooks])
 
   const currency = useAppSelector(selectCurrency)
   const { address: walletAddress } = useWallet() ?? {}
@@ -197,9 +197,9 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
             </Box>
             <Typography variant="body2" component="div" className={css.safeAddress}>
-              {name && (
+              {multiSafeAccountItem.name && (
                 <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
-                  {name}
+                  {multiSafeAccountItem.name}
                 </Typography>
               )}
               <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
@@ -232,7 +232,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             />
           </IconButton>
           <MultiAccountContextMenu
-            name={name ?? ''}
+            name={multiSafeAccountItem.name ?? ''}
             address={address}
             chainIds={deployedChainIds}
             addNetwork={hasReplayableSafe}
@@ -240,7 +240,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
         </AccordionSummary>
         <AccordionDetails sx={{ padding: '0px 12px' }}>
           <Box>
-            {safes.map((safeItem) => (
+            {sortedSafes.map((safeItem) => (
               <SubAccountItem
                 onLinkClick={onLinkClick}
                 safeItem={safeItem}
@@ -254,7 +254,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               <Divider sx={{ ml: '-12px', mr: '-12px' }} />
               <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>
                 <AddNetworkButton
-                  currentName={name}
+                  currentName={multiSafeAccountItem.name ?? ''}
                   safeAddress={address}
                   deployedChains={safes.map((safe) => safe.chainId)}
                 />
