@@ -23,6 +23,7 @@ const exportSummary = '[data-testid="export-summary"]'
 const sendBtn = '[data-testid="send-btn"]'
 const nextPageBtn = 'button[aria-label="Go to next page"]'
 const previousPageBtn = 'button[aria-label="Go to previous page"]'
+export const entryDialog = '[data-testid="entry-dialog"]'
 
 //TODO Move to specific component
 const moreActionIcon = '[data-testid="MoreHorizIcon"]'
