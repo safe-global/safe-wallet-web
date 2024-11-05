@@ -33,8 +33,8 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
                   data-mui-internal-clone-element="true"
                 >
                   <mock-icon
-                    aria-hidden="true"
-                    classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
+                    aria-hidden=""
+                    class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
                     focusable="false"
                   />
                 </span>
@@ -98,8 +98,8 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
           class="icon sign"
         >
           <mock-icon
-            aria-hidden="true"
-            classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+            aria-hidden=""
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
             focusable="false"
           />
         </div>
@@ -142,8 +142,8 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
                   type="button"
                 >
                   <mock-icon
-                    aria-hidden="true"
-                    classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
+                    aria-hidden=""
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
                     focusable="false"
                   />
                   Add to batch
@@ -287,8 +287,8 @@ exports[`SignOrExecute should display an error screen 1`] = `
                   data-mui-internal-clone-element="true"
                 >
                   <mock-icon
-                    aria-hidden="true"
-                    classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
+                    aria-hidden=""
+                    class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
                     focusable="false"
                   />
                 </span>
@@ -394,8 +394,8 @@ exports[`SignOrExecute should display an error screen 1`] = `
                                 type="button"
                               >
                                 <mock-icon
-                                  aria-hidden="true"
-                                  classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                                  aria-hidden=""
+                                  class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                                   data-testid="copy-btn-icon"
                                   focusable="false"
                                 />
@@ -430,8 +430,8 @@ exports[`SignOrExecute should display an error screen 1`] = `
           class="icon sign"
         >
           <mock-icon
-            aria-hidden="true"
-            classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+            aria-hidden=""
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
             focusable="false"
           />
         </div>
@@ -474,8 +474,8 @@ exports[`SignOrExecute should display an error screen 1`] = `
                   type="button"
                 >
                   <mock-icon
-                    aria-hidden="true"
-                    classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
+                    aria-hidden=""
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
                     focusable="false"
                   />
                   Add to batch

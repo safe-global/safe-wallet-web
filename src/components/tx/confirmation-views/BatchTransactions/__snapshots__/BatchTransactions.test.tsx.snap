@@ -180,8 +180,8 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
                                   type="button"
                                 >
                                   <mock-icon
-                                    aria-hidden="true"
-                                    classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                                    aria-hidden=""
+                                    class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                                     data-testid="copy-btn-icon"
                                     focusable="false"
                                   />
@@ -198,15 +198,14 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
                                   class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1o2vr87-MuiButtonBase-root-MuiIconButton-root"
                                   data-mui-internal-clone-element="true"
                                   data-testid="explorer-btn"
-                                  href=""
                                   rel="noreferrer"
                                   tabindex="0"
                                   target="_blank"
                                   type="button"
                                 >
                                   <mock-icon
-                                    aria-hidden="true"
-                                    classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+                                    aria-hidden=""
+                                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
                                     focusable="false"
                                   />
                                   <span

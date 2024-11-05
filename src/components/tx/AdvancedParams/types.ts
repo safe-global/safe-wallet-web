@@ -10,8 +10,8 @@ export enum AdvancedField {
 export type AdvancedParameters = Partial<{
   [AdvancedField.nonce]: number
   [AdvancedField.userNonce]: number
-  [AdvancedField.gasLimit]: BigNumber
-  [AdvancedField.maxFeePerGas]: BigNumber
-  [AdvancedField.maxPriorityFeePerGas]: BigNumber
+  [AdvancedField.gasLimit]: bigint
+  [AdvancedField.maxFeePerGas]: bigint
+  [AdvancedField.maxPriorityFeePerGas]: bigint
   [AdvancedField.safeTxGas]: number
 }>

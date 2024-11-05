@@ -9,8 +9,8 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
       class="MuiTypography-root MuiTypography-body1 css-ya5m4n-MuiTypography-root"
     >
       <mock-icon
-        aria-hidden="true"
-        classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
+        aria-hidden=""
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
         focusable="false"
       />
       Previous signer
@@ -70,8 +70,8 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
               type="button"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                 data-testid="copy-btn-icon"
                 focusable="false"
               />
@@ -88,15 +88,14 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
               class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1o2vr87-MuiButtonBase-root-MuiIconButton-root"
               data-mui-internal-clone-element="true"
               data-testid="explorer-btn"
-              href=""
               rel="noreferrer"
               tabindex="0"
               target="_blank"
               type="button"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
                 focusable="false"
               />
               <span
@@ -115,8 +114,8 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
       class="MuiTypography-root MuiTypography-body1 css-1ab5q2h-MuiTypography-root"
     >
       <mock-icon
-        aria-hidden="true"
-        classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
+        aria-hidden=""
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
         focusable="false"
       />
       New signer
@@ -176,8 +175,8 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
               type="button"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                 data-testid="copy-btn-icon"
                 focusable="false"
               />
@@ -194,15 +193,14 @@ exports[`SettingsChange should display the SettingsChange component with newOwne
               class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1o2vr87-MuiButtonBase-root-MuiIconButton-root"
               data-mui-internal-clone-element="true"
               data-testid="explorer-btn"
-              href=""
               rel="noreferrer"
               tabindex="0"
               target="_blank"
               type="button"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
                 focusable="false"
               />
               <span
@@ -229,8 +227,8 @@ exports[`SettingsChange should display the SettingsChange component with owner d
       class="MuiTypography-root MuiTypography-body1 css-1ab5q2h-MuiTypography-root"
     >
       <mock-icon
-        aria-hidden="true"
-        classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
+        aria-hidden=""
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
         focusable="false"
       />
       New signer
@@ -290,8 +288,8 @@ exports[`SettingsChange should display the SettingsChange component with owner d
               type="button"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
                 data-testid="copy-btn-icon"
                 focusable="false"
               />
@@ -308,15 +306,14 @@ exports[`SettingsChange should display the SettingsChange component with owner d
               class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1o2vr87-MuiButtonBase-root-MuiIconButton-root"
               data-mui-internal-clone-element="true"
               data-testid="explorer-btn"
-              href=""
               rel="noreferrer"
               tabindex="0"
               target="_blank"
               type="button"
             >
               <mock-icon
-                aria-hidden="true"
-                classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+                aria-hidden=""
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
                 focusable="false"
               />
               <span

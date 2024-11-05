@@ -37,8 +37,8 @@ exports[`HexEncodedData should not cut the text in case the limit option is high
             type="button"
           >
             <mock-icon
-              aria-hidden="true"
-              classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+              aria-hidden=""
+              class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
               data-testid="copy-btn-icon"
               focusable="false"
             />
@@ -99,8 +99,8 @@ exports[`HexEncodedData should not highlight the data if highlight option is fal
             type="button"
           >
             <mock-icon
-              aria-hidden="true"
-              classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+              aria-hidden=""
+              class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
               data-testid="copy-btn-icon"
               focusable="false"
             />
@@ -162,8 +162,8 @@ exports[`HexEncodedData should render the default component markup 1`] = `
             type="button"
           >
             <mock-icon
-              aria-hidden="true"
-              classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+              aria-hidden=""
+              class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
               data-testid="copy-btn-icon"
               focusable="false"
             />
