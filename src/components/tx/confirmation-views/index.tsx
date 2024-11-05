@@ -12,6 +12,7 @@ import ChangeThreshold from './ChangeThreshold'
 import BatchTransactions from './BatchTransactions'
 import { TxModalContext } from '@/components/tx-flow'
 import { isSettingsChangeView, isChangeThresholdView, isConfirmBatchView } from './utils'
+import { type ReactElement } from 'react'
 
 type ConfirmationViewProps = {
   txDetails?: TransactionDetails
@@ -28,7 +29,7 @@ const getConfirmationViewComponent = ({
   txDetails,
   txInfo,
   txFlow,
-}: NarrowConfirmationViewProps & { txFlow?: JSX.Element }) => {
+}: NarrowConfirmationViewProps & { txFlow?: ReactElement }) => {
   if (isChangeThresholdView(txInfo)) return <ChangeThreshold />
 
   if (isConfirmBatchView(txFlow)) return <BatchTransactions />

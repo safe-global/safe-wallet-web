@@ -7,7 +7,7 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import ReviewSignMessageOnChain from '@/components/tx-flow/flows/SignMessageOnChain/ReviewSignMessageOnChain'
 import { JsonRpcProvider, zeroPadValue } from 'ethers'
-import { act } from '@testing-library/react'
+import { act } from 'react'
 import type { SafeTxContextParams } from '../../SafeTxProvider'
 import { SafeTxContext } from '../../SafeTxProvider'
 import { createSafeTx } from '@/tests/builders/safeTx'

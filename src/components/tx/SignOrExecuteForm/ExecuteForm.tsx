@@ -77,7 +77,10 @@ export const ExecuteForm = ({
   const [advancedParams, setAdvancedParams] = useAdvancedParams(gasLimit)
 
   // Check if transaction will fail
-  const { executionValidationError } = useIsValidExecution(safeTx, advancedParams.gasLimit)
+  const { executionValidationError } = useIsValidExecution(
+    safeTx,
+    advancedParams.gasLimit ? advancedParams.gasLimit : undefined,
+  )
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {

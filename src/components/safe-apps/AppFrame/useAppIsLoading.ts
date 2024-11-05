@@ -16,7 +16,7 @@ const useAppIsLoading = (): UseAppIsLoadingReturnType => {
   const [isLoadingSlow, setIsLoadingSlow] = useState<boolean>(false)
   const [, setAppLoadError] = useState<boolean>(false)
 
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const timer = useRef<number>(0)
   const errorTimer = useRef<number>(0)
 
