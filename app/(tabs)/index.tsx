@@ -1,27 +1,31 @@
-import { StyleSheet } from 'react-native'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { StyleSheet, View } from 'react-native'
 
-import TxHistory from '@/src/features/TxHistory'
-
+import ParallaxScrollView from '@/src/components/ParallaxScrollView'
 import { Text } from 'tamagui'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
   return (
-    <SafeAreaView style={styles.content}>
-      <Text testID="welcome-title" paddingHorizontal={20}>
-        Transactions History
-      </Text>
-
-      <TxHistory />
-    </SafeAreaView>
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}
+    >
+      <View style={styles.titleContainer}>
+        <Text testID="explore-title">HomeScreen</Text>
+      </View>
+    </ParallaxScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    flexDirection: 'column',
-    width: '100%',
-    rowGap: 20,
+  headerImage: {
+    color: '#808080',
+    bottom: -90,
+    left: -35,
+    position: 'absolute',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    gap: 8,
   },
 })

@@ -63,7 +63,12 @@ export const config = createTamagui({
       backgroundStrong: tokens.color.primaryDarkLight,
       backgroundTransparent: 'transparent',
       color: tokens.color.textPrimaryLight,
+      primary: tokens.color.primaryMainLight,
+      primaryLight: tokens.color.primaryLightLight,
       colorHover: tokens.color.textSecondaryLight,
+      borderLight: tokens.color.borderLightLight,
+      error: tokens.color.errorMainLight,
+      errorDark: tokens.color.errorDarkDark,
     },
     light_pendingTx: {
       background: tokens.color.warning1MainLight,
@@ -105,11 +110,20 @@ export const config = createTamagui({
       background: tokens.color.error1MainDark,
       color: tokens.color.error1ContrastTextDark,
     },
+    logo: {
+      background: '#FFF',
+    },
     light_container: {
       background: tokens.color.backgroundPaperLight,
     },
     dark_container: {
       background: tokens.color.backgroundPaperDark,
+    },
+    light_safe_list: {
+      background: tokens.color.backgroundDefaultLight,
+    },
+    dark_safe_list: {
+      background: tokens.color.backgroundDefaultDark,
     },
     dark: {
       background: tokens.color.backgroundPaperDark,
@@ -119,6 +133,11 @@ export const config = createTamagui({
       backgroundStrong: tokens.color.primaryDarkDark,
       backgroundTransparent: 'transparent',
       color: tokens.color.textPrimaryDark,
+      primary: tokens.color.primaryMainDark,
+      primaryLight: tokens.color.primaryLightDark,
+      borderLight: tokens.color.borderLightDark,
+      error: tokens.color.errorMainDark,
+      errorDark: tokens.color.errorDarkDark,
     },
   },
   tokens,

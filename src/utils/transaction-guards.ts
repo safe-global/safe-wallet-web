@@ -1,14 +1,21 @@
 import {
   Cancellation,
+  ConflictHeader,
+  ConflictType,
   Creation,
   Custom,
   DateLabel,
   DetailedExecutionInfo,
+  Erc20Transfer,
+  Erc721Transfer,
   ExecutionInfo,
   Label,
   ModuleExecutionInfo,
   MultiSend,
   MultisigExecutionInfo,
+  NativeCoinTransfer,
+  Order,
+  SettingsChange,
   SwapOrder,
   Transaction,
   TransactionInfo,
@@ -16,8 +23,11 @@ import {
   TransactionListItem,
   TransactionListItemType,
   TransactionStatus,
+  TransactionTokenType,
   Transfer,
   TransferDirection,
+  TransferInfo,
+  TwapOrder,
 } from '@safe-global/safe-gateway-typescript-sdk'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
@@ -28,6 +38,9 @@ export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
   return value.type === TransactionInfoType.TRANSFER || isSwapTransferOrderTxInfo(value)
 }
 
+export const isSettingsChangeTxInfo = (value: TransactionInfo): value is SettingsChange => {
+  return value.type === TransactionInfoType.SETTINGS_CHANGE
+}
 /**
  * A fulfillment transaction for swap, limit or twap order is always a SwapOrder
  * It cannot be a TWAP order
@@ -53,12 +66,28 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
     typeof value.actionCount === 'number'
   )
 }
+
+export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
+  return isSwapOrderTxInfo(value) || isTwapOrderTxInfo(value)
+}
+
+export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder => {
+  return value.type === TransactionInfoType.TWAP_ORDER
+}
 export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
   return isCustomTxInfo(value) && value.isCancellation
 }
 
 export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
   return value.type === TransactionListItemType.TRANSACTION
+}
+
+export const isConflictHeaderListItem = (value: TransactionListItem): value is ConflictHeader => {
+  return value.type === TransactionListItemType.CONFLICT_HEADER
+}
+
+export const isNoneConflictType = (transaction: Transaction) => {
+  return transaction.conflictType === ConflictType.NONE
 }
 
 export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
@@ -84,4 +113,16 @@ export const isModuleExecutionInfo = (value?: ExecutionInfo | DetailedExecutionI
 
 export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
   return value.type === TransactionInfoType.SWAP_ORDER
+}
+
+export const isNativeTokenTransfer = (value: TransferInfo): value is NativeCoinTransfer => {
+  return value.type === TransactionTokenType.NATIVE_COIN
+}
+
+export const isERC20Transfer = (value: TransferInfo): value is Erc20Transfer => {
+  return value.type === TransactionTokenType.ERC20
+}
+
+export const isERC721Transfer = (value: TransferInfo): value is Erc721Transfer => {
+  return value.type === TransactionTokenType.ERC721
 }

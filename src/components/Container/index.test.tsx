@@ -20,16 +20,6 @@ describe('Container', () => {
       </Container>,
     )
     const container = getByTestId('container')
-    expect(container.props.style).toMatchObject({
-      borderBottomLeftRadius: 5,
-      borderBottomRightRadius: 5,
-      borderTopLeftRadius: 5,
-      borderTopRightRadius: 5,
-      flexDirection: 'column',
-      paddingBottom: 4,
-      paddingLeft: 16,
-      paddingRight: 16,
-      paddingTop: 4,
-    })
+    expect(container.props.style).toMatchSnapshot()
   })
 })

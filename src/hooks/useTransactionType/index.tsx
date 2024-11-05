@@ -15,6 +15,7 @@ import {
   isOutgoingTransfer,
   isTxQueued,
 } from '@/src/utils/transaction-guards'
+import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 
 const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
   switch (txInfo.type) {
@@ -32,9 +33,10 @@ const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | un
     }
   }
 }
-
 interface TxType {
   text: string
+  icon?: string | React.ReactElement
+  image: string | React.ReactElement
 }
 
 export const getOrderClass = (order: Pick<SwapOrder, 'fullAppData'>): latest.OrderClass1 => {
@@ -50,14 +52,22 @@ export const getTransactionType = (tx: TransactionSummary): TxType => {
   switch (tx.txInfo.type) {
     case TransactionInfoType.CREATION: {
       return {
+        image: toAddress?.logoUri || <SafeFontIcon name={'settings'} />,
+        icon: toAddress?.logoUri || <SafeFontIcon name={'settings'} />,
         text: 'Safe Account created',
       }
     }
     case TransactionInfoType.SWAP_TRANSFER:
     case TransactionInfoType.TRANSFER: {
       const isSendTx = isOutgoingTransfer(tx.txInfo)
-
+      const icon = isSendTx ? (
+        <SafeFontIcon name={'transaction-outgoing'} />
+      ) : (
+        <SafeFontIcon name={'transaction-incoming'} />
+      )
       return {
+        icon,
+        image: 'https://safe-transaction-assets.safe.global/chains/1/currency_logo.png',
         text: isSendTx ? (isTxQueued(tx.txStatus) ? 'Send' : 'Sent') : 'Received',
       }
     }
@@ -67,53 +77,72 @@ export const getTransactionType = (tx: TransactionSummary): TxType => {
       const isDeleteGuard = tx.txInfo.settingsInfo?.type === SettingsInfoType.DELETE_GUARD
 
       return {
+        image: <SafeFontIcon name={'settings'} />,
+        icon: <SafeFontIcon name={'settings'} />,
         text: isDeleteGuard ? 'deleteGuard' : tx.txInfo.dataDecoded.method,
       }
     }
+
     case TransactionInfoType.SWAP_ORDER: {
       const orderClass = getOrderClass(tx.txInfo)
       const altText = orderClass === 'limit' ? 'Limit order' : 'Swap order'
 
       return {
+        image: <SafeFontIcon name={'transaction-swap'} />,
+        icon: <SafeFontIcon name={'transaction-swap'} />,
         text: altText,
       }
     }
     case TransactionInfoType.TWAP_ORDER: {
       return {
+        image: <SafeFontIcon name={'transaction-swap'} />,
+        icon: <SafeFontIcon name={'transaction-swap'} />,
         text: 'TWAP order',
       }
     }
     case TransactionInfoType.CUSTOM: {
       if (isMultiSendTxInfo(tx.txInfo) && !tx.safeAppInfo) {
         return {
+          image: <SafeFontIcon name={'safe'} />,
+          icon: <SafeFontIcon name={'transaction-Batch'} />,
           text: 'Batch',
         }
       }
 
       if (isModuleExecutionInfo(tx.executionInfo)) {
         return {
+          image: toAddress?.logoUri || <SafeFontIcon name={'transaction-contract'} />,
+          icon: <SafeFontIcon name={'transaction-contract'} />,
           text: toAddress?.name || 'Contract interaction',
         }
       }
 
       if (isCancellationTxInfo(tx.txInfo)) {
         return {
+          image: <SafeFontIcon name={'close'} />,
+          icon: <SafeFontIcon name={'close'} />,
           text: 'On-chain rejection',
         }
       }
 
       return {
+        image: toAddress?.logoUri || <SafeFontIcon name={'transaction-contract'} />,
+        icon: <SafeFontIcon name={'transaction-contract'} />,
         text: toAddress?.name || 'Contract interaction',
       }
     }
     default: {
       if (tx.safeAppInfo) {
         return {
+          image: tx.safeAppInfo.logoUri,
+          icon: <SafeFontIcon name={'safe'} />,
           text: tx.safeAppInfo.name,
         }
       }
 
       return {
+        icon: <SafeFontIcon name={'transaction-contract'} />,
+        image: <SafeFontIcon name={'transaction-contract'} />,
         text: 'Contract interaction',
       }
     }
@@ -121,6 +150,7 @@ export const getTransactionType = (tx: TransactionSummary): TxType => {
 }
 
 // We're going to need the address book in the future
+// rename it to useTransactionNormalizer
 export const useTransactionType = (tx: TransactionSummary): TxType => {
   // addressBook = useAddressBook
 

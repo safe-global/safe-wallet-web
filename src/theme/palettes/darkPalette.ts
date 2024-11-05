@@ -21,7 +21,7 @@ const darkPalette = {
     background: '#121312',
   },
   error: {
-    dark: '#AC2C3B',
+    dark: '#411C20',
     main: '#FF5F72',
     light: '#FFB4BD',
     background: '#2F2527',
