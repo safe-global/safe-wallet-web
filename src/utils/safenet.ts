@@ -34,10 +34,7 @@ const convertSafenetBalanceToSafeClientGatewayBalance = (
     })
   }
 
-  return {
-    ...balances,
-    fiatTotal: balances.items.reduce((acc, item) => acc + parseFloat(item.fiatBalance), 0).toString(),
-  }
+  return balances
 }
 
 export { convertSafenetBalanceToSafeClientGatewayBalance }
