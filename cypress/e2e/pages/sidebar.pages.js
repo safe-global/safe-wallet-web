@@ -5,6 +5,7 @@ import * as navigation from './navigation.page.js'
 import { safeHeaderInfo } from './import_export.pages.js'
 import * as file from './import_export.pages.js'
 import safes from '../../fixtures/safes/static.json'
+import * as address_book from './address_book.page.js'
 
 export const chainLogo = '[data-testid="chain-logo"]'
 const safeIcon = '[data-testid="safe-icon"]'
@@ -20,8 +21,9 @@ const sideSafeListItem = '[data-testid="safe-list-item"]'
 const sidebarSafeHeader = '[data-testid="safe-header-info"]'
 const sidebarSafeContainer = '[data-testid="sidebar-safe-container"]'
 const safeItemOptionsBtn = '[data-testid="safe-options-btn"]'
-const safeItemOptionsRenameBtn = '[data-testid="rename-btn"]'
+export const safeItemOptionsRenameBtn = '[data-testid="rename-btn"]'
 const safeItemOptionsRemoveBtn = '[data-testid="remove-btn"]'
+export const safeItemOptionsAddChainBtn = '[data-testid="add-chain-btn"]'
 const nameInput = '[data-testid="name-input"]'
 const saveBtn = '[data-testid="save-btn"]'
 const cancelBtn = '[data-testid="cancel-btn"]'
@@ -34,6 +36,14 @@ const showMoreBtn = '[data-testid="show-more-btn" ]'
 const importBtn = '[data-testid="import-btn"]'
 export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
+const multichainItemSummary = '[data-testid="multichain-item-summary"]'
+const addChainDialog = "[data-testid='add-chain-dialog']"
+export const addNetworkBtn = "[data-testid='add-network-btn']"
+const subAccountContainer = '[data-testid="subacounts-container"]'
+const groupBalance = '[data-testid="group-balance"]'
+const groupAddress = '[data-testid="group-address"]'
+const groupSafeIcon = '[data-testid="group-safe-icon"]'
+const multichainTooltip = '[data-testid="multichain-tooltip"]'
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
 
@@ -59,6 +69,11 @@ const myAccountsStr = 'My accounts'
 const confirmTxStr = (number) => `${number} to confirm`
 const pedningTxStr = (n) => `${n} pending transaction`
 export const confirmGenStr = 'to confirm'
+
+export const multichainSafes = {
+  polygon: 'Multichain polygon',
+  sepolia: 'Multichain Sepolia',
+}
 
 export function verifyNumberOfPendingTxTag(tx) {
   cy.contains(pedningTxStr(tx))
@@ -206,8 +221,68 @@ export function verifyQueuedTx(safe) {
   return getSafeItemByName(safe).find(queuedTxInfo).should('exist')
 }
 
-function clickOnSafeItemOptionsBtn(name) {
+export function clickOnSafeItemOptionsBtn(name) {
   getSafeItemByName(name).find(safeItemOptionsBtn).click()
+}
+
+export function clickOnSafeItemOptionsBtnByIndex(index) {
+  cy.get(safeItemOptionsBtn).eq(index).click()
+}
+
+export function clickOnMultichainItemOptionsBtn(index) {
+  cy.get(multichainItemSummary).eq(index).find(safeItemOptionsBtn).click()
+}
+
+export function checkMultichainTooltipExists(index) {
+  cy.get(multichainItemSummary).eq(index).find(chainLogo).eq(0).trigger('mouseover', { force: true })
+
+  cy.get(multichainTooltip).should('exist')
+}
+
+export function checkSafeGroupBalance(index, balance) {
+  cy.get(multichainItemSummary)
+    .eq(index)
+    .find(groupBalance)
+    .invoke('text')
+    .then((text) => {
+      expect(text).to.include(balance)
+    })
+}
+
+export function checkSafeGroupAddress(index, address) {
+  cy.get(multichainItemSummary)
+    .eq(index)
+    .find(groupAddress)
+    .invoke('text')
+    .then((text) => {
+      expect(text).to.include(address)
+    })
+}
+export function checkSafeGroupIconsExist(index, icons) {
+  cy.get(multichainItemSummary).eq(index).find(groupSafeIcon).should('have.length', 1)
+  cy.get(multichainItemSummary).eq(index).find(safeIcon).should('have.length', icons)
+}
+
+export function getSubAccountContainer(index) {
+  return cy.get(subAccountContainer).eq(index)
+}
+
+export function checkThereIsNoOptionsMenu(index) {
+  getSubAccountContainer(index).find(safeItemOptionsBtn).should('not.exist')
+}
+
+export function checkAddNetworkBtnPosition(index) {
+  cy.get(multichainItemSummary)
+    .eq(index)
+    .should('exist')
+    .within(() => {
+      cy.get(addNetworkBtn)
+        .should('exist')
+        .should('be.visible')
+        .then(($btn) => {
+          expect($btn.parent().children().last()[0]).to.equal($btn[0])
+        })
+    })
 }
 
 export function renameSafeItem(oldName, newName) {
@@ -227,8 +302,9 @@ function typeSafeName(name) {
   cy.get(nameInput).find('input').clear().type(name)
 }
 
-function clickOnRenameBtn() {
+export function clickOnRenameBtn() {
   cy.get(safeItemOptionsRenameBtn).click()
+  cy.get(address_book.entryDialog).should('exist')
 }
 
 function clickOnRemoveBtn() {
@@ -297,4 +373,9 @@ export function verifyTxToConfirmDoesNotExist() {
 export function checkBalanceExists() {
   const balance = new RegExp(`\\s*\\d*\\.?\\d*\\s*`, 'i')
   const element = cy.get(chainLogo).prev().contains(balance)
+}
+
+export function checkAddChainDialogDisplayed() {
+  cy.get(safeItemOptionsAddChainBtn).click()
+  cy.get(addChainDialog).should('be.visible')
 }
