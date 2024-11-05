@@ -12,7 +12,10 @@ import { useMemo } from 'react'
 import { skipToken } from '@reduxjs/toolkit/query'
 import ExternalLink from '@/components/common/ExternalLink'
 import { NestedTransaction } from '../NestedTransaction'
-import DecodedTx from '@/components/tx/DecodedTx'
+import TxData from '../..'
+import { isMultiSendTxInfo, isOrderTxInfo } from '@/utils/transaction-guards'
+import { ErrorBoundary } from '@sentry/react'
+import Multisend from '../../DecodedData/Multisend'
 
 const safeInterface = Safe__factory.createInterface()
 
@@ -41,13 +44,13 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
     <NestedTransaction txData={data}>
       {nestedTxDetails ? (
         <>
-          <DecodedTx
-            showAdvancedDetails={false}
-            txDetails={nestedTxDetails}
-            decodedData={nestedTxDetails.txData?.dataDecoded}
-            txId={signedHash}
-            showMethodCall
-          />
+          <TxData txDetails={nestedTxDetails} trusted imitation={false} />
+
+          {(isMultiSendTxInfo(nestedTxDetails.txInfo) || isOrderTxInfo(nestedTxDetails.txInfo)) && (
+            <ErrorBoundary fallback={<div>Error parsing data</div>}>
+              <Multisend txData={nestedTxDetails.txData} />
+            </ErrorBoundary>
+          )}
 
           {chain && data && (
             <Link
