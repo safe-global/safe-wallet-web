@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react'
+import { memo, type ReactElement, useMemo, useState } from 'react'
 import { alpha, Box } from '@mui/system'
 import { Grid, LinearProgress } from '@mui/material'
 
@@ -31,7 +31,7 @@ const SafeAppsInfoModal = ({
   isPermissionsReviewCompleted,
   isSafeAppInDefaultList,
   isFirstTimeAccessingApp,
-}: SafeAppsInfoModalProps): JSX.Element => {
+}: SafeAppsInfoModalProps): ReactElement => {
   const [hideWarning, setHideWarning] = useState(false)
   const [selectedFeatures, setSelectedFeatures] = useState<AllowedFeatureSelection[]>(
     features.map((feature) => {
