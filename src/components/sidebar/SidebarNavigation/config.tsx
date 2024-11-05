@@ -21,54 +21,58 @@ export type NavItem = {
   disabled?: boolean
 }
 
-export const navItems: NavItem[] = [
-  {
-    label: 'Home',
-    icon: <SvgIcon component={HomeIcon} inheritViewBox />,
-    href: AppRoutes.home,
-  },
-  {
-    label: 'Assets',
-    icon: <SvgIcon component={AssetsIcon} inheritViewBox />,
-    href: AppRoutes.balances.index,
-  },
-  {
-    label: 'Bridge',
-    icon: <SvgIcon component={BridgeIcon} inheritViewBox />,
-    href: AppRoutes.bridge,
-  },
-  {
-    label: 'Swap',
-    icon: <SvgIcon component={SwapIcon} inheritViewBox />,
-    href: AppRoutes.swap,
-  },
-  {
-    label: 'Stake',
-    icon: <SvgIcon component={StakeIcon} inheritViewBox />,
-    href: AppRoutes.stake,
-    tag: <Chip label="New" sx={{ backgroundColor: 'secondary.light', color: 'static.main' }} />,
-  },
-  {
-    label: 'Transactions',
-    icon: <SvgIcon component={TransactionIcon} inheritViewBox />,
-    href: AppRoutes.transactions.history,
-  },
-  {
-    label: 'Address book',
-    icon: <SvgIcon component={ABIcon} inheritViewBox />,
-    href: AppRoutes.addressBook,
-  },
-  {
-    label: 'Apps',
-    icon: <SvgIcon component={AppsIcon} inheritViewBox />,
-    href: AppRoutes.apps.index,
-  },
-  {
-    label: 'Settings',
-    icon: <SvgIcon data-testid="settings-nav-icon" component={SettingsIcon} inheritViewBox />,
-    href: AppRoutes.settings.setup,
-  },
-]
+export const navItems = (isBridgeEnabled: boolean): NavItem[] => {
+  const chip = <Chip label="New" sx={{ backgroundColor: 'secondary.light', color: 'static.main' }} />
+  return [
+    {
+      label: 'Home',
+      icon: <SvgIcon component={HomeIcon} inheritViewBox />,
+      href: AppRoutes.home,
+    },
+    {
+      label: 'Assets',
+      icon: <SvgIcon component={AssetsIcon} inheritViewBox />,
+      href: AppRoutes.balances.index,
+    },
+    {
+      label: 'Bridge',
+      icon: <SvgIcon component={BridgeIcon} inheritViewBox />,
+      href: AppRoutes.bridge,
+      tag: !isBridgeEnabled ? undefined : chip,
+    },
+    {
+      label: 'Swap',
+      icon: <SvgIcon component={SwapIcon} inheritViewBox />,
+      href: AppRoutes.swap,
+    },
+    {
+      label: 'Stake',
+      icon: <SvgIcon component={StakeIcon} inheritViewBox />,
+      href: AppRoutes.stake,
+      tag: !isBridgeEnabled ? chip : undefined,
+    },
+    {
+      label: 'Transactions',
+      icon: <SvgIcon component={TransactionIcon} inheritViewBox />,
+      href: AppRoutes.transactions.history,
+    },
+    {
+      label: 'Address book',
+      icon: <SvgIcon component={ABIcon} inheritViewBox />,
+      href: AppRoutes.addressBook,
+    },
+    {
+      label: 'Apps',
+      icon: <SvgIcon component={AppsIcon} inheritViewBox />,
+      href: AppRoutes.apps.index,
+    },
+    {
+      label: 'Settings',
+      icon: <SvgIcon data-testid="settings-nav-icon" component={SettingsIcon} inheritViewBox />,
+      href: AppRoutes.settings.setup,
+    },
+  ]
+}
 
 export const transactionNavItems = [
   {
