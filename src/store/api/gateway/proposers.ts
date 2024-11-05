@@ -25,18 +25,23 @@ export const proposerEndpoints = (
     }
   >({
     queryFn({ chainId, safeAddress, delegateAddress, delegator, signature, isHardwareWallet }) {
-      const options = { params: { path: { chainId, delegateAddress } }, body: { safe: safeAddress, signature } }
+      const options = {
+        params: { path: { chainId, delegateAddress } },
+        body: { safe: safeAddress, signature, delegator },
+      }
       return buildQueryFn(() =>
         isHardwareWallet
-          ? deleteDelegate({ params: options.params, body: { ...options.body, delegate: delegateAddress, delegator } })
+          ? deleteDelegate({ params: options.params, body: { ...options.body, delegate: delegateAddress } })
           : deleteDelegateV2(options),
       )
     },
     // Optimistically update the cache and roll back in case the mutation fails
-    async onQueryStarted({ chainId, safeAddress, delegateAddress }, { dispatch, queryFulfilled }) {
+    async onQueryStarted({ chainId, safeAddress, delegateAddress, delegator }, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
         gatewayApi.util.updateQueryData('getProposers', { chainId, safeAddress }, (draft) => {
-          draft.results = draft.results.filter((delegate: Delegate) => delegate.delegate !== delegateAddress)
+          draft.results = draft.results.filter(
+            (delegate: Delegate) => delegate.delegate !== delegateAddress || delegate.delegator !== delegator,
+          )
         }),
       )
       try {
@@ -70,7 +75,9 @@ export const proposerEndpoints = (
     async onQueryStarted({ chainId, safeAddress, delegate, delegator, label }, { dispatch, queryFulfilled }) {
       const patchResult = dispatch(
         gatewayApi.util.updateQueryData('getProposers', { chainId, safeAddress }, (draft) => {
-          const existingProposer = draft.results.findIndex((proposer: Delegate) => proposer.delegate === delegate)
+          const existingProposer = draft.results.findIndex(
+            (proposer: Delegate) => proposer.delegate === delegate && delegator === proposer.delegator,
+          )
 
           if (existingProposer !== -1) {
             // Update the existing delegate's label

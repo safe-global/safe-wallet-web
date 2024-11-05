@@ -15,6 +15,21 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { HelpCenterArticle } from '@/config/constants'
 import React, { useMemo, useState } from 'react'
 
+const headCells = [
+  {
+    id: 'proposer',
+    label: 'Proposer',
+  },
+  {
+    id: 'creator',
+    label: 'Creator',
+  },
+  {
+    id: 'Actions',
+    label: '',
+  },
+]
+
 const ProposersList = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>()
   const proposers = useProposers()
@@ -33,9 +48,14 @@ const ProposersList = () => {
                 showCopyButton
                 hasExplorer
                 name={proposer.label || undefined}
-                shortAddress={false}
+                shortAddress
               />
             ),
+          },
+
+          creator: {
+            rawValue: proposer.delegator,
+            content: <EthHashInfo address={proposer.delegator} showCopyButton hasExplorer shortAddress />,
           },
           actions: {
             rawValue: '',
@@ -94,7 +114,7 @@ const ProposersList = () => {
               </CheckWallet>
             </Box>
 
-            {rows.length > 0 && <EnhancedTable rows={rows} headCells={[]} />}
+            {rows.length > 0 && <EnhancedTable rows={rows} headCells={headCells} />}
           </Grid>
 
           {isAddDialogOpen && (
