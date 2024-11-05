@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-import { _getAppData } from '@/features/bridge/BridgeWidget'
+import { _getAppData } from '@/features/bridge/components/BridgeWidget'
 import { chainBuilder } from '@/tests/builders/chains'
 import { FEATURES } from '@/utils/chains'
 

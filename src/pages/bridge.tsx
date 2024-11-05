@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import type { NextPage } from 'next'
 
-import { Bridge } from '@/features/bridge/Bridge'
+import { Bridge } from '@/features/bridge/components/Bridge'
 
 const BridgePage: NextPage = () => {
   return (

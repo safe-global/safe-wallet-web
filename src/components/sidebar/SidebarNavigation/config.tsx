@@ -12,7 +12,6 @@ import SwapIcon from '@/public/images/common/swap.svg'
 import StakeIcon from '@/public/images/common/stake.svg'
 import { SvgIcon } from '@mui/material'
 import { Chip } from '@/components/common/Chip'
-import { FEATURES } from '@/utils/chains'
 
 export type NavItem = {
   label: string
@@ -22,7 +21,7 @@ export type NavItem = {
   disabled?: boolean
 }
 
-export const navItems = (features: Array<FEATURES>): NavItem[] => [
+export const navItems: NavItem[] = [
   {
     label: 'Home',
     icon: <SvgIcon component={HomeIcon} inheritViewBox />,
@@ -33,16 +32,13 @@ export const navItems = (features: Array<FEATURES>): NavItem[] => [
     icon: <SvgIcon component={AssetsIcon} inheritViewBox />,
     href: AppRoutes.balances.index,
   },
-  ...(features.includes(FEATURES.BRIDGE)
-    ? [
-        {
-          label: 'Bridge',
-          icon: <SvgIcon component={BridgeIcon} inheritViewBox />,
-          href: AppRoutes.bridge,
-          tag: <Chip label="New" sx={{ backgroundColor: 'secondary.light', color: 'static.main' }} />,
-        },
-      ]
-    : []),
+  {
+    label: 'Bridge',
+    icon: <SvgIcon component={BridgeIcon} inheritViewBox />,
+    href: AppRoutes.bridge,
+    tag: <Chip label="New" sx={{ backgroundColor: 'secondary.light', color: 'static.main' }} />,
+  },
+
   {
     label: 'Swap',
     icon: <SvgIcon component={SwapIcon} inheritViewBox />,

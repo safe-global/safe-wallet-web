@@ -8,9 +8,12 @@ import { DisclaimerWrapper } from '@/components/wrappers/DisclaimerWrapper'
 
 const LOCAL_STORAGE_CONSENT_KEY = 'bridgeConsent'
 
-const BridgeWidget = dynamic(() => import('@/features/bridge/BridgeWidget').then((module) => module.BridgeWidget), {
-  ssr: false,
-})
+const BridgeWidget = dynamic(
+  () => import('@/features/bridge/components/BridgeWidget').then((module) => module.BridgeWidget),
+  {
+    ssr: false,
+  },
+)
 
 export function Bridge() {
   return (

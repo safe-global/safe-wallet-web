@@ -15,7 +15,6 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
 import { useQueuedTxsLength } from '@/hooks/useTxQueue'
 import { useCurrentChain } from '@/hooks/useChains'
-import type { FEATURES } from '@/utils/chains'
 import { isRouteEnabled } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
@@ -27,9 +26,9 @@ const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
 }
 
-const geoBlockedRoutes = [AppRoutes.swap, AppRoutes.stake]
+const geoBlockedRoutes = [AppRoutes.bridge, AppRoutes.swap, AppRoutes.stake]
 
-const undeployedSafeBlockedRoutes = [AppRoutes.swap, AppRoutes.stake, AppRoutes.apps.index]
+const undeployedSafeBlockedRoutes = [AppRoutes.bridge, AppRoutes.swap, AppRoutes.stake, AppRoutes.apps.index]
 
 const customSidebarEvents: { [key: string]: { event: any; label: string } } = {
   [AppRoutes.swap]: { event: SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar },
@@ -45,8 +44,7 @@ const Navigation = (): ReactElement => {
   const isBlockedCountry = useContext(GeoblockingContext)
 
   const visibleNavItems = useMemo(() => {
-    const features = (chain?.features ?? []) as unknown as Array<FEATURES>
-    return navItems(features).filter((item) => {
+    return navItems.filter((item) => {
       if (isBlockedCountry && geoBlockedRoutes.includes(item.href)) {
         return false
       }
