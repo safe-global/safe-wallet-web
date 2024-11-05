@@ -1,5 +1,6 @@
 import CheckWallet from '@/components/common/CheckWallet'
 import Track from '@/components/common/Track'
+import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import { getDelegateTypedData } from '@/features/proposers/utils/utils'
 import useWallet from '@/hooks/wallets/useWallet'
 import DeleteIcon from '@/public/images/common/delete.svg'
@@ -92,6 +93,8 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
   const onCancel = () => {
     trackEvent(SETTINGS_EVENTS.PROPOSERS.CANCEL_REMOVE_PROPOSER)
     setOpen(false)
+    setIsLoading(false)
+    setError(undefined)
   }
 
   const canDelete = wallet?.address === proposer.delegate || wallet?.address === proposer.delegator
@@ -144,7 +147,7 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
         <Divider />
 
         <DialogContent>
-          <Box>
+          <Box mb={2}>
             <Typography>
               Deleting this proposer will permanently remove the address, and it won&apos;t be able to suggest
               transactions anymore.
@@ -159,6 +162,8 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
               <ErrorMessage error={error}>Error deleting proposer</ErrorMessage>
             </Box>
           )}
+
+          <NetworkWarning action="sign" />
         </DialogContent>
 
         <Divider />
@@ -168,18 +173,22 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
             No, keep it
           </Button>
 
-          <Button
-            size="small"
-            variant="danger"
-            onClick={onConfirm}
-            disabled={isLoading || !canDelete}
-            sx={{
-              minWidth: '122px',
-              minHeight: '36px',
-            }}
-          >
-            {isLoading ? <CircularProgress size={20} /> : 'Yes, delete'}
-          </Button>
+          <CheckWallet checkNetwork={!isLoading}>
+            {(isOk) => (
+              <Button
+                size="small"
+                variant="danger"
+                onClick={onConfirm}
+                disabled={!isOk || isLoading || !canDelete}
+                sx={{
+                  minWidth: '122px',
+                  minHeight: '36px',
+                }}
+              >
+                {isLoading ? <CircularProgress size={20} /> : 'Yes, delete'}
+              </Button>
+            )}
+          </CheckWallet>
         </DialogActions>
       </Dialog>
     </>
