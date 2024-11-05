@@ -1,24 +1,14 @@
-import {
-  CircularProgress,
-  Link,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  SvgIcon,
-  Typography,
-} from '@mui/material'
+import { Loop } from '@mui/icons-material'
+import { CircularProgress, Link, List, ListItem, ListItemText, Paper, SvgIcon, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import CheckIcon from '@/public/images/common/check.svg'
 import CloseIcon from '@/public/images/common/close.svg'
 import type { SafenetSimulationResponse } from '@/store/safenet'
 import { useLazySimulateSafenetTxQuery } from '@/store/safenet'
+import { hashTypedData } from '@/utils/web3'
 import { useEffect, type ReactElement } from 'react'
 import css from './styles.module.css'
-import { hashTypedData } from '@/utils/web3'
-import { Loop } from '@mui/icons-material'
 
 export type SafenetTxSimulationProps = {
   safe: string
@@ -80,12 +70,45 @@ function _getSafeTxHash({ safe, chainId, safeTx }: Required<SafenetTxSimulationP
   })
 }
 
-const SafenetTxTxSimulationSummary = ({ simulation }: { simulation: SafenetSimulationResponse }): ReactElement => {
-  if (simulation.results.length === 0) {
-    return <Typography>No Safenet checks enabled...</Typography>
+const StatusIcon = ({ status }: { status: string }): ReactElement => {
+  if (status === 'success') {
+    return (
+      <div>
+        <SvgIcon
+          component={CheckIcon}
+          inheritViewBox
+          fontSize="small"
+          color="success"
+          className={css.safenetCheckIcon}
+        />
+        <span className={css.labelSuccess}>No issues found</span>
+      </div>
+    )
+  } else if (status === 'pending') {
+    return <SvgIcon component={Loop} inheritViewBox fontSize="small" className={css.safenetCheckIcon} />
+  } else {
+    return (
+      <div>
+        <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" color="error" className={css.safenetCheckIcon} />
+        <span className={css.labelFailure}>Failure</span>
+      </div>
+    )
   }
+}
+
+const SafenetTxTxSimulationSummary = ({ simulation }: { simulation: SafenetSimulationResponse }): ReactElement => {
+  // TODO(nlordell)
+  // if (simulation.results.length === 0) {
+  //   return <Typography>No Safenet checks enabled...</Typography>
+  // }
 
   const guarantees = _groupResultGuarantees(simulation)
+
+  // TODO(nlordell)
+  if (guarantees.length === 0) {
+    guarantees.push({ display: 'Fraud verification', status: 'success' })
+    guarantees.push({ display: 'Recipient verification', status: 'failure' })
+  }
 
   return (
     <Paper variant="outlined" className={css.wrapper}>
@@ -97,14 +120,7 @@ const SafenetTxTxSimulationSummary = ({ simulation }: { simulation: SafenetSimul
 
       <List>
         {guarantees.map(({ display, status, link }) => (
-          <ListItem key={display}>
-            <ListItemIcon>
-              {status === 'success' && (
-                <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" color="success" />
-              )}
-              {status === 'failure' && <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" color="error" />}
-              {status === 'pending' && <SvgIcon component={Loop} inheritViewBox fontSize="small" />}
-            </ListItemIcon>
+          <ListItem key={display} secondaryAction={<StatusIcon status={status} />}>
             <ListItemText>
               <div>{display}</div>
               {status === 'pending' && link && (
