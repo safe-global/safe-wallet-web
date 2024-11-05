@@ -1,4 +1,6 @@
 import { signTypedData } from '@/utils/web3'
+import { SigningMethod } from '@safe-global/protocol-kit'
+import { adjustVInSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 import type { JsonRpcSigner } from 'ethers'
 
 const getProposerDataV2 = (chainId: string, proposerAddress: string) => {
@@ -40,8 +42,10 @@ const getProposerDataV1 = (proposerAddress: string) => {
   return `${proposerAddress}${totp}`
 }
 
-export const signProposerData = (proposerAddress: string, signer: JsonRpcSigner) => {
+export const signProposerData = async (proposerAddress: string, signer: JsonRpcSigner) => {
   const data = getProposerDataV1(proposerAddress)
 
-  return signer.signMessage(data)
+  const signature = await signer.signMessage(data)
+
+  return adjustVInSignature(SigningMethod.ETH_SIGN_TYPED_DATA, signature)
 }
