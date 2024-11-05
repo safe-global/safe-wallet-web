@@ -12,7 +12,6 @@ import { id } from 'ethers'
 import { Provider } from 'react-redux'
 import { checksumAddress } from '@/utils/addresses'
 import { faker } from '@faker-js/faker'
-import { act as ReactAct } from 'react'
 
 const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   asPath: '/',
@@ -45,7 +44,7 @@ const mockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
 const getProviders: (options: {
   routerProps?: Partial<NextRouter>
   initialReduxState?: Partial<RootState>
-}) => React.FC<{ children: React.ReactElement }> = ({ routerProps, initialReduxState }) =>
+}) => React.JSXElementConstructor<{ children: React.ReactNode }> = ({ routerProps, initialReduxState }) =>
   function ProviderComponent({ children }) {
     const store = makeStore(initialReduxState)
 
@@ -145,5 +144,4 @@ export * from '@testing-library/react'
 // override render method
 export { customRender as render }
 export { customRenderHook as renderHook }
-export { ReactAct as act }
 export { mockWeb3Provider }

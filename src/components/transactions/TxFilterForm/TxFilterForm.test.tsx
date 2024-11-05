@@ -1,7 +1,7 @@
 import React from 'react'
 import { screen, fireEvent } from '@testing-library/react'
 import { act, render } from '@/tests/test-utils'
-import '@testing-library/jest-dom/extend-expect'
+import '@testing-library/jest-dom'
 import TxFilterForm from './index'
 import { useRouter } from 'next/router'
 
