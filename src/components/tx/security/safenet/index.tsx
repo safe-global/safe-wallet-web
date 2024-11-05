@@ -97,18 +97,11 @@ const StatusIcon = ({ status }: { status: string }): ReactElement => {
 }
 
 const SafenetTxTxSimulationSummary = ({ simulation }: { simulation: SafenetSimulationResponse }): ReactElement => {
-  // TODO(nlordell)
-  // if (simulation.results.length === 0) {
-  //   return <Typography>No Safenet checks enabled...</Typography>
-  // }
+  if (simulation.results.length === 0) {
+    return <Typography>No Safenet checks enabled...</Typography>
+  }
 
   const guarantees = _groupResultGuarantees(simulation)
-
-  // TODO(nlordell)
-  if (guarantees.length === 0) {
-    guarantees.push({ display: 'Fraud verification', status: 'success' })
-    guarantees.push({ display: 'Recipient verification', status: 'failure' })
-  }
 
   return (
     <Paper variant="outlined" className={css.wrapper}>
