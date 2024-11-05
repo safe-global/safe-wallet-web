@@ -1,6 +1,7 @@
 import type { DeviceActionState } from '@ledgerhq/device-management-kit'
 import type {
   GetAddressDAOutput,
+  SignPersonalMessageDAOutput,
   SignTransactionDAOutput,
   SignTypedDataDAOutput,
   TypedData,
@@ -170,24 +171,24 @@ export function ledgerModule(): WalletInit {
             personal_sign: async (args) => {
               // personal_sign params are the inverse of eth_sign
               const [message, address] = args.params
-              return (await eip1193Provider.request({
+              return await eip1193Provider.request({
                 method: 'eth_sign',
                 params: [address, message],
-              })) as string
+              })
             },
             eth_signTypedData: async (args) => {
               const typedData = JSON.parse(args.params[1])
               const signature = await ledgerSdk.signTypedData(getAssertedDerivationPath(), typedData)
               return Signature.from(signature).serialized
             },
-            // // @ts-expect-error createEIP1193Provider does not allow overriding eth_signTypedData_v3
-            // eth_signTypedData_v3: async (args) => {
-            //   return await eip1193Provider.request({ method: 'eth_signTypedData', params: args.params })
-            // },
-            // // @ts-expect-error createEIP1193Provider does not allow overriding eth_signTypedData_v4
-            // eth_signTypedData_v4: async (args) => {
-            //   return await eip1193Provider.request({ method: 'eth_signTypedData', params: args.params })
-            // },
+            // @ts-expect-error createEIP1193Provider does not allow overriding eth_signTypedData_v3
+            eth_signTypedData_v3: async (args) => {
+              return await eip1193Provider.request({ method: 'eth_signTypedData', params: args.params })
+            },
+            // @ts-expect-error createEIP1193Provider does not allow overriding eth_signTypedData_v4
+            eth_signTypedData_v4: async (args) => {
+              return await eip1193Provider.request({ method: 'eth_signTypedData', params: args.params })
+            },
             wallet_switchEthereumChain: async (args) => {
               const chainId = args.params[0].chainId
               setCurrentChain(chainId)
@@ -313,7 +314,7 @@ async function getLedgerSdk() {
   const sdk = new DeviceSdkBuilder().build()
   const device = await lastValueFrom(sdk.startDiscovering())
   const sessionId = await sdk.connect({ deviceId: device.id })
-  const kering = new KeyringEthBuilder({ sdk, sessionId }).build()
+  const keyring = new KeyringEthBuilder({ sdk, sessionId }).build()
 
   function mapOutput<T>(actionState: DeviceActionState<T, unknown, unknown>): T {
     switch (actionState.status) {
@@ -334,19 +335,19 @@ async function getLedgerSdk() {
       return sdk.disconnect({ sessionId })
     },
     getAddress: async (derivationPath: string): Promise<GetAddressDAOutput> => {
-      const actionState = await lastValueFrom(kering.getAddress(derivationPath, { checkOnDevice: false }).observable)
+      const actionState = await lastValueFrom(keyring.getAddress(derivationPath, { checkOnDevice: false }).observable)
       return mapOutput(actionState)
     },
-    signMessage: async (derivationPath: string, message: string): Promise<SignTypedDataDAOutput> => {
-      const actionState = await lastValueFrom(kering.signMessage(derivationPath, message).observable)
+    signMessage: async (derivationPath: string, message: string): Promise<SignPersonalMessageDAOutput> => {
+      const actionState = await lastValueFrom(keyring.signMessage(derivationPath, message).observable)
       return mapOutput(actionState)
     },
     signTransaction: async (derivationPath: string, transaction: Transaction): Promise<SignTransactionDAOutput> => {
-      const actionState = await lastValueFrom(kering.signTransaction(derivationPath, transaction).observable)
+      const actionState = await lastValueFrom(keyring.signTransaction(derivationPath, transaction).observable)
       return mapOutput(actionState)
     },
     signTypedData: async (derivationPath: string, typedData: TypedData): Promise<SignTypedDataDAOutput> => {
-      const actionState = await lastValueFrom(kering.signTypedData(derivationPath, typedData).observable)
+      const actionState = await lastValueFrom(keyring.signTypedData(derivationPath, typedData).observable)
       return mapOutput(actionState)
     },
   }
