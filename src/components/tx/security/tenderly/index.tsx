@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
 
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
+import { useSigner } from '@/hooks/wallets/useWallet'
 import CheckIcon from '@/public/images/common/check.svg'
 import CloseIcon from '@/public/images/common/close.svg'
 import { useDarkMode } from '@/hooks/useDarkMode'
@@ -33,7 +33,7 @@ export type TxSimulationProps = {
 // TODO: Test this component
 const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
-  const wallet = useWallet()
+  const signer = useSigner()
   const isDarkMode = useDarkMode()
   const { safeTx } = useContext(SafeTxContext)
   const {
@@ -42,13 +42,13 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
   } = useContext(TxInfoContext)
 
   const handleSimulation = async () => {
-    if (!wallet) {
+    if (!signer) {
       return
     }
 
     simulateTransaction({
       safe,
-      executionOwner: executionOwner ?? wallet.address,
+      executionOwner: executionOwner ?? signer.address,
       transactions,
       gasLimit,
     } as SimulationTxParams)

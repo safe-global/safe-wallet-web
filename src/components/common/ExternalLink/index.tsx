@@ -22,7 +22,7 @@ const ExternalLink = ({
     </Box>
   )
   return mode === 'link' ? (
-    <Link rel="noreferrer noopener" target="_blank" {...props}>
+    <Link href={href} rel="noreferrer noopener" target="_blank" {...props}>
       {linkContent}
     </Link>
   ) : (
