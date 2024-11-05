@@ -24,7 +24,10 @@ import type {
   SafeInfoExtended,
 } from '@safe-global/safe-apps-sdk'
 import { Methods, RPC_CALLS } from '@safe-global/safe-apps-sdk'
-import type { Permission, PermissionRequest } from '@safe-global/safe-apps-sdk/dist/types/types/permissions'
+import type {
+  Permission,
+  PermissionRequest,
+} from 'node_modules/@safe-global/safe-apps-sdk/dist/types/types/permissions'
 import type { SafeSettings } from '@safe-global/safe-apps-sdk'
 import AppCommunicator from '@/services/safe-apps/AppCommunicator'
 import { Errors, logError } from '@/services/exceptions'

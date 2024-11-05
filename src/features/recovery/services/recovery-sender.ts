@@ -1,7 +1,7 @@
 import { getModuleInstance, KnownContracts } from '@gnosis.pm/zodiac'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
+import type { TransactionAddedEvent } from 'node_modules/@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { Eip1193Provider, TransactionResponse } from 'ethers'
 
 import { didReprice, didRevert } from '@/utils/ethers-utils'
