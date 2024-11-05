@@ -14,8 +14,8 @@ import { type NavItem, navItems } from './config'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { AppRoutes } from '@/config/routes'
 import { useQueuedTxsLength } from '@/hooks/useTxQueue'
-import { useCurrentChain, useHasFeature } from '@/hooks/useChains'
-import { FEATURES, isRouteEnabled } from '@/utils/chains'
+import { useCurrentChain } from '@/hooks/useChains'
+import { isRouteEnabled } from '@/utils/chains'
 import { trackEvent } from '@/services/analytics'
 import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
@@ -26,7 +26,6 @@ const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
 }
 
-// TODO: Should bridging be geo-blocked?
 const geoBlockedRoutes = [AppRoutes.swap, AppRoutes.stake]
 
 const undeployedSafeBlockedRoutes = [AppRoutes.swap, AppRoutes.stake, AppRoutes.apps.index]
@@ -43,17 +42,16 @@ const Navigation = (): ReactElement => {
   const currentSubdirectory = getSubdirectory(router.pathname)
   const queueSize = useQueuedTxsLength()
   const isBlockedCountry = useContext(GeoblockingContext)
-  const isBridgeEnabled = useHasFeature(FEATURES.BRIDGE)
 
   const visibleNavItems = useMemo(() => {
-    return navItems(!!isBridgeEnabled).filter((item) => {
+    return navItems.filter((item) => {
       if (isBlockedCountry && geoBlockedRoutes.includes(item.href)) {
         return false
       }
 
       return isRouteEnabled(item.href, chain)
     })
-  }, [chain, isBlockedCountry, isBridgeEnabled])
+  }, [chain, isBlockedCountry])
 
   const enabledNavItems = useMemo(() => {
     return safe.deployed
