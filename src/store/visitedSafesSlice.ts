@@ -21,7 +21,6 @@ export const visitedSafesSlice = createSlice({
       { payload }: PayloadAction<{ chainId: string; address: string; lastVisited: number }>,
     ) => {
       const { chainId, address, lastVisited } = payload
-      console.log('upate visited safe', payload.address, payload.lastVisited)
       state[chainId] ??= {}
       state[chainId][address] = { lastVisited }
     },
