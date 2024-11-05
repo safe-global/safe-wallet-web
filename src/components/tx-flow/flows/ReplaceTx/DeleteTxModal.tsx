@@ -37,7 +37,14 @@ type DeleteTxModalProps = {
   safeAddress: ReturnType<typeof useSafeAddress>
 }
 
-const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, wallet, safeAddress, chainId }: DeleteTxModalProps) => {
+const InternalDeleteTxModal = ({
+  safeTxHash,
+  onSuccess,
+  onClose,
+  wallet,
+  safeAddress,
+  chainId,
+}: DeleteTxModalProps) => {
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -145,7 +152,7 @@ const _DeleteTxModal = ({ safeTxHash, onSuccess, onClose, wallet, safeAddress, c
   )
 }
 
-const DeleteTxModal = madProps(_DeleteTxModal, {
+const DeleteTxModal = madProps(InternalDeleteTxModal, {
   wallet: useWallet,
   chainId: useChainId,
   safeAddress: useSafeAddress,
