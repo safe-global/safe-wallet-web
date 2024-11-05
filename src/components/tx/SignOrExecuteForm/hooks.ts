@@ -42,8 +42,8 @@ type txDetails = AsyncResult<TransactionDetails>
 
 export const useProposeTx = (safeTx?: SafeTransaction, txId?: string, origin?: string): txDetails => {
   const { safe } = useSafeInfo()
-  const wallet = useWallet()
-  const sender = wallet?.address || safe.owners?.[0]?.value
+  const signer = useSigner()
+  const sender = signer?.address || safe.owners?.[0]?.value
 
   return useAsync(
     async () => {

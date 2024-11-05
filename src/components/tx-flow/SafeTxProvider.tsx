@@ -8,6 +8,7 @@ import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import { prependSafeToL2Migration } from '@/utils/transactions'
+import { useSelectAvailableSigner } from '@/hooks/wallets/useAvailableSigner'
 
 export type SafeTxContextParams = {
   safeTx?: SafeTransaction
@@ -84,11 +85,13 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
     createTx({ ...safeTx.data, safeTxGas: String(finalSafeTxGas) }, finalNonce)
       .then((tx) => {
-        console.log('SafeTxProvider: Updated tx with nonce and safeTxGas', tx)
         setSafeTx(tx)
       })
       .catch(setSafeTxError)
   }, [isSigned, finalNonce, finalSafeTxGas, safeTx?.data])
+
+  // Update the available signers based on the transaction
+  useSelectAvailableSigner(safeTx, safe)
 
   // Log errors
   useEffect(() => {

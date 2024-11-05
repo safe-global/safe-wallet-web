@@ -7,6 +7,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { useRouter } from 'next/router'
 import { type Eip1193Provider } from 'ethers'
 import { getNestedWallet } from '@/utils/nested-safe-wallet'
+import { sameAddress } from '@/utils/addresses'
 
 export type SignerWallet = {
   provider: Eip1193Provider | null
@@ -34,10 +35,10 @@ const WalletProvider = ({ children }: { children: ReactNode }): ReactElement => 
   const [signerAddress, setSignerAddress] = useState<string>()
 
   const [nestedSafeInfo] = useAsync(() => {
-    if (signerAddress && currentChain) {
+    if (signerAddress && !sameAddress(signerAddress, wallet?.address) && currentChain) {
       return getSafeInfo(currentChain.chainId, signerAddress)
     }
-  }, [currentChain, signerAddress])
+  }, [currentChain, signerAddress, wallet?.address])
 
   useEffect(() => {
     if (!onboard) return
