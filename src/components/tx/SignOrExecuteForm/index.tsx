@@ -31,7 +31,6 @@ import { findAllowingRole, findMostLikelyRole, useRoles } from './ExecuteThrough
 import { isAnyStakingTxInfo, isCustomTxInfo, isGenericConfirmation, isOrderTxInfo } from '@/utils/transaction-guards'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { BlockaidBalanceChanges } from '../security/blockaid/BlockaidBalanceChange'
-import { Blockaid } from '../security/blockaid'
 
 import TxData from '@/components/transactions/TxDetails/TxData'
 import ConfirmationOrder from '@/components/tx/ConfirmationOrder'
@@ -223,8 +222,6 @@ export const SignOrExecuteForm = ({
         <NetworkWarning />
 
         {!isMultiChainMigration && <UnknownContractError />}
-
-        <Blockaid />
 
         {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
