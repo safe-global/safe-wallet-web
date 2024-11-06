@@ -173,7 +173,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
             {/* Search results */}
             {searchQuery ? (
               <>
-                <Typography variant="h5" fontWeight="normal" mb={1} color="primary.light">
+                <Typography variant="h5" fontWeight="normal" mb={2} color="primary.light">
                   Found {filteredSafes.length} result{filteredSafes.length === 1 ? '' : 's'}
                 </Typography>
                 <Box mt={1}>
