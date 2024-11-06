@@ -6,9 +6,11 @@ import Track from '@/components/common/Track'
 import UpsertProposer from '@/features/proposers/components/UpsertProposer'
 import DeleteProposerDialog from '@/features/proposers/components/DeleteProposerDialog'
 import EditProposerDialog from '@/features/proposers/components/EditProposerDialog'
+import { useHasFeature } from '@/hooks/useChains'
 import useProposers from '@/hooks/useProposers'
 import AddIcon from '@/public/images/common/add.svg'
 import { SETTINGS_EVENTS } from '@/services/analytics'
+import { FEATURES } from '@/utils/chains'
 import { Box, Button, Grid, Paper, SvgIcon, Typography } from '@mui/material'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import ExternalLink from '@/components/common/ExternalLink'
@@ -33,6 +35,7 @@ const headCells = [
 const ProposersList = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>()
   const proposers = useProposers()
+  const isEnabled = useHasFeature(FEATURES.PROPOSERS)
 
   const rows = useMemo(() => {
     if (!proposers.data) return []
@@ -60,7 +63,7 @@ const ProposersList = () => {
           actions: {
             rawValue: '',
             sticky: true,
-            content: (
+            content: isEnabled && (
               <div className={tableCss.actions}>
                 <EditProposerDialog proposer={proposer} />
                 <DeleteProposerDialog proposer={proposer} />
@@ -95,24 +98,26 @@ const ProposersList = () => {
               transactions first. <ExternalLink href={HelpCenterArticle.DELEGATES}>Learn more</ExternalLink>
             </Typography>
 
-            <Box mb={2}>
-              <CheckWallet allowProposer={false}>
-                {(isOk) => (
-                  <Track {...SETTINGS_EVENTS.PROPOSERS.ADD_PROPOSER}>
-                    <Button
-                      data-testid="add-proposer-btn"
-                      onClick={onAdd}
-                      variant="text"
-                      startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
-                      disabled={!isOk}
-                      size="compact"
-                    >
-                      Add proposer
-                    </Button>
-                  </Track>
-                )}
-              </CheckWallet>
-            </Box>
+            {isEnabled && (
+              <Box mb={2}>
+                <CheckWallet allowProposer={false}>
+                  {(isOk) => (
+                    <Track {...SETTINGS_EVENTS.PROPOSERS.ADD_PROPOSER}>
+                      <Button
+                        data-testid="add-proposer-btn"
+                        onClick={onAdd}
+                        variant="text"
+                        startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
+                        disabled={!isOk}
+                        size="compact"
+                      >
+                        Add proposer
+                      </Button>
+                    </Track>
+                  )}
+                </CheckWallet>
+              </Box>
+            )}
 
             {rows.length > 0 && <EnhancedTable rows={rows} headCells={headCells} />}
           </Grid>
