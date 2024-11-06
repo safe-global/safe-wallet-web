@@ -37,7 +37,7 @@ import { useGetMultipleSafeOverviewsQuery } from '@/store/api/gateway'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectCurrency } from '@/store/settingsSlice'
 import { selectChains } from '@/store/chainsSlice'
-import Image from 'next/image'
+import GradientBoxSafenet from '@/components/common/GradientBoxSafenet'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -138,98 +138,94 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem, hasSafenetEnabled
     [safeOverviews],
   )
 
-  return (
-    <>
-      {hasSafenetEnabled && (
-        <Box className={css.safenetHeader} display="flex" alignItems="center" justifyContent="space-between">
-          <Image src="/images/safenet.svg" alt="Safenet Logo" width={12} height={12} />
-          <Typography variant="body2" fontWeight="bold" fontSize="12px" color="var(--color-static-main)">
-            Powered by Safenet
-          </Typography>
-        </Box>
-      )}
-      <ListItemButton
-        data-testid="safe-list-item"
-        selected={isCurrentSafe}
-        className={classnames(css.multiListItem, css.listItem, css.safenet, {
-          [css.currentListItem]: isCurrentSafe && !hasSafenetEnabled,
-        })}
-        sx={{
-          p: 0,
+  const listItem = (
+    <ListItemButton
+      data-testid="safe-list-item"
+      selected={isCurrentSafe}
+      className={classnames(css.multiListItem, css.listItem, {
+        [css.currentListItem]: isCurrentSafe,
+      })}
+      sx={{
+        p: 0,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        '&>.MuiPaper-root': {
           borderTopLeftRadius: 0,
           borderTopRightRadius: 0,
-          '&>.MuiPaper-root': {
-            borderTopLeftRadius: 0,
-            borderTopRightRadius: 0,
-          },
-        }}
-      >
-        <Accordion expanded={expanded} sx={{ border: 'none' }}>
-          <AccordionSummary
-            onClick={toggleExpand}
-            sx={{
-              pl: 0,
-              '& .MuiAccordionSummary-content': { m: '0 !important', alignItems: 'center' },
-              '&.Mui-expanded': { backgroundColor: 'transparent !important' },
-            }}
-          >
-            <Box className={css.safeLink} width="100%">
-              <Box pr={2.5}>
-                <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
-              </Box>
-              <Typography variant="body2" component="div" className={css.safeAddress}>
-                {name && (
-                  <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
-                    {name}
-                  </Typography>
-                )}
-                <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
-                  {shortenAddress(address)}
+        },
+      }}
+    >
+      <Accordion expanded={expanded} sx={{ border: 'none' }}>
+        <AccordionSummary
+          onClick={toggleExpand}
+          sx={{
+            pl: 0,
+            '& .MuiAccordionSummary-content': { m: '0 !important', alignItems: 'center' },
+            '&.Mui-expanded': { backgroundColor: 'transparent !important' },
+          }}
+        >
+          <Box className={css.safeLink} width="100%">
+            <Box pr={2.5}>
+              <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
+            </Box>
+            <Typography variant="body2" component="div" className={css.safeAddress}>
+              {name && (
+                <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
+                  {name}
                 </Typography>
+              )}
+              <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
+                {shortenAddress(address)}
               </Typography>
-              <MultichainIndicator safes={safes} />
-              <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
-                {totalFiatValue !== undefined ? (
-                  <FiatValue value={totalFiatValue} safenet />
-                ) : (
-                  <Skeleton variant="text" sx={{ ml: 'auto' }} />
-                )}
-              </Typography>
-            </Box>
-            <MultiAccountContextMenu
-              name={name ?? ''}
-              address={address}
-              chainIds={deployedChainIds}
-              addNetwork={hasReplayableSafe}
-            />
-          </AccordionSummary>
-          <AccordionDetails sx={{ padding: '0px 12px' }}>
-            <Box>
-              {safes.map((safeItem) => (
-                <SubAccountItem
-                  onLinkClick={onLinkClick}
-                  safeItem={safeItem}
-                  key={`${safeItem.chainId}:${safeItem.address}`}
-                  safeOverview={findOverview(safeItem)}
+            </Typography>
+            <MultichainIndicator safes={safes} />
+            <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
+              {totalFiatValue !== undefined ? (
+                <FiatValue value={totalFiatValue} safenet />
+              ) : (
+                <Skeleton variant="text" sx={{ ml: 'auto' }} />
+              )}
+            </Typography>
+          </Box>
+          <MultiAccountContextMenu
+            name={name ?? ''}
+            address={address}
+            chainIds={deployedChainIds}
+            addNetwork={hasReplayableSafe}
+          />
+        </AccordionSummary>
+        <AccordionDetails sx={{ padding: '0px 12px' }}>
+          <Box>
+            {safes.map((safeItem) => (
+              <SubAccountItem
+                onLinkClick={onLinkClick}
+                safeItem={safeItem}
+                key={`${safeItem.chainId}:${safeItem.address}`}
+                safeOverview={findOverview(safeItem)}
+              />
+            ))}
+          </Box>
+          {!isWatchlist && hasReplayableSafe && (
+            <>
+              <Divider sx={{ ml: '-12px', mr: '-12px' }} />
+              <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>
+                <AddNetworkButton
+                  currentName={name}
+                  safeAddress={address}
+                  deployedChains={safes.map((safe) => safe.chainId)}
                 />
-              ))}
-            </Box>
-            {!isWatchlist && hasReplayableSafe && (
-              <>
-                <Divider sx={{ ml: '-12px', mr: '-12px' }} />
-                <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>
-                  <AddNetworkButton
-                    currentName={name}
-                    safeAddress={address}
-                    deployedChains={safes.map((safe) => safe.chainId)}
-                  />
-                </Box>
-              </>
-            )}
-          </AccordionDetails>
-        </Accordion>
-      </ListItemButton>
-    </>
+              </Box>
+            </>
+          )}
+        </AccordionDetails>
+      </Accordion>
+    </ListItemButton>
+  )
+
+  return hasSafenetEnabled ? (
+    <GradientBoxSafenet className={css.safenetListItem}>{listItem}</GradientBoxSafenet>
+  ) : (
+    listItem
   )
 }
 
