@@ -141,4 +141,3 @@ This app is built using the following frameworks:
 - MUI
 - ethers.js
 - web3-onboard
-
