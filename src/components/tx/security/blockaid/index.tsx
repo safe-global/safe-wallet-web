@@ -74,7 +74,7 @@ const BlockaidResultWarning = ({
                 : undefined
             }
           >
-            <AlertTitle>
+            <AlertTitle fontWeight="700 !important" mb={1}>
               <ResultDescription
                 classification={blockaidResponse.classification}
                 reason={blockaidResponse.reason}
