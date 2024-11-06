@@ -1,7 +1,7 @@
 import useAsync, { type AsyncResult } from '@/hooks/useAsync'
 import { useHasFeature } from '@/hooks/useChains'
 import useSafeInfo from '@/hooks/useSafeInfo'
-import useWallet from '@/hooks/wallets/useWallet'
+import { useSigner } from '@/hooks/wallets/useWallet'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import type { SecurityResponse } from '@/services/security/modules/types'
 import { FEATURES } from '@/utils/chains'
@@ -19,12 +19,12 @@ export const useBlockaid = (
   data: SafeTransaction | EIP712TypedData | undefined,
 ): AsyncResult<SecurityResponse<BlockaidModuleResponse>> => {
   const { safe, safeAddress } = useSafeInfo()
-  const wallet = useWallet()
+  const signer = useSigner()
   const isFeatureEnabled = useHasFeature(FEATURES.RISK_MITIGATION)
 
   const [blockaidPayload, blockaidErrors, blockaidLoading] = useAsync<SecurityResponse<BlockaidModuleResponse>>(
     () => {
-      if (!isFeatureEnabled || !data || !wallet?.address) {
+      if (!isFeatureEnabled || !data || !signer?.address) {
         return
       }
 
@@ -32,12 +32,12 @@ export const useBlockaid = (
         chainId: Number(safe.chainId),
         data,
         safeAddress,
-        walletAddress: wallet.address,
+        walletAddress: signer.address,
         threshold: safe.threshold,
       })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safe.chainId, safe.threshold, safeAddress, data, wallet?.address, isFeatureEnabled],
+    [safe.chainId, safe.threshold, safeAddress, data, signer?.address, isFeatureEnabled],
     false,
   )
 
