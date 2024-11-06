@@ -73,7 +73,7 @@ const ProposersList = () => {
         },
       }
     })
-  }, [proposers.data])
+  }, [isEnabled, proposers.data])
 
   if (!proposers.data?.results) return null
 

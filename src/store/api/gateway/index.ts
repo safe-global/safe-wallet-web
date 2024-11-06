@@ -4,7 +4,7 @@ import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { asError } from '@/services/exceptions/utils'
 import { safeOverviewEndpoints } from './safeOverviews'
-import { getSubmission } from '@safe-global/safe-client-gateway-sdk'
+import { createSubmission, getSubmission } from '@safe-global/safe-client-gateway-sdk'
 
 export async function buildQueryFn<T>(fn: () => Promise<T>) {
   try {
@@ -17,6 +17,7 @@ export async function buildQueryFn<T>(fn: () => Promise<T>) {
 export const gatewayApi = createApi({
   reducerPath: 'gatewayApi',
   baseQuery: fakeBaseQuery<Error>(),
+  tagTypes: ['Submissions'],
   endpoints: (builder) => ({
     getTransactionDetails: builder.query<TransactionDetails, { chainId: string; txId: string }>({
       queryFn({ chainId, txId }) {
@@ -37,6 +38,23 @@ export const gatewayApi = createApi({
           getSubmission({ params: { path: { outreachId, chainId, safeAddress, signerAddress } } }),
         )
       },
+      providesTags: ['Submissions'],
+    }),
+    createSubmission: builder.mutation<
+      createSubmission,
+      { outreachId: number; chainId: string; safeAddress: string; signerAddress: string }
+    >({
+      queryFn({ outreachId, chainId, safeAddress, signerAddress }) {
+        return buildQueryFn(() =>
+          createSubmission({
+            params: {
+              path: { outreachId, chainId, safeAddress, signerAddress },
+            },
+            body: { completed: true },
+          }),
+        )
+      },
+      invalidatesTags: ['Submissions'],
     }),
     ...proposerEndpoints(builder),
     ...safeOverviewEndpoints(builder),
@@ -51,6 +69,7 @@ export const {
   useDeleteProposerMutation,
   useAddProposerMutation,
   useGetSubmissionQuery,
+  useCreateSubmissionMutation,
   useGetSafeOverviewQuery,
   useGetMultipleSafeOverviewsQuery,
 } = gatewayApi
