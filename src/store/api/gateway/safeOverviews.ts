@@ -35,7 +35,7 @@ class SafeOverviewFetcher {
     currency: string
   }) {
     return await getSafeOverviews(safeIds, {
-      trusted: true,
+      trusted: false,
       exclude_spam: true,
       currency,
       wallet_address: walletAddress,
