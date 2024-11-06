@@ -41,7 +41,13 @@ const extractTransactionData = (data: string): SafeTransaction | undefined => {
   }
 }
 
-export const ExecTransaction = ({ data }: { data?: TransactionData }) => {
+export const ExecTransaction = ({
+  data,
+  isConfirmationView = false,
+}: {
+  data?: TransactionData
+  isConfirmationView?: boolean
+}) => {
   const chain = useCurrentChain()
 
   const childSafeTx = useMemo<SafeTransaction | undefined>(
@@ -66,7 +72,7 @@ export const ExecTransaction = ({ data }: { data?: TransactionData }) => {
   ) : null
 
   return (
-    <NestedTransaction txData={data}>
+    <NestedTransaction txData={data} isConfirmationView={isConfirmationView}>
       {decodedNestedTxDataBlock ? (
         <>
           {decodedNestedTxDataBlock}

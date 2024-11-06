@@ -19,7 +19,13 @@ import Multisend from '../../DecodedData/Multisend'
 
 const safeInterface = Safe__factory.createInterface()
 
-export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
+export const OnChainConfirmation = ({
+  data,
+  isConfirmationView = false,
+}: {
+  data?: TransactionData
+  isConfirmationView?: boolean
+}) => {
   const chain = useCurrentChain()
   const chainId = useChainId()
   const signedHash = useMemo(() => {
@@ -41,7 +47,7 @@ export const OnChainConfirmation = ({ data }: { data?: TransactionData }) => {
   )
 
   return (
-    <NestedTransaction txData={data}>
+    <NestedTransaction txData={data} isConfirmationView={isConfirmationView}>
       {nestedTxDetails ? (
         <>
           <TxData txDetails={nestedTxDetails} trusted imitation={false} />

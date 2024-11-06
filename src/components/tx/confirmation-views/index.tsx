@@ -43,9 +43,10 @@ const getConfirmationViewComponent = ({
 
   if (isSettingsChangeView(txInfo)) return <SettingsChange txDetails={txDetails} txInfo={txInfo as SettingsChange} />
 
-  if (isOnChainConfirmationTxData(txDetails.txData)) return <OnChainConfirmation data={txDetails.txData} />
+  if (isOnChainConfirmationTxData(txDetails.txData))
+    return <OnChainConfirmation data={txDetails.txData} isConfirmationView />
 
-  if (isExecTxData(txDetails.txData)) return <ExecTransaction data={txDetails.txData} />
+  if (isExecTxData(txDetails.txData)) return <ExecTransaction data={txDetails.txData} isConfirmationView />
 
   return null
 }

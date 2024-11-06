@@ -11,20 +11,21 @@ import { MethodDetails } from '../DecodedData/MethodDetails'
 export const NestedTransaction = ({
   txData,
   children,
+  isConfirmationView = false,
 }: {
   txData: TransactionData | undefined
   children: ReactElement
+  isConfirmationView?: boolean
 }) => {
   return (
     <Stack spacing={2}>
-      {txData?.dataDecoded && (
+      {!isConfirmationView && txData?.dataDecoded && (
         <>
           <MethodCall contractAddress={txData.to.value} method={txData.dataDecoded.method} />
           <MethodDetails data={txData.dataDecoded} addressInfoIndex={txData.addressInfoIndex} />
+          <Divider />
         </>
       )}
-
-      <Divider />
 
       <Stack spacing={2}>
         <Typography variant="h5" display="flex" alignItems="center" gap={1}>
