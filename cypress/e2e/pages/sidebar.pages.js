@@ -30,7 +30,7 @@ const readOnlyVisibility = '[data-testid="read-only-visibility"]'
 const currencySection = '[data-testid="currency-section"]'
 const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
-const showMoreBtn = '[data-testid="show-more-btn" ]'
+const expandSafesList = '[data-testid="expand-safes-list" ]'
 const importBtn = '[data-testid="import-btn"]'
 export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
@@ -77,10 +77,9 @@ export function clickOnSidebarImportBtn() {
 
 export function showAllSafes() {
   cy.get('body').then(($body) => {
-    if ($body.find(showMoreBtn).length > 0) {
-      cy.get(showMoreBtn).click()
+    if ($body.find(expandSafesList).length > 0) {
+      cy.get(expandSafesList).click()
       cy.wait(500)
-      showAllSafes()
     }
   })
 }

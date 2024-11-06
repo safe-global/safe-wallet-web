@@ -212,6 +212,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 {/* All Accounts */}
                 <Accordion sx={{ border: 'none' }}>
                   <AccordionSummary
+                    data-testid="expand-safes-list"
                     expandIcon={<ExpandMoreIcon sx={{ '& path': { fill: 'var(--color-text-secondary)' } }} />}
                     sx={{
                       padding: 0,
