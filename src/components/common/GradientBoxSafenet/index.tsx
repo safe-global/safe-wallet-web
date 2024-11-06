@@ -38,11 +38,10 @@ const GradientBoxSafenet = ({
       >
         <SvgIcon component={SafenetIcon} inheritViewBox fontSize="small" />
         <Typography variant="h5" fontSize="small">
-          {heading ?? 'Safenet'}
+          {heading ?? 'Powered by Safenet'}
         </Typography>
       </Box>
       <Box
-        className="GradientBoxSafenet-content"
         style={{
           background: 'var(--color-background-paper)',
           borderRadius: '0 0 var(--space-1) var(--space-1)',
