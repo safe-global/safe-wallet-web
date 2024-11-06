@@ -88,11 +88,11 @@ const BlockaidResultWarning = ({
               <Track {...MODALS_EVENTS.ACCEPT_RISK}>
                 <FormControlLabel
                   label={
-                    <Typography variant="body2">
+                    <Typography variant="body2" color="static.main">
                       I understand the risks and would like to sign this {isTransaction ? 'transaction' : 'message'}
                     </Typography>
                   }
-                  control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} />}
+                  control={<Checkbox checked={isRiskConfirmed} onChange={toggleConfirmation} color="primary" />}
                 />
               </Track>
             </Box>
