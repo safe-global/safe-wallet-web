@@ -197,7 +197,7 @@ export const SignOrExecuteForm = ({
             />
           </ErrorBoundary>
         )}
-        {!isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
+        {!isSafenetEnabled && !isCounterfactualSafe && !props.isRejection && <BlockaidBalanceChanges />}
       </TxCard>
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
@@ -224,7 +224,7 @@ export const SignOrExecuteForm = ({
 
         {!isMultiChainMigration && <UnknownContractError />}
 
-        <Blockaid />
+        {!isSafenetEnabled && <Blockaid />}
 
         {isCounterfactualSafe && !isDelegate && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
