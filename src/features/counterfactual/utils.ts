@@ -122,7 +122,7 @@ export const getCounterfactualBalance = async (
   } else {
     const cachedBalance = getNativeBalance()
     const useCache = cachedBalance !== undefined && cachedBalance > 0n && !ignoreCache
-    balance = useCache ? cachedBalance : (await getWeb3ReadOnly()?.getBalance(safeAddress)) ?? 0n
+    balance = useCache ? cachedBalance : ((await getWeb3ReadOnly()?.getBalance(safeAddress)) ?? 0n)
     setNativeBalance(balance)
   }
 

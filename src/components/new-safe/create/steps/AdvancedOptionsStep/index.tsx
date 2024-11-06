@@ -160,7 +160,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
               label="Salt nonce"
               error={Boolean(formState.errors[AdvancedOptionsFields.saltNonce]) || Boolean(isDeployed)}
               helperText={
-                formState.errors[AdvancedOptionsFields.saltNonce]?.message ?? Boolean(isDeployed)
+                (formState.errors[AdvancedOptionsFields.saltNonce]?.message ?? Boolean(isDeployed))
                   ? 'The Safe is already deployed. Use a different salt nonce.'
                   : undefined
               }

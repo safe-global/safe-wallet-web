@@ -65,8 +65,8 @@ const trackTxEvents = (
   const creationEvent = isRoleExecution
     ? TX_EVENTS.CREATE_VIA_ROLE
     : isDelegateCreation
-    ? TX_EVENTS.CREATE_VIA_DELEGATE
-    : TX_EVENTS.CREATE
+      ? TX_EVENTS.CREATE_VIA_DELEGATE
+      : TX_EVENTS.CREATE
   const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
   const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
   const txType = getTransactionTrackingType(details)
