@@ -11,11 +11,13 @@ const useSafesSearch = (safes: (SafeItem | MultiChainSafeItem)[], query: string)
   const chains = useAppSelector(selectChains)
 
   useEffect(() => {
-    trackEvent({
-      category: OVERVIEW_EVENTS.SEARCH.category,
-      action: OVERVIEW_EVENTS.SEARCH.action,
-      label: query,
-    })
+    if (query) {
+      trackEvent({
+        category: OVERVIEW_EVENTS.SEARCH.category,
+        action: OVERVIEW_EVENTS.SEARCH.action,
+        label: query,
+      })
+    }
   }, [query])
 
   // Include chain names in the search

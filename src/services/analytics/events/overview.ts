@@ -52,6 +52,11 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
     event: EventType.META,
   },
+  TOTAL_SAFES_PINNED: {
+    action: 'Total Safes pinned',
+    category: OVERVIEW_CATEGORY,
+    event: EventType.META,
+  },
   TOTAL_SAFES_WATCHLIST: {
     action: 'Total Safes watchlist',
     category: OVERVIEW_CATEGORY,
