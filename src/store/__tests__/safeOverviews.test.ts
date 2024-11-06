@@ -175,7 +175,7 @@ describe('safeOverviews', () => {
           ],
           {
             currency: 'usd',
-            trusted: true,
+            trusted: false,
             exclude_spam: true,
           },
         )
@@ -344,12 +344,12 @@ describe('safeOverviews', () => {
       expect(mockedGetSafeOverviews).toHaveBeenCalledTimes(2)
       expect(mockedGetSafeOverviews).toHaveBeenCalledWith(
         request.safes.slice(0, 10).map((safe) => `1:${safe.address}`),
-        { currency: 'usd', exclude_spam: true, trusted: true },
+        { currency: 'usd', exclude_spam: true, trusted: false },
       )
 
       expect(mockedGetSafeOverviews).toHaveBeenCalledWith(
         request.safes.slice(10).map((safe) => `1:${safe.address}`),
-        { currency: 'usd', exclude_spam: true, trusted: true },
+        { currency: 'usd', exclude_spam: true, trusted: false },
       )
     })
   })
