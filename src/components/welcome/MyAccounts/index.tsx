@@ -91,12 +91,8 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
     dispatch(setOrderByPreference({ orderBy }))
   }
 
-  const handleSearch = useCallback((value: string) => {
-    const debouncedSearch = debounce((searchValue: string) => {
-      setSearchQuery(searchValue)
-    }, 300)
-    debouncedSearch(value)
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleSearch = useCallback(debounce(setSearchQuery, 300), [])
 
   useTrackSafesCount(ownedSafes, watchlistSafes, wallet)
 

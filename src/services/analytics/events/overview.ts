@@ -57,6 +57,10 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
     event: EventType.META,
   },
+  SEARCH: {
+    action: 'Search safes',
+    category: OVERVIEW_CATEGORY,
+  },
   SIDEBAR: {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,

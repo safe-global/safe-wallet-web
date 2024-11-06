@@ -34,7 +34,11 @@ const SafesList = ({ safes, onLinkClick, useTransitions = true }: SafeListProps)
       ))}
     </TransitionGroup>
   ) : (
-    <>{safes.map((item) => renderSafeItem(item, onLinkClick))}</>
+    <>
+      {safes.map((item) => (
+        <div key={item.address}>{renderSafeItem(item, onLinkClick)}</div>
+      ))}
+    </>
   )
 }
 
