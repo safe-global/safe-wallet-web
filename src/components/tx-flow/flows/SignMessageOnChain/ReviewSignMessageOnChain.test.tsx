@@ -33,7 +33,7 @@ describe('ReviewSignMessageOnChain', () => {
             },
             version: '1.3.0',
           } as ReturnType<typeof useSafeInfo.default>['safe'],
-        } as ReturnType<typeof useSafeInfo.default>),
+        }) as ReturnType<typeof useSafeInfo.default>,
     )
 
     await act(async () => {

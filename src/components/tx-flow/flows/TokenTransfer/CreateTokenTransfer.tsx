@@ -56,8 +56,8 @@ export const CreateTokenTransfer = ({
       [TokenTransferFields.type]: disableSpendingLimit
         ? TokenTransferType.multiSig
         : isOnlySpendingLimitBeneficiary
-        ? TokenTransferType.spendingLimit
-        : params.type,
+          ? TokenTransferType.spendingLimit
+          : params.type,
       [TokenTransferFields.tokenAddress]: isOnlySpendingLimitBeneficiary
         ? balancesItems[0]?.tokenInfo.address
         : params.tokenAddress,

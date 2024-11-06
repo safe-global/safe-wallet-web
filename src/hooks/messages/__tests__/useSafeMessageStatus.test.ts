@@ -18,7 +18,7 @@ describe('useSafeMessageStatus', () => {
 
   it('should return "Awaiting confirmations" if the message is not pending, the wallet has signed it but it is not fully signed', () => {
     jest.spyOn(useIsSafeMessagePendingHook, 'default').mockImplementation(() => false)
-    jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({ address: '0x123' } as ConnectedWallet))
+    jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({ address: '0x123' }) as ConnectedWallet)
 
     const message = {
       confirmations: [{ owner: { value: '0x123' } }],
@@ -31,7 +31,7 @@ describe('useSafeMessageStatus', () => {
 
   it('should return the message status if the message is not pending and the wallet has not signed the message', () => {
     jest.spyOn(useIsSafeMessagePendingHook, 'default').mockImplementation(() => false)
-    jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({ address: '0x123' } as ConnectedWallet))
+    jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({ address: '0x123' }) as ConnectedWallet)
 
     const message = {
       confirmations: [{ owner: { value: '0x456' } }] as SafeMessage['confirmations'],
@@ -44,7 +44,7 @@ describe('useSafeMessageStatus', () => {
 
   it('should return the message status if the message is not pending and it is fully signed', () => {
     jest.spyOn(useIsSafeMessagePendingHook, 'default').mockImplementation(() => false)
-    jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({ address: '0x123' } as ConnectedWallet))
+    jest.spyOn(useWalletHook, 'default').mockImplementation(() => ({ address: '0x123' }) as ConnectedWallet)
 
     const message = {
       confirmations: [{ owner: { value: '0x123' } }] as SafeMessage['confirmations'],
