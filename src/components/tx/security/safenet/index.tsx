@@ -3,6 +3,7 @@ import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import CheckIcon from '@/public/images/common/check.svg'
 import CloseIcon from '@/public/images/common/close.svg'
+import LinkIcon from '@/public/images/common/link.svg'
 import type { SafenetSimulationResponse } from '@/store/safenet'
 import { useLazySimulateSafenetTxQuery } from '@/store/safenet'
 import { hashTypedData } from '@/utils/web3'
@@ -85,8 +86,15 @@ const StatusAction = ({ status, link }: { status: string; link?: string }): Reac
     )
   } else if (status === 'pending' && link) {
     return (
-      <Button variant="outlined" size="small" href={link} sx={{ width: '100%', py: 0.5 }}>
-        Share verification link
+      <Button
+        variant="outlined"
+        size="small"
+        href={link}
+        target="_blank"
+        sx={{ width: '100%', py: 0.5 }}
+        startIcon={<SvgIcon component={LinkIcon} inheritViewBox fontSize="small" />}
+      >
+        Verify recipient
       </Button>
     )
   } else {
