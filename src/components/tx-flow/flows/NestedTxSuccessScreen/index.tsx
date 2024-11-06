@@ -11,6 +11,8 @@ import Link from 'next/link'
 import { AppRoutes } from '@/config/routes'
 import { useAppSelector } from '@/store'
 import ExternalLink from '@/components/common/ExternalLink'
+import { MODALS_EVENTS } from '@/services/analytics'
+import Track from '@/components/common/Track'
 
 type Props = {
   txId: string
@@ -88,20 +90,22 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
             />
           </Box>
         </Stack>
-        <Link
-          href={{
-            pathname: AppRoutes.transactions.tx,
-            query: {
-              safe: pendingTx.signerAddress,
-              chainId: pendingTx.chainId,
-              id: pendingTx.signingSafeTxHash,
-            },
-          }}
-          passHref
-          legacyBehavior
-        >
-          <ExternalLink mode="button">Open the transaction</ExternalLink>
-        </Link>
+        <Track {...MODALS_EVENTS.OPEN_PARENT_TX}>
+          <Link
+            href={{
+              pathname: AppRoutes.transactions.tx,
+              query: {
+                safe: pendingTx.signerAddress,
+                chainId: pendingTx.chainId,
+                id: pendingTx.signingSafeTxHash,
+              },
+            }}
+            passHref
+            legacyBehavior
+          >
+            <ExternalLink mode="button">Open the transaction</ExternalLink>
+          </Link>
+        </Track>
       </Box>
     </Container>
   )

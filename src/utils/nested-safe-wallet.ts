@@ -9,6 +9,8 @@ import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { initSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { logError } from '@/services/exceptions'
 import ErrorCodes from '@/services/exceptions/ErrorCodes'
+import { TX_EVENTS } from '@/services/analytics/events/transactions'
+import { trackEvent } from '@/services/analytics'
 
 export type NestedWallet = {
   address: string
@@ -95,6 +97,8 @@ export const getNestedWallet = (
             const signedTx = await connectedSDK.signTransaction(safeTx)
             await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, signedTx, safeTxHash)
           }
+
+          trackEvent(TX_EVENTS.CONFIRM_VIA_PARENT_SAFE)
         }
       } catch (err) {
         logError(ErrorCodes._817, err)

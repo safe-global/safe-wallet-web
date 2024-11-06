@@ -22,6 +22,7 @@ import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import useAvailableSigners from '@/hooks/wallets/useAvailableSigner'
+import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 
 export const SignerForm = () => {
   const { signer, setSignerAddress, connectedWallet: wallet } = useWalletContext() ?? {}
@@ -33,6 +34,7 @@ export const SignerForm = () => {
   const availableSigners = useAvailableSigners(safeTx, safe)
 
   const onChange = (event: SelectChangeEvent<string>) => {
+    trackEvent(MODALS_EVENTS.CHANGE_SIGNER)
     setSignerAddress?.(event.target.value)
   }
 
