@@ -233,5 +233,6 @@
 
 .safenetListItem .listItem {
   border: none;
-  border-radius: 0;
+  border-radius-left-top: 0;
+  border-radius-right-top: 0;
 }
