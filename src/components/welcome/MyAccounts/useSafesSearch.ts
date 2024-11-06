@@ -29,8 +29,9 @@ const useSafesSearch = (safes: (SafeItem | MultiChainSafeItem)[], query: string)
     () =>
       new Fuse(safesWithChainNames, {
         keys: [{ name: 'name' }, { name: 'address' }, { name: 'chainNames' }],
-        threshold: 0.3,
+        threshold: 0.2,
         findAllMatches: true,
+        ignoreLocation: true,
       }),
     [safesWithChainNames],
   )
