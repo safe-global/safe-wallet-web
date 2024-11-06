@@ -58,7 +58,7 @@
     "@safe-global/protocol-kit": "^4.1.1",
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@safe-global/safe-deployments": "1.37.12",
-    "@safe-global/safe-client-gateway-sdk": "v1.60.1",
+    "@safe-global/safe-client-gateway-sdk": "1.60.1-next-069fa2b",
     "@safe-global/safe-gateway-typescript-sdk": "3.22.3-beta.15",
     "@safe-global/safe-modules-deployments": "^2.2.1",
     "@sentry/react": "^7.91.0",
