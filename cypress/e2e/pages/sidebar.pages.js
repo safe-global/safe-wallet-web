@@ -22,7 +22,7 @@ const sidebarSafeHeader = '[data-testid="safe-header-info"]'
 const sidebarSafeContainer = '[data-testid="sidebar-safe-container"]'
 const safeItemOptionsBtn = '[data-testid="safe-options-btn"]'
 export const safeItemOptionsRenameBtn = '[data-testid="rename-btn"]'
-const safeItemOptionsRemoveBtn = '[data-testid="remove-btn"]'
+export const safeItemOptionsRemoveBtn = '[data-testid="remove-btn"]'
 export const safeItemOptionsAddChainBtn = '[data-testid="add-chain-btn"]'
 const nameInput = '[data-testid="name-input"]'
 const saveBtn = '[data-testid="save-btn"]'
@@ -39,13 +39,26 @@ const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
 const multichainItemSummary = '[data-testid="multichain-item-summary"]'
 const addChainDialog = "[data-testid='add-chain-dialog']"
 export const addNetworkBtn = "[data-testid='add-network-btn']"
+const modalAddNetworkBtn = "[data-testid='modal-add-network-btn']"
 const subAccountContainer = '[data-testid="subacounts-container"]'
 const groupBalance = '[data-testid="group-balance"]'
 const groupAddress = '[data-testid="group-address"]'
 const groupSafeIcon = '[data-testid="group-safe-icon"]'
 const multichainTooltip = '[data-testid="multichain-tooltip"]'
+const networkInput = '[id="network-input"]'
+const networkOption = 'li[role="option"]'
+const showAllNetworks = '[data-testid="show-all-networks"]'
+export const addNetworkOption = 'li[aria-label="Add network"]'
+export const addedNetworkOption = 'li[role="option"]'
+const modalAddNetworkName = '[data-testid="added-network"]'
+const networkSeperator = 'div[role="separator"]'
+export const addNetworkTooltip = '[data-testid="add-network-tooltip"]'
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
+export const undeployedSafe = 'Undeployed Sepolia'
+const notActivatedStr = 'Not activated'
+export const addingNetworkNotPossibleStr = 'Adding another network is not possible for this Safe.'
+export const createSafeMsg = (network) => `Successfully added your account on ${network}`
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
@@ -240,13 +253,7 @@ export function checkMultichainTooltipExists(index) {
 }
 
 export function checkSafeGroupBalance(index, balance) {
-  cy.get(multichainItemSummary)
-    .eq(index)
-    .find(groupBalance)
-    .invoke('text')
-    .then((text) => {
-      expect(text).to.include(balance)
-    })
+  cy.get(multichainItemSummary).eq(index).find(groupBalance).should('include.text', balance)
 }
 
 export function checkSafeGroupAddress(index, address) {
@@ -271,6 +278,10 @@ export function checkThereIsNoOptionsMenu(index) {
   getSubAccountContainer(index).find(safeItemOptionsBtn).should('not.exist')
 }
 
+export function checkUndeployedSafeExists(index) {
+  getSubAccountContainer(index).contains(notActivatedStr).should('exist')
+}
+
 export function checkAddNetworkBtnPosition(index) {
   cy.get(multichainItemSummary)
     .eq(index)
@@ -283,6 +294,29 @@ export function checkAddNetworkBtnPosition(index) {
           expect($btn.parent().children().last()[0]).to.equal($btn[0])
         })
     })
+}
+export function clickOnAddNetworkBtn() {
+  cy.get(addNetworkBtn).click()
+  cy.get(addChainDialog).should('be.visible')
+}
+
+export function getModalAddNetworkBtn() {
+  return cy.get(modalAddNetworkBtn)
+}
+
+export function clickOnNetworkInput() {
+  cy.get(networkInput).click()
+}
+
+export function getNetworkOptions() {
+  return cy.get(networkOption)
+}
+
+export function addNetwork(network) {
+  clickOnAddNetworkBtn()
+  clickOnNetworkInput()
+  getNetworkOptions().contains(network).click()
+  getModalAddNetworkBtn().click()
 }
 
 export function renameSafeItem(oldName, newName) {
@@ -378,4 +412,45 @@ export function checkBalanceExists() {
 export function checkAddChainDialogDisplayed() {
   cy.get(safeItemOptionsAddChainBtn).click()
   cy.get(addChainDialog).should('be.visible')
+}
+
+export function clickOnShowAllNetworksBtn() {
+  cy.get(showAllNetworks).click()
+}
+
+export function checkNetworkPresence(networks, optionSelector) {
+  return cy.get(optionSelector).then((options) => {
+    const optionTexts = [...options].map((option) => option.innerText)
+    networks.forEach((network) => {
+      const isNetworkPresent = optionTexts.some((text) => text.includes(network))
+      expect(isNetworkPresent).to.be.true
+    })
+    cy.wrap([...options].filter((option) => networks.some((network) => option.innerText.includes(network))))
+  })
+}
+
+export function checkNetworkIsNotEditable() {
+  cy.get(addChainDialog).within(() => {
+    cy.get(modalAddNetworkName).should('exist')
+  })
+  cy.get(addChainDialog).find(networkInput).should('not.exist')
+}
+
+export function checkNetworksInRange(expectedString, expectedCount, direction = 'below') {
+  const networkSeparator = networkSeperator
+  const startSelector = networkSeparator
+  const endSelector = direction === 'below' ? showAllNetworks : 'ul'
+
+  const traversalMethod = direction === 'below' ? 'nextUntil' : 'prevUntil'
+
+  return cy
+    .get(startSelector)
+    [traversalMethod](endSelector, 'li')
+    .then((liElements) => {
+      expect(liElements.length).to.equal(expectedCount)
+      const optionTexts = [...liElements].map((li) => li.innerText)
+      const isStringPresent = optionTexts.some((text) => text.includes(expectedString))
+      expect(isStringPresent).to.be.true
+      return cy.wrap(liElements)
+    })
 }
