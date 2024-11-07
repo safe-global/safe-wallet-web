@@ -9,8 +9,8 @@ import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
 import { encodeSafeSetupCall } from '@/components/new-safe/create/logic'
 import { memoize } from 'lodash'
 import { FEATURES, hasFeature } from '@/utils/chains'
-import { type SafeItem } from '@/components/welcome/MyAccounts/useAllSafes'
-import { type MultiChainSafeItem } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
+import { type SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
+import { type MultiChainSafeItem } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 
 type SafeSetup = {
   owners: string[]

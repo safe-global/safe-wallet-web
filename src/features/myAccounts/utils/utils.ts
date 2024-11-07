@@ -1,6 +1,6 @@
 import { OrderByOption } from '@/store/orderByPreferenceSlice'
-import type { SafeItem } from './useAllSafes'
-import type { MultiChainSafeItem } from './useAllSafesGrouped'
+import type { SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
+import type { MultiChainSafeItem } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 
 export const nameComparator = (a: SafeItem | MultiChainSafeItem, b: SafeItem | MultiChainSafeItem) => {
   // Put undefined names last

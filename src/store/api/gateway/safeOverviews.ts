@@ -4,7 +4,7 @@ import { type SafeOverview, getSafeOverviews } from '@safe-global/safe-gateway-t
 import { sameAddress } from '@/utils/addresses'
 import type { RootState } from '../..'
 import { selectCurrency } from '../../settingsSlice'
-import { type SafeItem } from '@/components/welcome/MyAccounts/useAllSafes'
+import { type SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import { asError } from '@/services/exceptions/utils'
 
 type SafeOverviewQueueItem = {

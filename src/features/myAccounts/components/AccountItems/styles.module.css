@@ -1,56 +1,3 @@
-.container {
-  container-type: inline-size;
-  container-name: my-accounts-container;
-  display: flex;
-  justify-content: center;
-}
-
-.myAccounts {
-  width: 100vw;
-  max-width: 750px;
-  margin: var(--space-2);
-}
-
-.sidebarAccounts {
-  margin: 0 !important;
-}
-
-.safeList {
-  padding: var(--space-2) var(--space-2) var(--space-3);
-  margin-bottom: var(--space-1);
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  padding: var(--space-3) 0;
-  gap: var(--space-2);
-}
-
-.sidebarHeader {
-  padding: var(--space-3) var(--space-2);
-  border-bottom: 1px solid var(--color-border-light);
-}
-
-.sidebarHeader > h1 {
-  font-size: 24px;
-}
-
-.headerButtons {
-  display: flex;
-  flex-direction: row;
-  gap: var(--space-1);
-}
-
-.noPinnedSafesMessage {
-  display: flex;
-  justify-content: center;
-  border: 1px solid var(--color-border-light);
-  padding: var(--space-3);
-  border-radius: var(--space-1);
-  border-style: dashed;
-}
-
 .listItem {
   border: 1px solid var(--color-border-light);
   border-radius: var(--space-1);
@@ -145,31 +92,6 @@
   stroke: var(--color-text-primary);
 }
 
-.card {
-  margin: auto;
-  padding: var(--space-3);
-  display: flex;
-  flex-direction: column;
-  background-color: transparent;
-}
-
-.card :global .MuiCardHeader-root,
-.card :global .MuiCardContent-root {
-  padding: 0;
-}
-
-.cardHeader {
-  text-align: center;
-}
-
-.infoIcon {
-  vertical-align: middle;
-  width: 1rem;
-  height: 1rem;
-  margin: 4px;
-  color: var(--color-text-secondary);
-}
-
 .chip {
   border-radius: 4px;
   background-color: var(--color-warning-background);
@@ -212,21 +134,9 @@
 }
 
 @media (max-width: 899.95px) {
-  .container {
-    width: auto;
-  }
-
   .safeLink {
     padding-right: 0;
   }
-}
-
-.safeList :global .MuiAccordionSummary-root {
-  background: var(--color-background-paper) !important;
-  padding-left: 0;
-  min-height: 0;
-  justify-content: left;
-  vertical-align: middle;
 }
 
 @media (max-width: 599.95px) {
@@ -257,16 +167,5 @@
 
   .chainIndicator {
     justify-content: flex-start;
-  }
-  .header {
-    flex-direction: column;
-  }
-
-  .headerButtons > span {
-    flex: 1;
-  }
-
-  .headerButtons > span > a {
-    width: 100%;
   }
 }

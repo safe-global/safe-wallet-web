@@ -3,11 +3,11 @@ import uniq from 'lodash/uniq'
 import isEmpty from 'lodash/isEmpty'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
-import useAllOwnedSafes from './useAllOwnedSafes'
 import useChains from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectAllAddressBooks, selectAllVisitedSafes, selectUndeployedSafes } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
+import useAllOwnedSafes from './useAllOwnedSafes'
 export type SafeItem = {
   chainId: string
   address: string
