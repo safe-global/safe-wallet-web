@@ -1,3 +1,5 @@
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { useIsWalletProposer } from '@/hooks/useProposers'
 import { useContext } from 'react'
 import { Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, Typography } from '@mui/material'
 import CreatedIcon from '@/public/images/messages/created.svg'
@@ -29,12 +31,18 @@ const TxStatusWidget = ({
   const { safe } = useSafeInfo()
   const { nonceNeeded } = useContext(SafeTxContext)
   const { threshold } = safe
+  const isSafeOwner = useIsSafeOwner()
+  const isProposer = useIsWalletProposer()
+  const isProposing = isProposer && !isSafeOwner
 
   const { executionInfo = undefined } = txSummary || {}
   const { confirmationsSubmitted = 0 } = isMultisigExecutionInfo(executionInfo) ? executionInfo : {}
 
-  const canConfirm = txSummary ? isConfirmableBy(txSummary, wallet?.address || '') : safe.threshold === 1
-  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : true
+  const canConfirm = txSummary
+    ? isConfirmableBy(txSummary, wallet?.address || '')
+    : safe.threshold === 1 && !isProposing
+
+  const canSign = txSummary ? isSignableBy(txSummary, wallet?.address || '') : !isProposing
 
   return (
     <Paper>
