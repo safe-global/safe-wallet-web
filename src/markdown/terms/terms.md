@@ -161,7 +161,7 @@ Our Services do not consist of:
 
 * You know of the inherent risks of cryptographic and Blockchain-based systems and the high volatility of Token markets. Transactions undertaken in the Blockchain are irrevocable and irreversible and there is no possibility to refund Token that have been deployed.
 
-* You should read the license requirements, terms and conditions as well as privacy policy of each Third-Party Safe Appz and Third-Party Service that you access or use. Certain Third-Party Safe Apps and Third-Party Services may involve complex Transactions that entail a high degree of risk.
+* You should read the license requirements, terms and conditions as well as privacy policy of each Third-Party Safe Apps and Third-Party Service that you access or use. Certain Third-Party Safe Apps and Third-Party Services may involve complex Transactions that entail a high degree of risk.
 
 * If you contribute integrations to Third-Party Safe Apps and Third-Party Services, you are responsible for all content you contribute, in any manner, and you must have all rights necessary to do so, in the manner in which you contribute it. You are responsible for all your activity in connection with any such Third-Party Safe Apps and Third-Party Services.
 
