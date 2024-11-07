@@ -9,11 +9,14 @@ import {
 } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapIcon from '@/public/images/common/swap.svg'
 import StakeIcon from '@/public/images/common/stake.svg'
+import NestedSafeIcon from '@/public/images/transactions/nestedTx.svg'
 
 import {
   isCancellationTxInfo,
+  isExecTxInfo,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
+  isOnChainConfirmationTxInfo,
   isOutgoingTransfer,
   isTxQueued,
 } from '@/utils/transaction-guards'
@@ -126,6 +129,13 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         return {
           icon: '/images/transactions/circle-cross-red.svg',
           text: 'On-chain rejection',
+        }
+      }
+
+      if (isOnChainConfirmationTxInfo(tx.txInfo) || isExecTxInfo(tx.txInfo)) {
+        return {
+          icon: <SvgIcon component={NestedSafeIcon} inheritViewBox fontSize="small" alt="Nested Safe" />,
+          text: `Nested Safe${addressBookName ? `: ${addressBookName}` : ''}`,
         }
       }
 

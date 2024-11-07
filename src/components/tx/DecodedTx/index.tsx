@@ -7,7 +7,7 @@ import {
 } from '@/utils/transaction-guards'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material'
 import { OperationType, type SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import type { DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DataDecoded, DecodedDataResponse, TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { Operation } from '@safe-global/safe-gateway-typescript-sdk'
 import Summary, { PartialSummary } from '@/components/transactions/TxDetails/Summary'
 import { trackEvent, MODALS_EVENTS } from '@/services/analytics'
@@ -22,8 +22,9 @@ type DecodedTxProps = {
   txId?: string
   txDetails?: TransactionDetails
   showMultisend?: boolean
-  decodedData?: DecodedDataResponse
+  decodedData?: DecodedDataResponse | DataDecoded
   showMethodCall?: boolean
+  showAdvancedDetails?: boolean
 }
 
 export const Divider = () => (
@@ -41,9 +42,10 @@ const DecodedTx = ({
   decodedData,
   showMultisend = true,
   showMethodCall = false,
+  showAdvancedDetails = true,
 }: DecodedTxProps): ReactElement => {
   const isMultisend = decodedData?.parameters && !!decodedData?.parameters[0]?.valueDecoded
-  const isMethodCallInAdvanced = !showMethodCall || (isMultisend && showMultisend)
+  const isMethodCallInAdvanced = showAdvancedDetails && (!showMethodCall || (isMultisend && showMultisend))
 
   const onChangeExpand = (_: SyntheticEvent, expanded: boolean) => {
     trackEvent({ ...MODALS_EVENTS.TX_DETAILS, label: expanded ? 'Open' : 'Close' })
@@ -85,42 +87,44 @@ const DecodedTx = ({
 
       {isMultisend && showMultisend && <Multisend txData={txDetails?.txData || txData} compact />}
 
-      <Box>
-        <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
-          <AccordionSummary
-            data-testid="decoded-tx-summary"
-            expandIcon={<ExpandMoreIcon />}
-            className={accordionCss.accordion}
-          >
-            Advanced details
-            <HelpToolTip />
-            <Box flexGrow={1} />
-            {isMethodCallInAdvanced && decodedData?.method}
-            {txDetails &&
-              isTransferTxInfo(txDetails.txInfo) &&
-              isNativeTokenTransfer(txDetails.txInfo.transferInfo) &&
-              'native transfer'}
-          </AccordionSummary>
-          <AccordionDetails data-testid="decoded-tx-details">
-            {showDecodedData && (
-              <>
-                {decodedDataBlock}
-                <Divider />
-              </>
-            )}
+      {showAdvancedDetails && (
+        <Box>
+          <Accordion elevation={0} onChange={onChangeExpand} sx={!tx ? { pointerEvents: 'none' } : undefined}>
+            <AccordionSummary
+              data-testid="decoded-tx-summary"
+              expandIcon={<ExpandMoreIcon />}
+              className={accordionCss.accordion}
+            >
+              Advanced details
+              <HelpToolTip />
+              <Box flexGrow={1} />
+              {isMethodCallInAdvanced && decodedData?.method}
+              {txDetails &&
+                isTransferTxInfo(txDetails.txInfo) &&
+                isNativeTokenTransfer(txDetails.txInfo.transferInfo) &&
+                'native transfer'}
+            </AccordionSummary>
+            <AccordionDetails data-testid="decoded-tx-details">
+              {showDecodedData && (
+                <>
+                  {decodedDataBlock}
+                  <Divider />
+                </>
+              )}
 
-            {txDetails && !showDecodedData && !isCreation ? (
-              <Summary
-                txDetails={txDetails}
-                defaultExpanded
-                hideDecodedData={isMethodCallInAdvanced && !!decodedData?.method}
-              />
-            ) : (
-              tx && <PartialSummary safeTx={tx} />
-            )}
-          </AccordionDetails>
-        </Accordion>
-      </Box>
+              {txDetails && !showDecodedData && !isCreation ? (
+                <Summary
+                  txDetails={txDetails}
+                  defaultExpanded
+                  hideDecodedData={isMethodCallInAdvanced && !!decodedData?.method}
+                />
+              ) : (
+                tx && <PartialSummary safeTx={tx} />
+              )}
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      )}
     </Stack>
   )
 }
