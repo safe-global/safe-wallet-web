@@ -171,7 +171,13 @@ const ReplaySafeDialog = ({
               <Typography>Add this Safe to another network with the same address.</Typography>
 
               {chain && (
-                <Box p={2} sx={{ backgroundColor: 'background.main', borderRadius: '6px' }}>
+                <Box
+                  sx={{
+                    p: 2,
+                    backgroundColor: 'background.main',
+                    borderRadius: '6px',
+                  }}
+                >
                   <ChainIndicator chainId={chain.chainId} />
                 </Box>
               )}
@@ -182,7 +188,13 @@ const ReplaySafeDialog = ({
               </ErrorMessage>
 
               {safeCreationDataLoading ? (
-                <Stack direction="column" alignItems="center" gap={1}>
+                <Stack
+                  direction="column"
+                  sx={{
+                    alignItems: 'center',
+                    gap: 1,
+                  }}
+                >
                   <CircularProgress />
                   <Typography variant="body2">Loading Safe data</Typography>
                 </Stack>
@@ -210,7 +222,14 @@ const ReplaySafeDialog = ({
         </DialogContent>
         <DialogActions>
           {isUnsupportedSafeCreationVersion ? (
-            <Box display="flex" width="100%" alignItems="center" justifyContent="space-between">
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <ExternalLink sx={{ flexGrow: 1 }} href={MULTICHAIN_HELP_ARTICLE}>
                 Read more
               </ExternalLink>

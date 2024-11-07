@@ -180,7 +180,14 @@ export const TxSigners = ({ txDetails, txSummary }: TxSignersProps): ReactElemen
               <Dot />
             </StyledListItemIcon>
             <ListItemText>
-              <Link data-testid="confirmation-visibility-btn" component="button" onClick={toggleHide} fontSize="medium">
+              <Link
+                data-testid="confirmation-visibility-btn"
+                component="button"
+                onClick={toggleHide}
+                sx={{
+                  fontSize: 'medium',
+                }}
+              >
                 {hideConfirmations ? 'Show all' : 'Hide all'}
               </Link>
             </ListItemText>

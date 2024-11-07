@@ -57,10 +57,21 @@ const StatusCard = ({
           <CircleOutlinedIcon color="inherit" fontSize="medium" />
         )}
       </div>
-      <Typography variant="h4" fontWeight="bold" mb={2}>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 'bold',
+          mb: 2,
+        }}
+      >
         {title}
       </Typography>
-      <Typography variant="body2" color="primary.light">
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'primary.light',
+        }}
+      >
         {content}
       </Typography>
       {children}
@@ -137,7 +148,11 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
     >
       {!completed && (
         <>
-          <Box mt={2}>
+          <Box
+            sx={{
+              mt: 2,
+            }}
+          >
             <Track {...OVERVIEW_EVENTS.ADD_FUNDS}>
               <Button
                 data-testid="add-funds-btn"
@@ -156,10 +171,38 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
             dialogTitle="Add funds to your Safe Account"
             hideChainIndicator
           >
-            <Box px={4} pb={5} pt={4}>
-              <Grid container spacing={2} alignItems="center" justifyContent="center" mb={4}>
-                <Grid data-testid="qr-code" item textAlign="center">
-                  <Box p={1} border={1} borderRadius="6px" borderColor="border.light" display="inline-flex">
+            <Box
+              sx={{
+                px: 4,
+                pb: 5,
+                pt: 4,
+              }}
+            >
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 4,
+                }}
+              >
+                <Grid
+                  data-testid="qr-code"
+                  item
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      p: 1,
+                      border: 1,
+                      borderRadius: '6px',
+                      borderColor: 'border.light',
+                      display: 'inline-flex',
+                    }}
+                  >
                     <QRCode value={qrCode} size={132} />
                   </Box>
                   <Box>
@@ -180,18 +223,24 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                   </Box>
                 </Grid>
                 <Grid item xs>
-                  <Typography mb={2}>
+                  <Typography
+                    sx={{
+                      mb: 2,
+                    }}
+                  >
                     Add funds directly from your bank account or copy your address to send tokens from a different
                     account.
                   </Typography>
 
                   <Box
                     data-testid="address-info"
-                    bgcolor="background.main"
-                    p={2}
-                    borderRadius="6px"
-                    alignSelf="flex-start"
-                    fontSize="14px"
+                    sx={{
+                      bgcolor: 'background.main',
+                      p: 2,
+                      borderRadius: '6px',
+                      alignSelf: 'flex-start',
+                      fontSize: '14px',
+                    }}
                   >
                     <EthHashInfo
                       address={safeAddress}
@@ -205,12 +254,24 @@ const AddFundsWidget = ({ completed }: { completed: boolean }) => {
                 </Grid>
               </Grid>
 
-              <Box mb={4} position="relative" textAlign="center">
+              <Box
+                sx={{
+                  mb: 4,
+                  position: 'relative',
+                  textAlign: 'center',
+                }}
+              >
                 <Typography className={css.orDivider}>or</Typography>
                 <Divider />
               </Box>
 
-              <Typography mb={2}>Buy crypto with fiat:</Typography>
+              <Typography
+                sx={{
+                  mb: 2,
+                }}
+              >
+                Buy crypto with fiat:
+              </Typography>
               <BuyCryptoOptions />
             </Box>
           </ModalDialog>
@@ -280,7 +341,11 @@ const ActivateSafeWidget = ({ chain }: { chain: ChainInfo | undefined }) => {
         completed={false}
         content={content}
       >
-        <Box mt={2}>
+        <Box
+          sx={{
+            mt: 2,
+          }}
+        >
           <ActivateAccountButton />
         </Box>
       </StatusCard>
@@ -295,7 +360,14 @@ const AccountReadyWidget = () => {
       <div className={classnames(css.checkIcon)}>
         <CheckCircleOutlineRoundedIcon sx={{ width: '60px', height: '60px' }} />
       </div>
-      <Typography variant="h4" fontWeight="bold" mb={2} mt={2}>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 'bold',
+          mb: 2,
+          mt: 2,
+        }}
+      >
         Safe Account is ready!
       </Typography>
       <Typography>Continue to improve your account security and unlock more features</Typography>
@@ -327,8 +399,22 @@ const FirstSteps = () => {
   return (
     <WidgetContainer>
       <WidgetBody data-testid="activation-section">
-        <Grid container gap={3} mb={2} flexWrap="nowrap" alignItems="center">
-          <Grid item position="relative" display="inline-flex">
+        <Grid
+          container
+          sx={{
+            gap: 3,
+            mb: 2,
+            flexWrap: 'nowrap',
+            alignItems: 'center',
+          }}
+        >
+          <Grid
+            item
+            sx={{
+              position: 'relative',
+              display: 'inline-flex',
+            }}
+          >
             <svg className={css.gradient}>
               <defs>
                 <linearGradient
@@ -355,7 +441,14 @@ const FirstSteps = () => {
             />
           </Grid>
           <Grid item>
-            <Typography component="div" variant="h2" fontWeight={700} mb={1}>
+            <Typography
+              component="div"
+              variant="h2"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+              }}
+            >
               {isActivating ? 'Account is being activated...' : 'Activate your Safe Account'}
             </Typography>
 

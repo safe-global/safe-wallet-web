@@ -53,13 +53,33 @@ const LoadSafe = ({ initialData }: { initialData?: TxStepperProps<LoadSafeFormDa
 
   return (
     <Container data-testid="load-safe-form">
-      <Grid container columnSpacing={3} mt={[2, null, 7]} justifyContent="center">
+      <Grid
+        container
+        columnSpacing={3}
+        sx={{
+          mt: [2, null, 7],
+          justifyContent: 'center',
+        }}
+      >
         <Grid item xs={12} md={10} lg={8}>
-          <Typography variant="h2" pb={2}>
+          <Typography
+            variant="h2"
+            sx={{
+              pb: 2,
+            }}
+          >
             Add Safe Account to watchlist
           </Typography>
         </Grid>
-        <Grid item xs={12} md={10} lg={8} order={[1, null, 0]}>
+        <Grid
+          item
+          xs={12}
+          md={10}
+          lg={8}
+          sx={{
+            order: [1, null, 0],
+          }}
+        >
           <CardStepper
             // Populate initial data
             key={initialSafe.address}

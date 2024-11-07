@@ -30,7 +30,14 @@ const StakePage = () => {
 
   if (blockedAddress) {
     return (
-      <Stack direction="column" alignItems="center" justifyContent="center" flex={1}>
+      <Stack
+        direction="column"
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+        }}
+      >
         <BlockedAddress address={blockedAddress} featureTitle="stake feature with Kiln" />
       </Stack>
     )
@@ -41,7 +48,14 @@ const StakePage = () => {
       {isConsentAccepted === undefined ? null : isConsentAccepted ? (
         <StakingWidget asset={String(asset)} />
       ) : (
-        <Stack direction="column" alignItems="center" justifyContent="center" flex={1}>
+        <Stack
+          direction="column"
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 1,
+          }}
+        >
           <Disclaimer
             title="Note"
             content={<WidgetDisclaimer widgetName="Stake Widget by Kiln" />}

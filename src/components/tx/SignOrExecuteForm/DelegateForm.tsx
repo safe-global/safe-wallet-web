@@ -76,15 +76,16 @@ export const DelegateForm = ({
         You are creating this transaction as a delegate. It will not have any signatures until it is confirmed by an
         owner.
       </ErrorMessage>
-
       {isRejectedByUser && (
-        <Box mt={1}>
+        <Box
+          sx={{
+            mt: 1,
+          }}
+        >
           <WalletRejectionError />
         </Box>
       )}
-
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
-
       <CardActions>
         <Stack
           sx={{

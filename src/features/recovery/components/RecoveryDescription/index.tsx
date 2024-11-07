@@ -51,9 +51,13 @@ export function RecoveryDescription({ item }: { item: RecoveryQueueItem }): Reac
       {newSetup.owners.map((owner) => (
         <EthHashInfo key={owner.value} address={owner.value} shortAddress={false} showCopyButton hasExplorer />
       ))}
-
       <div>
-        <Typography fontWeight={700} gutterBottom>
+        <Typography
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           Required confirmations for new transactions:
         </Typography>
         <Typography>

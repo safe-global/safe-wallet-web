@@ -12,10 +12,21 @@ const DelegatesList = () => {
 
   return (
     <Paper sx={{ p: 4, mt: 2 }}>
-      <Box display="flex" flexDirection="column" gap={2}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
         <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
-            <Typography variant="h4" fontWeight={700}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+              }}
+            >
               <Tooltip
                 placement="top"
                 title={

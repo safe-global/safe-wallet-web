@@ -113,15 +113,31 @@ function RecoverySettings(): ReactElement {
     <Paper sx={{ p: 4 }}>
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
-          <Box display="flex" alignItems="center" gap={1} mb={1}>
-            <Typography variant="h4" fontWeight="bold">
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              mb: 1,
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 'bold',
+              }}
+            >
               Account recovery
             </Typography>
           </Box>
         </Grid>
 
         <Grid item xs>
-          <Typography mb={2}>
+          <Typography
+            sx={{
+              mb: 2,
+            }}
+          >
             {isRecoveryEnabled
               ? 'The trusted Recoverer will be able to recover your Safe Account if you ever lose access. You can change Recoverers or alter your recovery setup at any time.'
               : 'Choose a trusted Recoverer to recover your Safe Account if you ever lose access. Enabling the Account recovery module will require a transaction.'}{' '}

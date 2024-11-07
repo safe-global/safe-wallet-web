@@ -41,7 +41,12 @@ export const ChooseThreshold = ({
   return (
     <TxCard>
       <div>
-        <Typography variant="h3" fontWeight={700}>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           Threshold
           <Tooltip title={TOOLTIP_TITLES.THRESHOLD} arrow placement="top">
             <span>
@@ -61,9 +66,12 @@ export const ChooseThreshold = ({
 
         <Typography>Any transaction will require the confirmation of:</Typography>
       </div>
-
       <form onSubmit={formMethods.handleSubmit(onSubmit)}>
-        <Box mb={2}>
+        <Box
+          sx={{
+            mb: 2,
+          }}
+        >
           <Controller
             control={formMethods.control}
             rules={{
@@ -78,7 +86,14 @@ export const ChooseThreshold = ({
               const isError = !!fieldState.error
 
               return (
-                <Grid container direction="row" gap={2} alignItems="center">
+                <Grid
+                  container
+                  direction="row"
+                  sx={{
+                    gap: 2,
+                    alignItems: 'center',
+                  }}
+                >
                   <Grid item>
                     <TextField select {...field} error={isError}>
                       {safe.owners.map((_, idx) => (
@@ -88,18 +103,25 @@ export const ChooseThreshold = ({
                       ))}
                     </TextField>
                   </Grid>
-
                   <Grid item>
                     <Typography>out of {safe.owners.length} signer(s)</Typography>
                   </Grid>
-
                   <Grid item xs={12}>
                     {isError ? (
-                      <Typography color="error" mb={2}>
+                      <Typography
+                        color="error"
+                        sx={{
+                          mb: 2,
+                        }}
+                      >
                         {fieldState.error?.message}
                       </Typography>
                     ) : (
-                      <Typography mb={2}>
+                      <Typography
+                        sx={{
+                          mb: 2,
+                        }}
+                      >
                         {fieldState.isDirty ? 'Previous policy was ' : 'Current policy is '}
                         <b>
                           {safe.threshold} out of {safe.owners.length}

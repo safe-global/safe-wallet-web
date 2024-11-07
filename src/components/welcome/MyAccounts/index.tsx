@@ -61,7 +61,13 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
     <Box data-testid="sidebar-safe-container" className={css.container}>
       <Box className={css.myAccounts}>
         <Box className={css.header}>
-          <Typography variant="h1" fontWeight={700} className={css.title}>
+          <Typography
+            variant="h1"
+            className={css.title}
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             Safe accounts
           </Typography>
           <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
@@ -78,7 +84,13 @@ const AccountsList = ({ safes, onLinkClick }: AccountsListProps) => {
               NO_SAFES_MESSAGE
             ) : (
               <>
-                <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
+                <Box
+                  sx={{
+                    mb: 2,
+                  }}
+                >
+                  Connect a wallet to view your Safe Accounts or to create a new one
+                </Box>
                 <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={trackingLabel}>
                   <ConnectWalletButton text="Connect a wallet" contained />
                 </Track>

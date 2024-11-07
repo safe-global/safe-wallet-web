@@ -101,7 +101,15 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
       <FormProvider {...formMethods}>
         <Stack spacing={2}>
           <Box className={layoutCss.row}>
-            <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
               Safe version
               <Tooltip
                 title="The threshold of a Safe Account specifies how many signers need to confirm a Safe Account transaction before it can be executed."
@@ -113,7 +121,12 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
                 </span>
               </Tooltip>
             </Typography>
-            <Typography variant="body2" mb={2}>
+            <Typography
+              variant="body2"
+              sx={{
+                mb: 2,
+              }}
+            >
               Changes the used master copy and fallback handler of the Safe.
             </Typography>
             <Controller
@@ -130,7 +143,15 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
 
           <Divider />
           <Box className={layoutCss.row}>
-            <Typography variant="h4" fontWeight={700} display="inline-flex" alignItems="center" gap={1}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
               Salt nonce
               <Tooltip
                 title="The salt nonce changes the predicted Safe address. It can be used to re-create a Safe from another chain or to create a specific Safe address"
@@ -142,7 +163,12 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
                 </span>
               </Tooltip>
             </Typography>
-            <Typography variant="body2" mb={2}>
+            <Typography
+              variant="body2"
+              sx={{
+                mb: 2,
+              }}
+            >
               Impacts the derived Safe address
             </Typography>
             <NumberField
@@ -167,7 +193,13 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
             />
           </Box>
           <Box className={layoutCss.row}>
-            <Typography variant="h4" fontWeight={700} mb={1}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+              }}
+            >
               New Safe address
             </Typography>
             {predictedSafeAddress ? (
@@ -178,7 +210,14 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
           </Box>
           <Divider />
           <Box className={layoutCss.row}>
-            <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                gap: 3,
+              }}
+            >
               <Button
                 data-testid="back-btn"
                 variant="outlined"

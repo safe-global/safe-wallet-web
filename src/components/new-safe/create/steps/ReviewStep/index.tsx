@@ -95,7 +95,12 @@ export const SafeSetupOverview = ({
             title={
               <Box>
                 {networks.map((safeItem) => (
-                  <Box p="4px 0px" key={safeItem.chainId}>
+                  <Box
+                    key={safeItem.chainId}
+                    sx={{
+                      p: '4px 0px',
+                    }}
+                  >
                     <ChainIndicator chainId={safeItem.chainId} />
                   </Box>
                 ))}
@@ -103,7 +108,11 @@ export const SafeSetupOverview = ({
             }
             arrow
           >
-            <Box display="inline-block">
+            <Box
+              sx={{
+                display: 'inline-block',
+              }}
+            >
               <NetworkLogosList networks={networks} />
             </Box>
           </Tooltip>
@@ -368,7 +377,6 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       <Box className={layoutCss.row}>
         <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} networks={data.networks} />
       </Box>
-
       {isCounterfactualEnabled && (
         <>
           <Divider />
@@ -383,7 +391,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
             {canRelay && payMethod === PayMethod.PayNow && (
               <>
-                <Grid container spacing={3} pt={2}>
+                <Grid
+                  container
+                  spacing={3}
+                  sx={{
+                    pt: 2,
+                  }}
+                >
                   <ReviewRow
                     value={
                       <ExecutionMethodSelector
@@ -405,7 +419,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
             {payMethod === PayMethod.PayNow && (
               <Grid item>
-                <Typography component="div" mt={2}>
+                <Typography
+                  component="div"
+                  sx={{
+                    mt: 2,
+                  }}
+                >
                   You will have to confirm a transaction and pay an estimated fee of{' '}
                   <NetworkFee totalFee={totalFee} isWaived={willRelay} chain={chain} inline /> with your connected
                   wallet
@@ -415,11 +434,17 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           </Box>
         </>
       )}
-
       {!isCounterfactualEnabled && (
         <>
           <Divider />
-          <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
+          <Box
+            className={layoutCss.row}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 3,
+            }}
+          >
             {canRelay && (
               <Grid container spacing={3}>
                 <ReviewRow
@@ -443,7 +468,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
                     <NetworkFee totalFee={totalFee} isWaived={willRelay} chain={chain} />
 
                     {!willRelay && (
-                      <Typography variant="body2" color="text.secondary" mt={1}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                          mt: 1,
+                        }}
+                      >
                         You will have to confirm a transaction with your connected wallet.
                       </Typography>
                     )}
@@ -462,12 +493,17 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           </Box>
         </>
       )}
-
       <Divider />
-
       <Box className={layoutCss.row}>
         {submitError && <ErrorMessage className={css.errorMessage}>{submitError}</ErrorMessage>}
-        <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 3,
+          }}
+        >
           <Button
             data-testid="back-btn"
             variant="outlined"

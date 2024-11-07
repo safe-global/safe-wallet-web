@@ -95,23 +95,44 @@ export const OwnerList = () => {
   }, [safe.owners, safe.chainId, addressBook, setTxFlow])
 
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+      }}
+    >
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             Manage Safe Account signers
           </Typography>
         </Grid>
 
         <Grid item xs>
-          <Typography mb={2}>
+          <Typography
+            sx={{
+              mb: 2,
+            }}
+          >
             Add, remove and replace or rename existing signers. Signer names are only stored locally and will never be
             shared with us or any third parties.
           </Typography>
 
           <EnhancedTable rows={rows} headCells={headCells} />
 
-          <Box pt={2} display="flex" justifyContent="space-between">
+          <Box
+            sx={{
+              pt: 2,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <CheckWallet>
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>

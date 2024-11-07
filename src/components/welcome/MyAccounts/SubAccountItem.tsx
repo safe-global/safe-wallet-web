@@ -63,7 +63,11 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
     >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
         <Link onClick={onLinkClick} href={href} className={css.safeSubLink}>
-          <Box pr={2.5}>
+          <Box
+            sx={{
+              pr: 2.5,
+            }}
+          >
             <SafeIcon
               address={address}
               owners={safeOverview?.owners.length ?? cfSafeSetup?.owners.length}
@@ -75,11 +79,24 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
             {name && (
-              <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
+              <Typography
+                variant="subtitle2"
+                component="p"
+                className={css.safeName}
+                sx={{
+                  fontWeight: 'bold',
+                }}
+              >
                 {name}
               </Typography>
             )}
-            <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
+            <Typography
+              component="span"
+              sx={{
+                color: 'var(--color-primary-light)',
+                fontSize: 'inherit',
+              }}
+            >
               {chain?.chainName}
             </Typography>
             {undeployedSafe && (
@@ -102,7 +119,14 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
             )}
           </Typography>
 
-          <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 'bold',
+              textAlign: 'right',
+              pr: 5,
+            }}
+          >
             {safeOverview ? (
               <FiatValue value={safeOverview.fiatTotal} />
             ) : undeployedSafe ? null : (
@@ -111,11 +135,9 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
           </Typography>
         </Link>
       </Track>
-
       {undeployedSafe && (
         <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={false} rename={false} />
       )}
-
       <QueueActions
         queued={safeOverview?.queued || 0}
         awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}

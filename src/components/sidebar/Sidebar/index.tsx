@@ -42,14 +42,17 @@ const Sidebar = (): ReactElement => {
         {/* Nav menu */}
         <SidebarNavigation />
 
-        <Box flex={1} />
+        <Box
+          sx={{
+            flex: 1,
+          }}
+        />
 
         <Divider flexItem />
 
         {/* What's new + Need help? */}
         <SidebarFooter />
       </div>
-
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
         <div className={css.drawer}>
           <MyAccounts onLinkClick={closeDrawer}></MyAccounts>

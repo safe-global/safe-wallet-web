@@ -90,13 +90,31 @@ const InternalDeleteTxModal = ({
   return (
     <Dialog open onClose={onClose}>
       <DialogTitle>
-        <Box data-testid="untrusted-token-warning" display="flex" alignItems="center">
-          <Typography variant="h6" fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box
+          data-testid="untrusted-token-warning"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
             <SvgIcon component={InfoIcon} inheritViewBox color="error" />
             Delete this transaction?
           </Typography>
 
-          <Box flexGrow={1} />
+          <Box
+            sx={{
+              flexGrow: 1,
+            }}
+          />
 
           <ChainIndicator chainId={chainId} />
 
@@ -105,16 +123,18 @@ const InternalDeleteTxModal = ({
           </IconButton>
         </Box>
       </DialogTitle>
-
       <Divider />
-
       <DialogContent>
         <Box>
           Are you sure you want to delete this transaction? This will permanently remove it from the queue but the
           already given signatures will remain valid.
         </Box>
 
-        <Box mt={2}>
+        <Box
+          sx={{
+            mt: 2,
+          }}
+        >
           Make sure that you are aware of the{' '}
           <ExternalLink href="https://help.safe.global/en/articles/40836-why-do-i-need-to-pay-for-cancelling-a-transaction">
             potential risks
@@ -123,14 +143,16 @@ const InternalDeleteTxModal = ({
         </Box>
 
         {error && (
-          <Box mt={2}>
+          <Box
+            sx={{
+              mt: 2,
+            }}
+          >
             <ErrorMessage error={error}>Error deleting transaction</ErrorMessage>
           </Box>
         )}
       </DialogContent>
-
       <Divider />
-
       <DialogActions sx={{ padding: 3, justifyContent: 'space-between' }}>
         <Button size="small" variant="text" onClick={onCancel}>
           Keep it

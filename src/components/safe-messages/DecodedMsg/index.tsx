@@ -19,14 +19,17 @@ const DecodedTypedObject = ({ displayedType, eip712Msg }: { displayedType: strin
   return (
     <Box>
       <Typography
-        textTransform="uppercase"
-        fontWeight={700}
         variant="caption"
-        sx={({ palette }) => ({ color: `${palette.border.main}` })}
+        sx={[
+          {
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          },
+          ({ palette }) => ({ color: `${palette.border.main}` }),
+        ]}
       >
         {displayedType}
       </Typography>
-
       {Object.entries(displayedType === EIP712_DOMAIN_TYPE ? domain : msg).map((param, index) => {
         const [paramName, paramValue] = param
         const type = findType(paramName) || 'string'

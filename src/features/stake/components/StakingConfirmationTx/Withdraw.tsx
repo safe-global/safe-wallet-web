@@ -12,7 +12,11 @@ type StakingOrderConfirmationViewProps = {
 
 const StakingConfirmationTxWithdraw = ({ order }: StakingOrderConfirmationViewProps) => {
   return (
-    <Stack gap={2}>
+    <Stack
+      sx={{
+        gap: 2,
+      }}
+    >
       <FieldsGrid title="Receive">
         {' '}
         <TokenAmount

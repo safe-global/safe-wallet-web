@@ -56,7 +56,12 @@ const _ExecutionMethodSelector = ({
               sx={{ flex: 1 }}
               value={ExecutionMethod.RELAY}
               label={
-                <Typography className={css.radioLabel} whiteSpace="nowrap">
+                <Typography
+                  className={css.radioLabel}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                  }}
+                >
                   Sponsored by
                   <SponsoredBy chainId={chain?.chainId ?? ''} />
                 </Typography>
@@ -79,7 +84,6 @@ const _ExecutionMethodSelector = ({
           </RadioGroup>
         </FormControl>
       </div>
-
       {shouldRelay && relays ? <RemainingRelays relays={relays} tooltip={tooltip} /> : wallet ? <BalanceInfo /> : null}
     </Box>
   )

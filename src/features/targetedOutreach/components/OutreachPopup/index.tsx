@@ -70,12 +70,29 @@ const OutreachPopup = (): ReactElement | null => {
         <ThemeProvider theme={safeTheme}>
           <Box className={css.popup}>
             <Paper className={css.container}>
-              <Stack gap={2}>
-                <Box display="flex">
+              <Stack
+                sx={{
+                  gap: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                  }}
+                >
                   <Avatar alt="Clem Bihorel" src="/images/common/outreach-popup-avatar.png" />
-                  <Box ml={1}>
+                  <Box
+                    sx={{
+                      ml: 1,
+                    }}
+                  >
                     <Typography variant="body2">Clem Bihorel</Typography>
-                    <Typography variant="body2" color="primary.light">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'primary.light',
+                      }}
+                    >
                       Product Lead
                     </Typography>
                   </Box>
@@ -85,13 +102,23 @@ const OutreachPopup = (): ReactElement | null => {
                     size="small"
                     sx={{ backgroundColor: 'text.primary', color: 'background.paper', mt: '-2px' }}
                     label={
-                      <Typography fontWeight={700} variant="overline">
+                      <Typography
+                        variant="overline"
+                        sx={{
+                          fontWeight: 700,
+                        }}
+                      >
                         EARN REWARDS
                       </Typography>
                     }
                   />
                 </Box>
-                <Typography variant="h4" fontWeight={700}>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: 700,
+                  }}
+                >
                   You&apos;re invited!
                 </Typography>
                 <Typography>
@@ -110,7 +137,13 @@ const OutreachPopup = (): ReactElement | null => {
                     Ask me later
                   </Button>
                 </Track>
-                <Typography variant="body2" color="primary.light" mx="auto">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'primary.light',
+                    mx: 'auto',
+                  }}
+                >
                   It&apos;ll only take 2 minutes.
                 </Typography>
                 <Track {...OUTREACH_EVENTS.CLOSE_POPUP}>
