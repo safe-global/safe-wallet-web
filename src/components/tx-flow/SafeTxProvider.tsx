@@ -8,7 +8,7 @@ import type { EIP712TypedData } from '@safe-global/safe-gateway-typescript-sdk'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import { prependSafeToL2Migration } from '@/utils/transactions'
-import { useSelectAvailableSigner } from '@/hooks/wallets/useAvailableSigner'
+import { useSelectAvailableSigner } from '@/hooks/wallets/useSelectAvailableSigner'
 
 export type SafeTxContextParams = {
   safeTx?: SafeTransaction
@@ -50,6 +50,7 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
   const { safe } = useSafeInfo()
   const chain = useCurrentChain()
+  const selectAvailableSigner = useSelectAvailableSigner()
 
   const setAndMigrateSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>> = useCallback(
     (
@@ -63,8 +64,11 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
       }
 
       prependSafeToL2Migration(safeTx, safe, chain).then(setSafeTx)
+
+      // Select a matching signer when we update the transaction
+      selectAvailableSigner(safeTx, safe)
     },
-    [chain, safe],
+    [chain, safe, selectAvailableSigner],
   )
 
   // Signed txs cannot be updated
@@ -89,9 +93,6 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
       })
       .catch(setSafeTxError)
   }, [isSigned, finalNonce, finalSafeTxGas, safeTx?.data])
-
-  // Update the available signers based on the transaction
-  useSelectAvailableSigner(safeTx, safe)
 
   // Log errors
   useEffect(() => {
