@@ -1,4 +1,5 @@
 import useIsExpiredSwap from '@/features/swap/hooks/useIsExpiredSwap'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import type { SyntheticEvent } from 'react'
 import { useContext, type ReactElement } from 'react'
 import { type TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
@@ -24,6 +25,7 @@ const SignTxButton = ({
   const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
   const nestedOwners = useNestedSafeOwners()
+  const isSafeOwner = useIsSafeOwner()
   const isSignable =
     isSignableBy(txSummary, wallet?.address || '') || nestedOwners?.some((owner) => isSignableBy(txSummary, owner))
   const safeSDK = useSafeSDK()
@@ -39,7 +41,7 @@ const SignTxButton = ({
   return (
     <CheckWallet>
       {(isOk) => (
-        <Tooltip title={isOk && !isSignable ? "You've already signed this transaction" : ''}>
+        <Tooltip title={isOk && !isSignable && isSafeOwner ? "You've already signed this transaction" : ''}>
           <span>
             <Track {...TX_LIST_EVENTS.CONFIRM}>
               <Button

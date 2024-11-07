@@ -1,4 +1,4 @@
-import { useIsWalletDelegate } from '@/hooks/useDelegates'
+import { useIsWalletProposer } from '@/hooks/useProposers'
 import { useMemo, type ReactElement } from 'react'
 import useIsOnlySpendingLimitBeneficiary from '@/hooks/useIsOnlySpendingLimitBeneficiary'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
@@ -16,6 +16,7 @@ type CheckWalletProps = {
   noTooltip?: boolean
   checkNetwork?: boolean
   allowUndeployedSafe?: boolean
+  allowProposer?: boolean
 }
 
 enum Message {
@@ -31,13 +32,14 @@ const CheckWallet = ({
   noTooltip,
   checkNetwork = false,
   allowUndeployedSafe = false,
+  allowProposer = true,
 }: CheckWalletProps): ReactElement => {
   const wallet = useWallet()
   const isSafeOwner = useIsSafeOwner()
   const isOnlySpendingLimit = useIsOnlySpendingLimitBeneficiary()
   const connectWallet = useConnectWallet()
   const isWrongChain = useIsWrongChain()
-  const isDelegate = useIsWalletDelegate()
+  const isProposer = useIsWalletProposer()
 
   const { safe } = useSafeInfo()
 
@@ -49,6 +51,7 @@ const CheckWallet = ({
     if (!wallet) {
       return Message.WalletNotConnected
     }
+
     if (isUndeployedSafe && !allowUndeployedSafe) {
       return Message.SafeNotActivated
     }
@@ -56,17 +59,22 @@ const CheckWallet = ({
     if (
       !allowNonOwner &&
       !isSafeOwner &&
-      !isDelegate &&
+      !isProposer &&
       !isNestedSafeOwner &&
       (!isOnlySpendingLimit || !allowSpendingLimit)
     ) {
       return Message.NotSafeOwner
     }
+
+    if (!allowProposer && isProposer && !isSafeOwner) {
+      return Message.NotSafeOwner
+    }
   }, [
     allowNonOwner,
+    allowProposer,
     allowSpendingLimit,
     allowUndeployedSafe,
-    isDelegate,
+    isProposer,
     isNestedSafeOwner,
     isOnlySpendingLimit,
     isSafeOwner,

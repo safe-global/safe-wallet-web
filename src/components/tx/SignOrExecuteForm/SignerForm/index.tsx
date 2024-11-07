@@ -30,7 +30,10 @@ export const SignerForm = () => {
   const signerAddress = signer?.address
   const { safe } = useSafeInfo()
   const { safeTx } = useContext(SafeTxContext)
-  const availableSigners = useMemo(() => getAvailableSigners(wallet, nestedSafeOwners, safe, safeTx), [])
+  const availableSigners = useMemo(
+    () => getAvailableSigners(wallet, nestedSafeOwners, safe, safeTx),
+    [nestedSafeOwners, safe, safeTx, wallet],
+  )
 
   const onChange = (event: SelectChangeEvent<string>) => {
     trackEvent(MODALS_EVENTS.CHANGE_SIGNER)

@@ -31,7 +31,7 @@ describe('SignForm', () => {
       signTx: jest.fn(),
       addToBatch: jest.fn(),
       executeTx: jest.fn(),
-      signDelegateTx: jest.fn(),
+      signProposerTx: jest.fn(),
     },
     txSecurity: defaultSecurityContextValues,
   }
@@ -81,7 +81,7 @@ describe('SignForm', () => {
           proposeTx: jest.fn(),
           signTx: mockSignTx,
           addToBatch: jest.fn(),
-          signDelegateTx: jest.fn(),
+          signProposerTx: jest.fn(),
           executeTx: jest.fn(),
         }}
       />,
@@ -108,7 +108,7 @@ describe('SignForm', () => {
           signTx: mockSignTx,
           addToBatch: jest.fn(),
           executeTx: jest.fn(),
-          signDelegateTx: jest.fn(),
+          signProposerTx: jest.fn(),
         }}
       />,
     )
@@ -157,7 +157,7 @@ describe('SignForm', () => {
           signTx: jest.fn(),
           addToBatch: mockAddToBatch,
           executeTx: jest.fn(),
-          signDelegateTx: jest.fn(),
+          signProposerTx: jest.fn(),
         }}
       />,
     )
