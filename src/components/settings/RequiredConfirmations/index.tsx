@@ -29,7 +29,12 @@ export const RequiredConfirmation = ({ threshold, owners }: { threshold: number;
             <CheckWallet>
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.CHANGE_THRESHOLD} as="span">
-                  <Button onClick={() => setTxFlow(<ChangeThresholdFlow />)} variant="contained" disabled={!isOk}>
+                  <Button
+                    onClick={() => setTxFlow(<ChangeThresholdFlow />)}
+                    variant="contained"
+                    disabled={!isOk}
+                    size="small"
+                  >
                     Change
                   </Button>
                 </Track>

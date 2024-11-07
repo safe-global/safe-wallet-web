@@ -1,6 +1,6 @@
-import DelegateForm from '@/components/tx/SignOrExecuteForm/DelegateForm'
+import ProposerForm from '@/components/tx/SignOrExecuteForm/ProposerForm'
 import CounterfactualForm from '@/features/counterfactual/CounterfactualForm'
-import { useIsWalletDelegate } from '@/hooks/useDelegates'
+import { useIsWalletProposer } from '@/hooks/useProposers'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { type ReactElement, type ReactNode, useState, useContext, useCallback } from 'react'
 import madProps from '@/utils/mad-props'
@@ -60,12 +60,12 @@ const trackTxEvents = (
   isCreation: boolean,
   isExecuted: boolean,
   isRoleExecution: boolean,
-  isDelegateCreation: boolean,
+  isProposerCreation: boolean,
 ) => {
   const creationEvent = isRoleExecution
     ? TX_EVENTS.CREATE_VIA_ROLE
-    : isDelegateCreation
-    ? TX_EVENTS.CREATE_VIA_DELEGATE
+    : isProposerCreation
+    ? TX_EVENTS.CREATE_VIA_PROPOSER
     : TX_EVENTS.CREATE
   const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
   const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
@@ -98,13 +98,13 @@ export const SignOrExecuteForm = ({
   const isCorrectNonce = useValidateNonce(safeTx)
   const isBatchable = props.isBatchable !== false && safeTx && !isDelegateCall(safeTx)
 
-  const isDelegate = useIsWalletDelegate()
-
   const [trigger] = useLazyGetTransactionDetailsQuery()
   const [readableApprovals] = useApprovalInfos({ safeTransaction: safeTx })
   const isApproval = readableApprovals && readableApprovals.length > 0
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
+  const isProposer = useIsWalletProposer()
+  const isProposing = isProposer && !isSafeOwner && isCreation
   const isCounterfactualSafe = !safe.deployed
   const multiChainMigrationTarget = extractMigrationL2MasterCopyAddress(safeTx)
   const isMultiChainMigration = !!multiChainMigrationTarget
@@ -125,12 +125,12 @@ export const SignOrExecuteForm = ({
     (props.onlyExecute || shouldExecute) && canExecuteThroughRole && (!canExecute || preferThroughRole)
 
   const onFormSubmit = useCallback(
-    async (txId: string, isExecuted = false, isRoleExecution = false, isDelegateCreation = false) => {
+    async (txId: string, isExecuted = false, isRoleExecution = false, isProposerCreation = false) => {
       onSubmit?.(txId, isExecuted)
 
       const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(details, !!isCreation, isExecuted, isRoleExecution, isDelegateCreation)
+      trackTxEvents(details, !!isCreation, isExecuted, isRoleExecution, isProposerCreation)
     },
     [chainId, isCreation, onSubmit, trigger],
   )
@@ -140,7 +140,7 @@ export const SignOrExecuteForm = ({
     [onFormSubmit],
   )
 
-  const onDelegateFormSubmit = useCallback<typeof onFormSubmit>(
+  const onProposerFormSubmit = useCallback<typeof onFormSubmit>(
     (txId, isExecuted) => onFormSubmit(txId, isExecuted, false, true),
     [onFormSubmit],
   )
@@ -173,7 +173,13 @@ export const SignOrExecuteForm = ({
 
       <TxCard>
         <ConfirmationTitle
-          variant={willExecute ? ConfirmationTitleTypes.execute : ConfirmationTitleTypes.sign}
+          variant={
+            isProposing
+              ? ConfirmationTitleTypes.propose
+              : willExecute
+              ? ConfirmationTitleTypes.execute
+              : ConfirmationTitleTypes.sign
+          }
           isCreation={isCreation}
         />
 
@@ -183,7 +189,7 @@ export const SignOrExecuteForm = ({
           </ErrorMessage>
         )}
 
-        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && !isDelegate && (
+        {(canExecute || canExecuteThroughRole) && !props.onlyExecute && !isCounterfactualSafe && !isProposing && (
           <ExecuteCheckbox onChange={setShouldExecute} />
         )}
 
@@ -193,10 +199,10 @@ export const SignOrExecuteForm = ({
 
         <Blockaid />
 
-        {isCounterfactualSafe && !isDelegate && (
+        {isCounterfactualSafe && !isProposing && (
           <CounterfactualForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} onlyExecute />
         )}
-        {!isCounterfactualSafe && willExecute && !isDelegate && (
+        {!isCounterfactualSafe && willExecute && !isProposing && (
           <ExecuteForm {...props} safeTx={safeTx} isCreation={isCreation} onSubmit={onFormSubmit} />
         )}
         {!isCounterfactualSafe && willExecuteThroughRole && (
@@ -208,7 +214,7 @@ export const SignOrExecuteForm = ({
             role={(allowingRole || mostLikelyRole)!}
           />
         )}
-        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isDelegate && (
+        {!isCounterfactualSafe && !willExecute && !willExecuteThroughRole && !isProposing && (
           <SignForm
             {...props}
             safeTx={safeTx}
@@ -218,7 +224,7 @@ export const SignOrExecuteForm = ({
           />
         )}
 
-        {isDelegate && <DelegateForm {...props} safeTx={safeTx} onSubmit={onDelegateFormSubmit} />}
+        {isProposing && <ProposerForm {...props} safeTx={safeTx} onSubmit={onProposerFormSubmit} />}
       </TxCard>
     </>
   )

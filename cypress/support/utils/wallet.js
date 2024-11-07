@@ -8,12 +8,17 @@ const privateKeyStr = 'Private key'
 export function connectSigner(signer) {
   const actions = {
     privateKey: () => {
-      cy.get(onboardv2)
-        .shadow()
-        .find('button')
-        .contains(privateKeyStr)
-        .click()
-        .then(() => handlePkConnect())
+      cy.wait(2000)
+      cy.get('body').then(($body) => {
+        if ($body.find(onboardv2).length > 0) {
+          cy.get(onboardv2)
+            .shadow()
+            .find('button')
+            .contains(privateKeyStr)
+            .click()
+            .then(() => handlePkConnect())
+        }
+      })
     },
     retry: () => {
       cy.wait(1000).then(enterPrivateKey)

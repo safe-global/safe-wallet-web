@@ -3,7 +3,14 @@ import DecodedTx from '../DecodedTx'
 import ConfirmationOrder from '../ConfirmationOrder'
 import useDecodeTx from '@/hooks/useDecodeTx'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
-import { isAnyStakingTxInfo, isCustomTxInfo, isGenericConfirmation, isOrderTxInfo } from '@/utils/transaction-guards'
+import {
+  isAnyStakingTxInfo,
+  isCustomTxInfo,
+  isExecTxData,
+  isGenericConfirmation,
+  isOnChainConfirmationTxData,
+  isOrderTxInfo,
+} from '@/utils/transaction-guards'
 import { type ReactNode, useContext, useMemo } from 'react'
 import TxData from '@/components/transactions/TxDetails/TxData'
 import type { NarrowConfirmationViewProps } from './types'
@@ -12,6 +19,8 @@ import ChangeThreshold from './ChangeThreshold'
 import BatchTransactions from './BatchTransactions'
 import { TxModalContext } from '@/components/tx-flow'
 import { isSettingsChangeView, isChangeThresholdView, isConfirmBatchView } from './utils'
+import { OnChainConfirmation } from '@/components/transactions/TxDetails/TxData/NestedTransaction/OnChainConfirmation'
+import { ExecTransaction } from '@/components/transactions/TxDetails/TxData/NestedTransaction/ExecTransaction'
 
 type ConfirmationViewProps = {
   txDetails?: TransactionDetails
@@ -24,6 +33,7 @@ type ConfirmationViewProps = {
   children?: ReactNode
 }
 
+// TODO: Maybe unify this with the if block in TxData
 const getConfirmationViewComponent = ({
   txDetails,
   txInfo,
@@ -34,6 +44,11 @@ const getConfirmationViewComponent = ({
   if (isConfirmBatchView(txFlow)) return <BatchTransactions />
 
   if (isSettingsChangeView(txInfo)) return <SettingsChange txDetails={txDetails} txInfo={txInfo as SettingsChange} />
+
+  if (isOnChainConfirmationTxData(txDetails.txData))
+    return <OnChainConfirmation data={txDetails.txData} isConfirmationView />
+
+  if (isExecTxData(txDetails.txData)) return <ExecTransaction data={txDetails.txData} isConfirmationView />
 
   return null
 }

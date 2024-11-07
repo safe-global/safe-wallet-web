@@ -7,7 +7,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import { isSmartContractWallet } from '@/utils/wallets'
 import {
-  dispatchDelegateTxSigning,
+  dispatchProposerTxSigning,
   dispatchOnChainSigning,
   dispatchTxExecution,
   dispatchTxProposal,
@@ -34,7 +34,7 @@ type TxActions = {
     origin?: string,
     isRelayed?: boolean,
   ) => Promise<string>
-  signDelegateTx: (safeTx?: SafeTransaction) => Promise<string>
+  signProposerTx: (safeTx?: SafeTransaction) => Promise<string>
   proposeTx: (safeTx: SafeTransaction, txId?: string, origin?: string) => Promise<TransactionDetails>
 }
 
@@ -126,12 +126,12 @@ export const useTxActions = (): TxActions => {
       return tx.txId
     }
 
-    const signDelegateTx: TxActions['signDelegateTx'] = async (safeTx) => {
+    const signProposerTx: TxActions['signProposerTx'] = async (safeTx) => {
       assertTx(safeTx)
       assertWallet(wallet)
       assertOnboard(onboard)
 
-      const signedTx = await dispatchDelegateTxSigning(safeTx, wallet)
+      const signedTx = await dispatchProposerTxSigning(safeTx, wallet)
 
       const tx = await _propose(wallet.address, signedTx)
       return tx.txId
@@ -174,7 +174,7 @@ export const useTxActions = (): TxActions => {
       return txId
     }
 
-    return { addToBatch, signTx, executeTx, signDelegateTx, proposeTx }
+    return { addToBatch, signTx, executeTx, signProposerTx, proposeTx }
   }, [safe, wallet, addTxToBatch, onboard, chain])
 }
 

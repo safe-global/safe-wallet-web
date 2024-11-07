@@ -113,7 +113,7 @@ type MultiOverviewQueryParams = {
   safes: SafeItem[]
 }
 
-export const safeOverviewEndpoints = (builder: EndpointBuilder<any, never, 'gatewayApi'>) => ({
+export const safeOverviewEndpoints = (builder: EndpointBuilder<any, 'Submissions', 'gatewayApi'>) => ({
   getSafeOverview: builder.query<SafeOverview | null, { safeAddress: string; walletAddress?: string; chainId: string }>(
     {
       async queryFn({ safeAddress, walletAddress, chainId }, { getState }) {
