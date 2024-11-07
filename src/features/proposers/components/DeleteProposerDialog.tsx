@@ -67,7 +67,7 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
       await deleteProposer({
         chainId,
         delegateAddress: proposer.delegate,
-        delegator: wallet.address,
+        delegator: proposer.delegator,
         safeAddress,
         signature,
         isHardwareWallet: hardwareWallet,
