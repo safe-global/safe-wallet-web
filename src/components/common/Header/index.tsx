@@ -1,3 +1,5 @@
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
+import { useIsWalletProposer } from '@/hooks/useProposers'
 import type { Dispatch, SetStateAction } from 'react'
 import { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
@@ -39,6 +41,8 @@ function getLogoLink(router: ReturnType<typeof useRouter>): Url {
 const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
   const safeAddress = useSafeAddress()
   const showSafeToken = useSafeTokenEnabled()
+  const isProposer = useIsWalletProposer()
+  const isSafeOwner = useIsSafeOwner()
   const router = useRouter()
   const enableWc = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
 
@@ -58,6 +62,8 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
       onBatchToggle((isOpen) => !isOpen)
     }
   }
+
+  const showBatchButton = safeAddress && (!isProposer || isSafeOwner)
 
   return (
     <Paper className={css.container}>
@@ -91,7 +97,7 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         <NotificationCenter />
       </div>
 
-      {safeAddress && (
+      {showBatchButton && (
         <div className={classnames(css.element, css.hideMobile)}>
           <BatchIndicator onClick={handleBatchToggle} />
         </div>

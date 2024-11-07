@@ -55,7 +55,7 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
   return (
     <Tooltip
       title={
-        <Box>
+        <Box data-testid="multichain-tooltip">
           <Typography fontSize="14px">Multichain account on:</Typography>
           {safes.map((safeItem) => (
             <Box p="4px 0px" key={safeItem.chainId}>
@@ -183,7 +183,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
       className={classnames(css.multiListItem, css.listItem, { [css.currentListItem]: isCurrentSafe })}
       sx={{ p: 0 }}
     >
-      <Accordion expanded={expanded} sx={{ border: 'none' }}>
+      <Accordion data-testid="multichain-item-summary" expanded={expanded} sx={{ border: 'none' }}>
         <AccordionSummary
           onClick={toggleExpand}
           sx={{
@@ -193,7 +193,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
           }}
         >
           <Box className={css.safeLink} width="100%">
-            <Box pr={2.5}>
+            <Box pr={2.5} data-testid="group-safe-icon">
               <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
             </Box>
             <Typography variant="body2" component="div" className={css.safeAddress}>
@@ -202,12 +202,17 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
                   {multiSafeAccountItem.name}
                 </Typography>
               )}
-              <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
+              <Typography
+                data-testid="group-address"
+                color="var(--color-primary-light)"
+                fontSize="inherit"
+                component="span"
+              >
                 {shortenAddress(address)}
               </Typography>
             </Typography>
             <MultichainIndicator safes={safes} />
-            <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
+            <Typography data-testid="group-balance" variant="body2" fontWeight="bold" textAlign="right" pl={2}>
               {totalFiatValue !== undefined ? (
                 <FiatValue value={totalFiatValue} />
               ) : (
@@ -239,7 +244,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
           />
         </AccordionSummary>
         <AccordionDetails sx={{ padding: '0px 12px' }}>
-          <Box>
+          <Box data-testid="subacounts-container">
             {sortedSafes.map((safeItem) => (
               <SubAccountItem
                 onLinkClick={onLinkClick}

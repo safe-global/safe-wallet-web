@@ -1,0 +1,28 @@
+.popup {
+  position: fixed;
+  z-index: 1300;
+  bottom: var(--space-2);
+  right: var(--space-2);
+  max-width: 400px;
+}
+
+.container {
+  padding: var(--space-2);
+  border-radius: var(--space-2);
+  background: linear-gradient(180deg, #b0ffc9 0%, #d7f6ff 99.5%);
+}
+
+.close {
+  position: absolute;
+  right: var(--space-1);
+  top: var(--space-1);
+  z-index: 1;
+  padding: var(--space-1);
+}
+
+@media (max-width: 599.99px) {
+  .popup {
+    right: 0;
+    bottom: 0;
+  }
+}

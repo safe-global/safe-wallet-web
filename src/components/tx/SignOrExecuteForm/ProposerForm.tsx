@@ -1,22 +1,21 @@
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { isWalletRejection } from '@/utils/wallets'
 import { type ReactElement, type SyntheticEvent, useContext, useState } from 'react'
-import { Box, Button, CardActions, CircularProgress, Divider } from '@mui/material'
+import { Box, Button, CardActions, CircularProgress, Divider, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import CheckWallet from '@/components/common/CheckWallet'
 import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
-import ErrorMessage from '@/components/tx/ErrorMessage'
 import { TxSecurityContext } from '@/components/tx/security/shared/TxSecurityContext'
 import { useTxActions } from '@/components/tx/SignOrExecuteForm/hooks'
-import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm/index'
+import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm/SignOrExecuteForm'
 import useWallet from '@/hooks/wallets/useWallet'
 import { Errors, trackError } from '@/services/exceptions'
 import { asError } from '@/services/exceptions/utils'
 import madProps from '@/utils/mad-props'
 import Stack from '@mui/system/Stack'
 
-export const DelegateForm = ({
+export const ProposerForm = ({
   safeTx,
   disableSubmit = false,
   txActions,
@@ -33,7 +32,7 @@ export const DelegateForm = ({
 
   // Hooks
   const wallet = useWallet()
-  const { signDelegateTx } = txActions
+  const { signProposerTx } = txActions
   const { setTxFlow } = useContext(TxModalContext)
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
 
@@ -52,7 +51,7 @@ export const DelegateForm = ({
     setIsRejectedByUser(false)
 
     try {
-      const txId = await signDelegateTx(safeTx)
+      const txId = await signProposerTx(safeTx)
       onSubmit?.(txId)
     } catch (_err) {
       const err = asError(_err)
@@ -72,10 +71,10 @@ export const DelegateForm = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <ErrorMessage level="info">
-        You are creating this transaction as a delegate. It will not have any signatures until it is confirmed by an
-        owner.
-      </ErrorMessage>
+      <Typography>
+        As a <strong>Proposer</strong>, you&apos;re creating this transaction without any signatures. It will need
+        approval from a signer before it becomes a valid transaction.
+      </Typography>
 
       {isRejectedByUser && (
         <Box mt={1}>
@@ -115,7 +114,7 @@ export const DelegateForm = ({
 
 const useTxSecurityContext = () => useContext(TxSecurityContext)
 
-export default madProps(DelegateForm, {
+export default madProps(ProposerForm, {
   txActions: useTxActions,
   txSecurity: useTxSecurityContext,
 })

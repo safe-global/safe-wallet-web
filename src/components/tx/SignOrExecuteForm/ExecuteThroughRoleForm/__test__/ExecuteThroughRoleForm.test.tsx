@@ -143,6 +143,7 @@ describe('ExecuteThroughRoleForm', () => {
 
     const { findByText, getByText } = render(
       <ExecuteThroughRoleForm
+        txId="0x0123412"
         safeTx={safeTx}
         role={{ ...TEST_ROLE_OK, status: zodiacRoles.Status.TargetAddressNotAllowed }}
       />,
@@ -170,7 +171,9 @@ describe('ExecuteThroughRoleForm', () => {
 
     const onSubmit = jest.fn()
 
-    const { findByText } = render(<ExecuteThroughRoleForm safeTx={safeTx} role={TEST_ROLE_OK} onSubmit={onSubmit} />)
+    const { findByText } = render(
+      <ExecuteThroughRoleForm txId="0x01323" safeTx={safeTx} role={TEST_ROLE_OK} onSubmit={onSubmit} />,
+    )
 
     fireEvent.click(await findByText('Execute'))
 

@@ -165,7 +165,7 @@ const ReplaySafeDialog = ({
   return (
     <ModalDialog open={open} onClose={onClose} dialogTitle="Add another network" hideChainIndicator>
       <form onSubmit={onFormSubmit} id="recreate-safe">
-        <DialogContent>
+        <DialogContent data-testid="add-chain-dialog">
           <FormProvider {...formMethods}>
             <Stack spacing={2}>
               <Typography>Add this Safe to another network with the same address.</Typography>
