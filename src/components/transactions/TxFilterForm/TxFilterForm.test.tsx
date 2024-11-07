@@ -19,7 +19,7 @@ const toggleFilter = jest.fn()
 
 const fromDate = '20/01/2021'
 const toDate = '20/01/2020'
-const placeholder = 'dd/mm/yyyy'
+const placeholder = 'DD/MM/YYYY'
 const errorMsgFormat = 'Invalid address format'
 
 describe('TxFilterForm Component Tests', () => {
