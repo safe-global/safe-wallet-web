@@ -14,10 +14,15 @@ export const getAvailableSigners = (
 
   const isDirectOwner =
     typeof wallet?.address === 'string' && safe.owners.map((owner) => owner.value).includes(wallet.address)
-
-  const availableSigners = nestedSafeOwners?.filter((owner) => !tx?.signatures.has(owner.toLowerCase())) ?? []
+  const isFullySigned = tx.signatures.size >= safe.threshold
+  const availableSigners = nestedSafeOwners ? [...nestedSafeOwners] : []
   if (wallet?.address && isDirectOwner && !tx?.signatures.has(wallet.address.toLowerCase())) {
     availableSigners?.push(wallet.address)
+  }
+
+  if (!isFullySigned) {
+    // Filter signers that already signed
+    return availableSigners.filter((signer) => !tx?.signatures.has(signer.toLowerCase()))
   }
   return availableSigners
 }
