@@ -124,6 +124,7 @@ export const networks = {
   sepolia: 'Sepolia',
   polygon: 'Polygon',
   gnosis: 'Gnosis',
+  zkSync: 'zkSync Era',
 }
 
 export const tokenAbbreviation = {

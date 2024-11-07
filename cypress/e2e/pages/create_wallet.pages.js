@@ -185,9 +185,12 @@ export function clearWalletName() {
   cy.get(nameInput).clear()
 }
 
+export function openNetworkSelector() {
+  cy.get(expandMoreIcon).parents('div').eq(1).click()
+}
 export function selectNetwork(network) {
   cy.wait(1000)
-  cy.get(expandMoreIcon).parents('div').eq(1).click()
+  openNetworkSelector()
   cy.wait(1000)
   let regex = new RegExp(`^${network}$`)
   cy.get('li').parents('ul').contains(regex).click()
