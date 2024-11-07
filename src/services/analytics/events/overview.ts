@@ -66,6 +66,10 @@ export const OVERVIEW_EVENTS = {
     action: 'Search safes',
     category: OVERVIEW_CATEGORY,
   },
+  SORT_SAFES: {
+    action: 'Sort Safes',
+    category: OVERVIEW_CATEGORY,
+  },
   SIDEBAR: {
     action: 'Sidebar',
     category: OVERVIEW_CATEGORY,
@@ -138,6 +142,10 @@ export const OVERVIEW_EVENTS = {
     category: OVERVIEW_CATEGORY,
     //label: OPEN_SAFE_LABELS
   },
+  PIN_SAFE: {
+    action: 'Toggle Safe pinned state',
+    category: OVERVIEW_CATEGORY,
+  },
   // Track clicks on links to Safe Accounts
   EXPAND_MULTI_SAFE: {
     action: 'Expand multi Safe',
@@ -183,6 +191,11 @@ export const OVERVIEW_EVENTS = {
     action: 'Staking banner learn more',
     category: OVERVIEW_CATEGORY,
   },
+}
+
+export enum PIN_SAFE_LABELS {
+  pin = 'pin',
+  unpin = 'unpin',
 }
 
 export enum OPEN_SAFE_LABELS {
