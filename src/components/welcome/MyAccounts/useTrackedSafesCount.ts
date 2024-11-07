@@ -28,8 +28,8 @@ const useTrackSafesCount = (
   // If all safes of a multichain account are on the watchlist we put the entire account on the watchlist
   const watchlistMultiChainSafes = useMemo(
     () =>
-      safes.allMultiChainSafes?.filter(
-        (account) => account.safes.some(({ isWatchlist, isPinned }) => isWatchlist && !isPinned),
+      safes.allMultiChainSafes?.filter((account) =>
+        account.safes.some(({ isWatchlist, isPinned }) => isWatchlist && !isPinned),
       ),
     [safes],
   )
