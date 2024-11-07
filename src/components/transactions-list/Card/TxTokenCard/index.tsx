@@ -11,6 +11,8 @@ import {
 } from '@/src/utils/transaction-guards'
 import { ellipsis, formatValue } from '@/src/utils/formatters'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
+import { useSelector } from 'react-redux'
+import { selectNativeCurrency } from '@/src/store/activeChainSlice'
 
 interface TxTokenCardProps {
   bordered?: boolean
@@ -29,15 +31,16 @@ interface tokenDetails {
 const getTokenDetails = (txInfo: Transfer): tokenDetails => {
   const transfer = txInfo.transferInfo
   const unnamedToken = 'Unnamed token'
+  const nativeCurrencty = useSelector(selectNativeCurrency)
 
   if (isNativeTokenTransfer(transfer))
     return {
-      value: formatValue(transfer.value, 18),
+      value: formatValue(transfer.value, nativeCurrencty.decimals),
       // take it from the native currency slice
-      decimals: 18,
-      tokenSymbol: 'ETH',
-      name: 'Ether',
-      logoUri: 'https://safe-transaction-assets.safe.global/chains/1/currency_logo.png',
+      decimals: nativeCurrencty.decimals,
+      tokenSymbol: nativeCurrencty.symbol,
+      name: nativeCurrencty.name,
+      logoUri: nativeCurrencty.logoUri,
     }
 
   if (isERC20Transfer(transfer)) {

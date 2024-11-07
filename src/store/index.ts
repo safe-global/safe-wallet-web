@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import { reduxStorage } from './storage'
 import txHistory from './txHistorySlice'
+import activeChain from './activeChainSlice'
 import { gatewayApi } from './gateway'
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
 import { isTestingEnv } from '../config/constants'
@@ -14,6 +15,7 @@ const persistConfig = {
 }
 export const rootReducer = combineReducers({
   txHistory,
+  activeChain,
   [gatewayApi.reducerPath]: gatewayApi.reducer,
 })
 
