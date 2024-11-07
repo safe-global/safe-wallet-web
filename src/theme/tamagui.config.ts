@@ -70,16 +70,6 @@ export const config = createTamagui({
       error: tokens.color.errorMainLight,
       errorDark: tokens.color.errorDarkDark,
     },
-    light_pendingTx: {
-      background: tokens.color.warning1MainLight,
-      color: tokens.color.warning1ContrastTextLight,
-      badgeTextColor: tokens.color.textPrimaryLight,
-    },
-    dark_pendingTx: {
-      background: tokens.color.warning1MainDark,
-      color: tokens.color.warning1ContrastTextDark,
-      badgeTextColor: tokens.color.textPrimaryLight,
-    },
     light_label: {
       color: tokens.color.textSecondaryLight,
     },
@@ -97,10 +87,12 @@ export const config = createTamagui({
     light_warning: {
       background: tokens.color.warning1MainLight,
       color: tokens.color.warning1ContrastTextLight,
+      badgeTextColor: tokens.color.textPrimaryLight,
     },
     dark_warning: {
       background: tokens.color.warning1MainDark,
       color: tokens.color.warning1ContrastTextDark,
+      badgeTextColor: tokens.color.backgroundDefaultDark,
     },
     light_error: {
       background: tokens.color.error1MainLight,

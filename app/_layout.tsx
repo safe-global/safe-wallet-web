@@ -5,19 +5,22 @@ import { Provider } from 'react-redux'
 import { persistor, store } from '@/src/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { isStorybookEnv } from '@/src/config/constants'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 function RootLayout() {
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <SafeThemeProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </SafeThemeProvider>
-      </PersistGate>
-    </Provider>
+    <GestureHandlerRootView>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <SafeThemeProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </SafeThemeProvider>
+        </PersistGate>
+      </Provider>
+    </GestureHandlerRootView>
   )
 }
 

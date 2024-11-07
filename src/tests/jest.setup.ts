@@ -8,6 +8,7 @@ jest.useFakeTimers()
  */
 jest.mock('expo-font', () => ({
   useFonts: () => [true],
+  isLoaded: () => true,
 }))
 
 jest.mock('react-native-mmkv', () => ({
