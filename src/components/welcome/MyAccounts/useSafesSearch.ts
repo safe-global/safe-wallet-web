@@ -15,7 +15,6 @@ const useSafesSearch = (safes: (SafeItem | MultiChainSafeItem)[], query: string)
       trackEvent({
         category: OVERVIEW_EVENTS.SEARCH.category,
         action: OVERVIEW_EVENTS.SEARCH.action,
-        label: query,
       })
     }
   }, [query])

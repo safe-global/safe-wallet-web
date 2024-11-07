@@ -27,7 +27,10 @@ const useTrackSafesCount = (
 
   // If all safes of a multichain account are on the watchlist we put the entire account on the watchlist
   const watchlistMultiChainSafes = useMemo(
-    () => safes.allMultiChainSafes?.filter((account) => !account.safes.some(({ isWatchlist }) => !isWatchlist)),
+    () =>
+      safes.allMultiChainSafes?.filter(
+        (account) => !account.safes.some(({ isWatchlist, isPinned }) => !isWatchlist && !isPinned),
+      ),
     [safes],
   )
 
@@ -38,7 +41,7 @@ const useTrackSafesCount = (
   const watchlistSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
     () => [
       ...(watchlistMultiChainSafes ?? []),
-      ...(safes.allSingleSafes?.filter(({ isWatchlist }) => isWatchlist) ?? []),
+      ...(safes.allSingleSafes?.filter(({ isWatchlist, isPinned }) => isWatchlist && !isPinned) ?? []),
     ],
     [safes, watchlistMultiChainSafes],
   )
@@ -64,7 +67,7 @@ const useTrackSafesCount = (
       (prev, current) => prev + (isMultiChainSafeItem(current) ? current.safes.length : 1),
       0,
     )
-    if (wallet && !isPinnedSafesTracked && pinnedSafes && pinnedSafes.length > 0 && isLoginPage) {
+    if (!isPinnedSafesTracked && pinnedSafes && pinnedSafes.length > 0 && isLoginPage) {
       trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_PINNED, label: totalSafesPinned })
       isPinnedSafesTracked = true
     }
