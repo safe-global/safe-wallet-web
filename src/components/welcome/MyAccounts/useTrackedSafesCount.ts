@@ -29,7 +29,7 @@ const useTrackSafesCount = (
   const watchlistMultiChainSafes = useMemo(
     () =>
       safes.allMultiChainSafes?.filter(
-        (account) => !account.safes.some(({ isWatchlist, isPinned }) => !isWatchlist && !isPinned),
+        (account) => account.safes.some(({ isWatchlist, isPinned }) => isWatchlist && !isPinned),
       ),
     [safes],
   )
