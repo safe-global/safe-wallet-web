@@ -120,7 +120,7 @@ const SafePrivacyPolicy = () => (
         <a href="#section-13">Changes to this Privacy Policy</a>
       </li>
       <li>
-        <a href="#section-14">Contacts us</a>
+        <a href="#section-14">Contact us</a>
       </li>
     </ol>
     <h3 id="section-2">2. Glossary</h3>
