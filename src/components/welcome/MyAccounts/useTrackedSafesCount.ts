@@ -71,7 +71,7 @@ const useTrackSafesCount = (
       trackEvent({ ...OVERVIEW_EVENTS.TOTAL_SAFES_PINNED, label: totalSafesPinned })
       isPinnedSafesTracked = true
     }
-  }, [isLoginPage, pinnedSafes, wallet])
+  }, [isLoginPage, pinnedSafes])
 
   useEffect(() => {
     const totalSafesWatched = watchlistSafes?.reduce(
