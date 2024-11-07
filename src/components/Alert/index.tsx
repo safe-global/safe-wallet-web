@@ -2,6 +2,7 @@ import { View, Text, Theme } from 'tamagui'
 import React, { type ReactElement } from 'react'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import { IconName } from '@/src/types/iconTypes'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 type AlertType = 'error' | 'warning' | 'info'
 
@@ -10,6 +11,10 @@ interface AlertProps {
   message: string
   iconName?: IconName
   displayIcon?: boolean
+  fullWidth?: boolean
+  endIcon?: React.ReactNode
+  startIcon?: React.ReactNode
+  onPress?: () => void
 }
 
 const icons = {
@@ -24,25 +29,42 @@ const getAlertIcon = (type: AlertType, iconName?: IconName, displayIcon?: boolea
   return iconName ? <SafeFontIcon name={iconName} /> : icons[type]
 }
 
-export const Alert = ({ type, message, iconName, displayIcon = true }: AlertProps) => {
+export const Alert = ({
+  type,
+  fullWidth = true,
+  message,
+  iconName,
+  startIcon,
+  endIcon,
+  displayIcon = true,
+  onPress,
+}: AlertProps) => {
   const Icon = getAlertIcon(type, iconName, displayIcon)
 
   return (
     <Theme name={type}>
-      <View
-        backgroundColor={'$background'}
-        padding={'$2'}
-        justifyContent={'center'}
-        alignItems={'center'}
-        borderRadius={'$2'}
-      >
-        <View justifyContent={'center'} alignItems={'center'} flexDirection={'row'}>
-          {Icon}
-          <Text paddingLeft={'$2'} fontSize={'$3'} fontWeight={'600'} fontFamily={'$body'}>
-            {message}
-          </Text>
+      <TouchableOpacity disabled={!onPress} onPress={onPress}>
+        <View flexDirection="row" width="100%" justifyContent="center">
+          <View
+            alignItems="center"
+            gap={'$3'}
+            width={fullWidth ? '100%' : 'auto'}
+            flexDirection="row"
+            justifyContent="center"
+            backgroundColor="$background"
+            padding="$2"
+            borderRadius={'$2'}
+          >
+            {startIcon ? <View>{startIcon}</View> : Icon}
+
+            <Text fontSize={'$4'} fontWeight={'600'} fontFamily={'$body'}>
+              {message}
+            </Text>
+
+            {endIcon && <View>{endIcon}</View>}
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Theme>
   )
 }

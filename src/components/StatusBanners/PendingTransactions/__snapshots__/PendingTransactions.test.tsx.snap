@@ -1,0 +1,247 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConflictTransactions should render the default markup 1`] = `
+<RNGestureHandlerButton
+  collapsable={false}
+  delayLongPress={600}
+  enabled={false}
+  exclusive={true}
+  handlerTag={1}
+  handlerType="NativeViewGestureHandler"
+  onGestureEvent={[Function]}
+  onGestureHandlerEvent={[Function]}
+  onGestureHandlerStateChange={[Function]}
+  onHandlerStateChange={[Function]}
+  rippleColor={0}
+  touchSoundDisabled={false}
+>
+  <View
+    accessible={true}
+    collapsable={false}
+    style={
+      {
+        "opacity": 1,
+      }
+    }
+  >
+    <View>
+      <View
+        style={
+          {
+            "alignItems": "center",
+            "backgroundColor": "#322211",
+            "borderBottomLeftRadius": 5,
+            "borderBottomRightRadius": 5,
+            "borderTopLeftRadius": 5,
+            "borderTopRightRadius": 5,
+            "flexDirection": "row",
+            "gap": 12,
+            "justifyContent": "center",
+            "paddingBottom": 8,
+            "paddingLeft": 8,
+            "paddingRight": 8,
+            "paddingTop": 8,
+            "width": "100%",
+          }
+        }
+      >
+        <View>
+          <View
+            style={
+              {
+                "alignItems": "center",
+                "backgroundColor": "#FF8C00",
+                "borderBottomLeftRadius": 100000,
+                "borderBottomRightRadius": 100000,
+                "borderTopLeftRadius": 100000,
+                "borderTopRightRadius": 100000,
+                "flexDirection": "column",
+                "height": 20,
+                "justifyContent": "center",
+                "maxHeight": 20,
+                "maxWidth": 20,
+                "minHeight": 20,
+                "minWidth": 20,
+                "paddingBottom": 0,
+                "paddingLeft": 0,
+                "paddingRight": 0,
+                "paddingTop": 0,
+                "width": 20,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "#121312",
+                }
+              }
+              suppressHighlighting={true}
+            >
+              2
+            </Text>
+          </View>
+        </View>
+        <Text
+          style={
+            {
+              "color": "#FF8C00",
+              "fontFamily": "DMSans-SemiBold",
+              "fontSize": 16,
+            }
+          }
+          suppressHighlighting={true}
+        >
+          Pending Transactions
+        </Text>
+        <View>
+          <Text
+            allowFontScaling={false}
+            selectable={false}
+            style={
+              [
+                {
+                  "color": "#FF8C00",
+                  "fontSize": 20,
+                },
+                undefined,
+                {
+                  "fontFamily": "SafeIcons",
+                  "fontStyle": "normal",
+                  "fontWeight": "normal",
+                },
+                {},
+              ]
+            }
+          >
+            
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNGestureHandlerButton>
+`;
+
+exports[`ConflictTransactions should render the pending transactions in fullWidth layout 1`] = `
+<RNGestureHandlerButton
+  collapsable={false}
+  delayLongPress={600}
+  enabled={false}
+  exclusive={true}
+  handlerTag={2}
+  handlerType="NativeViewGestureHandler"
+  onGestureEvent={[Function]}
+  onGestureHandlerEvent={[Function]}
+  onGestureHandlerStateChange={[Function]}
+  onHandlerStateChange={[Function]}
+  rippleColor={0}
+  touchSoundDisabled={false}
+>
+  <View
+    accessible={true}
+    collapsable={false}
+    style={
+      {
+        "opacity": 1,
+      }
+    }
+  >
+    <View>
+      <View
+        style={
+          {
+            "alignItems": "center",
+            "backgroundColor": "#322211",
+            "borderBottomLeftRadius": 5,
+            "borderBottomRightRadius": 5,
+            "borderTopLeftRadius": 5,
+            "borderTopRightRadius": 5,
+            "flexDirection": "row",
+            "gap": 12,
+            "justifyContent": "center",
+            "paddingBottom": 8,
+            "paddingLeft": 8,
+            "paddingRight": 8,
+            "paddingTop": 8,
+            "width": "100%",
+          }
+        }
+      >
+        <View>
+          <View
+            style={
+              {
+                "alignItems": "center",
+                "backgroundColor": "#FF8C00",
+                "borderBottomLeftRadius": 100000,
+                "borderBottomRightRadius": 100000,
+                "borderTopLeftRadius": 100000,
+                "borderTopRightRadius": 100000,
+                "flexDirection": "column",
+                "height": 20,
+                "justifyContent": "center",
+                "maxHeight": 20,
+                "maxWidth": 20,
+                "minHeight": 20,
+                "minWidth": 20,
+                "paddingBottom": 0,
+                "paddingLeft": 0,
+                "paddingRight": 0,
+                "paddingTop": 0,
+                "width": 20,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "#121312",
+                }
+              }
+              suppressHighlighting={true}
+            >
+              2
+            </Text>
+          </View>
+        </View>
+        <Text
+          style={
+            {
+              "color": "#FF8C00",
+              "fontFamily": "DMSans-SemiBold",
+              "fontSize": 16,
+            }
+          }
+          suppressHighlighting={true}
+        >
+          Pending Transactions
+        </Text>
+        <View>
+          <Text
+            allowFontScaling={false}
+            selectable={false}
+            style={
+              [
+                {
+                  "color": "#FF8C00",
+                  "fontSize": 20,
+                },
+                undefined,
+                {
+                  "fontFamily": "SafeIcons",
+                  "fontStyle": "normal",
+                  "fontWeight": "normal",
+                },
+                {},
+              ]
+            }
+          >
+            
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNGestureHandlerButton>
+`;
