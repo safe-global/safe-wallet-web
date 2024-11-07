@@ -24,6 +24,7 @@ export default [
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-invalid-void-type': 'off',
     },
   },
 ]
