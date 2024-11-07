@@ -16,7 +16,7 @@ import {
   IconButton,
 } from '@mui/material'
 import SafeIcon from '@/components/common/SafeIcon'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS, PIN_SAFE_LABELS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import { useAppDispatch, useAppSelector } from '@/store'
 import css from './styles.module.css'
@@ -42,8 +42,8 @@ import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import { addOrUpdateSafe, pinSafe, selectAllAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import { getComparator } from '@/features/myAccounts/utils'
 import { selectOrderByPreference } from '@/store/orderByPreferenceSlice'
+import { getComparator } from '@/features/myAccounts/utils/utils'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -168,12 +168,14 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
         dispatch(pinSafe({ chainId: safe.chainId, address: safe.address, removeOnUnpin: true }))
       }
     }
+    trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.pin })
   }, [safes, allAddedSafes, dispatch, findOverview, address])
 
   const removeFromPinnedList = useCallback(() => {
     for (const safe of safes) {
       dispatch(unpinSafe({ chainId: safe.chainId, address: safe.address }))
     }
+    trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.unpin })
   }, [safes, dispatch])
 
   return (

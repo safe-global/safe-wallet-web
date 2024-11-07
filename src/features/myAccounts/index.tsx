@@ -63,29 +63,6 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
   )
   const filteredSafes = useSafesSearch(allSafes ?? [], searchQuery).sort(sortComparator)
 
-  // We consider a multiChain account owned if at least one of the multiChain accounts is not on the watchlist
-  const ownedMultiChainSafes = useMemo(
-    () => safes.allMultiChainSafes?.filter((account) => account.safes.some(({ isWatchlist }) => !isWatchlist)),
-    [safes],
-  )
-
-  // If all safes of a multichain account are on the watchlist we put the entire account on the watchlist
-  const watchlistMultiChainSafes = useMemo(
-    () => safes.allMultiChainSafes?.filter((account) => !account.safes.some(({ isWatchlist }) => !isWatchlist)),
-    [safes],
-  )
-
-  const ownedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
-    () => [...(ownedMultiChainSafes ?? []), ...(safes.allSingleSafes?.filter(({ isWatchlist }) => !isWatchlist) ?? [])],
-    [safes, ownedMultiChainSafes],
-  )
-  const watchlistSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
-    () => [
-      ...(watchlistMultiChainSafes ?? []),
-      ...(safes.allSingleSafes?.filter(({ isWatchlist }) => isWatchlist) ?? []),
-    ],
-    [safes, watchlistMultiChainSafes],
-  )
   const pinnedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
     () => [...(allSafes?.filter(({ isPinned }) => isPinned) ?? [])],
     [allSafes],
@@ -98,7 +75,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleSearch = useCallback(debounce(setSearchQuery, 300), [])
 
-  useTrackSafesCount(ownedSafes, watchlistSafes, wallet)
+  useTrackSafesCount(safes, pinnedSafes, wallet)
 
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
   const trackingLabel = isLoginPage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar

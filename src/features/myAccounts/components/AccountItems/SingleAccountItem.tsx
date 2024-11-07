@@ -5,7 +5,7 @@ import { useMemo, useRef } from 'react'
 import { ListItemButton, Box, Typography, Chip, IconButton, SvgIcon, Skeleton } from '@mui/material'
 import Link from 'next/link'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { OVERVIEW_EVENTS, OVERVIEW_LABELS, PIN_SAFE_LABELS, trackEvent } from '@/services/analytics'
 import { AppRoutes } from '@/config/routes'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectChainById } from '@/store/chainsSlice'
@@ -112,10 +112,12 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     } else {
       dispatch(pinSafe({ chainId, address, removeOnUnpin: false }))
     }
+    trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.pin })
   }
 
   const removeFromPinnedList = () => {
     dispatch(unpinSafe({ chainId, address }))
+    trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.unpin })
   }
 
   return (
