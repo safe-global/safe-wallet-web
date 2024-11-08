@@ -52,6 +52,7 @@ export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
 export const transactionsHistoryUrl = '/transactions/history?safe='
 export const transactionsMessagesUrl = '/transactions/messages?safe='
+export const transactionsQueued = 'transactions/queued'
 export const transactionUrl = '/transactions/tx?safe='
 export const openAppsUrl = '/apps/open?safe='
 export const homeUrl = '/home?safe='
@@ -124,6 +125,7 @@ export const networks = {
   sepolia: 'Sepolia',
   polygon: 'Polygon',
   gnosis: 'Gnosis',
+  zkSync: 'zkSync Era',
 }
 
 export const tokenAbbreviation = {

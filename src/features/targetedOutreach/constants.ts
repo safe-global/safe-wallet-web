@@ -1,4 +1,4 @@
-export const ACTIVE_OUTREACH = { id: 1, url: 'https://wn2n6ocviur.typeform.com/to/J1OK3Ikf' }
+export const ACTIVE_OUTREACH = { id: 1, url: 'https://app.opinionx.co/safe-power-user-survey/' }
 
 export const OUTREACH_LS_KEY = 'outreachPopup'
 export const OUTREACH_SS_KEY = 'outreachPopup_session'

@@ -39,7 +39,7 @@ describe('ExecuteForm', () => {
       signTx: jest.fn(),
       addToBatch: jest.fn(),
       executeTx: jest.fn(),
-      signDelegateTx: jest.fn(),
+      signProposerTx: jest.fn(),
     },
     txSecurity: defaultSecurityContextValues,
   }
@@ -119,7 +119,7 @@ describe('ExecuteForm', () => {
           signTx: jest.fn(),
           addToBatch: jest.fn(),
           executeTx: jest.fn(),
-          signDelegateTx: jest.fn(),
+          signProposerTx: jest.fn(),
         }}
       />,
     )
@@ -156,7 +156,7 @@ describe('ExecuteForm', () => {
           signTx: jest.fn(),
           addToBatch: jest.fn(),
           executeTx: mockExecuteTx,
-          signDelegateTx: jest.fn(),
+          signProposerTx: jest.fn(),
         }}
       />,
     )
@@ -182,7 +182,7 @@ describe('ExecuteForm', () => {
           signTx: jest.fn(),
           addToBatch: jest.fn(),
           executeTx: mockExecuteTx,
-          signDelegateTx: jest.fn(),
+          signProposerTx: jest.fn(),
         }}
       />,
     )

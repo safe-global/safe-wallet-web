@@ -21,7 +21,7 @@ export type ConnectedWallet = {
   provider: Eip1193Provider
   icon?: string
   balance?: string
-  isDelegate?: boolean
+  isProposer?: boolean
 }
 
 const { getStore, setStore, useStore } = new ExternalStore<OnboardAPI>()
@@ -71,7 +71,7 @@ export const getConnectedWallet = (wallets: WalletState[]): ConnectedWallet | nu
       provider: primaryWallet.provider,
       icon: primaryWallet.icon,
       balance,
-      isDelegate: false,
+      isProposer: false,
     }
   } catch (e) {
     logError(Errors._106, e)

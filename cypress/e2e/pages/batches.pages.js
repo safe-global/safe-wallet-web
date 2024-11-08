@@ -36,6 +36,7 @@ export function addToBatch(EOA, currentNonce, amount, verify = false) {
     executeTransaction()
   }
   addToBatchButton()
+  cy.contains(transactionAddedToBatchStr).click().should('not.be.visible')
 }
 
 function fillTransactionData(EOA, amount) {

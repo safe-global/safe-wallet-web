@@ -76,6 +76,14 @@ describe('Add Owners tests', () => {
         },
       ]
       function step1() {
+        // Clean txs in the queue
+        cy.visit(constants.transactionQueueUrl + staticSafes.SEP_STATIC_SAFE_24)
+        wallet.connectSigner(signer2)
+        cy.wait(5000)
+        createTx.deleteAllTx()
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
+
         cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_24)
         wallet.connectSigner(signer2)
         owner.waitForConnectionStatus()
