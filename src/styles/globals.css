@@ -1,6 +1,11 @@
 @import url(./vars.css);
 @import url(./onboard.css);
-@import url(/public/fonts/fonts.css);
+/**
+* Some IDEs show this file as not existing, but it is.
+* If you modify this make sure that the file is also loaded on the
+* actual website
+*/
+@import url(/fonts/fonts.css);
 
 html,
 body {
