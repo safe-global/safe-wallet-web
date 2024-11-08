@@ -31,8 +31,7 @@ import useOnceVisible from '@/hooks/useOnceVisible'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { defaultSafeInfo, useGetSafeOverviewQuery } from '@/store/slices'
 import FiatValue from '@/components/common/FiatValue'
-import QueueActions from '../QueueActions'
-import { AccountStatusChip, ReadOnlyChip } from '../AccountInfoChips'
+import { AccountInfoChips } from '../AccountInfoChips'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -120,8 +119,6 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.unpin })
   }
 
-  const showQueueActions = isVisible && !undeployedSafe && !isWatchlist
-
   return (
     <ListItemButton
       ref={elementRef}
@@ -151,22 +148,17 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
               {shortenAddress(address)}
             </Typography>
             {!isMobile && (
-              <Box width="100%">
-                {undeployedSafe ? (
-                  <AccountStatusChip isActivating={isActivating} />
-                ) : isWatchlist ? (
-                  <ReadOnlyChip />
-                ) : null}
-
-                {showQueueActions && (
-                  <QueueActions
-                    queued={safeOverview?.queued || 0}
-                    awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
-                    safeAddress={address}
-                    chainShortName={chain?.shortName || ''}
-                  />
-                )}
-              </Box>
+              <AccountInfoChips
+                isActivating={isActivating}
+                isWatchlist={isWatchlist}
+                undeployedSafe={!!undeployedSafe}
+                isVisible={isVisible}
+                safeOverview={safeOverview ?? null}
+                chain={chain}
+                href={href}
+                onLinkClick={onLinkClick}
+                trackingLabel={trackingLabel}
+              />
             )}
           </Typography>
 
@@ -192,29 +184,17 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
       <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
 
       {isMobile && (
-        <Box width="100%">
-          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
-            <Link onClick={onLinkClick} href={href}>
-              <Box px={2} pb={2} className={css.chipSection}>
-                {undeployedSafe ? (
-                  <AccountStatusChip isActivating={isActivating} />
-                ) : isWatchlist ? (
-                  <ReadOnlyChip />
-                ) : null}
-              </Box>
-            </Link>
-          </Track>
-
-          {showQueueActions && (
-            <QueueActions
-              isMobile
-              queued={safeOverview?.queued || 0}
-              awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
-              safeAddress={address}
-              chainShortName={chain?.shortName || ''}
-            />
-          )}
-        </Box>
+        <AccountInfoChips
+          isActivating={isActivating}
+          isWatchlist={isWatchlist}
+          undeployedSafe={!!undeployedSafe}
+          isVisible={isVisible}
+          safeOverview={safeOverview ?? null}
+          chain={chain}
+          href={href}
+          onLinkClick={onLinkClick}
+          trackingLabel={trackingLabel}
+        />
       )}
     </ListItemButton>
   )

@@ -19,11 +19,10 @@ import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import type { SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import FiatValue from '@/components/common/FiatValue'
-import QueueActions from '@/features/myAccounts/components/QueueActions'
 import { useGetHref } from '@/features/myAccounts/hooks/useGetHref'
 import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
 import useOnceVisible from '@/hooks/useOnceVisible'
-import { AccountStatusChip, ReadOnlyChip } from '../AccountInfoChips'
+import { AccountInfoChips } from '../AccountInfoChips'
 
 type SubAccountItem = {
   safeItem: SafeItem
@@ -58,7 +57,6 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
   const isActivating = undeployedSafe?.status.status !== 'AWAITING_EXECUTION'
 
   const cfSafeSetup = extractCounterfactualSafeSetup(undeployedSafe, chain?.chainId)
-  const showQueueActions = isVisible && !undeployedSafe && !safeItem.isWatchlist
 
   return (
     <ListItemButton
@@ -89,22 +87,17 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
               {chain?.chainName}
             </Typography>
             {!isMobile && (
-              <Box width="100%">
-                {undeployedSafe ? (
-                  <AccountStatusChip isActivating={isActivating} />
-                ) : safeItem.isWatchlist ? (
-                  <ReadOnlyChip />
-                ) : null}
-
-                {showQueueActions && (
-                  <QueueActions
-                    queued={safeOverview?.queued || 0}
-                    awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
-                    safeAddress={address}
-                    chainShortName={chain?.shortName || ''}
-                  />
-                )}
-              </Box>
+              <AccountInfoChips
+                isActivating={isActivating}
+                isWatchlist={safeItem.isWatchlist}
+                undeployedSafe={!!undeployedSafe}
+                isVisible={isVisible}
+                safeOverview={safeOverview ?? null}
+                chain={chain}
+                href={href}
+                onLinkClick={onLinkClick}
+                trackingLabel={trackingLabel}
+              />
             )}
           </Typography>
 
@@ -123,29 +116,17 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
       )}
 
       {isMobile && (
-        <Box width="100%">
-          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
-            <Link onClick={onLinkClick} href={href}>
-              <Box px={2} pb={2} className={css.chipSection}>
-                {undeployedSafe ? (
-                  <AccountStatusChip isActivating={isActivating} />
-                ) : safeItem.isWatchlist ? (
-                  <ReadOnlyChip />
-                ) : null}
-              </Box>
-            </Link>
-          </Track>
-
-          {showQueueActions && (
-            <QueueActions
-              isMobile
-              queued={safeOverview?.queued || 0}
-              awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
-              safeAddress={address}
-              chainShortName={chain?.shortName || ''}
-            />
-          )}
-        </Box>
+        <AccountInfoChips
+          isActivating={isActivating}
+          isWatchlist={safeItem.isWatchlist}
+          undeployedSafe={!!undeployedSafe}
+          isVisible={isVisible}
+          safeOverview={safeOverview ?? null}
+          chain={chain}
+          href={href}
+          onLinkClick={onLinkClick}
+          trackingLabel={trackingLabel}
+        />
       )}
     </ListItemButton>
   )
