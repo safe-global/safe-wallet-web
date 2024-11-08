@@ -199,7 +199,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 </Box>
 
                 {/* All Accounts */}
-                <Accordion sx={{ border: 'none' }}>
+                <Accordion sx={{ border: 'none' }} defaultExpanded={!isSidebar}>
                   <AccordionSummary
                     data-testid="expand-safes-list"
                     expandIcon={<ExpandMoreIcon sx={{ '& path': { fill: 'var(--color-text-secondary)' } }} />}
@@ -241,10 +241,16 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                         mx="auto"
                         width={250}
                       >
-                        <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
-                        <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={trackingLabel}>
-                          <ConnectWalletButton text="Connect a wallet" contained />
-                        </Track>
+                        {!wallet ? (
+                          <>
+                            <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
+                            <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={trackingLabel}>
+                              <ConnectWalletButton text="Connect a wallet" contained />
+                            </Track>
+                          </>
+                        ) : (
+                          "You don't have any safes yet"
+                        )}
                       </Typography>
                     )}
                   </AccordionDetails>
@@ -253,6 +259,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
             )}
           </Paper>
         </Paper>
+        {isSidebar && <Divider />}
         <DataWidget />
       </Box>
     </Box>
