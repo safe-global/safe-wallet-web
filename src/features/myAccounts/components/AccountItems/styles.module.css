@@ -52,15 +52,16 @@
 .safeLink {
   display: grid;
   padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
-  grid-template-columns: 60px 6fr 10fr minmax(auto, 2fr);
+  grid-template-columns: 60px 10fr 3fr 3fr;
   align-items: center;
 }
 
+.multiSafeLink {
+  grid-template-columns: 60px 8fr 5fr 3fr;
+}
+
 .safeSubLink {
-  display: grid;
-  padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
   grid-template-columns: 60px 3fr minmax(auto, 2fr);
-  align-items: center;
 }
 
 .safeName,
@@ -70,50 +71,12 @@
   text-overflow: ellipsis;
 }
 
-.readOnlyChip {
-  border-radius: var(--space-2);
-  color: var(--color-primary-light);
-  border-color: var(--color-border-light);
-  font-size: 14px;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-.visibilityIcon {
-  font-size: 16px !important;
-  color: var(--color-border-main) !important;
-}
-
 .listHeader {
   display: flex;
 }
 
 .listHeader svg path {
   stroke: var(--color-text-primary);
-}
-
-.chip {
-  border-radius: 4px;
-  background-color: var(--color-warning-background);
-}
-
-.pendingAccount {
-  background-color: var(--color-info-light);
-}
-
-.pendingLoopIcon {
-  color: var(--color-info-dark) !important;
-}
-
-.statusChip {
-  display: flex;
-  gap: var(--space-1);
-  padding: 0 var(--space-2) var(--space-2);
-  width: 100%;
-}
-
-.statusChips:empty {
-  display: none;
 }
 
 .multiChains {
@@ -131,6 +94,14 @@
 
 .chainIndicator {
   justify-content: flex-end;
+}
+
+.chipSection {
+  width: 100%;
+}
+
+.chipSection:empty {
+  display: none;
 }
 
 @media (max-width: 899.95px) {

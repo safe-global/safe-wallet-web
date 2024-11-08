@@ -194,7 +194,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             '&.Mui-expanded': { backgroundColor: 'transparent !important' },
           }}
         >
-          <Box className={css.safeLink} width="100%">
+          <Box className={classnames(css.multiSafeLink, css.safeLink)} width="100%">
             <Box pr={2.5} data-testid="group-safe-icon">
               <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
             </Box>

@@ -1,0 +1,26 @@
+.readOnlyChip {
+  border-radius: var(--space-2);
+  color: var(--color-primary-light);
+  border-color: var(--color-border-light);
+  font-size: 14px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.visibilityIcon {
+  font-size: 16px !important;
+  color: var(--color-border-main) !important;
+}
+
+.pendingAccount {
+  background-color: var(--color-info-light);
+}
+
+.pendingLoopIcon {
+  color: var(--color-info-dark) !important;
+}
+
+.chip {
+  border-radius: 4px;
+  background-color: var(--color-warning-background);
+}

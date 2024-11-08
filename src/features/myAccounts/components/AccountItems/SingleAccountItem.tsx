@@ -1,8 +1,7 @@
-import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import { type SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo, useRef } from 'react'
-import { ListItemButton, Box, Typography, Chip, IconButton, SvgIcon, Skeleton } from '@mui/material'
+import { ListItemButton, Box, Typography, IconButton, SvgIcon, Skeleton, useTheme, useMediaQuery } from '@mui/material'
 import Link from 'next/link'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS, PIN_SAFE_LABELS, trackEvent } from '@/services/analytics'
@@ -19,7 +18,6 @@ import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import type { SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import { useGetHref } from '@/features/myAccounts/hooks/useGetHref'
 import { extractCounterfactualSafeSetup, isPredictedSafeProps } from '@/features/counterfactual/utils'
@@ -34,7 +32,7 @@ import { skipToken } from '@reduxjs/toolkit/query'
 import { defaultSafeInfo, useGetSafeOverviewQuery } from '@/store/slices'
 import FiatValue from '@/components/common/FiatValue'
 import QueueActions from '../QueueActions'
-import VisibilityIcon from '@mui/icons-material/Visibility'
+import { AccountStatusChip, ReadOnlyChip } from '../AccountInfoChips'
 
 type AccountItemProps = {
   safeItem: SafeItem
@@ -56,6 +54,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   const isAdded = !!addedSafes?.[address]
   const elementRef = useRef<HTMLDivElement>(null)
   const isVisible = useOnceVisible(elementRef)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const dispatch = useAppDispatch()
 
@@ -120,6 +120,8 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.unpin })
   }
 
+  const showQueueActions = isVisible && !undeployedSafe && !isWatchlist
+
   return (
     <ListItemButton
       ref={elementRef}
@@ -148,6 +150,24 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {shortenAddress(address)}
             </Typography>
+            {!isMobile && (
+              <Box width="100%">
+                {undeployedSafe ? (
+                  <AccountStatusChip isActivating={isActivating} />
+                ) : isWatchlist ? (
+                  <ReadOnlyChip />
+                ) : null}
+
+                {showQueueActions && (
+                  <QueueActions
+                    queued={safeOverview?.queued || 0}
+                    awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
+                    safeAddress={address}
+                    chainShortName={chain?.shortName || ''}
+                  />
+                )}
+              </Box>
+            )}
           </Typography>
 
           <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
@@ -161,7 +181,6 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           </Typography>
         </Link>
       </Track>
-
       <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={isPinned ? removeFromPinnedList : addToPinnedList}>
         <SvgIcon
           component={isPinned ? BookmarkedIcon : BookmarkIcon}
@@ -172,51 +191,31 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
       </IconButton>
       <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
 
-      <Box width="100%">
-        {undeployedSafe ? (
+      {isMobile && (
+        <Box width="100%">
           <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
-            <Link className={css.statusChip} onClick={onLinkClick} href={href}>
-              <Chip
-                size="small"
-                label={isActivating ? 'Activating account' : 'Not activated'}
-                icon={
-                  isActivating ? (
-                    <LoopIcon fontSize="small" className={css.pendingLoopIcon} sx={{ mr: '-4px', ml: '4px' }} />
-                  ) : (
-                    <ErrorOutlineIcon fontSize="small" color="warning" />
-                  )
-                }
-                className={classnames(css.chip, {
-                  [css.pendingAccount]: isActivating,
-                })}
-              />
+            <Link onClick={onLinkClick} href={href}>
+              <Box px={2} pb={2} className={css.chipSection}>
+                {undeployedSafe ? (
+                  <AccountStatusChip isActivating={isActivating} />
+                ) : isWatchlist ? (
+                  <ReadOnlyChip />
+                ) : null}
+              </Box>
             </Link>
           </Track>
-        ) : isWatchlist ? (
-          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
-            <Link className={css.statusChip} onClick={onLinkClick} href={href}>
-              <Chip
-                className={css.readOnlyChip}
-                variant="outlined"
-                size="small"
-                icon={<VisibilityIcon className={css.visibilityIcon} />}
-                label={
-                  <Typography variant="caption" display="flex" alignItems="center" gap={0.5}>
-                    Read-only
-                  </Typography>
-                }
-              />
-            </Link>
-          </Track>
-        ) : isVisible ? (
-          <QueueActions
-            queued={safeOverview?.queued || 0}
-            awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
-            safeAddress={address}
-            chainShortName={chain?.shortName || ''}
-          />
-        ) : null}
-      </Box>
+
+          {showQueueActions && (
+            <QueueActions
+              isMobile
+              queued={safeOverview?.queued || 0}
+              awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
+              safeAddress={address}
+              chainShortName={chain?.shortName || ''}
+            />
+          )}
+        </Box>
+      )}
     </ListItemButton>
   )
 }

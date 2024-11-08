@@ -25,11 +25,13 @@ const QueueActions = ({
   chainShortName,
   queued,
   awaitingConfirmation,
+  isMobile = false,
 }: {
   safeAddress: string
   chainShortName: string
   queued: number
   awaitingConfirmation: number
+  isMobile?: boolean
 }) => {
   const queueLink = useMemo<UrlObject>(
     () => ({
@@ -46,11 +48,11 @@ const QueueActions = ({
   return (
     <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
       <NextLink href={queueLink}>
-        <Box px={2} pb={2} display="flex" gap={1} alignItems="center">
+        <Box px={isMobile ? 2 : 0} pb={isMobile ? 2 : 0} display="flex" gap={1} alignItems="center">
           {queued > 0 && (
             <ChipLink>
               <SvgIcon component={TransactionsIcon} inheritViewBox fontSize="small" />
-              {queued} pending transaction{queued > 1 ? 's' : ''}
+              {queued} pending
             </ChipLink>
           )}
 
