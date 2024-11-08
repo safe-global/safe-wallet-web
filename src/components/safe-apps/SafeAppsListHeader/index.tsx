@@ -15,7 +15,7 @@ const SafeAppsListHeader = ({ title, amount }: SafeAppsListHeaderProps) => {
         mt: 3,
       }}
     >
-      {title}({amount || 0})
+      {title} ({amount || 0})
     </Typography>
   )
 }

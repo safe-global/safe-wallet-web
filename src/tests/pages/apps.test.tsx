@@ -105,7 +105,7 @@ describe('AppsPage', () => {
 
       // show Bookmarked Safe Apps only
       await waitFor(() => {
-        expect(screen.queryByText(/My pinned apps\s*\(\s*2\s*\)/)).toBeInTheDocument()
+        expect(screen.queryByText('My pinned apps (2)')).toBeInTheDocument()
         expect(screen.queryByLabelText('Unpin Compound')).toBeInTheDocument()
         expect(screen.queryByLabelText('Unpin Transaction Builder')).toBeInTheDocument()
         expect(screen.queryByLabelText('Unpin ENS App')).not.toBeInTheDocument()
