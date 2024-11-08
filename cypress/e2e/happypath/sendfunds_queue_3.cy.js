@@ -1,11 +1,11 @@
-import * as constants from '../../support/constants'
-import * as main from '../pages/main.page'
-import * as assets from '../pages/assets.pages'
-import * as tx from '../pages/transactions.page'
+import * as constants from '../../support/constants.js'
+import * as main from '../pages/main.page.js'
+import * as assets from '../pages/assets.pages.js'
+import * as tx from '../pages/transactions.page.js'
 import { ethers } from 'ethers'
 import SafeApiKit from '@safe-global/api-kit'
-import { createSigners } from '../../support/api/utils_ether'
-import { createSafes } from '../../support/api/utils_protocolkit'
+import { createSigners } from '../../support/api/utils_ether.js'
+import { createSafes } from '../../support/api/utils_protocolkit.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as ls from '../../support/localstorage_data.js'
 import * as navigation from '../pages/navigation.page.js'
@@ -19,7 +19,14 @@ const tokenAmount = '0.0001'
 const netwrok = 'sepolia'
 const network_pref = 'sep:'
 const unit_eth = 'ether'
-let apiKit, protocolKitOwnerS1, existingSafeAddress1, existingSafeAddress2, existingSafeAddress3
+let apiKit,
+  protocolKitOwnerS1,
+  protocolKitOwnerS2,
+  protocolKitOwner1_S3,
+  protocolKitOwner2_S3,
+  existingSafeAddress1,
+  existingSafeAddress2,
+  existingSafeAddress3
 
 let safes = []
 let safesData = []
@@ -35,15 +42,7 @@ function visit(url) {
   cy.visit(url)
 }
 
-function executeTransactionFlow(fromSafe) {
-  visit(constants.transactionQueueUrl + fromSafe)
-  wallet.connectSigner(signer)
-  assets.clickOnConfirmBtn(0)
-  tx.executeFlow_1()
-  cy.wait(5000)
-}
-
-describe('Send funds from queue happy path tests 1', () => {
+describe('Send funds from queue happy path tests 3', () => {
   before(async () => {
     cy.clearLocalStorage().then(() => {
       main.addToLocalStorage(constants.localStorageKeys.SAFE_v2_cookies, ls.cookies.acceptedCookies)
@@ -73,12 +72,22 @@ describe('Send funds from queue happy path tests 1', () => {
     safes = await createSafes(safeConfigurations)
 
     protocolKitOwnerS1 = safes[0]
+    protocolKitOwnerS2 = safes[1]
+    protocolKitOwner1_S3 = safes[2]
+    protocolKitOwner2_S3 = safes[3]
   })
 
-  it('Verify confirmation and execution of native token queued tx by second signer with connected wallet', () => {
+  it('Verify 1 signer can execute a tx confirmed by 2 signers', { defaultCommandTimeout: 300000 }, () => {
+    function executeTransaction(fromSafe) {
+      visit(constants.transactionQueueUrl + fromSafe)
+      wallet.connectSigner(signer)
+      assets.clickOnExecuteBtn(0)
+      tx.executeFlow_3()
+      cy.wait(5000)
+    }
     cy.wrap(null)
       .then(() => {
-        return main.fetchCurrentNonce(network_pref + existingSafeAddress1)
+        return main.fetchCurrentNonce(network_pref + existingSafeAddress3)
       })
       .then(async (currentNonce) => {
         const amount = ethers.parseUnits(tokenAmount, unit_eth).toString()
@@ -88,10 +97,10 @@ describe('Send funds from queue happy path tests 1', () => {
           value: amount.toString(),
         }
 
-        const safeTransaction = await protocolKitOwnerS1.createTransaction({ transactions: [safeTransactionData] })
-        const safeTxHash = await protocolKitOwnerS1.getTransactionHash(safeTransaction)
-        const senderSignature = await protocolKitOwnerS1.signHash(safeTxHash)
-        const safeAddress = existingSafeAddress1
+        const safeTransaction = await protocolKitOwner1_S3.createTransaction({ transactions: [safeTransactionData] })
+        const safeTxHash = await protocolKitOwner1_S3.getTransactionHash(safeTransaction)
+        const senderSignature = await protocolKitOwner1_S3.signHash(safeTxHash)
+        const safeAddress = existingSafeAddress3
 
         await apiKit.proposeTransaction({
           safeAddress,
@@ -101,7 +110,13 @@ describe('Send funds from queue happy path tests 1', () => {
           senderSignature: senderSignature.data,
         })
 
-        executeTransactionFlow(safeAddress)
+        const pendingTransactions = await apiKit.getPendingTransactions(safeAddress)
+        const safeTxHashofExistingTx = pendingTransactions.results[0].safeTxHash
+
+        const signature = await protocolKitOwner2_S3.signHash(safeTxHashofExistingTx)
+        await apiKit.confirmTransaction(safeTxHashofExistingTx, signature.data)
+
+        executeTransaction(safeAddress)
         cy.wait(5000)
         main.verifyNonceChange(network_pref + safeAddress, currentNonce + 1)
         navigation.clickOnWalletExpandMoreIcon()
