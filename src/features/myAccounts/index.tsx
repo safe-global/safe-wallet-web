@@ -42,6 +42,7 @@ import { useSafesSearch } from '@/features/myAccounts/hooks/useSafesSearch'
 import useTrackSafesCount from '@/features/myAccounts/hooks/useTrackedSafesCount'
 import { DataWidget } from '@/features/myAccounts/components/DataWidget'
 import OrderByButton from '@/features/myAccounts/components/OrderByButton'
+import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
 
 type AccountsListProps = {
   safes: AllSafesGrouped
@@ -102,9 +103,16 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                 </Button>
               </Link>
             </Track>
-            <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
-              <CreateButton isPrimary={!!wallet} />
-            </Track>
+
+            {wallet ? (
+              <Track {...OVERVIEW_EVENTS.CREATE_NEW_SAFE} label={trackingLabel}>
+                <CreateButton isPrimary />
+              </Track>
+            ) : (
+              <Box sx={{ '& button': { height: '36px' } }}>
+                <ConnectWalletButton small={true} />
+              </Box>
+            )}
           </Box>
         </Box>
 
@@ -147,9 +155,9 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
           {isSidebar && <Divider />}
 
           <Paper className={css.safeList}>
-            {/* Search results */}
             {searchQuery ? (
               <>
+                {/* Search results */}
                 <Typography variant="h5" fontWeight="normal" mb={2} color="primary.light">
                   Found {filteredSafes.length} result{filteredSafes.length === 1 ? '' : 's'}
                 </Typography>
@@ -219,9 +227,26 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                     </div>
                   </AccordionSummary>
                   <AccordionDetails sx={{ padding: 0 }}>
-                    <Box mt={1}>
-                      <SafesList safes={allSafes} onLinkClick={onLinkClick} />
-                    </Box>
+                    {allSafes.length > 0 ? (
+                      <Box mt={1}>
+                        <SafesList safes={allSafes} onLinkClick={onLinkClick} />
+                      </Box>
+                    ) : (
+                      <Typography
+                        component="div"
+                        variant="body2"
+                        color="text.secondary"
+                        textAlign="center"
+                        py={3}
+                        mx="auto"
+                        width={250}
+                      >
+                        <Box mb={2}>Connect a wallet to view your Safe Accounts or to create a new one</Box>
+                        <Track {...OVERVIEW_EVENTS.OPEN_ONBOARD} label={trackingLabel}>
+                          <ConnectWalletButton text="Connect a wallet" contained />
+                        </Track>
+                      </Typography>
+                    )}
                   </AccordionDetails>
                 </Accordion>
               </>
