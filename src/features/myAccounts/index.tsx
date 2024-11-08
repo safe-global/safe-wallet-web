@@ -15,29 +15,33 @@ import {
 } from '@mui/material'
 import debounce from 'lodash/debounce'
 import madProps from '@/utils/mad-props'
-import CreateButton from './CreateButton'
+import CreateButton from '@/features/myAccounts/components/CreateButton'
 import AddIcon from '@/public/images/common/add.svg'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
-import { DataWidget } from '@/components/welcome/MyAccounts/DataWidget'
-import css from './styles.module.css'
-import SafesList from './SafesList'
+import css from '@/features/myAccounts/styles.module.css'
+import SafesList from '@/features/myAccounts/components/SafesList'
 import { AppRoutes } from '@/config/routes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { useRouter } from 'next/router'
-import { type AllSafesGrouped, useAllSafesGrouped, type MultiChainSafeItem } from './useAllSafesGrouped'
-import { type SafeItem } from './useAllSafes'
+import {
+  type AllSafesGrouped,
+  useAllSafesGrouped,
+  type MultiChainSafeItem,
+} from '@/features/myAccounts/hooks/useAllSafesGrouped'
+import { type SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import classNames from 'classnames'
-import { getComparator } from './utils'
-import OrderByButton from './OrderByButton'
+import { getComparator } from '@/features/myAccounts/utils/utils'
 import SearchIcon from '@/public/images/common/search.svg'
 import type { OrderByOption } from '@/store/orderByPreferenceSlice'
 import { selectOrderByPreference, setOrderByPreference } from '@/store/orderByPreferenceSlice'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { useSafesSearch } from './useSafesSearch'
-import useTrackSafesCount from './useTrackedSafesCount'
+import { useSafesSearch } from '@/features/myAccounts/hooks/useSafesSearch'
+import useTrackSafesCount from '@/features/myAccounts/hooks/useTrackedSafesCount'
+import { DataWidget } from '@/features/myAccounts/components/DataWidget'
+import OrderByButton from '@/features/myAccounts/components/OrderByButton'
 
 type AccountsListProps = {
   safes: AllSafesGrouped

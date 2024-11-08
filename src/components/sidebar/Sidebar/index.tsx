@@ -10,7 +10,7 @@ import IndexingStatus from '@/components/sidebar/IndexingStatus'
 
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
-import MyAccounts from '@/components/welcome/MyAccounts'
+import MyAccounts from '@/features/myAccounts'
 
 const Sidebar = (): ReactElement => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)

@@ -1,4 +1,4 @@
-import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
+import { useAllSafesGrouped } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import { useMemo } from 'react'

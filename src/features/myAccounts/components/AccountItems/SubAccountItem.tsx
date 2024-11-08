@@ -1,8 +1,7 @@
-import { LoopIcon } from '@/features/counterfactual/CounterfactualStatusButton'
 import { selectUndeployedSafe } from '@/features/counterfactual/store/undeployedSafesSlice'
 import type { SafeOverview } from '@safe-global/safe-gateway-typescript-sdk'
 import { useMemo, useRef } from 'react'
-import { ListItemButton, Box, Typography, Chip, Skeleton } from '@mui/material'
+import { ListItemButton, Box, Typography, Skeleton, useMediaQuery, useTheme } from '@mui/material'
 import Link from 'next/link'
 import SafeIcon from '@/components/common/SafeIcon'
 import Track from '@/components/common/Track'
@@ -18,14 +17,12 @@ import useChainId from '@/hooks/useChainId'
 import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import type { SafeItem } from './useAllSafes'
+import type { SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import FiatValue from '@/components/common/FiatValue'
-import QueueActions from './QueueActions'
-import { useGetHref } from './useGetHref'
+import { useGetHref } from '@/features/myAccounts/hooks/useGetHref'
 import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
-import VisibilityIcon from '@mui/icons-material/Visibility'
 import useOnceVisible from '@/hooks/useOnceVisible'
+import { AccountInfoChips } from '../AccountInfoChips'
 
 type SubAccountItem = {
   safeItem: SafeItem
@@ -43,6 +40,8 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const elementRef = useRef<HTMLDivElement>(null)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const isVisible = useOnceVisible(elementRef)
 
   const trackingLabel = isWelcomePage ? OVERVIEW_LABELS.login_page : OVERVIEW_LABELS.sidebar
@@ -67,7 +66,7 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
       className={classnames(css.listItem, { [css.currentListItem]: isCurrentSafe }, css.subItem)}
     >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
-        <Link onClick={onLinkClick} href={href} className={css.safeSubLink}>
+        <Link onClick={onLinkClick} href={href} className={classnames(css.safeLink, css.safeSubLink)}>
           <Box pr={2.5}>
             <SafeIcon
               address={address}
@@ -87,6 +86,19 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
             <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
               {chain?.chainName}
             </Typography>
+            {!isMobile && (
+              <AccountInfoChips
+                isActivating={isActivating}
+                isWatchlist={safeItem.isWatchlist}
+                undeployedSafe={!!undeployedSafe}
+                isVisible={isVisible}
+                safeOverview={safeOverview ?? null}
+                chain={chain}
+                href={href}
+                onLinkClick={onLinkClick}
+                trackingLabel={trackingLabel}
+              />
+            )}
           </Typography>
 
           <Typography variant="body2" fontWeight="bold" textAlign="right" pr={5}>
@@ -103,51 +115,19 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
         <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={false} rename={false} />
       )}
 
-      <Box width="100%">
-        {undeployedSafe ? (
-          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
-            <Link className={css.statusChip} onClick={onLinkClick} href={href}>
-              <Chip
-                size="small"
-                label={isActivating ? 'Activating account' : 'Not activated'}
-                icon={
-                  isActivating ? (
-                    <LoopIcon fontSize="small" className={css.pendingLoopIcon} sx={{ mr: '-4px', ml: '4px' }} />
-                  ) : (
-                    <ErrorOutlineIcon fontSize="small" color="warning" />
-                  )
-                }
-                className={classnames(css.chip, {
-                  [css.pendingAccount]: isActivating,
-                })}
-              />
-            </Link>
-          </Track>
-        ) : safeItem.isWatchlist ? (
-          <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
-            <Link className={css.statusChip} onClick={onLinkClick} href={href}>
-              <Chip
-                className={css.readOnlyChip}
-                variant="outlined"
-                size="small"
-                icon={<VisibilityIcon className={css.visibilityIcon} />}
-                label={
-                  <Typography variant="caption" display="flex" alignItems="center" gap={0.5}>
-                    Read-only
-                  </Typography>
-                }
-              />
-            </Link>
-          </Track>
-        ) : isVisible ? (
-          <QueueActions
-            queued={safeOverview?.queued || 0}
-            awaitingConfirmation={safeOverview?.awaitingConfirmation || 0}
-            safeAddress={address}
-            chainShortName={chain?.shortName || ''}
-          />
-        ) : null}
-      </Box>
+      {isMobile && (
+        <AccountInfoChips
+          isActivating={isActivating}
+          isWatchlist={safeItem.isWatchlist}
+          undeployedSafe={!!undeployedSafe}
+          isVisible={isVisible}
+          safeOverview={safeOverview ?? null}
+          chain={chain}
+          href={href}
+          onLinkClick={onLinkClick}
+          trackingLabel={trackingLabel}
+        />
+      )}
     </ListItemButton>
   )
 }

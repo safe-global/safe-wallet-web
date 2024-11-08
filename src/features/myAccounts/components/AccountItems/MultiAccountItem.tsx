@@ -25,12 +25,12 @@ import { sameAddress } from '@/utils/addresses'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import FiatValue from '@/components/common/FiatValue'
-import { type MultiChainSafeItem } from './useAllSafesGrouped'
+import { type MultiChainSafeItem } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 import { shortenAddress } from '@/utils/formatters'
-import { type SafeItem } from './useAllSafes'
+import { type SafeItem } from '@/features/myAccounts/hooks/useAllSafes'
 import SubAccountItem from './SubAccountItem'
 import { getSafeSetups, getSharedSetup, hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
-import { AddNetworkButton } from './AddNetworkButton'
+import { AddNetworkButton } from '../AddNetworkButton'
 import { isPredictedSafeProps } from '@/features/counterfactual/utils'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import MultiAccountContextMenu from '@/components/sidebar/SafeListContextMenu/MultiAccountContextMenu'
@@ -42,8 +42,8 @@ import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
 import { addOrUpdateSafe, pinSafe, selectAllAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
 import { defaultSafeInfo } from '@/store/safeInfoSlice'
-import { getComparator } from './utils'
 import { selectOrderByPreference } from '@/store/orderByPreferenceSlice'
+import { getComparator } from '@/features/myAccounts/utils/utils'
 
 type MultiAccountItemProps = {
   multiSafeAccountItem: MultiChainSafeItem
@@ -194,7 +194,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             '&.Mui-expanded': { backgroundColor: 'transparent !important' },
           }}
         >
-          <Box className={css.safeLink} width="100%">
+          <Box className={classnames(css.multiSafeLink, css.safeLink)} width="100%">
             <Box pr={2.5} data-testid="group-safe-icon">
               <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
             </Box>
