@@ -62,9 +62,6 @@ describe('Send funds with relay happy path tests 3', { defaultCommandTimeout: 30
     ]
 
     safes = await createSafes(safeConfigurations)
-
-    protocolKitOwner1_S3 = safes[0]
-    protocolKitOwner2_S3 = safes[1]
   })
 
   it('Verify tx creation and execution of non-native token with with relay', () => {
