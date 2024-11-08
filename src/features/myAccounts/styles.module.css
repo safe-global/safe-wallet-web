@@ -59,11 +59,6 @@
   stroke: var(--color-text-primary);
 }
 
-/* .chip {
-  border-radius: 4px;
-  background-color: var(--color-warning-background);
-} */
-
 @media (max-width: 899.95px) {
   .container {
     width: auto;
