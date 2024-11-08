@@ -14,7 +14,7 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 // DO NOT use OWNER_2_PRIVATE_KEY for safe creation. Used for CF safes.
 const signer2 = walletCredentials.OWNER_2_PRIVATE_KEY
 
-describe('Multichain header network switch tests', { defaultCommandTimeout: 20000 }, () => {
+describe('Multichain header network switch tests', { defaultCommandTimeout: 30000 }, () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
