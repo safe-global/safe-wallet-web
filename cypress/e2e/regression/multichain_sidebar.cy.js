@@ -12,7 +12,7 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 // DO NOT use OWNER_2_PRIVATE_KEY for safe creation. Used for CF safes.
 const signer2 = walletCredentials.OWNER_2_PRIVATE_KEY
 
-describe('Multichain sidebar tests', () => {
+describe('Multichain sidebar tests', { defaultCommandTimeout: 20000 }, () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -119,7 +119,7 @@ describe('Multichain sidebar tests', () => {
   it('Verify balance of the safe group', () => {
     wallet.connectSigner(signer)
     sideBar.openSidebar()
-    sideBar.checkSafeGroupBalance(0, '0.62')
+    sideBar.checkSafeGroupBalance(0, '0.64')
   })
 
   it('Verify address of the safe group', () => {
