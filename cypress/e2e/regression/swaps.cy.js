@@ -168,7 +168,7 @@ describe('Swaps tests', () => {
           eventLabel: events.txCreatedSwap.eventLabel,
           eventCategory: events.txCreatedSwap.category,
           eventType: events.txCreatedSwap.eventType,
-          safeAddress: staticSafes.SEP_STATIC_SAFE_1.slice(6),
+          safeAddress: staticSafes.SEP_STATIC_SAFE_30.slice(6),
         },
       ]
       const tx_confirmed = [
@@ -176,15 +176,15 @@ describe('Swaps tests', () => {
           eventLabel: events.txConfirmedSwap.eventLabel,
           eventCategory: events.txConfirmedSwap.category,
           eventType: events.txConfirmedSwap.eventType,
-          safeAddress: staticSafes.SEP_STATIC_SAFE_1.slice(6),
+          safeAddress: staticSafes.SEP_STATIC_SAFE_30.slice(6),
         },
       ]
       // Clean txs in the queue
-      cy.visit(constants.transactionQueueUrl + staticSafes.SEP_STATIC_SAFE_1)
+      cy.visit(constants.transactionQueueUrl + staticSafes.SEP_STATIC_SAFE_30)
       cy.wait(5000)
       create_tx.deleteAllTx()
 
-      cy.visit(constants.swapUrl + staticSafes.SEP_STATIC_SAFE_1)
+      cy.visit(constants.swapUrl + staticSafes.SEP_STATIC_SAFE_30)
       swaps.acceptLegalDisclaimer()
       cy.wait(4000)
       main.getIframeBody(iframeSelector).within(() => {
@@ -193,14 +193,13 @@ describe('Swaps tests', () => {
         swaps.setExpiry('2')
         swaps.clickOnSettingsBtn()
         swaps.selectInputCurrency(swaps.swapTokens.cow)
-        swaps.checkTokenBalance(staticSafes.SEP_STATIC_SAFE_1.substring(4), swaps.swapTokens.cow)
-        swaps.setInputValue(100)
+        swaps.setInputValue(200)
         swaps.selectOutputCurrency(swaps.swapTokens.dai)
         swaps.clickOnExceeFeeChkbox()
         swaps.clickOnSwapBtn()
         swaps.clickOnSwapBtn()
       })
-      create_tx.changeNonce(24)
+      create_tx.changeNonce(0)
       create_tx.clickOnSignTransactionBtn()
       create_tx.clickViewTransaction()
       navigation.clickOnWalletExpandMoreIcon()

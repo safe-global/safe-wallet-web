@@ -81,6 +81,8 @@ describe('Add Owners tests', () => {
         wallet.connectSigner(signer2)
         cy.wait(5000)
         createTx.deleteAllTx()
+        navigation.clickOnWalletExpandMoreIcon()
+        navigation.clickOnDisconnectBtn()
 
         cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_24)
         wallet.connectSigner(signer2)
