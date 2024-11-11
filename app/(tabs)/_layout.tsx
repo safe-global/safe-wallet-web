@@ -23,7 +23,7 @@ export default function TabLayout() {
         name="transactions"
         options={{
           title: 'Transactions',
-          tabBarTestID: 'transactions',
+          tabBarButtonTestID: 'transactions',
           tabBarIcon: ({ color }) => <TabBarIcon name={'transactions'} color={color} />,
         }}
       />
