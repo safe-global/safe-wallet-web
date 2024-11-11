@@ -13,7 +13,7 @@ interface SafeThemeProviderProps {
   children: React.ReactNode
 }
 
-function SafeThemeProvider({ children }: SafeThemeProviderProps) {
+export const SafeThemeProvider = ({ children }: SafeThemeProviderProps) => {
   const colorScheme = useColorScheme()
 
   const themeProvider = isStorybookEnv ? (
@@ -35,5 +35,3 @@ function SafeThemeProvider({ children }: SafeThemeProviderProps) {
     </FontProvider>
   )
 }
-
-export default SafeThemeProvider

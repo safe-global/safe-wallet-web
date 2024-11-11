@@ -1,7 +1,7 @@
 import type { Preview } from '@storybook/react'
-import SafeThemeProvider from '@/src/providers/SafeThemeProvider/index'
+import { NavigationIndependentTree } from '@react-navigation/native'
+import { SafeThemeProvider } from '@/src/theme/provider/safeTheme'
 import { View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
 
 const preview: Preview = {
   parameters: {
@@ -16,13 +16,13 @@ const preview: Preview = {
   decorators: [
     (Story) => {
       return (
-        <NavigationContainer independent={true}>
+        <NavigationIndependentTree>
           <SafeThemeProvider>
             <View style={{ padding: 16, flex: 1 }}>
               <Story />
             </View>
           </SafeThemeProvider>
-        </NavigationContainer>
+        </NavigationIndependentTree>
       )
     },
   ],
