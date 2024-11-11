@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router'
 import 'react-native-reanimated'
-import SafeThemeProvider from '@/src/providers/SafeThemeProvider'
+import { SafeThemeProvider } from '@/src/theme/provider/safeTheme'
 import { Provider } from 'react-redux'
 import { persistor, store } from '@/src/store'
 import { PersistGate } from 'redux-persist/integration/react'
