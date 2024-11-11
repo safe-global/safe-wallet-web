@@ -10,6 +10,7 @@ import {
 import SwapIcon from '@/public/images/common/swap.svg'
 import StakeIcon from '@/public/images/common/stake.svg'
 import NestedSafeIcon from '@/public/images/transactions/nestedTx.svg'
+import BatchIcon from '@/public/images/common/multisend.svg'
 
 import {
   isCancellationTxInfo,
@@ -113,7 +114,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
     case TransactionInfoType.CUSTOM: {
       if (isMultiSendTxInfo(tx.txInfo) && !tx.safeAppInfo) {
         return {
-          icon: '/images/common/multisend.svg',
+          icon: <SvgIcon component={BatchIcon} inheritViewBox fontSize="small" alt="Batch" />,
           text: 'Batch',
         }
       }
