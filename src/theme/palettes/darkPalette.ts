@@ -31,7 +31,7 @@ const darkPalette = {
     contrastText: '#FF5F72',
   },
   success: {
-    dark: '#028D4C',
+    dark: '#1D3D28',
     main: '#00B460',
     light: '#81C784',
     background: '#1F2920',
@@ -43,7 +43,7 @@ const darkPalette = {
     background: '#19252C',
   },
   warning: {
-    dark: '#C04C32',
+    dark: '#432F18',
     main: '#FF8061',
     light: '#FFBC9F',
     background: '#2F2318',

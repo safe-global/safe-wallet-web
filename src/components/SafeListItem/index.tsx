@@ -1,8 +1,10 @@
 import React from 'react'
 import { Container } from '../Container'
-import { Text, Theme, View } from 'tamagui'
+import { Text, Theme, ThemeName, View } from 'tamagui'
 import { IconProps, SafeFontIcon } from '../SafeFontIcon/SafeFontIcon'
 import { ellipsis } from '@/src/utils/formatters'
+import { ExecutionInfo } from '@safe-global/safe-gateway-typescript-sdk'
+import { isMultisigExecutionInfo } from '@/src/utils/transaction-guards'
 
 interface SafeListItemProps {
   type?: string
@@ -12,13 +14,28 @@ interface SafeListItemProps {
   rightNode?: React.ReactNode
   leftNode?: React.ReactNode
   bordered?: boolean
+  inQueue?: boolean
+  executionInfo?: ExecutionInfo
+  themeName?: ThemeName
 }
 
-function SafeListItem({ type, leftNode, icon, bordered, label, rightNode, children }: SafeListItemProps) {
+function SafeListItem({
+  type,
+  leftNode,
+  icon,
+  bordered,
+  label,
+  rightNode,
+  children,
+  inQueue,
+  executionInfo,
+  themeName,
+}: SafeListItemProps) {
   return (
     <Container
       bordered={bordered}
       gap={12}
+      themeName={themeName}
       alignItems={'center'}
       flexWrap="wrap"
       flexDirection="row"
@@ -45,7 +62,35 @@ function SafeListItem({ type, leftNode, icon, bordered, label, rightNode, childr
         </View>
       </View>
 
-      {rightNode}
+      {inQueue && executionInfo && isMultisigExecutionInfo(executionInfo) ? (
+        <View alignItems="center" flexDirection="row">
+          <Theme
+            name={
+              executionInfo?.confirmationsRequired === executionInfo?.confirmationsSubmitted ? 'success' : 'warning'
+            }
+          >
+            <View
+              alignItems="center"
+              flexDirection="row"
+              backgroundColor="$badgeBackground"
+              paddingVertical="$1"
+              paddingHorizontal="$3"
+              gap="$1"
+              borderRadius={50}
+            >
+              <SafeFontIcon size={12} name="owners" />
+
+              <Text fontWeight={600}>
+                {executionInfo?.confirmationsRequired}/{executionInfo?.confirmationsSubmitted}
+              </Text>
+            </View>
+          </Theme>
+
+          <SafeFontIcon name="arrow-right" />
+        </View>
+      ) : (
+        rightNode
+      )}
 
       {children}
     </Container>

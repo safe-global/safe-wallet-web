@@ -4,7 +4,7 @@ import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import { IconName } from '@/src/types/iconTypes'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-type AlertType = 'error' | 'warning' | 'info'
+export type AlertType = 'error' | 'warning' | 'info' | 'success'
 
 interface AlertProps {
   type: AlertType
@@ -21,6 +21,7 @@ const icons = {
   error: <SafeFontIcon name={'alert'} />,
   warning: <SafeFontIcon name={'alert'} />,
   info: <SafeFontIcon name={'info'} />,
+  success: <SafeFontIcon name={'check'} />,
 }
 
 const getAlertIcon = (type: AlertType, iconName?: IconName, displayIcon?: boolean): ReactElement | null => {
@@ -52,7 +53,8 @@ export const Alert = ({
             flexDirection="row"
             justifyContent="center"
             backgroundColor="$background"
-            padding="$2"
+            paddingHorizontal="$2"
+            paddingVertical="$3"
             borderRadius={'$2'}
           >
             {startIcon ? <View>{startIcon}</View> : Icon}

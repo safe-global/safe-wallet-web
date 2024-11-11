@@ -29,10 +29,18 @@ import {
   TransferInfo,
   TwapOrder,
 } from '@safe-global/safe-gateway-typescript-sdk'
+import uniq from 'lodash/uniq'
 
 export const isTxQueued = (value: TransactionStatus): boolean => {
   return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
 }
+
+export const getBulkGroupTxHash = (group: Transaction[]) => {
+  const hashList = group.map((item) => item.transaction.txHash)
+  return uniq(hashList).length === 1 ? hashList[0] : undefined
+}
+
+export const getTxHash = (item: Transaction): string => item.transaction.txHash as unknown as string
 
 export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
   return value.type === TransactionInfoType.TRANSFER || isSwapTransferOrderTxInfo(value)

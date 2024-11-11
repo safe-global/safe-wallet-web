@@ -11,7 +11,7 @@ const meta: Meta<typeof PendingTransactions> = {
   parameters: { actions: { argTypesRegex: '^on.*' } },
   args: {
     fullWidth: false,
-    number: 5,
+    number: '5',
     onPress: action('on-press'),
   },
 }

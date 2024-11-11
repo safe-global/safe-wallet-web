@@ -1,21 +1,25 @@
 import React from 'react'
 import { Avatar, Text, Theme, View } from 'tamagui'
 import TxListItem from '@/src/components/SafeListItem'
-import { Order } from '@safe-global/safe-gateway-typescript-sdk'
+import { ExecutionInfo, Order } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatValue } from '@/src/utils/formatters'
 
 interface TxSwapCardProps {
   txInfo: Order
   bordered?: boolean
+  inQueue?: boolean
+  executionInfo?: ExecutionInfo
 }
 
-function TxSwapCard({ txInfo, bordered }: TxSwapCardProps) {
+function TxSwapCard({ txInfo, bordered, executionInfo, inQueue }: TxSwapCardProps) {
   return (
     <TxListItem
       label={`${txInfo.sellToken.symbol} > ${txInfo.buyToken.symbol}`}
       icon="transaction-swap"
       type="Swap order"
+      executionInfo={executionInfo}
       bordered={bordered}
+      inQueue={inQueue}
       leftNode={
         <Theme name="logo">
           <View position="relative" width="$10" height="$10">

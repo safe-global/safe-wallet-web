@@ -31,13 +31,13 @@ const lightPalette = {
     contrastText: '#FF5F72',
   },
   success: {
-    dark: '#028D4C',
+    dark: '#2D3D28',
     main: '#00B460',
     light: '#72F5B8',
     background: '#EFFAF1',
   },
   info: {
-    dark: '#52BFDC',
+    dark: '#553B1E',
     main: '#5FDDFF',
     light: '#B7F0FF',
     background: '#EFFCFF',
@@ -49,7 +49,7 @@ const lightPalette = {
     background: '#FFF1E0',
   },
   warning1: {
-    main: '#322211',
+    main: '#fff0e0',
     contrastText: '#FF8C00',
   },
   background: {

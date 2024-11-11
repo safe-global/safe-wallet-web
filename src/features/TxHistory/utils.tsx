@@ -1,9 +1,21 @@
 import { formatWithSchema } from '@/src/utils/date'
-import { isConflictHeaderListItem, isNoneConflictType, isTransactionListItem } from '@/src/utils/transaction-guards'
+import {
+  isConflictHeaderListItem,
+  isLabelListItem,
+  isNoneConflictType,
+  isTransactionListItem,
+} from '@/src/utils/transaction-guards'
 import { Transaction, TransactionListItem, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
 
+export interface PendingTxGroup {
+  pointer: number
+  amount: number
+  sections: GroupedTxsWithTitle[]
+}
+
 type GroupedTxsItem = TransactionListItem | Transaction[]
-type GroupedTxs = GroupedTxsItem[]
+
+export type GroupedTxs = GroupedTxsItem[]
 
 export interface GroupedTxsWithTitle {
   title: string
@@ -14,7 +26,40 @@ export const groupTxs = (list: TransactionListItem[]) => {
   const groupedByConflicts = groupConflictingTxs(list)
   const bulkTxs = groupBulkTxs(groupedByConflicts)
 
-  return groupByDateLabel(bulkTxs)
+  return bulkTxs
+}
+
+export const groupPendingTxs = (list: TransactionListItem[]) => {
+  const transactions = groupTxs(list)
+  const sections = ['Next', 'Queued']
+  const txSections = {
+    pointer: -1,
+    amount: 0,
+    sections: [
+      { title: 'Ready to execute', data: [] },
+      { title: 'Confirmation needed', data: [] },
+    ],
+  }
+
+  const categorizedTxs = transactions.reduce<PendingTxGroup>((acc, item) => {
+    if ('type' in item && isLabelListItem(item)) {
+      acc.pointer = sections.indexOf(item.label)
+    } else if (
+      acc.sections[acc.pointer] &&
+      (Array.isArray(item) || item.type === TransactionListItemType.TRANSACTION)
+    ) {
+      acc.amount += Array.isArray(item) ? item.length : 1
+      acc.sections[acc.pointer].data.push(item)
+    }
+
+    return acc
+  }, txSections)
+
+  return categorizedTxs
+}
+
+export const groupTxsByDate = (list: TransactionListItem[]) => {
+  return groupByDateLabel(groupTxs(list))
 }
 
 /**

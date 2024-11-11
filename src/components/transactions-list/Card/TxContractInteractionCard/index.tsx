@@ -2,14 +2,16 @@ import React from 'react'
 import { Avatar, Text, Theme, View } from 'tamagui'
 import SafeListItem from '@/src/components/SafeListItem'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import { Custom, MultiSend } from '@safe-global/safe-gateway-typescript-sdk'
+import { Custom, ExecutionInfo, MultiSend } from '@safe-global/safe-gateway-typescript-sdk'
 
 interface TxContractInteractionCardProps {
   bordered?: boolean
   txInfo: Custom | MultiSend
+  inQueue?: boolean
+  executionInfo?: ExecutionInfo
 }
 
-function TxContractInteractionCard({ bordered, txInfo }: TxContractInteractionCardProps) {
+function TxContractInteractionCard({ bordered, executionInfo, txInfo, inQueue }: TxContractInteractionCardProps) {
   const logoUri = txInfo.to.logoUri
   const label = txInfo.to.name || 'Contract interaction'
   return (
@@ -18,6 +20,8 @@ function TxContractInteractionCard({ bordered, txInfo }: TxContractInteractionCa
       icon={logoUri ? 'transaction-contract' : undefined}
       type={txInfo.methodName}
       bordered={bordered}
+      executionInfo={executionInfo}
+      inQueue={inQueue}
       leftNode={
         <Avatar circular size="$10">
           <Theme name="logo">
