@@ -8,7 +8,7 @@ import { View } from 'tamagui'
 
 const TransactiosHeader = () => (
   <View paddingHorizontal="$3">
-    <Title paddingTop={'$10'} marginBottom="$8" testID="welcome-title">
+    <Title marginBottom="$8" testID="welcome-title">
       Transactions
     </Title>
 

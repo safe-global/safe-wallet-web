@@ -18,6 +18,7 @@ function RootLayout() {
           <SafeThemeProvider>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="pending-transactions" options={{ headerShown: false }} />
               <Stack.Screen name="+not-found" />
             </Stack>
           </SafeThemeProvider>

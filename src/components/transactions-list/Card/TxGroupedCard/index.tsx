@@ -9,6 +9,7 @@ import { isSwapTransferOrderTxInfo } from '@/src/utils/transaction-guards'
 
 interface TxGroupedCard {
   transactions: Transaction[]
+  inQueue?: boolean
 }
 
 const orderClassTitles: Record<string, string> = {
@@ -23,7 +24,7 @@ const getSettlementOrderTitle = (order: Order): string => {
   return orderClassTitles[orderClass] || orderClassTitles['market']
 }
 
-function TxGroupedCard({ transactions }: TxGroupedCard) {
+function TxGroupedCard({ transactions, inQueue }: TxGroupedCard) {
   const firstTxInfo = transactions[0].transaction.txInfo
   const isSwapTransfer = isSwapTransferOrderTxInfo(firstTxInfo)
   const label = isSwapTransfer ? getSettlementOrderTitle(firstTxInfo) : 'Bulk transactions'
@@ -43,7 +44,7 @@ function TxGroupedCard({ transactions }: TxGroupedCard) {
       <View width="100%">
         {transactions.map((item, index) => (
           <View width="100%" key={`${item.transaction.id}-${index}`} marginTop={12}>
-            <TxInfo bordered tx={item.transaction} />
+            <TxInfo inQueue={inQueue} bordered tx={item.transaction} />
           </View>
         ))}
       </View>

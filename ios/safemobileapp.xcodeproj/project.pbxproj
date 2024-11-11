@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09961A91EABA4DA482986FEA /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2127F9C512E14C05840A1BCB /* noop-file.swift */; };
-		0FC5A3D64BB548719E7EF57C /* safe-icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B13E2549511E4C5E8DA93321 /* safe-icons.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		8E7DE24B299D054DB8BF5BEA /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7AE2D43AB3FFEBC645157CA2 /* PrivacyInfo.xcprivacy */; };
+		87DFB8EED400425FB02CE3E7 /* safe-icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB28408C904B48088BE6E7AC /* safe-icons.ttf */; };
+		89B579F96C9D4FEFAA3B14F0 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91904C16D02E4B1CB8DA3C01 /* noop-file.swift */; };
 		96905EF65AED1B983A6B3ABC /* libPods-safemobileapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-safemobileapp.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		FEB0C1336BF0B3C5564DF87E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4B458A06FD57039F81921E1F /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,15 +26,15 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = safemobileapp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = safemobileapp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = safemobileapp/main.m; sourceTree = "<group>"; };
-		2127F9C512E14C05840A1BCB /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "safemobileapp/noop-file.swift"; sourceTree = "<group>"; };
+		4B458A06FD57039F81921E1F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = safemobileapp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-safemobileapp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-safemobileapp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-safemobileapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-safemobileapp.debug.xcconfig"; path = "Target Support Files/Pods-safemobileapp/Pods-safemobileapp.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-safemobileapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-safemobileapp.release.xcconfig"; path = "Target Support Files/Pods-safemobileapp/Pods-safemobileapp.release.xcconfig"; sourceTree = "<group>"; };
-		7AE2D43AB3FFEBC645157CA2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = safemobileapp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		91904C16D02E4B1CB8DA3C01 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "safemobileapp/noop-file.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = safemobileapp/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B13E2549511E4C5E8DA93321 /* safe-icons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "safe-icons.ttf"; path = "../assets/fonts/safe-icons/safe-icons.ttf"; sourceTree = "<group>"; };
+		BB28408C904B48088BE6E7AC /* safe-icons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "safe-icons.ttf"; path = "../assets/fonts/safe-icons/safe-icons.ttf"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		BDE60DD7E38E4ABC82DB1101 /* safemobileapp-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "safemobileapp-Bridging-Header.h"; path = "safemobileapp/safemobileapp-Bridging-Header.h"; sourceTree = "<group>"; };
+		E49B90EB375041F1A5D3E653 /* safemobileapp-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "safemobileapp-Bridging-Header.h"; path = "safemobileapp/safemobileapp-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-safemobileapp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -51,6 +51,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C3FCFFE722C49D39909FAB1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BB28408C904B48088BE6E7AC /* safe-icons.ttf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* safemobileapp */ = {
 			isa = PBXGroup;
 			children = (
@@ -61,9 +70,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				2127F9C512E14C05840A1BCB /* noop-file.swift */,
-				BDE60DD7E38E4ABC82DB1101 /* safemobileapp-Bridging-Header.h */,
-				7AE2D43AB3FFEBC645157CA2 /* PrivacyInfo.xcprivacy */,
+				91904C16D02E4B1CB8DA3C01 /* noop-file.swift */,
+				E49B90EB375041F1A5D3E653 /* safemobileapp-Bridging-Header.h */,
+				4B458A06FD57039F81921E1F /* PrivacyInfo.xcprivacy */,
 			);
 			name = safemobileapp;
 			sourceTree = "<group>";
@@ -75,15 +84,6 @@
 				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-safemobileapp.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		7F13CB318A17476992741C3F /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				B13E2549511E4C5E8DA93321 /* safe-icons.ttf */,
-			);
-			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -102,7 +102,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
 				D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */,
-				7F13CB318A17476992741C3F /* Resources */,
+				0C3FCFFE722C49D39909FAB1 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -159,13 +159,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "safemobileapp" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				46F8C36282EF92292C8107B3 /* [Expo] Configure project */,
+				6E0660BEB61296183ABEC2CE /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				89153102073E7648DB1AC8F3 /* [CP] Embed Pods Frameworks */,
+				B60CDFAD64732149C4D700A7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -215,8 +215,8 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				0FC5A3D64BB548719E7EF57C /* safe-icons.ttf in Resources */,
-				8E7DE24B299D054DB8BF5BEA /* PrivacyInfo.xcprivacy in Resources */,
+				87DFB8EED400425FB02CE3E7 /* safe-icons.ttf in Resources */,
+				FEB0C1336BF0B3C5564DF87E /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,7 +260,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		46F8C36282EF92292C8107B3 /* [Expo] Configure project */ = {
+		6E0660BEB61296183ABEC2CE /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -307,7 +307,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-safemobileapp/Pods-safemobileapp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		89153102073E7648DB1AC8F3 /* [CP] Embed Pods Frameworks */ = {
+		B60CDFAD64732149C4D700A7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -335,7 +335,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				09961A91EABA4DA482986FEA /* noop-file.swift in Sources */,
+				89B579F96C9D4FEFAA3B14F0 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

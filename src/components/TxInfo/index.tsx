@@ -23,42 +23,74 @@ import TxSwapCard from '@/src/components/transactions-list/Card/TxSwapCard'
 interface TxInfoProps {
   tx: TransactionSummary
   bordered?: boolean
+  inQueue?: boolean
 }
 
-function TxInfo({ tx, bordered }: TxInfoProps) {
+function TxInfo({ tx, bordered, inQueue }: TxInfoProps) {
   const txType = useTransactionType(tx)
 
   const txInfo = tx.txInfo
   if (isTransferTxInfo(txInfo)) {
-    return <TxTokenCard bordered={bordered} txInfo={txInfo} txStatus={tx.txStatus} />
+    return (
+      <TxTokenCard
+        executionInfo={tx.executionInfo}
+        inQueue={inQueue}
+        bordered={bordered}
+        txInfo={txInfo}
+        txStatus={tx.txStatus}
+      />
+    )
   }
 
   if (isSettingsChangeTxInfo(txInfo)) {
-    return <TxSettingsCard bordered={bordered} txInfo={txInfo} />
+    return <TxSettingsCard executionInfo={tx.executionInfo} inQueue={inQueue} bordered={bordered} txInfo={txInfo} />
   }
 
   if (isMultiSendTxInfo(txInfo) && tx.txInfo.type === TransactionInfoType.CUSTOM) {
-    return <TxBatchCard label={txType.text} bordered={bordered} txInfo={txInfo} />
+    return (
+      <TxBatchCard
+        executionInfo={tx.executionInfo}
+        inQueue={inQueue}
+        label={txType.text}
+        bordered={bordered}
+        txInfo={txInfo}
+      />
+    )
   }
 
   if (isMultiSendTxInfo(txInfo) && tx.safeAppInfo) {
-    return <TxSafeAppCard bordered={bordered} txInfo={txInfo} safeAppInfo={tx.safeAppInfo} />
+    return (
+      <TxSafeAppCard
+        executionInfo={tx.executionInfo}
+        inQueue={inQueue}
+        bordered={bordered}
+        txInfo={txInfo}
+        safeAppInfo={tx.safeAppInfo}
+      />
+    )
   }
 
   if (isCreationTxInfo(txInfo)) {
-    return <TxCreationCard bordered={bordered} txInfo={txInfo} />
+    return <TxCreationCard executionInfo={tx.executionInfo} inQueue={inQueue} bordered={bordered} txInfo={txInfo} />
   }
 
   if (isCancellationTxInfo(txInfo)) {
-    return <TxRejectionCard bordered={bordered} txInfo={txInfo} />
+    return <TxRejectionCard executionInfo={tx.executionInfo} inQueue={inQueue} bordered={bordered} txInfo={txInfo} />
   }
 
   if (!isOrderTxInfo(txInfo)) {
-    return <TxContractInteractionCard bordered={bordered} txInfo={txInfo} />
+    return (
+      <TxContractInteractionCard
+        executionInfo={tx.executionInfo}
+        inQueue={inQueue}
+        bordered={bordered}
+        txInfo={txInfo}
+      />
+    )
   }
 
   if (isSwapOrderTxInfo(txInfo)) {
-    return <TxSwapCard txInfo={txInfo} />
+    return <TxSwapCard executionInfo={tx.executionInfo} inQueue={inQueue} txInfo={txInfo} />
   }
 
   return <></>

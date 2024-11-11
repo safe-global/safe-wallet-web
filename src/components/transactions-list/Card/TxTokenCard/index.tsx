@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, Text, Theme, View } from 'tamagui'
 import SafeListItem from '@/src/components/SafeListItem'
-import { TransactionStatus, TransferDirection, Transfer } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionStatus, TransferDirection, Transfer, ExecutionInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isERC20Transfer,
   isERC721Transfer,
@@ -17,7 +17,9 @@ import { selectNativeCurrency } from '@/src/store/activeChainSlice'
 interface TxTokenCardProps {
   bordered?: boolean
   txStatus: TransactionStatus
+  inQueue?: boolean
   txInfo: Transfer
+  executionInfo?: ExecutionInfo
 }
 
 interface tokenDetails {
@@ -69,7 +71,7 @@ const getTokenDetails = (txInfo: Transfer): tokenDetails => {
   }
 }
 
-function TxTokenCard({ bordered, txStatus, txInfo }: TxTokenCardProps) {
+function TxTokenCard({ bordered, inQueue, txStatus, executionInfo, txInfo }: TxTokenCardProps) {
   const isSendTx = isOutgoingTransfer(txInfo)
   const icon = isSendTx ? 'transaction-outgoing' : 'transaction-incoming'
   const type = isSendTx ? (isTxQueued(txStatus) ? 'Send' : 'Sent') : 'Received'
@@ -79,6 +81,8 @@ function TxTokenCard({ bordered, txStatus, txInfo }: TxTokenCardProps) {
 
   return (
     <SafeListItem
+      inQueue={inQueue}
+      executionInfo={executionInfo}
       label={name}
       icon={icon}
       type={type}

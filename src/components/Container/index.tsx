@@ -1,4 +1,4 @@
-import { styled, Theme, YStack, YStackProps } from 'tamagui'
+import { styled, Theme, ThemeName, YStack, YStackProps } from 'tamagui'
 
 const StyledYStack = styled(YStack, {
   variants: {
@@ -14,10 +14,10 @@ const StyledYStack = styled(YStack, {
   } as const,
 })
 
-export const Container = (props: YStackProps & { bordered?: boolean }) => {
-  const { children, bordered, ...rest } = props
+export const Container = (props: YStackProps & { bordered?: boolean; themeName?: ThemeName }) => {
+  const { children, bordered, themeName = 'container', ...rest } = props
   return (
-    <Theme name={'container'}>
+    <Theme name={themeName}>
       <StyledYStack bordered={!!bordered} borderRadius={'$3'} paddingHorizontal={'$4'} paddingVertical={'$4'} {...rest}>
         {children}
       </StyledYStack>

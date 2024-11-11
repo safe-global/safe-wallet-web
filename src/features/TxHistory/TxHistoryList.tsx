@@ -3,7 +3,7 @@ import { Transaction, TransactionListItem } from '@safe-global/safe-gateway-type
 import React, { useCallback, useMemo } from 'react'
 import { SectionList, SectionListRenderItem } from 'react-native'
 import { Spinner, View } from 'tamagui'
-import { GroupedTxsWithTitle, groupTxs } from './utils'
+import { GroupedTxsWithTitle, groupTxsByDate } from './utils'
 import TxGroupedCard from '@/src/components/transactions-list/Card/TxGroupedCard'
 import SafeListItem from '@/src/components/SafeListItem'
 
@@ -16,7 +16,7 @@ interface TxHistoryList {
 const getTxHash = (item: Transaction): string => item.transaction.txHash as unknown as string
 
 function TxHistoryList({ transactions, onEndReached, isLoading }: TxHistoryList) {
-  const groupedList = useMemo(() => groupTxs(transactions || []), [transactions])
+  const groupedList = useMemo(() => groupTxsByDate(transactions || []), [transactions])
   const renderItem = useCallback<SectionListRenderItem<Transaction | Transaction[], GroupedTxsWithTitle>>(
     ({ item, index }) => (
       <View marginTop={index && '$4'} paddingHorizontal="$3">

@@ -24,7 +24,15 @@ exports[`Alert should render a info alert 1`] = `
       }
     }
   >
-    <View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+    >
       <View
         style={
           {
@@ -37,10 +45,10 @@ exports[`Alert should render a info alert 1`] = `
             "flexDirection": "row",
             "gap": 12,
             "justifyContent": "center",
-            "paddingBottom": 8,
+            "paddingBottom": 12,
             "paddingLeft": 8,
             "paddingRight": 8,
-            "paddingTop": 8,
+            "paddingTop": 12,
             "width": "100%",
           }
         }
@@ -108,12 +116,20 @@ exports[`Alert should render a warning alert 1`] = `
       }
     }
   >
-    <View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+    >
       <View
         style={
           {
             "alignItems": "center",
-            "backgroundColor": "#322211",
+            "backgroundColor": "#fff0e0",
             "borderBottomLeftRadius": 5,
             "borderBottomRightRadius": 5,
             "borderTopLeftRadius": 5,
@@ -121,10 +137,10 @@ exports[`Alert should render a warning alert 1`] = `
             "flexDirection": "row",
             "gap": 12,
             "justifyContent": "center",
-            "paddingBottom": 8,
+            "paddingBottom": 12,
             "paddingLeft": 8,
             "paddingRight": 8,
-            "paddingTop": 8,
+            "paddingTop": 12,
             "width": "100%",
           }
         }
@@ -192,7 +208,15 @@ exports[`Alert should render an alert with a name icon 1`] = `
       }
     }
   >
-    <View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+    >
       <View
         style={
           {
@@ -205,10 +229,10 @@ exports[`Alert should render an alert with a name icon 1`] = `
             "flexDirection": "row",
             "gap": 12,
             "justifyContent": "center",
-            "paddingBottom": 8,
+            "paddingBottom": 12,
             "paddingLeft": 8,
             "paddingRight": 8,
-            "paddingTop": 8,
+            "paddingTop": 12,
             "width": "100%",
           }
         }
@@ -276,7 +300,15 @@ exports[`Alert should render an alert with an end icon 1`] = `
       }
     }
   >
-    <View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+    >
       <View
         style={
           {
@@ -289,10 +321,10 @@ exports[`Alert should render an alert with an end icon 1`] = `
             "flexDirection": "row",
             "gap": 12,
             "justifyContent": "center",
-            "paddingBottom": 8,
+            "paddingBottom": 12,
             "paddingLeft": 8,
             "paddingRight": 8,
-            "paddingTop": 8,
+            "paddingTop": 12,
             "width": "100%",
           }
         }
@@ -383,7 +415,15 @@ exports[`Alert should render an alert with start icon 1`] = `
       }
     }
   >
-    <View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+    >
       <View
         style={
           {
@@ -396,10 +436,10 @@ exports[`Alert should render an alert with start icon 1`] = `
             "flexDirection": "row",
             "gap": 12,
             "justifyContent": "center",
-            "paddingBottom": 8,
+            "paddingBottom": 12,
             "paddingLeft": 8,
             "paddingRight": 8,
-            "paddingTop": 8,
+            "paddingTop": 12,
             "width": "100%",
           }
         }
@@ -469,7 +509,15 @@ exports[`Alert should render an error alert 1`] = `
       }
     }
   >
-    <View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+    >
       <View
         style={
           {
@@ -482,10 +530,10 @@ exports[`Alert should render an error alert 1`] = `
             "flexDirection": "row",
             "gap": 12,
             "justifyContent": "center",
-            "paddingBottom": 8,
+            "paddingBottom": 12,
             "paddingLeft": 8,
             "paddingRight": 8,
-            "paddingTop": 8,
+            "paddingTop": 12,
             "width": "100%",
           }
         }

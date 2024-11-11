@@ -84,14 +84,26 @@ export const config = createTamagui({
       background: tokens.color.infoBackgroundDark,
       color: tokens.color.infoMainDark,
     },
+    light_success: {
+      background: tokens.color.successBackgroundLight,
+      color: tokens.color.successMainLight,
+      badgeBackground: tokens.color.successDarkLight,
+    },
+    dark_success: {
+      background: tokens.color.successBackgroundDark,
+      color: tokens.color.successMainDark,
+      badgeBackground: tokens.color.successDarkDark,
+    },
     light_warning: {
       background: tokens.color.warning1MainLight,
       color: tokens.color.warning1ContrastTextLight,
-      badgeTextColor: tokens.color.textPrimaryLight,
+      badgeTextColor: tokens.color.warning1MainLight,
+      badgeBackground: tokens.color.warningBackgroundLight,
     },
     dark_warning: {
       background: tokens.color.warning1MainDark,
       color: tokens.color.warning1ContrastTextDark,
+      badgeBackground: tokens.color.warningDarkDark,
       badgeTextColor: tokens.color.backgroundDefaultDark,
     },
     light_error: {
