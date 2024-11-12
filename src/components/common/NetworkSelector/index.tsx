@@ -45,10 +45,10 @@ import { skipToken } from '@reduxjs/toolkit/query'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 
 const ChainIndicatorWithFiatBalance = ({
-  isSelected,
-  chain,
-  safeAddress,
-}: {
+                                         isSelected,
+                                         chain,
+                                         safeAddress,
+                                       }: {
   isSelected: boolean
   chain: ChainInfo
   safeAddress: string
@@ -74,8 +74,8 @@ export const getNetworkLink = (router: NextRouter, safeAddress: string, networkS
   const query = (
     isSafeOpened
       ? {
-          safe: `${networkShortName}:${safeAddress}`,
-        }
+        safe: `${networkShortName}:${safeAddress}`,
+      }
       : { chain: networkShortName }
   ) as {
     safe?: string
@@ -96,10 +96,10 @@ export const getNetworkLink = (router: NextRouter, safeAddress: string, networkS
 }
 
 const UndeployedNetworkMenuItem = ({
-  chain,
-  isSelected = false,
-  onSelect,
-}: {
+                                     chain,
+                                     isSelected = false,
+                                     onSelect,
+                                   }: {
   chain: ChainInfo & { available: boolean }
   isSelected?: boolean
   onSelect: (chain: ChainInfo) => void
@@ -133,7 +133,14 @@ const UndeployedNetworkMenuItem = ({
 
 const NetworkSkeleton = () => {
   return (
-    <Stack direction="row" spacing={1} alignItems="center" p="4px 0px">
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: 'center',
+        p: '4px 0px',
+      }}
+    >
       <Skeleton variant="circular" width="24px" height="24px" />
       <Skeleton variant="rounded" sx={{ flexGrow: 1 }} />
     </Stack>
@@ -143,7 +150,12 @@ const NetworkSkeleton = () => {
 const TestnetDivider = () => {
   return (
     <Divider sx={{ m: '0px !important', '& .MuiDivider-wrapper': { p: '0px 16px' } }}>
-      <Typography variant="overline" color="border.main">
+      <Typography
+        variant="overline"
+        sx={{
+          color: 'border.main',
+        }}
+      >
         Testnets
       </Typography>
     </Divider>
@@ -151,11 +163,11 @@ const TestnetDivider = () => {
 }
 
 const UndeployedNetworks = ({
-  deployedChains,
-  chains,
-  safeAddress,
-  closeNetworkSelect,
-}: {
+                              deployedChains,
+                              chains,
+                              safeAddress,
+                              closeNetworkSelect,
+                            }: {
   deployedChains: string[]
   chains: ChainInfo[]
   safeAddress: string
@@ -196,7 +208,14 @@ const UndeployedNetworks = ({
 
   if (safeCreationLoading) {
     return (
-      <Box display="flex" alignItems="center" justifyContent="center" my={1}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          my: 1,
+        }}
+      >
         <CircularProgress size={18} />
       </Box>
     )
@@ -204,7 +223,13 @@ const UndeployedNetworks = ({
 
   const errorMessage =
     safeCreationDataError || (safeCreationData && noAvailableNetworks) ? (
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: 'center',
+        }}
+      >
         {safeCreationDataError?.message && (
           <Tooltip title={safeCreationDataError?.message}>
             <InfoOutlined color="info" fontSize="medium" />
@@ -220,8 +245,19 @@ const UndeployedNetworks = ({
 
   if (errorMessage) {
     return (
-      <Box px={2} py={1}>
-        <Typography color="text.secondary" fontSize="14px" maxWidth={300}>
+      <Box
+        sx={{
+          px: 2,
+          py: 1,
+        }}
+      >
+        <Typography
+          sx={{
+            color: 'text.secondary',
+            fontSize: '14px',
+            maxWidth: 300,
+          }}
+        >
           {errorMessage}
         </Typography>
       </Box>
@@ -241,8 +277,15 @@ const UndeployedNetworks = ({
   return (
     <>
       <ButtonBase className={css.listSubHeader} onClick={onShowAllNetworks} tabIndex={-1}>
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
           <div data-testid="show-all-networks">Show all networks</div>
+
           <ExpandMoreIcon
             fontSize="small"
             sx={{
@@ -253,7 +296,11 @@ const UndeployedNetworks = ({
       </ButtonBase>
       <Collapse in={open} timeout="auto" unmountOnExit>
         {!safeCreationData ? (
-          <Box p="0px 16px">
+          <Box
+            sx={{
+              p: '0px 16px',
+            }}
+          >
             <NetworkSkeleton />
             <NetworkSkeleton />
           </Box>
@@ -284,9 +331,9 @@ const UndeployedNetworks = ({
 }
 
 const NetworkSelector = ({
-  onChainSelect,
-  offerSafeCreation = false,
-}: {
+                           onChainSelect,
+                           offerSafeCreation = false,
+                         }: {
   onChainSelect?: () => void
   offerSafeCreation?: boolean
 }): ReactElement => {
@@ -386,10 +433,10 @@ const NetworkSelector = ({
           },
           ...(isDarkMode
             ? {
-                '& .Mui-selected, & .Mui-selected:hover': {
-                  backgroundColor: `${theme.palette.secondary.background} !important`,
-                },
-              }
+              '& .Mui-selected, & .Mui-selected:hover': {
+                backgroundColor: `${theme.palette.secondary.background} !important`,
+              },
+            }
             : {}),
         },
       }}

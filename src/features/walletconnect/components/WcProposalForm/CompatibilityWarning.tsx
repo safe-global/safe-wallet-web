@@ -32,10 +32,14 @@ export const CompatibilityWarning = ({
       <Alert severity={severity} className={css.alert}>
         {message}
       </Alert>
-
       {isUnsupportedChain && (
         <>
-          <Typography mt={3} mb={1}>
+          <Typography
+            sx={{
+              mt: 3,
+              mb: 1,
+            }}
+          >
             Supported networks
           </Typography>
 
@@ -45,7 +49,12 @@ export const CompatibilityWarning = ({
             ))}
           </div>
 
-          <Typography mt={3} component="div">
+          <Typography
+            component="div"
+            sx={{
+              mt: 3,
+            }}
+          >
             Switch network
             <NetworkSelector onChainSelect={onChainChange} />
           </Typography>

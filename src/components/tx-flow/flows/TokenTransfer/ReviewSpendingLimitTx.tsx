@@ -147,7 +147,13 @@ const ReviewSpendingLimitTx = ({
 
         {isRejectedByUser && <WalletRejectionError />}
 
-        <Typography variant="body2" color="primary.light" textAlign="center">
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'primary.light',
+            textAlign: 'center',
+          }}
+        >
           You&apos;re about to create a transaction and will need to confirm it with your currently connected wallet.
         </Typography>
 

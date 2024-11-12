@@ -48,6 +48,11 @@ const SideDrawer = ({ isOpen, onToggle }: SideDrawerProps): ReactElement => {
         anchor="left"
         open={isOpen}
         onClose={() => onToggle(false)}
+        sx={{
+          // fixes a bug on small screens where the drawer is not visible,
+          // but it steals all the events from the rest of the page
+          position: 'relative',
+        }}
         className={smDrawerHidden ? css.smDrawerHidden : undefined}
       >
         <aside>

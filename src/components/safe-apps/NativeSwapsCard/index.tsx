@@ -30,17 +30,28 @@ const NativeSwapsCard = () => {
           </div>
         }
       />
-
       <CardContent className={css.content}>
         <Typography className={css.title} variant="h5">
           Native swaps are here!
         </Typography>
 
-        <Typography className={css.description} variant="body2" color="text.secondary">
+        <Typography
+          className={css.description}
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
           Experience seamless trading with better decoding and security in native swaps.
         </Typography>
 
-        <Stack direction="row" gap={2} className={css.buttons}>
+        <Stack
+          direction="row"
+          className={css.buttons}
+          sx={{
+            gap: 2,
+          }}
+        >
           <Track {...SWAP_EVENTS.OPEN_SWAPS} label={SWAP_LABELS.safeAppsPromoWidget}>
             <Link href={{ pathname: AppRoutes.swap, query: { safe: router.query.safe } }} passHref legacyBehavior>
               <Button variant="contained" size="small">

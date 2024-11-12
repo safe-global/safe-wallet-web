@@ -12,15 +12,19 @@ const PagePlaceholder = ({ img, text, children }: PagePlaceholderProps): ReactEl
   return (
     <div className={css.container}>
       {img}
-
       {typeof text === 'string' ? (
-        <Typography variant="body1" color="primary.light" mt={2}>
+        <Typography
+          variant="body1"
+          sx={{
+            color: 'primary.light',
+            mt: 2,
+          }}
+        >
           {text}
         </Typography>
       ) : (
         text
       )}
-
       {children}
     </div>
   )

@@ -20,7 +20,14 @@ const SKELETON_ROWS = new Array(3).fill('').map(() => {
       beneficiary: {
         rawValue: '0x',
         content: (
-          <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 1,
+              alignItems: 'center',
+            }}
+          >
             <Skeleton variant="circular" width={26} height={26} />
             <div>
               <Typography>
@@ -36,7 +43,14 @@ const SKELETON_ROWS = new Array(3).fill('').map(() => {
       spent: {
         rawValue: '0',
         content: (
-          <Box display="flex" flexDirection="row" gap={1} alignItems="center">
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 1,
+              alignItems: 'center',
+            }}
+          >
             <Skeleton variant="circular" width={26} height={26} />
             <Typography>
               <Skeleton width={100} />
@@ -97,7 +111,14 @@ export const SpendingLimitsTable = ({
                 spent: {
                   rawValue: spendingLimit.spent,
                   content: (
-                    <Box data-testid="spent-amount" display="flex" alignItems="center" gap={1}>
+                    <Box
+                      data-testid="spent-amount"
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                      }}
+                    >
                       <TokenIcon logoUri={spendingLimit.token.logoUri} tokenSymbol={spendingLimit.token.symbol} />
                       {`${formattedSpent} of ${formattedAmount} ${spendingLimit.token.symbol}`}
                     </Box>

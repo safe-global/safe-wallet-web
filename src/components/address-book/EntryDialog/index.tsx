@@ -61,7 +61,11 @@ function EntryDialog({
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
           <DialogContent>
-            <Box mb={2}>
+            <Box
+              sx={{
+                mb: 2,
+              }}
+            >
               <NameInput data-testid="name-input" label="Name" autoFocus name="name" required />
             </Box>
 

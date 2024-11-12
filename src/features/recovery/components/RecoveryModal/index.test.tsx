@@ -40,9 +40,7 @@ describe('RecoveryModal', () => {
         <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />,
       )
 
-      expect(container.innerHTML).toBe(
-        '<div aria-hidden="true" class="MuiBackdrop-root css-1ejpag9-MuiBackdrop-root" style="opacity: 0; visibility: hidden;"></div>',
-      )
+      expect(container.innerHTML).toMatchSnapshot()
       expect(queryByText('recovery')).toBeFalsy()
     })
 
@@ -177,9 +175,7 @@ describe('RecoveryModal', () => {
           <_RecoveryModal wallet={wallet} isOwner isRecoverer={false} queue={queue} />,
         )
 
-        expect(container.innerHTML).toBe(
-          '<div aria-hidden="true" class="MuiBackdrop-root css-1ejpag9-MuiBackdrop-root" style="opacity: 0; visibility: hidden;"></div>',
-        )
+        expect(container.innerHTML).toMatchSnapshot()
         expect(queryByText('Recover this Account')).toBeFalsy()
       })
 
@@ -195,9 +191,7 @@ describe('RecoveryModal', () => {
           <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer queue={queue} isSidebarRoute={false} />,
         )
 
-        expect(container.innerHTML).toBe(
-          '<div aria-hidden="true" class="MuiBackdrop-root css-1ejpag9-MuiBackdrop-root" style="opacity: 0; visibility: hidden;"></div>',
-        )
+        expect(container.innerHTML).toMatchSnapshot()
         expect(queryByText('recovery')).toBeFalsy()
       })
 
@@ -213,9 +207,7 @@ describe('RecoveryModal', () => {
           <_RecoveryModal wallet={wallet} isOwner={false} isRecoverer={false} queue={queue} />,
         )
 
-        expect(container.innerHTML).toBe(
-          '<div aria-hidden="true" class="MuiBackdrop-root css-1ejpag9-MuiBackdrop-root" style="opacity: 0; visibility: hidden;"></div>',
-        )
+        expect(container.innerHTML).toMatchSnapshot()
         expect(queryByText('Recover this Account')).toBeFalsy()
       })
     })

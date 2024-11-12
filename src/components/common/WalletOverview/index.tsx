@@ -40,7 +40,6 @@ const WalletOverview = ({
   return (
     <Box className={css.container}>
       <WalletIdenticon wallet={wallet} />
-
       <Box className={css.walletDetails}>
         <Typography variant="body2" component="div">
           {wallet.ens ? (
@@ -58,7 +57,14 @@ const WalletOverview = ({
         </Typography>
 
         {showBalance && (
-          <Typography variant="caption" component="div" fontWeight="bold" display={{ xs: 'none', sm: 'block' }}>
+          <Typography
+            variant="caption"
+            component="div"
+            sx={{
+              fontWeight: 'bold',
+              display: { xs: 'none', sm: 'block' },
+            }}
+          >
             <WalletBalance balance={balance} />
           </Typography>
         )}

@@ -3,10 +3,11 @@
 exports[`SignOrExecute should display a confirmation screen 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-118bpkk-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-1w4z6qv-MuiPaper-root-MuiCard-root"
+    style="--Paper-shadow: none;"
   >
     <div
-      class="MuiCardContent-root cardContent css-46bh2p-MuiCardContent-root"
+      class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
       <div
         class="MuiStack-root css-1sazv7p-MuiStack-root"
@@ -15,65 +16,70 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
           class="MuiBox-root css-0"
         >
           <div
-            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1x8l8fd-MuiPaper-root-MuiAccordion-root"
+            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1befnxe-MuiPaper-root-MuiAccordion-root"
+            style="--Paper-shadow: none;"
           >
-            <div
-              aria-expanded="false"
-              class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-knbc2d-MuiButtonBase-root-MuiAccordionSummary-root"
-              data-testid="decoded-tx-summary"
-              role="button"
-              tabindex="0"
+            <h3
+              class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
             >
               <div
-                class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-6nefnh-MuiAccordionSummary-content"
+                aria-expanded="false"
+                class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-66oagt-MuiButtonBase-root-MuiAccordionSummary-root"
+                data-testid="decoded-tx-summary"
+                role="button"
+                tabindex="0"
               >
-                Advanced details
-                <span
-                  class=""
-                  data-mui-internal-clone-element="true"
-                >
-                  <mock-icon
-                    aria-hidden=""
-                    class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
-                    focusable="false"
-                  />
-                </span>
                 <div
-                  class="MuiBox-root css-i9gxme"
-                />
-              </div>
-              <div
-                class="MuiAccordionSummary-expandIconWrapper css-yw020d-MuiAccordionSummary-expandIconWrapper"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-17ceore-MuiSvgIcon-root"
-                  data-testid="ExpandMoreIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
+                  class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-1pnrdlh-MuiAccordionSummary-content"
                 >
-                  <path
-                    d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  Advanced details
+                  <span
+                    class=""
+                    data-mui-internal-clone-element="true"
+                  >
+                    <mock-icon
+                      aria-hidden=""
+                      class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-17ibv3e-MuiSvgIcon-root"
+                      focusable="false"
+                    />
+                  </span>
+                  <div
+                    class="MuiBox-root css-i9gxme"
                   />
-                </svg>
+                </div>
+                <div
+                  class="MuiAccordionSummary-expandIconWrapper css-1wqf3nl-MuiAccordionSummary-expandIconWrapper"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1dhtbeh-MuiSvgIcon-root"
+                    data-testid="ExpandMoreIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                    />
+                  </svg>
+                </div>
               </div>
-            </div>
+            </h3>
             <div
-              class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-bz4dnt-MuiCollapse-root"
+              class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-cwrbtg-MuiCollapse-root"
               style="min-height: 0px;"
             >
               <div
-                class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                class="MuiCollapse-wrapper MuiCollapse-vertical css-1x6hinx-MuiCollapse-wrapper"
               >
                 <div
-                  class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                  class="MuiCollapse-wrapperInner MuiCollapse-vertical css-1i4ywhz-MuiCollapse-wrapperInner"
                 >
                   <div
                     class="MuiAccordion-region"
                     role="region"
                   >
                     <div
-                      class="MuiAccordionDetails-root css-7wcoc8-MuiAccordionDetails-root"
+                      class="MuiAccordionDetails-root css-w74p4c-MuiAccordionDetails-root"
                       data-testid="decoded-tx-details"
                     />
                   </div>
@@ -86,10 +92,11 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-118bpkk-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-1w4z6qv-MuiPaper-root-MuiCard-root"
+    style="--Paper-shadow: none;"
   >
     <div
-      class="MuiCardContent-root cardContent css-46bh2p-MuiCardContent-root"
+      class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
       <div
         class="wrapper"
@@ -99,18 +106,18 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
         >
           <mock-icon
             aria-hidden=""
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
             focusable="false"
           />
         </div>
         <div>
           <h5
-            class="MuiTypography-root MuiTypography-h5 css-kmqua7-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-h5 css-1mp5g96-MuiTypography-root"
           >
             confirm
           </h5>
           <p
-            class="MuiTypography-root MuiTypography-body2 css-ceebrx-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-body2 css-17vdyq3-MuiTypography-root"
           >
             You're about to 
             create and 
@@ -121,10 +128,10 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
       </div>
       <form>
         <hr
-          class="MuiDivider-root MuiDivider-fullWidth nestedDivider css-1cvjk81-MuiDivider-root"
+          class="MuiDivider-root MuiDivider-fullWidth nestedDivider css-1jpvyob-MuiDivider-root"
         />
         <div
-          class="MuiCardActions-root MuiCardActions-spacing css-dnrpxu-MuiCardActions-root"
+          class="MuiCardActions-root MuiCardActions-spacing css-1q4nm6f-MuiCardActions-root"
         >
           <div
             class="MuiStack-root css-irtfmw-MuiStack-root"
@@ -137,19 +144,16 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
                 data-track="batching: Add to batch"
               >
                 <button
-                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-fj99we-MuiButtonBase-root-MuiButton-root"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-16be8yl-MuiButtonBase-root-MuiButton-root"
                   tabindex="0"
                   type="button"
                 >
                   <mock-icon
                     aria-hidden=""
-                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-1hr8a3z-MuiSvgIcon-root"
                     focusable="false"
                   />
                   Add to batch
-                  <span
-                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                  />
                 </button>
               </span>
             </span>
@@ -158,11 +162,12 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
             >
                
               <div
-                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren css-crkpmc-MuiDivider-root"
+                aria-orientation="horizontal"
+                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren css-1lftdsp-MuiDivider-root"
                 role="separator"
               >
                 <span
-                  class="MuiDivider-wrapper css-165zycj-MuiDivider-wrapper"
+                  class="MuiDivider-wrapper css-tuok6n-MuiDivider-wrapper"
                 >
                   or
                 </span>
@@ -174,7 +179,7 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
               data-mui-internal-clone-element="true"
             >
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-1mhjei7-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-1hp2ejb-MuiButtonBase-root-MuiButton-root"
                 data-testid="sign-btn"
                 disabled=""
                 tabindex="-1"
@@ -194,10 +199,11 @@ exports[`SignOrExecute should display a confirmation screen 1`] = `
 exports[`SignOrExecute should display a loading component 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-118bpkk-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-1w4z6qv-MuiPaper-root-MuiCard-root"
+    style="--Paper-shadow: none;"
   >
     <div
-      class="MuiCardContent-root cardContent css-46bh2p-MuiCardContent-root"
+      class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
       <div
         class="MuiBox-root css-17luq05"
@@ -257,10 +263,11 @@ exports[`SignOrExecute should display a loading component 1`] = `
 exports[`SignOrExecute should display an error screen 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-118bpkk-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-1w4z6qv-MuiPaper-root-MuiCard-root"
+    style="--Paper-shadow: none;"
   >
     <div
-      class="MuiCardContent-root cardContent css-46bh2p-MuiCardContent-root"
+      class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
       <div
         class="MuiStack-root css-1sazv7p-MuiStack-root"
@@ -269,69 +276,74 @@ exports[`SignOrExecute should display an error screen 1`] = `
           class="MuiBox-root css-0"
         >
           <div
-            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1x8l8fd-MuiPaper-root-MuiAccordion-root"
+            class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1befnxe-MuiPaper-root-MuiAccordion-root"
+            style="--Paper-shadow: none;"
           >
-            <div
-              aria-expanded="false"
-              class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-knbc2d-MuiButtonBase-root-MuiAccordionSummary-root"
-              data-testid="decoded-tx-summary"
-              role="button"
-              tabindex="0"
+            <h3
+              class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
             >
               <div
-                class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-6nefnh-MuiAccordionSummary-content"
+                aria-expanded="false"
+                class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-66oagt-MuiButtonBase-root-MuiAccordionSummary-root"
+                data-testid="decoded-tx-summary"
+                role="button"
+                tabindex="0"
               >
-                Advanced details
-                <span
-                  class=""
-                  data-mui-internal-clone-element="true"
-                >
-                  <mock-icon
-                    aria-hidden=""
-                    class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-i8sqcg-MuiSvgIcon-root"
-                    focusable="false"
-                  />
-                </span>
                 <div
-                  class="MuiBox-root css-i9gxme"
-                />
-              </div>
-              <div
-                class="MuiAccordionSummary-expandIconWrapper css-yw020d-MuiAccordionSummary-expandIconWrapper"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-17ceore-MuiSvgIcon-root"
-                  data-testid="ExpandMoreIcon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
+                  class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-1pnrdlh-MuiAccordionSummary-content"
                 >
-                  <path
-                    d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  Advanced details
+                  <span
+                    class=""
+                    data-mui-internal-clone-element="true"
+                  >
+                    <mock-icon
+                      aria-hidden=""
+                      class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-17ibv3e-MuiSvgIcon-root"
+                      focusable="false"
+                    />
+                  </span>
+                  <div
+                    class="MuiBox-root css-i9gxme"
                   />
-                </svg>
+                </div>
+                <div
+                  class="MuiAccordionSummary-expandIconWrapper css-1wqf3nl-MuiAccordionSummary-expandIconWrapper"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1dhtbeh-MuiSvgIcon-root"
+                    data-testid="ExpandMoreIcon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                    />
+                  </svg>
+                </div>
               </div>
-            </div>
+            </h3>
             <div
-              class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-bz4dnt-MuiCollapse-root"
+              class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-cwrbtg-MuiCollapse-root"
               style="min-height: 0px;"
             >
               <div
-                class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                class="MuiCollapse-wrapper MuiCollapse-vertical css-1x6hinx-MuiCollapse-wrapper"
               >
                 <div
-                  class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                  class="MuiCollapse-wrapperInner MuiCollapse-vertical css-1i4ywhz-MuiCollapse-wrapperInner"
                 >
                   <div
                     class="MuiAccordion-region"
                     role="region"
                   >
                     <div
-                      class="MuiAccordionDetails-root css-7wcoc8-MuiAccordionDetails-root"
+                      class="MuiAccordionDetails-root css-w74p4c-MuiAccordionDetails-root"
                       data-testid="decoded-tx-details"
                     >
                       <div
-                        class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
+                        class="MuiGrid-root MuiGrid-container css-86qz5o-MuiGrid-root"
                       >
                         <div
                           class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
@@ -339,7 +351,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
                           style="word-break: break-word;"
                         >
                           <p
-                            class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
+                            class="MuiTypography-root MuiTypography-body1 css-shf88x-MuiTypography-root"
                           >
                             safeTxGas:
                           </p>
@@ -356,7 +368,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
                         </div>
                       </div>
                       <div
-                        class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
+                        class="MuiGrid-root MuiGrid-container css-86qz5o-MuiGrid-root"
                       >
                         <div
                           class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
@@ -364,7 +376,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
                           style="word-break: break-word;"
                         >
                           <p
-                            class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
+                            class="MuiTypography-root MuiTypography-body1 css-shf88x-MuiTypography-root"
                           >
                             Raw data:
                           </p>
@@ -389,18 +401,15 @@ exports[`SignOrExecute should display an error screen 1`] = `
                             >
                               <button
                                 aria-label="Copy to clipboard"
-                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-nmr6e8-MuiButtonBase-root-MuiIconButton-root"
+                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-xyrzjn-MuiButtonBase-root-MuiIconButton-root"
                                 tabindex="0"
                                 type="button"
                               >
                                 <mock-icon
                                   aria-hidden=""
-                                  class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                                  class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-gvpe62-MuiSvgIcon-root"
                                   data-testid="copy-btn-icon"
                                   focusable="false"
-                                />
-                                <span
-                                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
                                 />
                               </button>
                             </span>
@@ -418,10 +427,11 @@ exports[`SignOrExecute should display an error screen 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-118bpkk-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiCard-root css-1w4z6qv-MuiPaper-root-MuiCard-root"
+    style="--Paper-shadow: none;"
   >
     <div
-      class="MuiCardContent-root cardContent css-46bh2p-MuiCardContent-root"
+      class="MuiCardContent-root cardContent css-1lt5qva-MuiCardContent-root"
     >
       <div
         class="wrapper"
@@ -431,18 +441,18 @@ exports[`SignOrExecute should display an error screen 1`] = `
         >
           <mock-icon
             aria-hidden=""
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
             focusable="false"
           />
         </div>
         <div>
           <h5
-            class="MuiTypography-root MuiTypography-h5 css-kmqua7-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-h5 css-1mp5g96-MuiTypography-root"
           >
             confirm
           </h5>
           <p
-            class="MuiTypography-root MuiTypography-body2 css-ceebrx-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-body2 css-17vdyq3-MuiTypography-root"
           >
             You're about to 
             create and 
@@ -453,10 +463,10 @@ exports[`SignOrExecute should display an error screen 1`] = `
       </div>
       <form>
         <hr
-          class="MuiDivider-root MuiDivider-fullWidth nestedDivider css-1cvjk81-MuiDivider-root"
+          class="MuiDivider-root MuiDivider-fullWidth nestedDivider css-1jpvyob-MuiDivider-root"
         />
         <div
-          class="MuiCardActions-root MuiCardActions-spacing css-dnrpxu-MuiCardActions-root"
+          class="MuiCardActions-root MuiCardActions-spacing css-1q4nm6f-MuiCardActions-root"
         >
           <div
             class="MuiStack-root css-irtfmw-MuiStack-root"
@@ -469,19 +479,16 @@ exports[`SignOrExecute should display an error screen 1`] = `
                 data-track="batching: Add to batch"
               >
                 <button
-                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-fj99we-MuiButtonBase-root-MuiButton-root"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-16be8yl-MuiButtonBase-root-MuiButton-root"
                   tabindex="0"
                   type="button"
                 >
                   <mock-icon
                     aria-hidden=""
-                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-gxmw0o-MuiSvgIcon-root"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-1hr8a3z-MuiSvgIcon-root"
                     focusable="false"
                   />
                   Add to batch
-                  <span
-                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                  />
                 </button>
               </span>
             </span>
@@ -490,11 +497,12 @@ exports[`SignOrExecute should display an error screen 1`] = `
             >
                
               <div
-                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren css-crkpmc-MuiDivider-root"
+                aria-orientation="horizontal"
+                class="MuiDivider-root MuiDivider-fullWidth MuiDivider-withChildren css-1lftdsp-MuiDivider-root"
                 role="separator"
               >
                 <span
-                  class="MuiDivider-wrapper css-165zycj-MuiDivider-wrapper"
+                  class="MuiDivider-wrapper css-tuok6n-MuiDivider-wrapper"
                 >
                   or
                 </span>
@@ -506,7 +514,7 @@ exports[`SignOrExecute should display an error screen 1`] = `
               data-mui-internal-clone-element="true"
             >
               <button
-                class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-1mhjei7-MuiButtonBase-root-MuiButton-root"
+                class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-1hp2ejb-MuiButtonBase-root-MuiButton-root"
                 data-testid="sign-btn"
                 disabled=""
                 tabindex="-1"

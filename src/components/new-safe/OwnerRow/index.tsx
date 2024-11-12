@@ -72,10 +72,12 @@ export const OwnerRow = ({
     <Grid
       container
       spacing={3}
-      alignItems="center"
-      marginBottom={3}
-      flexWrap={['wrap', undefined, 'nowrap']}
       className={classNames({ [css.helper]: walletIsOwner })}
+      sx={{
+        alignItems: 'center',
+        marginBottom: 3,
+        flexWrap: ['wrap', undefined, 'nowrap'],
+      }}
     >
       <Grid item xs={12} md={readOnly ? 5 : 4}>
         <FormControl fullWidth>
@@ -108,7 +110,17 @@ export const OwnerRow = ({
         )}
       </Grid>
       {!readOnly && (
-        <Grid item ml={-2} xs={1} alignSelf="stretch" display="flex" alignItems="center" flexShrink={0}>
+        <Grid
+          item
+          xs={1}
+          sx={{
+            ml: -2,
+            alignSelf: 'stretch',
+            display: 'flex',
+            alignItems: 'center',
+            flexShrink: 0,
+          }}
+        >
           {removable && (
             <>
               <IconButton data-testid="remove-owner-btn" onClick={() => remove?.(index)} aria-label="Remove signer">

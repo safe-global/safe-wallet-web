@@ -19,10 +19,16 @@ const SafeAppsDashboardSection = () => {
 
   return (
     <WidgetContainer>
-      <Typography component="h2" variant="subtitle1" fontWeight={700} mb={2}>
+      <Typography
+        component="h2"
+        variant="subtitle1"
+        sx={{
+          fontWeight: 700,
+          mb: 2,
+        }}
+      >
         Safe Apps
       </Typography>
-
       <Grid container spacing={3}>
         {rankedSafeApps.map((rankedSafeApp) => (
           <Grid key={rankedSafeApp.id} item xs={12} sm={6} md={4} xl={4}>
@@ -40,7 +46,6 @@ const SafeAppsDashboardSection = () => {
           <ExploreSafeAppsCard />
         </Grid>
       </Grid>
-
       <SafeAppPreviewDrawer
         isOpen={isPreviewDrawerOpen}
         safeApp={previewDrawerApp}

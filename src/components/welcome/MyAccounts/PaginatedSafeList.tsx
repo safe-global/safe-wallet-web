@@ -81,11 +81,25 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
   return (
     <Paper className={css.safeList}>
       <div className={css.listHeader}>
-        <Typography variant="h5" fontWeight={700} mb={2} className={css.listTitle}>
+        <Typography
+          variant="h5"
+          className={css.listTitle}
+          sx={{
+            fontWeight: 700,
+            mb: 2,
+          }}
+        >
           {title}
 
           {safes && safes.length > 0 && (
-            <Typography component="span" color="var(--color-primary-light)" fontSize="inherit" fontWeight="normal">
+            <Typography
+              component="span"
+              sx={{
+                color: 'var(--color-primary-light)',
+                fontSize: 'inherit',
+                fontWeight: 'normal',
+              }}
+            >
               {' '}
               ({safes.length})
             </Typography>
@@ -94,7 +108,6 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
 
         {action}
       </div>
-
       {totalSafes > 0 ? (
         <>
           {multiChainSafes && multiChainSafes.length > 0 && (
@@ -108,11 +121,13 @@ const PaginatedSafeList = ({ safes, title, action, noSafesMessage, onLinkClick }
         <Typography
           component="div"
           variant="body2"
-          color="text.secondary"
-          textAlign="center"
-          py={3}
-          mx="auto"
-          width={250}
+          sx={{
+            color: 'text.secondary',
+            textAlign: 'center',
+            py: 3,
+            mx: 'auto',
+            width: 250,
+          }}
         >
           {noSafesMessage}
         </Typography>

@@ -110,7 +110,15 @@ const SafeAppsInfoModal = ({
   const origin = useMemo(() => getOrigin(appUrl), [appUrl])
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" height="calc(100vh - 52px)">
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        height: 'calc(100vh - 52px)',
+      }}
+    >
       <Box
         data-testid="app-info-modal"
         sx={({ palette }) => ({
@@ -133,7 +141,16 @@ const SafeAppsInfoModal = ({
             },
           })}
         />
-        <Grid container justifyContent="center" alignItems="center" direction="column" textAlign="center" p={3}>
+        <Grid
+          container
+          direction="column"
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            p: 3,
+          }}
+        >
           <Slider onSlideChange={handleSlideChange}>
             {!isConsentAccepted && <LegalDisclaimerContent />}
 

@@ -70,7 +70,14 @@ export const _GasParams = ({
   const EditComponent = (
     <>
       {gasLimitError || !isExecution || (isExecution && !isLoading) ? (
-        <Link component="button" onClick={onEditClick} sx={{ mt: 2 }} fontSize="medium">
+        <Link
+          component="button"
+          onClick={onEditClick}
+          sx={{
+            fontSize: 'medium',
+            mt: 2,
+          }}
+        >
           Edit
         </Link>
       ) : (
@@ -88,7 +95,13 @@ export const _GasParams = ({
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />} className={accordionCss.accordion}>
           {isExecution ? (
-            <Typography display="flex" alignItems="center" width={1}>
+            <Typography
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                width: 1,
+              }}
+            >
               <span style={{ flex: '1' }}>Estimated fee </span>
               {gasLimitError ? (
                 <>
