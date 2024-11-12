@@ -89,6 +89,7 @@ const PayNowPayLater = ({
         <FormControl fullWidth>
           <RadioGroup row value={payMethod} onChange={onChoosePayMethod} className={css.radioGroup}>
             <FormControlLabel
+              data-testid="pay-now-execution-method"
               sx={{ flex: 1 }}
               value={PayMethod.PayNow}
               className={classnames(css.radioContainer, { [css.active]: payMethod === PayMethod.PayNow })}
