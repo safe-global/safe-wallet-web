@@ -4826,10 +4826,10 @@
     "@storybook/global" "^5.0.0"
     ts-dedent "^2.0.0"
 
-"@storybook/addon-themes@^8.0.6":
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-themes/-/addon-themes-8.0.6.tgz#41dabc2c51230bb1b8dbbbcb54691f3f4c8f7488"
-  integrity sha512-KwLwE8aP8Wg94cF+MuyqinUAQn6ZBhAWMv43YSZq+ixQVTVPOJ5w5ooFCnx7mJ5UhLbzpRS94iF9izSPRMlDNA==
+"@storybook/addon-themes@^8.3.4":
+  version "8.3.4"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-themes/-/addon-themes-8.3.4.tgz#69b7340659ae2d6b3f7d17f14045967216350829"
+  integrity sha512-6gQeSFhC5VzFg2A0LM1jXhHwOn7+2nYCx+GWXOZgIWzXmtuhkPz5dt4LZ3fP4lJ9EBWnGs3mfYwUk7BZCyD5fQ==
   dependencies:
     ts-dedent "^2.0.0"
 
