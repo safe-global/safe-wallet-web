@@ -7063,13 +7063,14 @@
     svelte "^3.49.0"
     svelte-i18n "^3.3.13"
 
-"@web3-onboard/hw-common@^2.0.4", "@web3-onboard/hw-common@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/hw-common/-/hw-common-2.3.0.tgz#715d35c4039515e3f8ec839643e6d4c49097891f"
-  integrity sha512-ai5gwaXHxMOgov+TKuy2yUtBf7b2Vq8c28L9tSx4Hl8Q2IM6boGZQEqfW6Hw0GHu/Ez+MxRR5+M6nfwFBf8JRw==
+"@web3-onboard/hw-common@^2.0.4", "@web3-onboard/hw-common@^2.3.0", "@web3-onboard/hw-common@^2.3.2":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/hw-common/-/hw-common-2.3.3.tgz#c8327b3eb6808e251809e6a7abeae84a542b0b85"
+  integrity sha512-AkJixEMSDsLjNeeruXvR2WAPa9Ji3lOR0+gKrVoW9Uwf6b3YmWh8dBAPd2XRVUVOc/AUNSwcNJVQ3Xo9rZkuhg==
   dependencies:
     "@ethereumjs/common" "2.6.2"
-    "@web3-onboard/common" "^2.3.3"
+    "@web3-onboard/common" "^2.4.1"
+    bignumber.js "^9.1.0"
     ethers "5.5.4"
     joi "17.9.1"
     rxjs "^7.5.2"
@@ -7083,16 +7084,16 @@
     joi "17.9.1"
     lodash.uniqby "^4.7.0"
 
-"@web3-onboard/keystone@^2.3.7":
-  version "2.3.7"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/keystone/-/keystone-2.3.7.tgz#e8355a9ffcaa36baf8033a10010b86aa8ebb4d06"
-  integrity sha512-9KdRQJ3htg9uSF3t8o2a5T32aQ+J2VA0mKYaXns2ZgsSznd4WqvQFuyrQi015b0rn6zkXM3BKFcMhu0OJtRwHw==
+"@web3-onboard/keystone@^2.3.10":
+  version "2.3.10"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/keystone/-/keystone-2.3.10.tgz#e2d51c573a87d744cc583a027c4ca81c6415697b"
+  integrity sha512-zFcO6gw+WRfYhEsBFLQE9czpOo6wnAKkjqwQoolVufd7CdZAohpnCOCE8Y2WwwedK9ColDGZvgEBrh2TWDtPMw==
   dependencies:
     "@ethereumjs/tx" "^3.4.0"
     "@ethersproject/providers" "^5.5.0"
     "@keystonehq/eth-keyring" "^0.14.00.3"
-    "@web3-onboard/common" "^2.3.3"
-    "@web3-onboard/hw-common" "^2.3.0"
+    "@web3-onboard/common" "^2.4.1"
+    "@web3-onboard/hw-common" "^2.3.2"
 
 "@web3-onboard/ledger@2.3.2":
   version "2.3.2"
@@ -8016,7 +8017,7 @@ bigint-buffer@^1.1.5:
   dependencies:
     bindings "^1.3.0"
 
-bignumber.js@^9.0.0, bignumber.js@^9.0.1, bignumber.js@^9.1.1, bignumber.js@^9.1.2:
+bignumber.js@^9.0.0, bignumber.js@^9.0.1, bignumber.js@^9.1.0, bignumber.js@^9.1.1, bignumber.js@^9.1.2:
   version "9.1.2"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.2.tgz#b7c4242259c008903b13707983b5f4bbd31eda0c"
   integrity sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==
