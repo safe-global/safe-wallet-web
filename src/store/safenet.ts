@@ -50,27 +50,32 @@ export type SafenetSimulationResponse = {
 }
 
 export const getSafenetBalances = async (chainId: string, safeAddress: string): Promise<SafenetBalanceEntity> => {
-  const response = await fetch(`${SAFENET_API_URL}/safenet/balances/${chainId}/${safeAddress}`)
+  const response = await fetch(`${SAFENET_API_URL}/api/v1/balances/${chainId}/${safeAddress}`)
   const data = await response.json()
   return data
 }
 
 export const safenetApi = createApi({
   reducerPath: 'safenetApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${SAFENET_API_URL}/safenet` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${SAFENET_API_URL}/api/v1` }),
   tagTypes: ['SafenetConfig', 'SafenetOffchainStatus', 'SafenetBalance', 'SafenetSimulation'],
   endpoints: (builder) => ({
     getSafenetConfig: builder.query<SafenetConfigEntity, void>({
-      query: () => `/config/`,
+      query: () => ({
+        url: '/about',
+        responseHandler: async (response) => {
+          return (await response.json()).config
+        },
+      }),
       providesTags: ['SafenetConfig'],
     }),
     getSafenetOffchainStatus: builder.query<SafenetSafeEntity, { chainId: string; safeAddress: string }>({
-      query: ({ chainId, safeAddress }) => `/safes/${chainId}/${safeAddress}`,
+      query: ({ chainId, safeAddress }) => `/account/${chainId}/${safeAddress}`,
       providesTags: (_, __, arg) => [{ type: 'SafenetOffchainStatus', id: arg.safeAddress }],
     }),
     registerSafenet: builder.mutation<boolean, { chainId: string; safeAddress: string }>({
       query: ({ chainId, safeAddress }) => ({
-        url: `/register`,
+        url: `/account`,
         method: 'POST',
         body: {
           chainId: Number(chainId),
