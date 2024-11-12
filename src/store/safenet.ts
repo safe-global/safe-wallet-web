@@ -49,8 +49,8 @@ export type SafenetSimulationResponse = {
   results: SafenetSimulationResult[]
 }
 
-export const getSafenetBalances = async (chainId: string, safeAddress: string): Promise<SafenetBalanceEntity> => {
-  const response = await fetch(`${SAFENET_API_URL}/api/v1/balances/${chainId}/${safeAddress}`)
+export const getSafenetBalances = async (safeAddress: string): Promise<SafenetBalanceEntity> => {
+  const response = await fetch(`${SAFENET_API_URL}/api/v1/balances/${safeAddress}`)
   const data = await response.json()
   return data
 }
@@ -84,8 +84,8 @@ export const safenetApi = createApi({
       }),
       invalidatesTags: (_, __, arg) => [{ type: 'SafenetOffchainStatus', id: arg.safeAddress }],
     }),
-    getSafenetBalance: builder.query<SafenetBalanceEntity, { chainId: string; safeAddress: string }>({
-      query: ({ chainId, safeAddress }) => `/balances/${chainId}/${safeAddress}`,
+    getSafenetBalance: builder.query<SafenetBalanceEntity, { safeAddress: string }>({
+      query: ({ safeAddress }) => `/balances/${safeAddress}`,
       providesTags: (_, __, arg) => [{ type: 'SafenetBalance', id: arg.safeAddress }],
     }),
     simulateSafenetTx: builder.query<
