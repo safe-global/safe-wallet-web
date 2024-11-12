@@ -9146,10 +9146,10 @@ cypress-file-upload@^5.0.8:
   resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-5.0.8.tgz#d8824cbeaab798e44be8009769f9a6c9daa1b4a1"
   integrity sha512-+8VzNabRk3zG6x8f8BWArF/xA/W0VK4IZNx3MV0jFWrJS/qKn8eHfa5nU73P9fOQAgwHFJx7zjg4lwOnljMO8g==
 
-cypress-visual-regression@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/cypress-visual-regression/-/cypress-visual-regression-5.0.2.tgz#1681543e0859525cc09baba9de6a367c6c0dbfa5"
-  integrity sha512-Rr/W2uSw1KxG5AE9q6MT8yZfT81GaLVO0z/QyKg9pCZ7XvObUklyh9j5gWe7yUzDnY/2g9XpczZKNKL2zZ2PAg==
+cypress-visual-regression@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/cypress-visual-regression/-/cypress-visual-regression-5.2.2.tgz#4dc3e7e223683ffa3419025f397f50dba91ac8e0"
+  integrity sha512-QWCXlE7GCpNnwVLmkywiIJ8usrIgTdVdUE6j3LYhZPSB35jNR3GmwVihP6NzzAG4CpW4zm+MAEDrkuX1MQzPeA==
   dependencies:
     chalk "^4.1.2"
     pixelmatch "^5.2.1"
