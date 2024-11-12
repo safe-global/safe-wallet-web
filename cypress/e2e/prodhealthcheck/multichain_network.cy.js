@@ -36,4 +36,25 @@ describe('[PROD] Multichain add network tests', () => {
     create_wallet.openNetworkSelector()
     cy.contains(sideBar.addingNetworkNotPossibleStr)
   })
+
+  it('Verify that zkSync network is not available during multichain safe creation', () => {
+    cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
+    wallet.connectSigner(signer)
+    cy.visit(constants.prodbaseUrl + constants.welcomeUrl + '?chain=sep')
+    create_wallet.clickOnContinueWithWalletBtn()
+    create_wallet.clickOnCreateNewSafeBtn()
+    create_wallet.selectMultiNetwork(1, constants.networks.polygon.toLowerCase())
+    cy.contains('li', constants.networks.zkSync).should('have.attr', 'aria-disabled', 'true')
+  })
+
+  it('Verify that zkSync network is available as part of single safe creation flow ', () => {
+    cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
+    wallet.connectSigner(signer)
+    cy.visit(constants.prodbaseUrl + constants.welcomeUrl + '?chain=sep')
+    create_wallet.clickOnContinueWithWalletBtn()
+    create_wallet.clickOnCreateNewSafeBtn()
+    create_wallet.clearNetworkInput(1)
+    create_wallet.enterNetwork(1, 'zkSync')
+    cy.contains('li', constants.networks.zkSync).should('not.have.attr', 'aria-disabled', 'true')
+  })
 })

@@ -105,6 +105,7 @@ export const TXActionNames = {
 
 export const networkKeys = {
   sepolia: '11155111',
+  polygon: '137',
 }
 export const mainSideMenuOptions = {
   home: 'Home',

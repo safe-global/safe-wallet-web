@@ -7,6 +7,7 @@ const executeFormBtn = '[data-testid="execute-form-btn"]'
 
 const executeBtnStr = 'Execute'
 const txCompletedStr = 'Transaction was successful'
+export const relayRemainingAttemptsStr = 'free transactions left today'
 
 export function selectExecuteNow() {
   cy.get(executeNowOption).click()

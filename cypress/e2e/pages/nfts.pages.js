@@ -150,7 +150,7 @@ export function verifyReviewModalData(NFTcount) {
   if (NFTcount > 1) {
     const numbersArr = Array.from({ length: NFTcount }, (_, index) => index + 1)
     numbersArr.forEach((number) => {
-      cy.contains(number.toString()).should('be.visible')
+      cy.contains(number.toString()).scrollIntoView().should('be.visible')
     })
   }
 }
