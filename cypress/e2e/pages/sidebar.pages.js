@@ -59,10 +59,16 @@ export const undeployedSafe = 'Undeployed Sepolia'
 const notActivatedStr = 'Not activated'
 export const addingNetworkNotPossibleStr = 'Adding another network is not possible for this Safe.'
 export const createSafeMsg = (network) => `Successfully added your account on ${network}`
+const signersNotConsistentMsg = 'Signers are not consistent'
+const signersNotConsistentMsg2 = (network) => `Signers are different on these networks of this account:${network}`
+const signersNotConsistentMsg3 =
+  'To manage your account easier and to prevent lose of funds, we recommend keeping the same signers'
+const signersNotConsistentConfirmTxViewMsg = (network) =>
+  `Signers are not consistent across networks on this account. Changing signers will only affect the account on ${network}`
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
-export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
+export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings', 'Swap']
 export const sideBarSafes = {
   safe1: '0xBb26E3717172d5000F87DeFd391994f789D80aEB',
   safe2: '0x905934aA8758c06B2422F0C90D97d2fbb6677811',
@@ -178,6 +184,10 @@ export function verifyTxCounter(counter) {
   cy.get(sideBarListItem).contains(sideBarListItems[2]).should('contain', counter)
 }
 
+export function verifyNavItemDisabled(item) {
+  cy.get(sideBarListItem).contains(item).parents('li').invoke('attr', 'class').should('include', 'disabled')
+}
+
 export function verifySafeCount(count) {
   main.verifyMinimumElementsCount(sideSafeListItem, count)
 }
@@ -279,7 +289,7 @@ export function checkThereIsNoOptionsMenu(index) {
 }
 
 export function checkUndeployedSafeExists(index) {
-  getSubAccountContainer(index).contains(notActivatedStr).should('exist')
+  return getSubAccountContainer(index).contains(notActivatedStr).should('exist')
 }
 
 export function checkAddNetworkBtnPosition(index) {
@@ -453,4 +463,14 @@ export function checkNetworksInRange(expectedString, expectedCount, direction = 
       expect(isStringPresent).to.be.true
       return cy.wrap(liElements)
     })
+}
+
+export function checkInconsistentSignersMsgDisplayed(network) {
+  cy.contains(signersNotConsistentMsg).should('exist')
+  cy.contains(signersNotConsistentMsg2(network)).should('exist')
+  cy.contains(signersNotConsistentMsg3).should('exist')
+}
+
+export function checkInconsistentSignersMsgDisplayedConfirmTxView(network) {
+  cy.contains(signersNotConsistentConfirmTxViewMsg(network)).should('exist')
 }

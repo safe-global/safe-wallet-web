@@ -1,6 +1,7 @@
 import * as main from '../pages/main.page'
 import { connectedWalletExecMethod } from '../pages/create_tx.pages'
 import * as sidebar from '../pages/sidebar.pages'
+import * as constants from '../../support/constants'
 
 const welcomeLoginScreen = '[data-testid="welcome-login"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
@@ -39,6 +40,7 @@ export const addFundsSection = '[data-testid="add-funds-section"]'
 export const noTokensAlert = '[data-testid="no-tokens-alert"]'
 const networkCheckbox = '[data-testid="network-checkbox"]'
 const cancelIcon = '[data-testid="CancelIcon"]'
+const thresholdItem = '[data-testid="threshold-item"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -129,7 +131,7 @@ export function clickOnReviewStepNextBtn() {
 
 export function clickOnLetsGoBtn() {
   cy.get(creationModalLetsGoBtn).click()
-  cy.get(creationModalLetsGoBtn, { timeout: 60000 }).should('not.exist')
+  return cy.get(creationModalLetsGoBtn, { timeout: 60000 }).should('not.exist')
 }
 
 export function verifyOwnerInfoIsPresent() {
@@ -197,9 +199,19 @@ export function selectNetwork(network) {
 }
 
 export function selectMultiNetwork(index, network) {
-  cy.get('input').eq(index).click()
-  cy.get('input').eq(index).type(network)
+  clickOnMultiNetworkInput(index)
+  enterNetwork(index, network)
+  clickOnNetwrokCheckbox()
+}
+
+export function clickOnNetwrokCheckbox() {
   cy.get(networkCheckbox).eq(0).click()
+}
+export function enterNetwork(index, network) {
+  cy.get('input').eq(index).type(network)
+}
+export function clickOnMultiNetworkInput(index) {
+  cy.get('input').eq(index).click()
 }
 
 export function clearNetworkInput(index) {
@@ -256,7 +268,7 @@ export function addNewOwner(name, address, index) {
 
 export function updateThreshold(number) {
   cy.get(thresholdInput).parent().click()
-  cy.contains('li', number).click()
+  cy.get(thresholdItem).contains(number).click()
 }
 
 export function removeOwner(index) {
@@ -301,4 +313,32 @@ function getOwnerNameInput(index) {
 
 function getOwnerAddressInput(index) {
   return `input[name="owners.${index}.address"]`
+}
+
+export function assertCFSafeThresholdAndSigners(chainId, threshold, expectedOwnersCount, lsdata) {
+  const localStorageData = lsdata
+  const data = JSON.parse(localStorageData)
+  let thresholdFound = false
+
+  for (const address in data[chainId]) {
+    const safe = data[chainId][address]
+
+    if (safe.props.safeAccountConfig.threshold === threshold) {
+      thresholdFound = true
+
+      const ownersCount = safe.props.safeAccountConfig.owners.length
+      if (ownersCount !== expectedOwnersCount) {
+        throw new Error(
+          `Safe at address ${address} on chain ID ${chainId} has ${ownersCount} owners, expected ${expectedOwnersCount}.`,
+        )
+      }
+
+      console.log(`Safe with threshold ${threshold} and ${expectedOwnersCount} owners exists on chain ID ${chainId}.`)
+      break
+    }
+  }
+
+  if (!thresholdFound) {
+    throw new Error(`No safe found with threshold ${threshold} on chain ID ${chainId}.`)
+  }
 }
