@@ -103,13 +103,13 @@ export const SafeSetupOverview = ({
             }
             arrow
           >
-            <Box display="inline-block">
+            <Box data-testid="network-list" display="inline-block">
               <NetworkLogosList networks={networks} />
             </Box>
           </Tooltip>
         }
       />
-      {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
+      {name && <ReviewRow name="Name" value={<Typography data-testid="review-step-safe-name">{name}</Typography>} />}
       <ReviewRow
         name="Signers"
         value={
@@ -132,7 +132,7 @@ export const SafeSetupOverview = ({
       <ReviewRow
         name="Threshold"
         value={
-          <Typography>
+          <Typography data-testid="review-step-threshold">
             {threshold} out of {owners.length} {owners.length > 1 ? 'signers' : 'signer'}
           </Typography>
         }
@@ -365,14 +365,14 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   return (
     <>
-      <Box className={layoutCss.row}>
+      <Box data-testid="safe-setup-overview" className={layoutCss.row}>
         <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} networks={data.networks} />
       </Box>
 
       {isCounterfactualEnabled && (
         <>
           <Divider />
-          <Box className={layoutCss.row}>
+          <Box data-testid="pay-now-later-message-box" className={layoutCss.row}>
             <PayNowPayLater
               totalFee={totalFee}
               isMultiChain={isMultiChainDeployment}
