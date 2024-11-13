@@ -127,6 +127,7 @@ export const networks = {
   polygon: 'Polygon',
   gnosis: 'Gnosis',
   zkSync: 'zkSync Era',
+  base: 'Base',
 }
 
 export const tokenAbbreviation = {
