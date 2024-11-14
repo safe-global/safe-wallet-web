@@ -86,4 +86,14 @@ describe('Multichain setup tests', { defaultCommandTimeout: 30000 }, () => {
     owner.clickOnThresholdNextBtn()
     sideBar.checkInconsistentSignersMsgDisplayedConfirmTxView(constants.networks.sepolia)
   })
+
+  it('Verify warning on swap owner for one safe in the group', () => {
+    cy.visit(constants.setupUrl + `sep:${safe}`)
+    owner.waitForConnectionStatus()
+    owner.openReplaceOwnerWindow(1)
+    owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)
+    cy.wait(2000)
+    owner.clickOnNextBtn()
+    sideBar.checkInconsistentSignersMsgDisplayedConfirmTxView(constants.networks.sepolia)
+  })
 })

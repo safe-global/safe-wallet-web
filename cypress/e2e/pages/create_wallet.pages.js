@@ -1,5 +1,5 @@
 import * as main from '../pages/main.page'
-import { connectedWalletExecMethod } from '../pages/create_tx.pages'
+import { connectedWalletExecMethod, relayExecMethod } from '../pages/create_tx.pages'
 import * as sidebar from '../pages/sidebar.pages'
 import * as constants from '../../support/constants'
 
@@ -35,6 +35,7 @@ const addFundsBtn = '[data-testid="add-funds-btn"]'
 const createTxBtn = '[data-testid="create-tx-btn"]'
 const qrCodeSwitch = '[data-testid="qr-code-switch"]'
 export const activateAccountBtn = '[data-testid="activate-account-btn-cf"]'
+export const activateFlowAccountBtn = '[data-testid="activate-account-flow-btn"]'
 const notificationsSwitch = '[data-testid="notifications-switch"]'
 export const addFundsSection = '[data-testid="add-funds-section"]'
 export const noTokensAlert = '[data-testid="no-tokens-alert"]'
@@ -49,6 +50,7 @@ export const reviewStepThreshold = '[data-testid="review-step-threshold"]'
 export const cfSafeCreationSuccessMsg = '[data-testid="account-success-message"]'
 export const cfSafeActivationMsg = '[data-testid="safe-activation-message"]'
 export const cfSafeInfo = '[data-testid="safe-info"]'
+const connectWalletBtn = '[data-testid="connect-wallet-btn"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -64,8 +66,7 @@ export const accountRecoveryStr = 'Account recovery'
 export const sendTokensStr = 'Send tokens'
 const noWalletConnectedMsg = 'No wallet connected'
 export const deployWalletStr = 'about to deploy this Safe Account'
-
-const connectWalletBtn = '[data-testid="connect-wallet-btn"]'
+const showAllNetworksStr = 'Show all networks'
 
 export function waitForConnectionMsgDisappear() {
   cy.contains(noWalletConnectedMsg).should('not.exist')
@@ -76,6 +77,10 @@ export function checkNotificationsSwitchIs(status) {
 
 export function clickOnActivateAccountBtn(index) {
   cy.get(activateAccountBtn).eq(index).click()
+}
+
+export function clickOnFinalActivateAccountBtn(index) {
+  cy.get(activateFlowAccountBtn).click()
 }
 
 export function clickOnQRCodeSwitch() {
@@ -114,6 +119,11 @@ export function verifyCFSafeCreated() {
 export function selectPayLaterOption() {
   cy.get(connectedWalletExecMethod).click()
 }
+
+export function selectRelayOption() {
+  cy.get(relayExecMethod).click()
+}
+
 export function cancelWalletCreation() {
   cy.get(cancelBtn).click()
   cy.get('button').contains(continueWithWalletBtn).should('be.visible')
@@ -224,6 +234,10 @@ export function clickOnMultiNetworkInput(index) {
 
 export function clearNetworkInput(index) {
   cy.get('input').eq(index).click()
+  cy.get(cancelIcon).click()
+}
+
+export function clickOnNetwrokRemoveIcon() {
   cy.get(cancelIcon).click()
 }
 

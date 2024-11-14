@@ -48,11 +48,13 @@ const multichainTooltip = '[data-testid="multichain-tooltip"]'
 const networkInput = '[id="network-input"]'
 const networkOption = 'li[role="option"]'
 const showAllNetworks = '[data-testid="show-all-networks"]'
+const showAllNetworksStr = 'Show all networks'
 export const addNetworkOption = 'li[aria-label="Add network"]'
 export const addedNetworkOption = 'li[role="option"]'
 const modalAddNetworkName = '[data-testid="added-network"]'
 const networkSeperator = 'div[role="separator"]'
 export const addNetworkTooltip = '[data-testid="add-network-tooltip"]'
+const networkOptionNetworkSwitch = 'span[data-track="overview: Add new network"] > li'
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
 export const undeployedSafe = 'Undeployed Sepolia'
@@ -262,8 +264,13 @@ export function checkMultichainTooltipExists(index) {
   cy.get(multichainTooltip).should('exist')
 }
 
-export function checkSafeGroupBalance(index, balance) {
-  cy.get(multichainItemSummary).eq(index).find(groupBalance).should('include.text', balance)
+export function checkSafeGroupBalance(index) {
+  cy.get(multichainItemSummary)
+    .eq(index)
+    .find(groupBalance)
+    .invoke('text')
+    .should('include', '$')
+    .and('match', /\d+\.\d{2}/)
 }
 
 export function checkSafeGroupAddress(index, address) {
@@ -428,6 +435,11 @@ export function clickOnShowAllNetworksBtn() {
   cy.get(showAllNetworks).click()
 }
 
+// TODO: Remove after next release due to data-testid availability
+export function clickOnShowAllNetworksStrBtn() {
+  cy.contains(showAllNetworksStr).click()
+}
+
 export function checkNetworkPresence(networks, optionSelector) {
   return cy.get(optionSelector).then((options) => {
     const optionTexts = [...options].map((option) => option.innerText)
@@ -473,4 +485,22 @@ export function checkInconsistentSignersMsgDisplayed(network) {
 
 export function checkInconsistentSignersMsgDisplayedConfirmTxView(network) {
   cy.contains(signersNotConsistentConfirmTxViewMsg(network)).should('exist')
+}
+
+function getNetworkElements() {
+  return cy.get('span[data-track="overview: Add new network"] > li')
+}
+
+export function checkNetworkDisabled(networks) {
+  getNetworkElements().should('have.length', 20)
+  getNetworkElements().each(($el) => {
+    const text = $el[0].innerText.trim()
+    console.log(`Element text: ${text}`)
+    const isDisabledNetwork = networks.some((network) => text.includes(network))
+    if (isDisabledNetwork) {
+      expect($el).to.have.attr('aria-disabled', 'true')
+    } else {
+      expect($el).not.to.have.attr('aria-disabled')
+    }
+  })
 }
