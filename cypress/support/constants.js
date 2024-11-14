@@ -95,6 +95,10 @@ export const safeListEndpoint = '**/safes'
 export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
 export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png'
 
+export const safeContractVersions = {
+  v1_4_1_L2: '1.4.1+L2',
+}
+
 export const commonThresholds = {
   oneOfOne: '1 out of 1 signer(s)',
 }
@@ -128,6 +132,8 @@ export const networks = {
   gnosis: 'Gnosis',
   zkSync: 'zkSync Era',
   base: 'Base',
+  optimism: 'Optimism',
+  gnosisChiado: 'Gnosis Chiado',
 }
 
 export const tokenAbbreviation = {

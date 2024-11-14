@@ -57,12 +57,10 @@ describe('[SMOKE] Tx history tests', () => {
   })
 
   it('[SMOKE] Verify summary for batch', () => {
-    createTx.verifySummaryByName(
-      typeBatch.title,
+    createTx.verifySummaryByName(typeBatch.title, typeBatch.summaryTxInfo, [
       typeBatch.summaryTxInfo,
-      [typeBatch.summaryTxInfo, typeGeneral.statusOk],
-      typeBatch.altImage,
-    )
+      typeGeneral.statusOk,
+    ])
   })
 
   it('[SMOKE] Verify summary for allowance deletion', () => {
