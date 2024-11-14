@@ -33,6 +33,7 @@ const SingleSafeSetup = ({
         justifyContent: 'start',
         flexDirection: 'row',
         gap: '1',
+        border: ({ palette }) => `1px solid ${palette.border.light}`,
       }}
       onClick={onSelect}
     >
@@ -44,6 +45,7 @@ const SingleSafeSetup = ({
           owners={setup.owners.length}
           threshold={setup.threshold}
           chainId={setup.chainId}
+          size={32}
         />
       </Box>
 
@@ -59,7 +61,7 @@ const SingleSafeSetup = ({
         </Typography>
       </Typography>
 
-      <ChainIndicator chainId={setup.chainId} responsive />
+      <ChainIndicator chainId={setup.chainId} />
     </ButtonBase>
   )
 }
@@ -67,7 +69,7 @@ const SingleSafeSetup = ({
 const SetupSelector = ({ setups, selectedChain }: { setups: SafeSetup[]; selectedChain: string | null }) => {
   const { setValue } = useFormContext<SynchronizeSetupsData>()
   return (
-    <Stack>
+    <Stack spacing={1}>
       {setups.map((setup) => (
         <SingleSafeSetup
           key={setup.chainId}
@@ -106,8 +108,11 @@ export const SelectNetworkStep = ({
     <TxCard>
       <FormProvider {...formMethods}>
         <form onSubmit={onFormSubmit}>
-          <Stack gap={1}>
-            <Typography variant="h5">Select network</Typography>
+          <Stack spacing={1} mb={2}>
+            <Typography variant="body2">
+              This action copies the setup from another Safe account with the same address.
+            </Typography>
+            <Typography variant="h5">Select Setup to copy</Typography>
             <SetupSelector setups={deviatingSetups} selectedChain={selectedChain} />
           </Stack>
           <Divider className={commonCss.nestedDivider} />
