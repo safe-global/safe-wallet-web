@@ -97,8 +97,6 @@ export const SignOrExecuteForm = ({
   const isNewExecutableTx = useImmediatelyExecutable() && isCreation
   const isCorrectNonce = useValidateNonce(safeTx)
 
-  console.log(props.txDetails)
-
   // TODO: move it to the confirmation view
   // const showTxDetails =
   //   !isAnyStakingTxInfo(txDetails.txInfo) &&

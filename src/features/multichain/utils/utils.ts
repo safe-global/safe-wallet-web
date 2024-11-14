@@ -12,7 +12,7 @@ import { FEATURES, hasFeature } from '@/utils/chains'
 import { type SafeItem } from '@/components/welcome/MyAccounts/useAllSafes'
 import { type MultiChainSafeItem } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
 
-type SafeSetup = {
+export type SafeSetup = {
   owners: string[]
   threshold: number
   chainId: string

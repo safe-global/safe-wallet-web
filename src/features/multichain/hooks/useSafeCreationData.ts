@@ -174,7 +174,6 @@ export const useSafeCreationData = (safeAddress: string, chains: ChainInfo[]): A
 
         try {
           const creationData = await getCreationDataForChain(chain, undeployedSafe, safeAddress, customRpc)
-          console.log({ creationData })
           return creationData
         } catch (err) {
           lastError = asError(err)

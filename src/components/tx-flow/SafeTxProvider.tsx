@@ -84,7 +84,6 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
 
     createTx({ ...safeTx.data, safeTxGas: String(finalSafeTxGas) }, finalNonce)
       .then((tx) => {
-        console.log('SafeTxProvider: Updated tx with nonce and safeTxGas', tx)
         setSafeTx(tx)
       })
       .catch(setSafeTxError)
