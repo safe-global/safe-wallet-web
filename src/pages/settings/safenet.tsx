@@ -11,11 +11,7 @@ import { useContext, useEffect, useMemo } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
 import { EnableSafenetFlow } from '@/components/tx-flow/flows/EnableSafenet'
 import type { SafenetConfigEntity } from '@/store/safenet'
-import {
-  useLazyGetSafenetOffchainStatusQuery,
-  useRegisterSafenetMutation,
-  useGetSafenetConfigQuery,
-} from '@/store/safenet'
+import { useLazyGetSafenetOffchainStatusQuery, useGetSafenetConfigQuery } from '@/store/safenet'
 import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
@@ -56,28 +52,14 @@ const SafenetContent = ({ safenetConfig, safe }: { safenetConfig: SafenetConfigE
 
   // @ts-expect-error bad types. We don't want 404 to be an error - it just means that the safe is not registered
   const offchainLookupError = safenetOffchainStatusError?.status === 404 ? null : safenetOffchainStatusError
-  const registeredOffchainStatus =
-    !offchainLookupError && sameAddress(safenetOffchainStatus?.guard, safenetGuardAddress)
-
-  const safenetStatusQueryWorked =
-    safenetOffchainStatusStatus === QueryStatus.fulfilled || safenetOffchainStatusStatus === QueryStatus.rejected
-  const needsRegistration = safenetStatusQueryWorked && isSafenetGuardEnabled && !registeredOffchainStatus
-  const [registerSafenet, { error: registerSafenetError }] = useRegisterSafenetMutation()
-  const error = offchainLookupError || registerSafenetError
   const safenetAssets = useMemo(
     () => getSafenetTokensByChain(Number(safe.chainId), safenetConfig),
     [safe.chainId, safenetConfig],
   )
 
-  if (error) {
-    throw getRTKErrorMessage(error)
+  if (offchainLookupError) {
+    throw getRTKErrorMessage(offchainLookupError)
   }
-
-  useEffect(() => {
-    if (needsRegistration) {
-      registerSafenet({ chainId: safe.chainId, safeAddress: safe.address.value })
-    }
-  }, [needsRegistration, registerSafenet, safe.chainId, safe.address.value])
 
   useEffect(() => {
     if (chainSupported) {

@@ -73,17 +73,6 @@ export const safenetApi = createApi({
       query: ({ chainId, safeAddress }) => `/account/${chainId}/${safeAddress}`,
       providesTags: (_, __, arg) => [{ type: 'SafenetOffchainStatus', id: arg.safeAddress }],
     }),
-    registerSafenet: builder.mutation<boolean, { chainId: string; safeAddress: string }>({
-      query: ({ chainId, safeAddress }) => ({
-        url: `/account`,
-        method: 'POST',
-        body: {
-          chainId: Number(chainId),
-          safe: safeAddress,
-        },
-      }),
-      invalidatesTags: (_, __, arg) => [{ type: 'SafenetOffchainStatus', id: arg.safeAddress }],
-    }),
     getSafenetBalance: builder.query<SafenetBalanceEntity, { safeAddress: string }>({
       query: ({ safeAddress }) => `/balances/${safeAddress}`,
       providesTags: (_, __, arg) => [{ type: 'SafenetBalance', id: arg.safeAddress }],
@@ -107,7 +96,6 @@ export const safenetApi = createApi({
 
 export const {
   useLazyGetSafenetOffchainStatusQuery,
-  useRegisterSafenetMutation,
   useGetSafenetConfigQuery,
   useLazyGetSafenetBalanceQuery,
   useLazySimulateSafenetTxQuery,
