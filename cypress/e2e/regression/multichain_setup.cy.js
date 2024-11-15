@@ -88,7 +88,8 @@ describe('Multichain setup tests', { defaultCommandTimeout: 30000 }, () => {
   })
 
   it('Verify warning on swap owner for one safe in the group', () => {
-    cy.visit(constants.setupUrl + `sep:${safe}`)
+    let safe = main.changeSafeChainName(staticSafes.MATIC_STATIC_SAFE_28, 'sep')
+    cy.visit(constants.setupUrl + safe)
     owner.waitForConnectionStatus()
     owner.openReplaceOwnerWindow(1)
     owner.typeOwnerAddress(constants.SEPOLIA_OWNER_2)

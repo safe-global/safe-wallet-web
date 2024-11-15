@@ -1,4 +1,4 @@
-name: Production health check tests
+name: Full Regression on demand tests
 
 on:
   workflow_dispatch:
@@ -12,11 +12,12 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-20.04
-    name: Cypress production health check tests
+    timeout-minutes: 40
+    name: Cypress Full Regression on demand tests
     strategy:
       fail-fast: false
       matrix:
-        containers: [1]
+        containers: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
 
@@ -24,9 +25,12 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           spec: |
-            cypress/e2e/prodhealthcheck/*.cy.js
-          group: 'Production health check tests'
-          tag: 'production'
+            cypress/e2e/happypath_2/*.cy.js
+            cypress/e2e/regression/*.cy.js
+            cypress/e2e/safe-apps/*.cy.js
+            cypress/e2e/smoke/*.cy.js
+          group: 'Full Regression on demand tests'
+          tag: 'full_regression'
 
       - name: Python setup
         if: always()
@@ -54,7 +58,7 @@ jobs:
           --username ${{ secrets.TESTRAIL_USERNAME }} \
           --password ${{ secrets.TESTRAIL_PASSWORD }} \
           parse_junit \
-          --title "Production Health Checks Automated Tests, branch: ${GITHUB_REF_NAME}" \
+          --title "Full Regression Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
           -f "reports/junit-report.xml"; then
             echo -e "\e[41;32mTestRail upload failed. Pipeline will continue, please check the upload process.\e[0m"
