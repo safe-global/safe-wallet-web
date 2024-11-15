@@ -1,7 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Button, CircularProgress, Grid, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
-import { QueryStatus } from '@reduxjs/toolkit/query'
 import InfoIcon from '@/public/images/notifications/info.svg'
 
 import SettingsHeader from '@/components/settings/SettingsHeader'
