@@ -6,15 +6,14 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { sameAddress } from '@/utils/addresses'
-import { useContext, useEffect, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { TxModalContext } from '@/components/tx-flow'
 import { EnableSafenetFlow } from '@/components/tx-flow/flows/EnableSafenet'
 import type { SafenetConfigEntity } from '@/store/safenet'
-import { useLazyGetSafenetOffchainStatusQuery, useGetSafenetConfigQuery } from '@/store/safenet'
+import { useGetSafenetConfigQuery } from '@/store/safenet'
 import type { ExtendedSafeInfo } from '@/store/safeInfoSlice'
 import { SAFE_FEATURES } from '@safe-global/protocol-kit/dist/src/utils'
 import { hasSafeFeature } from '@/utils/safe-versions'
-import { getRTKErrorMessage } from '@/utils/redux-toolkit-query'
 
 const getSafenetTokensByChain = (chainId: number, safenetConfig: SafenetConfigEntity): string[] => {
   const tokenSymbols = Object.keys(safenetConfig.tokens)
@@ -38,33 +37,10 @@ const SafenetContent = ({ safenetConfig, safe }: { safenetConfig: SafenetConfigE
   const chainSupported = safenetConfig.chains.includes(Number(safe.chainId))
   const { setTxFlow } = useContext(TxModalContext)
 
-  // Lazy query because running it on unsupported chain throws an error
-  const [
-    triggerGetSafenetOffchainStatus,
-    {
-      data: safenetOffchainStatus,
-      error: safenetOffchainStatusError,
-      isLoading: safenetOffchainStatusLoading,
-      status: safenetOffchainStatusStatus,
-    },
-  ] = useLazyGetSafenetOffchainStatusQuery()
-
-  // @ts-expect-error bad types. We don't want 404 to be an error - it just means that the safe is not registered
-  const offchainLookupError = safenetOffchainStatusError?.status === 404 ? null : safenetOffchainStatusError
   const safenetAssets = useMemo(
     () => getSafenetTokensByChain(Number(safe.chainId), safenetConfig),
     [safe.chainId, safenetConfig],
   )
-
-  if (offchainLookupError) {
-    throw getRTKErrorMessage(offchainLookupError)
-  }
-
-  useEffect(() => {
-    if (chainSupported) {
-      triggerGetSafenetOffchainStatus({ chainId: safe.chainId, safeAddress: safe.address.value })
-    }
-  }, [chainSupported, triggerGetSafenetOffchainStatus, safe.chainId, safe.address.value])
 
   switch (true) {
     case !chainSupported:
@@ -98,8 +74,6 @@ const SafenetContent = ({ safenetConfig, safe }: { safenetConfig: SafenetConfigE
           </Button>
         </div>
       )
-    case safenetOffchainStatusLoading:
-      return <CircularProgress />
     default:
       return null
   }
