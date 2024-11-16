@@ -1,6 +1,6 @@
 import type { DecodedDataResponse, Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
-import type { AnyAppDataDocVersion, latest, LatestAppDataDocVersion } from '@cowprotocol/app-data'
+import type { AnyAppDataDocVersion, latest, LatestAppDataDocVersion } from 'node_modules/@cowprotocol/app-data'
 
 import { TradeType, UiOrderType } from '@/features/swap/types'
 

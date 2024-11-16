@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { id, zeroPadValue } from 'ethers'
 import { JsonRpcProvider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
-import type { Delay, TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
+import type { Delay, TransactionAddedEvent } from 'node_modules/@gnosis.pm/zodiac/dist/cjs/types/Delay'
 import type { TransactionReceipt } from 'ethers'
 
 import {
