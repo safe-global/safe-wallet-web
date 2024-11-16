@@ -1,5 +1,5 @@
 import * as main from '../pages/main.page'
-import { connectedWalletExecMethod } from '../pages/create_tx.pages'
+import { connectedWalletExecMethod, relayExecMethod } from '../pages/create_tx.pages'
 import * as sidebar from '../pages/sidebar.pages'
 import * as constants from '../../support/constants'
 
@@ -17,7 +17,7 @@ const googleConnectBtn = '[data-testid="google-connect-btn"]'
 const googleSignedinBtn = '[data-testid="signed-in-account-btn"]'
 export const accountInfoHeader = '[data-testid="open-account-center"]'
 export const reviewStepOwnerInfo = '[data-testid="review-step-owner-info"]'
-const reviewStepNextBtn = '[data-testid="review-step-next-btn"]'
+export const reviewStepNextBtn = '[data-testid="review-step-next-btn"]'
 const creationModalLetsGoBtn = '[data-testid="cf-creation-lets-go-btn"]'
 const safeCreationStatusInfo = '[data-testid="safe-status-info"]'
 const startUsingSafeBtn = '[data-testid="start-using-safe-btn"]'
@@ -35,12 +35,22 @@ const addFundsBtn = '[data-testid="add-funds-btn"]'
 const createTxBtn = '[data-testid="create-tx-btn"]'
 const qrCodeSwitch = '[data-testid="qr-code-switch"]'
 export const activateAccountBtn = '[data-testid="activate-account-btn-cf"]'
+export const activateFlowAccountBtn = '[data-testid="activate-account-flow-btn"]'
 const notificationsSwitch = '[data-testid="notifications-switch"]'
 export const addFundsSection = '[data-testid="add-funds-section"]'
 export const noTokensAlert = '[data-testid="no-tokens-alert"]'
 const networkCheckbox = '[data-testid="network-checkbox"]'
 const cancelIcon = '[data-testid="CancelIcon"]'
 const thresholdItem = '[data-testid="threshold-item"]'
+export const payNowLaterMessageBox = '[data-testid="pay-now-later-message-box"]'
+export const safeSetupOverview = '[data-testid="safe-setup-overview"]'
+export const networksLogoList = '[data-testid="network-list"]'
+export const reviewStepSafeName = '[data-testid="review-step-safe-name"]'
+export const reviewStepThreshold = '[data-testid="review-step-threshold"]'
+export const cfSafeCreationSuccessMsg = '[data-testid="account-success-message"]'
+export const cfSafeActivationMsg = '[data-testid="safe-activation-message"]'
+export const cfSafeInfo = '[data-testid="safe-info"]'
+const connectWalletBtn = '[data-testid="connect-wallet-btn"]'
 
 const sponsorStr = 'Your account is sponsored by Goerli'
 const safeCreationProcessing = 'Transaction is being executed'
@@ -56,8 +66,7 @@ export const accountRecoveryStr = 'Account recovery'
 export const sendTokensStr = 'Send tokens'
 const noWalletConnectedMsg = 'No wallet connected'
 export const deployWalletStr = 'about to deploy this Safe Account'
-
-const connectWalletBtn = '[data-testid="connect-wallet-btn"]'
+const showAllNetworksStr = 'Show all networks'
 
 export function waitForConnectionMsgDisappear() {
   cy.contains(noWalletConnectedMsg).should('not.exist')
@@ -68,6 +77,10 @@ export function checkNotificationsSwitchIs(status) {
 
 export function clickOnActivateAccountBtn(index) {
   cy.get(activateAccountBtn).eq(index).click()
+}
+
+export function clickOnFinalActivateAccountBtn(index) {
+  cy.get(activateFlowAccountBtn).click()
 }
 
 export function clickOnQRCodeSwitch() {
@@ -106,6 +119,11 @@ export function verifyCFSafeCreated() {
 export function selectPayLaterOption() {
   cy.get(connectedWalletExecMethod).click()
 }
+
+export function selectRelayOption() {
+  cy.get(relayExecMethod).click()
+}
+
 export function cancelWalletCreation() {
   cy.get(cancelBtn).click()
   cy.get('button').contains(continueWithWalletBtn).should('be.visible')
@@ -216,6 +234,10 @@ export function clickOnMultiNetworkInput(index) {
 
 export function clearNetworkInput(index) {
   cy.get('input').eq(index).click()
+  cy.get(cancelIcon).click()
+}
+
+export function clickOnNetwrokRemoveIcon() {
   cy.get(cancelIcon).click()
 }
 
@@ -341,4 +363,27 @@ export function assertCFSafeThresholdAndSigners(chainId, threshold, expectedOwne
   if (!thresholdFound) {
     throw new Error(`No safe found with threshold ${threshold} on chain ID ${chainId}.`)
   }
+}
+
+function checkNetworkLogo(network) {
+  cy.get('img').then((logos) => {
+    const isLogoPresent = [...logos].some((img) => img.getAttribute('src').includes(network))
+    expect(isLogoPresent).to.be.true
+  })
+}
+
+export function checkNetworkLogoInReviewStep(networks) {
+  cy.get(networksLogoList).within(() => {
+    networks.forEach((network) => {
+      checkNetworkLogo(network)
+    })
+  })
+}
+
+export function checkNetworkLogoInSafeCreationModal(networks) {
+  cy.get(cfSafeInfo).within(() => {
+    networks.forEach((network) => {
+      checkNetworkLogo(network)
+    })
+  })
 }

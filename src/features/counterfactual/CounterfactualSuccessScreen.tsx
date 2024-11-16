@@ -79,8 +79,8 @@ const CounterfactualSuccessScreen = () => {
           <CheckRoundedIcon sx={{ width: 50, height: 50 }} color="success" />
         </Box>
 
-        <Box textAlign="center">
-          <Typography variant="h3" fontWeight="bold" mb={1}>
+        <Box data-testid="safe-activation-message" textAlign="center">
+          <Typography data-testid="account-success-message" variant="h3" fontWeight="bold" mb={1}>
             {isCFCreation ? 'Your account is almost set!' : 'Your account is all set!'}
           </Typography>
           <Typography variant="body2">
@@ -98,7 +98,7 @@ const CounterfactualSuccessScreen = () => {
         </Box>
 
         {safeAddress && (
-          <Box p={2} bgcolor="background.main" borderRadius={1} fontSize={14}>
+          <Box data-testid="safe-info" p={2} bgcolor="background.main" borderRadius={1} fontSize={14}>
             <NetworkLogosList networks={networks.length > 0 ? networks : chain ? [chain] : []} />
             <Typography variant="h5" mt={2}>
               {safeName}

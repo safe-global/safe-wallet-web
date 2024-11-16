@@ -1,7 +1,5 @@
 import * as constants from '../../support/constants.js'
 import * as main from '../pages/main.page.js'
-import * as sideBar from '../pages/sidebar.pages.js'
-import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as createwallet from '../pages/create_wallet.pages'
@@ -13,8 +11,6 @@ let staticSafes = []
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
-// DO NOT use OWNER_2_PRIVATE_KEY for safe creation. Used for CF safes.
-const signer2 = walletCredentials.OWNER_2_PRIVATE_KEY
 
 describe('Multichain safe creation tests', () => {
   before(async () => {

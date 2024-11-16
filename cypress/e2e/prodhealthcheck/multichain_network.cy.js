@@ -57,4 +57,19 @@ describe('[PROD] Multichain add network tests', () => {
     create_wallet.enterNetwork(1, 'zkSync')
     cy.contains('li', constants.networks.zkSync).should('not.have.attr', 'aria-disabled', 'true')
   })
+
+  it('Verify list of available networks for the safe deployed on one network with mastercopy 1.3.0', () => {
+    const safe = 'eth:0x55d93DF21332615D48EA0c0144c7b1D176F3e7cb'
+    cy.visit(constants.prodbaseUrl + constants.setupUrl + safe)
+    create_wallet.openNetworkSelector()
+    sideBar.clickOnShowAllNetworksStrBtn()
+    sideBar.checkNetworkDisabled([constants.networks.zkSync, constants.networks.gnosisChiado])
+  })
+
+  it('Verify list of available networks for the safe deployed on one network with mastercopy 1.4.1', () => {
+    cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.MATIC_STATIC_SAFE_28)
+    create_wallet.openNetworkSelector()
+    sideBar.clickOnShowAllNetworksStrBtn()
+    sideBar.checkNetworkDisabled([constants.networks.zkSync, constants.networks.gnosisChiado])
+  })
 })
