@@ -24,13 +24,14 @@ const useSafesSearch = (safes: (SafeItem | MultiChainSafeItem)[], query: string)
     () =>
       safes.map((safe) => {
         if (isMultiChainSafeItem(safe)) {
-          const subChainNames = safe.safes.map(
+          const subSafeChains = safe.safes.map(
             (subSafe) => chains.data.find((chain) => chain.chainId === subSafe.chainId)?.chainName,
           )
-          return { ...safe, chainNames: subChainNames }
+          const subSafeNames = safe.safes.map((subSafe) => subSafe.name)
+          return { ...safe, chainNames: subSafeChains, names: subSafeNames }
         }
         const chain = chains.data.find((chain) => chain.chainId === safe.chainId)
-        return { ...safe, chainNames: [chain?.chainName] }
+        return { ...safe, chainNames: [chain?.chainName], names: [safe.name] }
       }),
     [safes, chains.data],
   )
@@ -38,7 +39,7 @@ const useSafesSearch = (safes: (SafeItem | MultiChainSafeItem)[], query: string)
   const fuse = useMemo(
     () =>
       new Fuse(safesWithChainNames, {
-        keys: [{ name: 'name' }, { name: 'address' }, { name: 'chainNames' }],
+        keys: [{ name: 'names' }, { name: 'address' }, { name: 'chainNames' }],
         threshold: 0.2,
         findAllMatches: true,
         ignoreLocation: true,
@@ -51,8 +52,8 @@ const useSafesSearch = (safes: (SafeItem | MultiChainSafeItem)[], query: string)
     () =>
       query
         ? fuse.search(query).map((result) => {
-            const { chainNames: _, ...safeWithoutChainNames } = result.item
-            return safeWithoutChainNames
+            const { chainNames: _chainNames, names: _names, ...safe } = result.item
+            return safe
           })
         : [],
     [fuse, query],
