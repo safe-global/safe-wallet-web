@@ -48,21 +48,29 @@ const multichainTooltip = '[data-testid="multichain-tooltip"]'
 const networkInput = '[id="network-input"]'
 const networkOption = 'li[role="option"]'
 const showAllNetworks = '[data-testid="show-all-networks"]'
+const showAllNetworksStr = 'Show all networks'
 export const addNetworkOption = 'li[aria-label="Add network"]'
 export const addedNetworkOption = 'li[role="option"]'
 const modalAddNetworkName = '[data-testid="added-network"]'
 const networkSeperator = 'div[role="separator"]'
 export const addNetworkTooltip = '[data-testid="add-network-tooltip"]'
+const networkOptionNetworkSwitch = 'span[data-track="overview: Add new network"] > li'
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
 export const undeployedSafe = 'Undeployed Sepolia'
 const notActivatedStr = 'Not activated'
 export const addingNetworkNotPossibleStr = 'Adding another network is not possible for this Safe.'
 export const createSafeMsg = (network) => `Successfully added your account on ${network}`
+const signersNotConsistentMsg = 'Signers are not consistent'
+const signersNotConsistentMsg2 = (network) => `Signers are different on these networks of this account:${network}`
+const signersNotConsistentMsg3 =
+  'To manage your account easier and to prevent lose of funds, we recommend keeping the same signers'
+const signersNotConsistentConfirmTxViewMsg = (network) =>
+  `Signers are not consistent across networks on this account. Changing signers will only affect the account on ${network}`
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
-export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
+export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings', 'Swap']
 export const sideBarSafes = {
   safe1: '0xBb26E3717172d5000F87DeFd391994f789D80aEB',
   safe2: '0x905934aA8758c06B2422F0C90D97d2fbb6677811',
@@ -178,6 +186,10 @@ export function verifyTxCounter(counter) {
   cy.get(sideBarListItem).contains(sideBarListItems[2]).should('contain', counter)
 }
 
+export function verifyNavItemDisabled(item) {
+  cy.get(sideBarListItem).contains(item).parents('li').invoke('attr', 'class').should('include', 'disabled')
+}
+
 export function verifySafeCount(count) {
   main.verifyMinimumElementsCount(sideSafeListItem, count)
 }
@@ -252,8 +264,13 @@ export function checkMultichainTooltipExists(index) {
   cy.get(multichainTooltip).should('exist')
 }
 
-export function checkSafeGroupBalance(index, balance) {
-  cy.get(multichainItemSummary).eq(index).find(groupBalance).should('include.text', balance)
+export function checkSafeGroupBalance(index) {
+  cy.get(multichainItemSummary)
+    .eq(index)
+    .find(groupBalance)
+    .invoke('text')
+    .should('include', '$')
+    .and('match', /\d+\.\d{2}/)
 }
 
 export function checkSafeGroupAddress(index, address) {
@@ -279,7 +296,7 @@ export function checkThereIsNoOptionsMenu(index) {
 }
 
 export function checkUndeployedSafeExists(index) {
-  getSubAccountContainer(index).contains(notActivatedStr).should('exist')
+  return getSubAccountContainer(index).contains(notActivatedStr).should('exist')
 }
 
 export function checkAddNetworkBtnPosition(index) {
@@ -418,6 +435,11 @@ export function clickOnShowAllNetworksBtn() {
   cy.get(showAllNetworks).click()
 }
 
+// TODO: Remove after next release due to data-testid availability
+export function clickOnShowAllNetworksStrBtn() {
+  cy.contains(showAllNetworksStr).click()
+}
+
 export function checkNetworkPresence(networks, optionSelector) {
   return cy.get(optionSelector).then((options) => {
     const optionTexts = [...options].map((option) => option.innerText)
@@ -453,4 +475,32 @@ export function checkNetworksInRange(expectedString, expectedCount, direction = 
       expect(isStringPresent).to.be.true
       return cy.wrap(liElements)
     })
+}
+
+export function checkInconsistentSignersMsgDisplayed(network) {
+  cy.contains(signersNotConsistentMsg).should('exist')
+  cy.contains(signersNotConsistentMsg2(network)).should('exist')
+  cy.contains(signersNotConsistentMsg3).should('exist')
+}
+
+export function checkInconsistentSignersMsgDisplayedConfirmTxView(network) {
+  cy.contains(signersNotConsistentConfirmTxViewMsg(network)).should('exist')
+}
+
+function getNetworkElements() {
+  return cy.get('span[data-track="overview: Add new network"] > li')
+}
+
+export function checkNetworkDisabled(networks) {
+  getNetworkElements().should('have.length', 20)
+  getNetworkElements().each(($el) => {
+    const text = $el[0].innerText.trim()
+    console.log(`Element text: ${text}`)
+    const isDisabledNetwork = networks.some((network) => text.includes(network))
+    if (isDisabledNetwork) {
+      expect($el).to.have.attr('aria-disabled', 'true')
+    } else {
+      expect($el).not.to.have.attr('aria-disabled')
+    }
+  })
 }

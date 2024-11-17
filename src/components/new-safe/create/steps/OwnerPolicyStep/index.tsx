@@ -144,7 +144,7 @@ const OwnerPolicyStep = ({
                 render={({ field }) => (
                   <TextField data-testid="threshold-selector" select {...field}>
                     {ownerFields.map((_, idx) => (
-                      <MenuItem key={idx + 1} value={idx + 1}>
+                      <MenuItem data-testid="threshold-item" key={idx + 1} value={idx + 1}>
                         {idx + 1}
                       </MenuItem>
                     ))}
