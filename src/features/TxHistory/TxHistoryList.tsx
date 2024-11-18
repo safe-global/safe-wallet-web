@@ -1,9 +1,10 @@
 import TxInfo from '@/src/components/TxInfo'
 import { Transaction, TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
-import React, { useCallback, useMemo } from 'react'
-import { SectionList, SectionListRenderItem } from 'react-native'
 import { Spinner, View } from 'tamagui'
 import { GroupedTxsWithTitle, groupTxsByDate } from './utils'
+import React, { useCallback, useMemo } from 'react'
+import { SectionList, SectionListRenderItem } from 'react-native'
+
 import TxGroupedCard from '@/src/components/transactions-list/Card/TxGroupedCard'
 import SafeListItem from '@/src/components/SafeListItem'
 
@@ -29,6 +30,8 @@ function TxHistoryList({ transactions, onEndReached, isLoading }: TxHistoryList)
   return (
     <SectionList
       testID={'tx-history-list'}
+      stickySectionHeadersEnabled
+      contentInsetAdjustmentBehavior="automatic"
       sections={groupedList}
       keyExtractor={(item, index) => (Array.isArray(item) ? getTxHash(item[0]) + index : getTxHash(item) + index)}
       renderItem={renderItem}

@@ -10,15 +10,19 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 function RootLayout() {
   store.dispatch(apiSliceWithChainsConfig.endpoints.getChainsConfig.initiate({}))
-
   return (
     <GestureHandlerRootView>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <SafeThemeProvider>
-            <Stack>
+            <Stack
+              screenOptions={{
+                headerBackButtonDisplayMode: 'minimal',
+                headerShadowVisible: false,
+              }}
+            >
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="pending-transactions" options={{ headerShown: false }} />
+              <Stack.Screen name="pending-transactions" options={{ headerShown: true, title: '' }} />
               <Stack.Screen name="+not-found" />
             </Stack>
           </SafeThemeProvider>
