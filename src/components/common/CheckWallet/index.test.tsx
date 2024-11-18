@@ -6,7 +6,7 @@ import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import useIsWrongChain from '@/hooks/useIsWrongChain'
 import useWallet from '@/hooks/wallets/useWallet'
 import { chainBuilder } from '@/tests/builders/chains'
-import { useIsWalletDelegate } from '@/hooks/useDelegates'
+import { useIsWalletProposer } from '@/hooks/useProposers'
 import { faker } from '@faker-js/faker'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import useSafeInfo from '@/hooks/useSafeInfo'
@@ -43,9 +43,9 @@ jest.mock('@/hooks/useIsWrongChain', () => ({
   default: jest.fn(() => false),
 }))
 
-jest.mock('@/hooks/useDelegates', () => ({
+jest.mock('@/hooks/useProposers', () => ({
   __esModule: true,
-  useIsWalletDelegate: jest.fn(() => false),
+  useIsWalletProposer: jest.fn(() => false),
 }))
 
 jest.mock('@/hooks/useSafeInfo', () => ({
@@ -128,11 +128,33 @@ describe('CheckWallet', () => {
     expect(getByText('Continue')).not.toBeDisabled()
   })
 
-  it('should not disable the button for delegates', () => {
+  it('should not disable the button for proposers', () => {
     ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
-    ;(useIsWalletDelegate as jest.MockedFunction<typeof useIsWalletDelegate>).mockReturnValueOnce(true)
+    ;(useIsWalletProposer as jest.MockedFunction<typeof useIsWalletProposer>).mockReturnValueOnce(true)
 
     const { getByText } = renderButton()
+
+    expect(getByText('Continue')).not.toBeDisabled()
+  })
+
+  it('should disable the button for proposers if specified via flag', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(false)
+    ;(useIsWalletProposer as jest.MockedFunction<typeof useIsWalletProposer>).mockReturnValueOnce(true)
+
+    const { getByText } = render(
+      <CheckWallet allowProposer={false}>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
+    )
+
+    expect(getByText('Continue')).toBeDisabled()
+  })
+
+  it('should not disable the button for proposers that are also owners', () => {
+    ;(useIsSafeOwner as jest.MockedFunction<typeof useIsSafeOwner>).mockReturnValueOnce(true)
+    ;(useIsWalletProposer as jest.MockedFunction<typeof useIsWalletProposer>).mockReturnValueOnce(true)
+
+    const { getByText } = render(
+      <CheckWallet allowProposer={false}>{(isOk) => <button disabled={!isOk}>Continue</button>}</CheckWallet>,
+    )
 
     expect(getByText('Continue')).not.toBeDisabled()
   })

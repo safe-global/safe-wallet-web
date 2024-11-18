@@ -19,7 +19,7 @@ export const AddNetworkButton = ({
   return (
     <>
       <Track {...OVERVIEW_EVENTS.ADD_NEW_NETWORK} label={OVERVIEW_LABELS.sidebar}>
-        <Button variant="text" fullWidth onClick={() => setOpen(true)}>
+        <Button data-testid="add-network-btn" variant="text" fullWidth onClick={() => setOpen(true)}>
           <PlusIcon /> Add another network
         </Button>
       </Track>

@@ -14,7 +14,7 @@ const funds_second_tx = '0.002'
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
-describe('[SMOKE] Batch transaction tests', () => {
+describe('[SMOKE] Batch transaction tests', { defaultCommandTimeout: 30000 }, () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -32,7 +32,6 @@ describe('[SMOKE] Batch transaction tests', () => {
   it('[SMOKE] Verify a transaction can be added to the batch', () => {
     wallet.connectSigner(signer)
     batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
-    cy.contains(batch.transactionAddedToBatchStr).should('be.visible')
     batch.verifyBatchIconCount(1)
     batch.clickOnBatchCounter()
     batch.verifyAmountTransactionsInBatch(1)

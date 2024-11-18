@@ -108,7 +108,7 @@ const UndeployedNetworkMenuItem = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.ADD_NEW_NETWORK} label={OVERVIEW_LABELS.top_bar}>
-      <Tooltip title="Add network" arrow placement="left">
+      <Tooltip data-testid="add-network-tooltip" title="Add network" arrow placement="left">
         <MenuItem
           value={chain.chainId}
           sx={{ '&:hover': { backgroundColor: 'inherit' } }}
@@ -242,7 +242,7 @@ const UndeployedNetworks = ({
     <>
       <ButtonBase className={css.listSubHeader} onClick={onShowAllNetworks} tabIndex={-1}>
         <Stack direction="row" spacing={1} alignItems="center">
-          <div>Show all networks</div>
+          <div data-testid="show-all-networks">Show all networks</div>
           <ExpandMoreIcon
             fontSize="small"
             sx={{

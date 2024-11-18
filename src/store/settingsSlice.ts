@@ -53,7 +53,7 @@ export const initialState: SettingsState = {
 
   hiddenTokens: {},
 
-  hideSuspiciousTransactions: false,
+  hideSuspiciousTransactions: true,
 
   shortName: {
     copy: true,

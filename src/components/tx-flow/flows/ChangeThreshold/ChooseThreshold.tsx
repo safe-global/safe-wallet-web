@@ -82,7 +82,7 @@ export const ChooseThreshold = ({
                   <Grid item>
                     <TextField select {...field} error={isError}>
                       {safe.owners.map((_, idx) => (
-                        <MenuItem key={idx + 1} value={idx + 1}>
+                        <MenuItem data-testid="threshold-item" key={idx + 1} value={idx + 1}>
                           {idx + 1}
                         </MenuItem>
                       ))}
@@ -118,6 +118,7 @@ export const ChooseThreshold = ({
 
         <CardActions>
           <Button
+            data-testid="threshold-next-btn"
             variant="contained"
             type="submit"
             disabled={

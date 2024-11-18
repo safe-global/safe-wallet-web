@@ -165,13 +165,13 @@ const ReplaySafeDialog = ({
   return (
     <ModalDialog open={open} onClose={onClose} dialogTitle="Add another network" hideChainIndicator>
       <form onSubmit={onFormSubmit} id="recreate-safe">
-        <DialogContent>
+        <DialogContent data-testid="add-chain-dialog">
           <FormProvider {...formMethods}>
             <Stack spacing={2}>
               <Typography>Add this Safe to another network with the same address.</Typography>
 
               {chain && (
-                <Box p={2} sx={{ backgroundColor: 'background.main', borderRadius: '6px' }}>
+                <Box data-testid="added-network" p={2} sx={{ backgroundColor: 'background.main', borderRadius: '6px' }}>
                   <ChainIndicator chainId={chain.chainId} />
                 </Box>
               )}
@@ -221,7 +221,7 @@ const ReplaySafeDialog = ({
           ) : (
             <>
               <Button onClick={onCancel}>Cancel</Button>
-              <Button type="submit" variant="contained" disabled={submitDisabled}>
+              <Button data-testid="modal-add-network-btn" type="submit" variant="contained" disabled={submitDisabled}>
                 {isSubmitting ? <CircularProgress size={20} /> : 'Add network'}
               </Button>
             </>

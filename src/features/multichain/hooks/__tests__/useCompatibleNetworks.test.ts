@@ -31,11 +31,12 @@ describe('useCompatibleNetworks', () => {
   beforeAll(() => {
     jest.spyOn(useChains, 'default').mockReturnValue({
       configs: [
-        chainBuilder().with({ chainId: '1' }).build(),
-        chainBuilder().with({ chainId: '10' }).build(), // This has the eip155 and then the canonical addresses
-        chainBuilder().with({ chainId: '100' }).build(), // This has the canonical and then the eip155 addresses
-        chainBuilder().with({ chainId: '324' }).build(), // ZkSync has different addresses for all versions
-        chainBuilder().with({ chainId: '480' }).build(), // Worldchain has 1.4.1 but not 1.1.1
+        chainBuilder().with({ chainId: '1', l2: false }).build(),
+        chainBuilder().with({ chainId: '10', l2: true }).build(), // This has the eip155 and then the canonical addresses
+        chainBuilder().with({ chainId: '100', l2: true }).build(), // This has the canonical and then the eip155 addresses
+        chainBuilder().with({ chainId: '324', l2: true }).build(), // ZkSync has different addresses for all versions
+        chainBuilder().with({ chainId: '480', l2: true }).build(), // Worldchain has 1.4.1 but not 1.1.1
+        chainBuilder().with({ chainId: '10200', l2: true }).build(), // Gnosis Chiado has no migration contracts
       ],
     })
   })
@@ -68,7 +69,7 @@ describe('useCompatibleNetworks', () => {
     expect(result.current.every((config) => config.available)).toEqual(false)
   })
 
-  it('should set everything to available except zkSync for 1.4.1 Safes', () => {
+  it('should set everything to available except zkSync and GnosisChain Chiado for 1.4.1 Safes', () => {
     const callData = {
       owners: [faker.finance.ethereumAddress()],
       threshold: 1,
@@ -88,9 +89,9 @@ describe('useCompatibleNetworks', () => {
         safeVersion: '1.4.1',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(5)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
+      expect(result.current).toHaveLength(6)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true, false])
     }
 
     {
@@ -102,9 +103,9 @@ describe('useCompatibleNetworks', () => {
         safeVersion: '1.4.1',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(5)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
+      expect(result.current).toHaveLength(6)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true, false])
     }
   })
 
@@ -120,7 +121,7 @@ describe('useCompatibleNetworks', () => {
       paymentReceiver: ECOSYSTEM_ID_ADDRESS,
     }
 
-    // 1.3.0, L1 and canonical
+    // 1.3.0, L1 and canonical, not available on Chiado as no migration exists
     {
       const creationData: ReplayedSafeProps = {
         factoryAddress: PROXY_FACTORY_130_DEPLOYMENTS?.canonical?.address!,
@@ -130,9 +131,9 @@ describe('useCompatibleNetworks', () => {
         safeVersion: '1.3.0',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(5)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
+      expect(result.current).toHaveLength(6)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true, false])
     }
 
     // 1.3.0, L2 and canonical
@@ -145,12 +146,12 @@ describe('useCompatibleNetworks', () => {
         safeVersion: '1.3.0',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(5)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true])
+      expect(result.current).toHaveLength(6)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, true, true])
     }
 
-    // 1.3.0, L1 and EIP155 is not available on Worldchain
+    // 1.3.0, L1 and EIP155 is not available on Worldchain and Chiado
     {
       const creationData: ReplayedSafeProps = {
         factoryAddress: PROXY_FACTORY_130_DEPLOYMENTS?.eip155?.address!,
@@ -160,9 +161,9 @@ describe('useCompatibleNetworks', () => {
         safeVersion: '1.3.0',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(5)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, false])
+      expect(result.current).toHaveLength(6)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, false, false])
     }
 
     // 1.3.0, L2 and EIP155
@@ -175,9 +176,9 @@ describe('useCompatibleNetworks', () => {
         safeVersion: '1.3.0',
       }
       const { result } = renderHook(() => useCompatibleNetworks(creationData))
-      expect(result.current).toHaveLength(5)
-      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, false])
+      expect(result.current).toHaveLength(6)
+      expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+      expect(result.current.map((chain) => chain.available)).toEqual([true, true, true, false, false, false])
     }
   })
 
@@ -201,8 +202,8 @@ describe('useCompatibleNetworks', () => {
       safeVersion: '1.1.1',
     }
     const { result } = renderHook(() => useCompatibleNetworks(creationData))
-    expect(result.current).toHaveLength(5)
-    expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480'])
-    expect(result.current.map((chain) => chain.available)).toEqual([false, false, false, false, false])
+    expect(result.current).toHaveLength(6)
+    expect(result.current.map((chain) => chain.chainId)).toEqual(['1', '10', '100', '324', '480', '10200'])
+    expect(result.current.map((chain) => chain.available)).toEqual([false, false, false, false, false, false])
   })
 })
