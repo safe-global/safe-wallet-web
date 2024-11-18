@@ -1,6 +1,5 @@
 import { Tabs } from 'expo-router'
 import React from 'react'
-
 import { TabBarIcon } from '@/src/components/navigation/TabBarIcon'
 
 export default function TabLayout() {
@@ -32,6 +31,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Settings',
+          headerShown: true,
           tabBarIcon: ({ color }) => <TabBarIcon name={'settings'} color={color} />,
         }}
       />

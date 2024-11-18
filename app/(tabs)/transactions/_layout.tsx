@@ -1,56 +1,32 @@
-import { Tabs } from 'expo-router'
+import { Stack } from 'expo-router'
 import React from 'react'
-import { StyleSheet } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import Title from '@/src/components/Title'
-import InlineTab from '@/src/components/InlineTab'
-import { View } from 'tamagui'
+import type { Route } from '@react-navigation/routers'
 
-const TransactiosHeader = () => (
-  <View paddingHorizontal="$3">
-    <Title marginBottom="$8" testID="welcome-title">
-      Transactions
-    </Title>
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 
-    <InlineTab
-      items={[
-        {
-          path: '/transactions',
-          label: 'History',
-        },
-        {
-          path: '/transactions/messages',
-          label: 'Messages',
-        },
-      ]}
-    />
-  </View>
-)
+const getHeaderTitle = (route: Partial<Route<string>>) => {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'index'
+  const name = {
+    ['index']: 'Transactions',
+    ['messages']: 'Messages',
+  }[routeName]
+  return name || 'Transactions'
+}
 
 export default function TransactionsLayout() {
   return (
-    <SafeAreaView style={styles.content}>
-      <TransactiosHeader />
-
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarStyle: { display: 'none' },
-        }}
-      >
-        <Tabs.Screen name="index" />
-        <Tabs.Screen name="messages" />
-      </Tabs>
-    </SafeAreaView>
+    <Stack
+      screenOptions={{
+        headerLargeTitle: false,
+        headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen
+        name="(tabs)"
+        options={({ route }) => ({
+          headerTitle: getHeaderTitle(route),
+        })}
+      />
+    </Stack>
   )
 }
-
-export const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    flexDirection: 'column',
-    width: '100%',
-    rowGap: 10,
-  },
-})

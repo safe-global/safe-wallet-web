@@ -4,6 +4,7 @@ import usePendingTxs from '@/src/hooks/usePendingTxs'
 import { router } from 'expo-router'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+
 import { Avatar, Text, View } from 'tamagui'
 
 export default function HomeScreen() {
