@@ -14,7 +14,10 @@ const AccountStatusChip = ({ isActivating }: { isActivating: boolean }) => {
   return (
     <Chip
       className={css.chip}
-      sx={{ backgroundColor: isActivating ? 'var(--color-info-light)' : 'var(--color-warning-light)' }}
+      sx={{
+        backgroundColor: isActivating ? 'var(--color-info-light)' : 'var(--color-warning-background)',
+        // backgroundColor: 'warning.background',
+      }}
       size="small"
       label={isActivating ? 'Activating account' : 'Not activated'}
       icon={
