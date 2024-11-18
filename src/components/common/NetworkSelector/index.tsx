@@ -45,10 +45,10 @@ import { skipToken } from '@reduxjs/toolkit/query'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 
 const ChainIndicatorWithFiatBalance = ({
-                                         isSelected,
-                                         chain,
-                                         safeAddress,
-                                       }: {
+  isSelected,
+  chain,
+  safeAddress,
+}: {
   isSelected: boolean
   chain: ChainInfo
   safeAddress: string
@@ -74,8 +74,8 @@ export const getNetworkLink = (router: NextRouter, safeAddress: string, networkS
   const query = (
     isSafeOpened
       ? {
-        safe: `${networkShortName}:${safeAddress}`,
-      }
+          safe: `${networkShortName}:${safeAddress}`,
+        }
       : { chain: networkShortName }
   ) as {
     safe?: string
@@ -96,10 +96,10 @@ export const getNetworkLink = (router: NextRouter, safeAddress: string, networkS
 }
 
 const UndeployedNetworkMenuItem = ({
-                                     chain,
-                                     isSelected = false,
-                                     onSelect,
-                                   }: {
+  chain,
+  isSelected = false,
+  onSelect,
+}: {
   chain: ChainInfo & { available: boolean }
   isSelected?: boolean
   onSelect: (chain: ChainInfo) => void
@@ -163,11 +163,11 @@ const TestnetDivider = () => {
 }
 
 const UndeployedNetworks = ({
-                              deployedChains,
-                              chains,
-                              safeAddress,
-                              closeNetworkSelect,
-                            }: {
+  deployedChains,
+  chains,
+  safeAddress,
+  closeNetworkSelect,
+}: {
   deployedChains: string[]
   chains: ChainInfo[]
   safeAddress: string
@@ -331,9 +331,9 @@ const UndeployedNetworks = ({
 }
 
 const NetworkSelector = ({
-                           onChainSelect,
-                           offerSafeCreation = false,
-                         }: {
+  onChainSelect,
+  offerSafeCreation = false,
+}: {
   onChainSelect?: () => void
   offerSafeCreation?: boolean
 }): ReactElement => {
@@ -433,10 +433,10 @@ const NetworkSelector = ({
           },
           ...(isDarkMode
             ? {
-              '& .Mui-selected, & .Mui-selected:hover': {
-                backgroundColor: `${theme.palette.secondary.background} !important`,
-              },
-            }
+                '& .Mui-selected, & .Mui-selected:hover': {
+                  backgroundColor: `${theme.palette.secondary.background} !important`,
+                },
+              }
             : {}),
         },
       }}

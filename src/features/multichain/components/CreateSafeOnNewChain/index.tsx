@@ -42,15 +42,15 @@ type ReplaySafeDialogProps = {
 }
 
 const ReplaySafeDialog = ({
-                            safeAddress,
-                            chain,
-                            currentName,
-                            open,
-                            onClose,
-                            safeCreationResult,
-                            replayableChains,
-                            isUnsupportedSafeCreationVersion,
-                          }: ReplaySafeDialogProps) => {
+  safeAddress,
+  chain,
+  currentName,
+  open,
+  onClose,
+  safeCreationResult,
+  replayableChains,
+  isUnsupportedSafeCreationVersion,
+}: ReplaySafeDialogProps) => {
   const formMethods = useForm<CreateSafeOnNewChainForm>({
     mode: 'all',
     defaultValues: {
@@ -171,11 +171,14 @@ const ReplaySafeDialog = ({
               <Typography>Add this Safe to another network with the same address.</Typography>
 
               {chain && (
-                <Box data-testid="added-network" sx={{
-                  p: 2,
-                  backgroundColor: 'background.main',
-                  borderRadius: '6px',
-                }}>
+                <Box
+                  data-testid="added-network"
+                  sx={{
+                    p: 2,
+                    backgroundColor: 'background.main',
+                    borderRadius: '6px',
+                  }}
+                >
                   <ChainIndicator chainId={chain.chainId} />
                 </Box>
               )}
@@ -250,10 +253,10 @@ const ReplaySafeDialog = ({
 }
 
 export const CreateSafeOnNewChain = ({
-                                       safeAddress,
-                                       deployedChainIds,
-                                       ...props
-                                     }: Omit<
+  safeAddress,
+  deployedChainIds,
+  ...props
+}: Omit<
   ReplaySafeDialogProps,
   'safeCreationResult' | 'replayableChains' | 'chain' | 'isUnsupportedSafeCreationVersion'
 > & {

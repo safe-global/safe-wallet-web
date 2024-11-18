@@ -29,11 +29,11 @@ const OutreachPopup = (): ReactElement | null => {
     !wallet || !safeAddress
       ? skipToken
       : {
-        outreachId: ACTIVE_OUTREACH.id,
-        chainId: currentChainId,
-        safeAddress,
-        signerAddress: wallet?.address,
-      },
+          outreachId: ACTIVE_OUTREACH.id,
+          chainId: currentChainId,
+          safeAddress,
+          signerAddress: wallet?.address,
+        },
   )
 
   const [askAgainLaterTimestamp, setAskAgainLaterTimestamp] = useSessionStorage<number>(OUTREACH_SS_KEY)
@@ -80,7 +80,6 @@ const OutreachPopup = (): ReactElement | null => {
         <ThemeProvider theme={safeTheme}>
           <Box className={css.popup}>
             <Paper className={css.container}>
-
               <Stack
                 sx={{
                   gap: 2,
@@ -98,11 +97,12 @@ const OutreachPopup = (): ReactElement | null => {
                     }}
                   >
                     <Typography variant="body2">Clem</Typography>
-                    <Typography variant="body2"
-                                sx={{
-                                  color: 'primary.light',
-                                }}>
-
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'primary.light',
+                      }}
+                    >
                       Product Lead
                     </Typography>
                   </Box>

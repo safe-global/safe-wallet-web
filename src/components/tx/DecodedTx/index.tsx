@@ -39,13 +39,13 @@ export const Divider = () => (
 )
 
 const DecodedTx = ({
-                     tx,
-                     txDetails,
-                     decodedData,
-                     showMultisend = true,
-                     showMethodCall = false,
-                     showAdvancedDetails = true,
-                   }: DecodedTxProps): ReactElement => {
+  tx,
+  txDetails,
+  decodedData,
+  showMultisend = true,
+  showMethodCall = false,
+  showAdvancedDetails = true,
+}: DecodedTxProps): ReactElement => {
   const isMultisend = decodedData?.parameters && !!decodedData?.parameters[0]?.valueDecoded
   const isMethodCallInAdvanced = showAdvancedDetails && (!showMethodCall || (isMultisend && showMultisend))
 

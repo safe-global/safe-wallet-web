@@ -52,7 +52,10 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
           <Typography
             sx={{
               fontSize: '14px',
-            }}>Multichain account on:</Typography>
+            }}
+          >
+            Multichain account on:
+          </Typography>
           {safes.map((safeItem) => (
             <Box
               key={safeItem.chainId}
@@ -160,13 +163,18 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             '&.Mui-expanded': { backgroundColor: 'transparent !important' },
           }}
         >
-
-          <Box className={css.safeLink} sx={{
-            width: '100%',
-          }}>
-            <Box sx={{
-              pr: 2.5,
-            }} data-testid="group-safe-icon">
+          <Box
+            className={css.safeLink}
+            sx={{
+              width: '100%',
+            }}
+          >
+            <Box
+              sx={{
+                pr: 2.5,
+              }}
+              data-testid="group-safe-icon"
+            >
               <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
             </Box>
             <Typography variant="body2" component="div" className={css.safeAddress}>
@@ -194,12 +202,15 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               </Typography>
             </Typography>
             <MultichainIndicator safes={safes} />
-            <Typography data-testid="group-balance" variant="body2"
-                        sx={{
-                          fontWeight: 'bold',
-                          textAlign: 'right',
-                          pl: 2,
-                        }}>
+            <Typography
+              data-testid="group-balance"
+              variant="body2"
+              sx={{
+                fontWeight: 'bold',
+                textAlign: 'right',
+                pl: 2,
+              }}
+            >
               {totalFiatValue !== undefined ? (
                 <FiatValue value={totalFiatValue} />
               ) : (

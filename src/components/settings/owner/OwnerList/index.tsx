@@ -106,14 +106,16 @@ export const OwnerList = () => {
             }}
           >
             Members
-
           </Typography>
         </Grid>
 
         <Grid item xs>
-          <Typography fontWeight="bold" sx={{
-            mb: 2,
-          }}>
+          <Typography
+            fontWeight="bold"
+            sx={{
+              mb: 2,
+            }}
+          >
             Signers
           </Typography>
           <Typography mb={2}>
@@ -121,12 +123,13 @@ export const OwnerList = () => {
             reject them.
           </Typography>
 
-          <Box sx={{
-            pt: 2,
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}>
-
+          <Box
+            sx={{
+              pt: 2,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <CheckWallet>
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>

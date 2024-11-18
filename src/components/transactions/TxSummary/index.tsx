@@ -96,9 +96,11 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
         <DateTime value={tx.timestamp} />
       </Box>
       {isQueue && executionInfo && (
-        <Box sx={{
-          gridArea: 'confirmations',
-        }}>
+        <Box
+          sx={{
+            gridArea: 'confirmations',
+          }}
+        >
           {executionInfo.confirmationsSubmitted > 0 || isPending ? (
             <TxConfirmations
               submittedConfirmations={executionInfo.confirmationsSubmitted}
@@ -107,7 +109,6 @@ const TxSummary = ({ item, isConflictGroup, isBulkGroup }: TxSummaryProps): Reac
           ) : (
             <TxProposalChip />
           )}
-
         </Box>
       )}
       {isQueue && expiredSwap ? (

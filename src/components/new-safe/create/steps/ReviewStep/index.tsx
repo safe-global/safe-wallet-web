@@ -54,11 +54,11 @@ import { updateAddressBook } from '../../logic/address-book'
 import chains from '@/config/chains'
 
 export const NetworkFee = ({
-                             totalFee,
-                             chain,
-                             isWaived,
-                             inline = false,
-                           }: {
+  totalFee,
+  chain,
+  isWaived,
+  inline = false,
+}: {
   totalFee: string
   chain: ChainInfo | undefined
   isWaived: boolean
@@ -76,11 +76,11 @@ export const NetworkFee = ({
 }
 
 export const SafeSetupOverview = ({
-                                    name,
-                                    owners,
-                                    threshold,
-                                    networks,
-                                  }: {
+  name,
+  owners,
+  threshold,
+  networks,
+}: {
   name?: string
   owners: NamedAddress[]
   threshold: number
@@ -180,13 +180,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
     () =>
       chain
         ? createNewUndeployedSafeWithoutSalt(
-          data.safeVersion,
-          {
-            owners: data.owners.map((owner) => owner.address),
-            threshold: data.threshold,
-          },
-          chain,
-        )
+            data.safeVersion,
+            {
+              owners: data.owners.map((owner) => owner.address),
+              threshold: data.threshold,
+            },
+            chain,
+          )
         : undefined,
     [chain, data.owners, data.safeVersion, data.threshold],
   )
@@ -194,9 +194,9 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
   const safePropsForGasEstimation = useMemo(() => {
     return newSafeProps
       ? {
-        ...newSafeProps,
-        saltNonce: Date.now().toString(),
-      }
+          ...newSafeProps,
+          saltNonce: Date.now().toString(),
+        }
       : undefined
   }, [newSafeProps])
 
@@ -308,10 +308,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
       const options: DeploySafeProps['options'] = isEIP1559
         ? {
-          maxFeePerGas: maxFeePerGas?.toString(),
-          maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
-          gasLimit: gasLimit?.toString(),
-        }
+            maxFeePerGas: maxFeePerGas?.toString(),
+            maxPriorityFeePerGas: maxPriorityFeePerGas?.toString(),
+            gasLimit: gasLimit?.toString(),
+          }
         : { gasPrice: maxFeePerGas?.toString(), gasLimit: gasLimit?.toString() }
 
       const onSubmitCallback = async (taskId?: string, txHash?: string) => {
