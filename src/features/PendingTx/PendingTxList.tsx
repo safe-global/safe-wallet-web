@@ -1,7 +1,7 @@
 import SafeListItem from '@/src/components/SafeListItem'
 import { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import React, { useCallback } from 'react'
-import { SectionList, SectionListRenderItem, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
+import { SectionList, SectionListRenderItem } from 'react-native'
 import { Spinner, View } from 'tamagui'
 import TxInfo from '@/src/components/TxInfo'
 import { getBulkGroupTxHash, getTxHash } from '@/src/utils/transaction-guards'
@@ -75,7 +75,7 @@ function PendingTxList({ transactions, onEndReached, isLoading, hasMore, amount 
       onEndReached={onEndReached}
       ListFooterComponent={isLoading ? <Spinner size={'small'} color={'$color'} /> : undefined}
       renderSectionHeader={({ section: { title } }) => <SafeListItem.Header title={title} />}
-      onScroll={(handleScroll}
+      onScroll={handleScroll}
       scrollEventThrottle={16}
     />
   )
