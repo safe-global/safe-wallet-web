@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-import { _RecoveryHeader, _useIsProposalInProgress } from '.'
+import { InternalRecoveryHeader, useIsProposalInProgress } from '.'
 import { render, renderHook, waitFor } from '@/tests/test-utils'
 import store from '@/features/recovery/components/RecoveryContext'
 import { RecoveryEvent, recoveryDispatch, RecoveryTxType } from '@/features/recovery/services/recoveryEvents'
@@ -19,7 +19,7 @@ describe('RecoveryHeader', () => {
     const queue = [{ validFrom: BigInt(0) }] as any
     store.setStore({ state: [[{ queue }]] } as any)
 
-    const { queryByText } = render(<_RecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} />)
+    const { queryByText } = render(<InternalRecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} />)
 
     expect(queryByText('Account recovery in progress')).toBeTruthy()
   })
@@ -28,7 +28,7 @@ describe('RecoveryHeader', () => {
     const queue = [] as any
     store.setStore({ state: [[{ queue }]] } as any)
 
-    const { queryByText } = render(<_RecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} />)
+    const { queryByText } = render(<InternalRecoveryHeader isProposalInProgress={false} isRecoverer queue={queue} />)
 
     expect(queryByText('Recover this Account')).toBeTruthy()
   })
@@ -37,7 +37,7 @@ describe('RecoveryHeader', () => {
     const queue = [] as any
     store.setStore({ state: [[{ queue }]] } as any)
 
-    const { container } = render(<_RecoveryHeader isProposalInProgress isRecoverer queue={queue} />)
+    const { container } = render(<InternalRecoveryHeader isProposalInProgress isRecoverer queue={queue} />)
 
     expect(container).toBeEmptyDOMElement()
   })
@@ -49,7 +49,7 @@ describe('useIsProposalInProgress', () => {
       it('should return true if there is a proposal in progress', async () => {
         mockUseRecoveryQueue.mockReturnValue([] as any)
 
-        const { result } = renderHook(() => _useIsProposalInProgress())
+        const { result } = renderHook(() => useIsProposalInProgress())
 
         expect(result.current).toBe(false)
 
@@ -77,7 +77,7 @@ describe('useIsProposalInProgress', () => {
 
       mockUseRecoveryQueue.mockReturnValue([{ args: { txHash: payload.recoveryTxHash } }] as any)
 
-      const { result } = renderHook(() => _useIsProposalInProgress())
+      const { result } = renderHook(() => useIsProposalInProgress())
 
       expect(result.current).toBe(false)
 

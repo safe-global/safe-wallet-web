@@ -18,10 +18,11 @@ jobs:
 
       - uses: ./.github/workflows/yarn
 
-      - uses: CatChen/eslint-suggestion-action@v2
+      - uses: CatChen/eslint-suggestion-action@v4.1.7
         with:
           request-changes: true # optional
           fail-check: true # optional
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional
           directory: './' # optional
           targets: 'src' # optional
+          config-path: './eslint.config.mjs'

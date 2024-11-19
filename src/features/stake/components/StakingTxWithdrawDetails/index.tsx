@@ -4,7 +4,15 @@ import StakingConfirmationTxWithdraw from '@/features/stake/components/StakingCo
 
 const StakingTxWithdrawDetails = ({ info }: { info: StakingTxWithdrawInfo }) => {
   return (
-    <Box pl={1} pr={5} display="flex" flexDirection="column" gap={1}>
+    <Box
+      sx={{
+        pl: 1,
+        pr: 5,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
       <StakingConfirmationTxWithdraw order={info} />
     </Box>
   )

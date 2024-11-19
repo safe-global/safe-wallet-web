@@ -9,7 +9,12 @@ const BalanceInfo = () => {
 
   return (
     <div className={css.container}>
-      <Typography variant="body2" color="primary.light">
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'primary.light',
+        }}
+      >
         <b>Wallet balance:</b> <WalletBalance balance={balance} />
       </Typography>
     </div>

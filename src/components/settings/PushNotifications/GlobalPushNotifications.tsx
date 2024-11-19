@@ -374,7 +374,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   if (totalNotifiableSafes === 0) {
     return (
-      <Typography color={({ palette }) => palette.primary.light}>
+      <Typography sx={{ color: ({ palette }) => palette.primary.light }}>
         {address ? 'No owned Safes' : 'No wallet connected'}
       </Typography>
     )

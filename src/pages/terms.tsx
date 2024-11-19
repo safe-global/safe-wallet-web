@@ -6,7 +6,6 @@ import SafeTerms from '@/markdown/terms/terms.md'
 import type { MDXComponents } from 'mdx/types'
 
 const overrideComponents: MDXComponents = {
-  // @ts-expect-error
   a: CustomLink,
 }
 

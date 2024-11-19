@@ -79,7 +79,13 @@ const createSkeletonMessage = (confirmationsRequired: number): SafeMessage => {
 
 const MessageHashField = ({ label, hashValue }: { label: string; hashValue: string }) => (
   <>
-    <Typography variant="body2" fontWeight={700} mt={2}>
+    <Typography
+      variant="body2"
+      sx={{
+        fontWeight: 700,
+        mt: 2,
+      }}
+    >
       {label}:
     </Typography>
     <Typography data-testid="message-hash" variant="body2" component="div">
@@ -90,14 +96,31 @@ const MessageHashField = ({ label, hashValue }: { label: string; hashValue: stri
 
 const DialogHeader = ({ threshold }: { threshold: number }) => (
   <>
-    <Box textAlign="center" mb={2}>
+    <Box
+      sx={{
+        textAlign: 'center',
+        mb: 2,
+      }}
+    >
       <SvgIcon component={RequiredIcon} viewBox="0 0 32 32" fontSize="large" />
     </Box>
-    <Typography variant="h4" textAlign="center" gutterBottom>
+    <Typography
+      variant="h4"
+      gutterBottom
+      sx={{
+        textAlign: 'center',
+      }}
+    >
       Confirm message
     </Typography>
     {threshold > 1 && (
-      <Typography variant="body1" textAlign="center" mb={2}>
+      <Typography
+        variant="body1"
+        sx={{
+          textAlign: 'center',
+          mb: 2,
+        }}
+      >
         To sign this message, collect signatures from <b>{threshold} signers</b> of your Safe Account.
       </Typography>
     )}
@@ -112,12 +135,12 @@ const MessageDialogError = ({ isOwner, submitError }: { isOwner: boolean; submit
     !wallet || !onboard
       ? 'No wallet is connected.'
       : !isOwner
-      ? "You are currently not a signer of this Safe Account and won't be able to confirm this message."
-      : submitError && isWalletRejection(submitError)
-      ? 'User rejected signing.'
-      : submitError
-      ? 'Error confirming the message. Please try again.'
-      : null
+        ? "You are currently not a signer of this Safe Account and won't be able to confirm this message."
+        : submitError && isWalletRejection(submitError)
+          ? 'User rejected signing.'
+          : submitError
+            ? 'Error confirming the message. Please try again.'
+            : null
 
   if (errorMessage) {
     return <ErrorMessage>{errorMessage}</ErrorMessage>
@@ -138,7 +161,13 @@ const AlreadySignedByOwnerMessage = ({ hasSigned }: { hasSigned: boolean }) => {
   }
   return (
     <SuccessMessage>
-      <Grid container direction="row" justifyContent="space-between">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-between',
+        }}
+      >
         <Grid item xs={7}>
           Your connected wallet has already signed this message.
         </Grid>
@@ -192,10 +221,15 @@ const BlindSigningWarning = ({
 const SuccessCard = ({ safeMessage, onContinue }: { safeMessage: SafeMessage; onContinue: () => void }) => {
   return (
     <TxCard>
-      <Typography variant="h4" textAlign="center" gutterBottom>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          textAlign: 'center',
+        }}
+      >
         Message successfully signed
       </Typography>
-
       <MsgSigners msg={safeMessage} showOnlyConfirmations showMissingSignatures />
       <CardActions>
         <Button variant="contained" color="primary" onClick={onContinue} disabled={!safeMessage.preparedSignature}>
@@ -301,7 +335,13 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
             isBlindSigningPayload={isBlindSigningRequest}
           />
 
-          <Typography fontWeight={700} mt={2} mb={1}>
+          <Typography
+            sx={{
+              fontWeight: 700,
+              mt: 2,
+              mb: 1,
+            }}
+          >
             Message: <CopyButton text={decodedMessageAsString} />
           </Typography>
           <DecodedMsg message={decodedMessage} isInModal />
@@ -321,7 +361,6 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
           </Box>
         </CardContent>
       </TxCard>
-
       {isFullySigned ? (
         <SuccessCard onContinue={onContinue} safeMessage={safeMessage} />
       ) : (
@@ -350,7 +389,11 @@ const SignMessage = ({ message, safeAppId, requestId }: ProposeProps | ConfirmPr
                 title="Share the link with other owners"
                 message={
                   <>
-                    <Typography mb={2}>
+                    <Typography
+                      sx={{
+                        mb: 2,
+                      }}
+                    >
                       The owners will receive a notification about signing the message. You can also share the link with
                       them to speed up the process.
                     </Typography>

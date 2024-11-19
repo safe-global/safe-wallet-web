@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { Box, CircularProgress, Paper } from '@mui/material'
-import Grid from '@mui/material/Unstable_Grid2'
+import { Box, CircularProgress, Paper, Grid2 as Grid } from '@mui/material'
 import { OVERVIEW_EVENTS, SAFE_APPS_EVENTS, trackEvent, trackSafeAppEvent } from '@/services/analytics'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import { useSafeAppFromManifest } from '@/hooks/safe-apps/useSafeAppFromManifest'
@@ -51,7 +50,12 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
 
   if (isLoading || backendAppLoading) {
     return (
-      <Box py={4} textAlign="center">
+      <Box
+        sx={{
+          py: 4,
+          textAlign: 'center',
+        }}
+      >
         <CircularProgress size={40} />
       </Box>
     )
@@ -59,11 +63,11 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
 
   return (
     <Grid container>
-      <Grid sm={12} md={12} lg={8} lgOffset={2} xl={6} xlOffset={3}>
+      <Grid size={{ sm: 12, md: 12, lg: 8, xl: 6 }} offset={{ lg: 2, xl: 3 }}>
         <Paper sx={{ p: 6 }}>
           <SafeAppDetails app={backendApp || safeApp} showDefaultListWarning={!backendApp} />
           <Grid container sx={{ mt: 4 }} rowSpacing={{ xs: 2, sm: 2 }}>
-            <Grid xs={12} sm={12} md={showDemo ? 6 : 12}>
+            <Grid size={{ xs: 12, sm: 12, md: showDemo ? 6 : 12 }}>
               <AppActions
                 appUrl={appUrl}
                 wallet={wallet}
@@ -73,7 +77,7 @@ const SafeAppLanding = ({ appUrl, chain }: Props) => {
               />
             </Grid>
             {showDemo && (
-              <Grid xs={12} sm={12} md={6}>
+              <Grid size={{ xs: 12, sm: 12, md: 6 }}>
                 <TryDemo
                   demoUrl={{
                     pathname: AppRoutes.apps.open,

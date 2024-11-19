@@ -3,10 +3,10 @@
 exports[`BatchTransactions should render a list of batch transactions 1`] = `
 <div>
   <ul
-    class="MuiList-root MuiList-padding css-lcvy9m-MuiList-root"
+    class="MuiList-root MuiList-padding css-8g50lk-MuiList-root"
   >
     <li
-      class="MuiListItem-root MuiListItem-gutters css-1ukg6v4-MuiListItem-root"
+      class="MuiListItem-root MuiListItem-gutters css-rqnn2j-MuiListItem-root"
     >
       <div
         class="number"
@@ -14,84 +14,89 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
         1
       </div>
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1b8drg8-MuiPaper-root-MuiAccordion-root"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1bkyy70-MuiPaper-root-MuiAccordion-root"
+        style="--Paper-shadow: none;"
       >
-        <div
-          aria-expanded="false"
-          class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-knbc2d-MuiButtonBase-root-MuiAccordionSummary-root"
-          role="button"
-          tabindex="0"
+        <h3
+          class="MuiAccordion-heading css-cy7rkm-MuiAccordion-heading"
         >
           <div
-            class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-6nefnh-MuiAccordionSummary-content"
+            aria-expanded="false"
+            class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-66oagt-MuiButtonBase-root-MuiAccordionSummary-root"
+            role="button"
+            tabindex="0"
           >
             <div
-              class="MuiBox-root css-mvjamn"
+              class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-1pnrdlh-MuiAccordionSummary-content"
             >
               <div
-                class="txType MuiBox-root css-0"
+                class="MuiBox-root css-mvjamn"
               >
-                <img
-                  alt="Send"
-                  height="16"
-                  src="/images/transactions/outgoing.svg"
-                  width="16"
-                />
-                <span
-                  class="txTypeText"
+                <div
+                  class="txType MuiBox-root css-0"
                 >
-                  Send
-                </span>
-              </div>
-              <div
-                class="MuiBox-root css-1rr4qq7"
-              >
-                <span
-                  aria-label="1000000000000"
-                  class="container"
-                  data-mui-internal-clone-element="true"
+                  <img
+                    alt="Send"
+                    height="16"
+                    src="/images/transactions/outgoing.svg"
+                    width="16"
+                  />
+                  <span
+                    class="txTypeText"
+                  >
+                    Send
+                  </span>
+                </div>
+                <div
+                  class="MuiBox-root css-1rr4qq7"
                 >
-                  <b>
-                    -
-                    1000000000000
-                     
-                  </b>
-                </span>
+                  <span
+                    aria-label="1000000000000"
+                    class="container"
+                    data-mui-internal-clone-element="true"
+                  >
+                    <b>
+                      -
+                      1000000000000
+                       
+                    </b>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-          <div
-            class="MuiAccordionSummary-expandIconWrapper css-yw020d-MuiAccordionSummary-expandIconWrapper"
-          >
-            <svg
-              aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-17ceore-MuiSvgIcon-root"
-              data-testid="ExpandMoreIcon"
-              focusable="false"
-              viewBox="0 0 24 24"
+            <div
+              class="MuiAccordionSummary-expandIconWrapper css-1wqf3nl-MuiAccordionSummary-expandIconWrapper"
             >
-              <path
-                d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
-              />
-            </svg>
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1dhtbeh-MuiSvgIcon-root"
+                data-testid="ExpandMoreIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                />
+              </svg>
+            </div>
           </div>
-        </div>
+        </h3>
         <div
-          class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-bz4dnt-MuiCollapse-root"
+          class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-cwrbtg-MuiCollapse-root"
           style="min-height: 0px;"
         >
           <div
-            class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+            class="MuiCollapse-wrapper MuiCollapse-vertical css-1x6hinx-MuiCollapse-wrapper"
           >
             <div
-              class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+              class="MuiCollapse-wrapperInner MuiCollapse-vertical css-1i4ywhz-MuiCollapse-wrapperInner"
             >
               <div
                 class="MuiAccordion-region"
                 role="region"
               >
                 <div
-                  class="MuiAccordionDetails-root css-7wcoc8-MuiAccordionDetails-root"
+                  class="MuiAccordionDetails-root css-w74p4c-MuiAccordionDetails-root"
                 >
                   <div
                     class="details"
@@ -103,7 +108,7 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
                         class="MuiBox-root css-8v90jo"
                       >
                         <p
-                          class="MuiTypography-root MuiTypography-body1 css-1pqjor9-MuiTypography-root"
+                          class="MuiTypography-root MuiTypography-body1 css-v6lhhw-MuiTypography-root"
                         >
                           Send
                            
@@ -175,18 +180,15 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
                               >
                                 <button
                                   aria-label="Copy to clipboard"
-                                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-nmr6e8-MuiButtonBase-root-MuiIconButton-root"
+                                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-xyrzjn-MuiButtonBase-root-MuiIconButton-root"
                                   tabindex="0"
                                   type="button"
                                 >
                                   <mock-icon
-                                    aria-hidden="true"
-                                    classname="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-j1da6x-MuiSvgIcon-root"
+                                    aria-hidden=""
+                                    class="MuiSvgIcon-root MuiSvgIcon-colorBorder MuiSvgIcon-fontSizeSmall css-gvpe62-MuiSvgIcon-root"
                                     data-testid="copy-btn-icon"
                                     focusable="false"
-                                  />
-                                  <span
-                                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
                                   />
                                 </button>
                               </span>
@@ -195,44 +197,37 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
                               >
                                 <button
                                   aria-label=""
-                                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1o2vr87-MuiButtonBase-root-MuiIconButton-root"
+                                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1vbp2rr-MuiButtonBase-root-MuiIconButton-root"
                                   data-mui-internal-clone-element="true"
                                   data-testid="explorer-btn"
-                                  href=""
                                   rel="noreferrer"
                                   tabindex="0"
                                   target="_blank"
                                   type="button"
                                 >
                                   <mock-icon
-                                    aria-hidden="true"
-                                    classname="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-11dtfly-MuiSvgIcon-root"
+                                    aria-hidden=""
+                                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-tqxw8e-MuiSvgIcon-root"
                                     focusable="false"
-                                  />
-                                  <span
-                                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
                                   />
                                 </button>
                               </div>
                               <button
-                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeSmall css-sl0yvu-MuiButtonBase-root-MuiIconButton-root"
+                                class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeSmall css-1bg1tw1-MuiButtonBase-root-MuiIconButton-root"
                                 tabindex="0"
                                 type="button"
                               >
                                 <svg
                                   aria-hidden="true"
-                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-1pay1n0-MuiSvgIcon-root"
+                                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-1ktsa7m-MuiSvgIcon-root"
                                   data-testid="MoreHorizIcon"
                                   focusable="false"
                                   viewBox="0 0 24 24"
                                 >
                                   <path
-                                    d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+                                    d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2"
                                   />
                                 </svg>
-                                <span
-                                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                                />
                               </button>
                             </div>
                           </div>
@@ -240,7 +235,7 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
                       </div>
                     </div>
                     <div
-                      class="MuiGrid-root MuiGrid-container css-1d1otxt-MuiGrid-root"
+                      class="MuiGrid-root MuiGrid-container css-86qz5o-MuiGrid-root"
                     >
                       <div
                         class="MuiGrid-root MuiGrid-item css-1wehkfy-MuiGrid-root"
@@ -248,7 +243,7 @@ exports[`BatchTransactions should render a list of batch transactions 1`] = `
                         style="word-break: break-word;"
                       >
                         <p
-                          class="MuiTypography-root MuiTypography-body1 css-fzss1y-MuiTypography-root"
+                          class="MuiTypography-root MuiTypography-body1 css-shf88x-MuiTypography-root"
                         >
                           Created:
                         </p>

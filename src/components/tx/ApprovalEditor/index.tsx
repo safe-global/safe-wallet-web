@@ -19,7 +19,13 @@ const Title = ({ isErc721 }: { isErc721: boolean }) => {
 
   return (
     <div>
-      <Typography fontWeight={700}>{title}</Typography>
+      <Typography
+        sx={{
+          fontWeight: 700,
+        }}
+      >
+        {title}
+      </Typography>
       <Typography variant="body2">{subtitle}</Typography>
     </div>
   )
@@ -62,9 +68,16 @@ export const ApprovalEditor = ({
     (safeTransaction && safeTransaction.signatures.size > 0) || safeMessage !== undefined || isErc721Approval
 
   return (
-    <Box display="flex" flexDirection="column" gap={2} className={css.container} mb={1}>
+    <Box
+      className={css.container}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        mb: 1,
+      }}
+    >
       <Title isErc721={isErc721Approval} />
-
       {error ? (
         <Alert severity="error">Error while decoding approval transactions.</Alert>
       ) : loading || !readableApprovals ? (
