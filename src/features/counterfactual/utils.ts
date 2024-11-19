@@ -356,27 +356,20 @@ export const extractCounterfactualSafeSetup = (
       saltNonce: string | undefined
     }
   | undefined => {
-  if (!undeployedSafe || !chainId) {
+  if (!undeployedSafe || !chainId || !undeployedSafe.props.safeAccountConfig) {
     return undefined
   }
-  if (isPredictedSafeProps(undeployedSafe.props)) {
-    return {
-      owners: undeployedSafe.props.safeAccountConfig.owners,
-      threshold: undeployedSafe.props.safeAccountConfig.threshold,
-      fallbackHandler: undeployedSafe.props.safeAccountConfig.fallbackHandler,
-      safeVersion: undeployedSafe.props.safeDeploymentConfig?.safeVersion,
-      saltNonce: undeployedSafe.props.safeDeploymentConfig?.saltNonce,
-    }
-  } else {
-    const { owners, threshold, fallbackHandler } = undeployedSafe.props.safeAccountConfig
+  const { owners, threshold, fallbackHandler } = undeployedSafe.props.safeAccountConfig
+  const { safeVersion, saltNonce } = isPredictedSafeProps(undeployedSafe.props)
+    ? undeployedSafe.props.safeDeploymentConfig ?? {}
+    : undeployedSafe.props
 
-    return {
-      owners,
-      threshold: Number(threshold),
-      fallbackHandler,
-      safeVersion: undeployedSafe.props.safeVersion,
-      saltNonce: undeployedSafe.props.saltNonce,
-    }
+  return {
+    owners,
+    threshold: Number(threshold),
+    fallbackHandler,
+    safeVersion,
+    saltNonce,
   }
 }
 
