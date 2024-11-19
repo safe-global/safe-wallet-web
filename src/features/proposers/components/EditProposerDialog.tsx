@@ -29,7 +29,12 @@ const EditProposerDialog = ({ proposer }: { proposer: Delegate }) => {
               }
             >
               <span>
-                <IconButton onClick={() => setOpen(true)} size="small" disabled={!isOk || !canEdit}>
+                <IconButton
+                  data-testid="edit-proposer-btn"
+                  onClick={() => setOpen(true)}
+                  size="small"
+                  disabled={!isOk || !canEdit}
+                >
                   <SvgIcon component={EditIcon} inheritViewBox color="border" fontSize="small" />
                 </IconButton>
               </span>

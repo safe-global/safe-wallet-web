@@ -280,6 +280,9 @@ export const batchData = {
   },
 }
 export const addressBookData = {
+  proposers: {
+    11155111: { '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AD Proposer1' },
+  },
   sepoliaAddress1: {
     11155111: { '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'Owner1' },
   },
