@@ -172,13 +172,14 @@ const InternalDeleteProposer = ({ wallet, safeAddress, chainId, proposer }: Dele
         <Divider />
 
         <DialogActions sx={{ padding: 3, justifyContent: 'space-between' }}>
-          <Button size="small" variant="text" onClick={onCancel}>
+          <Button data-testid="reject-delete-proposer-btn" size="small" variant="text" onClick={onCancel}>
             No, keep it
           </Button>
 
           <CheckWallet checkNetwork={!isLoading}>
             {(isOk) => (
               <Button
+                data-testid="confirm-delete-proposer-btn"
                 size="small"
                 variant="danger"
                 onClick={onConfirm}

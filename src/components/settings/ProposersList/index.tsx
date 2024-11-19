@@ -83,7 +83,7 @@ const ProposersList = () => {
 
   return (
     <Paper sx={{ mt: 2 }}>
-      <Box display="flex" flexDirection="column" gap={2}>
+      <Box data-testid="proposer-section" display="flex" flexDirection="column" gap={2}>
         <Grid container spacing={3}>
           <Grid item lg={4} xs={12}>
             <Typography variant="h4" fontWeight={700}></Typography>
