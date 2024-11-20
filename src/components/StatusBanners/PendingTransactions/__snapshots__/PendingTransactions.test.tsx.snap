@@ -4,15 +4,24 @@ exports[`PendingTransactions should render the default markup 1`] = `
 <RNGestureHandlerButton
   collapsable={false}
   delayLongPress={600}
-  enabled={false}
+  enabled={true}
   exclusive={true}
   handlerTag={1}
   handlerType="NativeViewGestureHandler"
+  innerRef={null}
   onGestureEvent={[Function]}
   onGestureHandlerEvent={[Function]}
   onGestureHandlerStateChange={[Function]}
   onHandlerStateChange={[Function]}
   rippleColor={0}
+  style={
+    [
+      undefined,
+      {
+        "cursor": undefined,
+      },
+    ]
+  }
   touchSoundDisabled={false}
 >
   <View
@@ -136,15 +145,24 @@ exports[`PendingTransactions should render the pending transactions in fullWidth
 <RNGestureHandlerButton
   collapsable={false}
   delayLongPress={600}
-  enabled={false}
+  enabled={true}
   exclusive={true}
   handlerTag={2}
   handlerType="NativeViewGestureHandler"
+  innerRef={null}
   onGestureEvent={[Function]}
   onGestureHandlerEvent={[Function]}
   onGestureHandlerStateChange={[Function]}
   onHandlerStateChange={[Function]}
   rippleColor={0}
+  style={
+    [
+      undefined,
+      {
+        "cursor": undefined,
+      },
+    ]
+  }
   touchSoundDisabled={false}
 >
   <View

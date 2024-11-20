@@ -8,11 +8,20 @@ exports[`Alert should render a info alert 1`] = `
   exclusive={true}
   handlerTag={1}
   handlerType="NativeViewGestureHandler"
+  innerRef={null}
   onGestureEvent={[Function]}
   onGestureHandlerEvent={[Function]}
   onGestureHandlerStateChange={[Function]}
   onHandlerStateChange={[Function]}
   rippleColor={0}
+  style={
+    [
+      undefined,
+      {
+        "cursor": undefined,
+      },
+    ]
+  }
   touchSoundDisabled={false}
 >
   <View
@@ -100,11 +109,20 @@ exports[`Alert should render a warning alert 1`] = `
   exclusive={true}
   handlerTag={2}
   handlerType="NativeViewGestureHandler"
+  innerRef={null}
   onGestureEvent={[Function]}
   onGestureHandlerEvent={[Function]}
   onGestureHandlerStateChange={[Function]}
   onHandlerStateChange={[Function]}
   rippleColor={0}
+  style={
+    [
+      undefined,
+      {
+        "cursor": undefined,
+      },
+    ]
+  }
   touchSoundDisabled={false}
 >
   <View
@@ -192,11 +210,20 @@ exports[`Alert should render an alert with a name icon 1`] = `
   exclusive={true}
   handlerTag={6}
   handlerType="NativeViewGestureHandler"
+  innerRef={null}
   onGestureEvent={[Function]}
   onGestureHandlerEvent={[Function]}
   onGestureHandlerStateChange={[Function]}
   onHandlerStateChange={[Function]}
   rippleColor={0}
+  style={
+    [
+      undefined,
+      {
+        "cursor": undefined,
+      },
+    ]
+  }
   touchSoundDisabled={false}
 >
   <View
@@ -284,11 +311,20 @@ exports[`Alert should render an alert with an end icon 1`] = `
   exclusive={true}
   handlerTag={5}
   handlerType="NativeViewGestureHandler"
+  innerRef={null}
   onGestureEvent={[Function]}
   onGestureHandlerEvent={[Function]}
   onGestureHandlerStateChange={[Function]}
   onHandlerStateChange={[Function]}
   rippleColor={0}
+  style={
+    [
+      undefined,
+      {
+        "cursor": undefined,
+      },
+    ]
+  }
   touchSoundDisabled={false}
 >
   <View
@@ -399,11 +435,20 @@ exports[`Alert should render an alert with start icon 1`] = `
   exclusive={true}
   handlerTag={4}
   handlerType="NativeViewGestureHandler"
+  innerRef={null}
   onGestureEvent={[Function]}
   onGestureHandlerEvent={[Function]}
   onGestureHandlerStateChange={[Function]}
   onHandlerStateChange={[Function]}
   rippleColor={0}
+  style={
+    [
+      undefined,
+      {
+        "cursor": undefined,
+      },
+    ]
+  }
   touchSoundDisabled={false}
 >
   <View
@@ -493,11 +538,20 @@ exports[`Alert should render an error alert 1`] = `
   exclusive={true}
   handlerTag={3}
   handlerType="NativeViewGestureHandler"
+  innerRef={null}
   onGestureEvent={[Function]}
   onGestureHandlerEvent={[Function]}
   onGestureHandlerStateChange={[Function]}
   onHandlerStateChange={[Function]}
   rippleColor={0}
+  style={
+    [
+      undefined,
+      {
+        "cursor": undefined,
+      },
+    ]
+  }
   touchSoundDisabled={false}
 >
   <View
