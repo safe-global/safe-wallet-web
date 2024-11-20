@@ -14,21 +14,18 @@ import LoadingSpinner, { SpinnerStatus } from '@/components/new-safe/create/step
 import { ProcessingStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/ProcessingStatus'
 import { IndexingStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/IndexingStatus'
 import { DefaultStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/DefaultStatus'
-import useDecodeTx from '@/hooks/useDecodeTx'
-import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import { isSwapTransferOrderTxInfo } from '@/utils/transaction-guards'
 import { getTxLink } from '@/utils/tx-link'
+import useTxDetails from '@/hooks/useTxDetails'
 
 interface Props {
   /** The ID assigned to the transaction in the client-gateway */
   txId?: string
   /** For module transaction, pass the transaction hash while the `txId` is not yet available */
   txHash?: string
-  /** The multisig transaction object */
-  safeTx?: SafeTransaction
 }
 
-const SuccessScreen = ({ txId, txHash, safeTx }: Props) => {
+const SuccessScreen = ({ txId, txHash }: Props) => {
   const [localTxHash, setLocalTxHash] = useState<string | undefined>(txHash)
   const [error, setError] = useState<Error>()
   const { setTxFlow } = useContext(TxModalContext)
@@ -38,8 +35,8 @@ const SuccessScreen = ({ txId, txHash, safeTx }: Props) => {
   const status = !txId && txHash ? PendingStatus.INDEXING : pendingTx?.status
   const pendingTxHash = pendingTx && 'txHash' in pendingTx ? pendingTx.txHash : undefined
   const txLink = chain && txId && getTxLink(txId, chain, safeAddress)
-  const [decodedData] = useDecodeTx(safeTx)
-  const isSwapOrder = isSwapConfirmationViewOrder(decodedData)
+  const [txDetails] = useTxDetails(txId)
+  const isSwapOrder = txDetails && isSwapTransferOrderTxInfo(txDetails.txInfo)
 
   useEffect(() => {
     if (!pendingTxHash) return

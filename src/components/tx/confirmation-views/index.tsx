@@ -1,15 +1,14 @@
+import type { StakingTxInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import DecodedTx from '../DecodedTx'
-import ConfirmationOrder from '../ConfirmationOrder'
-import useDecodeTx from '@/hooks/useDecodeTx'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import {
   isAnyStakingTxInfo,
   isCustomTxInfo,
   isExecTxData,
-  isGenericConfirmation,
   isOnChainConfirmationTxData,
   isOrderTxInfo,
+  isSwapOrderTxInfo,
 } from '@/utils/transaction-guards'
 import { type ReactNode, useContext, useMemo } from 'react'
 import TxData from '@/components/transactions/TxDetails/TxData'
@@ -22,6 +21,8 @@ import { isSettingsChangeView, isChangeThresholdView, isConfirmBatchView } from 
 import { OnChainConfirmation } from '@/components/transactions/TxDetails/TxData/NestedTransaction/OnChainConfirmation'
 import { ExecTransaction } from '@/components/transactions/TxDetails/TxData/NestedTransaction/ExecTransaction'
 import { type ReactElement } from 'react'
+import SwapOrder from './SwapOrder'
+import StakingTx from './StakingTx'
 
 type ConfirmationViewProps = {
   txDetails?: TransactionDetails
@@ -51,12 +52,15 @@ const getConfirmationViewComponent = ({
 
   if (isExecTxData(txDetails.txData)) return <ExecTransaction data={txDetails.txData} isConfirmationView />
 
+  if (isSwapOrderTxInfo(txInfo)) return <SwapOrder txDetails={txDetails} txInfo={txInfo} />
+
+  if (isAnyStakingTxInfo(txInfo)) return <StakingTx txDetails={txDetails} txInfo={txInfo as StakingTxInfo} />
+
   return null
 }
 
 const ConfirmationView = ({ txDetails, ...props }: ConfirmationViewProps) => {
   const { txId } = txDetails || {}
-  const [decodedData] = useDecodeTx(props.safeTx)
   const { txFlow } = useContext(TxModalContext)
 
   const ConfirmationViewComponent = useMemo(
@@ -84,22 +88,14 @@ const ConfirmationView = ({ txDetails, ...props }: ConfirmationViewProps) => {
       {ConfirmationViewComponent ||
         (showTxDetails && txDetails && <TxData txDetails={txDetails} imitation={false} trusted />)}
 
-      {decodedData && <ConfirmationOrder decodedData={decodedData} toAddress={props.safeTx?.data.to ?? ''} />}
-
       {props.children}
 
       <DecodedTx
         tx={props.safeTx}
         txDetails={txDetails}
-        decodedData={decodedData}
+        decodedData={txDetails?.txData?.dataDecoded}
         showMultisend={!props.isBatch}
-        showMethodCall={
-          props.showMethodCall &&
-          !ConfirmationViewComponent &&
-          !showTxDetails &&
-          !props.isApproval &&
-          isGenericConfirmation(decodedData)
-        }
+        showMethodCall={props.showMethodCall && !ConfirmationViewComponent && !showTxDetails && !props.isApproval}
       />
     </>
   )

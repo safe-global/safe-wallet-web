@@ -146,14 +146,8 @@ export const useTxActions = (): TxActions => {
       let tx: TransactionDetails | undefined
       // Relayed transactions must be fully signed, so request a final signature if needed
       if (isRelayed && safeTx.signatures.size < safe.threshold) {
-        if (txId) {
-          safeTx = await signRelayedTx(safeTx)
-          tx = await _propose(wallet.address, safeTx, txId, origin)
-        } else {
-          tx = await _propose(wallet.address, safeTx, txId, origin)
-          safeTx = await signRelayedTx(safeTx)
-        }
-        txId = tx.txId
+        safeTx = await signRelayedTx(safeTx)
+        txId = '' // need to propose again with the signature
       }
 
       // Propose the tx if there's no id yet ("immediate execution")

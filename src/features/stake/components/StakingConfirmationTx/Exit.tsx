@@ -1,12 +1,12 @@
 import { Alert, Stack, Typography } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import { formatDurationFromMilliseconds } from '@/utils/formatters'
-import { type NativeStakingValidatorsExitConfirmationView } from '@safe-global/safe-gateway-typescript-sdk/dist/types/decoded-data'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
 import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
+import type { StakingTxExitInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 type StakingOrderConfirmationViewProps = {
-  order: NativeStakingValidatorsExitConfirmationView
+  order: StakingTxExitInfo
 }
 
 const StakingConfirmationTxExit = ({ order }: StakingOrderConfirmationViewProps) => {
@@ -28,7 +28,7 @@ const StakingConfirmationTxExit = ({ order }: StakingOrderConfirmationViewProps)
             label: 'Exit',
           },
           {
-            value: order.value || '0',
+            value: (order as unknown as { value: string }).value || '0',
             tokenInfo: order.tokenInfo,
             label: 'Receive',
           },
