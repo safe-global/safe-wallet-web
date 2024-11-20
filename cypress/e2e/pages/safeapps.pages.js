@@ -195,9 +195,9 @@ export function verifyNoAppsTextPresent() {
   cy.contains(noAppsStr).should('exist')
 }
 
-export function pinApp(app, pin = true) {
+export function pinApp(index, app, pin = true) {
   const option = pin ? 'Pin' : 'Unpin'
-  cy.get(`[aria-label="${option} ${app}"]`).click()
+  cy.get(`[aria-label="${option} ${app}"]`).eq(index).click()
 }
 
 export function clickOnBookmarkedAppsTab() {
