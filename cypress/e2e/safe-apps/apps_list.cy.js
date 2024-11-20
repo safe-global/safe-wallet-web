@@ -40,12 +40,12 @@ describe('Safe Apps list tests', () => {
 
   it('Verify apps can be pinned', () => {
     safeapps.clearSearchAppInput()
-    safeapps.pinApp(1, safeapps.transactionBuilderStr)
+    safeapps.pinApp(0, safeapps.transactionBuilderStr)
     safeapps.verifyPinnedAppCount(1)
   })
 
   it('Verify apps can be unpinned', () => {
-    safeapps.pinApp(1, safeapps.transactionBuilderStr)
+    safeapps.pinApp(0, safeapps.transactionBuilderStr)
     safeapps.pinApp(0, safeapps.transactionBuilderStr, false)
     safeapps.verifyPinnedAppCount(0)
   })
