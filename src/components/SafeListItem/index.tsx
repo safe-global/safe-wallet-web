@@ -81,7 +81,7 @@ function SafeListItem({
               <SafeFontIcon size={12} name="owners" />
 
               <Text fontWeight={600}>
-                {executionInfo?.confirmationsRequired}/{executionInfo?.confirmationsSubmitted}
+                {executionInfo?.confirmationsSubmitted}/{executionInfo?.confirmationsRequired}
               </Text>
             </View>
           </Theme>
