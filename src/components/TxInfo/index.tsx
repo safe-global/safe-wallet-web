@@ -1,14 +1,14 @@
 import React from 'react'
-import { TransactionInfoType, TransactionSummary } from '@safe-global/safe-gateway-typescript-sdk'
-
+import { TransactionInfoType } from '@/src/store/gateway/types'
+import { type Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 import { useTransactionType } from '@/src/hooks/useTransactionType'
 import TxTokenCard from '@/src/components/transactions-list/Card/TxTokenCard'
 import TxSettingsCard from '@/src/components/transactions-list/Card/TxSettingsCard'
 import {
   isCancellationTxInfo,
   isCreationTxInfo,
+  isCustomTxInfo,
   isMultiSendTxInfo,
-  isOrderTxInfo,
   isSettingsChangeTxInfo,
   isSwapOrderTxInfo,
   isTransferTxInfo,
@@ -21,7 +21,7 @@ import TxContractInteractionCard from '@/src/components/transactions-list/Card/T
 import TxSwapCard from '@/src/components/transactions-list/Card/TxSwapCard'
 
 interface TxInfoProps {
-  tx: TransactionSummary
+  tx: Transaction
   bordered?: boolean
   inQueue?: boolean
 }
@@ -78,7 +78,7 @@ function TxInfo({ tx, bordered, inQueue }: TxInfoProps) {
     return <TxRejectionCard executionInfo={tx.executionInfo} inQueue={inQueue} bordered={bordered} txInfo={txInfo} />
   }
 
-  if (!isOrderTxInfo(txInfo)) {
+  if (isMultiSendTxInfo(txInfo) || isCustomTxInfo(txInfo)) {
     return (
       <TxContractInteractionCard
         executionInfo={tx.executionInfo}

@@ -1,17 +1,24 @@
 import {
+  PendingTransactionItems,
+  DetailedExecutionInfoType,
+  TransactionTokenType,
+  TransactionStatus,
   TransactionInfoType,
   TransferDirection,
-  TransactionTokenType,
-  TransactionInfo,
   ConflictType,
   TransactionListItemType,
-  TransactionStatus,
-  DetailedExecutionInfoType,
-  TransactionListItem,
-  TransactionSummary,
-  AddressEx,
-} from '@safe-global/safe-gateway-typescript-sdk'
-import { RichFragmentType } from '@safe-global/safe-gateway-typescript-sdk/dist/types/human-description'
+  HistoryTransactionItems,
+} from '@/src/store/gateway/types'
+import {
+  TransferTransactionInfo,
+  SwapTransferTransactionInfo,
+  DateLabel,
+  TransactionQueuedItem,
+  LabelQueuedItem,
+  ConflictHeaderQueuedItem,
+  AddressInfo,
+  Transaction,
+} from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 export const fakeToken = {
   address: '0x1111111111',
@@ -29,7 +36,7 @@ export const fakeToken2 = {
   symbol: 'SAFE',
   trusted: false,
 }
-export const mockERC20Transfer: TransactionInfo = {
+export const mockERC20Transfer: TransferTransactionInfo = {
   type: TransactionInfoType.TRANSFER,
   sender: {
     value: '0x000000',
@@ -53,7 +60,7 @@ export const mockERC20Transfer: TransactionInfo = {
   direction: TransferDirection.INCOMING,
   humanDescription: 'a simple incoming transaction',
 }
-export const mockNFTTransfer: TransactionInfo = {
+export const mockNFTTransfer: TransferTransactionInfo = {
   type: TransactionInfoType.TRANSFER,
   sender: {
     value: '0x000000',
@@ -73,7 +80,7 @@ export const mockNFTTransfer: TransactionInfo = {
   direction: TransferDirection.OUTGOING,
   humanDescription: 'a simple incoming transaction',
 }
-export const mockSwapTransfer: TransactionInfo = {
+export const mockSwapTransfer: SwapTransferTransactionInfo = {
   type: TransactionInfoType.SWAP_TRANSFER,
   sender: {
     value: '0x000000',
@@ -93,14 +100,6 @@ export const mockSwapTransfer: TransactionInfo = {
   },
   uid: '231',
   humanDescription: 'here a human description',
-  richDecodedInfo: {
-    fragments: [
-      {
-        type: RichFragmentType.Address,
-        value: '0x0000',
-      },
-    ],
-  },
   status: 'fulfilled',
   kind: 'buy',
   orderClass: 'limit',
@@ -123,8 +122,8 @@ interface mockTransferWithInfoArgs {
   methodName?: string
   actionCount?: number
   isCancellation?: boolean
-  to?: AddressEx
-  creator?: AddressEx
+  to?: AddressInfo
+  creator?: AddressInfo
 }
 
 export const mockTransferWithInfo = ({
@@ -135,7 +134,7 @@ export const mockTransferWithInfo = ({
   isCancellation,
   to,
   creator,
-}: mockTransferWithInfoArgs): TransactionInfo =>
+}: mockTransferWithInfoArgs): Transaction['txInfo'] =>
   ({
     type,
     sender: {
@@ -163,9 +162,9 @@ export const mockTransferWithInfo = ({
     isCancellation,
     direction,
     humanDescription: 'a simple incoming transaction',
-  }) as TransactionInfo
+  }) as Transaction['txInfo']
 
-export const mockTransactionSummary: TransactionSummary = {
+export const mockTransactionSummary: Transaction = {
   id: 'id',
   timestamp: 123123,
   txStatus: TransactionStatus.SUCCESS,
@@ -180,9 +179,39 @@ export const mockTransactionSummary: TransactionSummary = {
   },
 }
 
-export const mockListItemByType = (type: TransactionListItemType): TransactionListItem =>
-  ({
-    transaction: mockTransactionSummary,
-    conflictType: ConflictType.END,
+export const mockHistoryPageItem = (type: 'TRANSACTION'): HistoryTransactionItems => {
+  return {
     type,
-  }) as TransactionListItem
+    transaction: mockTransactionSummary,
+    conflictType: ConflictType.NONE,
+  }
+}
+
+export const mockListItemByType = (type: TransactionListItemType): PendingTransactionItems | DateLabel => {
+  if (type === TransactionListItemType.DATE_LABEL) {
+    return {
+      type: TransactionListItemType.DATE_LABEL,
+      timestamp: 123123,
+    } as DateLabel
+  }
+
+  if (type === TransactionListItemType.LABEL) {
+    return {
+      type: TransactionListItemType.LABEL,
+      label: 'label',
+    } as LabelQueuedItem
+  }
+
+  if (type === TransactionListItemType.CONFLICT_HEADER) {
+    return {
+      type: TransactionListItemType.CONFLICT_HEADER,
+      nonce: 123,
+    } as ConflictHeaderQueuedItem
+  }
+
+  return {
+    type: TransactionListItemType.TRANSACTION,
+    transaction: mockTransactionSummary,
+    conflictType: ConflictType.NONE,
+  } as TransactionQueuedItem
+}

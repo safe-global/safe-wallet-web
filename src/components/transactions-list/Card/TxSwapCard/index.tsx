@@ -1,14 +1,15 @@
 import React from 'react'
 import { Avatar, Text, Theme, View } from 'tamagui'
 import TxListItem from '@/src/components/SafeListItem'
-import { ExecutionInfo, Order } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatValue } from '@/src/utils/formatters'
+import { OrderTransactionInfo } from '@/src/store/gateway/types'
+import { Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxSwapCardProps {
-  txInfo: Order
+  txInfo: OrderTransactionInfo
   bordered?: boolean
   inQueue?: boolean
-  executionInfo?: ExecutionInfo
+  executionInfo?: Transaction['executionInfo']
 }
 
 function TxSwapCard({ txInfo, bordered, executionInfo, inQueue }: TxSwapCardProps) {

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import TxContractInteractionCard from '@/src/components/transactions-list/Card/TxContractInteractionCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
-import { Custom, TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import { CustomTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionInfoType } from '@/src/store/gateway/types'
 
 const meta: Meta<typeof TxContractInteractionCard> = {
   title: 'TransactionsList/TxContractInteractionCard',
@@ -23,7 +24,7 @@ const meta: Meta<typeof TxContractInteractionCard> = {
         name: 'CryptoNevinhosos',
         logoUri: '',
       },
-    }) as Custom,
+    }) as CustomTransactionInfo,
   },
 }
 

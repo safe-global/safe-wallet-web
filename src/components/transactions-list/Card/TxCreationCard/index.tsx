@@ -2,14 +2,14 @@ import React from 'react'
 import { Theme, View } from 'tamagui'
 import TxListItem from '@/src/components/SafeListItem'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import { Creation, ExecutionInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { shortenAddress } from '@/src/utils/formatters'
+import type { Transaction, CreationTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxCreationCardProps {
-  txInfo: Creation
+  txInfo: CreationTransactionInfo
   bordered?: boolean
   inQueue?: boolean
-  executionInfo?: ExecutionInfo
+  executionInfo?: Transaction['executionInfo']
 }
 
 function TxCreationCard({ txInfo, executionInfo, bordered, inQueue }: TxCreationCardProps) {

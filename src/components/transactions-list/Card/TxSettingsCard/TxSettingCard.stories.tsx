@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import TxSettingsCard from '@/src/components/transactions-list/Card/TxSettingsCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
-import { SettingsChange, TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import { SettingsChangeTransaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionInfoType } from '@/src/store/gateway/types'
 
 const meta: Meta<typeof TxSettingsCard> = {
   title: 'TransactionsList/TxSettingsCard',
@@ -10,7 +11,7 @@ const meta: Meta<typeof TxSettingsCard> = {
   args: {
     txInfo: mockTransferWithInfo({
       type: TransactionInfoType.SETTINGS_CHANGE,
-    }) as SettingsChange,
+    }) as SettingsChangeTransaction,
   },
 }
 

@@ -1,5 +1,5 @@
 import { render as nativeRender, renderHook } from '@testing-library/react-native'
-import SafeThemeProvider from '../theme/provider'
+import { SafeThemeProvider } from '@/src/theme/provider/safeTheme'
 import { Provider } from 'react-redux'
 import { makeStore } from '../store'
 

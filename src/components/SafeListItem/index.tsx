@@ -3,8 +3,8 @@ import { Container } from '../Container'
 import { Text, Theme, ThemeName, View } from 'tamagui'
 import { IconProps, SafeFontIcon } from '../SafeFontIcon/SafeFontIcon'
 import { ellipsis } from '@/src/utils/formatters'
-import { ExecutionInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { isMultisigExecutionInfo } from '@/src/utils/transaction-guards'
+import { Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 interface SafeListItemProps {
   type?: string
@@ -15,7 +15,7 @@ interface SafeListItemProps {
   leftNode?: React.ReactNode
   bordered?: boolean
   inQueue?: boolean
-  executionInfo?: ExecutionInfo
+  executionInfo?: Transaction['executionInfo']
   themeName?: ThemeName
 }
 

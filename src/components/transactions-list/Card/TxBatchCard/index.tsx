@@ -1,15 +1,16 @@
 import React from 'react'
 import { Avatar, View } from 'tamagui'
 import TxListItem from '@/src/components/SafeListItem'
-import { ExecutionInfo, MultiSend } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
+import type { MultiSend } from '@/src/store/gateway/types'
+import type { Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxBatchCardProps {
   txInfo: MultiSend
   bordered?: boolean
   label?: string
   inQueue?: boolean
-  executionInfo?: ExecutionInfo
+  executionInfo?: Transaction['executionInfo']
 }
 
 function TxBatchCard({ txInfo, bordered, executionInfo, inQueue, label }: TxBatchCardProps) {

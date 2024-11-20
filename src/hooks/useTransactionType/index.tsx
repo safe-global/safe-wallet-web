@@ -1,13 +1,7 @@
 import { useMemo } from 'react'
-import {
-  type AddressEx,
-  SettingsInfoType,
-  SwapOrder,
-  TransactionInfoType,
-  type TransactionSummary,
-} from '@safe-global/safe-gateway-typescript-sdk'
 import type { AnyAppDataDocVersion, latest } from '@cowprotocol/app-data'
-
+import { SettingsInfoType, TransactionInfoType } from '@/src/store/gateway/types'
+import type { Transaction, AddressInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 import {
   isCancellationTxInfo,
   isModuleExecutionInfo,
@@ -16,8 +10,9 @@ import {
   isTxQueued,
 } from '@/src/utils/transaction-guards'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
+import { SwapOrderTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
-const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | undefined => {
+const getTxTo = ({ txInfo }: Pick<Transaction, 'txInfo'>): AddressInfo | undefined => {
   switch (txInfo.type) {
     case TransactionInfoType.CREATION: {
       return txInfo.factory
@@ -33,20 +28,21 @@ const getTxTo = ({ txInfo }: Pick<TransactionSummary, 'txInfo'>): AddressEx | un
     }
   }
 }
+
 interface TxType {
   text: string
   icon?: string | React.ReactElement
   image: string | React.ReactElement
 }
 
-export const getOrderClass = (order: Pick<SwapOrder, 'fullAppData'>): latest.OrderClass1 => {
+export const getOrderClass = (order: Pick<SwapOrderTransactionInfo, 'fullAppData'>): latest.OrderClass1 => {
   const fullAppData = order.fullAppData as AnyAppDataDocVersion
   const orderClass = (fullAppData?.metadata?.orderClass as latest.OrderClass)?.orderClass
 
   return orderClass || 'market'
 }
 
-export const getTransactionType = (tx: TransactionSummary): TxType => {
+export const getTransactionType = (tx: Transaction): TxType => {
   const toAddress = getTxTo(tx)
 
   switch (tx.txInfo.type) {
@@ -134,7 +130,7 @@ export const getTransactionType = (tx: TransactionSummary): TxType => {
     default: {
       if (tx.safeAppInfo) {
         return {
-          image: tx.safeAppInfo.logoUri,
+          image: tx.safeAppInfo.logoUri || '',
           icon: <SafeFontIcon name={'safe'} />,
           text: tx.safeAppInfo.name,
         }
@@ -151,7 +147,7 @@ export const getTransactionType = (tx: TransactionSummary): TxType => {
 
 // We're going to need the address book in the future
 // rename it to useTransactionNormalizer
-export const useTransactionType = (tx: TransactionSummary): TxType => {
+export const useTransactionType = (tx: Transaction): TxType => {
   // addressBook = useAddressBook
 
   return useMemo(() => {

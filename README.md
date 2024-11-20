@@ -117,6 +117,7 @@ npm run test:watch
 ```bash
 npm run test
 ```
+
 navigate inside the coverage folder and open the index.html file in your browser
 
 ## Running Eslint & Prettier

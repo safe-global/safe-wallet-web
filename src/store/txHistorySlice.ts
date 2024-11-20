@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '.'
-import { TransactionListItem, TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionItemPage } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
-const initialState: TransactionListPage = { results: [] }
+const initialState: TransactionItemPage = { results: [] }
 
 const txHistorySlice = createSlice({
   name: 'txHistory',
@@ -10,8 +10,7 @@ const txHistorySlice = createSlice({
   reducers: {
     // TODO: this will be removed in the next task
     // it is here just to test the action
-    addTx: (state, action: PayloadAction<{ item: TransactionListItem }>) => {
-      // @ts-expect-error
+    addTx: (state, action: PayloadAction<{ item: TransactionItemPage['results'][number] }>) => {
       state.results.push(action.payload.item)
     },
   },

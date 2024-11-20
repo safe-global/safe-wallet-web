@@ -1,42 +1,34 @@
-import TxInfo from '@/src/components/TxInfo'
-import { Transaction, TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
-import { Spinner, View } from 'tamagui'
-import { GroupedTxsWithTitle, groupTxsByDate } from './utils'
-import React, { useCallback, useMemo } from 'react'
-import { SectionList, SectionListRenderItem } from 'react-native'
+import { Spinner } from 'tamagui'
+import React, { useMemo } from 'react'
+import { SectionList } from 'react-native'
 
-import TxGroupedCard from '@/src/components/transactions-list/Card/TxGroupedCard'
 import SafeListItem from '@/src/components/SafeListItem'
+import { TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { getTxHash, GroupedTxsWithTitle, groupTxsByDate } from '@/src/features/TxHistory/utils'
+import { HistoryTransactionItems } from '@/src/store/gateway/types'
+import { renderItem } from '@/src/features/TxHistory/utils'
 
 interface TxHistoryList {
-  transactions?: TransactionListItem[]
+  transactions?: HistoryTransactionItems[]
   onEndReached: (info: { distanceFromEnd: number }) => void
   isLoading?: boolean
 }
 
-const getTxHash = (item: Transaction): string => item.transaction.txHash as unknown as string
-
 function TxHistoryList({ transactions, onEndReached, isLoading }: TxHistoryList) {
-  const groupedList = useMemo(() => groupTxsByDate(transactions || []), [transactions])
-  const renderItem = useCallback<SectionListRenderItem<Transaction | Transaction[], GroupedTxsWithTitle>>(
-    ({ item, index }) => (
-      <View marginTop={index && '$4'} paddingHorizontal="$3">
-        {Array.isArray(item) ? <TxGroupedCard transactions={item} /> : <TxInfo tx={item.transaction} />}
-      </View>
-    ),
-    [],
-  )
+  const groupedList: GroupedTxsWithTitle<TransactionItem>[] = useMemo(() => {
+    return groupTxsByDate(transactions || [])
+  }, [transactions])
 
   return (
     <SectionList
-      testID={'tx-history-list'}
+      testID="tx-history-list"
       stickySectionHeadersEnabled
       contentInsetAdjustmentBehavior="automatic"
       sections={groupedList}
       keyExtractor={(item, index) => (Array.isArray(item) ? getTxHash(item[0]) + index : getTxHash(item) + index)}
       renderItem={renderItem}
       onEndReached={onEndReached}
-      ListFooterComponent={isLoading ? <Spinner size={'small'} color={'$color'} /> : undefined}
+      ListFooterComponent={isLoading ? <Spinner size="small" color="$color" /> : undefined}
       renderSectionHeader={({ section: { title } }) => <SafeListItem.Header title={title} />}
     />
   )

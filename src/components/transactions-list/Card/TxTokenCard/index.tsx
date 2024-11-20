@@ -1,7 +1,6 @@
 import React from 'react'
 import { Avatar, Text, Theme, View } from 'tamagui'
 import SafeListItem from '@/src/components/SafeListItem'
-import { TransactionStatus, TransferDirection, Transfer, ExecutionInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isERC20Transfer,
   isERC721Transfer,
@@ -13,13 +12,15 @@ import { ellipsis, formatValue } from '@/src/utils/formatters'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import { useSelector } from 'react-redux'
 import { selectNativeCurrency } from '@/src/store/activeChainSlice'
+import { TransferDirection } from '@/src/store/gateway/types'
+import { TransferTransactionInfo, Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxTokenCardProps {
   bordered?: boolean
-  txStatus: TransactionStatus
+  txStatus: Transaction['txStatus']
   inQueue?: boolean
-  txInfo: Transfer
-  executionInfo?: ExecutionInfo
+  txInfo: TransferTransactionInfo
+  executionInfo?: Transaction['executionInfo']
 }
 
 interface tokenDetails {
@@ -30,14 +31,14 @@ interface tokenDetails {
   logoUri?: string
 }
 
-const getTokenDetails = (txInfo: Transfer): tokenDetails => {
+const getTokenDetails = (txInfo: TransferTransactionInfo): tokenDetails => {
   const transfer = txInfo.transferInfo
   const unnamedToken = 'Unnamed token'
   const nativeCurrencty = useSelector(selectNativeCurrency)
 
   if (isNativeTokenTransfer(transfer))
     return {
-      value: formatValue(transfer.value, nativeCurrencty.decimals),
+      value: formatValue(transfer.value || '0', nativeCurrencty.decimals),
       // take it from the native currency slice
       decimals: nativeCurrencty.decimals,
       tokenSymbol: nativeCurrencty.symbol,
@@ -48,8 +49,8 @@ const getTokenDetails = (txInfo: Transfer): tokenDetails => {
   if (isERC20Transfer(transfer)) {
     return {
       value: formatValue(transfer.value, transfer.decimals || 18),
-      decimals: transfer.decimals,
-      logoUri: transfer.logoUri,
+      decimals: transfer.decimals || undefined,
+      logoUri: transfer.logoUri || undefined,
       tokenSymbol: ellipsis((transfer.tokenSymbol || 'Unknown Token').trim(), 6),
       name: transfer.tokenName || unnamedToken,
     }
@@ -61,7 +62,7 @@ const getTokenDetails = (txInfo: Transfer): tokenDetails => {
       tokenSymbol: ellipsis(`${transfer.tokenSymbol || 'Unknown NFT'} #${transfer.tokenId}`, 8),
       value: '1',
       decimals: 0,
-      logoUri: transfer?.logoUri,
+      logoUri: transfer?.logoUri || undefined,
     }
   }
 

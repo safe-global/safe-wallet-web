@@ -1,131 +1,63 @@
+import { DateLabel, TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { groupBulkTxs } from '@/src/utils/transactions'
 import { formatWithSchema } from '@/src/utils/date'
-import {
-  isConflictHeaderListItem,
-  isLabelListItem,
-  isNoneConflictType,
-  isTransactionListItem,
-} from '@/src/utils/transaction-guards'
-import { Transaction, TransactionListItem, TransactionListItemType } from '@safe-global/safe-gateway-typescript-sdk'
+import { isDateLabel } from '@/src/utils/transaction-guards'
+import { HistoryTransactionItems } from '@/src/store/gateway/types'
+import { View } from 'tamagui'
+import TxGroupedCard from '@/src/components/transactions-list/Card/TxGroupedCard'
+import TxInfo from '@/src/components/TxInfo'
+import React from 'react'
 
-export interface PendingTxGroup {
-  pointer: number
-  amount: number
-  sections: GroupedTxsWithTitle[]
-}
+export type GroupedTxs<T> = (T | T[])[]
 
-type GroupedTxsItem = TransactionListItem | Transaction[]
-
-export type GroupedTxs = GroupedTxsItem[]
-
-export interface GroupedTxsWithTitle {
+export interface GroupedTxsWithTitle<T> {
   title: string
-  data: (Transaction[] | Transaction)[]
+  data: (T | T[])[]
 }
 
-export const groupTxs = (list: TransactionListItem[]) => {
-  const groupedByConflicts = groupConflictingTxs(list)
-  const bulkTxs = groupBulkTxs(groupedByConflicts)
-
-  return bulkTxs
+export const groupTxsByDate = (list: HistoryTransactionItems[]) => {
+  return groupByDateLabel(groupBulkTxs(list))
 }
 
-export const groupPendingTxs = (list: TransactionListItem[]) => {
-  const transactions = groupTxs(list)
-  const sections = ['Next', 'Queued']
-  const txSections = {
-    pointer: -1,
-    amount: 0,
-    sections: [
-      { title: 'Ready to execute', data: [] },
-      { title: 'Confirmation needed', data: [] },
-    ],
+const getDateLabel = (item: HistoryTransactionItems) => {
+  if (isDateLabel(item)) {
+    return formatWithSchema(item.timestamp, 'MMM d, yyyy')
   }
+  return undefined
+}
 
-  const categorizedTxs = transactions.reduce<PendingTxGroup>((acc, item) => {
-    if ('type' in item && isLabelListItem(item)) {
-      acc.pointer = sections.indexOf(item.label)
-    } else if (
-      acc.sections[acc.pointer] &&
-      (Array.isArray(item) || item.type === TransactionListItemType.TRANSACTION)
-    ) {
-      acc.amount += Array.isArray(item) ? item.length : 1
-      acc.sections[acc.pointer].data.push(item)
+const groupByDateLabel = (
+  list: GroupedTxs<HistoryTransactionItems>,
+): GroupedTxsWithTitle<Exclude<HistoryTransactionItems, DateLabel>>[] => {
+  const groupedTx: GroupedTxsWithTitle<Exclude<HistoryTransactionItems, DateLabel>>[] = []
+
+  list.forEach((item) => {
+    if (Array.isArray(item) || item.type === 'TRANSACTION') {
+      if (groupedTx.length === 0) {
+        groupedTx.push({ title: 'Unknown Date', data: [] })
+      }
+      groupedTx[groupedTx.length - 1].data.push(item as Exclude<HistoryTransactionItems, DateLabel>)
+    } else {
+      const title = getDateLabel(item)
+      if (title) {
+        groupedTx.push({ title, data: [] })
+      }
     }
-
-    return acc
-  }, txSections)
-
-  return categorizedTxs
-}
-
-export const groupTxsByDate = (list: TransactionListItem[]) => {
-  return groupByDateLabel(groupTxs(list))
-}
-
-/**
- * Group txs by conflict header
- */
-export const groupConflictingTxs = (list: TransactionListItem[]): GroupedTxs => {
-  return list
-    .reduce<GroupedTxs>((resultItems, item) => {
-      if (isConflictHeaderListItem(item)) {
-        return resultItems.concat([[]])
-      }
-
-      const prevItem = resultItems[resultItems.length - 1]
-      if (Array.isArray(prevItem) && isTransactionListItem(item) && !isNoneConflictType(item)) {
-        prevItem.push(item)
-        return resultItems
-      }
-
-      return resultItems.concat(item)
-    }, [])
-    .map((item) => {
-      if (Array.isArray(item)) {
-        return item.sort((a, b) => b.transaction.timestamp - a.transaction.timestamp)
-      }
-      return item
-    })
-}
-
-/**
- * Group txs by tx hash
- */
-const groupBulkTxs = (list: GroupedTxs): GroupedTxs => {
-  return list
-    .reduce<GroupedTxs>((resultItems, item) => {
-      if (Array.isArray(item) || !isTransactionListItem(item)) {
-        return resultItems.concat([item])
-      }
-      const currentTxHash = item.transaction.txHash
-
-      const prevItem = resultItems[resultItems.length - 1]
-      if (!Array.isArray(prevItem)) return resultItems.concat([[item]])
-      const prevTxHash = prevItem[0].transaction.txHash
-
-      if (currentTxHash && currentTxHash === prevTxHash) {
-        prevItem.push(item)
-        return resultItems
-      }
-
-      return resultItems.concat([[item]])
-    }, [])
-    .map((item) => (Array.isArray(item) && item.length === 1 ? item[0] : item))
-}
-
-const groupByDateLabel = (list: GroupedTxs): GroupedTxsWithTitle[] => {
-  const groupedTx = list.reduce<GroupedTxsWithTitle[]>((resultItems, item) => {
-    if (Array.isArray(item) || item.type === TransactionListItemType.TRANSACTION) {
-      resultItems[resultItems.length - 1].data.push(item)
-    } else if (item.type === TransactionListItemType.DATE_LABEL) {
-      resultItems.push({
-        data: [],
-        title: formatWithSchema(item.timestamp, 'MMM d, yyyy'),
-      })
-    }
-
-    return resultItems
-  }, [])
+  })
 
   return groupedTx
+}
+export const getTxHash = (item: HistoryTransactionItems): string => {
+  if (item.type !== 'TRANSACTION') {
+    return ''
+  }
+
+  return item.transaction.txHash as unknown as string
+}
+export const renderItem = ({ item, index }: { item: TransactionItem | TransactionItem[]; index: number }) => {
+  return (
+    <View marginTop={index && '$4'} paddingHorizontal="$3">
+      {Array.isArray(item) ? <TxGroupedCard transactions={item} /> : <TxInfo tx={item.transaction} />}
+    </View>
+  )
 }

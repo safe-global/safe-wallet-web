@@ -5,7 +5,7 @@ import {
   TransactionListItemType,
   TransactionStatus,
   TransferDirection,
-} from '@safe-global/safe-gateway-typescript-sdk'
+} from '@/src/store/gateway/types'
 import {
   isCancellationTxInfo,
   isCreationTxInfo,

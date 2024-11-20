@@ -1,14 +1,5 @@
 {
-  "*.ts": [
-    "prettier --write",
-    "eslint"
-  ],
-  "*.tsx": [
-    "prettier --write",
-    "eslint"
-  ],
-  "assets/fonts/safe-icons/selection.json": [
-    "node ./scripts/generateIconTypes.js",
-    "git add ./src/types/iconTypes.ts"
-  ]
+  "*.ts": ["prettier --write", "eslint"],
+  "*.tsx": ["prettier --write", "eslint"],
+  "assets/fonts/safe-icons/selection.json": ["node ./scripts/generateIconTypes.js", "git add ./src/types/iconTypes.ts"]
 }

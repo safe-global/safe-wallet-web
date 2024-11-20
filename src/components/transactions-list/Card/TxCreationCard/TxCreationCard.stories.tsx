@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import TxCreationCard from '@/src/components/transactions-list/Card/TxCreationCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
-import { Creation, TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import { type CreationTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionInfoType } from '@/src/store/gateway/types'
 
 const meta: Meta<typeof TxCreationCard> = {
   title: 'TransactionsList/TxCreationCard',
@@ -23,7 +24,7 @@ const meta: Meta<typeof TxCreationCard> = {
         logoUri: '',
         value: '0xas123da123sdasdsd001230sdf1sdf12sd12f',
       },
-    }) as Creation,
+    }) as CreationTransactionInfo,
   },
 }
 

@@ -5,7 +5,7 @@ import { selectChainById } from './gateway/chains'
 const initialState = { id: '1' }
 
 const activeChainSlice = createSlice({
-  name: 'txHistory',
+  name: 'activeChain',
   initialState,
   reducers: {
     switchActiveChain: (state, action: PayloadAction<{ id: string }>) => {
@@ -16,7 +16,9 @@ const activeChainSlice = createSlice({
 
 export const { switchActiveChain } = activeChainSlice.actions
 
-export const selectActiveChain = (state: RootState) => selectChainById(state, state.activeChain.id)
+export const selectActiveChain = (state: RootState) => {
+  return selectChainById(state, state.activeChain.id)
+}
 export const selectNativeCurrency = createSelector([selectActiveChain], ({ nativeCurrency }) => nativeCurrency)
 
 export default activeChainSlice.reducer
