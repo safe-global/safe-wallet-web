@@ -3,12 +3,13 @@ import { Theme, View } from 'tamagui'
 import TxListItem from '@/src/components/SafeListItem'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import TxInfo from '@/src/components/TxInfo'
-import { Order, Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { getOrderClass } from '@/src/hooks/useTransactionType'
 import { isSwapTransferOrderTxInfo } from '@/src/utils/transaction-guards'
+import { OrderTransactionInfo } from '@/src/store/gateway/types'
+import { TransactionQueuedItem, TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxGroupedCard {
-  transactions: Transaction[]
+  transactions: (TransactionItem | TransactionQueuedItem)[]
   inQueue?: boolean
 }
 
@@ -19,7 +20,7 @@ const orderClassTitles: Record<string, string> = {
   market: 'Swap order settlement',
 }
 
-const getSettlementOrderTitle = (order: Order): string => {
+const getSettlementOrderTitle = (order: OrderTransactionInfo): string => {
   const orderClass = getOrderClass(order)
   return orderClassTitles[orderClass] || orderClassTitles['market']
 }

@@ -1,9 +1,9 @@
-import { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { buildQueryFn } from '../utils'
+import { type Chain as ChainInfo } from '@/src/store/gateway/AUTO_GENERATED/chains'
 import { GATEWAY_URL } from '@/src/config/constants'
 import { createEntityAdapter, createSelector, EntityState } from '@reduxjs/toolkit'
-import { gatewayApi } from '..'
 import { RootState } from '../..'
+import { cgwClient } from '@/src/store/gateway/cgwClient'
+import { QueryReturnValue, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query'
 
 const chainsAdapter = createEntityAdapter<ChainInfo, string>({ selectId: (chain: ChainInfo) => chain.chainId })
 const initialState = chainsAdapter.getInitialState()
@@ -25,19 +25,29 @@ const getChainsConfigs = async (
   return chainsAdapter.setAll(initialState, nextResults)
 }
 
-const getChains = () => {
-  return buildQueryFn(getChainsConfigs)
+const getChains = async (): Promise<
+  QueryReturnValue<EntityState<ChainInfo, string>, FetchBaseQueryError, FetchBaseQueryMeta>
+> => {
+  try {
+    const data = await getChainsConfigs()
+    return { data }
+  } catch (error) {
+    return { error: error as FetchBaseQueryError }
+  }
 }
 
-export const apiSliceWithChainsConfig = gatewayApi.injectEndpoints({
+export const apiSliceWithChainsConfig = cgwClient.injectEndpoints({
   endpoints: (builder) => ({
-    getChainsConfig: builder.query({
-      queryFn: getChains,
+    getChainsConfig: builder.query<EntityState<ChainInfo, string>, void>({
+      queryFn: async () => {
+        return getChains()
+      },
     }),
   }),
+  overrideExisting: true,
 })
 
-const selectChainsResult = apiSliceWithChainsConfig.endpoints.getChainsConfig.select({})
+const selectChainsResult = apiSliceWithChainsConfig.endpoints.getChainsConfig.select()
 
 const selectChainsData = createSelector(selectChainsResult, (result) => {
   return result.data ?? initialState

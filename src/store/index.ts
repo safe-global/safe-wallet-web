@@ -3,7 +3,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import { reduxStorage } from './storage'
 import txHistory from './txHistorySlice'
 import activeChain from './activeChainSlice'
-import { gatewayApi } from './gateway'
+import { cgwClient } from '@/src/store/gateway/cgwClient'
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
 import { isTestingEnv } from '../config/constants'
 
@@ -11,12 +11,12 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage: reduxStorage,
-  blacklist: [gatewayApi.reducerPath],
+  blacklist: [cgwClient.reducerPath],
 }
 export const rootReducer = combineReducers({
   txHistory,
   activeChain,
-  [gatewayApi.reducerPath]: gatewayApi.reducer,
+  [cgwClient.reducerPath]: cgwClient.reducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -30,7 +30,7 @@ export const makeStore = () =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(gatewayApi.middleware),
+      }).concat(cgwClient.middleware),
     enhancers: (getDefaultEnhancers) => {
       if (isTestingEnv) {
         return getDefaultEnhancers()

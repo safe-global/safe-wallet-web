@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { mockERC20Transfer, mockListItemByType, mockNFTTransfer } from '@/src/tests/mocks'
-import { Transaction, TransactionListItemType, TransactionStatus } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { TransactionListItemType, TransactionStatus } from '@/src/store/gateway/types'
 import TxGroupedCard from '.'
 
 const meta: Meta<typeof TxGroupedCard> = {
@@ -18,7 +19,7 @@ const meta: Meta<typeof TxGroupedCard> = {
           txInfo: mockERC20Transfer,
           txHash: '0x0000000',
         },
-      } as Transaction,
+      } as TransactionItem,
       {
         ...mockListItemByType(TransactionListItemType.TRANSACTION),
         transaction: {
@@ -28,7 +29,7 @@ const meta: Meta<typeof TxGroupedCard> = {
           txInfo: mockNFTTransfer,
           txHash: '0x0000000',
         },
-      } as Transaction,
+      } as TransactionItem,
     ],
   },
 }

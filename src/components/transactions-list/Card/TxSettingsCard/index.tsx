@@ -2,13 +2,14 @@ import React from 'react'
 import { Theme, View } from 'tamagui'
 import TxListItem from '@/src/components/SafeListItem'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import { ExecutionInfo, SettingsChange, SettingsInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import { SettingsInfoType } from '@/src/store/gateway/types'
+import { SettingsChangeTransaction, Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxSettingsCardProps {
-  txInfo: SettingsChange
+  txInfo: SettingsChangeTransaction
   bordered?: boolean
   inQueue?: boolean
-  executionInfo?: ExecutionInfo
+  executionInfo?: Transaction['executionInfo']
 }
 
 function TxSettingsCard({ txInfo, bordered, executionInfo, inQueue }: TxSettingsCardProps) {

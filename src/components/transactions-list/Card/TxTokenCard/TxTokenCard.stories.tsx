@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import TxTokenCard from '@/src/components/transactions-list/Card/TxTokenCard'
 import { mockERC20Transfer, mockNFTTransfer } from '@/src/tests/mocks'
-import { TransactionStatus, Transfer } from '@safe-global/safe-gateway-typescript-sdk'
+import { TransactionStatus } from '@/src/store/gateway/types'
+import { type TransferTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 const meta: Meta<typeof TxTokenCard> = {
   title: 'TransactionsList/TxTokenCard',
@@ -25,12 +26,12 @@ type Story = StoryObj<typeof TxTokenCard>
 export const Default: Story = {
   args: {
     txStatus: TransactionStatus.SUCCESS,
-    txInfo: mockERC20Transfer as Transfer,
+    txInfo: mockERC20Transfer as TransferTransactionInfo,
   },
 }
 export const NFT: Story = {
   args: {
     txStatus: TransactionStatus.SUCCESS,
-    txInfo: mockNFTTransfer as Transfer,
+    txInfo: mockNFTTransfer as TransferTransactionInfo,
   },
 }

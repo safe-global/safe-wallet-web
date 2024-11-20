@@ -5,11 +5,11 @@ import { Provider } from 'react-redux'
 import { persistor, store } from '@/src/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { isStorybookEnv } from '@/src/config/constants'
-import { apiSliceWithChainsConfig } from '@/src/store/gateway/chains'
+import { apiSliceWithChainsConfig } from '@/src/store/gateway/chains/index'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 function RootLayout() {
-  store.dispatch(apiSliceWithChainsConfig.endpoints.getChainsConfig.initiate({}))
+  store.dispatch(apiSliceWithChainsConfig.endpoints.getChainsConfig.initiate())
   return (
     <GestureHandlerRootView>
       <Provider store={store}>

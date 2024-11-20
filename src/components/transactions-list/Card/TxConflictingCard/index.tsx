@@ -1,11 +1,11 @@
 import React from 'react'
 import { Theme, View } from 'tamagui'
 import TxInfo from '@/src/components/TxInfo'
-import { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
 import { Alert } from '@/src/components/Alert'
+import { TransactionQueuedItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
 interface TxConflictingCard {
-  transactions: Transaction[]
+  transactions: TransactionQueuedItem[]
   inQueue?: boolean
 }
 

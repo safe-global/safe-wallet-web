@@ -1,0 +1,3095 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/about": {
+      "get": {
+        "operationId": "GetAbout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/About" } } }
+          }
+        },
+        "tags": ["about"]
+      }
+    },
+    "/v1/accounts": {
+      "post": {
+        "operationId": "v1CreateAccount",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateAccountDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Account" } } }
+          }
+        },
+        "tags": ["accounts"]
+      }
+    },
+    "/v1/accounts/data-types": {
+      "get": {
+        "operationId": "v1GetDataTypes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/AccountDataType" } }
+              }
+            }
+          }
+        },
+        "tags": ["accounts"]
+      }
+    },
+    "/v1/accounts/{address}/data-settings": {
+      "get": {
+        "operationId": "v1GetAccountDataSettings",
+        "parameters": [{ "name": "address", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/AccountDataSetting" } }
+              }
+            }
+          }
+        },
+        "tags": ["accounts"]
+      },
+      "put": {
+        "operationId": "v1UpsertAccountDataSettings",
+        "parameters": [{ "name": "address", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpsertAccountDataSettingsDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/AccountDataSetting" } }
+              }
+            }
+          }
+        },
+        "tags": ["accounts"]
+      }
+    },
+    "/v1/accounts/{address}": {
+      "get": {
+        "operationId": "v1GetAccount",
+        "parameters": [{ "name": "address", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Account" } } }
+          }
+        },
+        "tags": ["accounts"]
+      },
+      "delete": {
+        "operationId": "v1DeleteAccount",
+        "parameters": [{ "name": "address", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "204": { "description": "" } },
+        "tags": ["accounts"]
+      }
+    },
+    "/v1/accounts/{address}/counterfactual-safes/{chainId}/{predictedAddress}": {
+      "get": {
+        "operationId": "v1GetCounterfactualSafe",
+        "parameters": [
+          { "name": "address", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "predictedAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CounterfactualSafe" } } }
+          }
+        },
+        "tags": ["accounts"]
+      },
+      "delete": {
+        "operationId": "v1DeleteCounterfactualSafe",
+        "parameters": [
+          { "name": "address", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "predictedAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["accounts"]
+      }
+    },
+    "/v1/accounts/{address}/counterfactual-safes": {
+      "get": {
+        "operationId": "v1GetCounterfactualSafes",
+        "parameters": [{ "name": "address", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/CounterfactualSafe" } }
+              }
+            }
+          }
+        },
+        "tags": ["accounts"]
+      },
+      "put": {
+        "operationId": "v1CreateCounterfactualSafe",
+        "parameters": [{ "name": "address", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreateCounterfactualSafeDto" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CounterfactualSafe" } } }
+          }
+        },
+        "tags": ["accounts"]
+      },
+      "delete": {
+        "operationId": "v1DeleteCounterfactualSafes",
+        "parameters": [{ "name": "address", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "" } },
+        "tags": ["accounts"]
+      }
+    },
+    "/v1/auth/nonce": {
+      "get": {
+        "operationId": "v1GetNonce",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthNonce" } } }
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/v1/auth/verify": {
+      "post": {
+        "operationId": "v1Verify",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SiweDto" } } }
+        },
+        "responses": { "200": { "description": "Empty response body. JWT token is set as response cookie." } },
+        "tags": ["auth"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/balances/{fiatCode}": {
+      "get": {
+        "operationId": "v1GetBalances",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "fiatCode", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "trusted", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "exclude_spam", "required": false, "in": "query", "schema": { "type": "boolean" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Balances" } } }
+          }
+        },
+        "tags": ["balances"]
+      }
+    },
+    "/v1/balances/supported-fiat-codes": {
+      "get": {
+        "operationId": "v1GetSupportedFiatCodes",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["balances"]
+      }
+    },
+    "/v1/chains": {
+      "get": {
+        "operationId": "v1GetChains",
+        "parameters": [{ "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ChainPage" } } }
+          }
+        },
+        "tags": ["chains"]
+      }
+    },
+    "/v1/chains/{chainId}": {
+      "get": {
+        "operationId": "v1GetChain",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Chain" } } }
+          }
+        },
+        "tags": ["chains"]
+      }
+    },
+    "/v1/chains/{chainId}/about": {
+      "get": {
+        "operationId": "v1GetAboutChain",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AboutChain" } } }
+          }
+        },
+        "tags": ["chains"]
+      }
+    },
+    "/v1/chains/{chainId}/about/backbone": {
+      "get": {
+        "operationId": "v1GetBackbone",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Backbone" } } }
+          }
+        },
+        "tags": ["chains"]
+      }
+    },
+    "/v1/chains/{chainId}/about/master-copies": {
+      "get": {
+        "operationId": "v1GetMasterCopies",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/MasterCopy" } }
+              }
+            }
+          }
+        },
+        "tags": ["chains"]
+      }
+    },
+    "/v1/chains/{chainId}/about/indexing": {
+      "get": {
+        "operationId": "v1GetIndexingStatus",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/IndexingStatus" } } }
+          }
+        },
+        "tags": ["chains"]
+      }
+    },
+    "/v2/chains/{chainId}/safes/{safeAddress}/collectibles": {
+      "get": {
+        "operationId": "v2GetCollectibles",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "trusted", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "exclude_spam", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CollectiblePage" } } }
+          }
+        },
+        "tags": ["collectibles"]
+      }
+    },
+    "/v1/community/campaigns": {
+      "get": {
+        "operationId": "v1GetCampaigns",
+        "parameters": [{ "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CampaignPage" } } }
+          }
+        },
+        "tags": ["community"]
+      }
+    },
+    "/v1/community/campaigns/{resourceId}": {
+      "get": {
+        "operationId": "v1GetCampaignById",
+        "parameters": [{ "name": "resourceId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Campaign" } } }
+          }
+        },
+        "tags": ["community"]
+      }
+    },
+    "/v1/community/campaigns/{resourceId}/activities": {
+      "get": {
+        "operationId": "v1GetCampaignActivities",
+        "parameters": [
+          { "name": "resourceId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "holder", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["community"]
+      }
+    },
+    "/v1/community/campaigns/{resourceId}/leaderboard": {
+      "get": {
+        "operationId": "v1GetCampaignLeaderboard",
+        "parameters": [
+          { "name": "resourceId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CampaignRankPage" } } }
+          }
+        },
+        "tags": ["community"]
+      }
+    },
+    "/v1/community/campaigns/{resourceId}/leaderboard/{safeAddress}": {
+      "get": {
+        "operationId": "v1GetCampaignRank",
+        "parameters": [
+          { "name": "resourceId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CampaignRank" } } }
+          }
+        },
+        "tags": ["community"]
+      }
+    },
+    "/v1/community/eligibility": {
+      "post": {
+        "operationId": "v1CheckEligibility",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EligibilityRequest" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Eligibility" } } }
+          }
+        },
+        "tags": ["community"]
+      }
+    },
+    "/v1/community/locking/leaderboard": {
+      "get": {
+        "operationId": "v1GetLeaderboard",
+        "parameters": [{ "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LockingRankPage" } } }
+          }
+        },
+        "tags": ["community"]
+      }
+    },
+    "/v1/community/locking/{safeAddress}/rank": {
+      "get": {
+        "operationId": "v1GetLockingRank",
+        "parameters": [{ "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LockingRank" } } }
+          }
+        },
+        "tags": ["community"]
+      }
+    },
+    "/v1/community/locking/{safeAddress}/history": {
+      "get": {
+        "operationId": "v1GetLockingHistory",
+        "parameters": [
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LockingEventPage" } } }
+          }
+        },
+        "tags": ["community"]
+      }
+    },
+    "/v1/chains/{chainId}/contracts/{contractAddress}": {
+      "get": {
+        "operationId": "v1GetContract",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "contractAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Contract" } } }
+          }
+        },
+        "tags": ["contracts"]
+      }
+    },
+    "/v1/chains/{chainId}/data-decoder": {
+      "post": {
+        "operationId": "v1GetDataDecoded",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TransactionDataDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DataDecoded" } } }
+          }
+        },
+        "tags": ["data-decoded"]
+      }
+    },
+    "/v1/chains/{chainId}/delegates": {
+      "get": {
+        "deprecated": true,
+        "operationId": "v1GetDelegates",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safe", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "delegate", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "delegator", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "label", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DelegatePage" } } }
+          }
+        },
+        "summary": "",
+        "tags": ["delegates"]
+      },
+      "post": {
+        "deprecated": true,
+        "operationId": "v1PostDelegate",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateDelegateDto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "summary": "",
+        "tags": ["delegates"]
+      }
+    },
+    "/v1/chains/{chainId}/delegates/{delegateAddress}": {
+      "delete": {
+        "deprecated": true,
+        "operationId": "v1DeleteDelegate",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "delegateAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeleteDelegateDto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "summary": "",
+        "tags": ["delegates"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/delegates/{delegateAddress}": {
+      "delete": {
+        "deprecated": true,
+        "operationId": "v1DeleteSafeDelegate",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeleteSafeDelegateDto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "summary": "",
+        "tags": ["delegates"]
+      }
+    },
+    "/v2/chains/{chainId}/delegates": {
+      "get": {
+        "operationId": "v2GetDelegates",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safe", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "delegate", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "delegator", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "label", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DelegatePage" } } }
+          }
+        },
+        "tags": ["delegates"]
+      },
+      "post": {
+        "operationId": "v2PostDelegate",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateDelegateDto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["delegates"]
+      }
+    },
+    "/v2/chains/{chainId}/delegates/{delegateAddress}": {
+      "delete": {
+        "operationId": "v2DeleteDelegate",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "delegateAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeleteDelegateV2Dto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["delegates"]
+      }
+    },
+    "/v2/chains/{chainId}/safes/{address}/multisig-transactions/estimations": {
+      "post": {
+        "operationId": "v2GetEstimation",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "address", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GetEstimationDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EstimationResponse" } } }
+          }
+        },
+        "tags": ["estimations"]
+      }
+    },
+    "/v1/chains/{chainId}/messages/{messageHash}": {
+      "get": {
+        "operationId": "v1GetMessageByHash",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "messageHash", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Message" } } }
+          }
+        },
+        "tags": ["messages"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/messages": {
+      "get": {
+        "operationId": "v1GetMessagesBySafe",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MessagePage" } } }
+          }
+        },
+        "tags": ["messages"]
+      },
+      "post": {
+        "operationId": "v1CreateMessage",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateMessageDto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["messages"]
+      }
+    },
+    "/v1/chains/{chainId}/messages/{messageHash}/signatures": {
+      "post": {
+        "operationId": "v1UpdateMessageSignature",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "messageHash", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateMessageSignatureDto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["messages"]
+      }
+    },
+    "/v1/register/notifications": {
+      "post": {
+        "operationId": "v1RegisterDevice",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegisterDeviceDto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["notifications"]
+      }
+    },
+    "/v1/chains/{chainId}/notifications/devices/{uuid}": {
+      "delete": {
+        "operationId": "v1UnregisterDevice",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "uuid", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["notifications"]
+      }
+    },
+    "/v1/chains/{chainId}/notifications/devices/{uuid}/safes/{safeAddress}": {
+      "delete": {
+        "operationId": "v1UnregisterSafe",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "uuid", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["notifications"]
+      }
+    },
+    "/v1/chains/{chainId}/owners/{ownerAddress}/safes": {
+      "get": {
+        "operationId": "v1GetSafesByOwner",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "ownerAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SafeList" } } }
+          }
+        },
+        "tags": ["owners"]
+      }
+    },
+    "/v1/owners/{ownerAddress}/safes": {
+      "get": {
+        "operationId": "v1GetAllSafesByOwner",
+        "parameters": [{ "name": "ownerAddress", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SafeList" } } }
+          }
+        },
+        "tags": ["owners"]
+      }
+    },
+    "/v1/chains/{chainId}/relay": {
+      "post": {
+        "operationId": "v1Relay",
+        "parameters": [{ "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RelayDto" } } }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["relay"]
+      }
+    },
+    "/v1/chains/{chainId}/relay/{safeAddress}": {
+      "get": {
+        "operationId": "v1GetRelaysRemaining",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["relay"]
+      }
+    },
+    "/v1/chains/{chainId}/safe-apps": {
+      "get": {
+        "operationId": "v1GetSafeApps",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "clientUrl", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "url", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/SafeApp" } } }
+            }
+          }
+        },
+        "tags": ["safe-apps"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}": {
+      "get": {
+        "operationId": "v1GetSafe",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SafeState" } } }
+          }
+        },
+        "tags": ["safes"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/nonces": {
+      "get": {
+        "operationId": "v1GetNonces",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SafeNonces" } } }
+          }
+        },
+        "tags": ["safes"]
+      }
+    },
+    "/v1/safes": {
+      "get": {
+        "operationId": "v1GetSafeOverview",
+        "parameters": [
+          { "name": "currency", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "safes", "required": true, "in": "query", "schema": { "type": "string" } },
+          { "name": "trusted", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "exclude_spam", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "wallet_address", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["safes"]
+      }
+    },
+    "/v1/targeted-messaging/outreaches/{outreachId}/chains/{chainId}/safes/{safeAddress}/signers/{signerAddress}/submissions": {
+      "get": {
+        "operationId": "v1GetSubmission",
+        "parameters": [
+          { "name": "outreachId", "required": true, "in": "path", "schema": { "type": "number" } },
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "signerAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Submission" } } }
+          }
+        },
+        "tags": ["targeted-messaging"]
+      },
+      "post": {
+        "operationId": "v1CreateSubmission",
+        "parameters": [
+          { "name": "outreachId", "required": true, "in": "path", "schema": { "type": "number" } },
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "signerAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateSubmissionDto" } } }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Submission" } } }
+          }
+        },
+        "tags": ["targeted-messaging"]
+      }
+    },
+    "/v1/chains/{chainId}/transactions/{id}": {
+      "get": {
+        "operationId": "v1GetTransactionById",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "id", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TransactionDetails" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/multisig-transactions": {
+      "get": {
+        "operationId": "v1GetMultisigTransactions",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "execution_date__gte", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "execution_date__lte", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "to", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "value", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "nonce", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "executed", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MultisigTransactionPage" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/transactions/{safeTxHash}": {
+      "delete": {
+        "operationId": "v1DeleteTransaction",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeTxHash", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DeleteTransactionDto" } } }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/module-transactions": {
+      "get": {
+        "operationId": "v1GetModuleTransactions",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "to", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "module", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "transaction_hash", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ModuleTransactionPage" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/transactions/{safeTxHash}/confirmations": {
+      "post": {
+        "operationId": "v1AddConfirmation",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeTxHash", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AddConfirmationDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Transaction" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/incoming-transfers": {
+      "get": {
+        "operationId": "v1GetIncomingTransfers",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "trusted", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "execution_date__gte", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "execution_date__lte", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "to", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "value", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "token_address", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/IncomingTransferPage" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/transactions/{safeAddress}/preview": {
+      "post": {
+        "operationId": "v1PreviewTransaction",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PreviewTransactionDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TransactionPreview" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/transactions/queued": {
+      "get": {
+        "operationId": "v1GetTransactionQueue",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "trusted", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueuedItemPage" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/transactions/history": {
+      "get": {
+        "operationId": "v1GetTransactionsHistory",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } },
+          {
+            "name": "timezone_offset",
+            "required": false,
+            "in": "query",
+            "deprecated": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "trusted", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "imitation", "required": false, "in": "query", "schema": { "type": "boolean" } },
+          { "name": "timezone", "required": false, "in": "query", "schema": { "type": "string" } },
+          { "name": "cursor", "required": false, "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TransactionItemPage" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/transactions/{safeAddress}/propose": {
+      "post": {
+        "operationId": "v1ProposeTransaction",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProposeTransactionDto" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Transaction" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/transactions/creation": {
+      "get": {
+        "operationId": "v1GetCreationTransaction",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreationTransaction" } } }
+          }
+        },
+        "tags": ["transactions"]
+      }
+    },
+    "/v1/chains/{chainId}/safes/{safeAddress}/views/transaction-confirmation": {
+      "post": {
+        "deprecated": true,
+        "description": "Deprecated in favour of /v1/chains/:chainId/transactions/:safeAddress/preview.",
+        "operationId": "v1GetTransactionConfirmationView",
+        "parameters": [
+          { "name": "chainId", "required": true, "in": "path", "schema": { "type": "string" } },
+          { "name": "safeAddress", "required": true, "in": "path", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TransactionDataDto" } } }
+        },
+        "responses": {
+          "200": {
+            "schema": {
+              "oneOf": [
+                { "$ref": "#/components/schemas/BaselineConfirmationView" },
+                { "$ref": "#/components/schemas/CowSwapConfirmationView" },
+                { "$ref": "#/components/schemas/CowSwapTwapConfirmationView" },
+                { "$ref": "#/components/schemas/NativeStakingDepositConfirmationView" },
+                { "$ref": "#/components/schemas/NativeStakingValidatorsExitConfirmationView" },
+                { "$ref": "#/components/schemas/NativeStakingWithdrawConfirmationView" }
+              ]
+            },
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/BaselineConfirmationView" },
+                    { "$ref": "#/components/schemas/CowSwapConfirmationView" },
+                    { "$ref": "#/components/schemas/CowSwapTwapConfirmationView" },
+                    { "$ref": "#/components/schemas/NativeStakingDepositConfirmationView" },
+                    { "$ref": "#/components/schemas/NativeStakingValidatorsExitConfirmationView" },
+                    { "$ref": "#/components/schemas/NativeStakingWithdrawConfirmationView" }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": ["transactions"]
+      }
+    }
+  },
+  "info": { "title": "Safe Client Gateway", "description": "", "version": "", "contact": {} },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "About": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string", "nullable": true },
+          "buildNumber": { "type": "string", "nullable": true }
+        },
+        "required": ["name"]
+      },
+      "CreateAccountDto": {
+        "type": "object",
+        "properties": { "address": { "type": "string" }, "name": { "type": "string" } },
+        "required": ["address", "name"]
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "groupId": { "type": "string", "nullable": true },
+          "address": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "required": ["id", "address", "name"]
+      },
+      "AccountDataType": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string", "nullable": true },
+          "isActive": { "type": "boolean" }
+        },
+        "required": ["id", "name", "isActive"]
+      },
+      "AccountDataSetting": {
+        "type": "object",
+        "properties": { "dataTypeId": { "type": "string" }, "enabled": { "type": "boolean" } },
+        "required": ["dataTypeId", "enabled"]
+      },
+      "UpsertAccountDataSettingDto": {
+        "type": "object",
+        "properties": { "dataTypeId": { "type": "string" }, "enabled": { "type": "boolean" } },
+        "required": ["dataTypeId", "enabled"]
+      },
+      "UpsertAccountDataSettingsDto": {
+        "type": "object",
+        "properties": {
+          "accountDataSettings": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/UpsertAccountDataSettingDto" }
+          }
+        },
+        "required": ["accountDataSettings"]
+      },
+      "CounterfactualSafe": {
+        "type": "object",
+        "properties": {
+          "chainId": { "type": "string" },
+          "creator": { "type": "string" },
+          "fallbackHandler": { "type": "string" },
+          "owners": { "type": "array", "items": { "type": "string" } },
+          "predictedAddress": { "type": "string" },
+          "saltNonce": { "type": "string" },
+          "singletonAddress": { "type": "string" },
+          "threshold": { "type": "number" }
+        },
+        "required": [
+          "chainId",
+          "creator",
+          "fallbackHandler",
+          "owners",
+          "predictedAddress",
+          "saltNonce",
+          "singletonAddress",
+          "threshold"
+        ]
+      },
+      "CreateCounterfactualSafeDto": {
+        "type": "object",
+        "properties": {
+          "chainId": { "type": "string" },
+          "fallbackHandler": { "type": "string" },
+          "owners": { "type": "array", "items": { "type": "string" } },
+          "predictedAddress": { "type": "string" },
+          "saltNonce": { "type": "string" },
+          "singletonAddress": { "type": "string" },
+          "threshold": { "type": "number" }
+        },
+        "required": [
+          "chainId",
+          "fallbackHandler",
+          "owners",
+          "predictedAddress",
+          "saltNonce",
+          "singletonAddress",
+          "threshold"
+        ]
+      },
+      "AuthNonce": { "type": "object", "properties": { "nonce": { "type": "string" } }, "required": ["nonce"] },
+      "SiweDto": {
+        "type": "object",
+        "properties": { "message": { "type": "string" }, "signature": { "type": "string" } },
+        "required": ["message", "signature"]
+      },
+      "Token": {
+        "type": "object",
+        "properties": {
+          "address": { "type": "string" },
+          "decimals": { "type": "number", "nullable": true },
+          "logoUri": { "type": "string" },
+          "name": { "type": "string" },
+          "symbol": { "type": "string" },
+          "type": { "type": "string", "enum": ["ERC721", "ERC20", "NATIVE_TOKEN", "UNKNOWN"] }
+        },
+        "required": ["address", "logoUri", "name", "symbol", "type"]
+      },
+      "Balance": {
+        "type": "object",
+        "properties": {
+          "balance": { "type": "string" },
+          "fiatBalance": { "type": "string" },
+          "fiatConversion": { "type": "string" },
+          "tokenInfo": { "$ref": "#/components/schemas/Token" }
+        },
+        "required": ["balance", "fiatBalance", "fiatConversion", "tokenInfo"]
+      },
+      "Balances": {
+        "type": "object",
+        "properties": {
+          "fiatTotal": { "type": "string" },
+          "items": { "type": "array", "items": { "oneOf": [{ "$ref": "#/components/schemas/Balance" }] } }
+        },
+        "required": ["fiatTotal", "items"]
+      },
+      "GasPriceOracle": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "gasParameter": { "type": "string" },
+          "gweiFactor": { "type": "string" },
+          "uri": { "type": "string" }
+        },
+        "required": ["type", "gasParameter", "gweiFactor", "uri"]
+      },
+      "GasPriceFixed": {
+        "type": "object",
+        "properties": { "type": { "type": "string" }, "weiValue": { "type": "string" } },
+        "required": ["type", "weiValue"]
+      },
+      "GasPriceFixedEIP1559": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "maxFeePerGas": { "type": "string" },
+          "maxPriorityFeePerGas": { "type": "string" }
+        },
+        "required": ["type", "maxFeePerGas", "maxPriorityFeePerGas"]
+      },
+      "NativeCurrency": {
+        "type": "object",
+        "properties": {
+          "decimals": { "type": "number" },
+          "logoUri": { "type": "string" },
+          "name": { "type": "string" },
+          "symbol": { "type": "string" }
+        },
+        "required": ["decimals", "logoUri", "name", "symbol"]
+      },
+      "BlockExplorerUriTemplate": {
+        "type": "object",
+        "properties": { "address": { "type": "string" }, "api": { "type": "string" }, "txHash": { "type": "string" } },
+        "required": ["address", "api", "txHash"]
+      },
+      "BalancesProvider": {
+        "type": "object",
+        "properties": { "chainName": { "type": "number", "nullable": true }, "enabled": { "type": "boolean" } },
+        "required": ["enabled"]
+      },
+      "ContractAddresses": {
+        "type": "object",
+        "properties": {
+          "safeSingletonAddress": { "type": "string", "nullable": true },
+          "safeProxyFactoryAddress": { "type": "string", "nullable": true },
+          "multiSendAddress": { "type": "string", "nullable": true },
+          "multiSendCallOnlyAddress": { "type": "string", "nullable": true },
+          "fallbackHandlerAddress": { "type": "string", "nullable": true },
+          "signMessageLibAddress": { "type": "string", "nullable": true },
+          "createCallAddress": { "type": "string", "nullable": true },
+          "simulateTxAccessorAddress": { "type": "string", "nullable": true },
+          "safeWebAuthnSignerFactoryAddress": { "type": "string", "nullable": true }
+        }
+      },
+      "RpcUri": {
+        "type": "object",
+        "properties": {
+          "authentication": { "type": "string", "enum": ["API_KEY_PATH", "NO_AUTHENTICATION", "UNKNOWN"] },
+          "value": { "type": "string" }
+        },
+        "required": ["authentication", "value"]
+      },
+      "Theme": {
+        "type": "object",
+        "properties": { "backgroundColor": { "type": "string" }, "textColor": { "type": "string" } },
+        "required": ["backgroundColor", "textColor"]
+      },
+      "Chain": {
+        "type": "object",
+        "properties": {
+          "chainId": { "type": "string" },
+          "chainName": { "type": "string" },
+          "description": { "type": "string" },
+          "chainLogoUri": { "type": "string", "nullable": true },
+          "l2": { "type": "boolean" },
+          "isTestnet": { "type": "boolean" },
+          "nativeCurrency": { "$ref": "#/components/schemas/NativeCurrency" },
+          "transactionService": { "type": "string" },
+          "blockExplorerUriTemplate": { "$ref": "#/components/schemas/BlockExplorerUriTemplate" },
+          "beaconChainExplorerUriTemplate": { "type": "object" },
+          "disabledWallets": { "type": "array", "items": { "type": "string" } },
+          "ensRegistryAddress": { "type": "string", "nullable": true },
+          "balancesProvider": { "$ref": "#/components/schemas/BalancesProvider" },
+          "contractAddresses": { "$ref": "#/components/schemas/ContractAddresses" },
+          "features": { "type": "array", "items": { "type": "string" } },
+          "gasPrice": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                { "$ref": "#/components/schemas/GasPriceOracle" },
+                { "$ref": "#/components/schemas/GasPriceFixed" },
+                { "$ref": "#/components/schemas/GasPriceFixedEIP1559" }
+              ]
+            }
+          },
+          "publicRpcUri": { "$ref": "#/components/schemas/RpcUri" },
+          "rpcUri": { "$ref": "#/components/schemas/RpcUri" },
+          "safeAppsRpcUri": { "$ref": "#/components/schemas/RpcUri" },
+          "shortName": { "type": "string" },
+          "theme": { "$ref": "#/components/schemas/Theme" }
+        },
+        "required": [
+          "chainId",
+          "chainName",
+          "description",
+          "l2",
+          "isTestnet",
+          "nativeCurrency",
+          "transactionService",
+          "blockExplorerUriTemplate",
+          "beaconChainExplorerUriTemplate",
+          "disabledWallets",
+          "balancesProvider",
+          "contractAddresses",
+          "features",
+          "gasPrice",
+          "publicRpcUri",
+          "rpcUri",
+          "safeAppsRpcUri",
+          "shortName",
+          "theme"
+        ]
+      },
+      "ChainPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/Chain" } }
+        },
+        "required": ["results"]
+      },
+      "AboutChain": {
+        "type": "object",
+        "properties": {
+          "transactionServiceBaseUri": { "type": "string" },
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "buildNumber": { "type": "string" }
+        },
+        "required": ["transactionServiceBaseUri", "name", "version", "buildNumber"]
+      },
+      "Backbone": {
+        "type": "object",
+        "properties": {
+          "api_version": { "type": "string" },
+          "headers": { "type": "string", "nullable": true },
+          "host": { "type": "string" },
+          "name": { "type": "string" },
+          "secure": { "type": "boolean" },
+          "settings": { "type": "object", "nullable": true },
+          "version": { "type": "string" }
+        },
+        "required": ["api_version", "host", "name", "secure", "settings", "version"]
+      },
+      "MasterCopy": {
+        "type": "object",
+        "properties": { "address": { "type": "string" }, "version": { "type": "string" } },
+        "required": ["address", "version"]
+      },
+      "IndexingStatus": {
+        "type": "object",
+        "properties": { "lastSync": { "type": "number" }, "synced": { "type": "boolean" } },
+        "required": ["lastSync", "synced"]
+      },
+      "Collectible": {
+        "type": "object",
+        "properties": {
+          "address": { "type": "string" },
+          "tokenName": { "type": "string" },
+          "tokenSymbol": { "type": "string" },
+          "logoUri": { "type": "string" },
+          "id": { "type": "string" },
+          "uri": { "type": "string", "nullable": true },
+          "name": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true },
+          "imageUri": { "type": "string", "nullable": true },
+          "metadata": { "type": "object", "nullable": true }
+        },
+        "required": ["address", "tokenName", "tokenSymbol", "logoUri", "id"]
+      },
+      "CollectiblePage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/Collectible" } }
+        },
+        "required": ["results"]
+      },
+      "ActivityMetadata": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "maxPoints": { "type": "number" }
+        },
+        "required": ["name", "description", "maxPoints"]
+      },
+      "Campaign": {
+        "type": "object",
+        "properties": {
+          "resourceId": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "startDate": { "type": "string" },
+          "endDate": { "type": "string" },
+          "lastUpdated": { "type": "string", "nullable": true },
+          "activitiesMetadata": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ActivityMetadata" }
+          },
+          "rewardValue": { "type": "string", "nullable": true },
+          "rewardText": { "type": "string", "nullable": true },
+          "iconUrl": { "type": "string", "nullable": true },
+          "safeAppUrl": { "type": "string", "nullable": true },
+          "partnerUrl": { "type": "string", "nullable": true },
+          "isPromoted": { "type": "boolean" }
+        },
+        "required": ["resourceId", "name", "description", "startDate", "endDate", "isPromoted"]
+      },
+      "CampaignPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/Campaign" } }
+        },
+        "required": ["results"]
+      },
+      "CampaignRank": {
+        "type": "object",
+        "properties": {
+          "holder": { "type": "string" },
+          "position": { "type": "number" },
+          "boost": { "type": "number" },
+          "totalPoints": { "type": "number" },
+          "totalBoostedPoints": { "type": "number" }
+        },
+        "required": ["holder", "position", "boost", "totalPoints", "totalBoostedPoints"]
+      },
+      "CampaignRankPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/CampaignRank" } }
+        },
+        "required": ["results"]
+      },
+      "EligibilityRequest": {
+        "type": "object",
+        "properties": { "requestId": { "type": "string" }, "sealedData": { "type": "string" } },
+        "required": ["requestId", "sealedData"]
+      },
+      "Eligibility": {
+        "type": "object",
+        "properties": {
+          "requestId": { "type": "string" },
+          "isAllowed": { "type": "boolean" },
+          "isVpn": { "type": "boolean" }
+        },
+        "required": ["requestId", "isAllowed", "isVpn"]
+      },
+      "LockingRank": {
+        "type": "object",
+        "properties": {
+          "holder": { "type": "string" },
+          "position": { "type": "number" },
+          "lockedAmount": { "type": "string" },
+          "unlockedAmount": { "type": "string" },
+          "withdrawnAmount": { "type": "string" }
+        },
+        "required": ["holder", "position", "lockedAmount", "unlockedAmount", "withdrawnAmount"]
+      },
+      "LockingRankPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/LockingRank" } }
+        },
+        "required": ["results"]
+      },
+      "LockEventItem": {
+        "type": "object",
+        "properties": {
+          "eventType": { "type": "string", "enum": ["LOCKED"] },
+          "executionDate": { "type": "string" },
+          "transactionHash": { "type": "string" },
+          "holder": { "type": "string" },
+          "amount": { "type": "string" },
+          "logIndex": { "type": "string" }
+        },
+        "required": ["eventType", "executionDate", "transactionHash", "holder", "amount", "logIndex"]
+      },
+      "UnlockEventItem": {
+        "type": "object",
+        "properties": {
+          "eventType": { "type": "string", "enum": ["UNLOCKED"] },
+          "executionDate": { "type": "string" },
+          "transactionHash": { "type": "string" },
+          "holder": { "type": "string" },
+          "amount": { "type": "string" },
+          "logIndex": { "type": "string" },
+          "unlockIndex": { "type": "string" }
+        },
+        "required": ["eventType", "executionDate", "transactionHash", "holder", "amount", "logIndex", "unlockIndex"]
+      },
+      "WithdrawEventItem": {
+        "type": "object",
+        "properties": {
+          "eventType": { "type": "string", "enum": ["WITHDRAWN"] },
+          "executionDate": { "type": "string" },
+          "transactionHash": { "type": "string" },
+          "holder": { "type": "string" },
+          "amount": { "type": "string" },
+          "logIndex": { "type": "string" },
+          "unlockIndex": { "type": "string" }
+        },
+        "required": ["eventType", "executionDate", "transactionHash", "holder", "amount", "logIndex", "unlockIndex"]
+      },
+      "LockingEventPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                { "$ref": "#/components/schemas/LockEventItem" },
+                { "$ref": "#/components/schemas/UnlockEventItem" },
+                { "$ref": "#/components/schemas/WithdrawEventItem" }
+              ]
+            }
+          }
+        },
+        "required": ["results"]
+      },
+      "Contract": {
+        "type": "object",
+        "properties": {
+          "address": { "type": "string" },
+          "name": { "type": "string" },
+          "displayName": { "type": "string" },
+          "logoUri": { "type": "string" },
+          "contractAbi": { "type": "object", "nullable": true },
+          "trustedForDelegateCall": { "type": "boolean" }
+        },
+        "required": ["address", "name", "displayName", "logoUri", "trustedForDelegateCall"]
+      },
+      "TransactionDataDto": {
+        "type": "object",
+        "properties": {
+          "data": { "type": "string", "description": "Hexadecimal value" },
+          "to": { "type": "string", "description": "The target Ethereum address" },
+          "value": { "type": "string", "description": "The wei amount being sent to a payable function" }
+        },
+        "required": ["data"]
+      },
+      "DataDecodedParameter": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "value": { "type": "object" },
+          "valueDecoded": {
+            "oneOf": [{ "type": "object" }, { "type": "array", "items": { "type": "object" } }],
+            "nullable": true
+          }
+        },
+        "required": ["name", "type", "value"]
+      },
+      "DataDecoded": {
+        "type": "object",
+        "properties": {
+          "method": { "type": "string" },
+          "parameters": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DataDecodedParameter" }
+          }
+        },
+        "required": ["method"]
+      },
+      "Delegate": {
+        "type": "object",
+        "properties": {
+          "safe": { "type": "string", "nullable": true },
+          "delegate": { "type": "string" },
+          "delegator": { "type": "string" },
+          "label": { "type": "string" }
+        },
+        "required": ["delegate", "delegator", "label"]
+      },
+      "DelegatePage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/Delegate" } }
+        },
+        "required": ["results"]
+      },
+      "CreateDelegateDto": {
+        "type": "object",
+        "properties": {
+          "safe": { "type": "string", "nullable": true },
+          "delegate": { "type": "string" },
+          "delegator": { "type": "string" },
+          "signature": { "type": "string" },
+          "label": { "type": "string" }
+        },
+        "required": ["delegate", "delegator", "signature", "label"]
+      },
+      "DeleteDelegateDto": {
+        "type": "object",
+        "properties": {
+          "delegate": { "type": "string" },
+          "delegator": { "type": "string" },
+          "signature": { "type": "string" }
+        },
+        "required": ["delegate", "delegator", "signature"]
+      },
+      "DeleteSafeDelegateDto": {
+        "type": "object",
+        "properties": {
+          "delegate": { "type": "string" },
+          "safe": { "type": "string" },
+          "signature": { "type": "string" }
+        },
+        "required": ["delegate", "safe", "signature"]
+      },
+      "DeleteDelegateV2Dto": {
+        "type": "object",
+        "properties": {
+          "delegator": { "type": "string", "nullable": true },
+          "safe": { "type": "string", "nullable": true },
+          "signature": { "type": "string" }
+        },
+        "required": ["signature"]
+      },
+      "GetEstimationDto": {
+        "type": "object",
+        "properties": {
+          "to": { "type": "string" },
+          "value": { "type": "string" },
+          "data": { "type": "string", "nullable": true },
+          "operation": { "type": "number" }
+        },
+        "required": ["to", "value", "operation"]
+      },
+      "EstimationResponse": {
+        "type": "object",
+        "properties": {
+          "currentNonce": { "type": "number" },
+          "recommendedNonce": { "type": "number" },
+          "safeTxGas": { "type": "string" }
+        },
+        "required": ["currentNonce", "recommendedNonce", "safeTxGas"]
+      },
+      "AddressInfo": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "string" },
+          "name": { "type": "string", "nullable": true },
+          "logoUri": { "type": "string", "nullable": true }
+        },
+        "required": ["value"]
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "messageHash": { "type": "string" },
+          "status": { "type": "string" },
+          "logoUri": { "type": "string", "nullable": true },
+          "name": { "type": "string", "nullable": true },
+          "message": { "type": "object" },
+          "creationTimestamp": { "type": "number" },
+          "modifiedTimestamp": { "type": "number" },
+          "confirmationsSubmitted": { "type": "number" },
+          "confirmationsRequired": { "type": "number" },
+          "proposedBy": { "$ref": "#/components/schemas/AddressInfo" },
+          "confirmations": { "type": "array", "items": { "type": "string" } },
+          "preparedSignature": { "type": "string", "nullable": true },
+          "origin": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "messageHash",
+          "status",
+          "message",
+          "creationTimestamp",
+          "modifiedTimestamp",
+          "confirmationsSubmitted",
+          "confirmationsRequired",
+          "proposedBy",
+          "confirmations"
+        ]
+      },
+      "MessageItem": {
+        "type": "object",
+        "properties": {
+          "messageHash": { "type": "string" },
+          "status": { "type": "string" },
+          "logoUri": { "type": "string", "nullable": true },
+          "name": { "type": "string", "nullable": true },
+          "message": { "type": "object" },
+          "creationTimestamp": { "type": "number" },
+          "modifiedTimestamp": { "type": "number" },
+          "confirmationsSubmitted": { "type": "number" },
+          "confirmationsRequired": { "type": "number" },
+          "proposedBy": { "$ref": "#/components/schemas/AddressInfo" },
+          "confirmations": { "type": "array", "items": { "type": "string" } },
+          "preparedSignature": { "type": "string", "nullable": true },
+          "origin": { "type": "string", "nullable": true },
+          "type": { "type": "string" }
+        },
+        "required": [
+          "messageHash",
+          "status",
+          "message",
+          "creationTimestamp",
+          "modifiedTimestamp",
+          "confirmationsSubmitted",
+          "confirmationsRequired",
+          "proposedBy",
+          "confirmations",
+          "type"
+        ]
+      },
+      "DateLabel": {
+        "type": "object",
+        "properties": { "type": { "type": "string", "enum": ["DATE_LABEL"] }, "timestamp": { "type": "number" } },
+        "required": ["type", "timestamp"]
+      },
+      "MessagePage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": {
+            "type": "array",
+            "items": {
+              "oneOf": [{ "$ref": "#/components/schemas/MessageItem" }, { "$ref": "#/components/schemas/DateLabel" }]
+            }
+          }
+        },
+        "required": ["results"]
+      },
+      "CreateMessageDto": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "object" },
+          "safeAppId": { "type": "number", "nullable": true, "deprecated": true },
+          "signature": { "type": "string" },
+          "origin": { "type": "string", "nullable": true }
+        },
+        "required": ["message", "signature"]
+      },
+      "UpdateMessageSignatureDto": {
+        "type": "object",
+        "properties": { "signature": { "type": "string" } },
+        "required": ["signature"]
+      },
+      "SafeRegistration": {
+        "type": "object",
+        "properties": {
+          "chainId": { "type": "string" },
+          "safes": { "type": "array", "items": { "type": "string" } },
+          "signatures": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["chainId", "safes", "signatures"]
+      },
+      "RegisterDeviceDto": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string", "nullable": true },
+          "cloudMessagingToken": { "type": "string" },
+          "buildNumber": { "type": "string" },
+          "bundle": { "type": "string" },
+          "deviceType": { "type": "string" },
+          "version": { "type": "string" },
+          "timestamp": { "type": "string", "nullable": true },
+          "safeRegistrations": { "type": "array", "items": { "$ref": "#/components/schemas/SafeRegistration" } }
+        },
+        "required": ["cloudMessagingToken", "buildNumber", "bundle", "deviceType", "version", "safeRegistrations"]
+      },
+      "SafeList": {
+        "type": "object",
+        "properties": { "safes": { "type": "array", "items": { "type": "string" } } },
+        "required": ["safes"]
+      },
+      "RelayDto": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "string" },
+          "to": { "type": "string" },
+          "data": { "type": "string" },
+          "gasLimit": {
+            "type": "string",
+            "nullable": true,
+            "description": "If specified, a gas buffer of 150k will be added on top of the expected gas usage for the transaction.\n      This is for the <a href=\"https://docs.gelato.network/developer-services/relay/quick-start/optional-parameters\" target=\"_blank\">\n      Gelato Relay execution overhead</a>, reducing the chance of the task cancelling before it is executed on-chain."
+          }
+        },
+        "required": ["version", "to", "data"]
+      },
+      "SafeAppProvider": {
+        "type": "object",
+        "properties": { "url": { "type": "string" }, "name": { "type": "string" } },
+        "required": ["url", "name"]
+      },
+      "SafeAppAccessControl": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "value": { "nullable": true, "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["type"]
+      },
+      "SafeAppSocialProfile": {
+        "type": "object",
+        "properties": {
+          "platform": { "type": "string", "enum": ["DISCORD", "GITHUB", "TWITTER", "UNKNOWN"] },
+          "url": { "type": "string" }
+        },
+        "required": ["platform", "url"]
+      },
+      "SafeApp": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "url": { "type": "string" },
+          "name": { "type": "string" },
+          "iconUrl": { "type": "string", "nullable": true },
+          "description": { "type": "string" },
+          "chainIds": { "type": "array", "items": { "type": "string" } },
+          "provider": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/SafeAppProvider" }] },
+          "accessControl": { "$ref": "#/components/schemas/SafeAppAccessControl" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "features": { "type": "array", "items": { "type": "string" } },
+          "developerWebsite": { "type": "string", "nullable": true },
+          "socialProfiles": { "type": "array", "items": { "$ref": "#/components/schemas/SafeAppSocialProfile" } },
+          "featured": { "type": "boolean" }
+        },
+        "required": [
+          "id",
+          "url",
+          "name",
+          "description",
+          "chainIds",
+          "accessControl",
+          "tags",
+          "features",
+          "socialProfiles",
+          "featured"
+        ]
+      },
+      "SafeState": {
+        "type": "object",
+        "properties": {
+          "address": { "$ref": "#/components/schemas/AddressInfo" },
+          "chainId": { "type": "string" },
+          "nonce": { "type": "number" },
+          "threshold": { "type": "number" },
+          "owners": { "type": "array", "items": { "type": "string" } },
+          "implementation": { "$ref": "#/components/schemas/AddressInfo" },
+          "modules": { "nullable": true, "type": "array", "items": { "$ref": "#/components/schemas/AddressInfo" } },
+          "fallbackHandler": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/AddressInfo" }] },
+          "guard": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/AddressInfo" }] },
+          "version": { "type": "string", "nullable": true },
+          "implementationVersionState": { "type": "string", "enum": ["UP_TO_DATE", "OUTDATED", "UNKNOWN"] },
+          "collectiblesTag": { "type": "string", "nullable": true },
+          "txQueuedTag": { "type": "string", "nullable": true },
+          "txHistoryTag": { "type": "string", "nullable": true },
+          "messagesTag": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "address",
+          "chainId",
+          "nonce",
+          "threshold",
+          "owners",
+          "implementation",
+          "implementationVersionState"
+        ]
+      },
+      "SafeNonces": {
+        "type": "object",
+        "properties": { "currentNonce": { "type": "number" }, "recommendedNonce": { "type": "number" } },
+        "required": ["currentNonce", "recommendedNonce"]
+      },
+      "Submission": {
+        "type": "object",
+        "properties": {
+          "outreachId": { "type": "number" },
+          "targetedSafeId": { "type": "number" },
+          "signerAddress": { "type": "string" },
+          "completionDate": { "format": "date-time", "type": "string", "nullable": true }
+        },
+        "required": ["outreachId", "targetedSafeId", "signerAddress"]
+      },
+      "CreateSubmissionDto": {
+        "type": "object",
+        "properties": { "completed": { "type": "boolean" } },
+        "required": ["completed"]
+      },
+      "TransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "Creation",
+              "Custom",
+              "SettingsChange",
+              "Transfer",
+              "SwapOrder",
+              "SwapTransfer",
+              "TwapOrder",
+              "NativeStakingDeposit",
+              "NativeStakingValidatorsExit",
+              "NativeStakingWithdraw"
+            ]
+          },
+          "humanDescription": { "type": "string", "nullable": true }
+        },
+        "required": ["type"]
+      },
+      "TransactionData": {
+        "type": "object",
+        "properties": {
+          "hexData": { "type": "string", "nullable": true },
+          "dataDecoded": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/DataDecoded" }] },
+          "to": { "$ref": "#/components/schemas/AddressInfo" },
+          "value": { "type": "string", "nullable": true },
+          "operation": { "type": "number" },
+          "trustedDelegateCallTarget": { "type": "boolean", "nullable": true },
+          "addressInfoIndex": { "type": "object", "nullable": true }
+        },
+        "required": ["to", "operation"]
+      },
+      "MultisigExecutionDetails": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["MULTISIG"] },
+          "submittedAt": { "type": "number" },
+          "nonce": { "type": "number" },
+          "safeTxGas": { "type": "string" },
+          "baseGas": { "type": "string" },
+          "gasPrice": { "type": "string" },
+          "gasToken": { "type": "string" },
+          "refundReceiver": { "$ref": "#/components/schemas/AddressInfo" },
+          "safeTxHash": { "type": "string" },
+          "executor": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/AddressInfo" }] },
+          "signers": { "type": "array", "items": { "type": "string" } },
+          "confirmationsRequired": { "type": "number" },
+          "confirmations": { "type": "array", "items": { "type": "string" } },
+          "rejectors": { "type": "array", "items": { "$ref": "#/components/schemas/AddressInfo" } },
+          "gasTokenInfo": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/Token" }] },
+          "trusted": { "type": "boolean" },
+          "proposer": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/AddressInfo" }] },
+          "proposedByDelegate": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/AddressInfo" }] }
+        },
+        "required": [
+          "type",
+          "submittedAt",
+          "nonce",
+          "safeTxGas",
+          "baseGas",
+          "gasPrice",
+          "gasToken",
+          "refundReceiver",
+          "safeTxHash",
+          "signers",
+          "confirmationsRequired",
+          "confirmations",
+          "rejectors",
+          "trusted"
+        ]
+      },
+      "ModuleExecutionDetails": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["MODULE"] },
+          "address": { "$ref": "#/components/schemas/AddressInfo" }
+        },
+        "required": ["type", "address"]
+      },
+      "SafeAppInfo": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "url": { "type": "string" },
+          "logoUri": { "type": "string", "nullable": true }
+        },
+        "required": ["name", "url"]
+      },
+      "TransactionDetails": {
+        "type": "object",
+        "properties": {
+          "safeAddress": { "type": "string" },
+          "txId": { "type": "string" },
+          "executedAt": { "type": "number", "nullable": true },
+          "txStatus": {
+            "type": "string",
+            "enum": ["SUCCESS", "FAILED", "CANCELLED", "AWAITING_CONFIRMATIONS", "AWAITING_EXECUTION"]
+          },
+          "txInfo": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/TransactionInfo" }] },
+          "txData": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/TransactionData" }] },
+          "detailedExecutionInfo": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/MultisigExecutionDetails" },
+              { "$ref": "#/components/schemas/ModuleExecutionDetails" }
+            ],
+            "nullable": true
+          },
+          "txHash": { "type": "string", "nullable": true },
+          "safeAppInfo": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/SafeAppInfo" }] }
+        },
+        "required": ["safeAddress", "txId", "txStatus", "txInfo"]
+      },
+      "CreationTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["Creation"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "creator": { "$ref": "#/components/schemas/AddressInfo" },
+          "transactionHash": { "type": "string" },
+          "implementation": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/AddressInfo" }] },
+          "factory": { "$ref": "#/components/schemas/AddressInfo" },
+          "saltNonce": { "type": "string", "nullable": true }
+        },
+        "required": ["type", "creator", "transactionHash"]
+      },
+      "CustomTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["Custom"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "to": { "$ref": "#/components/schemas/AddressInfo" },
+          "dataSize": { "type": "string" },
+          "value": { "type": "string", "nullable": true },
+          "isCancellation": { "type": "boolean" },
+          "methodName": { "type": "string", "nullable": true },
+          "actionCount": { "type": "number", "nullable": true }
+        },
+        "required": ["type", "to", "dataSize", "isCancellation"]
+      },
+      "SettingsChange": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ADD_OWNER",
+              "CHANGE_MASTER_COPY",
+              "CHANGE_THRESHOLD",
+              "DELETE_GUARD",
+              "DISABLE_MODULE",
+              "ENABLE_MODULE",
+              "REMOVE_OWNER",
+              "SET_FALLBACK_HANDLER",
+              "SET_GUARD",
+              "SWAP_OWNER"
+            ]
+          }
+        },
+        "required": ["type"]
+      },
+      "SettingsChangeTransaction": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["SettingsChange"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "dataDecoded": { "$ref": "#/components/schemas/DataDecoded" },
+          "settingsInfo": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/SettingsChange" }] }
+        },
+        "required": ["type", "dataDecoded"]
+      },
+      "Erc20Transfer": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["ERC20"] },
+          "tokenAddress": { "type": "string" },
+          "value": { "type": "string" },
+          "tokenName": { "type": "string", "nullable": true },
+          "tokenSymbol": { "type": "string", "nullable": true },
+          "logoUri": { "type": "string", "nullable": true },
+          "decimals": { "type": "number", "nullable": true },
+          "trusted": { "type": "boolean", "nullable": true },
+          "imitation": { "type": "boolean" }
+        },
+        "required": ["type", "tokenAddress", "value", "imitation"]
+      },
+      "Erc721Transfer": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["ERC721"] },
+          "tokenAddress": { "type": "string" },
+          "tokenId": { "type": "string" },
+          "tokenName": { "type": "string", "nullable": true },
+          "tokenSymbol": { "type": "string", "nullable": true },
+          "logoUri": { "type": "string", "nullable": true },
+          "trusted": { "type": "boolean", "nullable": true }
+        },
+        "required": ["type", "tokenAddress", "tokenId"]
+      },
+      "NativeCoinTransfer": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["NATIVE_COIN"] },
+          "value": { "type": "string", "nullable": true }
+        },
+        "required": ["type"]
+      },
+      "Transfer": {
+        "type": "object",
+        "properties": { "type": { "type": "string", "enum": ["NATIVE_COIN", "ERC20", "ERC721"] } },
+        "required": ["type"]
+      },
+      "TransferTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["Transfer"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "sender": { "$ref": "#/components/schemas/AddressInfo" },
+          "recipient": { "$ref": "#/components/schemas/AddressInfo" },
+          "direction": { "type": "string", "enum": ["INCOMING", "OUTGOING", "UNKNOWN"] },
+          "transferInfo": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/Erc20Transfer" },
+              { "$ref": "#/components/schemas/Erc721Transfer" },
+              { "$ref": "#/components/schemas/NativeCoinTransfer" }
+            ],
+            "allOf": [{ "$ref": "#/components/schemas/Transfer" }]
+          }
+        },
+        "required": ["type", "sender", "recipient", "direction", "transferInfo"]
+      },
+      "ModuleExecutionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["MODULE"] },
+          "address": { "$ref": "#/components/schemas/AddressInfo" }
+        },
+        "required": ["type", "address"]
+      },
+      "MultisigExecutionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["MULTISIG"] },
+          "nonce": { "type": "number" },
+          "confirmationsRequired": { "type": "number" },
+          "confirmationsSubmitted": { "type": "number" },
+          "missingSigners": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AddressInfo" }
+          }
+        },
+        "required": ["type", "nonce", "confirmationsRequired", "confirmationsSubmitted"]
+      },
+      "TokenInfo": {
+        "type": "object",
+        "properties": {
+          "address": { "type": "string", "description": "The token address" },
+          "decimals": { "type": "number", "description": "The token decimals" },
+          "logoUri": { "type": "string", "nullable": true, "description": "The logo URI for the token" },
+          "name": { "type": "string", "description": "The token name" },
+          "symbol": { "type": "string", "description": "The token symbol" },
+          "trusted": { "type": "boolean", "description": "The token trusted status" }
+        },
+        "required": ["address", "decimals", "name", "symbol", "trusted"]
+      },
+      "SwapOrderTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["SwapOrder"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "uid": { "type": "string", "description": "The order UID" },
+          "status": {
+            "type": "string",
+            "enum": ["presignaturePending", "open", "fulfilled", "cancelled", "expired", "unknown"]
+          },
+          "kind": { "type": "string", "enum": ["buy", "sell", "unknown"] },
+          "orderClass": { "type": "string", "enum": ["market", "limit", "liquidity", "unknown"] },
+          "validUntil": { "type": "number", "description": "The timestamp when the order expires" },
+          "sellAmount": { "type": "string", "description": "The sell token raw amount (no decimals)" },
+          "buyAmount": { "type": "string", "description": "The buy token raw amount (no decimals)" },
+          "executedSellAmount": { "type": "string", "description": "The executed sell token raw amount (no decimals)" },
+          "executedBuyAmount": { "type": "string", "description": "The executed buy token raw amount (no decimals)" },
+          "sellToken": {
+            "description": "The sell token of the order",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "buyToken": {
+            "description": "The buy token of the order",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "explorerUrl": { "type": "string", "description": "The URL to the explorer page of the order" },
+          "executedSurplusFee": {
+            "type": "string",
+            "nullable": true,
+            "description": "The amount of fees paid for this order."
+          },
+          "receiver": {
+            "type": "string",
+            "nullable": true,
+            "description": "The (optional) address to receive the proceeds of the trade"
+          },
+          "owner": { "type": "string" },
+          "fullAppData": { "type": "object", "nullable": true, "description": "The App Data for this order" }
+        },
+        "required": [
+          "type",
+          "uid",
+          "status",
+          "kind",
+          "orderClass",
+          "validUntil",
+          "sellAmount",
+          "buyAmount",
+          "executedSellAmount",
+          "executedBuyAmount",
+          "sellToken",
+          "buyToken",
+          "explorerUrl",
+          "owner"
+        ]
+      },
+      "SwapTransferTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["SwapTransfer"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "sender": { "$ref": "#/components/schemas/AddressInfo" },
+          "recipient": { "$ref": "#/components/schemas/AddressInfo" },
+          "direction": { "type": "string" },
+          "transferInfo": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/Erc20Transfer" },
+              { "$ref": "#/components/schemas/Erc721Transfer" },
+              { "$ref": "#/components/schemas/NativeCoinTransfer" }
+            ],
+            "allOf": [{ "$ref": "#/components/schemas/Transfer" }]
+          },
+          "uid": { "type": "string", "description": "The order UID" },
+          "status": {
+            "type": "string",
+            "enum": ["presignaturePending", "open", "fulfilled", "cancelled", "expired", "unknown"]
+          },
+          "kind": { "type": "string", "enum": ["buy", "sell", "unknown"] },
+          "orderClass": { "type": "string", "enum": ["market", "limit", "liquidity", "unknown"] },
+          "validUntil": { "type": "number", "description": "The timestamp when the order expires" },
+          "sellAmount": { "type": "string", "description": "The sell token raw amount (no decimals)" },
+          "buyAmount": { "type": "string", "description": "The buy token raw amount (no decimals)" },
+          "executedSellAmount": { "type": "string", "description": "The executed sell token raw amount (no decimals)" },
+          "executedBuyAmount": { "type": "string", "description": "The executed buy token raw amount (no decimals)" },
+          "sellToken": {
+            "description": "The sell token of the order",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "buyToken": {
+            "description": "The buy token of the order",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "explorerUrl": { "type": "string", "description": "The URL to the explorer page of the order" },
+          "executedSurplusFee": {
+            "type": "string",
+            "nullable": true,
+            "description": "The amount of fees paid for this order."
+          },
+          "receiver": {
+            "type": "string",
+            "nullable": true,
+            "description": "The (optional) address to receive the proceeds of the trade"
+          },
+          "owner": { "type": "string" },
+          "fullAppData": { "type": "object", "nullable": true, "description": "The App Data for this order" }
+        },
+        "required": [
+          "type",
+          "sender",
+          "recipient",
+          "direction",
+          "transferInfo",
+          "uid",
+          "status",
+          "kind",
+          "orderClass",
+          "validUntil",
+          "sellAmount",
+          "buyAmount",
+          "executedSellAmount",
+          "executedBuyAmount",
+          "sellToken",
+          "buyToken",
+          "explorerUrl",
+          "owner"
+        ]
+      },
+      "TwapOrderTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["TwapOrder"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "status": {
+            "type": "string",
+            "description": "The TWAP status",
+            "enum": ["presignaturePending", "open", "fulfilled", "cancelled", "expired", "unknown"]
+          },
+          "kind": { "type": "string", "enum": ["buy", "sell", "unknown"] },
+          "class": { "type": "string", "enum": ["market", "limit", "liquidity", "unknown"] },
+          "activeOrderUid": {
+            "type": "string",
+            "nullable": true,
+            "description": "The order UID of the active order, or null if none is active"
+          },
+          "validUntil": { "type": "number", "description": "The timestamp when the TWAP expires" },
+          "sellAmount": { "type": "string", "description": "The sell token raw amount (no decimals)" },
+          "buyAmount": { "type": "string", "description": "The buy token raw amount (no decimals)" },
+          "executedSellAmount": {
+            "type": "string",
+            "nullable": true,
+            "description": "The executed sell token raw amount (no decimals), or null if there are too many parts"
+          },
+          "executedBuyAmount": {
+            "type": "string",
+            "nullable": true,
+            "description": "The executed buy token raw amount (no decimals), or null if there are too many parts"
+          },
+          "executedSurplusFee": {
+            "type": "string",
+            "nullable": true,
+            "description": "The executed surplus fee raw amount (no decimals), or null if there are too many parts"
+          },
+          "sellToken": {
+            "description": "The sell token of the TWAP",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "buyToken": {
+            "description": "The buy token of the TWAP",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "receiver": { "type": "string", "description": "The address to receive the proceeds of the trade" },
+          "owner": { "type": "string" },
+          "fullAppData": { "type": "object", "nullable": true, "description": "The App Data for this TWAP" },
+          "numberOfParts": { "type": "string", "description": "The number of parts in the TWAP" },
+          "partSellAmount": { "type": "string", "description": "The amount of sellToken to sell in each part" },
+          "minPartLimit": {
+            "type": "string",
+            "description": "The amount of buyToken that must be bought in each part"
+          },
+          "timeBetweenParts": { "type": "number", "description": "The duration of the TWAP interval" },
+          "durationOfPart": {
+            "type": "object",
+            "description": "Whether the TWAP is valid for the entire interval or not"
+          },
+          "startTime": { "type": "object", "description": "The start time of the TWAP" }
+        },
+        "required": [
+          "type",
+          "status",
+          "kind",
+          "validUntil",
+          "sellAmount",
+          "buyAmount",
+          "sellToken",
+          "buyToken",
+          "receiver",
+          "owner",
+          "numberOfParts",
+          "partSellAmount",
+          "minPartLimit",
+          "timeBetweenParts",
+          "durationOfPart",
+          "startTime"
+        ]
+      },
+      "NativeStakingDepositTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["NativeStakingDeposit"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STAKED",
+              "ACTIVATING",
+              "DEPOSIT_IN_PROGRESS",
+              "ACTIVE",
+              "EXIT_REQUESTED",
+              "EXITING",
+              "EXITED",
+              "SLASHED"
+            ]
+          },
+          "estimatedEntryTime": { "type": "number" },
+          "estimatedExitTime": { "type": "number" },
+          "estimatedWithdrawalTime": { "type": "number" },
+          "fee": { "type": "number" },
+          "monthlyNrr": { "type": "number" },
+          "annualNrr": { "type": "number" },
+          "value": { "type": "string" },
+          "numValidators": { "type": "number" },
+          "expectedAnnualReward": { "type": "string" },
+          "expectedMonthlyReward": { "type": "string" },
+          "expectedFiatAnnualReward": { "type": "number" },
+          "expectedFiatMonthlyReward": { "type": "number" },
+          "tokenInfo": { "$ref": "#/components/schemas/TokenInfo" },
+          "validators": {
+            "nullable": true,
+            "description": "Populated after transaction has been executed",
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": [
+          "type",
+          "status",
+          "estimatedEntryTime",
+          "estimatedExitTime",
+          "estimatedWithdrawalTime",
+          "fee",
+          "monthlyNrr",
+          "annualNrr",
+          "value",
+          "numValidators",
+          "expectedAnnualReward",
+          "expectedMonthlyReward",
+          "expectedFiatAnnualReward",
+          "expectedFiatMonthlyReward",
+          "tokenInfo"
+        ]
+      },
+      "NativeStakingValidatorsExitTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["NativeStakingValidatorsExit"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STAKED",
+              "ACTIVATING",
+              "DEPOSIT_IN_PROGRESS",
+              "ACTIVE",
+              "EXIT_REQUESTED",
+              "EXITING",
+              "EXITED",
+              "SLASHED"
+            ]
+          },
+          "estimatedExitTime": { "type": "number" },
+          "estimatedWithdrawalTime": { "type": "number" },
+          "value": { "type": "string" },
+          "numValidators": { "type": "number" },
+          "tokenInfo": { "$ref": "#/components/schemas/TokenInfo" },
+          "validators": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": [
+          "type",
+          "status",
+          "estimatedExitTime",
+          "estimatedWithdrawalTime",
+          "value",
+          "numValidators",
+          "tokenInfo",
+          "validators"
+        ]
+      },
+      "NativeStakingWithdrawTransactionInfo": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["NativeStakingWithdraw"] },
+          "humanDescription": { "type": "string", "nullable": true },
+          "value": { "type": "string" },
+          "tokenInfo": { "$ref": "#/components/schemas/TokenInfo" },
+          "validators": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["type", "value", "tokenInfo", "validators"]
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "txHash": { "type": "string", "nullable": true },
+          "timestamp": { "type": "number" },
+          "txStatus": {
+            "type": "string",
+            "enum": ["SUCCESS", "FAILED", "CANCELLED", "AWAITING_CONFIRMATIONS", "AWAITING_EXECUTION"]
+          },
+          "txInfo": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/CreationTransactionInfo" },
+              { "$ref": "#/components/schemas/CustomTransactionInfo" },
+              { "$ref": "#/components/schemas/SettingsChangeTransaction" },
+              { "$ref": "#/components/schemas/SwapOrderTransactionInfo" },
+              { "$ref": "#/components/schemas/SwapTransferTransactionInfo" },
+              { "$ref": "#/components/schemas/TwapOrderTransactionInfo" },
+              { "$ref": "#/components/schemas/TransferTransactionInfo" },
+              { "$ref": "#/components/schemas/NativeStakingDepositTransactionInfo" },
+              { "$ref": "#/components/schemas/NativeStakingValidatorsExitTransactionInfo" },
+              { "$ref": "#/components/schemas/NativeStakingWithdrawTransactionInfo" }
+            ],
+            "allOf": [{ "$ref": "#/components/schemas/TransactionInfo" }]
+          },
+          "executionInfo": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/MultisigExecutionInfo" },
+              { "$ref": "#/components/schemas/ModuleExecutionInfo" }
+            ],
+            "nullable": true
+          },
+          "safeAppInfo": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/SafeAppInfo" }] }
+        },
+        "required": ["id", "timestamp", "txStatus", "txInfo"]
+      },
+      "MultisigTransaction": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["TRANSACTION"] },
+          "transaction": { "$ref": "#/components/schemas/Transaction" },
+          "conflictType": { "type": "string", "enum": ["None", "HasNext", "End"] }
+        },
+        "required": ["type", "transaction", "conflictType"]
+      },
+      "MultisigTransactionPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/MultisigTransaction" } }
+        },
+        "required": ["results"]
+      },
+      "DeleteTransactionDto": {
+        "type": "object",
+        "properties": { "signature": { "type": "string" } },
+        "required": ["signature"]
+      },
+      "ModuleTransaction": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["TRANSACTION"] },
+          "transaction": { "$ref": "#/components/schemas/Transaction" },
+          "conflictType": { "type": "string", "enum": ["None"] }
+        },
+        "required": ["type", "transaction", "conflictType"]
+      },
+      "ModuleTransactionPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/ModuleTransaction" } }
+        },
+        "required": ["results"]
+      },
+      "AddConfirmationDto": {
+        "type": "object",
+        "properties": { "signedSafeTxHash": { "type": "string" } },
+        "required": ["signedSafeTxHash"]
+      },
+      "IncomingTransfer": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["TRANSACTION"] },
+          "transaction": { "$ref": "#/components/schemas/Transaction" },
+          "conflictType": { "type": "string", "enum": ["None"] }
+        },
+        "required": ["type", "transaction", "conflictType"]
+      },
+      "IncomingTransferPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": { "type": "array", "items": { "$ref": "#/components/schemas/IncomingTransfer" } }
+        },
+        "required": ["results"]
+      },
+      "PreviewTransactionDto": {
+        "type": "object",
+        "properties": {
+          "to": { "type": "string" },
+          "data": { "type": "string", "nullable": true },
+          "value": { "type": "string" },
+          "operation": { "type": "number" }
+        },
+        "required": ["to", "value", "operation"]
+      },
+      "TransactionPreview": {
+        "type": "object",
+        "properties": {
+          "txInfo": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/CreationTransactionInfo" },
+              { "$ref": "#/components/schemas/CustomTransactionInfo" },
+              { "$ref": "#/components/schemas/SettingsChangeTransaction" },
+              { "$ref": "#/components/schemas/TransferTransactionInfo" },
+              { "$ref": "#/components/schemas/SwapOrderTransactionInfo" },
+              { "$ref": "#/components/schemas/TwapOrderTransactionInfo" },
+              { "$ref": "#/components/schemas/NativeStakingDepositTransactionInfo" },
+              { "$ref": "#/components/schemas/NativeStakingValidatorsExitTransactionInfo" },
+              { "$ref": "#/components/schemas/NativeStakingWithdrawTransactionInfo" }
+            ],
+            "allOf": [{ "$ref": "#/components/schemas/TransactionInfo" }]
+          },
+          "txData": { "$ref": "#/components/schemas/TransactionData" }
+        },
+        "required": ["txInfo", "txData"]
+      },
+      "ConflictHeaderQueuedItem": {
+        "type": "object",
+        "properties": { "type": { "type": "string", "enum": ["CONFLICT_HEADER"] }, "nonce": { "type": "number" } },
+        "required": ["type", "nonce"]
+      },
+      "LabelQueuedItem": {
+        "type": "object",
+        "properties": { "type": { "type": "string", "enum": ["LABEL"] }, "label": { "type": "string" } },
+        "required": ["type", "label"]
+      },
+      "TransactionQueuedItem": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["TRANSACTION"] },
+          "transaction": { "$ref": "#/components/schemas/Transaction" },
+          "conflictType": { "type": "string", "enum": ["None", "HasNext", "End"] }
+        },
+        "required": ["type", "transaction", "conflictType"]
+      },
+      "QueuedItemPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                { "$ref": "#/components/schemas/ConflictHeaderQueuedItem" },
+                { "$ref": "#/components/schemas/LabelQueuedItem" },
+                { "$ref": "#/components/schemas/TransactionQueuedItem" }
+              ]
+            }
+          }
+        },
+        "required": ["results"]
+      },
+      "TransactionItem": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "allOf": [{ "$ref": "#/components/schemas/TransactionQueuedItem" }],
+            "properties": { "conflictType": { "enum": ["None"] } }
+          },
+          "type": { "type": "string", "enum": ["TRANSACTION"] },
+          "transaction": { "$ref": "#/components/schemas/Transaction" },
+          "conflictType": { "type": "string", "enum": ["None"] }
+        },
+        "required": ["schema", "type", "transaction", "conflictType"]
+      },
+      "TransactionItemPage": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number", "nullable": true },
+          "next": { "type": "string", "nullable": true },
+          "previous": { "type": "string", "nullable": true },
+          "results": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                { "$ref": "#/components/schemas/TransactionItem" },
+                { "$ref": "#/components/schemas/DateLabel" }
+              ]
+            }
+          }
+        },
+        "required": ["results"]
+      },
+      "ProposeTransactionDto": {
+        "type": "object",
+        "properties": {
+          "to": { "type": "string" },
+          "value": { "type": "string" },
+          "data": { "type": "string", "nullable": true },
+          "nonce": { "type": "string" },
+          "operation": { "type": "number" },
+          "safeTxGas": { "type": "string" },
+          "baseGas": { "type": "string" },
+          "gasPrice": { "type": "string" },
+          "gasToken": { "type": "string" },
+          "refundReceiver": { "type": "string", "nullable": true },
+          "safeTxHash": { "type": "string" },
+          "sender": { "type": "string" },
+          "signature": { "type": "string", "nullable": true },
+          "origin": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "to",
+          "value",
+          "nonce",
+          "operation",
+          "safeTxGas",
+          "baseGas",
+          "gasPrice",
+          "gasToken",
+          "safeTxHash",
+          "sender"
+        ]
+      },
+      "CreationTransaction": {
+        "type": "object",
+        "properties": {
+          "created": { "format": "date-time", "type": "string" },
+          "creator": { "type": "string" },
+          "transactionHash": { "type": "string" },
+          "factoryAddress": { "type": "string" },
+          "masterCopy": { "type": "string", "nullable": true },
+          "setupData": { "type": "string", "nullable": true },
+          "saltNonce": { "type": "string", "nullable": true },
+          "dataDecoded": { "nullable": true, "allOf": [{ "$ref": "#/components/schemas/DataDecoded" }] }
+        },
+        "required": ["created", "creator", "transactionHash", "factoryAddress"]
+      },
+      "BaselineConfirmationView": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["GENERIC"] },
+          "method": { "type": "string" },
+          "parameters": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DataDecodedParameter" }
+          }
+        },
+        "required": ["type", "method"]
+      },
+      "CowSwapConfirmationView": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["COW_SWAP_ORDER"] },
+          "method": { "type": "string" },
+          "parameters": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DataDecodedParameter" }
+          },
+          "uid": { "type": "string", "description": "The order UID" },
+          "status": {
+            "type": "string",
+            "enum": ["presignaturePending", "open", "fulfilled", "cancelled", "expired", "unknown"]
+          },
+          "kind": { "type": "string", "enum": ["buy", "sell", "unknown"] },
+          "orderClass": { "type": "string", "enum": ["market", "limit", "liquidity", "unknown"] },
+          "validUntil": { "type": "number", "description": "The timestamp when the order expires" },
+          "sellAmount": { "type": "string", "description": "The sell token raw amount (no decimals)" },
+          "buyAmount": { "type": "string", "description": "The buy token raw amount (no decimals)" },
+          "executedSellAmount": { "type": "string", "description": "The executed sell token raw amount (no decimals)" },
+          "executedBuyAmount": { "type": "string", "description": "The executed buy token raw amount (no decimals)" },
+          "explorerUrl": { "type": "string", "description": "The URL to the explorer page of the order" },
+          "executedSurplusFee": {
+            "type": "string",
+            "nullable": true,
+            "description": "The amount of fees paid for this order."
+          },
+          "receiver": {
+            "type": "string",
+            "nullable": true,
+            "description": "The (optional) address to receive the proceeds of the trade"
+          },
+          "owner": { "type": "string" },
+          "fullAppData": { "type": "object", "nullable": true, "description": "The App Data for this order" },
+          "sellToken": {
+            "description": "The sell token of the order",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "buyToken": {
+            "description": "The buy token of the order",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          }
+        },
+        "required": [
+          "type",
+          "method",
+          "uid",
+          "status",
+          "kind",
+          "orderClass",
+          "validUntil",
+          "sellAmount",
+          "buyAmount",
+          "executedSellAmount",
+          "executedBuyAmount",
+          "explorerUrl",
+          "owner",
+          "sellToken",
+          "buyToken"
+        ]
+      },
+      "CowSwapTwapConfirmationView": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["COW_SWAP_TWAP_ORDER"] },
+          "method": { "type": "string" },
+          "parameters": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DataDecodedParameter" }
+          },
+          "status": {
+            "type": "string",
+            "enum": ["presignaturePending", "open", "fulfilled", "cancelled", "expired", "unknown"],
+            "description": "The TWAP status"
+          },
+          "kind": { "type": "string", "enum": ["buy", "sell", "unknown"] },
+          "class": { "type": "string", "enum": ["market", "limit", "liquidity", "unknown"] },
+          "activeOrderUid": {
+            "type": "null",
+            "description": "The order UID of the active order, null as it is not an active order"
+          },
+          "validUntil": { "type": "number", "description": "The timestamp when the TWAP expires" },
+          "sellAmount": { "type": "string", "description": "The sell token raw amount (no decimals)" },
+          "buyAmount": { "type": "string", "description": "The buy token raw amount (no decimals)" },
+          "executedSellAmount": {
+            "type": "string",
+            "nullable": true,
+            "description": "The executed sell token raw amount (no decimals), or null if there are too many parts"
+          },
+          "executedSurplusFee": {
+            "type": "string",
+            "nullable": true,
+            "description": "The executed surplus fee raw amount (no decimals), or null if there are too many parts"
+          },
+          "executedBuyAmount": {
+            "type": "string",
+            "nullable": true,
+            "description": "The executed buy token raw amount (no decimals), or null if there are too many parts"
+          },
+          "sellToken": {
+            "description": "The sell token of the TWAP",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "buyToken": {
+            "description": "The buy token of the TWAP",
+            "allOf": [{ "$ref": "#/components/schemas/TokenInfo" }]
+          },
+          "receiver": { "type": "string", "description": "The address to receive the proceeds of the trade" },
+          "owner": { "type": "string" },
+          "fullAppData": { "type": "object", "nullable": true, "description": "The App Data for this TWAP" },
+          "numberOfParts": { "type": "string", "description": "The number of parts in the TWAP" },
+          "partSellAmount": { "type": "string", "description": "The amount of sellToken to sell in each part" },
+          "minPartLimit": {
+            "type": "string",
+            "description": "The amount of buyToken that must be bought in each part"
+          },
+          "timeBetweenParts": { "type": "number", "description": "The duration of the TWAP interval" },
+          "durationOfPart": {
+            "type": "object",
+            "description": "Whether the TWAP is valid for the entire interval or not"
+          },
+          "startTime": { "type": "object", "description": "The start time of the TWAP" }
+        },
+        "required": [
+          "type",
+          "method",
+          "status",
+          "kind",
+          "class",
+          "activeOrderUid",
+          "validUntil",
+          "sellAmount",
+          "buyAmount",
+          "sellToken",
+          "buyToken",
+          "receiver",
+          "owner",
+          "numberOfParts",
+          "partSellAmount",
+          "minPartLimit",
+          "timeBetweenParts",
+          "durationOfPart",
+          "startTime"
+        ]
+      },
+      "NativeStakingDepositConfirmationView": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["KILN_NATIVE_STAKING_DEPOSIT"] },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STAKED",
+              "ACTIVATING",
+              "DEPOSIT_IN_PROGRESS",
+              "ACTIVE",
+              "EXIT_REQUESTED",
+              "EXITING",
+              "EXITED",
+              "SLASHED"
+            ]
+          },
+          "method": { "type": "string" },
+          "parameters": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DataDecodedParameter" }
+          },
+          "estimatedEntryTime": { "type": "number" },
+          "estimatedExitTime": { "type": "number" },
+          "estimatedWithdrawalTime": { "type": "number" },
+          "fee": { "type": "number" },
+          "monthlyNrr": { "type": "number" },
+          "annualNrr": { "type": "number" },
+          "value": { "type": "string" },
+          "numValidators": { "type": "number" },
+          "expectedAnnualReward": { "type": "string" },
+          "expectedMonthlyReward": { "type": "string" },
+          "expectedFiatAnnualReward": { "type": "number" },
+          "expectedFiatMonthlyReward": { "type": "number" },
+          "tokenInfo": { "$ref": "#/components/schemas/TokenInfo" }
+        },
+        "required": [
+          "type",
+          "status",
+          "method",
+          "estimatedEntryTime",
+          "estimatedExitTime",
+          "estimatedWithdrawalTime",
+          "fee",
+          "monthlyNrr",
+          "annualNrr",
+          "value",
+          "numValidators",
+          "expectedAnnualReward",
+          "expectedMonthlyReward",
+          "expectedFiatAnnualReward",
+          "expectedFiatMonthlyReward",
+          "tokenInfo"
+        ]
+      },
+      "NativeStakingValidatorsExitConfirmationView": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["KILN_NATIVE_STAKING_VALIDATORS_EXIT"] },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STAKED",
+              "ACTIVATING",
+              "DEPOSIT_IN_PROGRESS",
+              "ACTIVE",
+              "EXIT_REQUESTED",
+              "EXITING",
+              "EXITED",
+              "SLASHED"
+            ]
+          },
+          "method": { "type": "string" },
+          "parameters": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DataDecodedParameter" }
+          },
+          "estimatedExitTime": { "type": "number" },
+          "estimatedWithdrawalTime": { "type": "number" },
+          "value": { "type": "string" },
+          "numValidators": { "type": "number" },
+          "tokenInfo": { "$ref": "#/components/schemas/TokenInfo" },
+          "validators": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": [
+          "type",
+          "status",
+          "method",
+          "estimatedExitTime",
+          "estimatedWithdrawalTime",
+          "value",
+          "numValidators",
+          "tokenInfo",
+          "validators"
+        ]
+      },
+      "NativeStakingWithdrawConfirmationView": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["KILN_NATIVE_STAKING_WITHDRAW"] },
+          "method": { "type": "string" },
+          "parameters": {
+            "nullable": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DataDecodedParameter" }
+          },
+          "value": { "type": "string" },
+          "tokenInfo": { "$ref": "#/components/schemas/TokenInfo" },
+          "validators": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["type", "method", "value", "tokenInfo", "validators"]
+      }
+    }
+  }
+}

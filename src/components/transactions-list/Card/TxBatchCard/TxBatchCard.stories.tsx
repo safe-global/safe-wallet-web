@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import TxBatchCard from '@/src/components/transactions-list/Card/TxBatchCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
-import { MultiSend, TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
+import { MultiSend, TransactionInfoType } from '@/src/store/gateway/types'
 
 const meta: Meta<typeof TxBatchCard> = {
   title: 'TransactionsList/TxBatchCard',

@@ -16,8 +16,6 @@ function InlineTab({ items }: InlineTabProps) {
     router.replace(screenPath)
   }
 
-  console.log('path', path)
-
   return (
     <StyledTransactionsTabs>
       {items.map((item) => (

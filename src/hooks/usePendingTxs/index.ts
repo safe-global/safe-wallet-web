@@ -1,20 +1,20 @@
-import { groupPendingTxs } from '@/src/features/TxHistory/utils'
 import { selectActiveChain } from '@/src/store/activeChainSlice'
 import { useGetPendingTxsQuery } from '@/src/store/gateway'
-import { TransactionListItem } from '@safe-global/safe-gateway-typescript-sdk'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { QueuedItemPage } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { groupPendingTxs } from '@/src/features/PendingTx/utils'
 
 const usePendingTxs = () => {
   const activeChain = useSelector(selectActiveChain)
-  const [list, setList] = useState<TransactionListItem[]>([])
+  const [list, setList] = useState<QueuedItemPage['results']>([])
   const [pageUrl, setPageUrl] = useState<string>()
 
   const { data, isLoading, isFetching, refetch, isUninitialized } = useGetPendingTxsQuery(
     {
       chainId: activeChain?.chainId,
       safeAddress: '0xA77DE01e157f9f57C7c4A326eeE9C4874D0598b6',
-      pageUrl,
+      cursor: pageUrl,
     },
     {
       skip: !activeChain?.chainId,

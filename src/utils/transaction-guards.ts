@@ -1,52 +1,68 @@
+import uniq from 'lodash/uniq'
 import {
-  Cancellation,
-  ConflictHeader,
+  type Cancellation,
+  type MultiSend,
   ConflictType,
-  Creation,
-  Custom,
+  TransactionInfoType,
+  TransactionListItemType,
+  TransactionTokenType,
+  TransferDirection,
+} from '@/src/store/gateway/types'
+import type {
+  ModuleExecutionInfo,
+  TransactionDetails,
+  TransactionInfo,
+  SwapTransferTransactionInfo,
+  TwapOrderTransactionInfo,
+  ConflictHeaderQueuedItem,
+  TransactionQueuedItem,
   DateLabel,
-  DetailedExecutionInfo,
+  TransferTransactionInfo,
+  SettingsChangeTransaction,
+  LabelQueuedItem,
+  MultisigExecutionInfo,
+  SwapOrderTransactionInfo,
   Erc20Transfer,
   Erc721Transfer,
-  ExecutionInfo,
-  Label,
-  ModuleExecutionInfo,
-  MultiSend,
-  MultisigExecutionInfo,
   NativeCoinTransfer,
-  Order,
-  SettingsChange,
-  SwapOrder,
   Transaction,
-  TransactionInfo,
-  TransactionInfoType,
-  TransactionListItem,
-  TransactionListItemType,
-  TransactionStatus,
-  TransactionTokenType,
-  Transfer,
-  TransferDirection,
-  TransferInfo,
-  TwapOrder,
-} from '@safe-global/safe-gateway-typescript-sdk'
-import uniq from 'lodash/uniq'
+  CreationTransactionInfo,
+  CustomTransactionInfo,
+} from '@/src/store/gateway/AUTO_GENERATED/transactions'
 
-export const isTxQueued = (value: TransactionStatus): boolean => {
-  return [TransactionStatus.AWAITING_CONFIRMATIONS, TransactionStatus.AWAITING_EXECUTION].includes(value)
+import { HistoryTransactionItems, PendingTransactionItems } from '@/src/store/gateway/types'
+
+const TransactionStatus = {
+  AWAITING_CONFIRMATIONS: 'AWAITING_CONFIRMATIONS',
+  AWAITING_EXECUTION: 'AWAITING_EXECUTION',
+  CANCELLED: 'CANCELLED',
+  FAILED: 'FAILED',
+  SUCCESS: 'SUCCESS',
 }
 
-export const getBulkGroupTxHash = (group: Transaction[]) => {
-  const hashList = group.map((item) => item.transaction.txHash)
+export const isTxQueued = (value: Transaction['txStatus']): boolean => {
+  return [TransactionStatus.AWAITING_CONFIRMATIONS as string, TransactionStatus.AWAITING_EXECUTION as string].includes(
+    value,
+  )
+}
+
+export const getBulkGroupTxHash = (group: PendingTransactionItems[]) => {
+  const hashList = group.map((item) => {
+    if (isTransactionListItem(item)) {
+      return item.transaction.txHash
+    }
+    return null
+  })
   return uniq(hashList).length === 1 ? hashList[0] : undefined
 }
 
-export const getTxHash = (item: Transaction): string => item.transaction.txHash as unknown as string
+export const getTxHash = (item: TransactionQueuedItem): string => item.transaction.txHash as unknown as string
 
-export const isTransferTxInfo = (value: TransactionInfo): value is Transfer => {
+export const isTransferTxInfo = (value: Transaction['txInfo']): value is TransferTransactionInfo => {
   return value.type === TransactionInfoType.TRANSFER || isSwapTransferOrderTxInfo(value)
 }
 
-export const isSettingsChangeTxInfo = (value: TransactionInfo): value is SettingsChange => {
+export const isSettingsChangeTxInfo = (value: Transaction['txInfo']): value is SettingsChangeTransaction => {
   return value.type === TransactionInfoType.SETTINGS_CHANGE
 }
 /**
@@ -55,19 +71,19 @@ export const isSettingsChangeTxInfo = (value: TransactionInfo): value is Setting
  *
  * @param value
  */
-export const isSwapTransferOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
+export const isSwapTransferOrderTxInfo = (value: Transaction['txInfo']): value is SwapTransferTransactionInfo => {
   return value.type === TransactionInfoType.SWAP_TRANSFER
 }
 
-export const isOutgoingTransfer = (txInfo: TransactionInfo): boolean => {
+export const isOutgoingTransfer = (txInfo: Transaction['txInfo']): boolean => {
   return isTransferTxInfo(txInfo) && txInfo.direction.toUpperCase() === TransferDirection.OUTGOING
 }
 
-export const isCustomTxInfo = (value: TransactionInfo): value is Custom => {
+export const isCustomTxInfo = (value: Transaction['txInfo']): value is CustomTransactionInfo => {
   return value.type === TransactionInfoType.CUSTOM
 }
 
-export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend => {
+export const isMultiSendTxInfo = (value: Transaction['txInfo']): value is MultiSend => {
   return (
     value.type === TransactionInfoType.CUSTOM &&
     value.methodName === 'multiSend' &&
@@ -75,62 +91,65 @@ export const isMultiSendTxInfo = (value: TransactionInfo): value is MultiSend =>
   )
 }
 
-export const isOrderTxInfo = (value: TransactionInfo): value is Order => {
+export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrderTransactionInfo => {
+  return value.type === TransactionInfoType.SWAP_ORDER
+}
+export const isTwapOrderTxInfo = (value: Transaction['txInfo']): value is TwapOrderTransactionInfo => {
+  return value.type === TransactionInfoType.TWAP_ORDER
+}
+
+export const isOrderTxInfo = (value: Transaction['txInfo']): value is SwapOrderTransactionInfo => {
   return isSwapOrderTxInfo(value) || isTwapOrderTxInfo(value)
 }
 
-export const isTwapOrderTxInfo = (value: TransactionInfo): value is TwapOrder => {
-  return value.type === TransactionInfoType.TWAP_ORDER
-}
-export const isCancellationTxInfo = (value: TransactionInfo): value is Cancellation => {
+export const isCancellationTxInfo = (value: Transaction['txInfo']): value is Cancellation => {
   return isCustomTxInfo(value) && value.isCancellation
 }
 
-export const isTransactionListItem = (value: TransactionListItem): value is Transaction => {
+export const isTransactionListItem = (
+  value: HistoryTransactionItems | PendingTransactionItems,
+): value is TransactionQueuedItem => {
   return value.type === TransactionListItemType.TRANSACTION
 }
 
-export const isConflictHeaderListItem = (value: TransactionListItem): value is ConflictHeader => {
+export const isConflictHeaderListItem = (value: PendingTransactionItems): value is ConflictHeaderQueuedItem => {
   return value.type === TransactionListItemType.CONFLICT_HEADER
 }
 
-export const isNoneConflictType = (transaction: Transaction) => {
+export const isNoneConflictType = (transaction: TransactionQueuedItem) => {
   return transaction.conflictType === ConflictType.NONE
 }
 
-export const isDateLabel = (value: TransactionListItem): value is DateLabel => {
+export const isDateLabel = (value: HistoryTransactionItems | PendingTransactionItems): value is DateLabel => {
   return value.type === TransactionListItemType.DATE_LABEL
 }
 
-export const isLabelListItem = (value: TransactionListItem): value is Label => {
+export const isLabelListItem = (value: PendingTransactionItems | DateLabel): value is LabelQueuedItem => {
   return value.type === TransactionListItemType.LABEL
 }
 
-export const isCreationTxInfo = (value: TransactionInfo): value is Creation => {
+export const isCreationTxInfo = (value: TransactionInfo): value is CreationTransactionInfo => {
   return value.type === TransactionInfoType.CREATION
 }
 
 export const isMultisigExecutionInfo = (
-  value?: ExecutionInfo | DetailedExecutionInfo,
+  value?: Transaction['executionInfo'] | TransactionDetails['detailedExecutionInfo'],
 ): value is MultisigExecutionInfo => {
   return value?.type === 'MULTISIG'
 }
 
-export const isModuleExecutionInfo = (value?: ExecutionInfo | DetailedExecutionInfo): value is ModuleExecutionInfo =>
-  value?.type === 'MODULE'
+export const isModuleExecutionInfo = (
+  value?: Transaction['executionInfo'] | TransactionDetails['detailedExecutionInfo'],
+): value is ModuleExecutionInfo => value?.type === 'MODULE'
 
-export const isSwapOrderTxInfo = (value: TransactionInfo): value is SwapOrder => {
-  return value.type === TransactionInfoType.SWAP_ORDER
-}
-
-export const isNativeTokenTransfer = (value: TransferInfo): value is NativeCoinTransfer => {
+export const isNativeTokenTransfer = (value: TransferTransactionInfo['transferInfo']): value is NativeCoinTransfer => {
   return value.type === TransactionTokenType.NATIVE_COIN
 }
 
-export const isERC20Transfer = (value: TransferInfo): value is Erc20Transfer => {
+export const isERC20Transfer = (value: TransferTransactionInfo['transferInfo']): value is Erc20Transfer => {
   return value.type === TransactionTokenType.ERC20
 }
 
-export const isERC721Transfer = (value: TransferInfo): value is Erc721Transfer => {
+export const isERC721Transfer = (value: TransferTransactionInfo['transferInfo']): value is Erc721Transfer => {
   return value.type === TransactionTokenType.ERC721
 }

@@ -1,20 +1,22 @@
 import SafeListItem from '@/src/components/SafeListItem'
-import { Transaction } from '@safe-global/safe-gateway-typescript-sdk'
-import React, { useCallback } from 'react'
-import { SectionList, SectionListRenderItem } from 'react-native'
+import React from 'react'
+import { SectionList } from 'react-native'
 import { Spinner, View } from 'tamagui'
-import TxInfo from '@/src/components/TxInfo'
-import { getBulkGroupTxHash, getTxHash } from '@/src/utils/transaction-guards'
-import { GroupedTxsWithTitle } from '../TxHistory/utils'
-import TxConflictingCard from '@/src/components/transactions-list/Card/TxConflictingCard'
-import TxGroupedCard from '@/src/components/transactions-list/Card/TxGroupedCard'
 import CircularBadge from '@/src/components/CircularBadge'
 import { NavBarTitle } from '@/src/components/Title/NavBarTitle'
 import { LargeHeaderTitle } from '@/src/components/Title/LargeHeaderTitle'
 import { useScrollableHeader } from '@/src/navigation/useScrollableHeader'
+import { TransactionQueuedItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { PendingTransactionItems } from '@/src/store/gateway/types'
+import { keyExtractor, renderItem } from '@/src/features/PendingTx/utils'
+
+export interface GroupedPendingTxsWithTitle {
+  title: string
+  data: (PendingTransactionItems | TransactionQueuedItem[])[]
+}
 
 interface PendingTxListProps {
-  transactions: GroupedTxsWithTitle[]
+  transactions: GroupedPendingTxsWithTitle[]
   onEndReached: (info: { distanceFromEnd: number }) => void
   isLoading?: boolean
   amount: number
@@ -30,25 +32,6 @@ function PendingTxList({ transactions, onEndReached, isLoading, hasMore, amount 
       </>
     ),
   })
-
-  const renderItem = useCallback<SectionListRenderItem<Transaction | Transaction[], GroupedTxsWithTitle>>(
-    ({ item, index }) => {
-      return (
-        <View marginTop={index && '$4'} paddingHorizontal="$3">
-          {Array.isArray(item) ? (
-            getBulkGroupTxHash(item) ? (
-              <TxGroupedCard transactions={item} inQueue />
-            ) : (
-              <TxConflictingCard inQueue transactions={item} />
-            )
-          ) : (
-            <TxInfo inQueue tx={item?.transaction} />
-          )}
-        </View>
-      )
-    },
-    [],
-  )
 
   const LargeHeader = (
     <View flexDirection={'row'} alignItems={'center'} paddingTop={'$3'} paddingHorizontal={'$3'}>
@@ -68,9 +51,7 @@ function PendingTxList({ transactions, onEndReached, isLoading, hasMore, amount 
       ListHeaderComponent={LargeHeader}
       sections={transactions}
       contentInsetAdjustmentBehavior="automatic"
-      keyExtractor={(item, index) =>
-        Array.isArray(item) ? (getBulkGroupTxHash(item) || getTxHash(item[0])) + index : getTxHash(item) + index
-      }
+      keyExtractor={keyExtractor}
       renderItem={renderItem}
       onEndReached={onEndReached}
       ListFooterComponent={isLoading ? <Spinner size={'small'} color={'$color'} /> : undefined}
