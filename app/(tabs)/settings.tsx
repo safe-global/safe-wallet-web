@@ -1,10 +1,14 @@
-import { ScrollView, Text, View } from 'tamagui'
+import { NavBarTitle } from '@/src/components/Title/NavBarTitle'
+import { SafeAddressInput } from '@/src/features/Settings'
+import { ScrollView, View } from 'tamagui'
 
 export default function SettingsScreen() {
   return (
     <ScrollView>
       <View>
-        <Text testID="explore-title">Settings</Text>
+        <NavBarTitle>Settings</NavBarTitle>
+
+        <SafeAddressInput />
       </View>
     </ScrollView>
   )
