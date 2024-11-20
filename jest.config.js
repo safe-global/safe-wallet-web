@@ -8,7 +8,7 @@ module.exports = {
     '!./src/types/**',
     '!./src/**/*.snap',
   ],
-  coverageReporters: ['json', 'html', 'text-summary'],
+  coverageReporters: ['json-summary', 'html', 'text-summary'],
   setupFilesAfterEnv: ['./src/tests/jest.setup.ts', './src/tests/test-utils.tsx'],
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':

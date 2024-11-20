@@ -1,9 +1,11 @@
+import timezoneMock from 'timezone-mock'
 import { currentMinutes, formatDateTime, formatTime, getCountdown, getPeriod } from './date'
 
 const MOCKED_TIMESTAMP = 1729506116962
 
 describe('Date utils', () => {
   beforeAll(() => {
+    timezoneMock.register('Etc/GMT-2')
     jest.spyOn(Date, 'now').mockImplementation(() => MOCKED_TIMESTAMP)
   })
 
