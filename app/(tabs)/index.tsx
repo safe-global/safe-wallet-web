@@ -1,14 +1,18 @@
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import PendingTransactions from '@/src/components/StatusBanners/PendingTransactions'
 import usePendingTxs from '@/src/hooks/usePendingTxs'
+import { selectActiveSafe } from '@/src/store/activeSafeSlice'
+import { shortenAddress } from '@/src/utils/formatters'
 import { router } from 'expo-router'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useSelector } from 'react-redux'
 
 import { Avatar, Text, View } from 'tamagui'
 
 export default function HomeScreen() {
   const { amount, hasMore, isLoading } = usePendingTxs()
+  const activeSafe = useSelector(selectActiveSafe)
 
   const onPendingTransactionsPress = () => {
     router.push('/pending-transactions')
@@ -28,7 +32,7 @@ export default function HomeScreen() {
 
           <View justifyContent="center" alignItems="center" flexDirection="row">
             <Text fontSize="$5" fontWeight={600}>
-              My DAO
+              {shortenAddress(activeSafe.address)}
             </Text>
             <SafeFontIcon name="arrow-down" />
           </View>

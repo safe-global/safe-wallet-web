@@ -3,6 +3,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import { reduxStorage } from './storage'
 import txHistory from './txHistorySlice'
 import activeChain from './activeChainSlice'
+import activeSafe from './activeSafeSlice'
 import { cgwClient } from '@/src/store/gateway/cgwClient'
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin'
 import { isTestingEnv } from '../config/constants'
@@ -16,6 +17,7 @@ const persistConfig = {
 export const rootReducer = combineReducers({
   txHistory,
   activeChain,
+  activeSafe,
   [cgwClient.reducerPath]: cgwClient.reducer,
 })
 
