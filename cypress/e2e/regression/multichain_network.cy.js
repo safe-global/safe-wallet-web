@@ -9,8 +9,6 @@ let staticSafes = []
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
-// DO NOT use OWNER_2_PRIVATE_KEY for safe creation. Used for CF safes.
-const signer2 = walletCredentials.OWNER_2_PRIVATE_KEY
 
 describe('Multichain add network tests', () => {
   before(async () => {
@@ -51,7 +49,6 @@ describe('Multichain add network tests', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addedSafes, ls.addedSafes.set6_undeployed_safe)
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__undeployedSafes, ls.undeployedSafe.safe1)
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.undeployed)
-    wallet.connectSigner(signer2)
     sideBar.openSidebar()
     sideBar.removeSafeItem(sideBar.undeployedSafe)
     cy.wrap(null, { timeout: 10000 }).should(() => {

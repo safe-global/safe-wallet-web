@@ -123,6 +123,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
             </Typography>
           ) : (
             <Typography
+              data-testid="simulation-success-msg"
               variant="body2"
               className={sharedCss.result}
               sx={{
@@ -136,6 +137,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
         ) : (
           <Track {...MODALS_EVENTS.SIMULATE_TX}>
             <Button
+              data-testid="simulate-btn"
               variant="outlined"
               size="small"
               className={css.simulate}

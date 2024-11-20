@@ -84,6 +84,7 @@ export const stagingCGWChains = '/chains/'
 export const stagingCGWSafes = '/safes/'
 export const stagingCGWNone = '/nonces/'
 export const stagingCGWCollectibles = '/collectibles/'
+export const stagingCGWDelegatesUrl = '/delegates?safe='
 export const relayPath = '/relay/'
 export const stagingCGWAllTokensBalances = '/balances/USD?trusted=false&exclude_spam=false'
 

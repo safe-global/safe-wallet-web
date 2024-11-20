@@ -47,6 +47,8 @@ const radioSelector = 'div[role="radiogroup"]'
 const rejectTxBtn = '[data-testid="reject-btn"]'
 const deleteTxModalBtn = '[data-testid="delete-tx-btn"]'
 const toggleUntrustedBtn = '[data-testid="toggle-untrusted"]'
+const simulateTxBtn = '[data-testid="simulate-btn"]'
+const simulateSuccess = '[data-testid="simulation-success-msg"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -628,4 +630,12 @@ export function verifyBulkExecuteBtnIsDisabled() {
 
 export function toggleUntrustedTxs() {
   cy.get(toggleUntrustedBtn).click()
+}
+
+export function clickOnSimulateTxBtn() {
+  cy.get(simulateTxBtn).click()
+}
+
+export function verifySuccessfulSimulation() {
+  cy.get(simulateSuccess).should('exist')
 }

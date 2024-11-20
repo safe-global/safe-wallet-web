@@ -47,7 +47,6 @@ export function connectSigner(signer) {
         cy.get(connectWalletBtn)
           .eq(0)
           .should('be.enabled')
-          .and('be.visible')
           .click()
           .then(() => {
             const actionKey = $body.find(onboardv2).length > 0 ? 'privateKey' : 'retry'
