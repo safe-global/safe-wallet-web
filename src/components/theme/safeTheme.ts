@@ -193,20 +193,17 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
               margin: 0,
               borderColor: theme.palette.secondary.light,
             },
-
-            '&.Mui-expanded > .MuiAccordionSummary-root': {
-              background: theme.palette.background.light,
-            },
           }),
         },
       },
       MuiAccordionSummary: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             '&.Mui-expanded': {
               minHeight: '48px',
+              background: theme.palette.background.light,
             },
-          },
+          }),
           content: {
             '&.Mui-expanded': {
               margin: '12px 0',
