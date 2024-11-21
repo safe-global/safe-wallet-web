@@ -204,6 +204,11 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
               background: theme.palette.background.light,
             },
           }),
+          content: {
+            '&.Mui-expanded': {
+              margin: '12px 0',
+            },
+          },
         },
       },
       MuiAccordionDetails: {
