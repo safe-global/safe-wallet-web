@@ -2,9 +2,7 @@ import * as constants from '../../support/constants.js'
 import * as owner from '../pages/owners.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
-import * as navigation from '../pages/navigation.page.js'
 import * as proposer from '../pages/proposers.pages.js'
-import { getSafeDelegates } from '../../support/utils/cgw.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))

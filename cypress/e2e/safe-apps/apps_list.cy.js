@@ -76,4 +76,15 @@ describe('Safe Apps list tests', () => {
     safeapps.verifyCustomAppCount(1)
     safeapps.verifyAppDescription(myCustomAppDescrAdded)
   })
+
+  it('Verify the featured apps list', () => {
+    safeapps.verifyAppInFeaturedList(safeapps.transactionBuilderStr)
+    safeapps.verifyAppInFeaturedList(safeapps.cowswapStr)
+  })
+
+  it('Verify that pinned app can be in pinned section and in featured at the same time', () => {
+    safeapps.pinApp(0, safeapps.transactionBuilderStr)
+    safeapps.verifyAppInFeaturedList(safeapps.transactionBuilderStr)
+    safeapps.verifyAppInPinnedList(safeapps.transactionBuilderStr)
+  })
 })

@@ -345,6 +345,7 @@ export function renameSafeItem(oldName, newName) {
 
 export function removeSafeItem(name) {
   clickOnSafeItemOptionsBtn(name)
+  cy.wait(1000)
   clickOnRemoveBtn()
   confirmSafeItemRemoval()
   verifyModalRemoved()

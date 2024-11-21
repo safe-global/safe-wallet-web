@@ -1,11 +1,7 @@
-import * as constants from '../../support/constants'
 import * as main from './main.page'
-import * as createWallet from './create_wallet.pages'
-import * as navigation from './navigation.page'
 import * as addressBook from './address_book.page'
 import * as batch from './batches.pages'
 import * as create_tx from './create_tx.pages'
-import { getSafeDelegates } from '../../support/utils/cgw.js'
 
 export const proposersSection = '[data-testid="proposer-section"]'
 const addProposerBtn = '[data-testid="add-proposer-btn"]'
