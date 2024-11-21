@@ -28,3 +28,6 @@ expo-env.d.ts
 /.idea
 # Tamagui UI generates a lot of cache files
 .tamagui
+
+*storybook.log
+/storybook-static
