@@ -4,7 +4,7 @@ import { StyledTransactionsTabs, StyledTransactionTabItem, StyledTransactionTabT
 
 interface InlineTabProps {
   items: {
-    path: Href<string>
+    path: Href
     label: string
   }[]
 }
@@ -12,7 +12,7 @@ interface InlineTabProps {
 function InlineTab({ items }: InlineTabProps) {
   const path = usePathname()
 
-  const onTabItemClick = (screenPath: Href<string>) => () => {
+  const onTabItemClick = (screenPath: Href) => () => {
     router.replace(screenPath)
   }
 
