@@ -33,6 +33,12 @@ export const generateDataRowValue = (
         />
       )
     case 'rawData':
+      let length = 0
+      try {
+        length = dataLength(value)
+      } catch {
+        // ignore
+      }
       return (
         <Box
           data-testid="tx-data-row"
@@ -41,7 +47,7 @@ export const generateDataRowValue = (
             alignItems: 'center',
           }}
         >
-          <div>{value ? dataLength(value) : 0} bytes</div>
+          <div>{length} bytes</div>
           <CopyButton text={value} />
         </Box>
       )
