@@ -19,9 +19,7 @@ export default {
 export const Default = () => (
   <DataRow>
     <DataRow.Label>Send</DataRow.Label>
-    <DataRow.Value>
-      <Text>0.05452 ETH</Text>
-    </DataRow.Value>
+    <DataRow.Value>0.05452 ETH</DataRow.Value>
   </DataRow>
 )
 

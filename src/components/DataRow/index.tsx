@@ -1,13 +1,17 @@
 import React from 'react'
 import { XStack, Text, Theme, XStackProps } from 'tamagui'
 
-interface Props {
+type Props = {
   children: string
+}
+
+type ValueProps = {
+  children: string | React.ReactElement
 }
 
 export const DataRow: React.FC<XStackProps> & {
   Label: React.FC<Props>
-  Value: React.FC<Props>
+  Value: React.FC<ValueProps>
   Header: React.FC<Props>
 } = (props: XStackProps) => {
   const { children, ...rest } = props
@@ -24,7 +28,13 @@ const Label = ({ children }: Props) => (
   </Theme>
 )
 
-const Value = ({ children }: Props) => <Text>{children}</Text>
+const Value = ({ children }: { children: string | React.ReactElement }) => {
+  if (typeof children === 'string') {
+    return <Text>{children}</Text>
+  }
+
+  return children
+}
 
 const Header = ({ children }: Props) => (
   <Text fontWeight="600" marginVertical="$2">
