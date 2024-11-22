@@ -54,7 +54,7 @@ const getConfirmationViewComponent = ({
 
   if (isSwapOrderTxInfo(txInfo)) return <SwapOrder txDetails={txDetails} txInfo={txInfo} />
 
-  if (isAnyStakingTxInfo(txInfo)) return <StakingTx txDetails={txDetails} txInfo={txInfo as StakingTxInfo} />
+  if (isAnyStakingTxInfo(txInfo)) return <StakingTx txDetails={txDetails} txInfo={txInfo} />
 
   return null
 }
