@@ -74,7 +74,7 @@ export const AccountInfoChips = ({
   const showQueueActions = isVisible && !undeployedSafe && !isWatchlist
 
   return (
-    <Box width="100%">
+    <Box sx={{ width: '100%', mt: 0.3 }}>
       {undeployedSafe ? (
         <>
           {isMobile ? (

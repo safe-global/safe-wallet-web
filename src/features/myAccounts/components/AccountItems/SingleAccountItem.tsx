@@ -84,10 +84,10 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     undeployedSafe || !isVisible
       ? skipToken
       : {
-          chainId: safeItem.chainId,
-          safeAddress: safeItem.address,
-          walletAddress,
-        },
+        chainId: safeItem.chainId,
+        safeAddress: safeItem.address,
+        walletAddress,
+      },
   )
 
   const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold ?? defaultSafeInfo.threshold
@@ -95,22 +95,17 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     safeOverview?.owners ?? counterfactualSetup?.owners.map((address) => ({ value: address })) ?? defaultSafeInfo.owners
 
   const addToPinnedList = () => {
-    if (!isAdded && !undeployedSafe) {
-      dispatch(
-        addOrUpdateSafe({
-          safe: {
-            ...defaultSafeInfo,
-            chainId,
-            address: { value: address },
-            owners: safeOwners,
-            threshold: safeThreshold,
-          },
-        }),
-      )
-      dispatch(pinSafe({ chainId, address, removeOnUnpin: true }))
-    } else {
-      dispatch(pinSafe({ chainId, address, removeOnUnpin: false }))
-    }
+    dispatch(
+      addOrUpdateSafe({
+        safe: {
+          ...defaultSafeInfo,
+          chainId,
+          address: { value: address },
+          owners: safeOwners,
+          threshold: safeThreshold,
+        },
+      }),
+    )
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.pin })
   }
 
@@ -198,7 +193,15 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           fontSize="small"
         />
       </IconButton>
-      <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
+
+      <SafeListContextMenu
+        name={name}
+        address={address}
+        chainId={chainId}
+        addNetwork={isReplayable}
+        rename
+        undeployedSafe={!!undeployedSafe}
+      />
 
       {isMobile && (
         <AccountInfoChips
