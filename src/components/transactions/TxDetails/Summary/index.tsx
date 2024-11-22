@@ -136,7 +136,11 @@ export const PartialSummary = ({ safeTx }: { safeTx: SafeTransaction }) => {
   const txData = safeTx.data
   const { safeAddress, safe } = useSafeInfo()
   const safeTxHash = useMemo(() => {
-    return safe.version && calculateSafeTransactionHash(safeAddress, safeTx.data, safe.version, BigInt(safe.chainId))
+    try {
+      return safe.version && calculateSafeTransactionHash(safeAddress, safeTx.data, safe.version, BigInt(safe.chainId))
+    } catch {
+      // FIXME: When connected as parent via WC, safeTx.data.safeTxGas is NaN when switching between signer/proposer
+    }
   }, [safe.chainId, safe.version, safeAddress, safeTx.data])
   return (
     <>
