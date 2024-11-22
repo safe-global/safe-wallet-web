@@ -67,6 +67,7 @@ const signersNotConsistentMsg3 =
   'To manage your account easier and to prevent lose of funds, we recommend keeping the same signers'
 const signersNotConsistentConfirmTxViewMsg = (network) =>
   `Signers are not consistent across networks on this account. Changing signers will only affect the account on ${network}`
+const activateStr = 'You need to activate your Safe first'
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
@@ -187,7 +188,7 @@ export function verifyTxCounter(counter) {
 }
 
 export function verifyNavItemDisabled(item) {
-  cy.get(sideBarListItem).contains(item).parents('li').invoke('attr', 'class').should('include', 'disabled')
+  cy.get(`div[aria-label*="${activateStr}"]`).contains(item).should('exist')
 }
 
 export function verifySafeCount(count) {
@@ -344,6 +345,7 @@ export function renameSafeItem(oldName, newName) {
 
 export function removeSafeItem(name) {
   clickOnSafeItemOptionsBtn(name)
+  cy.wait(1000)
   clickOnRemoveBtn()
   confirmSafeItemRemoval()
   verifyModalRemoved()

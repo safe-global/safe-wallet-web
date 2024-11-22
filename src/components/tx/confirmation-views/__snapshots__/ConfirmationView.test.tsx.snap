@@ -137,7 +137,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
       class="MuiBox-root css-0"
     >
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1befnxe-MuiPaper-root-MuiAccordion-root"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1gdgqta-MuiPaper-root-MuiAccordion-root"
         style="--Paper-shadow: none;"
       >
         <h3
@@ -145,7 +145,7 @@ exports[`ConfirmationView should display a confirmation screen for a SETTINGS_CH
         >
           <div
             aria-expanded="false"
-            class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-66oagt-MuiButtonBase-root-MuiAccordionSummary-root"
+            class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-6csn7x-MuiButtonBase-root-MuiAccordionSummary-root"
             data-testid="decoded-tx-summary"
             role="button"
             tabindex="0"
@@ -693,7 +693,7 @@ exports[`ConfirmationView should display a confirmation with method call when th
       class="MuiBox-root css-0"
     >
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1befnxe-MuiPaper-root-MuiAccordion-root"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded MuiAccordion-gutters css-1gdgqta-MuiPaper-root-MuiAccordion-root"
         style="--Paper-shadow: none;"
       >
         <h3
@@ -701,7 +701,7 @@ exports[`ConfirmationView should display a confirmation with method call when th
         >
           <div
             aria-expanded="false"
-            class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-66oagt-MuiButtonBase-root-MuiAccordionSummary-root"
+            class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters accordion css-6csn7x-MuiButtonBase-root-MuiAccordionSummary-root"
             data-testid="decoded-tx-summary"
             role="button"
             tabindex="0"

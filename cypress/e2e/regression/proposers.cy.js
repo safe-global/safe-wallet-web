@@ -58,14 +58,14 @@ describe('Proposers tests', () => {
   })
 
   it('Verify a proposer Creator is shown in the table', () => {
-    proposer.checkCreatorAddress(0, [creatorAddress])
+    proposer.checkCreatorAddress([creatorAddress])
   })
 
   it('Verify non-creators of a proposers cannot edit or delete it', () => {
     navigation.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
     wallet.connectSigner(signer2)
-    proposer.verifyDeleteProposerBtnIsDisabled()
+    proposer.verifyDeleteProposerBtnIsDisabled(proposerAddress)
     proposer.verifyEditProposerBtnDisabled(proposerAddress)
   })
 
@@ -73,11 +73,11 @@ describe('Proposers tests', () => {
     main.addToLocalStorage(constants.localStorageKeys.SAFE_v2__addressBook, ls.addressBookData.proposers)
     cy.reload()
     cy.contains(owner.safeAccountNonceStr, { timeout: 10000 })
-    proposer.checkProposerData(0, [proposerNameAD])
+    proposer.checkProposerData([proposerNameAD])
   })
 
   it('Verify if the address book entry of propers name is removed, then the name given during its creation shows again', () => {
-    proposer.checkProposerData(0, [proposerName])
+    proposer.checkProposerData([proposerName])
   })
 
   it('Verify Proposers cannot see the "Batched tx" button in the header', () => {
