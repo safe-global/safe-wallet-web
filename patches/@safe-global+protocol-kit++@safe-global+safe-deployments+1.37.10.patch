@@ -1,0 +1,1020 @@
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/compatibility_fallback_handler.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/compatibility_fallback_handler.json
+index bd4341d..f8d5dd2 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/compatibility_fallback_handler.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/compatibility_fallback_handler.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/create_call.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/create_call.json
+index 0675f78..1e3367d 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/create_call.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/create_call.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe.json
+index bfc9e27..7fbf12a 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json
+index 01114ac..363c41d 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/multi_send.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/multi_send.json
+index 58146b8..9db3165 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/multi_send.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/multi_send.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/multi_send_call_only.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/multi_send_call_only.json
+index 104089b..209e28a 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/multi_send_call_only.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/multi_send_call_only.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/proxy_factory.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/proxy_factory.json
+index d46c162..2c36ffc 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/proxy_factory.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/proxy_factory.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/sign_message_lib.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/sign_message_lib.json
+index 7278cc1..3fe76ba 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/sign_message_lib.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/sign_message_lib.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/simulate_tx_accessor.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/simulate_tx_accessor.json
+index c272e70..952b43e 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/simulate_tx_accessor.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.3.0/simulate_tx_accessor.json
+@@ -17,6 +17,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "eip155",
++        "88882": "eip155",
+         "1": ["canonical", "eip155"],
+         "3": "canonical",
+         "4": "canonical",
+@@ -81,6 +83,7 @@
+         "324": "zksync",
+         "336": ["canonical", "eip155"],
+         "338": "eip155",
++        "360": "eip155",
+         "369": "canonical",
+         "388": "zksync",
+         "420": "eip155",
+@@ -100,7 +103,7 @@
+         "1001": "eip155",
+         "1008": "canonical",
+         "1030": "canonical",
+-        "1088": "eip155",
++        "1088": ["eip155", "canonical"],
+         "1101": ["canonical", "eip155"],
+         "1111": "eip155",
+         "1112": "eip155",
+@@ -153,9 +156,11 @@
+         "5000": ["eip155", "canonical"],
+         "5001": "eip155",
+         "5003": ["eip155", "canonical"],
++        "5165": "canonical",
+         "5700": ["eip155", "canonical"],
+         "6001": "canonical",
+         "6102": "eip155",
++        "6398": "eip155",
+         "7000": ["eip155", "canonical"],
+         "7001": "eip155",
+         "7332": "eip155",
+@@ -178,6 +183,7 @@
+         "10242": "eip155",
+         "10243": "eip155",
+         "10849": "canonical",
++        "11011": "eip155",
+         "11111": "canonical",
+         "11235": "canonical",
+         "11437": "canonical",
+@@ -189,6 +195,7 @@
+         "13337": "canonical",
+         "13371": "eip155",
+         "13473": "eip155",
++        "14800": "eip155",
+         "17000": ["canonical", "eip155"],
+         "17069": ["eip155", "canonical"],
+         "17172": "eip155",
+@@ -197,6 +204,7 @@
+         "22776": "canonical",
+         "23294": "eip155",
+         "23295": "eip155",
++        "25327": "eip155",
+         "28979": "canonical",
+         "33401": "canonical",
+         "34443": ["canonical", "eip155"],
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/compatibility_fallback_handler.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/compatibility_fallback_handler.json
+index c3cfee3..217671d 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/compatibility_fallback_handler.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/compatibility_fallback_handler.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/create_call.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/create_call.json
+index 6458da5..61e3d8a 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/create_call.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/create_call.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/multi_send.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/multi_send.json
+index b2f7877..d8dba16 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/multi_send.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/multi_send.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/multi_send_call_only.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/multi_send_call_only.json
+index 9dd4882..3e986e9 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/multi_send_call_only.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/multi_send_call_only.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe.json
+index 9316e57..6fc8319 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_l2.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_l2.json
+index 331dba8..a1c403f 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_l2.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_l2.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_migration.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_migration.json
+index fca843f..c458912 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_migration.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_migration.json
+@@ -9,16 +9,23 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "10": "canonical",
+         "56": "canonical",
++        "81": "canonical",
+         "100": "canonical",
+         "137": "canonical",
+         "196": "canonical",
++        "480": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1101": "canonical",
+         "1337": "canonical",
+         "5000": "canonical",
+         "8453": "canonical",
++        "10081": "canonical",
+         "42161": "canonical",
+         "42220": "canonical",
+         "43114": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_proxy_factory.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_proxy_factory.json
+index c101c22..e5e5ddd 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_proxy_factory.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_proxy_factory.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_to_l2_migration.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_to_l2_migration.json
+index 59ff972..6a4fba4 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_to_l2_migration.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_to_l2_migration.json
+@@ -9,16 +9,23 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "10": "canonical",
+         "56": "canonical",
++        "81": "canonical",
+         "100": "canonical",
+         "137": "canonical",
+         "196": "canonical",
++        "480": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1101": "canonical",
+         "1337": "canonical",
+         "5000": "canonical",
+         "8453": "canonical",
++        "10081": "canonical",
+         "42161": "canonical",
+         "42220": "canonical",
+         "43114": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_to_l2_setup.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_to_l2_setup.json
+index 89ddef4..54bd322 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_to_l2_setup.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/safe_to_l2_setup.json
+@@ -9,16 +9,23 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "10": "canonical",
+         "56": "canonical",
++        "81": "canonical",
+         "100": "canonical",
+         "137": "canonical",
+         "196": "canonical",
++        "480": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1101": "canonical",
+         "1337": "canonical",
+         "5000": "canonical",
+         "8453": "canonical",
++        "10081": "canonical",
+         "42161": "canonical",
+         "42220": "canonical",
+         "43114": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/sign_message_lib.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/sign_message_lib.json
+index 6490997..6e52f3f 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/sign_message_lib.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/sign_message_lib.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",
+diff --git a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/simulate_tx_accessor.json b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/simulate_tx_accessor.json
+index ba24dc0..ce35fdf 100644
+--- a/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/simulate_tx_accessor.json
++++ b/node_modules/@safe-global/protocol-kit/node_modules/@safe-global/safe-deployments/dist/assets/v1.4.1/simulate_tx_accessor.json
+@@ -9,6 +9,8 @@
+         }
+     },
+     "networkAddresses": {
++        "88888": "canonical",
++        "88882": "canonical",
+         "1": "canonical",
+         "5": "canonical",
+         "10": "canonical",
+@@ -21,6 +23,7 @@
+         "41": "canonical",
+         "56": "canonical",
+         "71": "canonical",
++        "81": "canonical",
+         "97": "canonical",
+         "100": "canonical",
+         "114": "canonical",
+@@ -40,6 +43,8 @@
+         "592": "canonical",
+         "690": "canonical",
+         "919": "canonical",
++        "970": "canonical",
++        "995": "canonical",
+         "1030": "canonical",
+         "1101": "canonical",
+         "1111": "canonical",
+@@ -84,6 +89,7 @@
+         "8194": "canonical",
+         "8453": "canonical",
+         "9001": "canonical",
++        "10081": "canonical",
+         "10242": "canonical",
+         "10243": "canonical",
+         "11235": "canonical",

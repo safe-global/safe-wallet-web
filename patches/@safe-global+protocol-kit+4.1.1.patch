@@ -1,0 +1,13 @@
+diff --git a/node_modules/@safe-global/protocol-kit/dist/src/utils/eip-3770/config.js b/node_modules/@safe-global/protocol-kit/dist/src/utils/eip-3770/config.js
+index 00ae69d..500b992 100644
+--- a/node_modules/@safe-global/protocol-kit/dist/src/utils/eip-3770/config.js
++++ b/node_modules/@safe-global/protocol-kit/dist/src/utils/eip-3770/config.js
+@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.networks = void 0;
+ // https://github.com/ethereum-lists/chains/tree/master/_data/chains
+ exports.networks = [
++    { chainId: 88882n, shortName: 'chzspicy' },
++    { chainId: 88888n, shortName: 'chzmainnet' },
+     { chainId: 1n, shortName: 'eth' },
+     { chainId: 3n, shortName: 'rop' },
+     { chainId: 4n, shortName: 'rin' },
