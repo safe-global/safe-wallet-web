@@ -7,9 +7,8 @@ import { compareAsc } from 'date-fns'
 import { Alert, Typography } from '@mui/material'
 import { formatAmount } from '@/utils/formatNumber'
 import { getLimitPrice, getOrderClass, getSlippageInPercent } from '@/features/swap/helpers/utils'
-import type { AnySwapOrderConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
-import { StartTimeValue } from '@safe-global/safe-gateway-typescript-sdk'
-import { ConfirmationViewTypes } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DataDecoded, SwapOrder, SwapTransferOrder, TwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
+import { StartTimeValue, TransactionInfoType } from '@safe-global/safe-gateway-typescript-sdk'
 import SwapTokens from '@/features/swap/components/SwapTokens'
 import AlertIcon from '@/public/images/common/alert.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -23,14 +22,15 @@ import { isSettingTwapFallbackHandler } from '@/features/swap/helpers/utils'
 import { TwapFallbackHandlerWarning } from '@/features/swap/components/TwapFallbackHandlerWarning'
 
 type SwapOrderProps = {
-  order: AnySwapOrderConfirmationView
+  order: SwapOrder | SwapTransferOrder | TwapOrder
   settlementContract: string
+  decodedData?: DataDecoded
 }
 
-export const SwapOrderConfirmation = ({ order, settlementContract }: SwapOrderProps): ReactElement => {
+export const SwapOrderConfirmation = ({ order, decodedData, settlementContract }: SwapOrderProps): ReactElement => {
   const { owner, kind, validUntil, sellToken, buyToken, sellAmount, buyAmount, explorerUrl, receiver } = order
 
-  const isTwapOrder = order.type === ConfirmationViewTypes.COW_SWAP_TWAP_ORDER
+  const isTwapOrder = order.type === TransactionInfoType.TWAP_ORDER
 
   const limitPrice = getLimitPrice(order)
   const orderClass = getOrderClass(order)
@@ -39,7 +39,7 @@ export const SwapOrderConfirmation = ({ order, settlementContract }: SwapOrderPr
 
   const slippage = getSlippageInPercent(order)
   const isSellOrder = kind === 'sell'
-  const isChangingFallbackHandler = isSettingTwapFallbackHandler(order)
+  const isChangingFallbackHandler = decodedData && isSettingTwapFallbackHandler(decodedData)
 
   return (
     <>

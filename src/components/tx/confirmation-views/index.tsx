@@ -1,4 +1,3 @@
-import type { StakingTxInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import DecodedTx from '../DecodedTx'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
