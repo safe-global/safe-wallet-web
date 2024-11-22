@@ -95,7 +95,7 @@ describe('SignerForm', () => {
     expect(result.queryByText('Sign with')).toBeNull()
   })
 
-  it('should render form if there are nested Safes', () => {
+  it('should render sign form if there are nested Safes', () => {
     mockUseNestedSafeOwners.mockReturnValue([mockOwners[0].value])
     const result = render(
       <TestWalletContextProvider
@@ -110,5 +110,22 @@ describe('SignerForm', () => {
       </TestWalletContextProvider>,
     )
     expect(result.queryByText('Sign with')).toBeVisible()
+  })
+
+  it('should render execution form if there are nested Safes', () => {
+    mockUseNestedSafeOwners.mockReturnValue([mockOwners[0].value])
+    const result = render(
+      <TestWalletContextProvider
+        connectedWallet={{
+          address: faker.finance.ethereumAddress(),
+          chainId: '1',
+          label: 'MetaMask',
+          provider: {} as Eip1193Provider,
+        }}
+      >
+        <SignerForm willExecute />
+      </TestWalletContextProvider>,
+    )
+    expect(result.queryByText('Execute with')).toBeVisible()
   })
 })

@@ -172,7 +172,7 @@ export const SignOrExecuteForm = ({
 
       {!isCounterfactualSafe && !props.isRejection && <TxChecks />}
 
-      <SignerForm />
+      <SignerForm willExecute={willExecute} />
 
       <TxCard>
         <ConfirmationTitle

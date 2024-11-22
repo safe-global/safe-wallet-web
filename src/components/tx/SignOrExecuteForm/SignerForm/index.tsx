@@ -24,7 +24,7 @@ import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
 import { getAvailableSigners } from '@/utils/signers'
 
-export const SignerForm = () => {
+export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
   const { signer, setSignerAddress, connectedWallet: wallet } = useWalletContext() ?? {}
   const nestedSafeOwners = useNestedSafeOwners()
   const signerAddress = signer?.address
@@ -42,8 +42,8 @@ export const SignerForm = () => {
 
   const isNotNestedOwner = useMemo(() => nestedSafeOwners && nestedSafeOwners.length === 0, [nestedSafeOwners])
   const isOptionEnabled = useCallback(
-    (address: string) => availableSigners.some((available) => sameAddress(available, address)),
-    [availableSigners],
+    (address: string) => willExecute || availableSigners.some((available) => sameAddress(available, address)),
+    [willExecute, availableSigners],
   )
 
   const options = useMemo(
@@ -64,9 +64,11 @@ export const SignerForm = () => {
     <TxCard>
       <Typography variant="h5" display="flex" gap={1} alignItems="center">
         <SvgIcon component={SignatureIcon} inheritViewBox fontSize="small" />
-        Sign with
+        {willExecute ? 'Execute' : 'Sign'} with
         <Tooltip
-          title="Your connected wallet controls other Safe Accounts, which can sign this transaction. You can select which Account to sign with."
+          title={`Your connected wallet controls other Safe Accounts, which can sign this transaction. You can select which Account to ${
+            willExecute ? 'execute' : 'sign'
+          } with.`}
           arrow
           placement="top"
         >
