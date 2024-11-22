@@ -32,7 +32,10 @@ function ChangeThreshold({ txDetails }: ChangeThresholdProps) {
         </Typography>
 
         <Typography aria-label="threshold">
-          <b>{newThreshold || threshold}</b> out of <b>{safe.owners.length} signer(s)</b>
+          <b>{newThreshold || threshold}</b> out of{' '}
+          <b>
+            {safe.owners.length} signer{safe.owners.length > 1 ? 's' : ''}
+          </b>
         </Typography>
       </div>
       <Box

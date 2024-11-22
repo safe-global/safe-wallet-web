@@ -225,7 +225,9 @@ export function RecoverAccountFlowSetup({
             </Grid>
 
             <Grid item>
-              <Typography>out of {fields.length} signer(s)</Typography>
+              <Typography>
+                out of {fields.length} signer{fields.length > 1 ? 's' : ''}
+              </Typography>
             </Grid>
           </Grid>
 

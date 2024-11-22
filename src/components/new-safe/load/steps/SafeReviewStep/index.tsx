@@ -118,7 +118,7 @@ const SafeReviewStep = ({ data, onBack }: StepRenderProps<LoadSafeFormData>) => 
             name="Threshold"
             value={
               <Typography>
-                {data.threshold} out of {data.owners.length} signer(s)
+                {data.threshold} out of {data.owners.length} signer{data.owners.length > 1 ? 's' : ''}
               </Typography>
             }
           />

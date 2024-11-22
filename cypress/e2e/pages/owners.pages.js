@@ -95,7 +95,7 @@ export function getThresholdOptions() {
 }
 
 export function verifyThresholdLimit(startValue, endValue) {
-  cy.get('p').contains(`out of ${endValue} signer(s)`)
+  cy.get('p').contains(`out of ${endValue} signer${endValue > 1 ? 's' : ''}`)
   clickOnThresholdDropdown()
   getThresholdOptions().eq(0).should('have.text', startValue).click()
 }
@@ -248,7 +248,9 @@ export function verifyConfirmTransactionWindowDisplayed() {
 
 export function verifyThreshold(startValue, endValue) {
   main.verifyInputValue(thresholdInput, startValue)
-  cy.get('p').contains(`out of ${endValue} signer(s)`).should('be.visible')
+  cy.get('p')
+    .contains(`out of ${endValue} signer${endValue > 1 ? 's' : ''}`)
+    .should('be.visible')
   cy.get(thresholdInput).parent().click()
   cy.get(thresholdList).contains(endValue).should('be.visible')
   cy.get(thresholdList).find('li').should('have.length', endValue)

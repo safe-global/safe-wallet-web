@@ -174,7 +174,9 @@ const OwnerPolicyStep = ({
               />
             </Grid>
             <Grid item>
-              <Typography>out of {ownerFields.length} signer(s)</Typography>
+              <Typography>
+                out of {ownerFields.length} signer{ownerFields.length > 1 ? 's' : ''}
+              </Typography>
             </Grid>
           </Grid>
         </Box>

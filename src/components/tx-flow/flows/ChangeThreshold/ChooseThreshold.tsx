@@ -104,7 +104,9 @@ export const ChooseThreshold = ({
                     </TextField>
                   </Grid>
                   <Grid item>
-                    <Typography>out of {safe.owners.length} signer(s)</Typography>
+                    <Typography>
+                      out of {safe.owners.length} signer{safe.owners.length > 1 ? 's' : ''}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
                     {isError ? (

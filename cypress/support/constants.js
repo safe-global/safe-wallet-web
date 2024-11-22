@@ -101,7 +101,7 @@ export const safeContractVersions = {
 }
 
 export const commonThresholds = {
-  oneOfOne: '1 out of 1 signer(s)',
+  oneOfOne: '1 out of 1 signer',
 }
 export const TXActionNames = {
   resetAllowance: 'resetAllowance',

@@ -101,7 +101,9 @@ export const SetThreshold = ({
               </Select>
             </Grid>
             <Grid item>
-              <Typography>out of {newNumberOfOwners} signer(s)</Typography>
+              <Typography>
+                out of {newNumberOfOwners} signer{newNumberOfOwners > 1 ? 's' : ''}
+              </Typography>
             </Grid>
           </Grid>
         </Box>

@@ -26,6 +26,6 @@ describe('ChangeThreshold', () => {
     )
 
     expect(container).toMatchSnapshot()
-    expect(getByLabelText('threshold')).toHaveTextContent('3 out of 1 signer(s)')
+    expect(getByLabelText('threshold')).toHaveTextContent('3 out of 1 signer')
   })
 })
