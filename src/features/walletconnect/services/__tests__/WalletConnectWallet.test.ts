@@ -4,6 +4,10 @@ import type { IWalletKit, WalletKitTypes } from '@reown/walletkit'
 
 import WalletConnectWallet from '../WalletConnectWallet'
 
+jest.mock('@walletconnect/core', () => ({
+  Core: jest.fn(),
+}))
+
 jest.mock('@reown/walletkit', () => {
   class MockWeb3Wallet implements Partial<IWalletKit> {
     static init() {
