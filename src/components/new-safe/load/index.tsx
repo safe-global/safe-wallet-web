@@ -68,7 +68,7 @@ const LoadSafe = ({ initialData }: { initialData?: TxStepperProps<LoadSafeFormDa
               pb: 2,
             }}
           >
-            Add a read-only Safe Account
+            Add existing Safe Account
           </Typography>
         </Grid>
         <Grid

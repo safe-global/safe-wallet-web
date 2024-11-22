@@ -21,7 +21,7 @@ const useTrackSafesCount = (
   const isLoginPage = router.pathname === AppRoutes.welcome.accounts
 
   const ownedMultiChainSafes = useMemo(
-    () => safes.allMultiChainSafes?.filter((account) => account.safes.some(({ isWatchlist }) => !isWatchlist)),
+    () => safes.allMultiChainSafes?.filter((account) => account.safes.some(({ isReadOnly }) => !isReadOnly)),
     [safes],
   )
 
@@ -29,19 +29,19 @@ const useTrackSafesCount = (
   const watchlistMultiChainSafes = useMemo(
     () =>
       safes.allMultiChainSafes?.filter((account) =>
-        account.safes.some(({ isWatchlist, isPinned }) => isWatchlist && !isPinned),
+        account.safes.some(({ isReadOnly, isPinned }) => isReadOnly && !isPinned),
       ),
     [safes],
   )
 
   const ownedSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
-    () => [...(ownedMultiChainSafes ?? []), ...(safes.allSingleSafes?.filter(({ isWatchlist }) => !isWatchlist) ?? [])],
+    () => [...(ownedMultiChainSafes ?? []), ...(safes.allSingleSafes?.filter(({ isReadOnly }) => !isReadOnly) ?? [])],
     [safes, ownedMultiChainSafes],
   )
   const watchlistSafes = useMemo<(MultiChainSafeItem | SafeItem)[]>(
     () => [
       ...(watchlistMultiChainSafes ?? []),
-      ...(safes.allSingleSafes?.filter(({ isWatchlist, isPinned }) => isWatchlist && !isPinned) ?? []),
+      ...(safes.allSingleSafes?.filter(({ isReadOnly, isPinned }) => isReadOnly && !isPinned) ?? []),
     ],
     [safes, watchlistMultiChainSafes],
   )

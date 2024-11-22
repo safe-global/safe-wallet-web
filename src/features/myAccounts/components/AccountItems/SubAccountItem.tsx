@@ -102,7 +102,7 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
             {!isMobile && (
               <AccountInfoChips
                 isActivating={isActivating}
-                isWatchlist={safeItem.isWatchlist}
+                isReadOnly={safeItem.isReadOnly}
                 undeployedSafe={!!undeployedSafe}
                 isVisible={isVisible}
                 safeOverview={safeOverview ?? null}
@@ -124,13 +124,20 @@ const SubAccountItem = ({ onLinkClick, safeItem, safeOverview }: SubAccountItem)
         </Link>
       </Track>
       {undeployedSafe && (
-        <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={false} rename={false} />
+        <SafeListContextMenu
+          name={name}
+          address={address}
+          chainId={chainId}
+          addNetwork={false}
+          rename={false}
+          undeployedSafe={!!undeployedSafe}
+        />
       )}
 
       {isMobile && (
         <AccountInfoChips
           isActivating={isActivating}
-          isWatchlist={safeItem.isWatchlist}
+          isReadOnly={safeItem.isReadOnly}
           undeployedSafe={!!undeployedSafe}
           isVisible={isVisible}
           safeOverview={safeOverview ?? null}

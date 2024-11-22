@@ -13,7 +13,7 @@ describe('multiChain/utils', () => {
             {
               address: faker.finance.ethereumAddress(),
               chainId: '1',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -31,7 +31,7 @@ describe('multiChain/utils', () => {
         isMultiChainSafeItem({
           address: faker.finance.ethereumAddress(),
           chainId: '1',
-          isWatchlist: false,
+          isReadOnly: false,
           isPinned: false,
           lastVisited: 0,
           name: undefined,
@@ -238,7 +238,7 @@ describe('multiChain/utils', () => {
             {
               address: faker.finance.ethereumAddress(),
               chainId: '1',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -257,7 +257,7 @@ describe('multiChain/utils', () => {
             {
               address: faker.finance.ethereumAddress(),
               chainId: '1',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -280,7 +280,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '1',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -288,7 +288,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '100',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -338,7 +338,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '1',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -346,7 +346,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '100',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -402,7 +402,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '1',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -410,7 +410,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '100',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -418,7 +418,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '5',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -472,7 +472,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '1',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,
@@ -480,7 +480,7 @@ describe('multiChain/utils', () => {
             {
               address,
               chainId: '100',
-              isWatchlist: false,
+              isReadOnly: false,
               isPinned: false,
               lastVisited: 0,
               name: undefined,

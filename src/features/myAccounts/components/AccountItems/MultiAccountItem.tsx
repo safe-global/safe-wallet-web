@@ -103,8 +103,8 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
 
   const deployedChainIds = useMemo(() => safes.map((safe) => safe.chainId), [safes])
 
-  const isWatchlist = useMemo(
-    () => multiSafeAccountItem.safes.every((safe) => safe.isWatchlist),
+  const isReadOnly = useMemo(
+    () => multiSafeAccountItem.safes.every((safe) => safe.isReadOnly),
     [multiSafeAccountItem.safes],
   )
 
@@ -160,7 +160,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
     const isGroupAdded = safes.every((safe) => allAddedSafes[safe.chainId]?.[safe.address])
     if (isGroupAdded) {
       for (const safe of safes) {
-        dispatch(pinSafe({ chainId: safe.chainId, address: safe.address, removeOnUnpin: false }))
+        dispatch(pinSafe({ chainId: safe.chainId, address: safe.address }))
       }
     } else {
       for (const safe of safes) {
@@ -176,7 +176,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             },
           }),
         )
-        dispatch(pinSafe({ chainId: safe.chainId, address: safe.address, removeOnUnpin: true }))
+        dispatch(pinSafe({ chainId: safe.chainId, address: safe.address }))
       }
     }
     trackEvent({ ...OVERVIEW_EVENTS.PIN_SAFE, label: PIN_SAFE_LABELS.pin })
@@ -277,7 +277,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
               />
             ))}
           </Box>
-          {!isWatchlist && hasReplayableSafe && (
+          {!isReadOnly && hasReplayableSafe && (
             <>
               <Divider sx={{ ml: '-12px', mr: '-12px' }} />
               <Box

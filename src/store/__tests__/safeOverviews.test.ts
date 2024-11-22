@@ -223,7 +223,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -231,7 +231,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '10',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -280,7 +280,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -288,7 +288,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '10',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -319,7 +319,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -327,7 +327,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -335,7 +335,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -343,7 +343,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -351,7 +351,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -359,7 +359,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -367,7 +367,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -375,7 +375,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -383,7 +383,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -391,7 +391,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -399,7 +399,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -407,7 +407,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -415,7 +415,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -423,7 +423,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,
@@ -431,7 +431,7 @@ describe('safeOverviews', () => {
           {
             address: faker.finance.ethereumAddress(),
             chainId: '1',
-            isWatchlist: false,
+            isReadOnly: false,
             isPinned: false,
             lastVisited: 0,
             name: undefined,

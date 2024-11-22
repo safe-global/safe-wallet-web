@@ -61,12 +61,12 @@ const SafeListContextMenu = ({
 
   const handleOpenModal =
     (type: keyof typeof open, event: typeof OVERVIEW_EVENTS.SIDEBAR_RENAME | typeof OVERVIEW_EVENTS.SIDEBAR_RENAME) =>
-      () => {
-        handleCloseContextMenu()
-        setOpen((prev) => ({ ...prev, [type]: true }))
+    () => {
+      handleCloseContextMenu()
+      setOpen((prev) => ({ ...prev, [type]: true }))
 
-        trackEvent({ ...event, label: trackingLabel })
-      }
+      trackEvent({ ...event, label: trackingLabel })
+    }
 
   const handleCloseModal = () => {
     setOpen(defaultOpen)
