@@ -33,7 +33,7 @@ const currencySection = '[data-testid="currency-section"]'
 const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
 const showMoreBtn = '[data-testid="show-more-btn" ]'
-const importBtn = '[data-testid="import-btn"]'
+export const importBtn = '[data-testid="import-btn"]'
 export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
 const multichainItemSummary = '[data-testid="multichain-item-summary"]'
@@ -105,8 +105,6 @@ export function getImportBtn() {
   return cy.get(importBtn).scrollIntoView().should('be.visible')
 }
 export function clickOnSidebarImportBtn() {
-  cy.get(sidebarSafeContainer).find(sideSafeListItem).last().scrollIntoView()
-
   getImportBtn().click()
   modal.verifyModalTitle(modal.modalTitiles.dataImport)
   file.verifyValidImportInputExists()
