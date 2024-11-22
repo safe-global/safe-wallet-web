@@ -16,7 +16,14 @@ const ExternalLink = ({
   if (!href) return <>{children}</>
 
   const linkContent = (
-    <Box display="inline-flex" alignItems="center" gap={0.2} component="span">
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 0.2,
+      }}
+    >
       {children}
       {!noIcon && <OpenInNewRounded fontSize="small" />}
     </Box>

@@ -90,13 +90,24 @@ export const PushNotifications = (): ReactElement => {
       <Paper sx={{ p: 4, mb: 2 }}>
         <Grid container spacing={3}>
           <Grid item sm={4} xs={12}>
-            <Typography variant="h4" fontWeight={700}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+              }}
+            >
               Push notifications
             </Typography>
           </Grid>
 
           <Grid item xs>
-            <Grid container gap={2.5} flexDirection="column">
+            <Grid
+              container
+              sx={{
+                gap: 2.5,
+                flexDirection: 'column',
+              }}
+            >
               <Typography>
                 Enable push notifications for {safeLoaded ? 'this Safe Account' : 'your Safe Accounts'} in your browser
                 with your signature. You will need to enable them again if you clear your browser cache. Learn more
@@ -105,7 +116,13 @@ export const PushNotifications = (): ReactElement => {
 
               {shouldShowMacHelper && (
                 <Alert severity="info" className={css.macOsInfo}>
-                  <Typography fontWeight={700} variant="body2" mb={1}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 700,
+                      mb: 1,
+                    }}
+                  >
                     For macOS users
                   </Typography>
                   <Typography variant="body2">
@@ -161,7 +178,12 @@ export const PushNotifications = (): ReactElement => {
         <Paper sx={{ p: 4 }}>
           <Grid container spacing={3}>
             <Grid item sm={4} xs={12}>
-              <Typography variant="h4" fontWeight={700}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                }}
+              >
                 Notification
               </Typography>
             </Grid>
@@ -244,7 +266,12 @@ export const PushNotifications = (): ReactElement => {
                     <>
                       <Typography>Confirmation requests</Typography>
                       {!preferences[WebhookType.CONFIRMATION_REQUEST] && (
-                        <Typography color="text.secondary" variant="body2">
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: 'text.secondary',
+                          }}
+                        >
                           {isOwner ? 'Requires your signature' : 'Only signers'}
                         </Typography>
                       )}

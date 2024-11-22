@@ -57,7 +57,12 @@ const RecoveryAttemptReview = ({ item }: RecoveryAttemptReviewProps) => {
   return (
     <TxCard>
       <form onSubmit={onFormSubmit}>
-        <Stack gap={3} mb={2}>
+        <Stack
+          sx={{
+            gap: 3,
+            mb: 2,
+          }}
+        >
           <Typography>Execute this transaction to finalize the recovery.</Typography>
 
           <FieldsGrid title="Initiator">

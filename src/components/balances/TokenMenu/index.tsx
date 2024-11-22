@@ -27,11 +27,22 @@ const TokenMenu = ({
       <Box className={css.wrapper}>
         <Box className={css.hideTokensHeader}>
           <VisibilityOffOutlined />
-          <Typography variant="body2" lineHeight="inherit">
+          <Typography
+            variant="body2"
+            sx={{
+              lineHeight: 'inherit',
+            }}
+          >
             {selectedAssetCount} {selectedAssetCount === 1 ? 'token' : 'tokens'} selected
           </Typography>
         </Box>
-        <Box display="flex" flexDirection="row" gap={1}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 1,
+          }}
+        >
           <Track {...ASSETS_EVENTS.CANCEL_HIDE_DIALOG}>
             <Button onClick={cancel} className={css.cancelButton} size="small" variant="outlined">
               Cancel

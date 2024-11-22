@@ -238,8 +238,8 @@ describe('transactions', () => {
                 data: safeTxDataBuilder()
                   .with({
                     to: onlyCalls
-                      ? getMultiSendCallOnlyDeployment()?.defaultAddress ?? faker.finance.ethereumAddress()
-                      : getMultiSendDeployment()?.defaultAddress ?? faker.finance.ethereumAddress(),
+                      ? (getMultiSendCallOnlyDeployment()?.defaultAddress ?? faker.finance.ethereumAddress())
+                      : (getMultiSendDeployment()?.defaultAddress ?? faker.finance.ethereumAddress()),
                     value: '0',
                     data: Multi_send__factory.createInterface().encodeFunctionData('multiSend', [
                       encodeMultiSendData(transactions),

@@ -19,7 +19,13 @@ export function OwnerList({
 }): ReactElement {
   return (
     <Paper className={css.container} sx={sx}>
-      <Typography color="text.secondary" display="flex" alignItems="center">
+      <Typography
+        sx={{
+          color: 'text.secondary',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
         {title ?? `New signer${owners.length > 1 ? 's' : ''}`}
       </Typography>

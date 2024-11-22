@@ -21,7 +21,14 @@ const TransferTxInfoMain = ({ txInfo, txStatus, trusted, imitation }: TransferTx
   const { direction } = txInfo
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 1,
+      }}
+    >
       <Typography>
         {direction === TransferDirection.INCOMING ? 'Received' : isTxQueued(txStatus) ? 'Send' : 'Sent'}{' '}
         <b>
@@ -38,10 +45,21 @@ const TransferTxInfo = ({ txInfo, txStatus, trusted, imitation }: TransferTxInfo
   const address = txInfo.direction.toUpperCase() === TransferDirection.INCOMING ? txInfo.sender : txInfo.recipient
 
   return (
-    <Box display="flex" flexDirection="column" gap={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
       <TransferTxInfoMain txInfo={txInfo} txStatus={txStatus} trusted={trusted} imitation={imitation} />
-
-      <Box display="flex" alignItems="center" width="100%">
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
         <EthHashInfo
           address={address.value}
           name={address.name}

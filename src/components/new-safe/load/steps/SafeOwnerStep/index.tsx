@@ -74,7 +74,14 @@ const SafeOwnerStep = ({ data, onSubmit, onBack }: StepRenderProps<LoadSafeFormD
         </Box>
         <Divider />
         <Box className={layoutCss.row}>
-          <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              gap: 3,
+            }}
+          >
             <Button variant="outlined" size="small" onClick={handleBack} startIcon={<ArrowBackIcon fontSize="small" />}>
               Back
             </Button>

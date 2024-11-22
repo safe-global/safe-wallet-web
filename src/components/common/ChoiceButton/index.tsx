@@ -28,19 +28,31 @@ const ChoiceButton = ({
       >
         <SvgIcon component={icon} fontSize="small" inheritViewBox color={iconColor} />
       </Box>
-
-      <Box py={0.2}>
-        <Typography fontWeight="bold">{title}</Typography>
+      <Box
+        sx={{
+          py: 0.2,
+        }}
+      >
+        <Typography
+          sx={{
+            fontWeight: 'bold',
+          }}
+        >
+          {title}
+        </Typography>
 
         {description && (
-          <Typography variant="body2" color="primary.light">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'primary.light',
+            }}
+          >
             {description}
           </Typography>
         )}
       </Box>
-
       <SvgIcon component={ChevronRightRoundedIcon} color="border" sx={{ ml: 'auto' }} />
-
       {chip && <Box className={css.chip}>{chip}</Box>}
     </ButtonBase>
   )

@@ -70,21 +70,44 @@ const EnvironmentVariables = () => {
 
   return (
     <Paper sx={{ padding: 4 }}>
-      <Grid container direction="row" justifyContent="space-between" spacing={3} mb={2}>
+      <Grid
+        container
+        direction="row"
+        spacing={3}
+        sx={{
+          justifyContent: 'space-between',
+          mb: 2,
+        }}
+      >
         <Grid item lg={4} xs={12}>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             Environment variables
           </Typography>
         </Grid>
 
         <Grid item xs>
-          <Typography mb={3}>
+          <Typography
+            sx={{
+              mb: 3,
+            }}
+          >
             You can override some of our default APIs here in case you need to. Proceed at your own risk.
           </Typography>
 
           <FormProvider {...formMethods}>
             <form onSubmit={onSubmit}>
-              <Typography fontWeight={700} mb={2} mt={3}>
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  mb: 2,
+                  mt: 3,
+                }}
+              >
                 RPC provider
                 <Tooltip
                   placement="top"
@@ -122,7 +145,13 @@ const EnvironmentVariables = () => {
                 fullWidth
               />
 
-              <Typography fontWeight={700} mb={2} mt={3}>
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  mb: 2,
+                  mt: 3,
+                }}
+              >
                 Tenderly
                 <Tooltip
                   placement="top"

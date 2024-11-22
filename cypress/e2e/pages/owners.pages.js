@@ -7,6 +7,7 @@ import * as addressBook from '../pages/address_book.page'
 const tooltipLabel = (label) => `span[aria-label="${label}"]`
 export const removeOwnerBtn = 'span[data-track="settings: Remove owner"] > span > button'
 const replaceOwnerBtn = 'span[data-track="settings: Replace owner"] > span > button'
+const changeThresholdBtn = 'span[data-track="settings: Change threshold"] > button'
 const tooltip = 'div[role="tooltip"]'
 const expandMoreIcon = 'svg[data-testid="ExpandMoreIcon"]'
 const sentinelStart = 'div[data-testid="sentinelStart"]'
@@ -26,6 +27,7 @@ const addOwnerBtn = '[data-testid="add-owner-btn"]'
 const addOwnerNextBtn = '[data-testid="add-owner-next-btn"]'
 const modalHeader = '[data-testid="modal-header"]'
 const addressToBeRemoved = '[aria-label="Copy to clipboard"] span'
+const thresholdNextBtn = '[data-testid="threshold-next-btn"]'
 
 const disconnectBtnStr = 'Disconnect'
 const notConnectedStatus = 'Connect'
@@ -37,6 +39,7 @@ const removeOwnerStr = 'Remove signer'
 const selectedOwnerStr = 'Selected signer'
 const addNewOwnerStr = 'Add new signer'
 const processedTransactionStr = 'Transaction was successful'
+const changeThresholdStr = 'Change threshold'
 
 export const safeAccountNonceStr = 'Safe Account nonce'
 export const nonOwnerErrorMsg = 'Your connected wallet is not a signer of this Safe Account'
@@ -64,6 +67,10 @@ export function verifyExistingOwnerAddress(index, address) {
   cy.get(existingOwnerAddressInput(index)).should('have.value', address)
 }
 
+export function typeOwnerAddressCreateSafeStep(index, address) {
+  cy.get(existingOwnerAddressInput(index)).clear().type(address)
+}
+
 export function verifyExistingOwnerName(index, name) {
   cy.get(existingOwnerNameInput(index)).should('have.value', name)
 }
@@ -79,7 +86,7 @@ export function verifyOwnerDeletionWindowDisplayed() {
   cy.get('p').contains(selectedOwnerStr)
 }
 
-function clickOnThresholdDropdown() {
+export function clickOnThresholdDropdown() {
   cy.get(thresholdDropdown).eq(0).click()
 }
 
@@ -179,8 +186,11 @@ export function waitForConnectionStatus() {
   cy.get(createWallet.accountInfoHeader).should('exist')
 }
 
-export function openAddOwnerWindow() {
+export function clickOnAddSignerBtn() {
   cy.get(addOwnerBtn).should('be.enabled').click()
+}
+export function openAddOwnerWindow() {
+  clickOnAddSignerBtn()
   cy.get(newOwnerName).should('be.visible')
   cy.get(newOwnerAddress).should('be.visible')
 }
@@ -243,4 +253,15 @@ export function verifyThreshold(startValue, endValue) {
   cy.get(thresholdList).contains(endValue).should('be.visible')
   cy.get(thresholdList).find('li').should('have.length', endValue)
   cy.get('body').click(0, 0)
+}
+
+export function clickOnChangeThresholdBtn() {
+  cy.get(changeThresholdBtn).click({ force: true })
+  cy.get('div').contains(changeThresholdStr).should('exist')
+}
+
+export function clickOnThresholdNextBtn() {
+  //TODO: Remove extra wait when init sdk is merged
+  cy.wait(3000)
+  cy.get(thresholdNextBtn).click()
 }

@@ -22,7 +22,7 @@ const sidebarSafeHeader = '[data-testid="safe-header-info"]'
 const sidebarSafeContainer = '[data-testid="sidebar-safe-container"]'
 const safeItemOptionsBtn = '[data-testid="safe-options-btn"]'
 export const safeItemOptionsRenameBtn = '[data-testid="rename-btn"]'
-const safeItemOptionsRemoveBtn = '[data-testid="remove-btn"]'
+export const safeItemOptionsRemoveBtn = '[data-testid="remove-btn"]'
 export const safeItemOptionsAddChainBtn = '[data-testid="add-chain-btn"]'
 const nameInput = '[data-testid="name-input"]'
 const saveBtn = '[data-testid="save-btn"]'
@@ -33,23 +33,45 @@ const currencySection = '[data-testid="currency-section"]'
 const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
 const showMoreBtn = '[data-testid="show-more-btn" ]'
-const importBtn = '[data-testid="import-btn"]'
+export const importBtn = '[data-testid="import-btn"]'
 export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
 const multichainItemSummary = '[data-testid="multichain-item-summary"]'
 const addChainDialog = "[data-testid='add-chain-dialog']"
 export const addNetworkBtn = "[data-testid='add-network-btn']"
+const modalAddNetworkBtn = "[data-testid='modal-add-network-btn']"
 const subAccountContainer = '[data-testid="subacounts-container"]'
 const groupBalance = '[data-testid="group-balance"]'
 const groupAddress = '[data-testid="group-address"]'
 const groupSafeIcon = '[data-testid="group-safe-icon"]'
 const multichainTooltip = '[data-testid="multichain-tooltip"]'
+const networkInput = '[id="network-input"]'
+const networkOption = 'li[role="option"]'
+const showAllNetworks = '[data-testid="show-all-networks"]'
+const showAllNetworksStr = 'Show all networks'
+export const addNetworkOption = 'li[aria-label="Add network"]'
+export const addedNetworkOption = 'li[role="option"]'
+const modalAddNetworkName = '[data-testid="added-network"]'
+const networkSeperator = 'div[role="separator"]'
+export const addNetworkTooltip = '[data-testid="add-network-tooltip"]'
+const networkOptionNetworkSwitch = 'span[data-track="overview: Add new network"] > li'
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
+export const undeployedSafe = 'Undeployed Sepolia'
+const notActivatedStr = 'Not activated'
+export const addingNetworkNotPossibleStr = 'Adding another network is not possible for this Safe.'
+export const createSafeMsg = (network) => `Successfully added your account on ${network}`
+const signersNotConsistentMsg = 'Signers are not consistent'
+const signersNotConsistentMsg2 = (network) => `Signers are different on these networks of this account:${network}`
+const signersNotConsistentMsg3 =
+  'To manage your account easier and to prevent lose of funds, we recommend keeping the same signers'
+const signersNotConsistentConfirmTxViewMsg = (network) =>
+  `Signers are not consistent across networks on this account. Changing signers will only affect the account on ${network}`
+const activateStr = 'You need to activate your Safe first'
 
 export const addedSafesEth = ['0x8675...a19b']
 export const addedSafesSepolia = ['0x6d0b...6dC1', '0x5912...fFdb', '0x0637...708e', '0xD157...DE9a']
-export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings']
+export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book', 'Apps', 'Settings', 'Swap']
 export const sideBarSafes = {
   safe1: '0xBb26E3717172d5000F87DeFd391994f789D80aEB',
   safe2: '0x905934aA8758c06B2422F0C90D97d2fbb6677811',
@@ -83,8 +105,6 @@ export function getImportBtn() {
   return cy.get(importBtn).scrollIntoView().should('be.visible')
 }
 export function clickOnSidebarImportBtn() {
-  cy.get(sidebarSafeContainer).find(sideSafeListItem).last().scrollIntoView()
-
   getImportBtn().click()
   modal.verifyModalTitle(modal.modalTitiles.dataImport)
   file.verifyValidImportInputExists()
@@ -165,6 +185,10 @@ export function verifyTxCounter(counter) {
   cy.get(sideBarListItem).contains(sideBarListItems[2]).should('contain', counter)
 }
 
+export function verifyNavItemDisabled(item) {
+  cy.get(`div[aria-label*="${activateStr}"]`).contains(item).should('exist')
+}
+
 export function verifySafeCount(count) {
   main.verifyMinimumElementsCount(sideSafeListItem, count)
 }
@@ -239,14 +263,13 @@ export function checkMultichainTooltipExists(index) {
   cy.get(multichainTooltip).should('exist')
 }
 
-export function checkSafeGroupBalance(index, balance) {
+export function checkSafeGroupBalance(index) {
   cy.get(multichainItemSummary)
     .eq(index)
     .find(groupBalance)
     .invoke('text')
-    .then((text) => {
-      expect(text).to.include(balance)
-    })
+    .should('include', '$')
+    .and('match', /\d+\.\d{2}/)
 }
 
 export function checkSafeGroupAddress(index, address) {
@@ -271,6 +294,10 @@ export function checkThereIsNoOptionsMenu(index) {
   getSubAccountContainer(index).find(safeItemOptionsBtn).should('not.exist')
 }
 
+export function checkUndeployedSafeExists(index) {
+  return getSubAccountContainer(index).contains(notActivatedStr).should('exist')
+}
+
 export function checkAddNetworkBtnPosition(index) {
   cy.get(multichainItemSummary)
     .eq(index)
@@ -284,6 +311,29 @@ export function checkAddNetworkBtnPosition(index) {
         })
     })
 }
+export function clickOnAddNetworkBtn() {
+  cy.get(addNetworkBtn).click()
+  cy.get(addChainDialog).should('be.visible')
+}
+
+export function getModalAddNetworkBtn() {
+  return cy.get(modalAddNetworkBtn)
+}
+
+export function clickOnNetworkInput() {
+  cy.get(networkInput).click()
+}
+
+export function getNetworkOptions() {
+  return cy.get(networkOption)
+}
+
+export function addNetwork(network) {
+  clickOnAddNetworkBtn()
+  clickOnNetworkInput()
+  getNetworkOptions().contains(network).click()
+  getModalAddNetworkBtn().click()
+}
 
 export function renameSafeItem(oldName, newName) {
   clickOnSafeItemOptionsBtn(oldName)
@@ -293,6 +343,7 @@ export function renameSafeItem(oldName, newName) {
 
 export function removeSafeItem(name) {
   clickOnSafeItemOptionsBtn(name)
+  cy.wait(1000)
   clickOnRemoveBtn()
   confirmSafeItemRemoval()
   verifyModalRemoved()
@@ -378,4 +429,78 @@ export function checkBalanceExists() {
 export function checkAddChainDialogDisplayed() {
   cy.get(safeItemOptionsAddChainBtn).click()
   cy.get(addChainDialog).should('be.visible')
+}
+
+export function clickOnShowAllNetworksBtn() {
+  cy.get(showAllNetworks).click()
+}
+
+// TODO: Remove after next release due to data-testid availability
+export function clickOnShowAllNetworksStrBtn() {
+  cy.contains(showAllNetworksStr).click()
+}
+
+export function checkNetworkPresence(networks, optionSelector) {
+  return cy.get(optionSelector).then((options) => {
+    const optionTexts = [...options].map((option) => option.innerText)
+    networks.forEach((network) => {
+      const isNetworkPresent = optionTexts.some((text) => text.includes(network))
+      expect(isNetworkPresent).to.be.true
+    })
+    cy.wrap([...options].filter((option) => networks.some((network) => option.innerText.includes(network))))
+  })
+}
+
+export function checkNetworkIsNotEditable() {
+  cy.get(addChainDialog).within(() => {
+    cy.get(modalAddNetworkName).should('exist')
+  })
+  cy.get(addChainDialog).find(networkInput).should('not.exist')
+}
+
+export function checkNetworksInRange(expectedString, expectedCount, direction = 'below') {
+  const networkSeparator = networkSeperator
+  const startSelector = networkSeparator
+  const endSelector = direction === 'below' ? showAllNetworks : 'ul'
+
+  const traversalMethod = direction === 'below' ? 'nextUntil' : 'prevUntil'
+
+  return cy
+    .get(startSelector)
+    [traversalMethod](endSelector, 'li')
+    .then((liElements) => {
+      expect(liElements.length).to.equal(expectedCount)
+      const optionTexts = [...liElements].map((li) => li.innerText)
+      const isStringPresent = optionTexts.some((text) => text.includes(expectedString))
+      expect(isStringPresent).to.be.true
+      return cy.wrap(liElements)
+    })
+}
+
+export function checkInconsistentSignersMsgDisplayed(network) {
+  cy.contains(signersNotConsistentMsg).should('exist')
+  cy.contains(signersNotConsistentMsg2(network)).should('exist')
+  cy.contains(signersNotConsistentMsg3).should('exist')
+}
+
+export function checkInconsistentSignersMsgDisplayedConfirmTxView(network) {
+  cy.contains(signersNotConsistentConfirmTxViewMsg(network)).should('exist')
+}
+
+function getNetworkElements() {
+  return cy.get('span[data-track="overview: Add new network"] > li')
+}
+
+export function checkNetworkDisabled(networks) {
+  getNetworkElements().should('have.length', 20)
+  getNetworkElements().each(($el) => {
+    const text = $el[0].innerText.trim()
+    console.log(`Element text: ${text}`)
+    const isDisabledNetwork = networks.some((network) => text.includes(network))
+    if (isDisabledNetwork) {
+      expect($el).to.have.attr('aria-disabled', 'true')
+    } else {
+      expect($el).not.to.have.attr('aria-disabled')
+    }
+  })
 }

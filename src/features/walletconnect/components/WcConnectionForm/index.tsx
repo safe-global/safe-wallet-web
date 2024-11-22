@@ -30,7 +30,12 @@ export const WcConnectionForm = ({ sessions, uri }: { sessions: SessionTypes.Str
 
   return (
     <Grid className={css.container}>
-      <Grid item textAlign="center">
+      <Grid
+        item
+        sx={{
+          textAlign: 'center',
+        }}
+      >
         <Tooltip
           title={showHints ? 'Hide how WalletConnect works' : 'How does WalletConnect work?'}
           placement="top"
@@ -48,30 +53,41 @@ export const WcConnectionForm = ({ sessions, uri }: { sessions: SessionTypes.Str
 
         <WcLogoHeader />
 
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+          }}
+        >
           {safeLoaded
             ? `Paste the pairing code below to connect to your Safe{Wallet} via WalletConnect`
             : `Please open one of your Safe Accounts to connect to via WalletConnect`}
         </Typography>
 
         {safeLoaded ? (
-          <Box mt={3}>
+          <Box
+            sx={{
+              mt: 3,
+            }}
+          >
             <WcInput uri={uri} />
           </Box>
         ) : null}
       </Grid>
-
       <Divider flexItem />
-
       <Grid item>
         <WcSessionList sessions={sessions} />
       </Grid>
-
       {showHints && (
         <>
           <Divider flexItem />
 
-          <Grid item mt={1}>
+          <Grid
+            item
+            sx={{
+              mt: 1,
+            }}
+          >
             <WcHints />
           </Grid>
         </>

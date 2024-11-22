@@ -171,7 +171,6 @@ describe('Swap helpers', () => {
       expect(result).toEqual('0')
     })
 
-    // eslint-disable-next-line no-only-tests/no-only-tests
     it('returns the surplus amount for buy orders', () => {
       const mockOrder = {
         executedSellAmount: '10000000000000000000', //10

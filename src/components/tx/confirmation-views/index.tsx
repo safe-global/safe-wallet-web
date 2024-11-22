@@ -21,6 +21,7 @@ import { TxModalContext } from '@/components/tx-flow'
 import { isSettingsChangeView, isChangeThresholdView, isConfirmBatchView } from './utils'
 import { OnChainConfirmation } from '@/components/transactions/TxDetails/TxData/NestedTransaction/OnChainConfirmation'
 import { ExecTransaction } from '@/components/transactions/TxDetails/TxData/NestedTransaction/ExecTransaction'
+import { type ReactElement } from 'react'
 
 type ConfirmationViewProps = {
   txDetails?: TransactionDetails
@@ -38,8 +39,8 @@ const getConfirmationViewComponent = ({
   txDetails,
   txInfo,
   txFlow,
-}: NarrowConfirmationViewProps & { txFlow?: JSX.Element }) => {
-  if (isChangeThresholdView(txInfo)) return <ChangeThreshold />
+}: NarrowConfirmationViewProps & { txFlow?: ReactElement }) => {
+  if (isChangeThresholdView(txInfo)) return <ChangeThreshold txDetails={txDetails} />
 
   if (isConfirmBatchView(txFlow)) return <BatchTransactions />
 

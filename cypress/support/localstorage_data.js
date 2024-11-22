@@ -280,6 +280,9 @@ export const batchData = {
   },
 }
 export const addressBookData = {
+  proposers: {
+    11155111: { '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AD Proposer1' },
+  },
   sepoliaAddress1: {
     11155111: { '0x6a5602335a878ADDCa4BF63a050E34946B56B5bC': 'Owner1' },
   },
@@ -346,6 +349,16 @@ export const addressBookData = {
     },
     11155111: {
       '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Multichain Sepolia',
+    },
+  },
+  undeployed: {
+    11155111: {
+      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': 'Undeployed Sepolia',
+    },
+  },
+  undeployedEth: {
+    1: {
+      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': 'Undeployed Sepolia',
     },
   },
   sortingData: {
@@ -681,6 +694,18 @@ export const addedSafes = {
         owners: [
           {
             value: '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED',
+          },
+        ],
+        threshold: 1,
+      },
+    },
+  },
+  set6_undeployed_safe: {
+    11155111: {
+      '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': {
+        owners: [
+          {
+            value: '0x9445deb174C1eCbbfce8d31D33F438B8e7a0F1BA',
           },
         ],
         threshold: 1,

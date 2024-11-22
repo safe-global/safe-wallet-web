@@ -40,7 +40,7 @@ type DeleteProposerProps = {
   proposer: Delegate
 }
 
-const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeleteProposerProps) => {
+const InternalDeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeleteProposerProps) => {
   const [open, setOpen] = useState<boolean>(false)
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -67,7 +67,7 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
       await deleteProposer({
         chainId,
         delegateAddress: proposer.delegate,
-        delegator: wallet.address,
+        delegator: proposer.delegator,
         safeAddress,
         signature,
         isHardwareWallet: hardwareWallet,
@@ -112,8 +112,8 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
                 isOk && canDelete
                   ? 'Delete proposer'
                   : isOk && !canDelete
-                  ? 'Only the owner of this proposer or the proposer itself can delete them'
-                  : undefined
+                    ? 'Only the owner of this proposer or the proposer itself can delete them'
+                    : undefined
               }
             >
               <span>
@@ -172,13 +172,14 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
         <Divider />
 
         <DialogActions sx={{ padding: 3, justifyContent: 'space-between' }}>
-          <Button size="small" variant="text" onClick={onCancel}>
+          <Button data-testid="reject-delete-proposer-btn" size="small" variant="text" onClick={onCancel}>
             No, keep it
           </Button>
 
           <CheckWallet checkNetwork={!isLoading}>
             {(isOk) => (
               <Button
+                data-testid="confirm-delete-proposer-btn"
                 size="small"
                 variant="danger"
                 onClick={onConfirm}
@@ -198,7 +199,7 @@ const _DeleteProposer = ({ wallet, safeAddress, chainId, proposer }: DeletePropo
   )
 }
 
-const DeleteProposerDialog = madProps(_DeleteProposer, {
+const DeleteProposerDialog = madProps(InternalDeleteProposer, {
   wallet: useWallet,
   chainId: useChainId,
   safeAddress: useSafeAddress,

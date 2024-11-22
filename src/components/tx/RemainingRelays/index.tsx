@@ -11,7 +11,15 @@ const RemainingRelays = ({ relays, tooltip }: { relays?: RelayCountResponse; too
 
   return (
     <div className={css.container}>
-      <Typography variant="body2" color="primary.light" display="flex" alignItems="center" gap={0.5}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'primary.light',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.5,
+        }}
+      >
         <b>{relays?.remaining ?? MAX_DAY_RELAYS}</b> free transactions left today
         <Tooltip title={tooltip} placement="top" arrow>
           <span style={{ lineHeight: 0 }}>

@@ -42,11 +42,22 @@ const WelcomeLogin = () => {
       <Box className={css.loginContent}>
         <SvgIcon component={SafeLogo} inheritViewBox sx={{ height: '24px', width: '80px', ml: '-8px' }} />
 
-        <Typography variant="h6" mt={6} fontWeight={700}>
+        <Typography
+          variant="h6"
+          sx={{
+            mt: 6,
+            fontWeight: 700,
+          }}
+        >
           Get started
         </Typography>
 
-        <Typography mb={2} textAlign="center">
+        <Typography
+          sx={{
+            mb: 2,
+            textAlign: 'center',
+          }}
+        >
           {wallet
             ? 'Open your existing Safe Accounts or create a new one'
             : 'Connect your wallet to create a new Safe Account or open an existing one'}
@@ -59,7 +70,13 @@ const WelcomeLogin = () => {
         {!wallet && (
           <>
             <Divider sx={{ mt: 2, mb: 2, width: '100%' }}>
-              <Typography color="text.secondary" fontWeight={700} variant="overline">
+              <Typography
+                variant="overline"
+                sx={{
+                  color: 'text.secondary',
+                  fontWeight: 700,
+                }}
+              >
                 or
               </Typography>
             </Divider>

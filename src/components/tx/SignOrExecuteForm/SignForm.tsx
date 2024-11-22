@@ -104,7 +104,6 @@ export const SignForm = ({
   return (
     <form onSubmit={handleSubmit}>
       {hasSigned && <ErrorMessage level="warning">You have already signed this transaction.</ErrorMessage>}
-
       {cannotPropose ? (
         <NonOwnerError />
       ) : (
@@ -112,15 +111,16 @@ export const SignForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
       )}
-
       {isRejectedByUser && (
-        <Box mt={1}>
+        <Box
+          sx={{
+            mt: 1,
+          }}
+        >
           <WalletRejectionError />
         </Box>
       )}
-
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
-
       <CardActions>
         <Stack
           sx={{

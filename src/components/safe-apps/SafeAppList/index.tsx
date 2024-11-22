@@ -22,6 +22,7 @@ type SafeAppListProps = {
   title: string
   query?: string
   isFiltered?: boolean
+  showNativeSwapsCard?: boolean
 }
 
 const SafeAppList = ({
@@ -34,6 +35,7 @@ const SafeAppList = ({
   title,
   query,
   isFiltered = false,
+  showNativeSwapsCard = false,
 }: SafeAppListProps) => {
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
@@ -72,7 +74,7 @@ const SafeAppList = ({
             </li>
           ))}
 
-        {!isFiltered && !addCustomApp && <NativeSwapsCard />}
+        {!isFiltered && showNativeSwapsCard && <NativeSwapsCard />}
 
         {/* Flat list filtered by search query */}
         {safeAppsList.map((safeApp) => (

@@ -66,13 +66,11 @@ const Summary = ({ txDetails, defaultExpanded = false, hideDecodedData = false }
       <TxDataRow datatestid="tx-created-at" title="Created:">
         {submittedAt ? dateString(submittedAt) : null}
       </TxDataRow>
-
       {executedAt && (
         <TxDataRow datatestid="tx-executed-at" title="Executed:">
           {dateString(executedAt)}
         </TxDataRow>
       )}
-
       {/* Advanced TxData */}
       {txData && (
         <>
@@ -89,9 +87,22 @@ const Summary = ({ txDetails, defaultExpanded = false, hideDecodedData = false }
           )}
 
           {expanded && (
-            <Box mt={1}>
+            <Box
+              sx={{
+                mt: 1,
+              }}
+            >
               {!isCustom && !hideDecodedData && (
-                <Box borderBottom="1px solid" borderColor="border.light" p={2} mt={1} mb={2} mx={-2}>
+                <Box
+                  sx={{
+                    borderBottom: '1px solid',
+                    borderColor: 'border.light',
+                    p: 2,
+                    mt: 1,
+                    mb: 2,
+                    mx: -2,
+                  }}
+                >
                   <DecodedData txData={txDetails.txData} toInfo={txDetails.txData?.to} />
                 </Box>
               )}

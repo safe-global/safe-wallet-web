@@ -36,7 +36,6 @@ export const useBlockaid = (
         threshold: safe.threshold,
       })
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [safe.chainId, safe.threshold, safeAddress, data, signer?.address, isFeatureEnabled],
     false,
   )

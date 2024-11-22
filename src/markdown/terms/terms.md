@@ -15,7 +15,7 @@ Last updated: September, 2024
 
 [4\. What do the Services not consist of?](#4.-what-do-the-services-not-consist-of?)
 
-[5\. What do you need to know about Third-Party Services?](#5.-what-do-you-need-to-know-about-third-party-safe-apps-and-third-party-services?)
+[5\. What do you need to know about Third-Party Safe Apps and Third-Party Services?](#5.-what-do-you-need-to-know-about-third-party-safe-apps-and-third-party-services?)
 
 [6\. What are the fees for the Services?](#6.-what-are-the-fees-for-the-services?)
 
@@ -30,6 +30,8 @@ Last updated: September, 2024
 [11\. Are we responsible for the issuance of the Safe Token and any related functionalities or reward programs?](#11.-are-we-responsible-for-the-issuance-of-the-safe-token-and-any-related-functionalities-or-reward-programs?)
 
 [12\. Are we responsible for third-party content and services?](#12.-are-we-responsible-for-third-party-content-and-services?)
+
+[13\. Can we terminate or limit your right to use our Services?](#13.-can-we-terminate-or-limit-your-right-to-use-our-services?)
 
 [14\. Can you terminate your Agreement with us?](#14.-can-you-terminate-your-agreement-with-us?)
 
@@ -233,7 +235,7 @@ Our Services do not consist of:
 
 3. If we offer access to Third-Party Features in the Safe{Wallet} App free of charge by us (Third-Parties may charge separate fees), the liability for providing access to such Third-Party Feature is limited pursuant to Section 18 below. Furthermore we reserve the right to cease to provide access to those Third-Party Features through the Safe{Wallet} App without notice.
 
-13\. Can we terminate or limit your right to use our Services?
+# 13\. Can we terminate or limit your right to use our Services? {#13.-can-we-terminate-or-limit-your-right-to-use-our-services?}
 
 1. We may cease offering our Services and/or terminate the Agreement and refuse access to the Safe{Wallet} App at any time. The right of the parties to terminate the Agreement at any time for cause remains unaffected. In case of our termination of the Agreement, you may no longer access your Safe Account via our Services. However, you may continue to access your Safe Account and any Tokens via a third-party wallet provider using your Recovery Phrase and Private Keys.
 
@@ -386,4 +388,4 @@ For users who are merchants within the meaning of the German Commercial Code (Ha
 
 # 31\. Is this all? {#31.-is-this-all?}
 
-These Terms constitute the entire agreement between you and us in relation to the Agreement’s subject matter. It replaces and extinguishes any and all prior agreements, draft agreements, arrangements, warranties, statements, assurances, representations and undertakings of any nature made by, or on behalf of either of us, whether oral or written, public or private, in relation to that subject matter.  
+These Terms constitute the entire agreement between you and us in relation to the Agreement’s subject matter. It replaces and extinguishes any and all prior agreements, draft agreements, arrangements, warranties, statements, assurances, representations and undertakings of any nature made by, or on behalf of either of us, whether oral or written, public or private, in relation to that subject matter.

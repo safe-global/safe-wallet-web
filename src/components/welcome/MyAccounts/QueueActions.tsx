@@ -13,7 +13,14 @@ const ChipLink = ({ children, color }: { children: ReactNode; color?: string }) 
     size="small"
     sx={{ backgroundColor: `${color}.background` }}
     label={
-      <Typography variant="caption" display="flex" alignItems="center" gap={0.5}>
+      <Typography
+        variant="caption"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.5,
+        }}
+      >
         {children}
       </Typography>
     }
@@ -44,10 +51,22 @@ const QueueActions = ({
   }
 
   return (
-    <Box width="100%">
+    <Box
+      sx={{
+        width: '100%',
+      }}
+    >
       <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
         <NextLink href={queueLink}>
-          <Box px={2} pb={2} display="flex" gap={1} alignItems="center">
+          <Box
+            sx={{
+              px: 2,
+              pb: 2,
+              display: 'flex',
+              gap: 1,
+              alignItems: 'center',
+            }}
+          >
             {queued > 0 && (
               <ChipLink>
                 <SvgIcon component={TransactionsIcon} inheritViewBox fontSize="small" />

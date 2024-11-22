@@ -9,7 +9,7 @@ import { useWalletContext } from '@/hooks/wallets/useWallet'
 const noop = () => {}
 
 export type TxModalContextType = {
-  txFlow: JSX.Element | undefined
+  txFlow: ReactElement | undefined
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => void
   setFullWidth: (fullWidth: boolean) => void
 }

@@ -13,7 +13,12 @@ export const MigrateToL2Information = ({
     <Box>
       <Alert severity="info" icon={<SvgIcon component={InfoOutlinedIcon} color="info" />}>
         <AlertTitle>
-          <Typography variant="h5" fontWeight={700}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
             Migration to compatible base contract
           </Typography>
         </AlertTitle>
@@ -24,8 +29,18 @@ export const MigrateToL2Information = ({
         </Typography>
 
         {newMasterCopy && (
-          <Box mt={2}>
-            <Typography variant="overline" color="text.secondary" fontWeight={700}>
+          <Box
+            sx={{
+              mt: 2,
+            }}
+          >
+            <Typography
+              variant="overline"
+              sx={{
+                color: 'text.secondary',
+                fontWeight: 700,
+              }}
+            >
               New contract
             </Typography>
             <NamedAddressInfo address={newMasterCopy} shortAddress={false} showCopyButton hasExplorer />

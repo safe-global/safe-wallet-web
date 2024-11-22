@@ -34,7 +34,13 @@ export const generateDataRowValue = (
       )
     case 'rawData':
       return (
-        <Box data-testid="tx-data-row" display="flex" alignItems="center">
+        <Box
+          data-testid="tx-data-row"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <div>{value ? dataLength(value) : 0} bytes</div>
           <CopyButton text={value} />
         </Box>

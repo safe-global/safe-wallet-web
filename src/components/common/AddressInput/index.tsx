@@ -140,7 +140,6 @@ const AddressInput = ({
               ) : (
                 <Skeleton variant="circular" width={32} height={32} animation={false} />
               )}
-
               {!rawValueRef.current.startsWith(`${currentShortName}:`) && <>{currentShortName}:</>}
             </InputAdornment>
           ),

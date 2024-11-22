@@ -50,10 +50,20 @@ export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) 
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       {token && <SendAmountBlock amountInWei={amountInWei} tokenInfo={token.tokenInfo} title="Amount" />}
-
-      <Grid container gap={1} alignItems="center">
+      <Grid
+        container
+        sx={{
+          gap: 1,
+          alignItems: 'center',
+        }}
+      >
         <Grid item md>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             Beneficiary
           </Typography>
         </Grid>
@@ -67,10 +77,20 @@ export const RemoveSpendingLimit = ({ params }: { params: SpendingLimitState }) 
           />
         </Grid>
       </Grid>
-
-      <Grid container gap={1} alignItems="center">
+      <Grid
+        container
+        sx={{
+          gap: 1,
+          alignItems: 'center',
+        }}
+      >
         <Grid item md>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             Reset time
           </Typography>
         </Grid>

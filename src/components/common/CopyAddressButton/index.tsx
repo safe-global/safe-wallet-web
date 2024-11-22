@@ -22,7 +22,13 @@ const CopyAddressButton = ({
   const checksummedAddress = checksumAddress(address)
 
   const dialogContent = trusted ? undefined : (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+      }}
+    >
       <EthHashInfo
         address={checksummedAddress}
         shortAddress={false}

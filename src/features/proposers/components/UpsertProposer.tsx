@@ -202,6 +202,7 @@ const UpsertProposer = ({ onClose, onSuccess, proposer }: UpsertProposerProps) =
             <CheckWallet checkNetwork={!isLoading} allowProposer={false}>
               {(isOk) => (
                 <Button
+                  data-testid="submit-proposer-btn"
                   size="small"
                   variant="contained"
                   color="primary"

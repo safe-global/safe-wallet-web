@@ -31,15 +31,33 @@ const TxGroup = ({ groupedListItems }: { groupedListItems: Transaction[] }): Rea
 
   return (
     <Paper className={css.container}>
-      <Typography gridArea="nonce">{nonce}</Typography>
-
-      <Box gridArea="warning" className={css.disclaimerContainer}>
+      <Typography
+        sx={{
+          gridArea: 'nonce',
+        }}
+      >
+        {nonce}
+      </Typography>
+      <Box
+        className={css.disclaimerContainer}
+        sx={{
+          gridArea: 'warning',
+        }}
+      >
         <Disclaimer />
       </Box>
-
-      <Box gridArea="line" className={css.line} />
-
-      <Box gridArea="items" className={css.txItems}>
+      <Box
+        className={css.line}
+        sx={{
+          gridArea: 'line',
+        }}
+      />
+      <Box
+        className={css.txItems}
+        sx={{
+          gridArea: 'items',
+        }}
+      >
         {groupedListItems.map((tx) => (
           <div
             key={tx.transaction.id}

@@ -1,5 +1,3 @@
 import { createContext } from 'react'
 
-export const ChangeThresholdReviewContext = createContext({
-  newThreshold: 0,
-})
+export const ChangeThresholdReviewContext = createContext<{ newThreshold?: number }>({})

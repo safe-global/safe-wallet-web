@@ -17,13 +17,17 @@ export function RemoveRecoveryFlowOverview({
         This transaction will remove the recovery module from your Safe Account. You will no longer be able to recover
         your Safe Account.
       </Typography>
-
       <Typography variant="body2">
         This Recoverer will not be able to initiate the recovery process once this transaction is executed.
       </Typography>
-
       <div data-testid="remove-recoverer-section">
-        <Typography variant="body2" color="text.secondary" mb={1}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            mb: 1,
+          }}
+        >
           Removing Recoverer
         </Typography>
 
@@ -38,9 +42,7 @@ export function RemoveRecoveryFlowOverview({
           />
         ))}
       </div>
-
       <Divider className={commonCss.nestedDivider} />
-
       <CardActions sx={{ mt: '0 !important' }}>
         <Button data-testid="next-btn" variant="contained" onClick={onSubmit}>
           Next

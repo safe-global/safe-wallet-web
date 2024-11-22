@@ -53,10 +53,16 @@ const _ExecutionMethodSelector = ({
 
           <RadioGroup row value={executionMethod} onChange={onChooseExecutionMethod}>
             <FormControlLabel
+              data-testid="relay-execution-method"
               sx={{ flex: 1 }}
               value={ExecutionMethod.RELAY}
               label={
-                <Typography className={css.radioLabel} whiteSpace="nowrap">
+                <Typography
+                  className={css.radioLabel}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                  }}
+                >
                   Sponsored by
                   <SponsoredBy chainId={chain?.chainId ?? ''} />
                 </Typography>
@@ -79,7 +85,6 @@ const _ExecutionMethodSelector = ({
           </RadioGroup>
         </FormControl>
       </div>
-
       {shouldRelay && relays ? <RemainingRelays relays={relays} tooltip={tooltip} /> : wallet ? <BalanceInfo /> : null}
     </Box>
   )
