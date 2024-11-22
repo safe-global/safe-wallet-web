@@ -50,7 +50,7 @@ const useAllSafes = (): SafeItems | undefined => {
     if (walletAddress && allOwned === undefined) {
       return []
     }
-    const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded))).concat(Object.keys(allUndeployed))
+    const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded), Object.keys(allUndeployed)))
     chains.sort((a, b) => parseInt(a) - parseInt(b))
 
     return chains.flatMap((chainId) => {
@@ -58,7 +58,7 @@ const useAllSafes = (): SafeItems | undefined => {
       const addedOnChain = Object.keys(allAdded[chainId] || {})
       const ownedOnChain = (allOwned || {})[chainId]
       const undeployedOnChain = Object.keys(allUndeployed[chainId] || {})
-      const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain).concat(undeployedOnChain)).filter(Boolean)
+      const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain, undeployedOnChain).filter(Boolean))
       uniqueAddresses.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 
       return uniqueAddresses.map((address) => {
