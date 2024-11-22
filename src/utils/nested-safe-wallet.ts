@@ -87,15 +87,15 @@ export const getNestedWallet = (
           await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, safeTx, safeTxHash)
           await connectedSDK.approveTransactionHash(safeTxHash)
         } else {
-          const signedTx = await tryOffChainTxSigning(safeTx, safeInfo.version, connectedSDK)
           // Sign off-chain
           if (safeInfo.threshold === 1) {
             // Always propose the tx so the resulting link to the parentTx does not error out
             await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, safeTx, safeTxHash)
 
             // Directly execute the tx
-            await connectedSDK.executeTransaction(signedTx)
+            await connectedSDK.executeTransaction(safeTx)
           } else {
+            const signedTx = await tryOffChainTxSigning(safeTx, safeInfo.version, connectedSDK)
             await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, signedTx, safeTxHash)
           }
 
