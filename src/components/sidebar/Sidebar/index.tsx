@@ -43,7 +43,11 @@ const Sidebar = (): ReactElement => {
         {/* Nav menu */}
         <SidebarNavigation />
 
-        <Box flex={1} />
+        <Box
+          sx={{
+            flex: 1,
+          }}
+        />
 
         <Divider flexItem />
 
@@ -54,7 +58,6 @@ const Sidebar = (): ReactElement => {
 
         <IndexingStatus />
       </div>
-
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
         <div className={css.drawer}>
           <MyAccounts onLinkClick={closeDrawer} isSidebar></MyAccounts>

@@ -24,7 +24,7 @@ type ThirdPartyCookiesType = {
 }
 
 const useThirdPartyCookies = (): ThirdPartyCookiesType => {
-  const iframeRef = useRef<HTMLIFrameElement>()
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const [thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled] = useState<boolean>(false)
 
   const messageHandler = useCallback((event: MessageEvent) => {

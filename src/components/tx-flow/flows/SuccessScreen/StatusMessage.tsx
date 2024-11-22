@@ -37,9 +37,21 @@ const StatusMessage = ({ status, error }: { status: PendingStatus; error?: Error
 
   return (
     <>
-      <Box paddingX={3} mt={3}>
+      <Box
+        sx={{
+          paddingX: 3,
+          mt: 3,
+        }}
+      >
         <LoadingSpinner status={spinnerStatus} />
-        <Typography data-testid="transaction-status" variant="h6" marginTop={2} fontWeight={700}>
+        <Typography
+          data-testid="transaction-status"
+          variant="h6"
+          sx={{
+            marginTop: 2,
+            fontWeight: 700,
+          }}
+        >
           {stepInfo.description}
         </Typography>
       </Box>

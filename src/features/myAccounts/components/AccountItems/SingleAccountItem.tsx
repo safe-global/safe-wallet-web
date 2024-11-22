@@ -128,7 +128,11 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
     >
       <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>
         <Link onClick={onLinkClick} href={href} className={css.safeLink}>
-          <Box pr={2.5}>
+          <Box
+            sx={{
+              pr: 2.5,
+            }}
+          >
             <SafeIcon
               address={address}
               owners={safeOwners.length > 0 ? safeOwners.length : undefined}
@@ -139,12 +143,25 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
 
           <Typography variant="body2" component="div" className={css.safeAddress}>
             {name && (
-              <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
+              <Typography
+                variant="subtitle2"
+                component="p"
+                className={css.safeName}
+                sx={{
+                  fontWeight: 'bold',
+                }}
+              >
                 {name}
               </Typography>
             )}
             {chain?.shortName}:
-            <Typography color="var(--color-primary-light)" fontSize="inherit" component="span">
+            <Typography
+              component="span"
+              sx={{
+                color: 'var(--color-primary-light)',
+                fontSize: 'inherit',
+              }}
+            >
               {shortenAddress(address)}
             </Typography>
             {!isMobile && (
@@ -164,7 +181,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
 
           <ChainIndicator chainId={chainId} responsive onlyLogo className={css.chainIndicator} />
 
-          <Typography variant="body2" fontWeight="bold" textAlign="right" pl={2}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold', textAlign: 'right', pl: 2 }}>
             {undeployedSafe ? null : safeOverview ? (
               <FiatValue value={safeOverview.fiatTotal} />
             ) : (

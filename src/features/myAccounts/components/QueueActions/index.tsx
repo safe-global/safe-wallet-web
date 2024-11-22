@@ -13,7 +13,14 @@ const ChipLink = ({ children, color }: { children: ReactNode; color?: string }) 
     size="small"
     sx={{ backgroundColor: `${color}.background` }}
     label={
-      <Typography variant="caption" display="flex" alignItems="center" gap={0.5}>
+      <Typography
+        variant="caption"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.5,
+        }}
+      >
         {children}
       </Typography>
     }
@@ -48,17 +55,25 @@ const QueueActions = ({
   return (
     <Track {...OVERVIEW_EVENTS.OPEN_MISSING_SIGNATURES}>
       <NextLink href={queueLink}>
-        <Box px={isMobile ? 2 : 0} pb={isMobile ? 2 : 0} display="flex" gap={1} alignItems="center">
+        <Box
+          sx={{
+            px: isMobile ? 2 : 0,
+            pb: isMobile ? 2 : 0,
+            display: 'flex',
+            gap: 1,
+            alignItems: 'center',
+          }}
+        >
           {queued > 0 && (
             <ChipLink>
-              <SvgIcon component={TransactionsIcon} inheritViewBox fontSize="small" />
+              <SvgIcon component={TransactionsIcon} inheritViewBox sx={{ fontSize: 'small' }} />
               {queued} pending
             </ChipLink>
           )}
 
           {awaitingConfirmation > 0 && (
             <ChipLink color="warning">
-              <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" color="warning" />
+              <SvgIcon component={CheckIcon} inheritViewBox sx={{ fontSize: 'small', color: 'warning' }} />
               {awaitingConfirmation} to confirm
             </ChipLink>
           )}

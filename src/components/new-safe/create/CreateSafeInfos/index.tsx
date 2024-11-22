@@ -22,7 +22,13 @@ const CreateSafeInfos = ({
 
   return (
     <Grid item xs={12}>
-      <Grid container direction="column" gap={3}>
+      <Grid
+        container
+        direction="column"
+        sx={{
+          gap: 3,
+        }}
+      >
         {staticHint && (
           <Grid item>
             <InfoWidget title={staticHint.title} variant={staticHint.variant} steps={staticHint.steps} />

@@ -56,9 +56,20 @@ const MultichainIndicator = ({ safes }: { safes: SafeItem[] }) => {
     <Tooltip
       title={
         <Box data-testid="multichain-tooltip">
-          <Typography fontSize="14px">Multichain account on:</Typography>
+          <Typography
+            sx={{
+              fontSize: '14px',
+            }}
+          >
+            Multichain account on:
+          </Typography>
           {safes.map((safeItem) => (
-            <Box p="4px 0px" key={safeItem.chainId}>
+            <Box
+              key={safeItem.chainId}
+              sx={{
+                p: '4px 0px',
+              }}
+            >
               <ChainIndicator chainId={safeItem.chainId} />
             </Box>
           ))}
@@ -195,26 +206,36 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
           }}
         >
           <Box className={classnames(css.multiSafeLink, css.safeLink)} width="100%">
-            <Box pr={2.5} data-testid="group-safe-icon">
+            <Box sx={{ pr: 2.5 }} data-testid="group-safe-icon">
               <SafeIcon address={address} owners={sharedSetup?.owners.length} threshold={sharedSetup?.threshold} />
             </Box>
             <Typography variant="body2" component="div" className={css.safeAddress}>
               {multiSafeAccountItem.name && (
-                <Typography variant="subtitle2" component="p" fontWeight="bold" className={css.safeName}>
+                <Typography variant="subtitle2" component="p" sx={{ fontWeight: 'bold' }} className={css.safeName}>
                   {multiSafeAccountItem.name}
                 </Typography>
               )}
               <Typography
                 data-testid="group-address"
-                color="var(--color-primary-light)"
-                fontSize="inherit"
                 component="span"
+                sx={{
+                  color: 'var(--color-primary-light)',
+                  fontSize: 'inherit',
+                }}
               >
                 {shortenAddress(address)}
               </Typography>
             </Typography>
             <MultichainIndicator safes={safes} />
-            <Typography data-testid="group-balance" variant="body2" fontWeight="bold" textAlign="right" pl={2}>
+            <Typography
+              data-testid="group-balance"
+              variant="body2"
+              sx={{
+                fontWeight: 'bold',
+                textAlign: 'right',
+                pl: 2,
+              }}
+            >
               {totalFiatValue !== undefined ? (
                 <FiatValue value={totalFiatValue} />
               ) : (
@@ -259,7 +280,15 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
           {!isWatchlist && hasReplayableSafe && (
             <>
               <Divider sx={{ ml: '-12px', mr: '-12px' }} />
-              <Box display="flex" alignItems="center" justifyContent="center" sx={{ ml: '-12px', mr: '-12px' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  ml: '-12px',
+                  mr: '-12px',
+                }}
+              >
                 <AddNetworkButton
                   currentName={multiSafeAccountItem.name ?? ''}
                   safeAddress={address}

@@ -15,7 +15,7 @@ import { WALLETCONNECT_EVENTS } from '@/services/analytics/events/walletconnect'
 
 import { asError } from '@/services/exceptions/utils'
 import { Button, Checkbox, CircularProgress, Divider, FormControlLabel, Typography } from '@mui/material'
-import type { Web3WalletTypes } from '@walletconnect/web3wallet'
+import type { WalletKitTypes } from '@reown/walletkit'
 import type { ChangeEvent, ReactElement } from 'react'
 import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { CompatibilityWarning } from './CompatibilityWarning'
@@ -25,8 +25,8 @@ import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
 import BlockedAddress from '@/components/common/BlockedAddress'
 
 type ProposalFormProps = {
-  proposal: Web3WalletTypes.SessionProposal
-  setProposal: Dispatch<SetStateAction<Web3WalletTypes.SessionProposal | undefined>>
+  proposal: WalletKitTypes.SessionProposal
+  setProposal: Dispatch<SetStateAction<WalletKitTypes.SessionProposal | undefined>>
   onApprove: () => void
 }
 
@@ -114,30 +114,39 @@ const WcProposalForm = ({ proposal, setProposal, onApprove }: ProposalFormProps)
 
   return (
     <div className={css.container}>
-      <Typography variant="body2" color="text.secondary">
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+        }}
+      >
         WalletConnect
       </Typography>
-
       {proposer.metadata.icons[0] && (
         <div className={css.icon}>
           <SafeAppIconCard src={proposer.metadata.icons[0]} width={32} height={32} alt={`${name || 'dApp'} logo`} />
         </div>
       )}
-
-      <Typography mb={1}>
+      <Typography
+        sx={{
+          mb: 1,
+        }}
+      >
         <b>{name}</b> wants to connect
       </Typography>
-
-      <Typography className={css.origin} mb={3}>
+      <Typography
+        className={css.origin}
+        sx={{
+          mb: 3,
+        }}
+      >
         {proposal.verifyContext.verified.origin}
       </Typography>
-
       <div className={css.info}>
         <ProposalVerification proposal={proposal} />
 
         <CompatibilityWarning proposal={proposal} chainIds={chainIds} />
       </div>
-
       {!isBlocked && isHighRisk && (
         <FormControlLabel
           className={css.checkbox}
@@ -145,13 +154,10 @@ const WcProposalForm = ({ proposal, setProposal, onApprove }: ProposalFormProps)
           label="I understand the risks associated with interacting with this dApp and would like to continue."
         />
       )}
-
       {isSafePass && sanctionedAddress && (
         <BlockedAddress address={sanctionedAddress} featureTitle="Safe{Pass}" onClose={onReject} />
       )}
-
       <Divider flexItem className={css.divider} />
-
       <div className={css.buttons}>
         <Button variant="danger" onClick={onReject} className={css.button} disabled={!!isLoading}>
           {isLoading === WCLoadingState.REJECT ? <CircularProgress size={20} /> : 'Reject'}

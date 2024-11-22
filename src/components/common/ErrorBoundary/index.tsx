@@ -16,7 +16,12 @@ const ErrorBoundary = ({ error, componentStack }: ErrorBoundaryProps) => {
   return (
     <div className={css.container}>
       <div className={css.wrapper}>
-        <Typography variant="h3" color="text.primary">
+        <Typography
+          variant="h3"
+          sx={{
+            color: 'text.primary',
+          }}
+        >
           Something went wrong,
           <br />
           please try again.
@@ -25,7 +30,11 @@ const ErrorBoundary = ({ error, componentStack }: ErrorBoundaryProps) => {
         <CircularIcon icon={WarningIcon} badgeColor="warning" />
 
         {IS_PRODUCTION ? (
-          <Typography color="text.primary">
+          <Typography
+            sx={{
+              color: 'text.primary',
+            }}
+          >
             In case the problem persists, please reach out to us via our{' '}
             <ExternalLink href={HELP_CENTER_URL}>Help Center</ExternalLink>
           </Typography>
@@ -36,7 +45,13 @@ const ErrorBoundary = ({ error, componentStack }: ErrorBoundaryProps) => {
             <Typography color="error">{componentStack}</Typography>
           </>
         )}
-        <Link href={AppRoutes.welcome.index} color="primary" mt={2}>
+        <Link
+          href={AppRoutes.welcome.index}
+          color="primary"
+          sx={{
+            mt: 2,
+          }}
+        >
           Go home
         </Link>
       </div>

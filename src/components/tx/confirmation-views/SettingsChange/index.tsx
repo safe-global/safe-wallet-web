@@ -27,7 +27,14 @@ const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo: { settingsInfo 
     <>
       {'oldOwner' in settingsInfo && (
         <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: 2 }}>
-          <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
+          <Typography
+            sx={{
+              color: 'text.secondary',
+              mb: 2,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
             Previous signer
           </Typography>
@@ -40,12 +47,9 @@ const SettingsChange: React.FC<SettingsChangeProps> = ({ txInfo: { settingsInfo 
           />
         </Paper>
       )}
-
       {'owner' in settingsInfo && !hasNewOwner && <OwnerList owners={[settingsInfo.owner]} />}
       {hasNewOwner && <OwnerList owners={[{ name: params.newOwner.name, value: params.newOwner.address }]} />}
-
       {shouldShowChangeSigner && <ChangeSignerSetupWarning />}
-
       {'threshold' in settingsInfo && (
         <>
           <Divider className={commonCss.nestedDivider} />

@@ -2,8 +2,6 @@ name: Regression on demand tests
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 4 * * 1-5'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -57,7 +55,7 @@ jobs:
           --username ${{ secrets.TESTRAIL_USERNAME }} \
           --password ${{ secrets.TESTRAIL_PASSWORD }} \
           parse_junit \
-          --title "Automated Tests, branch: ${GITHUB_REF_NAME}" \
+          --title "Regression Automated Tests, branch: ${GITHUB_REF_NAME}" \
           --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
           -f "reports/junit-report.xml"; then
             echo -e "\e[41;32mTestRail upload failed. Pipeline will continue, please check the upload process.\e[0m"

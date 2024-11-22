@@ -13,8 +13,21 @@ export const SpenderField = ({ address }: { address: string }) => {
   const isSmallScreen = useMediaQuery(breakpoints.down('md'))
 
   return (
-    <Stack direction="row" justifyContent="space-between" alignItems="center" gap={2} className={css.approvalField}>
-      <Typography variant="body2" color="text.secondary">
+    <Stack
+      direction="row"
+      className={css.approvalField}
+      sx={{
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 2,
+      }}
+    >
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+        }}
+      >
         Spender
       </Typography>
       <div>

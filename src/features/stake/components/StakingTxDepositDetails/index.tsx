@@ -6,13 +6,19 @@ import StakingConfirmationTxDeposit from '@/features/stake/components/StakingCon
 
 const StakingTxDepositDetails = ({ info, txData }: { info: StakingTxDepositInfo; txData?: TransactionData }) => {
   return (
-    <Box pl={1} pr={5} display="flex" flexDirection="column" gap={1}>
+    <Box
+      sx={{
+        pl: 1,
+        pr: 5,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
       {txData && (
         <SendAmountBlock title="Deposit" amountInWei={txData.value?.toString() || '0'} tokenInfo={info.tokenInfo} />
       )}
-
       <FieldsGrid title="Net reward rate">{info.annualNrr.toFixed(3)}%</FieldsGrid>
-
       <StakingConfirmationTxDeposit order={info} />
     </Box>
   )

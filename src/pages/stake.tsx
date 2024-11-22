@@ -15,12 +15,16 @@ const StakePage: NextPage = () => {
       <Head>
         <title>{'Safe{Wallet} – Stake'}</title>
       </Head>
-
       {isFeatureEnabled === true ? (
         <LazyStakePage />
       ) : isFeatureEnabled === false ? (
         <main>
-          <Typography textAlign="center" my={3}>
+          <Typography
+            sx={{
+              textAlign: 'center',
+              my: 3,
+            }}
+          >
             Staking is not available on this network.
           </Typography>
         </main>

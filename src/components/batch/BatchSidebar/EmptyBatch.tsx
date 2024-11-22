@@ -7,28 +7,66 @@ import SettingsIcon from '@/public/images/sidebar/settings.svg'
 import { Box, SvgIcon, Typography } from '@mui/material'
 
 const EmptyBatch = ({ children }: { children: ReactNode }) => (
-  <Box display="flex" flexWrap="wrap" justifyContent="center" textAlign="center" mt={3} px={4}>
+  <Box
+    sx={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      textAlign: 'center',
+      mt: 3,
+      px: 4,
+    }}
+  >
     <SvgIcon component={EmptyBatchIcon} inheritViewBox sx={{ fontSize: 110 }} />
 
-    <Typography variant="h4" fontWeight={700}>
+    <Typography
+      variant="h4"
+      sx={{
+        fontWeight: 700,
+      }}
+    >
       Add an initial transaction to the batch
     </Typography>
 
-    <Typography variant="body2" mt={2} mb={4} px={8} sx={{ textWrap: 'balance' }}>
+    <Typography
+      variant="body2"
+      sx={{
+        mt: 2,
+        mb: 4,
+        px: 8,
+        textWrap: 'balance',
+      }}
+    >
       Save gas and signatures by adding multiple Safe transactions to a single batch transaction. You can reorder and
       delete individual transactions in a batch.
     </Typography>
 
     {children}
 
-    <Typography variant="body2" color="border.main" mt={8}>
-      <Box mb={1}>
+    <Typography
+      variant="body2"
+      sx={{
+        color: 'border.main',
+        mt: 8,
+      }}
+    >
+      <Box
+        sx={{
+          mb: 1,
+        }}
+      >
         <SvgIcon component={InfoIcon} inheritViewBox />
       </Box>
 
       <b>What type of transactions can you add to the batch?</b>
 
-      <Box display="flex" mt={3} gap={6}>
+      <Box
+        sx={{
+          display: 'flex',
+          mt: 3,
+          gap: 6,
+        }}
+      >
         <div>
           <SvgIcon component={AssetsIcon} inheritViewBox />
           <div>Token and NFT transfers</div>
