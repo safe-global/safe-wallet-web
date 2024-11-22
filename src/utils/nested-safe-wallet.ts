@@ -12,6 +12,7 @@ import ErrorCodes from '@/services/exceptions/ErrorCodes'
 import { TX_EVENTS } from '@/services/analytics/events/transactions'
 import { trackEvent } from '@/services/analytics'
 import { tryOffChainTxSigning } from '@/services/tx/tx-sender/sdk'
+import type { TransactionResult } from '@safe-global/safe-core-sdk-types'
 
 export type NestedWallet = {
   address: string
@@ -78,6 +79,8 @@ export const getNestedWallet = (
 
       const safeTxHash = await connectedSDK.getTransactionHash(safeTx)
 
+      let result: TransactionResult | null = null
+
       try {
         if (await isSmartContractWallet(safeInfo.chainId, actualWallet.address)) {
           // With the unchecked signer, the contract call resolves once the tx
@@ -85,7 +88,7 @@ export const getNestedWallet = (
 
           // First we propose so the backend will pick it up
           await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, safeTx, safeTxHash)
-          await connectedSDK.approveTransactionHash(safeTxHash)
+          result = await connectedSDK.approveTransactionHash(safeTxHash)
         } else {
           // Sign off-chain
           if (safeInfo.threshold === 1) {
@@ -93,7 +96,7 @@ export const getNestedWallet = (
             await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, safeTx, safeTxHash)
 
             // Directly execute the tx
-            await connectedSDK.executeTransaction(safeTx)
+            result = await connectedSDK.executeTransaction(safeTx)
           } else {
             const signedTx = await tryOffChainTxSigning(safeTx, safeInfo.version, connectedSDK)
             await proposeTx(safeInfo.chainId, safeInfo.address.value, actualWallet.address, signedTx, safeTxHash)
@@ -108,6 +111,7 @@ export const getNestedWallet = (
 
       return {
         safeTxHash,
+        txHash: result?.hash,
       }
     },
 
