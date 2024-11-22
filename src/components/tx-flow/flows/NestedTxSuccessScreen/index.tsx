@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Box, Container, Paper, Stack, SvgIcon, Typography } from '@mui/material'
 import { PendingStatus, selectPendingTxById } from '@/store/pendingTxsSlice'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -18,15 +19,23 @@ type Props = {
   txId: string
 }
 const NestedTxSuccessScreen = ({ txId }: Props) => {
-  const pendingTx = useAppSelector((state) => (txId ? selectPendingTxById(state, txId) : undefined))
   const addressBook = useAddressBook()
 
-  if (pendingTx?.status !== PendingStatus.NESTED_SIGNING) {
+  // _pendingTx eventually clears from the store, so we need to cache it
+  const _pendingTx = useAppSelector((state) => (txId ? selectPendingTxById(state, txId) : undefined))
+  const [cachedPendingTx, setCachedPendingTx] = useState(_pendingTx)
+  useEffect(() => {
+    if (_pendingTx) {
+      setCachedPendingTx(_pendingTx)
+    }
+  }, [_pendingTx])
+
+  if (cachedPendingTx?.status !== PendingStatus.NESTED_SIGNING) {
     return <ErrorMessage>No transaction data found</ErrorMessage>
   }
 
-  const currentSafeAddress = addressBook[pendingTx.safeAddress]
-  const parentSafeAddress = addressBook[pendingTx.signerAddress]
+  const currentSafeAddress = addressBook[cachedPendingTx.safeAddress]
+  const parentSafeAddress = addressBook[cachedPendingTx.signerAddress]
 
   return (
     <Container
@@ -54,7 +63,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
               Parent Safe
             </Typography>
             <EthHashInfo
-              address={pendingTx.signerAddress}
+              address={cachedPendingTx.signerAddress}
               name={parentSafeAddress}
               isAddressBookName={Boolean(parentSafeAddress)}
               shortAddress={false}
@@ -83,7 +92,7 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
               Current Safe
             </Typography>
             <EthHashInfo
-              address={pendingTx.safeAddress}
+              address={cachedPendingTx.safeAddress}
               name={currentSafeAddress}
               isAddressBookName={Boolean(currentSafeAddress)}
               shortAddress={false}
@@ -95,9 +104,9 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
             href={{
               pathname: AppRoutes.transactions.tx,
               query: {
-                safe: pendingTx.signerAddress,
-                chainId: pendingTx.chainId,
-                id: pendingTx.signingSafeTxHash,
+                safe: cachedPendingTx.signerAddress,
+                chainId: cachedPendingTx.chainId,
+                id: cachedPendingTx.signingSafeTxHash,
               },
             }}
             passHref
