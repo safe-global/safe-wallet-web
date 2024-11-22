@@ -35,7 +35,11 @@ class SafeOverviewFetcher {
     currency: string
   }) {
     return await getSafeOverviews(safeIds, {
-      trusted: true,
+      /**
+       * This flag can only be set once for all cross chain `safeIds`.
+       * If we set `trusted` to `true` we will get 0 as `fiatTotal` for all Safes on networks without Default tokenlists.
+       */
+      trusted: false,
       exclude_spam: true,
       currency,
       wallet_address: walletAddress,
