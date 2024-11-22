@@ -24,11 +24,11 @@ const StakingConfirmationTxExit = ({ order }: StakingOrderConfirmationViewProps)
       <ConfirmationOrderHeader
         blocks={[
           {
-            value: `${order.numValidators || 0} Validators`,
+            value: `${order.numValidators} Validators`,
             label: 'Exit',
           },
           {
-            value: (order as unknown as { value: string }).value || '0',
+            value: order.value,
             tokenInfo: order.tokenInfo,
             label: 'Receive',
           },

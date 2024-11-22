@@ -30,7 +30,7 @@ const StakingConfirmationTxDeposit = ({ order, isTxDetails }: StakingOrderConfir
         <ConfirmationOrderHeader
           blocks={[
             {
-              value: order.value || '0',
+              value: order.value,
               tokenInfo: order.tokenInfo,
               label: 'Deposit',
             },
