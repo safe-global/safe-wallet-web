@@ -26,13 +26,12 @@ export const safeItemOptionsRemoveBtn = '[data-testid="remove-btn"]'
 export const safeItemOptionsAddChainBtn = '[data-testid="add-chain-btn"]'
 const nameInput = '[data-testid="name-input"]'
 const saveBtn = '[data-testid="save-btn"]'
-const cancelBtn = '[data-testid="cancel-btn"]'
 const deleteBtn = '[data-testid="delete-btn"]'
 const readOnlyVisibility = '[data-testid="read-only-visibility"]'
 const currencySection = '[data-testid="currency-section"]'
 const missingSignatureInfo = '[data-testid="missing-signature-info"]'
 const queuedTxInfo = '[data-testid="queued-tx-info"]'
-const showMoreBtn = '[data-testid="show-more-btn" ]'
+const expandSafesList = '[data-testid="expand-safes-list" ]'
 export const importBtn = '[data-testid="import-btn"]'
 export const pendingActivationIcon = '[data-testid="pending-activation-icon"]'
 const safeItemMenuIcon = '[data-testid="MoreVertIcon"]'
@@ -54,7 +53,6 @@ export const addedNetworkOption = 'li[role="option"]'
 const modalAddNetworkName = '[data-testid="added-network"]'
 const networkSeperator = 'div[role="separator"]'
 export const addNetworkTooltip = '[data-testid="add-network-tooltip"]'
-const networkOptionNetworkSwitch = 'span[data-track="overview: Add new network"] > li'
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
 export const undeployedSafe = 'Undeployed Sepolia'
@@ -112,10 +110,9 @@ export function clickOnSidebarImportBtn() {
 
 export function showAllSafes() {
   cy.get('body').then(($body) => {
-    if ($body.find(showMoreBtn).length > 0) {
-      cy.get(showMoreBtn).click()
+    if ($body.find(expandSafesList).length > 0) {
+      cy.get(expandSafesList).click()
       cy.wait(500)
-      showAllSafes()
     }
   })
 }
@@ -467,7 +464,7 @@ export function checkNetworksInRange(expectedString, expectedCount, direction = 
 
   return cy
     .get(startSelector)
-    [traversalMethod](endSelector, 'li')
+  [traversalMethod](endSelector, 'li')
     .then((liElements) => {
       expect(liElements.length).to.equal(expectedCount)
       const optionTexts = [...liElements].map((li) => li.innerText)

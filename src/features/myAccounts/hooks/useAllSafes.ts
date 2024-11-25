@@ -3,15 +3,18 @@ import uniq from 'lodash/uniq'
 import isEmpty from 'lodash/isEmpty'
 import { useAppSelector } from '@/store'
 import { selectAllAddedSafes } from '@/store/addedSafesSlice'
-import useAllOwnedSafes from './useAllOwnedSafes'
 import useChains from '@/hooks/useChains'
 import useWallet from '@/hooks/wallets/useWallet'
-import { selectUndeployedSafes } from '@/store/slices'
+import { selectAllAddressBooks, selectAllVisitedSafes, selectUndeployedSafes } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
+import useAllOwnedSafes from './useAllOwnedSafes'
 export type SafeItem = {
   chainId: string
   address: string
-  isWatchlist: boolean
+  isReadOnly: boolean
+  isPinned: boolean
+  lastVisited: number
+  name: string | undefined
 }
 
 export type SafeItems = SafeItem[]
@@ -36,37 +39,46 @@ export const useHasSafes = () => {
 
 const useAllSafes = (): SafeItems | undefined => {
   const { address: walletAddress = '' } = useWallet() || {}
-  const [allOwned, , allOwnedLoading] = useAllOwnedSafes(walletAddress)
+  const [allOwned] = useAllOwnedSafes(walletAddress)
   const allAdded = useAddedSafes()
+  const allUndeployed = useAppSelector(selectUndeployedSafes)
+  const allVisitedSafes = useAppSelector(selectAllVisitedSafes)
   const { configs } = useChains()
-  const undeployedSafes = useAppSelector(selectUndeployedSafes)
+  const allSafeNames = useAppSelector(selectAllAddressBooks)
 
-  return useMemo<SafeItems | undefined>(() => {
-    if (walletAddress && (allOwned === undefined || allOwnedLoading)) {
-      return undefined
+  return useMemo<SafeItems>(() => {
+    if (walletAddress && allOwned === undefined) {
+      return []
     }
-    const chains = uniq(Object.keys(allAdded).concat(Object.keys(allOwned || {})))
+    const chains = uniq(Object.keys(allOwned || {}).concat(Object.keys(allAdded), Object.keys(allUndeployed)))
+    chains.sort((a, b) => parseInt(a) - parseInt(b))
 
     return chains.flatMap((chainId) => {
       if (!configs.some((item) => item.chainId === chainId)) return []
       const addedOnChain = Object.keys(allAdded[chainId] || {})
       const ownedOnChain = (allOwned || {})[chainId]
-      const undeployedOnChain = Object.keys(undeployedSafes[chainId] || {})
-      const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain)).filter(Boolean)
+      const undeployedOnChain = Object.keys(allUndeployed[chainId] || {})
+      const uniqueAddresses = uniq(addedOnChain.concat(ownedOnChain, undeployedOnChain).filter(Boolean))
+      uniqueAddresses.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
 
       return uniqueAddresses.map((address) => {
         const owners = allAdded?.[chainId]?.[address]?.owners
+        const isPinned = !!allAdded?.[chainId]?.[address]
         const isOwner = owners?.some(({ value }) => sameAddress(walletAddress, value))
-        const isUndeployed = undeployedOnChain.includes(address)
         const isOwned = (ownedOnChain || []).includes(address) || isOwner
+        const lastVisited = allVisitedSafes?.[chainId]?.[address]?.lastVisited || 0
+        const name = allSafeNames?.[chainId]?.[address]
         return {
           address,
           chainId,
-          isWatchlist: !isOwned && !isUndeployed,
+          isReadOnly: !isOwned,
+          isPinned,
+          lastVisited,
+          name,
         }
       })
     })
-  }, [allAdded, allOwned, allOwnedLoading, configs, undeployedSafes, walletAddress])
+  }, [allAdded, allOwned, allUndeployed, configs, walletAddress, allVisitedSafes, allSafeNames])
 }
 
 export default useAllSafes
