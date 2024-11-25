@@ -47,7 +47,7 @@ export const CookieAndTermBanner = ({
   const dispatch = useAppDispatch()
   const cookies = useAppSelector(selectCookies)
 
-  const { register, watch, getValues, setValue } = useForm({
+  const { getValues } = useForm({
     defaultValues: {
       [CookieAndTermType.TERMS]: true,
       [CookieAndTermType.NECESSARY]: true,
@@ -66,12 +66,6 @@ export const CookieAndTermBanner = ({
       }),
     )
     dispatch(closeCookieBanner())
-  }
-
-  const handleAcceptAll = () => {
-    setValue(CookieAndTermType.UPDATES, true)
-    setValue(CookieAndTermType.ANALYTICS, true)
-    setTimeout(handleAccept, 300)
   }
 
   return (
@@ -104,8 +98,7 @@ export const CookieAndTermBanner = ({
             >
               By browsing this page, you accept our{' '}
               <ExternalLink href={AppRoutes.terms}>Terms & Conditions</ExternalLink> (last updated{' '}
-              {metadata.last_update_date}) and the use of necessary cookies. By clicking &quot;Accept all&quot; you
-              additionally agree to the use of Beamer and Analytics cookies as listed below.{' '}
+              {metadata.last_update_date}) and the use of necessary cookies.{' '}
               <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
             </Typography>
 
@@ -127,7 +120,7 @@ export const CookieAndTermBanner = ({
                   <Typography variant="body2">Locally stored data for core functionality</Typography>
                 </Box>
 
-                <Box
+                {/* <Box
                   sx={{
                     mb: 2,
                   }}
@@ -139,9 +132,9 @@ export const CookieAndTermBanner = ({
                   />
                   <br />
                   <Typography variant="body2">New features and product announcements</Typography>
-                </Box>
+                </Box> */}
 
-                <Box>
+                {/* <Box>
                   <CookieCheckbox
                     checkboxProps={{ ...register(CookieAndTermType.ANALYTICS), id: 'ga' }}
                     label="Analytics"
@@ -151,7 +144,7 @@ export const CookieAndTermBanner = ({
                   <Typography variant="body2">
                     Opt in for Google Analytics cookies to help us analyze app usage patterns.
                   </Typography>
-                </Box>
+                </Box> */}
               </Grid>
             </Grid>
 
@@ -172,11 +165,11 @@ export const CookieAndTermBanner = ({
                 </Typography>
               </Grid>
 
-              <Grid item>
+              {/* <Grid item>
                 <Button onClick={handleAcceptAll} variant="contained" color="secondary" size="small" disableElevation>
                   Accept all
                 </Button>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
         </Grid>
