@@ -10,7 +10,7 @@ import IndexingStatus from '@/components/sidebar/IndexingStatus'
 
 import css from './styles.module.css'
 import { trackEvent, OVERVIEW_EVENTS } from '@/services/analytics'
-import MyAccounts from '@/components/welcome/MyAccounts'
+import MyAccounts from '@/features/myAccounts'
 
 const Sidebar = (): ReactElement => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
@@ -60,7 +60,7 @@ const Sidebar = (): ReactElement => {
       </div>
       <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
         <div className={css.drawer}>
-          <MyAccounts onLinkClick={closeDrawer}></MyAccounts>
+          <MyAccounts onLinkClick={closeDrawer} isSidebar></MyAccounts>
         </div>
       </Drawer>
     </div>

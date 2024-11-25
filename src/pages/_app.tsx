@@ -45,6 +45,7 @@ import WalletProvider from '@/components/common/WalletProvider'
 import CounterfactualHooks from '@/features/counterfactual/CounterfactualHooks'
 import PkModulePopup from '@/services/private-key-module/PkModulePopup'
 import GeoblockingProvider from '@/components/common/GeoblockingProvider'
+import { useVisitedSafes } from '@/features/myAccounts/hooks/useVisitedSafes'
 import OutreachPopup from '@/features/targetedOutreach/components/OutreachPopup'
 
 export const GATEWAY_URL = IS_PRODUCTION || cgwDebugStorage.get() ? GATEWAY_URL_PRODUCTION : GATEWAY_URL_STAGING
@@ -71,6 +72,7 @@ const InitApp = (): null => {
   useTxTracking()
   useSafeMsgTracking()
   useBeamer()
+  useVisitedSafes()
 
   return null
 }
