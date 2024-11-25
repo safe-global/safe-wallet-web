@@ -19,7 +19,6 @@ import { asError } from '@/services/exceptions/utils'
 import { isWalletRejection } from '@/utils/wallets'
 import { useSigner } from '@/hooks/wallets/useWallet'
 import { NestedTxSuccessScreenFlow } from '@/components/tx-flow/flows'
-import useSafeInfo from '@/hooks/useSafeInfo'
 
 export const SignForm = ({
   safeTx,
@@ -51,7 +50,6 @@ export const SignForm = ({
   const { needsRiskConfirmation, isRiskConfirmed, setIsRiskIgnored } = txSecurity
   const hasSigned = useAlreadySigned(safeTx)
   const signer = useSigner()
-  const { safe } = useSafeInfo()
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent, isAddingToBatch = false) => {
@@ -88,7 +86,7 @@ export const SignForm = ({
       onSubmit?.(resultTxId)
     }
 
-    if (signer?.isSafe && safe.threshold > 1) {
+    if (signer?.isSafe) {
       setTxFlow(<NestedTxSuccessScreenFlow txId={resultTxId} />, undefined, false)
     } else {
       setTxFlow(undefined)
