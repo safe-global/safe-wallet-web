@@ -6,7 +6,7 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      getAbout: build.query<GetAboutApiResponse, GetAboutApiArg>({
+      aboutGetAbout: build.query<AboutGetAboutApiResponse, AboutGetAboutApiArg>({
         query: () => ({ url: `/about` }),
         providesTags: ['about'],
       }),
@@ -14,11 +14,11 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type GetAboutApiResponse = /** status 200  */ About
-export type GetAboutApiArg = void
+export type AboutGetAboutApiResponse = /** status 200  */ About
+export type AboutGetAboutApiArg = void
 export type About = {
   name: string
   version?: string | null
   buildNumber?: string | null
 }
-export const { useGetAboutQuery } = injectedRtkApi
+export const { useAboutGetAboutQuery } = injectedRtkApi

@@ -6,7 +6,7 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetChains: build.query<V1GetChainsApiResponse, V1GetChainsApiArg>({
+      chainsGetChainsV1: build.query<ChainsGetChainsV1ApiResponse, ChainsGetChainsV1ApiArg>({
         query: (queryArg) => ({
           url: `/v1/chains`,
           params: {
@@ -15,23 +15,23 @@ const injectedRtkApi = api
         }),
         providesTags: ['chains'],
       }),
-      v1GetChain: build.query<V1GetChainApiResponse, V1GetChainApiArg>({
+      chainsGetChainV1: build.query<ChainsGetChainV1ApiResponse, ChainsGetChainV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}` }),
         providesTags: ['chains'],
       }),
-      v1GetAboutChain: build.query<V1GetAboutChainApiResponse, V1GetAboutChainApiArg>({
+      chainsGetAboutChainV1: build.query<ChainsGetAboutChainV1ApiResponse, ChainsGetAboutChainV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/about` }),
         providesTags: ['chains'],
       }),
-      v1GetBackbone: build.query<V1GetBackboneApiResponse, V1GetBackboneApiArg>({
+      chainsGetBackboneV1: build.query<ChainsGetBackboneV1ApiResponse, ChainsGetBackboneV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/about/backbone` }),
         providesTags: ['chains'],
       }),
-      v1GetMasterCopies: build.query<V1GetMasterCopiesApiResponse, V1GetMasterCopiesApiArg>({
+      chainsGetMasterCopiesV1: build.query<ChainsGetMasterCopiesV1ApiResponse, ChainsGetMasterCopiesV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/about/master-copies` }),
         providesTags: ['chains'],
       }),
-      v1GetIndexingStatus: build.query<V1GetIndexingStatusApiResponse, V1GetIndexingStatusApiArg>({
+      chainsGetIndexingStatusV1: build.query<ChainsGetIndexingStatusV1ApiResponse, ChainsGetIndexingStatusV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/about/indexing` }),
         providesTags: ['chains'],
       }),
@@ -39,28 +39,28 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetChainsApiResponse = /** status 200  */ ChainPage
-export type V1GetChainsApiArg = {
+export type ChainsGetChainsV1ApiResponse = /** status 200  */ ChainPage
+export type ChainsGetChainsV1ApiArg = {
   cursor?: string
 }
-export type V1GetChainApiResponse = /** status 200  */ Chain
-export type V1GetChainApiArg = {
+export type ChainsGetChainV1ApiResponse = /** status 200  */ Chain
+export type ChainsGetChainV1ApiArg = {
   chainId: string
 }
-export type V1GetAboutChainApiResponse = /** status 200  */ AboutChain
-export type V1GetAboutChainApiArg = {
+export type ChainsGetAboutChainV1ApiResponse = /** status 200  */ AboutChain
+export type ChainsGetAboutChainV1ApiArg = {
   chainId: string
 }
-export type V1GetBackboneApiResponse = /** status 200  */ Backbone
-export type V1GetBackboneApiArg = {
+export type ChainsGetBackboneV1ApiResponse = /** status 200  */ Backbone
+export type ChainsGetBackboneV1ApiArg = {
   chainId: string
 }
-export type V1GetMasterCopiesApiResponse = /** status 200  */ MasterCopy[]
-export type V1GetMasterCopiesApiArg = {
+export type ChainsGetMasterCopiesV1ApiResponse = /** status 200  */ MasterCopy[]
+export type ChainsGetMasterCopiesV1ApiArg = {
   chainId: string
 }
-export type V1GetIndexingStatusApiResponse = /** status 200  */ IndexingStatus
-export type V1GetIndexingStatusApiArg = {
+export type ChainsGetIndexingStatusV1ApiResponse = /** status 200  */ IndexingStatus
+export type ChainsGetIndexingStatusV1ApiArg = {
   chainId: string
 }
 export type NativeCurrency = {
@@ -165,10 +165,10 @@ export type IndexingStatus = {
   synced: boolean
 }
 export const {
-  useV1GetChainsQuery,
-  useV1GetChainQuery,
-  useV1GetAboutChainQuery,
-  useV1GetBackboneQuery,
-  useV1GetMasterCopiesQuery,
-  useV1GetIndexingStatusQuery,
+  useChainsGetChainsV1Query,
+  useChainsGetChainV1Query,
+  useChainsGetAboutChainV1Query,
+  useChainsGetBackboneV1Query,
+  useChainsGetMasterCopiesV1Query,
+  useChainsGetIndexingStatusV1Query,
 } = injectedRtkApi

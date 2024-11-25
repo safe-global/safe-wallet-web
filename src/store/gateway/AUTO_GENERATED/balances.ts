@@ -6,7 +6,7 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetBalances: build.query<V1GetBalancesApiResponse, V1GetBalancesApiArg>({
+      balancesGetBalancesV1: build.query<BalancesGetBalancesV1ApiResponse, BalancesGetBalancesV1ApiArg>({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/balances/${queryArg.fiatCode}`,
           params: {
@@ -16,7 +16,10 @@ const injectedRtkApi = api
         }),
         providesTags: ['balances'],
       }),
-      v1GetSupportedFiatCodes: build.query<V1GetSupportedFiatCodesApiResponse, V1GetSupportedFiatCodesApiArg>({
+      balancesGetSupportedFiatCodesV1: build.query<
+        BalancesGetSupportedFiatCodesV1ApiResponse,
+        BalancesGetSupportedFiatCodesV1ApiArg
+      >({
         query: () => ({ url: `/v1/balances/supported-fiat-codes` }),
         providesTags: ['balances'],
       }),
@@ -24,16 +27,16 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetBalancesApiResponse = /** status 200  */ Balances
-export type V1GetBalancesApiArg = {
+export type BalancesGetBalancesV1ApiResponse = /** status 200  */ Balances
+export type BalancesGetBalancesV1ApiArg = {
   chainId: string
   safeAddress: string
   fiatCode: string
   trusted?: boolean
   excludeSpam?: boolean
 }
-export type V1GetSupportedFiatCodesApiResponse = unknown
-export type V1GetSupportedFiatCodesApiArg = void
+export type BalancesGetSupportedFiatCodesV1ApiResponse = unknown
+export type BalancesGetSupportedFiatCodesV1ApiArg = void
 export type Token = {
   address: string
   decimals?: number | null
@@ -52,4 +55,4 @@ export type Balances = {
   fiatTotal: string
   items: Balance[]
 }
-export const { useV1GetBalancesQuery, useV1GetSupportedFiatCodesQuery } = injectedRtkApi
+export const { useBalancesGetBalancesV1Query, useBalancesGetSupportedFiatCodesV1Query } = injectedRtkApi

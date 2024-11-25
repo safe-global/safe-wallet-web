@@ -6,7 +6,10 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetDataDecoded: build.mutation<V1GetDataDecodedApiResponse, V1GetDataDecodedApiArg>({
+      dataDecodedGetDataDecodedV1: build.mutation<
+        DataDecodedGetDataDecodedV1ApiResponse,
+        DataDecodedGetDataDecodedV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/data-decoder`,
           method: 'POST',
@@ -18,8 +21,8 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetDataDecodedApiResponse = /** status 200  */ DataDecoded
-export type V1GetDataDecodedApiArg = {
+export type DataDecodedGetDataDecodedV1ApiResponse = /** status 200  */ DataDecoded
+export type DataDecodedGetDataDecodedV1ApiArg = {
   chainId: string
   transactionDataDto: TransactionDataDto
 }
@@ -41,4 +44,4 @@ export type TransactionDataDto = {
   /** The wei amount being sent to a payable function */
   value?: string
 }
-export const { useV1GetDataDecodedMutation } = injectedRtkApi
+export const { useDataDecodedGetDataDecodedV1Mutation } = injectedRtkApi

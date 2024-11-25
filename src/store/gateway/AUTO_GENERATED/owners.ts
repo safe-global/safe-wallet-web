@@ -6,11 +6,11 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetSafesByOwner: build.query<V1GetSafesByOwnerApiResponse, V1GetSafesByOwnerApiArg>({
+      ownersGetSafesByOwnerV1: build.query<OwnersGetSafesByOwnerV1ApiResponse, OwnersGetSafesByOwnerV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/owners/${queryArg.ownerAddress}/safes` }),
         providesTags: ['owners'],
       }),
-      v1GetAllSafesByOwner: build.query<V1GetAllSafesByOwnerApiResponse, V1GetAllSafesByOwnerApiArg>({
+      ownersGetAllSafesByOwnerV1: build.query<OwnersGetAllSafesByOwnerV1ApiResponse, OwnersGetAllSafesByOwnerV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/owners/${queryArg.ownerAddress}/safes` }),
         providesTags: ['owners'],
       }),
@@ -18,16 +18,16 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetSafesByOwnerApiResponse = /** status 200  */ SafeList
-export type V1GetSafesByOwnerApiArg = {
+export type OwnersGetSafesByOwnerV1ApiResponse = /** status 200  */ SafeList
+export type OwnersGetSafesByOwnerV1ApiArg = {
   chainId: string
   ownerAddress: string
 }
-export type V1GetAllSafesByOwnerApiResponse = /** status 200  */ SafeList
-export type V1GetAllSafesByOwnerApiArg = {
+export type OwnersGetAllSafesByOwnerV1ApiResponse = /** status 200  */ SafeList
+export type OwnersGetAllSafesByOwnerV1ApiArg = {
   ownerAddress: string
 }
 export type SafeList = {
   safes: string[]
 }
-export const { useV1GetSafesByOwnerQuery, useV1GetAllSafesByOwnerQuery } = injectedRtkApi
+export const { useOwnersGetSafesByOwnerV1Query, useOwnersGetAllSafesByOwnerV1Query } = injectedRtkApi

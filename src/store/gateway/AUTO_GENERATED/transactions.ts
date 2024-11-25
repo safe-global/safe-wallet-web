@@ -6,11 +6,17 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetTransactionById: build.query<V1GetTransactionByIdApiResponse, V1GetTransactionByIdApiArg>({
+      transactionsGetTransactionByIdV1: build.query<
+        TransactionsGetTransactionByIdV1ApiResponse,
+        TransactionsGetTransactionByIdV1ApiArg
+      >({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/transactions/${queryArg.id}` }),
         providesTags: ['transactions'],
       }),
-      v1GetMultisigTransactions: build.query<V1GetMultisigTransactionsApiResponse, V1GetMultisigTransactionsApiArg>({
+      transactionsGetMultisigTransactionsV1: build.query<
+        TransactionsGetMultisigTransactionsV1ApiResponse,
+        TransactionsGetMultisigTransactionsV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/multisig-transactions`,
           params: {
@@ -25,7 +31,10 @@ const injectedRtkApi = api
         }),
         providesTags: ['transactions'],
       }),
-      v1DeleteTransaction: build.mutation<V1DeleteTransactionApiResponse, V1DeleteTransactionApiArg>({
+      transactionsDeleteTransactionV1: build.mutation<
+        TransactionsDeleteTransactionV1ApiResponse,
+        TransactionsDeleteTransactionV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/transactions/${queryArg.safeTxHash}`,
           method: 'DELETE',
@@ -33,7 +42,10 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ['transactions'],
       }),
-      v1GetModuleTransactions: build.query<V1GetModuleTransactionsApiResponse, V1GetModuleTransactionsApiArg>({
+      transactionsGetModuleTransactionsV1: build.query<
+        TransactionsGetModuleTransactionsV1ApiResponse,
+        TransactionsGetModuleTransactionsV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/module-transactions`,
           params: {
@@ -45,7 +57,10 @@ const injectedRtkApi = api
         }),
         providesTags: ['transactions'],
       }),
-      v1AddConfirmation: build.mutation<V1AddConfirmationApiResponse, V1AddConfirmationApiArg>({
+      transactionsAddConfirmationV1: build.mutation<
+        TransactionsAddConfirmationV1ApiResponse,
+        TransactionsAddConfirmationV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/transactions/${queryArg.safeTxHash}/confirmations`,
           method: 'POST',
@@ -53,7 +68,10 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ['transactions'],
       }),
-      v1GetIncomingTransfers: build.query<V1GetIncomingTransfersApiResponse, V1GetIncomingTransfersApiArg>({
+      transactionsGetIncomingTransfersV1: build.query<
+        TransactionsGetIncomingTransfersV1ApiResponse,
+        TransactionsGetIncomingTransfersV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/incoming-transfers`,
           params: {
@@ -68,7 +86,10 @@ const injectedRtkApi = api
         }),
         providesTags: ['transactions'],
       }),
-      v1PreviewTransaction: build.mutation<V1PreviewTransactionApiResponse, V1PreviewTransactionApiArg>({
+      transactionsPreviewTransactionV1: build.mutation<
+        TransactionsPreviewTransactionV1ApiResponse,
+        TransactionsPreviewTransactionV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/transactions/${queryArg.safeAddress}/preview`,
           method: 'POST',
@@ -76,7 +97,10 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ['transactions'],
       }),
-      v1GetTransactionQueue: build.query<V1GetTransactionQueueApiResponse, V1GetTransactionQueueApiArg>({
+      transactionsGetTransactionQueueV1: build.query<
+        TransactionsGetTransactionQueueV1ApiResponse,
+        TransactionsGetTransactionQueueV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/transactions/queued`,
           params: {
@@ -86,7 +110,10 @@ const injectedRtkApi = api
         }),
         providesTags: ['transactions'],
       }),
-      v1GetTransactionsHistory: build.query<V1GetTransactionsHistoryApiResponse, V1GetTransactionsHistoryApiArg>({
+      transactionsGetTransactionsHistoryV1: build.query<
+        TransactionsGetTransactionsHistoryV1ApiResponse,
+        TransactionsGetTransactionsHistoryV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/transactions/history`,
           params: {
@@ -99,7 +126,10 @@ const injectedRtkApi = api
         }),
         providesTags: ['transactions'],
       }),
-      v1ProposeTransaction: build.mutation<V1ProposeTransactionApiResponse, V1ProposeTransactionApiArg>({
+      transactionsProposeTransactionV1: build.mutation<
+        TransactionsProposeTransactionV1ApiResponse,
+        TransactionsProposeTransactionV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/transactions/${queryArg.safeAddress}/propose`,
           method: 'POST',
@@ -107,23 +137,37 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ['transactions'],
       }),
-      v1GetCreationTransaction: build.query<V1GetCreationTransactionApiResponse, V1GetCreationTransactionApiArg>({
+      transactionsGetCreationTransactionV1: build.query<
+        TransactionsGetCreationTransactionV1ApiResponse,
+        TransactionsGetCreationTransactionV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/transactions/creation`,
         }),
         providesTags: ['transactions'],
       }),
+      transactionsViewGetTransactionConfirmationViewV1: build.mutation<
+        TransactionsViewGetTransactionConfirmationViewV1ApiResponse,
+        TransactionsViewGetTransactionConfirmationViewV1ApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/views/transaction-confirmation`,
+          method: 'POST',
+          body: queryArg.transactionDataDto,
+        }),
+        invalidatesTags: ['transactions'],
+      }),
     }),
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetTransactionByIdApiResponse = /** status 200  */ TransactionDetails
-export type V1GetTransactionByIdApiArg = {
+export type TransactionsGetTransactionByIdV1ApiResponse = /** status 200  */ TransactionDetails
+export type TransactionsGetTransactionByIdV1ApiArg = {
   chainId: string
   id: string
 }
-export type V1GetMultisigTransactionsApiResponse = /** status 200  */ MultisigTransactionPage
-export type V1GetMultisigTransactionsApiArg = {
+export type TransactionsGetMultisigTransactionsV1ApiResponse = /** status 200  */ MultisigTransactionPage
+export type TransactionsGetMultisigTransactionsV1ApiArg = {
   chainId: string
   safeAddress: string
   executionDateGte?: string
@@ -134,14 +178,14 @@ export type V1GetMultisigTransactionsApiArg = {
   executed?: boolean
   cursor?: string
 }
-export type V1DeleteTransactionApiResponse = unknown
-export type V1DeleteTransactionApiArg = {
+export type TransactionsDeleteTransactionV1ApiResponse = unknown
+export type TransactionsDeleteTransactionV1ApiArg = {
   chainId: string
   safeTxHash: string
   deleteTransactionDto: DeleteTransactionDto
 }
-export type V1GetModuleTransactionsApiResponse = /** status 200  */ ModuleTransactionPage
-export type V1GetModuleTransactionsApiArg = {
+export type TransactionsGetModuleTransactionsV1ApiResponse = /** status 200  */ ModuleTransactionPage
+export type TransactionsGetModuleTransactionsV1ApiArg = {
   chainId: string
   safeAddress: string
   to?: string
@@ -149,14 +193,14 @@ export type V1GetModuleTransactionsApiArg = {
   transactionHash?: string
   cursor?: string
 }
-export type V1AddConfirmationApiResponse = /** status 200  */ Transaction
-export type V1AddConfirmationApiArg = {
+export type TransactionsAddConfirmationV1ApiResponse = /** status 200  */ Transaction
+export type TransactionsAddConfirmationV1ApiArg = {
   chainId: string
   safeTxHash: string
   addConfirmationDto: AddConfirmationDto
 }
-export type V1GetIncomingTransfersApiResponse = /** status 200  */ IncomingTransferPage
-export type V1GetIncomingTransfersApiArg = {
+export type TransactionsGetIncomingTransfersV1ApiResponse = /** status 200  */ IncomingTransferPage
+export type TransactionsGetIncomingTransfersV1ApiArg = {
   chainId: string
   safeAddress: string
   trusted?: boolean
@@ -167,21 +211,21 @@ export type V1GetIncomingTransfersApiArg = {
   tokenAddress?: string
   cursor?: string
 }
-export type V1PreviewTransactionApiResponse = /** status 200  */ TransactionPreview
-export type V1PreviewTransactionApiArg = {
+export type TransactionsPreviewTransactionV1ApiResponse = /** status 200  */ TransactionPreview
+export type TransactionsPreviewTransactionV1ApiArg = {
   chainId: string
   safeAddress: string
   previewTransactionDto: PreviewTransactionDto
 }
-export type V1GetTransactionQueueApiResponse = /** status 200  */ QueuedItemPage
-export type V1GetTransactionQueueApiArg = {
+export type TransactionsGetTransactionQueueV1ApiResponse = /** status 200  */ QueuedItemPage
+export type TransactionsGetTransactionQueueV1ApiArg = {
   chainId: string
   safeAddress: string
   trusted?: boolean
   cursor?: string
 }
-export type V1GetTransactionsHistoryApiResponse = /** status 200  */ TransactionItemPage
-export type V1GetTransactionsHistoryApiArg = {
+export type TransactionsGetTransactionsHistoryV1ApiResponse = /** status 200  */ TransactionItemPage
+export type TransactionsGetTransactionsHistoryV1ApiArg = {
   chainId: string
   safeAddress: string
   timezoneOffset?: string
@@ -190,16 +234,29 @@ export type V1GetTransactionsHistoryApiArg = {
   timezone?: string
   cursor?: string
 }
-export type V1ProposeTransactionApiResponse = /** status 200  */ Transaction
-export type V1ProposeTransactionApiArg = {
+export type TransactionsProposeTransactionV1ApiResponse = /** status 200  */ Transaction
+export type TransactionsProposeTransactionV1ApiArg = {
   chainId: string
   safeAddress: string
   proposeTransactionDto: ProposeTransactionDto
 }
-export type V1GetCreationTransactionApiResponse = /** status 200  */ CreationTransaction
-export type V1GetCreationTransactionApiArg = {
+export type TransactionsGetCreationTransactionV1ApiResponse = /** status 200  */ CreationTransaction
+export type TransactionsGetCreationTransactionV1ApiArg = {
   chainId: string
   safeAddress: string
+}
+export type TransactionsViewGetTransactionConfirmationViewV1ApiResponse =
+  /** status 200  */
+  | BaselineConfirmationView
+  | CowSwapConfirmationView
+  | CowSwapTwapConfirmationView
+  | NativeStakingDepositConfirmationView
+  | NativeStakingValidatorsExitConfirmationView
+  | NativeStakingWithdrawConfirmationView
+export type TransactionsViewGetTransactionConfirmationViewV1ApiArg = {
+  chainId: string
+  safeAddress: string
+  transactionDataDto: TransactionDataDto
 }
 export type TransactionInfo = {
   type:
@@ -684,16 +741,162 @@ export type CreationTransaction = {
   saltNonce?: string | null
   dataDecoded?: DataDecoded | null
 }
+export type BaselineConfirmationView = {
+  type: 'GENERIC'
+  method: string
+  parameters?: DataDecodedParameter[] | null
+}
+export type CowSwapConfirmationView = {
+  type: 'COW_SWAP_ORDER'
+  method: string
+  parameters?: DataDecodedParameter[] | null
+  /** The order UID */
+  uid: string
+  status: 'presignaturePending' | 'open' | 'fulfilled' | 'cancelled' | 'expired' | 'unknown'
+  kind: 'buy' | 'sell' | 'unknown'
+  orderClass: 'market' | 'limit' | 'liquidity' | 'unknown'
+  /** The timestamp when the order expires */
+  validUntil: number
+  /** The sell token raw amount (no decimals) */
+  sellAmount: string
+  /** The buy token raw amount (no decimals) */
+  buyAmount: string
+  /** The executed sell token raw amount (no decimals) */
+  executedSellAmount: string
+  /** The executed buy token raw amount (no decimals) */
+  executedBuyAmount: string
+  /** The URL to the explorer page of the order */
+  explorerUrl: string
+  /** The amount of fees paid for this order. */
+  executedSurplusFee?: string | null
+  /** The (optional) address to receive the proceeds of the trade */
+  receiver?: string | null
+  owner: string
+  /** The App Data for this order */
+  fullAppData?: object | null
+  /** The sell token of the order */
+  sellToken: TokenInfo
+  /** The buy token of the order */
+  buyToken: TokenInfo
+}
+export type CowSwapTwapConfirmationView = {
+  type: 'COW_SWAP_TWAP_ORDER'
+  method: string
+  parameters?: DataDecodedParameter[] | null
+  /** The TWAP status */
+  status: 'presignaturePending' | 'open' | 'fulfilled' | 'cancelled' | 'expired' | 'unknown'
+  kind: 'buy' | 'sell' | 'unknown'
+  class: 'market' | 'limit' | 'liquidity' | 'unknown'
+  /** The order UID of the active order, null as it is not an active order */
+  activeOrderUid: null
+  /** The timestamp when the TWAP expires */
+  validUntil: number
+  /** The sell token raw amount (no decimals) */
+  sellAmount: string
+  /** The buy token raw amount (no decimals) */
+  buyAmount: string
+  /** The executed sell token raw amount (no decimals), or null if there are too many parts */
+  executedSellAmount?: string | null
+  /** The executed surplus fee raw amount (no decimals), or null if there are too many parts */
+  executedSurplusFee?: string | null
+  /** The executed buy token raw amount (no decimals), or null if there are too many parts */
+  executedBuyAmount?: string | null
+  /** The sell token of the TWAP */
+  sellToken: TokenInfo
+  /** The buy token of the TWAP */
+  buyToken: TokenInfo
+  /** The address to receive the proceeds of the trade */
+  receiver: string
+  owner: string
+  /** The App Data for this TWAP */
+  fullAppData?: object | null
+  /** The number of parts in the TWAP */
+  numberOfParts: string
+  /** The amount of sellToken to sell in each part */
+  partSellAmount: string
+  /** The amount of buyToken that must be bought in each part */
+  minPartLimit: string
+  /** The duration of the TWAP interval */
+  timeBetweenParts: number
+  /** Whether the TWAP is valid for the entire interval or not */
+  durationOfPart: object
+  /** The start time of the TWAP */
+  startTime: object
+}
+export type NativeStakingDepositConfirmationView = {
+  type: 'KILN_NATIVE_STAKING_DEPOSIT'
+  status:
+    | 'NOT_STAKED'
+    | 'ACTIVATING'
+    | 'DEPOSIT_IN_PROGRESS'
+    | 'ACTIVE'
+    | 'EXIT_REQUESTED'
+    | 'EXITING'
+    | 'EXITED'
+    | 'SLASHED'
+  method: string
+  parameters?: DataDecodedParameter[] | null
+  estimatedEntryTime: number
+  estimatedExitTime: number
+  estimatedWithdrawalTime: number
+  fee: number
+  monthlyNrr: number
+  annualNrr: number
+  value: string
+  numValidators: number
+  expectedAnnualReward: string
+  expectedMonthlyReward: string
+  expectedFiatAnnualReward: number
+  expectedFiatMonthlyReward: number
+  tokenInfo: TokenInfo
+}
+export type NativeStakingValidatorsExitConfirmationView = {
+  type: 'KILN_NATIVE_STAKING_VALIDATORS_EXIT'
+  status:
+    | 'NOT_STAKED'
+    | 'ACTIVATING'
+    | 'DEPOSIT_IN_PROGRESS'
+    | 'ACTIVE'
+    | 'EXIT_REQUESTED'
+    | 'EXITING'
+    | 'EXITED'
+    | 'SLASHED'
+  method: string
+  parameters?: DataDecodedParameter[] | null
+  estimatedExitTime: number
+  estimatedWithdrawalTime: number
+  value: string
+  numValidators: number
+  tokenInfo: TokenInfo
+  validators: string[]
+}
+export type NativeStakingWithdrawConfirmationView = {
+  type: 'KILN_NATIVE_STAKING_WITHDRAW'
+  method: string
+  parameters?: DataDecodedParameter[] | null
+  value: string
+  tokenInfo: TokenInfo
+  validators: string[]
+}
+export type TransactionDataDto = {
+  /** Hexadecimal value */
+  data: string
+  /** The target Ethereum address */
+  to?: string
+  /** The wei amount being sent to a payable function */
+  value?: string
+}
 export const {
-  useV1GetTransactionByIdQuery,
-  useV1GetMultisigTransactionsQuery,
-  useV1DeleteTransactionMutation,
-  useV1GetModuleTransactionsQuery,
-  useV1AddConfirmationMutation,
-  useV1GetIncomingTransfersQuery,
-  useV1PreviewTransactionMutation,
-  useV1GetTransactionQueueQuery,
-  useV1GetTransactionsHistoryQuery,
-  useV1ProposeTransactionMutation,
-  useV1GetCreationTransactionQuery,
+  useTransactionsGetTransactionByIdV1Query,
+  useTransactionsGetMultisigTransactionsV1Query,
+  useTransactionsDeleteTransactionV1Mutation,
+  useTransactionsGetModuleTransactionsV1Query,
+  useTransactionsAddConfirmationV1Mutation,
+  useTransactionsGetIncomingTransfersV1Query,
+  useTransactionsPreviewTransactionV1Mutation,
+  useTransactionsGetTransactionQueueV1Query,
+  useTransactionsGetTransactionsHistoryV1Query,
+  useTransactionsProposeTransactionV1Mutation,
+  useTransactionsGetCreationTransactionV1Query,
+  useTransactionsViewGetTransactionConfirmationViewV1Mutation,
 } = injectedRtkApi

@@ -6,7 +6,7 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetContract: build.query<V1GetContractApiResponse, V1GetContractApiArg>({
+      contractsGetContractV1: build.query<ContractsGetContractV1ApiResponse, ContractsGetContractV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/contracts/${queryArg.contractAddress}` }),
         providesTags: ['contracts'],
       }),
@@ -14,8 +14,8 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetContractApiResponse = /** status 200  */ Contract
-export type V1GetContractApiArg = {
+export type ContractsGetContractV1ApiResponse = /** status 200  */ Contract
+export type ContractsGetContractV1ApiArg = {
   chainId: string
   contractAddress: string
 }
@@ -27,4 +27,4 @@ export type Contract = {
   contractAbi?: object | null
   trustedForDelegateCall: boolean
 }
-export const { useV1GetContractQuery } = injectedRtkApi
+export const { useContractsGetContractV1Query } = injectedRtkApi

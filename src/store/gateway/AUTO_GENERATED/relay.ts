@@ -6,11 +6,11 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1Relay: build.mutation<V1RelayApiResponse, V1RelayApiArg>({
+      relayRelayV1: build.mutation<RelayRelayV1ApiResponse, RelayRelayV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/relay`, method: 'POST', body: queryArg.relayDto }),
         invalidatesTags: ['relay'],
       }),
-      v1GetRelaysRemaining: build.query<V1GetRelaysRemainingApiResponse, V1GetRelaysRemainingApiArg>({
+      relayGetRelaysRemainingV1: build.query<RelayGetRelaysRemainingV1ApiResponse, RelayGetRelaysRemainingV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/relay/${queryArg.safeAddress}` }),
         providesTags: ['relay'],
       }),
@@ -18,13 +18,13 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1RelayApiResponse = unknown
-export type V1RelayApiArg = {
+export type RelayRelayV1ApiResponse = unknown
+export type RelayRelayV1ApiArg = {
   chainId: string
   relayDto: RelayDto
 }
-export type V1GetRelaysRemainingApiResponse = unknown
-export type V1GetRelaysRemainingApiArg = {
+export type RelayGetRelaysRemainingV1ApiResponse = unknown
+export type RelayGetRelaysRemainingV1ApiArg = {
   chainId: string
   safeAddress: string
 }
@@ -37,4 +37,4 @@ export type RelayDto = {
           Gelato Relay execution overhead</a>, reducing the chance of the task cancelling before it is executed on-chain. */
   gasLimit?: string | null
 }
-export const { useV1RelayMutation, useV1GetRelaysRemainingQuery } = injectedRtkApi
+export const { useRelayRelayV1Mutation, useRelayGetRelaysRemainingV1Query } = injectedRtkApi
