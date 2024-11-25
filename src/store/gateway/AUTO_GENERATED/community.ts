@@ -6,7 +6,7 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetCampaigns: build.query<V1GetCampaignsApiResponse, V1GetCampaignsApiArg>({
+      communityGetCampaignsV1: build.query<CommunityGetCampaignsV1ApiResponse, CommunityGetCampaignsV1ApiArg>({
         query: (queryArg) => ({
           url: `/v1/community/campaigns`,
           params: {
@@ -15,11 +15,14 @@ const injectedRtkApi = api
         }),
         providesTags: ['community'],
       }),
-      v1GetCampaignById: build.query<V1GetCampaignByIdApiResponse, V1GetCampaignByIdApiArg>({
+      communityGetCampaignByIdV1: build.query<CommunityGetCampaignByIdV1ApiResponse, CommunityGetCampaignByIdV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/community/campaigns/${queryArg.resourceId}` }),
         providesTags: ['community'],
       }),
-      v1GetCampaignActivities: build.query<V1GetCampaignActivitiesApiResponse, V1GetCampaignActivitiesApiArg>({
+      communityGetCampaignActivitiesV1: build.query<
+        CommunityGetCampaignActivitiesV1ApiResponse,
+        CommunityGetCampaignActivitiesV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/community/campaigns/${queryArg.resourceId}/activities`,
           params: {
@@ -29,7 +32,10 @@ const injectedRtkApi = api
         }),
         providesTags: ['community'],
       }),
-      v1GetCampaignLeaderboard: build.query<V1GetCampaignLeaderboardApiResponse, V1GetCampaignLeaderboardApiArg>({
+      communityGetCampaignLeaderboardV1: build.query<
+        CommunityGetCampaignLeaderboardV1ApiResponse,
+        CommunityGetCampaignLeaderboardV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/community/campaigns/${queryArg.resourceId}/leaderboard`,
           params: {
@@ -38,13 +44,20 @@ const injectedRtkApi = api
         }),
         providesTags: ['community'],
       }),
-      v1GetCampaignRank: build.query<V1GetCampaignRankApiResponse, V1GetCampaignRankApiArg>({
+      communityGetCampaignRankV1: build.query<CommunityGetCampaignRankV1ApiResponse, CommunityGetCampaignRankV1ApiArg>({
         query: (queryArg) => ({
           url: `/v1/community/campaigns/${queryArg.resourceId}/leaderboard/${queryArg.safeAddress}`,
         }),
         providesTags: ['community'],
       }),
-      v1GetLeaderboard: build.query<V1GetLeaderboardApiResponse, V1GetLeaderboardApiArg>({
+      communityCheckEligibilityV1: build.mutation<
+        CommunityCheckEligibilityV1ApiResponse,
+        CommunityCheckEligibilityV1ApiArg
+      >({
+        query: (queryArg) => ({ url: `/v1/community/eligibility`, method: 'POST', body: queryArg.eligibilityRequest }),
+        invalidatesTags: ['community'],
+      }),
+      communityGetLeaderboardV1: build.query<CommunityGetLeaderboardV1ApiResponse, CommunityGetLeaderboardV1ApiArg>({
         query: (queryArg) => ({
           url: `/v1/community/locking/leaderboard`,
           params: {
@@ -53,11 +66,14 @@ const injectedRtkApi = api
         }),
         providesTags: ['community'],
       }),
-      v1GetLockingRank: build.query<V1GetLockingRankApiResponse, V1GetLockingRankApiArg>({
+      communityGetLockingRankV1: build.query<CommunityGetLockingRankV1ApiResponse, CommunityGetLockingRankV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/community/locking/${queryArg.safeAddress}/rank` }),
         providesTags: ['community'],
       }),
-      v1GetLockingHistory: build.query<V1GetLockingHistoryApiResponse, V1GetLockingHistoryApiArg>({
+      communityGetLockingHistoryV1: build.query<
+        CommunityGetLockingHistoryV1ApiResponse,
+        CommunityGetLockingHistoryV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/community/locking/${queryArg.safeAddress}/history`,
           params: {
@@ -70,40 +86,44 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetCampaignsApiResponse = /** status 200  */ CampaignPage
-export type V1GetCampaignsApiArg = {
+export type CommunityGetCampaignsV1ApiResponse = /** status 200  */ CampaignPage
+export type CommunityGetCampaignsV1ApiArg = {
   cursor?: string
 }
-export type V1GetCampaignByIdApiResponse = /** status 200  */ Campaign
-export type V1GetCampaignByIdApiArg = {
+export type CommunityGetCampaignByIdV1ApiResponse = /** status 200  */ Campaign
+export type CommunityGetCampaignByIdV1ApiArg = {
   resourceId: string
 }
-export type V1GetCampaignActivitiesApiResponse = unknown
-export type V1GetCampaignActivitiesApiArg = {
+export type CommunityGetCampaignActivitiesV1ApiResponse = unknown
+export type CommunityGetCampaignActivitiesV1ApiArg = {
   resourceId: string
   holder?: string
   cursor?: string
 }
-export type V1GetCampaignLeaderboardApiResponse = /** status 200  */ CampaignRankPage
-export type V1GetCampaignLeaderboardApiArg = {
+export type CommunityGetCampaignLeaderboardV1ApiResponse = /** status 200  */ CampaignRankPage
+export type CommunityGetCampaignLeaderboardV1ApiArg = {
   resourceId: string
   cursor?: string
 }
-export type V1GetCampaignRankApiResponse = /** status 200  */ CampaignRank
-export type V1GetCampaignRankApiArg = {
+export type CommunityGetCampaignRankV1ApiResponse = /** status 200  */ CampaignRank
+export type CommunityGetCampaignRankV1ApiArg = {
   resourceId: string
   safeAddress: string
 }
-export type V1GetLeaderboardApiResponse = /** status 200  */ LockingRankPage
-export type V1GetLeaderboardApiArg = {
+export type CommunityCheckEligibilityV1ApiResponse = /** status 200  */ Eligibility
+export type CommunityCheckEligibilityV1ApiArg = {
+  eligibilityRequest: EligibilityRequest
+}
+export type CommunityGetLeaderboardV1ApiResponse = /** status 200  */ LockingRankPage
+export type CommunityGetLeaderboardV1ApiArg = {
   cursor?: string
 }
-export type V1GetLockingRankApiResponse = /** status 200  */ LockingRank
-export type V1GetLockingRankApiArg = {
+export type CommunityGetLockingRankV1ApiResponse = /** status 200  */ LockingRank
+export type CommunityGetLockingRankV1ApiArg = {
   safeAddress: string
 }
-export type V1GetLockingHistoryApiResponse = /** status 200  */ LockingEventPage
-export type V1GetLockingHistoryApiArg = {
+export type CommunityGetLockingHistoryV1ApiResponse = /** status 200  */ LockingEventPage
+export type CommunityGetLockingHistoryV1ApiArg = {
   safeAddress: string
   cursor?: string
 }
@@ -145,6 +165,15 @@ export type CampaignRankPage = {
   next?: string | null
   previous?: string | null
   results: CampaignRank[]
+}
+export type Eligibility = {
+  requestId: string
+  isAllowed: boolean
+  isVpn: boolean
+}
+export type EligibilityRequest = {
+  requestId: string
+  sealedData: string
 }
 export type LockingRank = {
   holder: string
@@ -192,12 +221,13 @@ export type LockingEventPage = {
   results: (LockEventItem | UnlockEventItem | WithdrawEventItem)[]
 }
 export const {
-  useV1GetCampaignsQuery,
-  useV1GetCampaignByIdQuery,
-  useV1GetCampaignActivitiesQuery,
-  useV1GetCampaignLeaderboardQuery,
-  useV1GetCampaignRankQuery,
-  useV1GetLeaderboardQuery,
-  useV1GetLockingRankQuery,
-  useV1GetLockingHistoryQuery,
+  useCommunityGetCampaignsV1Query,
+  useCommunityGetCampaignByIdV1Query,
+  useCommunityGetCampaignActivitiesV1Query,
+  useCommunityGetCampaignLeaderboardV1Query,
+  useCommunityGetCampaignRankV1Query,
+  useCommunityCheckEligibilityV1Mutation,
+  useCommunityGetLeaderboardV1Query,
+  useCommunityGetLockingRankV1Query,
+  useCommunityGetLockingHistoryV1Query,
 } = injectedRtkApi

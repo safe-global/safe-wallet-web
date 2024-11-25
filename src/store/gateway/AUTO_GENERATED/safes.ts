@@ -1,34 +1,20 @@
 import { cgwClient as api } from '../cgwClient'
-export const addTagTypes = ['owners', 'safe-apps', 'safes'] as const
+export const addTagTypes = ['safes'] as const
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetSafesByOwner: build.query<V1GetSafesByOwnerApiResponse, V1GetSafesByOwnerApiArg>({
-        query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/owners/${queryArg.ownerAddress}/safes` }),
-        providesTags: ['owners'],
-      }),
-      v1GetSafeApps: build.query<V1GetSafeAppsApiResponse, V1GetSafeAppsApiArg>({
-        query: (queryArg) => ({
-          url: `/v1/chains/${queryArg.chainId}/safe-apps`,
-          params: {
-            clientUrl: queryArg.clientUrl,
-            url: queryArg.url,
-          },
-        }),
-        providesTags: ['safe-apps'],
-      }),
-      v1GetSafe: build.query<V1GetSafeApiResponse, V1GetSafeApiArg>({
+      safesGetSafeV1: build.query<SafesGetSafeV1ApiResponse, SafesGetSafeV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}` }),
         providesTags: ['safes'],
       }),
-      v1GetNonces: build.query<V1GetNoncesApiResponse, V1GetNoncesApiArg>({
+      safesGetNoncesV1: build.query<SafesGetNoncesV1ApiResponse, SafesGetNoncesV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/nonces` }),
         providesTags: ['safes'],
       }),
-      v1GetSafeOverview: build.query<V1GetSafeOverviewApiResponse, V1GetSafeOverviewApiArg>({
+      safesGetSafeOverviewV1: build.query<SafesGetSafeOverviewV1ApiResponse, SafesGetSafeOverviewV1ApiArg>({
         query: (queryArg) => ({
           url: `/v1/safes`,
           params: {
@@ -45,64 +31,23 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetSafesByOwnerApiResponse = /** status 200  */ SafeList
-export type V1GetSafesByOwnerApiArg = {
-  chainId: string
-  ownerAddress: string
-}
-export type V1GetSafeAppsApiResponse = /** status 200  */ SafeApp[]
-export type V1GetSafeAppsApiArg = {
-  chainId: string
-  clientUrl?: string
-  url?: string
-}
-export type V1GetSafeApiResponse = /** status 200  */ SafeState
-export type V1GetSafeApiArg = {
+export type SafesGetSafeV1ApiResponse = /** status 200  */ SafeState
+export type SafesGetSafeV1ApiArg = {
   chainId: string
   safeAddress: string
 }
-export type V1GetNoncesApiResponse = /** status 200  */ SafeNonces
-export type V1GetNoncesApiArg = {
+export type SafesGetNoncesV1ApiResponse = /** status 200  */ SafeNonces
+export type SafesGetNoncesV1ApiArg = {
   chainId: string
   safeAddress: string
 }
-export type V1GetSafeOverviewApiResponse = unknown
-export type V1GetSafeOverviewApiArg = {
+export type SafesGetSafeOverviewV1ApiResponse = unknown
+export type SafesGetSafeOverviewV1ApiArg = {
   currency: string
   safes: string
   trusted?: boolean
   excludeSpam?: boolean
   walletAddress?: string
-}
-export type SafeList = {
-  safes: string[]
-}
-export type SafeAppProvider = {
-  url: string
-  name: string
-}
-export type SafeAppAccessControl = {
-  type: string
-  value?: string[] | null
-}
-export type SafeAppSocialProfile = {
-  platform: 'DISCORD' | 'GITHUB' | 'TWITTER' | 'UNKNOWN'
-  url: string
-}
-export type SafeApp = {
-  id: number
-  url: string
-  name: string
-  iconUrl?: string | null
-  description: string
-  chainIds: string[]
-  provider?: SafeAppProvider | null
-  accessControl: SafeAppAccessControl
-  tags: string[]
-  features: string[]
-  developerWebsite?: string | null
-  socialProfiles: SafeAppSocialProfile[]
-  featured: boolean
 }
 export type AddressInfo = {
   value: string
@@ -130,10 +75,4 @@ export type SafeNonces = {
   currentNonce: number
   recommendedNonce: number
 }
-export const {
-  useV1GetSafesByOwnerQuery,
-  useV1GetSafeAppsQuery,
-  useV1GetSafeQuery,
-  useV1GetNoncesQuery,
-  useV1GetSafeOverviewQuery,
-} = injectedRtkApi
+export const { useSafesGetSafeV1Query, useSafesGetNoncesV1Query, useSafesGetSafeOverviewV1Query } = injectedRtkApi

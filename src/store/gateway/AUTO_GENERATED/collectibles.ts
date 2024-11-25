@@ -6,7 +6,10 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v2GetCollectibles: build.query<V2GetCollectiblesApiResponse, V2GetCollectiblesApiArg>({
+      collectiblesGetCollectiblesV2: build.query<
+        CollectiblesGetCollectiblesV2ApiResponse,
+        CollectiblesGetCollectiblesV2ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v2/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/collectibles`,
           params: {
@@ -21,8 +24,8 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V2GetCollectiblesApiResponse = /** status 200  */ CollectiblePage
-export type V2GetCollectiblesApiArg = {
+export type CollectiblesGetCollectiblesV2ApiResponse = /** status 200  */ CollectiblePage
+export type CollectiblesGetCollectiblesV2ApiArg = {
   chainId: string
   safeAddress: string
   trusted?: boolean
@@ -47,4 +50,4 @@ export type CollectiblePage = {
   previous?: string | null
   results: Collectible[]
 }
-export const { useV2GetCollectiblesQuery } = injectedRtkApi
+export const { useCollectiblesGetCollectiblesV2Query } = injectedRtkApi

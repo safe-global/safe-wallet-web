@@ -6,18 +6,27 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1RegisterDevice: build.mutation<V1RegisterDeviceApiResponse, V1RegisterDeviceApiArg>({
+      notificationsRegisterDeviceV1: build.mutation<
+        NotificationsRegisterDeviceV1ApiResponse,
+        NotificationsRegisterDeviceV1ApiArg
+      >({
         query: (queryArg) => ({ url: `/v1/register/notifications`, method: 'POST', body: queryArg.registerDeviceDto }),
         invalidatesTags: ['notifications'],
       }),
-      v1UnregisterDevice: build.mutation<V1UnregisterDeviceApiResponse, V1UnregisterDeviceApiArg>({
+      notificationsUnregisterDeviceV1: build.mutation<
+        NotificationsUnregisterDeviceV1ApiResponse,
+        NotificationsUnregisterDeviceV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/notifications/devices/${queryArg.uuid}`,
           method: 'DELETE',
         }),
         invalidatesTags: ['notifications'],
       }),
-      v1UnregisterSafe: build.mutation<V1UnregisterSafeApiResponse, V1UnregisterSafeApiArg>({
+      notificationsUnregisterSafeV1: build.mutation<
+        NotificationsUnregisterSafeV1ApiResponse,
+        NotificationsUnregisterSafeV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/notifications/devices/${queryArg.uuid}/safes/${queryArg.safeAddress}`,
           method: 'DELETE',
@@ -28,17 +37,17 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1RegisterDeviceApiResponse = unknown
-export type V1RegisterDeviceApiArg = {
+export type NotificationsRegisterDeviceV1ApiResponse = unknown
+export type NotificationsRegisterDeviceV1ApiArg = {
   registerDeviceDto: RegisterDeviceDto
 }
-export type V1UnregisterDeviceApiResponse = unknown
-export type V1UnregisterDeviceApiArg = {
+export type NotificationsUnregisterDeviceV1ApiResponse = unknown
+export type NotificationsUnregisterDeviceV1ApiArg = {
   chainId: string
   uuid: string
 }
-export type V1UnregisterSafeApiResponse = unknown
-export type V1UnregisterSafeApiArg = {
+export type NotificationsUnregisterSafeV1ApiResponse = unknown
+export type NotificationsUnregisterSafeV1ApiArg = {
   chainId: string
   uuid: string
   safeAddress: string
@@ -58,5 +67,8 @@ export type RegisterDeviceDto = {
   timestamp?: string | null
   safeRegistrations: SafeRegistration[]
 }
-export const { useV1RegisterDeviceMutation, useV1UnregisterDeviceMutation, useV1UnregisterSafeMutation } =
-  injectedRtkApi
+export const {
+  useNotificationsRegisterDeviceV1Mutation,
+  useNotificationsUnregisterDeviceV1Mutation,
+  useNotificationsUnregisterSafeV1Mutation,
+} = injectedRtkApi

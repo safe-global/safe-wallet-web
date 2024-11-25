@@ -6,7 +6,7 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetSafeApps: build.query<V1GetSafeAppsApiResponse, V1GetSafeAppsApiArg>({
+      safeAppsGetSafeAppsV1: build.query<SafeAppsGetSafeAppsV1ApiResponse, SafeAppsGetSafeAppsV1ApiArg>({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safe-apps`,
           params: {
@@ -20,8 +20,8 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetSafeAppsApiResponse = /** status 200  */ SafeApp[]
-export type V1GetSafeAppsApiArg = {
+export type SafeAppsGetSafeAppsV1ApiResponse = /** status 200  */ SafeApp[]
+export type SafeAppsGetSafeAppsV1ApiArg = {
   chainId: string
   clientUrl?: string
   url?: string
@@ -53,4 +53,4 @@ export type SafeApp = {
   socialProfiles: SafeAppSocialProfile[]
   featured: boolean
 }
-export const { useV1GetSafeAppsQuery } = injectedRtkApi
+export const { useSafeAppsGetSafeAppsV1Query } = injectedRtkApi

@@ -6,7 +6,36 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v2GetDelegates: build.query<V2GetDelegatesApiResponse, V2GetDelegatesApiArg>({
+      delegatesGetDelegatesV1: build.query<DelegatesGetDelegatesV1ApiResponse, DelegatesGetDelegatesV1ApiArg>({
+        query: (queryArg) => ({
+          url: `/v1/chains/${queryArg.chainId}/delegates`,
+          params: {
+            safe: queryArg.safe,
+            delegate: queryArg.delegate,
+            delegator: queryArg.delegator,
+            label: queryArg.label,
+            cursor: queryArg.cursor,
+          },
+        }),
+        providesTags: ['delegates'],
+      }),
+      delegatesPostDelegateV1: build.mutation<DelegatesPostDelegateV1ApiResponse, DelegatesPostDelegateV1ApiArg>({
+        query: (queryArg) => ({
+          url: `/v1/chains/${queryArg.chainId}/delegates`,
+          method: 'POST',
+          body: queryArg.createDelegateDto,
+        }),
+        invalidatesTags: ['delegates'],
+      }),
+      delegatesDeleteDelegateV1: build.mutation<DelegatesDeleteDelegateV1ApiResponse, DelegatesDeleteDelegateV1ApiArg>({
+        query: (queryArg) => ({
+          url: `/v1/chains/${queryArg.chainId}/delegates/${queryArg.delegateAddress}`,
+          method: 'DELETE',
+          body: queryArg.deleteDelegateDto,
+        }),
+        invalidatesTags: ['delegates'],
+      }),
+      delegatesGetDelegatesV2: build.query<DelegatesGetDelegatesV2ApiResponse, DelegatesGetDelegatesV2ApiArg>({
         query: (queryArg) => ({
           url: `/v2/chains/${queryArg.chainId}/delegates`,
           params: {
@@ -19,7 +48,7 @@ const injectedRtkApi = api
         }),
         providesTags: ['delegates'],
       }),
-      v2PostDelegate: build.mutation<V2PostDelegateApiResponse, V2PostDelegateApiArg>({
+      delegatesPostDelegateV2: build.mutation<DelegatesPostDelegateV2ApiResponse, DelegatesPostDelegateV2ApiArg>({
         query: (queryArg) => ({
           url: `/v2/chains/${queryArg.chainId}/delegates`,
           method: 'POST',
@@ -27,7 +56,7 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ['delegates'],
       }),
-      v2DeleteDelegate: build.mutation<V2DeleteDelegateApiResponse, V2DeleteDelegateApiArg>({
+      delegatesDeleteDelegateV2: build.mutation<DelegatesDeleteDelegateV2ApiResponse, DelegatesDeleteDelegateV2ApiArg>({
         query: (queryArg) => ({
           url: `/v2/chains/${queryArg.chainId}/delegates/${queryArg.delegateAddress}`,
           method: 'DELETE',
@@ -39,8 +68,8 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V2GetDelegatesApiResponse = /** status 200  */ DelegatePage
-export type V2GetDelegatesApiArg = {
+export type DelegatesGetDelegatesV1ApiResponse = /** status 200  */ DelegatePage
+export type DelegatesGetDelegatesV1ApiArg = {
   chainId: string
   safe?: string
   delegate?: string
@@ -48,13 +77,33 @@ export type V2GetDelegatesApiArg = {
   label?: string
   cursor?: string
 }
-export type V2PostDelegateApiResponse = unknown
-export type V2PostDelegateApiArg = {
+export type DelegatesPostDelegateV1ApiResponse = unknown
+export type DelegatesPostDelegateV1ApiArg = {
   chainId: string
   createDelegateDto: CreateDelegateDto
 }
-export type V2DeleteDelegateApiResponse = unknown
-export type V2DeleteDelegateApiArg = {
+export type DelegatesDeleteDelegateV1ApiResponse = unknown
+export type DelegatesDeleteDelegateV1ApiArg = {
+  chainId: string
+  delegateAddress: string
+  deleteDelegateDto: DeleteDelegateDto
+}
+export type DelegatesGetDelegatesV2ApiResponse = /** status 200  */ DelegatePage
+export type DelegatesGetDelegatesV2ApiArg = {
+  chainId: string
+  safe?: string
+  delegate?: string
+  delegator?: string
+  label?: string
+  cursor?: string
+}
+export type DelegatesPostDelegateV2ApiResponse = unknown
+export type DelegatesPostDelegateV2ApiArg = {
+  chainId: string
+  createDelegateDto: CreateDelegateDto
+}
+export type DelegatesDeleteDelegateV2ApiResponse = unknown
+export type DelegatesDeleteDelegateV2ApiArg = {
   chainId: string
   delegateAddress: string
   deleteDelegateV2Dto: DeleteDelegateV2Dto
@@ -78,9 +127,21 @@ export type CreateDelegateDto = {
   signature: string
   label: string
 }
+export type DeleteDelegateDto = {
+  delegate: string
+  delegator: string
+  signature: string
+}
 export type DeleteDelegateV2Dto = {
   delegator?: string | null
   safe?: string | null
   signature: string
 }
-export const { useV2GetDelegatesQuery, useV2PostDelegateMutation, useV2DeleteDelegateMutation } = injectedRtkApi
+export const {
+  useDelegatesGetDelegatesV1Query,
+  useDelegatesPostDelegateV1Mutation,
+  useDelegatesDeleteDelegateV1Mutation,
+  useDelegatesGetDelegatesV2Query,
+  useDelegatesPostDelegateV2Mutation,
+  useDelegatesDeleteDelegateV2Mutation,
+} = injectedRtkApi

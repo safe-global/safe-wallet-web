@@ -6,11 +6,14 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetMessageByHash: build.query<V1GetMessageByHashApiResponse, V1GetMessageByHashApiArg>({
+      messagesGetMessageByHashV1: build.query<MessagesGetMessageByHashV1ApiResponse, MessagesGetMessageByHashV1ApiArg>({
         query: (queryArg) => ({ url: `/v1/chains/${queryArg.chainId}/messages/${queryArg.messageHash}` }),
         providesTags: ['messages'],
       }),
-      v1GetMessagesBySafe: build.query<V1GetMessagesBySafeApiResponse, V1GetMessagesBySafeApiArg>({
+      messagesGetMessagesBySafeV1: build.query<
+        MessagesGetMessagesBySafeV1ApiResponse,
+        MessagesGetMessagesBySafeV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/messages`,
           params: {
@@ -19,7 +22,7 @@ const injectedRtkApi = api
         }),
         providesTags: ['messages'],
       }),
-      v1CreateMessage: build.mutation<V1CreateMessageApiResponse, V1CreateMessageApiArg>({
+      messagesCreateMessageV1: build.mutation<MessagesCreateMessageV1ApiResponse, MessagesCreateMessageV1ApiArg>({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/messages`,
           method: 'POST',
@@ -27,7 +30,10 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ['messages'],
       }),
-      v1UpdateMessageSignature: build.mutation<V1UpdateMessageSignatureApiResponse, V1UpdateMessageSignatureApiArg>({
+      messagesUpdateMessageSignatureV1: build.mutation<
+        MessagesUpdateMessageSignatureV1ApiResponse,
+        MessagesUpdateMessageSignatureV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/chains/${queryArg.chainId}/messages/${queryArg.messageHash}/signatures`,
           method: 'POST',
@@ -39,25 +45,25 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetMessageByHashApiResponse = /** status 200  */ Message
-export type V1GetMessageByHashApiArg = {
+export type MessagesGetMessageByHashV1ApiResponse = /** status 200  */ Message
+export type MessagesGetMessageByHashV1ApiArg = {
   chainId: string
   messageHash: string
 }
-export type V1GetMessagesBySafeApiResponse = /** status 200  */ MessagePage
-export type V1GetMessagesBySafeApiArg = {
+export type MessagesGetMessagesBySafeV1ApiResponse = /** status 200  */ MessagePage
+export type MessagesGetMessagesBySafeV1ApiArg = {
   chainId: string
   safeAddress: string
   cursor?: string
 }
-export type V1CreateMessageApiResponse = unknown
-export type V1CreateMessageApiArg = {
+export type MessagesCreateMessageV1ApiResponse = unknown
+export type MessagesCreateMessageV1ApiArg = {
   chainId: string
   safeAddress: string
   createMessageDto: CreateMessageDto
 }
-export type V1UpdateMessageSignatureApiResponse = unknown
-export type V1UpdateMessageSignatureApiArg = {
+export type MessagesUpdateMessageSignatureV1ApiResponse = unknown
+export type MessagesUpdateMessageSignatureV1ApiArg = {
   chainId: string
   messageHash: string
   updateMessageSignatureDto: UpdateMessageSignatureDto
@@ -118,8 +124,8 @@ export type UpdateMessageSignatureDto = {
   signature: string
 }
 export const {
-  useV1GetMessageByHashQuery,
-  useV1GetMessagesBySafeQuery,
-  useV1CreateMessageMutation,
-  useV1UpdateMessageSignatureMutation,
+  useMessagesGetMessageByHashV1Query,
+  useMessagesGetMessagesBySafeV1Query,
+  useMessagesCreateMessageV1Mutation,
+  useMessagesUpdateMessageSignatureV1Mutation,
 } = injectedRtkApi

@@ -6,13 +6,19 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1GetSubmission: build.query<V1GetSubmissionApiResponse, V1GetSubmissionApiArg>({
+      targetedMessagingGetSubmissionV1: build.query<
+        TargetedMessagingGetSubmissionV1ApiResponse,
+        TargetedMessagingGetSubmissionV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/targeted-messaging/outreaches/${queryArg.outreachId}/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/signers/${queryArg.signerAddress}/submissions`,
         }),
         providesTags: ['targeted-messaging'],
       }),
-      v1CreateSubmission: build.mutation<V1CreateSubmissionApiResponse, V1CreateSubmissionApiArg>({
+      targetedMessagingCreateSubmissionV1: build.mutation<
+        TargetedMessagingCreateSubmissionV1ApiResponse,
+        TargetedMessagingCreateSubmissionV1ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v1/targeted-messaging/outreaches/${queryArg.outreachId}/chains/${queryArg.chainId}/safes/${queryArg.safeAddress}/signers/${queryArg.signerAddress}/submissions`,
           method: 'POST',
@@ -24,15 +30,15 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V1GetSubmissionApiResponse = /** status 200  */ Submission
-export type V1GetSubmissionApiArg = {
+export type TargetedMessagingGetSubmissionV1ApiResponse = /** status 200  */ Submission
+export type TargetedMessagingGetSubmissionV1ApiArg = {
   outreachId: number
   chainId: string
   safeAddress: string
   signerAddress: string
 }
-export type V1CreateSubmissionApiResponse = /** status 201  */ Submission
-export type V1CreateSubmissionApiArg = {
+export type TargetedMessagingCreateSubmissionV1ApiResponse = /** status 201  */ Submission
+export type TargetedMessagingCreateSubmissionV1ApiArg = {
   outreachId: number
   chainId: string
   safeAddress: string
@@ -48,4 +54,5 @@ export type Submission = {
 export type CreateSubmissionDto = {
   completed: boolean
 }
-export const { useV1GetSubmissionQuery, useV1CreateSubmissionMutation } = injectedRtkApi
+export const { useTargetedMessagingGetSubmissionV1Query, useTargetedMessagingCreateSubmissionV1Mutation } =
+  injectedRtkApi

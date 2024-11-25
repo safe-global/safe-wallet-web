@@ -6,7 +6,10 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v2GetEstimation: build.mutation<V2GetEstimationApiResponse, V2GetEstimationApiArg>({
+      estimationsGetEstimationV2: build.mutation<
+        EstimationsGetEstimationV2ApiResponse,
+        EstimationsGetEstimationV2ApiArg
+      >({
         query: (queryArg) => ({
           url: `/v2/chains/${queryArg.chainId}/safes/${queryArg.address}/multisig-transactions/estimations`,
           method: 'POST',
@@ -18,8 +21,8 @@ const injectedRtkApi = api
     overrideExisting: false,
   })
 export { injectedRtkApi as cgwApi }
-export type V2GetEstimationApiResponse = /** status 200  */ EstimationResponse
-export type V2GetEstimationApiArg = {
+export type EstimationsGetEstimationV2ApiResponse = /** status 200  */ EstimationResponse
+export type EstimationsGetEstimationV2ApiArg = {
   chainId: string
   address: string
   getEstimationDto: GetEstimationDto
@@ -35,4 +38,4 @@ export type GetEstimationDto = {
   data?: string | null
   operation: number
 }
-export const { useV2GetEstimationMutation } = injectedRtkApi
+export const { useEstimationsGetEstimationV2Mutation } = injectedRtkApi
