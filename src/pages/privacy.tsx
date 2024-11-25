@@ -13,7 +13,7 @@ const PrivacyPolicy: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Chiliz Safe – Privacy policy'}</title>
+        <title>Chiliz Safe – Privacy policy</title>
       </Head>
 
       <main>{IS_OFFICIAL_HOST && <SafePrivacyPolicy components={overrideComponents} />}</main>

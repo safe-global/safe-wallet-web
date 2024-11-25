@@ -32,7 +32,7 @@ const Appearance: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Chiliz Safe – Settings – Appearance'}</title>
+        <title>Chiliz Safe – Settings – Appearance</title>
       </Head>
       <SettingsHeader />
       <main>

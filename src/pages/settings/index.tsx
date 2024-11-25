@@ -17,7 +17,7 @@ const Settings: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Chiliz Safe – Settings'}</title>
+        <title>Chiliz Safe – Settings</title>
       </Head>
     </>
   )

@@ -14,7 +14,7 @@ const BookmarkedSafeApps: NextPage = () => {
 
   return (
     <Head>
-      <title>{'Chiliz Safe – Safe Apps'}</title>
+      <title>Chiliz Safe – Safe Apps</title>
     </Head>
   )
 }

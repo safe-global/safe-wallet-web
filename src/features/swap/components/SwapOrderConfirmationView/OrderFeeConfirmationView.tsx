@@ -24,8 +24,8 @@ export const OrderFeeConfirmationView = ({
           <>
             The tiered widget fee incurred here is charged by CoW Protocol for the operation of this widget. The fee is
             automatically calculated into this quote. Part of the fee will contribute to a license fee that supports the
-            Safe Community. Neither the Safe Ecosystem Foundation nor {`Chiliz Safe`} operate the CoW Swap Widget and/or
-            CoW Swap.
+            Safe Community. Neither the Safe Ecosystem Foundation nor Chiliz Safe operate the CoW Swap Widget and/or CoW
+            Swap.
             <MUILink href={HelpCenterArticle.SWAP_WIDGET_FEES} target="_blank" rel="noopener noreferrer">
               Learn more
             </MUILink>

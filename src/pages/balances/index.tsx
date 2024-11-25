@@ -24,7 +24,7 @@ const Balances: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Chiliz Safe – Assets'}</title>
+        <title>Chiliz Safe – Assets</title>
       </Head>
       <AssetsHeader>
         <HiddenTokenButton showHiddenAssets={showHiddenAssets} toggleShowHiddenAssets={toggleShowHiddenAssets} />

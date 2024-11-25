@@ -13,7 +13,7 @@ const Terms: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Chiliz Safe – Terms'}</title>
+        <title>Chiliz Safe – Terms</title>
       </Head>
 
       <main>{IS_OFFICIAL_HOST && <SafeTerms components={overrideComponents} />}</main>

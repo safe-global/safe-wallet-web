@@ -7,7 +7,7 @@ const EnvironmentVariablesPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Chiliz Safe – Settings – Environment variables'}</title>
+        <title>Chiliz Safe – Settings – Environment variables</title>
       </Head>
 
       <SettingsHeader />

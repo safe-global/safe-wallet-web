@@ -33,7 +33,7 @@ const SwapPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Chiliz Safe – Swap'}</title>
+        <title>Chiliz Safe – Swap</title>
       </Head>
       <main style={{ height: 'calc(100vh - 52px)' }}>
         {isFeatureEnabled === true ? (

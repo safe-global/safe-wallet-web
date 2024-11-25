@@ -8,14 +8,11 @@ import {
   SidebarListItemText,
 } from '@/components/sidebar/SidebarList'
 import { BEAMER_SELECTOR, loadBeamer } from '@/services/beamer'
-import { useAppDispatch, useAppSelector } from '@/store'
+import { useAppSelector } from '@/store'
 import { CookieAndTermType, hasConsentFor } from '@/store/cookiesAndTermsSlice'
-import { openCookieBanner } from '@/store/popupSlice'
-import BeamerIcon from '@/public/images/sidebar/whats-new.svg'
-import HelpCenterIcon from '@/public/images/sidebar/help-center.svg'
 import { Link, ListItem, SvgIcon, Typography } from '@mui/material'
 import DebugToggle from '../DebugToggle'
-import { HELP_CENTER_URL, IS_PRODUCTION, NEW_SUGGESTION_FORM } from '@/config/constants'
+import { IS_PRODUCTION, NEW_SUGGESTION_FORM } from '@/config/constants'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics/events/overview'
 import { useCurrentChain } from '@/hooks/useChains'
@@ -24,7 +21,6 @@ import SuggestionIcon from '@/public/images/sidebar/lightbulb_icon.svg'
 import darkPalette from '@/components/theme/darkPalette'
 
 const SidebarFooter = (): ReactElement => {
-  const dispatch = useAppDispatch()
   const chain = useCurrentChain()
   const hasBeamerConsent = useAppSelector((state) => hasConsentFor(state, CookieAndTermType.UPDATES))
 
@@ -34,12 +30,6 @@ const SidebarFooter = (): ReactElement => {
       loadBeamer(chain.shortName)
     }
   }, [hasBeamerConsent, chain?.shortName])
-
-  const handleBeamer = () => {
-    if (!hasBeamerConsent) {
-      dispatch(openCookieBanner({ warningKey: CookieAndTermType.UPDATES }))
-    }
-  }
 
   return (
     <SidebarList>

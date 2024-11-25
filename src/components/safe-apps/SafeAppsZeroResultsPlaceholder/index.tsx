@@ -16,7 +16,7 @@ const SafeAppsZeroResultsPlaceholder = ({ searchQuery }: { searchQuery: string }
           }}
         >
           No Safe Apps found matching <strong>{searchQuery}</strong>. Connect to dApps that haven&apos;t yet been
-          integrated with the {'Chiliz Safe'} using WalletConnect.
+          integrated with the Chiliz Safe using WalletConnect.
         </Typography>
       }
     />
