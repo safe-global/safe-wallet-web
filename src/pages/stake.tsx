@@ -13,7 +13,7 @@ const StakePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Stake'}</title>
+        <title>{'Chiliz Safe – Stake'}</title>
       </Head>
       {isFeatureEnabled === true ? (
         <LazyStakePage />

@@ -42,7 +42,7 @@ export const createOnboard = (
     },
 
     appMetadata: {
-      name: 'Safe{Wallet}',
+      name: 'Chiliz Safe',
       icon: location.origin + '/images/logo-round.svg',
       description: 'Safe{Wallet} – smart contract wallet for Ethereum (ex-Gnosis Safe multisig)',
     },

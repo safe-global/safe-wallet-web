@@ -146,7 +146,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
     <>
       {!isNativeEmbed && (
         <Head>
-          <title>{`Safe{Wallet} - Safe Apps${remoteApp ? ' - ' + remoteApp.name : ''}`}</title>
+          <title>{`Chiliz Safe - Safe Apps${remoteApp ? ' - ' + remoteApp.name : ''}`}</title>
         </Head>
       )}
 

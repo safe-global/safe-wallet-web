@@ -19,7 +19,7 @@ const WcLogoHeader = ({ errorMessage }: { errorMessage?: string }): ReactElement
           mb: 0.5,
         }}
       >
-        {errorMessage || 'Connect dApps to Safe{Wallet}'}
+        {errorMessage || 'Connect dApps to Chiliz Safe'}
       </Typography>
     </>
   )
