@@ -130,7 +130,7 @@
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.14.182",
     "@types/mdx": "^2.0.13",
-    "@types/node": "18.11.18",
+    "@types/node": "22.9.3",
     "@types/qrcode": "^1.5.5",
     "@types/react": "npm:types-react@19.0.0-rc.1",
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
