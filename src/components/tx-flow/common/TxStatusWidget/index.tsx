@@ -55,7 +55,7 @@ const TxStatusWidget = ({
             gap: 1,
           }}
         >
-          <SafeLogo width={16} height={16} className={css.logo} />
+          <SafeLogo width={32} height={32} className={css.logo} />
           {isMessage ? 'Message' : 'Transaction'} status
         </Typography>
 

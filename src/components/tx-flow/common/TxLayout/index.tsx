@@ -118,7 +118,7 @@ const TxLayout = ({
                 size="large"
                 onClick={toggleStatus}
               >
-                <SafeLogo width={16} height={16} />
+                <SafeLogo width={32} height={32} />
               </IconButton>
             )}
 

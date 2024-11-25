@@ -13,7 +13,7 @@ const WcConnectionState = ({ metadata, isDelete }: { metadata?: CoreTypes.Metada
   return (
     <div className={css.container}>
       <div>
-        <SafeLogo alt="Safe logo" width="28px" height="28px" />
+        <SafeLogo alt="Safe logo" width="32px" height="32px" />
 
         <SvgIcon
           component={ConnectionDots}

@@ -9,7 +9,7 @@ import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWallet
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import NetworkLogosList from '@/features/multichain/components/NetworkLogosList'
 
-const LOGO_DIMENSIONS = '22px'
+const LOGO_DIMENSIONS = '44px'
 
 const OverviewWidget = ({ safeName, networks }: { safeName: string; networks: ChainInfo[] }): ReactElement | null => {
   const wallet = useWallet()
