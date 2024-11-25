@@ -93,7 +93,7 @@ const trackTxEvents = (
 
 function getCreationEvent(args: { isParentSigner: boolean; isRoleExecution: boolean; isProposerCreation: boolean }) {
   if (args.isParentSigner) {
-    return TX_EVENTS.CREATE_IN_PARENT
+    return TX_EVENTS.CREATE_VIA_PARENT
   }
   if (args.isRoleExecution) {
     return TX_EVENTS.CREATE_VIA_ROLE
@@ -104,14 +104,20 @@ function getCreationEvent(args: { isParentSigner: boolean; isRoleExecution: bool
   return TX_EVENTS.CREATE
 }
 
-function getConfirmationEvent(isNestedConfirmation: boolean) {
-  if (isNestedConfirmation) {
+function getConfirmationEvent(args: { isParentSigner: boolean; isNestedConfirmation: boolean }) {
+  if (args.isParentSigner) {
+    return TX_EVENTS.CONFIRM_VIA_PARENT
+  }
+  if (args.isNestedConfirmation) {
     return TX_EVENTS.CONFIRM_IN_PARENT
   }
   return TX_EVENTS.CONFIRM
 }
 
-function getExecutionEvent(args: { isNestedConfirmation: boolean; isRoleExecution: boolean }) {
+function getExecutionEvent(args: { isParentSigner: boolean; isNestedConfirmation: boolean; isRoleExecution: boolean }) {
+  if (args.isParentSigner) {
+    return TX_EVENTS.EXECUTE_VIA_PARENT
+  }
   if (args.isNestedConfirmation) {
     return TX_EVENTS.EXECUTE_IN_PARENT
   }
