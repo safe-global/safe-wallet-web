@@ -50,7 +50,7 @@ const ReadOnlyChip = () => {
 
 export const AccountInfoChips = ({
   isActivating,
-  isWatchlist,
+  isReadOnly,
   undeployedSafe,
   isVisible,
   safeOverview,
@@ -60,7 +60,7 @@ export const AccountInfoChips = ({
   trackingLabel,
 }: {
   isActivating: boolean
-  isWatchlist: boolean
+  isReadOnly: boolean
   isVisible: boolean
   undeployedSafe: boolean
   safeOverview: SafeOverview | null
@@ -71,7 +71,7 @@ export const AccountInfoChips = ({
 }) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  const showQueueActions = isVisible && !undeployedSafe && !isWatchlist
+  const showQueueActions = isVisible && !undeployedSafe && !isReadOnly
 
   return (
     <Box sx={{ width: '100%', mt: 0.3 }}>
@@ -88,7 +88,7 @@ export const AccountInfoChips = ({
             <AccountStatusChip isActivating={isActivating} />
           )}
         </>
-      ) : isWatchlist ? (
+      ) : isReadOnly ? (
         <>
           {isMobile ? (
             <Track {...OVERVIEW_EVENTS.OPEN_SAFE} label={trackingLabel}>

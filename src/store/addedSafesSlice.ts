@@ -7,8 +7,6 @@ export type AddedSafesOnChain = {
     owners: AddressEx[]
     threshold: number
     ethBalance?: string
-    pinned?: boolean
-    removeOnUnpin?: boolean
   }
 }
 
@@ -51,29 +49,18 @@ export const addedSafesSlice = createSlice({
         delete state[chainId]
       }
     },
-    pinSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string; removeOnUnpin: boolean }>) => {
-      const { chainId, address, removeOnUnpin } = payload
+    pinSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
+      const { chainId, address } = payload
       state[chainId] ??= {}
-      state[chainId][address] = {
-        ...(state[chainId][address] ?? {}),
-        pinned: true,
-        removeOnUnpin,
-      }
+      state[chainId][address] = state[chainId][address] ?? {}
     },
     unpinSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
       const { chainId, address } = payload
-      const removeOnUnpin = state[chainId]?.[address]?.removeOnUnpin
 
-      if (removeOnUnpin) {
-        delete state[chainId]?.[address]
-        if (Object.keys(state[chainId]).length === 0) {
-          delete state[chainId]
-        }
-      } else if (state[chainId]?.[address]) {
-        state[chainId][address] = {
-          ...state[chainId][address],
-          pinned: false,
-        }
+      delete state[chainId]?.[address]
+
+      if (Object.keys(state[chainId]).length === 0) {
+        delete state[chainId]
       }
     },
   },

@@ -25,7 +25,7 @@ import useWallet from '@/hooks/wallets/useWallet'
 import { hasMultiChainAddNetworkFeature } from '@/features/multichain/utils/utils'
 import BookmarkIcon from '@/public/images/apps/bookmark.svg'
 import BookmarkedIcon from '@/public/images/apps/bookmarked.svg'
-import { addOrUpdateSafe, pinSafe, selectAddedSafes, unpinSafe } from '@/store/addedSafesSlice'
+import { addOrUpdateSafe, unpinSafe } from '@/store/addedSafesSlice'
 import SafeIcon from '@/components/common/SafeIcon'
 import useOnceVisible from '@/hooks/useOnceVisible'
 import { skipToken } from '@reduxjs/toolkit/query'
@@ -40,7 +40,7 @@ type AccountItemProps = {
 }
 
 const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
-  const { chainId, address, isPinned, isWatchlist } = safeItem
+  const { chainId, address, isReadOnly, isPinned } = safeItem
   const chain = useAppSelector((state) => selectChainById(state, chainId))
   const undeployedSafe = useAppSelector((state) => selectUndeployedSafe(state, chainId, address))
   const safeAddress = useSafeAddress()
@@ -49,8 +49,6 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
   const isCurrentSafe = chainId === currChainId && sameAddress(safeAddress, address)
   const isWelcomePage = router.pathname === AppRoutes.welcome.accounts
   const { address: walletAddress } = useWallet() ?? {}
-  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
-  const isAdded = !!addedSafes?.[address]
   const elementRef = useRef<HTMLDivElement>(null)
   const isVisible = useOnceVisible(elementRef)
   const theme = useTheme()
@@ -76,18 +74,16 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
 
   const addNetworkFeatureEnabled = hasMultiChainAddNetworkFeature(chain)
   const isReplayable =
-    addNetworkFeatureEnabled &&
-    !safeItem.isWatchlist &&
-    (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
+    addNetworkFeatureEnabled && !isReadOnly && (!undeployedSafe || !isPredictedSafeProps(undeployedSafe.props))
 
   const { data: safeOverview } = useGetSafeOverviewQuery(
     undeployedSafe || !isVisible
       ? skipToken
       : {
-        chainId: safeItem.chainId,
-        safeAddress: safeItem.address,
-        walletAddress,
-      },
+          chainId: safeItem.chainId,
+          safeAddress: safeItem.address,
+          walletAddress,
+        },
   )
 
   const safeThreshold = safeOverview?.threshold ?? counterfactualSetup?.threshold ?? defaultSafeInfo.threshold
@@ -162,7 +158,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
             {!isMobile && (
               <AccountInfoChips
                 isActivating={isActivating}
-                isWatchlist={isWatchlist}
+                isReadOnly={isReadOnly}
                 undeployedSafe={!!undeployedSafe}
                 isVisible={isVisible}
                 safeOverview={safeOverview ?? null}
@@ -206,7 +202,7 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
       {isMobile && (
         <AccountInfoChips
           isActivating={isActivating}
-          isWatchlist={isWatchlist}
+          isReadOnly={isReadOnly}
           undeployedSafe={!!undeployedSafe}
           isVisible={isVisible}
           safeOverview={safeOverview ?? null}
