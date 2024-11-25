@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CodeIcon from '@mui/icons-material/Code'
 import classNames from 'classnames'
 import { SafeMessageStatus, type SafeMessage } from '@safe-global/safe-gateway-typescript-sdk'
+import { ErrorBoundary } from '@sentry/react'
 
 import { formatDateTime } from '@/utils/date'
 import EthHashInfo from '@/components/common/EthHashInfo'
@@ -26,7 +27,11 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
   const wallet = useWallet()
   const isConfirmed = msg.status === SafeMessageStatus.CONFIRMED
   const safeMessage = useMemo(() => {
-    return generateSafeMessageMessage(msg.message)
+    try {
+      return generateSafeMessageMessage(msg.message)
+    } catch (e) {
+      return ''
+    }
   }, [msg.message])
   const verifyingContract = isEIP712TypedData(msg.message) ? msg.message.domain.verifyingContract : undefined
 
@@ -65,7 +70,9 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
               </>
             }
           >
-            <DecodedMsg message={msg.message} />
+            <ErrorBoundary fallback={<div>Error decoding message</div>}>
+              <DecodedMsg message={msg.message} />
+            </ErrorBoundary>
           </InfoDetails>
         </div>
 
@@ -73,7 +80,7 @@ const MsgDetails = ({ msg }: { msg: SafeMessage }): ReactElement => {
           <TxDataRow title="Created:">{formatDateTime(msg.creationTimestamp)}</TxDataRow>
           <TxDataRow title="Last modified:">{formatDateTime(msg.modifiedTimestamp)}</TxDataRow>
           <TxDataRow title="Message hash:">{generateDataRowValue(msg.messageHash, 'hash')}</TxDataRow>
-          <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>
+          {safeMessage && <TxDataRow title="SafeMessage:">{generateDataRowValue(safeMessage, 'hash')}</TxDataRow>}
         </div>
 
         {msg.preparedSignature && (
