@@ -14,10 +14,9 @@ import BatchIcon from '@/public/images/common/multisend.svg'
 
 import {
   isCancellationTxInfo,
-  isExecTxInfo,
   isModuleExecutionInfo,
   isMultiSendTxInfo,
-  isOnChainConfirmationTxInfo,
+  isNestedConfirmationTxInfo,
   isOutgoingTransfer,
   isTxQueued,
 } from '@/utils/transaction-guards'
@@ -133,7 +132,7 @@ export const getTransactionType = (tx: TransactionSummary, addressBook: AddressB
         }
       }
 
-      if (isOnChainConfirmationTxInfo(tx.txInfo) || isExecTxInfo(tx.txInfo)) {
+      if (isNestedConfirmationTxInfo(tx.txInfo)) {
         return {
           icon: <SvgIcon component={NestedSafeIcon} inheritViewBox fontSize="small" alt="Nested Safe" />,
           text: `Nested Safe${addressBookName ? `: ${addressBookName}` : ''}`,

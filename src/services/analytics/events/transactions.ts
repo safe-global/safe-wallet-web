@@ -78,9 +78,19 @@ export const TX_EVENTS = {
     action: 'Execute via role',
     category: TX_CATEGORY,
   },
-  CONFIRM_VIA_PARENT_SAFE: {
-    event: EventType.TX_CONFIRMED,
+  CREATE_IN_PARENT: {
+    event: EventType.TX_CREATED,
+    action: 'Create in parent',
     category: TX_CATEGORY,
-    action: 'Confirm via parent Safe',
+  },
+  CONFIRM_IN_PARENT: {
+    event: EventType.TX_CONFIRMED,
+    action: 'Confirm in parent',
+    category: TX_CATEGORY,
+  },
+  EXECUTE_IN_PARENT: {
+    event: EventType.TX_EXECUTED,
+    action: 'Execute in parent',
+    category: TX_CATEGORY,
   },
 }

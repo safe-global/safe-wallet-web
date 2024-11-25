@@ -16,6 +16,8 @@ import TxData from '../..'
 import { isMultiSendTxInfo, isOrderTxInfo } from '@/utils/transaction-guards'
 import { ErrorBoundary } from '@sentry/react'
 import Multisend from '../../DecodedData/Multisend'
+import { MODALS_EVENTS } from '@/services/analytics'
+import Track from '@/components/common/Track'
 
 const safeInterface = Safe__factory.createInterface()
 
@@ -59,19 +61,21 @@ export const OnChainConfirmation = ({
           )}
 
           {chain && data && (
-            <Link
-              href={{
-                pathname: AppRoutes.transactions.tx,
-                query: {
-                  safe: `${chain?.shortName}:${data?.to.value}`,
-                  id: nestedTxDetails.txId,
-                },
-              }}
-              passHref
-              legacyBehavior
-            >
-              <ExternalLink>Open nested transaction</ExternalLink>
-            </Link>
+            <Track {...MODALS_EVENTS.OPEN_NESTED_TX}>
+              <Link
+                href={{
+                  pathname: AppRoutes.transactions.tx,
+                  query: {
+                    safe: `${chain?.shortName}:${data?.to.value}`,
+                    id: nestedTxDetails.txId,
+                  },
+                }}
+                passHref
+                legacyBehavior
+              >
+                <ExternalLink>Open nested transaction</ExternalLink>
+              </Link>
+            </Track>
           )}
         </>
       ) : txDetailsError ? (

@@ -39,6 +39,8 @@ import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sd
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
 import ConfirmationView from '../confirmation-views'
 import { SignerForm } from './SignerForm'
+import { useSigner } from '@/hooks/wallets/useWallet'
+import { isNestedConfirmationTxInfo } from '@/utils/transaction-guards'
 
 export type SubmitCallback = (txId: string, isExecuted?: boolean) => void
 
@@ -62,14 +64,24 @@ const trackTxEvents = (
   isExecuted: boolean,
   isRoleExecution: boolean,
   isProposerCreation: boolean,
+  isParentSigner: boolean,
 ) => {
-  const creationEvent = isRoleExecution
-    ? TX_EVENTS.CREATE_VIA_ROLE
-    : isProposerCreation
-      ? TX_EVENTS.CREATE_VIA_PROPOSER
-      : TX_EVENTS.CREATE
-  const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
-  const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
+  const isNestedConfirmation = !!details && isNestedConfirmationTxInfo(details.txInfo)
+
+  const creationEvent = getCreationEvent({ isParentSigner, isRoleExecution, isProposerCreation })
+  const confirmationEvent = getConfirmationEvent(isNestedConfirmation)
+  const executionEvent = getExecutionEvent({ isNestedConfirmation, isRoleExecution })
+
+  const event = (() => {
+    if (isCreation) {
+      return creationEvent
+    }
+    if (isExecuted) {
+      return executionEvent
+    }
+    return confirmationEvent
+  })()
+
   const txType = getTransactionTrackingType(details)
   trackEvent({ ...event, label: txType })
 
@@ -77,6 +89,36 @@ const trackTxEvents = (
   if (isCreation && isExecuted) {
     trackEvent({ ...executionEvent, label: txType })
   }
+}
+
+function getCreationEvent(args: { isParentSigner: boolean; isRoleExecution: boolean; isProposerCreation: boolean }) {
+  if (args.isParentSigner) {
+    return TX_EVENTS.CREATE_IN_PARENT
+  }
+  if (args.isRoleExecution) {
+    return TX_EVENTS.CREATE_VIA_ROLE
+  }
+  if (args.isProposerCreation) {
+    return TX_EVENTS.CREATE_VIA_PROPOSER
+  }
+  return TX_EVENTS.CREATE
+}
+
+function getConfirmationEvent(isNestedConfirmation: boolean) {
+  if (isNestedConfirmation) {
+    return TX_EVENTS.CONFIRM_IN_PARENT
+  }
+  return TX_EVENTS.CONFIRM
+}
+
+function getExecutionEvent(args: { isNestedConfirmation: boolean; isRoleExecution: boolean }) {
+  if (args.isNestedConfirmation) {
+    return TX_EVENTS.EXECUTE_IN_PARENT
+  }
+  if (args.isRoleExecution) {
+    return TX_EVENTS.EXECUTE_VIA_ROLE
+  }
+  return TX_EVENTS.EXECUTE
 }
 
 export const SignOrExecuteForm = ({
@@ -104,6 +146,7 @@ export const SignOrExecuteForm = ({
   const isApproval = readableApprovals && readableApprovals.length > 0
   const { safe } = useSafeInfo()
   const isSafeOwner = useIsSafeOwner()
+  const signer = useSigner()
   const isProposer = useIsWalletProposer()
   const isProposing = isProposer && !isSafeOwner && isCreation
   const isCounterfactualSafe = !safe.deployed
@@ -131,9 +174,9 @@ export const SignOrExecuteForm = ({
 
       const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(details, !!isCreation, isExecuted, isRoleExecution, isProposerCreation)
+      trackTxEvents(details, !!isCreation, isExecuted, isRoleExecution, isProposerCreation, !!signer?.isSafe)
     },
-    [chainId, isCreation, onSubmit, trigger],
+    [chainId, isCreation, onSubmit, trigger, signer?.isSafe],
   )
 
   const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(
