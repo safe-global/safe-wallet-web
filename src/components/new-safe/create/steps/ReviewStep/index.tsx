@@ -184,11 +184,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             {
               owners: data.owners.map((owner) => owner.address),
               threshold: data.threshold,
+              paymentReceiver: data.paymentReceiver,
             },
             chain,
           )
         : undefined,
-    [chain, data.owners, data.safeVersion, data.threshold],
+    [chain, data.owners, data.safeVersion, data.threshold, data.paymentReceiver],
   )
 
   const safePropsForGasEstimation = useMemo(() => {
@@ -226,12 +227,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       setIsCreating(true)
 
       // Figure out the shared available nonce across chains
-      const nextAvailableNonce = await getAvailableSaltNonce(
-        customRPCs,
-        { ...newSafeProps, saltNonce: '0' },
-        data.networks,
-        knownAddresses,
-      )
+      const nextAvailableNonce =
+        data.saltNonce !== undefined
+          ? data.saltNonce.toString()
+          : await getAvailableSaltNonce(customRPCs, { ...newSafeProps, saltNonce: '0' }, data.networks, knownAddresses)
 
       const replayedSafeWithNonce = { ...newSafeProps, saltNonce: nextAvailableNonce }
 
