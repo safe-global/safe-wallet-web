@@ -36,6 +36,10 @@ export function getRewardRegex() {
   return new RegExp('^\\d+(\\.\\d+)? ETH \\(\\$\\s?\\d{1,3}(,\\d{3})*\\)$')
 }
 
+export function getActivationTimeRegex() {
+  return new RegExp('^\\d+\\s+hour(s)?\\s+\\d+\\s+minute(s)?$')
+}
+
 export function checkTxHeaderData(data) {
   main.verifyValuesExist(create_tx.transactionItem, data)
 }
