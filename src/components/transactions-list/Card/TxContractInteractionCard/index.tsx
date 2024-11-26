@@ -26,7 +26,7 @@ function TxContractInteractionCard({ bordered, executionInfo, txInfo, inQueue }:
       leftNode={
         <Avatar circular size="$10">
           <Theme name="logo">
-            {logoUri && <Avatar.Image backgroundColor="$background" accessibilityLabel={label} src={logoUri} />}
+            {logoUri && <Avatar.Image backgroundColor="$color" accessibilityLabel={label} src={logoUri} />}
 
             <Avatar.Fallback backgroundColor="$background">
               <View backgroundColor="$background" padding="$2" borderRadius={100}>

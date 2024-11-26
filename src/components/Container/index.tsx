@@ -8,13 +8,21 @@ const StyledYStack = styled(YStack, {
         borderWidth: 1,
       },
       false: {
-        backgroundColor: '$background',
+        backgroundColor: '$backgroundPaper',
+      },
+    },
+    transparent: {
+      true: {
+        backgroundColor: 'transparent',
+        borderWidth: 0,
       },
     },
   } as const,
 })
 
-export const Container = (props: YStackProps & { bordered?: boolean; themeName?: ThemeName }) => {
+export const Container = (
+  props: YStackProps & { bordered?: boolean; transparent?: boolean; themeName?: ThemeName },
+) => {
   const { children, bordered, themeName = 'container', ...rest } = props
   return (
     <Theme name={themeName}>

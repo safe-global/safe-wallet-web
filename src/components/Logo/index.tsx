@@ -1,0 +1,34 @@
+import React from 'react'
+import { Avatar, Theme, View } from 'tamagui'
+import { IconProps, SafeFontIcon } from '../SafeFontIcon/SafeFontIcon'
+
+interface LogoProps {
+  logoUri?: string | null
+  accessibilityLabel?: string
+  fallbackIcon?: IconProps['name']
+  imageBackground?: string
+}
+
+function Logo({ logoUri, accessibilityLabel, imageBackground = '$color', fallbackIcon = 'nft' }: LogoProps) {
+  return (
+    <Theme name="logo">
+      <Avatar circular size="$10">
+        {logoUri && (
+          <Avatar.Image
+            backgroundColor={imageBackground}
+            accessibilityLabel={accessibilityLabel}
+            source={{ uri: logoUri }}
+          />
+        )}
+
+        <Avatar.Fallback backgroundColor="$background">
+          <View backgroundColor="$background" padding="$2" borderRadius={100}>
+            <SafeFontIcon name={fallbackIcon} color="$colorSecondary" />
+          </View>
+        </Avatar.Fallback>
+      </Avatar>
+    </Theme>
+  )
+}
+
+export default Logo

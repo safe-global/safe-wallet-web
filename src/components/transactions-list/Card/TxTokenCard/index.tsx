@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Text, Theme, View } from 'tamagui'
+import { Text, View } from 'tamagui'
 import SafeListItem from '@/src/components/SafeListItem'
 import {
   isERC20Transfer,
@@ -9,11 +9,11 @@ import {
   isTxQueued,
 } from '@/src/utils/transaction-guards'
 import { ellipsis, formatValue } from '@/src/utils/formatters'
-import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import { useSelector } from 'react-redux'
 import { selectNativeCurrency } from '@/src/store/activeChainSlice'
 import { TransferDirection } from '@/src/store/gateway/types'
 import { TransferTransactionInfo, Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import Logo from '@/src/components/Logo'
 
 interface TxTokenCardProps {
   bordered?: boolean
@@ -34,16 +34,16 @@ interface tokenDetails {
 const getTokenDetails = (txInfo: TransferTransactionInfo): tokenDetails => {
   const transfer = txInfo.transferInfo
   const unnamedToken = 'Unnamed token'
-  const nativeCurrencty = useSelector(selectNativeCurrency)
+  const nativeCurrency = useSelector(selectNativeCurrency)
 
   if (isNativeTokenTransfer(transfer))
     return {
-      value: formatValue(transfer.value || '0', nativeCurrencty.decimals),
+      value: formatValue(transfer.value || '0', nativeCurrency.decimals),
       // take it from the native currency slice
-      decimals: nativeCurrencty.decimals,
-      tokenSymbol: nativeCurrencty.symbol,
-      name: nativeCurrencty.name,
-      logoUri: nativeCurrencty.logoUri,
+      decimals: nativeCurrency.decimals,
+      tokenSymbol: nativeCurrency.symbol,
+      name: nativeCurrency.name,
+      logoUri: nativeCurrency.logoUri,
     }
 
   if (isERC20Transfer(transfer)) {
@@ -88,19 +88,7 @@ function TxTokenCard({ bordered, inQueue, txStatus, executionInfo, txInfo }: TxT
       icon={icon}
       type={type}
       bordered={bordered}
-      leftNode={
-        <Theme name="logo">
-          <Avatar circular size="$10">
-            {logoUri && <Avatar.Image accessibilityLabel={name} source={{ uri: logoUri }} />}
-
-            <Avatar.Fallback backgroundColor="$background">
-              <View backgroundColor="$background" padding="$2" borderRadius={100}>
-                <SafeFontIcon name="nft" color="$color" />
-              </View>
-            </Avatar.Fallback>
-          </Avatar>
-        </Theme>
-      }
+      leftNode={<Logo logoUri={logoUri} accessibilityLabel={name} />}
       rightNode={
         <View maxWidth="34%">
           <Text color={isOutgoing ? '$color' : '$primary'} textAlign="right">

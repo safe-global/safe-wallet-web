@@ -57,6 +57,7 @@ export const config = createTamagui({
   themes: {
     light: {
       background: tokens.color.backgroundMainLight,
+      backgroundPaper: tokens.color.backgroundPaperLight,
       backgroundHover: tokens.color.backgroundLightLight,
       backgroundPress: tokens.color.primaryLightLight,
       backgroundFocus: tokens.color.backgroundMainLight,
@@ -64,7 +65,7 @@ export const config = createTamagui({
       backgroundTransparent: 'transparent',
       color: tokens.color.textPrimaryLight,
       primary: tokens.color.primaryMainLight,
-      primaryLight: tokens.color.primaryLightLight,
+      colorSecondary: tokens.color.primaryLightLight,
       colorHover: tokens.color.textSecondaryLight,
       borderLight: tokens.color.borderLightLight,
       error: tokens.color.errorMainLight,
@@ -114,14 +115,14 @@ export const config = createTamagui({
       background: tokens.color.error1MainDark,
       color: tokens.color.error1ContrastTextDark,
     },
-    logo: {
-      background: '#FFF',
+    light_logo: {
+      background: tokens.color.logoBackgroundLight,
+    },
+    dark_logo: {
+      background: tokens.color.logoBackgroundDark,
     },
     light_container: {
       background: tokens.color.backgroundPaperLight,
-    },
-    dark_container: {
-      background: tokens.color.backgroundPaperDark,
     },
     light_safe_list: {
       background: tokens.color.backgroundDefaultLight,
@@ -130,7 +131,8 @@ export const config = createTamagui({
       background: tokens.color.backgroundDefaultDark,
     },
     dark: {
-      background: tokens.color.backgroundPaperDark,
+      background: tokens.color.backgroundDefaultDark,
+      backgroundPaper: tokens.color.backgroundPaperDark,
       backgroundHover: tokens.color.backgroundLightDark,
       backgroundPress: tokens.color.primaryLightDark,
       backgroundFocus: tokens.color.backgroundMainDark,
@@ -138,7 +140,7 @@ export const config = createTamagui({
       backgroundTransparent: 'transparent',
       color: tokens.color.textPrimaryDark,
       primary: tokens.color.primaryMainDark,
-      primaryLight: tokens.color.primaryLightDark,
+      colorSecondary: tokens.color.primaryLightDark,
       borderLight: tokens.color.borderLightDark,
       error: tokens.color.errorMainDark,
       errorDark: tokens.color.errorDarkDark,

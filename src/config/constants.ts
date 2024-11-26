@@ -5,6 +5,7 @@ export const isProduction = process.env.NODE_ENV !== 'production'
 export const isAndroid = Platform.OS === 'android'
 export const isTestingEnv = process.env.NODE_ENV === 'test'
 export const isStorybookEnv = Constants?.expoConfig?.extra?.storybookEnabled === 'true'
+export const POLLING_INTERVAL = 15_000
 
 export const GATEWAY_URL_PRODUCTION =
   process.env.NEXT_PUBLIC_GATEWAY_URL_PRODUCTION || 'https://safe-client.safe.global'

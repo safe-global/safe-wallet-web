@@ -53,8 +53,8 @@ const selectChainsData = createSelector(selectChainsResult, (result) => {
   return result.data ?? initialState
 })
 
-const { selectAll, selectById } = chainsAdapter.getSelectors(selectChainsData)
+const { selectAll: selectAllChains, selectById } = chainsAdapter.getSelectors(selectChainsData)
 
 export const selectChainById = (state: RootState, chainId: string) => selectById(state, chainId)
 export const { useGetChainsConfigQuery } = apiSliceWithChainsConfig
-export { selectAll }
+export { selectAllChains }

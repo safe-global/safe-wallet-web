@@ -7,28 +7,35 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { isStorybookEnv } from '@/src/config/constants'
 import { apiSliceWithChainsConfig } from '@/src/store/gateway/chains/index'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { PortalProvider } from 'tamagui'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 function RootLayout() {
   store.dispatch(apiSliceWithChainsConfig.endpoints.getChainsConfig.initiate())
+
   return (
-    <GestureHandlerRootView>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <SafeThemeProvider>
-            <Stack
-              screenOptions={{
-                headerBackButtonDisplayMode: 'minimal',
-                headerShadowVisible: false,
-              }}
-            >
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="pending-transactions" options={{ headerShown: true, title: '' }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          </SafeThemeProvider>
-        </PersistGate>
-      </Provider>
-    </GestureHandlerRootView>
+    <PortalProvider shouldAddRootHost>
+      <GestureHandlerRootView>
+        <BottomSheetModalProvider>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <SafeThemeProvider>
+                <Stack
+                  screenOptions={{
+                    headerBackButtonDisplayMode: 'minimal',
+                    headerShadowVisible: false,
+                  }}
+                >
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="pending-transactions" options={{ headerShown: true, title: '' }} />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+              </SafeThemeProvider>
+            </PersistGate>
+          </Provider>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
+    </PortalProvider>
   )
 }
 

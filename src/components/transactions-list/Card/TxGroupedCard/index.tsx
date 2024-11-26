@@ -40,7 +40,7 @@ function TxGroupedCard({ transactions, inQueue }: TxGroupedCard) {
           </View>
         </Theme>
       }
-      rightNode={<SafeFontIcon name="external-link" color="$primaryLight" />}
+      rightNode={<SafeFontIcon name="external-link" color="$colorSecondary" />}
     >
       <View width="100%">
         {transactions.map((item, index) => (

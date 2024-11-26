@@ -8,6 +8,7 @@ import {
   ModuleExecutionInfo,
   MultisigExecutionInfo,
 } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import { SafeOverview } from './AUTO_GENERATED/safes'
 
 export type ExecutionInfo = ModuleExecutionInfo | MultisigExecutionInfo
 
@@ -83,6 +84,7 @@ export type MultiSend = CustomTransactionInfo & {
   isCancellation: boolean
   humanDescription?: string
 }
+export type SafeOverviewResult = { data: SafeOverview[]; error: unknown; isLoading: boolean }
 
 export type OrderTransactionInfo = SwapOrderTransactionInfo | TwapOrderTransactionInfo | SwapTransferTransactionInfo
 
