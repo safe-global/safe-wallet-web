@@ -14,6 +14,7 @@ export interface IconProps {
   name: IconName
   size?: number
   color?: string
+  testID?: string
 }
 
 export const SafeFontIcon = ({ name, size = 24, color, ...rest }: IconProps) => {

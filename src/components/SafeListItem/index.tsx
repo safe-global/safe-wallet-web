@@ -50,7 +50,7 @@ function SafeListItem({
         <View>
           {type && (
             <View flexDirection="row" alignItems="center" gap={4} marginBottom={4}>
-              {icon && <SafeFontIcon name={icon} size={10} color="$colorSecondary" />}
+              {icon && <SafeFontIcon testID={`safe-list-${icon}-icon`} name={icon} size={10} color="$colorSecondary" />}
               <Text fontSize="$3" color="$colorSecondary" marginBottom={2}>
                 {type}
               </Text>

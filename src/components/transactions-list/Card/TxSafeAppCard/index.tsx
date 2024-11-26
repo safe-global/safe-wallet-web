@@ -24,10 +24,13 @@ function TxSafeAppCard({ safeAppInfo, executionInfo, txInfo, inQueue, bordered }
       executionInfo={executionInfo}
       leftNode={
         <Avatar circular size="$10">
-          <Avatar.Image accessibilityLabel={safeAppInfo.name} src={safeAppInfo.logoUri || ''} />
+          {safeAppInfo.logoUri && (
+            <Avatar.Image testID="safe-app-image" accessibilityLabel={safeAppInfo.name} src={safeAppInfo.logoUri} />
+          )}
+
           <Avatar.Fallback backgroundColor="$borderLight">
             <View backgroundColor="$borderLightDark" padding="$2" borderRadius={100}>
-              <SafeFontIcon name="code-blocks" color="$color" />
+              <SafeFontIcon testID="safe-app-fallback" name="code-blocks" color="$color" />
             </View>
           </Avatar.Fallback>
         </Avatar>

@@ -19,7 +19,7 @@
     "web": "expo start --web",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --collectCoverageFrom=\"./src/**\"",
+    "test:coverage": "jest --coverage",
     "test:snapshots": "jest -u",
     "lint": "tsc && npm run eslint",
     "eslint": "eslint src/* app/*",

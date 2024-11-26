@@ -43,7 +43,9 @@ function Tokens() {
     )
   }, [])
 
-  if (isLoading || !data?.items.length || error) return <Fallback loading={isLoading} hasError={!!error} />
+  if (isLoading || !data?.items.length || error) {
+    return <Fallback loading={isLoading} hasError={!!error} />
+  }
 
   return (
     <SafeTab.FlatList<Balance>

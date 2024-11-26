@@ -44,7 +44,7 @@ function TxGroupedCard({ transactions, inQueue }: TxGroupedCard) {
     >
       <View width="100%">
         {transactions.map((item, index) => (
-          <View width="100%" key={`${item.transaction.id}-${index}`} marginTop={12}>
+          <View width="100%" testID="tx-group-info" key={`${item.transaction.id}-${index}`} marginTop={12}>
             <TxInfo inQueue={inQueue} bordered tx={item.transaction} />
           </View>
         ))}
