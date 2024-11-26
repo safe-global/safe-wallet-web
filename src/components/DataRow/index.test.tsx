@@ -2,6 +2,7 @@ import React from 'react'
 import { render } from '@testing-library/react-native'
 import { DataRow } from './index'
 import { Text } from 'react-native'
+import { View } from 'tamagui'
 
 describe('DataRow', () => {
   it('renders correctly with children', () => {
@@ -50,6 +51,17 @@ describe('DataRow.Value', () => {
   it('renders correctly with children', () => {
     const { getByText } = render(<DataRow.Value>Value</DataRow.Value>)
     expect(getByText('Value')).toBeTruthy()
+  })
+
+  it('renders correctly with children as a React node', () => {
+    const { getByText } = render(
+      <DataRow.Value>
+        <View>
+          <Text>bob</Text>
+        </View>
+      </DataRow.Value>,
+    )
+    expect(getByText('bob')).toBeTruthy()
   })
 })
 

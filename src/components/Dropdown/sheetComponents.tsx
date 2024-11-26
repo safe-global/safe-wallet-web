@@ -18,7 +18,15 @@ const BackdropComponent = React.memo(() => {
   const handleClose = () => dismiss()
 
   return (
-    <View onPress={handleClose} position="absolute" top={0} left={0} width="100%" height="100%">
+    <View
+      testID="dropdown-backdrop"
+      onPress={handleClose}
+      position="absolute"
+      top={0}
+      left={0}
+      width="100%"
+      height="100%"
+    >
       <BlurView style={styles.absolute} blurType="dark" blurAmount={8} />
     </View>
   )

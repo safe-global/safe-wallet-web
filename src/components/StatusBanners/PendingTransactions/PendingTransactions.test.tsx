@@ -1,11 +1,22 @@
-import { render } from '@/src/tests/test-utils'
+import { render, userEvent } from '@/src/tests/test-utils'
 import PendingTransactions from '.'
 
 describe('PendingTransactions', () => {
-  it('should render the default markup', () => {
-    const container = render(<PendingTransactions number={'2'} onPress={jest.fn()} />)
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
 
-    expect(container).toMatchSnapshot()
+  it('should render the default markup', async () => {
+    const user = userEvent.setup()
+    const mockedFn = jest.fn()
+
+    const { getByText } = render(<PendingTransactions number={'2'} onPress={mockedFn} />)
+
+    expect(getByText('2')).toBeTruthy()
+
+    await user.press(getByText('Pending Transactions'))
+
+    expect(mockedFn).toHaveBeenCalled()
   })
 
   it('should render the pending transactions in fullWidth layout', () => {

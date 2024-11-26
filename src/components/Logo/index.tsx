@@ -15,6 +15,7 @@ function Logo({ logoUri, accessibilityLabel, imageBackground = '$color', fallbac
       <Avatar circular size="$10">
         {logoUri && (
           <Avatar.Image
+            testID="logo-image"
             backgroundColor={imageBackground}
             accessibilityLabel={accessibilityLabel}
             source={{ uri: logoUri }}
@@ -23,7 +24,7 @@ function Logo({ logoUri, accessibilityLabel, imageBackground = '$color', fallbac
 
         <Avatar.Fallback backgroundColor="$background">
           <View backgroundColor="$background" padding="$2" borderRadius={100}>
-            <SafeFontIcon name={fallbackIcon} color="$colorSecondary" />
+            <SafeFontIcon testID="logo-fallback-icon" name={fallbackIcon} color="$colorSecondary" />
           </View>
         </Avatar.Fallback>
       </Avatar>

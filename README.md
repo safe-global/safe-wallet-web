@@ -43,7 +43,7 @@ Then select one of them and happy debugging 👨‍💻👩‍💻
 
 ## How to run the e2e tests
 
-We're using DETOX for e2e. Before run the tests script, you shuold first install DETOX by following this steps bellow:
+We're using DETOX for e2e. Before run the tests script, you should first install DETOX by following this steps bellow:
 
 ### 1. install DETOX cli:
 

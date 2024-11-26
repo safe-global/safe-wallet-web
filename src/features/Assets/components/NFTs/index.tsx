@@ -31,19 +31,25 @@ function NFTs() {
   )
 
   useEffect(() => {
-    if (!data?.results) return
+    if (!data?.results) {
+      return
+    }
 
     setList((prev) => (prev ? [...prev, ...data.results] : data.results))
   }, [data])
 
   const onEndReached = () => {
-    if (!data?.next) return
+    if (!data?.next) {
+      return
+    }
 
     setPageUrl(data.next)
     refetch()
   }
 
-  if (isLoading || !list?.length || error) return <Fallback loading={isLoading} hasError={!!error} />
+  if (isLoading || !list?.length || error) {
+    return <Fallback loading={isLoading || !list} hasError={!!error} />
+  }
 
   return (
     <SafeTab.FlatList<Collectible>

@@ -38,14 +38,20 @@ function Dropdown<T>({
 
   return (
     <>
-      <View alignItems="center" onPress={handlePresentModalPress} flexDirection="row" marginBottom="$3">
+      <View
+        alignItems="center"
+        testID="dropdown-label-view"
+        onPress={handlePresentModalPress}
+        flexDirection="row"
+        marginBottom="$3"
+      >
         {leftNode}
 
         <Text fontSize="$4" fontWeight={400}>
           {label}
         </Text>
 
-        <SafeFontIcon name="arrow-down" />
+        <SafeFontIcon testID="dropdown-arrow" name="arrow-down" />
       </View>
 
       <BottomSheetModal

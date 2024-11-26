@@ -21,7 +21,9 @@ function ChainItems({ chainId, chains, activeChain, fiatTotal, onSelect }: Chain
     onSelect(chainId)
   }
 
-  if (!chain) return null
+  if (!chain) {
+    return null
+  }
 
   return (
     <TouchableOpacity style={{ width: '100%' }} onPress={handleChainSelect}>
