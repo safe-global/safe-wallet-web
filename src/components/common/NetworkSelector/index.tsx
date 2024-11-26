@@ -28,7 +28,7 @@ import { useChainId } from '@/hooks/useChainId'
 import { type ReactElement, useCallback, useMemo, useState } from 'react'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS, trackEvent } from '@/services/analytics'
 
-import { useAllSafesGrouped } from '@/components/welcome/MyAccounts/useAllSafesGrouped'
+import { useAllSafesGrouped } from '@/features/myAccounts/hooks/useAllSafesGrouped'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import { sameAddress } from '@/utils/addresses'
 import uniq from 'lodash/uniq'
@@ -108,7 +108,7 @@ const UndeployedNetworkMenuItem = ({
 
   return (
     <Track {...OVERVIEW_EVENTS.ADD_NEW_NETWORK} label={OVERVIEW_LABELS.top_bar}>
-      <Tooltip title="Add network" arrow placement="left">
+      <Tooltip data-testid="add-network-tooltip" title="Add network" arrow placement="left">
         <MenuItem
           value={chain.chainId}
           sx={{ '&:hover': { backgroundColor: 'inherit' } }}
@@ -133,7 +133,14 @@ const UndeployedNetworkMenuItem = ({
 
 const NetworkSkeleton = () => {
   return (
-    <Stack direction="row" spacing={1} alignItems="center" p="4px 0px">
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: 'center',
+        p: '4px 0px',
+      }}
+    >
       <Skeleton variant="circular" width="24px" height="24px" />
       <Skeleton variant="rounded" sx={{ flexGrow: 1 }} />
     </Stack>
@@ -143,7 +150,12 @@ const NetworkSkeleton = () => {
 const TestnetDivider = () => {
   return (
     <Divider sx={{ m: '0px !important', '& .MuiDivider-wrapper': { p: '0px 16px' } }}>
-      <Typography variant="overline" color="border.main">
+      <Typography
+        variant="overline"
+        sx={{
+          color: 'border.main',
+        }}
+      >
         Testnets
       </Typography>
     </Divider>
@@ -196,7 +208,14 @@ const UndeployedNetworks = ({
 
   if (safeCreationLoading) {
     return (
-      <Box display="flex" alignItems="center" justifyContent="center" my={1}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          my: 1,
+        }}
+      >
         <CircularProgress size={18} />
       </Box>
     )
@@ -204,7 +223,13 @@ const UndeployedNetworks = ({
 
   const errorMessage =
     safeCreationDataError || (safeCreationData && noAvailableNetworks) ? (
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: 'center',
+        }}
+      >
         {safeCreationDataError?.message && (
           <Tooltip title={safeCreationDataError?.message}>
             <InfoOutlined color="info" fontSize="medium" />
@@ -220,8 +245,19 @@ const UndeployedNetworks = ({
 
   if (errorMessage) {
     return (
-      <Box px={2} py={1}>
-        <Typography color="text.secondary" fontSize="14px" maxWidth={300}>
+      <Box
+        sx={{
+          px: 2,
+          py: 1,
+        }}
+      >
+        <Typography
+          sx={{
+            color: 'text.secondary',
+            fontSize: '14px',
+            maxWidth: 300,
+          }}
+        >
           {errorMessage}
         </Typography>
       </Box>
@@ -241,8 +277,15 @@ const UndeployedNetworks = ({
   return (
     <>
       <ButtonBase className={css.listSubHeader} onClick={onShowAllNetworks} tabIndex={-1}>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <div>Show all networks</div>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: 'center',
+          }}
+        >
+          <div data-testid="show-all-networks">Show all networks</div>
+
           <ExpandMoreIcon
             fontSize="small"
             sx={{
@@ -253,7 +296,11 @@ const UndeployedNetworks = ({
       </ButtonBase>
       <Collapse in={open} timeout="auto" unmountOnExit>
         {!safeCreationData ? (
-          <Box p="0px 16px">
+          <Box
+            sx={{
+              p: '0px 16px',
+            }}
+          >
             <NetworkSkeleton />
             <NetworkSkeleton />
           </Box>

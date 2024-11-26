@@ -20,15 +20,25 @@ const RejectTx = ({ txNonce }: RejectTxProps): ReactElement => {
 
   return (
     <SignOrExecuteForm isBatchable={false} isRejection>
-      <Typography mb={2}>
+      <Typography
+        sx={{
+          mb: 2,
+        }}
+      >
         To reject the transaction, a separate rejection transaction will be created to replace the original one.
       </Typography>
-
-      <Typography mb={2}>
+      <Typography
+        sx={{
+          mb: 2,
+        }}
+      >
         Transaction nonce: <b>{txNonce}</b>
       </Typography>
-
-      <Typography mb={2}>
+      <Typography
+        sx={{
+          mb: 2,
+        }}
+      >
         You will need to confirm the rejection transaction with your currently connected wallet.
       </Typography>
     </SignOrExecuteForm>

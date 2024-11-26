@@ -21,17 +21,47 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
   return (
     <ModalDialog open dialogTitle="Receive assets" onClose={onClose} hideChainIndicator>
       <DialogContent>
-        <Box bgcolor={chain?.theme.backgroundColor} color={chain?.theme.textColor} px={3} py={2} mx={-3}>
+        <Box
+          sx={{
+            bgcolor: chain?.theme.backgroundColor,
+            color: chain?.theme.textColor,
+            px: 3,
+            py: 2,
+            mx: -3,
+          }}
+        >
           {chainName} network &mdash; only send {chainName} assets to this Safe Account.
         </Box>
 
-        <Typography my={2}>
+        <Typography
+          sx={{
+            my: 2,
+          }}
+        >
           This is the address of your Safe Account. Deposit funds by scanning the QR code or copying the address below.
           Only send {nativeToken} and tokens (e.g. ERC20, ERC721) to this address.
         </Typography>
 
-        <Box display="flex" flexDirection="column" flexWrap="wrap" justifyContent="center" alignItems="center" my={2}>
-          <Box mt={1} mb={1} p={1} border="1px solid" borderColor="border.main" borderRadius={1}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            alignItems: 'center',
+            my: 2,
+          }}
+        >
+          <Box
+            sx={{
+              mt: 1,
+              mb: 1,
+              p: 1,
+              border: '1px solid',
+              borderColor: 'border.main',
+              borderRadius: 1,
+            }}
+          >
             <QRCode value={qrCode} size={164} />
           </Box>
 
@@ -46,7 +76,11 @@ const QrModal = ({ onClose }: { onClose: () => void }): ReactElement => {
             }
           />
 
-          <Box mt={2}>
+          <Box
+            sx={{
+              mt: 2,
+            }}
+          >
             <EthHashInfo
               address={safeAddress}
               shortAddress={false}

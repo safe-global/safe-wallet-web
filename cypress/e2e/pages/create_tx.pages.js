@@ -14,6 +14,8 @@ const gasLimitInput = '[name="gasLimit"]'
 const rotateLeftIcon = '[data-testid="RotateLeftIcon"]'
 export const transactionItem = '[data-testid="transaction-item"]'
 export const connectedWalletExecMethod = '[data-testid="connected-wallet-execution-method"]'
+export const relayExecMethod = '[data-testid="relay-execution-method"]'
+export const payNowExecMethod = '[data-testid="pay-now-execution-method"]'
 const addToBatchBtn = '[data-track="batching: Add to batch"]'
 const accordionDetails = '[data-testid="accordion-details"]'
 const copyIcon = '[data-testid="copy-btn-icon"]'
@@ -26,6 +28,8 @@ const advancedDetails = '[data-testid="tx-advanced-details"]'
 const baseGas = '[data-testid="tx-bas-gas"]'
 const requiredConfirmation = '[data-testid="required-confirmations"]'
 export const txDate = '[data-testid="tx-date"]'
+export const proposalStatus = '[data-testid="proposal-status"]'
+export const txSigner = '[data-testid="signer"]'
 const spamTokenWarningIcon = '[data-testid="warning"]'
 const untrustedTokenWarningModal = '[data-testid="untrusted-token-warning"]'
 const sendTokensBtn = '[data-testid="send-tokens-btn"]'
@@ -38,10 +42,13 @@ const filterTokenInput = '[data-testid="token-input"]'
 const filterNonceInput = '[data-testid="nonce-input"]'
 const filterApplyBtn = '[data-testid="apply-btn"]'
 const filterClearBtn = '[data-testid="clear-btn"]'
-const addressItem = '[data-testid="address-item"]'
+export const addressItem = '[data-testid="address-item"]'
 const radioSelector = 'div[role="radiogroup"]'
 const rejectTxBtn = '[data-testid="reject-btn"]'
 const deleteTxModalBtn = '[data-testid="delete-tx-btn"]'
+const toggleUntrustedBtn = '[data-testid="toggle-untrusted"]'
+const simulateTxBtn = '[data-testid="simulate-btn"]'
+const simulateSuccess = '[data-testid="simulation-success-msg"]'
 
 const viewTransactionBtn = 'View transaction'
 const transactionDetailsTitle = 'Transaction details'
@@ -101,6 +108,19 @@ export function deleteTx() {
   clickOnRejectBtn()
   cy.get(wallet.choiceBtn).contains(deleteFromQueueStr).click()
   cy.get(deleteTxModalBtn).click()
+}
+
+export function deleteAllTx() {
+  cy.get('body').then(($body) => {
+    if ($body.find(transactionItem).length > 0) {
+      cy.get(transactionItem).then(($items) => {
+        for (let i = $items.length - 1; i >= 0; i--) {
+          cy.wrap($items[i]).click({ force: true })
+          deleteTx()
+        }
+      })
+    }
+  })
 }
 
 export function setTxType(type) {
@@ -606,4 +626,16 @@ export function verifyBulkExecuteBtnIsDisabled() {
   cy.get('button').contains(bulkExecuteBtnStr).should('be.disabled')
   cy.get('button').contains(bulkExecuteBtnStr).trigger('mouseover', { force: true })
   cy.contains(disabledBultExecuteBtnTooltip).should('exist')
+}
+
+export function toggleUntrustedTxs() {
+  cy.get(toggleUntrustedBtn).click()
+}
+
+export function clickOnSimulateTxBtn() {
+  cy.get(simulateTxBtn).click()
+}
+
+export function verifySuccessfulSimulation() {
+  cy.get(simulateSuccess).should('exist')
 }

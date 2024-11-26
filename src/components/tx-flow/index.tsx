@@ -8,7 +8,7 @@ import useChainId from '@/hooks/useChainId'
 const noop = () => {}
 
 export type TxModalContextType = {
-  txFlow: JSX.Element | undefined
+  txFlow: ReactElement | undefined
   setTxFlow: (txFlow: TxModalContextType['txFlow'], onClose?: () => void, shouldWarn?: boolean) => void
   setFullWidth: (fullWidth: boolean) => void
 }

@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, type ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import ListItem from '@mui/material/ListItem'
+import { ListItemButton } from '@mui/material'
 import { ImplementationVersionState } from '@safe-global/safe-gateway-typescript-sdk'
 
 import {
@@ -99,27 +99,30 @@ const Navigation = (): ReactElement => {
             key={item.href}
             arrow
           >
-            <ListItem
-              disablePadding
-              disabled={isDisabled}
-              selected={isSelected}
-              onClick={isDisabled ? undefined : () => handleNavigationClick(item.href)}
-              key={item.href}
-            >
-              <SidebarListItemButton
-                selected={isSelected}
-                href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
+            <div>
+              <ListItemButton
+                // disablePadding
+                sx={{ padding: 0 }}
                 disabled={isDisabled}
+                selected={isSelected}
+                onClick={isDisabled ? undefined : () => handleNavigationClick(item.href)}
+                key={item.href}
               >
-                {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
+                <SidebarListItemButton
+                  selected={isSelected}
+                  href={item.href && { pathname: getRoute(item.href), query: { safe: router.query.safe } }}
+                  disabled={isDisabled}
+                >
+                  {item.icon && <SidebarListItemIcon badge={getBadge(item)}>{item.icon}</SidebarListItemIcon>}
 
-                <SidebarListItemText data-testid="sidebar-list-item" bold>
-                  {item.label}
+                  <SidebarListItemText data-testid="sidebar-list-item" bold>
+                    {item.label}
 
-                  {ItemTag}
-                </SidebarListItemText>
-              </SidebarListItemButton>
-            </ListItem>
+                    {ItemTag}
+                  </SidebarListItemText>
+                </SidebarListItemButton>
+              </ListItemButton>
+            </div>
           </Tooltip>
         )
       })}

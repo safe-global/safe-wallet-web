@@ -7,7 +7,7 @@ import { trackError, Errors } from '@/services/exceptions'
 import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useAlreadySigned, useTxActions } from './hooks'
-import type { SignOrExecuteProps } from '.'
+import type { SignOrExecuteProps } from './SignOrExecuteForm'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { TxModalContext } from '@/components/tx-flow'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -34,6 +34,7 @@ export const SignForm = ({
   isOwner: ReturnType<typeof useIsSafeOwner>
   txActions: ReturnType<typeof useTxActions>
   txSecurity: ReturnType<typeof useTxSecurityContext>
+  isCreation?: boolean
   safeTx?: SafeTransaction
 }): ReactElement => {
   // Form state
@@ -96,7 +97,6 @@ export const SignForm = ({
   return (
     <form onSubmit={handleSubmit}>
       {hasSigned && <ErrorMessage level="warning">You have already signed this transaction.</ErrorMessage>}
-
       {cannotPropose ? (
         <NonOwnerError />
       ) : (
@@ -104,15 +104,16 @@ export const SignForm = ({
           <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
         )
       )}
-
       {isRejectedByUser && (
-        <Box mt={1}>
+        <Box
+          sx={{
+            mt: 1,
+          }}
+        >
           <WalletRejectionError />
         </Box>
       )}
-
       <Divider className={commonCss.nestedDivider} sx={{ pt: 3 }} />
-
       <CardActions>
         <Stack
           sx={{

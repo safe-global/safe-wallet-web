@@ -21,11 +21,13 @@ const WcSampleDapps = ({ onUnload }: { onUnload: () => void }) => {
   return (
     <Typography
       variant="body2"
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      mt={3}
       component="div"
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        mt: 3,
+      }}
     >
       {SAMPLE_DAPPS.map((item) => (
         <Typography variant="body2" key={item.url}>
@@ -51,10 +53,15 @@ const WcNoSessions = () => {
 
   return (
     <>
-      <Typography variant="body2" textAlign="center" color="text.secondary">
+      <Typography
+        variant="body2"
+        sx={{
+          textAlign: 'center',
+          color: 'text.secondary',
+        }}
+      >
         No dApps are connected yet.{sampleDapps ? ' Try one of these:' : ''}
       </Typography>
-
       {sampleDapps}
     </>
   )

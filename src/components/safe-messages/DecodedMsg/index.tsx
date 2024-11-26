@@ -10,6 +10,7 @@ import { isAddress } from 'ethers'
 import type { ReactElement } from 'react'
 import Msg from '../Msg'
 import css from './styles.module.css'
+import { logError, Errors } from '@/services/exceptions'
 
 const EIP712_DOMAIN_TYPE = 'EIP712Domain'
 
@@ -19,14 +20,17 @@ const DecodedTypedObject = ({ displayedType, eip712Msg }: { displayedType: strin
   return (
     <Box>
       <Typography
-        textTransform="uppercase"
-        fontWeight={700}
         variant="caption"
-        sx={({ palette }) => ({ color: `${palette.border.main}` })}
+        sx={[
+          {
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          },
+          ({ palette }) => ({ color: `${palette.border.main}` }),
+        ]}
       >
         {displayedType}
       </Typography>
-
       {Object.entries(displayedType === EIP712_DOMAIN_TYPE ? domain : msg).map((param, index) => {
         const [paramName, paramValue] = param
         const type = findType(paramName) || 'string'
@@ -75,7 +79,13 @@ export const DecodedMsg = ({
   }
 
   // Normalize message such that we know the primaryType
-  const normalizedMsg = normalizeTypedData(message)
+  let normalizedMsg: EIP712Normalized
+  try {
+    normalizedMsg = normalizeTypedData(message)
+  } catch (error) {
+    logError(Errors._809, error)
+    normalizedMsg = message as EIP712Normalized
+  }
 
   return (
     <Box

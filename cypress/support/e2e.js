@@ -30,7 +30,7 @@ import * as ls from './localstorage_data'
 const { addCompareSnapshotCommand } = require('cypress-visual-regression/dist/command')
 addCompareSnapshotCommand()
 
-const beamer = JSON.parse(Cypress.env('BEAMER_DATA_E2E'))
+const beamer = JSON.parse(Cypress.env('BEAMER_DATA_E2E') || '{}')
 const productID = beamer.PRODUCT_ID
 
 before(() => {
@@ -45,6 +45,12 @@ before(() => {
         style.innerHTML = '.command-name-request, .command-name-xhr { display: none }'
         style.setAttribute('data-hide-command-log-request', '')
         app.document.head.appendChild(style)
+      }
+    }
+    const originalConsoleLog = console.log
+    console.log = (...args) => {
+      if (typeof args[0] === 'string' && !args[0].includes('Intercepted request with headers')) {
+        originalConsoleLog(...args)
       }
     }
   })

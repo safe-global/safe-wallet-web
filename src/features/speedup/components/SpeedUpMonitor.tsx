@@ -68,7 +68,13 @@ export const SpeedUpMonitor = ({ txId, pendingTx, modalTrigger = 'alertBox' }: S
             action={<Button onClick={onOpen}>{`Speed up >`}</Button>}
           >
             <AlertTitle>
-              <Typography textAlign="left">Taking too long?</Typography>
+              <Typography
+                sx={{
+                  textAlign: 'left',
+                }}
+              >
+                Taking too long?
+              </Typography>
             </AlertTitle>
             Try to speed up with better gas parameters.
           </Alert>

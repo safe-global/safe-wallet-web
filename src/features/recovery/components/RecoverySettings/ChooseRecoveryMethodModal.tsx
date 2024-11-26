@@ -70,7 +70,12 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
   return (
     <Dialog open={open} onClose={onClose} className={css.dialog}>
       <DialogContent dividers sx={{ py: 2, px: 3 }}>
-        <Typography variant="h2" mb={1}>
+        <Typography
+          variant="h2"
+          sx={{
+            mb: 1,
+          }}
+        >
           Set up Account Recovery
         </Typography>
         <IconButton onClick={onClose} className={css.closeIcon}>
@@ -102,7 +107,13 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                   label={
                     <div className={css.method}>
                       <RecoveryCustomIcon style={{ display: 'block' }} />
-                      <Typography fontWeight="bold" mb={1} mt={2}>
+                      <Typography
+                        sx={{
+                          fontWeight: 'bold',
+                          mb: 1,
+                          mt: 2,
+                        }}
+                      >
                         Self Custodial Recovery
                       </Typography>
                       <List className={css.checkList}>
@@ -131,7 +142,13 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                     <div className={css.method}>
                       <RecoverySygnumIcon style={{ display: 'block' }} />
 
-                      <Typography fontWeight="bold" mb={1} mt={2}>
+                      <Typography
+                        sx={{
+                          fontWeight: 'bold',
+                          mb: 1,
+                          mt: 2,
+                        }}
+                      >
                         Sygnum Web3 Recovery
                       </Typography>
                       <List className={css.checkList}>
@@ -150,7 +167,12 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
                       </List>
 
                       {!hasSygnumApp && (
-                        <Box mt={2.5} sx={{ oopacity: 0.75 }}>
+                        <Box
+                          sx={{
+                            mt: 2.5,
+                            oopacity: 0.75,
+                          }}
+                        >
                           <TxStatusChip color="primary">Not available on this network</TxStatusChip>
                         </Box>
                       )}
@@ -161,13 +183,24 @@ export function ChooseRecoveryMethodModal({ open, onClose }: { open: boolean; on
             )}
           />
         </FormControl>
-        <Typography color="primary.light" mt="12px">
+        <Typography
+          sx={{
+            color: 'primary.light',
+            mt: '12px',
+          }}
+        >
           Unhappy with the provided options?{' '}
           <Track {...RECOVERY_EVENTS.GIVE_US_FEEDBACK} label="method-modal">
             <ExternalLink href={RECOVERY_FEEDBACK_FORM}>Give us feedback</ExternalLink>
           </Track>
         </Typography>
-        <Box display="flex" justifyContent="center" mt={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 3,
+          }}
+        >
           {currentType === RecoveryMethod.SelfCustody ? (
             <Track {...RECOVERY_EVENTS.CONTINUE_WITH_RECOVERY} label={currentType}>
               <Button

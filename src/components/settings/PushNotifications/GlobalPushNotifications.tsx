@@ -36,7 +36,7 @@ import type { PushNotificationPreferences } from '@/services/push-notifications/
 import CheckWallet from '@/components/common/CheckWallet'
 
 import css from './styles.module.css'
-import useAllOwnedSafes from '@/components/welcome/MyAccounts/useAllOwnedSafes'
+import useAllOwnedSafes from '@/features/myAccounts/hooks/useAllOwnedSafes'
 import useWallet from '@/hooks/wallets/useWallet'
 import { selectAllAddedSafes, type AddedSafesState } from '@/store/addedSafesSlice'
 
@@ -374,7 +374,7 @@ export const GlobalPushNotifications = (): ReactElement | null => {
 
   if (totalNotifiableSafes === 0) {
     return (
-      <Typography color={({ palette }) => palette.primary.light}>
+      <Typography sx={{ color: ({ palette }) => palette.primary.light }}>
         {address ? 'No owned Safes' : 'No wallet connected'}
       </Typography>
     )

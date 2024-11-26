@@ -22,10 +22,20 @@ const CheckBalance = () => {
       severity="info"
       sx={{ display: 'flex', maxWidth: '600px', mt: 3, px: 3, py: 2, mx: 'auto' }}
     >
-      <Typography fontWeight="bold" mb={1}>
+      <Typography
+        sx={{
+          fontWeight: 'bold',
+          mb: 1,
+        }}
+      >
         Don&apos;t see your tokens?
       </Typography>
-      <Typography variant="body2" mb={2}>
+      <Typography
+        variant="body2"
+        sx={{
+          mb: 2,
+        }}
+      >
         Your Safe Account is not activated yet so we can only display your native balance. Non-native tokens may not
         show up immediately after the Safe is deployed. Finish the onboarding to deploy your account onchain and unlock
         all features.{' '}
@@ -38,7 +48,6 @@ const CheckBalance = () => {
           </>
         )}
       </Typography>
-
       <ActivateAccountButton />
     </Alert>
   )

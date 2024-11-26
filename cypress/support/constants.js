@@ -46,12 +46,14 @@ export const testAppUrl = 'https://safe-test-app.com'
 export const swapUrl = '/swap?safe='
 export const addressBookUrl = '/address-book?safe='
 export const appsUrlGeneral = '/apps?=safe='
+export const stakingUrl = '/stake?safe='
 export const appsCustomUrl = 'apps/custom?safe='
 export const BALANCE_URL = '/balances?safe='
 export const balanceNftsUrl = '/balances/nfts?safe='
 export const transactionQueueUrl = '/transactions/queue?safe='
 export const transactionsHistoryUrl = '/transactions/history?safe='
 export const transactionsMessagesUrl = '/transactions/messages?safe='
+export const transactionsQueued = 'transactions/queued'
 export const transactionUrl = '/transactions/tx?safe='
 export const openAppsUrl = '/apps/open?safe='
 export const homeUrl = '/home?safe='
@@ -83,6 +85,7 @@ export const stagingCGWChains = '/chains/'
 export const stagingCGWSafes = '/safes/'
 export const stagingCGWNone = '/nonces/'
 export const stagingCGWCollectibles = '/collectibles/'
+export const stagingCGWDelegatesUrl = '/delegates?safe='
 export const relayPath = '/relay/'
 export const stagingCGWAllTokensBalances = '/balances/USD?trusted=false&exclude_spam=false'
 
@@ -94,6 +97,10 @@ export const safeListEndpoint = '**/safes'
 export const VALID_QR_CODE_PATH = '../fixtures/sepolia_test_safe_QR.png'
 export const INVALID_QR_CODE_PATH = '../fixtures/invalid_image_QR_test.png'
 
+export const safeContractVersions = {
+  v1_4_1_L2: '1.4.1+L2',
+}
+
 export const commonThresholds = {
   oneOfOne: '1 out of 1 signer(s)',
 }
@@ -104,6 +111,7 @@ export const TXActionNames = {
 
 export const networkKeys = {
   sepolia: '11155111',
+  polygon: '137',
 }
 export const mainSideMenuOptions = {
   home: 'Home',
@@ -124,6 +132,10 @@ export const networks = {
   sepolia: 'Sepolia',
   polygon: 'Polygon',
   gnosis: 'Gnosis',
+  zkSync: 'zkSync Era',
+  base: 'Base',
+  optimism: 'Optimism',
+  gnosisChiado: 'Gnosis Chiado',
 }
 
 export const tokenAbbreviation = {

@@ -7,7 +7,7 @@ import { OwnerList } from '@/components/settings/owner/OwnerList'
 import { RequiredConfirmation } from '@/components/settings/RequiredConfirmations'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
-import DelegatesList from '@/components/settings/DelegatesList'
+import ProposersList from 'src/components/settings/ProposersList'
 import SpendingLimits from '@/components/settings/SpendingLimits'
 
 const Setup: NextPage = () => {
@@ -21,14 +21,17 @@ const Setup: NextPage = () => {
       <Head>
         <title>{'Safe{Wallet} – Settings – Setup'}</title>
       </Head>
-
       <SettingsHeader />
-
       <main>
         <Paper data-testid="setup-section" sx={{ p: 4, mb: 2 }}>
           <Grid container spacing={3}>
             <Grid item lg={4} xs={12}>
-              <Typography variant="h4" fontWeight={700}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                }}
+              >
                 <Tooltip
                   placement="top"
                   title="For security reasons, transactions made with a Safe Account need to be executed in order. The nonce shows you which transaction will be executed next. You can find the nonce for a transaction in the transaction details."
@@ -46,7 +49,11 @@ const Setup: NextPage = () => {
                 </Tooltip>
               </Typography>
 
-              <Typography pt={1}>
+              <Typography
+                sx={{
+                  pt: 1,
+                }}
+              >
                 Current nonce:{' '}
                 {safeLoaded ? <b>{nonce}</b> : <Skeleton width="30px" sx={{ display: 'inline-block' }} />}
               </Typography>
@@ -61,12 +68,12 @@ const Setup: NextPage = () => {
         <Paper sx={{ p: 4, mb: 2 }}>
           <OwnerList />
 
+          <ProposersList />
+
           <RequiredConfirmation threshold={threshold} owners={ownerLength} />
         </Paper>
 
         <SpendingLimits />
-
-        <DelegatesList />
       </main>
     </>
   )

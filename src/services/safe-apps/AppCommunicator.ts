@@ -13,11 +13,11 @@ type AppCommunicatorConfig = {
 }
 
 class AppCommunicator {
-  private iframeRef: RefObject<HTMLIFrameElement | undefined>
+  private iframeRef: RefObject<HTMLIFrameElement | null>
   private handlers = new Map<Methods, MessageHandler>()
   private config: AppCommunicatorConfig
 
-  constructor(iframeRef: RefObject<HTMLIFrameElement | undefined>, config?: AppCommunicatorConfig) {
+  constructor(iframeRef: RefObject<HTMLIFrameElement | null>, config?: AppCommunicatorConfig) {
     this.iframeRef = iframeRef
     this.config = config || {}
 

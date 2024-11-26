@@ -42,7 +42,12 @@ export const WalletInfo = ({ wallet, balance, currentChainId, onboard, addressBo
 
   return (
     <>
-      <Box display="flex" gap="12px">
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '12px',
+        }}
+      >
         <WalletIdenticon wallet={wallet} size={36} />
 
         <Typography variant="body2" className={css.address} component="div">
@@ -57,25 +62,44 @@ export const WalletInfo = ({ wallet, balance, currentChainId, onboard, addressBo
           />
         </Typography>
       </Box>
-
       <Box className={css.rowContainer}>
         <Box className={css.row}>
-          <Typography variant="body2" color="primary.light">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'primary.light',
+            }}
+          >
             Wallet
           </Typography>
           <Typography variant="body2">{wallet.label}</Typography>
         </Box>
 
         <Box className={css.row}>
-          <Typography variant="body2" color="primary.light">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'primary.light',
+            }}
+          >
             Balance
           </Typography>
-          <Typography variant="body2" textAlign="right">
+          <Typography
+            variant="body2"
+            sx={{
+              textAlign: 'right',
+            }}
+          >
             <WalletBalance balance={balance} />
 
             {currentChainId !== chainInfo?.chainId && (
               <>
-                <Typography variant="body2" color="primary.light">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'primary.light',
+                  }}
+                >
                   ({chainInfo?.chainName || 'Unknown chain'})
                 </Typography>
               </>
@@ -83,8 +107,14 @@ export const WalletInfo = ({ wallet, balance, currentChainId, onboard, addressBo
           </Typography>
         </Box>
       </Box>
-
-      <Box display="flex" flexDirection="column" gap={2} width={1}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          width: 1,
+        }}
+      >
         <ChainSwitcher fullWidth />
 
         <Button variant="contained" size="small" onClick={handleSwitchWallet} fullWidth>

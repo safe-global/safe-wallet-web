@@ -9,7 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { useCurrentChain } from '@/hooks/useChains'
 import { prependSafeToL2Migration } from '@/utils/transactions'
 
-export const SafeTxContext = createContext<{
+export type SafeTxContextParams = {
   safeTx?: SafeTransaction
   setSafeTx: Dispatch<SetStateAction<SafeTransaction | undefined>>
 
@@ -28,7 +28,9 @@ export const SafeTxContext = createContext<{
   setSafeTxGas: Dispatch<SetStateAction<string | undefined>>
 
   recommendedNonce?: number
-}>({
+}
+
+export const SafeTxContext = createContext<SafeTxContextParams>({
   setSafeTx: () => {},
   setSafeMessage: () => {},
   setSafeTxError: () => {},
@@ -72,8 +74,10 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
   const recommendedSafeTxGas = useSafeTxGas(safeTx)
 
   // Priority to external nonce, then to the recommended one
-  const finalNonce = isSigned ? safeTx?.data.nonce : nonce ?? recommendedNonce ?? safeTx?.data.nonce
-  const finalSafeTxGas = isSigned ? safeTx?.data.safeTxGas : safeTxGas ?? recommendedSafeTxGas ?? safeTx?.data.safeTxGas
+  const finalNonce = isSigned ? safeTx?.data.nonce : (nonce ?? recommendedNonce ?? safeTx?.data.nonce)
+  const finalSafeTxGas = isSigned
+    ? safeTx?.data.safeTxGas
+    : (safeTxGas ?? recommendedSafeTxGas ?? safeTx?.data.safeTxGas)
 
   // Update the tx when the nonce or safeTxGas change
   useEffect(() => {
@@ -81,7 +85,10 @@ const SafeTxProvider = ({ children }: { children: ReactNode }): ReactElement => 
     if (safeTx.data.nonce === finalNonce && safeTx.data.safeTxGas === finalSafeTxGas) return
 
     createTx({ ...safeTx.data, safeTxGas: String(finalSafeTxGas) }, finalNonce)
-      .then(setSafeTx)
+      .then((tx) => {
+        console.log('SafeTxProvider: Updated tx with nonce and safeTxGas', tx)
+        setSafeTx(tx)
+      })
       .catch(setSafeTxError)
   }, [isSigned, finalNonce, finalSafeTxGas, safeTx?.data])
 

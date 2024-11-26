@@ -38,15 +38,33 @@ const RecoverySteps = [
 export function UpsertRecoveryFlowIntro({ onSubmit }: { onSubmit: () => void }): ReactElement {
   return (
     <TxCard>
-      <Grid container display="flex" gap={4} className={css.connector}>
+      <Grid
+        container
+        className={css.connector}
+        sx={{
+          display: 'flex',
+          gap: 4,
+        }}
+      >
         {RecoverySteps.map(({ Icon, title, subtitle }, index) => (
           <Grid item xs={12} key={index}>
-            <Grid container display="flex" gap={3}>
+            <Grid
+              container
+              sx={{
+                display: 'flex',
+                gap: 3,
+              }}
+            >
               <Grid item className={css.icon}>
                 <Icon />
               </Grid>
               <Grid item xs>
-                <Typography variant="h5" mb={0.5}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    mb: 0.5,
+                  }}
+                >
                   {title}
                 </Typography>
                 <Typography variant="body2">{subtitle}</Typography>
@@ -55,9 +73,7 @@ export function UpsertRecoveryFlowIntro({ onSubmit }: { onSubmit: () => void }):
           </Grid>
         ))}
       </Grid>
-
       <Divider className={commonCss.nestedDivider} />
-
       <CardActions sx={{ mt: 'var(--space-1) !important' }}>
         <Button data-testid="next-btn" variant="contained" onClick={onSubmit}>
           Next

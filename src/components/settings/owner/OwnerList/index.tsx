@@ -19,11 +19,6 @@ import type { AddressBook } from '@/store/addressBookSlice'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 
-const headCells = [
-  { id: 'owner', label: 'Name' },
-  { id: 'actions', label: '', sticky: true },
-]
-
 export const OwnerList = () => {
   const addressBook = useAddressBook()
   const { safe } = useSafeInfo()
@@ -95,23 +90,46 @@ export const OwnerList = () => {
   }, [safe.owners, safe.chainId, addressBook, setTxFlow])
 
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+      }}
+    >
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
-          <Typography variant="h4" fontWeight={700}>
-            Manage Safe Account signers
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+            }}
+          >
+            Members
           </Typography>
         </Grid>
 
         <Grid item xs>
+          <Typography
+            fontWeight="bold"
+            sx={{
+              mb: 2,
+            }}
+          >
+            Signers
+          </Typography>
           <Typography mb={2}>
-            Add, remove and replace or rename existing signers. Signer names are only stored locally and will never be
-            shared with us or any third parties.
+            Signers have full control over the account, they can propose, sign and execute transactions, as well as
+            reject them.
           </Typography>
 
-          <EnhancedTable rows={rows} headCells={headCells} />
-
-          <Box pt={2} display="flex" justifyContent="space-between">
+          <Box
+            sx={{
+              pt: 2,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <CheckWallet>
               {(isOk) => (
                 <Track {...SETTINGS_EVENTS.SETUP.ADD_OWNER}>
@@ -121,17 +139,20 @@ export const OwnerList = () => {
                     variant="text"
                     startIcon={<SvgIcon component={AddIcon} inheritViewBox fontSize="small" />}
                     disabled={!isOk}
+                    size="compact"
                   >
-                    Add new signer
+                    Add signer
                   </Button>
                 </Track>
               )}
             </CheckWallet>
 
-            <Button variant="text" onClick={() => exportOwners(safe, addressBook)}>
+            <Button variant="text" onClick={() => exportOwners(safe, addressBook)} size="compact">
               Export as CSV
             </Button>
           </Box>
+
+          <EnhancedTable rows={rows} headCells={[]} />
         </Grid>
       </Grid>
     </Box>

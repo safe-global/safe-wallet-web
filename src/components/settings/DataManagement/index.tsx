@@ -74,7 +74,12 @@ const DataManagement = () => {
       <Paper sx={{ p: 4, mb: 2 }}>
         <Grid container spacing={3}>
           <Grid item sm={4} xs={12}>
-            <Typography variant="h4" fontWeight={700}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+              }}
+            >
               Data export
             </Typography>
           </Grid>
@@ -105,11 +110,15 @@ const DataManagement = () => {
           </Grid>
         </Grid>
       </Paper>
-
       <Paper sx={{ p: 4 }}>
         <Grid container spacing={3}>
           <Grid item sm={4} xs={12}>
-            <Typography variant="h4" fontWeight={700}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+              }}
+            >
               Data import
             </Typography>
           </Grid>

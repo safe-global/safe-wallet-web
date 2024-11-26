@@ -1,3 +1,4 @@
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import { Alert, Button, Paper, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import type { ReactElement } from 'react'
@@ -34,6 +35,7 @@ export type TxSimulationProps = {
 const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }: TxSimulationProps): ReactElement => {
   const { safe } = useSafeInfo()
   const wallet = useWallet()
+  const isSafeOwner = useIsSafeOwner()
   const isDarkMode = useDarkMode()
   const { safeTx } = useContext(SafeTxContext)
   const {
@@ -48,7 +50,8 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
 
     simulateTransaction({
       safe,
-      executionOwner: executionOwner ?? wallet.address,
+      // fall back to the first owner of the safe in case the transaction is created by a proposer
+      executionOwner: (executionOwner ?? isSafeOwner) ? wallet.address : safe.owners[0].value,
       transactions,
       gasLimit,
     } as SimulationTxParams)
@@ -62,7 +65,12 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
   return (
     <Paper variant="outlined" className={sharedCss.wrapper}>
       <div className={css.wrapper}>
-        <Typography variant="body2" fontWeight={700}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           Run a simulation
           <Tooltip
             title="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
@@ -93,7 +101,6 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
           />
         </Typography>
       </div>
-
       <div className={sharedCss.result}>
         {isLoading ? (
           <CircularProgress
@@ -104,12 +111,25 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
           />
         ) : isFinished ? (
           !isSuccess || isError || isCallTraceError ? (
-            <Typography variant="body2" color="error.main" className={sharedCss.result}>
+            <Typography
+              variant="body2"
+              className={sharedCss.result}
+              sx={{
+                color: 'error.main',
+              }}
+            >
               <SvgIcon component={CloseIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
               Error
             </Typography>
           ) : (
-            <Typography variant="body2" color="success.main" className={sharedCss.result}>
+            <Typography
+              data-testid="simulation-success-msg"
+              variant="body2"
+              className={sharedCss.result}
+              sx={{
+                color: 'success.main',
+              }}
+            >
               <SvgIcon component={CheckIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', mr: 1 }} />
               Success
             </Typography>
@@ -117,6 +137,7 @@ const TxSimulationBlock = ({ transactions, disabled, gasLimit, executionOwner }:
         ) : (
           <Track {...MODALS_EVENTS.SIMULATE_TX}>
             <Button
+              data-testid="simulate-btn"
               variant="outlined"
               size="small"
               className={css.simulate}
@@ -156,7 +177,12 @@ export const TxSimulationMessage = () => {
   if (!isSuccess || isError || isCallTraceError) {
     return (
       <Alert severity="error" sx={{ border: 'unset' }}>
-        <Typography variant="body2" fontWeight={700}>
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           Simulation failed
         </Typography>
         {requestError ? (
@@ -183,7 +209,12 @@ export const TxSimulationMessage = () => {
 
   return (
     <Alert severity="info" sx={{ border: 'unset' }}>
-      <Typography variant="body2" fontWeight={700}>
+      <Typography
+        variant="body2"
+        sx={{
+          fontWeight: 700,
+        }}
+      >
         Simulation successful
       </Typography>
       Full simulation report is available <ExternalLink href={simulationLink}>on Tenderly</ExternalLink>.

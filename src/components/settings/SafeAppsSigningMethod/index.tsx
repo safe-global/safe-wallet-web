@@ -19,13 +19,23 @@ export const SafeAppsSigningMethod = () => {
     <Paper sx={{ padding: 4, mt: 2 }}>
       <Grid container spacing={3}>
         <Grid item lg={4} xs={12}>
-          <Typography variant="h4" fontWeight="bold" mb={1}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 'bold',
+              mb: 1,
+            }}
+          >
             Signing method
           </Typography>
         </Grid>
 
         <Grid item xs>
-          <Typography mb={2}>
+          <Typography
+            sx={{
+              mb: 2,
+            }}
+          >
             This setting determines how the {'Safe{Wallet}'} will sign message requests from Safe Apps. Gasless,
             off-chain signing is used by default. Learn more about message signing{' '}
             <ExternalLink href={HelpCenterArticle.SIGNED_MESSAGES}>here</ExternalLink>.
