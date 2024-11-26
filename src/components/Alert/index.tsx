@@ -25,7 +25,9 @@ const icons = {
 }
 
 const getAlertIcon = (type: AlertType, iconName?: IconName, displayIcon?: boolean): ReactElement | null => {
-  if (!displayIcon) return null
+  if (!displayIcon) {
+    return null
+  }
 
   return iconName ? <SafeFontIcon name={iconName} /> : icons[type]
 }

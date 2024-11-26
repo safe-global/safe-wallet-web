@@ -20,7 +20,9 @@ const getChainsConfigs = async (
 
   const nextResults = [...results, ...data.results]
 
-  if (data.next) return getChainsConfigs(url, nextResults)
+  if (data.next) {
+    return getChainsConfigs(url, nextResults)
+  }
 
   return chainsAdapter.setAll(initialState, nextResults)
 }

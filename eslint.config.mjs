@@ -26,6 +26,7 @@ export default [
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-invalid-void-type': 'off',
       '@typescript-eslint/consistent-type-definitions': 'off',
+      curly: 'error',
     },
   },
 ]

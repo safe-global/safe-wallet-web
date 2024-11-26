@@ -17,13 +17,17 @@ function TxHistory() {
   })
 
   useEffect(() => {
-    if (!data?.results) return
+    if (!data?.results) {
+      return
+    }
 
     setList((prev) => [...prev, ...data.results])
   }, [data])
 
   const onEndReached = () => {
-    if (!data?.next) return
+    if (!data?.next) {
+      return
+    }
 
     setPageUrl(data.next)
     refetch()
