@@ -16,7 +16,7 @@ export const VESTING_URL =
     : 'https://safe-claiming-app-data.staging.5afe.dev/allocations/'
 
 export type VestingData = {
-  tag: 'user' | 'ecosystem' | 'investor' | 'user_v2' // SEP #5
+  tag: 'user' | 'ecosystem' | 'investor' | 'user_v2' | 'sap_boosted' | 'sap_unboosted' // SEP #5
   account: string
   chainId: number
   contract: string

@@ -1,6 +1,8 @@
+import UnreadBadge from '@/components/common/UnreadBadge'
 import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES, SAFE_LOCKING_ADDRESS } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
+import type { Vesting } from '@/hooks/useSafeTokenAllocation'
 import useSafeTokenAllocation, { useSafeVotingPower } from '@/hooks/useSafeTokenAllocation'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 import { formatVisualAmount } from '@/utils/formatters'
@@ -20,10 +22,18 @@ import { formatAmount } from '@/utils/formatNumber'
 
 const TOKEN_DECIMALS = 18
 
-export const useSafeTokenAddress = () => {
-  const chainId = useChainId()
-  return getSafeTokenAddress(chainId)
+const canRedeemSAPUnboostedAllocation = (allocation?: Vesting[]): boolean => {
+  const sapUnboostedAllocation = allocation?.find(({ tag }) => tag === 'sap_unboosted')
+
+  if (!sapUnboostedAllocation) {
+    return false
+  }
+
+  return !sapUnboostedAllocation.isRedeemed && !sapUnboostedAllocation.isExpired
 }
+
+// TODO: Replace with actual date once contracts are deployed
+const SAP_REDEEM_DEADLINE = '31.12.2025'
 
 export const getSafeTokenAddress = (chainId: string): string | undefined => {
   return SAFE_TOKEN_ADDRESSES[chainId]
@@ -61,10 +71,19 @@ const SafeTokenWidget = () => {
   }
 
   const flooredSafeBalance = formatVisualAmount(allocation || BigInt(0), TOKEN_DECIMALS, 0)
+  const canRedeemSAPUnboosted = canRedeemSAPUnboostedAllocation(allocationData)
 
   return (
     <Box className={css.container}>
-      <Tooltip title="Go to Safe{DAO} Governance">
+      <Tooltip
+        title={
+          url
+            ? canRedeemSAPUnboosted
+              ? `Redeem your allocation before ${SAP_REDEEM_DEADLINE} to be eligible!`
+              : 'Go to Safe{DAO} Governance'
+            : ''
+        }
+      >
         <span>
           <Track {...OVERVIEW_EVENTS.SAFE_TOKEN_WIDGET}>
             <Link href={url} passHref legacyBehavior>
@@ -73,17 +92,23 @@ const SafeTokenWidget = () => {
                 <Typography
                   component="div"
                   variant="body2"
+                  lineHeight={1}
                   // Badge does not accept className so must be here
                   className={css.allocationBadge}
-                  sx={{
-                    lineHeight: '20px',
-                  }}
                 >
-                  {allocationDataLoading || allocationLoading ? (
-                    <Skeleton width="16px" animation="wave" />
-                  ) : (
-                    flooredSafeBalance
-                  )}
+                  <UnreadBadge
+                    invisible={!canRedeemSAPUnboosted}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                  >
+                    {allocationDataLoading || allocationLoading ? (
+                      <Skeleton width="16px" animation="wave" />
+                    ) : (
+                      flooredSafeBalance
+                    )}
+                  </UnreadBadge>
                 </Typography>
 
                 <Divider orientation="vertical" />
