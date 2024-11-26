@@ -2212,7 +2212,17 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SafeOverview"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -5187,6 +5197,44 @@
         "required": [
           "currentNonce",
           "recommendedNonce"
+        ]
+      },
+      "SafeOverview": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/AddressInfo"
+          },
+          "chainId": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "number"
+          },
+          "owners": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fiatTotal": {
+            "type": "string"
+          },
+          "queued": {
+            "type": "number"
+          },
+          "awaitingConfirmation": {
+            "type": "number",
+            "nullable": true
+          }
+        },
+        "required": [
+          "address",
+          "chainId",
+          "threshold",
+          "owners",
+          "fiatTotal",
+          "queued"
         ]
       },
       "Submission": {

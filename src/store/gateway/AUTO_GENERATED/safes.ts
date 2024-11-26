@@ -41,7 +41,7 @@ export type SafesGetNoncesV1ApiArg = {
   chainId: string
   safeAddress: string
 }
-export type SafesGetSafeOverviewV1ApiResponse = unknown
+export type SafesGetSafeOverviewV1ApiResponse = /** status 200  */ SafeOverview[]
 export type SafesGetSafeOverviewV1ApiArg = {
   currency: string
   safes: string
@@ -74,5 +74,14 @@ export type SafeState = {
 export type SafeNonces = {
   currentNonce: number
   recommendedNonce: number
+}
+export type SafeOverview = {
+  address: AddressInfo
+  chainId: string
+  threshold: number
+  owners: string[]
+  fiatTotal: string
+  queued: number
+  awaitingConfirmation?: number | null
 }
 export const { useSafesGetSafeV1Query, useSafesGetNoncesV1Query, useSafesGetSafeOverviewV1Query } = injectedRtkApi
