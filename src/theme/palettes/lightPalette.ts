@@ -53,9 +53,9 @@ const lightPalette = {
     contrastText: '#FF8C00',
   },
   background: {
-    default: '#F4F4F4',
-    main: '#F4F4F4',
-    paper: '#FFFFFF',
+    default: '#FFFFFF',
+    main: '#FFFFFF',
+    paper: '#F4F4F4',
     light: '#EFFFF4',
   },
   backdrop: {

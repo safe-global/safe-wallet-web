@@ -16,9 +16,7 @@ const activeChainSlice = createSlice({
 
 export const { switchActiveChain } = activeChainSlice.actions
 
-export const selectActiveChain = (state: RootState) => {
-  return selectChainById(state, state.activeChain.id)
-}
-export const selectNativeCurrency = createSelector([selectActiveChain], ({ nativeCurrency }) => nativeCurrency)
+export const selectActiveChain = (state: RootState) => selectChainById(state, state.activeChain.id)
+export const selectNativeCurrency = createSelector([selectActiveChain], (activeChain) => activeChain?.nativeCurrency)
 
 export default activeChainSlice.reducer

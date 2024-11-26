@@ -1,18 +1,15 @@
 import { Tabs } from 'expo-router'
 import React from 'react'
 import { TabBarIcon } from '@/src/components/navigation/TabBarIcon'
+import { LayoutHeader } from '.'
 
 export default function TabLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-      }}
-    >
+    <Tabs>
       <Tabs.Screen
         name="index"
         options={{
+          header: LayoutHeader,
           title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon name={'wallet'} color={color} />,
         }}
@@ -22,6 +19,7 @@ export default function TabLayout() {
         name="transactions"
         options={{
           title: 'Transactions',
+          headerShown: false,
           tabBarButtonTestID: 'transactions',
           tabBarIcon: ({ color }) => <TabBarIcon name={'transactions'} color={color} />,
         }}

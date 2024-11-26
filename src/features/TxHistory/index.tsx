@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 import { useGetTxsHistoryQuery } from '../../store/gateway'
 import type { TransactionItemPage } from '../../store/gateway/AUTO_GENERATED/transactions'
+import { safelyDecodeURIComponent } from 'expo-router/build/fork/getStateFromPath-forks'
 
 function TxHistory() {
   const [pageUrl, setPageUrl] = useState<string>()
@@ -12,7 +13,7 @@ function TxHistory() {
   const { data, refetch, isFetching, isUninitialized } = useGetTxsHistoryQuery({
     chainId: activeSafe.chainId,
     safeAddress: activeSafe.address,
-    cursor: pageUrl,
+    cursor: pageUrl && safelyDecodeURIComponent(pageUrl?.split('cursor=')[1]),
   })
 
   useEffect(() => {

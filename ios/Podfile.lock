@@ -15,8 +15,6 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (14.0.1):
     - ExpoModulesCore
-  - ExpoLinearGradient (14.0.1):
-    - ExpoModulesCore
   - ExpoLinking (7.0.2):
     - ExpoModulesCore
   - ExpoModulesCore (2.0.3):
@@ -1289,6 +1287,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-blur (4.4.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-mmkv (3.1.0):
     - DoubleConversion
     - glog
@@ -1980,7 +1999,6 @@ DEPENDENCIES:
   - ExpoFont (from `../node_modules/expo-font/ios`)
   - ExpoHead (from `../node_modules/expo-router/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
-  - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
@@ -2021,6 +2039,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -2083,8 +2102,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-router/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
-  ExpoLinearGradient:
-    :path: "../node_modules/expo-linear-gradient/ios"
   ExpoLinking:
     :path: "../node_modules/expo-linking/ios"
   ExpoModulesCore:
@@ -2162,6 +2179,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-blur:
+    :path: "../node_modules/@react-native-community/blur"
   react-native-mmkv:
     :path: "../node_modules/react-native-mmkv"
   react-native-pager-view:
@@ -2249,7 +2268,6 @@ SPEC CHECKSUMS:
   ExpoFont: 7522d869d84ee2ee8093ee997fef5b86f85d856b
   ExpoHead: e18c3b28f8e22de7e1f26c085c346a91ea7f459b
   ExpoKeepAwake: 783e68647b969b210a786047c3daa7b753dcac1f
-  ExpoLinearGradient: 7ca3b1d1625a1ab85c129abce4a3cdc78a9500a3
   ExpoLinking: 05ab69d3b5b1b0600d6a1a043d8d1ea3bb61a71a
   ExpoModulesCore: f12deb734bfa4efc1f1783eafc324c933a985a48
   ExpoSplashScreen: a1c1b3a9648ab738be13fb109c42a85b32e08e5a
@@ -2288,6 +2306,7 @@ SPEC CHECKSUMS:
   React-logger: 81d58ca6f1d93fca9a770bda6cc1c4fbfcc99c9c
   React-Mapbuffer: 726951e68f4bb1c2513d322f2548798b2a3d628d
   React-microtasksnativemodule: 7a69a9b8fded72ea3cf81923ecf75cad5558ed26
+  react-native-blur: 28b0a731ed804bed3e88757c2414305896e6b47e
   react-native-mmkv: bb0824bed68c01f7cc681eefa58059097bdaa796
   react-native-pager-view: 94195f1bf32e7f78359fa20057c97e632364a08b
   react-native-safe-area-context: 458f6b948437afcb59198016b26bbd02ff9c3b47

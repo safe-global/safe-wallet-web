@@ -26,7 +26,7 @@ export const StyledTransactionTabText = styled(Text, {
         fontSize: '$5',
       },
       false: {
-        color: '$primaryLight',
+        color: '$colorSecondary',
         fontWeight: 600,
         fontSize: '$5',
       },
