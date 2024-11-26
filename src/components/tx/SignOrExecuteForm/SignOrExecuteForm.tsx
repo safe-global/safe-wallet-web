@@ -69,8 +69,8 @@ const trackTxEvents = (
   const isNestedConfirmation = !!details && isNestedConfirmationTxInfo(details.txInfo)
 
   const creationEvent = getCreationEvent({ isParentSigner, isRoleExecution, isProposerCreation })
-  const confirmationEvent = getConfirmationEvent(isNestedConfirmation)
-  const executionEvent = getExecutionEvent({ isNestedConfirmation, isRoleExecution })
+  const confirmationEvent = getConfirmationEvent({ isParentSigner, isNestedConfirmation })
+  const executionEvent = getExecutionEvent({ isParentSigner, isNestedConfirmation, isRoleExecution })
 
   const event = (() => {
     if (isCreation) {

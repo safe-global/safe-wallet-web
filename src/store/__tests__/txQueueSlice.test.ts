@@ -81,7 +81,7 @@ describe('txQueueSlice', () => {
           safeAddress: '0x0000000000000000000000000000000000000000',
           status: PendingStatus.NESTED_SIGNING,
           signerAddress: '0x456',
-          signingSafeTxHash: faker.string.hexadecimal({ length: 64 }),
+          txHashOrParentSafeTxHash: faker.string.hexadecimal({ length: 64 }),
         },
       } as PendingTxsState,
     } as RootState
