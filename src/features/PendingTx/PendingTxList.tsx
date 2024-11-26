@@ -2,7 +2,7 @@ import SafeListItem from '@/src/components/SafeListItem'
 import React from 'react'
 import { SectionList } from 'react-native'
 import { Spinner, View } from 'tamagui'
-import CircularBadge from '@/src/components/CircularBadge'
+import Badge from '../../components/Badge'
 import { NavBarTitle } from '@/src/components/Title/NavBarTitle'
 import { LargeHeaderTitle } from '@/src/components/Title/LargeHeaderTitle'
 import { useScrollableHeader } from '@/src/navigation/useScrollableHeader'
@@ -28,7 +28,7 @@ function PendingTxList({ transactions, onEndReached, isLoading, hasMore, amount 
     children: (
       <>
         <NavBarTitle paddingRight={5}>Pending Transactions</NavBarTitle>
-        <CircularBadge content={`${amount}${hasMore ? '+' : ''}`} circleSize={'$6'} fontSize={10} />
+        <Badge content={`${amount}${hasMore ? '+' : ''}`} circleSize={'$6'} fontSize={10} />
       </>
     ),
   })
@@ -40,7 +40,7 @@ function PendingTxList({ transactions, onEndReached, isLoading, hasMore, amount 
       {isLoading ? (
         <Spinner size="large" color="$warning1ContrastTextDark" />
       ) : (
-        <CircularBadge content={`${amount}${hasMore ? '+' : ''}`} />
+        <Badge content={`${amount}${hasMore ? '+' : ''}`} />
       )}
     </View>
   )

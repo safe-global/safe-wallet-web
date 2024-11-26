@@ -12,7 +12,6 @@ if (isWeb) {
     stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
     addons: [
       '@storybook/addon-essentials',
-      '@chromatic-com/storybook',
       '@storybook/addon-interactions',
       {
         name: '@storybook/addon-react-native-web',

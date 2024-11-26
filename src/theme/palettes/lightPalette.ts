@@ -57,6 +57,7 @@ const lightPalette = {
     main: '#FFFFFF',
     paper: '#F4F4F4',
     light: '#EFFFF4',
+    skeleton: 'rgba(255, 255, 255, 0.04)',
   },
   backdrop: {
     main: '#636669',

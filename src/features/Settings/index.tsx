@@ -1,38 +1,148 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setActiveSafe } from '../../store/activeSafeSlice' // You'll need to create this action
-import { selectActiveChain } from '@/src/store/activeChainSlice'
-import { View, Text, Input } from 'tamagui'
-import { TouchableOpacity } from 'react-native'
+import React, { useEffect } from 'react'
+import { H2, ScrollView, Text, View, XStack, YStack } from 'tamagui'
+import { SafeFontIcon as Icon } from '@/src/components/SafeFontIcon/SafeFontIcon'
+import SafeListItem from '@/src/components/SafeListItem'
+import { useGetSafeQuery } from '@/src/store/gateway'
+import { Skeleton } from 'moti/skeleton'
+import { Pressable } from 'react-native'
+import { EthAddress } from '@/src/components/EthAddress'
+import { SafeState } from '@/src/store/gateway/AUTO_GENERATED/safes'
+import { Address } from '@/src/types/address'
+import { router, useNavigation } from 'expo-router'
+import { IdenticonWithBadge } from '@/src/features/Settings/components/IdenticonWithBadge'
+import { useSelector } from 'react-redux'
+import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 
-export const SafeAddressInput = () => {
-  const dispatch = useDispatch()
-  const activeChain = useSelector(selectActiveChain)
-  const [safeAddress, setSafeAddress] = useState('')
+export const Settings = () => {
+  const navigation = useNavigation()
+  const { chainId, address } = useSelector(selectActiveSafe)
+  const { data = {} as SafeState } = useGetSafeQuery({
+    chainId: chainId,
+    safeAddress: address,
+  })
 
-  const handleSubmit = () => {
-    dispatch(
-      setActiveSafe({
-        chainId: activeChain.chainId,
-        address: safeAddress,
-      }),
-    )
-  }
+  useEffect(() => {
+    navigation.setParams({
+      safeAddress: address,
+    })
+  }, [address])
+
+  const { owners = [], threshold, implementation } = data
 
   return (
-    <View padding="$3">
-      <Input
-        value={safeAddress}
-        onChangeText={setSafeAddress}
-        placeholder="Enter Safe Address"
-        placeholderTextColor="#666"
-        fontSize={20}
-        height={30}
-        marginVertical={10}
-      />
-      <TouchableOpacity onPress={handleSubmit}>
-        <Text>Set Safe Address</Text>
-      </TouchableOpacity>
-    </View>
+    <ScrollView>
+      <YStack flex={1} padding="$4" paddingTop={'$10'}>
+        <Skeleton.Group show={!owners.length}>
+          <YStack alignItems="center" space="$3" marginBottom="$6">
+            <IdenticonWithBadge address={address} badgeContent={owners.length ? `${threshold}/${owners.length}` : ''} />
+            <H2 color="$foreground" fontWeight={600}>
+              My DAO
+            </H2>
+            <View>
+              <EthAddress
+                address={address as Address}
+                copy
+                textProps={{
+                  color: '$colorSecondary',
+                }}
+              />
+            </View>
+
+            <View>
+              <Skeleton>
+                <Text color="$primary">saaafe.xyz</Text>
+              </Skeleton>
+            </View>
+          </YStack>
+
+          <XStack justifyContent="center" marginBottom="$6">
+            <YStack
+              alignItems="center"
+              backgroundColor={'$background'}
+              padding={'$2'}
+              borderRadius={'$6'}
+              width={80}
+              marginRight={'$2'}
+            >
+              <View width={30}>
+                <Skeleton>
+                  <Text fontWeight="700" textAlign="center" fontSize={'$4'}>
+                    {owners.length}
+                  </Text>
+                </Skeleton>
+              </View>
+              <Text color="$colorHover" fontSize={'$3'}>
+                Signers
+              </Text>
+            </YStack>
+
+            <YStack alignItems="center" backgroundColor={'$background'} padding={'$2'} borderRadius={'$6'} width={80}>
+              <View width={30}>
+                <Skeleton>
+                  <Text fontWeight="bold" textAlign="center" fontSize={'$4'}>
+                    {threshold}/{owners.length}
+                  </Text>
+                </Skeleton>
+              </View>
+              <Text color="$colorHover" fontSize={'$3'}>
+                Threshold
+              </Text>
+            </YStack>
+          </XStack>
+
+          <YStack space="$4">
+            <View backgroundColor="$backgroundDark" padding="$4" borderRadius="$3" gap={'$2'}>
+              <Text color="$foreground">Members</Text>
+              <Pressable
+                style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }]}
+                onPress={() => {
+                  router.push('/signers')
+                }}
+              >
+                <SafeListItem
+                  label={'Signers'}
+                  leftNode={<Icon name={'owners'} />}
+                  rightNode={
+                    <View flexDirection={'row'} alignItems={'center'} justifyContent={'center'}>
+                      <Skeleton height={17}>
+                        <Text minWidth={15} marginRight={'$3'}>
+                          {owners.length}
+                        </Text>
+                      </Skeleton>
+                      <View>
+                        <Icon name={'arrow-right'} />
+                      </View>
+                    </View>
+                  }
+                />
+              </Pressable>
+            </View>
+
+            <View backgroundColor="$backgroundDark" padding="$4" borderRadius="$3" gap={'$2'}>
+              <Text color="$foreground">General</Text>
+              <View backgroundColor={'$background'} borderRadius={'$3'}>
+                <Pressable
+                  style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }]}
+                  onPress={() => {
+                    router.push('/notifications')
+                  }}
+                >
+                  <SafeListItem
+                    label={'Notifications'}
+                    leftNode={<Icon name={'bell'} />}
+                    rightNode={<Icon name={'arrow-right'} />}
+                  />
+                </Pressable>
+              </View>
+            </View>
+          </YStack>
+        </Skeleton.Group>
+
+        {/* Footer */}
+        <Text textAlign="center" color="$colorSecondary" marginTop="$8">
+          {implementation?.name}
+        </Text>
+      </YStack>
+    </ScrollView>
   )
 }
