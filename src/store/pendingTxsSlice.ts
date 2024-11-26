@@ -70,7 +70,7 @@ type PendingIndexingTx = PendingTxCommonProps & {
 
 type PendingNestedSigningTx = PendingTxCommonProps & {
   signerAddress: string
-  signingSafeTxHash: string
+  txHashOrParentSafeTxHash: string
   status: PendingStatus.NESTED_SIGNING
 }
 

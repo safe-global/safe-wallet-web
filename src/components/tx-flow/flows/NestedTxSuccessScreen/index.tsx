@@ -14,6 +14,9 @@ import { useAppSelector } from '@/store'
 import ExternalLink from '@/components/common/ExternalLink'
 import { MODALS_EVENTS } from '@/services/analytics'
 import Track from '@/components/common/Track'
+import useAsync from '@/hooks/useAsync'
+import { getSafeTransaction } from '@/utils/transactions'
+import { isMultisigDetailedExecutionInfo } from '@/utils/transaction-guards'
 
 type Props = {
   txId: string
@@ -29,6 +32,21 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
       setCachedPendingTx(_pendingTx)
     }
   }, [_pendingTx])
+
+  const [safeTx] = useAsync(() => {
+    if (cachedPendingTx?.status == PendingStatus.NESTED_SIGNING) {
+      return getSafeTransaction(
+        cachedPendingTx.txHashOrParentSafeTxHash,
+        cachedPendingTx.chainId,
+        cachedPendingTx.signerAddress,
+      )
+    }
+  }, [cachedPendingTx])
+  const isSafeTxHash =
+    cachedPendingTx?.status == PendingStatus.NESTED_SIGNING &&
+    !!safeTx &&
+    isMultisigDetailedExecutionInfo(safeTx.detailedExecutionInfo) &&
+    safeTx.detailedExecutionInfo.safeTxHash === cachedPendingTx.txHashOrParentSafeTxHash
 
   if (cachedPendingTx?.status !== PendingStatus.NESTED_SIGNING) {
     return <ErrorMessage>No transaction data found</ErrorMessage>
@@ -101,14 +119,24 @@ const NestedTxSuccessScreen = ({ txId }: Props) => {
         </Stack>
         <Track {...MODALS_EVENTS.OPEN_PARENT_TX}>
           <Link
-            href={{
-              pathname: AppRoutes.transactions.tx,
-              query: {
-                safe: cachedPendingTx.signerAddress,
-                chainId: cachedPendingTx.chainId,
-                id: cachedPendingTx.signingSafeTxHash,
-              },
-            }}
+            href={
+              isSafeTxHash
+                ? {
+                    pathname: AppRoutes.transactions.tx,
+                    query: {
+                      safe: cachedPendingTx.signerAddress,
+                      chainId: cachedPendingTx.chainId,
+                      id: cachedPendingTx.txHashOrParentSafeTxHash,
+                    },
+                  }
+                : {
+                    pathname: AppRoutes.transactions.queue,
+                    query: {
+                      safe: cachedPendingTx.signerAddress,
+                      chainId: cachedPendingTx.chainId,
+                    },
+                  }
+            }
             passHref
             legacyBehavior
           >

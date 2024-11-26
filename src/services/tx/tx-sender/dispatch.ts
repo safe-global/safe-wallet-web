@@ -148,12 +148,15 @@ export const dispatchOnChainSigning = async (
   const eventParams = { txId, nonce: safeTx.data.nonce }
 
   const options = chainId === chains.zksync ? { gasLimit: ZK_SYNC_ON_CHAIN_SIGNATURE_GAS_LIMIT } : undefined
-  let txResponse: string
+  let txHashOrParentSafeTxHash: string
   try {
     // TODO: This is a workaround until there is a fix for unchecked transactions in the protocol-kit
     const encodedApproveHashTx = await prepareApproveTxHash(safeTxHash, provider)
 
-    txResponse = await provider.request({
+    // Note: SafeWalletProvider returns transaction hash if it exists, otherwise the safeTxHash
+    // If the parent immediately executes, this will be the transaction hash of the approveHash
+    // otherwise the safeTxHash of it
+    txHashOrParentSafeTxHash = await provider.request({
       method: 'eth_sendTransaction',
       params: [{ from: signerAddress, to: safeAddress, data: encodedApproveHashTx, gas: options?.gasLimit }],
     })
@@ -167,8 +170,11 @@ export const dispatchOnChainSigning = async (
   txDispatch(TxEvent.ONCHAIN_SIGNATURE_SUCCESS, eventParams)
 
   if (isNestedSafe) {
-    const parentSafeTxHash = txResponse
-    txDispatch(TxEvent.NESTED_SAFE_TX_CREATED, { ...eventParams, parentSafeAddress: signerAddress, parentSafeTxHash })
+    txDispatch(TxEvent.NESTED_SAFE_TX_CREATED, {
+      ...eventParams,
+      txHashOrParentSafeTxHash,
+      parentSafeAddress: signerAddress,
+    })
   }
 
   // Until the on-chain signature is/has been executed, the safeTx is not

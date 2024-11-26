@@ -39,7 +39,7 @@ interface TxEvents {
   [TxEvent.SIGNATURE_INDEXED]: { txId: string }
   [TxEvent.ONCHAIN_SIGNATURE_REQUESTED]: Id
   [TxEvent.ONCHAIN_SIGNATURE_SUCCESS]: Id
-  [TxEvent.NESTED_SAFE_TX_CREATED]: Id & { parentSafeAddress: string; parentSafeTxHash: string }
+  [TxEvent.NESTED_SAFE_TX_CREATED]: Id & { parentSafeAddress: string; txHashOrParentSafeTxHash: string }
   [TxEvent.EXECUTING]: Id
   [TxEvent.PROCESSING]: Id & {
     txHash: string
