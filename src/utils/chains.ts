@@ -48,6 +48,7 @@ export const FeatureRoutes = {
   [AppRoutes.stake]: FEATURES.STAKING,
   [AppRoutes.balances.nfts]: FEATURES.ERC721,
   [AppRoutes.settings.notifications]: FEATURES.PUSH_NOTIFICATIONS,
+  [AppRoutes.bridge]: FEATURES.BRIDGE,
 }
 
 export const hasFeature = (chain: ChainInfo, feature: FEATURES): boolean => {
