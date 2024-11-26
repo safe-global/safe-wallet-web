@@ -168,7 +168,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
             ) : (
               <>
                 {/* Pinned Accounts */}
-                <Box mb={2} minHeight="170px">
+                <Box data-testid="pinned-accounts" mb={2} minHeight="170px">
                   <div className={css.listHeader}>
                     <SvgIcon
                       component={BookmarkIcon}

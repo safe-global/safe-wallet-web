@@ -181,7 +181,13 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
           </Typography>
         </Link>
       </Track>
-      <IconButton edge="end" size="medium" sx={{ mx: 1 }} onClick={isPinned ? removeFromPinnedList : addToPinnedList}>
+      <IconButton
+        data-testid="bookmark-icon"
+        edge="end"
+        size="medium"
+        sx={{ mx: 1 }}
+        onClick={isPinned ? removeFromPinnedList : addToPinnedList}
+      >
         <SvgIcon
           component={isPinned ? BookmarkedIcon : BookmarkIcon}
           inheritViewBox

@@ -53,6 +53,7 @@ export const addedNetworkOption = 'li[role="option"]'
 const modalAddNetworkName = '[data-testid="added-network"]'
 const networkSeperator = 'div[role="separator"]'
 export const addNetworkTooltip = '[data-testid="add-network-tooltip"]'
+const pinnedAccountsContainer = '[data-testid="pinned-accounts"]'
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
 export const undeployedSafe = 'Undeployed Sepolia'
@@ -87,7 +88,7 @@ const emptyWatchListStr = 'Watch any Safe Account to keep an eye on its activity
 const emptySafeListStr = "You don't have any Safe Accounts yet"
 const myAccountsStr = 'My accounts'
 const confirmTxStr = (number) => `${number} to confirm`
-const pedningTxStr = (n) => `${n} pending transaction`
+const pedningTxStr = (n) => `${n} pending`
 export const confirmGenStr = 'to confirm'
 
 export const multichainSafes = {
@@ -96,7 +97,9 @@ export const multichainSafes = {
 }
 
 export function verifyNumberOfPendingTxTag(tx) {
-  cy.contains(pedningTxStr(tx))
+  cy.get(pinnedAccountsContainer).within(() => {
+    cy.get('span').contains(pedningTxStr(tx))
+  })
 }
 
 export function getImportBtn() {
@@ -464,7 +467,7 @@ export function checkNetworksInRange(expectedString, expectedCount, direction = 
 
   return cy
     .get(startSelector)
-  [traversalMethod](endSelector, 'li')
+    [traversalMethod](endSelector, 'li')
     .then((liElements) => {
       expect(liElements.length).to.equal(expectedCount)
       const optionTexts = [...liElements].map((li) => li.innerText)
