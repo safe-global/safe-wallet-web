@@ -42,7 +42,7 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import NetworkWarning from '../../NetworkWarning'
-import useAllSafes from '@/components/welcome/MyAccounts/useAllSafes'
+import useAllSafes from '@/features/myAccounts/hooks/useAllSafes'
 import { uniq } from 'lodash'
 import { selectRpc } from '@/store/settingsSlice'
 import { AppRoutes } from '@/config/routes'
@@ -521,7 +521,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             size="stretched"
             disabled={isDisabled}
           >
-            {isCreating ? <CircularProgress size={18} /> : 'Create Account'}
+            {isCreating ? <CircularProgress size={18} /> : 'Create account'}
           </Button>
         </Box>
       </Box>

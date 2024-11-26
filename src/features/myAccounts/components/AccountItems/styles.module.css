@@ -1,33 +1,3 @@
-.container {
-  container-type: inline-size;
-  container-name: my-accounts-container;
-  display: flex;
-  justify-content: center;
-}
-
-.myAccounts {
-  width: 100%;
-  max-width: 600px;
-  margin: var(--space-2);
-}
-
-.safeList {
-  padding: var(--space-3);
-  margin-bottom: var(--space-3);
-}
-
-.safeList :last-child {
-  margin-bottom: 0;
-}
-
-.header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: var(--space-3) 0;
-  gap: var(--space-1);
-}
-
 .listItem {
   border: 1px solid var(--color-border-light);
   border-radius: var(--space-1);
@@ -69,6 +39,7 @@
   border-radius: 6px;
   border: 1px solid var(--color-border-light);
 }
+
 .subItem.currentListItem .borderLeft {
   border-left: 4px solid var(--color-secondary-light);
 }
@@ -81,15 +52,16 @@
 .safeLink {
   display: grid;
   padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
-  grid-template-columns: 60px 3fr 3fr minmax(auto, 2fr);
+  grid-template-columns: 60px 10fr 2fr 3fr;
   align-items: center;
 }
 
+.multiSafeLink {
+  grid-template-columns: 60px 8fr 5fr 3fr;
+}
+
 .safeSubLink {
-  display: grid;
-  padding: var(--space-2) var(--space-1) var(--space-2) var(--space-2);
   grid-template-columns: 60px 3fr minmax(auto, 2fr);
-  align-items: center;
 }
 
 .safeName,
@@ -100,52 +72,11 @@
 }
 
 .listHeader {
-  padding-bottom: var(--space-1);
   display: flex;
-  justify-content: space-between;
 }
 
-.listTitle {
-  margin: auto 0;
-}
-
-.card {
-  margin: auto;
-  padding: var(--space-3);
-  display: flex;
-  flex-direction: column;
-  background-color: transparent;
-}
-
-.card :global .MuiCardHeader-root,
-.card :global .MuiCardContent-root {
-  padding: 0;
-}
-
-.cardHeader {
-  text-align: center;
-}
-
-.infoIcon {
-  vertical-align: middle;
-  width: 1rem;
-  height: 1rem;
-  margin: 4px;
-  color: var(--color-text-secondary);
-}
-
-.chip {
-  border-radius: 4px;
-  background-color: var(--color-warning-background);
-  margin-top: 4px;
-}
-
-.pendingAccount {
-  background-color: var(--color-info-light);
-}
-
-.pendingLoopIcon {
-  color: var(--color-info-dark) !important;
+.listHeader svg path {
+  stroke: var(--color-text-primary);
 }
 
 .multiChains {
@@ -165,11 +96,15 @@
   justify-content: flex-end;
 }
 
-@media (max-width: 899.95px) {
-  .container {
-    width: auto;
-  }
+.chipSection {
+  width: 100%;
+}
 
+.chipSection:empty {
+  display: none;
+}
+
+@media (max-width: 899.95px) {
   .safeLink {
     padding-right: 0;
   }
@@ -200,28 +135,8 @@
   .multiChains {
     justify-content: flex-start;
   }
-}
 
-@container my-accounts-container (max-width: 500px) {
-  .myAccounts {
-    margin: 0;
-  }
-
-  .header {
-    padding: var(--space-3);
-    border-bottom: 1px solid var(--color-border-light);
-  }
-
-  .safeList {
-    border-radius: 0;
-    margin-bottom: 0;
-  }
-
-  .title {
-    font-size: 20px;
-  }
-
-  .card {
-    border-top: 1px solid var(--color-border-light);
+  .chainIndicator {
+    justify-content: flex-start;
   }
 }

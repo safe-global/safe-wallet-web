@@ -49,10 +49,24 @@ export const addedSafesSlice = createSlice({
         delete state[chainId]
       }
     },
+    pinSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
+      const { chainId, address } = payload
+      state[chainId] ??= {}
+      state[chainId][address] = state[chainId][address] ?? {}
+    },
+    unpinSafe: (state, { payload }: PayloadAction<{ chainId: string; address: string }>) => {
+      const { chainId, address } = payload
+
+      delete state[chainId]?.[address]
+
+      if (Object.keys(state[chainId]).length === 0) {
+        delete state[chainId]
+      }
+    },
   },
 })
 
-export const { addOrUpdateSafe, removeSafe } = addedSafesSlice.actions
+export const { addOrUpdateSafe, removeSafe, pinSafe, unpinSafe } = addedSafesSlice.actions
 
 export const selectAllAddedSafes = (state: RootState): AddedSafesState => {
   return state[addedSafesSlice.name]
