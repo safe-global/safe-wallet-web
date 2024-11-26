@@ -36,7 +36,7 @@ const getTokenDetails = (txInfo: TransferTransactionInfo): tokenDetails => {
   const unnamedToken = 'Unnamed token'
   const nativeCurrency = useSelector(selectNativeCurrency)
 
-  if (isNativeTokenTransfer(transfer))
+  if (isNativeTokenTransfer(transfer)) {
     return {
       value: formatValue(transfer.value || '0', nativeCurrency.decimals),
       // take it from the native currency slice
@@ -45,6 +45,7 @@ const getTokenDetails = (txInfo: TransferTransactionInfo): tokenDetails => {
       name: nativeCurrency.name,
       logoUri: nativeCurrency.logoUri,
     }
+  }
 
   if (isERC20Transfer(transfer)) {
     return {

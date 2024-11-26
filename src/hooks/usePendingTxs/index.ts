@@ -22,13 +22,17 @@ const usePendingTxs = () => {
   )
 
   useEffect(() => {
-    if (!data?.results) return
+    if (!data?.results) {
+      return
+    }
 
     setList((prev) => [...prev, ...data.results])
   }, [data])
 
   const fetchMoreTx = async () => {
-    if (!data?.next) return
+    if (!data?.next) {
+      return
+    }
 
     setPageUrl(data.next)
 
