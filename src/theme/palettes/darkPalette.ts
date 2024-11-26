@@ -57,6 +57,7 @@ const darkPalette = {
     main: '#121312',
     paper: '#1C1C1C',
     light: '#1B2A22',
+    skeleton: 'rgba(255, 255, 255, 0.04)',
   },
   backdrop: {
     main: '#636669',

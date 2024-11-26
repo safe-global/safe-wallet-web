@@ -1,46 +1,8 @@
-import { radius, zIndex } from '@tamagui/themes'
-import { createTamagui, createTokens } from 'tamagui'
+import { createTamagui } from 'tamagui'
 import { createDmSansFont } from '@tamagui/font-dm-sans'
-import { flattenPalette } from '@/src/theme/helpers/utils'
-import lightPalette from '@/src/theme/palettes/lightPalette'
-import darkPalette from '@/src/theme/palettes/darkPalette'
-
-const colors = {
-  ...flattenPalette(lightPalette, { suffix: 'Light' }),
-  ...flattenPalette(darkPalette, { suffix: 'Dark' }),
-}
-export const tokens = createTokens({
-  color: colors,
-  space: {
-    $1: 4,
-    $2: 8,
-    true: 8,
-    $3: 12,
-    $4: 16,
-    $5: 20,
-    $6: 24,
-    $7: 28,
-    $8: 32,
-    $9: 36,
-    $10: 40,
-  },
-  // space,
-  size: {
-    $1: 4,
-    $2: 8,
-    true: 8,
-    $3: 12,
-    $4: 16,
-    $5: 20,
-    $6: 24,
-    $7: 28,
-    $8: 32,
-    $9: 36,
-    $10: 40,
-  },
-  zIndex,
-  radius,
-})
+import { badgeTheme } from '@/src/components/Badge/theme'
+import { tokens } from '@/src/theme/tokens'
+import { createAnimations } from '@tamagui/animations-moti'
 
 const DmSansFont = createDmSansFont({
   face: {
@@ -63,10 +25,11 @@ export const config = createTamagui({
       backgroundFocus: tokens.color.backgroundMainLight,
       backgroundStrong: tokens.color.primaryDarkLight,
       backgroundTransparent: 'transparent',
+      backgroundSkeleton: tokens.color.backgroundSkeletonLight,
       color: tokens.color.textPrimaryLight,
       primary: tokens.color.primaryMainLight,
-      colorSecondary: tokens.color.primaryLightLight,
       colorHover: tokens.color.textSecondaryLight,
+      colorSecondary: tokens.color.textSecondaryLight,
       borderLight: tokens.color.borderLightLight,
       error: tokens.color.errorMainLight,
       errorDark: tokens.color.errorDarkDark,
@@ -85,27 +48,26 @@ export const config = createTamagui({
       background: tokens.color.infoBackgroundDark,
       color: tokens.color.infoMainDark,
     },
+    ...badgeTheme,
     light_success: {
       background: tokens.color.successBackgroundLight,
       color: tokens.color.successMainLight,
       badgeBackground: tokens.color.successDarkLight,
+      badgeTextColor: tokens.color.backgroundMainDark,
     },
     dark_success: {
       background: tokens.color.successBackgroundDark,
       color: tokens.color.successMainDark,
       badgeBackground: tokens.color.successDarkDark,
     },
+    dark_success_light: {},
     light_warning: {
       background: tokens.color.warning1MainLight,
       color: tokens.color.warning1ContrastTextLight,
-      badgeTextColor: tokens.color.warning1MainLight,
-      badgeBackground: tokens.color.warningBackgroundLight,
     },
     dark_warning: {
       background: tokens.color.warning1MainDark,
       color: tokens.color.warning1ContrastTextDark,
-      badgeBackground: tokens.color.warningDarkDark,
-      badgeTextColor: tokens.color.backgroundDefaultDark,
     },
     light_error: {
       background: tokens.color.error1MainLight,
@@ -138,15 +100,66 @@ export const config = createTamagui({
       backgroundFocus: tokens.color.backgroundMainDark,
       backgroundStrong: tokens.color.primaryDarkDark,
       backgroundTransparent: 'transparent',
+      backgroundSkeleton: tokens.color.backgroundSkeletonLight,
       color: tokens.color.textPrimaryDark,
       primary: tokens.color.primaryMainDark,
-      colorSecondary: tokens.color.primaryLightDark,
       borderLight: tokens.color.borderLightDark,
+      colorHover: tokens.color.textSecondaryDark,
+      colorSecondary: tokens.color.textSecondaryDark,
       error: tokens.color.errorMainDark,
       errorDark: tokens.color.errorDarkDark,
     },
   },
   tokens,
+  animations: createAnimations({
+    fast: {
+      type: 'spring',
+      damping: 20,
+      mass: 1.2,
+      stiffness: 250,
+    },
+    medium: {
+      type: 'spring',
+      damping: 10,
+      mass: 0.9,
+      stiffness: 100,
+    },
+    slow: {
+      type: 'spring',
+      damping: 20,
+      stiffness: 60,
+    },
+    '100ms': {
+      type: 'timing',
+      duration: 100,
+    },
+    '200ms': {
+      type: 'timing',
+      duration: 200,
+    },
+    bouncy: {
+      type: 'spring',
+      damping: 10,
+      mass: 0.9,
+      stiffness: 100,
+    },
+    lazy: {
+      type: 'spring',
+      damping: 20,
+      stiffness: 60,
+    },
+    quick: {
+      type: 'spring',
+      damping: 20,
+      mass: 1.2,
+      stiffness: 250,
+    },
+    tooltip: {
+      damping: 10,
+      mass: 0.9,
+      stiffness: 100,
+    },
+  }),
 })
 
 export type Conf = typeof config

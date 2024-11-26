@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Address } from '@/src/types/address'
 import { RootState } from '.'
 
 interface SafeInfo {
-  address: string
+  address: Address
   chainId: string
 }
 

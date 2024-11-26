@@ -7,8 +7,10 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { isStorybookEnv } from '@/src/config/constants'
 import { apiSliceWithChainsConfig } from '@/src/store/gateway/chains/index'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { PortalProvider } from 'tamagui'
+
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { PortalProvider } from '@tamagui/portal'
+import { SafeToastProvider } from '@/src/theme/provider/toastProvider'
 
 function RootLayout() {
   store.dispatch(apiSliceWithChainsConfig.endpoints.getChainsConfig.initiate())
@@ -20,16 +22,21 @@ function RootLayout() {
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
               <SafeThemeProvider>
-                <Stack
-                  screenOptions={{
-                    headerBackButtonDisplayMode: 'minimal',
-                    headerShadowVisible: false,
-                  }}
-                >
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                  <Stack.Screen name="pending-transactions" options={{ headerShown: true, title: '' }} />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
+                <SafeToastProvider>
+                  <Stack
+                    screenOptions={{
+                      headerBackButtonDisplayMode: 'minimal',
+                      headerShadowVisible: false,
+                    }}
+                  >
+                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    <Stack.Screen name="pending-transactions" options={{ headerShown: true, title: '' }} />
+                    <Stack.Screen name="signers" options={{ headerShown: true, title: 'Signers' }} />
+                    <Stack.Screen name="notifications" options={{ headerShown: true, title: 'Notifications' }} />
+                    <Stack.Screen name="app-settings" options={{ headerShown: true, title: 'Settings' }} />
+                    <Stack.Screen name="+not-found" />
+                  </Stack>
+                </SafeToastProvider>
               </SafeThemeProvider>
             </PersistGate>
           </Provider>

@@ -5,6 +5,7 @@ import { IconProps, SafeFontIcon } from '../SafeFontIcon/SafeFontIcon'
 import { ellipsis } from '@/src/utils/formatters'
 import { isMultisigExecutionInfo } from '@/src/utils/transaction-guards'
 import { Transaction } from '@/src/store/gateway/AUTO_GENERATED/transactions'
+import Badge from '../Badge'
 
 interface SafeListItemProps {
   type?: string
@@ -69,27 +70,23 @@ function SafeListItem({
 
       {inQueue && executionInfo && isMultisigExecutionInfo(executionInfo) ? (
         <View alignItems="center" flexDirection="row">
-          <Theme
-            name={
-              executionInfo?.confirmationsRequired === executionInfo?.confirmationsSubmitted ? 'success' : 'warning'
-            }
-          >
-            <View
-              alignItems="center"
-              flexDirection="row"
-              backgroundColor="$badgeBackground"
-              paddingVertical="$1"
-              paddingHorizontal="$3"
-              gap="$1"
-              borderRadius={50}
-            >
-              <SafeFontIcon size={12} name="owners" />
+          <Badge
+            circular={false}
+            content={
+              <View alignItems="center" flexDirection="row" gap="$1">
+                <SafeFontIcon size={12} name="owners" />
 
-              <Text fontWeight={600}>
-                {executionInfo?.confirmationsSubmitted}/{executionInfo?.confirmationsRequired}
-              </Text>
-            </View>
-          </Theme>
+                <Text fontWeight={600} color={'$color'}>
+                  {executionInfo?.confirmationsSubmitted}/{executionInfo?.confirmationsRequired}
+                </Text>
+              </View>
+            }
+            themeName={
+              executionInfo?.confirmationsRequired === executionInfo?.confirmationsSubmitted
+                ? 'badge_success_variant1'
+                : 'badge_warning_variant1'
+            }
+          />
 
           <SafeFontIcon name="arrow-right" />
         </View>
