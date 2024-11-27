@@ -168,7 +168,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
             ) : (
               <>
                 {/* Pinned Accounts */}
-                <Box mb={2} minHeight="170px">
+                <Box data-testid="pinned-accounts" mb={2} minHeight="170px">
                   <div className={css.listHeader}>
                     <SvgIcon
                       component={BookmarkIcon}
@@ -183,7 +183,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                   {pinnedSafes.length > 0 ? (
                     <SafesList safes={pinnedSafes} onLinkClick={onLinkClick} />
                   ) : (
-                    <Box className={css.noPinnedSafesMessage}>
+                    <Box data-testid="empty-pinned-list" className={css.noPinnedSafesMessage}>
                       <Typography color="text.secondary" variant="body2" maxWidth="350px" textAlign="center">
                         Personalize your account list by clicking the
                         <SvgIcon
@@ -233,6 +233,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                       </Box>
                     ) : (
                       <Typography
+                        data-testid="empty-account-list"
                         component="div"
                         variant="body2"
                         color="text.secondary"

@@ -1,4 +1,4 @@
-import type { DecodedDataResponse, Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
+import type { DataDecoded, Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
 import { formatUnits } from 'ethers'
 import type { AnyAppDataDocVersion, latest, LatestAppDataDocVersion } from '@cowprotocol/app-data'
 
@@ -200,9 +200,9 @@ export const UiOrderTypeToOrderType = (orderType: UiOrderType): TradeType => {
   }
 }
 
-export const isSettingTwapFallbackHandler = (decodedData: DecodedDataResponse | undefined) => {
+export const isSettingTwapFallbackHandler = (decodedData: DataDecoded) => {
   return (
-    decodedData?.parameters?.some(
+    decodedData.parameters?.some(
       (item) =>
         Array.isArray(item?.valueDecoded) &&
         item.valueDecoded.some(

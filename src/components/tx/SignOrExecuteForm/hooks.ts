@@ -153,20 +153,15 @@ export const useTxActions = (): TxActions => {
       assertChainInfo(chain)
 
       let tx: TransactionDetails | undefined
+      let rePropose = false
       // Relayed transactions must be fully signed, so request a final signature if needed
       if (isRelayed && safeTx.signatures.size < safe.threshold) {
-        if (txId) {
-          safeTx = await signRelayedTx(safeTx)
-          tx = await _propose(signer.address, safeTx, txId, origin)
-        } else {
-          tx = await _propose(signer.address, safeTx, txId, origin)
-          safeTx = await signRelayedTx(safeTx)
-        }
-        txId = tx.txId
+        safeTx = await signRelayedTx(safeTx)
+        rePropose = true
       }
 
       // Propose the tx if there's no id yet ("immediate execution")
-      if (!txId) {
+      if (!txId || rePropose) {
         tx = await _propose(signer.address, safeTx, txId, origin)
         txId = tx.txId
       }

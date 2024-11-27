@@ -244,6 +244,7 @@ const MultiAccountItem = ({ onLinkClick, multiSafeAccountItem }: MultiAccountIte
             </Typography>
           </Box>
           <IconButton
+            data-testid="bookmark-icon"
             edge="end"
             size="medium"
             sx={{ mx: 1 }}
