@@ -36,7 +36,7 @@ const CurrentToast = () => {
       opacity={1}
       scale={1}
       animation="100ms"
-      backgroundColor={'$background'}
+      backgroundColor={'$backgroundPaper'}
       viewportName={currentToast.viewportName}
     >
       <YStack>
