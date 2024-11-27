@@ -58,7 +58,7 @@ export const Settings = () => {
           <XStack justifyContent="center" marginBottom="$6">
             <YStack
               alignItems="center"
-              backgroundColor={'$background'}
+              backgroundColor={'$backgroundPaper'}
               padding={'$2'}
               borderRadius={'$6'}
               width={80}
@@ -76,7 +76,13 @@ export const Settings = () => {
               </Text>
             </YStack>
 
-            <YStack alignItems="center" backgroundColor={'$background'} padding={'$2'} borderRadius={'$6'} width={80}>
+            <YStack
+              alignItems="center"
+              backgroundColor={'$backgroundPaper'}
+              padding={'$2'}
+              borderRadius={'$6'}
+              width={80}
+            >
               <View width={30}>
                 <Skeleton>
                   <Text fontWeight="bold" textAlign="center" fontSize={'$4'}>
