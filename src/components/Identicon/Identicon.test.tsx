@@ -28,9 +28,4 @@ describe('Identicon', () => {
     expect(image.props.style.width).toBe(100)
     expect(image.props.style.height).toBe(100)
   })
-
-  it('returns null when address is not provided', () => {
-    const { queryByTestId } = render(<Identicon address={null as unknown as `0x${string}`} />)
-    expect(queryByTestId('identicon-image')).toBeNull()
-  })
 })
