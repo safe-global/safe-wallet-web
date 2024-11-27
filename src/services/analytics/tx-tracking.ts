@@ -9,6 +9,7 @@ import {
   isCancellationTxInfo,
   isSwapOrderTxInfo,
   isAnyStakingTxInfo,
+  isNestedConfirmationTxInfo,
 } from '@/utils/transaction-guards'
 
 export const getTransactionTrackingType = (details: TransactionDetails | undefined): string => {
@@ -67,6 +68,10 @@ export const getTransactionTrackingType = (details: TransactionDetails | undefin
 
     if (isMultiSendTxInfo(txInfo)) {
       return TX_TYPES.batch
+    }
+
+    if (isNestedConfirmationTxInfo(txInfo)) {
+      return TX_TYPES.nested_safe
     }
 
     return TX_TYPES.walletconnect

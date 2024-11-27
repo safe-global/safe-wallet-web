@@ -46,15 +46,18 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
     [willExecute, availableSigners],
   )
 
-  const options = useMemo(
-    () =>
-      wallet
-        ? [wallet.address, ...(nestedSafeOwners ?? [])].filter((address) =>
-            safe.owners.some((owner) => sameAddress(owner.value, address)),
-          )
-        : [],
-    [nestedSafeOwners, safe.owners, wallet],
-  )
+  const options = useMemo(() => {
+    if (!wallet) {
+      return []
+    }
+    const owners = new Set(nestedSafeOwners ?? [])
+
+    if (willExecute || safe.owners.some((owner) => sameAddress(owner.value, wallet.address))) {
+      owners.add(wallet.address)
+    }
+
+    return Array.from(owners)
+  }, [nestedSafeOwners, safe.owners, wallet, willExecute])
 
   if (!wallet || isNotNestedOwner) {
     return null

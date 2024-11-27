@@ -19,6 +19,7 @@ export enum TX_TYPES {
   batch = 'batch',
   rejection = 'rejection',
   typed_message = 'typed_message',
+  nested_safe = 'nested_safe',
   walletconnect = 'walletconnect',
   custom = 'custom',
   native_swap = 'native_swap',
