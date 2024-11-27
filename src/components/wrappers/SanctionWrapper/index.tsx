@@ -26,12 +26,8 @@ export function _SanctionWrapper({
   const { safeAddress } = getSafeInfo()
   const wallet = getWallet()
 
-  const { data: isSafeAddressBlocked } = isSanctioned(safeAddress || skipToken)
-  const { data: isWalletAddressBlocked } = isSanctioned(wallet?.address || skipToken)
-
-  if (isSafeAddressBlocked === undefined || isWalletAddressBlocked === undefined) {
-    return null
-  }
+  const { data: isSafeAddressBlocked = false } = isSanctioned(safeAddress || skipToken)
+  const { data: isWalletAddressBlocked = false } = isSanctioned(wallet?.address || skipToken)
 
   const blockedAddress = getKeyWithTrueValue({
     [safeAddress]: !!isSafeAddressBlocked,
