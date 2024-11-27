@@ -19,7 +19,7 @@ describe('Sidebar tests 3', () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  it('Verify that users with no accounts see the empty state in "My accounts" block', () => {
+  it('Verify the empty state of the "All accounts" list', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     cy.intercept('GET', constants.safeListEndpoint, { 1: [], 100: [], 137: [], 11155111: [] })
     wallet.connectSigner(signer)
@@ -27,12 +27,12 @@ describe('Sidebar tests 3', () => {
     sideBar.verifySafeListIsEmpty()
   })
 
-  it('Verify empty state of the Watchlist', () => {
+  it('Verify the empty state of the pinned safes list', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     cy.intercept('GET', constants.safeListEndpoint, {})
     wallet.connectSigner(signer)
     sideBar.openSidebar()
-    sideBar.verifyWatchlistIsEmpty()
+    sideBar.verifyPinnedListIsEmpty()
   })
 
   it('Verify connected user is redirected from welcome page to accounts page', () => {
@@ -50,11 +50,9 @@ describe('Sidebar tests 3', () => {
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],
     })
-
     wallet.connectSigner(signer)
     sideBar.openSidebar()
-    sideBar.verifyAddedSafesExistByIndex(0, sideBar.sideBarSafes.safe1short)
-    sideBar.verifyAddedSafesExistByIndex(1, sideBar.sideBarSafes.safe2short)
+    sideBar.verifyAddedSafesExist([sideBar.sideBarSafes.safe1short, sideBar.sideBarSafes.safe2short])
   })
 
   it('Verify there is an option to name an unnamed safe', () => {
@@ -80,14 +78,14 @@ describe('Sidebar tests 3', () => {
   })
 
   // Added to prod
-  it('Verify the "My accounts" counter at the top is counting all safes the user owns', () => {
+  it('Verify the "Accounts" counter at the top is counting all safes the user owns', () => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],
     })
     wallet.connectSigner(signer)
     sideBar.openSidebar()
-    sideBar.checkMyAccountCounter(2)
+    sideBar.checkAccountsCounter(2)
   })
 
   it('Verify that safes the user do not owns show in the watchlist after adding them', () => {
@@ -115,16 +113,12 @@ describe('Sidebar tests 3', () => {
     })
     sideBar.openSidebar()
     sideBar.verifyTxToConfirmDoesNotExist()
-
-    cy.get('body').click()
-
     owner.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafesPendingActions.safe1],
     })
     wallet.connectSigner(signer2)
-    sideBar.openSidebar()
     sideBar.verifyAddedSafesExist([sideBar.sideBarSafesPendingActions.safe1short])
     sideBar.checkTxToConfirm(1)
   })
