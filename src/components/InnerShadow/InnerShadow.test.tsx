@@ -1,5 +1,5 @@
 import { render } from '@/src/tests/test-utils'
-import InnerShadow from '.'
+import { InnerShadow } from '.'
 
 describe('InnerShadow', () => {
   it('should render the default markup', () => {

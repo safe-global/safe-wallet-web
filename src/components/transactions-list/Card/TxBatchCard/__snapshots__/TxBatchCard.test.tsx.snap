@@ -157,7 +157,7 @@ exports[`TxBatchCard should render the default markup 1`] = `
             style={
               [
                 {
-                  "color": "#636669",
+                  "color": "#A1A3A7",
                   "fontSize": 10,
                 },
                 undefined,
@@ -176,7 +176,7 @@ exports[`TxBatchCard should render the default markup 1`] = `
           <Text
             style={
               {
-                "color": "#636669",
+                "color": "#A1A3A7",
                 "fontSize": 12,
                 "marginBottom": 2,
               }

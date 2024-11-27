@@ -1,5 +1,5 @@
 import { render } from '@/src/tests/test-utils'
-import TxBatchCard from '.'
+import { TxBatchCard } from '.'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
 import { MultiSend, TransactionInfoType } from '@/src/store/gateway/types'
 

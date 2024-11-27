@@ -2,7 +2,7 @@ import { Spinner } from 'tamagui'
 import React, { useMemo } from 'react'
 import { SectionList } from 'react-native'
 
-import SafeListItem from '@/src/components/SafeListItem'
+import { SafeListItem } from '@/src/components/SafeListItem'
 import { TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 import { getTxHash, GroupedTxsWithTitle, groupTxsByDate } from '@/src/features/TxHistory/utils'
 import { HistoryTransactionItems } from '@/src/store/gateway/types'

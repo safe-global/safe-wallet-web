@@ -7,7 +7,7 @@ import Assets from '@/src/features/Assets'
 import { useSelector } from 'react-redux'
 import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 import { shortenAddress } from '@/src/utils/formatters'
-import InnerShadow from '@/src/components/InnerShadow'
+import { InnerShadow } from '@/src/components/InnerShadow'
 
 // TODO: take it from safe wallet slice info
 const fakeAccountUri = 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80'

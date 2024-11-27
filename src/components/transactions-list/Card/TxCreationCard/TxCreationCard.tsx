@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme, View } from 'tamagui'
-import TxListItem from '@/src/components/SafeListItem'
+import { SafeListItem } from '@/src/components/SafeListItem'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import { shortenAddress } from '@/src/utils/formatters'
 import type { Transaction, CreationTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
@@ -12,9 +12,9 @@ interface TxCreationCardProps {
   executionInfo?: Transaction['executionInfo']
 }
 
-function TxCreationCard({ txInfo, executionInfo, bordered, inQueue }: TxCreationCardProps) {
+export function TxCreationCard({ txInfo, executionInfo, bordered, inQueue }: TxCreationCardProps) {
   return (
-    <TxListItem
+    <SafeListItem
       inQueue={inQueue}
       executionInfo={executionInfo}
       bordered={bordered}
@@ -30,5 +30,3 @@ function TxCreationCard({ txInfo, executionInfo, bordered, inQueue }: TxCreation
     />
   )
 }
-
-export default TxCreationCard

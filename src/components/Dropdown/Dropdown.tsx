@@ -15,7 +15,7 @@ interface DropdownProps<T> {
   keyExtractor?: ({ item, index }: { item: T; index: number }) => string
 }
 
-function Dropdown<T>({
+export function Dropdown<T>({
   label,
   leftNode,
   children,
@@ -98,5 +98,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 })
-
-export default Dropdown

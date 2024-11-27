@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import TxRejectionCard from '@/src/components/transactions-list/Card/TxRejectionCard'
+import { TxRejectionCard } from '@/src/components/transactions-list/Card/TxRejectionCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
 import { Cancellation } from '@/src/store/gateway/types'
 

@@ -1,5 +1,5 @@
 import { render } from '@/src/tests/test-utils'
-import AssetsCard from '.'
+import { AssetsCard } from '.'
 
 describe('AssetsCard', () => {
   it('should render the default markup', () => {

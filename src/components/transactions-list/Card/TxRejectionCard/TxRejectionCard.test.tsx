@@ -1,5 +1,5 @@
 import { render } from '@/src/tests/test-utils'
-import TxRejectionCard from '.'
+import { TxRejectionCard } from '.'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
 import { Cancellation } from '@/src/store/gateway/types'
 

@@ -1,5 +1,5 @@
-import SafeTab from '@/src/components/SafeTab'
-import AssetsCard from '@/src/components/transactions-list/Card/AssetsCard'
+import { SafeTab } from '@/src/components/SafeTab'
+import { AssetsCard } from '@/src/components/transactions-list/Card/AssetsCard'
 import { POLLING_INTERVAL } from '@/src/config/constants'
 import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 import { Balance, useBalancesGetBalancesV1Query } from '@/src/store/gateway/AUTO_GENERATED/balances'

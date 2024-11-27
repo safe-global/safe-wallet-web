@@ -1,5 +1,5 @@
 import { render } from '@/src/tests/test-utils'
-import TxSafeAppCard from '.'
+import { TxSafeAppCard } from '.'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
 import { MultiSend } from '@/src/store/gateway/types'
 

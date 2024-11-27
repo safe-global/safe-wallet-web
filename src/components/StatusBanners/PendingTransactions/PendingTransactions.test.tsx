@@ -1,5 +1,5 @@
 import { render, userEvent } from '@/src/tests/test-utils'
-import PendingTransactions from '.'
+import { PendingTransactions } from '.'
 
 describe('PendingTransactions', () => {
   beforeEach(() => {

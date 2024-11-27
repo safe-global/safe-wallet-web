@@ -9,7 +9,12 @@ interface SafeTabBarProps {
   activeTab: string
 }
 
-const SafeTabBar = ({ tabNames, onTabPress, activeTab, setActiveTab }: TabBarProps<TabName> & SafeTabBarProps) => {
+export const SafeTabBar = ({
+  tabNames,
+  onTabPress,
+  activeTab,
+  setActiveTab,
+}: TabBarProps<TabName> & SafeTabBarProps) => {
   const theme = useTheme()
 
   const activeButtonStyle = {
@@ -39,5 +44,3 @@ const SafeTabBar = ({ tabNames, onTabPress, activeTab, setActiveTab }: TabBarPro
     </View>
   )
 }
-
-export default SafeTabBar

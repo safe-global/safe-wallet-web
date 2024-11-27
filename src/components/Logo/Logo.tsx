@@ -9,7 +9,7 @@ interface LogoProps {
   imageBackground?: string
 }
 
-function Logo({ logoUri, accessibilityLabel, imageBackground = '$color', fallbackIcon = 'nft' }: LogoProps) {
+export function Logo({ logoUri, accessibilityLabel, imageBackground = '$color', fallbackIcon = 'nft' }: LogoProps) {
   return (
     <Theme name="logo">
       <Avatar circular size="$10">
@@ -31,5 +31,3 @@ function Logo({ logoUri, accessibilityLabel, imageBackground = '$color', fallbac
     </Theme>
   )
 }
-
-export default Logo

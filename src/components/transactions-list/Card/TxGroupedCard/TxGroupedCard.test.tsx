@@ -1,5 +1,5 @@
 import { render } from '@/src/tests/test-utils'
-import TxGroupedCard from '.'
+import { TxGroupedCard } from '.'
 import { mockERC20Transfer, mockListItemByType, mockNFTTransfer, mockSwapTransfer } from '@/src/tests/mocks'
 import { TransactionListItemType, TransactionStatus } from '@/src/store/gateway/types'
 import { TransactionItem } from '@/src/store/gateway/AUTO_GENERATED/transactions'

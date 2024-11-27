@@ -1,6 +1,6 @@
 import { styled, View } from 'tamagui'
 
-const InnerShadow = styled(View, {
+export const InnerShadow = styled(View, {
   position: 'absolute',
   bottom: 0,
   height: 10,
@@ -12,5 +12,3 @@ const InnerShadow = styled(View, {
   shadowRadius: 4,
   shadowOpacity: 1,
 })
-
-export default InnerShadow

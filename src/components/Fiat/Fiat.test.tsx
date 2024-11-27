@@ -1,5 +1,5 @@
 import { render } from '@/src/tests/test-utils'
-import Fiat from '.'
+import { Fiat } from '.'
 
 describe('Fiat', () => {
   it('should render the default markup', () => {

@@ -1,5 +1,5 @@
 import { render, userEvent } from '@/src/tests/test-utils'
-import Dropdown from '.'
+import { Dropdown } from '.'
 import { Text, View } from 'tamagui'
 import * as hooks from '@gorhom/bottom-sheet'
 

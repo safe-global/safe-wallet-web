@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import TxSafeAppCard from '@/src/components/transactions-list/Card/TxSafeAppCard'
+import { TxSafeAppCard } from '@/src/components/transactions-list/Card/TxSafeAppCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
 import { MultiSend } from '@/src/store/gateway/types'
 

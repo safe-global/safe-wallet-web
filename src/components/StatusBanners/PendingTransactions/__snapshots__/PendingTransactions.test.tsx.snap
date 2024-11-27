@@ -72,7 +72,7 @@ exports[`PendingTransactions should render the pending transactions in fullWidth
             style={
               {
                 "alignItems": "center",
-                "backgroundColor": "#FF8C00",
+                "backgroundColor": "#FFF1E0",
                 "borderBottomLeftRadius": 100000,
                 "borderBottomRightRadius": 100000,
                 "borderTopLeftRadius": 100000,
