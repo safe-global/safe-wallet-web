@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Badge from '@/src/components/Badge'
+import { Badge } from '@/src/components/Badge'
 import { View, Text } from 'tamagui'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import React from 'react'

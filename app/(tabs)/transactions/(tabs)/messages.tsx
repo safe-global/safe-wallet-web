@@ -1,5 +1,5 @@
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import SafeListItem from '@/src/components/SafeListItem'
+import { SafeListItem } from '@/src/components/SafeListItem'
 import { formatWithSchema } from '@/src/utils/date'
 import React from 'react'
 import { ScrollView, Text, View } from 'tamagui'

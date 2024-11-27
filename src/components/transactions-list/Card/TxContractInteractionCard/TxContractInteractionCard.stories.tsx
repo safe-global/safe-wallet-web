@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import TxContractInteractionCard from '@/src/components/transactions-list/Card/TxContractInteractionCard'
+import { TxContractInteractionCard } from '@/src/components/transactions-list/Card/TxContractInteractionCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
 import { CustomTransactionInfo } from '@/src/store/gateway/AUTO_GENERATED/transactions'
 import { TransactionInfoType } from '@/src/store/gateway/types'

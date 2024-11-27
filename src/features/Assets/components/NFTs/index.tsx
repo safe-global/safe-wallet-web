@@ -2,7 +2,7 @@ import { safelyDecodeURIComponent } from 'expo-router/build/fork/getStateFromPat
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import SafeTab from '@/src/components/SafeTab'
+import { SafeTab } from '@/src/components/SafeTab'
 import { POLLING_INTERVAL } from '@/src/config/constants'
 import { selectActiveSafe } from '@/src/store/activeSafeSlice'
 import {

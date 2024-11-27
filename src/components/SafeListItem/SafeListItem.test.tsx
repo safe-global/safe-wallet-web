@@ -1,5 +1,5 @@
 import { render } from '@/src/tests/test-utils'
-import SafeListItem from '.'
+import { SafeListItem } from '.'
 import { Text, View } from 'tamagui'
 import { ellipsis } from '@/src/utils/formatters'
 

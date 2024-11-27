@@ -1,7 +1,7 @@
 import { View } from 'tamagui'
 import { Identicon } from '@/src/components/Identicon'
 import { Skeleton } from 'moti/skeleton'
-import Badge from '@/src/components/Badge'
+import { Badge } from '@/src/components/Badge'
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { Address } from '@/src/types/address'

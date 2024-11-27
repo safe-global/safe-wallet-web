@@ -1,4 +1,4 @@
-import PendingTransactions from '@/src/components/StatusBanners/PendingTransactions'
+import { PendingTransactions } from '@/src/components/StatusBanners/PendingTransactions'
 import usePendingTxs from '@/src/hooks/usePendingTxs'
 import { router } from 'expo-router'
 import { View } from 'tamagui'

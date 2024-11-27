@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { H2, ScrollView, Text, View, XStack, YStack } from 'tamagui'
 import { SafeFontIcon as Icon } from '@/src/components/SafeFontIcon/SafeFontIcon'
-import SafeListItem from '@/src/components/SafeListItem'
+import { SafeListItem } from '@/src/components/SafeListItem'
 import { useGetSafeQuery } from '@/src/store/gateway'
 import { Skeleton } from 'moti/skeleton'
 import { Pressable } from 'react-native'

@@ -1,7 +1,11 @@
 import React from 'react'
 import { H1, H3, View } from 'tamagui'
 
-const Fiat = ({ baseAmount }: { baseAmount: string }) => {
+interface FiatProps {
+  baseAmount: string
+}
+
+export const Fiat = ({ baseAmount }: FiatProps) => {
   const amount = baseAmount.split('.')
 
   return (
@@ -17,5 +21,3 @@ const Fiat = ({ baseAmount }: { baseAmount: string }) => {
     </View>
   )
 }
-
-export default Fiat

@@ -4,8 +4,8 @@ import { formatWithSchema } from '@/src/utils/date'
 import { isDateLabel } from '@/src/utils/transaction-guards'
 import { HistoryTransactionItems } from '@/src/store/gateway/types'
 import { View } from 'tamagui'
-import TxGroupedCard from '@/src/components/transactions-list/Card/TxGroupedCard'
-import TxInfo from '@/src/components/TxInfo'
+import { TxGroupedCard } from '@/src/components/transactions-list/Card/TxGroupedCard'
+import { TxInfo } from '@/src/components/TxInfo'
 import React from 'react'
 
 export type GroupedTxs<T> = (T | T[])[]

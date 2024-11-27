@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import TxBatchCard from '@/src/components/transactions-list/Card/TxBatchCard'
+import { TxBatchCard } from '@/src/components/transactions-list/Card/TxBatchCard'
 import { mockTransferWithInfo } from '@/src/tests/mocks'
 import { MultiSend, TransactionInfoType } from '@/src/store/gateway/types'
 

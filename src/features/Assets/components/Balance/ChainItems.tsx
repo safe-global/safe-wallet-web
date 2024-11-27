@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'tamagui'
 import { Chain } from '@/src/store/gateway/AUTO_GENERATED/chains'
-import AssetsCard from '@/src/components/transactions-list/Card/AssetsCard'
+import { AssetsCard } from '@/src/components/transactions-list/Card/AssetsCard'
 import { SafeFontIcon } from '@/src/components/SafeFontIcon/SafeFontIcon'
 import { TouchableOpacity } from 'react-native'
 

@@ -17,7 +17,7 @@ interface BadgeProps {
   circular?: boolean
 }
 
-const Badge = ({
+export const Badge = ({
   content,
   circleSize = '$7',
   fontSize = 14,
@@ -60,5 +60,3 @@ const Badge = ({
     </Theme>
   )
 }
-
-export default Badge

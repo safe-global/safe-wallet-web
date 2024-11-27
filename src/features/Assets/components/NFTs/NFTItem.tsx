@@ -1,4 +1,4 @@
-import AssetsCard from '@/src/components/transactions-list/Card/AssetsCard'
+import { AssetsCard } from '@/src/components/transactions-list/Card/AssetsCard'
 import { Collectible } from '@/src/store/gateway/AUTO_GENERATED/collectibles'
 import React from 'react'
 
