@@ -365,17 +365,15 @@ export class SafeWalletProvider {
     return safeTxHash
   }
   async wallet_getCallsStatus(safeTxHash: string): Promise<{
-    calls: Array<{
-      status: BundleStatus
-      receipt: {
-        success: boolean
-        blockHash: string
-        blockNumber: string // hex string
-        blockTimestamp: string // hex string
-        gasUsed: string // hex string
-        transactionHash: string
-        logs: TransactionReceipt['logs']
-      }
+    status: BundleStatus
+    receipts?: Array<{
+      logs: TransactionReceipt['logs']
+      status: `0x${string}` // Hex 1 or 0 for success or failure, respectively
+      chainId: `0x${string}`
+      blockHash: `0x${string}`
+      blockNumber: `0x${string}`
+      gasUsed: `0x${string}`
+      transactionHash: `0x${string}`
     }>
   }> {
     let tx: TransactionDetails | undefined
@@ -384,33 +382,39 @@ export class SafeWalletProvider {
       tx = await this.sdk.getBySafeTxHash(safeTxHash)
     } catch (e) {}
 
-    if (!tx || !tx.txData?.dataDecoded) {
+    if (!tx) {
       throw new Error('Transaction not found')
     }
 
-    const calls = new Array(tx.txData.dataDecoded.parameters?.[0].valueDecoded?.length ?? 1).fill(null)
-    const { txStatus, txHash } = tx
+    const status = BundleTxStatuses[tx.txStatus]
 
-    let receipt: TransactionReceipt | undefined
-    if (txHash) {
-      receipt = await (this.sdk.proxy('eth_getTransactionReceipt', [txHash]) as Promise<TransactionReceipt>)
+    if (!tx.txHash) {
+      return {
+        status,
+      }
     }
 
-    const callStatus = {
-      status: BundleTxStatuses[txStatus],
-      receipt: {
-        success: txStatus === TransactionStatus.SUCCESS,
-        blockHash: receipt?.blockHash ?? '',
-        blockNumber: receipt?.blockNumber.toString() ?? '0x0',
-        blockTimestamp: numberToHex(tx.executedAt ?? 0),
-        gasUsed: receipt?.gasUsed.toString() ?? '0x0',
-        transactionHash: txHash ?? '',
-        logs: receipt?.logs ?? [],
-      },
+    const receipt = await (this.sdk.proxy('eth_getTransactionReceipt', [
+      tx.txHash,
+    ]) as Promise<TransactionReceipt | null>)
+    if (!receipt) {
+      return { status }
     }
+
+    const calls = tx.txData?.dataDecoded?.parameters?.[0].valueDecoded?.length ?? 1
+    const receipts = Array.from({ length: calls }, () => ({
+      logs: receipt.logs,
+      status: numberToHex(tx.txStatus === TransactionStatus.SUCCESS ? 1 : 0),
+      chainId: numberToHex(this.safe.chainId),
+      blockHash: receipt.blockHash as `0x${string}`,
+      blockNumber: numberToHex(receipt.blockNumber),
+      gasUsed: numberToHex(receipt.gasUsed),
+      transactionHash: tx.txHash as `0x${string}`,
+    }))
 
     return {
-      calls: calls.map(() => callStatus),
+      status,
+      receipts,
     }
   }
   async wallet_showCallsStatus(txHash: string): Promise<null> {
