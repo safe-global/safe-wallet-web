@@ -67,7 +67,7 @@ export default defineConfig({
     hideXHR: true,
     defaultCommandTimeout: 10000,
     pageLoadTimeout: 60000,
-    numTestsKeptInMemory: 0,
+    numTestsKeptInMemory: 20,
   },
 
   chromeWebSecurity: false,

@@ -28,10 +28,11 @@ export type NewSafeFormData = {
   networks: ChainInfo[]
   threshold: number
   owners: NamedAddress[]
-  saltNonce: number
+  saltNonce?: number
   safeVersion: SafeVersion
   safeAddress?: string
   willRelay?: boolean
+  paymentReceiver?: string
 }
 
 const staticHints: Record<
@@ -173,7 +174,6 @@ const CreateSafe = () => {
     networks: [],
     owners: [],
     threshold: 1,
-    saltNonce: 0,
     safeVersion: getLatestSafeVersion(chain) as SafeVersion,
   }
 

@@ -19,7 +19,7 @@ const StakingTxDepositDetails = ({ info, txData }: { info: StakingTxDepositInfo;
         <SendAmountBlock title="Deposit" amountInWei={txData.value?.toString() || '0'} tokenInfo={info.tokenInfo} />
       )}
       <FieldsGrid title="Net reward rate">{info.annualNrr.toFixed(3)}%</FieldsGrid>
-      <StakingConfirmationTxDeposit order={info} />
+      <StakingConfirmationTxDeposit order={info} isTxDetails />
     </Box>
   )
 }

@@ -1,4 +1,4 @@
-import { Button, Grid, SvgIcon, Card, CardHeader, CardContent, Tooltip } from '@mui/material'
+import { Button, SvgIcon, Card, CardHeader, CardContent, Tooltip, Box } from '@mui/material'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
 
@@ -56,37 +56,33 @@ export const DataWidget = (): ReactElement => {
         }
       />
       <CardContent>
-        <Grid container spacing={2} sx={{ maxWidth: 240, margin: 'auto', paddingRight: 2 }}>
+        <Box display="flex" gap={2} justifyContent="center" sx={{ maxWidth: 240, margin: 'auto' }}>
           {hasData && (
-            <Grid item xs={6}>
-              <Track {...OVERVIEW_EVENTS.EXPORT_DATA} label={trackingLabel}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={exportAppData}
-                  startIcon={<SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />}
-                  sx={{ width: '100%', py: 0.5 }}
-                >
-                  Export
-                </Button>
-              </Track>
-            </Grid>
-          )}
-          <Grid item xs={6}>
-            <Track {...OVERVIEW_EVENTS.IMPORT_DATA} label={trackingLabel}>
+            <Track {...OVERVIEW_EVENTS.EXPORT_DATA} label={trackingLabel}>
               <Button
-                data-testid="import-btn"
                 variant="outlined"
                 size="small"
-                onClick={onImport}
-                startIcon={<SvgIcon component={ImportIcon} inheritViewBox fontSize="small" />}
-                sx={{ width: '100%', py: 0.5 }}
+                onClick={exportAppData}
+                startIcon={<SvgIcon component={ExportIcon} inheritViewBox fontSize="small" />}
+                sx={{ width: '100%', py: 0.5, px: 2, mt: 2 }}
               >
-                Import
+                Export
               </Button>
             </Track>
-          </Grid>
-        </Grid>
+          )}
+          <Track {...OVERVIEW_EVENTS.IMPORT_DATA} label={trackingLabel}>
+            <Button
+              data-testid="import-btn"
+              variant="outlined"
+              size="small"
+              onClick={onImport}
+              startIcon={<SvgIcon component={ImportIcon} inheritViewBox fontSize="small" />}
+              sx={{ width: '100%', py: 0.5, px: 2, mt: 2 }}
+            >
+              Import
+            </Button>
+          </Track>
+        </Box>
       </CardContent>
       {importModalOpen && (
         <ImportDialog

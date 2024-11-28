@@ -1,10 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material'
 import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { StakingTxDepositInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import {
-  ConfirmationViewTypes,
-  type NativeStakingDepositConfirmationView,
-} from '@safe-global/safe-gateway-typescript-sdk'
+import { type NativeStakingDepositConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
 import { formatDurationFromMilliseconds, formatVisualAmount } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
@@ -13,12 +10,13 @@ import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
 
 type StakingOrderConfirmationViewProps = {
   order: NativeStakingDepositConfirmationView | StakingTxDepositInfo
+  isTxDetails?: boolean
 }
 
 const CURRENCY = 'USD'
 
-const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewProps) => {
-  const isOrder = order.type === ConfirmationViewTypes.KILN_NATIVE_STAKING_DEPOSIT
+const StakingConfirmationTxDeposit = ({ order, isTxDetails }: StakingOrderConfirmationViewProps) => {
+  const isOrder = !isTxDetails
 
   // the fee is returned in decimal format, so we multiply by 100 to get the percentage
   const fee = (order.fee * 100).toFixed(2)
@@ -32,7 +30,7 @@ const StakingConfirmationTxDeposit = ({ order }: StakingOrderConfirmationViewPro
         <ConfirmationOrderHeader
           blocks={[
             {
-              value: order.value || '0',
+              value: order.value,
               tokenInfo: order.tokenInfo,
               label: 'Deposit',
             },

@@ -15,14 +15,14 @@ describe('[PROD] Sidebar tests 3', () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
-  it('Verify the "My accounts" counter at the top is counting all safes the user owns', () => {
+  it('Verify the "Accounts" counter at the top is counting all safes the user owns', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_9)
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],
     })
     wallet.connectSigner(signer)
     sideBar.openSidebar()
-    sideBar.checkMyAccountCounter(2)
+    sideBar.checkAccountsCounter('2')
   })
 
   it('Verify pending signature is displayed in sidebar for unsigned tx', () => {
@@ -33,14 +33,12 @@ describe('[PROD] Sidebar tests 3', () => {
     })
     sideBar.openSidebar()
     sideBar.verifyTxToConfirmDoesNotExist()
-    cy.get('body').click()
     owner.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafesPendingActions.safe1],
     })
     wallet.connectSigner(signer2)
-    sideBar.openSidebar()
     sideBar.verifyAddedSafesExist([sideBar.sideBarSafesPendingActions.safe1short])
     sideBar.checkTxToConfirm(1)
   })
