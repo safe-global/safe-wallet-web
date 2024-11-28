@@ -41,7 +41,6 @@ import type {
   NativeStakingValidatorsExitConfirmationView,
   StakingTxInfo,
   TransactionData,
-  DataDecoded,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -272,28 +271,6 @@ export const isGenericConfirmation = (
     return decodedData.type === ConfirmationViewTypes.GENERIC
   }
   return false
-}
-
-const isCreateProxyWithNonceTxData = (dataDecoded?: DataDecoded) => {
-  const isMethod = dataDecoded?.method === 'createProxyWithNonce'
-  if (!isMethod) {
-    return false
-  }
-  // We could try to decoded the data, but this is simpler
-  const params = dataDecoded?.parameters
-  return params?.[0]?.name === '_singleton' && params?.[1]?.name === 'initializer' && params?.[2]?.name === 'saltNonce'
-}
-
-export const isSubaccountTxData = (dataDecoded?: DataDecoded): boolean => {
-  const isMultiSend = dataDecoded?.method === 'multiSend' && dataDecoded?.parameters?.[0]?.name === 'transaction'
-  if (!isMultiSend) {
-    return isCreateProxyWithNonceTxData(dataDecoded)
-  }
-
-  const transactions = dataDecoded?.parameters?.[0]?.valueDecoded
-  return !!transactions?.some((transaction) => {
-    return isCreateProxyWithNonceTxData(transaction.dataDecoded)
-  })
 }
 
 export const isCancelledSwapOrder = (value: TransactionInfo) => {

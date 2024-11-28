@@ -3,7 +3,7 @@ import Safe from '@safe-global/protocol-kit'
 import type { Eip1193Provider } from 'ethers'
 import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import type { SafeBalanceResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import type { SafeAccountConfig } from '@safe-global/protocol-kit'
+import type { SafeAccountConfig, SafeDeploymentConfig } from '@safe-global/protocol-kit'
 
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
@@ -21,6 +21,7 @@ import type {
  * @param {Eip1193Provider} args.provider - EIP-1193 provider
  * @param {SetupSubaccountForm['assets']} args.assets - assets to fund the Subaccount with
  * @param {SafeAccountConfig} args.safeAccountConfig - Subaccount configuration
+ * @param {SafeDeploymentConfig} args.safeDeploymentConfig - Subaccount deployment configuration
  * @param {string} args.predictedSafeAddress - predicted Subaccount address
  * @param {SafeBalanceResponse} args.balances - current Safe balance
  *
@@ -30,6 +31,7 @@ export async function createSubaccount(args: {
   provider: Eip1193Provider
   assets: SetupSubaccountForm[SetupSubaccountFormFields.assets]
   safeAccountConfig: SafeAccountConfig
+  safeDeploymentConfig: SafeDeploymentConfig
   predictedSafeAddress: string
   balances: SafeBalanceResponse
 }): Promise<SafeTransaction> {
@@ -46,17 +48,20 @@ export async function createSubaccount(args: {
  *
  * @param {Eip1193Provider} args.provider - EIP-1193 provider
  * @param {SafeAccountConfig} args.safeAccountConfig - Subaccount configuration
+ * @param {SafeDeploymentConfig} args.safeDeploymentConfig - Subaccount deployment configuration
  *
  * @returns {Promise<MetaTransactionData>} Safe deployment transaction
  */
 async function getDeploymentTransaction(args: {
   provider: Eip1193Provider
   safeAccountConfig: SafeAccountConfig
+  safeDeploymentConfig: SafeDeploymentConfig
 }): Promise<MetaTransactionData> {
   const sdk = await Safe.init({
     provider: args.provider,
     predictedSafe: {
       safeAccountConfig: args.safeAccountConfig,
+      safeDeploymentConfig: args.safeDeploymentConfig,
     },
   })
   return sdk.createSafeDeploymentTransaction().then(({ to, value, data }) => {

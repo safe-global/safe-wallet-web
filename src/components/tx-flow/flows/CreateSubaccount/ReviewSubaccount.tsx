@@ -14,6 +14,7 @@ import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeCon
 import useAsync from '@/hooks/useAsync'
 import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
 import type { SetupSubaccountForm } from '@/components/tx-flow/flows/CreateSubaccount/SetupSubaccount'
+import { useGetSafesByOwnerQuery } from '@/store/slices'
 
 export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
   const dispatch = useAppDispatch()
@@ -23,6 +24,8 @@ export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const { balances } = useBalances()
   const safeVersion = getLatestSafeVersion(chain)
+  const { data: subaccounts } = useGetSafesByOwnerQuery({ chainId: safe.chainId, ownerAddress: safe.address.value })
+  const saltNonce = (subaccounts?.safes.length ?? 0).toString()
 
   const [safeAccountConfig] = useAsync(async () => {
     const fallbackHandler = await getReadOnlyFallbackHandlerContract(safeVersion)
@@ -42,11 +45,12 @@ export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
       wallet.provider,
       {
         safeAccountConfig,
+        saltNonce,
       },
       chain,
       safeVersion,
     )
-  }, [wallet?.provider, safeAccountConfig, chain, safeVersion])
+  }, [wallet?.provider, safeAccountConfig, chain, safeVersion, saltNonce])
 
   useEffect(() => {
     if (!wallet?.provider || !safeAccountConfig || !predictedSafeAddress) {
@@ -56,12 +60,24 @@ export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
       provider: wallet.provider,
       assets: params.assets,
       safeAccountConfig,
+      safeDeploymentConfig: {
+        saltNonce,
+      },
       predictedSafeAddress,
       balances,
     })
       .then(setSafeTx)
       .catch(setSafeTxError)
-  }, [wallet?.provider, params.assets, safeAccountConfig, predictedSafeAddress, balances, setSafeTx, setSafeTxError])
+  }, [
+    wallet?.provider,
+    params.assets,
+    safeAccountConfig,
+    predictedSafeAddress,
+    balances,
+    setSafeTx,
+    setSafeTxError,
+    saltNonce,
+  ])
 
   const onSubmit = () => {
     if (!predictedSafeAddress) {
