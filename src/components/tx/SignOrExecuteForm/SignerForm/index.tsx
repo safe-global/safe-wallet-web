@@ -22,7 +22,6 @@ import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
-import { getAvailableSigners } from '@/utils/signers'
 
 export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
   const { signer, setSignerAddress, connectedWallet: wallet } = useWalletContext() ?? {}
@@ -30,10 +29,6 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
   const signerAddress = signer?.address
   const { safe } = useSafeInfo()
   const { safeTx } = useContext(SafeTxContext)
-  const availableSigners = useMemo(
-    () => getAvailableSigners(wallet, nestedSafeOwners, safe, safeTx),
-    [nestedSafeOwners, safe, safeTx, wallet],
-  )
 
   const onChange = (event: SelectChangeEvent<string>) => {
     trackEvent(MODALS_EVENTS.CHANGE_SIGNER)
@@ -42,8 +37,18 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
 
   const isNotNestedOwner = useMemo(() => nestedSafeOwners && nestedSafeOwners.length === 0, [nestedSafeOwners])
   const isOptionEnabled = useCallback(
-    (address: string) => willExecute || availableSigners.some((available) => sameAddress(available, address)),
-    [willExecute, availableSigners],
+    (address: string) => {
+      if (!safeTx) {
+        return true
+      }
+
+      if (safeTx.signatures.size < safe.threshold) {
+        return !safeTx.signatures.keys().some((key) => sameAddress(key, address))
+      }
+
+      return true
+    },
+    [safeTx, safe.threshold],
   )
 
   const options = useMemo(() => {
@@ -88,7 +93,7 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
             label="Signer account"
             fullWidth
             onChange={onChange}
-            value={signerAddress ?? options[0]}
+            value={signerAddress ?? options.filter(isOptionEnabled)[0]}
           >
             {options?.map((owner) => (
               <MenuItem key={owner} value={owner} disabled={!isOptionEnabled(owner)}>
