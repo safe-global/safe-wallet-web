@@ -103,11 +103,11 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         </div>
       )}
 
-      {/* {enableWc && (
+      {enableWc && (
         <div className={classnames(css.element, css.hideMobile)}>
           <WalletConnect />
         </div>
-      )} */}
+      )}
 
       <div className={classnames(css.element, css.connectWallet)}>
         <Track label={OVERVIEW_LABELS.top_bar} {...OVERVIEW_EVENTS.OPEN_ONBOARD}>
