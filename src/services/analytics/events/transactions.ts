@@ -91,7 +91,7 @@ export const TX_EVENTS = {
   },
   EXECUTE_VIA_PARENT: {
     event: EventType.TX_CREATED,
-    action: 'Create via parent',
+    action: 'Execute via parent',
     category: TX_CATEGORY,
   },
   CONFIRM_IN_PARENT: {
