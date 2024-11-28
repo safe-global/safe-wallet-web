@@ -226,7 +226,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
                       </Typography>
                     </div>
                   </AccordionSummary>
-                  <AccordionDetails sx={{ padding: 0 }}>
+                  <AccordionDetails data-testid="accounts-list" sx={{ padding: 0 }}>
                     {allSafes.length > 0 ? (
                       <Box mt={1}>
                         <SafesList safes={allSafes} onLinkClick={onLinkClick} />

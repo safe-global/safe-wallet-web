@@ -255,4 +255,5 @@ export const localStorageKeys = {
   SAFE_v2__SafeApps__infoModal: 'SAFE_v2__SafeApps__infoModal',
   SAFE_v2__undeployedSafes: 'SAFE_v2__undeployedSafes',
   SAFE_v2__batch: 'SAFE_v2__batch',
+  SAFE_v2__visitedSafes: 'SAFE_v2__visitedSafes',
 }

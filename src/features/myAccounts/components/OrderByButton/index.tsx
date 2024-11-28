@@ -36,6 +36,7 @@ const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: O
   return (
     <Box display="flex">
       <Button
+        data-testid="sortby-button"
         onClick={handleClick}
         startIcon={<SvgIcon component={TransactionsIcon} inheritViewBox />}
         sx={{ color: 'primary.light', fontWeight: 'normal' }}
@@ -61,6 +62,7 @@ const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: O
           <ListItemText>Sort by</ListItemText>
         </MenuItem>
         <MenuItem
+          data-testid="last-visited-option"
           sx={{ borderRadius: 0 }}
           onClick={() => handleOrderByChange(OrderByOption.LAST_VISITED)}
           selected={orderBy === OrderByOption.LAST_VISITED}
@@ -68,7 +70,11 @@ const OrderByButton = ({ orderBy: orderBy, onOrderByChange: onOrderByChange }: O
           <ListItemText sx={{ mr: 2 }}>{orderByLabels[OrderByOption.LAST_VISITED]}</ListItemText>
           {orderBy === OrderByOption.LAST_VISITED && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
-        <MenuItem onClick={() => handleOrderByChange(OrderByOption.NAME)} selected={orderBy === OrderByOption.NAME}>
+        <MenuItem
+          data-testid="name-option"
+          onClick={() => handleOrderByChange(OrderByOption.NAME)}
+          selected={orderBy === OrderByOption.NAME}
+        >
           <ListItemText>{orderByLabels[OrderByOption.NAME]}</ListItemText>
           {orderBy === OrderByOption.NAME && <CheckIcon sx={{ ml: 1 }} />}
         </MenuItem>
