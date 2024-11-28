@@ -1,8 +1,7 @@
 import { Tabs } from 'expo-router'
 import React from 'react'
 import { TabBarIcon } from '@/src/components/navigation/TabBarIcon'
-import { LayoutHeader } from '.'
-import { Navbar } from '@/src/features/Settings/components/Navbar/'
+import { Navbar as AssetsNavbar } from '@/src/features/Assets/components/Navbar/Navbar'
 
 export default function TabLayout() {
   return (
@@ -10,7 +9,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          header: LayoutHeader,
+          header: AssetsNavbar,
           title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon name={'wallet'} color={color} />,
         }}
@@ -28,17 +27,11 @@ export default function TabLayout() {
 
       <Tabs.Screen
         name="settings"
-        options={({ route }) => {
-          // @ts-ignore
-          const safeAddress = route.params?.safeAddress
+        options={() => {
           return {
             title: 'Settings',
-            headerShown: true,
-            headerShadowVisible: false,
+            headerShown: false,
             tabBarIcon: ({ color }) => <TabBarIcon name={'settings'} color={color} />,
-            headerRight: () => {
-              return <Navbar safeAddress={safeAddress} />
-            },
           }
         }}
       />
