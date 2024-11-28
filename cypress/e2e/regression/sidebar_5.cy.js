@@ -63,7 +63,7 @@ describe('Sidebar search tests', () => {
   })
 
   it('Verify search shows number of results found', () => {
-    let safe = main.changeSafeChainName(staticSafes.MATIC_STATIC_SAFE_28, 'eth')
+    const safe = main.changeSafeChainName(staticSafes.MATIC_STATIC_SAFE_28, 'eth')
     cy.visit(constants.BALANCE_URL + safe)
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2, sideBar.sideBarSafes.safe3],
@@ -76,7 +76,7 @@ describe('Sidebar search tests', () => {
   })
 
   it('Verify clearing the search input returns back to the previous lists', () => {
-    let safe = main.changeSafeChainName(staticSafes.MATIC_STATIC_SAFE_28, 'eth')
+    const safe = main.changeSafeChainName(staticSafes.MATIC_STATIC_SAFE_28, 'eth')
     cy.visit(constants.BALANCE_URL + safe)
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2, sideBar.sideBarSafes.safe3],
