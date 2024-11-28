@@ -17,7 +17,7 @@ const BridgeWidget = dynamic(
 
 export function Bridge() {
   return (
-    <FeatureWrapper feature={FEATURES.BRIDGE} to={AppRoutes.home}>
+    <FeatureWrapper feature={FEATURES.BRIDGE} fallbackRoute={AppRoutes.home}>
       <SanctionWrapper featureTitle="bridge feature with LI.FI">
         <DisclaimerWrapper localStorageKey={LOCAL_STORAGE_CONSENT_KEY} widgetName="Bridging Widget by LI.FI">
           <BridgeWidget />

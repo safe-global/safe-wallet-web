@@ -9,7 +9,7 @@ import { useDarkMode } from '@/hooks/useDarkMode'
 import type { SafeAppDataWithPermissions } from '@/components/safe-apps/types'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
-const BRIDGE_WIDGET_URL = 'https://iframe.jumper.exchange/'
+export const BRIDGE_WIDGET_URL = 'https://iframe.jumper.exchange'
 
 export function BridgeWidget(): ReactElement {
   const isDarkMode = useDarkMode()
@@ -36,7 +36,7 @@ export function _getAppData(isDarkMode: boolean, chains?: Array<ChainInfo>): Saf
     name: 'Bridge',
     iconUrl: '/images/common/bridge.svg',
     chainIds: getChainIds(chains),
-    url: `${BRIDGE_WIDGET_URL}?theme=${theme}`,
+    url: `${BRIDGE_WIDGET_URL}/?theme=${theme}`,
   }
 }
 

@@ -9,12 +9,12 @@ import type { FEATURES } from '@/utils/chains'
 export function _FeatureWrapper({
   children,
   feature,
-  to,
+  fallbackRoute,
   isFeatureEnabled,
 }: {
   children: ReactElement
   feature: FEATURES
-  to: string
+  fallbackRoute: string
   isFeatureEnabled: typeof useHasFeature
 }): ReactElement | null {
   const isEnabled = isFeatureEnabled(feature)
@@ -24,7 +24,7 @@ export function _FeatureWrapper({
   }
 
   if (isEnabled === false) {
-    return <Navigate to={to} replace />
+    return <Navigate to={fallbackRoute} replace />
   }
 
   return children

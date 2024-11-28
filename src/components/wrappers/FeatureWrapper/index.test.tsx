@@ -23,7 +23,11 @@ describe('FeatureWrapper', () => {
     mockUseHasFeature.mockReturnValue(true)
 
     const { queryByText } = render(
-      <_FeatureWrapper feature={faker.helpers.objectValue(FEATURES)} to="/test" isFeatureEnabled={mockUseHasFeature}>
+      <_FeatureWrapper
+        feature={faker.helpers.objectValue(FEATURES)}
+        fallbackRoute="/test"
+        isFeatureEnabled={mockUseHasFeature}
+      >
         <>Feature enabled</>
       </_FeatureWrapper>,
     )
@@ -37,7 +41,11 @@ describe('FeatureWrapper', () => {
     mockUseHasFeature.mockReturnValue(false)
 
     const { queryByText } = render(
-      <_FeatureWrapper feature={faker.helpers.objectValue(FEATURES)} to={route} isFeatureEnabled={mockUseHasFeature}>
+      <_FeatureWrapper
+        feature={faker.helpers.objectValue(FEATURES)}
+        fallbackRoute={route}
+        isFeatureEnabled={mockUseHasFeature}
+      >
         <>Feature enabled</>
       </_FeatureWrapper>,
     )
@@ -50,7 +58,11 @@ describe('FeatureWrapper', () => {
     mockUseHasFeature.mockReturnValue(undefined)
 
     const { queryByText } = render(
-      <_FeatureWrapper feature={faker.helpers.objectValue(FEATURES)} to="/test" isFeatureEnabled={mockUseHasFeature}>
+      <_FeatureWrapper
+        feature={faker.helpers.objectValue(FEATURES)}
+        fallbackRoute="/test"
+        isFeatureEnabled={mockUseHasFeature}
+      >
         <>Feature enabled</>
       </_FeatureWrapper>,
     )
