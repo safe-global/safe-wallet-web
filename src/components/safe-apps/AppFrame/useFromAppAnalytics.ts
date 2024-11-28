@@ -16,7 +16,7 @@ const ALLOWED_DOMAINS: RegExp[] = [
   /^https:\/\/safe-dao-governance\.dev\.5afe\.dev$/,
 ]
 
-const useAnalyticsFromSafeApp = (iframeRef: RefObject<HTMLIFrameElement | undefined>): void => {
+const useAnalyticsFromSafeApp = (iframeRef: RefObject<HTMLIFrameElement | null>): void => {
   const isValidMessage = useCallback(
     (msg: MessageEvent<AnalyticsEvent>) => {
       if (!msg.data) return false

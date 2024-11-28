@@ -34,6 +34,8 @@ import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletReject
 import commonCss from '@/components/tx-flow/common/styles.module.css'
 import { BlockaidBalanceChanges } from '@/components/tx/security/blockaid/BlockaidBalanceChange'
 import NetworkWarning from '@/components/new-safe/create/NetworkWarning'
+import { useGetTransactionDetailsQuery } from '@/store/api/gateway'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlowProps }): ReactElement | null {
   // Form state
@@ -51,6 +53,8 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   const [data] = useRecovery()
   const recovery = data && selectDelayModifierByRecoverer(data, wallet?.address ?? '')
   const [, executionValidationError] = useIsValidRecoveryExecTransactionFromModule(recovery?.address, safeTx)
+
+  const { data: txDetails } = useGetTransactionDetailsQuery(skipToken)
 
   // Proposal
   const newThreshold = Number(params[RecoverAccountFlowFields.threshold])
@@ -107,7 +111,11 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
   return (
     <>
       <TxCard>
-        <Typography mb={1}>
+        <Typography
+          sx={{
+            mb: 1,
+          }}
+        >
           This transaction will reset the Account setup, changing the signers
           {newThreshold !== safe.threshold ? ' and threshold' : ''}.
         </Typography>
@@ -116,8 +124,18 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <Divider className={commonCss.nestedDivider} sx={{ mt: 'var(--space-2) !important' }} />
 
-        <Box my={1}>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
+        <Box
+          sx={{
+            my: 1,
+          }}
+        >
+          <Typography
+            variant="body2"
+            gutterBottom
+            sx={{
+              color: 'text.secondary',
+            }}
+          >
             After recovery, Safe Account transactions will require:
           </Typography>
           <Typography>
@@ -127,13 +145,11 @@ export function RecoverAccountFlowReview({ params }: { params: RecoverAccountFlo
 
         <Divider className={commonCss.nestedDivider} />
 
-        <DecodedTx tx={safeTx} decodedData={decodedData} />
+        <DecodedTx txDetails={txDetails} tx={safeTx} decodedData={decodedData} />
 
         <BlockaidBalanceChanges />
       </TxCard>
-
       <TxChecks executionOwner={safe.owners[0].value} />
-
       <TxCard>
         <>
           <ConfirmationTitle variant={ConfirmationTitleTypes.execute} />

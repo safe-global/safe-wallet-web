@@ -23,7 +23,7 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import { asError } from '@/services/exceptions/utils'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import { TxModalContext } from '@/components/tx-flow'
-import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm'
+import { type SubmitCallback } from '@/components/tx/SignOrExecuteForm/SignOrExecuteForm'
 import { TX_EVENTS, TX_TYPES } from '@/services/analytics/events/transactions'
 import { isWalletRejection } from '@/utils/wallets'
 import { safeParseUnits } from '@/utils/formatters'
@@ -147,7 +147,13 @@ const ReviewSpendingLimitTx = ({
 
         {isRejectedByUser && <WalletRejectionError />}
 
-        <Typography variant="body2" color="primary.light" textAlign="center">
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'primary.light',
+            textAlign: 'center',
+          }}
+        >
           You&apos;re about to create a transaction and will need to confirm it with your currently connected wallet.
         </Typography>
 

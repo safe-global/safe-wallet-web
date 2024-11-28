@@ -49,6 +49,7 @@ declare module '@mui/material/SvgIcon' {
 declare module '@mui/material/Button' {
   export interface ButtonPropsSizeOverrides {
     stretched: true
+    compact: true
   }
 
   export interface ButtonPropsColorOverrides {
@@ -100,6 +101,12 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
       },
       MuiButton: {
         variants: [
+          {
+            props: { size: 'compact' },
+            style: {
+              padding: '8px 12px',
+            },
+          },
           {
             props: { size: 'stretched' },
             style: {
@@ -186,20 +193,17 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
               margin: 0,
               borderColor: theme.palette.secondary.light,
             },
-
-            '&.Mui-expanded > .MuiAccordionSummary-root': {
-              background: theme.palette.background.light,
-            },
           }),
         },
       },
       MuiAccordionSummary: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             '&.Mui-expanded': {
               minHeight: '48px',
+              background: theme.palette.background.light,
             },
-          },
+          }),
           content: {
             '&.Mui-expanded': {
               margin: '12px 0',
@@ -299,7 +303,6 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '&.MuiPaper-root': {
               backgroundColor: theme.palette.error.background,
             },
-            border: `1px solid ${theme.palette.error.main}`,
           }),
           standardInfo: ({ theme }) => ({
             '& .MuiAlert-icon': {
@@ -308,7 +311,6 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '&.MuiPaper-root': {
               backgroundColor: theme.palette.info.background,
             },
-            border: `1px solid ${theme.palette.info.main}`,
           }),
           standardSuccess: ({ theme }) => ({
             '& .MuiAlert-icon': {
@@ -317,7 +319,6 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '&.MuiPaper-root': {
               backgroundColor: theme.palette.success.background,
             },
-            border: `1px solid ${theme.palette.success.main}`,
           }),
           standardWarning: ({ theme }) => ({
             '& .MuiAlert-icon': {
@@ -326,7 +327,6 @@ const createSafeTheme = (mode: PaletteMode): Theme => {
             '&.MuiPaper-root': {
               backgroundColor: theme.palette.warning.background,
             },
-            border: `1px solid ${theme.palette.warning.main}`,
           }),
           root: ({ theme }) => ({
             color: theme.palette.text.primary,

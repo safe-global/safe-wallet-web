@@ -42,7 +42,7 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import ChainIndicator from '@/components/common/ChainIndicator'
 import NetworkWarning from '../../NetworkWarning'
-import useAllSafes from '@/components/welcome/MyAccounts/useAllSafes'
+import useAllSafes from '@/features/myAccounts/hooks/useAllSafes'
 import { uniq } from 'lodash'
 import { selectRpc } from '@/store/settingsSlice'
 import { AppRoutes } from '@/config/routes'
@@ -95,7 +95,12 @@ export const SafeSetupOverview = ({
             title={
               <Box>
                 {networks.map((safeItem) => (
-                  <Box p="4px 0px" key={safeItem.chainId}>
+                  <Box
+                    key={safeItem.chainId}
+                    sx={{
+                      p: '4px 0px',
+                    }}
+                  >
                     <ChainIndicator chainId={safeItem.chainId} />
                   </Box>
                 ))}
@@ -103,13 +108,18 @@ export const SafeSetupOverview = ({
             }
             arrow
           >
-            <Box display="inline-block">
+            <Box
+              data-testid="network-list"
+              sx={{
+                display: 'inline-block',
+              }}
+            >
               <NetworkLogosList networks={networks} />
             </Box>
           </Tooltip>
         }
       />
-      {name && <ReviewRow name="Name" value={<Typography>{name}</Typography>} />}
+      {name && <ReviewRow name="Name" value={<Typography data-testid="review-step-safe-name">{name}</Typography>} />}
       <ReviewRow
         name="Signers"
         value={
@@ -132,7 +142,7 @@ export const SafeSetupOverview = ({
       <ReviewRow
         name="Threshold"
         value={
-          <Typography>
+          <Typography data-testid="review-step-threshold">
             {threshold} out of {owners.length} {owners.length > 1 ? 'signers' : 'signer'}
           </Typography>
         }
@@ -174,11 +184,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             {
               owners: data.owners.map((owner) => owner.address),
               threshold: data.threshold,
+              paymentReceiver: data.paymentReceiver,
             },
             chain,
           )
         : undefined,
-    [chain, data.owners, data.safeVersion, data.threshold],
+    [chain, data.owners, data.safeVersion, data.threshold, data.paymentReceiver],
   )
 
   const safePropsForGasEstimation = useMemo(() => {
@@ -216,12 +227,10 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
       setIsCreating(true)
 
       // Figure out the shared available nonce across chains
-      const nextAvailableNonce = await getAvailableSaltNonce(
-        customRPCs,
-        { ...newSafeProps, saltNonce: '0' },
-        data.networks,
-        knownAddresses,
-      )
+      const nextAvailableNonce =
+        data.saltNonce !== undefined
+          ? data.saltNonce.toString()
+          : await getAvailableSaltNonce(customRPCs, { ...newSafeProps, saltNonce: '0' }, data.networks, knownAddresses)
 
       const replayedSafeWithNonce = { ...newSafeProps, saltNonce: nextAvailableNonce }
 
@@ -365,14 +374,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
   return (
     <>
-      <Box className={layoutCss.row}>
+      <Box data-testid="safe-setup-overview" className={layoutCss.row}>
         <SafeSetupOverview name={data.name} owners={data.owners} threshold={data.threshold} networks={data.networks} />
       </Box>
-
       {isCounterfactualEnabled && (
         <>
           <Divider />
-          <Box className={layoutCss.row}>
+          <Box data-testid="pay-now-later-message-box" className={layoutCss.row}>
             <PayNowPayLater
               totalFee={totalFee}
               isMultiChain={isMultiChainDeployment}
@@ -383,7 +391,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
             {canRelay && payMethod === PayMethod.PayNow && (
               <>
-                <Grid container spacing={3} pt={2}>
+                <Grid
+                  container
+                  spacing={3}
+                  sx={{
+                    pt: 2,
+                  }}
+                >
                   <ReviewRow
                     value={
                       <ExecutionMethodSelector
@@ -405,7 +419,12 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
 
             {payMethod === PayMethod.PayNow && (
               <Grid item>
-                <Typography component="div" mt={2}>
+                <Typography
+                  component="div"
+                  sx={{
+                    mt: 2,
+                  }}
+                >
                   You will have to confirm a transaction and pay an estimated fee of{' '}
                   <NetworkFee totalFee={totalFee} isWaived={willRelay} chain={chain} inline /> with your connected
                   wallet
@@ -415,11 +434,17 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           </Box>
         </>
       )}
-
       {!isCounterfactualEnabled && (
         <>
           <Divider />
-          <Box className={layoutCss.row} display="flex" flexDirection="column" gap={3}>
+          <Box
+            className={layoutCss.row}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 3,
+            }}
+          >
             {canRelay && (
               <Grid container spacing={3}>
                 <ReviewRow
@@ -443,7 +468,13 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
                     <NetworkFee totalFee={totalFee} isWaived={willRelay} chain={chain} />
 
                     {!willRelay && (
-                      <Typography variant="body2" color="text.secondary" mt={1}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                          mt: 1,
+                        }}
+                      >
                         You will have to confirm a transaction with your connected wallet.
                       </Typography>
                     )}
@@ -462,12 +493,17 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
           </Box>
         </>
       )}
-
       <Divider />
-
       <Box className={layoutCss.row}>
         {submitError && <ErrorMessage className={css.errorMessage}>{submitError}</ErrorMessage>}
-        <Box display="flex" flexDirection="row" justifyContent="space-between" gap={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 3,
+          }}
+        >
           <Button
             data-testid="back-btn"
             variant="outlined"
@@ -484,7 +520,7 @@ const ReviewStep = ({ data, onSubmit, onBack, setStep }: StepRenderProps<NewSafe
             size="stretched"
             disabled={isDisabled}
           >
-            {isCreating ? <CircularProgress size={18} /> : 'Create Account'}
+            {isCreating ? <CircularProgress size={18} /> : 'Create account'}
           </Button>
         </Box>
       </Box>

@@ -163,7 +163,13 @@ const ActivateAccountFlow = () => {
         />
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
-        <Box display="flex" flexDirection="column" gap={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3,
+          }}
+        >
           {canRelay && (
             <Grid container spacing={3}>
               <ReviewRow
@@ -187,7 +193,13 @@ const ActivateAccountFlow = () => {
                   <NetworkFee totalFee={totalFee} isWaived={willRelay || isWrongChain} chain={chain} />
 
                   {!willRelay && (
-                    <Typography variant="body2" color="text.secondary" mt={1}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'text.secondary',
+                        mt: 1,
+                      }}
+                    >
                       {isWrongChain
                         ? `Switch your connected wallet to ${chain?.chainName} to see the correct estimated network fee`
                         : 'You will have to confirm a transaction with your connected wallet.'}
@@ -199,7 +211,11 @@ const ActivateAccountFlow = () => {
           </Grid>
 
           {submitError && (
-            <Box mt={1}>
+            <Box
+              sx={{
+                mt: 1,
+              }}
+            >
               <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
             </Box>
           )}
@@ -213,11 +229,18 @@ const ActivateAccountFlow = () => {
 
         <Divider sx={{ mx: -3, mt: 2, mb: 1 }} />
 
-        <Box display="flex" flexDirection="row" justifyContent="flex-end" gap={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            gap: 3,
+          }}
+        >
           <CheckWallet checkNetwork={!submitDisabled} allowNonOwner allowUndeployedSafe>
             {(isOk) => (
               <Button
-                data-testid="activate-account-btn"
+                data-testid="activate-account-flow-btn"
                 onClick={createSafe}
                 variant="contained"
                 size="stretched"

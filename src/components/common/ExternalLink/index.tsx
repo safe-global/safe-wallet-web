@@ -15,7 +15,14 @@ const ExternalLink = ({
 
   return (
     <Link rel="noreferrer noopener" target="_blank" {...props}>
-      <Box display="inline-flex" alignItems="center" gap={0.2} component="span">
+      <Box
+        component="span"
+        sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 0.2,
+        }}
+      >
         {children}
         {!noIcon && <OpenInNewRounded fontSize="small" />}
       </Box>

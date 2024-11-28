@@ -16,7 +16,7 @@ import css from '../TransactionGuards/styles.module.css'
 
 const NoModules = () => {
   return (
-    <Typography mt={2} color={({ palette }) => palette.primary.light}>
+    <Typography mt={2} sx={{ color: ({ palette }) => palette.primary.light }}>
       No modules enabled
     </Typography>
   )

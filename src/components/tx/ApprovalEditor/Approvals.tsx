@@ -13,7 +13,12 @@ const Approvals = ({ approvalInfos }: { approvalInfos: ApprovalInfo[] }) => {
   return (
     <List className={css.approvalsList}>
       {Object.entries(groupedApprovals).map(([spender, approvals]) => (
-        <Stack key={spender} gap={2}>
+        <Stack
+          key={spender}
+          sx={{
+            gap: 2,
+          }}
+        >
           <SpenderField address={spender} />
           {approvals.map((tx) => {
             if (!tx.tokenInfo) return <></>

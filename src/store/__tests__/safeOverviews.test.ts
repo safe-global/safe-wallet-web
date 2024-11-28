@@ -175,7 +175,7 @@ describe('safeOverviews', () => {
           ],
           {
             currency: 'usd',
-            trusted: true,
+            trusted: false,
             exclude_spam: true,
           },
         )
@@ -220,8 +220,22 @@ describe('safeOverviews', () => {
       const request = {
         currency: 'usd',
         safes: [
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '10', isWatchlist: false },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '10',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
         ],
       }
 
@@ -263,8 +277,22 @@ describe('safeOverviews', () => {
       const request = {
         currency: 'usd',
         safes: [
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '10', isWatchlist: false },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '10',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
         ],
       }
 
@@ -288,21 +316,126 @@ describe('safeOverviews', () => {
       const request = {
         currency: 'usd',
         safes: [
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
-          { address: faker.finance.ethereumAddress(), chainId: '1', isWatchlist: false },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
+          {
+            address: faker.finance.ethereumAddress(),
+            chainId: '1',
+            isReadOnly: false,
+            isPinned: false,
+            lastVisited: 0,
+            name: undefined,
+          },
         ],
       }
 
@@ -344,12 +477,12 @@ describe('safeOverviews', () => {
       expect(mockedGetSafeOverviews).toHaveBeenCalledTimes(2)
       expect(mockedGetSafeOverviews).toHaveBeenCalledWith(
         request.safes.slice(0, 10).map((safe) => `1:${safe.address}`),
-        { currency: 'usd', exclude_spam: true, trusted: true },
+        { currency: 'usd', exclude_spam: true, trusted: false },
       )
 
       expect(mockedGetSafeOverviews).toHaveBeenCalledWith(
         request.safes.slice(10).map((safe) => `1:${safe.address}`),
-        { currency: 'usd', exclude_spam: true, trusted: true },
+        { currency: 'usd', exclude_spam: true, trusted: false },
       )
     })
   })

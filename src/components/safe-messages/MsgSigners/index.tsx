@@ -106,7 +106,13 @@ export const MsgSigners = ({
             <Dot />
           </ListItemIcon>
           <ListItemText>
-            <Link component="button" onClick={toggleHide} fontSize="medium">
+            <Link
+              component="button"
+              onClick={toggleHide}
+              sx={{
+                fontSize: 'medium',
+              }}
+            >
               {hideConfirmations ? 'Show all' : 'Hide all'}
             </Link>
           </ListItemText>
@@ -119,9 +125,21 @@ export const MsgSigners = ({
               <SvgIcon component={CircleOutlinedIcon} className={css.dot} color="border" fontSize="small" />
             </ListItemIcon>
             <ListItemText>
-              <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 1,
+                }}
+              >
                 <Skeleton variant="circular" width={36} height={36} />
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   Confirmation #{idx + 1 + confirmationsSubmitted}
                 </Typography>
               </Box>

@@ -32,18 +32,28 @@ const TxLayoutHeader = ({
 
   return (
     <Box className={css.headerInner}>
-      <Box display="flex" alignItems="center">
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         {icon && (
           <div className={css.icon}>
             <SvgIcon component={icon} inheritViewBox />
           </div>
         )}
 
-        <Typography variant="h4" component="div" fontWeight="bold">
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{
+            fontWeight: 'bold',
+          }}
+        >
           {subtitle}
         </Typography>
       </Box>
-
       {!hideNonce && safe.deployed && nonceNeeded && <TxNonce />}
     </Box>
   )
@@ -113,7 +123,13 @@ const TxLayout = ({
             )}
 
             <Container className={css.container}>
-              <Grid container gap={3} justifyContent="center">
+              <Grid
+                container
+                sx={{
+                  gap: 3,
+                  justifyContent: 'center',
+                }}
+              >
                 {/* Main content */}
                 <Grid item xs={12} md={7}>
                   <div className={css.titleWrapper}>
@@ -121,8 +137,10 @@ const TxLayout = ({
                       data-testid="modal-title"
                       variant="h3"
                       component="div"
-                      fontWeight="700"
                       className={css.title}
+                      sx={{
+                        fontWeight: '700',
+                      }}
                     >
                       {title}
                     </Typography>

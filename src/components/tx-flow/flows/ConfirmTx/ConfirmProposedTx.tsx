@@ -4,10 +4,10 @@ import type { TransactionSummary } from '@safe-global/safe-gateway-typescript-sd
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useChainId } from '@/hooks/useChainId'
 import useWallet from '@/hooks/wallets/useWallet'
-import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { isExecutable, isMultisigExecutionInfo, isSignableBy } from '@/utils/transaction-guards'
 import { createExistingTx } from '@/services/tx/tx-sender'
 import { SafeTxContext } from '../../SafeTxProvider'
+import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 
 type ConfirmProposedTxProps = {
   txSummary: TransactionSummary
@@ -40,7 +40,13 @@ const ConfirmProposedTx = ({ txSummary }: ConfirmProposedTxProps): ReactElement 
 
   return (
     <SignOrExecuteForm txId={txId} isExecutable={canExecute} onlyExecute={!canSign} showMethodCall>
-      <Typography mb={1}>{text}</Typography>
+      <Typography
+        sx={{
+          mb: 1,
+        }}
+      >
+        {text}
+      </Typography>
     </SignOrExecuteForm>
   )
 }

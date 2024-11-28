@@ -18,7 +18,7 @@ import { useCurrentChain } from '@/hooks/useChains'
 import { getTxOptions } from '@/utils/transactions'
 import CheckWallet from '@/components/common/CheckWallet'
 import { useIsExecutionLoop } from '@/components/tx/SignOrExecuteForm/hooks'
-import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm'
+import type { SignOrExecuteProps } from '@/components/tx/SignOrExecuteForm/SignOrExecuteForm'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import AdvancedParams, { useAdvancedParams } from '@/components/tx/AdvancedParams'
 import { asError } from '@/services/exceptions/utils'
@@ -43,6 +43,7 @@ export const CounterfactualForm = ({
   isExecutionLoop: ReturnType<typeof useIsExecutionLoop>
   txSecurity: ReturnType<typeof useTxSecurityContext>
   safeTx?: SafeTransaction
+  isCreation?: boolean
 }): ReactElement => {
   const wallet = useWallet()
   const chain = useCurrentChain()
@@ -163,7 +164,11 @@ export const CounterfactualForm = ({
         )}
 
         {submitError && (
-          <Box mt={1}>
+          <Box
+            sx={{
+              mt: 1,
+            }}
+          >
             <ErrorMessage error={submitError}>Error submitting the transaction. Please try again.</ErrorMessage>
           </Box>
         )}

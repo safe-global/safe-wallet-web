@@ -38,23 +38,40 @@ const GroupedTxListItems = ({
     title = getSettlementOrderTitle(groupedListItems[0].transaction.txInfo as Order)
   }
   return (
-    <Paper className={css.container}>
-      <Box gridArea="icon">
+    <Paper data-testid="grouped-items" className={css.container}>
+      <Box
+        sx={{
+          gridArea: 'icon',
+        }}
+      >
         <SvgIcon className={css.icon} component={BatchIcon} inheritViewBox fontSize="medium" />
       </Box>
-      <Box gridArea="info">
+      <Box
+        sx={{
+          gridArea: 'info',
+        }}
+      >
         <Typography noWrap>{title}</Typography>
       </Box>
       <Box className={css.action}>{groupedListItems.length} transactions</Box>
       <Box className={css.hash}>
         <ExplorerButton href={explorerLink} isCompact={false} />
       </Box>
-
-      <Box gridArea="items" className={css.txItems}>
+      <Box
+        className={css.txItems}
+        sx={{
+          gridArea: 'items',
+        }}
+      >
         {groupedListItems.map((tx) => {
           const nonce = isMultisigExecutionInfo(tx.transaction.executionInfo) ? tx.transaction.executionInfo.nonce : ''
           return (
-            <Box position="relative" key={tx.transaction.id}>
+            <Box
+              key={tx.transaction.id}
+              sx={{
+                position: 'relative',
+              }}
+            >
               <Box className={css.nonce}>
                 <Typography className={css.nonce}>{nonce}</Typography>
               </Box>

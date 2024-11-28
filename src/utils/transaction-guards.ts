@@ -41,7 +41,7 @@ import type {
   NativeStakingValidatorsExitConfirmationView,
   StakingTxInfo,
   TransactionData,
-  DecodedDataResponse,
+  DataDecoded,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -59,7 +59,7 @@ import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 import { ethers } from 'ethers'
 import { getSafeToL2MigrationDeployment, getMultiSendDeployments } from '@safe-global/safe-deployments'
-import { Safe_to_l2_migration__factory } from '@/types/contracts'
+import { Safe__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
 import { hasMatchingDeployment } from '@/services/contracts/deployments'
 import { isMultiSendCalldata } from './transaction-calldata'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'
@@ -274,23 +274,25 @@ export const isGenericConfirmation = (
   return false
 }
 
-export const isCreateProxyWithNonceDecodedData = (decodedData: DecodedDataResponse | undefined): boolean => {
-  return decodedData?.method === 'createProxyWithNonce'
-}
-
-export const isSubaccountDecodedData = (decodedData: DecodedDataResponse | undefined): boolean => {
-  if (!decodedData) {
+const isCreateProxyWithNonceTxData = (dataDecoded?: DataDecoded) => {
+  const isMethod = dataDecoded?.method === 'createProxyWithNonce'
+  if (!isMethod) {
     return false
   }
+  // We could try to decoded the data, but this is simpler
+  const params = dataDecoded?.parameters
+  return params?.[0]?.name === '_singleton' && params?.[1]?.name === 'initializer' && params?.[2]?.name === 'saltNonce'
+}
 
-  const isMultiSend = decodedData?.method === 'multiSend'
+export const isSubaccountTxData = (dataDecoded?: DataDecoded): boolean => {
+  const isMultiSend = dataDecoded?.method === 'multiSend' && dataDecoded?.parameters?.[0]?.name === 'transaction'
   if (!isMultiSend) {
-    return isCreateProxyWithNonceDecodedData(decodedData)
+    return isCreateProxyWithNonceTxData(dataDecoded)
   }
 
-  const transactions = decodedData?.parameters.find((param) => param.name === 'transactions')
-  return !!transactions?.valueDecoded?.some(({ dataDecoded }) => {
-    return isCreateProxyWithNonceDecodedData(dataDecoded)
+  const transactions = dataDecoded?.parameters?.[0]?.valueDecoded
+  return !!transactions?.some((transaction) => {
+    return isCreateProxyWithNonceTxData(transaction.dataDecoded)
   })
 }
 
@@ -432,4 +434,35 @@ export const isERC20Transfer = (value: TransferInfo): value is Erc20Transfer => 
 
 export const isERC721Transfer = (value: TransferInfo): value is Erc721Transfer => {
   return value.type === TransactionTokenType.ERC721
+}
+
+const safeInterface = Safe__factory.createInterface()
+/**
+ * True if the tx calls `approveHash`
+ */
+export const isOnChainConfirmationTxData = (data?: TransactionData): boolean => {
+  const approveHashSelector = safeInterface.getFunction('approveHash').selector
+  return Boolean(data && data.hexData?.startsWith(approveHashSelector))
+}
+
+export const isOnChainConfirmationTxInfo = (info: TransactionInfo): info is Custom => {
+  if (isCustomTxInfo(info)) {
+    return info.methodName === 'approveHash' && info.dataSize === '36'
+  }
+  return false
+}
+
+/**
+ * True if the tx calls `execTransaction`
+ */
+export const isExecTxData = (data?: TransactionData): boolean => {
+  const execTransactionSelector = safeInterface.getFunction('execTransaction').selector
+  return Boolean(data && data.hexData?.startsWith(execTransactionSelector))
+}
+
+export const isExecTxInfo = (info: TransactionInfo): info is Custom => {
+  if (isCustomTxInfo(info)) {
+    return info.methodName === 'execTransaction'
+  }
+  return false
 }

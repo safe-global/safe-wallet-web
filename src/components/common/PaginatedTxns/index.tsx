@@ -45,22 +45,30 @@ const TxPage = ({
   return (
     <>
       {isFirstPage && filter && page && (
-        <Box display="flex" flexDirection="column" alignItems="flex-end" pt={[2, 0]} pb={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            pt: [2, 0],
+            pb: 3,
+          }}
+        >
           {getFilterResultCount(filter, page)}
         </Box>
       )}
-
       {page && page.results.length > 0 && <TxList items={page.results} />}
-
       {isQueue && page?.results.length === 0 && recoveryQueue.length === 0 && !hasPending && <NoQueuedTxns />}
-
       {error && <ErrorMessage>Error loading transactions</ErrorMessage>}
-
       {/* No skeletons for pending as they are shown above the queue which has them */}
       {loading && !hasPending && <SkeletonTxList />}
-
       {page?.next && onNextPage && (
-        <Box my={4} textAlign="center">
+        <Box
+          sx={{
+            my: 4,
+            textAlign: 'center',
+          }}
+        >
           <InfiniteScroll onLoadMore={() => onNextPage(page.next!)} />
         </Box>
       )}
@@ -84,7 +92,11 @@ const PaginatedTxns = ({ useTxns }: { useTxns: typeof useTxHistory | typeof useT
   }
 
   return (
-    <Box position="relative">
+    <Box
+      sx={{
+        position: 'relative',
+      }}
+    >
       {pages.map((pageUrl, index) => (
         <TxPage
           key={pageUrl}

@@ -38,7 +38,13 @@ const ActivateAccountButton = () => {
             >
               {isProcessing ? (
                 <>
-                  <Typography variant="body2" component="span" mr={1}>
+                  <Typography
+                    variant="body2"
+                    component="span"
+                    sx={{
+                      mr: 1,
+                    }}
+                  >
                     Processing
                   </Typography>
                   <CircularProgress size={16} />

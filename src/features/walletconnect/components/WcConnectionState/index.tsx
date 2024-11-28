@@ -24,8 +24,12 @@ const WcConnectionState = ({ metadata, isDelete }: { metadata?: CoreTypes.Metada
 
         <SafeAppIconCard src={icon} width={28} height={28} alt={`${name} logo`} />
       </div>
-
-      <Typography variant="h5" mt={3}>
+      <Typography
+        variant="h5"
+        sx={{
+          mt: 3,
+        }}
+      >
         {isDelete ? `${name} disconnected` : `${name} successfully connected!`}
       </Typography>
     </div>

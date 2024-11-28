@@ -9,7 +9,7 @@ const AwaitingConfirmationsStatus = 'AWAITING_CONFIRMATIONS'
 
 type SafeMessageLocalStatus = SafeMessageStatus | typeof ConfirmingStatus | typeof AwaitingConfirmationsStatus
 
-const STATUS_LABELS: { [key in SafeMessageLocalStatus]: string } = {
+const STATUS_LABELS: { [_key in SafeMessageLocalStatus]: string } = {
   [ConfirmingStatus]: 'Confirming',
   [AwaitingConfirmationsStatus]: 'Awaiting confirmations',
   [SafeMessageStatus.CONFIRMED]: 'Confirmed',

@@ -35,7 +35,14 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
   return (
     <SignOrExecuteForm onSubmit={onFormSubmit}>
       <Paper sx={{ backgroundColor: ({ palette }) => palette.warning.background, p: 2 }}>
-        <Typography color="text.secondary" mb={2} display="flex" alignItems="center">
+        <Typography
+          sx={{
+            color: 'text.secondary',
+            mb: 2,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <SvgIcon component={MinusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
           Selected signer
         </Typography>
@@ -48,10 +55,19 @@ export const ReviewRemoveOwner = ({ params }: { params: RemoveOwnerFlowProps }):
         />
       </Paper>
       <ChangeSignerSetupWarning />
-
       <Divider className={commonCss.nestedDivider} />
-      <Box m={1}>
-        <Typography variant="body2" color="text.secondary" mb={0.5}>
+      <Box
+        sx={{
+          m: 1,
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            mb: 0.5,
+          }}
+        >
           Any transaction requires the confirmation of:
         </Typography>
         <Typography>

@@ -52,6 +52,7 @@ function EntryDialog({
 
   return (
     <ModalDialog
+      data-testid="entry-dialog"
       open
       onClose={handleClose}
       dialogTitle={defaultValues.name ? 'Edit entry' : 'Create entry'}
@@ -60,7 +61,11 @@ function EntryDialog({
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
           <DialogContent>
-            <Box mb={2}>
+            <Box
+              sx={{
+                mb: 2,
+              }}
+            >
               <NameInput data-testid="name-input" label="Name" autoFocus name="name" required />
             </Box>
 

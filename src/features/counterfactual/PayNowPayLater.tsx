@@ -42,7 +42,12 @@ const PayNowPayLater = ({
 
   return (
     <>
-      <Typography variant="h4" fontWeight="bold">
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 'bold',
+        }}
+      >
         Before we continue...
       </Typography>
       {isMultiChain && (
@@ -89,13 +94,20 @@ const PayNowPayLater = ({
         <FormControl fullWidth>
           <RadioGroup row value={payMethod} onChange={onChoosePayMethod} className={css.radioGroup}>
             <FormControlLabel
+              data-testid="pay-now-execution-method"
               sx={{ flex: 1 }}
               value={PayMethod.PayNow}
               className={classnames(css.radioContainer, { [css.active]: payMethod === PayMethod.PayNow })}
               label={
                 <>
                   <Typography className={css.radioTitle}>Pay now</Typography>
-                  <Typography className={css.radioSubtitle} variant="body2" color="text.secondary">
+                  <Typography
+                    className={css.radioSubtitle}
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     {canRelay ? (
                       'Sponsored free transaction'
                     ) : (
@@ -117,7 +129,13 @@ const PayNowPayLater = ({
               label={
                 <>
                   <Typography className={css.radioTitle}>Pay later</Typography>
-                  <Typography className={css.radioSubtitle} variant="body2" color="text.secondary">
+                  <Typography
+                    className={css.radioSubtitle}
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary',
+                    }}
+                  >
                     with the first transaction
                   </Typography>
                 </>

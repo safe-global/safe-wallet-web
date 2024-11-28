@@ -1,3 +1,4 @@
+import type Safe from '@safe-global/protocol-kit'
 import { act } from 'react'
 import { extendedSafeInfoBuilder } from '@/tests/builders/safe'
 import { hexlify, zeroPadValue, toUtf8Bytes } from 'ethers'
@@ -13,6 +14,7 @@ import * as useChainsHook from '@/hooks/useChains'
 import * as sender from '@/services/safe-messages/safeMsgSender'
 import * as onboard from '@/hooks/wallets/useOnboard'
 import * as useSafeMessage from '@/hooks/messages/useSafeMessage'
+import * as sdk from '@/hooks/coreSDK/safeCoreSDK'
 import { render, fireEvent, waitFor } from '@/tests/test-utils'
 import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import type { EIP1193Provider, WalletState, AppState, OnboardAPI } from '@web3-onboard/core'
@@ -102,6 +104,8 @@ describe('SignMessage', () => {
     }))
 
     jest.spyOn(useIsWrongChainHook, 'default').mockImplementation(() => false)
+
+    jest.spyOn(sdk, 'useSafeSDK').mockReturnValue({} as unknown as Safe)
   })
 
   describe('EIP-191 messages', () => {
@@ -394,7 +398,7 @@ describe('SignMessage', () => {
       () =>
         ({
           address: zeroPadValue('0x07', 20),
-        } as ConnectedWallet),
+        }) as ConnectedWallet,
     )
     jest.spyOn(useIsSafeOwnerHook, 'default').mockImplementation(() => false)
     jest.spyOn(useSafeMessage, 'default').mockImplementation(() => [undefined, jest.fn(), undefined])
@@ -423,7 +427,7 @@ describe('SignMessage', () => {
       () =>
         ({
           address: zeroPadValue('0x02', 20),
-        } as ConnectedWallet),
+        }) as ConnectedWallet,
     )
     const messageText = 'Hello world!'
     const messageHash = generateSafeMessageHash(
@@ -469,7 +473,7 @@ describe('SignMessage', () => {
       () =>
         ({
           address: zeroPadValue('0x03', 20),
-        } as ConnectedWallet),
+        }) as ConnectedWallet,
     )
 
     jest.spyOn(useSafeMessage, 'default').mockReturnValue([undefined, jest.fn(), undefined])
@@ -511,7 +515,7 @@ describe('SignMessage', () => {
       () =>
         ({
           address: zeroPadValue('0x03', 20),
-        } as ConnectedWallet),
+        }) as ConnectedWallet,
     )
 
     const messageText = 'Hello world!'
@@ -575,7 +579,7 @@ describe('SignMessage', () => {
       () =>
         ({
           address: zeroPadValue('0x03', 20),
-        } as ConnectedWallet),
+        }) as ConnectedWallet,
     )
 
     const messageText = 'Hello world!'

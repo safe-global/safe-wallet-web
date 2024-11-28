@@ -16,7 +16,7 @@ import { sameAddress } from '@/utils/addresses'
 import { useIsSidebarRoute } from '@/hooks/useIsSidebarRoute'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
 
-export function _RecoveryModal({
+export function InternalRecoveryModal({
   isOwner,
   isRecoverer,
   queue,
@@ -29,8 +29,8 @@ export function _RecoveryModal({
   wallet: ReturnType<typeof useWallet>
   isSidebarRoute?: boolean
 }): ReactElement {
-  const { wasProposalDismissed, dismissProposal } = _useDidDismissProposal()
-  const { wasInProgressDismissed, dismissInProgress } = _useDidDismissInProgress()
+  const { wasProposalDismissed, dismissProposal } = useDidDismissProposal()
+  const { wasInProgressDismissed, dismissInProgress } = useDidDismissInProgress()
 
   const [modal, setModal] = useState<ReactElement | null>(null)
   const router = useRouter()
@@ -105,7 +105,7 @@ const useSidebar = () => {
   return isSidebarRoute
 }
 
-export const RecoveryModal = madProps(_RecoveryModal, {
+export const RecoveryModal = madProps(InternalRecoveryModal, {
   isOwner: useIsSafeOwner,
   isRecoverer: useIsRecoverer,
   queue: useRecoveryQueue,
@@ -113,7 +113,7 @@ export const RecoveryModal = madProps(_RecoveryModal, {
   isSidebarRoute: useSidebar,
 })
 
-export function _useDidDismissProposal() {
+export function useDidDismissProposal() {
   const LS_KEY = 'dismissedRecoveryProposals'
 
   type Recoverer = string
@@ -151,7 +151,7 @@ export function _useDidDismissProposal() {
   return { wasProposalDismissed, dismissProposal }
 }
 
-export function _useDidDismissInProgress() {
+export function useDidDismissInProgress() {
   type TxHash = string
   type DismissedInProgressCache = { [chainId: string]: { [safeAddress: string]: TxHash } }
 

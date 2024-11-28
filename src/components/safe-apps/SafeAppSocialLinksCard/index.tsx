@@ -33,30 +33,64 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
 
   return (
     <Card className={css.container}>
-      <Box display="flex" alignItems="center" gap={1} component="a">
+      <Box
+        component="a"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+        }}
+      >
         {/* Team Link section */}
         <div className={css.questionMarkIcon}>
           <HelpOutlineRoundedIcon color="info" />
         </div>
         <div>
-          <Typography fontWeight="bold" variant="subtitle1">
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: 'bold',
+            }}
+          >
             Something wrong with the Safe App?
           </Typography>
-          <Typography color="primary.light" variant="body2">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'primary.light',
+            }}
+          >
             Get in touch with the team
           </Typography>
         </div>
       </Box>
-
-      <Box className={css.socialLinksSectionContainer} display="flex" gap={4}>
+      <Box
+        className={css.socialLinksSectionContainer}
+        sx={{
+          display: 'flex',
+          gap: 4,
+        }}
+      >
         {/* Social links section */}
         {hasSocialLinks && (
           <div>
-            <Typography color="border.main" variant="body2" paddingLeft={1}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'border.main',
+                paddingLeft: 1,
+              }}
+            >
               Social Media
             </Typography>
 
-            <Box display="flex" mt={0.2} minHeight="40px">
+            <Box
+              sx={{
+                display: 'flex',
+                mt: 0.2,
+                minHeight: '40px',
+              }}
+            >
               {discordSocialLink && (
                 <IconButton aria-label="Discord link" component="a" target="_blank" href={discordSocialLink.url}>
                   <DiscordIcon />
@@ -90,8 +124,18 @@ const SafeAppSocialLinksCard = ({ safeApp }: SafeAppSocialLinksCardProps) => {
 
         {/* Developer website section */}
         {developerWebsite && (
-          <Box display="flex" flexDirection="column">
-            <Typography color="border.main" variant="body2">
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'border.main',
+              }}
+            >
               Website
             </Typography>
 

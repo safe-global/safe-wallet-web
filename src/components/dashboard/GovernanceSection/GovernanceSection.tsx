@@ -24,16 +24,40 @@ import InfiniteScroll from '@/components/common/InfiniteScroll'
 
 // A fallback component when the Safe App fails to load
 const WidgetLoadErrorFallback = () => (
-  <Box display="flex" flexDirection="column" alignItems="center" height="100%">
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      height: '100%',
+    }}
+  >
     <Card className={css.loadErrorCard}>
       <Box className={css.loadErrorMsgContainer}>
-        <Typography variant="h4" color="text.primary" fontWeight="bold">
+        <Typography
+          variant="h4"
+          sx={{
+            color: 'text.primary',
+            fontWeight: 'bold',
+          }}
+        >
           Couldn&apos;t load governance widgets
         </Typography>
         <SvgIcon component={NetworkError} inheritViewBox className={css.loadErroricon} />
-        <Typography variant="body1" color="text.primary">
+        <Typography
+          variant="body1"
+          sx={{
+            color: 'text.primary',
+          }}
+        >
           You can try to reload the page and in case the problem persists, please reach out to us via{' '}
-          <Link target="_blank" href={DISCORD_URL} fontSize="medium">
+          <Link
+            target="_blank"
+            href={DISCORD_URL}
+            sx={{
+              fontSize: 'medium',
+            }}
+          >
             Discord
             <OpenInNew fontSize="small" color="primary" className={css.loadErroricon} />
           </Link>
@@ -91,12 +115,19 @@ const GovernanceSection = () => {
             ) : (
               <Box
                 className={css.widgetWrapper}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                textAlign="center"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                }}
               >
-                <Typography variant="h1" color="text.secondary">
+                <Typography
+                  variant="h1"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   Loading section...
                 </Typography>
               </Box>
@@ -132,14 +163,24 @@ const LazyGovernanceSection = () => {
   return (
     <>
       {hasScrolled && <InfiniteScroll onLoadMore={onVisible} />}
-
-      <Typography component="h2" variant="subtitle1" fontWeight={700}>
+      <Typography
+        component="h2"
+        variant="subtitle1"
+        sx={{
+          fontWeight: 700,
+        }}
+      >
         Governance
       </Typography>
-      <Typography variant="body2" mb={2} color="text.secondary">
+      <Typography
+        variant="body2"
+        sx={{
+          mb: 2,
+          color: 'text.secondary',
+        }}
+      >
         Use your SAFE tokens to vote on important proposals or participate in forum discussions.
       </Typography>
-
       <div className={css.lazyWrapper}>{isVisible && <GovernanceSection />}</div>
     </>
   )

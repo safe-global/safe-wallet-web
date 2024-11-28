@@ -45,7 +45,11 @@ export const ApprovalEditorForm = ({
       <List className={css.approvalsList}>
         {Object.entries(groupedApprovals).map(([spender, approvals], spenderIdx) => (
           <Box key={spender}>
-            <Stack gap={2}>
+            <Stack
+              sx={{
+                gap: 2,
+              }}
+            >
               {approvals.map((tx) => (
                 <ListItem
                   key={tx.tokenAddress + tx.spender}

@@ -8,8 +8,6 @@ import ListItemText from '@mui/material/ListItemText'
 
 import EntryDialog from '@/components/address-book/EntryDialog'
 import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
-import { useAppSelector } from '@/store'
-import { selectAddedSafes } from '@/store/addedSafesSlice'
 import SubaccountsIcon from '@/public/images/sidebar/subaccounts-icon.svg'
 import EditIcon from '@/public/images/common/edit.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
@@ -44,18 +42,16 @@ const SafeListContextMenu = ({
   chainId,
   addNetwork,
   rename,
-  showSubaccounts,
+  undeployedSafe,
 }: {
   name: string
   address: string
   chainId: string
   addNetwork: boolean
   rename: boolean
-  showSubaccounts: boolean
+  undeployedSafe: boolean
 }): ReactElement => {
   const { data: subaccounts } = useGetSafesByOwnerQuery({ chainId, ownerAddress: address })
-  const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
-  const isAdded = !!addedSafes?.[address]
   const addressBook = useAddressBook()
   const hasName = address in addressBook
 
@@ -94,7 +90,7 @@ const SafeListContextMenu = ({
         <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
-        {showSubaccounts && subaccounts?.safes && subaccounts.safes.length > 0 && (
+        {!undeployedSafe && subaccounts?.safes && subaccounts.safes.length > 0 && (
           <MenuItem onClick={handleOpenModal(ModalType.SUBACCOUNTS, OVERVIEW_EVENTS.SIDEBAR_SUBACCOUNTS)}>
             <ListItemIcon>
               <SvgIcon component={SubaccountsIcon} inheritViewBox fontSize="small" color="success" />
@@ -112,7 +108,7 @@ const SafeListContextMenu = ({
           </MenuItem>
         )}
 
-        {isAdded && (
+        {undeployedSafe && (
           <MenuItem onClick={handleOpenModal(ModalType.REMOVE, OVERVIEW_EVENTS.REMOVE_FROM_WATCHLIST)}>
             <ListItemIcon>
               <SvgIcon component={DeleteIcon} inheritViewBox fontSize="small" color="error" />
