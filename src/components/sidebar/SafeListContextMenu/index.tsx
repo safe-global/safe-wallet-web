@@ -10,6 +10,7 @@ import EntryDialog from '@/components/address-book/EntryDialog'
 import SafeListRemoveDialog from '@/components/sidebar/SafeListRemoveDialog'
 import { useAppSelector } from '@/store'
 import { selectAddedSafes } from '@/store/addedSafesSlice'
+import SubaccountsIcon from '@/public/images/sidebar/subaccounts-icon.svg'
 import EditIcon from '@/public/images/common/edit.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import PlusIcon from '@/public/images/common/plus.svg'
@@ -20,14 +21,22 @@ import useAddressBook from '@/hooks/useAddressBook'
 import { AppRoutes } from '@/config/routes'
 import router from 'next/router'
 import { CreateSafeOnNewChain } from '@/features/multichain/components/CreateSafeOnNewChain'
+import { useGetSafesByOwnerQuery } from '@/store/slices'
+import { SubaccountsPopover } from '../SubaccountsPopover'
 
 enum ModalType {
+  SUBACCOUNTS = 'subaccounts',
   RENAME = 'rename',
   REMOVE = 'remove',
   ADD_CHAIN = 'add_chain',
 }
 
-const defaultOpen = { [ModalType.RENAME]: false, [ModalType.REMOVE]: false, [ModalType.ADD_CHAIN]: false }
+const defaultOpen = {
+  [ModalType.SUBACCOUNTS]: false,
+  [ModalType.RENAME]: false,
+  [ModalType.REMOVE]: false,
+  [ModalType.ADD_CHAIN]: false,
+}
 
 const SafeListContextMenu = ({
   name,
@@ -35,19 +44,22 @@ const SafeListContextMenu = ({
   chainId,
   addNetwork,
   rename,
+  showSubaccounts,
 }: {
   name: string
   address: string
   chainId: string
   addNetwork: boolean
   rename: boolean
+  showSubaccounts: boolean
 }): ReactElement => {
+  const { data: subaccounts } = useGetSafesByOwnerQuery({ chainId, ownerAddress: address })
   const addedSafes = useAppSelector((state) => selectAddedSafes(state, chainId))
   const isAdded = !!addedSafes?.[address]
   const addressBook = useAddressBook()
   const hasName = address in addressBook
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>()
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [open, setOpen] = useState<typeof defaultOpen>(defaultOpen)
 
   const trackingLabel =
@@ -58,13 +70,15 @@ const SafeListContextMenu = ({
   }
 
   const handleCloseContextMenu = () => {
-    setAnchorEl(undefined)
+    setAnchorEl(null)
   }
 
   const handleOpenModal =
     (type: keyof typeof open, event: typeof OVERVIEW_EVENTS.SIDEBAR_RENAME | typeof OVERVIEW_EVENTS.SIDEBAR_RENAME) =>
     () => {
-      handleCloseContextMenu()
+      if (type !== ModalType.SUBACCOUNTS) {
+        handleCloseContextMenu()
+      }
       setOpen((prev) => ({ ...prev, [type]: true }))
 
       trackEvent({ ...event, label: trackingLabel })
@@ -80,6 +94,15 @@ const SafeListContextMenu = ({
         <MoreVertIcon sx={({ palette }) => ({ color: palette.border.main })} />
       </IconButton>
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
+        {showSubaccounts && subaccounts?.safes && subaccounts.safes.length > 0 && (
+          <MenuItem onClick={handleOpenModal(ModalType.SUBACCOUNTS, OVERVIEW_EVENTS.SIDEBAR_SUBACCOUNTS)}>
+            <ListItemIcon>
+              <SvgIcon component={SubaccountsIcon} inheritViewBox fontSize="small" color="success" />
+            </ListItemIcon>
+            <ListItemText data-testid="subaccounts-btn">Subaccounts</ListItemText>
+          </MenuItem>
+        )}
+
         {rename && (
           <MenuItem onClick={handleOpenModal(ModalType.RENAME, OVERVIEW_EVENTS.SIDEBAR_RENAME)}>
             <ListItemIcon>
@@ -107,6 +130,10 @@ const SafeListContextMenu = ({
           </MenuItem>
         )}
       </ContextMenu>
+
+      {open[ModalType.SUBACCOUNTS] && (
+        <SubaccountsPopover anchorEl={anchorEl} onClose={handleCloseModal} chainId={chainId} safeAddress={address} />
+      )}
 
       {open[ModalType.RENAME] && (
         <EntryDialog

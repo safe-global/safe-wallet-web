@@ -72,8 +72,8 @@ export function SetUpSubaccount({
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onFormSubmit)}>
           <Typography variant="body2" sx={{ mt: 1 }}>
-            It&apos;s possible to fund a Subaccount with multiple assets during deployment. You can select which assets
-            you&apos;d like to fund the Subaccount with below, and they will be sent in the deployment transaction.
+            Name your Subaccount and select which assets to fund it with. All selected assets will be transferred when
+            deployed.
           </Typography>
 
           <FormControl fullWidth sx={{ mt: 3 }}>
@@ -247,7 +247,7 @@ function AssetInputs({ name }: { name: SetupSubaccountFormFields.assets }) {
         sx={{ my: 3 }}
         disabled={nonSelectedAssets.length === 0}
       >
-        Fund new asset
+        Add asset
       </Button>
     </>
   )

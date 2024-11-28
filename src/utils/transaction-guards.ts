@@ -41,6 +41,7 @@ import type {
   NativeStakingValidatorsExitConfirmationView,
   StakingTxInfo,
   TransactionData,
+  DecodedDataResponse,
 } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   ConfirmationViewTypes,
@@ -271,6 +272,26 @@ export const isGenericConfirmation = (
     return decodedData.type === ConfirmationViewTypes.GENERIC
   }
   return false
+}
+
+export const isCreateProxyWithNonceDecodedData = (decodedData: DecodedDataResponse | undefined): boolean => {
+  return decodedData?.method === 'createProxyWithNonce'
+}
+
+export const isSubaccountDecodedData = (decodedData: DecodedDataResponse | undefined): boolean => {
+  if (!decodedData) {
+    return false
+  }
+
+  const isMultiSend = decodedData?.method === 'multiSend'
+  if (!isMultiSend) {
+    return isCreateProxyWithNonceDecodedData(decodedData)
+  }
+
+  const transactions = decodedData?.parameters.find((param) => param.name === 'transactions')
+  return !!transactions?.valueDecoded?.some(({ dataDecoded }) => {
+    return isCreateProxyWithNonceDecodedData(dataDecoded)
+  })
 }
 
 export const isCancelledSwapOrder = (value: TransactionInfo) => {

@@ -138,7 +138,14 @@ const AccountItem = ({ onLinkClick, safeItem }: AccountItemProps) => {
         </Link>
       </Track>
 
-      <SafeListContextMenu name={name} address={address} chainId={chainId} addNetwork={isReplayable} rename />
+      <SafeListContextMenu
+        name={name}
+        address={address}
+        chainId={chainId}
+        addNetwork={isReplayable}
+        rename
+        showSubaccounts
+      />
 
       <QueueActions
         queued={safeOverview?.queued || 0}

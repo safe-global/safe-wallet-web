@@ -15,7 +15,7 @@ import { ProcessingStatus } from '@/components/tx-flow/flows/SuccessScreen/statu
 import { IndexingStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/IndexingStatus'
 import { DefaultStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses/DefaultStatus'
 import useDecodeTx from '@/hooks/useDecodeTx'
-import { isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
+import { isSubaccountDecodedData, isSwapConfirmationViewOrder } from '@/utils/transaction-guards'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { getTxLink } from '@/utils/tx-link'
 
@@ -40,6 +40,7 @@ const SuccessScreen = ({ txId, txHash, safeTx }: Props) => {
   const txLink = chain && txId && getTxLink(txId, chain, safeAddress)
   const [decodedData] = useDecodeTx(safeTx)
   const isSwapOrder = isSwapConfirmationViewOrder(decodedData)
+  const isSubaccount = isSubaccountDecodedData(decodedData)
 
   useEffect(() => {
     if (!pendingTxHash) return
@@ -69,10 +70,10 @@ const SuccessScreen = ({ txId, txHash, safeTx }: Props) => {
     case PendingStatus.PROCESSING:
     case PendingStatus.RELAYING:
       // status can only have these values if txId & pendingTx are defined
-      StatusComponent = <ProcessingStatus txId={txId!} pendingTx={pendingTx!} />
+      StatusComponent = <ProcessingStatus txId={txId!} pendingTx={pendingTx!} isSubaccount={isSubaccount} />
       break
     case PendingStatus.INDEXING:
-      StatusComponent = <IndexingStatus />
+      StatusComponent = <IndexingStatus isSubaccount={isSubaccount} />
       break
     default:
       StatusComponent = <DefaultStatus error={error} />

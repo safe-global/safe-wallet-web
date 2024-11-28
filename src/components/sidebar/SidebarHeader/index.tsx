@@ -31,6 +31,7 @@ import ExplorerButton from '@/components/common/ExplorerButton'
 import CopyTooltip from '@/components/common/CopyTooltip'
 import FiatValue from '@/components/common/FiatValue'
 import { useAddressResolver } from '@/hooks/useAddressResolver'
+import { SubaccountsButton } from '@/components/sidebar/SubaccountsButton'
 
 const SafeHeader = (): ReactElement => {
   const { balances } = useVisibleBalances()
@@ -106,6 +107,10 @@ const SafeHeader = (): ReactElement => {
 
           <Track {...OVERVIEW_EVENTS.OPEN_EXPLORER}>
             <ExplorerButton {...blockExplorerLink} className={css.iconButton} icon={LinkIconBold} />
+          </Track>
+
+          <Track {...OVERVIEW_EVENTS.HEADER_SUBACCOUNTS}>
+            <SubaccountsButton chainId={safe.chainId} safeAddress={safe.address.value} />
           </Track>
 
           <CounterfactualStatusButton />

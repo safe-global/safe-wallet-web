@@ -9,6 +9,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import SettingsHeader from '@/components/settings/SettingsHeader'
 import DelegatesList from '@/components/settings/DelegatesList'
 import SpendingLimits from '@/components/settings/SpendingLimits'
+import { SubaccountsList } from '@/components/settings/SubaccountsList'
 
 const Setup: NextPage = () => {
   const { safe, safeLoaded } = useSafeInfo()
@@ -67,6 +68,8 @@ const Setup: NextPage = () => {
         <SpendingLimits />
 
         <DelegatesList />
+
+        <SubaccountsList />
       </main>
     </>
   )
