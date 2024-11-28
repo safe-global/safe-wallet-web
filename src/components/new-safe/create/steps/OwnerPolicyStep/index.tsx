@@ -16,6 +16,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import layoutCss from '@/components/new-safe/create/styles.module.css'
 import { CREATE_SAFE_EVENTS, trackEvent } from '@/services/analytics'
 import OwnerRow from '@/components/new-safe/OwnerRow'
+import { maybePlural } from '@/utils/formatters'
 
 enum OwnerPolicyStepFields {
   owners = 'owners',
@@ -175,7 +176,7 @@ const OwnerPolicyStep = ({
             </Grid>
             <Grid item>
               <Typography>
-                out of {ownerFields.length} signer{ownerFields.length > 1 ? 's' : ''}
+                out of {ownerFields.length} signer{maybePlural(ownerFields)}
               </Typography>
             </Grid>
           </Grid>

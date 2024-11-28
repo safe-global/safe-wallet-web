@@ -20,6 +20,7 @@ import type { ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import { asError } from '@/services/exceptions/utils'
 import { UncheckedJsonRpcSigner } from '@/utils/providers/UncheckedJsonRpcSigner'
 import get from 'lodash/get'
+import { maybePlural } from '@/utils/formatters'
 
 export const getAndValidateSafeSDK = (): Safe => {
   const safeSDK = getSafeSDK()
@@ -210,9 +211,9 @@ export const prepareTxExecution = async (safeTransaction: SafeTransaction, provi
   if (threshold > signedSafeTransaction.signatures.size) {
     const signaturesMissing = threshold - signedSafeTransaction.signatures.size
     throw new Error(
-      `There ${signaturesMissing > 1 ? 'are' : 'is'} ${signaturesMissing} signature${
-        signaturesMissing > 1 ? 's' : ''
-      } missing`,
+      `There ${signaturesMissing > 1 ? 'are' : 'is'} ${signaturesMissing} signature${maybePlural(
+        signaturesMissing,
+      )} missing`,
     )
   }
 

@@ -1,4 +1,5 @@
 import { format, formatDistanceToNow, formatRelative } from 'date-fns'
+import { maybePlural } from './formatters'
 
 export const currentMinutes = (): number => Math.floor(Date.now() / (1000 * 60))
 
@@ -40,14 +41,14 @@ export function getPeriod(seconds: number): string | undefined {
   const { days, hours, minutes } = getCountdown(seconds)
 
   if (days > 0) {
-    return `${days} day${days === 1 ? '' : 's'}`
+    return `${days} day${maybePlural(days)}`
   }
 
   if (hours > 0) {
-    return `${hours} hour${hours === 1 ? '' : 's'}`
+    return `${hours} hour${maybePlural(hours)}`
   }
 
   if (minutes > 0) {
-    return `${minutes} minute${minutes === 1 ? '' : 's'}`
+    return `${minutes} minute${maybePlural(minutes)}`
   }
 }

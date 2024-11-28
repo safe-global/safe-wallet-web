@@ -7,6 +7,7 @@ import PlusIcon from '@/public/images/common/plus.svg'
 import EthHashInfo from '@/components/common/EthHashInfo'
 
 import css from './styles.module.css'
+import { maybePlural } from '@/utils/formatters'
 
 export function OwnerList({
   title,
@@ -27,7 +28,7 @@ export function OwnerList({
         }}
       >
         <SvgIcon component={PlusIcon} inheritViewBox fontSize="small" sx={{ mr: 1 }} />
-        {title ?? `New signer${owners.length > 1 ? 's' : ''}`}
+        {title ?? `New signer${maybePlural(owners)}`}
       </Typography>
       {owners.map((newOwner) => (
         <EthHashInfo

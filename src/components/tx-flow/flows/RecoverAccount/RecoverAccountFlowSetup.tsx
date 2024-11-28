@@ -28,6 +28,7 @@ import type { RecoverAccountFlowProps } from '.'
 import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { maybePlural } from '@/utils/formatters'
 
 export function _isSameSetup({
   oldOwners,
@@ -226,7 +227,7 @@ export function RecoverAccountFlowSetup({
 
             <Grid item>
               <Typography>
-                out of {fields.length} signer{fields.length > 1 ? 's' : ''}
+                out of {fields.length} signer{maybePlural(fields)}
               </Typography>
             </Grid>
           </Grid>

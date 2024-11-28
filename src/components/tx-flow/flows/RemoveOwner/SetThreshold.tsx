@@ -11,6 +11,7 @@ import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 import type { RemoveOwnerFlowProps } from '.'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { maybePlural } from '@/utils/formatters'
 
 export const SetThreshold = ({
   params,
@@ -102,7 +103,7 @@ export const SetThreshold = ({
             </Grid>
             <Grid item>
               <Typography>
-                out of {newNumberOfOwners} signer{newNumberOfOwners > 1 ? 's' : ''}
+                out of {newNumberOfOwners} signer{maybePlural(newNumberOfOwners)}
               </Typography>
             </Grid>
           </Grid>

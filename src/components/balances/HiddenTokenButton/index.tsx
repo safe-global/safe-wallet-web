@@ -7,6 +7,7 @@ import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined'
 import Track from '@/components/common/Track'
 
 import css from './styles.module.css'
+import { maybePlural } from '@/utils/formatters'
 
 const HiddenTokenButton = ({
   toggleShowHiddenAssets,
@@ -45,7 +46,7 @@ const HiddenTokenButton = ({
             >
               {hiddenAssetCount === 0
                 ? 'Hide tokens'
-                : `${hiddenAssetCount} hidden token${hiddenAssetCount > 1 ? 's' : ''}`}{' '}
+                : `${hiddenAssetCount} hidden token${maybePlural(hiddenAssetCount)}`}{' '}
             </Typography>
           </>
         </Button>

@@ -16,6 +16,7 @@ import type { TxModalContextType } from '@/components/tx-flow'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 
 import css from './styles.module.css'
+import { maybePlural } from '@/utils/formatters'
 
 type Props =
   | {
@@ -52,9 +53,7 @@ export function InternalRecoveryProposalCard({
     />
   )
   const title = 'Recover this Account'
-  const desc = `The connected wallet was chosen as a trusted Recoverer. You can help the owner${
-    safe.owners.length > 1 ? 's' : ''
-  } regain access by resetting the Account setup.`
+  const desc = `The connected wallet was chosen as a trusted Recoverer. You can help the owner${maybePlural(safe.owners)} regain access by resetting the Account setup.`
 
   const link = (
     <Track {...RECOVERY_EVENTS.LEARN_MORE} label="proposal-card">
