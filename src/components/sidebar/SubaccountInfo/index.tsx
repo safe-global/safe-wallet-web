@@ -8,9 +8,9 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 
 export function SubaccountInfo(): ReactElement {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 1 }}>
       <Subaccounts />
-      <Box sx={{ display: 'flex', gap: 1, py: 1 }}>
+      <Box sx={{ display: 'flex', gap: 1, py: 2 }}>
         <Typography fontWeight={700}>No Subaccounts yet</Typography>
         <Tooltip
           title="Subaccounts are separate wallets owned by your main Account, perfect for organizing different funds and projects."
@@ -29,12 +29,12 @@ export function SubaccountInfo(): ReactElement {
           </span>
         </Tooltip>
       </Box>
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', pt: 3, pb: 4 }}>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', pt: 1, pb: 4 }}>
         <Avatar sx={{ padding: '20px', backgroundColor: 'success.background' }}>
-          <SvgIcon component={SubaccountsIcon} inheritViewBox color="success" sx={{ fontSize: 20 }} />
+          <SvgIcon component={SubaccountsIcon} inheritViewBox color="primary" sx={{ fontSize: 20 }} />
         </Avatar>
         <Typography variant="body2" fontWeight={700}>
-          With Subaccounts you can:
+          Subaccounts allow you to:
         </Typography>
       </Box>
       <List sx={{ p: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>

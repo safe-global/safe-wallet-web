@@ -104,22 +104,6 @@ export const OVERVIEW_EVENTS = {
     action: 'Interact with notification',
     category: OVERVIEW_CATEGORY,
   },
-  HEADER_SUBACCOUNTS: {
-    action: 'Open Subaccounts from header',
-    category: OVERVIEW_CATEGORY,
-  },
-  SIDEBAR_SUBACCOUNTS: {
-    action: 'Open Subaccounts from sidebar',
-    category: OVERVIEW_CATEGORY,
-  },
-  ADD_SUBACCOUNT: {
-    action: 'Add subaccount',
-    category: OVERVIEW_CATEGORY,
-  },
-  SHOW_ALL_SUBACCOUNTS: {
-    action: 'Show all Subaccounts',
-    category: OVERVIEW_CATEGORY,
-  },
   SIDEBAR_RENAME: {
     action: 'Rename Safe from sidebar',
     category: OVERVIEW_CATEGORY,

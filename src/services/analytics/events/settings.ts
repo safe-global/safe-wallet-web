@@ -34,10 +34,6 @@ export const SETTINGS_EVENTS = {
       action: 'Threshold',
       category: SETTINGS_CATEGORY,
     },
-    RENAME_SUBACCOUNT: {
-      action: 'Rename subaccount',
-      category: SETTINGS_CATEGORY,
-    },
   },
   APPEARANCE: {
     COPY_PREFIXES: {

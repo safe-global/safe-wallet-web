@@ -13,7 +13,7 @@ import EditIcon from '@/public/images/common/edit.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import PlusIcon from '@/public/images/common/plus.svg'
 import ContextMenu from '@/components/common/ContextMenu'
-import { trackEvent, OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
+import { trackEvent, OVERVIEW_EVENTS, OVERVIEW_LABELS, type AnalyticsEvent } from '@/services/analytics'
 import { SvgIcon } from '@mui/material'
 import useAddressBook from '@/hooks/useAddressBook'
 import { AppRoutes } from '@/config/routes'
@@ -21,6 +21,7 @@ import router from 'next/router'
 import { CreateSafeOnNewChain } from '@/features/multichain/components/CreateSafeOnNewChain'
 import { useGetSafesByOwnerQuery } from '@/store/slices'
 import { SubaccountsPopover } from '../SubaccountsPopover'
+import { SUBACCOUNT_EVENTS, SUBACCOUNT_LABELS } from '@/services/analytics/events/subaccounts'
 
 enum ModalType {
   SUBACCOUNTS = 'subaccounts',
@@ -69,16 +70,14 @@ const SafeListContextMenu = ({
     setAnchorEl(null)
   }
 
-  const handleOpenModal =
-    (type: keyof typeof open, event: typeof OVERVIEW_EVENTS.SIDEBAR_RENAME | typeof OVERVIEW_EVENTS.SIDEBAR_RENAME) =>
-    () => {
-      if (type !== ModalType.SUBACCOUNTS) {
-        handleCloseContextMenu()
-      }
-      setOpen((prev) => ({ ...prev, [type]: true }))
-
-      trackEvent({ ...event, label: trackingLabel })
+  const handleOpenModal = (type: keyof typeof open, event: AnalyticsEvent) => () => {
+    if (type !== ModalType.SUBACCOUNTS) {
+      handleCloseContextMenu()
     }
+    setOpen((prev) => ({ ...prev, [type]: true }))
+
+    trackEvent({ ...event, label: trackingLabel })
+  }
 
   const handleCloseModal = () => {
     setOpen(defaultOpen)
@@ -91,7 +90,12 @@ const SafeListContextMenu = ({
       </IconButton>
       <ContextMenu anchorEl={anchorEl} open={!!anchorEl} onClose={handleCloseContextMenu}>
         {!undeployedSafe && subaccounts?.safes && subaccounts.safes.length > 0 && (
-          <MenuItem onClick={handleOpenModal(ModalType.SUBACCOUNTS, OVERVIEW_EVENTS.SIDEBAR_SUBACCOUNTS)}>
+          <MenuItem
+            onClick={handleOpenModal(ModalType.SUBACCOUNTS, {
+              ...SUBACCOUNT_EVENTS.OPEN,
+              label: SUBACCOUNT_LABELS.sidebar,
+            })}
+          >
             <ListItemIcon>
               <SvgIcon component={SubaccountsIcon} inheritViewBox fontSize="small" color="success" />
             </ListItemIcon>

@@ -8,9 +8,8 @@ import { CreateSubaccount } from '@/components/tx-flow/flows/CreateSubaccount'
 import { TxModalContext } from '@/components/tx-flow'
 import { SubaccountsList } from '@/components/sidebar/SubaccountsList'
 import { SubaccountInfo } from '@/components/sidebar/SubaccountInfo'
-import { base } from '@/styles/spacings'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics'
+import { SUBACCOUNT_EVENTS } from '@/services/analytics/events/subaccounts'
 
 export function SubaccountsPopover({
   anchorEl,
@@ -38,7 +37,7 @@ export function SubaccountsPopover({
         horizontal: 'left',
       }}
       transformOrigin={{
-        vertical: -1 * base,
+        vertical: 'top',
         horizontal: 'left',
       }}
       slotProps={{ paper: { sx: { width: '300px' } } }}
@@ -53,6 +52,7 @@ export function SubaccountsPopover({
       <Box
         sx={{
           p: 3,
+          pt: 2,
           display: 'flex',
           flexDirection: 'column',
           maxHeight: '590px',
@@ -65,7 +65,7 @@ export function SubaccountsPopover({
             <SubaccountsList subaccounts={subaccounts} />
           </Box>
         )}
-        <Track {...OVERVIEW_EVENTS.ADD_SUBACCOUNT}>
+        <Track {...SUBACCOUNT_EVENTS.ADD}>
           <Button variant="contained" sx={{ width: '100%', mt: 3 }} onClick={onAdd}>
             <SvgIcon component={AddIcon} inheritViewBox fontSize="small" />
             Add Subaccount

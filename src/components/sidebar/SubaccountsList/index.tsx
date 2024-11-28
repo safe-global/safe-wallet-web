@@ -1,6 +1,6 @@
 import EthHashInfo from '@/components/common/EthHashInfo'
 import Track from '@/components/common/Track'
-import { OVERVIEW_EVENTS } from '@/services/analytics'
+import { SUBACCOUNT_EVENTS } from '@/services/analytics/events/subaccounts'
 import { ChevronRight } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 import { useState, type ReactElement } from 'react'
@@ -43,7 +43,7 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
         )
       })}
       {subaccounts.length > MAX_SUBACCOUNTS && !showAll && (
-        <Track {...OVERVIEW_EVENTS.SHOW_ALL_SUBACCOUNTS}>
+        <Track {...SUBACCOUNT_EVENTS.SHOW_ALL}>
           <Typography
             variant="caption"
             color="text.secondary"

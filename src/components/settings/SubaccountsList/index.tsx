@@ -16,7 +16,7 @@ import { useGetSafesByOwnerQuery } from '@/store/slices'
 
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import Track from '@/components/common/Track'
-import { SETTINGS_EVENTS } from '@/services/analytics'
+import { SUBACCOUNT_EVENTS } from '@/services/analytics/events/subaccounts'
 
 export function SubaccountsList(): ReactElement | null {
   const { setTxFlow } = useContext(TxModalContext)
@@ -42,7 +42,7 @@ export function SubaccountsList(): ReactElement | null {
               <div className={tableCss.actions}>
                 <CheckWallet>
                   {(isOk) => (
-                    <Track {...SETTINGS_EVENTS.SETUP.RENAME_SUBACCOUNT}>
+                    <Track {...SUBACCOUNT_EVENTS.RENAME}>
                       <Tooltip title={isOk ? 'Rename Subaccount' : undefined}>
                         <span>
                           <IconButton onClick={() => setAddressToRename(subaccount)} size="small" disabled={!isOk}>
