@@ -1,3 +1,4 @@
+import { ECOSYSTEM_ID_ADDRESS } from '@/config/constants'
 import { Container, Typography, Grid } from '@mui/material'
 import { useRouter } from 'next/router'
 
@@ -98,6 +99,7 @@ const AdvancedCreateSafe = () => {
     threshold: 1,
     saltNonce: 0,
     safeVersion: getLatestSafeVersion(chain),
+    paymentReceiver: ECOSYSTEM_ID_ADDRESS,
   }
 
   const onClose = () => {

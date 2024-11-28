@@ -1,6 +1,8 @@
+import { predictAddressBasedOnReplayData } from '@/features/multichain/utils/utils'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { Button, MenuItem, Divider, Box, TextField, Stack, Skeleton, SvgIcon, Tooltip, Typography } from '@mui/material'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import type { ReactElement } from 'react'
+import { type ReactElement, useMemo } from 'react'
 
 import type { StepRenderProps } from '@/components/new-safe/CardStepper/useCardStepper'
 import type { NewSafeFormData } from '@/components/new-safe/create'
@@ -11,29 +13,29 @@ import { type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import NumberField from '@/components/common/NumberField'
 import { useCurrentChain } from '@/hooks/useChains'
 import useAsync from '@/hooks/useAsync'
-import { computeNewSafeAddress } from '../../logic'
-import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
+import { createNewUndeployedSafeWithoutSalt } from '../../logic'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import InfoIcon from '@/public/images/notifications/info.svg'
-import useWallet from '@/hooks/wallets/useWallet'
 import { isSmartContract } from '@/utils/wallets'
 
 enum AdvancedOptionsFields {
   safeVersion = 'safeVersion',
   saltNonce = 'saltNonce',
+  paymentReceiver = 'paymentReceiver',
 }
 
 export type AdvancedOptionsStepForm = {
   [AdvancedOptionsFields.safeVersion]: SafeVersion
   [AdvancedOptionsFields.saltNonce]: number
+  [AdvancedOptionsFields.paymentReceiver]: string
 }
 
 const ADVANCED_OPTIONS_STEP_FORM_ID = 'create-safe-advanced-options-step-form'
 
 const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProps<NewSafeFormData>): ReactElement => {
-  const wallet = useWallet()
   useSyncSafeCreationStep(setStep, data.networks)
   const chain = useCurrentChain()
+  const provider = useWeb3ReadOnly()
 
   const formMethods = useForm<AdvancedOptionsStepForm>({
     mode: 'onChange',
@@ -44,39 +46,31 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
 
   const selectedSafeVersion = watch(AdvancedOptionsFields.safeVersion)
   const selectedSaltNonce = watch(AdvancedOptionsFields.saltNonce)
+  const selectedPaymentReceiver = watch(AdvancedOptionsFields.paymentReceiver)
 
-  const [readOnlyFallbackHandlerContract] = useAsync(
-    () => (chain ? getReadOnlyFallbackHandlerContract(selectedSafeVersion) : undefined),
-    [chain, selectedSafeVersion],
+  const newSafeProps = useMemo(
+    () =>
+      chain
+        ? createNewUndeployedSafeWithoutSalt(
+            selectedSafeVersion,
+            {
+              owners: data.owners.map((owner) => owner.address),
+              threshold: data.threshold,
+              paymentReceiver: selectedPaymentReceiver,
+            },
+            chain,
+          )
+        : undefined,
+    [chain, data.owners, data.threshold, selectedSafeVersion, selectedPaymentReceiver],
   )
 
   const [predictedSafeAddress] = useAsync(async () => {
-    if (!chain || !readOnlyFallbackHandlerContract || !wallet) {
-      return undefined
-    }
+    if (!provider || !newSafeProps) return
 
-    return computeNewSafeAddress(
-      wallet.provider,
-      {
-        safeAccountConfig: {
-          owners: data.owners.map((owner) => owner.address),
-          threshold: data.threshold,
-          fallbackHandler: await readOnlyFallbackHandlerContract.getAddress(),
-        },
-        saltNonce: selectedSaltNonce.toString(),
-      },
-      chain,
-      selectedSafeVersion,
-    )
-  }, [
-    chain,
-    data.owners,
-    data.threshold,
-    wallet,
-    readOnlyFallbackHandlerContract,
-    selectedSafeVersion,
-    selectedSaltNonce,
-  ])
+    const replayedSafeWithNonce = { ...newSafeProps, saltNonce: selectedSaltNonce.toString() }
+
+    return predictAddressBasedOnReplayData(replayedSafeWithNonce, provider)
+  }, [provider, newSafeProps, selectedSaltNonce])
 
   const [isDeployed] = useAsync(
     async () => (predictedSafeAddress ? await isSmartContract(predictedSafeAddress) : false),
@@ -102,7 +96,7 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
         <Stack spacing={2}>
           <Box className={layoutCss.row}>
             <Typography
-              variant="h4"
+              variant="h5"
               sx={{
                 fontWeight: 700,
                 display: 'inline-flex',
@@ -139,17 +133,16 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
                 </TextField>
               )}
             />
-          </Box>
 
-          <Divider />
-          <Box className={layoutCss.row}>
             <Typography
-              variant="h4"
+              variant="h5"
               sx={{
                 fontWeight: 700,
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 1,
+                mt: 4,
+                width: 1,
               }}
             >
               Salt nonce
@@ -183,15 +176,57 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
                 },
                 required: true,
               })}
+              fullWidth
               label="Salt nonce"
               error={Boolean(formState.errors[AdvancedOptionsFields.saltNonce]) || Boolean(isDeployed)}
               helperText={
-                (formState.errors[AdvancedOptionsFields.saltNonce]?.message ?? Boolean(isDeployed))
-                  ? 'The Safe is already deployed. Use a different salt nonce.'
-                  : undefined
+                formState.errors[AdvancedOptionsFields.saltNonce]?.message ??
+                (Boolean(isDeployed) ? 'The Safe is already deployed. Use a different salt nonce.' : undefined)
               }
             />
+
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 1,
+                mt: 4,
+                width: 1,
+              }}
+            >
+              Payment receiver
+              <Tooltip title="The payment receiver changes the predicted Safe address." arrow placement="top">
+                <span style={{ display: 'flex' }}>
+                  <SvgIcon component={InfoIcon} inheritViewBox color="border" fontSize="small" />
+                </span>
+              </Tooltip>
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                mb: 2,
+              }}
+            >
+              Impacts the derived Safe address
+            </Typography>
+            <TextField
+              {...register(AdvancedOptionsFields.paymentReceiver, {
+                required: true,
+              })}
+              label="Payment receiver"
+              error={Boolean(formState.errors[AdvancedOptionsFields.paymentReceiver]) || Boolean(isDeployed)}
+              helperText={
+                formState.errors[AdvancedOptionsFields.paymentReceiver]?.message ??
+                (Boolean(isDeployed) ? 'The Safe is already deployed. Use a different payment receiver.' : undefined)
+              }
+              fullWidth
+            />
           </Box>
+
+          <Divider />
+
           <Box className={layoutCss.row}>
             <Typography
               variant="h4"
@@ -208,7 +243,9 @@ const AdvancedOptionsStep = ({ onSubmit, onBack, data, setStep }: StepRenderProp
               <Skeleton />
             )}
           </Box>
+
           <Divider />
+
           <Box className={layoutCss.row}>
             <Box
               sx={{

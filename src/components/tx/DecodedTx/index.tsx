@@ -1,4 +1,5 @@
 import { type SyntheticEvent, type ReactElement, memo } from 'react'
+import { ErrorBoundary } from '@sentry/react'
 import {
   isCustomTxInfo,
   isMultisigDetailedExecutionInfo,
@@ -130,7 +131,11 @@ const DecodedTx = ({
                   hideDecodedData={isMethodCallInAdvanced && !!decodedData?.method}
                 />
               ) : (
-                tx && <PartialSummary safeTx={tx} />
+                tx && (
+                  <ErrorBoundary>
+                    <PartialSummary safeTx={tx} />
+                  </ErrorBoundary>
+                )
               )}
             </AccordionDetails>
           </Accordion>
