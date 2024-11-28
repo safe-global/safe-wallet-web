@@ -128,7 +128,7 @@ const SafeListContextMenu = ({
       </ContextMenu>
 
       {open[ModalType.SUBACCOUNTS] && (
-        <SubaccountsPopover anchorEl={anchorEl} onClose={handleCloseModal} chainId={chainId} safeAddress={address} />
+        <SubaccountsPopover anchorEl={anchorEl} onClose={handleCloseModal} subaccounts={subaccounts?.safes ?? []} />
       )}
 
       {open[ModalType.RENAME] && (

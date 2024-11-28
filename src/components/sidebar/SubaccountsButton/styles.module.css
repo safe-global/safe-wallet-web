@@ -1,0 +1,19 @@
+.badge :global .MuiBadge-badge {
+  border: 2px solid var(--color-background-paper);
+  border-radius: 50%;
+  box-sizing: content-box;
+  right: 10px;
+  top: 8px;
+  background-color: var(--color-success-light);
+}
+
+.count {
+  margin-left: calc(var(--space-1) / 2);
+  background-color: var(--color-success-light);
+  border-radius: 100%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

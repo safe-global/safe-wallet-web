@@ -9,23 +9,19 @@ import { TxModalContext } from '@/components/tx-flow'
 import { SubaccountsList } from '@/components/sidebar/SubaccountsList'
 import { SubaccountInfo } from '@/components/sidebar/SubaccountInfo'
 import { base } from '@/styles/spacings'
-import { useGetSafesByOwnerQuery } from '@/store/slices'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
 
 export function SubaccountsPopover({
   anchorEl,
   onClose,
-  chainId,
-  safeAddress,
+  subaccounts,
 }: {
   anchorEl: HTMLElement | null
   onClose: () => void
-  chainId: string
-  safeAddress: string
+  subaccounts: Array<string>
 }): ReactElement {
   const { setTxFlow } = useContext(TxModalContext)
-  const { data: subaccounts } = useGetSafesByOwnerQuery({ chainId, ownerAddress: safeAddress })
 
   const onAdd = () => {
     setTxFlow(<CreateSubaccount />)
@@ -62,15 +58,13 @@ export function SubaccountsPopover({
           maxHeight: '590px',
         }}
       >
-        {subaccounts?.safes ? (
-          subaccounts.safes.length === 0 ? (
-            <SubaccountInfo />
-          ) : (
-            <Box sx={{ overflowX: 'hidden' }}>
-              <SubaccountsList subaccounts={subaccounts.safes} />
-            </Box>
-          )
-        ) : null}
+        {subaccounts.length === 0 ? (
+          <SubaccountInfo />
+        ) : (
+          <Box sx={{ overflowX: 'hidden' }}>
+            <SubaccountsList subaccounts={subaccounts} />
+          </Box>
+        )}
         <Track {...OVERVIEW_EVENTS.ADD_SUBACCOUNT}>
           <Button variant="contained" sx={{ width: '100%', mt: 3 }} onClick={onAdd}>
             <SvgIcon component={AddIcon} inheritViewBox fontSize="small" />
