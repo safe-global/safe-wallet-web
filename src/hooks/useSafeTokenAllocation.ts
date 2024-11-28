@@ -2,7 +2,7 @@ import { getSafeTokenAddress, getSafeLockingAddress } from '@/components/common/
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { IS_PRODUCTION } from '@/config/constants'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import { isPast } from 'date-fns'
+import { isFuture, isPast } from 'date-fns'
 import { AbiCoder, Interface, type JsonRpcProvider } from 'ethers'
 import { useMemo } from 'react'
 import useAsync, { type AsyncResult } from './useAsync'
@@ -186,7 +186,10 @@ export const useSafeVotingPower = (allocationData?: Vesting[]): AsyncResult<bigi
     }
 
     const tokensInVesting = allocationData.reduce(
-      (acc, data) => (data.isExpired ? acc : acc + BigInt(data.amount) - BigInt(data.amountClaimed)),
+      (acc, data) =>
+        data.isExpired || data.startDate > Math.floor(Date.now() / 1000)
+          ? acc
+          : acc + BigInt(data.amount) - BigInt(data.amountClaimed),
       BigInt(0),
     )
 
