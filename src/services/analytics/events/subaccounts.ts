@@ -26,5 +26,6 @@ export const SUBACCOUNT_EVENTS = {
 export enum SUBACCOUNT_LABELS {
   header = 'header',
   sidebar = 'sidebar',
+  list = 'list',
   success_screen = 'success_screen',
 }

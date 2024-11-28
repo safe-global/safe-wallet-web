@@ -1,9 +1,12 @@
-import EthHashInfo from '@/components/common/EthHashInfo'
 import Track from '@/components/common/Track'
-import { SUBACCOUNT_EVENTS } from '@/services/analytics/events/subaccounts'
+import { SUBACCOUNT_EVENTS, SUBACCOUNT_LABELS } from '@/services/analytics/events/subaccounts'
 import { ChevronRight } from '@mui/icons-material'
-import { Box, Typography } from '@mui/material'
+import { List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material'
 import { useState, type ReactElement } from 'react'
+import Identicon from '@/components/common/Identicon'
+import { shortenAddress } from '@/utils/formatters'
+import useAddressBook from '@/hooks/useAddressBook'
+import { trackEvent } from '@/services/analytics'
 
 const MAX_SUBACCOUNTS = 5
 
@@ -16,32 +19,9 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center' }}>
+    <List sx={{ gap: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {subaccountsToShow.map((subaccount) => {
-        // TODO: Turn into link to Subaccount
-        return (
-          <Box
-            sx={{
-              width: '100%',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              border: '1px solid var(--color-border-light)',
-              borderRadius: ({ shape }) => `${shape.borderRadius}px`,
-              cursor: 'pointer',
-              py: '11px',
-              px: 2,
-              '&:hover': {
-                backgroundColor: 'var(--color-background-light)',
-                borderColor: 'var(--color-secondary-light)',
-              },
-            }}
-            key={subaccount}
-          >
-            <EthHashInfo address={subaccount} showPrefix={false} />
-            <ChevronRight color="border" />
-          </Box>
-        )
+        return <SubaccountListItem subaccount={subaccount} key={subaccount} />
       })}
       {subaccounts.length > MAX_SUBACCOUNTS && !showAll && (
         <Track {...SUBACCOUNT_EVENTS.SHOW_ALL}>
@@ -59,6 +39,47 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
           </Typography>
         </Track>
       )}
-    </Box>
+    </List>
+  )
+}
+
+function SubaccountListItem({ subaccount }: { subaccount: string }): ReactElement {
+  const addressBook = useAddressBook()
+  const name = addressBook[subaccount]
+
+  // Note: using the Track element breaks accessibility/styles
+  const onClick = () => {
+    trackEvent({ ...SUBACCOUNT_EVENTS.OPEN_SUBACCOUNT, label: SUBACCOUNT_LABELS.list })
+  }
+
+  return (
+    <ListItem
+      sx={{
+        border: ({ palette }) => `1px solid ${palette.border.light}`,
+        borderRadius: ({ shape }) => `${shape.borderRadius}px`,
+        p: 0,
+      }}
+    >
+      <ListItemButton sx={{ p: '11px 12px' }} onClick={onClick}>
+        <ListItemAvatar sx={{ minWidth: 'unset', pr: 1 }}>
+          <Identicon address={subaccount} size={32} />
+        </ListItemAvatar>
+        <ListItemText
+          primary={name}
+          primaryTypographyProps={{
+            fontWeight: 700,
+            sx: {
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            },
+          }}
+          secondary={shortenAddress(subaccount)}
+          secondaryTypographyProps={{ color: 'primary.light' }}
+          sx={{ my: 0 }}
+        />
+        <ChevronRight color="border" />
+      </ListItemButton>
+    </ListItem>
   )
 }
