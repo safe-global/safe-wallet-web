@@ -2,7 +2,7 @@ import { getSafeTokenAddress, getSafeLockingAddress } from '@/components/common/
 import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { IS_PRODUCTION } from '@/config/constants'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import { isFuture, isPast } from 'date-fns'
+import { isPast } from 'date-fns'
 import { AbiCoder, Interface, type JsonRpcProvider } from 'ethers'
 import { useMemo } from 'react'
 import useAsync, { type AsyncResult } from './useAsync'
