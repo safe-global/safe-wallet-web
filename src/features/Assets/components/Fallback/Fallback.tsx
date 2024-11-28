@@ -3,9 +3,9 @@ import { Spinner } from 'tamagui'
 
 import { Alert } from '@/src/components/Alert'
 import { SafeTab } from '@/src/components/SafeTab'
-import NoFunds from '../NoFunds'
+import { NoFunds } from '../NoFunds'
 
-const Fallback = ({ loading, hasError }: { loading: boolean; hasError: boolean }) => (
+export const Fallback = ({ loading, hasError }: { loading: boolean; hasError: boolean }) => (
   <SafeTab.ScrollView>
     {loading ? (
       <Spinner size="small" />
@@ -16,5 +16,3 @@ const Fallback = ({ loading, hasError }: { loading: boolean; hasError: boolean }
     )}
   </SafeTab.ScrollView>
 )
-
-export default Fallback

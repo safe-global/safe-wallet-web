@@ -1,8 +1,8 @@
 import React from 'react'
-import { Notifications } from '@/src/features/Notifications'
+import { NotificationsContainer } from '@/src/features/Notifications'
 
 function NotificationsScreen() {
-  return <Notifications />
+  return <NotificationsContainer />
 }
 
 export default NotificationsScreen

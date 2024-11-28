@@ -1,8 +1,8 @@
+import { AppSettingsContainer } from '@/src/features/Settings/components/AppSettings'
 import React from 'react'
-import { AppSettings } from '@/src/features/Settings/AppSettings'
 
 function SignersScreen() {
-  return <AppSettings />
+  return <AppSettingsContainer />
 }
 
 export default SignersScreen

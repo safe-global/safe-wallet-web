@@ -7,7 +7,6 @@ import {
   isTransactionListItem,
 } from '@/src/utils/transaction-guards'
 import { groupBulkTxs } from '@/src/utils/transactions'
-import { GroupedPendingTxsWithTitle } from '@/src/features/PendingTx/PendingTxList'
 import { type PendingTransactionItems, TransactionListItemType } from '@/src/store/gateway/types'
 import { View } from 'tamagui'
 import { TxGroupedCard } from '@/src/components/transactions-list/Card/TxGroupedCard'
@@ -15,6 +14,7 @@ import { TxConflictingCard } from '@/src/components/transactions-list/Card/TxCon
 import { SafeListItem } from '@/src/components/SafeListItem'
 import { TxInfo } from '@/src/components/TxInfo'
 import React from 'react'
+import { GroupedPendingTxsWithTitle } from './components/PendingTxList/PendingTxList.container'
 
 type GroupedTxs = (PendingTransactionItems | TransactionQueuedItem[])[]
 

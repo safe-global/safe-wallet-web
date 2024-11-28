@@ -2,7 +2,7 @@ import React from 'react'
 import { H3, Text, View } from 'tamagui'
 import EmptyToken from './EmptyToken'
 
-function NoFunds() {
+export function NoFunds() {
   return (
     <View alignItems="center" gap="$4">
       <EmptyToken />
@@ -13,5 +13,3 @@ function NoFunds() {
     </View>
   )
 }
-
-export default NoFunds

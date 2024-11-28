@@ -14,7 +14,7 @@ interface TxHistoryList {
   isLoading?: boolean
 }
 
-function TxHistoryList({ transactions, onEndReached, isLoading }: TxHistoryList) {
+export function TxHistoryList({ transactions, onEndReached, isLoading }: TxHistoryList) {
   const groupedList: GroupedTxsWithTitle<TransactionItem>[] = useMemo(() => {
     return groupTxsByDate(transactions || [])
   }, [transactions])
@@ -33,5 +33,3 @@ function TxHistoryList({ transactions, onEndReached, isLoading }: TxHistoryList)
     />
   )
 }
-
-export default TxHistoryList
