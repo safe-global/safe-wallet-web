@@ -13,7 +13,7 @@ interface ChainItemsProps {
   onSelect: (chainId: string) => void
 }
 
-function ChainItems({ chainId, chains, activeChain, fiatTotal, onSelect }: ChainItemsProps) {
+export function ChainItems({ chainId, chains, activeChain, fiatTotal, onSelect }: ChainItemsProps) {
   const chain = chains.find((item) => item.chainId === chainId)
   const isActive = chainId === activeChain.chainId
 
@@ -38,5 +38,3 @@ function ChainItems({ chainId, chains, activeChain, fiatTotal, onSelect }: Chain
     </TouchableOpacity>
   )
 }
-
-export default ChainItems

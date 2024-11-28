@@ -1,9 +1,9 @@
-
 # React Native Code Guidelines
 
 ## Code Structure
 
 ### General Components
+
 - Components that are used across multiple features should reside in the `src/components/` folder.
 - Each component should have its own folder, structured as follows:
   ```
@@ -24,32 +24,41 @@
   ```
 
 ### Exporting Components
+
 - **Always prefer named exports over default exports.**
   - Named exports make it easier to refactor and identify exports in a codebase.
 
 ### Features and Screens
+
 - Feature-specific components and screens should be implemented inside the `src/features/` folder.
 
 #### Example: Feature File Structure
+
 For a feature called **Assets**, the file structure might look like this:
+
 ```
 // src/features/Assets
-- Assets.tsx
+- Assets.container.tsx
 - index.tsx
 ```
+
 - `index.tsx` should only export the **Assets** component/container.
 
 #### Subcomponents for Features
+
 - If a feature depends on multiple subcomponents unique to that feature, place them in a `components` subfolder. For example:
+
 ```
 // src/features/Assets/components/AssetHeader
-- AssetHeaderPresentation.tsx
-- AssetHeaderContainer.tsx
+- AssetHeader.tsx
+- AssetHeader.container.tsx
 - index.tsx
 ```
 
 ### Presentation vs. Container Components
+
 - **Presentation Components**:
+
   - Responsible only for rendering the UI.
   - Receive data and callbacks via props.
   - Avoid direct manipulation of business logic.
@@ -58,5 +67,3 @@ For a feature called **Assets**, the file structure might look like this:
 - **Container Components**:
   - Handle business logic (e.g., state management, API calls, etc.).
   - Pass necessary data and callbacks to the corresponding Presentation component.
-
-

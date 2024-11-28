@@ -1,8 +1,8 @@
 import React from 'react'
-import { Signers } from '@/src/features/Signers'
+import { SignersContainer } from '@/src/features/Signers'
 
 function SignersScreen() {
-  return <Signers />
+  return <SignersContainer />
 }
 
 export default SignersScreen

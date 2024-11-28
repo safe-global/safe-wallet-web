@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router'
 import React from 'react'
 import { TabBarIcon } from '@/src/components/navigation/TabBarIcon'
 import { LayoutHeader } from '.'
-import { Navbar } from '@/src/features/Settings/components/Navbar/Navbar'
+import { Navbar } from '@/src/features/Settings/components/Navbar/'
 
 export default function TabLayout() {
   return (

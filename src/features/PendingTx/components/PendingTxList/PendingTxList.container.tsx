@@ -2,7 +2,7 @@ import { SafeListItem } from '@/src/components/SafeListItem'
 import React from 'react'
 import { SectionList } from 'react-native'
 import { Spinner, View } from 'tamagui'
-import { Badge } from '../../components/Badge'
+import { Badge } from '@/src/components/Badge'
 import { NavBarTitle } from '@/src/components/Title/NavBarTitle'
 import { LargeHeaderTitle } from '@/src/components/Title/LargeHeaderTitle'
 import { useScrollableHeader } from '@/src/navigation/useScrollableHeader'
@@ -15,7 +15,7 @@ export interface GroupedPendingTxsWithTitle {
   data: (PendingTransactionItems | TransactionQueuedItem[])[]
 }
 
-interface PendingTxListProps {
+interface PendingTxListContainerProps {
   transactions: GroupedPendingTxsWithTitle[]
   onEndReached: (info: { distanceFromEnd: number }) => void
   isLoading?: boolean
@@ -23,7 +23,13 @@ interface PendingTxListProps {
   hasMore: boolean
 }
 
-function PendingTxList({ transactions, onEndReached, isLoading, hasMore, amount }: PendingTxListProps) {
+export function PendingTxListContainer({
+  transactions,
+  onEndReached,
+  isLoading,
+  hasMore,
+  amount,
+}: PendingTxListContainerProps) {
   const { handleScroll } = useScrollableHeader({
     children: (
       <>
@@ -61,5 +67,3 @@ function PendingTxList({ transactions, onEndReached, isLoading, hasMore, amount 
     />
   )
 }
-
-export default PendingTxList
