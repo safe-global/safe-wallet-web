@@ -82,7 +82,7 @@ describe('SanctionWrapper', () => {
     expect(queryByText('Blocked address')).toBeTruthy()
   })
 
-  it('should not render anything if the sanction list is loading', () => {
+  it('should render if the sanction list is loading', () => {
     const safe = faker.finance.ethereumAddress()
     const wallet = faker.finance.ethereumAddress()
 
@@ -104,7 +104,6 @@ describe('SanctionWrapper', () => {
       </_SanctionWrapper>,
     )
 
-    expect(queryByText('Not sanctioned')).toBeFalsy()
-    expect(queryByText('Blocked address')).toBeFalsy()
+    expect(queryByText('Not sanctioned')).toBeTruthy()
   })
 })
