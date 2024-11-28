@@ -19,7 +19,7 @@ import { predictAddressBasedOnReplayData } from '@/features/multichain/utils/uti
 import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
 import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
 import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
-import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData, SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Grid, Typography } from '@mui/material'
 import { skipToken } from '@reduxjs/toolkit/query'
@@ -74,23 +74,24 @@ export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
       value: '0',
     }
 
-    const fundingTxs = params.assets
-      .map((asset) => {
-        const token = balances.items.find((item) => {
-          return item.tokenInfo.address === asset[SetupSubaccountFormAssetFields.tokenAddress]
-        })
-        if (token) {
-          return createTokenTransferParams(
+    const fundingTxs: Array<MetaTransactionData> = []
+
+    for (const asset of params.assets) {
+      const token = balances.items.find((item) => {
+        return item.tokenInfo.address === asset[SetupSubaccountFormAssetFields.tokenAddress]
+      })
+
+      if (token) {
+        fundingTxs.push(
+          createTokenTransferParams(
             predictedSafeAddress,
             asset[SetupSubaccountFormAssetFields.amount],
             token.tokenInfo.decimals,
             token.tokenInfo.address,
-          )
-        }
-      })
-      .filter((tx) => {
-        return tx != null
-      })
+          ),
+        )
+      }
+    }
 
     const createSafeTx = async (): Promise<SafeTransaction> => {
       const isMultiSend = fundingTxs.length > 0
