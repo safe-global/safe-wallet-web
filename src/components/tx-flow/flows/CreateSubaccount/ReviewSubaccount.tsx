@@ -22,15 +22,18 @@ import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { Grid, Typography } from '@mui/material'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
   const dispatch = useAppDispatch()
-  const { safeAddress, safe } = useSafeInfo()
+  const { safeAddress, safe, safeLoaded } = useSafeInfo()
   const chain = useCurrentChain()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const { balances } = useBalances()
   const provider = useWeb3ReadOnly()
-  const { data: subaccounts } = useGetSafesByOwnerQuery({ chainId: safe.chainId, ownerAddress: safe.address.value })
+  const { data: subaccounts } = useGetSafesByOwnerQuery(
+    safeLoaded ? { chainId: safe.chainId, ownerAddress: safeAddress } : skipToken,
+  )
   const version = getLatestSafeVersion(chain)
 
   const safeAccountConfig = useMemo(() => {

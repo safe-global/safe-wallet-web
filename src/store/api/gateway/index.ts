@@ -17,7 +17,7 @@ export async function buildQueryFn<T>(fn: () => Promise<T>) {
 export const gatewayApi = createApi({
   reducerPath: 'gatewayApi',
   baseQuery: fakeBaseQuery<Error>(),
-  tagTypes: ['Submissions'],
+  tagTypes: ['OwnedSafes', 'Submissions'],
   endpoints: (builder) => ({
     getTransactionDetails: builder.query<TransactionDetails, { chainId: string; txId: string }>({
       queryFn({ chainId, txId }) {
@@ -43,6 +43,9 @@ export const gatewayApi = createApi({
     getSafesByOwner: builder.query<getSafesByOwner, { chainId: string; ownerAddress: string }>({
       queryFn({ chainId, ownerAddress }) {
         return buildQueryFn(() => getSafesByOwner({ params: { path: { chainId, ownerAddress } } }))
+      },
+      providesTags: (_res, _err, { chainId, ownerAddress }) => {
+        return [{ type: 'OwnedSafes', id: `${chainId}:${ownerAddress}` }]
       },
     }),
     createSubmission: builder.mutation<

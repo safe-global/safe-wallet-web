@@ -22,6 +22,7 @@ import { CreateSafeOnNewChain } from '@/features/multichain/components/CreateSaf
 import { useGetSafesByOwnerQuery } from '@/store/slices'
 import { SubaccountsPopover } from '../SubaccountsPopover'
 import { SUBACCOUNT_EVENTS, SUBACCOUNT_LABELS } from '@/services/analytics/events/subaccounts'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 enum ModalType {
   SUBACCOUNTS = 'subaccounts',
@@ -52,7 +53,7 @@ const SafeListContextMenu = ({
   rename: boolean
   undeployedSafe: boolean
 }): ReactElement => {
-  const { data: subaccounts } = useGetSafesByOwnerQuery({ chainId, ownerAddress: address })
+  const { data: subaccounts } = useGetSafesByOwnerQuery(address ? { chainId, ownerAddress: address } : skipToken)
   const addressBook = useAddressBook()
   const hasName = address in addressBook
 

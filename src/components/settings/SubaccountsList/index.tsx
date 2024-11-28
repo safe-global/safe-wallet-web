@@ -17,13 +17,16 @@ import { useGetSafesByOwnerQuery } from '@/store/slices'
 import tableCss from '@/components/common/EnhancedTable/styles.module.css'
 import Track from '@/components/common/Track'
 import { SUBACCOUNT_EVENTS } from '@/services/analytics/events/subaccounts'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 export function SubaccountsList(): ReactElement | null {
   const { setTxFlow } = useContext(TxModalContext)
   const [addressToRename, setAddressToRename] = useState<string | null>(null)
 
-  const { safe } = useSafeInfo()
-  const { data: subaccounts } = useGetSafesByOwnerQuery({ chainId: safe.chainId, ownerAddress: safe.address.value })
+  const { safe, safeLoaded, safeAddress } = useSafeInfo()
+  const { data: subaccounts } = useGetSafesByOwnerQuery(
+    safeLoaded ? { chainId: safe.chainId, ownerAddress: safeAddress } : skipToken,
+  )
 
   const rows = useMemo(() => {
     return subaccounts?.safes.map((subaccount) => {

@@ -5,13 +5,14 @@ import type { ReactElement } from 'react'
 import SubaccountsIcon from '@/public/images/sidebar/subaccounts-icon.svg'
 import { SubaccountsPopover } from '@/components/sidebar/SubaccountsPopover'
 import { useGetSafesByOwnerQuery } from '@/store/slices'
+import { skipToken } from '@reduxjs/toolkit/query'
 
 import headerCss from '@/components/sidebar/SidebarHeader/styles.module.css'
 import css from './styles.module.css'
 
 export function SubaccountsButton({ chainId, safeAddress }: { chainId: string; safeAddress: string }): ReactElement {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const { data } = useGetSafesByOwnerQuery({ chainId, ownerAddress: safeAddress })
+  const { data } = useGetSafesByOwnerQuery(safeAddress ? { chainId, ownerAddress: safeAddress } : skipToken)
   const subaccounts = data?.safes ?? []
 
   const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {

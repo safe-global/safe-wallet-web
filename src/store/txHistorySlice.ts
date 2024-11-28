@@ -3,6 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { TransactionListPage } from '@safe-global/safe-gateway-typescript-sdk'
 import {
   isCreationTxInfo,
+  isCustomTxInfo,
   isIncomingTransfer,
   isMultisigExecutionInfo,
   isTransactionListItem,
@@ -10,6 +11,7 @@ import {
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 import { clearPendingTx, selectPendingTxs } from './pendingTxsSlice'
 import { makeLoadableSlice } from './common'
+import { gatewayApi, selectSafeInfo } from './slices'
 
 const { slice, selector } = makeLoadableSlice('txHistory', undefined as TransactionListPage | undefined)
 
@@ -44,6 +46,28 @@ export const txHistoryListener = (listenerMiddleware: typeof listenerMiddlewareI
         )
 
         if (!pendingTxByNonce) continue
+
+        // Invalidate getSafesByOwner cache as Subaccount was (likely) created
+        if (isCustomTxInfo(result.transaction.txInfo)) {
+          const method = result.transaction.txInfo.methodName
+          const deployedSafe = method === 'createProxyWithNonce'
+          const likelyDeployedSafe = method === 'multiSend'
+
+          if (deployedSafe || likelyDeployedSafe) {
+            const safe = selectSafeInfo(listenerApi.getState())
+            const safeAddress = safe.data?.address?.value
+            const chainId = safe.data?.chainId
+
+            listenerApi.dispatch(
+              gatewayApi.util.invalidateTags([
+                {
+                  type: 'OwnedSafes',
+                  id: `${chainId}:${safeAddress}`,
+                },
+              ]),
+            )
+          }
+        }
 
         const txId = result.transaction.id
 

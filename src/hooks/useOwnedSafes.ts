@@ -14,6 +14,7 @@ type OwnedSafesCache = {
   }
 }
 
+// TODO: Replace with useGetSafesByOwnerQuery
 const useOwnedSafes = (): OwnedSafesCache['walletAddress'] => {
   const chainId = useChainId()
   const { address: walletAddress } = useWallet() || {}
