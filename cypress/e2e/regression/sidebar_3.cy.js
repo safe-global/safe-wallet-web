@@ -85,7 +85,7 @@ describe('Sidebar tests 3', () => {
     })
     wallet.connectSigner(signer)
     sideBar.openSidebar()
-    sideBar.checkAccountsCounter(2)
+    sideBar.checkAccountsCounter('2')
   })
 
   it('Verify that safes the user do not owns show in the watchlist after adding them', () => {
