@@ -20,7 +20,8 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import AddIcon from '@/public/images/common/add.svg'
 import DeleteIcon from '@/public/images/common/delete.svg'
 import TxCard from '@/components/tx-flow/common/TxCard'
-import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
+import useSafeAddress from '@/hooks/useSafeAddress'
+import useAddressBook from '@/hooks/useAddressBook'
 import NameInput from '@/components/common/NameInput'
 import tokenInputCss from '@/components/common/TokenAmountInput/styles.module.css'
 import NumberField from '@/components/common/NumberField'
@@ -54,7 +55,10 @@ export function SetUpSubaccount({
   params: SetupSubaccountForm
   onSubmit: (params: SetupSubaccountForm) => void
 }) {
-  const fallbackName = useMnemonicSafeName()
+  const addressBook = useAddressBook()
+  const safeAddress = useSafeAddress()
+  const fallbackName = `${addressBook[safeAddress]} Subaccount`
+
   const formMethods = useForm<SetupSubaccountForm>({
     defaultValues: params,
     mode: 'onChange',

@@ -4,12 +4,14 @@ import css from '@/components/tx-flow/flows/SuccessScreen/styles.module.css'
 import { isTimeoutError } from '@/utils/ethers-utils'
 
 const TRANSACTION_FAILED = 'Transaction failed'
+const SUBACCOUNT_SUCCESSFUL = 'Subaccount was created'
 const TRANSACTION_SUCCESSFUL = 'Transaction was successful'
 
 type Props = {
   error: undefined | Error
+  willDeploySafe: boolean
 }
-export const DefaultStatus = ({ error }: Props) => (
+export const DefaultStatus = ({ error, willDeploySafe: isCreatingSafe }: Props) => (
   <Box
     sx={{
       paddingX: 3,
@@ -24,7 +26,7 @@ export const DefaultStatus = ({ error }: Props) => (
         fontWeight: 700,
       }}
     >
-      {error ? TRANSACTION_FAILED : TRANSACTION_SUCCESSFUL}
+      {error ? TRANSACTION_FAILED : !isCreatingSafe ? TRANSACTION_SUCCESSFUL : SUBACCOUNT_SUCCESSFUL}
     </Typography>
     {error && (
       <Box className={classNames(css.instructions, error ? css.errorBg : css.infoBg)}>

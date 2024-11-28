@@ -1,8 +1,12 @@
 const SUBACCOUNTS_CATEGORY = 'subaccounts'
 
 export const SUBACCOUNT_EVENTS = {
-  OPEN: {
-    action: 'Open',
+  OPEN_LIST: {
+    action: 'Open Subaccount list',
+    category: SUBACCOUNTS_CATEGORY,
+  },
+  OPEN_SUBACCOUNT: {
+    action: 'Open Subaccount',
     category: SUBACCOUNTS_CATEGORY,
   },
   SHOW_ALL: {
@@ -22,4 +26,5 @@ export const SUBACCOUNT_EVENTS = {
 export enum SUBACCOUNT_LABELS {
   header = 'header',
   sidebar = 'sidebar',
+  success_screen = 'success_screen',
 }

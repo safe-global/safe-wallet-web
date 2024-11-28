@@ -6,8 +6,9 @@ import { PendingStatus, type PendingTx } from '@/store/pendingTxsSlice'
 type Props = {
   txId: string
   pendingTx: PendingTx
+  willDeploySafe: boolean
 }
-export const ProcessingStatus = ({ txId, pendingTx }: Props) => (
+export const ProcessingStatus = ({ txId, pendingTx, willDeploySafe: isCreatingSafe }: Props) => (
   <Box
     sx={{
       paddingX: 3,
@@ -22,7 +23,7 @@ export const ProcessingStatus = ({ txId, pendingTx }: Props) => (
         fontWeight: 700,
       }}
     >
-      Transaction is now processing
+      {!isCreatingSafe ? 'Transaction is now processing' : 'Subaccount is now being created'}
     </Typography>
     <Typography
       variant="body2"
@@ -30,7 +31,7 @@ export const ProcessingStatus = ({ txId, pendingTx }: Props) => (
         mb: 3,
       }}
     >
-      The transaction was confirmed and is now being processed.
+      {!isCreatingSafe ? 'The transaction' : 'Your Subaccount'} was confirmed and is now being processed.
     </Typography>
     <Box>
       {pendingTx.status === PendingStatus.PROCESSING && (

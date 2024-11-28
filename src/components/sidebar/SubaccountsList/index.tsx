@@ -18,6 +18,7 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center' }}>
       {subaccountsToShow.map((subaccount) => {
+        // TODO: Turn into link to Subaccount
         return (
           <Box
             sx={{
@@ -37,7 +38,7 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
             }}
             key={subaccount}
           >
-            <EthHashInfo address={subaccount} />
+            <EthHashInfo address={subaccount} showPrefix={false} />
             <ChevronRight color="border" />
           </Box>
         )
@@ -49,6 +50,7 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
             color="text.secondary"
             sx={{
               textTransform: 'uppercase',
+              fontWeight: 700,
             }}
             onClick={onShowAll}
           >

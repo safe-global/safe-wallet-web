@@ -92,7 +92,7 @@ const SafeListContextMenu = ({
         {!undeployedSafe && subaccounts?.safes && subaccounts.safes.length > 0 && (
           <MenuItem
             onClick={handleOpenModal(ModalType.SUBACCOUNTS, {
-              ...SUBACCOUNT_EVENTS.OPEN,
+              ...SUBACCOUNT_EVENTS.OPEN_LIST,
               label: SUBACCOUNT_LABELS.sidebar,
             })}
           >

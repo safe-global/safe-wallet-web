@@ -1,83 +1,101 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 
 import SignOrExecuteForm from '@/components/tx/SignOrExecuteForm'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
-import { createSubaccount } from '@/components/tx-flow/flows/CreateSubaccount/create-subaccount-tx'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import useBalances from '@/hooks/useBalances'
 import { useCurrentChain } from '@/hooks/useChains'
-import useWallet from '@/hooks/wallets/useWallet'
 import { useAppDispatch } from '@/store'
 import { upsertAddressBookEntries } from '@/store/addressBookSlice'
 import { getLatestSafeVersion } from '@/utils/chains'
-import { getReadOnlyFallbackHandlerContract } from '@/services/contracts/safeContracts'
 import useAsync from '@/hooks/useAsync'
-import { computeNewSafeAddress } from '@/components/new-safe/create/logic'
-import type { SetupSubaccountForm } from '@/components/tx-flow/flows/CreateSubaccount/SetupSubaccount'
+import { createNewUndeployedSafeWithoutSalt, encodeSafeCreationTx } from '@/components/new-safe/create/logic'
+import {
+  SetupSubaccountFormAssetFields,
+  type SetupSubaccountForm,
+} from '@/components/tx-flow/flows/CreateSubaccount/SetupSubaccount'
 import { useGetSafesByOwnerQuery } from '@/store/slices'
+import { predictAddressBasedOnReplayData } from '@/features/multichain/utils/utils'
+import { useWeb3ReadOnly } from '@/hooks/wallets/web3'
+import { createTokenTransferParams } from '@/services/tx/tokenTransferParams'
+import { createMultiSendCallOnlyTx, createTx } from '@/services/tx/tx-sender'
+import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import EthHashInfo from '@/components/common/EthHashInfo'
+import { Grid, Typography } from '@mui/material'
 
 export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
   const dispatch = useAppDispatch()
-  const wallet = useWallet()
   const { safeAddress, safe } = useSafeInfo()
   const chain = useCurrentChain()
   const { setSafeTx, setSafeTxError } = useContext(SafeTxContext)
   const { balances } = useBalances()
-  const safeVersion = getLatestSafeVersion(chain)
+  const provider = useWeb3ReadOnly()
   const { data: subaccounts } = useGetSafesByOwnerQuery({ chainId: safe.chainId, ownerAddress: safe.address.value })
-  const saltNonce = (subaccounts?.safes.length ?? 0).toString()
+  const version = getLatestSafeVersion(chain)
 
-  const [safeAccountConfig] = useAsync(async () => {
-    const fallbackHandler = await getReadOnlyFallbackHandlerContract(safeVersion)
-    const owners = [safeAddress]
-    return {
-      owners,
-      threshold: owners.length,
-      fallbackHandler: fallbackHandler?.contractAddress,
-    }
-  }, [safeVersion, safeAddress])
-
-  const [predictedSafeAddress] = useAsync(async () => {
-    if (!wallet?.provider || !safeAccountConfig || !chain || !safeVersion) {
+  const safeAccountConfig = useMemo(() => {
+    if (!chain || !subaccounts) {
       return
     }
-    return computeNewSafeAddress(
-      wallet.provider,
+
+    const undeployedSafe = createNewUndeployedSafeWithoutSalt(
+      version,
       {
-        safeAccountConfig,
-        saltNonce,
+        owners: [safeAddress],
+        threshold: 1,
       },
       chain,
-      safeVersion,
     )
-  }, [wallet?.provider, safeAccountConfig, chain, safeVersion, saltNonce])
+    const saltNonce = subaccounts.safes.length.toString()
+
+    return {
+      ...undeployedSafe,
+      saltNonce,
+    }
+  }, [chain, safeAddress, subaccounts, version])
+
+  const [predictedSafeAddress] = useAsync(async () => {
+    if (provider && safeAccountConfig) {
+      return predictAddressBasedOnReplayData(safeAccountConfig, provider)
+    }
+  }, [provider, safeAccountConfig])
 
   useEffect(() => {
-    if (!wallet?.provider || !safeAccountConfig || !predictedSafeAddress) {
+    if (!chain || !safeAccountConfig || !predictedSafeAddress) {
       return
     }
-    createSubaccount({
-      provider: wallet.provider,
-      assets: params.assets,
-      safeAccountConfig,
-      safeDeploymentConfig: {
-        saltNonce,
-      },
-      predictedSafeAddress,
-      balances,
-    })
-      .then(setSafeTx)
-      .catch(setSafeTxError)
-  }, [
-    wallet?.provider,
-    params.assets,
-    safeAccountConfig,
-    predictedSafeAddress,
-    balances,
-    setSafeTx,
-    setSafeTxError,
-    saltNonce,
-  ])
+
+    const deploymentTx = {
+      to: safeAccountConfig.factoryAddress,
+      data: encodeSafeCreationTx(safeAccountConfig, chain),
+      value: '0',
+    }
+
+    const fundingTxs = params.assets
+      .map((asset) => {
+        const token = balances.items.find((item) => {
+          return item.tokenInfo.address === asset[SetupSubaccountFormAssetFields.tokenAddress]
+        })
+        if (token) {
+          return createTokenTransferParams(
+            predictedSafeAddress,
+            asset[SetupSubaccountFormAssetFields.amount],
+            token.tokenInfo.decimals,
+            token.tokenInfo.address,
+          )
+        }
+      })
+      .filter((tx) => {
+        return tx != null
+      })
+
+    const createSafeTx = async (): Promise<SafeTransaction> => {
+      const isMultiSend = fundingTxs.length > 0
+      return isMultiSend ? createMultiSendCallOnlyTx([deploymentTx, ...fundingTxs]) : createTx(deploymentTx)
+    }
+
+    createSafeTx().then(setSafeTx).catch(setSafeTxError)
+  }, [chain, params.assets, safeAccountConfig, predictedSafeAddress, balances.items, setSafeTx, setSafeTxError])
 
   const onSubmit = () => {
     if (!predictedSafeAddress) {
@@ -92,5 +110,38 @@ export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
     )
   }
 
-  return <SignOrExecuteForm onSubmit={onSubmit} />
+  return (
+    <SignOrExecuteForm onSubmit={onSubmit}>
+      {predictedSafeAddress && (
+        <Grid
+          container
+          sx={{
+            gap: 1,
+          }}
+        >
+          <Grid item md>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+              }}
+            >
+              Subaccount
+            </Typography>
+          </Grid>
+
+          <Grid data-testid="beneficiary-address" item md={10}>
+            <EthHashInfo
+              name={params.name}
+              address={predictedSafeAddress}
+              shortAddress={false}
+              hasExplorer
+              showCopyButton
+              showAvatar={false}
+            />
+          </Grid>
+        </Grid>
+      )}
+    </SignOrExecuteForm>
+  )
 }

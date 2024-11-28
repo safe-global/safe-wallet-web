@@ -17,6 +17,10 @@ import { DefaultStatus } from '@/components/tx-flow/flows/SuccessScreen/statuses
 import { isSwapTransferOrderTxInfo } from '@/utils/transaction-guards'
 import { getTxLink } from '@/utils/tx-link'
 import useTxDetails from '@/hooks/useTxDetails'
+import { usePredictSafeAddressFromTxDetails } from '@/hooks/usePredictSafeAddressFromTxDetails'
+import { AppRoutes } from '@/config/routes'
+import { SUBACCOUNT_EVENTS, SUBACCOUNT_LABELS } from '@/services/analytics/events/subaccounts'
+import Track from '@/components/common/Track'
 
 interface Props {
   /** The ID assigned to the transaction in the client-gateway */
@@ -37,6 +41,7 @@ const SuccessScreen = ({ txId, txHash }: Props) => {
   const txLink = chain && txId && getTxLink(txId, chain, safeAddress)
   const [txDetails] = useTxDetails(txId)
   const isSwapOrder = txDetails && isSwapTransferOrderTxInfo(txDetails.txInfo)
+  const [predictedSafeAddress] = usePredictSafeAddressFromTxDetails(txDetails)
 
   useEffect(() => {
     if (!pendingTxHash) return
@@ -66,13 +71,13 @@ const SuccessScreen = ({ txId, txHash }: Props) => {
     case PendingStatus.PROCESSING:
     case PendingStatus.RELAYING:
       // status can only have these values if txId & pendingTx are defined
-      StatusComponent = <ProcessingStatus txId={txId!} pendingTx={pendingTx!} />
+      StatusComponent = <ProcessingStatus txId={txId!} pendingTx={pendingTx!} willDeploySafe={!!predictedSafeAddress} />
       break
     case PendingStatus.INDEXING:
-      StatusComponent = <IndexingStatus />
+      StatusComponent = <IndexingStatus willDeploySafe={!!predictedSafeAddress} />
       break
     default:
-      StatusComponent = <DefaultStatus error={error} />
+      StatusComponent = <DefaultStatus error={error} willDeploySafe={!!predictedSafeAddress} />
   }
 
   return (
@@ -121,11 +126,30 @@ const SuccessScreen = ({ txId, txHash }: Props) => {
           </Link>
         )}
 
-        {!isSwapOrder && (
-          <Button data-testid="finish-transaction-btn" variant="contained" size="small" onClick={onClose}>
-            Finish
-          </Button>
-        )}
+        {!isSwapOrder &&
+          (predictedSafeAddress ? (
+            <Track {...SUBACCOUNT_EVENTS.OPEN_SUBACCOUNT} label={SUBACCOUNT_LABELS.success_screen}>
+              <Link
+                href={{ pathname: AppRoutes.home, query: { safe: `${chain?.shortName}:${predictedSafeAddress}` } }}
+                passHref
+                legacyBehavior
+              >
+                <Button
+                  data-testid="open-subaccount-btn"
+                  variant="contained"
+                  size="small"
+                  onClick={onClose}
+                  disabled={!isSuccess}
+                >
+                  Go to Subaccount
+                </Button>
+              </Link>
+            </Track>
+          ) : (
+            <Button data-testid="finish-transaction-btn" variant="contained" size="small" onClick={onClose}>
+              Finish
+            </Button>
+          ))}
       </div>
     </Container>
   )

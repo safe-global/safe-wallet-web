@@ -116,7 +116,7 @@ const SafeHeader = (): ReactElement => {
             <ExplorerButton {...blockExplorerLink} className={css.iconButton} icon={LinkIconBold} />
           </Track>
 
-          <Track {...SUBACCOUNT_EVENTS.OPEN} label={SUBACCOUNT_LABELS.header}>
+          <Track {...SUBACCOUNT_EVENTS.OPEN_LIST} label={SUBACCOUNT_LABELS.header}>
             <SubaccountsButton chainId={safe.chainId} safeAddress={safe.address.value} />
           </Track>
 
