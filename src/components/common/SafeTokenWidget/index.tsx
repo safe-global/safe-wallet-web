@@ -2,6 +2,7 @@ import UnreadBadge from '@/components/common/UnreadBadge'
 import { IS_PRODUCTION, SAFE_TOKEN_ADDRESSES, SAFE_LOCKING_ADDRESS } from '@/config/constants'
 import { AppRoutes } from '@/config/routes'
 import useChainId from '@/hooks/useChainId'
+import useIsSafeOwner from '@/hooks/useIsSafeOwner'
 import type { Vesting } from '@/hooks/useSafeTokenAllocation'
 import useSafeTokenAllocation, { useSafeVotingPower } from '@/hooks/useSafeTokenAllocation'
 import { OVERVIEW_EVENTS } from '@/services/analytics'
@@ -50,6 +51,7 @@ const SafeTokenWidget = () => {
   const safeAddress = useSafeAddress()
   const query = useSearchParams()
   const darkMode = useDarkMode()
+  const isSafeOwner = useIsSafeOwner()
 
   const [allocationData, , allocationDataLoading] = useSafeTokenAllocation()
   const [allocation, , allocationLoading] = useSafeVotingPower(allocationData)
@@ -71,7 +73,7 @@ const SafeTokenWidget = () => {
   }
 
   const flooredSafeBalance = formatVisualAmount(allocation || BigInt(0), TOKEN_DECIMALS, 0)
-  const canRedeemSAPUnboosted = canRedeemSAPUnboostedAllocation(allocationData)
+  const canRedeemSAPUnboosted = canRedeemSAPUnboostedAllocation(allocationData) && isSafeOwner
 
   return (
     <Box className={css.container}>
