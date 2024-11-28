@@ -1,0 +1,1 @@
+export { BlurredIdenticonBackground } from './BlurredIdenticonBackground'

@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyledAssetsHeader } from './styles'
-import { View } from 'tamagui'
 import { BalanceContainer } from '../Balance'
 import { PendingTransactions } from '@/src/components/StatusBanners/PendingTransactions'
+import { View } from 'tamagui'
+import { StyledAssetsHeader } from './styles'
 
 interface AssetsHeaderProps {
   amount: number
@@ -14,7 +14,7 @@ interface AssetsHeaderProps {
 export function AssetsHeader({ amount, isLoading, onPendingTransactionsPress, hasMore }: AssetsHeaderProps) {
   return (
     <StyledAssetsHeader backgroundColor="$background">
-      <View marginBottom="$10" marginTop="$2">
+      <View marginBottom="$10" marginTop="0">
         {amount > 0 && (
           <PendingTransactions
             isLoading={isLoading}
