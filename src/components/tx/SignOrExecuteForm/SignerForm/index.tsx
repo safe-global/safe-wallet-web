@@ -43,7 +43,8 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
       }
 
       if (safeTx.signatures.size < safe.threshold) {
-        return !safeTx.signatures.keys().some((key) => sameAddress(key, address))
+        const signers = Array.from(safeTx.signatures.keys())
+        return !signers.some((key) => sameAddress(key, address))
       }
 
       return true
