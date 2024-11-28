@@ -96,7 +96,7 @@ export const testSafeHeaderDetails = ['2/2', safes.SEP_STATIC_SAFE_9_SHORT]
 const receiveAssetsStr = 'Receive assets'
 const emptyPinnedListStr = 'Watch any Safe Account to keep an eye on its activity'
 const emptySafeListStr = "You don't have any safes yet"
-const accountsStr = 'Accounts'
+const accountsRegex = /(My accounts|Accounts) \((\d+)\)/
 const confirmTxStr = (number) => `${number} to confirm`
 const pedningTxStr = (n) => `${n} pending`
 export const confirmGenStr = 'to confirm'
@@ -464,7 +464,14 @@ export function verifySafeGiveNameOptionExists(index) {
 }
 
 export function checkAccountsCounter(value) {
-  cy.contains(accountsStr).should('contain', value)
+  cy.get(sidebarSafeContainer)
+    .should('exist')
+    .then(($el) => {
+      const text = $el.text()
+      const match = text.match(accountsRegex)
+      expect(match).not.to.be.null
+      expect(match[0]).to.exist
+    })
 }
 
 export function checkTxToConfirm(numberOfTx) {

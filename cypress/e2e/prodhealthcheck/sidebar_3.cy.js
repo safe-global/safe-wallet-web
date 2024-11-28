@@ -22,7 +22,7 @@ describe('[PROD] Sidebar tests 3', () => {
     })
     wallet.connectSigner(signer)
     sideBar.openSidebar()
-    sideBar.checkAccountsCounter(2)
+    sideBar.checkAccountsCounter('2')
   })
 
   it('Verify pending signature is displayed in sidebar for unsigned tx', () => {
