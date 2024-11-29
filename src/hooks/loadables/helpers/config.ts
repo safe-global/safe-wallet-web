@@ -1,5 +1,5 @@
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { GATEWAY_URL } from '@/pages/_app'
+import { GATEWAY_URL } from '@/components/App'
 
 export const getConfigs = async (): Promise<ChainInfo[]> => {
   let allResults: ChainInfo[] = []
