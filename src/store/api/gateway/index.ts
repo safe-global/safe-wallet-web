@@ -1,7 +1,12 @@
 import { proposerEndpoints } from '@/store/api/gateway/proposers'
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type AllOwnedSafes,
+  getAllOwnedSafes,
+  getTransactionDetails,
+  type TransactionDetails,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import { asError } from '@/services/exceptions/utils'
 import { safeOverviewEndpoints } from './safeOverviews'
 import { createSubmission, getSafesByOwner, getSubmission } from '@safe-global/safe-client-gateway-sdk'
@@ -29,6 +34,19 @@ export const gatewayApi = createApi({
         return buildQueryFn(() => Promise.all(txIds.map((txId) => getTransactionDetails(chainId, txId))))
       },
     }),
+    getAllOwnedSafes: builder.query<AllOwnedSafes, { walletAddress: string }>({
+      queryFn({ walletAddress }) {
+        return buildQueryFn(() => getAllOwnedSafes(walletAddress))
+      },
+    }),
+    getSafesByOwner: builder.query<getSafesByOwner, { chainId: string; ownerAddress: string }>({
+      queryFn({ chainId, ownerAddress }) {
+        return buildQueryFn(() => getSafesByOwner({ params: { path: { chainId, ownerAddress } } }))
+      },
+      providesTags: (_res, _err, { chainId, ownerAddress }) => {
+        return [{ type: 'OwnedSafes', id: `${chainId}:${ownerAddress}` }]
+      },
+    }),
     getSubmission: builder.query<
       getSubmission,
       { outreachId: number; chainId: string; safeAddress: string; signerAddress: string }
@@ -39,14 +57,6 @@ export const gatewayApi = createApi({
         )
       },
       providesTags: ['Submissions'],
-    }),
-    getSafesByOwner: builder.query<getSafesByOwner, { chainId: string; ownerAddress: string }>({
-      queryFn({ chainId, ownerAddress }) {
-        return buildQueryFn(() => getSafesByOwner({ params: { path: { chainId, ownerAddress } } }))
-      },
-      providesTags: (_res, _err, { chainId, ownerAddress }) => {
-        return [{ type: 'OwnedSafes', id: `${chainId}:${ownerAddress}` }]
-      },
     }),
     createSubmission: builder.mutation<
       createSubmission,
@@ -81,4 +91,5 @@ export const {
   useGetSafeOverviewQuery,
   useGetMultipleSafeOverviewsQuery,
   useGetSafesByOwnerQuery,
+  useGetAllOwnedSafesQuery,
 } = gatewayApi

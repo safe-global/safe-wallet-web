@@ -8,6 +8,8 @@ import { PendingStatus, selectPendingTxs } from './pendingTxsSlice'
 import { sameAddress } from '@/utils/addresses'
 import { txDispatch, TxEvent } from '@/services/tx/txEvents'
 
+const SIGNING_STATES = [PendingStatus.SIGNING, PendingStatus.NESTED_SIGNING]
+
 const { slice, selector } = makeLoadableSlice('txQueue', undefined as TransactionListPage | undefined)
 
 export const txQueueSlice = slice
@@ -45,7 +47,7 @@ export const txQueueListener = (listenerMiddleware: typeof listenerMiddlewareIns
         const txId = result.transaction.id
 
         const pendingTx = pendingTxs[txId]
-        if (!pendingTx || pendingTx.status !== PendingStatus.SIGNING) {
+        if (!pendingTx || !SIGNING_STATES.includes(pendingTx.status) || !('signerAddress' in pendingTx)) {
           continue
         }
 

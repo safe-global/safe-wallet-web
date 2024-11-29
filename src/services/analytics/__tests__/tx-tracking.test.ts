@@ -174,4 +174,15 @@ describe('getTransactionTrackingType', () => {
     const txType = getTransactionTrackingType(details)
     expect(txType).toEqual(TX_TYPES.batch)
   })
+
+  it('should return native_bridge for native bridge transactions', () => {
+    const details = {
+      txInfo: {
+        type: TransactionInfoType.CUSTOM,
+      },
+    } as unknown as TransactionDetails
+    const origin = '{"url":"https://iframe.jumper.exchange","name":"Bridge"}'
+    const txType = getTransactionTrackingType(details, origin)
+    expect(txType).toEqual(TX_TYPES.native_bridge)
+  })
 })

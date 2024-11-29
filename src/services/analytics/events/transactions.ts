@@ -19,8 +19,10 @@ export enum TX_TYPES {
   batch = 'batch',
   rejection = 'rejection',
   typed_message = 'typed_message',
+  nested_safe = 'nested_safe',
   walletconnect = 'walletconnect',
   custom = 'custom',
+  native_bridge = 'native_bridge',
   native_swap = 'native_swap',
   bulk_execute = 'bulk_execute',
 
@@ -76,6 +78,31 @@ export const TX_EVENTS = {
   EXECUTE_VIA_ROLE: {
     event: EventType.TX_EXECUTED,
     action: 'Execute via role',
+    category: TX_CATEGORY,
+  },
+  CREATE_VIA_PARENT: {
+    event: EventType.TX_CREATED,
+    action: 'Create via parent',
+    category: TX_CATEGORY,
+  },
+  CONFIRM_VIA_PARENT: {
+    event: EventType.TX_CREATED,
+    action: 'Confirm via parent',
+    category: TX_CATEGORY,
+  },
+  EXECUTE_VIA_PARENT: {
+    event: EventType.TX_CREATED,
+    action: 'Execute via parent',
+    category: TX_CATEGORY,
+  },
+  CONFIRM_IN_PARENT: {
+    event: EventType.TX_CONFIRMED,
+    action: 'Confirm in parent',
+    category: TX_CATEGORY,
+  },
+  EXECUTE_IN_PARENT: {
+    event: EventType.TX_EXECUTED,
+    action: 'Execute in parent',
     category: TX_CATEGORY,
   },
 }
