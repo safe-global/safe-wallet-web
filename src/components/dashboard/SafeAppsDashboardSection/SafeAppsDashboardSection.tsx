@@ -10,6 +10,7 @@ import SafeAppPreviewDrawer from '@/components/safe-apps/SafeAppPreviewDrawer'
 import SafeAppCard, { SafeAppCardContainer } from '@/components/safe-apps/SafeAppCard'
 import { AppRoutes } from '@/config/routes'
 import ExploreSafeAppsIcon from '@/public/images/apps/explore.svg'
+import { SAFE_APPS_LABELS } from '@/services/analytics'
 
 import css from './styles.module.css'
 
@@ -34,7 +35,7 @@ const SafeAppsDashboardSection = () => {
           <Grid key={rankedSafeApp.id} item xs={12} sm={6} md={4} xl={4}>
             <SafeAppCard
               safeApp={rankedSafeApp}
-              onBookmarkSafeApp={togglePin}
+              onBookmarkSafeApp={(appId) => togglePin(appId, SAFE_APPS_LABELS.dashboard)}
               isBookmarked={pinnedSafeAppIds.has(rankedSafeApp.id)}
               onClickSafeApp={() => openPreviewDrawer(rankedSafeApp)}
               openPreviewDrawer={openPreviewDrawer}
@@ -51,7 +52,7 @@ const SafeAppsDashboardSection = () => {
         safeApp={previewDrawerApp}
         isBookmarked={previewDrawerApp && pinnedSafeAppIds.has(previewDrawerApp.id)}
         onClose={closePreviewDrawer}
-        onBookmark={togglePin}
+        onBookmark={(appId) => togglePin(appId, SAFE_APPS_LABELS.apps_sidebar)}
       />
     </WidgetContainer>
   )

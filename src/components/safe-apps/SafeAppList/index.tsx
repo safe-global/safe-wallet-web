@@ -11,12 +11,14 @@ import css from './styles.module.css'
 import { Skeleton } from '@mui/material'
 import { useOpenedSafeApps } from '@/hooks/safe-apps/useOpenedSafeApps'
 import NativeSwapsCard from '@/components/safe-apps/NativeSwapsCard'
+import { SAFE_APPS_EVENTS, SAFE_APPS_LABELS, trackSafeAppEvent } from '@/services/analytics'
+import { useSafeApps } from '@/hooks/safe-apps/useSafeApps'
 
 type SafeAppListProps = {
   safeAppsList: SafeAppData[]
   safeAppsListLoading?: boolean
   bookmarkedSafeAppsId?: Set<number>
-  onBookmarkSafeApp?: (safeAppId: number) => void
+  eventLabel: SAFE_APPS_LABELS
   addCustomApp?: (safeApp: SafeAppData) => void
   removeCustomApp?: (safeApp: SafeAppData) => void
   title: string
@@ -29,7 +31,7 @@ const SafeAppList = ({
   safeAppsList,
   safeAppsListLoading,
   bookmarkedSafeAppsId,
-  onBookmarkSafeApp,
+  eventLabel,
   addCustomApp,
   removeCustomApp,
   title,
@@ -37,6 +39,7 @@ const SafeAppList = ({
   isFiltered = false,
   showNativeSwapsCard = false,
 }: SafeAppListProps) => {
+  const { togglePin } = useSafeApps()
   const { isPreviewDrawerOpen, previewDrawerApp, openPreviewDrawer, closePreviewDrawer } = useSafeAppPreviewDrawer()
   const { openedSafeAppIds } = useOpenedSafeApps()
 
@@ -44,13 +47,19 @@ const SafeAppList = ({
 
   const handleSafeAppClick = useCallback(
     (safeApp: SafeAppData) => {
+      if (openedSafeAppIds.includes(safeApp.id)) {
+        // We only track if not previously opened as it is then tracked in preview drawer
+        trackSafeAppEvent({ ...SAFE_APPS_EVENTS.OPEN_APP, label: eventLabel }, safeApp.name)
+        return
+      }
+
       const isCustomApp = safeApp.id < 1
 
-      if (isCustomApp || openedSafeAppIds.includes(safeApp.id)) return
+      if (isCustomApp) return
 
-      return () => openPreviewDrawer(safeApp)
+      openPreviewDrawer(safeApp)
     },
-    [openPreviewDrawer, openedSafeAppIds],
+    [eventLabel, openPreviewDrawer, openedSafeAppIds],
   )
 
   return (
@@ -82,9 +91,9 @@ const SafeAppList = ({
             <SafeAppCard
               safeApp={safeApp}
               isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
-              onBookmarkSafeApp={onBookmarkSafeApp}
+              onBookmarkSafeApp={() => togglePin(safeApp.id, eventLabel)}
               removeCustomApp={removeCustomApp}
-              onClickSafeApp={handleSafeAppClick(safeApp)}
+              onClickSafeApp={() => handleSafeAppClick(safeApp)}
               openPreviewDrawer={openPreviewDrawer}
             />
           </li>
@@ -100,7 +109,7 @@ const SafeAppList = ({
         safeApp={previewDrawerApp}
         isBookmarked={previewDrawerApp && bookmarkedSafeAppsId?.has(previewDrawerApp.id)}
         onClose={closePreviewDrawer}
-        onBookmark={onBookmarkSafeApp}
+        onBookmark={(appId) => togglePin(appId, SAFE_APPS_LABELS.apps_sidebar)}
       />
     </>
   )

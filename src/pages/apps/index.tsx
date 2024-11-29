@@ -14,10 +14,11 @@ import useSafeAppsFilters from '@/hooks/safe-apps/useSafeAppsFilters'
 import SafeAppsFilters from '@/components/safe-apps/SafeAppsFilters'
 import { useHasFeature } from '@/hooks/useChains'
 import { FEATURES } from '@/utils/chains'
+import { SAFE_APPS_LABELS } from '@/services/analytics'
 
 const SafeApps: NextPage = () => {
   const router = useRouter()
-  const { remoteSafeApps, remoteSafeAppsLoading, pinnedSafeApps, pinnedSafeAppIds, togglePin } = useSafeApps()
+  const { remoteSafeApps, remoteSafeAppsLoading, pinnedSafeApps, pinnedSafeAppIds } = useSafeApps()
   const { filteredApps, query, setQuery, setSelectedCategories, setOptimizedWithBatchFilter, selectedCategories } =
     useSafeAppsFilters(remoteSafeApps)
   const isFiltered = filteredApps.length !== remoteSafeApps.length
@@ -72,7 +73,7 @@ const SafeApps: NextPage = () => {
             title="My pinned apps"
             safeAppsList={pinnedSafeApps}
             bookmarkedSafeAppsId={pinnedSafeAppIds}
-            onBookmarkSafeApp={togglePin}
+            eventLabel={SAFE_APPS_LABELS.apps_pinned}
           />
         )}
 
@@ -82,7 +83,7 @@ const SafeApps: NextPage = () => {
             title="Featured apps"
             safeAppsList={featuredSafeApps}
             bookmarkedSafeAppsId={pinnedSafeAppIds}
-            onBookmarkSafeApp={togglePin}
+            eventLabel={SAFE_APPS_LABELS.apps_featured}
           />
         )}
 
@@ -93,7 +94,7 @@ const SafeApps: NextPage = () => {
           safeAppsList={isFiltered ? filteredApps : nonPinnedApps}
           safeAppsListLoading={remoteSafeAppsLoading}
           bookmarkedSafeAppsId={pinnedSafeAppIds}
-          onBookmarkSafeApp={togglePin}
+          eventLabel={SAFE_APPS_LABELS.apps_all}
           query={query}
           showNativeSwapsCard
         />

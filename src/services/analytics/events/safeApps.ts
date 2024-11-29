@@ -70,3 +70,12 @@ export const SAFE_APPS_EVENTS = {
     action: 'SDK method call',
   },
 }
+
+export enum SAFE_APPS_LABELS {
+  dashboard = 'dashboard',
+  apps_pinned = 'apps_pinned',
+  apps_featured = 'apps_featured',
+  apps_all = 'apps_all',
+  apps_custom = 'apps_custom',
+  apps_sidebar = 'apps_sidebar',
+}
