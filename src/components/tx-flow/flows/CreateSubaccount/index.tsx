@@ -1,4 +1,4 @@
-import CustomIcon from '@/public/images/transactions/custom.svg'
+import SubaccountsIcon from '@/public/images/sidebar/subaccounts-icon.svg'
 import TxLayout from '@/components/tx-flow/common/TxLayout'
 import useTxStepper from '@/components/tx-flow/useTxStepper'
 import { ReviewSubaccount } from '@/components/tx-flow/flows/CreateSubaccount/ReviewSubaccount'
@@ -20,7 +20,7 @@ export function CreateSubaccount() {
     <TxLayout
       title={step === 0 ? 'Set up Subaccount' : 'Confirm Subaccount'}
       subtitle="Create a Subaccount"
-      icon={CustomIcon}
+      icon={SubaccountsIcon}
       step={step}
       onBack={prevStep}
     >
