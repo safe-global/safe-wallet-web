@@ -1,7 +1,14 @@
 import { proposerEndpoints } from '@/store/api/gateway/proposers'
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { getTransactionDetails, type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
+import {
+  type AllOwnedSafes,
+  getAllOwnedSafes,
+  getTransactionDetails,
+  type TransactionDetails,
+  type OwnedSafes,
+  getOwnedSafes,
+} from '@safe-global/safe-gateway-typescript-sdk'
 import { asError } from '@/services/exceptions/utils'
 import { safeOverviewEndpoints } from './safeOverviews'
 import { createSubmission, getSubmission } from '@safe-global/safe-client-gateway-sdk'
@@ -27,6 +34,16 @@ export const gatewayApi = createApi({
     getMultipleTransactionDetails: builder.query<TransactionDetails[], { chainId: string; txIds: string[] }>({
       queryFn({ chainId, txIds }) {
         return buildQueryFn(() => Promise.all(txIds.map((txId) => getTransactionDetails(chainId, txId))))
+      },
+    }),
+    getAllOwnedSafes: builder.query<AllOwnedSafes, { walletAddress: string }>({
+      queryFn({ walletAddress }) {
+        return buildQueryFn(() => getAllOwnedSafes(walletAddress))
+      },
+    }),
+    getOwnedSafes: builder.query<OwnedSafes, { chainId: string; walletAddress: string }>({
+      queryFn({ chainId, walletAddress }) {
+        return buildQueryFn(() => getOwnedSafes(chainId, walletAddress))
       },
     }),
     getSubmission: builder.query<
@@ -72,4 +89,6 @@ export const {
   useCreateSubmissionMutation,
   useGetSafeOverviewQuery,
   useGetMultipleSafeOverviewsQuery,
+  useGetAllOwnedSafesQuery,
+  useGetOwnedSafesQuery,
 } = gatewayApi

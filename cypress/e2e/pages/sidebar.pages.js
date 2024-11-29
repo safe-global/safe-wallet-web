@@ -59,6 +59,9 @@ const emptyPinnedList = '[data-testid="empty-pinned-list"]'
 const boomarkIcon = '[data-testid="bookmark-icon"]'
 const emptyAccountList = '[data-testid="empty-account-list"]'
 const searchInput = '[id="search-by-name"]'
+const accountsList = '[data-testid="accounts-list"]'
+const sortbyBtn = '[data-testid="sortby-button"]'
+
 export const importBtnStr = 'Import'
 export const exportBtnStr = 'Export'
 export const undeployedSafe = 'Undeployed Sepolia'
@@ -80,11 +83,13 @@ export const sideBarListItems = ['Home', 'Assets', 'Transactions', 'Address book
 export const sideBarSafes = {
   safe1: '0xBb26E3717172d5000F87DeFd391994f789D80aEB',
   safe2: '0x905934aA8758c06B2422F0C90D97d2fbb6677811',
+  safe3: '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B',
   safe1short: '0xBb26...0aEB',
   safe1short_: '0xBb26',
   safe2short: '0x9059...7811',
   safe3short: '0x86Cb...2C27',
   safe4short: '0x9261...7E00',
+  multichain_short_: '0xC96e',
 }
 
 // 0x926186108f74dB20BFeb2b6c888E523C78cb7E00
@@ -100,6 +105,15 @@ const accountsRegex = /(My accounts|Accounts) \((\d+)\)/
 const confirmTxStr = (number) => `${number} to confirm`
 const pedningTxStr = (n) => `${n} pending`
 export const confirmGenStr = 'to confirm'
+const searchResults = (number) => `Found ${number} result${number === 1 ? '' : 's'}`
+
+export const sortOptions = {
+  lastVisited: '[data-testid="last-visited-option"]',
+  name: '[data-testid="name-option"]',
+}
+export function checkSearchResults(number) {
+  cy.contains(searchResults(number)).should('exist')
+}
 
 export const multichainSafes = {
   polygon: 'Multichain polygon',
@@ -108,6 +122,18 @@ export const multichainSafes = {
 
 export function searchSafe(safe) {
   cy.get(searchInput).clear().type(safe)
+}
+
+export function openSortOptionsMenu() {
+  cy.get(sortbyBtn).click()
+}
+
+export function selectSortOption(option) {
+  cy.get(option).click()
+}
+
+export function clearSearchInput() {
+  cy.get(searchInput).scrollIntoView().clear({ force: true })
 }
 
 export function verifySearchInputPosition() {
@@ -232,6 +258,12 @@ export function verifySafeCount(count) {
   main.verifyMinimumElementsCount(sideSafeListItem, count)
 }
 
+export function verifyAccountListSafeCount(count) {
+  cy.get(accountsList).within(() => {
+    cy.get(sideSafeListItem).should('have.length', count)
+  })
+}
+
 export function clickOnOpenSidebarBtn() {
   cy.get(openSafesIcon).click()
 }
@@ -248,9 +280,12 @@ export function verifyAddedSafesExist(safes) {
   main.verifyValuesExist(sideSafeListItem, safes)
 }
 
+export function verifySafesDoNotExist(safes) {
+  main.verifyValuesDoNotExist(sidebarSafeContainer, safes)
+}
+
 export function verifyAddedSafesExistByIndex(index, safe) {
   cy.get(sideSafeListItem).eq(index).should('contain', safe)
-  cy.get(sideSafeListItem).eq(index).should('contain', 'sep:')
 }
 
 export function verifySafesByNetwork(netwrok, safes) {
@@ -266,7 +301,7 @@ export function verifySafesByNetwork(netwrok, safes) {
 }
 
 function getSafeByName(safe) {
-  return cy.get(sidebarSafeContainer).find(sideSafeListItem).contains(safe).parents('span').parent()
+  return cy.get(sidebarSafeContainer).find(sideSafeListItem).contains(safe).parents('span').parent().should('exist')
 }
 
 function getSafeItemOptions(name) {
@@ -295,13 +330,16 @@ export function clickOnSafeItemOptionsBtnByIndex(index) {
   cy.get(safeItemOptionsBtn).eq(index).click()
 }
 
+export function expandGroupSafes(index) {
+  cy.get(multichainItemSummary).eq(index).click()
+}
+
 export function clickOnMultichainItemOptionsBtn(index) {
   cy.get(multichainItemSummary).eq(index).find(safeItemOptionsBtn).click()
 }
 
 export function checkMultichainTooltipExists(index) {
   cy.get(multichainItemSummary).eq(index).find(chainLogo).eq(0).trigger('mouseover', { force: true })
-
   cy.get(multichainTooltip).should('exist')
 }
 
@@ -338,6 +376,10 @@ export function checkThereIsNoOptionsMenu(index) {
 
 export function checkUndeployedSafeExists(index) {
   return getSubAccountContainer(index).contains(notActivatedStr).should('exist')
+}
+
+export function checkMultichainSubSafeExists(safes) {
+  main.verifyValuesExist(subAccountContainer, safes)
 }
 
 export function checkAddNetworkBtnPosition(index) {

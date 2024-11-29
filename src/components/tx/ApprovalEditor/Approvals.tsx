@@ -3,7 +3,7 @@ import { List, ListItem, Stack } from '@mui/material'
 import { type ApprovalInfo } from '@/components/tx/ApprovalEditor/hooks/useApprovalInfos'
 import css from './styles.module.css'
 import ApprovalItem from '@/components/tx/ApprovalEditor/ApprovalItem'
-import { groupBy } from 'lodash'
+import groupBy from 'lodash/groupBy'
 import { useMemo } from 'react'
 import { SpenderField } from './SpenderField'
 

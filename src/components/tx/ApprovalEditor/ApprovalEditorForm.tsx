@@ -5,7 +5,7 @@ import type { ApprovalInfo } from './hooks/useApprovalInfos'
 
 import { useMemo } from 'react'
 import EditableApprovalItem from './EditableApprovalItem'
-import { groupBy } from 'lodash'
+import groupBy from 'lodash/groupBy'
 import { SpenderField } from './SpenderField'
 
 export type ApprovalEditorFormData = {

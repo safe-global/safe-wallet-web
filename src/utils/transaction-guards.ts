@@ -443,3 +443,7 @@ export const isExecTxInfo = (info: TransactionInfo): info is Custom => {
   }
   return false
 }
+
+export const isNestedConfirmationTxInfo = (info: TransactionInfo): boolean => {
+  return isCustomTxInfo(info) && (isOnChainConfirmationTxInfo(info) || isExecTxInfo(info))
+}

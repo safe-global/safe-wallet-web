@@ -13,6 +13,7 @@ import CheckWallet from '@/components/common/CheckWallet'
 import { useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
 import { TxModalContext } from '@/components/tx-flow'
 import { ConfirmTxFlow } from '@/components/tx-flow/flows'
+import { useNestedSafeOwners } from '@/hooks/useNestedSafeOwners'
 
 const SignTxButton = ({
   txSummary,
@@ -23,8 +24,10 @@ const SignTxButton = ({
 }): ReactElement => {
   const { setTxFlow } = useContext(TxModalContext)
   const wallet = useWallet()
+  const nestedOwners = useNestedSafeOwners()
   const isSafeOwner = useIsSafeOwner()
-  const isSignable = isSignableBy(txSummary, wallet?.address || '')
+  const isSignable =
+    isSignableBy(txSummary, wallet?.address || '') || nestedOwners?.some((owner) => isSignableBy(txSummary, owner))
   const safeSDK = useSafeSDK()
   const expiredSwap = useIsExpiredSwap(txSummary.txInfo)
   const isDisabled = !isSignable || !safeSDK || expiredSwap

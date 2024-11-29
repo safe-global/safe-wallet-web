@@ -279,6 +279,15 @@ export const batchData = {
     },
   },
 }
+export const visitedSafes = {
+  set1: {
+    11155111: {
+      '0x905934aA8758c06B2422F0C90D97d2fbb6677811': {
+        lastVisited: 1732794651004,
+      },
+    },
+  },
+}
 export const addressBookData = {
   proposers: {
     11155111: { '0xC16Db0251654C0a72E91B190d81eAD367d2C6fED': 'AD Proposer1' },
@@ -354,6 +363,14 @@ export const addressBookData = {
   undeployed: {
     11155111: {
       '0x926186108f74dB20BFeb2b6c888E523C78cb7E00': 'Undeployed Sepolia',
+    },
+  },
+  undeployedSet: {
+    100: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Safe A',
+    },
+    1: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': 'Safe B',
     },
   },
   undeployedEth: {
@@ -763,6 +780,46 @@ export const undeployedSafe = {
           safeDeploymentConfig: {
             saltNonce: '21',
             safeVersion: '1.3.0',
+          },
+        },
+        status: {
+          status: 'AWAITING_EXECUTION',
+          type: 'PayLater',
+        },
+      },
+    },
+  },
+  safes2: {
+    1: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': {
+        props: {
+          safeAccountConfig: {
+            threshold: 1,
+            owners: ['0x3ba5d9a6d6169429Adb278768D9681A125C01Af6'],
+            fallbackHandler: '0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99',
+          },
+          safeDeploymentConfig: {
+            saltNonce: '0',
+            safeVersion: '1.4.1',
+          },
+        },
+        status: {
+          status: 'AWAITING_EXECUTION',
+          type: 'PayLater',
+        },
+      },
+    },
+    100: {
+      '0xC96ee38f5A73C8A70b565CB8EA938D2aF913ee3B': {
+        props: {
+          safeAccountConfig: {
+            threshold: 1,
+            owners: ['0x3ba5d9a6d6169429Adb278768D9681A125C01Af6'],
+            fallbackHandler: '0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99',
+          },
+          safeDeploymentConfig: {
+            saltNonce: '0',
+            safeVersion: '1.4.1',
           },
         },
         status: {
