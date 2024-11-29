@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '.'
-import { metadata } from '@/markdown/terms/terms.md'
+import { version } from '@/markdown/terms/version'
 
 export enum CookieAndTermType {
   TERMS = 'terms',
@@ -38,12 +38,12 @@ export const selectCookies = (state: RootState) => state[cookiesAndTermsSlice.na
 
 export const hasAcceptedTerms = (state: RootState): boolean => {
   const cookies = selectCookies(state)
-  return cookies[CookieAndTermType.TERMS] === true && cookies.termsVersion === metadata.version
+  return cookies[CookieAndTermType.TERMS] === true && cookies.termsVersion === version
 }
 
 export const hasConsentFor = (state: RootState, type: CookieAndTermType): boolean => {
   const cookies = selectCookies(state)
-  return cookies[type] === true && cookies.termsVersion === metadata.version
+  return cookies[type] === true && cookies.termsVersion === version
 }
 
 export const { saveCookieAndTermConsent } = cookiesAndTermsSlice.actions

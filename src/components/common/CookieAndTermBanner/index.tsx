@@ -4,7 +4,7 @@ import type { CheckboxProps } from '@mui/material'
 import { Grid, Button, Checkbox, FormControlLabel, Typography, Paper, SvgIcon, Box } from '@mui/material'
 import WarningIcon from '@/public/images/notifications/warning.svg'
 import { useForm } from 'react-hook-form'
-import { metadata } from '@/markdown/terms/terms.md'
+import * as metadata from '@/markdown/terms/version'
 
 import { useAppDispatch, useAppSelector } from '@/store'
 import {
@@ -104,7 +104,7 @@ export const CookieAndTermBanner = ({
             >
               By browsing this page, you accept our{' '}
               <ExternalLink href={AppRoutes.terms}>Terms & Conditions</ExternalLink> (last updated{' '}
-              {metadata.last_update_date}) and the use of necessary cookies. By clicking &quot;Accept all&quot; you
+              {metadata.lastUpdated}) and the use of necessary cookies. By clicking &quot;Accept all&quot; you
               additionally agree to the use of Beamer and Analytics cookies as listed below.{' '}
               <ExternalLink href={AppRoutes.cookie}>Cookie policy</ExternalLink>
             </Typography>

@@ -26,7 +26,7 @@ import * as slices from './slices'
 import * as hydrate from './useHydrateStore'
 import { ofacApi } from '@/store/api/ofac'
 import { safePassApi } from './api/safePass'
-import { metadata } from '@/markdown/terms/terms.md'
+import { version as termsVersion } from '@/markdown/terms/version'
 
 const rootReducer = combineReducers({
   [slices.chainsSlice.name]: slices.chainsSlice.reducer,
@@ -103,10 +103,7 @@ export const _hydrationReducer: typeof rootReducer = (state, action) => {
     const nextState = merge({}, state, action.payload) as RootState
 
     // Check if termsVersion matches
-    if (
-      nextState[cookiesAndTermsSlice.name] &&
-      nextState[cookiesAndTermsSlice.name].termsVersion !== metadata.version
-    ) {
+    if (nextState[cookiesAndTermsSlice.name] && nextState[cookiesAndTermsSlice.name].termsVersion !== termsVersion) {
       // Reset consent
       nextState[cookiesAndTermsSlice.name] = {
         ...cookiesAndTermsInitialState,
