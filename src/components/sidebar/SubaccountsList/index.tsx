@@ -7,6 +7,9 @@ import Identicon from '@/components/common/Identicon'
 import { shortenAddress } from '@/utils/formatters'
 import useAddressBook from '@/hooks/useAddressBook'
 import { trackEvent } from '@/services/analytics'
+import Link from 'next/link'
+import { AppRoutes } from '@/config/routes'
+import { useCurrentChain } from '@/hooks/useChains'
 
 const MAX_SUBACCOUNTS = 5
 
@@ -45,6 +48,7 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
 }
 
 function SubaccountListItem({ subaccount }: { subaccount: string }): ReactElement {
+  const chain = useCurrentChain()
   const addressBook = useAddressBook()
   const name = addressBook[subaccount]
 
@@ -61,26 +65,37 @@ function SubaccountListItem({ subaccount }: { subaccount: string }): ReactElemen
         p: 0,
       }}
     >
-      <ListItemButton sx={{ p: '11px 12px' }} onClick={onClick}>
-        <ListItemAvatar sx={{ minWidth: 'unset', pr: 1 }}>
-          <Identicon address={subaccount} size={32} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={name}
-          primaryTypographyProps={{
-            fontWeight: 700,
-            sx: {
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            },
-          }}
-          secondary={shortenAddress(subaccount)}
-          secondaryTypographyProps={{ color: 'primary.light' }}
-          sx={{ my: 0 }}
-        />
-        <ChevronRight color="border" />
-      </ListItemButton>
+      <Link
+        href={{
+          pathname: AppRoutes.home,
+          query: {
+            safe: `${chain?.shortName}:${subaccount}`,
+          },
+        }}
+        passHref
+        legacyBehavior
+      >
+        <ListItemButton sx={{ p: '11px 12px' }} onClick={onClick}>
+          <ListItemAvatar sx={{ minWidth: 'unset', pr: 1 }}>
+            <Identicon address={subaccount} size={32} />
+          </ListItemAvatar>
+          <ListItemText
+            primary={name}
+            primaryTypographyProps={{
+              fontWeight: 700,
+              sx: {
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              },
+            }}
+            secondary={shortenAddress(subaccount)}
+            secondaryTypographyProps={{ color: 'primary.light' }}
+            sx={{ my: 0 }}
+          />
+          <ChevronRight color="border" />
+        </ListItemButton>
+      </Link>
     </ListItem>
   )
 }
