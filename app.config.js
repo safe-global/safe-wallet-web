@@ -19,7 +19,11 @@ module.exports = {
     },
     ios: {
       supportsTablet: true,
+      appleTeamId: 'MXRS32BBL4',
       bundleIdentifier: 'global.safe.mobileapp',
+      config: {
+        usesNonExemptEncryption: false,
+      }
     },
     android: {
       adaptiveIcon: {
