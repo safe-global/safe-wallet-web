@@ -1,5 +1,4 @@
 import * as useChains from '@/hooks/useChains'
-import { type ConnectedWallet } from '@/hooks/wallets/useOnboard'
 import * as useWallet from '@/hooks/wallets/useWallet'
 import { SecuritySeverity } from '@/services/security/modules/types'
 import { eip712TypedDataBuilder } from '@/tests/builders/messages'
@@ -12,6 +11,7 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import { safeInfoBuilder } from '@/tests/builders/safe'
 import { CLASSIFICATION_MAPPING, REASON_MAPPING } from '..'
 import { renderHook, waitFor } from '@/tests/test-utils'
+import { type SignerWallet } from '@/components/common/WalletProvider'
 
 const setupFetchStub = (data: any) => () => {
   return Promise.resolve({
@@ -37,7 +37,7 @@ jest.mock('@/hooks/useSafeInfo')
 const mockUseSafeInfo = useSafeInfo as jest.MockedFunction<typeof useSafeInfo>
 
 describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useBlockaid for %s', (testCase) => {
-  let mockUseWallet: jest.SpyInstance<ConnectedWallet | null, []>
+  let mockUseSigner: jest.SpyInstance<SignerWallet | null, []>
 
   const mockPayload = testCase === TEST_CASES.TRANSACTION ? safeTxBuilder().build() : eip712TypedDataBuilder().build()
 
@@ -46,8 +46,8 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useBlockaid for %s'
   beforeEach(() => {
     jest.resetAllMocks()
     jest.useFakeTimers()
-    mockUseWallet = jest.spyOn(useWallet, 'default')
-    mockUseWallet.mockImplementation(() => null)
+    mockUseSigner = jest.spyOn(useWallet, 'useSigner')
+    mockUseSigner.mockImplementation(() => null)
     mockUseSafeInfo.mockReturnValue({
       safe: { ...mockSafeInfo, deployed: true },
       safeAddress: mockSafeInfo.address.value,
@@ -81,7 +81,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useBlockaid for %s'
   it('should return undefined without feature enabled', async () => {
     const walletAddress = toBeHex('0x1', 20)
 
-    mockUseWallet.mockImplementation(() => ({
+    mockUseSigner.mockImplementation(() => ({
       address: walletAddress,
       chainId: '1',
       label: 'Testwallet',
@@ -102,7 +102,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useBlockaid for %s'
   it('should handle request errors', async () => {
     const walletAddress = toBeHex('0x1', 20)
 
-    mockUseWallet.mockImplementation(() => ({
+    mockUseSigner.mockImplementation(() => ({
       address: walletAddress,
       chainId: '1',
       label: 'Testwallet',
@@ -126,7 +126,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useBlockaid for %s'
   it('should handle failed simulations', async () => {
     const walletAddress = toBeHex('0x1', 20)
 
-    mockUseWallet.mockImplementation(() => ({
+    mockUseSigner.mockImplementation(() => ({
       address: walletAddress,
       chainId: '1',
       label: 'Testwallet',
@@ -216,7 +216,7 @@ describe.each([TEST_CASES.MESSAGE, TEST_CASES.TRANSACTION])('useBlockaid for %s'
       },
     }
 
-    mockUseWallet.mockImplementation(() => ({
+    mockUseSigner.mockImplementation(() => ({
       address: walletAddress,
       chainId: '1',
       label: 'Testwallet',
