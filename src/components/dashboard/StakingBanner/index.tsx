@@ -15,7 +15,8 @@ import ExternalLink from '@/components/common/ExternalLink'
 import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
 import { AppRoutes } from '@/config/routes'
 import useBalances from '@/hooks/useBalances'
-import { formatUnits } from 'ethers'
+import { formatUnits } from '@ethersproject/units'
+
 import { TokenType } from '@safe-global/safe-gateway-typescript-sdk'
 import useIsStakingBannerEnabled from '@/features/stake/hooks/useIsStakingBannerEnabled'
 

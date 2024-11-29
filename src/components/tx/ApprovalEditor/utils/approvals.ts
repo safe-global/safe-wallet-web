@@ -2,7 +2,8 @@ import { ERC20__factory } from '@/types/contracts'
 import { UNLIMITED_APPROVAL_AMOUNT } from '@/utils/tokens'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import type { DecodedDataResponse } from '@safe-global/safe-gateway-typescript-sdk'
-import { parseUnits, id } from 'ethers'
+import { parseUnits } from '@ethersproject/units'
+import { id } from '@ethersproject/hash'
 import { EMPTY_DATA } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { type ApprovalInfo } from '../hooks/useApprovalInfos'
 
@@ -103,13 +104,16 @@ export const updateApprovalTxs = (
         return {
           to: approvalInfo.tokenAddress,
           value: '0',
-          data: ERC20_INTERFACE.encodeFunctionData('approve', [approvalInfo.spender, newAmountWei]),
+          data: ERC20_INTERFACE.encodeFunctionData('approve' as any, [approvalInfo.spender, newAmountWei as any]),
         }
       } else {
         return {
           to: approvalInfo.tokenAddress,
           value: '0',
-          data: ERC20_INTERFACE.encodeFunctionData('increaseAllowance', [approvalInfo.spender, newAmountWei]),
+          data: ERC20_INTERFACE.encodeFunctionData('increaseAllowance' as any, [
+            approvalInfo.spender,
+            newAmountWei as any,
+          ]),
         }
       }
     }

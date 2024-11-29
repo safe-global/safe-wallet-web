@@ -1,7 +1,7 @@
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { ConfirmationViewTypes, type BaselineConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import { safeParseUnits } from '@/utils/formatters'
-import { Interface } from 'ethers'
+import { Interface } from '@ethersproject/abi'
 import { sameAddress } from '@/utils/addresses'
 
 // CryptoKitties Contract Addresses by network

@@ -1,5 +1,5 @@
 import type { DataDecoded, Order as SwapOrder } from '@safe-global/safe-gateway-typescript-sdk'
-import { formatUnits } from 'ethers'
+import { formatUnits } from '@ethersproject/units'
 import type { AnyAppDataDocVersion, latest, LatestAppDataDocVersion } from '@cowprotocol/app-data'
 
 import { TradeType, UiOrderType } from '@/features/swap/types'

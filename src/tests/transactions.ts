@@ -1,5 +1,6 @@
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
-import { solidityPacked, concat } from 'ethers'
+import { pack as solidityPacked } from '@ethersproject/solidity'
+import { concat } from '@ethersproject/bytes'
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
 

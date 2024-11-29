@@ -1,4 +1,4 @@
-import { TypedDataEncoder } from 'ethers'
+import { _TypedDataEncoder as TypedDataEncoder } from '@ethersproject/hash'
 import { TxDataRow, generateDataRowValue } from '../TxDataRow'
 import { type SafeTransactionData, type SafeVersion } from '@safe-global/safe-core-sdk-types'
 import { getEip712TxTypes } from '@safe-global/protocol-kit/dist/src/utils'

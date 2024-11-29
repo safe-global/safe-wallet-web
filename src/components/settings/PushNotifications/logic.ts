@@ -1,4 +1,7 @@
-import { getBytes, keccak256, toUtf8Bytes, type BrowserProvider } from 'ethers'
+import { keccak256 } from '@ethersproject/keccak256'
+import { toUtf8Bytes } from '@ethersproject/strings'
+import { arrayify as getBytes } from '@ethersproject/bytes'
+import { type BrowserProvider } from 'ethers'
 import { joinSignature, splitSignature } from '@/utils/ethers-utils'
 import { getToken, getMessaging } from 'firebase/messaging'
 import { DeviceType } from '@safe-global/safe-gateway-typescript-sdk'

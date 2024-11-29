@@ -23,7 +23,7 @@ import { TxSecurityContext } from '../../security/shared/TxSecurityContext'
 
 import WalletRejectionError from '@/components/tx/SignOrExecuteForm/WalletRejectionError'
 import { pollModuleTransactionId, useExecuteThroughRole, useGasLimit, useMetaTransactions, type Role } from './hooks'
-import { decodeBytes32String } from 'ethers'
+import { parseBytes32String as decodeBytes32String } from '@ethersproject/strings'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'

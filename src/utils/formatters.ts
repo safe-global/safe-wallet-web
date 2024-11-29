@@ -1,5 +1,6 @@
 import type { BigNumberish } from 'ethers'
-import { formatUnits, parseUnits } from 'ethers'
+import { formatUnits, parseUnits } from '@ethersproject/units'
+
 import { formatAmount, formatAmountPrecise } from './formatNumber'
 import { formatDuration, intervalToDuration } from 'date-fns'
 
@@ -45,7 +46,7 @@ export const formatVisualAmount = (
 
 export const safeParseUnits = (value: string, decimals: number | string = GWEI): bigint | undefined => {
   try {
-    return parseUnits(value, decimals)
+    return parseUnits(value, decimals).toBigInt()
   } catch (err) {
     console.error('Error parsing units', err)
     return

@@ -1,6 +1,6 @@
 import type { MutableRefObject } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { getAddress } from 'ethers'
+import { getAddress } from '@ethersproject/address'
 import type {
   SafeAppData,
   ChainInfo as WebCoreChainInfo,

@@ -1,4 +1,4 @@
-import { getAddress, isAddress } from 'ethers'
+import { getAddress, isAddress } from '@ethersproject/address'
 
 /**
  * Checksums the given address

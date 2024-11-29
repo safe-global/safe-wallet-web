@@ -3,7 +3,8 @@ import { cgwDebugStorage } from '@/components/sidebar/DebugToggle'
 import { IS_PRODUCTION } from '@/config/constants'
 import { ZERO_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { isPast } from 'date-fns'
-import { AbiCoder, Interface, type JsonRpcProvider } from 'ethers'
+import { Interface, AbiCoder } from '@ethersproject/abi'
+import { type JsonRpcProvider } from 'ethers'
 import { useMemo } from 'react'
 import useAsync, { type AsyncResult } from './useAsync'
 import useSafeInfo from './useSafeInfo'
@@ -68,7 +69,8 @@ const completeAllocation = async (allocation: VestingData): Promise<Vesting> => 
     data: airdropInterface.encodeFunctionData('vestings', [allocation.vestingId]),
   })
 
-  const decodedVestingData = AbiCoder.defaultAbiCoder().decode(
+  const abiCoder = new AbiCoder()
+  const decodedVestingData = abiCoder.decode(
     // account, curveType, managed, durationWeeks, startDate, amount, amountClaimed, pausingDate, cancelled}
     ['address', 'uint8', 'bool', 'uint16', 'uint64', 'uint128', 'uint128', 'uint64', 'bool'],
     onChainVestingData,

@@ -56,7 +56,7 @@ import { getSpendingLimitModuleAddress } from '@/services/contracts/spendingLimi
 import { sameAddress } from '@/utils/addresses'
 import type { NamedAddress } from '@/components/new-safe/create/types'
 import type { RecoveryQueueItem } from '@/features/recovery/services/recovery-state'
-import { ethers } from 'ethers'
+import { id } from '@ethersproject/hash'
 import { getSafeToL2MigrationDeployment, getMultiSendDeployments } from '@safe-global/safe-deployments'
 import { Safe__factory, Safe_to_l2_migration__factory } from '@/types/contracts'
 import { hasMatchingDeployment } from '@/services/contracts/deployments'
@@ -316,7 +316,7 @@ export const isTransactionListItem = (value: TransactionListItem): value is Tran
 
 export function isRecoveryQueueItem(value: TransactionListItem | RecoveryQueueItem): value is RecoveryQueueItem {
   const EVENT_SIGNATURE = 'TransactionAdded(uint256,bytes32,address,uint256,bytes,uint8)'
-  return 'fragment' in value && ethers.id(EVENT_SIGNATURE) === value.fragment.topicHash
+  return 'fragment' in value && id(EVENT_SIGNATURE) === value.fragment.topicHash
 }
 
 // Narrows `Transaction`

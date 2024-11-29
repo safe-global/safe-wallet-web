@@ -7,7 +7,7 @@ import {
   isMultiSendCalldata,
 } from '@/utils/transaction-calldata'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
-import { Interface } from 'ethers'
+import { Interface } from '@ethersproject/abi'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { decodeMultiSendData } from '@safe-global/protocol-kit/dist/src/utils'

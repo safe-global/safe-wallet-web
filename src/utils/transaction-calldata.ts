@@ -1,4 +1,4 @@
-import { id } from 'ethers'
+import { id } from '@ethersproject/hash'
 import type { FunctionFragment } from 'ethers'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 

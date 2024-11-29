@@ -4,7 +4,11 @@ import { type ChainInfo, type SafeOverview } from '@safe-global/safe-gateway-typ
 import { type UndeployedSafesState, type ReplayedSafeProps } from '@/store/slices'
 import { sameAddress } from '@/utils/addresses'
 import { Safe_proxy_factory__factory } from '@/types/contracts'
-import { keccak256, ethers, solidityPacked, getCreate2Address, type Provider } from 'ethers'
+import { keccak256 } from '@ethersproject/keccak256'
+import { concat } from '@ethersproject/bytes'
+import { pack as solidityPack } from '@ethersproject/solidity'
+import { getCreate2Address } from '@ethersproject/address'
+import type { Provider } from 'ethers'
 import { extractCounterfactualSafeSetup } from '@/features/counterfactual/utils'
 import { encodeSafeSetupCall } from '@/components/new-safe/create/logic'
 import memoize from 'lodash/memoize'
@@ -95,7 +99,7 @@ export const getDeviatingSetups = (
 
 const memoizedGetProxyCreationCode = memoize(
   async (factoryAddress: string, provider: Provider) => {
-    return Safe_proxy_factory__factory.connect(factoryAddress, provider).proxyCreationCode()
+    return Safe_proxy_factory__factory.connect(factoryAddress, provider as any).proxyCreationCode()
   },
   async (factoryAddress, provider) => `${factoryAddress}${(await provider.getNetwork()).chainId}`,
 )
@@ -107,7 +111,7 @@ export const predictAddressBasedOnReplayData = async (safeCreationData: Replayed
   const initializerHash = keccak256(setupData)
 
   // Step 2: Encode the initializerHash and saltNonce using abi.encodePacked equivalent
-  const encoded = ethers.concat([initializerHash, solidityPacked(['uint256'], [safeCreationData.saltNonce])])
+  const encoded = concat([initializerHash, solidityPack(['uint256'], [safeCreationData.saltNonce])])
 
   // Step 3: Hash the encoded value to get the final salt
   const salt = keccak256(encoded)
@@ -116,7 +120,7 @@ export const predictAddressBasedOnReplayData = async (safeCreationData: Replayed
   const proxyCreationCode = await memoizedGetProxyCreationCode(safeCreationData.factoryAddress, provider)
 
   const constructorData = safeCreationData.masterCopy
-  const initCode = proxyCreationCode + solidityPacked(['uint256'], [constructorData]).slice(2)
+  const initCode = proxyCreationCode + solidityPack(['uint256'], [constructorData]).slice(2)
   return getCreate2Address(safeCreationData.factoryAddress, salt, keccak256(initCode))
 }
 

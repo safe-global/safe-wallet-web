@@ -1,6 +1,6 @@
 import classnames from 'classnames'
 import type { ReactNode, ReactElement, SyntheticEvent } from 'react'
-import { isAddress } from 'ethers'
+import { isAddress } from '@ethersproject/address'
 import { useTheme } from '@mui/material/styles'
 import { Box, SvgIcon, Tooltip } from '@mui/material'
 import AddressBookIcon from '@/public/images/sidebar/address-book.svg'

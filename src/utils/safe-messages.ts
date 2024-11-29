@@ -1,4 +1,6 @@
-import { getBytes, hashMessage, type TypedDataDomain, type JsonRpcSigner } from 'ethers'
+import type { TypedDataDomain, JsonRpcSigner } from 'ethers'
+import { arrayify as getBytes } from '@ethersproject/bytes'
+import { hashMessage } from '@ethersproject/hash'
 import { gte } from 'semver'
 import { adjustVInSignature } from '@safe-global/protocol-kit/dist/src/utils/signatures'
 

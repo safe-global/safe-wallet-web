@@ -12,7 +12,7 @@ import { TENDERLY_SIMULATE_ENDPOINT_URL, TENDERLY_ORG_NAME, TENDERLY_PROJECT_NAM
 import { FEATURES, hasFeature } from '@/utils/chains'
 import type { StateObject, TenderlySimulatePayload, TenderlySimulation } from '@/components/tx/security/tenderly/types'
 import { getWeb3ReadOnly } from '@/hooks/wallets/web3'
-import { toBeHex } from 'ethers'
+import { hexlify as toBeHex } from '@ethersproject/bytes'
 import type { EnvState } from '@/store/settingsSlice'
 
 export const isTxSimulationEnabled = (chain?: ChainInfo): boolean => {
@@ -178,11 +178,11 @@ const getNonceOverwrite = (params: SimulationTxParams): number | undefined => {
   The threshold is stored in storage slot 4 and uses full 32 bytes slot.
   Safe storage layout can be found here:
   https://github.com/gnosis/safe-contracts/blob/main/contracts/libraries/GnosisSafeStorage.sol */
-export const THRESHOLD_STORAGE_POSITION = toBeHex('0x4', 32)
-export const THRESHOLD_OVERWRITE = toBeHex('0x1', 32)
+export const THRESHOLD_STORAGE_POSITION = toBeHex('0x4')
+export const THRESHOLD_OVERWRITE = toBeHex('0x1')
 /* We need to overwrite the nonce if we simulate a (partially) signed transaction which is not at the top position of the tx queue.
   The nonce can be found in storage slot 5 and uses a full 32 bytes slot. */
-export const NONCE_STORAGE_POSITION = toBeHex('0x5', 32)
+export const NONCE_STORAGE_POSITION = toBeHex('0x5')
 
 const getStateOverwrites = (params: SimulationTxParams) => {
   const nonceOverwrite = getNonceOverwrite(params)
@@ -194,7 +194,7 @@ const getStateOverwrites = (params: SimulationTxParams) => {
     storageOverwrites[THRESHOLD_STORAGE_POSITION] = THRESHOLD_OVERWRITE
   }
   if (nonceOverwrite !== undefined) {
-    storageOverwrites[NONCE_STORAGE_POSITION] = toBeHex('0x' + BigInt(nonceOverwrite).toString(16), 32)
+    storageOverwrites[NONCE_STORAGE_POSITION] = toBeHex('0x' + BigInt(nonceOverwrite).toString(16))
   }
 
   return storageOverwrites

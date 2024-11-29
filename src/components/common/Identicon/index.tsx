@@ -4,7 +4,7 @@ import { blo } from 'blo'
 import Skeleton from '@mui/material/Skeleton'
 
 import css from './styles.module.css'
-import { isAddress } from 'ethers'
+import { isAddress } from '@ethersproject/address'
 
 export interface IdenticonProps {
   address: string

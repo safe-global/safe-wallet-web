@@ -3,7 +3,7 @@ import type { AddressEx } from '@safe-global/safe-gateway-typescript-sdk'
 import CopyButton from '@/components/common/CopyButton'
 import { HexEncodedData } from '@/components/transactions/HexEncodedData'
 import { Typography, Box } from '@mui/material'
-import { dataLength } from 'ethers'
+import { hexDataLength as dataLength } from '@ethersproject/bytes'
 import EthHashInfo from '@/components/common/EthHashInfo'
 import { DataRow } from '@/components/common/Table/DataRow'
 

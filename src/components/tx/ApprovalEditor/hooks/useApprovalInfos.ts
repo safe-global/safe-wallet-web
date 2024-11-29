@@ -11,7 +11,7 @@ import {
 } from '@/utils/tokens'
 import { type SafeTransaction } from '@safe-global/safe-core-sdk-types'
 import { type EIP712TypedData, type TokenInfo, TokenType } from '@safe-global/safe-gateway-typescript-sdk'
-import { formatUnits } from 'ethers'
+import { formatUnits } from '@ethersproject/units'
 import { useMemo } from 'react'
 import { PSEUDO_APPROVAL_VALUES } from '../utils/approvals'
 

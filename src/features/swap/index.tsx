@@ -26,7 +26,7 @@ import { setSwapOrder } from '@/store/swapOrderSlice'
 import useChainId from '@/hooks/useChainId'
 import { type BaseTransaction } from '@safe-global/safe-apps-sdk'
 import { APPROVAL_SIGNATURE_HASH } from '@/components/tx/ApprovalEditor/utils/approvals'
-import { id } from 'ethers'
+import { id } from '@ethersproject/hash'
 import {
   LIMIT_ORDER_TITLE,
   SWAP_TITLE,

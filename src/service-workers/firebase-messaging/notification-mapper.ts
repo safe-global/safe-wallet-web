@@ -1,6 +1,6 @@
 // Be careful what you import here as it will increase the service worker bundle size
 
-import { formatUnits } from 'ethers'
+import { formatUnits } from '@ethersproject/units'
 import { getBalances } from '@safe-global/safe-gateway-typescript-sdk'
 import type { ChainInfo, TokenInfo } from '@safe-global/safe-gateway-typescript-sdk'
 

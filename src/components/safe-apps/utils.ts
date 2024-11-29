@@ -1,8 +1,9 @@
-import { isHexString, toUtf8String } from 'ethers'
+import { toUtf8String } from '@ethersproject/strings'
 import { SafeAppAccessPolicyTypes } from '@safe-global/safe-gateway-typescript-sdk'
 import { SafeAppFeatures } from '@safe-global/safe-gateway-typescript-sdk'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 import type { BaseTransaction, ChainInfo } from '@safe-global/safe-apps-sdk'
+import { isHexString } from '@web3-onboard/walletconnect'
 
 import { formatVisualAmount } from '@/utils/formatters'
 import { validateAddress } from '@/utils/validation'

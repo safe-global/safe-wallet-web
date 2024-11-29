@@ -1,7 +1,7 @@
 import { OperationType } from '@safe-global/safe-core-sdk-types'
 import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { getModuleInstance, KnownContracts, deployAndSetUpModule } from '@gnosis.pm/zodiac'
-import { Interface } from 'ethers'
+import { Interface } from '@ethersproject/abi'
 import type { JsonRpcProvider } from 'ethers'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 

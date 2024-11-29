@@ -1,4 +1,4 @@
-import { Interface } from 'ethers'
+import { Interface } from '@ethersproject/abi'
 import { getSafeSingletonDeployment } from '@safe-global/safe-deployments'
 import { SENTINEL_ADDRESS } from '@safe-global/protocol-kit/dist/src/utils/constants'
 import { OperationType } from '@safe-global/safe-core-sdk-types'

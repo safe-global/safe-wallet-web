@@ -1,4 +1,4 @@
-import { id } from 'ethers'
+import { id } from '@ethersproject/hash'
 import type { BaseTransaction } from '@safe-global/safe-apps-sdk'
 
 const WITHDRAW_SIGHASH = id('requestValidatorsExit(bytes)').slice(0, 10)

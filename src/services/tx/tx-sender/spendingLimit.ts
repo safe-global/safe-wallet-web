@@ -9,7 +9,7 @@ import {
   createSetAllowanceTx,
 } from '@/services/tx/spendingLimitParams'
 import type { ChainInfo } from '@safe-global/safe-gateway-typescript-sdk'
-import { parseUnits } from 'ethers'
+import { parseUnits } from '@ethersproject/units'
 import { currentMinutes } from '@/utils/date'
 import { createMultiSendCallOnlyTx } from '@/services/tx/tx-sender/create'
 

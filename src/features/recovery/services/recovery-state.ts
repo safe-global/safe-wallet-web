@@ -4,7 +4,9 @@ import { getMultiSendCallOnlyDeployment } from '@safe-global/safe-deployments'
 import type { SafeInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import type { Delay } from '@gnosis.pm/zodiac'
 import type { TransactionAddedEvent } from '@gnosis.pm/zodiac/dist/cjs/types/Delay'
-import { toBeHex, type JsonRpcProvider, type TransactionReceipt } from 'ethers'
+import { type JsonRpcProvider, type TransactionReceipt } from 'ethers'
+import { hexlify as toBeHex } from '@ethersproject/bytes'
+
 import { trimTrailingSlash } from '@/utils/url'
 import { sameAddress } from '@/utils/addresses'
 import { isMultiSendCalldata } from '@/utils/transaction-calldata'
@@ -138,7 +140,7 @@ const queryAddedTransactions = async (
   // The nonce has to be one between the current queueNonce and the txNonce.
   const diff = queueNonce - txNonce
   const queryNonces = Array.from({ length: Number(diff) }, (_, idx) => {
-    return toBeHex(BigInt(txNonce + BigInt(idx)), 32)
+    return toBeHex(BigInt(txNonce + BigInt(idx)))
   })
 
   const transactionAddedFilter = delayModifier.filters.TransactionAdded() as TransactionAddedEvent.Filter
