@@ -22,6 +22,7 @@ import css from './styles.module.css'
 import { sameAddress } from '@/utils/addresses'
 import { SafeTxContext } from '@/components/tx-flow/SafeTxProvider'
 import { MODALS_EVENTS, trackEvent } from '@/services/analytics'
+import { useIsNestedSafeOwner } from '@/hooks/useIsNestedSafeOwner'
 
 export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
   const { signer, setSignerAddress, connectedWallet: wallet } = useWalletContext() ?? {}
@@ -29,13 +30,13 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
   const signerAddress = signer?.address
   const { safe } = useSafeInfo()
   const { safeTx } = useContext(SafeTxContext)
+  const isNestedOwner = useIsNestedSafeOwner()
 
   const onChange = (event: SelectChangeEvent<string>) => {
     trackEvent(MODALS_EVENTS.CHANGE_SIGNER)
     setSignerAddress?.(event.target.value)
   }
 
-  const isNotNestedOwner = useMemo(() => nestedSafeOwners && nestedSafeOwners.length === 0, [nestedSafeOwners])
   const isOptionEnabled = useCallback(
     (address: string) => {
       if (!safeTx) {
@@ -65,7 +66,7 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
     return Array.from(owners)
   }, [nestedSafeOwners, safe.owners, wallet, willExecute])
 
-  if (!wallet || isNotNestedOwner) {
+  if (!wallet || !isNestedOwner) {
     return null
   }
 
