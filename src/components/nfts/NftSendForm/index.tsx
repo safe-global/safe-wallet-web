@@ -4,13 +4,14 @@ import ArrowIcon from '@/public/images/common/arrow-nw.svg'
 import type { SafeCollectibleResponse } from '@safe-global/safe-gateway-typescript-sdk'
 import { Sticky } from '@/components/common/Sticky'
 import CheckWallet from '@/components/common/CheckWallet'
+import { maybePlural } from '@/utils/formatters'
 
 type NftSendFormProps = {
   selectedNfts: SafeCollectibleResponse[]
 }
 
 const NftSendForm = ({ selectedNfts }: NftSendFormProps): ReactElement => {
-  const nftsText = `NFT${selectedNfts.length === 1 ? '' : 's'}`
+  const nftsText = `NFT${maybePlural(selectedNfts)}`
   const noSelected = selectedNfts.length === 0
 
   return (

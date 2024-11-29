@@ -7,6 +7,7 @@ import { ChangeThresholdReviewContext } from '@/components/tx-flow/flows/ChangeT
 import { ChangeSignerSetupWarning } from '@/features/multichain/components/SignerSetupWarning/ChangeSignerSetupWarning'
 import { type TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { isChangeThresholdView } from '../utils'
+import { maybePlural } from '@/utils/formatters'
 
 interface ChangeThresholdProps {
   txDetails?: TransactionDetails
@@ -32,7 +33,10 @@ function ChangeThreshold({ txDetails }: ChangeThresholdProps) {
         </Typography>
 
         <Typography aria-label="threshold">
-          <b>{newThreshold || threshold}</b> out of <b>{safe.owners.length} signer(s)</b>
+          <b>{newThreshold || threshold}</b> out of{' '}
+          <b>
+            {safe.owners.length} signer{maybePlural(safe.owners)}
+          </b>
         </Typography>
       </div>
       <Box

@@ -3,7 +3,7 @@ import FieldsGrid from '@/components/tx/FieldsGrid'
 import type { StakingTxDepositInfo } from '@safe-global/safe-gateway-typescript-sdk'
 import { type NativeStakingDepositConfirmationView } from '@safe-global/safe-gateway-typescript-sdk'
 import ConfirmationOrderHeader from '@/components/tx/ConfirmationOrder/ConfirmationOrderHeader'
-import { formatDurationFromMilliseconds, formatVisualAmount } from '@/utils/formatters'
+import { formatDurationFromMilliseconds, formatVisualAmount, maybePlural } from '@/utils/formatters'
 import { formatCurrency } from '@/utils/formatNumber'
 import StakingStatus from '@/features/stake/components/StakingStatus'
 import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
@@ -86,7 +86,7 @@ const StakingConfirmationTxDeposit = ({ order, isTxDetails }: StakingOrderConfir
                 borderRadius: 1,
               }}
             >
-              {order.numValidators} Ethereum validator{order.numValidators === 1 ? '' : 's'}
+              {order.numValidators} Ethereum validator{maybePlural(order.numValidators)}
             </Box>
           </Typography>
         ) : (

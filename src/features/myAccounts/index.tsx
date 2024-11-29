@@ -43,6 +43,7 @@ import useTrackSafesCount from '@/features/myAccounts/hooks/useTrackedSafesCount
 import { DataWidget } from '@/features/myAccounts/components/DataWidget'
 import OrderByButton from '@/features/myAccounts/components/OrderByButton'
 import ConnectWalletButton from '@/components/common/ConnectWallet/ConnectWalletButton'
+import { maybePlural } from '@/utils/formatters'
 
 type AccountsListProps = {
   safes: AllSafesGrouped
@@ -159,7 +160,7 @@ const AccountsList = ({ safes, onLinkClick, isSidebar = false }: AccountsListPro
               <>
                 {/* Search results */}
                 <Typography variant="h5" fontWeight="normal" mb={2} color="primary.light">
-                  Found {filteredSafes.length} result{filteredSafes.length === 1 ? '' : 's'}
+                  Found {filteredSafes.length} result{maybePlural(filteredSafes)}
                 </Typography>
                 <Box mt={1}>
                   <SafesList safes={filteredSafes} onLinkClick={onLinkClick} useTransitions={false} />

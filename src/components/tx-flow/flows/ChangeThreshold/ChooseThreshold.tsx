@@ -21,6 +21,7 @@ import InfoIcon from '@/public/images/notifications/info.svg'
 import { TOOLTIP_TITLES } from '@/components/tx-flow/common/constants'
 
 import commonCss from '@/components/tx-flow/common/styles.module.css'
+import { maybePlural } from '@/utils/formatters'
 
 export const ChooseThreshold = ({
   params,
@@ -104,7 +105,9 @@ export const ChooseThreshold = ({
                     </TextField>
                   </Grid>
                   <Grid item>
-                    <Typography>out of {safe.owners.length} signer(s)</Typography>
+                    <Typography>
+                      out of {safe.owners.length} signer{maybePlural(safe.owners)}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
                     {isError ? (

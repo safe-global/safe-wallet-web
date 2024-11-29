@@ -15,10 +15,11 @@ exports[`ChangeThreshold should display the ChangeThreshold component with the n
       <b>
         3
       </b>
-       out of 
+       out of
+       
       <b>
         1
-         signer(s)
+         signer
       </b>
     </p>
   </div>
