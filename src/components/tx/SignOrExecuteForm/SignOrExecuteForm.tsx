@@ -65,6 +65,7 @@ const trackTxEvents = (
   isRoleExecution: boolean,
   isProposerCreation: boolean,
   isParentSigner: boolean,
+  origin?: string,
 ) => {
   const isNestedConfirmation = !!details && isNestedConfirmationTxInfo(details.txInfo)
 
@@ -82,7 +83,7 @@ const trackTxEvents = (
     return confirmationEvent
   })()
 
-  const txType = getTransactionTrackingType(details)
+  const txType = getTransactionTrackingType(details, origin)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
@@ -180,9 +181,17 @@ export const SignOrExecuteForm = ({
 
       const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(details, !!isCreation, isExecuted, isRoleExecution, isProposerCreation, !!signer?.isSafe)
+      trackTxEvents(
+        details,
+        !!isCreation,
+        isExecuted,
+        isRoleExecution,
+        isProposerCreation,
+        !!signer?.isSafe,
+        props.origin,
+      )
     },
-    [chainId, isCreation, onSubmit, trigger, signer?.isSafe],
+    [chainId, isCreation, onSubmit, trigger, signer?.isSafe, props.origin],
   )
 
   const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(

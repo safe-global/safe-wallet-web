@@ -22,6 +22,7 @@ export enum TX_TYPES {
   nested_safe = 'nested_safe',
   walletconnect = 'walletconnect',
   custom = 'custom',
+  native_bridge = 'native_bridge',
   native_swap = 'native_swap',
   bulk_execute = 'bulk_execute',
 

@@ -2,6 +2,8 @@
 import { faker } from '@faker-js/faker'
 import { SafeWalletProvider } from '.'
 import { ERC20__factory } from '@/types/contracts'
+import { numberToHex } from '@/utils/hex'
+import type { TransactionReceipt } from 'ethers'
 
 const safe = {
   safeAddress: faker.finance.ethereumAddress(),
@@ -617,7 +619,88 @@ describe('SafeWalletProvider', () => {
     })
 
     describe('wallet_getCallsStatus', () => {
-      it('should look up a tx by txHash', async () => {
+      it('should return a confirmed transaction', async () => {
+        const receipt: Pick<TransactionReceipt, 'logs' | 'blockHash' | 'blockNumber' | 'gasUsed'> = {
+          logs: [],
+          blockHash: faker.string.hexadecimal(),
+          blockNumber: faker.number.int(),
+          gasUsed: faker.number.bigInt(),
+        }
+        const sdk = {
+          getBySafeTxHash: jest.fn().mockResolvedValue({
+            txStatus: 'SUCCESS',
+            txHash: '0x123',
+            txData: {
+              dataDecoded: {
+                parameters: [{ valueDecoded: [1] }],
+              },
+            },
+          }),
+          proxy: jest.fn().mockImplementation((method) => {
+            if (method === 'eth_getTransactionReceipt') {
+              return Promise.resolve(receipt)
+            }
+            return Promise.reject('Unknown method')
+          }),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = ['0x123']
+
+        const status = await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
+
+        expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
+        expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
+        expect(status).toStrictEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: {
+            receipts: [
+              {
+                blockHash: receipt.blockHash,
+                blockNumber: numberToHex(receipt.blockNumber),
+                chainId: '0x1',
+                gasUsed: numberToHex(receipt.gasUsed),
+                logs: receipt.logs,
+                status: '0x1',
+                transactionHash: '0x123',
+              },
+            ],
+            status: 'CONFIRMED',
+          },
+        })
+      })
+
+      it('should return a pending status w/o txHash', async () => {
+        const sdk = {
+          getBySafeTxHash: jest.fn().mockResolvedValue({
+            txStatus: 'AWAITING_EXECUTION',
+            txData: {
+              dataDecoded: {
+                parameters: [{ valueDecoded: [1] }],
+              },
+            },
+          }),
+          proxy: jest.fn(),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = ['0x123']
+
+        const status = await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
+
+        expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
+        expect(sdk.proxy).not.toHaveBeenCalled()
+        expect(status).toStrictEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: {
+            status: 'PENDING',
+          },
+        })
+      })
+
+      it('should return a pending status w/o receipt', async () => {
         const sdk = {
           getBySafeTxHash: jest.fn().mockResolvedValue({
             txStatus: 'AWAITING_EXECUTION',
@@ -628,38 +711,28 @@ describe('SafeWalletProvider', () => {
               },
             },
           }),
-          proxy: jest.fn(),
+          proxy: jest.fn().mockImplementation((method) => {
+            if (method === 'eth_getTransactionReceipt') {
+              return Promise.resolve(null)
+            }
+            return Promise.reject('Unknown method')
+          }),
         }
         const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
 
         const params = ['0x123']
 
-        await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
+        const status = await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
 
         expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
         expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
-      })
-
-      it('should return a pending status w/o txHash', async () => {
-        const sdk = {
-          getBySafeTxHash: jest.fn().mockResolvedValue({
-            txStatus: 'AWAITING_CONFIRMATION',
-            txData: {
-              dataDecoded: {
-                parameters: [{ valueDecoded: [1] }],
-              },
-            },
-          }),
-          proxy: jest.fn(),
-        }
-        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
-
-        const params = ['0x123']
-
-        await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
-
-        expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
-        expect(sdk.proxy).not.toHaveBeenCalled()
+        expect(status).toStrictEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: {
+            status: 'PENDING',
+          },
+        })
       })
     })
 

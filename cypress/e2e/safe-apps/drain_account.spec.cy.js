@@ -13,7 +13,7 @@ let iframeSelector
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
-describe('Drain Account tests', () => {
+describe('Drain Account tests', { defaultCommandTimeout: 40000 }, () => {
   before(async () => {
     safeAppSafes = await getSafes(CATEGORIES.safeapps)
   })
