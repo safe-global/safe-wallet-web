@@ -5,6 +5,7 @@ import * as wallet from '../../support/utils/wallet.js'
 import * as proposer from '../pages/proposers.pages.js'
 import * as createtx from '../pages/create_tx.pages.js'
 import * as tx from '../pages/transactions.page.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -26,7 +27,7 @@ describe('Proposers 2 tests', () => {
     wallet.connectSigner(signer)
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
-    createtx.typeRecipientAddress(constants.EOA)
+    createtx.typeRecipientAddress(getMockAddress())
     createtx.setSendValue(sendValue)
     createtx.clickOnNextBtn()
     tx.selectExecuteNow()
@@ -41,7 +42,7 @@ describe('Proposers 2 tests', () => {
     wallet.connectSigner(signer2)
     createtx.clickOnNewtransactionBtn()
     createtx.clickOnSendTokensBtn()
-    createtx.typeRecipientAddress(constants.EOA)
+    createtx.typeRecipientAddress(getMockAddress())
     createtx.setSendValue(sendValue)
     createtx.clickOnNextBtn()
     createtx.verifySubmitBtnIsEnabled()

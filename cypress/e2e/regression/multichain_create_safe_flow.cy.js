@@ -1,20 +1,14 @@
 import * as constants from '../../support/constants.js'
 import * as main from '../pages/main.page.js'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as createwallet from '../pages/create_wallet.pages.js'
 import * as owner from '../pages/owners.pages.js'
-
-let staticSafes = []
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('Multichain safe creation flow tests', () => {
-  before(async () => {
-    staticSafes = await getSafes(CATEGORIES.static)
-  })
-
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
     cy.wait(2000)
@@ -54,7 +48,7 @@ describe('Multichain safe creation flow tests', () => {
     createwallet.selectMultiNetwork(1, constants.networks.polygon.toLowerCase())
     createwallet.clickOnNextBtn()
     owner.clickOnAddSignerBtn()
-    owner.typeOwnerAddressCreateSafeStep(1, constants.SEPOLIA_OWNER_2)
+    owner.typeOwnerAddressCreateSafeStep(1, getMockAddress())
     createwallet.clickOnNextBtn()
     createwallet.clickOnReviewStepNextBtn()
     main.verifyElementsExist([createwallet.cfSafeActivationMsg, createwallet.cfSafeCreationSuccessMsg])

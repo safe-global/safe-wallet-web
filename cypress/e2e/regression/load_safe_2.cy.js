@@ -5,6 +5,7 @@ import * as safe from '../pages/load_safe.pages'
 import * as ls from '../../support/localstorage_data.js'
 import * as owner from '../pages/owners.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let staticSafes,
   fundSafes = []
@@ -91,7 +92,7 @@ describe('Load Safe tests 2', () => {
   })
 
   it('Verify a valid address can be entered', () => {
-    safe.inputAddress(staticSafes.SEP_STATIC_SAFE_13)
+    safe.inputAddress(getMockAddress())
     safe.verifyAddresFormatIsValid()
   })
 
@@ -107,7 +108,7 @@ describe('Load Safe tests 2', () => {
   })
 
   it('Verify that the wrong prefix is not allowed', () => {
-    safe.inputAddress(fundSafes.ETH_FUNDS_SAFE_13)
+    safe.inputAddress(`eth:${getMockAddress()}`)
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.prefixMismatch)
     safe.verifyNextButtonStatus(constants.enabledStates.disabled)
   })

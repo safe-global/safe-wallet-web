@@ -6,6 +6,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as modules from '../pages/modules.page.js'
 import * as navigation from '../pages/navigation.page.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let recoverySafes,
   staticSafes = []
@@ -144,7 +145,7 @@ describe('Recovery regression tests', { defaultCommandTimeout: 50000 }, () => {
     recovery.clickOnSetupRecoveryBtn()
     recovery.clickOnSetupRecoveryModalBtn()
     recovery.clickOnNextBtn()
-    recovery.enterRecovererAddress(constants.SEPOLIA_OWNER_2)
+    recovery.enterRecovererAddress(getMockAddress())
     recovery.agreeToTerms()
     recovery.clickOnNextBtn()
     navigation.clickOnModalCloseBtn(0)
@@ -186,7 +187,7 @@ describe('Recovery regression tests', { defaultCommandTimeout: 50000 }, () => {
     recovery.enterRecovererAddress(main.generateRandomString(10), 1)
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidFormat)
 
-    recovery.enterRecovererAddress(constants.DEFAULT_OWNER_ADDRESS.toUpperCase(), 1)
+    recovery.enterRecovererAddress(getMockAddress().replace('A', 'a'), 1)
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidChecksum)
 
     recovery.enterRecovererAddress(constants.ENS_TEST_SEPOLIA_INVALID, 1)
@@ -206,7 +207,7 @@ describe('Recovery regression tests', { defaultCommandTimeout: 50000 }, () => {
     recovery.clickOnRecoverLaterBtn()
     cy.visit(constants.homeUrl + recoverySafes.SEP_RECOVERY_SAFE_4)
     recovery.clickOnStartRecoveryBtn()
-    recovery.enterRecovererAddress(constants.SEPOLIA_OWNER_2)
+    recovery.enterRecovererAddress(getMockAddress())
     navigation.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
   })

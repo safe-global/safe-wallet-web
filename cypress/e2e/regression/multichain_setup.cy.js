@@ -15,7 +15,8 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 // DO NOT use OWNER_2_PRIVATE_KEY for safe creation. Used for CF safes.
 const signer2 = walletCredentials.OWNER_2_PRIVATE_KEY
 
-describe('Multichain setup tests', { defaultCommandTimeout: 30000 }, () => {
+// Skip due to issues with Polygon
+describe.skip('Multichain setup tests', { defaultCommandTimeout: 30000 }, () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })

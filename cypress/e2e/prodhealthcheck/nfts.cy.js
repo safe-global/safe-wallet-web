@@ -3,6 +3,7 @@ import * as nfts from '../pages/nfts.pages'
 import * as createTx from '../pages/create_tx.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 const multipleNFT = ['multiSend']
 const multipleNFTAction = 'safeTransferFrom'
@@ -32,14 +33,13 @@ describe('[PROD] NFTs tests', () => {
     nfts.waitForNftItems(2)
   })
 
-  // TODO: Add Sign action
   it('Verify multipls NFTs can be selected and reviewed', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(3)
     nfts.deselectNFTs([2], 3)
     nfts.sendNFT()
     nfts.verifyNFTModalData()
-    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
+    nfts.typeRecipientAddress(getMockAddress())
     nfts.clikOnNextBtn()
     nfts.verifyReviewModalData(2)
   })
@@ -48,7 +48,7 @@ describe('[PROD] NFTs tests', () => {
     nfts.verifyInitialNFTData()
     nfts.selectNFTs(2)
     nfts.sendNFT()
-    nfts.typeRecipientAddress(staticSafes.SEP_STATIC_SAFE_1)
+    nfts.typeRecipientAddress(getMockAddress())
     nfts.clikOnNextBtn()
     nfts.verifyTxDetails(multipleNFT)
     nfts.verifyCountOfActions(2)

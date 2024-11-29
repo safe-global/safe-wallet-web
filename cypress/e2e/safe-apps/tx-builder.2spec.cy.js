@@ -6,8 +6,8 @@ import * as navigation from '../pages/navigation.page.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as ls from '../../support/localstorage_data.js'
 import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
-import * as wallet from '../../support/utils/wallet.js'
 import * as utils from '../../support/utils/checkers.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let safeAppSafes = []
 let iframeSelector
@@ -30,7 +30,7 @@ describe('Transaction Builder 2 tests', { defaultCommandTimeout: 20000 }, () => 
 
   it('Verify a batch cannot be created without method data', () => {
     cy.enter(iframeSelector).then((getBody) => {
-      getBody().findByLabelText(safeapps.enterAddressStr).type(constants.SAFE_APP_ADDRESS)
+      getBody().findByLabelText(safeapps.enterAddressStr).type(getMockAddress())
       getBody().findByText(safeapps.addTransactionStr).click()
       getBody()
         .findAllByText(safeapps.requiredStr)

@@ -10,7 +10,8 @@ let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
-describe('Multichain add network tests', () => {
+// Skip due to issues with Polygon
+describe.skip('Multichain add network tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })

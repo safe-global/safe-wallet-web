@@ -1,22 +1,16 @@
 import * as constants from '../../support/constants.js'
 import * as main from '../pages/main.page.js'
-import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as createwallet from '../pages/create_wallet.pages'
 import * as createtx from '../pages/create_tx.pages.js'
 import * as tx from '../pages/transactions.page.js'
 import * as owner from '../pages/owners.pages'
-
-let staticSafes = []
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
 const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 
 describe('Multichain safe creation tests', () => {
-  before(async () => {
-    staticSafes = await getSafes(CATEGORIES.static)
-  })
-
   beforeEach(() => {
     cy.visit(constants.welcomeUrl + '?chain=sep')
     cy.wait(2000)
@@ -61,7 +55,7 @@ describe('Multichain safe creation tests', () => {
     createwallet.selectMultiNetwork(1, constants.networks.polygon.toLowerCase())
     createwallet.clickOnNextBtn()
     owner.clickOnAddSignerBtn()
-    owner.typeOwnerAddressCreateSafeStep(1, constants.SEPOLIA_OWNER_2)
+    owner.typeOwnerAddressCreateSafeStep(1, getMockAddress())
     owner.clickOnThresholdDropdown()
     owner.getThresholdOptions().eq(1).click()
     createwallet.clickOnNextBtn()
@@ -79,7 +73,7 @@ describe('Multichain safe creation tests', () => {
     createwallet.selectMultiNetwork(1, constants.networks.polygon.toLowerCase())
     createwallet.clickOnNextBtn()
     owner.clickOnAddSignerBtn()
-    owner.typeOwnerAddressCreateSafeStep(1, constants.SEPOLIA_OWNER_2)
+    owner.typeOwnerAddressCreateSafeStep(1, getMockAddress())
     owner.clickOnThresholdDropdown()
     owner.getThresholdOptions().eq(0).click()
     createwallet.clickOnNextBtn()
