@@ -14,6 +14,8 @@ const MULTISEND_METHOD = 'multiSend'
 
 const APPROVE_METHOD = 'approve'
 
+const INCREASE_ALLOWANCE_METHOD = 'increaseAllowance'
+
 const TRANSACTIONS_PARAM = 'transactions'
 
 const ADDRESS_TYPE = 'address'
@@ -104,16 +106,15 @@ export const updateApprovalTxs = (
         return {
           to: approvalInfo.tokenAddress,
           value: '0',
-          data: ERC20_INTERFACE.encodeFunctionData('approve' as any, [approvalInfo.spender, newAmountWei as any]),
+          // @ts-ignore
+          data: ERC20_INTERFACE.encodeFunctionData(APPROVE_METHOD, [approvalInfo.spender, newAmountWei]),
         }
       } else {
         return {
           to: approvalInfo.tokenAddress,
           value: '0',
-          data: ERC20_INTERFACE.encodeFunctionData('increaseAllowance' as any, [
-            approvalInfo.spender,
-            newAmountWei as any,
-          ]),
+          // @ts-ignore
+          data: ERC20_INTERFACE.encodeFunctionData(INCREASE_ALLOWANCE_METHOD, [approvalInfo.spender, newAmountWei]),
         }
       }
     }
