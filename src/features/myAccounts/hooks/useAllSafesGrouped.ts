@@ -1,4 +1,4 @@
-import { groupBy } from 'lodash'
+import groupBy from 'lodash/groupBy'
 import useAllSafes, { type SafeItem, type SafeItems } from './useAllSafes'
 import { useMemo } from 'react'
 import { sameAddress } from '@/utils/addresses'
