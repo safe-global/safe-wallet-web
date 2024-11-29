@@ -31,6 +31,7 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
             sx={{
               textTransform: 'uppercase',
               fontWeight: 700,
+              cursor: 'pointer',
             }}
             onClick={onShowAll}
           >
