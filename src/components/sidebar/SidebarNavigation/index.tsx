@@ -21,16 +21,18 @@ import { SWAP_EVENTS, SWAP_LABELS } from '@/services/analytics/events/swaps'
 import { GeoblockingContext } from '@/components/common/GeoblockingProvider'
 import { STAKE_EVENTS, STAKE_LABELS } from '@/services/analytics/events/stake'
 import { Tooltip } from '@mui/material'
+import { BRIDGE_EVENTS, BRIDGE_LABELS } from '@/services/analytics/events/bridge'
 
 const getSubdirectory = (pathname: string): string => {
   return pathname.split('/')[1]
 }
 
-const geoBlockedRoutes = [AppRoutes.swap, AppRoutes.stake]
+const geoBlockedRoutes = [AppRoutes.bridge, AppRoutes.swap, AppRoutes.stake]
 
-const undeployedSafeBlockedRoutes = [AppRoutes.swap, AppRoutes.stake, AppRoutes.apps.index]
+const undeployedSafeBlockedRoutes = [AppRoutes.bridge, AppRoutes.swap, AppRoutes.stake, AppRoutes.apps.index]
 
 const customSidebarEvents: { [key: string]: { event: any; label: string } } = {
+  [AppRoutes.bridge]: { event: BRIDGE_EVENTS.OPEN_BRIDGE, label: BRIDGE_LABELS.sidebar },
   [AppRoutes.swap]: { event: SWAP_EVENTS.OPEN_SWAPS, label: SWAP_LABELS.sidebar },
   [AppRoutes.stake]: { event: STAKE_EVENTS.OPEN_STAKE, label: STAKE_LABELS.sidebar },
 }

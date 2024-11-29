@@ -21,6 +21,7 @@ export enum TX_TYPES {
   typed_message = 'typed_message',
   walletconnect = 'walletconnect',
   custom = 'custom',
+  native_bridge = 'native_bridge',
   native_swap = 'native_swap',
   bulk_execute = 'bulk_execute',
 

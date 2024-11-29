@@ -10,13 +10,19 @@ import {
   isSwapOrderTxInfo,
   isAnyStakingTxInfo,
 } from '@/utils/transaction-guards'
+import { BRIDGE_WIDGET_URL } from '@/features/bridge/components/BridgeWidget'
 
-export const getTransactionTrackingType = (details: TransactionDetails | undefined): string => {
+export const getTransactionTrackingType = (details: TransactionDetails | undefined, origin?: string): string => {
   if (!details) {
     return TX_TYPES.custom
   }
 
   const { txInfo } = details
+
+  const isNativeBridge = origin?.includes(BRIDGE_WIDGET_URL)
+  if (isNativeBridge) {
+    return TX_TYPES.native_bridge
+  }
 
   if (isTransferTxInfo(txInfo)) {
     if (isERC721Transfer(txInfo.transferInfo)) {

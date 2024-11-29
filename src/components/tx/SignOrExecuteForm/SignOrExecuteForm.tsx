@@ -61,6 +61,7 @@ const trackTxEvents = (
   isExecuted: boolean,
   isRoleExecution: boolean,
   isProposerCreation: boolean,
+  origin?: string,
 ) => {
   const creationEvent = isRoleExecution
     ? TX_EVENTS.CREATE_VIA_ROLE
@@ -69,7 +70,7 @@ const trackTxEvents = (
       : TX_EVENTS.CREATE
   const executionEvent = isRoleExecution ? TX_EVENTS.EXECUTE_VIA_ROLE : TX_EVENTS.EXECUTE
   const event = isCreation ? creationEvent : isExecuted ? executionEvent : TX_EVENTS.CONFIRM
-  const txType = getTransactionTrackingType(details)
+  const txType = getTransactionTrackingType(details, origin)
   trackEvent({ ...event, label: txType })
 
   // Immediate execution on creation
@@ -130,9 +131,9 @@ export const SignOrExecuteForm = ({
 
       const { data: details } = await trigger({ chainId, txId })
       // Track tx event
-      trackTxEvents(details, !!isCreation, isExecuted, isRoleExecution, isProposerCreation)
+      trackTxEvents(details, !!isCreation, isExecuted, isRoleExecution, isProposerCreation, props.origin)
     },
-    [chainId, isCreation, onSubmit, trigger],
+    [chainId, isCreation, onSubmit, props.origin, trigger],
   )
 
   const onRoleExecutionSubmit = useCallback<typeof onFormSubmit>(
