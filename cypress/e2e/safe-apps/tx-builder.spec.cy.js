@@ -8,6 +8,7 @@ import * as ls from '../../support/localstorage_data.js'
 import { getEvents, events, checkDataLayerEvents } from '../../support/utils/gtag.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as utils from '../../support/utils/checkers.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let safeAppSafes = []
 let iframeSelector

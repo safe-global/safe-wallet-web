@@ -6,6 +6,7 @@ import * as tx from '../pages/create_tx.pages'
 import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -52,12 +53,12 @@ describe('Spending limits tests', () => {
     //Assume that default reset time is set to One time
     wallet.connectSigner(signer)
     spendinglimit.clickOnNewSpendingLimitBtn()
-    spendinglimit.enterBeneficiaryAddress(staticSafes.SEP_STATIC_SAFE_6)
+    spendinglimit.enterBeneficiaryAddress(getMockAddress())
     spendinglimit.enterSpendingLimitAmount(0.1)
     spendinglimit.clickOnNextBtn()
     spendinglimit.checkReviewData(
       tokenAmount,
-      staticSafes.SEP_STATIC_SAFE_6,
+      getMockAddress(),
       spendinglimit.timePeriodOptions.oneTime.split(' ').join('-'),
     )
   })

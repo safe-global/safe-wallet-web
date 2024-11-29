@@ -6,6 +6,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as ls from '../../support/localstorage_data.js'
 import * as navigation from '../pages/navigation.page.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 const currentNonce = 3
 const funds_first_tx = '0.001'
@@ -29,13 +30,13 @@ describe('Batch transaction tests', { defaultCommandTimeout: 30000 }, () => {
 
   it('Verify the Add batch button is present in a transaction form', () => {
     //The "true" is to validate that the add to batch button is not visible if "Yes, execute" is selected
-    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
+    batch.addNewTransactionToBatch(getMockAddress(), currentNonce, funds_first_tx)
   })
 
   it('Verify a second transaction can be added to the batch', () => {
-    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
+    batch.addNewTransactionToBatch(getMockAddress(), currentNonce, funds_first_tx)
     cy.wait(1000)
-    batch.addNewTransactionToBatch(constants.EOA, currentNonce, funds_first_tx)
+    batch.addNewTransactionToBatch(getMockAddress(), currentNonce, funds_first_tx)
     batch.verifyBatchIconCount(2)
     batch.clickOnBatchCounter()
     batch.verifyAmountTransactionsInBatch(2)

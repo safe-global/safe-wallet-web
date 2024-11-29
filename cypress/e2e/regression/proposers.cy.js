@@ -6,6 +6,7 @@ import * as wallet from '../../support/utils/wallet.js'
 import * as navigation from '../pages/navigation.page.js'
 import * as ls from '../../support/localstorage_data.js'
 import * as proposer from '../pages/proposers.pages.js'
+import { getMockAddress } from '../../support/utils/ethers.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -50,10 +51,7 @@ describe('Proposers tests', () => {
 
   it('Verify that a proposer address must be checksummed', () => {
     proposer.clickOnAddProposerBtn()
-    proposer.enterProposerData(
-      staticSafes.SEP_STATIC_SAFE_31.substring(4).replace('E', 'e'),
-      main.generateRandomString(5),
-    )
+    proposer.enterProposerData(getMockAddress().replace('A', 'a'), main.generateRandomString(5))
     owner.verifyErrorMsgInvalidAddress(constants.addressBookErrrMsg.invalidChecksum)
   })
 
