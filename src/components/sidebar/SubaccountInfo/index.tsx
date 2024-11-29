@@ -39,9 +39,9 @@ export function SubaccountInfo(): ReactElement {
       </Box>
       <List sx={{ p: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
         {[
-          'Use them for specific cases such as DeFi operations',
-          'Install modules to execute transactions, bypassing thresholds',
-          'Make sure that this Safe is not exposed to additional risks',
+          'rebuild your organizational structure onchain',
+          'explore new DeFi opportunities without exposing your main Account',
+          'deploy specialized modules and enable easier access through passkeys and other signers',
         ].map((item) => {
           return (
             <ListItem key={item} sx={{ p: 0, pl: 1.5, alignItems: 'unset' }}>

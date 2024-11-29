@@ -251,7 +251,7 @@ function AssetInputs({ name }: { name: SetupSubaccountFormFields.assets }) {
         sx={{ my: 3 }}
         disabled={nonSelectedAssets.length === 0}
       >
-        Add asset
+        Fund new asset
       </Button>
     </>
   )

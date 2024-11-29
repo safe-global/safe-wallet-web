@@ -1,10 +1,12 @@
 .badge :global .MuiBadge-badge {
-  border: 2px solid var(--color-background-paper);
+  border: 1px solid var(--color-background-main);
   border-radius: 50%;
   box-sizing: content-box;
-  right: 10px;
+  right: 12px;
   top: 8px;
-  background-color: var(--color-success-light);
+  background-color: var(--color-secondary-main);
+  height: 6px;
+  min-width: 6px;
 }
 
 .count {
