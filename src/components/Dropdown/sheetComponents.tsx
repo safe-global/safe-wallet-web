@@ -2,7 +2,7 @@ import React from 'react'
 import { View as RCView, StyleSheet } from 'react-native'
 import { View } from 'tamagui'
 import { BottomSheetBackgroundProps, useBottomSheetModal } from '@gorhom/bottom-sheet'
-import { BlurView } from '@react-native-community/blur'
+import { BlurView } from 'expo-blur'
 
 const BackgroundComponent = React.memo(({ style }: BottomSheetBackgroundProps) => {
   return (
@@ -27,7 +27,7 @@ const BackdropComponent = React.memo(() => {
       width="100%"
       height="100%"
     >
-      <BlurView style={styles.absolute} blurType="dark" blurAmount={8} />
+      <BlurView style={styles.absolute} intensity={100} experimentalBlurMethod={'dimezisBlurView'} tint={'dark'} />
     </View>
   )
 })
@@ -42,6 +42,8 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
+    width: '100%',
+    height: '100%',
   },
 })
 

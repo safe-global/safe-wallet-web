@@ -14,24 +14,24 @@ export const Navbar = () => {
   const activeSafe = useSelector(selectActiveSafe)
   return (
     <View>
-      <BlurredIdenticonBackground address={activeSafe.address as Address} />
+      <BlurredIdenticonBackground address={activeSafe.address as Address}>
+        <SafeAreaView style={styles.headerContainer}>
+          <View flexDirection="row" alignItems="center" columnGap="$3">
+            <Identicon address={activeSafe.address} rounded={true} size={30} />
 
-      <SafeAreaView style={styles.headerContainer}>
-        <View flexDirection="row" alignItems="center" columnGap="$3">
-          <Identicon address={activeSafe.address} rounded={true} size={30} />
-
-          <View justifyContent="center" alignItems="center" flexDirection="row">
-            <Text fontSize="$5" fontWeight={600}>
-              {shortenAddress(activeSafe.address)}
-            </Text>
-            <SafeFontIcon name="arrow-down" />
+            <View justifyContent="center" alignItems="center" flexDirection="row">
+              <Text fontSize="$5" fontWeight={600}>
+                {shortenAddress(activeSafe.address)}
+              </Text>
+              <SafeFontIcon name="arrow-down" />
+            </View>
           </View>
-        </View>
 
-        <TouchableOpacity>
-          <SafeFontIcon name="apps" />
-        </TouchableOpacity>
-      </SafeAreaView>
+          <TouchableOpacity>
+            <SafeFontIcon name="apps" />
+          </TouchableOpacity>
+        </SafeAreaView>
+      </BlurredIdenticonBackground>
     </View>
   )
 }

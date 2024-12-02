@@ -12,13 +12,14 @@ export const Navbar = (props: { safeAddress: Address }) => {
 
   return (
     <View>
-      {safeAddress && <BlurredIdenticonBackground address={safeAddress} height={140} />}
-      <SafeAreaView style={styles.headerContainer}>
-        <View flexDirection="row" alignItems="center" columnGap="$3">
-          <SettingsButton />
-          <SettingsMenu safeAddress={safeAddress} />
-        </View>
-      </SafeAreaView>
+      <BlurredIdenticonBackground address={safeAddress} height={140}>
+        <SafeAreaView style={styles.headerContainer}>
+          <View flexDirection="row" alignItems="center" columnGap="$3">
+            <SettingsButton />
+            <SettingsMenu safeAddress={safeAddress} />
+          </View>
+        </SafeAreaView>
+      </BlurredIdenticonBackground>
     </View>
   )
 }

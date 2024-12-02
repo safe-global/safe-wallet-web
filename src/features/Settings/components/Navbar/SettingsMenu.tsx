@@ -82,40 +82,38 @@ const Menu = ({ onPressAction, color, destructiveColor }: MenuProps) => {
         {
           id: 'rename',
           title: 'Rename',
-          titleColor: color,
           image: Platform.select({
             ios: 'pencil',
-            android: 'ic_menu_add',
+            android: 'baseline_create_24',
           }),
-          imageColor: color,
+          imageColor: Platform.select({ ios: color, android: '#000' }),
         },
         {
           id: 'explorer',
           title: 'View on Explorer',
-          titleColor: color,
           image: Platform.select({
             ios: 'link',
-            android: 'ic_menu_share',
+            android: 'baseline_explore_24',
           }),
-          imageColor: color,
+          imageColor: Platform.select({ ios: color, android: '#000' }),
         },
         {
           id: 'copy',
           title: 'Copy address',
           image: Platform.select({
             ios: 'doc.on.doc',
-            android: 'ic_menu_delete',
+            android: 'baseline_auto_awesome_motion_24',
           }),
-          imageColor: color,
+          imageColor: Platform.select({ ios: color, android: '#000' }),
         },
         {
           id: 'share',
           title: 'Share account',
           image: Platform.select({
             ios: 'square.and.arrow.up.on.square',
-            android: 'ic_menu_delete',
+            android: 'baseline_arrow_outward_24',
           }),
-          imageColor: color,
+          imageColor: Platform.select({ ios: color, android: '#000' }),
         },
         {
           id: 'remove',
@@ -125,7 +123,7 @@ const Menu = ({ onPressAction, color, destructiveColor }: MenuProps) => {
           },
           image: Platform.select({
             ios: 'trash',
-            android: 'ic_menu_delete',
+            android: 'baseline_delete_24',
           }),
           imageColor: destructiveColor,
         },
