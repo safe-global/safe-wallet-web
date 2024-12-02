@@ -17,7 +17,6 @@ describe('[SMOKE] Load Safe tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.loadNewSafeSepoliaUrl)
-    cy.wait(2000)
   })
 
   it('[SMOKE] Verify a network can be selected in the Safe', () => {

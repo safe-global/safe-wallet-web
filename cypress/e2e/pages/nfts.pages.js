@@ -22,7 +22,7 @@ const txDetailsSummary = '[data-testid="decoded-tx-summary"]'
 const txAccordionDetails = '[data-testid="decoded-tx-details"]'
 const accordionActionItem = '[data-testid="action-item"]'
 
-const noneNFTSelected = '0 NFTs selected'
+const noneNFTSelected = /0 NFT[s]? selected/
 const sendNFTStr = 'Send NFTs'
 const recipientAddressStr = 'Recipient address or ENS'
 const selectedNFTStr = 'Selected NFTs'

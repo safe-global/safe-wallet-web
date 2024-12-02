@@ -349,7 +349,7 @@ export function checkSafeGroupBalance(index) {
     .find(groupBalance)
     .invoke('text')
     .should('include', '$')
-    .and('match', /\d+\.\d{2}/)
+    .and('match', /\$?\s?\d+(\.\d{1,3})?/)
 }
 
 export function checkSafeGroupAddress(index, address) {

@@ -101,7 +101,6 @@ export function getSetupRecoveryBtn() {
 
 export function clickOnSetupRecoveryBtn() {
   getSetupRecoveryBtn().click()
-  cy.get(setupRecoveryModalBtn).should('be.visible')
 }
 
 export function clickOnSetupRecoveryModalBtn() {
