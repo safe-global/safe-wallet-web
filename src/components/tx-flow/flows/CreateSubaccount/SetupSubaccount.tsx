@@ -29,6 +29,7 @@ import { useVisibleBalances } from '@/hooks/useVisibleBalances'
 import { AutocompleteItem } from '@/components/tx-flow/flows/TokenTransfer/CreateTokenTransfer'
 import { validateDecimalLength, validateLimitedAmount } from '@/utils/validation'
 import { safeFormatUnits } from '@/utils/formatters'
+import { useMnemonicSafeName } from '@/hooks/useMnemonicName'
 
 import css from '@/components/tx-flow/flows/CreateSubaccount/styles.module.css'
 import commonCss from '@/components/tx-flow/common/styles.module.css'
@@ -57,7 +58,8 @@ export function SetUpSubaccount({
 }) {
   const addressBook = useAddressBook()
   const safeAddress = useSafeAddress()
-  const fallbackName = `${addressBook[safeAddress]} Subaccount`
+  const randomName = useMnemonicSafeName()
+  const fallbackName = `${addressBook[safeAddress] ?? randomName} Subaccount`
 
   const formMethods = useForm<SetupSubaccountForm>({
     defaultValues: params,
