@@ -62,7 +62,7 @@ export function SubaccountsPopover({
           <SubaccountInfo />
         ) : (
           <Box sx={{ overflowX: 'hidden' }}>
-            <SubaccountsList subaccounts={subaccounts} />
+            <SubaccountsList onClose={onClose} subaccounts={subaccounts} />
           </Box>
         )}
         <Track {...SUBACCOUNT_EVENTS.ADD}>

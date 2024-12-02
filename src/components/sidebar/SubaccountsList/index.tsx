@@ -13,7 +13,13 @@ import { useCurrentChain } from '@/hooks/useChains'
 
 const MAX_SUBACCOUNTS = 5
 
-export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> }): ReactElement {
+export function SubaccountsList({
+  onClose,
+  subaccounts,
+}: {
+  onClose: () => void
+  subaccounts: Array<string>
+}): ReactElement {
   const [showAll, setShowAll] = useState(false)
   const subaccountsToShow = showAll ? subaccounts : subaccounts.slice(0, MAX_SUBACCOUNTS)
 
@@ -24,7 +30,7 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
   return (
     <List sx={{ gap: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {subaccountsToShow.map((subaccount) => {
-        return <SubaccountListItem subaccount={subaccount} key={subaccount} />
+        return <SubaccountListItem onClose={onClose} subaccount={subaccount} key={subaccount} />
       })}
       {subaccounts.length > MAX_SUBACCOUNTS && !showAll && (
         <Track {...SUBACCOUNT_EVENTS.SHOW_ALL}>
@@ -47,14 +53,16 @@ export function SubaccountsList({ subaccounts }: { subaccounts: Array<string> })
   )
 }
 
-function SubaccountListItem({ subaccount }: { subaccount: string }): ReactElement {
+function SubaccountListItem({ onClose, subaccount }: { onClose: () => void; subaccount: string }): ReactElement {
   const chain = useCurrentChain()
   const addressBook = useAddressBook()
   const name = addressBook[subaccount]
 
-  // Note: using the Track element breaks accessibility/styles
   const onClick = () => {
+    // Note: using the Track element breaks accessibility/styles
     trackEvent({ ...SUBACCOUNT_EVENTS.OPEN_SUBACCOUNT, label: SUBACCOUNT_LABELS.list })
+
+    onClose()
   }
 
   return (
