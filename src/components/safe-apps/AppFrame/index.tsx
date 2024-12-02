@@ -2,14 +2,12 @@ import useAddressBook from '@/hooks/useAddressBook'
 import useChainId from '@/hooks/useChainId'
 import { type AddressBookItem, Methods } from '@safe-global/safe-apps-sdk'
 import type { ReactElement } from 'react'
-import { useMemo } from 'react'
 import { useCallback, useEffect } from 'react'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import type { RequestId } from '@safe-global/safe-apps-sdk'
 import { trackSafeAppOpenCount } from '@/services/safe-apps/track-app-usage-count'
-import { SAFE_APPS_EVENTS, trackSafeAppEvent } from '@/services/analytics'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { useSafeAppFromBackend } from '@/hooks/safe-apps/useSafeAppFromBackend'
 import { useSafePermissions } from '@/hooks/safe-apps/permissions'
@@ -57,13 +55,12 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
     transactions,
   } = useTransactionQueueBarState()
   const queueBarVisible = transactions.results.length > 0 && !queueBarDismissed
-  const [remoteApp, , isBackendAppsLoading] = useSafeAppFromBackend(appUrl, safe.chainId)
+  const [remoteApp] = useSafeAppFromBackend(appUrl, safe.chainId)
   const { thirdPartyCookiesDisabled, setThirdPartyCookiesDisabled } = useThirdPartyCookies()
   const { iframeRef, appIsLoading, isLoadingSlow, setAppIsLoading } = useAppIsLoading()
   useAnalyticsFromSafeApp(iframeRef)
   const { permissionsRequest, setPermissionsRequest, confirmPermissionRequest, getPermissions, hasPermission } =
     useSafePermissions()
-  const appName = useMemo(() => (remoteApp ? remoteApp.name : appUrl), [appUrl, remoteApp])
 
   const communicator = useCustomAppCommunicator(iframeRef, remoteApp || safeAppFromManifest, chain, {
     onGetPermissions: getPermissions,
@@ -109,17 +106,6 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
       gtmTrackPageview(`${router.pathname}?appUrl=${router.query.appUrl}`, router.asPath)
     }
   }, [appUrl, iframeRef, setAppIsLoading, router, isNativeEmbed])
-
-  useEffect(() => {
-    if (!isNativeEmbed && !appIsLoading && !isBackendAppsLoading) {
-      trackSafeAppEvent(
-        {
-          ...SAFE_APPS_EVENTS.OPEN_APP,
-        },
-        appName,
-      )
-    }
-  }, [appIsLoading, isBackendAppsLoading, appName, isNativeEmbed])
 
   if (!safeLoaded) {
     return <div />
