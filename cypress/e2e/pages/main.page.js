@@ -194,6 +194,15 @@ export function acceptCookies(index = 0) {
     })
 }
 
+export function acceptCookies2() {
+  cy.get('body').then(($body) => {
+    if ($body.find('button:contains(' + acceptSelection + ')').length > 0) {
+      cy.contains('button', acceptSelection).click()
+      cy.wait(500)
+    }
+  })
+}
+
 export function verifyOwnerConnected(prefix = 'sep:') {
   cy.get(connectedOwnerBlock).should('contain', prefix)
 }
