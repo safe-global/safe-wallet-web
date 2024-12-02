@@ -17,7 +17,6 @@ describe('[SMOKE] Add Owners tests', () => {
   beforeEach(() => {
     cy.visit(constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     main.waitForHistoryCallToComplete()
-    main.acceptCookies2()
     main.verifyElementsExist([navigation.setupSection])
   })
 

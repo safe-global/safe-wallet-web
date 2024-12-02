@@ -19,8 +19,6 @@ describe('Safe Apps list tests', () => {
     cy.visit(`${constants.appsUrl}?safe=${staticSafes.SEP_STATIC_SAFE_1}`, {
       failOnStatusCode: false,
     })
-    cy.wait(2000)
-    main.acceptCookies2()
   })
 
   it('Verify app list can be filtered by app name', () => {

@@ -21,8 +21,6 @@ describe('[SMOKE] Batch transaction tests', { defaultCommandTimeout: 30000 }, ()
 
   beforeEach(() => {
     cy.visit(constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_2)
-    cy.wait(2000)
-    main.acceptCookies2()
   })
 
   it('[SMOKE] Verify empty batch list can be opened', () => {
