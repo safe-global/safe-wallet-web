@@ -34,13 +34,7 @@ describe('Recovery happy path tests 1', () => {
     recovery.clickOnNextBtn()
     tx.executeFlow_1()
     recovery.verifyRecovererAdded([constants.SEPOLIA_OWNER_2_SHORT])
-
     recovery.clearRecoverers()
-
-    // recovery.removeRecoverer(0, constants.SEPOLIA_OWNER_2)
-    // recovery.clickOnNextBtn()
-    // tx.executeFlow_1()
-
     recovery.getSetupRecoveryBtn()
   })
 })
