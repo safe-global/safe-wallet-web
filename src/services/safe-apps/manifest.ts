@@ -89,19 +89,18 @@ const fetchSafeAppFromManifest = async (
   appUrl: string,
   currentChainId: string,
 ): Promise<SafeAppDataWithPermissions> => {
-  const normalizedAppUrl = trimTrailingSlash(appUrl)
   const appManifest = await fetchAppManifest(appUrl)
 
   if (!isAppManifestValid(appManifest)) {
     throw new Error('Invalid Safe App manifest')
   }
 
-  const iconUrl = getAppLogoUrl(normalizedAppUrl, appManifest)
+  const iconUrl = getAppLogoUrl(appUrl, appManifest)
 
   return {
     // Must satisfy https://docs.djangoproject.com/en/5.0/ref/models/fields/#positiveintegerfield
     id: Math.round(Math.random() * 1e9 + 1e6),
-    url: normalizedAppUrl,
+    url: appUrl,
     name: appManifest.name,
     description: appManifest.description,
     accessControl: { type: SafeAppAccessPolicyTypes.NoRestrictions },
