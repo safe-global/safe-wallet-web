@@ -3,7 +3,6 @@ import * as main from '../pages/main.page'
 import * as safeapps from '../pages/safeapps.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as ls from '../../support/localstorage_data.js'
-import { cy } from 'date-fns/locale'
 
 const myCustomAppTitle = 'Cypress Test App'
 const myCustomAppDescrAdded = 'Cypress Test App Description'
