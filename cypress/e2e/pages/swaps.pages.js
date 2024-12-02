@@ -14,6 +14,7 @@ export const assetsSwapBtn = '[data-testid="swap-btn"]'
 export const dashboardSwapBtn = '[data-testid="overview-swap-btn"]'
 export const customRecipient = 'div[id="recipient"]'
 const recipientToggle = 'button[id="toggle-recipient-mode-button"]'
+const twapsAddressToggle = '[class*="Toggle__Wrapper"]'
 const orderTypeMenuItem = 'div[class*="MenuItem"]'
 const explorerBtn = '[data-testid="explorer-btn"]'
 const limitPriceFld = '[data-testid="limit-price"]'
@@ -27,6 +28,7 @@ const groupedItems = '[data-testid="grouped-items"]'
 const inputCurrencyPreview = '[id="input-currency-preview"]'
 const outputCurrencyPreview = '[id="output-currency-preview"]'
 const reviewTwapBtn = '[id="do-trade-button"]'
+export const unlockOrdersBtn = '[id="unlock-advanced-orders-btn"]'
 
 const swapStrBtn = 'Swap'
 const twapStrBtn = 'TWAP'
@@ -103,6 +105,15 @@ export const swapTxs = {
     '&id=multisig_0x8f4A19C85b39032A37f7a6dCc65234f966F72551_0xd3d13db9fc438d0674819f81be62fcd9c74a8ed7c101a8249b8895e55ee80d76',
   safeAppSwapOrder:
     '&id=multisig_0x03042B890b99552b60A073F808100517fb148F60_0x5f08e05edb210a8990791e9df2f287a5311a8137815ec85856a2477a36552f1e',
+}
+
+export function unlockTwapOrders(iframeSelector) {
+  main.getIframeBody(iframeSelector).then(($iframeBody) => {
+    if ($iframeBody.find(unlockOrdersBtn).length > 0) {
+      cy.wrap($iframeBody).find(unlockOrdersBtn).click()
+      cy.wait(500)
+    }
+  })
 }
 
 export function clickOnAssetSwapBtn(index) {
@@ -267,6 +278,10 @@ export function enableCustomRecipient(option) {
   if (!option) cy.get(recipientToggle).click()
 }
 
+export function enableTwapCustomRecipient() {
+  cy.get(twapsAddressToggle).click()
+}
+
 export function disableCustomRecipient(option) {
   if (option) cy.get(recipientToggle).click()
 }
@@ -349,6 +364,7 @@ export function switchToTwap() {
   cy.get('a').contains(swapStrBtn).click()
   cy.wait(1000)
   cy.get('a').contains(twapStrBtn).click()
+  cy.wait(1000)
 }
 
 export function checkTokenBalanceAndValue(tokenDirection, balance, value) {
