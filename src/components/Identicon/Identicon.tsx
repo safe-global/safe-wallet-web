@@ -1,6 +1,7 @@
 import { blo } from 'blo'
 import { Image } from 'expo-image'
 import { type Address } from '@/src/types/address'
+import { View } from 'tamagui'
 
 type Props = {
   address: Address
@@ -18,5 +19,9 @@ export const Identicon = ({ address, rounded, size }: Props) => {
 
   const blockie = blo(address)
 
-  return <Image testID={'identicon-image'} source={{ uri: blockie }} style={style} />
+  return (
+    <View style={{ borderRadius: '50%', overflow: 'hidden' }}>
+      <Image testID={'identicon-image'} source={{ uri: blockie }} style={style} />
+    </View>
+  )
 }

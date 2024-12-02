@@ -11,6 +11,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { PortalProvider } from '@tamagui/portal'
 import { SafeToastProvider } from '@/src/theme/provider/toastProvider'
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated'
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+})
 
 function RootLayout() {
   store.dispatch(apiSliceWithChainsConfig.endpoints.getChainsConfig.initiate())

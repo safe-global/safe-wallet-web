@@ -1,7 +1,7 @@
 import { blo } from 'blo'
 import { View } from 'tamagui'
 import { Image } from 'expo-image'
-import { Dimensions, StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet, useColorScheme } from 'react-native'
 import { BlurView } from 'expo-blur'
 import React from 'react'
 import { Address } from '@/src/types/address'
@@ -9,11 +9,14 @@ import { Address } from '@/src/types/address'
 type Props = {
   address: Address
   height?: number
+  children: React.ReactNode
 }
-export const BlurredIdenticonBackground = ({ address, height = 125 }: Props) => {
+export const BlurredIdenticonBackground = ({ address, height = 125, children }: Props) => {
   const blockie = blo(address)
+  const colorScheme = useColorScheme()
+
   return (
-    <View style={styles.container}>
+    <View>
       <View style={[styles.containerInner, { height: height }]}>
         <View
           style={[
@@ -23,41 +26,46 @@ export const BlurredIdenticonBackground = ({ address, height = 125 }: Props) => 
             },
           ]}
         ></View>
-        <Image testID={'header-image'} source={{ uri: blockie }} style={styles.identicon} />
+        <View style={styles.androidHack}>
+          <Image testID={'header-image'} source={{ uri: blockie }} style={styles.identicon} />
+        </View>
 
         <BlurView
           intensity={100}
+          experimentalBlurMethod={'dimezisBlurView'}
           style={[
             styles.blurView,
             {
               height: height,
             },
           ]}
+          tint={colorScheme || 'dark'}
         />
+
+        {children}
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-  },
   containerInner: {
     position: 'relative',
-    left: 0,
-    right: 0,
   },
   containerInnerBackground: {
-    backgroundColor: '#000',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  // Android cannot handle border-radius on Image component
+  // so we need to wrap it in a View with borderRadius
+  androidHack: {
+    borderRadius: '50%',
+    overflow: 'hidden',
+    bottom: 20,
+    position: 'absolute',
   },
   identicon: {
-    bottom: 20,
-    opacity: 0.7,
-    position: 'absolute',
-    borderRadius: '50%',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').width,
   },

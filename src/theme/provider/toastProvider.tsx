@@ -39,7 +39,7 @@ const CurrentToast = () => {
       backgroundColor={'$backgroundPaper'}
       viewportName={currentToast.viewportName}
     >
-      <YStack>
+      <YStack style={{ alignItems: 'center', justifyContent: 'center' }}>
         <Toast.Title>{currentToast.title}</Toast.Title>
         {!!currentToast.message && <Toast.Description>{currentToast.message}</Toast.Description>}
       </YStack>

@@ -45,6 +45,7 @@ module.exports = {
           fonts: ['./assets/fonts/safe-icons/safe-icons.ttf'],
         },
       ],
+      ['./withDrawableAssets.js', './assets/drawable'],
     ],
     experiments: {
       typedRoutes: true,
