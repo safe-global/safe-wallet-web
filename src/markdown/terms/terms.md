@@ -1,8 +1,3 @@
----
-version: 1.2
-last_update_date: September, 2024
----
-
 # Terms and Conditions
 
 Last updated: September, 2024
