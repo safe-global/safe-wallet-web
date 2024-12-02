@@ -10,8 +10,7 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 let staticSafes = []
 let iframeSelector
 
-// Blocked by a bug on UI
-describe.skip('Twaps 2 tests', { defaultCommandTimeout: 30000 }, () => {
+describe('Twaps 2 tests', { defaultCommandTimeout: 30000 }, () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
@@ -32,6 +31,9 @@ describe.skip('Twaps 2 tests', { defaultCommandTimeout: 30000 }, () => {
       cy.wait(4000)
       main.getIframeBody(iframeSelector).within(() => {
         swaps.switchToTwap()
+      })
+      swaps.unlockTwapOrders(iframeSelector)
+      main.getIframeBody(iframeSelector).within(() => {
         swaps.selectInputCurrency(swaps.swapTokens.cow)
         swaps.setInputValue(2000)
         swaps.selectOutputCurrency(swaps.swapTokens.dai)
@@ -49,6 +51,9 @@ describe.skip('Twaps 2 tests', { defaultCommandTimeout: 30000 }, () => {
       cy.wait(4000)
       main.getIframeBody(iframeSelector).within(() => {
         swaps.switchToTwap()
+      })
+      swaps.unlockTwapOrders(iframeSelector)
+      main.getIframeBody(iframeSelector).within(() => {
         swaps.selectInputCurrency(swaps.swapTokens.cow)
         swaps.setInputValue(100)
         swaps.selectOutputCurrency(swaps.swapTokens.dai)
@@ -74,12 +79,15 @@ describe.skip('Twaps 2 tests', { defaultCommandTimeout: 30000 }, () => {
         })
         .within(() => {
           swaps.switchToTwap()
-          swaps.selectInputCurrency(swaps.swapTokens.cow)
-          swaps.clickOnSettingsBtnTwaps()
-          swaps.enableCustomRecipient(isCustomRecipientFound(swaps.customRecipient))
-          swaps.clickOnSettingsBtnTwaps()
-          swaps.enterRecipient(swaps.blockedAddress)
         })
+      swaps.unlockTwapOrders(iframeSelector)
+      main.getIframeBody(iframeSelector).within(() => {
+        swaps.selectInputCurrency(swaps.swapTokens.cow)
+        swaps.clickOnSettingsBtnTwaps()
+        swaps.enableTwapCustomRecipient()
+        swaps.clickOnSettingsBtnTwaps()
+        swaps.enterRecipient(swaps.blockedAddress)
+      })
       cy.contains(swaps.blockedAddressStr)
     },
   )

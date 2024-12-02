@@ -10,15 +10,13 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 let staticSafes = []
 let iframeSelector
 
-// Blocked by a bug on UI
-describe.skip('Twaps tests', { defaultCommandTimeout: 30000 }, () => {
+describe('Twaps tests', { defaultCommandTimeout: 30000 }, () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
   })
 
   beforeEach(() => {
     cy.visit(constants.swapUrl + staticSafes.SEP_STATIC_SAFE_27)
-    main.waitForHistoryCallToComplete()
     wallet.connectSigner(signer)
     iframeSelector = `iframe[src*="${constants.swapWidget}"]`
   })
@@ -37,8 +35,12 @@ describe.skip('Twaps tests', { defaultCommandTimeout: 30000 }, () => {
 
     swaps.acceptLegalDisclaimer()
     cy.wait(4000)
+
     main.getIframeBody(iframeSelector).within(() => {
       swaps.switchToTwap()
+    })
+    swaps.unlockTwapOrders(iframeSelector)
+    main.getIframeBody(iframeSelector).within(() => {
       swaps.clickOnTokenSelctor('input')
       swaps.checkTokenList(tokens)
     })
@@ -51,7 +53,9 @@ describe.skip('Twaps tests', { defaultCommandTimeout: 30000 }, () => {
     cy.wait(4000)
     main.getIframeBody(iframeSelector).within(() => {
       swaps.switchToTwap()
-
+    })
+    swaps.unlockTwapOrders(iframeSelector)
+    main.getIframeBody(iframeSelector).within(() => {
       swaps.selectInputCurrency(swaps.swapTokens.cow)
       swaps.setInputValue(500)
       swaps.selectOutputCurrency(swaps.swapTokens.dai)
@@ -64,6 +68,9 @@ describe.skip('Twaps tests', { defaultCommandTimeout: 30000 }, () => {
     cy.wait(4000)
     main.getIframeBody(iframeSelector).within(() => {
       swaps.switchToTwap()
+    })
+    swaps.unlockTwapOrders(iframeSelector)
+    main.getIframeBody(iframeSelector).within(() => {
       swaps.selectInputCurrency(swaps.swapTokens.cow)
       swaps.clickOnMaxBtn()
       swaps.checkInputValue('input', '750')
