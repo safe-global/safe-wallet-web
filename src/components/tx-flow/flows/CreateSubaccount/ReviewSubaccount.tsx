@@ -49,7 +49,7 @@ export function ReviewSubaccount({ params }: { params: SetupSubaccountForm }) {
       },
       chain,
     )
-    const saltNonce = subaccounts.safes.length.toString()
+    const saltNonce = Date.now().toString()
 
     return {
       ...undeployedSafe,
