@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { type SyntheticEvent, useCallback } from 'react'
 import type { SafeAppData } from '@safe-global/safe-gateway-typescript-sdk'
 
 import SafeAppCard from '@/components/safe-apps/SafeAppCard'
@@ -46,18 +46,16 @@ const SafeAppList = ({
   const showZeroResultsPlaceholder = query && safeAppsList.length === 0
 
   const handleSafeAppClick = useCallback(
-    (safeApp: SafeAppData) => {
-      if (openedSafeAppIds.includes(safeApp.id)) {
+    (e: SyntheticEvent, safeApp: SafeAppData) => {
+      const isCustomApp = safeApp.id < 1
+      if (!openedSafeAppIds.includes(safeApp.id) && !isCustomApp) {
+        // Don't open link
+        e.preventDefault()
+        openPreviewDrawer(safeApp)
+      } else {
         // We only track if not previously opened as it is then tracked in preview drawer
         trackSafeAppEvent({ ...SAFE_APPS_EVENTS.OPEN_APP, label: eventLabel }, safeApp.name)
-        return
       }
-
-      const isCustomApp = safeApp.id < 1
-
-      if (isCustomApp) return
-
-      openPreviewDrawer(safeApp)
     },
     [eventLabel, openPreviewDrawer, openedSafeAppIds],
   )
@@ -93,7 +91,7 @@ const SafeAppList = ({
               isBookmarked={bookmarkedSafeAppsId?.has(safeApp.id)}
               onBookmarkSafeApp={() => togglePin(safeApp.id, eventLabel)}
               removeCustomApp={removeCustomApp}
-              onClickSafeApp={() => handleSafeAppClick(safeApp)}
+              onClickSafeApp={(e) => handleSafeAppClick(e, safeApp)}
               openPreviewDrawer={openPreviewDrawer}
             />
           </li>

@@ -37,7 +37,11 @@ const SafeAppsDashboardSection = () => {
               safeApp={rankedSafeApp}
               onBookmarkSafeApp={(appId) => togglePin(appId, SAFE_APPS_LABELS.dashboard)}
               isBookmarked={pinnedSafeAppIds.has(rankedSafeApp.id)}
-              onClickSafeApp={() => openPreviewDrawer(rankedSafeApp)}
+              onClickSafeApp={(e) => {
+                // Don't open link
+                e.preventDefault()
+                openPreviewDrawer(rankedSafeApp)
+              }}
               openPreviewDrawer={openPreviewDrawer}
             />
           </Grid>
