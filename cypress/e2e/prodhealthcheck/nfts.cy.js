@@ -4,6 +4,9 @@ import * as createTx from '../pages/create_tx.pages'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import { getMockAddress } from '../../support/utils/ethers.js'
+import * as navigation from '../pages/navigation.page.js'
+import { waitForConnectionStatus } from '../pages/owners.pages'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 const multipleNFT = ['multiSend']
 const multipleNFTAction = 'safeTransferFrom'
@@ -30,6 +33,7 @@ describe('[PROD] NFTs tests', () => {
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.balanceNftsUrl + staticSafes.SEP_STATIC_SAFE_2)
     wallet.connectSigner(signer)
+    acceptCookies2()
     nfts.waitForNftItems(2)
   })
 

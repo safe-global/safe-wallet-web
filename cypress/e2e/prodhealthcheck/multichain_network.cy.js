@@ -5,6 +5,7 @@ import * as ls from '../../support/localstorage_data.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as create_wallet from '../pages/create_wallet.pages.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 
@@ -14,6 +15,11 @@ const signer = walletCredentials.OWNER_4_PRIVATE_KEY
 describe('[PROD] Multichain add network tests', () => {
   before(async () => {
     staticSafes = await getSafes(CATEGORIES.static)
+  })
+
+  beforeEach(() => {
+    cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
+    acceptCookies2()
   })
 
   // TODO: Unskip after next release
@@ -29,7 +35,6 @@ describe('[PROD] Multichain add network tests', () => {
 
   // Limitation: zkSync network does not support private key. Test might be flaky.
   it('Verify that it is not possible to add networks for the zkSync safes', () => {
-    cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     wallet.connectSigner(signer)
     cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.ZKSYNC_STATIC_SAFE_29)
     sideBar.openSidebar()
@@ -38,7 +43,6 @@ describe('[PROD] Multichain add network tests', () => {
   })
 
   it('Verify that zkSync network is not available during multichain safe creation', () => {
-    cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     wallet.connectSigner(signer)
     cy.visit(constants.prodbaseUrl + constants.welcomeUrl + '?chain=sep')
     create_wallet.clickOnContinueWithWalletBtn()
@@ -48,7 +52,6 @@ describe('[PROD] Multichain add network tests', () => {
   })
 
   it('Verify that zkSync network is available as part of single safe creation flow ', () => {
-    cy.visit(constants.prodbaseUrl + constants.setupUrl + staticSafes.SEP_STATIC_SAFE_4)
     wallet.connectSigner(signer)
     cy.visit(constants.prodbaseUrl + constants.welcomeUrl + '?chain=sep')
     create_wallet.clickOnContinueWithWalletBtn()

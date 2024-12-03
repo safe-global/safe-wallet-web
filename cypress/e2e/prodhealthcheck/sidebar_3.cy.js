@@ -4,6 +4,7 @@ import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
 import * as navigation from '../pages/navigation.page.js'
 import * as owner from '../pages/owners.pages.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -21,6 +22,7 @@ describe('[PROD] Sidebar tests 3', () => {
       11155111: [sideBar.sideBarSafes.safe1, sideBar.sideBarSafes.safe2],
     })
     wallet.connectSigner(signer)
+    acceptCookies2()
     sideBar.openSidebar()
     sideBar.checkAccountsCounter('2')
   })
@@ -28,6 +30,7 @@ describe('[PROD] Sidebar tests 3', () => {
   it('Verify pending signature is displayed in sidebar for unsigned tx', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
     wallet.connectSigner(signer)
+    acceptCookies2()
     cy.intercept('GET', constants.safeListEndpoint, {
       11155111: [sideBar.sideBarSafesPendingActions.safe1],
     })
@@ -46,6 +49,7 @@ describe('[PROD] Sidebar tests 3', () => {
   it('Verify balance exists in a tx in sidebar', () => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_7)
     wallet.connectSigner(signer)
+    acceptCookies2()
     owner.clickOnWalletExpandMoreIcon()
     navigation.clickOnDisconnectBtn()
     wallet.connectSigner(signer)

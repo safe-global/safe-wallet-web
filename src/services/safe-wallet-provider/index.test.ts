@@ -619,7 +619,60 @@ describe('SafeWalletProvider', () => {
     })
 
     describe('wallet_getCallsStatus', () => {
-      it('should return a confirmed transaction', async () => {
+      it('should return a confirmed transaction if blockNumber/gasUsed are hex', async () => {
+        const receipt: Pick<TransactionReceipt, 'logs' | 'blockHash' | 'blockNumber' | 'gasUsed'> = {
+          logs: [],
+          blockHash: faker.string.hexadecimal(),
+          // Typed as number/bigint; is hex
+          blockNumber: faker.string.hexadecimal() as unknown as number,
+          gasUsed: faker.string.hexadecimal() as unknown as bigint,
+        }
+        const sdk = {
+          getBySafeTxHash: jest.fn().mockResolvedValue({
+            txStatus: 'SUCCESS',
+            txHash: '0x123',
+            txData: {
+              dataDecoded: {
+                parameters: [{ valueDecoded: [1] }],
+              },
+            },
+          }),
+          proxy: jest.fn().mockImplementation((method) => {
+            if (method === 'eth_getTransactionReceipt') {
+              return Promise.resolve(receipt)
+            }
+            return Promise.reject('Unknown method')
+          }),
+        }
+        const safeWalletProvider = new SafeWalletProvider(safe, sdk as any)
+
+        const params = ['0x123']
+
+        const status = await safeWalletProvider.request(1, { method: 'wallet_getCallsStatus', params } as any, appInfo)
+
+        expect(sdk.getBySafeTxHash).toHaveBeenCalledWith(params[0])
+        expect(sdk.proxy).toHaveBeenCalledWith('eth_getTransactionReceipt', params)
+        expect(status).toStrictEqual({
+          id: 1,
+          jsonrpc: '2.0',
+          result: {
+            receipts: [
+              {
+                blockHash: receipt.blockHash,
+                blockNumber: receipt.blockNumber,
+                chainId: '0x1',
+                gasUsed: receipt.gasUsed,
+                logs: receipt.logs,
+                status: '0x1',
+                transactionHash: '0x123',
+              },
+            ],
+            status: 'CONFIRMED',
+          },
+        })
+      })
+
+      it('should return a confirmed transaction if blockNumber/gasUsed are number/bigint', async () => {
         const receipt: Pick<TransactionReceipt, 'logs' | 'blockHash' | 'blockNumber' | 'gasUsed'> = {
           logs: [],
           blockHash: faker.string.hexadecimal(),

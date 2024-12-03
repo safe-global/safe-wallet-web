@@ -403,13 +403,18 @@ export class SafeWalletProvider {
     }
 
     const calls = tx.txData?.dataDecoded?.parameters?.[0].valueDecoded?.length ?? 1
+
+    // Typed as number; is hex
+    const blockNumber = Number(receipt.blockNumber)
+    const gasUsed = Number(receipt.gasUsed)
+
     const receipts = Array.from({ length: calls }, () => ({
       logs: receipt.logs,
       status: numberToHex(tx.txStatus === TransactionStatus.SUCCESS ? 1 : 0),
       chainId: numberToHex(this.safe.chainId),
       blockHash: receipt.blockHash as `0x${string}`,
-      blockNumber: numberToHex(receipt.blockNumber),
-      gasUsed: numberToHex(receipt.gasUsed),
+      blockNumber: numberToHex(blockNumber),
+      gasUsed: numberToHex(gasUsed),
       transactionHash: tx.txHash as `0x${string}`,
     }))
 
