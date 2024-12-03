@@ -4,6 +4,7 @@ import Link from 'next/link'
 import MUILink from '@mui/material/Link'
 import { AppRoutes } from '@/config/routes'
 import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
+import { BRAND_NAME } from '@/config/constants'
 
 const SafeCookiePolicy = () => (
   <div>
@@ -595,7 +596,7 @@ const CookiePolicy: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Cookie policy'}</title>
+        <title>{`${BRAND_NAME} – Cookie policy`}</title>
       </Head>
 
       <main>{isOfficialHost && <SafeCookiePolicy />}</main>

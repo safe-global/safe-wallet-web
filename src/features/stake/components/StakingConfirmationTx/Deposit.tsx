@@ -7,6 +7,7 @@ import { formatDurationFromMilliseconds, formatVisualAmount, maybePlural } from 
 import { formatCurrency } from '@/utils/formatNumber'
 import StakingStatus from '@/features/stake/components/StakingStatus'
 import { InfoTooltip } from '@/features/stake/components/InfoTooltip'
+import { BRAND_NAME } from '@/config/constants'
 
 type StakingOrderConfirmationViewProps = {
   order: NativeStakingDepositConfirmationView | StakingTxDepositInfo
@@ -55,7 +56,9 @@ const StakingConfirmationTxDeposit = ({ order, isTxDetails }: StakingOrderConfir
         title={
           <>
             Fee
-            <InfoTooltip title="The widget fee incurred here is charged by Kiln for the operation of this widget. The fee is calculated automatically. Part of the fee will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor Safe{Wallet} operates the Kiln Widget and/or Kiln." />
+            <InfoTooltip
+              title={`The widget fee incurred here is charged by Kiln for the operation of this widget. The fee is calculated automatically. Part of the fee will contribute to a license fee that supports the Safe Community. Neither the Safe Ecosystem Foundation nor ${BRAND_NAME} operates the Kiln Widget and/or Kiln.`}
+            />
           </>
         }
       >

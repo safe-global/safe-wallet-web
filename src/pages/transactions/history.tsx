@@ -11,6 +11,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TxFilterForm from '@/components/transactions/TxFilterForm'
 import TrustedToggle from '@/components/transactions/TrustedToggle'
 import { useTxFilter } from '@/utils/tx-history-filter'
+import { BRAND_NAME } from '@/config/constants'
 
 const History: NextPage = () => {
   const [filter] = useTxFilter()
@@ -25,7 +26,7 @@ const History: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Transaction history'}</title>
+        <title>{`${BRAND_NAME} – Transaction history`}</title>
       </Head>
       <TxHeader>
         <TrustedToggle />

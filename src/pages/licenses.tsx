@@ -4,6 +4,7 @@ import { Typography, Table, TableBody, TableRow, TableCell, TableHead, TableCont
 import ExternalLink from '@/components/common/ExternalLink'
 import Paper from '@mui/material/Paper'
 import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
+import { BRAND_NAME } from '@/config/constants'
 
 const SafeLicenses = () => (
   <>
@@ -34,7 +35,7 @@ const SafeLicenses = () => (
         }}
       >
         This page contains a list of attribution notices for third party software that may be contained in portions of
-        the {'Safe{Wallet}'}. We thank the open source community for all of their contributions.
+        the {BRAND_NAME}. We thank the open source community for all of their contributions.
       </Typography>
       <Typography
         variant="h2"
@@ -748,7 +749,7 @@ const Licenses: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Licenses'}</title>
+        <title>{`${BRAND_NAME} – Licenses`}</title>
       </Head>
 
       <main>{isOfficialHost && <SafeLicenses />}</main>

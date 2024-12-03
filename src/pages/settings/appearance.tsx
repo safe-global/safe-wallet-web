@@ -9,6 +9,7 @@ import SettingsHeader from '@/components/settings/SettingsHeader'
 import { trackEvent, SETTINGS_EVENTS } from '@/services/analytics'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import ExternalLink from '@/components/common/ExternalLink'
+import { BRAND_NAME } from '@/config/constants'
 
 const Appearance: NextPage = () => {
   const dispatch = useAppDispatch()
@@ -32,7 +33,7 @@ const Appearance: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Settings – Appearance'}</title>
+        <title>{`${BRAND_NAME} – Settings – Appearance`}</title>
       </Head>
       <SettingsHeader />
       <main>

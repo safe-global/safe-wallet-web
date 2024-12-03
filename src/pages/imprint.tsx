@@ -4,6 +4,7 @@ import { Typography } from '@mui/material'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
 import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
+import { BRAND_NAME } from '@/config/constants'
 
 const SafeImprint = () => (
   <div>
@@ -117,7 +118,7 @@ const Imprint: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{'Safe{Wallet} – Imprint'}</title>
+        <title>{`${BRAND_NAME} – Imprint`}</title>
       </Head>
 
       <main>{isOfficialHost && <SafeImprint />}</main>

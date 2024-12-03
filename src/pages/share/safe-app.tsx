@@ -3,6 +3,7 @@ import { Box, CircularProgress } from '@mui/material'
 import { useSafeAppUrl } from '@/hooks/safe-apps/useSafeAppUrl'
 import { SafeAppLanding } from '@/components/safe-apps/SafeAppLandingPage'
 import { useCurrentChain } from '@/hooks/useChains'
+import { BRAND_NAME } from '@/config/constants'
 
 const ShareSafeApp = () => {
   const appUrl = useSafeAppUrl()
@@ -11,7 +12,7 @@ const ShareSafeApp = () => {
   return (
     <>
       <Head>
-        <title>{`Safe{Wallet} – Safe Apps`}</title>
+        <title>{`${BRAND_NAME} – Safe Apps`}</title>
       </Head>
       <main>
         {appUrl && chain ? (

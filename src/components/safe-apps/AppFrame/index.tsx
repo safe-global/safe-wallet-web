@@ -29,6 +29,7 @@ import { useCustomAppCommunicator } from '@/hooks/safe-apps/useCustomAppCommunic
 import { useSanctionedAddress } from '@/hooks/useSanctionedAddress'
 import BlockedAddress from '@/components/common/BlockedAddress'
 import { isSafePassApp } from '@/features/walletconnect/services/utils'
+import { BRAND_NAME } from '@/config/constants'
 
 const UNKNOWN_APP_NAME = 'Unknown Safe App'
 
@@ -132,7 +133,7 @@ const AppFrame = ({ appUrl, allowedFeaturesList, safeAppFromManifest, isNativeEm
     <>
       {!isNativeEmbed && (
         <Head>
-          <title>{`Safe{Wallet} - Safe Apps${remoteApp ? ' - ' + remoteApp.name : ''}`}</title>
+          <title>{`${BRAND_NAME} - Safe Apps${remoteApp ? ' - ' + remoteApp.name : ''}`}</title>
         </Head>
       )}
 
