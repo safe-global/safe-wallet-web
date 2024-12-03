@@ -98,7 +98,7 @@ export const DISCORD_URL = 'https://chat.safe.global'
 export const TWITTER_URL = 'https://twitter.com/safe'
 
 // Legal
-export const OFFICIAL_HOSTS = /(app\.safe\.global|.+\.5afe\.dev|localhost:3000)\//
+export const OFFICIAL_HOSTS = /app\.safe\.global|.+\.5afe\.dev|localhost:3000/
 
 // Risk mitigation (Blockaid)
 export const BLOCKAID_API = 'https://client.blockaid.io'
