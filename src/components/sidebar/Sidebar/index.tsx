@@ -58,7 +58,13 @@ const Sidebar = (): ReactElement => {
 
         <IndexingStatus />
       </div>
-      <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle}>
+      <Drawer
+        variant="temporary"
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={onDrawerToggle}
+        ModalProps={{ keepMounted: true }}
+      >
         <div className={css.drawer}>
           <MyAccounts onLinkClick={closeDrawer} isSidebar></MyAccounts>
         </div>
