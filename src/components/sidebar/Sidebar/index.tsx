@@ -1,4 +1,4 @@
-import { useCallback, useState, type ReactElement } from 'react'
+import { useCallback, useEffect, useState, type ReactElement } from 'react'
 import { Box, Divider, Drawer } from '@mui/material'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 
@@ -14,6 +14,7 @@ import MyAccounts from '@/features/myAccounts'
 
 const Sidebar = (): ReactElement => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+  const [modalProps, setModalProps] = useState({ keepMounted: false })
 
   const onDrawerToggle = useCallback(() => {
     setIsDrawerOpen((isOpen) => {
@@ -24,6 +25,13 @@ const Sidebar = (): ReactElement => {
   }, [])
 
   const closeDrawer = useCallback(() => setIsDrawerOpen(false), [])
+
+  // Mount the drawer 600ms after the page load, and keep it mounted
+  useEffect(() => {
+    setTimeout(() => {
+      setModalProps({ keepMounted: true })
+    }, 600)
+  }, [])
 
   return (
     <div data-testid="sidebar-container" className={css.container}>
@@ -58,13 +66,7 @@ const Sidebar = (): ReactElement => {
 
         <IndexingStatus />
       </div>
-      <Drawer
-        variant="temporary"
-        anchor="left"
-        open={isDrawerOpen}
-        onClose={onDrawerToggle}
-        ModalProps={{ keepMounted: true }}
-      >
+      <Drawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={onDrawerToggle} ModalProps={modalProps}>
         <div className={css.drawer}>
           <MyAccounts onLinkClick={closeDrawer} isSidebar></MyAccounts>
         </div>
