@@ -1,9 +1,9 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { IS_OFFICIAL_HOST } from '@/config/constants'
 import { Typography, Table, TableBody, TableRow, TableCell, TableHead, TableContainer, Box } from '@mui/material'
 import ExternalLink from '@/components/common/ExternalLink'
 import Paper from '@mui/material/Paper'
+import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
 
 const SafeLicenses = () => (
   <>
@@ -743,13 +743,15 @@ const SafeLicenses = () => (
 )
 
 const Licenses: NextPage = () => {
+  const isOfficialHost = useIsOfficialHost()
+
   return (
     <>
       <Head>
         <title>{'Safe{Wallet} – Licenses'}</title>
       </Head>
 
-      <main>{IS_OFFICIAL_HOST && <SafeLicenses />}</main>
+      <main>{isOfficialHost && <SafeLicenses />}</main>
     </>
   )
 }

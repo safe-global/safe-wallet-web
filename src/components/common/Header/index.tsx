@@ -24,6 +24,7 @@ import { useHasFeature } from '@/hooks/useChains'
 import Track from '@/components/common/Track'
 import { OVERVIEW_EVENTS, OVERVIEW_LABELS } from '@/services/analytics'
 import { useSafeTokenEnabled } from '@/hooks/useSafeTokenEnabled'
+import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -45,6 +46,7 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
   const isSafeOwner = useIsSafeOwner()
   const router = useRouter()
   const enableWc = useHasFeature(FEATURES.NATIVE_WALLETCONNECT)
+  const isOfficialHost = useIsOfficialHost()
 
   // If on the home page, the logo should link to the Accounts or Welcome page, otherwise to the home page
   const logoHref = getLogoLink(router)
@@ -75,17 +77,21 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         )}
       </div>
 
-      <div className={classnames(css.element, css.logoMobile)}>
-        <Link href={logoHref} passHref>
-          <SafeLogoMobile alt="Safe logo" />
-        </Link>
-      </div>
+      {isOfficialHost && (
+        <>
+          <div className={classnames(css.element, css.logoMobile)}>
+            <Link href={logoHref} passHref>
+              <SafeLogoMobile alt="Safe logo" />
+            </Link>
+          </div>
 
-      <div className={classnames(css.element, css.hideMobile, css.logo)}>
-        <Link href={logoHref} passHref>
-          <SafeLogo alt="Safe logo" />
-        </Link>
-      </div>
+          <div className={classnames(css.element, css.hideMobile, css.logo)}>
+            <Link href={logoHref} passHref>
+              <SafeLogo alt="Safe logo" />
+            </Link>
+          </div>
+        </>
+      )}
 
       {showSafeToken && (
         <div className={classnames(css.element, css.hideMobile)}>

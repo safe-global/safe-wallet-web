@@ -1,22 +1,24 @@
 import CustomLink from '@/components/common/CustomLink'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { IS_OFFICIAL_HOST } from '@/config/constants'
 import SafeTerms from '@/markdown/terms/terms.md'
 import type { MDXComponents } from 'mdx/types'
+import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
 
 const overrideComponents: MDXComponents = {
   a: CustomLink,
 }
 
 const Terms: NextPage = () => {
+  const isOfficialHost = useIsOfficialHost()
+
   return (
     <>
       <Head>
         <title>{'Safe{Wallet} – Terms'}</title>
       </Head>
 
-      <main>{IS_OFFICIAL_HOST && <SafeTerms components={overrideComponents} />}</main>
+      <main>{isOfficialHost && <SafeTerms components={overrideComponents} />}</main>
     </>
   )
 }

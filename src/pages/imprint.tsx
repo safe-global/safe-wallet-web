@@ -1,9 +1,9 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { IS_OFFICIAL_HOST } from '@/config/constants'
 import { Typography } from '@mui/material'
 import Link from 'next/link'
 import MUILink from '@mui/material/Link'
+import { useIsOfficialHost } from '@/hooks/useIsOfficialHost'
 
 const SafeImprint = () => (
   <div>
@@ -112,13 +112,15 @@ const SafeImprint = () => (
 )
 
 const Imprint: NextPage = () => {
+  const isOfficialHost = useIsOfficialHost()
+
   return (
     <>
       <Head>
         <title>{'Safe{Wallet} – Imprint'}</title>
       </Head>
 
-      <main>{IS_OFFICIAL_HOST && <SafeImprint />}</main>
+      <main>{isOfficialHost && <SafeImprint />}</main>
     </>
   )
 }
