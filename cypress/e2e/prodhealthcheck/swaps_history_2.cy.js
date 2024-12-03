@@ -4,6 +4,7 @@ import * as create_tx from '../pages/create_tx.pages.js'
 import * as swaps_data from '../../fixtures/swaps_data.json'
 import * as swaps from '../pages/swaps.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 
@@ -18,6 +19,7 @@ describe('[PROD] Swaps history tests 2', () => {
     cy.visit(
       constants.prodbaseUrl + constants.transactionUrl + staticSafes.SEP_STATIC_SAFE_1 + swaps.swapTxs.buy2actions,
     )
+    acceptCookies2()
     const eq = swaps.createRegex(swapsHistory.oneGNOFull, 'COW')
     const atMost = swaps.createRegex(swapsHistory.forAtMostCow, 'COW')
 
@@ -43,6 +45,7 @@ describe('[PROD] Swaps history tests 2', () => {
           staticSafes.SEP_STATIC_SAFE_1 +
           swaps.swapTxs.safeAppSwapOrder,
       )
+      acceptCookies2()
       main.verifyValuesDoNotExist('div', [
         swapsHistory.actionApproveG,
         swapsHistory.actionDepositG,
