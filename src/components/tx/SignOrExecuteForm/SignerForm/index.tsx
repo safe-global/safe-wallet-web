@@ -58,13 +58,14 @@ export const SignerForm = ({ willExecute }: { willExecute?: boolean }) => {
       return []
     }
     const owners = new Set(nestedSafeOwners ?? [])
+    const isFullySigned = safeTx ? safeTx.signatures.size >= safe.threshold : false
 
-    if (willExecute || safe.owners.some((owner) => sameAddress(owner.value, wallet.address))) {
+    if ((willExecute && isFullySigned) || safe.owners.some((owner) => sameAddress(owner.value, wallet.address))) {
       owners.add(wallet.address)
     }
 
     return Array.from(owners)
-  }, [nestedSafeOwners, safe.owners, wallet, willExecute])
+  }, [nestedSafeOwners, safe.owners, safe.threshold, safeTx, wallet, willExecute])
 
   if (!wallet || !isNestedOwner) {
     return null
