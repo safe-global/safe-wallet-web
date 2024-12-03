@@ -506,6 +506,7 @@ export function verifySafeGiveNameOptionExists(index) {
 }
 
 export function checkAccountsCounter(value) {
+  verifySafeCount(2)
   cy.get(sidebarSafeContainer)
     .should('exist')
     .then(($el) => {

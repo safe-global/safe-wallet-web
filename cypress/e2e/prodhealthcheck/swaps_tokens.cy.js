@@ -4,7 +4,7 @@ import * as swaps from '../pages/swaps.pages.js'
 import * as assets from '../pages/assets.pages.js'
 import { getSafes, CATEGORIES } from '../../support/safes/safesHandler.js'
 import * as wallet from '../../support/utils/wallet.js'
-import * as ls from '../../support/localstorage_data.js'
+import { acceptCookies2 } from '../pages/main.page.js'
 
 let staticSafes = []
 const walletCredentials = JSON.parse(Cypress.env('CYPRESS_WALLET_CREDENTIALS'))
@@ -19,6 +19,7 @@ describe('[PROD] Swaps token tests', () => {
 
   beforeEach(() => {
     cy.visit(constants.prodbaseUrl + constants.BALANCE_URL + staticSafes.SEP_STATIC_SAFE_1)
+    acceptCookies2()
   })
 
   it(
