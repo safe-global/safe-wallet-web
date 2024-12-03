@@ -1,6 +1,9 @@
 import { useMemo } from 'react'
-import { OFFICIAL_HOSTS } from '@/config/constants'
+import { IS_OFFICIAL_HOST, OFFICIAL_HOSTS } from '@/config/constants'
 
 export const useIsOfficialHost = (): boolean => {
-  return useMemo(() => (typeof window === 'undefined' ? true : OFFICIAL_HOSTS.test(window.location.host)), [])
+  return useMemo(
+    () => IS_OFFICIAL_HOST && (typeof window === 'undefined' || OFFICIAL_HOSTS.test(window.location.host)),
+    [],
+  )
 }
