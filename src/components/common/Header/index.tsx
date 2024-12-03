@@ -4,7 +4,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import { type ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import type { Url } from 'next/dist/shared/lib/router/router'
-import { IconButton, Paper } from '@mui/material'
+import { IconButton, Paper, SvgIcon } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import classnames from 'classnames'
 import css from './styles.module.css'
@@ -15,6 +15,7 @@ import NotificationCenter from '@/components/notification-center/NotificationCen
 import { AppRoutes } from '@/config/routes'
 import SafeLogo from '@/public/images/logo.svg'
 import SafeLogoMobile from '@/public/images/logo-no-text.svg'
+import LogoPlaceholder from '@mui/icons-material/Home'
 import Link from 'next/link'
 import useSafeAddress from '@/hooks/useSafeAddress'
 import BatchIndicator from '@/components/batch/BatchIndicator'
@@ -77,21 +78,17 @@ const Header = ({ onMenuToggle, onBatchToggle }: HeaderProps): ReactElement => {
         )}
       </div>
 
-      {isOfficialHost && (
-        <>
-          <div className={classnames(css.element, css.logoMobile)}>
-            <Link href={logoHref} passHref>
-              <SafeLogoMobile alt="Safe logo" />
-            </Link>
-          </div>
+      <div className={classnames(css.element, css.logoMobile)}>
+        <Link href={logoHref} passHref>
+          {isOfficialHost ? <SafeLogoMobile alt="Safe logo" /> : null}
+        </Link>
+      </div>
 
-          <div className={classnames(css.element, css.hideMobile, css.logo)}>
-            <Link href={logoHref} passHref>
-              <SafeLogo alt="Safe logo" />
-            </Link>
-          </div>
-        </>
-      )}
+      <div className={classnames(css.element, css.hideMobile, css.logo)}>
+        <Link href={logoHref} passHref>
+          {isOfficialHost ? <SafeLogo alt="Safe logo" /> : <SvgIcon component={LogoPlaceholder} fontSize="large" />}
+        </Link>
+      </div>
 
       {showSafeToken && (
         <div className={classnames(css.element, css.hideMobile)}>
