@@ -25,6 +25,7 @@ export const PendingTransactions = ({ number, isLoading, fullWidth, onPress }: P
       startIcon={startIcon}
       message="Pending Transactions"
       onPress={onPress}
+      testID="pending-transactions"
     />
   )
 }

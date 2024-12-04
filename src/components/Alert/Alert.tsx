@@ -15,6 +15,7 @@ interface AlertProps {
   endIcon?: React.ReactNode
   startIcon?: React.ReactNode
   onPress?: () => void
+  testID?: string
 }
 
 const icons = {
@@ -41,11 +42,12 @@ export const Alert = ({
   endIcon,
   displayIcon = true,
   onPress,
+  testID,
 }: AlertProps) => {
   const Icon = getAlertIcon(type, iconName, displayIcon)
   return (
     <Theme name={type}>
-      <TouchableOpacity disabled={!onPress} onPress={onPress}>
+      <TouchableOpacity disabled={!onPress} onPress={onPress} testID={testID}>
         <View flexDirection="row" width="100%" justifyContent="center">
           <View
             alignItems="center"
