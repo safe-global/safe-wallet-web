@@ -23,7 +23,7 @@ module.exports = {
       bundleIdentifier: 'global.safe.mobileapp',
       config: {
         usesNonExemptEncryption: false,
-      }
+      },
     },
     android: {
       adaptiveIcon: {
@@ -45,7 +45,7 @@ module.exports = {
           fonts: ['./assets/fonts/safe-icons/safe-icons.ttf'],
         },
       ],
-      ['./withDrawableAssets.js', './assets/drawable'],
+      ['./expo-plugins/withDrawableAssets.js', './assets/android/drawable'],
     ],
     experiments: {
       typedRoutes: true,

@@ -11,6 +11,7 @@ export default function TabLayout() {
         options={{
           header: AssetsNavbar,
           title: 'Home',
+          tabBarButtonTestID: 'tabHome',
           tabBarIcon: ({ color }) => <TabBarIcon name={'wallet'} color={color} />,
         }}
       />
@@ -20,7 +21,7 @@ export default function TabLayout() {
         options={{
           title: 'Transactions',
           headerShown: false,
-          tabBarButtonTestID: 'transactions',
+          tabBarButtonTestID: 'tabTransactions',
           tabBarIcon: ({ color }) => <TabBarIcon name={'transactions'} color={color} />,
         }}
       />
@@ -31,6 +32,7 @@ export default function TabLayout() {
           return {
             title: 'Settings',
             headerShown: false,
+            tabBarButtonTestID: 'tabSettings',
             tabBarIcon: ({ color }) => <TabBarIcon name={'settings'} color={color} />,
           }
         }}

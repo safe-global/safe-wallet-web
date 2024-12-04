@@ -30,13 +30,17 @@
     "generate:icons": "node ./scripts/generateIconTypes.js",
     "prepare": "husky",
     "api-generate": " npx @rtk-query/codegen-openapi openapi-config.ts",
-    "build-storybook": "STORYBOOK_WEB='true' storybook build"
+    "build-storybook": "STORYBOOK_WEB='true' storybook build",
+    "e2e:metro-ios": "EXPO_PUBLIC_ENV=e2e NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo run:ios",
+    "e2e:metro-android": "EXPO_PUBLIC_ENV=e2e NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo run:android",
+    "e2e:run": "maestro test e2e"
   },
   "dependencies": {
     "@cowprotocol/app-data": "^2.3.0",
     "@expo/config-plugins": "^9.0.10",
     "@expo/vector-icons": "^14.0.2",
     "@react-native-clipboard/clipboard": "^1.15.0",
+    "@react-native-community/blur": "^4.4.1",
     "@react-native-menu/menu": "^1.1.6",
     "@react-native/babel-preset": "^0.76.2",
     "@react-navigation/material-top-tabs": "^7.0.1",
@@ -111,7 +115,6 @@
     "@types/node": "^22.9.1",
     "@types/react": "~18.3.12",
     "babel-loader": "^8.4.1",
-    "detox": "^20.27.6",
     "eslint": "^9.12.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",

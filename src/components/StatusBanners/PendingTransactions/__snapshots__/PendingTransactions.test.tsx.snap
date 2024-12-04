@@ -35,6 +35,7 @@ exports[`PendingTransactions should render the pending transactions in fullWidth
         "opacity": 1,
       }
     }
+    testID="pending-transactions"
   >
     <View
       style={
